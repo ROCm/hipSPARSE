@@ -1,0 +1,9 @@
+/* ************************************************************************
+ * Copyright 2018 Advanced Micro Devices, Inc.
+ * ************************************************************************ */
+
+/* the configured version and settings */
+#define hipsparseVersionMajor @hipsparse_VERSION_MAJOR@
+#define hipsparseVersionMinor @hipsparse_VERSION_MINOR@
+#define hipsparseVersionPatch @hipsparse_VERSION_PATCH@
+#define hipsparseVersionTweak @hipsparse_VERSION_TWEAK@
