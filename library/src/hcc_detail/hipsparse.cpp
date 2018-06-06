@@ -680,6 +680,14 @@ hipsparseStatus_t hipsparseXcoo2csr(hipsparseHandle_t handle,
                                                         hipBaseToHCCBase(idxBase)));
 }
 
+hipsparseStatus_t hipsparseCreateIdentityPermutation(hipsparseHandle_t handle,
+                                                     int n,
+                                                     int* p)
+{
+    return rocSPARSEStatusToHIPStatus(
+        rocsparse_create_identity_permutation((rocsparse_handle)handle, n, p));
+}
+
 #ifdef __cplusplus
 }
 #endif
