@@ -721,6 +721,14 @@ hipsparseStatus_t hipsparseXcoo2csr(hipsparseHandle_t handle,
                          hipIndexBaseToCudaIndexBase(idxBase)));
 }
 
+hipsparseStatus_t hipsparseCreateIdentityPermutation(hipsparseHandle_t handle,
+                                                     int n,
+                                                     int* p)
+{
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseCreateIdentityPermutation((cusparseHandle_t)handle, n, p));
+}
+
 #ifdef __cplusplus
 }
 #endif

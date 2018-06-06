@@ -368,6 +368,12 @@ hipsparseStatus_t hipsparseXcoo2csr(hipsparseHandle_t handle,
                                     int* csrRowPtr,
                                     hipsparseIndexBase_t idxBase);
 
+/* Description: This routine creates an identity map. */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCreateIdentityPermutation(hipsparseHandle_t handle,
+                                                     int n,
+                                                     int* p);
+
 #ifdef __cplusplus
 }
 #endif
