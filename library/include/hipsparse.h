@@ -13,8 +13,8 @@
 //
 
 #pragma once
-#ifndef HIPSPARSE_H
-#define HIPSPARSE_H
+#ifndef _HIPSPARSE_H_
+#define _HIPSPARSE_H_
 
 #include "hipsparse-export.h"
 #include "hipsparse-version.h"
@@ -24,6 +24,8 @@
 typedef void* hipsparseHandle_t;
 typedef void* hipsparseMatDescr_t;
 typedef void* hipsparseHybMat_t;
+
+// clang-format off
 
 /* hipSPARSE status types */
 typedef enum {
@@ -89,6 +91,8 @@ typedef enum {
     HIPSPARSE_SIDE_RIGHT = 1
 } hipsparseSideMode_t;
 
+// clang-format on
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -110,37 +114,30 @@ hipsparseStatus_t hipsparseGetStream(hipsparseHandle_t handle, hipStream_t* stre
 
 /* hipSPARSE type creation, destruction, set and get routines */
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseSetPointerMode(hipsparseHandle_t handle,
-                                          hipsparsePointerMode_t mode);
+hipsparseStatus_t hipsparseSetPointerMode(hipsparseHandle_t handle, hipsparsePointerMode_t mode);
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseGetPointerMode(hipsparseHandle_t handle,
-                                          hipsparsePointerMode_t* mode);
+hipsparseStatus_t hipsparseGetPointerMode(hipsparseHandle_t handle, hipsparsePointerMode_t* mode);
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreateMatDescr(hipsparseMatDescr_t* descrA);
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroyMatDescr(hipsparseMatDescr_t descrA);
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseCopyMatDescr(hipsparseMatDescr_t dest,
-                                        const hipsparseMatDescr_t src);
+hipsparseStatus_t hipsparseCopyMatDescr(hipsparseMatDescr_t dest, const hipsparseMatDescr_t src);
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseSetMatType(hipsparseMatDescr_t descrA,
-                                      hipsparseMatrixType_t type);
+hipsparseStatus_t hipsparseSetMatType(hipsparseMatDescr_t descrA, hipsparseMatrixType_t type);
 HIPSPARSE_EXPORT
 hipsparseMatrixType_t hipsparseGetMatType(const hipsparseMatDescr_t descrA);
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseSetMatFillMode(hipsparseMatDescr_t descrA,
-                                          hipsparseFillMode_t fillMode);
+hipsparseStatus_t hipsparseSetMatFillMode(hipsparseMatDescr_t descrA, hipsparseFillMode_t fillMode);
 HIPSPARSE_EXPORT
 hipsparseFillMode_t hipsparseGetMatFillMode(const hipsparseMatDescr_t descrA);
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseSetMatDiagType(hipsparseMatDescr_t descrA,
-                                          hipsparseDiagType_t diagType);
+hipsparseStatus_t hipsparseSetMatDiagType(hipsparseMatDescr_t descrA, hipsparseDiagType_t diagType);
 HIPSPARSE_EXPORT
 hipsparseDiagType_t hipsparseGetMatDiagType(const hipsparseMatDescr_t descrA);
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseSetMatIndexBase(hipsparseMatDescr_t descrA,
-                                           hipsparseIndexBase_t base);
+hipsparseStatus_t hipsparseSetMatIndexBase(hipsparseMatDescr_t descrA, hipsparseIndexBase_t base);
 HIPSPARSE_EXPORT
 hipsparseIndexBase_t hipsparseGetMatIndexBase(const hipsparseMatDescr_t descrA);
 
@@ -384,8 +381,6 @@ hipsparseStatus_t hipsparseDhybmv(hipsparseHandle_t handle,
 
 /* --- Sparse Level 3 routines --- */
 
-
-
 /* --- Sparse Format Conversion --- */
 
 /* Description: This routine converts a sparse matrix in CSR storage format
@@ -405,13 +400,13 @@ hipsparseStatus_t hipsparseScsr2csc(hipsparseHandle_t handle,
                                     int m,
                                     int n,
                                     int nnz,
-                                    const float* csrSortedVal, 
-                                    const int* csrSortedRowPtr, 
-                                    const int* csrSortedColInd, 
-                                    float* cscSortedVal, 
-                                    int* cscSortedRowInd, 
-                                    int* cscSortedColPtr, 
-                                    hipsparseAction_t copyValues, 
+                                    const float* csrSortedVal,
+                                    const int* csrSortedRowPtr,
+                                    const int* csrSortedColInd,
+                                    float* cscSortedVal,
+                                    int* cscSortedRowInd,
+                                    int* cscSortedColPtr,
+                                    hipsparseAction_t copyValues,
                                     hipsparseIndexBase_t idxBase);
 
 HIPSPARSE_EXPORT
@@ -419,13 +414,13 @@ hipsparseStatus_t hipsparseDcsr2csc(hipsparseHandle_t handle,
                                     int m,
                                     int n,
                                     int nnz,
-                                    const double* csrSortedVal, 
-                                    const int* csrSortedRowPtr, 
-                                    const int* csrSortedColInd, 
-                                    double* cscSortedVal, 
-                                    int* cscSortedRowInd, 
-                                    int* cscSortedColPtr, 
-                                    hipsparseAction_t copyValues, 
+                                    const double* csrSortedVal,
+                                    const int* csrSortedRowPtr,
+                                    const int* csrSortedColInd,
+                                    double* cscSortedVal,
+                                    int* cscSortedRowInd,
+                                    int* cscSortedColPtr,
+                                    hipsparseAction_t copyValues,
                                     hipsparseIndexBase_t idxBase);
 
 /* Description: This routine computes the number of ELL entries per row
@@ -501,9 +496,7 @@ hipsparseStatus_t hipsparseXcoo2csr(hipsparseHandle_t handle,
 
 /* Description: This routine creates an identity map. */
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseCreateIdentityPermutation(hipsparseHandle_t handle,
-                                                     int n,
-                                                     int* p);
+hipsparseStatus_t hipsparseCreateIdentityPermutation(hipsparseHandle_t handle, int n, int* p);
 
 /* Description: This routine computes the required buffer size for csrsort. */
 HIPSPARSE_EXPORT
@@ -525,7 +518,7 @@ hipsparseStatus_t hipsparseXcsrsort(hipsparseHandle_t handle,
                                     const int* csrRowPtr,
                                     int* csrColInd,
                                     int* P,
-                                    void *pBuffer);
+                                    void* pBuffer);
 
 /* Description: This routine computes the required buffer size for coosort. */
 HIPSPARSE_EXPORT
@@ -563,4 +556,4 @@ hipsparseStatus_t hipsparseXcoosortByColumn(hipsparseHandle_t handle,
 }
 #endif
 
-#endif // HIPSPARSE_H
+#endif // _HIPSPARSE_H_
