@@ -187,7 +187,8 @@ def docker_build_inside_image( def build_image, compiler_data compiler_args, doc
 
   build_image.inside( docker_args.docker_run_args )
   {
-    withEnv(["CXX=${compiler_args.compiler_path}", 'CLICOLOR_FORCE=1'])
+//    withEnv(["CXX=${compiler_args.compiler_path}", 'CLICOLOR_FORCE=1'])
+    withEnv(["", 'CLICOLOR_FORCE=1'])
     {
       // Install rocsparse
       sh  """#!/usr/bin/env bash
