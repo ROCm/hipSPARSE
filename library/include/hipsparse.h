@@ -171,6 +171,103 @@ hipsparseStatus_t hipsparseDaxpyi(hipsparseHandle_t handle,
                                   double* y,
                                   hipsparseIndexBase_t idxBase);
 
+/* Description: Compute the dot product of a sparse vector x
+   with a dense vector y. */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSdoti(hipsparseHandle_t handle,
+                                 int nnz,
+                                 const float* xVal,
+                                 const int* xInd,
+                                 const float* y,
+                                 float* result,
+                                 hipsparseIndexBase_t idxBase);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDdoti(hipsparseHandle_t handle,
+                                 int nnz,
+                                 const double* xVal,
+                                 const int* xInd,
+                                 const double* y,
+                                 double* result,
+                                 hipsparseIndexBase_t idxBase);
+
+/* Description: Gathers the elements that are listed in xInd from
+   a dense vector y and stores them in a sparse vector x. */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSgthr(hipsparseHandle_t handle,
+                                 int nnz,
+                                 const float* y,
+                                 float* xVal,
+                                 const int* xInd,
+                                 hipsparseIndexBase_t idxBase);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDgthr(hipsparseHandle_t handle,
+                                 int nnz,
+                                 const double* y,
+                                 double* xVal,
+                                 const int* xInd,
+                                 hipsparseIndexBase_t idxBase);
+
+/* Description: Gathers the elements that are listed in xInd from
+   a dense vector y and stores them in a sparse vector x. Gathered
+   elements are replaced by zero in y. */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSgthrz(hipsparseHandle_t handle,
+                                  int nnz,
+                                  float* y,
+                                  float* xVal,
+                                  const int* xInd,
+                                  hipsparseIndexBase_t idxBase);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDgthrz(hipsparseHandle_t handle,
+                                  int nnz,
+                                  double* y,
+                                  double* xVal,
+                                  const int* xInd,
+                                  hipsparseIndexBase_t idxBase);
+
+/* Description: Applies the Givens rotation matrix to a sparse vector
+   x and a dense vector y. */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSroti(hipsparseHandle_t handle,
+                                 int nnz,
+                                 float* xVal,
+                                 const int* xInd,
+                                 float* y,
+                                 const float* c,
+                                 const float* s,
+                                 hipsparseIndexBase_t idxBase);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDroti(hipsparseHandle_t handle,
+                                 int nnz,
+                                 double* xVal,
+                                 const int* xInd,
+                                 double* y,
+                                 const double* c,
+                                 const double* s,
+                                 hipsparseIndexBase_t idxBase);
+
+/* Description: Scatters elements listed in xInd from a sparse vector x
+   into a dense vector y. */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSsctr(hipsparseHandle_t handle,
+                                 int nnz,
+                                 const float* xVal,
+                                 const int* xInd,
+                                 float* y,
+                                 hipsparseIndexBase_t idxBase);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDsctr(hipsparseHandle_t handle,
+                                 int nnz,
+                                 const double* xVal,
+                                 const int* xInd,
+                                 double* y,
+                                 hipsparseIndexBase_t idxBase);
+
 /* --- Sparse Level 2 routines --- */
 
 /* Description: Matrix-vector multiplication  y = alpha * op(A) * x  + beta * y,
@@ -285,6 +382,10 @@ hipsparseStatus_t hipsparseDhybmv(hipsparseHandle_t handle,
                                   const double* beta,
                                   double* y);
 
+/* --- Sparse Level 3 routines --- */
+
+
+
 /* --- Sparse Format Conversion --- */
 
 /* Description: This routine converts a sparse matrix in CSR storage format
@@ -313,9 +414,9 @@ HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseScsr2ell(hipsparseHandle_t handle,
                                     int m,
                                     const hipsparseMatDescr_t descrA,
-                                    const float* csrValA,
-                                    const int* csrRowPtrA,
-                                    const int* csrColIndA,
+                                    const float* csrSortedValA,
+                                    const int* csrSortedRowPtrA,
+                                    const int* csrSortedColIndA,
                                     const hipsparseMatDescr_t descrC,
                                     int ellWidthC,
                                     float* ellValC,
@@ -325,9 +426,9 @@ HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDcsr2ell(hipsparseHandle_t handle,
                                     int m,
                                     const hipsparseMatDescr_t descrA,
-                                    const double* csrValA,
-                                    const int* csrRowPtrA,
-                                    const int* csrColIndA,
+                                    const double* csrSortedValA,
+                                    const int* csrSortedRowPtrA,
+                                    const int* csrSortedColIndA,
                                     const hipsparseMatDescr_t descrC,
                                     int ellWidthC,
                                     double* ellValC,
@@ -373,6 +474,60 @@ HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreateIdentityPermutation(hipsparseHandle_t handle,
                                                      int n,
                                                      int* p);
+
+/* Description: This routine computes the required buffer size for csrsort. */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseXcsrsort_bufferSizeExt(hipsparseHandle_t handle,
+                                                  int m,
+                                                  int n,
+                                                  int nnz,
+                                                  const int* csrRowPtr,
+                                                  const int* csrColInd,
+                                                  size_t* pBufferSizeInBytes);
+
+/* Description: This routine sorts CSR format. */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseXcsrsort(hipsparseHandle_t handle,
+                                    int m,
+                                    int n,
+                                    int nnz,
+                                    const hipsparseMatDescr_t descrA,
+                                    const int* csrRowPtr,
+                                    int* csrColInd,
+                                    int* P,
+                                    void *pBuffer);
+
+/* Description: This routine computes the required buffer size for coosort. */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseXcoosort_bufferSizeExt(hipsparseHandle_t handle,
+                                                  int m,
+                                                  int n,
+                                                  int nnz,
+                                                  const int* cooRows,
+                                                  const int* cooCols,
+                                                  size_t* pBufferSizeInBytes);
+
+/* Description: This routine sorts COO format by rows. */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseXcoosortByRow(hipsparseHandle_t handle,
+                                         int m,
+                                         int n,
+                                         int nnz,
+                                         int* cooRows,
+                                         int* cooCols,
+                                         int* P,
+                                         void* pBuffer);
+
+/* Description: This routine sorts COO format by columns. */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseXcoosortByColumn(hipsparseHandle_t handle,
+                                            int m,
+                                            int n,
+                                            int nnz,
+                                            int* cooRows,
+                                            int* cooCols,
+                                            int* P,
+                                            void* pBuffer);
 
 #ifdef __cplusplus
 }
