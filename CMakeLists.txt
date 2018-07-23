@@ -26,6 +26,8 @@ endif()
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE CACHE BOOLEAN "Add paths to linker search and installed rpath")
 
 # Build options
+option(BUILD_CLIENTS_TESTS "Build tests (requires googletest)" OFF)
+option(BUILD_CLIENTS_SAMPLES "Build examples" ON)
 option(BUILD_CUDA "Build hipSPARSE for CUDA" OFF)
 option(BUILD_SHARED_LIBS "Build hipSPARSE as a shared library" ON)
 option(BUILD_VERBOSE "Output additional build information" OFF)
@@ -35,3 +37,8 @@ include(cmake/Dependencies.cmake)
 
 # hipSPARSE library
 add_subdirectory(library)
+
+if(BUILD_CLIENTS_SAMPLES OR BUILD_CLIENTS_TESTS)
+  enable_testing()
+  add_subdirectory(clients)
+endif()
