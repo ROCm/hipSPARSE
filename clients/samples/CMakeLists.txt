@@ -24,6 +24,7 @@ function(add_hipsparse_example EXAMPLE_SOURCE)
     target_link_libraries(${EXAMPLE_TARGET} PRIVATE hip_hcc)
   else()
     target_compile_definitions(${EXAMPLE_TARGET} PRIVATE __HIP_PLATFORM_NVCC__)
+    target_link_libraries(${EXAMPLE_TARGET} PRIVATE ${CUDA_LIBRARIES})
   endif()
 
   set_target_properties(${EXAMPLE_TARGET} 
