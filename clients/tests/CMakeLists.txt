@@ -97,6 +97,7 @@ if(NOT BUILD_CUDA)
   target_link_libraries(hipsparse-test PRIVATE hip_hcc)
 else()
   target_compile_definitions(hipsparse-test PRIVATE __HIP_PLATFORM_NVCC__)
+  target_link_libraries(hipsparse-test PRIVATE ${CUDA_LIBRARIES})
 endif()
 
 add_test(hipsparse-test hipsparse-test)

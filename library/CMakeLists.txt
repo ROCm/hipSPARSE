@@ -45,9 +45,9 @@ target_include_directories(hipsparse
 )
 
 if(NOT BUILD_CUDA)
-  target_include_directories(hipsparse PRIVATE $<BUILD_INTERFACE:${HIP_INCLUDE_DIRS}>)
+  target_include_directories(hipsparse PUBLIC $<BUILD_INTERFACE:${HIP_INCLUDE_DIRS}>)
 else()
-  target_include_directories(hipsparse PRIVATE $<BUILD_INTERFACE:${CUDA_INCLUDE_DIRS}>)
+  target_include_directories(hipsparse PUBLIC $<BUILD_INTERFACE:${CUDA_INCLUDE_DIRS}>)
 endif()
 
 # Target link libraries
