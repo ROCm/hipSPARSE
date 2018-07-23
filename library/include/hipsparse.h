@@ -398,6 +398,36 @@ hipsparseStatus_t hipsparseXcsr2coo(hipsparseHandle_t handle,
                                     int* cooRowInd,
                                     hipsparseIndexBase_t idxBase);
 
+/* Description: This routine converts a sparse matrix in CSR storage format
+   to a sparse matrix in CSC storage format. */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseScsr2csc(hipsparseHandle_t handle,
+                                    int m,
+                                    int n,
+                                    int nnz,
+                                    const float* csrSortedVal, 
+                                    const int* csrSortedRowPtr, 
+                                    const int* csrSortedColInd, 
+                                    float* cscSortedVal, 
+                                    int* cscSortedRowInd, 
+                                    int* cscSortedColPtr, 
+                                    hipsparseAction_t copyValues, 
+                                    hipsparseIndexBase_t idxBase);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDcsr2csc(hipsparseHandle_t handle,
+                                    int m,
+                                    int n,
+                                    int nnz,
+                                    const double* csrSortedVal, 
+                                    const int* csrSortedRowPtr, 
+                                    const int* csrSortedColInd, 
+                                    double* cscSortedVal, 
+                                    int* cscSortedRowInd, 
+                                    int* cscSortedColPtr, 
+                                    hipsparseAction_t copyValues, 
+                                    hipsparseIndexBase_t idxBase);
+
 /* Description: This routine computes the number of ELL entries per row
    (ell_width) from a given CSR matrix. */
 HIPSPARSE_EXPORT
