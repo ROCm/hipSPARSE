@@ -437,6 +437,178 @@ hipsparseStatus_t hipsparseDaxpyi(hipsparseHandle_t handle,
                        hipIndexBaseToCudaIndexBase(idxBase)));
 }
 
+hipsparseStatus_t hipsparseSdoti(hipsparseHandle_t handle,
+                                 int nnz,
+                                 const float* xVal,
+                                 const int* xInd,
+                                 const float* y,
+                                 float* result,
+                                 hipsparseIndexBase_t idxBase)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseSdoti(
+        (cusparseHandle_t)handle,
+        nnz,
+        xVal,
+        xInd,
+        y,
+        result,
+        hipIndexBaseToCudaIndexBase(idxBase)));
+}
+
+hipsparseStatus_t hipsparseDdoti(hipsparseHandle_t handle,
+                                 int nnz,
+                                 const double* xVal,
+                                 const int* xInd,
+                                 const double* y,
+                                 double* result,
+                                 hipsparseIndexBase_t idxBase)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseDdoti(
+        (cusparseHandle_t)handle,
+        nnz,
+        xVal,
+        xInd,
+        y,
+        result,
+        hipIndexBaseToCudaIndexBase(idxBase)));
+}
+
+hipsparseStatus_t hipsparseSgthr(hipsparseHandle_t handle,
+                                 int nnz,
+                                 const float* y,
+                                 float* xVal,
+                                 const int* xInd,
+                                 hipsparseIndexBase_t idxBase)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseSgthr(
+        (cusparseHandle_t)handle,
+        nnz,
+        y,
+        xVal,
+        xInd,
+        hipIndexBaseToCudaIndexBase(idxBase)));
+}
+
+hipsparseStatus_t hipsparseDgthr(hipsparseHandle_t handle,
+                                 int nnz,
+                                 const double* y,
+                                 double* xVal,
+                                 const int* xInd,
+                                 hipsparseIndexBase_t idxBase)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseDgthr(
+        (cusparseHandle_t)handle,
+        nnz,
+        y,
+        xVal,
+        xInd,
+        hipIndexBaseToCudaIndexBase(idxBase)));
+}
+
+hipsparseStatus_t hipsparseSgthrz(hipsparseHandle_t handle,
+                                  int nnz,
+                                  float* y,
+                                  float* xVal,
+                                  const int* xInd,
+                                  hipsparseIndexBase_t idxBase)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseSgthrz(
+        (cusparseHandle_t)handle,
+        nnz,
+        y,
+        xVal,
+        xInd,
+        hipIndexBaseToCudaIndexBase(idxBase)));
+}
+
+hipsparseStatus_t hipsparseDgthrz(hipsparseHandle_t handle,
+                                  int nnz,
+                                  double* y,
+                                  double* xVal,
+                                  const int* xInd,
+                                  hipsparseIndexBase_t idxBase)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseDgthrz(
+        (cusparseHandle_t)handle,
+        nnz,
+        y,
+        xVal,
+        xInd,
+        hipIndexBaseToCudaIndexBase(idxBase)));
+}
+
+hipsparseStatus_t hipsparseSroti(hipsparseHandle_t handle,
+                                 int nnz,
+                                 float* xVal,
+                                 const int* xInd,
+                                 float* y,
+                                 const float* c,
+                                 const float* s,
+                                 hipsparseIndexBase_t idxBase)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseSroti(
+        (cusparseHandle_t)handle,
+        nnz,
+        xVal,
+        xInd,
+        y,
+        c,
+        s,
+        hipIndexBaseToCudaIndexBase(idxBase)));
+}
+
+hipsparseStatus_t hipsparseDroti(hipsparseHandle_t handle,
+                                 int nnz,
+                                 double* xVal,
+                                 const int* xInd,
+                                 double* y,
+                                 const double* c,
+                                 const double* s,
+                                 hipsparseIndexBase_t idxBase)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseDroti(
+        (cusparseHandle_t)handle,
+        nnz,
+        xVal,
+        xInd,
+        y,
+        c,
+        s,
+        hipIndexBaseToCudaIndexBase(idxBase)));
+}
+
+hipsparseStatus_t hipsparseSsctr(hipsparseHandle_t handle,
+                                 int nnz,
+                                 const float* xVal,
+                                 const int* xInd,
+                                 float* y,
+                                 hipsparseIndexBase_t idxBase)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseSsctr(
+        (cusparseHandle_t)handle,
+        nnz,
+        xVal,
+        xInd,
+        y,
+        hipIndexBaseToCudaIndexBase(idxBase)));
+}
+
+hipsparseStatus_t hipsparseDsctr(hipsparseHandle_t handle,
+                                 int nnz,
+                                 const double* xVal,
+                                 const int* xInd,
+                                 double* y,
+                                 hipsparseIndexBase_t idxBase)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseDsctr(
+        (cusparseHandle_t)handle,
+        nnz,
+        xVal,
+        xInd,
+        y,
+        hipIndexBaseToCudaIndexBase(idxBase)));
+}
+
 hipsparseStatus_t hipsparseScsrmv(hipsparseHandle_t handle,
                                   hipsparseOperation_t transA,
                                   int m,
@@ -504,9 +676,9 @@ hipsparseStatus_t hipsparseScoomv(hipsparseHandle_t handle,
                                   int nnz,
                                   const float* alpha,
                                   const hipsparseMatDescr_t descrA,
-                                  const float* cooValA,
-                                  const int* cooRowIndA,
-                                  const int* cooColIndA,
+                                  const float* cooSortedValA,
+                                  const int* cooSortedRowIndA,
+                                  const int* cooSortedColIndA,
                                   const float* x,
                                   const float* beta,
                                   float* y)
@@ -521,9 +693,9 @@ hipsparseStatus_t hipsparseDcoomv(hipsparseHandle_t handle,
                                   int nnz,
                                   const double* alpha,
                                   const hipsparseMatDescr_t descrA,
-                                  const double* cooValA,
-                                  const int* cooRowIndA,
-                                  const int* cooColIndA,
+                                  const double* cooSortedValA,
+                                  const int* cooSortedRowIndA,
+                                  const int* cooSortedColIndA,
                                   const double* x,
                                   const double* beta,
                                   double* y)
@@ -616,6 +788,62 @@ hipsparseStatus_t hipsparseXcsr2coo(hipsparseHandle_t handle,
                          nnz,
                          m,
                          cooRowInd,
+                         hipIndexBaseToCudaIndexBase(idxBase)));
+}
+
+hipsparseStatus_t hipsparseScsr2csc(hipsparseHandle_t handle,
+                                    int m,
+                                    int n,
+                                    int nnz,
+                                    const float* csrSortedVal,
+                                    const int* csrSortedRowPtr,
+                                    const int* csrSortedColInd,
+                                    float* cscSortedVal,
+                                    int* cscSortedRowInd,
+                                    int* cscSortedColPtr,
+                                    hipsparseAction_t copyValues,
+                                    hipsparseIndexBase_t idxBase)
+{
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseScsr2csc((cusparseHandle_t)handle,
+                         m,
+                         n,
+                         nnz,
+                         csrSortedVal,
+                         csrSortedRowPtr,
+                         csrSortedColInd,
+                         cscSortedVal,
+                         cscSortedRowInd,
+                         cscSortedColPtr,
+                         hipActionToCudaAction(copyValues),
+                         hipIndexBaseToCudaIndexBase(idxBase)));
+}
+
+hipsparseStatus_t hipsparseDcsr2csc(hipsparseHandle_t handle,
+                                    int m,
+                                    int n,
+                                    int nnz,
+                                    const double* csrSortedVal,
+                                    const int* csrSortedRowPtr,
+                                    const int* csrSortedColInd,
+                                    double* cscSortedVal,
+                                    int* cscSortedRowInd,
+                                    int* cscSortedColPtr,
+                                    hipsparseAction_t copyValues,
+                                    hipsparseIndexBase_t idxBase)
+{
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseDcsr2csc((cusparseHandle_t)handle,
+                         m,
+                         n,
+                         nnz,
+                         csrSortedVal,
+                         csrSortedRowPtr,
+                         csrSortedColInd,
+                         cscSortedVal,
+                         cscSortedRowInd,
+                         cscSortedColPtr,
+                         hipActionToCudaAction(copyValues),
                          hipIndexBaseToCudaIndexBase(idxBase)));
 }
 
@@ -719,6 +947,78 @@ hipsparseStatus_t hipsparseXcoo2csr(hipsparseHandle_t handle,
                          m,
                          csrRowPtr,
                          hipIndexBaseToCudaIndexBase(idxBase)));
+}
+
+hipsparseStatus_t hipsparseCreateIdentityPermutation(hipsparseHandle_t handle,
+                                                     int n,
+                                                     int* p)
+{
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseCreateIdentityPermutation((cusparseHandle_t)handle, n, p));
+}
+
+hipsparseStatus_t hipsparseXcsrsort_bufferSizeExt(hipsparseHandle_t handle,
+                                                  int m,
+                                                  int n,
+                                                  int nnz,
+                                                  const int* csrRowPtr,
+                                                  const int* csrColInd,
+                                                  size_t* pBufferSizeInBytes)
+{
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseXcsrsort_bufferSizeExt((cusparseHandle_t)handle, m, n, nnz, csrRowPtr, csrColInd, pBufferSizeInBytes));
+}
+
+hipsparseStatus_t hipsparseXcsrsort(hipsparseHandle_t handle,
+                                    int m,
+                                    int n,
+                                    int nnz,
+                                    const hipsparseMatDescr_t descrA,
+                                    const int* csrRowPtr,
+                                    int* csrColInd,
+                                    int* P,
+                                    void *pBuffer)
+{
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseXcsrsort((cusparseHandle_t)handle, m, n, nnz, (const cusparseMatDescr_t)descrA, csrRowPtr, csrColInd, P, pBuffer));
+}
+
+hipsparseStatus_t hipsparseXcoosort_bufferSizeExt(hipsparseHandle_t handle,
+                                                  int m,
+                                                  int n,
+                                                  int nnz,
+                                                  const int* cooRows,
+                                                  const int* cooCols,
+                                                  size_t* pBufferSizeInBytes)
+{
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseXcoosort_bufferSizeExt((cusparseHandle_t)handle, m, n, nnz, cooRows, cooCols, pBufferSizeInBytes));
+}
+
+hipsparseStatus_t hipsparseXcoosortByRow(hipsparseHandle_t handle,
+                                         int m,
+                                         int n,
+                                         int nnz,
+                                         int* cooRows,
+                                         int* cooCols,
+                                         int* P,
+                                         void* pBuffer)
+{
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseXcoosortByRow((cusparseHandle_t)handle, m, n, nnz, cooRows, cooCols, P, pBuffer));
+}
+
+hipsparseStatus_t hipsparseXcoosortByColumn(hipsparseHandle_t handle,
+                                            int m,
+                                            int n,
+                                            int nnz,
+                                            int* cooRows,
+                                            int* cooCols,
+                                            int* P,
+                                            void* pBuffer)
+{
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseXcoosortByColumn((cusparseHandle_t)handle, m, n, nnz, cooRows, cooCols, P, pBuffer));
 }
 
 #ifdef __cplusplus

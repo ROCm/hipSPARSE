@@ -17,11 +17,6 @@ else()
   find_package(CUDA REQUIRED)
 endif()
 
-# HIP configuration
-if(HIP_PLATFORM STREQUAL "hcc")
-elseif(HIP_PLATFORM STREQUAL "nvcc")
-endif()
-
 # Test dependencies
 if(BUILD_TEST)
   if(NOT DEPENDENCIES_FORCE_DOWNLOAD)
