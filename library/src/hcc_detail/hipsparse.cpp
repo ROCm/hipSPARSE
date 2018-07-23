@@ -11,6 +11,48 @@
 extern "C" {
 #endif
 
+#define RETURN_IF_HIP_ERROR(INPUT_STATUS_FOR_CHECK)                 \
+    {                                                               \
+        hipError_t TMP_STATUS_FOR_CHECK = INPUT_STATUS_FOR_CHECK;   \
+        if(TMP_STATUS_FOR_CHECK != hipSuccess)                      \
+        {                                                           \
+            return hipErrorToHIPSPARSEStatus(TMP_STATUS_FOR_CHECK); \
+        }                                                           \
+    }
+
+#define RETURN_IF_ROCSPARSE_ERROR(INPUT_STATUS_FOR_CHECK)               \
+    {                                                                   \
+        rocsparse_status TMP_STATUS_FOR_CHECK = INPUT_STATUS_FOR_CHECK; \
+        if(TMP_STATUS_FOR_CHECK != rocsparse_status_success)            \
+        {                                                               \
+            return rocSPARSEStatusToHIPStatus(TMP_STATUS_FOR_CHECK);    \
+        }                                                               \
+    }
+
+hipsparseStatus_t hipErrorToHIPSPARSEStatus(hipError_t status)
+{
+    switch(status)
+    {
+    case hipSuccess:
+        return HIPSPARSE_STATUS_SUCCESS;
+    case hipErrorMemoryAllocation:
+    case hipErrorLaunchOutOfResources:
+        return HIPSPARSE_STATUS_ALLOC_FAILED;
+    case hipErrorInvalidDevicePointer:
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    case hipErrorInvalidDevice:
+    case hipErrorInvalidResourceHandle:
+        return HIPSPARSE_STATUS_NOT_INITIALIZED;
+    case hipErrorInvalidValue:
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    case hipErrorNoDevice:
+    case hipErrorUnknown:
+        return HIPSPARSE_STATUS_INTERNAL_ERROR;
+    default:
+        return HIPSPARSE_STATUS_INTERNAL_ERROR;
+    }
+}
+
 hipsparseStatus_t rocSPARSEStatusToHIPStatus(rocsparse_status_ status)
 {
     switch(status)
@@ -64,7 +106,18 @@ hipsparsePointerMode_t HCCPtrModeToHIPPtrMode(rocsparse_pointer_mode_ mode)
     }
 }
 
-// TODO hipsparseAction_t
+rocsparse_action_ hipActionToHCCAction(hipsparseAction_t action)
+{
+    switch(action)
+    {
+    case HIPSPARSE_ACTION_SYMBOLIC:
+        return rocsparse_action_symbolic;
+    case HIPSPARSE_ACTION_NUMERIC:
+        return rocsparse_action_numeric;
+    default:
+        throw "Non existent hipsparseAction_t";
+    }
+}
 
 rocsparse_matrix_type_ hipMatTypeToHCCMatType(hipsparseMatrixType_t type)
 {
@@ -726,6 +779,104 @@ hipsparseStatus_t hipsparseXcsr2coo(hipsparseHandle_t handle,
                                                         m,
                                                         cooRowInd,
                                                         hipBaseToHCCBase(idxBase)));
+}
+
+hipsparseStatus_t hipsparseScsr2csc(hipsparseHandle_t handle,
+                                    int m,
+                                    int n,
+                                    int nnz,
+                                    const float* csrSortedVal, 
+                                    const int* csrSortedRowPtr, 
+                                    const int* csrSortedColInd, 
+                                    float* cscSortedVal, 
+                                    int* cscSortedRowInd, 
+                                    int* cscSortedColPtr, 
+                                    hipsparseAction_t copyValues, 
+                                    hipsparseIndexBase_t idxBase)
+{
+    // Determine buffer size
+    size_t buffer_size = 0;
+    RETURN_IF_ROCSPARSE_ERROR(rocsparse_csr2csc_buffer_size((rocsparse_handle)handle,
+                                                            m,
+                                                            n,
+                                                            nnz,
+                                                            csrSortedRowPtr,
+                                                            csrSortedColInd,
+                                                            hipActionToHCCAction(copyValues),
+                                                            &buffer_size));
+
+    // Allocate buffer
+    void* buffer = nullptr;
+    RETURN_IF_HIP_ERROR(hipMalloc(&buffer, buffer_size));
+
+    // Format conversion
+    RETURN_IF_ROCSPARSE_ERROR(rocsparse_scsr2csc((rocsparse_handle)handle,
+                                                 m,
+                                                 n,
+                                                 nnz,
+                                                 csrSortedVal,
+                                                 csrSortedRowPtr,
+                                                 csrSortedColInd,
+                                                 cscSortedVal,
+                                                 cscSortedRowInd,
+                                                 cscSortedColPtr,
+                                                 hipActionToHCCAction(copyValues),
+                                                 hipBaseToHCCBase(idxBase),
+                                                 buffer));
+
+    // Free buffer
+    RETURN_IF_HIP_ERROR(hipFree(buffer));
+
+    return HIPSPARSE_STATUS_SUCCESS;
+}
+
+hipsparseStatus_t hipsparseDcsr2csc(hipsparseHandle_t handle,
+                                    int m,
+                                    int n,
+                                    int nnz,
+                                    const double* csrSortedVal, 
+                                    const int* csrSortedRowPtr, 
+                                    const int* csrSortedColInd, 
+                                    double* cscSortedVal, 
+                                    int* cscSortedRowInd, 
+                                    int* cscSortedColPtr, 
+                                    hipsparseAction_t copyValues, 
+                                    hipsparseIndexBase_t idxBase)
+{
+    // Determine buffer size
+    size_t buffer_size = 0;
+    RETURN_IF_ROCSPARSE_ERROR(rocsparse_csr2csc_buffer_size((rocsparse_handle)handle,
+                                                            m,
+                                                            n,
+                                                            nnz,
+                                                            csrSortedRowPtr,
+                                                            csrSortedColInd,
+                                                            hipActionToHCCAction(copyValues),
+                                                            &buffer_size));
+
+    // Allocate buffer
+    void* buffer = nullptr;
+    RETURN_IF_HIP_ERROR(hipMalloc(&buffer, buffer_size));
+
+    // Format conversion
+    RETURN_IF_ROCSPARSE_ERROR(rocsparse_dcsr2csc((rocsparse_handle)handle,
+                                                 m,
+                                                 n,
+                                                 nnz,
+                                                 csrSortedVal,
+                                                 csrSortedRowPtr,
+                                                 csrSortedColInd,
+                                                 cscSortedVal,
+                                                 cscSortedRowInd,
+                                                 cscSortedColPtr,
+                                                 hipActionToHCCAction(copyValues),
+                                                 hipBaseToHCCBase(idxBase),
+                                                 buffer));
+
+    // Free buffer
+    RETURN_IF_HIP_ERROR(hipFree(buffer));
+
+    return HIPSPARSE_STATUS_SUCCESS;
 }
 
 hipsparseStatus_t hipsparseXcsr2ellWidth(hipsparseHandle_t handle,
