@@ -196,7 +196,7 @@ pushd .
 
   # On ROCm platforms, hcc compiler can build everything
   if [[ "${build_cuda}" == false ]]; then
-    CXX=hcc cmake ${cmake_common_options} ${cmake_client_options} -DCMAKE_PREFIX_PATH="$(pwd)/../deps/deps-install" ../..
+    cmake ${cmake_common_options} ${cmake_client_options} -DCMAKE_PREFIX_PATH="$(pwd)/../deps/deps-install" ../..
     make -j$(nproc)
   else
     # The nvidia compile is a little more complicated, in that we split compiling the library from the clients
@@ -208,7 +208,7 @@ pushd .
     # so we launch multiple cmake invocation with a different compiler on each.
 
     # Build library only with hipcc as compiler
-    CXX=hipcc cmake ${cmake_common_options} -DCMAKE_INSTALL_PREFIX=hipsparse-install -DCPACK_PACKAGE_INSTALL_DIRECTORY=/opt/rocm ../..
+    cmake ${cmake_common_options} -DCMAKE_INSTALL_PREFIX=hipsparse-install -DCPACK_PACKAGE_INSTALL_DIRECTORY=/opt/rocm ../..
     make -j$(nproc) install
 
     # Build cuda clients with default host compiler
