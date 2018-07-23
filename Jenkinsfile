@@ -189,6 +189,12 @@ def docker_build_inside_image( def build_image, compiler_data compiler_args, doc
   {
     withEnv(["CXX=${compiler_args.compiler_path}", 'CLICOLOR_FORCE=1'])
     {
+      // Install rocsparse
+      sh  """#!/usr/bin/env bash
+          set -x
+          cd ${paths.project_build_prefix}
+          sudo dpkg -i deps/rocsparse*
+        """
       // Build library & clients
       sh  """#!/usr/bin/env bash
           set -x
