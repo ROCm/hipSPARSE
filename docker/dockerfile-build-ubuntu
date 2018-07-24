@@ -18,6 +18,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-ins
     make \
     cmake \
     pkg-config \
+    libnuma1 \
     && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
@@ -27,4 +28,5 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-ins
 # Grant any member of sudo group password-less sudo privileges
 RUN useradd --create-home -u ${user_uid} -o -G sudo --shell /bin/bash jenkins && \
     mkdir -p /etc/sudoers.d/ && \
-    echo '%sudo   ALL=(ALL) NOPASSWD:ALL' | tee /etc/sudoers.d/sudo-nopasswd
+    echo '%sudo   ALL=(ALL) NOPASSWD:ALL' | tee /etc/sudoers.d/sudo-nopasswd && \
+    echo 'jenkins ALL=(ALL) NOPASSWD:ALL' | tee /etc/sudoers.d/sudo-nopasswd
