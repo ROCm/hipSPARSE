@@ -131,13 +131,11 @@ if [[ "${install_dependencies}" == true ]]; then
   # dependencies needed for hipSPARSE and clients to build
   library_dependencies_ubuntu=( "make" "cmake-curses-gui" "hip_hcc" "pkg-config" )
   if [[ "${build_cuda}" == false ]]; then
-    library_dependencies_ubuntu+=( "hcc" )
+    library_dependencies_ubuntu+=( "hcc" "rocsparse" )
   else
     # Ideally, this could be cuda-cusparse-dev, but the package name has a version number in it
     library_dependencies_ubuntu+=( "cuda" )
   fi
-
-  client_dependencies_ubuntu=( "libboost-program-options-dev" )
 
   elevate_if_not_root apt update
 
@@ -177,7 +175,7 @@ pushd .
   # #################################################
   # configure & build
   # #################################################
-  cmake_common_options=""
+  cmake_common_options="-DCMAKE_INSTALL_PREFIX=hipsparse-install -DCPACK_PACKAGE_INSTALL_DIRECTORY=/opt/rocm"
   cmake_client_options=""
 
   # build type
@@ -191,34 +189,19 @@ pushd .
 
   # clients
   if [[ "${build_clients}" == true ]]; then
-    cmake_client_options="${cmake_client_options} -DBUILD_CLIENTS_SAMPLES=ON -DBUILD_CLIENTS_TESTS=ON -DBUILD_CLIENTS_BENCHMARKS=ON"
+    cmake_client_options="${cmake_client_options} -DBUILD_CLIENTS_SAMPLES=ON -DBUILD_CLIENTS_TESTS=ON"
   fi
 
-  # On ROCm platforms, hcc compiler can build everything
+  # backend
   if [[ "${build_cuda}" == false ]]; then
-    cmake ${cmake_common_options} ${cmake_client_options} -DCMAKE_PREFIX_PATH="$(pwd)/../deps/deps-install" ../..
-    make -j$(nproc)
+    cmake_common_options="${cmake_common_options} -DBUILD_CUDA=OFF"
   else
-    # The nvidia compile is a little more complicated, in that we split compiling the library from the clients
-    # We use the hipcc compiler to build the hipSPARSE library for a cuda backend (hipcc offloads the compile to nvcc)
-    # However, we run into a compiler incompatibility compiling the clients between nvcc and sparsew3.h 3.3.4 headers.
-    # The incompatibility is fixed in sparse v3.3.6, but that is not shipped by default on Ubuntu
-    # As a workaround, since clients do not contain device code, we opt to build clients with the native
-    # compiler on the platform.  The compiler cmake chooses during configuration time is mostly unchangeable,
-    # so we launch multiple cmake invocation with a different compiler on each.
-
-    # Build library only with hipcc as compiler
-    cmake ${cmake_common_options} -DCMAKE_INSTALL_PREFIX=hipsparse-install -DCPACK_PACKAGE_INSTALL_DIRECTORY=/opt/rocm ../..
-    make -j$(nproc) install
-
-    # Build cuda clients with default host compiler
-    if [[ "${build_clients}" == true ]]; then
-      pushd clients
-        cmake ${cmake_common_options} ${cmake_client_options} -DCMAKE_PREFIX_PATH="$(pwd)/../hipsparse-install;$(pwd)/../deps/deps-install" ../../../clients
-        make -j$(nproc)
-      popd
-    fi
+    cmake_common_options="${cmake_common_options} -DBUILD_CUDA=ON"
   fi
+
+  # build
+  cmake ${cmake_common_options} ${cmake_client_options} -DCMAKE_PREFIX_PATH="$(pwd)/../deps/deps-install" ../..
+  make -j$(nproc) install
 
   # #################################################
   # install
