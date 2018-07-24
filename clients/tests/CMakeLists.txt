@@ -80,8 +80,12 @@ target_include_directories(hipsparse-test
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
 )
 
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
+target_link_libraries(hipsparse-test PRIVATE Threads::Threads)
+target_link_libraries(hipsparse-test PRIVATE hipsparse ${GTEST_BOTH_LIBRARIES})
+
 set_target_properties(hipsparse-test PROPERTIES CXX_STANDARD 11 CXX_STANDARD_REQUIRED ON)
-target_link_libraries(hipsparse-test PRIVATE hipsparse ${GTEST_BOTH_LIBRARIES} pthread)
 
 target_compile_definitions(hipsparse-test PRIVATE GOOGLE_TEST)
 
@@ -94,7 +98,9 @@ target_include_directories(hipsparse-test
 
 if(NOT BUILD_CUDA)
   target_compile_definitions(hipsparse-test PRIVATE __HIP_PLATFORM_HCC__)
-  target_link_libraries(hipsparse-test PRIVATE hip_hcc)
+  get_target_property(HIP_HCC_LOCATION hip::hip_hcc IMPORTED_LOCATION_RELEASE)
+  get_target_property(HCC_AM_LOCATION hcc::hc_am IMPORTED_LOCATION_RELEASE)
+  target_link_libraries(hipsparse-test PRIVATE ${HIP_HCC_LOCATION} ${HCC_AM_LOCATION})
 else()
   target_compile_definitions(hipsparse-test PRIVATE __HIP_PLATFORM_NVCC__)
   target_link_libraries(hipsparse-test PRIVATE ${CUDA_LIBRARIES})
