@@ -29,13 +29,12 @@ void testing_gthr_bad_arg(void)
     hipsparseHandle_t handle = unique_ptr_handle->handle;
 
     auto dx_val_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-    auto dx_ind_managed =
-        hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-    auto dy_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+    auto dx_ind_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+    auto dy_managed     = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
 
-    T* dx_val             = (T*)dx_val_managed.get();
+    T* dx_val   = (T*)dx_val_managed.get();
     int* dx_ind = (int*)dx_ind_managed.get();
-    T* dy                 = (T*)dy_managed.get();
+    T* dy       = (T*)dy_managed.get();
 
     if(!dx_ind || !dx_val || !dy)
     {
@@ -76,9 +75,9 @@ void testing_gthr_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_gthr(Arguments argus)
 {
-    int N               = argus.N;
-    int nnz             = argus.nnz;
-    int safe_size       = 100;
+    int N                         = argus.N;
+    int nnz                       = argus.nnz;
+    int safe_size                 = 100;
     hipsparseIndexBase_t idx_base = argus.idx_base;
     hipsparseStatus_t status;
 
@@ -95,8 +94,8 @@ hipsparseStatus_t testing_gthr(Arguments argus)
         auto dy_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
 
         int* dx_ind = (int*)dx_ind_managed.get();
-        T* dx_val             = (T*)dx_val_managed.get();
-        T* dy                 = (T*)dy_managed.get();
+        T* dx_val   = (T*)dx_val_managed.get();
+        T* dy       = (T*)dy_managed.get();
 
         if(!dx_ind || !dx_val || !dy)
         {
@@ -132,14 +131,13 @@ hipsparseStatus_t testing_gthr(Arguments argus)
     hipsparseInit<T>(hy, 1, N);
 
     // allocate memory on device
-    auto dx_ind_managed =
-        hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
+    auto dx_ind_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
     auto dx_val_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
     auto dy_managed     = hipsparse_unique_ptr{device_malloc(sizeof(T) * N), device_free};
 
     int* dx_ind = (int*)dx_ind_managed.get();
-    T* dx_val             = (T*)dx_val_managed.get();
-    T* dy                 = (T*)dy_managed.get();
+    T* dx_val   = (T*)dx_val_managed.get();
+    T* dy       = (T*)dy_managed.get();
 
     if(!dx_ind || !dx_val || !dy)
     {
@@ -148,8 +146,7 @@ hipsparseStatus_t testing_gthr(Arguments argus)
     }
 
     // copy data from CPU to device
-    CHECK_HIP_ERROR(
-        hipMemcpy(dx_ind, hx_ind.data(), sizeof(int) * nnz, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(dx_ind, hx_ind.data(), sizeof(int) * nnz, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dy, hy.data(), sizeof(T) * N, hipMemcpyHostToDevice));
 
     if(argus.unit_check)
@@ -173,7 +170,7 @@ hipsparseStatus_t testing_gthr(Arguments argus)
 
         // enable unit check, notice unit check is not invasive, but norm check is,
         // unit check and norm check can not be interchanged their order
-        unit_check_general(1, nnz, hx_val_gold.data(), hx_val.data());
+        unit_check_general(1, nnz, 1, hx_val_gold.data(), hx_val.data());
     }
 
     if(argus.timing)
@@ -194,9 +191,8 @@ hipsparseStatus_t testing_gthr(Arguments argus)
             hipsparseXgthr(handle, nnz, dy, dx_val, dx_ind, idx_base);
         }
 
-        gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
-        double bandwidth =
-            (sizeof(int) * nnz + sizeof(T) * 2.0 * nnz) / gpu_time_used / 1e3;
+        gpu_time_used    = (get_time_us() - gpu_time_used) / number_hot_calls;
+        double bandwidth = (sizeof(int) * nnz + sizeof(T) * 2.0 * nnz) / gpu_time_used / 1e3;
 
         printf("nnz\t\tGB/s\tusec\n");
         printf("%9d\t%0.2lf\t%0.2lf\n", nnz, bandwidth, gpu_time_used);
