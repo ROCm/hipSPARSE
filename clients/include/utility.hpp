@@ -607,12 +607,17 @@ class Arguments
     public:
     int M   = 128;
     int N   = 128;
+    int K   = 128;
     int nnz = 32;
+
+    int ldb;
+    int ldc;
 
     double alpha = 1.0;
     double beta  = 0.0;
 
-    hipsparseOperation_t trans     = HIPSPARSE_OPERATION_NON_TRANSPOSE;
+    hipsparseOperation_t transA    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
+    hipsparseOperation_t transB    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
     hipsparseIndexBase_t idx_base  = HIPSPARSE_INDEX_BASE_ZERO;
     hipsparseIndexBase_t idx_base2 = HIPSPARSE_INDEX_BASE_ZERO;
     hipsparseAction_t action       = HIPSPARSE_ACTION_NUMERIC;
@@ -631,29 +636,34 @@ class Arguments
 
     Arguments& operator=(const Arguments& rhs)
     {
-        M   = rhs.M;
-        N   = rhs.N;
-        nnz = rhs.nnz;
+        this->M   = rhs.M;
+        this->N   = rhs.N;
+        this->K   = rhs.K;
+        this->nnz = rhs.nnz;
 
-        alpha = rhs.alpha;
-        beta  = rhs.beta;
+        this->ldb = rhs.ldb;
+        this->ldc = rhs.ldc;
 
-        trans     = rhs.trans;
-        idx_base  = rhs.idx_base;
-        idx_base2 = rhs.idx_base2;
-        action    = rhs.action;
-        part      = rhs.part;
+        this->alpha = rhs.alpha;
+        this->beta  = rhs.beta;
 
-        norm_check = rhs.norm_check;
-        unit_check = rhs.unit_check;
-        timing     = rhs.timing;
+        this->transA    = rhs.transA;
+        this->transB    = rhs.transB;
+        this->idx_base  = rhs.idx_base;
+        this->idx_base2 = rhs.idx_base2;
+        this->action    = rhs.action;
+        this->part      = rhs.part;
 
-        iters     = rhs.iters;
-        laplacian = rhs.laplacian;
-        ell_width = rhs.ell_width;
-        temp      = rhs.temp;
+        this->norm_check = rhs.norm_check;
+        this->unit_check = rhs.unit_check;
+        this->timing     = rhs.timing;
 
-        filename = rhs.filename;
+        this->iters     = rhs.iters;
+        this->laplacian = rhs.laplacian;
+        this->ell_width = rhs.ell_width;
+        this->temp      = rhs.temp;
+
+        this->filename = rhs.filename;
 
         return *this;
     }

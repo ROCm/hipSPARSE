@@ -174,7 +174,7 @@ hipsparseStatus_t testing_csr2coo(Arguments argus)
             hcoo_row_ind.data(), dcoo_row_ind, sizeof(int) * nnz, hipMemcpyDeviceToHost));
 
         // Unit check
-        unit_check_general(1, nnz, hcoo_row_ind_gold.data(), hcoo_row_ind.data());
+        unit_check_general(1, nnz, 1, hcoo_row_ind_gold.data(), hcoo_row_ind.data());
     }
 
     if(argus.timing)

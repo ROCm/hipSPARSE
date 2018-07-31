@@ -498,8 +498,8 @@ hipsparseStatus_t testing_csr2ell(Arguments argus)
         int ell_nnz = ell_width * m;
 
         // Check if ELL width does match
-        unit_check_general(1, 1, &ell_width_gold, &ell_width);
-        unit_check_general(1, 1, &ell_nnz_gold, &ell_nnz);
+        unit_check_general(1, 1, 1, &ell_width_gold, &ell_width);
+        unit_check_general(1, 1, 1, &ell_nnz_gold, &ell_nnz);
 
         // Allocate ELL device memory
         auto dell_col_ind_managed =
@@ -530,8 +530,8 @@ hipsparseStatus_t testing_csr2ell(Arguments argus)
             hipMemcpy(hell_val.data(), dell_val, sizeof(T) * ell_nnz, hipMemcpyDeviceToHost));
 
         // Unit check
-        unit_check_general(1, ell_nnz, hell_col_ind_gold.data(), hell_col_ind.data());
-        unit_check_general(1, ell_nnz, hell_val_gold.data(), hell_val.data());
+        unit_check_general(1, ell_nnz, 1, hell_col_ind_gold.data(), hell_col_ind.data());
+        unit_check_general(1, ell_nnz, 1, hell_val_gold.data(), hell_val.data());
     }
 
     if(argus.timing)
