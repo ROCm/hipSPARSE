@@ -170,7 +170,7 @@ hipsparseStatus_t testing_coosort(Arguments argus)
     int m               = argus.M;
     int n               = argus.N;
     int safe_size       = 100;
-    int by_row          = argus.trans == HIPSPARSE_OPERATION_NON_TRANSPOSE;
+    int by_row          = argus.transA == HIPSPARSE_OPERATION_NON_TRANSPOSE;
     int permute         = argus.temp;
     hipsparseIndexBase_t idx_base = argus.idx_base;
     hipsparseStatus_t status;
@@ -224,7 +224,7 @@ hipsparseStatus_t testing_coosort(Arguments argus)
 
             // Buffer size should be zero
             size_t zero = 0;
-            unit_check_general(1, 1, &zero, &buffer_size);
+            unit_check_general(1, 1, 1, &zero, &buffer_size);
         }
 
         if(by_row)
@@ -457,12 +457,12 @@ hipsparseStatus_t testing_coosort(Arguments argus)
         }
 
         // Unit check
-        unit_check_general(1, nnz, hcoo_row_ind.data(), hcoo_row_ind_unsorted.data());
-        unit_check_general(1, nnz, hcoo_col_ind.data(), hcoo_col_ind_unsorted.data());
+        unit_check_general(1, nnz, 1, hcoo_row_ind.data(), hcoo_row_ind_unsorted.data());
+        unit_check_general(1, nnz, 1, hcoo_col_ind.data(), hcoo_col_ind_unsorted.data());
 
         if(permute)
         {
-            unit_check_general(1, nnz, hcoo_val.data(), hcoo_val_unsorted.data());
+            unit_check_general(1, nnz, 1, hcoo_val.data(), hcoo_val_unsorted.data());
         }
     }
 

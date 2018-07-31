@@ -120,7 +120,7 @@ hipsparseStatus_t testing_identity(Arguments argus)
         CHECK_HIP_ERROR(hipMemcpy(hp.data(), dp, sizeof(int) * n, hipMemcpyDeviceToHost));
 
         // Unit check
-        unit_check_general(1, n, hp_gold.data(), hp.data());
+        unit_check_general(1, n, 1, hp_gold.data(), hp.data());
     }
 
     if(argus.timing)

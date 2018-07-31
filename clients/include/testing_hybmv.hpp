@@ -121,7 +121,7 @@ hipsparseStatus_t testing_hybmv(Arguments argus)
     int n               = argus.N;
     T h_alpha                     = argus.alpha;
     T h_beta                      = argus.beta;
-    hipsparseOperation_t trans     = argus.trans;
+    hipsparseOperation_t trans     = argus.transA;
     hipsparseIndexBase_t idx_base = argus.idx_base;
     hipsparseHybPartition_t part  = argus.part;
     int user_ell_width  = argus.ell_width;
@@ -326,8 +326,8 @@ hipsparseStatus_t testing_hybmv(Arguments argus)
 
         cpu_time_used = get_time_us() - cpu_time_used;
 
-        unit_check_general(1, m, hy_gold.data(), hy_1.data());
-        unit_check_general(1, m, hy_gold.data(), hy_2.data());
+        unit_check_general(1, m, 1, hy_gold.data(), hy_1.data());
+        unit_check_general(1, m, 1, hy_gold.data(), hy_2.data());
     }
 
     if(argus.timing)

@@ -137,7 +137,7 @@ hipsparseStatus_t testing_coomv(Arguments argus)
     int n               = argus.N;
     T h_alpha                     = argus.alpha;
     T h_beta                      = argus.beta;
-    hipsparseOperation_t trans     = argus.trans;
+    hipsparseOperation_t trans     = argus.transA;
     hipsparseIndexBase_t idx_base = argus.idx_base;
     hipsparseStatus_t status;
 
@@ -326,8 +326,8 @@ hipsparseStatus_t testing_coomv(Arguments argus)
         // unit check and norm check can not be interchanged their order
         if(argus.unit_check)
         {
-            unit_check_general(1, m, hy_gold.data(), hy_1.data());
-            unit_check_general(1, m, hy_gold.data(), hy_2.data());
+            unit_check_general(1, m, 1, hy_gold.data(), hy_1.data());
+            unit_check_general(1, m, 1, hy_gold.data(), hy_2.data());
         }
     }
 
