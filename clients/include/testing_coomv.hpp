@@ -20,12 +20,12 @@ using namespace hipsparse_test;
 template <typename T>
 void testing_coomv_bad_arg(void)
 {
-    int n           = 100;
-    int m           = 100;
-    int nnz         = 100;
-    int safe_size   = 100;
-    T alpha                   = 0.6;
-    T beta                    = 0.2;
+    int n                      = 100;
+    int m                      = 100;
+    int nnz                    = 100;
+    int safe_size              = 100;
+    T alpha                    = 0.6;
+    T beta                     = 0.2;
     hipsparseOperation_t trans = HIPSPARSE_OPERATION_NON_TRANSPOSE;
     hipsparseStatus_t status;
 
@@ -35,19 +35,17 @@ void testing_coomv_bad_arg(void)
     std::unique_ptr<descr_struct> unique_ptr_descr(new descr_struct);
     hipsparseMatDescr_t descr = unique_ptr_descr->descr;
 
-    auto drow_managed =
-        hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-    auto dcol_managed =
-        hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+    auto drow_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+    auto dcol_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
     auto dval_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
     auto dx_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
     auto dy_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
 
     int* drow = (int*)drow_managed.get();
     int* dcol = (int*)dcol_managed.get();
-    T* dval             = (T*)dval_managed.get();
-    T* dx               = (T*)dx_managed.get();
-    T* dy               = (T*)dy_managed.get();
+    T* dval   = (T*)dval_managed.get();
+    T* dx     = (T*)dx_managed.get();
+    T* dy     = (T*)dy_managed.get();
 
     if(!dval || !drow || !dcol || !dx || !dy)
     {
@@ -132,12 +130,12 @@ void testing_coomv_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_coomv(Arguments argus)
 {
-    int safe_size       = 100;
-    int m               = argus.M;
-    int n               = argus.N;
+    int safe_size                 = 100;
+    int m                         = argus.M;
+    int n                         = argus.N;
     T h_alpha                     = argus.alpha;
     T h_beta                      = argus.beta;
-    hipsparseOperation_t trans     = argus.trans;
+    hipsparseOperation_t trans    = argus.transA;
     hipsparseIndexBase_t idx_base = argus.idx_base;
     hipsparseStatus_t status;
 
@@ -171,9 +169,9 @@ hipsparseStatus_t testing_coomv(Arguments argus)
 
         int* drow = (int*)drow_managed.get();
         int* dcol = (int*)dcol_managed.get();
-        T* dval             = (T*)dval_managed.get();
-        T* dx               = (T*)dx_managed.get();
-        T* dy               = (T*)dy_managed.get();
+        T* dval   = (T*)dval_managed.get();
+        T* dx     = (T*)dx_managed.get();
+        T* dy     = (T*)dy_managed.get();
 
         if(!dval || !drow || !dcol || !dx || !dy)
         {
@@ -250,10 +248,8 @@ hipsparseStatus_t testing_coomv(Arguments argus)
     hy_gold = hy_1;
 
     // allocate memory on device
-    auto drow_managed =
-        hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
-    auto dcol_managed =
-        hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
+    auto drow_managed    = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
+    auto dcol_managed    = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
     auto dval_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
     auto dx_managed      = hipsparse_unique_ptr{device_malloc(sizeof(T) * n), device_free};
     auto dy_1_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * m), device_free};
@@ -261,14 +257,14 @@ hipsparseStatus_t testing_coomv(Arguments argus)
     auto d_alpha_managed = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
     auto d_beta_managed  = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
 
-    int* drow = (int*)drow_managed.get();
-    int* dcol = (int*)dcol_managed.get();
-    T* dval             = (T*)dval_managed.get();
-    T* dx               = (T*)dx_managed.get();
-    T* dy_1             = (T*)dy_1_managed.get();
-    T* dy_2             = (T*)dy_2_managed.get();
-    T* d_alpha          = (T*)d_alpha_managed.get();
-    T* d_beta           = (T*)d_beta_managed.get();
+    int* drow  = (int*)drow_managed.get();
+    int* dcol  = (int*)dcol_managed.get();
+    T* dval    = (T*)dval_managed.get();
+    T* dx      = (T*)dx_managed.get();
+    T* dy_1    = (T*)dy_1_managed.get();
+    T* dy_2    = (T*)dy_2_managed.get();
+    T* d_alpha = (T*)d_alpha_managed.get();
+    T* d_beta  = (T*)d_beta_managed.get();
 
     if(!dval || !drow || !dcol || !dx || !dy_1 || !dy_2 || !d_alpha || !d_beta)
     {
@@ -279,10 +275,8 @@ hipsparseStatus_t testing_coomv(Arguments argus)
     }
 
     // copy data from CPU to device
-    CHECK_HIP_ERROR(
-        hipMemcpy(drow, hrow.data(), sizeof(int) * nnz, hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(
-        hipMemcpy(dcol, hcol.data(), sizeof(int) * nnz, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(drow, hrow.data(), sizeof(int) * nnz, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(dcol, hcol.data(), sizeof(int) * nnz, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dval, hval.data(), sizeof(T) * nnz, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dx, hx.data(), sizeof(T) * n, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dy_1, hy_1.data(), sizeof(T) * m, hipMemcpyHostToDevice));
@@ -326,8 +320,8 @@ hipsparseStatus_t testing_coomv(Arguments argus)
         // unit check and norm check can not be interchanged their order
         if(argus.unit_check)
         {
-            unit_check_general(1, m, hy_gold.data(), hy_1.data());
-            unit_check_general(1, m, hy_gold.data(), hy_2.data());
+            unit_check_general(1, m, 1, hy_gold.data(), hy_1.data());
+            unit_check_general(1, m, 1, hy_gold.data(), hy_2.data());
         }
     }
 
@@ -366,8 +360,7 @@ hipsparseStatus_t testing_coomv(Arguments argus)
         {
             memtrans += 2 * m;
         }
-        double bandwidth =
-            (memtrans * sizeof(T) + (2 * nnz) * sizeof(int)) / gpu_time_used / 1e6;
+        double bandwidth = (memtrans * sizeof(T) + (2 * nnz) * sizeof(int)) / gpu_time_used / 1e6;
 
         printf("m\t\tn\t\tnnz\t\talpha\tbeta\tGFlops\tGB/s\tmsec\n");
         printf("%8d\t%8d\t%9d\t%0.2lf\t%0.2lf\t%0.2lf\t%0.2lf\t%0.2lf\n",

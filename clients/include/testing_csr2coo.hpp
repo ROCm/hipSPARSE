@@ -69,9 +69,9 @@ void testing_csr2coo_bad_arg(void)
 
 hipsparseStatus_t testing_csr2coo(Arguments argus)
 {
-    int m               = argus.M;
-    int n               = argus.N;
-    int safe_size       = 100;
+    int m                         = argus.M;
+    int n                         = argus.N;
+    int safe_size                 = 100;
     hipsparseIndexBase_t idx_base = argus.idx_base;
     hipsparseStatus_t status;
 
@@ -147,8 +147,7 @@ hipsparseStatus_t testing_csr2coo(Arguments argus)
     // Allocate memory on the device
     auto dcsr_row_ptr_managed =
         hipsparse_unique_ptr{device_malloc(sizeof(int) * (m + 1)), device_free};
-    auto dcoo_row_ind_managed =
-        hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
+    auto dcoo_row_ind_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
 
     int* dcsr_row_ptr = (int*)dcsr_row_ptr_managed.get();
     int* dcoo_row_ind = (int*)dcoo_row_ind_managed.get();
@@ -161,8 +160,8 @@ hipsparseStatus_t testing_csr2coo(Arguments argus)
     }
 
     // Copy data from host to device
-    CHECK_HIP_ERROR(hipMemcpy(
-        dcsr_row_ptr, hcsr_row_ptr.data(), sizeof(int) * (m + 1), hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(
+        hipMemcpy(dcsr_row_ptr, hcsr_row_ptr.data(), sizeof(int) * (m + 1), hipMemcpyHostToDevice));
 
     if(argus.unit_check)
     {
@@ -170,11 +169,11 @@ hipsparseStatus_t testing_csr2coo(Arguments argus)
             hipsparseXcsr2coo(handle, dcsr_row_ptr, nnz, m, dcoo_row_ind, idx_base));
 
         // Copy output from device to host
-        CHECK_HIP_ERROR(hipMemcpy(
-            hcoo_row_ind.data(), dcoo_row_ind, sizeof(int) * nnz, hipMemcpyDeviceToHost));
+        CHECK_HIP_ERROR(
+            hipMemcpy(hcoo_row_ind.data(), dcoo_row_ind, sizeof(int) * nnz, hipMemcpyDeviceToHost));
 
         // Unit check
-        unit_check_general(1, nnz, hcoo_row_ind_gold.data(), hcoo_row_ind.data());
+        unit_check_general(1, nnz, 1, hcoo_row_ind_gold.data(), hcoo_row_ind.data());
     }
 
     if(argus.timing)

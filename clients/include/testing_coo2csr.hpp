@@ -69,9 +69,9 @@ void testing_coo2csr_bad_arg(void)
 
 hipsparseStatus_t testing_coo2csr(Arguments argus)
 {
-    int m               = argus.M;
-    int n               = argus.N;
-    int safe_size       = 100;
+    int m                         = argus.M;
+    int n                         = argus.N;
+    int safe_size                 = 100;
     hipsparseIndexBase_t idx_base = argus.idx_base;
     hipsparseStatus_t status;
 
@@ -167,8 +167,7 @@ hipsparseStatus_t testing_coo2csr(Arguments argus)
     std::vector<int> hcsr_row_ptr_gold(m + 1, 0);
 
     // Allocate memory on the device
-    auto dcoo_row_ind_managed =
-        hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
+    auto dcoo_row_ind_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
     auto dcsr_row_ptr_managed =
         hipsparse_unique_ptr{device_malloc(sizeof(int) * (m + 1)), device_free};
 
@@ -183,8 +182,8 @@ hipsparseStatus_t testing_coo2csr(Arguments argus)
     }
 
     // Copy data from host to device
-    CHECK_HIP_ERROR(hipMemcpy(
-        dcoo_row_ind, hcoo_row_ind.data(), sizeof(int) * nnz, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(
+        hipMemcpy(dcoo_row_ind, hcoo_row_ind.data(), sizeof(int) * nnz, hipMemcpyHostToDevice));
 
     if(argus.unit_check)
     {
@@ -192,10 +191,8 @@ hipsparseStatus_t testing_coo2csr(Arguments argus)
             hipsparseXcoo2csr(handle, dcoo_row_ind, nnz, m, dcsr_row_ptr, idx_base));
 
         // Copy output from device to host
-        CHECK_HIP_ERROR(hipMemcpy(hcsr_row_ptr.data(),
-                                  dcsr_row_ptr,
-                                  sizeof(int) * (m + 1),
-                                  hipMemcpyDeviceToHost));
+        CHECK_HIP_ERROR(hipMemcpy(
+            hcsr_row_ptr.data(), dcsr_row_ptr, sizeof(int) * (m + 1), hipMemcpyDeviceToHost));
 
         // CPU
         double cpu_time_used = get_time_us();
@@ -215,7 +212,7 @@ hipsparseStatus_t testing_coo2csr(Arguments argus)
         cpu_time_used = get_time_us() - cpu_time_used;
 
         // Unit check
-        unit_check_general(1, m + 1, hcsr_row_ptr_gold.data(), hcsr_row_ptr.data());
+        unit_check_general(1, m + 1, 1, hcsr_row_ptr_gold.data(), hcsr_row_ptr.data());
     }
 
     if(argus.timing)
