@@ -37,15 +37,14 @@ void testing_csrsort_bad_arg(void)
         hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
     auto csr_col_ind_managed =
         hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-    auto perm_managed =
-        hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+    auto perm_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
     auto buffer_managed =
         hipsparse_unique_ptr{device_malloc(sizeof(char) * safe_size), device_free};
 
     int* csr_row_ptr = (int*)csr_row_ptr_managed.get();
     int* csr_col_ind = (int*)csr_col_ind_managed.get();
     int* perm        = (int*)perm_managed.get();
-    void* buffer               = (void*)buffer_managed.get();
+    void* buffer     = (void*)buffer_managed.get();
 
     if(!csr_row_ptr || !csr_col_ind || !perm || !buffer)
     {
@@ -141,10 +140,10 @@ void testing_csrsort_bad_arg(void)
 
 hipsparseStatus_t testing_csrsort(Arguments argus)
 {
-    int m               = argus.M;
-    int n               = argus.N;
-    int safe_size       = 100;
-    int permute         = argus.temp;
+    int m                         = argus.M;
+    int n                         = argus.N;
+    int safe_size                 = 100;
+    int permute                   = argus.temp;
     hipsparseIndexBase_t idx_base = argus.idx_base;
     hipsparseStatus_t status;
 
@@ -181,7 +180,7 @@ hipsparseStatus_t testing_csrsort(Arguments argus)
         int* csr_row_ptr = (int*)csr_row_ptr_managed.get();
         int* csr_col_ind = (int*)csr_col_ind_managed.get();
         int* perm        = (int*)perm_managed.get();
-        void* buffer               = (void*)buffer_managed.get();
+        void* buffer     = (void*)buffer_managed.get();
 
         if(!csr_row_ptr || !csr_col_ind || !perm || !buffer)
         {
@@ -290,8 +289,8 @@ hipsparseStatus_t testing_csrsort(Arguments argus)
         {
             int rng = row_begin + rand() % row_nnz;
 
-            int temp_col = hcsr_col_ind_unsorted[j];
-            float temp_val         = hcsr_val_unsorted[j];
+            int temp_col   = hcsr_col_ind_unsorted[j];
+            float temp_val = hcsr_val_unsorted[j];
 
             hcsr_col_ind_unsorted[j] = hcsr_col_ind_unsorted[rng];
             hcsr_val_unsorted[j]     = hcsr_val_unsorted[rng];
@@ -304,18 +303,16 @@ hipsparseStatus_t testing_csrsort(Arguments argus)
     // Allocate memory on the device
     auto dcsr_row_ptr_managed =
         hipsparse_unique_ptr{device_malloc(sizeof(int) * (m + 1)), device_free};
-    auto dcsr_col_ind_managed =
-        hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
+    auto dcsr_col_ind_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
     auto dcsr_val_managed = hipsparse_unique_ptr{device_malloc(sizeof(float) * nnz), device_free};
     auto dcsr_val_sorted_managed =
         hipsparse_unique_ptr{device_malloc(sizeof(float) * nnz), device_free};
-    auto dperm_managed =
-        hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
+    auto dperm_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
 
-    int* dcsr_row_ptr = (int*)dcsr_row_ptr_managed.get();
-    int* dcsr_col_ind = (int*)dcsr_col_ind_managed.get();
-    float* dcsr_val             = (float*)dcsr_val_managed.get();
-    float* dcsr_val_sorted      = (float*)dcsr_val_sorted_managed.get();
+    int* dcsr_row_ptr      = (int*)dcsr_row_ptr_managed.get();
+    int* dcsr_col_ind      = (int*)dcsr_col_ind_managed.get();
+    float* dcsr_val        = (float*)dcsr_val_managed.get();
+    float* dcsr_val_sorted = (float*)dcsr_val_sorted_managed.get();
 
     // Set permutation vector, if asked for
     int* dperm = permute ? (int*)dperm_managed.get() : nullptr;
@@ -329,12 +326,10 @@ hipsparseStatus_t testing_csrsort(Arguments argus)
     }
 
     // Copy data from host to device
+    CHECK_HIP_ERROR(
+        hipMemcpy(dcsr_row_ptr, hcsr_row_ptr.data(), sizeof(int) * (m + 1), hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(
-        dcsr_row_ptr, hcsr_row_ptr.data(), sizeof(int) * (m + 1), hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(hipMemcpy(dcsr_col_ind,
-                              hcsr_col_ind_unsorted.data(),
-                              sizeof(int) * nnz,
-                              hipMemcpyHostToDevice));
+        dcsr_col_ind, hcsr_col_ind_unsorted.data(), sizeof(int) * nnz, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(
         hipMemcpy(dcsr_val, hcsr_val_unsorted.data(), sizeof(float) * nnz, hipMemcpyHostToDevice));
 
@@ -374,10 +369,8 @@ hipsparseStatus_t testing_csrsort(Arguments argus)
         }
 
         // Copy output from device to host
-        CHECK_HIP_ERROR(hipMemcpy(hcsr_col_ind_unsorted.data(),
-                                  dcsr_col_ind,
-                                  sizeof(int) * nnz,
-                                  hipMemcpyDeviceToHost));
+        CHECK_HIP_ERROR(hipMemcpy(
+            hcsr_col_ind_unsorted.data(), dcsr_col_ind, sizeof(int) * nnz, hipMemcpyDeviceToHost));
 
         if(permute)
         {
@@ -402,7 +395,8 @@ hipsparseStatus_t testing_csrsort(Arguments argus)
         int number_hot_calls  = argus.iters;
 
         // Allocate buffer for csrsort
-        hipsparseXcsrsort_bufferSizeExt(handle, m, n, nnz, dcsr_row_ptr, dcsr_col_ind, &buffer_size);
+        hipsparseXcsrsort_bufferSizeExt(
+            handle, m, n, nnz, dcsr_row_ptr, dcsr_col_ind, &buffer_size);
 
         auto dbuffer_managed =
             hipsparse_unique_ptr{device_malloc(sizeof(char) * buffer_size), device_free};

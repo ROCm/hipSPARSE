@@ -21,8 +21,8 @@ void testing_roti_bad_arg(void)
 {
     int nnz       = 100;
     int safe_size = 100;
-    T c                     = 3.7;
-    T s                     = 1.2;
+    T c           = 3.7;
+    T s           = 1.2;
 
     hipsparseIndexBase_t idx_base = HIPSPARSE_INDEX_BASE_ZERO;
     hipsparseStatus_t status;
@@ -31,13 +31,12 @@ void testing_roti_bad_arg(void)
     hipsparseHandle_t handle = unique_ptr_handle->handle;
 
     auto dx_val_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-    auto dx_ind_managed =
-        hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-    auto dy_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+    auto dx_ind_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+    auto dy_managed     = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
 
-    T* dx_val             = (T*)dx_val_managed.get();
+    T* dx_val   = (T*)dx_val_managed.get();
     int* dx_ind = (int*)dx_ind_managed.get();
-    T* dy                 = (T*)dy_managed.get();
+    T* dy       = (T*)dy_managed.get();
 
     if(!dx_ind || !dx_val || !dy)
     {
@@ -92,11 +91,11 @@ void testing_roti_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_roti(Arguments argus)
 {
-    int N               = argus.N;
-    int nnz             = argus.nnz;
+    int N                         = argus.N;
+    int nnz                       = argus.nnz;
     T c                           = argus.alpha;
     T s                           = argus.beta;
-    int safe_size       = 100;
+    int safe_size                 = 100;
     hipsparseIndexBase_t idx_base = argus.idx_base;
     hipsparseStatus_t status;
 
@@ -113,8 +112,8 @@ hipsparseStatus_t testing_roti(Arguments argus)
         auto dy_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
 
         int* dx_ind = (int*)dx_ind_managed.get();
-        T* dx_val             = (T*)dx_val_managed.get();
-        T* dy                 = (T*)dy_managed.get();
+        T* dx_val   = (T*)dx_val_managed.get();
+        T* dy       = (T*)dy_managed.get();
 
         if(!dx_ind || !dx_val || !dy)
         {
@@ -159,8 +158,7 @@ hipsparseStatus_t testing_roti(Arguments argus)
     hy_gold     = hy_1;
 
     // allocate memory on device
-    auto dx_ind_managed =
-        hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
+    auto dx_ind_managed   = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
     auto dx_val_1_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
     auto dx_val_2_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
     auto dy_1_managed     = hipsparse_unique_ptr{device_malloc(sizeof(T) * N), device_free};
@@ -169,12 +167,12 @@ hipsparseStatus_t testing_roti(Arguments argus)
     auto ds_managed       = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
 
     int* dx_ind = (int*)dx_ind_managed.get();
-    T* dx_val_1           = (T*)dx_val_1_managed.get();
-    T* dx_val_2           = (T*)dx_val_2_managed.get();
-    T* dy_1               = (T*)dy_1_managed.get();
-    T* dy_2               = (T*)dy_2_managed.get();
-    T* dc                 = (T*)dc_managed.get();
-    T* ds                 = (T*)ds_managed.get();
+    T* dx_val_1 = (T*)dx_val_1_managed.get();
+    T* dx_val_2 = (T*)dx_val_2_managed.get();
+    T* dy_1     = (T*)dy_1_managed.get();
+    T* dy_2     = (T*)dy_2_managed.get();
+    T* dc       = (T*)dc_managed.get();
+    T* ds       = (T*)ds_managed.get();
 
     if(!dx_ind || !dx_val_1 || !dx_val_2 || !dy_1 || !dy_2 || !dc || !ds)
     {
@@ -185,8 +183,7 @@ hipsparseStatus_t testing_roti(Arguments argus)
     }
 
     // copy data from CPU to device
-    CHECK_HIP_ERROR(
-        hipMemcpy(dx_ind, hx_ind.data(), sizeof(int) * nnz, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(dx_ind, hx_ind.data(), sizeof(int) * nnz, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dx_val_1, hx_val_1.data(), sizeof(T) * nnz, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dy_1, hy_1.data(), sizeof(T) * N, hipMemcpyHostToDevice));
 
@@ -258,10 +255,9 @@ hipsparseStatus_t testing_roti(Arguments argus)
             hipsparseXroti(handle, nnz, dx_val_1, dx_ind, dy_1, &c, &s, idx_base);
         }
 
-        gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
-        double gflops = nnz * 6.0 / gpu_time_used / 1e3;
-        double bandwidth =
-            (sizeof(int) * nnz + sizeof(T) * 2.0 * nnz) / gpu_time_used / 1e3;
+        gpu_time_used    = (get_time_us() - gpu_time_used) / number_hot_calls;
+        double gflops    = nnz * 6.0 / gpu_time_used / 1e3;
+        double bandwidth = (sizeof(int) * nnz + sizeof(T) * 2.0 * nnz) / gpu_time_used / 1e3;
 
         printf("nnz\t\tcosine\tsine\tGFlop/s\tGB/s\tusec\n");
         printf("%9d\t%0.2lf\t%0.2lf\t%0.2lf\t%0.2lf\t%0.2lf\n",

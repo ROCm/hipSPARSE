@@ -61,7 +61,7 @@ void testing_csr2hyb_bad_arg(void)
 
     int* csr_row_ptr = (int*)csr_row_ptr_managed.get();
     int* csr_col_ind = (int*)csr_col_ind_managed.get();
-    T* csr_val                 = (T*)csr_val_managed.get();
+    T* csr_val       = (T*)csr_val_managed.get();
 
     if(!csr_row_ptr || !csr_col_ind || !csr_val)
     {
@@ -138,12 +138,12 @@ void testing_csr2hyb_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_csr2hyb(Arguments argus)
 {
-    int m               = argus.M;
-    int n               = argus.N;
-    int safe_size       = 100;
+    int m                         = argus.M;
+    int n                         = argus.N;
+    int safe_size                 = 100;
     hipsparseIndexBase_t idx_base = argus.idx_base;
     hipsparseHybPartition_t part  = argus.part;
-    int user_ell_width  = argus.ell_width;
+    int user_ell_width            = argus.ell_width;
     hipsparseStatus_t status;
 
     double scale = 0.02;
@@ -177,7 +177,7 @@ hipsparseStatus_t testing_csr2hyb(Arguments argus)
 
         int* csr_row_ptr = (int*)csr_row_ptr_managed.get();
         int* csr_col_ind = (int*)csr_col_ind_managed.get();
-        T* csr_val                 = (T*)csr_val_managed.get();
+        T* csr_val       = (T*)csr_val_managed.get();
 
         if(!csr_row_ptr || !csr_col_ind || !csr_val)
         {
@@ -255,13 +255,12 @@ hipsparseStatus_t testing_csr2hyb(Arguments argus)
     // Allocate memory on the device
     auto dcsr_row_ptr_managed =
         hipsparse_unique_ptr{device_malloc(sizeof(int) * (m + 1)), device_free};
-    auto dcsr_col_ind_managed =
-        hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
-    auto dcsr_val_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
+    auto dcsr_col_ind_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
+    auto dcsr_val_managed     = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
 
     int* dcsr_row_ptr = (int*)dcsr_row_ptr_managed.get();
     int* dcsr_col_ind = (int*)dcsr_col_ind_managed.get();
-    T* dcsr_val                 = (T*)dcsr_val_managed.get();
+    T* dcsr_val       = (T*)dcsr_val_managed.get();
 
     if(!dcsr_row_ptr || !dcsr_col_ind || !dcsr_val)
     {
@@ -271,10 +270,10 @@ hipsparseStatus_t testing_csr2hyb(Arguments argus)
     }
 
     // Copy data from host to device
-    CHECK_HIP_ERROR(hipMemcpy(
-        dcsr_row_ptr, hcsr_row_ptr.data(), sizeof(int) * (m + 1), hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(hipMemcpy(
-        dcsr_col_ind, hcsr_col_ind.data(), sizeof(int) * nnz, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(
+        hipMemcpy(dcsr_row_ptr, hcsr_row_ptr.data(), sizeof(int) * (m + 1), hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(
+        hipMemcpy(dcsr_col_ind, hcsr_col_ind.data(), sizeof(int) * nnz, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dcsr_val, hcsr_val.data(), sizeof(T) * nnz, hipMemcpyHostToDevice));
 
     // User given ELL width check
@@ -351,7 +350,7 @@ hipsparseStatus_t testing_csr2hyb(Arguments argus)
         for(int i = 0; i < m; ++i)
         {
             int row_nnz = hcsr_row_ptr[i + 1] - hcsr_row_ptr[i];
-            ell_width             = (row_nnz > ell_width) ? row_nnz : ell_width;
+            ell_width   = (row_nnz > ell_width) ? row_nnz : ell_width;
         }
         ell_nnz = ell_width * m;
     }
@@ -374,7 +373,7 @@ hipsparseStatus_t testing_csr2hyb(Arguments argus)
         {
             if(p < ell_width)
             {
-                int idx          = ELL_IND(i, p++, m, ell_width);
+                int idx                    = ELL_IND(i, p++, m, ell_width);
                 hhyb_ell_col_ind_gold[idx] = hcsr_col_ind[j];
                 hhyb_ell_val_gold[idx]     = hcsr_val[j];
             }
@@ -388,7 +387,7 @@ hipsparseStatus_t testing_csr2hyb(Arguments argus)
         }
         for(int j = hcsr_row_ptr[i + 1] - hcsr_row_ptr[i]; j < ell_width; ++j)
         {
-            int idx          = ELL_IND(i, p++, m, ell_width);
+            int idx                    = ELL_IND(i, p++, m, ell_width);
             hhyb_ell_col_ind_gold[idx] = -1;
             hhyb_ell_val_gold[idx]     = static_cast<T>(0);
         }

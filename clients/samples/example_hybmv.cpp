@@ -98,7 +98,8 @@ int main(int argc, char* argv[])
     for(int i = 0; i < 10; ++i)
     {
         // Call hipsparse hybmv
-        hipsparseDhybmv(handle, HIPSPARSE_OPERATION_NON_TRANSPOSE, &halpha, descrA, hybA, dx, &hbeta, dy);
+        hipsparseDhybmv(
+            handle, HIPSPARSE_OPERATION_NON_TRANSPOSE, &halpha, descrA, hybA, dx, &hbeta, dy);
     }
 
     // Device synchronization
@@ -123,8 +124,7 @@ int main(int argc, char* argv[])
 
     time = (get_time_us() - time) / (trials * batch_size * 1e3);
     double bandwidth =
-        static_cast<double>(sizeof(double) * (2 * m + nnz) + sizeof(int) * (nnz)) / time /
-        1e6;
+        static_cast<double>(sizeof(double) * (2 * m + nnz) + sizeof(int) * (nnz)) / time / 1e6;
     double gflops = static_cast<double>(2 * nnz) / time / 1e6;
     printf("m\t\tn\t\tnnz\t\talpha\tbeta\tGFlops\tGB/s\tusec\n");
     printf("%8d\t%8d\t%9d\t%0.2lf\t%0.2lf\t%0.2lf\t%0.2lf\t%0.2lf\n",

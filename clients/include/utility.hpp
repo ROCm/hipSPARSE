@@ -32,32 +32,32 @@
         exit(EXIT_FAILURE);                   \
     }
 
-#define CHECK_HIPSPARSE_ERROR(error)                              \
-    if(error != HIPSPARSE_STATUS_SUCCESS)                         \
-    {                                                             \
-        fprintf(stderr, "hipSPARSE error: ");                     \
-        if(error == HIPSPARSE_STATUS_NOT_INITIALIZED)             \
-        {                                                         \
-            fprintf(stderr, "HIPSPARSE_STATUS_NOT_INITIALIZED");  \
-        }                                                         \
-        else if(error == HIPSPARSE_STATUS_INTERNAL_ERROR)         \
-        {                                                         \
-            fprintf(stderr, " HIPSPARSE_STATUS_INTERNAL_ERROR");  \
-        }                                                         \
-        else if(error == HIPSPARSE_STATUS_INVALID_VALUE)          \
-        {                                                         \
-            fprintf(stderr, "HIPSPARSE_STATUS_INVALID_VALUE");    \
-        }                                                         \
-        else if(error == HIPSPARSE_STATUS_ALLOC_FAILED)           \
-        {                                                         \
-            fprintf(stderr, "HIPSPARSE_STATUS_ALLOC_FAILED");     \
-        }                                                         \
-        else                                                      \
-        {                                                         \
-            fprintf(stderr, "HIPSPARSE_STATUS ERROR");            \
-        }                                                         \
-        fprintf(stderr, "\n");                                    \
-        return error;                                             \
+#define CHECK_HIPSPARSE_ERROR(error)                             \
+    if(error != HIPSPARSE_STATUS_SUCCESS)                        \
+    {                                                            \
+        fprintf(stderr, "hipSPARSE error: ");                    \
+        if(error == HIPSPARSE_STATUS_NOT_INITIALIZED)            \
+        {                                                        \
+            fprintf(stderr, "HIPSPARSE_STATUS_NOT_INITIALIZED"); \
+        }                                                        \
+        else if(error == HIPSPARSE_STATUS_INTERNAL_ERROR)        \
+        {                                                        \
+            fprintf(stderr, " HIPSPARSE_STATUS_INTERNAL_ERROR"); \
+        }                                                        \
+        else if(error == HIPSPARSE_STATUS_INVALID_VALUE)         \
+        {                                                        \
+            fprintf(stderr, "HIPSPARSE_STATUS_INVALID_VALUE");   \
+        }                                                        \
+        else if(error == HIPSPARSE_STATUS_ALLOC_FAILED)          \
+        {                                                        \
+            fprintf(stderr, "HIPSPARSE_STATUS_ALLOC_FAILED");    \
+        }                                                        \
+        else                                                     \
+        {                                                        \
+            fprintf(stderr, "HIPSPARSE_STATUS ERROR");           \
+        }                                                        \
+        fprintf(stderr, "\n");                                   \
+        return error;                                            \
     }
 
 /* ============================================================================================ */
@@ -111,12 +111,8 @@ void hipsparseInitIndex(I* x, int nnz, int start, int end)
 /* ============================================================================================ */
 /*! \brief  csr matrix initialization */
 template <typename T>
-void hipsparseInitCSR(std::vector<int>& ptr,
-                      std::vector<int>& col,
-                      std::vector<T>& val,
-                      int nrow,
-                      int ncol,
-                      int nnz)
+void hipsparseInitCSR(
+    std::vector<int>& ptr, std::vector<int>& col, std::vector<T>& val, int nrow, int ncol, int nnz)
 {
     // Row offsets
     ptr[0]    = 0;
@@ -170,8 +166,8 @@ int gen_2d_laplacian(int ndim,
     {
         for(int j = 0; j < ndim; ++j)
         {
-            int idx = i * ndim + j;
-            rowptr[idx]       = nnz + idx_base;
+            int idx     = i * ndim + j;
+            rowptr[idx] = nnz + idx_base;
             // if no upper boundary element, connect with upper neighbor
             if(i != 0)
             {
@@ -266,7 +262,7 @@ void gen_matrix_coo(int m,
         {
             // Normal distribution around the diagonal
             int rng = (i - begin) * sqrt(-2.0 * log((double)rand() / RAND_MAX)) *
-                                cos(2.0 * M_PI * (double)rand() / RAND_MAX);
+                      cos(2.0 * M_PI * (double)rand() / RAND_MAX);
 
             if(m <= n)
             {

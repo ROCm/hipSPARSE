@@ -87,18 +87,18 @@ int main(int argc, char* argv[])
     {
         // Call hipsparse csrmv
         hipsparseDcsrmv(handle,
-                         HIPSPARSE_OPERATION_NON_TRANSPOSE,
-                         m,
-                         n,
-                         nnz,
-                         &halpha,
-                         descrA,
-                         dAval,
-                         dAptr,
-                         dAcol,
-                         dx,
-                         &hbeta,
-                         dy);
+                        HIPSPARSE_OPERATION_NON_TRANSPOSE,
+                        m,
+                        n,
+                        nnz,
+                        &halpha,
+                        descrA,
+                        dAval,
+                        dAptr,
+                        dAcol,
+                        dx,
+                        &hbeta,
+                        dy);
     }
 
     // Device synchronization
@@ -114,28 +114,28 @@ int main(int argc, char* argv[])
         {
             // Call hipsparse csrmv
             hipsparseDcsrmv(handle,
-                             HIPSPARSE_OPERATION_NON_TRANSPOSE,
-                             m,
-                             n,
-                             nnz,
-                             &halpha,
-                             descrA,
-                             dAval,
-                             dAptr,
-                             dAcol,
-                             dx,
-                             &hbeta,
-                             dy);
+                            HIPSPARSE_OPERATION_NON_TRANSPOSE,
+                            m,
+                            n,
+                            nnz,
+                            &halpha,
+                            descrA,
+                            dAval,
+                            dAptr,
+                            dAcol,
+                            dx,
+                            &hbeta,
+                            dy);
         }
 
         // Device synchronization
         hipDeviceSynchronize();
     }
 
-    time             = (get_time_us() - time) / (trials * batch_size * 1e3);
-    double bandwidth = static_cast<double>(sizeof(double) * (2 * m + nnz) +
-                                           sizeof(int) * (m + 1 + nnz)) /
-                       time / 1e6;
+    time = (get_time_us() - time) / (trials * batch_size * 1e3);
+    double bandwidth =
+        static_cast<double>(sizeof(double) * (2 * m + nnz) + sizeof(int) * (m + 1 + nnz)) / time /
+        1e6;
     double gflops = static_cast<double>(2 * nnz) / time / 1e6;
     printf("m\t\tn\t\tnnz\t\talpha\tbeta\tGFlops\tGB/s\tusec\n");
     printf("%8d\t%8d\t%9d\t%0.2lf\t%0.2lf\t%0.2lf\t%0.2lf\t%0.2lf\n",
