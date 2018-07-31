@@ -71,7 +71,8 @@ void verify_hipsparse_status_invalid_handle(hipsparseStatus_t status)
 #else
     if(status != HIPSPARSE_STATUS_NOT_INITIALIZED)
     {
-        std::cerr << "rocSPARSE TEST ERROR: status != HIPSPARSE_STATUS_NOT_INITIALIZED" << std::endl;
+        std::cerr << "rocSPARSE TEST ERROR: status != HIPSPARSE_STATUS_NOT_INITIALIZED"
+                  << std::endl;
     }
 #endif
 }
