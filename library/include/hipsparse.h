@@ -381,6 +381,82 @@ hipsparseStatus_t hipsparseDhybmv(hipsparseHandle_t handle,
 
 /* --- Sparse Level 3 routines --- */
 
+/* Description: Matrix-matrix multiplication C = alpha * op(A) * B + beta * C,
+   where A is a sparse matrix in CSR storage format, B and C are dense matrices. */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseScsrmm(hipsparseHandle_t handle,
+                                  hipsparseOperation_t transA,
+                                  int m,
+                                  int n,
+                                  int k,
+                                  int nnz,
+                                  const float* alpha,
+                                  const hipsparseMatDescr_t descrA,
+                                  const float* csrSortedValA, 
+                                  const int* csrSortedRowPtrA, 
+                                  const int* csrSortedColIndA, 
+                                  const float* B, 
+                                  int ldb, 
+                                  const float* beta, 
+                                  float* C, 
+                                  int ldc);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDcsrmm(hipsparseHandle_t handle,
+                                  hipsparseOperation_t transA,
+                                  int m,
+                                  int n,
+                                  int k,
+                                  int nnz,
+                                  const double* alpha,
+                                  const hipsparseMatDescr_t descrA,
+                                  const double* csrSortedValA, 
+                                  const int* csrSortedRowPtrA, 
+                                  const int* csrSortedColIndA, 
+                                  const double* B, 
+                                  int ldb, 
+                                  const double* beta, 
+                                  double* C, 
+                                  int ldc);
+
+/* Description: Matrix-matrix multiplication C = alpha * op(A) * op(B) + beta * C,
+   where A is a sparse matrix in CSR storage format, B and C are dense matrices. */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseScsrmm2(hipsparseHandle_t handle,
+                                   hipsparseOperation_t transA,
+                                   hipsparseOperation_t transB,
+                                   int m,
+                                   int n,
+                                   int k,
+                                   int nnz,
+                                   const float* alpha,
+                                   const hipsparseMatDescr_t descrA,
+                                   const float* csrSortedValA, 
+                                   const int* csrSortedRowPtrA, 
+                                   const int* csrSortedColIndA, 
+                                   const float* B, 
+                                   int ldb, 
+                                   const float* beta, 
+                                   float* C, 
+                                   int ldc);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDcsrmm2(hipsparseHandle_t handle,
+                                   hipsparseOperation_t transA,
+                                   hipsparseOperation_t transB,
+                                   int m,
+                                   int n,
+                                   int k,
+                                   int nnz,
+                                   const double* alpha,
+                                   const hipsparseMatDescr_t descrA,
+                                   const double* csrSortedValA, 
+                                   const int* csrSortedRowPtrA, 
+                                   const int* csrSortedColIndA, 
+                                   const double* B, 
+                                   int ldb, 
+                                   const double* beta, 
+                                   double* C, 
+                                   int ldc);
+
 /* --- Sparse Format Conversion --- */
 
 /* Description: This routine converts a sparse matrix in CSR storage format
