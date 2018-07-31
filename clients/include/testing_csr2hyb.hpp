@@ -410,11 +410,11 @@ hipsparseStatus_t testing_csr2hyb(Arguments argus)
         test_hyb* dhyb = (test_hyb*)hyb;
 
         // Check if sizes match
-        unit_check_general(1, 1, &m, &dhyb->m);
-        unit_check_general(1, 1, &n, &dhyb->n);
-        unit_check_general(1, 1, &ell_width, &dhyb->ell_width);
-        unit_check_general(1, 1, &ell_nnz, &dhyb->ell_nnz);
-        unit_check_general(1, 1, &coo_nnz, &dhyb->coo_nnz);
+        unit_check_general(1, 1, 1, &m, &dhyb->m);
+        unit_check_general(1, 1, 1, &n, &dhyb->n);
+        unit_check_general(1, 1, 1, &ell_width, &dhyb->ell_width);
+        unit_check_general(1, 1, 1, &ell_nnz, &dhyb->ell_nnz);
+        unit_check_general(1, 1, 1, &coo_nnz, &dhyb->coo_nnz);
 
         CHECK_HIP_ERROR(hipMemcpy(hhyb_ell_col_ind.data(),
                                   dhyb->ell_col_ind,
@@ -434,11 +434,11 @@ hipsparseStatus_t testing_csr2hyb(Arguments argus)
             hhyb_coo_val.data(), dhyb->coo_val, sizeof(T) * coo_nnz, hipMemcpyDeviceToHost));
 
         // Unit check
-        unit_check_general(1, ell_nnz, hhyb_ell_col_ind_gold.data(), hhyb_ell_col_ind.data());
-        unit_check_general(1, ell_nnz, hhyb_ell_val_gold.data(), hhyb_ell_val.data());
-        unit_check_general(1, coo_nnz, hhyb_coo_row_ind_gold.data(), hhyb_coo_row_ind.data());
-        unit_check_general(1, coo_nnz, hhyb_coo_col_ind_gold.data(), hhyb_coo_col_ind.data());
-        unit_check_general(1, coo_nnz, hhyb_coo_val_gold.data(), hhyb_coo_val.data());
+        unit_check_general(1, ell_nnz, 1, hhyb_ell_col_ind_gold.data(), hhyb_ell_col_ind.data());
+        unit_check_general(1, ell_nnz, 1, hhyb_ell_val_gold.data(), hhyb_ell_val.data());
+        unit_check_general(1, coo_nnz, 1, hhyb_coo_row_ind_gold.data(), hhyb_coo_row_ind.data());
+        unit_check_general(1, coo_nnz, 1, hhyb_coo_col_ind_gold.data(), hhyb_coo_col_ind.data());
+        unit_check_general(1, coo_nnz, 1, hhyb_coo_val_gold.data(), hhyb_coo_val.data());
     }
 
     if(argus.timing)

@@ -31,7 +31,7 @@ Arguments setup_coosort_arguments(coosort_tuple tup)
     Arguments arg;
     arg.M        = std::get<0>(tup);
     arg.N        = std::get<1>(tup);
-    arg.trans    = std::get<2>(tup);
+    arg.transA    = std::get<2>(tup);
     arg.temp     = std::get<3>(tup);
     arg.idx_base = std::get<4>(tup);
     arg.timing   = 0;
