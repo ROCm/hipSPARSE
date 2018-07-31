@@ -26,8 +26,7 @@ void testing_identity_bad_arg(void)
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t handle = unique_ptr_handle->handle;
 
-    auto p_managed =
-        hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+    auto p_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
 
     int* p = (int*)p_managed.get();
 
@@ -66,8 +65,7 @@ hipsparseStatus_t testing_identity(Arguments argus)
     // Argument sanity check before allocating invalid memory
     if(n <= 0)
     {
-        auto p_managed =
-            hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+        auto p_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
 
         int* p = (int*)p_managed.get();
 
@@ -120,7 +118,7 @@ hipsparseStatus_t testing_identity(Arguments argus)
         CHECK_HIP_ERROR(hipMemcpy(hp.data(), dp, sizeof(int) * n, hipMemcpyDeviceToHost));
 
         // Unit check
-        unit_check_general(1, n, hp_gold.data(), hp.data());
+        unit_check_general(1, n, 1, hp_gold.data(), hp.data());
     }
 
     if(argus.timing)

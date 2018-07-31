@@ -11,9 +11,10 @@
 
 typedef std::tuple<int, int, hipsparseOperation_t, int, hipsparseIndexBase_t> coosort_tuple;
 
-int coosort_M_range[]               = {-1, 0, 10, 500, 3872, 10000};
-int coosort_N_range[]               = {-3, 0, 33, 242, 1623, 10000};
-hipsparseOperation_t coosort_trans[] = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPERATION_TRANSPOSE};
+int coosort_M_range[]                = {-1, 0, 10, 500, 3872, 10000};
+int coosort_N_range[]                = {-3, 0, 33, 242, 1623, 10000};
+hipsparseOperation_t coosort_trans[] = {HIPSPARSE_OPERATION_NON_TRANSPOSE,
+                                        HIPSPARSE_OPERATION_TRANSPOSE};
 int coosort_perm[]                  = {0, 1};
 hipsparseIndexBase_t coosort_base[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
@@ -31,7 +32,7 @@ Arguments setup_coosort_arguments(coosort_tuple tup)
     Arguments arg;
     arg.M        = std::get<0>(tup);
     arg.N        = std::get<1>(tup);
-    arg.trans    = std::get<2>(tup);
+    arg.transA   = std::get<2>(tup);
     arg.temp     = std::get<3>(tup);
     arg.idx_base = std::get<4>(tup);
     arg.timing   = 0;

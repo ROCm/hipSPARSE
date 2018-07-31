@@ -44,10 +44,10 @@ void testing_csr2csc_bad_arg(void)
 
     int* csr_row_ptr = (int*)csr_row_ptr_managed.get();
     int* csr_col_ind = (int*)csr_col_ind_managed.get();
-    T* csr_val                 = (T*)csr_val_managed.get();
+    T* csr_val       = (T*)csr_val_managed.get();
     int* csc_row_ind = (int*)csc_row_ind_managed.get();
     int* csc_col_ptr = (int*)csc_col_ptr_managed.get();
-    T* csc_val                 = (T*)csc_val_managed.get();
+    T* csc_val       = (T*)csc_val_managed.get();
 
     if(!csr_row_ptr || !csr_col_ind || !csr_val || !csc_row_ind || !csc_col_ptr || !csc_val)
     {
@@ -194,11 +194,11 @@ void testing_csr2csc_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_csr2csc(Arguments argus)
 {
-    int m               = argus.M;
-    int n               = argus.N;
-    int safe_size       = 100;
+    int m                         = argus.M;
+    int n                         = argus.N;
+    int safe_size                 = 100;
     hipsparseIndexBase_t idx_base = argus.idx_base;
-    hipsparseAction_t action       = argus.action;
+    hipsparseAction_t action      = argus.action;
     hipsparseStatus_t status;
 
     size_t size = 0;
@@ -231,10 +231,10 @@ hipsparseStatus_t testing_csr2csc(Arguments argus)
 
         int* csr_row_ptr = (int*)csr_row_ptr_managed.get();
         int* csr_col_ind = (int*)csr_col_ind_managed.get();
-        T* csr_val                 = (T*)csr_val_managed.get();
+        T* csr_val       = (T*)csr_val_managed.get();
         int* csc_row_ind = (int*)csc_row_ind_managed.get();
         int* csc_col_ptr = (int*)csc_col_ptr_managed.get();
-        T* csc_val                 = (T*)csc_val_managed.get();
+        T* csc_val       = (T*)csc_val_managed.get();
 
         if(!csr_row_ptr || !csr_col_ind || !csr_val || !csc_row_ind || !csc_col_ptr || !csc_val)
         {
@@ -322,21 +322,19 @@ hipsparseStatus_t testing_csr2csc(Arguments argus)
     // Allocate memory on the device
     auto dcsr_row_ptr_managed =
         hipsparse_unique_ptr{device_malloc(sizeof(int) * (m + 1)), device_free};
-    auto dcsr_col_ind_managed =
-        hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
-    auto dcsr_val_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
-    auto dcsc_row_ind_managed =
-        hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
+    auto dcsr_col_ind_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
+    auto dcsr_val_managed     = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
+    auto dcsc_row_ind_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
     auto dcsc_col_ptr_managed =
         hipsparse_unique_ptr{device_malloc(sizeof(int) * (n + 1)), device_free};
     auto dcsc_val_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
 
     int* dcsr_row_ptr = (int*)dcsr_row_ptr_managed.get();
     int* dcsr_col_ind = (int*)dcsr_col_ind_managed.get();
-    T* dcsr_val                 = (T*)dcsr_val_managed.get();
+    T* dcsr_val       = (T*)dcsr_val_managed.get();
     int* dcsc_row_ind = (int*)dcsc_row_ind_managed.get();
     int* dcsc_col_ptr = (int*)dcsc_col_ptr_managed.get();
-    T* dcsc_val                 = (T*)dcsc_val_managed.get();
+    T* dcsc_val       = (T*)dcsc_val_managed.get();
 
     if(!dcsr_row_ptr || !dcsr_col_ind || !dcsr_val || !dcsc_row_ind || !dcsc_col_ptr || !dcsc_val)
     {
@@ -352,10 +350,10 @@ hipsparseStatus_t testing_csr2csc(Arguments argus)
     CHECK_HIP_ERROR(hipMemset(dcsc_val, 0, sizeof(T) * nnz));
 
     // Copy data from host to device
-    CHECK_HIP_ERROR(hipMemcpy(
-        dcsr_row_ptr, hcsr_row_ptr.data(), sizeof(int) * (m + 1), hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(hipMemcpy(
-        dcsr_col_ind, hcsr_col_ind.data(), sizeof(int) * nnz, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(
+        hipMemcpy(dcsr_row_ptr, hcsr_row_ptr.data(), sizeof(int) * (m + 1), hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(
+        hipMemcpy(dcsr_col_ind, hcsr_col_ind.data(), sizeof(int) * nnz, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dcsr_val, hcsr_val.data(), sizeof(T) * nnz, hipMemcpyHostToDevice));
 
     if(argus.unit_check)
@@ -378,12 +376,10 @@ hipsparseStatus_t testing_csr2csc(Arguments argus)
         std::vector<int> hcsc_col_ptr(n + 1);
         std::vector<T> hcsc_val(nnz);
 
+        CHECK_HIP_ERROR(
+            hipMemcpy(hcsc_row_ind.data(), dcsc_row_ind, sizeof(int) * nnz, hipMemcpyDeviceToHost));
         CHECK_HIP_ERROR(hipMemcpy(
-            hcsc_row_ind.data(), dcsc_row_ind, sizeof(int) * nnz, hipMemcpyDeviceToHost));
-        CHECK_HIP_ERROR(hipMemcpy(hcsc_col_ptr.data(),
-                                  dcsc_col_ptr,
-                                  sizeof(int) * (n + 1),
-                                  hipMemcpyDeviceToHost));
+            hcsc_col_ptr.data(), dcsc_col_ptr, sizeof(int) * (n + 1), hipMemcpyDeviceToHost));
         CHECK_HIP_ERROR(
             hipMemcpy(hcsc_val.data(), dcsc_val, sizeof(T) * nnz, hipMemcpyDeviceToHost));
 
@@ -428,13 +424,13 @@ hipsparseStatus_t testing_csr2csc(Arguments argus)
         hcsc_col_ptr_gold[0] = idx_base;
 
         // Unit check
-        unit_check_general(1, nnz, hcsc_row_ind_gold.data(), hcsc_row_ind.data());
-        unit_check_general(1, n + 1, hcsc_col_ptr_gold.data(), hcsc_col_ptr.data());
+        unit_check_general(1, nnz, 1, hcsc_row_ind_gold.data(), hcsc_row_ind.data());
+        unit_check_general(1, n + 1, 1, hcsc_col_ptr_gold.data(), hcsc_col_ptr.data());
 
         // If action == HIPSPARSE_ACTION_NUMERIC also check values
         if(action == HIPSPARSE_ACTION_NUMERIC)
         {
-            unit_check_general(1, nnz, hcsc_val_gold.data(), hcsc_val.data());
+            unit_check_general(1, nnz, 1, hcsc_val_gold.data(), hcsc_val.data());
         }
     }
 
