@@ -24,12 +24,12 @@ using namespace hipsparse_test;
 template <typename T>
 void testing_ellmv_bad_arg(void)
 {
-    int n           = 100;
-    int m           = 100;
-    int safe_size   = 100;
-    int ell_width   = 8;
-    T alpha                   = 0.6;
-    T beta                    = 0.2;
+    int n                      = 100;
+    int m                      = 100;
+    int safe_size              = 100;
+    int ell_width              = 8;
+    T alpha                    = 0.6;
+    T beta                     = 0.2;
     hipsparseOperation_t trans = HIPSPARSE_OPERATION_NON_TRANSPOSE;
     hipsparseStatus_t status;
 
@@ -39,16 +39,15 @@ void testing_ellmv_bad_arg(void)
     std::unique_ptr<descr_struct> unique_ptr_descr(new descr_struct);
     hipsparseMatDescr_t descr = unique_ptr_descr->descr;
 
-    auto dcol_managed =
-        hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+    auto dcol_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
     auto dval_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
     auto dx_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
     auto dy_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
 
     int* dcol = (int*)dcol_managed.get();
-    T* dval             = (T*)dval_managed.get();
-    T* dx               = (T*)dx_managed.get();
-    T* dy               = (T*)dy_managed.get();
+    T* dval   = (T*)dval_managed.get();
+    T* dx     = (T*)dx_managed.get();
+    T* dy     = (T*)dy_managed.get();
 
     if(!dval || !dcol || !dx || !dy)
     {
@@ -125,12 +124,12 @@ void testing_ellmv_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_ellmv(Arguments argus)
 {
-    int safe_size       = 100;
-    int m               = argus.M;
-    int n               = argus.N;
+    int safe_size                 = 100;
+    int m                         = argus.M;
+    int n                         = argus.N;
     T h_alpha                     = argus.alpha;
     T h_beta                      = argus.beta;
-    hipsparseOperation_t trans     = argus.transA;
+    hipsparseOperation_t trans    = argus.transA;
     hipsparseIndexBase_t idx_base = argus.idx_base;
     hipsparseStatus_t status;
 
@@ -161,9 +160,9 @@ hipsparseStatus_t testing_ellmv(Arguments argus)
         auto dy_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
 
         int* dcol = (int*)dcol_managed.get();
-        T* dval             = (T*)dval_managed.get();
-        T* dx               = (T*)dx_managed.get();
-        T* dy               = (T*)dy_managed.get();
+        T* dval   = (T*)dval_managed.get();
+        T* dx     = (T*)dx_managed.get();
+        T* dy     = (T*)dy_managed.get();
 
         if(!dval || !dcol || !dx || !dy)
         {
@@ -239,7 +238,7 @@ hipsparseStatus_t testing_ellmv(Arguments argus)
     for(int i = 0; i < m; ++i)
     {
         int row_nnz = hcsr_row_ptr[i + 1] - hcsr_row_ptr[i];
-        ell_width             = (row_nnz > ell_width) ? row_nnz : ell_width;
+        ell_width   = (row_nnz > ell_width) ? row_nnz : ell_width;
     }
 
     int ell_nnz = ell_width * m;
@@ -252,14 +251,14 @@ hipsparseStatus_t testing_ellmv(Arguments argus)
         int p = 0;
         for(int j = hcsr_row_ptr[i] - idx_base; j < hcsr_row_ptr[i + 1] - idx_base; ++j)
         {
-            int idx = ELL_IND(i, p, m, ell_width);
+            int idx           = ELL_IND(i, p, m, ell_width);
             hell_val[idx]     = hval[j];
             hell_col_ind[idx] = hcol_ind[j];
             ++p;
         }
         for(int j = hcsr_row_ptr[i + 1] - hcsr_row_ptr[i]; j < ell_width; ++j)
         {
-            int idx = ELL_IND(i, p, m, ell_width);
+            int idx           = ELL_IND(i, p, m, ell_width);
             hell_val[idx]     = static_cast<T>(0);
             hell_col_ind[idx] = -1;
             ++p;
@@ -279,8 +278,7 @@ hipsparseStatus_t testing_ellmv(Arguments argus)
     hy_gold = hy_1;
 
     // allocate memory on device
-    auto dcol_managed =
-        hipsparse_unique_ptr{device_malloc(sizeof(int) * ell_nnz), device_free};
+    auto dcol_managed    = hipsparse_unique_ptr{device_malloc(sizeof(int) * ell_nnz), device_free};
     auto dval_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * ell_nnz), device_free};
     auto dx_managed      = hipsparse_unique_ptr{device_malloc(sizeof(T) * n), device_free};
     auto dy_1_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * m), device_free};
@@ -288,13 +286,13 @@ hipsparseStatus_t testing_ellmv(Arguments argus)
     auto d_alpha_managed = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
     auto d_beta_managed  = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
 
-    int* dcol = (int*)dcol_managed.get();
-    T* dval             = (T*)dval_managed.get();
-    T* dx               = (T*)dx_managed.get();
-    T* dy_1             = (T*)dy_1_managed.get();
-    T* dy_2             = (T*)dy_2_managed.get();
-    T* d_alpha          = (T*)d_alpha_managed.get();
-    T* d_beta           = (T*)d_beta_managed.get();
+    int* dcol  = (int*)dcol_managed.get();
+    T* dval    = (T*)dval_managed.get();
+    T* dx      = (T*)dx_managed.get();
+    T* dy_1    = (T*)dy_1_managed.get();
+    T* dy_2    = (T*)dy_2_managed.get();
+    T* d_alpha = (T*)d_alpha_managed.get();
+    T* d_beta  = (T*)d_beta_managed.get();
 
     if(!dval || !dcol || !dx || !dy_1 || !dy_2 || !d_alpha || !d_beta)
     {
@@ -305,8 +303,8 @@ hipsparseStatus_t testing_ellmv(Arguments argus)
     }
 
     // copy data from CPU to device
-    CHECK_HIP_ERROR(hipMemcpy(
-        dcol, hell_col_ind.data(), sizeof(int) * ell_nnz, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(
+        hipMemcpy(dcol, hell_col_ind.data(), sizeof(int) * ell_nnz, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dval, hell_val.data(), sizeof(T) * ell_nnz, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dx, hx.data(), sizeof(T) * n, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dy_1, hy_1.data(), sizeof(T) * m, hipMemcpyHostToDevice));
@@ -337,8 +335,7 @@ hipsparseStatus_t testing_ellmv(Arguments argus)
         for(int i = 0; i < m; ++i)
         {
             hy_gold[i] *= h_beta;
-            for(int j = hcsr_row_ptr[i] - idx_base; j < hcsr_row_ptr[i + 1] - idx_base;
-                ++j)
+            for(int j = hcsr_row_ptr[i] - idx_base; j < hcsr_row_ptr[i + 1] - idx_base; ++j)
             {
                 hy_gold[i] += h_alpha * hval[j] * hx[hcol_ind[j] - idx_base];
             }

@@ -45,7 +45,7 @@ void testing_csr2ell_bad_arg(void)
 
     int* csr_row_ptr = (int*)csr_row_ptr_managed.get();
     int* csr_col_ind = (int*)csr_col_ind_managed.get();
-    T* csr_val                 = (T*)csr_val_managed.get();
+    T* csr_val       = (T*)csr_val_managed.get();
 
     if(!csr_row_ptr || !csr_col_ind || !csr_val)
     {
@@ -109,7 +109,7 @@ void testing_csr2ell_bad_arg(void)
     auto ell_val_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
 
     int* ell_col_ind = (int*)ell_col_ind_managed.get();
-    T* ell_val                 = (T*)ell_val_managed.get();
+    T* ell_val       = (T*)ell_val_managed.get();
 
     if(!ell_col_ind || !ell_val)
     {
@@ -262,9 +262,9 @@ void testing_csr2ell_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_csr2ell(Arguments argus)
 {
-    int m               = argus.M;
-    int n               = argus.N;
-    int safe_size       = 100;
+    int m                         = argus.M;
+    int n                         = argus.N;
+    int safe_size                 = 100;
     hipsparseIndexBase_t csr_base = argus.idx_base;
     hipsparseIndexBase_t ell_base = argus.idx_base2;
     hipsparseStatus_t status;
@@ -295,10 +295,8 @@ hipsparseStatus_t testing_csr2ell(Arguments argus)
     if(m <= 0 || n <= 0 || nnz <= 0)
     {
         auto csr_row_ptr_managed =
-            (m > 0)
-                ? hipsparse_unique_ptr{device_malloc(sizeof(int) * (m + 1)), device_free}
-                : hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size),
-                                       device_free};
+            (m > 0) ? hipsparse_unique_ptr{device_malloc(sizeof(int) * (m + 1)), device_free}
+                    : hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
         auto csr_col_ind_managed =
             hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
         auto csr_val_managed =
@@ -306,7 +304,7 @@ hipsparseStatus_t testing_csr2ell(Arguments argus)
 
         int* csr_row_ptr = (int*)csr_row_ptr_managed.get();
         int* csr_col_ind = (int*)csr_col_ind_managed.get();
-        T* csr_val                 = (T*)csr_val_managed.get();
+        T* csr_val       = (T*)csr_val_managed.get();
 
         if(!csr_row_ptr || !csr_col_ind || !csr_val)
         {
@@ -337,7 +335,7 @@ hipsparseStatus_t testing_csr2ell(Arguments argus)
             hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
 
         int* ell_col_ind = (int*)ell_col_ind_managed.get();
-        T* ell_val                 = (T*)ell_val_managed.get();
+        T* ell_val       = (T*)ell_val_managed.get();
 
         if(!ell_col_ind || !ell_val)
         {
@@ -424,13 +422,12 @@ hipsparseStatus_t testing_csr2ell(Arguments argus)
     // Allocate memory on the device
     auto dcsr_row_ptr_managed =
         hipsparse_unique_ptr{device_malloc(sizeof(int) * (m + 1)), device_free};
-    auto dcsr_col_ind_managed =
-        hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
-    auto dcsr_val_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
+    auto dcsr_col_ind_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
+    auto dcsr_val_managed     = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
 
     int* dcsr_row_ptr = (int*)dcsr_row_ptr_managed.get();
     int* dcsr_col_ind = (int*)dcsr_col_ind_managed.get();
-    T* dcsr_val                 = (T*)dcsr_val_managed.get();
+    T* dcsr_val       = (T*)dcsr_val_managed.get();
 
     if(!dcsr_row_ptr || !dcsr_col_ind || !dcsr_val)
     {
@@ -440,10 +437,10 @@ hipsparseStatus_t testing_csr2ell(Arguments argus)
     }
 
     // Copy data from host to device
-    CHECK_HIP_ERROR(hipMemcpy(
-        dcsr_row_ptr, hcsr_row_ptr.data(), sizeof(int) * (m + 1), hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(hipMemcpy(
-        dcsr_col_ind, hcsr_col_ind.data(), sizeof(int) * nnz, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(
+        hipMemcpy(dcsr_row_ptr, hcsr_row_ptr.data(), sizeof(int) * (m + 1), hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(
+        hipMemcpy(dcsr_col_ind, hcsr_col_ind.data(), sizeof(int) * nnz, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dcsr_val, hcsr_val.data(), sizeof(T) * nnz, hipMemcpyHostToDevice));
 
     // Host csr2ell conversion
@@ -452,8 +449,8 @@ hipsparseStatus_t testing_csr2ell(Arguments argus)
     // Determine max nnz per row
     for(int i = 0; i < m; ++i)
     {
-        int row_nnz = hcsr_row_ptr[i + 1] - hcsr_row_ptr[i];
-        ell_width_gold        = (row_nnz > ell_width_gold) ? row_nnz : ell_width_gold;
+        int row_nnz    = hcsr_row_ptr[i + 1] - hcsr_row_ptr[i];
+        ell_width_gold = (row_nnz > ell_width_gold) ? row_nnz : ell_width_gold;
     }
 
     int ell_nnz_gold = ell_width_gold * m;
@@ -473,13 +470,13 @@ hipsparseStatus_t testing_csr2ell(Arguments argus)
                 break;
             }
 
-            int idx      = ELL_IND(i, p++, m, ell_width_gold);
+            int idx                = ELL_IND(i, p++, m, ell_width_gold);
             hell_col_ind_gold[idx] = hcsr_col_ind[j] - csr_base + ell_base;
             hell_val_gold[idx]     = hcsr_val[j];
         }
         for(int j = hcsr_row_ptr[i + 1] - hcsr_row_ptr[i]; j < ell_width_gold; ++j)
         {
-            int idx      = ELL_IND(i, p++, m, ell_width_gold);
+            int idx                = ELL_IND(i, p++, m, ell_width_gold);
             hell_col_ind_gold[idx] = -1;
             hell_val_gold[idx]     = static_cast<T>(0);
         }
@@ -508,7 +505,7 @@ hipsparseStatus_t testing_csr2ell(Arguments argus)
             hipsparse_unique_ptr{device_malloc(sizeof(T) * ell_nnz), device_free};
 
         int* dell_col_ind = (int*)dell_col_ind_managed.get();
-        T* dell_val                 = (T*)dell_val_managed.get();
+        T* dell_val       = (T*)dell_val_managed.get();
 
         // Perform actual ELL conversion
         CHECK_HIPSPARSE_ERROR(hipsparseXcsr2ell(handle,
@@ -522,10 +519,8 @@ hipsparseStatus_t testing_csr2ell(Arguments argus)
                                                 dell_val,
                                                 dell_col_ind));
 
-        CHECK_HIP_ERROR(hipMemcpy(hell_col_ind.data(),
-                                  dell_col_ind,
-                                  sizeof(int) * ell_nnz,
-                                  hipMemcpyDeviceToHost));
+        CHECK_HIP_ERROR(hipMemcpy(
+            hell_col_ind.data(), dell_col_ind, sizeof(int) * ell_nnz, hipMemcpyDeviceToHost));
         CHECK_HIP_ERROR(
             hipMemcpy(hell_val.data(), dell_val, sizeof(T) * ell_nnz, hipMemcpyDeviceToHost));
 
@@ -550,7 +545,7 @@ hipsparseStatus_t testing_csr2ell(Arguments argus)
                 hipsparse_unique_ptr{device_malloc(sizeof(T) * ell_nnz), device_free};
 
             int* dell_col_ind = (int*)dell_col_ind_managed.get();
-            T* dell_val                 = (T*)dell_val_managed.get();
+            T* dell_val       = (T*)dell_val_managed.get();
 
             hipsparseXcsr2ell(handle,
                               m,
@@ -577,7 +572,7 @@ hipsparseStatus_t testing_csr2ell(Arguments argus)
                 hipsparse_unique_ptr{device_malloc(sizeof(T) * ell_nnz), device_free};
 
             int* dell_col_ind = (int*)dell_col_ind_managed.get();
-            T* dell_val                 = (T*)dell_val_managed.get();
+            T* dell_val       = (T*)dell_val_managed.get();
 
             hipsparseXcsr2ell(handle,
                               m,

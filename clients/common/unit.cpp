@@ -117,8 +117,7 @@ void unit_check_near(int M, int N, int lda, float* hCPU, float* hGPU)
 }
 
 template <>
-void unit_check_near(
-    int M, int N, int lda, double* hCPU, double* hGPU)
+void unit_check_near(int M, int N, int lda, double* hCPU, double* hGPU)
 {
     for(int j = 0; j < N; j++)
     {

@@ -34,15 +34,14 @@ void testing_coosort_bad_arg(void)
         hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
     auto coo_col_ind_managed =
         hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-    auto perm_managed =
-        hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+    auto perm_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
     auto buffer_managed =
         hipsparse_unique_ptr{device_malloc(sizeof(char) * safe_size), device_free};
 
     int* coo_row_ind = (int*)coo_row_ind_managed.get();
     int* coo_col_ind = (int*)coo_col_ind_managed.get();
     int* perm        = (int*)perm_managed.get();
-    void* buffer               = (void*)buffer_managed.get();
+    void* buffer     = (void*)buffer_managed.get();
 
     if(!coo_row_ind || !coo_col_ind || !perm || !buffer)
     {
@@ -94,8 +93,8 @@ void testing_coosort_bad_arg(void)
     {
         int* coo_row_ind_null = nullptr;
 
-        status = hipsparseXcoosortByRow(
-            handle, m, n, nnz, coo_row_ind_null, coo_col_ind, perm, buffer);
+        status =
+            hipsparseXcoosortByRow(handle, m, n, nnz, coo_row_ind_null, coo_col_ind, perm, buffer);
         verify_hipsparse_status_invalid_pointer(status, "Error: coo_row_ind is nullptr");
     }
 
@@ -103,8 +102,8 @@ void testing_coosort_bad_arg(void)
     {
         int* coo_col_ind_null = nullptr;
 
-        status = hipsparseXcoosortByRow(
-            handle, m, n, nnz, coo_row_ind, coo_col_ind_null, perm, buffer);
+        status =
+            hipsparseXcoosortByRow(handle, m, n, nnz, coo_row_ind, coo_col_ind_null, perm, buffer);
         verify_hipsparse_status_invalid_pointer(status, "Error: coo_col_ind is nullptr");
     }
 
@@ -112,8 +111,8 @@ void testing_coosort_bad_arg(void)
     {
         int* buffer_null = nullptr;
 
-        status = hipsparseXcoosortByRow(
-            handle, m, n, nnz, coo_row_ind, coo_col_ind, perm, buffer_null);
+        status =
+            hipsparseXcoosortByRow(handle, m, n, nnz, coo_row_ind, coo_col_ind, perm, buffer_null);
         verify_hipsparse_status_invalid_pointer(status, "Error: buffer is nullptr");
     }
 
@@ -121,8 +120,8 @@ void testing_coosort_bad_arg(void)
     {
         hipsparseHandle_t handle_null = nullptr;
 
-        status = hipsparseXcoosortByRow(
-            handle_null, m, n, nnz, coo_row_ind, coo_col_ind, perm, buffer);
+        status =
+            hipsparseXcoosortByRow(handle_null, m, n, nnz, coo_row_ind, coo_col_ind, perm, buffer);
         verify_hipsparse_status_invalid_handle(status);
     }
 
@@ -167,11 +166,11 @@ void testing_coosort_bad_arg(void)
 
 hipsparseStatus_t testing_coosort(Arguments argus)
 {
-    int m               = argus.M;
-    int n               = argus.N;
-    int safe_size       = 100;
-    int by_row          = argus.transA == HIPSPARSE_OPERATION_NON_TRANSPOSE;
-    int permute         = argus.temp;
+    int m                         = argus.M;
+    int n                         = argus.N;
+    int safe_size                 = 100;
+    int by_row                    = argus.transA == HIPSPARSE_OPERATION_NON_TRANSPOSE;
+    int permute                   = argus.temp;
     hipsparseIndexBase_t idx_base = argus.idx_base;
     hipsparseStatus_t status;
 
@@ -202,7 +201,7 @@ hipsparseStatus_t testing_coosort(Arguments argus)
         int* coo_row_ind = (int*)coo_row_ind_managed.get();
         int* coo_col_ind = (int*)coo_col_ind_managed.get();
         int* perm        = (int*)perm_managed.get();
-        void* buffer               = (void*)buffer_managed.get();
+        void* buffer     = (void*)buffer_managed.get();
 
         if(!coo_row_ind || !coo_col_ind || !perm || !buffer)
         {
@@ -311,9 +310,9 @@ hipsparseStatus_t testing_coosort(Arguments argus)
     {
         int rng = rand() % nnz;
 
-        int temp_row = hcoo_row_ind_unsorted[i];
-        int temp_col = hcoo_col_ind_unsorted[i];
-        float temp_val         = hcoo_val_unsorted[i];
+        int temp_row   = hcoo_row_ind_unsorted[i];
+        int temp_col   = hcoo_col_ind_unsorted[i];
+        float temp_val = hcoo_val_unsorted[i];
 
         hcoo_row_ind_unsorted[i] = hcoo_row_ind_unsorted[rng];
         hcoo_col_ind_unsorted[i] = hcoo_col_ind_unsorted[rng];
@@ -357,20 +356,17 @@ hipsparseStatus_t testing_coosort(Arguments argus)
     }
 
     // Allocate memory on the device
-    auto dcoo_row_ind_managed =
-        hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
-    auto dcoo_col_ind_managed =
-        hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
+    auto dcoo_row_ind_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
+    auto dcoo_col_ind_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
     auto dcoo_val_managed = hipsparse_unique_ptr{device_malloc(sizeof(float) * nnz), device_free};
     auto dcoo_val_sorted_managed =
         hipsparse_unique_ptr{device_malloc(sizeof(float) * nnz), device_free};
-    auto dperm_managed =
-        hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
+    auto dperm_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
 
-    int* dcoo_row_ind = (int*)dcoo_row_ind_managed.get();
-    int* dcoo_col_ind = (int*)dcoo_col_ind_managed.get();
-    float* dcoo_val             = (float*)dcoo_val_managed.get();
-    float* dcoo_val_sorted      = (float*)dcoo_val_sorted_managed.get();
+    int* dcoo_row_ind      = (int*)dcoo_row_ind_managed.get();
+    int* dcoo_col_ind      = (int*)dcoo_col_ind_managed.get();
+    float* dcoo_val        = (float*)dcoo_val_managed.get();
+    float* dcoo_val_sorted = (float*)dcoo_val_sorted_managed.get();
 
     // Set permutation vector, if asked for
     int* dperm = permute ? (int*)dperm_managed.get() : nullptr;
@@ -384,14 +380,10 @@ hipsparseStatus_t testing_coosort(Arguments argus)
     }
 
     // Copy data from host to device
-    CHECK_HIP_ERROR(hipMemcpy(dcoo_row_ind,
-                              hcoo_row_ind_unsorted.data(),
-                              sizeof(int) * nnz,
-                              hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(hipMemcpy(dcoo_col_ind,
-                              hcoo_col_ind_unsorted.data(),
-                              sizeof(int) * nnz,
-                              hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(
+        dcoo_row_ind, hcoo_row_ind_unsorted.data(), sizeof(int) * nnz, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(
+        dcoo_col_ind, hcoo_col_ind_unsorted.data(), sizeof(int) * nnz, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(
         hipMemcpy(dcoo_val, hcoo_val_unsorted.data(), sizeof(float) * nnz, hipMemcpyHostToDevice));
 
@@ -439,14 +431,10 @@ hipsparseStatus_t testing_coosort(Arguments argus)
         }
 
         // Copy output from device to host
-        CHECK_HIP_ERROR(hipMemcpy(hcoo_row_ind_unsorted.data(),
-                                  dcoo_row_ind,
-                                  sizeof(int) * nnz,
-                                  hipMemcpyDeviceToHost));
-        CHECK_HIP_ERROR(hipMemcpy(hcoo_col_ind_unsorted.data(),
-                                  dcoo_col_ind,
-                                  sizeof(int) * nnz,
-                                  hipMemcpyDeviceToHost));
+        CHECK_HIP_ERROR(hipMemcpy(
+            hcoo_row_ind_unsorted.data(), dcoo_row_ind, sizeof(int) * nnz, hipMemcpyDeviceToHost));
+        CHECK_HIP_ERROR(hipMemcpy(
+            hcoo_col_ind_unsorted.data(), dcoo_col_ind, sizeof(int) * nnz, hipMemcpyDeviceToHost));
 
         if(permute)
         {
@@ -472,7 +460,8 @@ hipsparseStatus_t testing_coosort(Arguments argus)
         int number_hot_calls  = argus.iters;
 
         // Allocate buffer for coosort
-        hipsparseXcoosort_bufferSizeExt(handle, m, n, nnz, dcoo_row_ind, dcoo_col_ind, &buffer_size);
+        hipsparseXcoosort_bufferSizeExt(
+            handle, m, n, nnz, dcoo_row_ind, dcoo_col_ind, &buffer_size);
 
         auto dbuffer_managed =
             hipsparse_unique_ptr{device_malloc(sizeof(char) * buffer_size), device_free};
@@ -480,16 +469,14 @@ hipsparseStatus_t testing_coosort(Arguments argus)
 
         for(int iter = 0; iter < number_cold_calls; ++iter)
         {
-            hipsparseXcoosortByRow(
-                handle, m, n, nnz, dcoo_row_ind, dcoo_col_ind, nullptr, dbuffer);
+            hipsparseXcoosortByRow(handle, m, n, nnz, dcoo_row_ind, dcoo_col_ind, nullptr, dbuffer);
         }
 
         double gpu_time_used = get_time_us();
 
         for(int iter = 0; iter < number_hot_calls; ++iter)
         {
-            hipsparseXcoosortByRow(
-                handle, m, n, nnz, dcoo_row_ind, dcoo_col_ind, nullptr, dbuffer);
+            hipsparseXcoosortByRow(handle, m, n, nnz, dcoo_row_ind, dcoo_col_ind, nullptr, dbuffer);
         }
 
         gpu_time_used = (get_time_us() - gpu_time_used) / (number_hot_calls * 1e3);
