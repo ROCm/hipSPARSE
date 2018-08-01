@@ -13,6 +13,7 @@
 
 #include <hipsparse.h>
 #include <algorithm>
+#include <string>
 
 using namespace hipsparse;
 using namespace hipsparse_test;
@@ -73,7 +74,22 @@ hipsparseStatus_t testing_csr2coo(Arguments argus)
     int n                         = argus.N;
     int safe_size                 = 100;
     hipsparseIndexBase_t idx_base = argus.idx_base;
+    std::string binfile           = "";
+    std::string filename          = "";
     hipsparseStatus_t status;
+
+    // When in testing mode, M == N == -99 indicates that we are testing with a real
+    // matrix from cise.ufl.edu
+    if(m == -99 && n == -99 && argus.timing == 0)
+    {
+        binfile = argus.filename;
+        m = n = safe_size;
+    }
+
+    if(argus.timing == 1)
+    {
+        filename = argus.filename;
+    }
 
     double scale = 0.02;
     if(m > 1000 || n > 1000)
@@ -117,31 +133,55 @@ hipsparseStatus_t testing_csr2coo(Arguments argus)
         return HIPSPARSE_STATUS_SUCCESS;
     }
 
-    // For testing, assemble a COO matrix and convert it to CSR first (on host)
-
     // Host structures
-    std::vector<int> hcoo_row_ind(nnz);
-    std::vector<int> hcoo_row_ind_gold(nnz);
-    std::vector<int> hcoo_col_ind(nnz);
-    std::vector<float> hcoo_val(nnz);
+    std::vector<int> hcsr_row_ptr;
+    std::vector<int> hcoo_row_ind;
+    std::vector<int> hcol_ind;
+    std::vector<float> hval(nnz);
 
-    // Sample initial COO matrix on CPU
+    // Initial data on CPU
     srand(12345ULL);
-    gen_matrix_coo(m, n, nnz, hcoo_row_ind_gold, hcoo_col_ind, hcoo_val, idx_base);
-
-    // Convert COO to CSR
-    std::vector<int> hcsr_row_ptr(m + 1);
-
-    // csr2coo on host
-    for(int i = 0; i < nnz; ++i)
+    if(binfile != "")
     {
-        ++hcsr_row_ptr[hcoo_row_ind_gold[i] + 1 - idx_base];
+        if(read_bin_matrix(binfile.c_str(), m, n, nnz, hcsr_row_ptr, hcol_ind, hval, idx_base) != 0)
+        {
+            fprintf(stderr, "Cannot open [read] %s\n", binfile.c_str());
+            return HIPSPARSE_STATUS_INTERNAL_ERROR;
+        }
     }
-
-    hcsr_row_ptr[0] = idx_base;
-    for(int i = 0; i < m; ++i)
+    else if(argus.laplacian)
     {
-        hcsr_row_ptr[i + 1] += hcsr_row_ptr[i];
+        m = n = gen_2d_laplacian(argus.laplacian, hcsr_row_ptr, hcol_ind, hval, idx_base);
+        nnz   = hcsr_row_ptr[m];
+    }
+    else
+    {
+        if(filename != "")
+        {
+            if(read_mtx_matrix(
+                   filename.c_str(), m, n, nnz, hcoo_row_ind, hcol_ind, hval, idx_base) != 0)
+            {
+                fprintf(stderr, "Cannot open [read] %s\n", filename.c_str());
+                return HIPSPARSE_STATUS_INTERNAL_ERROR;
+            }
+        }
+        else
+        {
+            gen_matrix_coo(m, n, nnz, hcoo_row_ind, hcol_ind, hval, idx_base);
+        }
+
+        // Convert COO to CSR
+        hcsr_row_ptr.resize(m + 1, 0);
+        for(int i = 0; i < nnz; ++i)
+        {
+            ++hcsr_row_ptr[hcoo_row_ind[i] + 1 - idx_base];
+        }
+
+        hcsr_row_ptr[0] = idx_base;
+        for(int i = 0; i < m; ++i)
+        {
+            hcsr_row_ptr[i + 1] += hcsr_row_ptr[i];
+        }
     }
 
     // Allocate memory on the device
@@ -169,8 +209,22 @@ hipsparseStatus_t testing_csr2coo(Arguments argus)
             hipsparseXcsr2coo(handle, dcsr_row_ptr, nnz, m, dcoo_row_ind, idx_base));
 
         // Copy output from device to host
+        hcoo_row_ind.resize(nnz);
         CHECK_HIP_ERROR(
             hipMemcpy(hcoo_row_ind.data(), dcoo_row_ind, sizeof(int) * nnz, hipMemcpyDeviceToHost));
+
+        // CPU conversion to COO
+        std::vector<int> hcoo_row_ind_gold(nnz);
+        for(int i = 0; i < m; ++i)
+        {
+            int row_begin = hcsr_row_ptr[i] - idx_base;
+            int row_end   = hcsr_row_ptr[i + 1] - idx_base;
+
+            for(int j = row_begin; j < row_end; ++j)
+            {
+                hcoo_row_ind_gold[j] = i + idx_base;
+            }
+        }
 
         // Unit check
         unit_check_general(1, nnz, 1, hcoo_row_ind_gold.data(), hcoo_row_ind.data());
