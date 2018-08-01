@@ -24,13 +24,13 @@ using namespace hipsparse_test;
 template <typename T>
 void testing_ellmv_bad_arg(void)
 {
-    int n                      = 100;
-    int m                      = 100;
-    int safe_size              = 100;
-    int ell_width              = 8;
-    T alpha                    = 0.6;
-    T beta                     = 0.2;
-    hipsparseOperation_t trans = HIPSPARSE_OPERATION_NON_TRANSPOSE;
+    int n                       = 100;
+    int m                       = 100;
+    int safe_size               = 100;
+    int ell_width               = 8;
+    T alpha                     = 0.6;
+    T beta                      = 0.2;
+    hipsparseOperation_t transA = HIPSPARSE_OPERATION_NON_TRANSPOSE;
     hipsparseStatus_t status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
@@ -60,7 +60,7 @@ void testing_ellmv_bad_arg(void)
         int* dcol_null = nullptr;
 
         status = hipsparseXellmv(
-            handle, trans, m, n, &alpha, descr, dval, dcol_null, ell_width, dx, &beta, dy);
+            handle, transA, m, n, &alpha, descr, dval, dcol_null, ell_width, dx, &beta, dy);
         verify_hipsparse_status_invalid_pointer(status, "Error: dcol is nullptr");
     }
     // testing for(nullptr == dval)
@@ -68,7 +68,7 @@ void testing_ellmv_bad_arg(void)
         T* dval_null = nullptr;
 
         status = hipsparseXellmv(
-            handle, trans, m, n, &alpha, descr, dval_null, dcol, ell_width, dx, &beta, dy);
+            handle, transA, m, n, &alpha, descr, dval_null, dcol, ell_width, dx, &beta, dy);
         verify_hipsparse_status_invalid_pointer(status, "Error: dval is nullptr");
     }
     // testing for(nullptr == dx)
@@ -76,7 +76,7 @@ void testing_ellmv_bad_arg(void)
         T* dx_null = nullptr;
 
         status = hipsparseXellmv(
-            handle, trans, m, n, &alpha, descr, dval, dcol, ell_width, dx_null, &beta, dy);
+            handle, transA, m, n, &alpha, descr, dval, dcol, ell_width, dx_null, &beta, dy);
         verify_hipsparse_status_invalid_pointer(status, "Error: dx is nullptr");
     }
     // testing for(nullptr == dy)
@@ -84,7 +84,7 @@ void testing_ellmv_bad_arg(void)
         T* dy_null = nullptr;
 
         status = hipsparseXellmv(
-            handle, trans, m, n, &alpha, descr, dval, dcol, ell_width, dx, &beta, dy_null);
+            handle, transA, m, n, &alpha, descr, dval, dcol, ell_width, dx, &beta, dy_null);
         verify_hipsparse_status_invalid_pointer(status, "Error: dy is nullptr");
     }
     // testing for(nullptr == d_alpha)
@@ -92,7 +92,7 @@ void testing_ellmv_bad_arg(void)
         T* d_alpha_null = nullptr;
 
         status = hipsparseXellmv(
-            handle, trans, m, n, d_alpha_null, descr, dval, dcol, ell_width, dx, &beta, dy);
+            handle, transA, m, n, d_alpha_null, descr, dval, dcol, ell_width, dx, &beta, dy);
         verify_hipsparse_status_invalid_pointer(status, "Error: alpha is nullptr");
     }
     // testing for(nullptr == d_beta)
@@ -100,7 +100,7 @@ void testing_ellmv_bad_arg(void)
         T* d_beta_null = nullptr;
 
         status = hipsparseXellmv(
-            handle, trans, m, n, &alpha, descr, dval, dcol, ell_width, dx, d_beta_null, dy);
+            handle, transA, m, n, &alpha, descr, dval, dcol, ell_width, dx, d_beta_null, dy);
         verify_hipsparse_status_invalid_pointer(status, "Error: beta is nullptr");
     }
     // testing for(nullptr == descr)
@@ -108,7 +108,7 @@ void testing_ellmv_bad_arg(void)
         hipsparseMatDescr_t descr_null = nullptr;
 
         status = hipsparseXellmv(
-            handle, trans, m, n, &alpha, descr_null, dval, dcol, ell_width, dx, &beta, dy);
+            handle, transA, m, n, &alpha, descr_null, dval, dcol, ell_width, dx, &beta, dy);
         verify_hipsparse_status_invalid_pointer(status, "Error: descr is nullptr");
     }
     // testing for(nullptr == handle)
@@ -116,7 +116,7 @@ void testing_ellmv_bad_arg(void)
         hipsparseHandle_t handle_null = nullptr;
 
         status = hipsparseXellmv(
-            handle_null, trans, m, n, &alpha, descr, dval, dcol, ell_width, dx, &beta, dy);
+            handle_null, transA, m, n, &alpha, descr, dval, dcol, ell_width, dx, &beta, dy);
         verify_hipsparse_status_invalid_handle(status);
     }
 }
@@ -129,9 +129,24 @@ hipsparseStatus_t testing_ellmv(Arguments argus)
     int n                         = argus.N;
     T h_alpha                     = argus.alpha;
     T h_beta                      = argus.beta;
-    hipsparseOperation_t trans    = argus.transA;
+    hipsparseOperation_t transA   = argus.transA;
     hipsparseIndexBase_t idx_base = argus.idx_base;
+    std::string binfile           = "";
+    std::string filename          = "";
     hipsparseStatus_t status;
+
+    // When in testing mode, M == N == -99 indicates that we are testing with a real
+    // matrix from cise.ufl.edu
+    if(m == -99 && n == -99 && argus.timing == 0)
+    {
+        binfile = argus.filename;
+        m = n = safe_size;
+    }
+
+    if(argus.timing == 1)
+    {
+        filename = argus.filename;
+    }
 
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
     hipsparseHandle_t handle = test_handle->handle;
@@ -173,7 +188,7 @@ hipsparseStatus_t testing_ellmv(Arguments argus)
 
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
         status =
-            hipsparseXellmv(handle, trans, m, n, &h_alpha, descr, dval, dcol, 0, dx, &h_beta, dy);
+            hipsparseXellmv(handle, transA, m, n, &h_alpha, descr, dval, dcol, 0, dx, &h_beta, dy);
 
         if(m < 0 || n < 0 || nnz < 0)
         {
@@ -195,19 +210,27 @@ hipsparseStatus_t testing_ellmv(Arguments argus)
 
     // Initial Data on CPU
     srand(12345ULL);
-    if(argus.laplacian)
+    if(binfile != "")
+    {
+        if(read_bin_matrix(binfile.c_str(), m, n, nnz, hcsr_row_ptr, hcol_ind, hval, idx_base) != 0)
+        {
+            fprintf(stderr, "Cannot open [read] %s\n", binfile.c_str());
+            return HIPSPARSE_STATUS_INTERNAL_ERROR;
+        }
+    }
+    else if(argus.laplacian)
     {
         m = n = gen_2d_laplacian(argus.laplacian, hcsr_row_ptr, hcol_ind, hval, idx_base);
         nnz   = hcsr_row_ptr[m];
     }
     else
     {
-        if(argus.filename != "")
+        if(filename != "")
         {
             if(read_mtx_matrix(
-                   argus.filename.c_str(), m, n, nnz, hcoo_row_ind, hcol_ind, hval, idx_base) != 0)
+                   filename.c_str(), m, n, nnz, hcoo_row_ind, hcol_ind, hval, idx_base) != 0)
             {
-                fprintf(stderr, "Cannot open [read] %s\n", argus.filename.c_str());
+                fprintf(stderr, "Cannot open [read] %s\n", filename.c_str());
                 return HIPSPARSE_STATUS_INTERNAL_ERROR;
             }
         }
@@ -315,15 +338,15 @@ hipsparseStatus_t testing_ellmv(Arguments argus)
     {
         CHECK_HIP_ERROR(hipMemcpy(dy_2, hy_2.data(), sizeof(T) * m, hipMemcpyHostToDevice));
 
-        // HIPSPARSE pointer mode host
+        // ROCSPARSE pointer mode host
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
         CHECK_HIPSPARSE_ERROR(hipsparseXellmv(
-            handle, trans, m, n, &h_alpha, descr, dval, dcol, ell_width, dx, &h_beta, dy_1));
+            handle, transA, m, n, &h_alpha, descr, dval, dcol, ell_width, dx, &h_beta, dy_1));
 
-        // HIPSPARSE pointer mode device
+        // ROCSPARSE pointer mode device
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
         CHECK_HIPSPARSE_ERROR(hipsparseXellmv(
-            handle, trans, m, n, d_alpha, descr, dval, dcol, ell_width, dx, d_beta, dy_2));
+            handle, transA, m, n, d_alpha, descr, dval, dcol, ell_width, dx, d_beta, dy_2));
 
         // copy output from device to CPU
         CHECK_HIP_ERROR(hipMemcpy(hy_1.data(), dy_1, sizeof(T) * m, hipMemcpyDeviceToHost));
@@ -334,10 +357,29 @@ hipsparseStatus_t testing_ellmv(Arguments argus)
 
         for(int i = 0; i < m; ++i)
         {
-            hy_gold[i] *= h_beta;
-            for(int j = hcsr_row_ptr[i] - idx_base; j < hcsr_row_ptr[i + 1] - idx_base; ++j)
+            T sum = static_cast<T>(0);
+            for(int p = 0; p < ell_width; ++p)
             {
-                hy_gold[i] += h_alpha * hval[j] * hx[hcol_ind[j] - idx_base];
+                int idx = ELL_IND(i, p, m, ell_width);
+                int col = hell_col_ind[idx] - idx_base;
+
+                if(col >= 0 && col < n)
+                {
+                    sum += hell_val[idx] * hx[col];
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            if(h_beta != static_cast<T>(0))
+            {
+                hy_gold[i] = h_beta * hy_gold[i] + h_alpha * sum;
+            }
+            else
+            {
+                hy_gold[i] = h_alpha * sum;
             }
         }
 
@@ -358,7 +400,7 @@ hipsparseStatus_t testing_ellmv(Arguments argus)
         for(int iter = 0; iter < number_cold_calls; iter++)
         {
             hipsparseXellmv(
-                handle, trans, m, n, &h_alpha, descr, dval, dcol, ell_width, dx, &h_beta, dy_1);
+                handle, transA, m, n, &h_alpha, descr, dval, dcol, ell_width, dx, &h_beta, dy_1);
         }
 
         double gpu_time_used = get_time_us(); // in microseconds
@@ -366,7 +408,7 @@ hipsparseStatus_t testing_ellmv(Arguments argus)
         for(int iter = 0; iter < number_hot_calls; iter++)
         {
             hipsparseXellmv(
-                handle, trans, m, n, &h_alpha, descr, dval, dcol, ell_width, dx, &h_beta, dy_1);
+                handle, transA, m, n, &h_alpha, descr, dval, dcol, ell_width, dx, &h_beta, dy_1);
         }
 
         // Convert to miliseconds per call
