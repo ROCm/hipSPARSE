@@ -155,7 +155,7 @@ hipsparseStatus_t testing_sctr(Arguments argus)
 
     if(argus.unit_check)
     {
-        // HIPSPARSE pointer mode host
+        // ROCSPARSE pointer mode host
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
         CHECK_HIPSPARSE_ERROR(hipsparseXsctr(handle, nnz, dx_val, dx_ind, dy, idx_base));
 

@@ -511,7 +511,7 @@ hipsparseStatus_t testing_csrmm(Arguments argus)
         CHECK_HIP_ERROR(hipMemcpy(d_alpha, &h_alpha, sizeof(T), hipMemcpyHostToDevice));
         CHECK_HIP_ERROR(hipMemcpy(d_beta, &h_beta, sizeof(T), hipMemcpyHostToDevice));
 
-        // HIPSPARSE pointer mode host
+        // ROCSPARSE pointer mode host
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
         CHECK_HIPSPARSE_ERROR(hipsparseXcsrmm2(handle,
                                                transA,
@@ -531,7 +531,7 @@ hipsparseStatus_t testing_csrmm(Arguments argus)
                                                dC_1,
                                                ldc));
 
-        // HIPSPARSE pointer mode device
+        // ROCSPARSE pointer mode device
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
         CHECK_HIPSPARSE_ERROR(hipsparseXcsrmm2(handle,
                                                transA,
