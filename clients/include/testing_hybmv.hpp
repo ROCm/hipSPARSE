@@ -17,6 +17,10 @@
 using namespace hipsparse;
 using namespace hipsparse_test;
 
+#define ELL_IND_ROW(i, el, m, width) (el) * (m) + (i)
+#define ELL_IND_EL(i, el, m, width) (el) + (width) * (i)
+#define ELL_IND(i, el, m, width) ELL_IND_ROW(i, el, m, width)
+
 struct testhyb
 {
     int m;
@@ -35,10 +39,10 @@ struct testhyb
 template <typename T>
 void testing_hybmv_bad_arg(void)
 {
-    int safe_size              = 100;
-    T alpha                    = 0.6;
-    T beta                     = 0.2;
-    hipsparseOperation_t trans = HIPSPARSE_OPERATION_NON_TRANSPOSE;
+    int safe_size               = 100;
+    T alpha                     = 0.6;
+    T beta                      = 0.2;
+    hipsparseOperation_t transA = HIPSPARSE_OPERATION_NON_TRANSPOSE;
     hipsparseStatus_t status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
@@ -66,49 +70,49 @@ void testing_hybmv_bad_arg(void)
     {
         T* dx_null = nullptr;
 
-        status = hipsparseXhybmv(handle, trans, &alpha, descr, hyb, dx_null, &beta, dy);
+        status = hipsparseXhybmv(handle, transA, &alpha, descr, hyb, dx_null, &beta, dy);
         verify_hipsparse_status_invalid_pointer(status, "Error: dx is nullptr");
     }
     // testing for(nullptr == dy)
     {
         T* dy_null = nullptr;
 
-        status = hipsparseXhybmv(handle, trans, &alpha, descr, hyb, dx, &beta, dy_null);
+        status = hipsparseXhybmv(handle, transA, &alpha, descr, hyb, dx, &beta, dy_null);
         verify_hipsparse_status_invalid_pointer(status, "Error: dy is nullptr");
     }
     // testing for(nullptr == d_alpha)
     {
         T* d_alpha_null = nullptr;
 
-        status = hipsparseXhybmv(handle, trans, d_alpha_null, descr, hyb, dx, &beta, dy);
+        status = hipsparseXhybmv(handle, transA, d_alpha_null, descr, hyb, dx, &beta, dy);
         verify_hipsparse_status_invalid_pointer(status, "Error: alpha is nullptr");
     }
     // testing for(nullptr == d_beta)
     {
         T* d_beta_null = nullptr;
 
-        status = hipsparseXhybmv(handle, trans, &alpha, descr, hyb, dx, d_beta_null, dy);
+        status = hipsparseXhybmv(handle, transA, &alpha, descr, hyb, dx, d_beta_null, dy);
         verify_hipsparse_status_invalid_pointer(status, "Error: beta is nullptr");
     }
     // testing for(nullptr == hyb)
     {
         hipsparseHybMat_t hyb_null = nullptr;
 
-        status = hipsparseXhybmv(handle, trans, &alpha, descr, hyb_null, dx, &beta, dy);
+        status = hipsparseXhybmv(handle, transA, &alpha, descr, hyb_null, dx, &beta, dy);
         verify_hipsparse_status_invalid_pointer(status, "Error: descr is nullptr");
     }
     // testing for(nullptr == descr)
     {
         hipsparseMatDescr_t descr_null = nullptr;
 
-        status = hipsparseXhybmv(handle, trans, &alpha, descr_null, hyb, dx, &beta, dy);
+        status = hipsparseXhybmv(handle, transA, &alpha, descr_null, hyb, dx, &beta, dy);
         verify_hipsparse_status_invalid_pointer(status, "Error: descr is nullptr");
     }
     // testing for(nullptr == handle)
     {
         hipsparseHandle_t handle_null = nullptr;
 
-        status = hipsparseXhybmv(handle_null, trans, &alpha, descr, hyb, dx, &beta, dy);
+        status = hipsparseXhybmv(handle_null, transA, &alpha, descr, hyb, dx, &beta, dy);
         verify_hipsparse_status_invalid_handle(status);
     }
 }
@@ -121,11 +125,26 @@ hipsparseStatus_t testing_hybmv(Arguments argus)
     int n                         = argus.N;
     T h_alpha                     = argus.alpha;
     T h_beta                      = argus.beta;
-    hipsparseOperation_t trans    = argus.transA;
+    hipsparseOperation_t transA   = argus.transA;
     hipsparseIndexBase_t idx_base = argus.idx_base;
     hipsparseHybPartition_t part  = argus.part;
     int user_ell_width            = argus.ell_width;
+    std::string binfile           = "";
+    std::string filename          = "";
     hipsparseStatus_t status;
+
+    // When in testing mode, M == N == -99 indicates that we are testing with a real
+    // matrix from cise.ufl.edu
+    if(m == -99 && n == -99 && argus.timing == 0)
+    {
+        binfile = argus.filename;
+        m = n = safe_size;
+    }
+
+    if(argus.timing == 1)
+    {
+        filename = argus.filename;
+    }
 
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
     hipsparseHandle_t handle = test_handle->handle;
@@ -182,7 +201,7 @@ hipsparseStatus_t testing_hybmv(Arguments argus)
 
         // hybmv should be able to deal with m <= 0 || n <= 0 || nnz <= 0 even if csr2hyb fails
         // because hyb structures is allocated with n = m = 0 - so nothing should happen
-        status = hipsparseXhybmv(handle, trans, &h_alpha, descr, hyb, dx, &h_beta, dy);
+        status = hipsparseXhybmv(handle, transA, &h_alpha, descr, hyb, dx, &h_beta, dy);
         verify_hipsparse_status_success(status, "m >= 0 && n >= 0 && nnz >= 0");
 
         return HIPSPARSE_STATUS_SUCCESS;
@@ -196,19 +215,27 @@ hipsparseStatus_t testing_hybmv(Arguments argus)
 
     // Initial Data on CPU
     srand(12345ULL);
-    if(argus.laplacian)
+    if(binfile != "")
+    {
+        if(read_bin_matrix(binfile.c_str(), m, n, nnz, hcsr_row_ptr, hcol_ind, hval, idx_base) != 0)
+        {
+            fprintf(stderr, "Cannot open [read] %s\n", binfile.c_str());
+            return HIPSPARSE_STATUS_INTERNAL_ERROR;
+        }
+    }
+    else if(argus.laplacian)
     {
         m = n = gen_2d_laplacian(argus.laplacian, hcsr_row_ptr, hcol_ind, hval, idx_base);
         nnz   = hcsr_row_ptr[m];
     }
     else
     {
-        if(argus.filename != "")
+        if(filename != "")
         {
             if(read_mtx_matrix(
-                   argus.filename.c_str(), m, n, nnz, hcoo_row_ind, hcol_ind, hval, idx_base) != 0)
+                   filename.c_str(), m, n, nnz, hcoo_row_ind, hcol_ind, hval, idx_base) != 0)
             {
-                fprintf(stderr, "Cannot open [read] %s\n", argus.filename.c_str());
+                fprintf(stderr, "Cannot open [read] %s\n", filename.c_str());
                 return HIPSPARSE_STATUS_INTERNAL_ERROR;
             }
         }
@@ -280,29 +307,78 @@ hipsparseStatus_t testing_hybmv(Arguments argus)
     CHECK_HIP_ERROR(hipMemcpy(d_alpha, &h_alpha, sizeof(T), hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(d_beta, &h_beta, sizeof(T), hipMemcpyHostToDevice));
 
-    // User given ELL width
+    // ELL width limit
+    int width_limit = (2 * nnz - 1) / m + 1;
+
+    // Limit ELL user width
     if(part == HIPSPARSE_HYB_PARTITION_USER)
     {
         user_ell_width = user_ell_width * nnz / m;
+        user_ell_width = std::min(width_limit, user_ell_width);
     }
 
     // Convert CSR to HYB
-    CHECK_HIPSPARSE_ERROR(
-        hipsparseXcsr2hyb(handle, m, n, descr, dval, dptr, dcol, hyb, user_ell_width, part));
+    status = hipsparseXcsr2hyb(handle, m, n, descr, dval, dptr, dcol, hyb, user_ell_width, part);
+
+    if(part == HIPSPARSE_HYB_PARTITION_MAX)
+    {
+        // Compute max ELL width
+        int ell_max_width = 0;
+        for(int i = 0; i < m; ++i)
+        {
+            ell_max_width = std::max(hcsr_row_ptr[i + 1] - hcsr_row_ptr[i], ell_max_width);
+        }
+
+        if(ell_max_width > width_limit)
+        {
+            verify_hipsparse_status_invalid_value(status, "ell_max_width > width_limit");
+            return HIPSPARSE_STATUS_SUCCESS;
+        }
+    }
 
     if(argus.unit_check)
     {
+        // Copy HYB structure to CPU
+        testhyb* dhyb = (testhyb*)hyb;
+
+        int ell_nnz = dhyb->ell_nnz;
+        int coo_nnz = dhyb->coo_nnz;
+
+        std::vector<int> hell_col(ell_nnz);
+        std::vector<T> hell_val(ell_nnz);
+        std::vector<int> hcoo_row(coo_nnz);
+        std::vector<int> hcoo_col(coo_nnz);
+        std::vector<T> hcoo_val(coo_nnz);
+
+        if(ell_nnz > 0)
+        {
+            CHECK_HIP_ERROR(hipMemcpy(
+                hell_col.data(), dhyb->ell_col_ind, sizeof(int) * ell_nnz, hipMemcpyDeviceToHost));
+            CHECK_HIP_ERROR(hipMemcpy(
+                hell_val.data(), dhyb->ell_val, sizeof(T) * ell_nnz, hipMemcpyDeviceToHost));
+        }
+
+        if(coo_nnz > 0)
+        {
+            CHECK_HIP_ERROR(hipMemcpy(
+                hcoo_row.data(), dhyb->coo_row_ind, sizeof(int) * coo_nnz, hipMemcpyDeviceToHost));
+            CHECK_HIP_ERROR(hipMemcpy(
+                hcoo_col.data(), dhyb->coo_col_ind, sizeof(int) * coo_nnz, hipMemcpyDeviceToHost));
+            CHECK_HIP_ERROR(hipMemcpy(
+                hcoo_val.data(), dhyb->coo_val, sizeof(T) * coo_nnz, hipMemcpyDeviceToHost));
+        }
+
         CHECK_HIP_ERROR(hipMemcpy(dy_2, hy_2.data(), sizeof(T) * m, hipMemcpyHostToDevice));
 
-        // HIPSPARSE pointer mode host
+        // ROCSPARSE pointer mode host
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
         CHECK_HIPSPARSE_ERROR(
-            hipsparseXhybmv(handle, trans, &h_alpha, descr, hyb, dx, &h_beta, dy_1));
+            hipsparseXhybmv(handle, transA, &h_alpha, descr, hyb, dx, &h_beta, dy_1));
 
-        // HIPSPARSE pointer mode device
+        // ROCSPARSE pointer mode device
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
         CHECK_HIPSPARSE_ERROR(
-            hipsparseXhybmv(handle, trans, d_alpha, descr, hyb, dx, d_beta, dy_2));
+            hipsparseXhybmv(handle, transA, d_alpha, descr, hyb, dx, d_beta, dy_2));
 
         // copy output from device to CPU
         CHECK_HIP_ERROR(hipMemcpy(hy_1.data(), dy_1, sizeof(T) * m, hipMemcpyDeviceToHost));
@@ -311,19 +387,61 @@ hipsparseStatus_t testing_hybmv(Arguments argus)
         // CPU
         double cpu_time_used = get_time_us();
 
-        for(int i = 0; i < m; ++i)
+        // ELL part
+        if(ell_nnz > 0)
         {
-            hy_gold[i] *= h_beta;
-            for(int j = hcsr_row_ptr[i] - idx_base; j < hcsr_row_ptr[i + 1] - idx_base; ++j)
+            for(int i = 0; i < m; ++i)
             {
-                hy_gold[i] += h_alpha * hval[j] * hx[hcol_ind[j] - idx_base];
+                T sum = static_cast<T>(0);
+                for(int p = 0; p < dhyb->ell_width; ++p)
+                {
+                    int idx = ELL_IND(i, p, m, dhyb->ell_width);
+                    int col = hell_col[idx] - idx_base;
+
+                    if(col >= 0 && col < n)
+                    {
+                        sum += hell_val[idx] * hx[col];
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                if(h_beta != static_cast<T>(0))
+                {
+                    hy_gold[i] = h_beta * hy_gold[i] + h_alpha * sum;
+                }
+                else
+                {
+                    hy_gold[i] = h_alpha * sum;
+                }
+            }
+        }
+
+        // COO part
+        if(coo_nnz > 0)
+        {
+            T coo_beta = (ell_nnz > 0) ? static_cast<T>(1) : h_beta;
+
+            for(int i = 0; i < m; ++i)
+            {
+                hy_gold[i] *= coo_beta;
+            }
+
+            for(int i = 0; i < coo_nnz; ++i)
+            {
+                int row = hcoo_row[i] - idx_base;
+                int col = hcoo_col[i] - idx_base;
+
+                hy_gold[row] += h_alpha * hcoo_val[i] * hx[col];
             }
         }
 
         cpu_time_used = get_time_us() - cpu_time_used;
 
-        unit_check_general(1, m, 1, hy_gold.data(), hy_1.data());
-        unit_check_general(1, m, 1, hy_gold.data(), hy_2.data());
+        unit_check_near(1, m, 1, hy_gold.data(), hy_1.data());
+        unit_check_near(1, m, 1, hy_gold.data(), hy_2.data());
     }
 
     if(argus.timing)
@@ -334,14 +452,14 @@ hipsparseStatus_t testing_hybmv(Arguments argus)
 
         for(int iter = 0; iter < number_cold_calls; iter++)
         {
-            hipsparseXhybmv(handle, trans, &h_alpha, descr, hyb, dx, &h_beta, dy_1);
+            hipsparseXhybmv(handle, transA, &h_alpha, descr, hyb, dx, &h_beta, dy_1);
         }
 
         double gpu_time_used = get_time_us(); // in microseconds
 
         for(int iter = 0; iter < number_hot_calls; iter++)
         {
-            hipsparseXhybmv(handle, trans, &h_alpha, descr, hyb, dx, &h_beta, dy_1);
+            hipsparseXhybmv(handle, transA, &h_alpha, descr, hyb, dx, &h_beta, dy_1);
         }
 
         testhyb* dhyb = (testhyb*)hyb;

@@ -13,6 +13,7 @@
 
 #include <hipsparse.h>
 #include <algorithm>
+#include <string>
 
 using namespace hipsparse;
 using namespace hipsparse_test;
@@ -144,7 +145,22 @@ hipsparseStatus_t testing_csr2hyb(Arguments argus)
     hipsparseIndexBase_t idx_base = argus.idx_base;
     hipsparseHybPartition_t part  = argus.part;
     int user_ell_width            = argus.ell_width;
+    std::string binfile           = "";
+    std::string filename          = "";
     hipsparseStatus_t status;
+
+    // When in testing mode, M == N == -99 indicates that we are testing with a real
+    // matrix from cise.ufl.edu
+    if(m == -99 && n == -99 && argus.timing == 0)
+    {
+        binfile = argus.filename;
+        m = n = safe_size;
+    }
+
+    if(argus.timing == 1)
+    {
+        filename = argus.filename;
+    }
 
     double scale = 0.02;
     if(m > 1000 || n > 1000)
@@ -211,25 +227,29 @@ hipsparseStatus_t testing_csr2hyb(Arguments argus)
 
     // Sample initial COO matrix on CPU
     srand(12345ULL);
-    if(argus.laplacian)
+    if(binfile != "")
+    {
+        if(read_bin_matrix(
+               binfile.c_str(), m, n, nnz, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base) != 0)
+        {
+            fprintf(stderr, "Cannot open [read] %s\n", binfile.c_str());
+            return HIPSPARSE_STATUS_INTERNAL_ERROR;
+        }
+    }
+    else if(argus.laplacian)
     {
         m = n = gen_2d_laplacian(argus.laplacian, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base);
         nnz   = hcsr_row_ptr[m];
     }
     else
     {
-        if(argus.filename != "")
+        if(filename != "")
         {
-            if(read_mtx_matrix(argus.filename.c_str(),
-                               m,
-                               n,
-                               nnz,
-                               hcoo_row_ind,
-                               hcsr_col_ind,
-                               hcsr_val,
-                               idx_base) != 0)
+            if(read_mtx_matrix(
+                   filename.c_str(), m, n, nnz, hcoo_row_ind, hcsr_col_ind, hcsr_val, idx_base) !=
+               0)
             {
-                fprintf(stderr, "Cannot open [read] %s\n", argus.filename.c_str());
+                fprintf(stderr, "Cannot open [read] %s\n", filename.c_str());
                 return HIPSPARSE_STATUS_INTERNAL_ERROR;
             }
         }
@@ -303,6 +323,35 @@ hipsparseStatus_t testing_csr2hyb(Arguments argus)
             verify_hipsparse_status_invalid_value(
                 status, "Error: user_ell_width < 0 || user_ell_width > max_ell_width");
 
+            return HIPSPARSE_STATUS_SUCCESS;
+        }
+    }
+
+    // Max width check
+    if(part == HIPSPARSE_HYB_PARTITION_MAX)
+    {
+        // Compute max ELL width
+        int ell_max_width = 0;
+        for(int i = 0; i < m; ++i)
+        {
+            ell_max_width = std::max(hcsr_row_ptr[i + 1] - hcsr_row_ptr[i], ell_max_width);
+        }
+
+        int width_limit = (2 * nnz - 1) / m + 1;
+        if(ell_max_width > width_limit)
+        {
+            status = hipsparseXcsr2hyb(handle,
+                                       m,
+                                       n,
+                                       descr,
+                                       dcsr_val,
+                                       dcsr_row_ptr,
+                                       dcsr_col_ind,
+                                       hyb,
+                                       user_ell_width,
+                                       part);
+
+            verify_hipsparse_status_invalid_value(status, "ell_max_width > width_limit");
             return HIPSPARSE_STATUS_SUCCESS;
         }
     }
