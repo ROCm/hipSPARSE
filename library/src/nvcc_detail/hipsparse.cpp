@@ -943,6 +943,49 @@ hipsparseStatus_t hipsparseXcoo2csr(hipsparseHandle_t handle,
                                                          hipIndexBaseToCudaIndexBase(idxBase)));
 }
 
+hipsparseStatus_t hipsparseXell2csrNnz(hipsparseHandle_t handle,
+                                       int m,
+                                       int n,
+                                       const hipsparseMatDescr_t descrA,
+                                       int ellWidthA,
+                                       const int* ellColIndA,
+                                       const hipsparseMatDescr_t descrC,
+                                       int* csrRowPtrC,
+                                       int* csrNnz)
+{
+    return HIPSPARSE_STATUS_INTERNAL_ERROR;
+}
+
+hipsparseStatus_t hipsparseSell2csr(hipsparseHandle_t handle,
+                                    int m,
+                                    int n,
+                                    const hipsparseMatDescr_t descrA,
+                                    int ellWidthA,
+                                    const float* ellValA,
+                                    const int* ellColIndA,
+                                    const hipsparseMatDescr_t descrC,
+                                    float* csrValC,
+                                    const int* csrRowPtrC,
+                                    int* csrColIndC)
+{
+    return HIPSPARSE_STATUS_INTERNAL_ERROR;
+}
+
+hipsparseStatus_t hipsparseDell2csr(hipsparseHandle_t handle,
+                                    int m,
+                                    int n,
+                                    const hipsparseMatDescr_t descrA,
+                                    int ellWidthA,
+                                    const double* ellValA,
+                                    const int* ellColIndA,
+                                    const hipsparseMatDescr_t descrC,
+                                    double* csrValC,
+                                    const int* csrRowPtrC,
+                                    int* csrColIndC)
+{
+    return HIPSPARSE_STATUS_INTERNAL_ERROR;
+}
+
 hipsparseStatus_t hipsparseCreateIdentityPermutation(hipsparseHandle_t handle, int n, int* p)
 {
     return hipCUSPARSEStatusToHIPStatus(

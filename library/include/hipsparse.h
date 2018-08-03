@@ -570,6 +570,46 @@ hipsparseStatus_t hipsparseXcoo2csr(hipsparseHandle_t handle,
                                     int* csrRowPtr,
                                     hipsparseIndexBase_t idxBase);
 
+/* Description: This routine computes the number of total CSR non-zero
+   elements from a given ELL matrix. */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseXell2csrNnz(hipsparseHandle_t handle,
+                                       int m,
+                                       int n,
+                                       const hipsparseMatDescr_t descrA,
+                                       int ellWidthA,
+                                       const int* ellColIndA,
+                                       const hipsparseMatDescr_t descrC,
+                                       int* csrRowPtrC,
+                                       int* csrNnz);
+
+/* Description: This routine converts a sparse matrix in ELL storage format
+   to a sparse matrix in CSR storage format. */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSell2csr(hipsparseHandle_t handle,
+                                    int m,
+                                    int n,
+                                    const hipsparseMatDescr_t descrA,
+                                    int ellWidthA,
+                                    const float* ellValA,
+                                    const int* ellColIndA,
+                                    const hipsparseMatDescr_t descrC,
+                                    float* csrValC,
+                                    const int* csrRowPtrC,
+                                    int* csrColIndC);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDell2csr(hipsparseHandle_t handle,
+                                    int m,
+                                    int n,
+                                    const hipsparseMatDescr_t descrA,
+                                    int ellWidthA,
+                                    const double* ellValA,
+                                    const int* ellColIndA,
+                                    const hipsparseMatDescr_t descrC,
+                                    double* csrValC,
+                                    const int* csrRowPtrC,
+                                    int* csrColIndC);
+
 /* Description: This routine creates an identity map. */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreateIdentityPermutation(hipsparseHandle_t handle, int n, int* p);
