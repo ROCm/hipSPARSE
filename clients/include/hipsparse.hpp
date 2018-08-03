@@ -172,6 +172,19 @@ hipsparseStatus_t hipsparseXcsr2hyb(hipsparseHandle_t handle,
                                     int user_ell_width,
                                     hipsparseHybPartition_t partition_type);
 
+template <typename T>
+hipsparseStatus_t hipsparseXell2csr(hipsparseHandle_t handle,
+                                    int m,
+                                    int n,
+                                    const hipsparseMatDescr_t ell_descr,
+                                    int ell_width,
+                                    const T* ell_val,
+                                    const int* ell_col_ind,
+                                    const hipsparseMatDescr_t csr_descr,
+                                    T* csr_val,
+                                    const int* csr_row_ptr,
+                                    int* csr_col_ind);
+
 } // namespace hipsparse
 
 #endif // _HIPSPARSE_HPP_
