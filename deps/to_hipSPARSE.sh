@@ -138,6 +138,10 @@ sed -i 's/rocsparse_csrsort/hipsparseXcsrsort/g' $1
 sed -i 's/rocsparse_coosort_buffer_size/hipsparseXcoosort_bufferSizeExt/g' $1
 sed -i 's/rocsparse_coosort_by_row/hipsparseXcoosortByRow/g' $1
 sed -i 's/rocsparse_coosort_by_column/hipsparseXcoosortByColumn/g' $1
+sed -i 's/rocsparse_ell2csr_nnz/hipsparseXell2csrNnz/g' $1
+sed -i 's/rocsparse_sell2csr/hipsparseSell2csr/g' $1
+sed -i 's/rocsparse_dell2csr/hipsparseDell2csr/g' $1
+sed -i 's/rocsparse_ell2csr/hipsparseXell2csr/g' $1
 
 # Header
 sed -i 's/rocsparse.h/hipsparse.h/g' $1

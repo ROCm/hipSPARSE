@@ -514,4 +514,56 @@ hipsparseStatus_t hipsparseXcsr2hyb(hipsparseHandle_t handle,
                              partition_type);
 }
 
+template <>
+hipsparseStatus_t hipsparseXell2csr(hipsparseHandle_t handle,
+                                    int m,
+                                    int n,
+                                    const hipsparseMatDescr_t ell_descr,
+                                    int ell_width,
+                                    const float* ell_val,
+                                    const int* ell_col_ind,
+                                    const hipsparseMatDescr_t csr_descr,
+                                    float* csr_val,
+                                    const int* csr_row_ptr,
+                                    int* csr_col_ind)
+{
+    return hipsparseSell2csr(handle,
+                             m,
+                             n,
+                             ell_descr,
+                             ell_width,
+                             ell_val,
+                             ell_col_ind,
+                             csr_descr,
+                             csr_val,
+                             csr_row_ptr,
+                             csr_col_ind);
+}
+
+template <>
+hipsparseStatus_t hipsparseXell2csr(hipsparseHandle_t handle,
+                                    int m,
+                                    int n,
+                                    const hipsparseMatDescr_t ell_descr,
+                                    int ell_width,
+                                    const double* ell_val,
+                                    const int* ell_col_ind,
+                                    const hipsparseMatDescr_t csr_descr,
+                                    double* csr_val,
+                                    const int* csr_row_ptr,
+                                    int* csr_col_ind)
+{
+    return hipsparseDell2csr(handle,
+                             m,
+                             n,
+                             ell_descr,
+                             ell_width,
+                             ell_val,
+                             ell_col_ind,
+                             csr_descr,
+                             csr_val,
+                             csr_row_ptr,
+                             csr_col_ind);
+}
+
 } // namespace hipsparse
