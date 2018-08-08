@@ -511,7 +511,7 @@ rocm_ubuntu:
         project_name:'hipsparse-ubuntu',
         src_prefix:'src',
         build_prefix:'src',
-        build_command: 'sudo dpkg -i rocsparse-*.deb; ./install.sh -c' )
+        build_command: 'sudo dpkg -i rocsparse-*.deb; ./install.sh -cd' )
 
     def print_version_closure = {
       sh  """
