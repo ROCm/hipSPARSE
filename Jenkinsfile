@@ -185,16 +185,31 @@ def docker_build_inside_image( def build_image, compiler_data compiler_args, doc
     build_type_postfix = "-d"
   }
 
+  if( paths.project_name.equalsIgnoreCase( 'hipsparse-ubuntu' ) || paths.project_name.equalsIgnoreCase( 'hipsparse-hcc-ctu' ) )
+  {
+    String rocsparse_archive_path='hcc-rocm-ubuntu';
+
+    // This invokes 'copy artifact plugin' to copy latest archive from rocsparse project
+    step([$class: 'CopyArtifact', filter: "Release/${rocsparse_archive_path}/*.deb",
+      fingerprintArtifacts: true, projectName: 'ROCmSoftwarePlatform/rocSPARSE/develop', flatten: true,
+      selector: [$class: 'StatusBuildSelector', stable: false],
+      target: "${paths.project_build_prefix}" ])
+  }
+  else if( paths.project_name.equalsIgnoreCase( 'hipsparse-fedora' ) )
+  {
+    String rocsparse_archive_path='hcc-rocm-fedora';
+
+    // This invokes 'copy artifact plugin' to copy latest archive from rocsparse project
+    step([$class: 'CopyArtifact', filter: "Release/${rocsparse_archive_path}/*.rpm",
+      fingerprintArtifacts: true, projectName: 'ROCmSoftwarePlatform/rocSPARSE/develop', flatten: true,
+      selector: [$class: 'StatusBuildSelector', stable: false],
+      target: "${paths.project_build_prefix}" ])
+  }
+
   build_image.inside( docker_args.docker_run_args )
   {
-    withEnv(["CXXX=${compiler_args.compiler_path}", 'CLICOLOR_FORCE=1'])
+    withEnv(["CXX=${compiler_args.compiler_path}", 'CLICOLOR_FORCE=1'])
     {
-      // Install rocsparse
-      sh  """#!/usr/bin/env bash
-          set -x
-          cd ${paths.project_build_prefix}
-          sudo dpkg -i deps/rocsparse*
-        """
       // Build library & clients
       sh  """#!/usr/bin/env bash
           set -x
@@ -267,12 +282,14 @@ def docker_build_inside_image( def build_image, compiler_data compiler_args, doc
               set -x
               rm -rf ${docker_context} && mkdir -p ${docker_context}
               mv ${paths.project_build_prefix}/build/release/*.rpm ${docker_context}
+
+              # Temp rocsparse mv because repo.radeon.com does not have rpms for rocsparse
+              mv ${paths.project_build_prefix}/*.rpm ${docker_context}
               rpm -qlp ${docker_context}/*.rpm
           """
-          archiveArtifacts artifacts: "${docker_context}/*.rpm", fingerprint: true
+          archiveArtifacts artifacts: "${docker_context}/hipsparse-*.rpm", fingerprint: true
         }
       }
-
     }
   }
 
@@ -435,45 +452,45 @@ def build_pipeline( compiler_data compiler_args, docker_data docker_args, projec
 }
 
 // The following launches 3 builds in parallel: hcc-ctu, hcc-1.6 and cuda
-parallel hcc_ctu:
-{
-  try
-  {
-    node( 'docker && rocm && gfx900')
-    {
-      def docker_args = new docker_data(
-          from_image:'compute-artifactory:5001/rocm-developer-tools/hip/master/hip-hcc-ctu-ubuntu-16.04:latest',
-          build_docker_file:'dockerfile-build-ubuntu',
-          install_docker_file:'dockerfile-install-ubuntu',
-          docker_run_args:'--device=/dev/kfd --device=/dev/dri --group-add=video',
-          docker_build_args:' --pull' )
-
-      def compiler_args = new compiler_data(
-          compiler_name:'hcc-ctu',
-          build_config:'Release',
-          compiler_path:'/opt/rocm/bin/hcc' )
-
-      def hipsparse_paths = new project_paths(
-          project_name:'hipsparse-hcc-ctu',
-          src_prefix:'src',
-          build_prefix:'src',
-          build_command: './install.sh -cd' )
-
-      def print_version_closure = {
-        sh  """
-            set -x
-            /opt/rocm/bin/hcc --version
-          """
-      }
-
-      build_pipeline( compiler_args, docker_args, hipsparse_paths, print_version_closure )
-    }
-  }
-  catch( err )
-  {
-    currentBuild.result = 'UNSTABLE'
-  }
-},
+//parallel hcc_ctu:
+//{
+//  try
+//  {
+//    node( 'docker && rocm && gfx900')
+//    {
+//      def docker_args = new docker_data(
+//          from_image:'compute-artifactory:5001/rocm-developer-tools/hip/master/hip-hcc-ctu-ubuntu-16.04:latest',
+//          build_docker_file:'dockerfile-build-ubuntu',
+//          install_docker_file:'dockerfile-install-ubuntu',
+//          docker_run_args:'--device=/dev/kfd --device=/dev/dri --group-add=video',
+//          docker_build_args:' --pull' )
+//
+//      def compiler_args = new compiler_data(
+//          compiler_name:'hcc-ctu',
+//          build_config:'Release',
+//          compiler_path:'/opt/rocm/bin/hcc' )
+//
+//      def hipsparse_paths = new project_paths(
+//          project_name:'hipsparse-hcc-ctu',
+//          src_prefix:'src',
+//          build_prefix:'src',
+//          build_command: './install.sh -cd' )
+//
+//      def print_version_closure = {
+//        sh  """
+//            set -x
+//            /opt/rocm/bin/hcc --version
+//          """
+//      }
+//
+//      build_pipeline( compiler_args, docker_args, hipsparse_paths, print_version_closure )
+//    }
+//  }
+//  catch( err )
+//  {
+//    currentBuild.result = 'UNSTABLE'
+//  }
+//},
 rocm_ubuntu:
 {
   node( 'docker && rocm && gfx900')
@@ -488,17 +505,18 @@ rocm_ubuntu:
     def hcc_compiler_args = new compiler_data(
         compiler_name:'hcc-rocm-ubuntu',
         build_config:'Release',
-        compiler_path:'/opt/rocm/bin/hcc' )
+        compiler_path:'g++' )
 
     def hipsparse_paths = new project_paths(
         project_name:'hipsparse-ubuntu',
         src_prefix:'src',
         build_prefix:'src',
-        build_command: './install.sh -cd' )
+        build_command: 'sudo dpkg -i rocsparse-*.deb; ./install.sh -cd' )
 
     def print_version_closure = {
       sh  """
           set -x
+          /opt/rocm/bin/rocm_agent_enumerator -t ALL
           /opt/rocm/bin/hcc --version
         """
     }
@@ -553,12 +571,13 @@ rocm_ubuntu:
 //     def hcc_compiler_args = new compiler_data(
 //         compiler_name:'nvcc-9.0',
 //         build_config:'Release',
-//         compiler_path:'/opt/rocm/bin/hipcc' )
+//         compiler_path:'g++' )
 
 //     def hipsparse_paths = new project_paths(
 //         project_name:'hipsparse-cuda',
 //         src_prefix:'src',
 //         build_prefix:'build' )
+//         build_command: './install.sh -c'
 
 //     def print_version_closure = {
 //       sh  """
