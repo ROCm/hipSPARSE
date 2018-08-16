@@ -225,6 +225,46 @@ hipsparseStatus_t hipsparseXcsrmv(hipsparseHandle_t handle,
 }
 
 template <>
+hipsparseStatus_t hipsparseXcsrmv2(hipsparseHandle_t handle,
+                                   hipsparseOperation_t trans,
+                                   int m,
+                                   int n,
+                                   int nnz,
+                                   const float* alpha,
+                                   const hipsparseMatDescr_t descr,
+                                   const float* csr_val,
+                                   const int* csr_row_ptr,
+                                   const int* csr_col_ind,
+                                   csrmv2Info_t info,
+                                   const float* x,
+                                   const float* beta,
+                                   float* y)
+{
+    return hipsparseScsrmv2(
+        handle, trans, m, n, nnz, alpha, descr, csr_val, csr_row_ptr, csr_col_ind, info, x, beta, y);
+}
+
+template <>
+hipsparseStatus_t hipsparseXcsrmv2(hipsparseHandle_t handle,
+                                   hipsparseOperation_t trans,
+                                   int m,
+                                   int n,
+                                   int nnz,
+                                   const double* alpha,
+                                   const hipsparseMatDescr_t descr,
+                                   const double* csr_val,
+                                   const int* csr_row_ptr,
+                                   const int* csr_col_ind,
+                                   csrmv2Info_t info,
+                                   const double* x,
+                                   const double* beta,
+                                   double* y)
+{
+    return hipsparseDcsrmv2(
+        handle, trans, m, n, nnz, alpha, descr, csr_val, csr_row_ptr, csr_col_ind, info, x, beta, y);
+}
+
+template <>
 hipsparseStatus_t hipsparseXellmv(hipsparseHandle_t handle,
                                   hipsparseOperation_t trans,
                                   int m,
