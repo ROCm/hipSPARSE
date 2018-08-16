@@ -153,14 +153,6 @@ void testing_csrmv2_bad_arg(void)
             handle, transA, m, n, nnz, &alpha, descr, dval, dptr, dcol, info, dx, d_beta_null, dy);
         verify_hipsparse_status_invalid_pointer(status, "Error: beta is nullptr");
     }
-    // testing for(nullptr == info)
-    {
-        csrmv2Info_t info_null = nullptr;
-
-        status = hipsparseXcsrmv2(
-            handle, transA, m, n, nnz, &alpha, descr, dval, dptr, dcol, info_null, dx, &beta, dy);
-        verify_hipsparse_status_invalid_pointer(status, "Error: info is nullptr");
-    }
     // testing for(nullptr == descr)
     {
         hipsparseMatDescr_t descr_null = nullptr;
