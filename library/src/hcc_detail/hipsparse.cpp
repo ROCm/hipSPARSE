@@ -538,6 +538,11 @@ hipsparseStatus_t hipsparseScsrmv2(hipsparseHandle_t handle,
                                    const float* beta,
                                    float* y)
 {
+    if(info == nullptr)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
+
     return rocSPARSEStatusToHIPStatus(rocsparse_scsrmv((rocsparse_handle)handle,
                                                        hipOperationToHCCOperation(transA),
                                                        m,
@@ -569,6 +574,11 @@ hipsparseStatus_t hipsparseDcsrmv2(hipsparseHandle_t handle,
                                    const double* beta,
                                    double* y)
 {
+    if(info == nullptr)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
+
     return rocSPARSEStatusToHIPStatus(rocsparse_dcsrmv((rocsparse_handle)handle,
                                                        hipOperationToHCCOperation(transA),
                                                        m,
