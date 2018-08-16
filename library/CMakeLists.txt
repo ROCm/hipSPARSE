@@ -91,10 +91,12 @@ rocm_export_targets(TARGETS hipsparse-targets
 rocm_install_symlink_subdir(hipsparse)
 
 # Package specific CPACK vars
-set(CPACK_DEBIAN_PACKAGE_DEPENDS "hip_hcc (>= 1.3)")
-set(CPACK_DEBIAN_PACKAGE_DEPENDS "rocsparse (>= 0.1.2)")
-set(CPACK_RPM_PACKAGE_REQUIRES "hip_hcc >= 1.3")
-set(CPACK_RPM_PACKAGE_REQUIRES "rocsparse >= 0.1.2")
+if(NOT BUILD_CUDA)
+  set(CPACK_DEBIAN_PACKAGE_DEPENDS "hip_hcc (>= 1.3)")
+  set(CPACK_DEBIAN_PACKAGE_DEPENDS "rocsparse (>= 0.1.2)")
+  set(CPACK_RPM_PACKAGE_REQUIRES "hip_hcc >= 1.3")
+  set(CPACK_RPM_PACKAGE_REQUIRES "rocsparse >= 0.1.2")
+endif()
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/../LICENSE.md")
 
 if(NOT CPACK_PACKAGING_INSTALL_PREFIX)
