@@ -21,9 +21,11 @@
 
 #include <hip/hip_runtime_api.h>
 
+/* Opaque structures holding information */
 typedef void* hipsparseHandle_t;
 typedef void* hipsparseMatDescr_t;
 typedef void* hipsparseHybMat_t;
+typedef void* csrmv2Info_t;
 
 // clang-format off
 
@@ -146,6 +148,12 @@ HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreateHybMat(hipsparseHybMat_t* hybA);
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroyHybMat(hipsparseHybMat_t hybA);
+
+/* Info structures */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCreateCsrmv2Info(csrmv2Info_t *info);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDestroyCsrmv2Info(csrmv2Info_t info);
 
 /* --- Sparse Level 1 routines --- */
 
@@ -297,6 +305,50 @@ hipsparseStatus_t hipsparseDcsrmv(hipsparseHandle_t handle,
                                   const double* x,
                                   const double* beta,
                                   double* y);
+
+/* Description: Matrix-vector multiplication  y = alpha * op(A) * x  + beta * y,
+   where A is a sparse matrix in CSR storage format, x and y are dense vectors. */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseXcsrmv2_analysis(hipsparseHandle_t handle,
+                                            hipsparseOperation_t transA,
+                                            int m,
+                                            int n,
+                                            int nnz,
+                                            const hipsparseMatDescr_t descrA,
+                                            const int* csrSortedRowPtrA,
+                                            const int* csrSortedColIndA,
+                                            csrmv2Info_t info);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseScsrmv2(hipsparseHandle_t handle,
+                                   hipsparseOperation_t transA,
+                                   int m,
+                                   int n,
+                                   int nnz,
+                                   const float* alpha,
+                                   const hipsparseMatDescr_t descrA,
+                                   const float* csrSortedValA,
+                                   const int* csrSortedRowPtrA,
+                                   const int* csrSortedColIndA,
+                                   csrmv2Info_t info,
+                                   const float* x,
+                                   const float* beta,
+                                   float* y);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDcsrmv2(hipsparseHandle_t handle,
+                                   hipsparseOperation_t transA,
+                                   int m,
+                                   int n,
+                                   int nnz,
+                                   const double* alpha,
+                                   const hipsparseMatDescr_t descrA,
+                                   const double* csrSortedValA,
+                                   const int* csrSortedRowPtrA,
+                                   const int* csrSortedColIndA,
+                                   csrmv2Info_t info,
+                                   const double* x,
+                                   const double* beta,
+                                   double* y);
 
 /* Description: Matrix-vector multiplication  y = alpha * op(A) * x  + beta * y,
    where A is a sparse matrix in COO storage format, x and y are dense vectors. */
