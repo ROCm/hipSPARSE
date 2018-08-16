@@ -458,7 +458,8 @@ hipsparseStatus_t hipsparseScsrmv(hipsparseHandle_t handle,
                                                        csrSortedColIndA,
                                                        x,
                                                        beta,
-                                                       y));
+                                                       y,
+                                                       nullptr));
 }
 
 hipsparseStatus_t hipsparseDcsrmv(hipsparseHandle_t handle,
@@ -487,7 +488,8 @@ hipsparseStatus_t hipsparseDcsrmv(hipsparseHandle_t handle,
                                                        csrSortedColIndA,
                                                        x,
                                                        beta,
-                                                       y));
+                                                       y,
+                                                       nullptr));
 }
 
 hipsparseStatus_t hipsparseScoomv(hipsparseHandle_t handle,
