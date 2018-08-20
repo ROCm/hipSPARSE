@@ -292,6 +292,16 @@ hipsparseStatus_t hipsparseDestroyHybMat(hipsparseHybMat_t hybA)
     return rocSPARSEStatusToHIPStatus(rocsparse_destroy_hyb_mat((rocsparse_hyb_mat)hybA));
 }
 
+hipsparseStatus_t hipsparseCreateCsrmv2Info(csrmv2Info_t* info)
+{
+    return rocSPARSEStatusToHIPStatus(rocsparse_create_mat_info((rocsparse_mat_info*)info));
+}
+
+hipsparseStatus_t hipsparseDestroyCsrmv2Info(csrmv2Info_t info)
+{
+    return rocSPARSEStatusToHIPStatus(rocsparse_destroy_mat_info((rocsparse_mat_info)info));
+}
+
 hipsparseStatus_t hipsparseSaxpyi(hipsparseHandle_t handle,
                                   int nnz,
                                   const float* alpha,
@@ -458,7 +468,8 @@ hipsparseStatus_t hipsparseScsrmv(hipsparseHandle_t handle,
                                                        csrSortedColIndA,
                                                        x,
                                                        beta,
-                                                       y));
+                                                       y,
+                                                       nullptr));
 }
 
 hipsparseStatus_t hipsparseDcsrmv(hipsparseHandle_t handle,
@@ -487,7 +498,91 @@ hipsparseStatus_t hipsparseDcsrmv(hipsparseHandle_t handle,
                                                        csrSortedColIndA,
                                                        x,
                                                        beta,
-                                                       y));
+                                                       y,
+                                                       nullptr));
+}
+
+hipsparseStatus_t hipsparseXcsrmv2_analysis(hipsparseHandle_t handle,
+                                            hipsparseOperation_t transA,
+                                            int m,
+                                            int n,
+                                            int nnz,
+                                            const hipsparseMatDescr_t descrA,
+                                            const int* csrSortedRowPtrA,
+                                            const int* csrSortedColIndA,
+                                            csrmv2Info_t info)
+{
+    return rocSPARSEStatusToHIPStatus(rocsparse_csrmv_analysis((rocsparse_handle)handle,
+                                                               hipOperationToHCCOperation(transA),
+                                                               m,
+                                                               n,
+                                                               nnz,
+                                                               (rocsparse_mat_descr)descrA,
+                                                               csrSortedRowPtrA,
+                                                               csrSortedColIndA,
+                                                               (rocsparse_mat_info)info));
+}
+
+hipsparseStatus_t hipsparseScsrmv2(hipsparseHandle_t handle,
+                                   hipsparseOperation_t transA,
+                                   int m,
+                                   int n,
+                                   int nnz,
+                                   const float* alpha,
+                                   const hipsparseMatDescr_t descrA,
+                                   const float* csrSortedValA,
+                                   const int* csrSortedRowPtrA,
+                                   const int* csrSortedColIndA,
+                                   csrmv2Info_t info,
+                                   const float* x,
+                                   const float* beta,
+                                   float* y)
+{
+    return rocSPARSEStatusToHIPStatus(rocsparse_scsrmv((rocsparse_handle)handle,
+                                                       hipOperationToHCCOperation(transA),
+                                                       m,
+                                                       n,
+                                                       nnz,
+                                                       alpha,
+                                                       (rocsparse_mat_descr)descrA,
+                                                       csrSortedValA,
+                                                       csrSortedRowPtrA,
+                                                       csrSortedColIndA,
+                                                       x,
+                                                       beta,
+                                                       y,
+                                                       (rocsparse_mat_info)info));
+}
+
+hipsparseStatus_t hipsparseDcsrmv2(hipsparseHandle_t handle,
+                                   hipsparseOperation_t transA,
+                                   int m,
+                                   int n,
+                                   int nnz,
+                                   const double* alpha,
+                                   const hipsparseMatDescr_t descrA,
+                                   const double* csrSortedValA,
+                                   const int* csrSortedRowPtrA,
+                                   const int* csrSortedColIndA,
+                                   csrmv2Info_t info,
+                                   const double* x,
+                                   const double* beta,
+                                   double* y)
+{
+    return rocSPARSEStatusToHIPStatus(rocsparse_dcsrmv((rocsparse_handle)handle,
+                                                       hipOperationToHCCOperation(transA),
+                                                       m,
+                                                       n,
+                                                       nnz,
+                                                       alpha,
+                                                       (rocsparse_mat_descr)descrA,
+                                                       csrSortedValA,
+                                                       csrSortedRowPtrA,
+                                                       csrSortedColIndA,
+                                                       x,
+                                                       beta,
+                                                       y,
+                                                       (rocsparse_mat_info)info));
 }
 
 hipsparseStatus_t hipsparseScoomv(hipsparseHandle_t handle,
