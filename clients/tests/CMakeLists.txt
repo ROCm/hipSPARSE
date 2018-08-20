@@ -54,6 +54,7 @@ set(HIPSPARSE_TEST_SOURCES
   test_sctr.cpp
   test_coomv.cpp
   test_csrmv.cpp
+  test_csrmv2.cpp
   test_ellmv.cpp
   test_hybmv.cpp
   test_csrmm.cpp

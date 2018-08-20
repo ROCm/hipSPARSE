@@ -87,6 +87,22 @@ struct hyb_struct
     }
 };
 
+struct csrmv2_struct
+{
+    csrmv2Info_t info;
+    csrmv2_struct()
+    {
+        hipsparseStatus_t status = hipsparseCreateCsrmv2Info(&info);
+        verify_hipsparse_status_success(status, "ERROR: csrmv2_struct constructor");
+    }
+
+    ~csrmv2_struct()
+    {
+        hipsparseStatus_t status = hipsparseDestroyCsrmv2Info(info);
+        verify_hipsparse_status_success(status, "ERROR: csrmv2_struct destructor");
+    }
+};
+
 } // namespace hipsparse_test
 
 using hipsparse_unique_ptr = std::unique_ptr<void, void (*)(void*)>;

@@ -76,6 +76,7 @@ hipsparseStatus_t hipsparseXcoomv(hipsparseHandle_t handle,
                                   const T* x,
                                   const T* beta,
                                   T* y);
+
 template <typename T>
 hipsparseStatus_t hipsparseXcsrmv(hipsparseHandle_t handle,
                                   hipsparseOperation_t trans,
@@ -90,6 +91,22 @@ hipsparseStatus_t hipsparseXcsrmv(hipsparseHandle_t handle,
                                   const T* x,
                                   const T* beta,
                                   T* y);
+
+template <typename T>
+hipsparseStatus_t hipsparseXcsrmv2(hipsparseHandle_t handle,
+                                   hipsparseOperation_t trans,
+                                   int m,
+                                   int n,
+                                   int nnz,
+                                   const T* alpha,
+                                   const hipsparseMatDescr_t descr,
+                                   const T* csr_val,
+                                   const int* csr_row_ptr,
+                                   const int* csr_col_ind,
+                                   csrmv2Info_t info,
+                                   const T* x,
+                                   const T* beta,
+                                   T* y);
 
 template <typename T>
 hipsparseStatus_t hipsparseXellmv(hipsparseHandle_t handle,
