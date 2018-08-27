@@ -466,10 +466,10 @@ hipsparseStatus_t hipsparseScsrmv(hipsparseHandle_t handle,
                                                        csrSortedValA,
                                                        csrSortedRowPtrA,
                                                        csrSortedColIndA,
+                                                       nullptr,
                                                        x,
                                                        beta,
-                                                       y,
-                                                       nullptr));
+                                                       y));
 }
 
 hipsparseStatus_t hipsparseDcsrmv(hipsparseHandle_t handle,
@@ -496,10 +496,10 @@ hipsparseStatus_t hipsparseDcsrmv(hipsparseHandle_t handle,
                                                        csrSortedValA,
                                                        csrSortedRowPtrA,
                                                        csrSortedColIndA,
+                                                       nullptr,
                                                        x,
                                                        beta,
-                                                       y,
-                                                       nullptr));
+                                                       y));
 }
 
 hipsparseStatus_t hipsparseXcsrmv2_analysis(hipsparseHandle_t handle,
@@ -548,10 +548,10 @@ hipsparseStatus_t hipsparseScsrmv2(hipsparseHandle_t handle,
                                                        csrSortedValA,
                                                        csrSortedRowPtrA,
                                                        csrSortedColIndA,
+                                                       (rocsparse_mat_info)info,
                                                        x,
                                                        beta,
-                                                       y,
-                                                       (rocsparse_mat_info)info));
+                                                       y));
 }
 
 hipsparseStatus_t hipsparseDcsrmv2(hipsparseHandle_t handle,
@@ -579,10 +579,10 @@ hipsparseStatus_t hipsparseDcsrmv2(hipsparseHandle_t handle,
                                                        csrSortedValA,
                                                        csrSortedRowPtrA,
                                                        csrSortedColIndA,
+                                                       (rocsparse_mat_info)info,
                                                        x,
                                                        beta,
-                                                       y,
-                                                       (rocsparse_mat_info)info));
+                                                       y));
 }
 
 hipsparseStatus_t hipsparseScoomv(hipsparseHandle_t handle,
