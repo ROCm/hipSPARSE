@@ -114,7 +114,7 @@ set(HIPSPARSE_CONFIG_DIR "\${CPACK_PACKAGING_INSTALL_PREFIX}/${CMAKE_INSTALL_LIB
 rocm_create_package(
   NAME ${package_name}
   DESCRIPTION "Radeon Open Compute SPARSE library"
-  MAINTAINER "Nico Trost <nico.trost@amd.com>"
+  MAINTAINER "Nico Trost"
   LDCONFIG
   LDCONFIG_DIR ${HIPSPARSE_CONFIG_DIR}
 )
