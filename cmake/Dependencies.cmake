@@ -8,7 +8,7 @@
 find_package(Git REQUIRED)
 
 # DownloadProject package
-include(cmake/DownloadProject.cmake)
+include(cmake/DownloadProject/DownloadProject.cmake)
 
 # Either rocSPARSE or cuSPARSE is required
 if(NOT BUILD_CUDA)
@@ -83,21 +83,6 @@ if(BUILD_BENCHMARK)
   endif()
   find_package(benchmark REQUIRED CONFIG PATHS ${GOOGLEBENCHMARK_ROOT})
 endif()
-
-# rocPRIM package
-#set(ROCPRIM_ROOT ${CMAKE_CURRENT_BINARY_DIR}/rocPRIM CACHE PATH "")
-#message(STATUS "Downloading rocPRIM.")
-#download_project(PROJ    rocPRIM
-#     GIT_REPOSITORY      https://github.com/ROCmSoftwarePlatform/rocPRIM.git
-#     GIT_TAG             master
-#     INSTALL_DIR         ${ROCPRIM_ROOT}
-#     CMAKE_ARGS          -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_TEST=OFF -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
-#     LOG_DOWNLOAD        TRUE
-#     LOG_CONFIGURE       TRUE
-#     LOG_INSTALL         TRUE
-#     BUILD_PROJECT       TRUE
-#     UPDATE_DISCONNECT   TRUE
-#)
 
 # ROCm package
 find_package(ROCM QUIET CONFIG PATHS /opt/rocm)
