@@ -87,19 +87,35 @@ struct hyb_struct
     }
 };
 
-struct csrmv2_struct
+struct csrsv2_struct
 {
-    csrmv2Info_t info;
-    csrmv2_struct()
+    csrsv2Info_t info;
+    csrsv2_struct()
     {
-        hipsparseStatus_t status = hipsparseCreateCsrmv2Info(&info);
-        verify_hipsparse_status_success(status, "ERROR: csrmv2_struct constructor");
+        hipsparseStatus_t status = hipsparseCreateCsrsv2Info(&info);
+        verify_hipsparse_status_success(status, "ERROR: csrsv2_struct constructor");
     }
 
-    ~csrmv2_struct()
+    ~csrsv2_struct()
     {
-        hipsparseStatus_t status = hipsparseDestroyCsrmv2Info(info);
-        verify_hipsparse_status_success(status, "ERROR: csrmv2_struct destructor");
+        hipsparseStatus_t status = hipsparseDestroyCsrsv2Info(info);
+        verify_hipsparse_status_success(status, "ERROR: csrsv2_struct destructor");
+    }
+};
+
+struct csrilu02_struct
+{
+    csrilu02Info_t info;
+    csrilu02_struct()
+    {
+        hipsparseStatus_t status = hipsparseCreateCsrilu02Info(&info);
+        verify_hipsparse_status_success(status, "ERROR: csrilu02_struct constructor");
+    }
+
+    ~csrilu02_struct()
+    {
+        hipsparseStatus_t status = hipsparseDestroyCsrilu02Info(info);
+        verify_hipsparse_status_success(status, "ERROR: csrilu02_struct destructor");
     }
 };
 

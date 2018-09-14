@@ -17,7 +17,14 @@ int coosort_M_range[]                = {-1, 0, 10, 500, 3872, 10000};
 int coosort_N_range[]                = {-3, 0, 33, 242, 1623, 10000};
 hipsparseOperation_t coosort_trans[] = {HIPSPARSE_OPERATION_NON_TRANSPOSE,
                                         HIPSPARSE_OPERATION_TRANSPOSE};
-int coosort_perm[]                  = {0, 1};
+
+#if defined(__HIP_PLATFORM_HCC__)
+int coosort_perm[] = {0, 1};
+#elif defined(__HIP_PLATFORM_NVCC__)
+// cusparse does not allow without permutation
+int coosort_perm[] = {1};
+#endif
+
 hipsparseIndexBase_t coosort_base[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
 std::string coosort_bin[] = {"rma10.bin",

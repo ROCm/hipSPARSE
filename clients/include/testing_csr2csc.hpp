@@ -21,6 +21,10 @@ using namespace hipsparse_test;
 template <typename T>
 void testing_csr2csc_bad_arg(void)
 {
+#ifdef __HIP_PLATFORM_NVCC__
+    // do not test for bad args
+    return;
+#endif
     int m         = 100;
     int n         = 100;
     int nnz       = 100;
@@ -232,6 +236,10 @@ hipsparseStatus_t testing_csr2csc(Arguments argus)
     // Argument sanity check before allocating invalid memory
     if(m <= 0 || n <= 0 || nnz <= 0)
     {
+#ifdef __HIP_PLATFORM_NVCC__
+        // Do not test args in cusparse
+        return HIPSPARSE_STATUS_SUCCESS;
+#endif
         auto csr_row_ptr_managed =
             hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
         auto csr_col_ind_managed =

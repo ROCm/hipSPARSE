@@ -52,22 +52,25 @@ set(HIPSPARSE_TEST_SOURCES
   test_gthrz.cpp
   test_roti.cpp
   test_sctr.cpp
-  test_coomv.cpp
   test_csrmv.cpp
-  test_csrmv2.cpp
-  test_ellmv.cpp
-  test_hybmv.cpp
+  test_csrsv2.cpp
   test_csrmm.cpp
+  test_csrilu02.cpp
   test_csr2coo.cpp
   test_csr2csc.cpp
-  test_csr2ell.cpp
-  test_csr2hyb.cpp
   test_coo2csr.cpp
-  test_ell2csr.cpp
   test_identity.cpp
   test_csrsort.cpp
   test_coosort.cpp
+  test_csrilusv.cpp
 )
+
+if(NOT BUILD_CUDA)
+    list(APPEND HIPSPARSE_TEST_SOURCES
+        test_hybmv.cpp
+        test_csr2hyb.cpp
+    )
+endif()
 
 set(HIPSPARSE_CLIENTS_COMMON
   ../common/arg_check.cpp

@@ -15,6 +15,8 @@ void verify_hipsparse_status_invalid_size(hipsparseStatus_t status, const char* 
 
 void verify_hipsparse_status_invalid_value(hipsparseStatus_t status, const char* message);
 
+void verify_hipsparse_status_zero_pivot(hipsparseStatus_t status, const char* message);
+
 void verify_hipsparse_status_invalid_handle(hipsparseStatus_t status);
 
 void verify_hipsparse_status_success(hipsparseStatus_t status, const char* message);

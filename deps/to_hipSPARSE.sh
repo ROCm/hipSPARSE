@@ -10,6 +10,7 @@ sed -i 's/verify_rocsparse_status_invalid_pointer/verify_hipsparse_status_invali
 sed -i 's/verify_rocsparse_status_invalid_size/verify_hipsparse_status_invalid_size/g' $1
 sed -i 's/verify_rocsparse_status_invalid_value/verify_hipsparse_status_invalid_value/g' $1
 sed -i 's/verify_rocsparse_status_invalid_handle/verify_hipsparse_status_invalid_handle/g' $1
+sed -i 's/verify_rocsparse_status_zero_pivot/verify_hipsparse_status_zero_pivot/g' $1
 sed -i 's/verify_rocsparse_status_success/verify_hipsparse_status_success/g' $1
 
 # Handle
@@ -28,6 +29,10 @@ sed -i 's/rocsparse_create_mat_descr/hipsparseCreateMatDescr/g' $1
 sed -i 's/rocsparse_destroy_mat_descr/hipsparseDestroyMatDescr/g' $1
 sed -i 's/rocsparse_set_mat_index_base/hipsparseSetMatIndexBase/g' $1
 sed -i 's/rocsparse_get_mat_index_base/hipsparseGetMatIndexBase/g' $1
+sed -i 's/rocsparse_set_mat_fill_mode/hipsparseSetMatFillMode/g' $1
+sed -i 's/rocsparse_get_mat_fill_mode/hipsparseGetMatFillMode/g' $1
+sed -i 's/rocsparse_set_mat_diag_type/hipsparseSetMatDiagType/g' $1
+sed -i 's/rocsparse_get_mat_diag_type/hipsparseGetMatDiagType/g' $1
 
 # Operation
 sed -i 's/rocsparse_operation_none/HIPSPARSE_OPERATION_NON_TRANSPOSE/g' $1
@@ -46,6 +51,16 @@ sed -i 's/rocsparse_matrix_type_symmetric/HIPSPARSE_MATRIX_TYPE_SYMMETRIC/g' $1
 sed -i 's/rocsparse_matrix_type_hermitian/HIPSPARSE_MATRIX_TYPE_HERMITIAN/g' $1
 sed -i 's/rocsparse_matrix_type_triangular/HIPSPARSE_MATRIX_TYPE_TRIANGULAR/g' $1
 sed -i 's/rocsparse_matrix_type/hipsparseMatrixType_t/g' $1
+
+# Fill mode
+sed -i 's/rocsparse_fill_mode_lower/HIPSPARSE_FILL_MODE_LOWER/g' $1
+sed -i 's/rocsparse_fill_mode_upper/HIPSPARSE_FILL_MODE_UPPER/g' $1
+sed -i 's/rocsparse_fill_mode/hipsparseFillMode_t/g' $1
+
+# Diag type
+sed -i 's/rocsparse_diag_type_unit/HIPSPARSE_DIAG_TYPE_UNIT/g' $1
+sed -i 's/rocsparse_diag_type_non_unit/HIPSPARSE_DIAG_TYPE_NON_UNIT/g' $1
+sed -i 's/rocsparse_diag_type/hipsparseDiagType_t/g' $1
 
 # Action
 sed -i 's/rocsparse_action_symbolic/HIPSPARSE_ACTION_SYMBOLIC/g' $1
@@ -71,6 +86,7 @@ sed -i 's/rocsparse_status_memory_error/HIPSPARSE_STATUS_ALLOC_FAILED/g' $1
 sed -i 's/rocsparse_status_internal_error/HIPSPARSE_STATUS_INTERNAL_ERROR/g' $1
 sed -i 's/rocsparse_status_invalid_value/HIPSPARSE_STATUS_INVALID_VALUE/g' $1
 sed -i 's/rocsparse_status_arch_mismatch/HIPSPARSE_STATUS_ARCH_MISMATCH/g' $1
+sed -i 's/rocsparse_status_zero_pivot/HIPSPARSE_STATUS_ZERO_PIVOT/g' $1
 sed -i 's/rocsparse_status/hipsparseStatus_t/g' $1
 
 # Pointer mode
