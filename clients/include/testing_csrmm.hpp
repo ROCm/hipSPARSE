@@ -20,7 +20,10 @@ using namespace hipsparse_test;
 template <typename T>
 void testing_csrmm_bad_arg(void)
 {
-
+#ifdef __HIP_PLATFORM_NVCC__
+    // do not test for bad args
+    return;
+#endif
     int N                       = 100;
     int M                       = 100;
     int K                       = 100;
@@ -318,6 +321,10 @@ hipsparseStatus_t testing_csrmm(Arguments argus)
     // Argument sanity check before allocating invalid memory
     if(M <= 0 || N <= 0 || K <= 0 || nnz <= 0)
     {
+#ifdef __HIP_PLATFORM_NVCC__
+        // Do not test args in cusparse
+        return HIPSPARSE_STATUS_SUCCESS;
+#endif
         auto dptr_managed =
             hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
         auto dcol_managed =

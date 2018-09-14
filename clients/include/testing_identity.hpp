@@ -19,6 +19,10 @@ using namespace hipsparse_test;
 
 void testing_identity_bad_arg(void)
 {
+#ifdef __HIP_PLATFORM_NVCC__
+    // do not test for bad args
+    return;
+#endif
     int n         = 100;
     int safe_size = 100;
     hipsparseStatus_t status;
@@ -65,6 +69,10 @@ hipsparseStatus_t testing_identity(Arguments argus)
     // Argument sanity check before allocating invalid memory
     if(n <= 0)
     {
+#ifdef __HIP_PLATFORM_NVCC__
+        // Do not test args in cusparse
+        return HIPSPARSE_STATUS_SUCCESS;
+#endif
         auto p_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
 
         int* p = (int*)p_managed.get();
