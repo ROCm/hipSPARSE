@@ -289,8 +289,8 @@ hipsparseStatus_t hipsparseDestroyMatDescr(hipsparseMatDescr_t descrA)
 
 hipsparseStatus_t hipsparseCopyMatDescr(hipsparseMatDescr_t dest, const hipsparseMatDescr_t src)
 {
-    return rocSPARSEStatusToHIPStatus(rocsparse_copy_mat_descr((rocsparse_mat_descr)dest,
-                                                               (const rocsparse_mat_descr)src));
+    return rocSPARSEStatusToHIPStatus(
+        rocsparse_copy_mat_descr((rocsparse_mat_descr)dest, (const rocsparse_mat_descr)src));
 }
 
 hipsparseStatus_t hipsparseSetMatType(hipsparseMatDescr_t descrA, hipsparseMatrixType_t type)
