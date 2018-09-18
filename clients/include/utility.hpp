@@ -682,11 +682,11 @@ int lsolve(int m,
         int row_begin = ptr[i] - idx_base;
         int row_end   = ptr[i + 1] - idx_base;
 
-        T diag_val;
+        T diag_val = static_cast<T>(1);
 
         for(int l = row_begin; l < row_end; l += wf_size)
         {
-            for(int k = 0; k < wf_size; ++k)
+            for(unsigned int k = 0; k < wf_size; ++k)
             {
                 int j = l + k;
 
@@ -730,9 +730,9 @@ int lsolve(int m,
             }
         }
 
-        for(int j = 1; j < wf_size; j <<= 1)
+        for(unsigned int j = 1; j < wf_size; j <<= 1)
         {
-            for(int k = 0; k < wf_size - j; ++k)
+            for(unsigned int k = 0; k < wf_size - j; ++k)
             {
                 temp[k] += temp[k + j];
             }
@@ -787,11 +787,11 @@ int usolve(int m,
         int row_begin = ptr[i] - idx_base;
         int row_end   = ptr[i + 1] - idx_base;
 
-        T diag_val;
+        T diag_val = static_cast<T>(1);
 
         for(int l = row_begin; l < row_end; l += wf_size)
         {
-            for(int k = 0; k < wf_size; ++k)
+            for(unsigned int k = 0; k < wf_size; ++k)
             {
                 int j = l + k;
 
@@ -835,9 +835,9 @@ int usolve(int m,
             }
         }
 
-        for(int j = 1; j < wf_size; j <<= 1)
+        for(unsigned int j = 1; j < wf_size; j <<= 1)
         {
-            for(int k = 0; k < wf_size - j; ++k)
+            for(unsigned int k = 0; k < wf_size - j; ++k)
             {
                 temp[k] += temp[k + j];
             }

@@ -31,8 +31,6 @@ void testing_csr2csc_bad_arg(void)
     int safe_size = 100;
     hipsparseStatus_t status;
 
-    size_t size = 0;
-
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t handle = unique_ptr_handle->handle;
 
@@ -220,8 +218,6 @@ hipsparseStatus_t testing_csr2csc(Arguments argus)
     {
         filename = argus.filename;
     }
-
-    size_t size = 0;
 
     double scale = 0.02;
     if(m > 1000 || n > 1000)
