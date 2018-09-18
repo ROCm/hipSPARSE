@@ -92,8 +92,8 @@ rocm_install_symlink_subdir(hipsparse)
 
 # Package specific CPACK vars
 if(NOT BUILD_CUDA)
-  set(CPACK_DEBIAN_PACKAGE_DEPENDS "hip_hcc (>= 1.5)")#, rocsparse (>= 0.1.2)") enable this when we go live in rocm repo
-  set(CPACK_RPM_PACKAGE_REQUIRES "hip_hcc >= 1.5")#, rocsparse >= 0.1.2") enable this when we go live in rocm repo
+  set(CPACK_DEBIAN_PACKAGE_DEPENDS "hip_hcc (>= 1.5.18353), rocsparse (>= 0.1.3.0)")
+  set(CPACK_RPM_PACKAGE_REQUIRES "hip_hcc >= 1.5.18353, rocsparse >= 0.1.3.0")
 endif()
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/../LICENSE.md")
 

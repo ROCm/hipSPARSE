@@ -542,6 +542,8 @@ int read_bin_matrix(const char* filename,
     err |= fread(col.data(), sizeof(int), nnz, f);
     err |= fread(tmp.data(), sizeof(double), nnz, f);
 
+    fclose(f);
+
     for(int i = 0; i < nnz; ++i)
     {
         val[i] = static_cast<T>(tmp[i]);
@@ -564,6 +566,304 @@ int read_bin_matrix(const char* filename,
     fflush(stdout);
 
     return 0;
+}
+
+/* ============================================================================================ */
+/*! \brief  Compute incomplete LU factorization without fill-ins and no pivoting using CSR
+ *  matrix storage format.
+ */
+template <typename T>
+int csrilu0(int m, const int* ptr, const int* col, T* val, hipsparseIndexBase_t idx_base)
+{
+    // pointer of upper part of each row
+    std::vector<int> diag_offset(m);
+    std::vector<int> nnz_entries(m, 0);
+
+    // ai = 0 to N loop over all rows
+    for(int ai = 0; ai < m; ++ai)
+    {
+        // ai-th row entries
+        int row_start = ptr[ai] - idx_base;
+        int row_end   = ptr[ai + 1] - idx_base;
+        int j;
+
+        // nnz position of ai-th row in val array
+        for(j = row_start; j < row_end; ++j)
+        {
+            nnz_entries[col[j] - idx_base] = j;
+        }
+
+        bool has_diag = false;
+
+        // loop over ai-th row nnz entries
+        for(j = row_start; j < row_end; ++j)
+        {
+            // if nnz entry is in lower matrix
+            if(col[j] - idx_base < ai)
+            {
+
+                int col_j  = col[j] - idx_base;
+                int diag_j = diag_offset[col_j];
+
+                if(val[diag_j] != static_cast<T>(0))
+                {
+                    // multiplication factor
+                    val[j] = val[j] / val[diag_j];
+
+                    // loop over upper offset pointer and do linear combination for nnz entry
+                    for(int k = diag_j + 1; k < ptr[col_j + 1] - idx_base; ++k)
+                    {
+                        // if nnz at this position do linear combination
+                        if(nnz_entries[col[k] - idx_base] != 0)
+                        {
+                            val[nnz_entries[col[k] - idx_base]] -= val[j] * val[k];
+                        }
+                    }
+                }
+                else
+                {
+                    // Numerical zero diagonal
+                    return col_j + idx_base;
+                }
+            }
+            else if(col[j] - idx_base == ai)
+            {
+                has_diag = true;
+                break;
+            }
+            else
+            {
+                break;
+            }
+        }
+
+        if(!has_diag)
+        {
+            // Structural zero digonal
+            return ai + idx_base;
+        }
+
+        // set diagonal pointer to diagonal element
+        diag_offset[ai] = j;
+
+        // clear nnz entries
+        for(j = row_start; j < row_end; ++j)
+        {
+            nnz_entries[col[j] - idx_base] = 0;
+        }
+    }
+
+    return -1;
+}
+
+/* ============================================================================================ */
+/*! \brief  Sparse triangular lower solve using CSR storage format. */
+template <typename T>
+int lsolve(int m,
+           const int* ptr,
+           const int* col,
+           const T* val,
+           T alpha,
+           const T* x,
+           T* y,
+           hipsparseIndexBase_t idx_base,
+           hipsparseDiagType_t diag_type,
+           unsigned int wf_size)
+{
+    int pivot = std::numeric_limits<int>::max();
+    std::vector<T> temp(wf_size);
+
+    for(int i = 0; i < m; ++i)
+    {
+        temp.assign(wf_size, static_cast<T>(0));
+        temp[0] = alpha * x[i];
+
+        int diag      = -1;
+        int row_begin = ptr[i] - idx_base;
+        int row_end   = ptr[i + 1] - idx_base;
+
+        T diag_val = static_cast<T>(1);
+
+        for(int l = row_begin; l < row_end; l += wf_size)
+        {
+            for(unsigned int k = 0; k < wf_size; ++k)
+            {
+                int j = l + k;
+
+                // Do not run out of bounds
+                if(j >= row_end)
+                {
+                    break;
+                }
+
+                int col_j = col[j] - idx_base;
+                T val_j   = val[j];
+
+                if(col_j < i)
+                {
+                    // Lower part
+                    temp[k] -= val[j] * y[col_j];
+                }
+                else if(col_j == i)
+                {
+                    // Diagonal
+                    if(diag_type == HIPSPARSE_DIAG_TYPE_NON_UNIT)
+                    {
+                        // Check for numerical zero
+                        if(val_j == static_cast<T>(0))
+                        {
+                            pivot = std::min(pivot, i + idx_base);
+                            val_j = static_cast<T>(1);
+                        }
+
+                        diag     = j;
+                        diag_val = static_cast<T>(1) / val_j;
+                    }
+
+                    break;
+                }
+                else
+                {
+                    // Upper part
+                    break;
+                }
+            }
+        }
+
+        for(unsigned int j = 1; j < wf_size; j <<= 1)
+        {
+            for(unsigned int k = 0; k < wf_size - j; ++k)
+            {
+                temp[k] += temp[k + j];
+            }
+        }
+
+        if(diag_type == HIPSPARSE_DIAG_TYPE_NON_UNIT)
+        {
+            if(diag == -1)
+            {
+                pivot = std::min(pivot, i + idx_base);
+            }
+
+            y[i] = temp[0] * diag_val;
+        }
+        else
+        {
+            y[i] = temp[0];
+        }
+    }
+
+    if(pivot != std::numeric_limits<int>::max())
+    {
+        return pivot;
+    }
+
+    return -1;
+}
+
+/* ============================================================================================ */
+/*! \brief  Sparse triangular upper solve using CSR storage format. */
+template <typename T>
+int usolve(int m,
+           const int* ptr,
+           const int* col,
+           const T* val,
+           T alpha,
+           const T* x,
+           T* y,
+           hipsparseIndexBase_t idx_base,
+           hipsparseDiagType_t diag_type,
+           unsigned int wf_size)
+{
+    int pivot = std::numeric_limits<int>::max();
+    std::vector<T> temp(wf_size);
+
+    for(int i = m - 1; i >= 0; --i)
+    {
+        temp.assign(wf_size, static_cast<T>(0));
+        temp[0] = alpha * x[i];
+
+        int diag      = -1;
+        int row_begin = ptr[i] - idx_base;
+        int row_end   = ptr[i + 1] - idx_base;
+
+        T diag_val = static_cast<T>(1);
+
+        for(int l = row_begin; l < row_end; l += wf_size)
+        {
+            for(unsigned int k = 0; k < wf_size; ++k)
+            {
+                int j = l + k;
+
+                // Do not run out of bounds
+                if(j >= row_end)
+                {
+                    break;
+                }
+
+                int col_j = col[j] - idx_base;
+                T val_j   = val[j];
+
+                if(col_j < i)
+                {
+                    // Lower part
+                    continue;
+                }
+                else if(col_j == i)
+                {
+                    // Diagonal
+                    if(diag_type == HIPSPARSE_DIAG_TYPE_NON_UNIT)
+                    {
+                        // Check for numerical zero
+                        if(val_j == static_cast<T>(0))
+                        {
+                            pivot = std::min(pivot, i + idx_base);
+                            val_j = static_cast<T>(1);
+                        }
+
+                        diag     = j;
+                        diag_val = static_cast<T>(1) / val_j;
+                    }
+
+                    continue;
+                }
+                else
+                {
+                    // Upper part
+                    temp[k] -= val[j] * y[col_j];
+                }
+            }
+        }
+
+        for(unsigned int j = 1; j < wf_size; j <<= 1)
+        {
+            for(unsigned int k = 0; k < wf_size - j; ++k)
+            {
+                temp[k] += temp[k + j];
+            }
+        }
+
+        if(diag_type == HIPSPARSE_DIAG_TYPE_NON_UNIT)
+        {
+            if(diag == -1)
+            {
+                pivot = std::min(pivot, i + idx_base);
+            }
+
+            y[i] = temp[0] * diag_val;
+        }
+        else
+        {
+            y[i] = temp[0];
+        }
+    }
+
+    if(pivot != std::numeric_limits<int>::max())
+    {
+        return pivot;
+    }
+
+    return -1;
 }
 
 #ifdef __cplusplus
@@ -618,6 +918,8 @@ class Arguments
     hipsparseIndexBase_t idx_base2 = HIPSPARSE_INDEX_BASE_ZERO;
     hipsparseAction_t action       = HIPSPARSE_ACTION_NUMERIC;
     hipsparseHybPartition_t part   = HIPSPARSE_HYB_PARTITION_AUTO;
+    hipsparseDiagType_t diag_type  = HIPSPARSE_DIAG_TYPE_NON_UNIT;
+    hipsparseFillMode_t fill_mode  = HIPSPARSE_FILL_MODE_LOWER;
 
     int norm_check = 0;
     int unit_check = 1;
@@ -649,6 +951,8 @@ class Arguments
         this->idx_base2 = rhs.idx_base2;
         this->action    = rhs.action;
         this->part      = rhs.part;
+        this->diag_type = rhs.diag_type;
+        this->fill_mode = rhs.fill_mode;
 
         this->norm_check = rhs.norm_check;
         this->unit_check = rhs.unit_check;

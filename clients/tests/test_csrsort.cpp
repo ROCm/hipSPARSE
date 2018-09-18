@@ -13,9 +13,16 @@
 typedef std::tuple<int, int, int, hipsparseIndexBase_t> csrsort_tuple;
 typedef std::tuple<int, hipsparseIndexBase_t, std::string> csrsort_bin_tuple;
 
-int csrsort_M_range[]               = {-1, 0, 10, 500, 872, 1000};
-int csrsort_N_range[]               = {-3, 0, 33, 242, 623, 1000};
-int csrsort_perm[]                  = {0, 1};
+int csrsort_M_range[] = {-1, 0, 10, 500, 872, 1000};
+int csrsort_N_range[] = {-3, 0, 33, 242, 623, 1000};
+
+#if defined(__HIP_PLATFORM_HCC__)
+int csrsort_perm[] = {0, 1};
+#elif defined(__HIP_PLATFORM_NVCC__)
+// cusparse does not allow without permutation
+int csrsort_perm[] = {1};
+#endif
+
 hipsparseIndexBase_t csrsort_base[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
 std::string csrsort_bin[] = {"rma10.bin",

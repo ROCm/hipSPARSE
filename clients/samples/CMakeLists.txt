@@ -34,7 +34,5 @@ endfunction()
 
 # Examples
 add_hipsparse_example(example_handle.cpp)
-add_hipsparse_example(example_coomv.cpp)
 add_hipsparse_example(example_csrmv.cpp)
-add_hipsparse_example(example_ellmv.cpp)
 add_hipsparse_example(example_hybmv.cpp)

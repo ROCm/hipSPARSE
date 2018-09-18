@@ -19,6 +19,10 @@ using namespace hipsparse_test;
 template <typename T>
 void testing_axpyi_bad_arg(void)
 {
+#ifdef __HIP_PLATFORM_NVCC__
+    // do not test for bad args
+    return;
+#endif
     int nnz       = 100;
     int safe_size = 100;
     T alpha       = 0.6;
@@ -96,6 +100,10 @@ hipsparseStatus_t testing_axpyi(Arguments argus)
     // Argument sanity check before allocating invalid memory
     if(nnz <= 0)
     {
+#ifdef __HIP_PLATFORM_NVCC__
+        // Do not test args in cusparse
+        return HIPSPARSE_STATUS_SUCCESS;
+#endif
         auto dxInd_managed =
             hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
         auto dxVal_managed =
