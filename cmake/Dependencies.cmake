@@ -12,8 +12,8 @@ include(cmake/DownloadProject/DownloadProject.cmake)
 
 # Either rocSPARSE or cuSPARSE is required
 if(NOT BUILD_CUDA)
-  find_package(rocSPARSE REQUIRED)
-  find_package(hip REQUIRED CONFIG PATHS /opt/rocm)
+  find_package(rocSPARSE 0.1.3.0 REQUIRED) # ROCm 1.9
+  find_package(hip 1.5.18353 REQUIRED CONFIG PATHS /opt/rocm) # ROCm 1.9
 else()
   find_package(CUDA REQUIRED)
 endif()

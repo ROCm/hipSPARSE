@@ -64,6 +64,19 @@ void verify_hipsparse_status_invalid_value(hipsparseStatus_t status, const char*
 #endif
 }
 
+void verify_hipsparse_status_zero_pivot(hipsparseStatus_t status, const char* message)
+{
+#ifdef GOOGLE_TEST
+    ASSERT_EQ(status, HIPSPARSE_STATUS_ZERO_PIVOT);
+#else
+    if(status != HIPSPARSE_STATUS_ZERO_PIVOT)
+    {
+        std::cerr << "rocSPARSE TEST ERROR: status != HIPSPARSE_STATUS_ZERO_PIVOT, ";
+        std::cerr << message << std::endl;
+    }
+#endif
+}
+
 void verify_hipsparse_status_invalid_handle(hipsparseStatus_t status)
 {
 #ifdef GOOGLE_TEST

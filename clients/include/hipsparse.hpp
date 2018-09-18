@@ -63,21 +63,6 @@ hipsparseStatus_t hipsparseXsctr(hipsparseHandle_t handle,
                                  hipsparseIndexBase_t idx_base);
 
 template <typename T>
-hipsparseStatus_t hipsparseXcoomv(hipsparseHandle_t handle,
-                                  hipsparseOperation_t trans,
-                                  int m,
-                                  int n,
-                                  int nnz,
-                                  const T* alpha,
-                                  const hipsparseMatDescr_t descr,
-                                  const T* coo_val,
-                                  const int* coo_row_ind,
-                                  const int* coo_col_ind,
-                                  const T* x,
-                                  const T* beta,
-                                  T* y);
-
-template <typename T>
 hipsparseStatus_t hipsparseXcsrmv(hipsparseHandle_t handle,
                                   hipsparseOperation_t trans,
                                   int m,
@@ -93,34 +78,57 @@ hipsparseStatus_t hipsparseXcsrmv(hipsparseHandle_t handle,
                                   T* y);
 
 template <typename T>
-hipsparseStatus_t hipsparseXcsrmv2(hipsparseHandle_t handle,
-                                   hipsparseOperation_t trans,
-                                   int m,
-                                   int n,
-                                   int nnz,
-                                   const T* alpha,
-                                   const hipsparseMatDescr_t descr,
-                                   const T* csr_val,
-                                   const int* csr_row_ptr,
-                                   const int* csr_col_ind,
-                                   csrmv2Info_t info,
-                                   const T* x,
-                                   const T* beta,
-                                   T* y);
+hipsparseStatus_t hipsparseXcsrsv2_bufferSize(hipsparseHandle_t handle,
+                                              hipsparseOperation_t transA,
+                                              int m,
+                                              int nnz,
+                                              const hipsparseMatDescr_t descrA,
+                                              T* csrSortedValA,
+                                              const int* csrSortedRowPtrA,
+                                              const int* csrSortedColIndA,
+                                              csrsv2Info_t info,
+                                              int* pBufferSizeInBytes);
 
 template <typename T>
-hipsparseStatus_t hipsparseXellmv(hipsparseHandle_t handle,
-                                  hipsparseOperation_t trans,
-                                  int m,
-                                  int n,
-                                  const T* alpha,
-                                  const hipsparseMatDescr_t descr,
-                                  const T* ell_val,
-                                  const int* ell_col_ind,
-                                  int ell_width,
-                                  const T* x,
-                                  const T* beta,
-                                  T* y);
+hipsparseStatus_t hipsparseXcsrsv2_bufferSizeExt(hipsparseHandle_t handle,
+                                                 hipsparseOperation_t transA,
+                                                 int m,
+                                                 int nnz,
+                                                 const hipsparseMatDescr_t descrA,
+                                                 T* csrSortedValA,
+                                                 const int* csrSortedRowPtrA,
+                                                 const int* csrSortedColIndA,
+                                                 csrsv2Info_t info,
+                                                 size_t* pBufferSize);
+
+template <typename T>
+hipsparseStatus_t hipsparseXcsrsv2_analysis(hipsparseHandle_t handle,
+                                            hipsparseOperation_t transA,
+                                            int m,
+                                            int nnz,
+                                            const hipsparseMatDescr_t descrA,
+                                            const T* csrSortedValA,
+                                            const int* csrSortedRowPtrA,
+                                            const int* csrSortedColIndA,
+                                            csrsv2Info_t info,
+                                            hipsparseSolvePolicy_t policy,
+                                            void* pBuffer);
+
+template <typename T>
+hipsparseStatus_t hipsparseXcsrsv2_solve(hipsparseHandle_t handle,
+                                         hipsparseOperation_t transA,
+                                         int m,
+                                         int nnz,
+                                         const T* alpha,
+                                         const hipsparseMatDescr_t descrA,
+                                         const T* csrSortedValA,
+                                         const int* csrSortedRowPtrA,
+                                         const int* csrSortedColIndA,
+                                         csrsv2Info_t info,
+                                         const T* f,
+                                         T* x,
+                                         hipsparseSolvePolicy_t policy,
+                                         void* pBuffer);
 
 template <typename T>
 hipsparseStatus_t hipsparseXhybmv(hipsparseHandle_t handle,
@@ -152,6 +160,54 @@ hipsparseStatus_t hipsparseXcsrmm2(hipsparseHandle_t handle,
                                    int ldc);
 
 template <typename T>
+hipsparseStatus_t hipsparseXcsrilu02_bufferSize(hipsparseHandle_t handle,
+                                                int m,
+                                                int nnz,
+                                                const hipsparseMatDescr_t descrA,
+                                                T* csrSortedValA,
+                                                const int* csrSortedRowPtrA,
+                                                const int* csrSortedColIndA,
+                                                csrilu02Info_t info,
+                                                int* pBufferSizeInBytes);
+
+template <typename T>
+hipsparseStatus_t hipsparseXcsrilu02_bufferSizeExt(hipsparseHandle_t handle,
+                                                   int m,
+                                                   int nnz,
+                                                   const hipsparseMatDescr_t descrA,
+                                                   T* csrSortedValA,
+                                                   const int* csrSortedRowPtrA,
+                                                   const int* csrSortedColIndA,
+                                                   csrilu02Info_t info,
+                                                   size_t* pBufferSize);
+
+template <typename T>
+hipsparseStatus_t hipsparseXcsrilu02_analysis(hipsparseHandle_t handle,
+                                              int m,
+                                              int nnz,
+                                              const hipsparseMatDescr_t descrA,
+                                              const T* csrSortedValA,
+                                              const int* csrSortedRowPtrA,
+                                              const int* csrSortedColIndA,
+                                              csrilu02Info_t info,
+                                              hipsparseSolvePolicy_t policy,
+                                              void* pBuffer);
+
+template <typename T>
+hipsparseStatus_t hipsparseXcsrilu02(hipsparseHandle_t handle,
+                                     int m,
+                                     int nnz,
+                                     const hipsparseMatDescr_t descrA,
+                                     T* csrSortedValA_valM,
+                                     /* matrix A values are updated inplace
+                                        to be the preconditioner M values */
+                                     const int* csrSortedRowPtrA,
+                                     const int* csrSortedColIndA,
+                                     csrilu02Info_t info,
+                                     hipsparseSolvePolicy_t policy,
+                                     void* pBuffer);
+
+template <typename T>
 hipsparseStatus_t hipsparseXcsr2csc(hipsparseHandle_t handle,
                                     int m,
                                     int n,
@@ -166,18 +222,6 @@ hipsparseStatus_t hipsparseXcsr2csc(hipsparseHandle_t handle,
                                     hipsparseIndexBase_t idx_base);
 
 template <typename T>
-hipsparseStatus_t hipsparseXcsr2ell(hipsparseHandle_t handle,
-                                    int m,
-                                    const hipsparseMatDescr_t csr_descr,
-                                    const T* csr_val,
-                                    const int* csr_row_ptr,
-                                    const int* csr_col_ind,
-                                    const hipsparseMatDescr_t ell_descr,
-                                    int ell_width,
-                                    T* ell_val,
-                                    int* ell_col_ind);
-
-template <typename T>
 hipsparseStatus_t hipsparseXcsr2hyb(hipsparseHandle_t handle,
                                     int m,
                                     int n,
@@ -188,19 +232,6 @@ hipsparseStatus_t hipsparseXcsr2hyb(hipsparseHandle_t handle,
                                     hipsparseHybMat_t hyb,
                                     int user_ell_width,
                                     hipsparseHybPartition_t partition_type);
-
-template <typename T>
-hipsparseStatus_t hipsparseXell2csr(hipsparseHandle_t handle,
-                                    int m,
-                                    int n,
-                                    const hipsparseMatDescr_t ell_descr,
-                                    int ell_width,
-                                    const T* ell_val,
-                                    const int* ell_col_ind,
-                                    const hipsparseMatDescr_t csr_descr,
-                                    T* csr_val,
-                                    const int* csr_row_ptr,
-                                    int* csr_col_ind);
 
 } // namespace hipsparse
 

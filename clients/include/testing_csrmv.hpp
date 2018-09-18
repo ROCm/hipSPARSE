@@ -21,6 +21,10 @@ using namespace hipsparse_test;
 template <typename T>
 void testing_csrmv_bad_arg(void)
 {
+#ifdef __HIP_PLATFORM_NVCC__
+    // do not test for bad args
+    return;
+#endif
     int n                       = 100;
     int m                       = 100;
     int nnz                     = 100;
@@ -175,6 +179,10 @@ hipsparseStatus_t testing_csrmv(Arguments argus)
     // Argument sanity check before allocating invalid memory
     if(m <= 0 || n <= 0 || nnz <= 0)
     {
+#ifdef __HIP_PLATFORM_NVCC__
+        // Do not test args in cusparse
+        return HIPSPARSE_STATUS_SUCCESS;
+#endif
         auto dptr_managed =
             hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
         auto dcol_managed =
@@ -412,8 +420,14 @@ hipsparseStatus_t testing_csrmv(Arguments argus)
 
         cpu_time_used = get_time_us() - cpu_time_used;
 
+#if defined(__HIP_PLATFORM_HCC__)
         unit_check_general(1, m, 1, hy_gold.data(), hy_1.data());
         unit_check_general(1, m, 1, hy_gold.data(), hy_2.data());
+#elif defined(__HIP_PLATFORM_NVCC__)
+        // do weaker check for cusparse
+        unit_check_near(1, m, 1, hy_gold.data(), hy_1.data());
+        unit_check_near(1, m, 1, hy_gold.data(), hy_2.data());
+#endif
     }
 
     if(argus.timing)

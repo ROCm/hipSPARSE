@@ -149,44 +149,6 @@ hipsparseStatus_t hipsparseXsctr(hipsparseHandle_t handle,
 }
 
 template <>
-hipsparseStatus_t hipsparseXcoomv(hipsparseHandle_t handle,
-                                  hipsparseOperation_t trans,
-                                  int m,
-                                  int n,
-                                  int nnz,
-                                  const float* alpha,
-                                  const hipsparseMatDescr_t descr,
-                                  const float* coo_val,
-                                  const int* coo_row_ind,
-                                  const int* coo_col_ind,
-                                  const float* x,
-                                  const float* beta,
-                                  float* y)
-{
-    return hipsparseScoomv(
-        handle, trans, m, n, nnz, alpha, descr, coo_val, coo_row_ind, coo_col_ind, x, beta, y);
-}
-
-template <>
-hipsparseStatus_t hipsparseXcoomv(hipsparseHandle_t handle,
-                                  hipsparseOperation_t trans,
-                                  int m,
-                                  int n,
-                                  int nnz,
-                                  const double* alpha,
-                                  const hipsparseMatDescr_t descr,
-                                  const double* coo_val,
-                                  const int* coo_row_ind,
-                                  const int* coo_col_ind,
-                                  const double* x,
-                                  const double* beta,
-                                  double* y)
-{
-    return hipsparseDcoomv(
-        handle, trans, m, n, nnz, alpha, descr, coo_val, coo_row_ind, coo_col_ind, x, beta, y);
-}
-
-template <>
 hipsparseStatus_t hipsparseXcsrmv(hipsparseHandle_t handle,
                                   hipsparseOperation_t trans,
                                   int m,
@@ -225,79 +187,215 @@ hipsparseStatus_t hipsparseXcsrmv(hipsparseHandle_t handle,
 }
 
 template <>
-hipsparseStatus_t hipsparseXcsrmv2(hipsparseHandle_t handle,
-                                   hipsparseOperation_t trans,
-                                   int m,
-                                   int n,
-                                   int nnz,
-                                   const float* alpha,
-                                   const hipsparseMatDescr_t descr,
-                                   const float* csr_val,
-                                   const int* csr_row_ptr,
-                                   const int* csr_col_ind,
-                                   csrmv2Info_t info,
-                                   const float* x,
-                                   const float* beta,
-                                   float* y)
+hipsparseStatus_t hipsparseXcsrsv2_bufferSize(hipsparseHandle_t handle,
+                                              hipsparseOperation_t transA,
+                                              int m,
+                                              int nnz,
+                                              const hipsparseMatDescr_t descrA,
+                                              float* csrSortedValA,
+                                              const int* csrSortedRowPtrA,
+                                              const int* csrSortedColIndA,
+                                              csrsv2Info_t info,
+                                              int* pBufferSizeInBytes)
 {
-    return hipsparseScsrmv2(
-        handle, trans, m, n, nnz, alpha, descr, csr_val, csr_row_ptr, csr_col_ind, info, x, beta, y);
+    return hipsparseScsrsv2_bufferSize(handle,
+                                       transA,
+                                       m,
+                                       nnz,
+                                       descrA,
+                                       csrSortedValA,
+                                       csrSortedRowPtrA,
+                                       csrSortedColIndA,
+                                       info,
+                                       pBufferSizeInBytes);
 }
 
 template <>
-hipsparseStatus_t hipsparseXcsrmv2(hipsparseHandle_t handle,
-                                   hipsparseOperation_t trans,
-                                   int m,
-                                   int n,
-                                   int nnz,
-                                   const double* alpha,
-                                   const hipsparseMatDescr_t descr,
-                                   const double* csr_val,
-                                   const int* csr_row_ptr,
-                                   const int* csr_col_ind,
-                                   csrmv2Info_t info,
-                                   const double* x,
-                                   const double* beta,
-                                   double* y)
+hipsparseStatus_t hipsparseXcsrsv2_bufferSize(hipsparseHandle_t handle,
+                                              hipsparseOperation_t transA,
+                                              int m,
+                                              int nnz,
+                                              const hipsparseMatDescr_t descrA,
+                                              double* csrSortedValA,
+                                              const int* csrSortedRowPtrA,
+                                              const int* csrSortedColIndA,
+                                              csrsv2Info_t info,
+                                              int* pBufferSizeInBytes)
 {
-    return hipsparseDcsrmv2(
-        handle, trans, m, n, nnz, alpha, descr, csr_val, csr_row_ptr, csr_col_ind, info, x, beta, y);
+    return hipsparseDcsrsv2_bufferSize(handle,
+                                       transA,
+                                       m,
+                                       nnz,
+                                       descrA,
+                                       csrSortedValA,
+                                       csrSortedRowPtrA,
+                                       csrSortedColIndA,
+                                       info,
+                                       pBufferSizeInBytes);
 }
 
 template <>
-hipsparseStatus_t hipsparseXellmv(hipsparseHandle_t handle,
-                                  hipsparseOperation_t trans,
-                                  int m,
-                                  int n,
-                                  const float* alpha,
-                                  const hipsparseMatDescr_t descr,
-                                  const float* ell_val,
-                                  const int* ell_col_ind,
-                                  int ell_width,
-                                  const float* x,
-                                  const float* beta,
-                                  float* y)
+hipsparseStatus_t hipsparseXcsrsv2_bufferSizeExt(hipsparseHandle_t handle,
+                                                 hipsparseOperation_t transA,
+                                                 int m,
+                                                 int nnz,
+                                                 const hipsparseMatDescr_t descrA,
+                                                 float* csrSortedValA,
+                                                 const int* csrSortedRowPtrA,
+                                                 const int* csrSortedColIndA,
+                                                 csrsv2Info_t info,
+                                                 size_t* pBufferSize)
 {
-    return hipsparseSellmv(
-        handle, trans, m, n, alpha, descr, ell_val, ell_col_ind, ell_width, x, beta, y);
+    return hipsparseScsrsv2_bufferSizeExt(handle,
+                                          transA,
+                                          m,
+                                          nnz,
+                                          descrA,
+                                          csrSortedValA,
+                                          csrSortedRowPtrA,
+                                          csrSortedColIndA,
+                                          info,
+                                          pBufferSize);
 }
 
 template <>
-hipsparseStatus_t hipsparseXellmv(hipsparseHandle_t handle,
-                                  hipsparseOperation_t trans,
-                                  int m,
-                                  int n,
-                                  const double* alpha,
-                                  const hipsparseMatDescr_t descr,
-                                  const double* ell_val,
-                                  const int* ell_col_ind,
-                                  int ell_width,
-                                  const double* x,
-                                  const double* beta,
-                                  double* y)
+hipsparseStatus_t hipsparseXcsrsv2_bufferSizeExt(hipsparseHandle_t handle,
+                                                 hipsparseOperation_t transA,
+                                                 int m,
+                                                 int nnz,
+                                                 const hipsparseMatDescr_t descrA,
+                                                 double* csrSortedValA,
+                                                 const int* csrSortedRowPtrA,
+                                                 const int* csrSortedColIndA,
+                                                 csrsv2Info_t info,
+                                                 size_t* pBufferSize)
 {
-    return hipsparseDellmv(
-        handle, trans, m, n, alpha, descr, ell_val, ell_col_ind, ell_width, x, beta, y);
+    return hipsparseDcsrsv2_bufferSizeExt(handle,
+                                          transA,
+                                          m,
+                                          nnz,
+                                          descrA,
+                                          csrSortedValA,
+                                          csrSortedRowPtrA,
+                                          csrSortedColIndA,
+                                          info,
+                                          pBufferSize);
+}
+
+template <>
+hipsparseStatus_t hipsparseXcsrsv2_analysis(hipsparseHandle_t handle,
+                                            hipsparseOperation_t transA,
+                                            int m,
+                                            int nnz,
+                                            const hipsparseMatDescr_t descrA,
+                                            const float* csrSortedValA,
+                                            const int* csrSortedRowPtrA,
+                                            const int* csrSortedColIndA,
+                                            csrsv2Info_t info,
+                                            hipsparseSolvePolicy_t policy,
+                                            void* pBuffer)
+{
+    return hipsparseScsrsv2_analysis(handle,
+                                     transA,
+                                     m,
+                                     nnz,
+                                     descrA,
+                                     csrSortedValA,
+                                     csrSortedRowPtrA,
+                                     csrSortedColIndA,
+                                     info,
+                                     policy,
+                                     pBuffer);
+}
+
+template <>
+hipsparseStatus_t hipsparseXcsrsv2_analysis(hipsparseHandle_t handle,
+                                            hipsparseOperation_t transA,
+                                            int m,
+                                            int nnz,
+                                            const hipsparseMatDescr_t descrA,
+                                            const double* csrSortedValA,
+                                            const int* csrSortedRowPtrA,
+                                            const int* csrSortedColIndA,
+                                            csrsv2Info_t info,
+                                            hipsparseSolvePolicy_t policy,
+                                            void* pBuffer)
+{
+    return hipsparseDcsrsv2_analysis(handle,
+                                     transA,
+                                     m,
+                                     nnz,
+                                     descrA,
+                                     csrSortedValA,
+                                     csrSortedRowPtrA,
+                                     csrSortedColIndA,
+                                     info,
+                                     policy,
+                                     pBuffer);
+}
+
+template <>
+hipsparseStatus_t hipsparseXcsrsv2_solve(hipsparseHandle_t handle,
+                                         hipsparseOperation_t transA,
+                                         int m,
+                                         int nnz,
+                                         const float* alpha,
+                                         const hipsparseMatDescr_t descrA,
+                                         const float* csrSortedValA,
+                                         const int* csrSortedRowPtrA,
+                                         const int* csrSortedColIndA,
+                                         csrsv2Info_t info,
+                                         const float* f,
+                                         float* x,
+                                         hipsparseSolvePolicy_t policy,
+                                         void* pBuffer)
+{
+    return hipsparseScsrsv2_solve(handle,
+                                  transA,
+                                  m,
+                                  nnz,
+                                  alpha,
+                                  descrA,
+                                  csrSortedValA,
+                                  csrSortedRowPtrA,
+                                  csrSortedColIndA,
+                                  info,
+                                  f,
+                                  x,
+                                  policy,
+                                  pBuffer);
+}
+
+template <>
+hipsparseStatus_t hipsparseXcsrsv2_solve(hipsparseHandle_t handle,
+                                         hipsparseOperation_t transA,
+                                         int m,
+                                         int nnz,
+                                         const double* alpha,
+                                         const hipsparseMatDescr_t descrA,
+                                         const double* csrSortedValA,
+                                         const int* csrSortedRowPtrA,
+                                         const int* csrSortedColIndA,
+                                         csrsv2Info_t info,
+                                         const double* f,
+                                         double* x,
+                                         hipsparseSolvePolicy_t policy,
+                                         void* pBuffer)
+{
+    return hipsparseDcsrsv2_solve(handle,
+                                  transA,
+                                  m,
+                                  nnz,
+                                  alpha,
+                                  descrA,
+                                  csrSortedValA,
+                                  csrSortedRowPtrA,
+                                  csrSortedColIndA,
+                                  info,
+                                  f,
+                                  x,
+                                  policy,
+                                  pBuffer);
 }
 
 template <>
@@ -403,6 +501,194 @@ hipsparseStatus_t hipsparseXcsrmm2(hipsparseHandle_t handle,
 }
 
 template <>
+hipsparseStatus_t hipsparseXcsrilu02_bufferSize(hipsparseHandle_t handle,
+                                                int m,
+                                                int nnz,
+                                                const hipsparseMatDescr_t descrA,
+                                                float* csrSortedValA,
+                                                const int* csrSortedRowPtrA,
+                                                const int* csrSortedColIndA,
+                                                csrilu02Info_t info,
+                                                int* pBufferSizeInBytes)
+{
+    return hipsparseScsrilu02_bufferSize(handle,
+                                         m,
+                                         nnz,
+                                         descrA,
+                                         csrSortedValA,
+                                         csrSortedRowPtrA,
+                                         csrSortedColIndA,
+                                         info,
+                                         pBufferSizeInBytes);
+}
+
+template <>
+hipsparseStatus_t hipsparseXcsrilu02_bufferSize(hipsparseHandle_t handle,
+                                                int m,
+                                                int nnz,
+                                                const hipsparseMatDescr_t descrA,
+                                                double* csrSortedValA,
+                                                const int* csrSortedRowPtrA,
+                                                const int* csrSortedColIndA,
+                                                csrilu02Info_t info,
+                                                int* pBufferSizeInBytes)
+{
+    return hipsparseDcsrilu02_bufferSize(handle,
+                                         m,
+                                         nnz,
+                                         descrA,
+                                         csrSortedValA,
+                                         csrSortedRowPtrA,
+                                         csrSortedColIndA,
+                                         info,
+                                         pBufferSizeInBytes);
+}
+
+template <>
+hipsparseStatus_t hipsparseXcsrilu02_bufferSizeExt(hipsparseHandle_t handle,
+                                                   int m,
+                                                   int nnz,
+                                                   const hipsparseMatDescr_t descrA,
+                                                   float* csrSortedValA,
+                                                   const int* csrSortedRowPtrA,
+                                                   const int* csrSortedColIndA,
+                                                   csrilu02Info_t info,
+                                                   size_t* pBufferSize)
+{
+    return hipsparseScsrilu02_bufferSizeExt(handle,
+                                            m,
+                                            nnz,
+                                            descrA,
+                                            csrSortedValA,
+                                            csrSortedRowPtrA,
+                                            csrSortedColIndA,
+                                            info,
+                                            pBufferSize);
+}
+
+template <>
+hipsparseStatus_t hipsparseXcsrilu02_bufferSizeExt(hipsparseHandle_t handle,
+                                                   int m,
+                                                   int nnz,
+                                                   const hipsparseMatDescr_t descrA,
+                                                   double* csrSortedValA,
+                                                   const int* csrSortedRowPtrA,
+                                                   const int* csrSortedColIndA,
+                                                   csrilu02Info_t info,
+                                                   size_t* pBufferSize)
+{
+    return hipsparseDcsrilu02_bufferSizeExt(handle,
+                                            m,
+                                            nnz,
+                                            descrA,
+                                            csrSortedValA,
+                                            csrSortedRowPtrA,
+                                            csrSortedColIndA,
+                                            info,
+                                            pBufferSize);
+}
+
+template <>
+hipsparseStatus_t hipsparseXcsrilu02_analysis(hipsparseHandle_t handle,
+                                              int m,
+                                              int nnz,
+                                              const hipsparseMatDescr_t descrA,
+                                              const float* csrSortedValA,
+                                              const int* csrSortedRowPtrA,
+                                              const int* csrSortedColIndA,
+                                              csrilu02Info_t info,
+                                              hipsparseSolvePolicy_t policy,
+                                              void* pBuffer)
+{
+    return hipsparseScsrilu02_analysis(handle,
+                                       m,
+                                       nnz,
+                                       descrA,
+                                       csrSortedValA,
+                                       csrSortedRowPtrA,
+                                       csrSortedColIndA,
+                                       info,
+                                       policy,
+                                       pBuffer);
+}
+
+template <>
+hipsparseStatus_t hipsparseXcsrilu02_analysis(hipsparseHandle_t handle,
+                                              int m,
+                                              int nnz,
+                                              const hipsparseMatDescr_t descrA,
+                                              const double* csrSortedValA,
+                                              const int* csrSortedRowPtrA,
+                                              const int* csrSortedColIndA,
+                                              csrilu02Info_t info,
+                                              hipsparseSolvePolicy_t policy,
+                                              void* pBuffer)
+{
+    return hipsparseDcsrilu02_analysis(handle,
+                                       m,
+                                       nnz,
+                                       descrA,
+                                       csrSortedValA,
+                                       csrSortedRowPtrA,
+                                       csrSortedColIndA,
+                                       info,
+                                       policy,
+                                       pBuffer);
+}
+
+template <>
+hipsparseStatus_t hipsparseXcsrilu02(hipsparseHandle_t handle,
+                                     int m,
+                                     int nnz,
+                                     const hipsparseMatDescr_t descrA,
+                                     float* csrSortedValA_valM,
+                                     /* matrix A values are updated inplace
+                                        to be the preconditioner M values */
+                                     const int* csrSortedRowPtrA,
+                                     const int* csrSortedColIndA,
+                                     csrilu02Info_t info,
+                                     hipsparseSolvePolicy_t policy,
+                                     void* pBuffer)
+{
+    return hipsparseScsrilu02(handle,
+                              m,
+                              nnz,
+                              descrA,
+                              csrSortedValA_valM,
+                              csrSortedRowPtrA,
+                              csrSortedColIndA,
+                              info,
+                              policy,
+                              pBuffer);
+}
+
+template <>
+hipsparseStatus_t hipsparseXcsrilu02(hipsparseHandle_t handle,
+                                     int m,
+                                     int nnz,
+                                     const hipsparseMatDescr_t descrA,
+                                     double* csrSortedValA_valM,
+                                     /* matrix A values are updated inplace
+                                        to be the preconditioner M values */
+                                     const int* csrSortedRowPtrA,
+                                     const int* csrSortedColIndA,
+                                     csrilu02Info_t info,
+                                     hipsparseSolvePolicy_t policy,
+                                     void* pBuffer)
+{
+    return hipsparseDcsrilu02(handle,
+                              m,
+                              nnz,
+                              descrA,
+                              csrSortedValA_valM,
+                              csrSortedRowPtrA,
+                              csrSortedColIndA,
+                              info,
+                              policy,
+                              pBuffer);
+}
+
+template <>
 hipsparseStatus_t hipsparseXcsr2csc(hipsparseHandle_t handle,
                                     int m,
                                     int n,
@@ -459,54 +745,6 @@ hipsparseStatus_t hipsparseXcsr2csc(hipsparseHandle_t handle,
 }
 
 template <>
-hipsparseStatus_t hipsparseXcsr2ell(hipsparseHandle_t handle,
-                                    int m,
-                                    const hipsparseMatDescr_t csr_descr,
-                                    const float* csr_val,
-                                    const int* csr_row_ptr,
-                                    const int* csr_col_ind,
-                                    const hipsparseMatDescr_t ell_descr,
-                                    int ell_width,
-                                    float* ell_val,
-                                    int* ell_col_ind)
-{
-    return hipsparseScsr2ell(handle,
-                             m,
-                             csr_descr,
-                             csr_val,
-                             csr_row_ptr,
-                             csr_col_ind,
-                             ell_descr,
-                             ell_width,
-                             ell_val,
-                             ell_col_ind);
-}
-
-template <>
-hipsparseStatus_t hipsparseXcsr2ell(hipsparseHandle_t handle,
-                                    int m,
-                                    const hipsparseMatDescr_t csr_descr,
-                                    const double* csr_val,
-                                    const int* csr_row_ptr,
-                                    const int* csr_col_ind,
-                                    const hipsparseMatDescr_t ell_descr,
-                                    int ell_width,
-                                    double* ell_val,
-                                    int* ell_col_ind)
-{
-    return hipsparseDcsr2ell(handle,
-                             m,
-                             csr_descr,
-                             csr_val,
-                             csr_row_ptr,
-                             csr_col_ind,
-                             ell_descr,
-                             ell_width,
-                             ell_val,
-                             ell_col_ind);
-}
-
-template <>
 hipsparseStatus_t hipsparseXcsr2hyb(hipsparseHandle_t handle,
                                     int m,
                                     int n,
@@ -552,58 +790,6 @@ hipsparseStatus_t hipsparseXcsr2hyb(hipsparseHandle_t handle,
                              hyb,
                              user_ell_width,
                              partition_type);
-}
-
-template <>
-hipsparseStatus_t hipsparseXell2csr(hipsparseHandle_t handle,
-                                    int m,
-                                    int n,
-                                    const hipsparseMatDescr_t ell_descr,
-                                    int ell_width,
-                                    const float* ell_val,
-                                    const int* ell_col_ind,
-                                    const hipsparseMatDescr_t csr_descr,
-                                    float* csr_val,
-                                    const int* csr_row_ptr,
-                                    int* csr_col_ind)
-{
-    return hipsparseSell2csr(handle,
-                             m,
-                             n,
-                             ell_descr,
-                             ell_width,
-                             ell_val,
-                             ell_col_ind,
-                             csr_descr,
-                             csr_val,
-                             csr_row_ptr,
-                             csr_col_ind);
-}
-
-template <>
-hipsparseStatus_t hipsparseXell2csr(hipsparseHandle_t handle,
-                                    int m,
-                                    int n,
-                                    const hipsparseMatDescr_t ell_descr,
-                                    int ell_width,
-                                    const double* ell_val,
-                                    const int* ell_col_ind,
-                                    const hipsparseMatDescr_t csr_descr,
-                                    double* csr_val,
-                                    const int* csr_row_ptr,
-                                    int* csr_col_ind)
-{
-    return hipsparseDell2csr(handle,
-                             m,
-                             n,
-                             ell_descr,
-                             ell_width,
-                             ell_val,
-                             ell_col_ind,
-                             csr_descr,
-                             csr_val,
-                             csr_row_ptr,
-                             csr_col_ind);
 }
 
 } // namespace hipsparse
