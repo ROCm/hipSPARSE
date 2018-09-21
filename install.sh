@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# Author: Kent Knox
+# Author: Nico Trost
 
+#set -x #echo on
 
 # #################################################
 # helper functions
@@ -10,6 +11,7 @@ function display_help()
   echo "hipSPARSE build & installation helper script"
   echo "./install [-h|--help] "
   echo "    [-h|--help] prints this help message"
+#  echo "    [--prefix] Specify an alternate CMAKE_INSTALL_PREFIX for cmake"
   echo "    [-i|--install] install after build"
   echo "    [-d|--dependencies] install build dependencies"
   echo "    [-c|--clients] build library clients too (combines with -i & -d)"
@@ -38,14 +40,24 @@ supported_distro( )
 }
 
 # This function is helpful for dockerfiles that do not have sudo installed, but the default user is root
+check_exit_code( )
+{
+  if (( $? != 0 )); then
+    exit $?
+  fi
+}
+
+# This function is helpful for dockerfiles that do not have sudo installed, but the default user is root
 elevate_if_not_root( )
 {
   local uid=$(id -u)
 
   if (( ${uid} )); then
     sudo $@
+    check_exit_code
   else
     $@
+    check_exit_code
   fi
 }
 
@@ -101,7 +113,7 @@ install_packages( )
   fi
 
   # dependencies needed for library and clients to build
-  local library_dependencies_ubuntu=( "make" "cmake-curses-gui" "pkg-config" "hip_hcc" )
+  local library_dependencies_ubuntu=( "make" "cmake-curses-gui" "hip_hcc" "pkg-config" )
   local library_dependencies_centos=( "epel-release" "make" "cmake3" "hip_hcc" "gcc-c++" )
   local library_dependencies_fedora=( "make" "cmake" "hip_hcc" "gcc-c++" "libcxx-devel" "rpm-build" )
 
@@ -111,9 +123,9 @@ install_packages( )
     library_dependencies_centos+=( "" ) # how to install cuda on centos?
     library_dependencies_fedora+=( "" ) # how to install cuda on fedora?
   else
-    library_dependencies_ubuntu+=( "hcc" "rocsparse" )
-    library_dependencies_centos+=( "hcc" "rocsparse" )
-    library_dependencies_fedora+=( "hcc" "rocsparse" )
+    library_dependencies_ubuntu+=( "rocsparse" )
+    library_dependencies_centos+=( "rocsparse" )
+    library_dependencies_fedora+=( "rocsparse" )
   fi
 
   local client_dependencies_ubuntu=( "libboost-program-options-dev" )
@@ -131,7 +143,9 @@ install_packages( )
       ;;
 
     centos|rhel)
-      elevate_if_not_root yum -y update
+#     yum -y update brings *all* installed packages up to date
+#     without seeking user approval
+#     elevate_if_not_root yum -y update
       install_yum_packages "${library_dependencies_centos[@]}"
 
       if [[ "${build_clients}" == true ]]; then
@@ -140,7 +154,7 @@ install_packages( )
       ;;
 
     fedora)
-      elevate_if_not_root dnf -y update
+#     elevate_if_not_root dnf -y update
       install_dnf_packages "${library_dependencies_fedora[@]}"
 
       if [[ "${build_clients}" == true ]]; then
@@ -269,19 +283,19 @@ if [[ "${install_dependencies}" == true ]]; then
 
   install_packages
 
-  # The following builds googletest & lapack from source, installs into cmake default /usr/local
+  # The following builds googletest from source, installs into cmake default /usr/local
   pushd .
     printf "\033[32mBuilding \033[33mgoogletest\033[32m from source; installing into \033[33m/usr/local\033[0m\n"
     mkdir -p ${build_dir}/deps && cd ${build_dir}/deps
-    ${cmake_executable} -DCMAKE_INSTALL_PREFIX=deps-install -DBUILD_BOOST=OFF ../../deps
+    ${cmake_executable} ../../deps
     make -j$(nproc)
-    make install
+    elevate_if_not_root make install
   popd
-  fi
+fi
 
 # We append customary rocm path; if user provides custom rocm path in ${path}, our
 # hard-coded path has lesser priority
-# export PATH=${PATH}:/opt/rocm/bin
+export PATH=${PATH}:/opt/rocm/bin
 
 pushd .
   # #################################################
@@ -304,6 +318,10 @@ pushd .
     cmake_client_options="${cmake_client_options} -DBUILD_CLIENTS_SAMPLES=ON -DBUILD_CLIENTS_TESTS=ON"
   fi
 
+  # cpack
+  cmake_common_options="${cmake_common_options} -DCPACK_SET_DESTDIR=OFF -DCPACK_PACKAGING_INSTALL_PREFIX=/opt/rocm"
+
+  # cuda or hip
   if [[ "${build_cuda}" == false ]]; then
     cmake_common_options="${cmake_common_options} -DBUILD_CUDA=OFF"
   else
@@ -311,8 +329,11 @@ pushd .
   fi
 
   # Build library
-  ${cmake_executable} ${cmake_common_options} ${cmake_client_options} -DCMAKE_PREFIX_PATH="$(pwd)/../deps/deps-install" ../..
-  make -j$(nproc)
+  ${cmake_executable} ${cmake_common_options} ${cmake_client_options} -DCMAKE_INSTALL_PREFIX=hipsparse-install ../..
+  check_exit_code
+
+  make -j$(nproc) install
+  check_exit_code
 
   # #################################################
   # install
@@ -320,6 +341,7 @@ pushd .
   # installing through package manager, which makes uninstalling easy
   if [[ "${install_package}" == true ]]; then
     make package
+    check_exit_code
 
     case "${ID}" in
       ubuntu)
