@@ -13,7 +13,7 @@ else()
 endif()
 
 # hipSPARSE project
-project(hipsparse VERSION 0.1.3.0 LANGUAGES CXX)
+project(hipsparse VERSION 0.1.3.1 LANGUAGES CXX)
 set(hipsparse_SOVERSION 0)
 
 # Set a default build type if none was specified
