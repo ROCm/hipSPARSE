@@ -52,7 +52,7 @@ endif()
 
 # Target link libraries
 if(NOT BUILD_CUDA)
-  target_link_libraries(hipsparse PRIVATE roc::rocsparse)
+  target_link_libraries(hipsparse PRIVATE ${ROCSPARSE_LIBRARIES})
 else()
   target_link_libraries(hipsparse PRIVATE ${CUDA_cusparse_LIBRARY})
 endif()
@@ -81,7 +81,7 @@ rocm_install_targets(TARGETS hipsparse
 )
 
 # Export targets
-rocm_export_targets(TARGETS hipsparse-targets
+rocm_export_targets(TARGETS roc::hipsparse
                     PREFIX hipsparse
                     DEPENDS PACKAGE hip
                     NAMESPACE roc::
