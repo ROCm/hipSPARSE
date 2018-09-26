@@ -245,14 +245,15 @@ hipsparseHybPartition_t HCCHybPartToHIPHybPart(rocsparse_hyb_partition_ partitio
 
 hipsparseStatus_t hipsparseCreate(hipsparseHandle_t* handle)
 {
+    // Check if handle is valid
+    if(handle == nullptr)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
+
     int deviceId;
     hipError_t err;
     hipsparseStatus_t retval = HIPSPARSE_STATUS_SUCCESS;
-
-    if(handle == nullptr)
-    {
-        handle = (hipsparseHandle_t*)new rocsparse_handle();
-    }
 
     err = hipGetDevice(&deviceId);
     if(err == hipSuccess)
