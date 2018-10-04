@@ -260,7 +260,7 @@ def docker_build_inside_image( def build_image, compiler_data compiler_args, doc
               mv ${paths.project_build_prefix}/build/release/*.deb ${docker_context}
 
               # Temp rocsparse mv because repo.radeon.com does not have debs for rocsparse
-              mv ${paths.project_build_prefix/*.deb ${docker_context}
+              mv ${paths.project_build_prefix}/*.deb ${docker_context}
               dpkg -c ${docker_context}/*.deb
           """
           archiveArtifacts artifacts: "${docker_context}/*.deb", fingerprint: true
