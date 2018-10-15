@@ -32,8 +32,7 @@ else()
 endif()
 
 # hipSPARSE project
-project(hipsparse VERSION 0.1.3.1 LANGUAGES CXX)
-set(hipsparse_SOVERSION 0)
+project(hipsparse LANGUAGES CXX)
 
 # Set a default build type if none was specified
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
@@ -57,6 +56,10 @@ option(BUILD_VERBOSE "Output additional build information" OFF)
 
 # Dependencies
 include(cmake/Dependencies.cmake)
+
+# Setup version
+rocm_setup_version(VERSION 0.1.3.2 NO_GIT_TAG_VERSION)
+set(hipsparse_SOVERSION 0)
 
 # hipSPARSE library
 add_subdirectory(library)
