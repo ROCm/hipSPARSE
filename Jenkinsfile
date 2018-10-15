@@ -258,7 +258,11 @@ def docker_build_inside_image( def build_image, compiler_data compiler_args, doc
               set -x
               rm -rf ${docker_context} && mkdir -p ${docker_context}
               mv ${paths.project_build_prefix}/build/release/*.deb ${docker_context}
-              dpkg -c ${docker_context}/*.deb
+
+              # Temp rocsparse mv because repo.radeon.com does not have debs for rocsparse
+              mv ${paths.project_build_prefix}/*.deb ${docker_context}
+              dpkg -c ${docker_context}/*rocsparse*.deb
+              dpkg -c ${docker_context}/*hipsparse*.deb
           """
           archiveArtifacts artifacts: "${docker_context}/*.deb", fingerprint: true
 
@@ -493,7 +497,7 @@ def build_pipeline( compiler_data compiler_args, docker_data docker_args, projec
 //},
 rocm_ubuntu:
 {
-  node( 'docker && rocm && gfx900')
+  node( 'docker && rocm19 && gfx900')
   {
     def hcc_docker_args = new docker_data(
         from_image:'rocm/dev-ubuntu-16.04:1.9.0',
