@@ -495,7 +495,7 @@ def build_pipeline( compiler_data compiler_args, docker_data docker_args, projec
 //    currentBuild.result = 'UNSTABLE'
 //  }
 //},
-rocm_ubuntu:
+parallel rocm_ubuntu:
 {
   node( 'docker && rocm19 && gfx900')
   {
