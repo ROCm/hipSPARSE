@@ -39,6 +39,15 @@ extern "C" {
         }                                                           \
     }
 
+#define RETURN_IF_HIPSPARSE_ERROR(INPUT_STATUS_FOR_CHECK)                \
+    {                                                                    \
+        hipsparseStatus_t TMP_STATUS_FOR_CHECK = INPUT_STATUS_FOR_CHECK; \
+        if(TMP_STATUS_FOR_CHECK != HIPSPARSE_STATUS_SUCCESS)             \
+        {                                                                \
+            return TMP_STATUS_FOR_CHECK;                                 \
+        }                                                                \
+    }
+
 #define RETURN_IF_ROCSPARSE_ERROR(INPUT_STATUS_FOR_CHECK)               \
     {                                                                   \
         rocsparse_status TMP_STATUS_FOR_CHECK = INPUT_STATUS_FOR_CHECK; \
@@ -419,8 +428,18 @@ hipsparseStatus_t hipsparseSdoti(hipsparseHandle_t handle,
                                  float* result,
                                  hipsparseIndexBase_t idxBase)
 {
-    return rocSPARSEStatusToHIPStatus(rocsparse_sdoti(
+    // Obtain stream, to explicitly sync (cusparse doti is blocking)
+    hipStream_t stream;
+    RETURN_IF_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
+
+    // Doti
+    RETURN_IF_ROCSPARSE_ERROR(rocsparse_sdoti(
         (rocsparse_handle)handle, nnz, xVal, xInd, y, result, hipBaseToHCCBase(idxBase)));
+
+    // Synchronize stream
+    RETURN_IF_HIP_ERROR(hipStreamSynchronize(stream));
+
+    return HIPSPARSE_STATUS_SUCCESS;
 }
 
 hipsparseStatus_t hipsparseDdoti(hipsparseHandle_t handle,
@@ -431,8 +450,18 @@ hipsparseStatus_t hipsparseDdoti(hipsparseHandle_t handle,
                                  double* result,
                                  hipsparseIndexBase_t idxBase)
 {
-    return rocSPARSEStatusToHIPStatus(rocsparse_ddoti(
+    // Obtain stream, to explicitly sync (cusparse doti is blocking)
+    hipStream_t stream;
+    RETURN_IF_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
+
+    // Doti
+    RETURN_IF_ROCSPARSE_ERROR(rocsparse_ddoti(
         (rocsparse_handle)handle, nnz, xVal, xInd, y, result, hipBaseToHCCBase(idxBase)));
+
+    // Synchronize stream
+    RETURN_IF_HIP_ERROR(hipStreamSynchronize(stream));
+
+    return HIPSPARSE_STATUS_SUCCESS;
 }
 
 hipsparseStatus_t hipsparseSgthr(hipsparseHandle_t handle,
@@ -590,8 +619,18 @@ hipsparseStatus_t hipsparseDcsrmv(hipsparseHandle_t handle,
 hipsparseStatus_t
 hipsparseXcsrsv2_zeroPivot(hipsparseHandle_t handle, csrsv2Info_t info, int* position)
 {
-    return rocSPARSEStatusToHIPStatus(rocsparse_csrsv_zero_pivot(
+    // Obtain stream, to explicitly sync (cusparse csrsv2_zeropivot is blocking)
+    hipStream_t stream;
+    RETURN_IF_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
+
+    // csrsv zero pivot
+    RETURN_IF_ROCSPARSE_ERROR(rocsparse_csrsv_zero_pivot(
         (rocsparse_handle)handle, nullptr, (rocsparse_mat_info)info, position));
+
+    // Synchronize stream
+    RETURN_IF_HIP_ERROR(hipStreamSynchronize(stream));
+
+    return HIPSPARSE_STATUS_SUCCESS;
 }
 
 hipsparseStatus_t hipsparseScsrsv2_bufferSize(hipsparseHandle_t handle,
@@ -724,18 +763,28 @@ hipsparseStatus_t hipsparseScsrsv2_analysis(hipsparseHandle_t handle,
                                             hipsparseSolvePolicy_t policy,
                                             void* pBuffer)
 {
-    return rocSPARSEStatusToHIPStatus(rocsparse_scsrsv_analysis((rocsparse_handle)handle,
-                                                                hipOperationToHCCOperation(transA),
-                                                                m,
-                                                                nnz,
-                                                                (rocsparse_mat_descr)descrA,
-                                                                csrSortedValA,
-                                                                csrSortedRowPtrA,
-                                                                csrSortedColIndA,
-                                                                (rocsparse_mat_info)info,
-                                                                rocsparse_analysis_policy_force,
-                                                                rocsparse_solve_policy_auto,
-                                                                pBuffer));
+    // Obtain stream, to explicitly sync (cusparse csrsv2_analysis is blocking)
+    hipStream_t stream;
+    RETURN_IF_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
+
+    // csrsv analysis
+    RETURN_IF_ROCSPARSE_ERROR(rocsparse_scsrsv_analysis((rocsparse_handle)handle,
+                                                        hipOperationToHCCOperation(transA),
+                                                        m,
+                                                        nnz,
+                                                        (rocsparse_mat_descr)descrA,
+                                                        csrSortedValA,
+                                                        csrSortedRowPtrA,
+                                                        csrSortedColIndA,
+                                                        (rocsparse_mat_info)info,
+                                                        rocsparse_analysis_policy_force,
+                                                        rocsparse_solve_policy_auto,
+                                                        pBuffer));
+
+    // Synchronize stream
+    RETURN_IF_HIP_ERROR(hipStreamSynchronize(stream));
+
+    return HIPSPARSE_STATUS_SUCCESS;
 }
 
 hipsparseStatus_t hipsparseDcsrsv2_analysis(hipsparseHandle_t handle,
@@ -750,18 +799,28 @@ hipsparseStatus_t hipsparseDcsrsv2_analysis(hipsparseHandle_t handle,
                                             hipsparseSolvePolicy_t policy,
                                             void* pBuffer)
 {
-    return rocSPARSEStatusToHIPStatus(rocsparse_dcsrsv_analysis((rocsparse_handle)handle,
-                                                                hipOperationToHCCOperation(transA),
-                                                                m,
-                                                                nnz,
-                                                                (rocsparse_mat_descr)descrA,
-                                                                csrSortedValA,
-                                                                csrSortedRowPtrA,
-                                                                csrSortedColIndA,
-                                                                (rocsparse_mat_info)info,
-                                                                rocsparse_analysis_policy_force,
-                                                                rocsparse_solve_policy_auto,
-                                                                pBuffer));
+    // Obtain stream, to explicitly sync (cusparse csrsv2_analysis is blocking)
+    hipStream_t stream;
+    RETURN_IF_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
+
+    // csrsv analysis
+    RETURN_IF_ROCSPARSE_ERROR(rocsparse_dcsrsv_analysis((rocsparse_handle)handle,
+                                                        hipOperationToHCCOperation(transA),
+                                                        m,
+                                                        nnz,
+                                                        (rocsparse_mat_descr)descrA,
+                                                        csrSortedValA,
+                                                        csrSortedRowPtrA,
+                                                        csrSortedColIndA,
+                                                        (rocsparse_mat_info)info,
+                                                        rocsparse_analysis_policy_force,
+                                                        rocsparse_solve_policy_auto,
+                                                        pBuffer));
+
+    // Synchronize stream
+    RETURN_IF_HIP_ERROR(hipStreamSynchronize(stream));
+
+    return HIPSPARSE_STATUS_SUCCESS;
 }
 
 hipsparseStatus_t hipsparseScsrsv2_solve(hipsparseHandle_t handle,
@@ -1013,8 +1072,18 @@ hipsparseStatus_t hipsparseDcsrmm2(hipsparseHandle_t handle,
 hipsparseStatus_t
 hipsparseXcsrilu02_zeroPivot(hipsparseHandle_t handle, csrilu02Info_t info, int* position)
 {
-    return rocSPARSEStatusToHIPStatus(
+    // Obtain stream, to explicitly sync (cusparse csrilu02_zeropivot is blocking)
+    hipStream_t stream;
+    RETURN_IF_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
+
+    // csrilu0 zero pivot
+    RETURN_IF_ROCSPARSE_ERROR(
         rocsparse_csrilu0_zero_pivot((rocsparse_handle)handle, (rocsparse_mat_info)info, position));
+
+    // Synchronize stream
+    RETURN_IF_HIP_ERROR(hipStreamSynchronize(stream));
+
+    return HIPSPARSE_STATUS_SUCCESS;
 }
 
 hipsparseStatus_t hipsparseScsrilu02_bufferSize(hipsparseHandle_t handle,
@@ -1136,17 +1205,27 @@ hipsparseStatus_t hipsparseScsrilu02_analysis(hipsparseHandle_t handle,
                                               hipsparseSolvePolicy_t policy,
                                               void* pBuffer)
 {
-    return rocSPARSEStatusToHIPStatus(rocsparse_scsrilu0_analysis((rocsparse_handle)handle,
-                                                                  m,
-                                                                  nnz,
-                                                                  (rocsparse_mat_descr)descrA,
-                                                                  csrSortedValA,
-                                                                  csrSortedRowPtrA,
-                                                                  csrSortedColIndA,
-                                                                  (rocsparse_mat_info)info,
-                                                                  rocsparse_analysis_policy_force,
-                                                                  rocsparse_solve_policy_auto,
-                                                                  pBuffer));
+    // Obtain stream, to explicitly sync (cusparse csrilu02_analysis is blocking)
+    hipStream_t stream;
+    RETURN_IF_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
+
+    // csrilu0 analysis
+    RETURN_IF_ROCSPARSE_ERROR(rocsparse_scsrilu0_analysis((rocsparse_handle)handle,
+                                                          m,
+                                                          nnz,
+                                                          (rocsparse_mat_descr)descrA,
+                                                          csrSortedValA,
+                                                          csrSortedRowPtrA,
+                                                          csrSortedColIndA,
+                                                          (rocsparse_mat_info)info,
+                                                          rocsparse_analysis_policy_force,
+                                                          rocsparse_solve_policy_auto,
+                                                          pBuffer));
+
+    // Synchronize stream
+    RETURN_IF_HIP_ERROR(hipStreamSynchronize(stream));
+
+    return HIPSPARSE_STATUS_SUCCESS;
 }
 
 hipsparseStatus_t hipsparseDcsrilu02_analysis(hipsparseHandle_t handle,
@@ -1160,17 +1239,27 @@ hipsparseStatus_t hipsparseDcsrilu02_analysis(hipsparseHandle_t handle,
                                               hipsparseSolvePolicy_t policy,
                                               void* pBuffer)
 {
-    return rocSPARSEStatusToHIPStatus(rocsparse_dcsrilu0_analysis((rocsparse_handle)handle,
-                                                                  m,
-                                                                  nnz,
-                                                                  (rocsparse_mat_descr)descrA,
-                                                                  csrSortedValA,
-                                                                  csrSortedRowPtrA,
-                                                                  csrSortedColIndA,
-                                                                  (rocsparse_mat_info)info,
-                                                                  rocsparse_analysis_policy_force,
-                                                                  rocsparse_solve_policy_auto,
-                                                                  pBuffer));
+    // Obtain stream, to explicitly sync (cusparse csrilu02_analysis is blocking)
+    hipStream_t stream;
+    RETURN_IF_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
+
+    // csrilu0 analysis
+    RETURN_IF_ROCSPARSE_ERROR(rocsparse_dcsrilu0_analysis((rocsparse_handle)handle,
+                                                          m,
+                                                          nnz,
+                                                          (rocsparse_mat_descr)descrA,
+                                                          csrSortedValA,
+                                                          csrSortedRowPtrA,
+                                                          csrSortedColIndA,
+                                                          (rocsparse_mat_info)info,
+                                                          rocsparse_analysis_policy_force,
+                                                          rocsparse_solve_policy_auto,
+                                                          pBuffer));
+
+    // Synchronize stream
+    RETURN_IF_HIP_ERROR(hipStreamSynchronize(stream));
+
+    return HIPSPARSE_STATUS_SUCCESS;
 }
 
 hipsparseStatus_t hipsparseScsrilu02(hipsparseHandle_t handle,
@@ -1262,6 +1351,10 @@ hipsparseStatus_t hipsparseScsr2csc(hipsparseHandle_t handle,
     void* buffer = nullptr;
     RETURN_IF_HIP_ERROR(hipMalloc(&buffer, buffer_size));
 
+    // Obtain stream, to explicitly sync (cusparse csr2csc is blocking)
+    hipStream_t stream;
+    RETURN_IF_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
+
     // Format conversion
     RETURN_IF_ROCSPARSE_ERROR(rocsparse_scsr2csc((rocsparse_handle)handle,
                                                  m,
@@ -1279,6 +1372,9 @@ hipsparseStatus_t hipsparseScsr2csc(hipsparseHandle_t handle,
 
     // Free buffer
     RETURN_IF_HIP_ERROR(hipFree(buffer));
+
+    // Synchronize stream
+    RETURN_IF_HIP_ERROR(hipStreamSynchronize(stream));
 
     return HIPSPARSE_STATUS_SUCCESS;
 }
@@ -1311,6 +1407,10 @@ hipsparseStatus_t hipsparseDcsr2csc(hipsparseHandle_t handle,
     void* buffer = nullptr;
     RETURN_IF_HIP_ERROR(hipMalloc(&buffer, buffer_size));
 
+    // Obtain stream, to explicitly sync (cusparse csr2csc is blocking)
+    hipStream_t stream;
+    RETURN_IF_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
+
     // Format conversion
     RETURN_IF_ROCSPARSE_ERROR(rocsparse_dcsr2csc((rocsparse_handle)handle,
                                                  m,
@@ -1328,6 +1428,9 @@ hipsparseStatus_t hipsparseDcsr2csc(hipsparseHandle_t handle,
 
     // Free buffer
     RETURN_IF_HIP_ERROR(hipFree(buffer));
+
+    // Synchronize stream
+    RETURN_IF_HIP_ERROR(hipStreamSynchronize(stream));
 
     return HIPSPARSE_STATUS_SUCCESS;
 }
