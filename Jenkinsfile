@@ -185,7 +185,7 @@ def docker_build_inside_image( def build_image, compiler_data compiler_args, doc
     build_type_postfix = "-d"
   }
 
-  if( paths.project_name.equalsIgnoreCase( 'hipsparse-ubuntu' ) || paths.project_name.equalsIgnoreCase( 'hipsparse-hcc-ctu' ) )
+  if( paths.project_name.equalsIgnoreCase( 'hipsparse-ubuntu' ) || paths.project_name.equalsIgnoreCase( 'hipsparse-hcc-ctu' ) || paths.project_name.equalsIgnoreCase( 'hipsparse-cuda' ) )
   {
     String rocsparse_archive_path='hcc-rocm-ubuntu';
 
