@@ -533,7 +533,7 @@ nvcc:
   node( 'docker && cuda' )
   {
     def hcc_docker_args = new docker_data(
-        from_image:'nvidia/cuda:10.0-devel',
+        from_image:'nvidia/cuda:9.1-devel-ubuntu16.04',
         build_docker_file:'dockerfile-build-nvidia-cuda',
         install_docker_file:'dockerfile-install-nvidia-cuda',
         docker_run_args:'--runtime=nvidia',
@@ -547,7 +547,7 @@ nvcc:
     def hipsparse_paths = new project_paths(
         project_name:'hipsparse-cuda',
         src_prefix:'src',
-        build_prefix:'build' )
+        build_prefix:'src' )
         build_command: './install.sh -cd --cuda'
 
     def print_version_closure = {
