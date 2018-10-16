@@ -117,12 +117,7 @@ install_packages( )
   local library_dependencies_centos=( "epel-release" "make" "cmake3" "hip_hcc" "gcc-c++" "numactl-libs" )
   local library_dependencies_fedora=( "make" "cmake" "hip_hcc" "gcc-c++" "libcxx-devel" "rpm-build" "numactl-libs" )
 
-  if [[ "${build_cuda}" == true ]]; then
-    # Ideally, this could be cuda-cusparse-dev, but the package name has a version number in it
-    library_dependencies_ubuntu+=( "cuda" )
-    library_dependencies_centos+=( "" ) # how to install cuda on centos?
-    library_dependencies_fedora+=( "" ) # how to install cuda on fedora?
-  else
+  if [[ "${build_cuda}" == false ]]; then
     library_dependencies_ubuntu+=( "rocsparse" )
     library_dependencies_centos+=( "rocsparse" )
     library_dependencies_fedora+=( "rocsparse" )
