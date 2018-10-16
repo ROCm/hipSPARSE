@@ -547,8 +547,8 @@ nvcc:
     def hipsparse_paths = new project_paths(
         project_name:'hipsparse-cuda',
         src_prefix:'src',
-        build_prefix:'src' )
-        build_command: './install.sh -cd --cuda'
+        build_prefix:'src',
+        build_command: './install.sh -cd --cuda' )
 
     def print_version_closure = {
       sh  """
