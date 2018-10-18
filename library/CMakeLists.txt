@@ -60,12 +60,11 @@ target_compile_features(hipsparse PRIVATE cxx_nullptr)
 target_include_directories(hipsparse
                            PUBLIC  $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/library/include>
                                    $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
+                                   $<BUILD_INTERFACE:${HIP_INCLUDE_DIRS}>
                                    $<INSTALL_INTERFACE:include>
 )
 
-if(NOT BUILD_CUDA)
-  target_include_directories(hipsparse PUBLIC $<BUILD_INTERFACE:${HIP_INCLUDE_DIRS}>)
-else()
+if(BUILD_CUDA)
   target_include_directories(hipsparse PUBLIC $<BUILD_INTERFACE:${CUDA_INCLUDE_DIRS}>)
 endif()
 
@@ -102,7 +101,7 @@ rocm_install_targets(TARGETS hipsparse
 # Export targets
 rocm_export_targets(TARGETS roc::hipsparse
                     PREFIX hipsparse
-                    DEPENDS PACKAGE HIP
+                    DEPENDS PACKAGE hip
                     NAMESPACE roc::
 )
 

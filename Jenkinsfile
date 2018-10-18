@@ -444,7 +444,7 @@ def build_pipeline( compiler_data compiler_args, docker_data docker_args, projec
       docker_build_inside_image( hipsparse_build_image, compiler_args, docker_args, hipsparse_paths )
     }
 
-    if( !hipsparse_paths.project_name.equalsIgnoreCase( 'hipsparse-hcc-ctu' ) )
+    if( !hipsparse_paths.project_name.equalsIgnoreCase( 'hipsparse-hcc-ctu' ) && !hipsparse_paths.project_name.equalsIgnoreCase( 'hipsparse-cuda' ) )
     {
       // After a successful build, upload a docker image of the results
       String job_name = env.JOB_NAME.toLowerCase( )
@@ -495,7 +495,7 @@ def build_pipeline( compiler_data compiler_args, docker_data docker_args, projec
 //    currentBuild.result = 'UNSTABLE'
 //  }
 //},
-rocm_ubuntu:
+parallel rocm_ubuntu:
 {
   node( 'docker && rocm19 && gfx900')
   {
@@ -527,8 +527,41 @@ rocm_ubuntu:
 
     build_pipeline( hcc_compiler_args, hcc_docker_args, hipsparse_paths, print_version_closure )
   }
+},
+nvcc:
+{
+  node( 'docker && cuda' )
+  {
+    def hcc_docker_args = new docker_data(
+        from_image:'nvidia/cuda:10.0-devel',
+        build_docker_file:'dockerfile-build-nvidia-cuda',
+        install_docker_file:'dockerfile-install-nvidia-cuda',
+        docker_run_args:'--runtime=nvidia',
+        docker_build_args:' --pull' )
+
+    def hcc_compiler_args = new compiler_data(
+        compiler_name:'nvcc-10.0',
+        build_config:'Release',
+        compiler_path:'g++' )
+
+    def hipsparse_paths = new project_paths(
+        project_name:'hipsparse-cuda',
+        src_prefix:'src',
+        build_prefix:'src',
+        build_command: './install.sh -cd --cuda' )
+
+    def print_version_closure = {
+      sh  """
+          set -x
+          nvidia-smi
+          nvcc --version
+        """
+    }
+
+    build_pipeline( hcc_compiler_args, hcc_docker_args, hipsparse_paths, print_version_closure )
+  }
 }
-//,
+// ,
 // rocm_fedora:
 // {
 //   node( 'docker && rocm && gfx900')
@@ -555,39 +588,6 @@ rocm_ubuntu:
 //       sh  """
 //           set -x
 //           /opt/rocm/bin/hcc --version
-//         """
-//     }
-
-//     build_pipeline( hcc_compiler_args, hcc_docker_args, hipsparse_paths, print_version_closure )
-//   }
-// },
-// nvcc:
-// {
-//   node( 'docker && cuda' )
-//   {
-//     def hcc_docker_args = new docker_data(
-//         from_image:'nvidia/cuda:9.0-devel',
-//         build_docker_file:'dockerfile-build-nvidia-cuda',
-//         install_docker_file:'dockerfile-install-nvidia-cuda',
-//         docker_run_args:'--runtime=nvidia',
-//         docker_build_args:' --pull' )
-
-//     def hcc_compiler_args = new compiler_data(
-//         compiler_name:'nvcc-9.0',
-//         build_config:'Release',
-//         compiler_path:'g++' )
-
-//     def hipsparse_paths = new project_paths(
-//         project_name:'hipsparse-cuda',
-//         src_prefix:'src',
-//         build_prefix:'build' )
-//         build_command: './install.sh -c'
-
-//     def print_version_closure = {
-//       sh  """
-//           set -x
-//           nvidia-smi
-//           nvcc --version
 //         """
 //     }
 
