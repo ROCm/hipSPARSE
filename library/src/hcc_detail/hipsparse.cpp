@@ -24,6 +24,7 @@
 #include "hipsparse.h"
 
 #include <rocsparse.h>
+#include <stdio.h>
 #include <hip/hip_runtime_api.h>
 
 #ifdef __cplusplus
@@ -279,7 +280,45 @@ hipsparseStatus_t hipsparseDestroy(hipsparseHandle_t handle)
 
 hipsparseStatus_t hipsparseGetVersion(hipsparseHandle_t handle, int* version)
 {
-    return rocSPARSEStatusToHIPStatus(rocsparse_get_version((rocsparse_handle)handle, version));
+    if(handle == nullptr)
+    {
+        return HIPSPARSE_STATUS_NOT_INITIALIZED;
+    }
+
+    *version = hipsparseVersionMajor * 100000 + hipsparseVersionMinor * 100 + hipsparseVersionPatch;
+
+    return HIPSPARSE_STATUS_SUCCESS;
+}
+
+hipsparseStatus_t hipsparseGetGitRevision(hipsparseHandle_t handle, char* rev)
+{
+    // Get hipSPARSE revision
+    if(handle == nullptr)
+    {
+        return HIPSPARSE_STATUS_NOT_INITIALIZED;
+    }
+
+    char hipsparse_rev[64];
+    strcpy(hipsparse_rev, hipsparseGitRevision);
+
+    // Get rocSPARSE revision
+    char rocsparse_rev[64];
+    RETURN_IF_ROCSPARSE_ERROR(rocsparse_get_git_rev((rocsparse_handle)handle, rocsparse_rev));
+
+    // Get rocSPARSE version
+    int rocsparse_ver;
+    RETURN_IF_ROCSPARSE_ERROR(rocsparse_get_version((rocsparse_handle)handle, &rocsparse_ver));
+
+    // Combine
+    sprintf(rev,
+            "%s (rocSPARSE %d.%d.%d-%s)",
+            hipsparse_rev,
+            rocsparse_ver / 100000,
+            rocsparse_ver / 100 % 1000,
+            rocsparse_ver % 100,
+            rocsparse_rev);
+
+    return HIPSPARSE_STATUS_SUCCESS;
 }
 
 hipsparseStatus_t hipsparseSetStream(hipsparseHandle_t handle, hipStream_t streamId)

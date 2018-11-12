@@ -138,6 +138,8 @@ HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroy(hipsparseHandle_t handle);
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseGetVersion(hipsparseHandle_t handle, int* version);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseGetGitRevision(hipsparseHandle_t handle, char* rev);
 // HIPSPARSE_EXPORT
 // hipsparseStatus_t hipsparseGetProperty(libraryPropertyType type,
 //                                       int *value);

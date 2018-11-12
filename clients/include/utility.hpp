@@ -890,6 +890,10 @@ extern "C" {
 #endif
 
 /* ============================================================================================ */
+/*  query for hipsparse version and git commit SHA-1. */
+void query_version(char* version);
+
+/* ============================================================================================ */
 /*  device query and print out their ID and name */
 int query_device_property();
 
