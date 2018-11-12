@@ -33,6 +33,28 @@ extern "C" {
 #endif
 
 /* ============================================================================================ */
+/*  query for hipsparse version and git commit SHA-1. */
+void query_version(char* version)
+{
+    hipsparseHandle_t handle;
+    hipsparseCreate(&handle);
+
+    int ver;
+    hipsparseGetVersion(handle, &ver);
+
+    char rev[128];
+    hipsparseGetGitRevision(handle, rev);
+
+    sprintf(version, "v%d.%d.%d-%s",
+            ver / 100000,
+            ver / 100 % 1000,
+            ver % 100,
+            rev);
+
+    hipsparseDestroy(handle);
+}
+
+/* ============================================================================================ */
 /*  device query and print out their ID and name; return number of compute-capable devices. */
 int query_device_property()
 {

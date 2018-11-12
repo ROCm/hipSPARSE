@@ -23,6 +23,7 @@
 
 #include "hipsparse.h"
 
+#include <stdio.h>
 #include <hip/hip_runtime_api.h>
 #include <cuda_runtime_api.h>
 #include <cusparse_v2.h>
@@ -30,6 +31,15 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#define RETURN_IF_CUSPARSE_ERROR(INPUT_STATUS_FOR_CHECK)                \
+    {                                                                   \
+        cusparseStatus_t TMP_STATUS_FOR_CHECK = INPUT_STATUS_FOR_CHECK; \
+        if(TMP_STATUS_FOR_CHECK != CUSPARSE_STATUS_SUCCESS)             \
+        {                                                               \
+            return hipCUSPARSEStatusToHIPStatus(TMP_STATUS_FOR_CHECK);  \
+        }                                                               \
+    }
 
 hipsparseStatus_t hipCUSPARSEStatusToHIPStatus(cusparseStatus_t cuStatus)
 {
@@ -249,7 +259,40 @@ hipsparseStatus_t hipsparseDestroy(hipsparseHandle_t handle)
 
 hipsparseStatus_t hipsparseGetVersion(hipsparseHandle_t handle, int* version)
 {
-    return hipCUSPARSEStatusToHIPStatus(cusparseGetVersion((cusparseHandle_t)handle, version));
+    if(handle == nullptr)
+    {
+        return HIPSPARSE_STATUS_NOT_INITIALIZED;
+    }
+
+    *version = hipsparseVersionMajor * 100000 + hipsparseVersionMinor * 100 + hipsparseVersionPatch;
+
+    return HIPSPARSE_STATUS_SUCCESS;
+}
+
+hipsparseStatus_t hipsparseGetGitRevision(hipsparseHandle_t handle, char* rev)
+{
+    // Get hipSPARSE revision
+    if(handle == nullptr)
+    {
+        return HIPSPARSE_STATUS_NOT_INITIALIZED;
+    }
+
+    char hipsparse_rev[64];
+    strcpy(hipsparse_rev, hipsparseGitRevision);
+
+    // Get cuSPARSE version
+    int cusparse_ver;
+    RETURN_IF_CUSPARSE_ERROR(cusparseGetVersion((cusparseHandle_t)handle, &cusparse_ver));
+
+    // Combine
+    sprintf(rev,
+            "%s (cuSPARSE %d.%d.%d)",
+            hipsparse_rev,
+            cusparse_ver / 100000,
+            cusparse_ver / 100 % 1000,
+            cusparse_ver % 100);
+
+    return HIPSPARSE_STATUS_SUCCESS;
 }
 
 hipsparseStatus_t hipsparseSetStream(hipsparseHandle_t handle, hipStream_t streamId)
