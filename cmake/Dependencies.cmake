@@ -34,7 +34,7 @@ find_package(HIP 1.5.18353 REQUIRED CONFIG PATHS /opt/rocm) # ROCm 1.9
 
 # Either rocSPARSE or cuSPARSE is required
 if(NOT BUILD_CUDA)
-  find_package(rocsparse 0.1.4 REQUIRED) # ROCm 1.9
+  find_package(rocsparse 1.0.0 REQUIRED) # ROCm 1.9
 else()
   find_package(CUDA REQUIRED)
 endif()
