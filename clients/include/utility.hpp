@@ -32,8 +32,9 @@
 #include <vector>
 #include <algorithm>
 #include <sstream>
-#include <hipsparse.h>
 #include <hip/hip_runtime_api.h>
+
+#include "hipsparse.h"
 
 /*!\file
  * \brief provide data initialization and timing utilities.
