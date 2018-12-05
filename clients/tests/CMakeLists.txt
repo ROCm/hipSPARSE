@@ -39,6 +39,12 @@ set(TEST_MATRICES
   HB/nos7
 )
 
+if(NOT TARGET hipsparse)
+  set(CONVERT ${CMAKE_SOURCE_DIR}/../deps/convert)
+else()
+  set(CONVERT ${CMAKE_SOURCE_DIR}/deps/convert)
+endif()
+
 foreach(m ${TEST_MATRICES})
   string(REPLACE "/" ";" sep_m ${m})
   list(GET sep_m 0 dir)
@@ -53,7 +59,7 @@ foreach(m ${TEST_MATRICES})
                     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/matrices)
     execute_process(COMMAND mv ${mat}/${mat}.mtx .
                     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/matrices)
-    execute_process(COMMAND ${CMAKE_SOURCE_DIR}/deps/convert ${mat}.mtx ${mat}.bin
+    execute_process(COMMAND ${CONVERT} ${mat}.mtx ${mat}.bin
                     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/matrices)
     execute_process(COMMAND rm ${mat}.tar.gz ${mat} ${mat}.mtx -rf
                     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/matrices)
@@ -101,14 +107,22 @@ set(HIPSPARSE_CLIENTS_COMMON
 add_executable(hipsparse-test ${HIPSPARSE_TEST_SOURCES} ${HIPSPARSE_CLIENTS_COMMON})
 
 target_include_directories(hipsparse-test
-  PRIVATE
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
-)
+                             PRIVATE
+                               $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
+                               $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/library/include>
+                               $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
+                               $<BUILD_INTERFACE:${hip_INCLUDE_DIRS}>)
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 target_link_libraries(hipsparse-test PRIVATE Threads::Threads)
-target_link_libraries(hipsparse-test PRIVATE hipsparse ${GTEST_BOTH_LIBRARIES})
+target_link_libraries(hipsparse-test PRIVATE ${GTEST_BOTH_LIBRARIES})
+
+if(NOT TARGET hipsparse)
+  target_link_libraries(hipsparse-test PRIVATE ${HIPSPARSE_LIBRARIES})
+else()
+  target_link_libraries(hipsparse-test PRIVATE roc::hipsparse)
+endif()
 
 set_target_properties(hipsparse-test PROPERTIES CXX_STANDARD 11 CXX_STANDARD_REQUIRED ON)
 
