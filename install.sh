@@ -17,6 +17,7 @@ function display_help()
   echo "    [-c|--clients] build library clients too (combines with -i & -d)"
   echo "    [-g|--debug] -DCMAKE_BUILD_TYPE=Debug (default is =Release)"
   echo "    [--cuda] build library for cuda backend"
+  echo "    [--hip-clang] build library with hip-clang"
 }
 
 # This function is helpful for dockerfiles that do not have sudo installed, but the default user is root
@@ -196,6 +197,7 @@ install_dependencies=false
 install_prefix=hipsparse-install
 build_clients=false
 build_cuda=false
+build_hip_clang=false
 build_release=true
 
 # #################################################
@@ -205,7 +207,7 @@ build_release=true
 # check if we have a modern version of getopt that can handle whitespace and long parameters
 getopt -T
 if [[ $? -eq 4 ]]; then
-  GETOPT_PARSE=$(getopt --name "${0}" --longoptions help,install,clients,dependencies,debug,cuda --options hicdg -- "$@")
+  GETOPT_PARSE=$(getopt --name "${0}" --longoptions help,install,clients,dependencies,debug,cuda,hip-clang --options hicdg -- "$@")
 else
   echo "Need a new version of getopt"
   exit 1
@@ -238,6 +240,9 @@ while true; do
         shift ;;
     --cuda)
         build_cuda=true
+        shift ;;
+    --hip-clang)
+        build_hip_clang=true
         shift ;;
     --prefix)
         install_prefix=${2}
@@ -323,8 +328,15 @@ pushd .
     cmake_common_options="${cmake_common_options} -DBUILD_CUDA=ON"
   fi
 
+  # Check if using HIP built on HCC or HIP-Clang
+  if [[ "${build_hip_clang}" == true ]]; then
+     HIP_COMPILER=clang
+  else
+     HIP_COMPILER=hcc
+  fi
+
   # Build library
-  ${cmake_executable} ${cmake_common_options} ${cmake_client_options} -DCMAKE_INSTALL_PREFIX=hipsparse-install ../..
+  ${cmake_executable} -DHIP_COMPILER=$HIP_COMPILER ${cmake_common_options} ${cmake_client_options} -DCMAKE_INSTALL_PREFIX=hipsparse-install ../..
   check_exit_code
 
   make -j$(nproc) install
