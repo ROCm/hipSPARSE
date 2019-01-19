@@ -129,18 +129,7 @@ void checkout_and_version( project_paths paths )
       extensions: scm.extensions + [[$class: 'CleanCheckout']],
       userRemoteConfigs: scm.userRemoteConfigs
     ])
-
-    if( fileExists( 'CMakeLists.txt' ) )
-    {
-      def cmake_version_file = readFile( 'CMakeLists.txt' ).trim()
-      //echo "cmake_version_file:\n${cmake_version_file}"
-
-      cmake_version_file = cmake_version_file.replaceAll(/(\d+\.)(\d+\.)(\d+\.)\d+/, "\$1\$2\$3${env.BUILD_ID}")
-      //echo "cmake_version_file:\n${cmake_version_file}"
-      writeFile( file: 'CMakeLists.txt', text: cmake_version_file )
-    }
   }
-
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -185,7 +174,7 @@ def docker_build_inside_image( def build_image, compiler_data compiler_args, doc
     build_type_postfix = "-d"
   }
 
-  if( paths.project_name.equalsIgnoreCase( 'hipsparse-ubuntu' ) || paths.project_name.equalsIgnoreCase( 'hipsparse-hcc-ctu' ) )
+  if( paths.project_name.equalsIgnoreCase( 'hipsparse-ubuntu' ) )
   {
     String rocsparse_archive_path='hcc-rocm-ubuntu';
 
@@ -218,10 +207,27 @@ def docker_build_inside_image( def build_image, compiler_data compiler_args, doc
         """
     }
 
+    if( paths.project_name.equalsIgnoreCase( 'hipsparse-ubuntu' ) )
+    {
+      stage('Clang Format')
+      {
+        sh '''
+            find . -iname \'*.h\' \
+                -o -iname \'*.hpp\' \
+                -o -iname \'*.cpp\' \
+                -o -iname \'*.h.in\' \
+                -o -iname \'*.hpp.in\' \
+                -o -iname \'*.cpp.in\' \
+            | grep -v 'build/' \
+            | xargs -n 1 -P 1 -I{} -t sh -c \'clang-format-3.8 -style=file {} | diff - {}\'
+        '''
+      }
+    }
+
     stage( "Test ${compiler_args.compiler_name} ${compiler_args.build_config}" )
     {
       // Cap the maximum amount of testing to be a few hours; assume failure if the time limit is hit
-      timeout(time: 2, unit: 'HOURS')
+      timeout(time: 4, unit: 'HOURS')
       {
         if(isJobStartedByTimer())
         {
@@ -265,20 +271,6 @@ def docker_build_inside_image( def build_image, compiler_data compiler_args, doc
               dpkg -c ${docker_context}/*hipsparse*.deb
           """
           archiveArtifacts artifacts: "${docker_context}/*.deb", fingerprint: true
-
-//          stage('Clang Format')
-//          {
-//            sh '''
-//                find . -iname \'*.h\' \
-//                    -o -iname \'*.hpp\' \
-//                    -o -iname \'*.cpp\' \
-//                    -o -iname \'*.h.in\' \
-//                    -o -iname \'*.hpp.in\' \
-//                    -o -iname \'*.cpp.in\' \
-//                | grep -v 'build/' \
-//                | xargs -n 1 -P 1 -I{} -t sh -c \'clang-format-3.8 -style=file {} | diff - {}\'
-//            '''
-//          }
         }
         else if( paths.project_name.equalsIgnoreCase( 'hipsparse-fedora' ) )
         {
@@ -497,10 +489,10 @@ def build_pipeline( compiler_data compiler_args, docker_data docker_args, projec
 //},
 parallel rocm_ubuntu:
 {
-  node( 'docker && rocm19 && gfx900')
+  node( 'docker && rocm20 && dkms')
   {
     def hcc_docker_args = new docker_data(
-        from_image:'rocm/dev-ubuntu-16.04:latest',
+        from_image:'rocm/dev-ubuntu-16.04:2.0',
         build_docker_file:'dockerfile-build-ubuntu',
         install_docker_file:'dockerfile-install-ubuntu',
         docker_run_args:'--device=/dev/kfd --device=/dev/dri --group-add=video',
@@ -520,7 +512,6 @@ parallel rocm_ubuntu:
     def print_version_closure = {
       sh  """
           set -x
-          /opt/rocm/bin/rocm_agent_enumerator -t ALL
           /opt/rocm/bin/hcc --version
         """
     }
