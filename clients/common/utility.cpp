@@ -45,11 +45,7 @@ void query_version(char* version)
     char rev[128];
     hipsparseGetGitRevision(handle, rev);
 
-    sprintf(version, "v%d.%d.%d-%s",
-            ver / 100000,
-            ver / 100 % 1000,
-            ver % 100,
-            rev);
+    sprintf(version, "v%d.%d.%d-%s", ver / 100000, ver / 100 % 1000, ver % 100, rev);
 
     hipsparseDestroy(handle);
 }
