@@ -174,27 +174,6 @@ def docker_build_inside_image( def build_image, compiler_data compiler_args, doc
     build_type_postfix = "-d"
   }
 
-  if( paths.project_name.equalsIgnoreCase( 'hipsparse-ubuntu' ) )
-  {
-    String rocsparse_archive_path='hcc-rocm-ubuntu';
-
-    // This invokes 'copy artifact plugin' to copy latest archive from rocsparse project
-    step([$class: 'CopyArtifact', filter: "Release/${rocsparse_archive_path}/*.deb",
-      fingerprintArtifacts: true, projectName: 'ROCmSoftwarePlatform/rocSPARSE/develop', flatten: true,
-      selector: [$class: 'StatusBuildSelector', stable: false],
-      target: "${paths.project_build_prefix}" ])
-  }
-  else if( paths.project_name.equalsIgnoreCase( 'hipsparse-fedora' ) )
-  {
-    String rocsparse_archive_path='hcc-rocm-fedora';
-
-    // This invokes 'copy artifact plugin' to copy latest archive from rocsparse project
-    step([$class: 'CopyArtifact', filter: "Release/${rocsparse_archive_path}/*.rpm",
-      fingerprintArtifacts: true, projectName: 'ROCmSoftwarePlatform/rocSPARSE/develop', flatten: true,
-      selector: [$class: 'StatusBuildSelector', stable: false],
-      target: "${paths.project_build_prefix}" ])
-  }
-
   build_image.inside( docker_args.docker_run_args )
   {
     withEnv(["CXX=${compiler_args.compiler_path}", 'CLICOLOR_FORCE=1'])
@@ -264,11 +243,7 @@ def docker_build_inside_image( def build_image, compiler_data compiler_args, doc
               set -x
               rm -rf ${docker_context} && mkdir -p ${docker_context}
               mv ${paths.project_build_prefix}/build/release/*.deb ${docker_context}
-
-              # Temp rocsparse mv because repo.radeon.com does not have debs for rocsparse
-              mv ${paths.project_build_prefix}/*.deb ${docker_context}
-              dpkg -c ${docker_context}/*rocsparse*.deb
-              dpkg -c ${docker_context}/*hipsparse*.deb
+              dpkg -c ${docker_context}/*.deb
           """
           archiveArtifacts artifacts: "${docker_context}/*.deb", fingerprint: true
         }
@@ -278,12 +253,9 @@ def docker_build_inside_image( def build_image, compiler_data compiler_args, doc
               set -x
               rm -rf ${docker_context} && mkdir -p ${docker_context}
               mv ${paths.project_build_prefix}/build/release/*.rpm ${docker_context}
-
-              # Temp rocsparse mv because repo.radeon.com does not have rpms for rocsparse
-              mv ${paths.project_build_prefix}/*.rpm ${docker_context}
               rpm -qlp ${docker_context}/*.rpm
           """
-          archiveArtifacts artifacts: "${docker_context}/hipsparse-*.rpm", fingerprint: true
+          archiveArtifacts artifacts: "${docker_context}/*.rpm", fingerprint: true
         }
       }
     }
@@ -492,7 +464,7 @@ parallel rocm_ubuntu:
   node( 'docker && rocm20 && dkms')
   {
     def hcc_docker_args = new docker_data(
-        from_image:'rocm/dev-ubuntu-16.04:2.0',
+        from_image:'rocm/dev-ubuntu-16.04:latest',
         build_docker_file:'dockerfile-build-ubuntu',
         install_docker_file:'dockerfile-install-ubuntu',
         docker_run_args:'--device=/dev/kfd --device=/dev/dri --group-add=video',
@@ -507,7 +479,7 @@ parallel rocm_ubuntu:
         project_name:'hipsparse-ubuntu',
         src_prefix:'src',
         build_prefix:'src',
-        build_command: 'sudo dpkg -i rocsparse-*.deb; ./install.sh -cd' )
+        build_command: './install.sh -cd' )
 
     def print_version_closure = {
       sh  """
@@ -552,7 +524,7 @@ nvcc:
     build_pipeline( hcc_compiler_args, hcc_docker_args, hipsparse_paths, print_version_closure )
   }
 }
-// ,
+//,
 // rocm_fedora:
 // {
 //   node( 'docker && rocm && gfx900')
