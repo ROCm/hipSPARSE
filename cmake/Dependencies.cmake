@@ -30,17 +30,17 @@ find_package(Git REQUIRED)
 include(cmake/DownloadProject/DownloadProject.cmake)
 
 # HIP
-find_package(HIP 1.5.18353 REQUIRED CONFIG PATHS /opt/rocm) # ROCm 1.9
+find_package(HIP 1.5.19055 REQUIRED CONFIG PATHS /opt/rocm) # ROCm 2.2
 
 # Either rocSPARSE or cuSPARSE is required
 if(NOT BUILD_CUDA)
-  find_package(rocsparse 1.0.0 REQUIRED) # ROCm 1.9
+  find_package(rocsparse 1.0.2 REQUIRED) # ROCm 2.2
 else()
   find_package(CUDA REQUIRED)
 endif()
 
 # Test dependencies
-if(BUILD_TEST)
+if(BUILD_CLIENTS_TESTS)
   if(NOT DEPENDENCIES_FORCE_DOWNLOAD)
     find_package(GTest QUIET)
   endif()
@@ -49,7 +49,7 @@ if(BUILD_TEST)
     set(GTEST_ROOT ${CMAKE_CURRENT_BINARY_DIR}/gtest CACHE PATH "")
     download_project(PROJ        googletest
              GIT_REPOSITORY      https://github.com/google/googletest.git
-             GIT_TAG             master
+             GIT_TAG             release-1.8.1
              INSTALL_DIR         ${GTEST_ROOT}
              CMAKE_ARGS          -DBUILD_GTEST=ON -DINSTALL_GTEST=ON -Dgtest_force_shared_crt=ON -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
              LOG_DOWNLOAD        TRUE
@@ -61,48 +61,6 @@ if(BUILD_TEST)
     )
   endif()
   find_package(GTest REQUIRED)
-  # Download some test matrices
-  set(TEST_MATRICES
-    nos1
-    nos2
-    nos3
-    nos4
-    nos5
-    nos6
-    nos7
-  )
-  foreach(m ${TEST_MATRICES})
-    if(NOT EXISTS "${CMAKE_CURRENT_BINARY_DIR}/matrices/${m}.mtx")
-      file(DOWNLOAD ftp://math.nist.gov/pub/MatrixMarket2/Harwell-Boeing/lanpro/${m}.mtx.gz
-           ${CMAKE_CURRENT_BINARY_DIR}/matrices/${m}.mtx.gz)
-      execute_process(COMMAND gzip -d -f ${m}.mtx.gz
-                      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/matrices)
-    endif()
-  endforeach()
-endif()
-
-# Benchmark dependencies
-if(BUILD_BENCHMARK)
-  if(NOT DEPENDENCIES_FORCE_DOWNLOAD)
-    find_package(benchmark QUIET)
-  endif()
-  if(NOT benchmark_FOUND)
-    message(STATUS "Google Benchmark not found. Downloading and building Google Benchmark.")
-    set(GOOGLEBENCHMARK_ROOT ${CMAKE_CURRENT_BINARY_DIR}/googlebenchmark CACHE PATH "")
-    download_project(PROJ        googlebenchmark
-             GIT_REPOSITORY      https://github.com/google/benchmark.git
-             GIT_TAG             master
-             INSTALL_DIR         ${GOOGLEBENCHMARK_ROOT}
-             CMAKE_ARGS          -DCMAKE_BUILD_TYPE=RELEASE -DBENCHMARK_ENABLE_TESTING=OFF -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
-             LOG_DOWNLOAD        TRUE
-             LOG_CONFIGURE       TRUE
-             LOG_BUILD           TRUE
-             LOG_INSTALL         TRUE
-             BUILD_PROJECT       TRUE
-             UPDATE_DISCONNECTED TRUE
-    )
-  endif()
-  find_package(benchmark REQUIRED CONFIG PATHS ${GOOGLEBENCHMARK_ROOT})
 endif()
 
 # ROCm package
