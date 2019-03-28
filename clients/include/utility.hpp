@@ -636,7 +636,8 @@ int csrilu0(int m, const int* ptr, const int* col, T* val, hipsparseIndexBase_t 
                         // if nnz at this position do linear combination
                         if(nnz_entries[col[k] - idx_base] != 0)
                         {
-                            val[nnz_entries[col[k] - idx_base]] -= val[j] * val[k];
+                            int idx = nnz_entries[col[k] - idx_base];
+                            val[idx] = std::fma(-val[j], val[k], val[idx]);
                         }
                     }
                 }
@@ -704,7 +705,7 @@ int lsolve(int m,
 
         T diag_val = static_cast<T>(1);
 
-        for(int l = row_begin; l < row_end; l += wf_size)
+        for(unsigned int l = row_begin; l < row_end; l += wf_size)
         {
             for(unsigned int k = 0; k < wf_size; ++k)
             {
@@ -809,7 +810,7 @@ int usolve(int m,
 
         T diag_val = static_cast<T>(1);
 
-        for(int l = row_begin; l < row_end; l += wf_size)
+        for(unsigned int l = row_begin; l < row_end; l += wf_size)
         {
             for(unsigned int k = 0; k < wf_size; ++k)
             {
