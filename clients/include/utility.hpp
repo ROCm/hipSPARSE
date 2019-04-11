@@ -636,7 +636,7 @@ int csrilu0(int m, const int* ptr, const int* col, T* val, hipsparseIndexBase_t 
                         // if nnz at this position do linear combination
                         if(nnz_entries[col[k] - idx_base] != 0)
                         {
-                            int idx = nnz_entries[col[k] - idx_base];
+                            int idx  = nnz_entries[col[k] - idx_base];
                             val[idx] = std::fma(-val[j], val[k], val[idx]);
                         }
                     }
