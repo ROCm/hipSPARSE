@@ -1052,12 +1052,6 @@ hipsparseStatus_t hipsparseScsrmm2(hipsparseHandle_t handle,
                                    float* C,
                                    int ldc)
 {
-    // Returning prior to rocSPARSE nullptr check to comply with cuSPARSE behavior
-    if(m == 0 || n == 0 || k == 0 || nnz == 0)
-    {
-        return HIPSPARSE_STATUS_SUCCESS;
-    }
-
     return rocSPARSEStatusToHIPStatus(rocsparse_scsrmm((rocsparse_handle)handle,
                                                        hipOperationToHCCOperation(transA),
                                                        hipOperationToHCCOperation(transB),
@@ -1095,12 +1089,6 @@ hipsparseStatus_t hipsparseDcsrmm2(hipsparseHandle_t handle,
                                    double* C,
                                    int ldc)
 {
-    // Returning prior to rocSPARSE nullptr check to comply with cuSPARSE behavior
-    if(m == 0 || n == 0 || k == 0 || nnz == 0)
-    {
-        return HIPSPARSE_STATUS_SUCCESS;
-    }
-
     return rocSPARSEStatusToHIPStatus(rocsparse_dcsrmm((rocsparse_handle)handle,
                                                        hipOperationToHCCOperation(transA),
                                                        hipOperationToHCCOperation(transB),
@@ -1539,12 +1527,6 @@ hipsparseStatus_t hipsparseXcoo2csr(hipsparseHandle_t handle,
                                     int* csrRowPtr,
                                     hipsparseIndexBase_t idxBase)
 {
-    // Returning prior to rocSPARSE nullptr check to comply with cuSPARSE behavior
-    if(nnz == 0 || m == 0)
-    {
-        return HIPSPARSE_STATUS_SUCCESS;
-    }
-
     return rocSPARSEStatusToHIPStatus(rocsparse_coo2csr(
         (rocsparse_handle)handle, cooRowInd, nnz, m, csrRowPtr, hipBaseToHCCBase(idxBase)));
 }
