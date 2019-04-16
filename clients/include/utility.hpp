@@ -32,9 +32,8 @@
 #include <vector>
 #include <algorithm>
 #include <sstream>
-#include <hip/hip_runtime_api.h>
-
 #include "hipsparse.h"
+#include <hip/hip_runtime_api.h>
 
 /*!\file
  * \brief provide data initialization and timing utilities.
@@ -703,7 +702,7 @@ int lsolve(int m,
         int row_begin = ptr[i] - idx_base;
         int row_end   = ptr[i + 1] - idx_base;
 
-        T diag_val = static_cast<T>(1);
+        T diag_val = static_cast<T>(0);
 
         for(unsigned int l = row_begin; l < row_end; l += wf_size)
         {
@@ -723,7 +722,7 @@ int lsolve(int m,
                 if(col_j < i)
                 {
                     // Lower part
-                    temp[k] -= val[j] * y[col_j];
+                    temp[k] = std::fma(-val[j], y[col_j], temp[k]);
                 }
                 else if(col_j == i)
                 {
@@ -808,16 +807,16 @@ int usolve(int m,
         int row_begin = ptr[i] - idx_base;
         int row_end   = ptr[i + 1] - idx_base;
 
-        T diag_val = static_cast<T>(1);
+        T diag_val = static_cast<T>(0);
 
-        for(unsigned int l = row_begin; l < row_end; l += wf_size)
+        for(int l = row_end - 1; l >= row_begin; l -= wf_size)
         {
             for(unsigned int k = 0; k < wf_size; ++k)
             {
-                int j = l + k;
+                int j = l - k;
 
                 // Do not run out of bounds
-                if(j >= row_end)
+                if(j < row_begin)
                 {
                     break;
                 }
@@ -851,7 +850,7 @@ int usolve(int m,
                 else
                 {
                     // Upper part
-                    temp[k] -= val[j] * y[col_j];
+                    temp[k] = std::fma(-val[j], y[col_j], temp[k]);
                 }
             }
         }
