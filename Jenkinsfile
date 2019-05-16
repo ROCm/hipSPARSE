@@ -33,19 +33,9 @@ hipSPARSECI:
     hipsparse.paths.build_command = './install.sh -c'
     hipsparse.compiler.compiler_name = 'c++'
     hipsparse.compiler.compiler_path = 'c++'
-    
-    def cudasparse = new rocProject('hipsparse-cuda')
-    // for cuda support, must add a new project because build command is different
-    cudasparse.paths.build_command = './install.sh -c -cuda'
-    cudasparse.compiler.compiler_name = 'c++'
-    cudasparse.compiler.compiler_path = 'c++'
 
     // Define test architectures, optional rocm version argument is available
     def nodes = new dockerNodes(['gfx900'], hipsparse)
-    def cnodes = new dockerNodes(['cuda'], cudasparse)
-    
-    boolean isCuda = true
-    alternateSetting(isCuda)
     
     boolean formatCheck = true
 
@@ -108,5 +98,16 @@ hipSPARSECI:
     }
 
     buildProject(hipsparse, formatCheck, nodes.dockerArray, compileCommand, testCommand, packageCommand)
+    
+    def cudasparse = new rocProject('hipsparse-cuda')
+    def cnodes = new dockerNodes(['cuda'], cudasparse)
+    
+    // for cuda support, must add a new project because build command is different
+    cudasparse.paths.build_command = './install.sh -c -cuda'
+    cudasparse.compiler.compiler_name = 'c++'
+    cudasparse.compiler.compiler_path = 'c++'
+    boolean isCuda = true
+    alternateSetting(isCuda)
+    
     buildProject(cudasparse, formatCheck, cnodes.dockerArray, compileCommand, testCommand, packageCommand)
 }
