@@ -97,7 +97,7 @@ hipSPARSECI:
         platform.archiveArtifacts(this, """${project.paths.project_build_prefix}/build/release/package/*.deb""")
     }
 
-    buildProject(hipsparse, formatCheck, nodes.dockerArray, compileCommand, testCommand, packageCommand)
+    //buildProject(hipsparse, formatCheck, nodes.dockerArray, compileCommand, testCommand, packageCommand)
     
     def cudasparse = new rocProject('hipsparse-cuda')
     def cnodes = new dockerNodes(['cuda'], cudasparse)
