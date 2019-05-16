@@ -41,7 +41,7 @@ hipSPARSECI:
     cudasparse.compiler.compiler_path = 'c++'
 
     // Define test architectures, optional rocm version argument is available
-    def nodes = new dockerNodes(['gfx906'], hipsparse)
+    def nodes = new dockerNodes(['gfx900'], hipsparse)
     def cnodes = new dockerNodes(['cuda'], cudasparse)
     
     boolean isCuda = true
