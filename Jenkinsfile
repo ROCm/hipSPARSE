@@ -28,16 +28,25 @@ import java.nio.file.Path;
 
 hipSPARSECI:
 {
-
     def hipsparse = new rocProject('hipsparse')
     // customize for project
     hipsparse.paths.build_command = './install.sh -c'
     hipsparse.compiler.compiler_name = 'c++'
     hipsparse.compiler.compiler_path = 'c++'
+    
+    def cudasparse = new rocProject('hipsparse-cuda')
+    // for cuda support, must add a new project because build command is different
+    cudasparse.paths.build_command = './install.sh -c -cuda'
+    cudasparse.compiler.compiler_name = 'c++'
+    cudasparse.compiler.compiler_path = 'c++'
 
     // Define test architectures, optional rocm version argument is available
-    def nodes = new dockerNodes(['gfx900', 'gfx906'], hipsparse)
-
+    def nodes = new dockerNodes(['gfx906'], hipsparse)
+    def cnodes = new dockerNodes(['cuda'], cudasparse)
+    
+    boolean isCuda = true
+    alternateSetting(isCuda)
+    
     boolean formatCheck = true
 
     def compileCommand =
@@ -99,5 +108,5 @@ hipSPARSECI:
     }
 
     buildProject(hipsparse, formatCheck, nodes.dockerArray, compileCommand, testCommand, packageCommand)
-
+    buildProject(cudasparse, formatCheck, cnodes.dockerArray, compileCommand, testCommand, packageCommand)
 }
