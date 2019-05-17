@@ -33,9 +33,9 @@ hipSPARSECI:
     hipsparse.paths.build_command = './install.sh -c'
     hipsparse.compiler.compiler_name = 'c++'
     hipsparse.compiler.compiler_path = 'c++'
-
+    
     // Define test architectures, optional rocm version argument is available
-    def nodes = new dockerNodes(['gfx900'], hipsparse)
+    def nodes = new dockerNodes(['gfx900','cuda'], hipsparse)
     
     boolean formatCheck = true
 
@@ -44,15 +44,26 @@ hipSPARSECI:
         platform, project->
 
         project.paths.construct_build_prefix()
-        def command = """#!/usr/bin/env bash
+        
+        if(platform == 'cuda'){
+            def command = """#!/usr/bin/env bash
                   set -x
                   cd ${project.paths.project_build_prefix}
-                  LD_LIBRARY_PATH=/opt/rocm/hcc/lib CXX=${project.compiler.compiler_path} ${project.paths.build_command}
+                  LD_LIBRARY_PATH=/opt/rocm/hcc/lib CXX=${project.compiler.compiler_path} ${project.paths.build_command} -cuda 
                 """
-
+        } 
+        else
+        {
+            def command = """#!/usr/bin/env bash
+                  set -x
+                  cd ${project.paths.project_build_prefix}
+                  LD_LIBRARY_PATH=/opt/rocm/hcc/lib CXX=${project.compiler.compiler_path} ${project.paths.build_command} 
+                """
+        }
+        
         platform.runCommand(this, command)
     }
-
+    
     def testCommand =
     {
         platform, project->
@@ -97,16 +108,6 @@ hipSPARSECI:
         platform.archiveArtifacts(this, """${project.paths.project_build_prefix}/build/release/package/*.deb""")
     }
 
-    //buildProject(hipsparse, formatCheck, nodes.dockerArray, compileCommand, testCommand, packageCommand)
+    buildProject(hipsparse, formatCheck, nodes.dockerArray, compileCommand, testCommand, packageCommand)
     
-    def cudasparse = new rocProject('hipsparse-cuda')
-    def cnodes = new dockerNodes(['cuda'], cudasparse)
-    
-    // for cuda support, must add a new project because build command is different
-    boolean isCuda = true
-    cudasparse.paths.build_command = './install.sh -c -cuda'
-    cudasparse.compiler.compiler_name = 'c++'
-    cudasparse.compiler.compiler_path = 'c++'
-    
-    buildProject(cudasparse, formatCheck, cnodes.dockerArray, compileCommand, testCommand, packageCommand)
 }
