@@ -47,6 +47,8 @@ hipSPARSECI:
         
         if(platform == 'cuda')
         {
+            project.paths = new project_paths(
+                project_name: name+'-cuda' )
             def command = """#!/usr/bin/env bash
                   set -x
                   cd ${project.paths.project_build_prefix}
@@ -55,8 +57,8 @@ hipSPARSECI:
         } 
         else
         {
-            project.paths = new project_paths(
-                project_name: name+'-ubuntu' )
+           // project.paths = new project_paths(
+           //     project_name: name+'-cuda' )
             def command = """#!/usr/bin/env bash
                   set -x
                   cd ${project.paths.project_build_prefix}
@@ -73,10 +75,10 @@ hipSPARSECI:
 
         def command
         
-        if(platform == 'ubuntu')
+        if(platform == 'cuda')
         {
             project.paths = new project_paths(
-                project_name: name+'-ubuntu' )
+                project_name: name+'-cuda' )
         }
         if(auxiliary.isJobStartedByTimer())
         {
@@ -103,10 +105,10 @@ hipSPARSECI:
     {
         platform, project->
         
-        if(platform == 'ubuntu')
+        if(platform == 'cuda')
         {
             project.paths = new project_paths(
-                project_name: name+'-ubuntu' )
+                project_name: name+'-cuda' )
         }
         
         def command = """
