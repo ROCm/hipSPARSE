@@ -35,7 +35,7 @@ hipSPARSECI:
     hipsparse.compiler.compiler_path = 'c++'
     
     // Define test architectures, optional rocm version argument is available
-    def nodes = new dockerNodes(['gfx900','cuda'], hipsparse)
+    def nodes = new dockerNodes(['cuda'], hipsparse)
     
     boolean formatCheck = true
 
@@ -45,7 +45,8 @@ hipSPARSECI:
 
         project.paths.construct_build_prefix()
         
-        if(platform == 'cuda'){
+        if(platform == 'cuda')
+        {
             def command = """#!/usr/bin/env bash
                   set -x
                   cd ${project.paths.project_build_prefix}
