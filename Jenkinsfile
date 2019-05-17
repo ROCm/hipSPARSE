@@ -35,7 +35,7 @@ hipSPARSECI:
     hipsparse.compiler.compiler_path = 'c++'
     
     // Define test architectures, optional rocm version argument is available
-    def nodes = new dockerNodes(['gfx900','gfx906'], hipsparse)
+    def nodes = new dockerNodes(['cuda'], hipsparse)
     
     boolean formatCheck = true
 
@@ -47,8 +47,6 @@ hipSPARSECI:
         
         if(platform == 'cuda')
         {
-            project.paths = new project_paths(
-                project_name: name+'-cuda' )
             def command = """#!/usr/bin/env bash
                   set -x
                   cd ${project.paths.project_build_prefix}
@@ -57,8 +55,6 @@ hipSPARSECI:
         } 
         else
         {
-           // project.paths = new project_paths(
-           //     project_name: name+'-cuda' )
             def command = """#!/usr/bin/env bash
                   set -x
                   cd ${project.paths.project_build_prefix}
@@ -75,11 +71,6 @@ hipSPARSECI:
 
         def command
         
-        if(platform == 'cuda')
-        {
-            project.paths = new project_paths(
-                project_name: name+'-cuda' )
-        }
         if(auxiliary.isJobStartedByTimer())
         {
           command = """#!/usr/bin/env bash
@@ -104,12 +95,6 @@ hipSPARSECI:
     def packageCommand =
     {
         platform, project->
-        
-        if(platform == 'cuda')
-        {
-            project.paths = new project_paths(
-                project_name: name+'-cuda' )
-        }
         
         def command = """
                   set -x
