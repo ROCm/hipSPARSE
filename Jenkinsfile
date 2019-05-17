@@ -103,11 +103,10 @@ hipSPARSECI:
     def cnodes = new dockerNodes(['cuda'], cudasparse)
     
     // for cuda support, must add a new project because build command is different
+    boolean isCuda = true
     cudasparse.paths.build_command = './install.sh -c -cuda'
     cudasparse.compiler.compiler_name = 'c++'
     cudasparse.compiler.compiler_path = 'c++'
-    boolean isCuda = true
-    rocDocker.alternateSetting(isCuda)
     
     buildProject(cudasparse, formatCheck, cnodes.dockerArray, compileCommand, testCommand, packageCommand)
 }
