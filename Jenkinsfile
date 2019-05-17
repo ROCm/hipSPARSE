@@ -28,7 +28,7 @@ import java.nio.file.Path;
 
 hipSPARSECI:
 {
-    def hipsparse = new rocProject('hipsparse')
+    def hipsparse = new rocProject('hipsparse','cuda')
     // customize for project
     hipsparse.paths.build_command = './install.sh -c'
     hipsparse.compiler.compiler_name = 'c++'
@@ -55,6 +55,8 @@ hipSPARSECI:
         } 
         else
         {
+            project.paths = new project_paths(
+                project_name: name+'-ubuntu' )
             def command = """#!/usr/bin/env bash
                   set -x
                   cd ${project.paths.project_build_prefix}
@@ -70,7 +72,12 @@ hipSPARSECI:
         platform, project->
 
         def command
-
+        
+        if(platform == 'ubuntu')
+        {
+            project.paths = new project_paths(
+                project_name: name+'-ubuntu' )
+        }
         if(auxiliary.isJobStartedByTimer())
         {
           command = """#!/usr/bin/env bash
@@ -95,15 +102,21 @@ hipSPARSECI:
     def packageCommand =
     {
         platform, project->
-
+        
+        if(platform == 'ubuntu')
+        {
+            project.paths = new project_paths(
+                project_name: name+'-ubuntu' )
+        }
+        
         def command = """
-                      set -x
-                      cd ${project.paths.project_build_prefix}/build/release
-                      make package
-                      rm -rf package && mkdir -p package
-                      mv *.deb package/
-                      dpkg -c package/*.deb
-                      """
+                  set -x
+                  cd ${project.paths.project_build_prefix}/build/release
+                  make package
+                  rm -rf package && mkdir -p package
+                  mv *.deb package/
+                  dpkg -c package/*.deb
+              """
 
         platform.runCommand(this, command)
         platform.archiveArtifacts(this, """${project.paths.project_build_prefix}/build/release/package/*.deb""")
