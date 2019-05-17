@@ -107,7 +107,7 @@ hipSPARSECI:
     cudasparse.compiler.compiler_name = 'c++'
     cudasparse.compiler.compiler_path = 'c++'
     boolean isCuda = true
-    platform.alternateSetting(isCuda)
+    rocDocker.alternateSetting(isCuda)
     
     buildProject(cudasparse, formatCheck, cnodes.dockerArray, compileCommand, testCommand, packageCommand)
 }
