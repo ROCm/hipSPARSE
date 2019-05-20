@@ -47,7 +47,7 @@ hipSPARSECI:
 
         project.paths.construct_build_prefix()
         
-        System.out.println("Platform: $platform")
+        System.out.println("Platform: ",platform)
         if(platform == 'cuda')
         {
             command = """#!/usr/bin/env bash
