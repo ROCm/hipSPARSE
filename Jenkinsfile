@@ -28,7 +28,7 @@ import java.nio.file.Path;
 
 hipSPARSECI:
 {
-    def hipsparse = new rocProject('hipsparse','ubuntu')
+    def hipsparse = new rocProject('hipsparse','cuda')
     // customize for project
     hipsparse.paths.build_command = './install.sh -c'
     hipsparse.compiler.compiler_name = 'c++'
