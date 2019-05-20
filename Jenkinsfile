@@ -30,7 +30,7 @@ hipSPARSECI:
 {
     def hipsparse = new rocProject('hipsparse','cuda')
     // customize for project
-    hipsparse.paths.build_command = './install.sh -cd'
+    hipsparse.paths.build_command = './install.sh -c'
     hipsparse.compiler.compiler_path = 'c++'
     
     // Define test architectures, optional rocm version argument is available
@@ -46,7 +46,7 @@ hipSPARSECI:
 
         project.paths.construct_build_prefix()
         
-        if(platform == 'cuda')
+        if(platform.jenkinsLabel == 'cuda')
         {
             command = """#!/usr/bin/env bash
                   set -x
