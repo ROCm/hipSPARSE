@@ -42,12 +42,14 @@ hipSPARSECI:
     def compileCommand =
     {
         platform, project->
+        
+        def command
 
         project.paths.construct_build_prefix()
         
         if(platform == 'cuda')
         {
-            def command = """#!/usr/bin/env bash
+            command = """#!/usr/bin/env bash
                   set -x
                   cd ${project.paths.project_build_prefix}
                   LD_LIBRARY_PATH=/opt/rocm/hcc/lib CXX=${project.compiler.compiler_path} ${project.paths.build_command} -cuda 
@@ -55,7 +57,7 @@ hipSPARSECI:
         } 
         else
         {
-            def command = """#!/usr/bin/env bash
+            command = """#!/usr/bin/env bash
                   set -x
                   cd ${project.paths.project_build_prefix}
                   LD_LIBRARY_PATH=/opt/rocm/hcc/lib CXX=${project.compiler.compiler_path} ${project.paths.build_command} 
@@ -73,7 +75,7 @@ hipSPARSECI:
         
         if(auxiliary.isJobStartedByTimer())
         {
-          command = """#!/usr/bin/env bash
+            command = """#!/usr/bin/env bash
                 set -x
                 cd ${project.paths.project_build_prefix}/build/release/clients/tests
                 LD_LIBRARY_PATH=/opt/rocm/hcc/lib GTEST_LISTENER=NO_PASS_LINE_IN_LOG ./hipsparse-test --gtest_output=xml --gtest_color=yes #--gtest_filter=*nightly*-*known_bug* #--gtest_filter=*nightly*
@@ -81,7 +83,7 @@ hipSPARSECI:
         }
         else
         {
-          command = """#!/usr/bin/env bash
+            command = """#!/usr/bin/env bash
                 set -x
                 cd ${project.paths.project_build_prefix}/build/release/clients/tests
                 LD_LIBRARY_PATH=/opt/rocm/hcc/lib GTEST_LISTENER=NO_PASS_LINE_IN_LOG ./hipsparse-test --gtest_output=xml --gtest_color=yes #--gtest_filter=*quick*:*pre_checkin*-*known_bug* #--gtest_filter=*checkin*
