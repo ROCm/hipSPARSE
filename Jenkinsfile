@@ -30,7 +30,7 @@ hipSPARSECI:
 {
     def hipsparse = new rocProject('hipsparse')
     // customize for project
-    hipsparse.paths.build_command = './install.sh -cd'
+    hipsparse.paths.build_command = './install.sh -c'
     hipsparse.compiler.compiler_path = 'c++'
     
     // Define test architectures, optional rocm version argument is available
@@ -51,7 +51,7 @@ hipSPARSECI:
             command = """#!/usr/bin/env bash
                   set -x
                   cd ${project.paths.project_build_prefix}
-                  LD_LIBRARY_PATH=/opt/rocm/hcc/lib CXX=g++ ${project.paths.build_command} --cuda
+                  LD_LIBRARY_PATH=/opt/rocm/hcc/lib CMAKE_PREFIX_PATH=/opt/rocm/hcc CXX=g++ ${project.paths.build_command} --cuda
                 """
         } 
         else
@@ -59,7 +59,7 @@ hipSPARSECI:
             command = """#!/usr/bin/env bash
                   set -x
                   cd ${project.paths.project_build_prefix}
-                  LD_LIBRARY_PATH=/opt/rocm/hcc/lib CXX=${project.compiler.compiler_path} ${project.paths.build_command}
+                  LD_LIBRARY_PATH=/opt/rocm/hcc/lib CMAKE_PREFIX_PATH=/opt/rocm/hcc CXX=${project.compiler.compiler_path} ${project.paths.build_command}
                 """
         }
         
@@ -104,6 +104,7 @@ hipSPARSECI:
             command = """
                   set -x
                   cd ${project.paths.project_build_prefix}/build/release
+                  CMAKE_PREFIX_PATH=/opt/rocm/hcc
                   make package
                   rm -rf package && mkdir -p package
                   mv *.rpm package/
@@ -118,6 +119,7 @@ hipSPARSECI:
             command = """
                   set -x
                   cd ${project.paths.project_build_prefix}/build/release
+                  CMAKE_PREFIX_PATH=/opt/rocm/hcc
                   make package
                   rm -rf package && mkdir -p package
                   mv *.deb package/

@@ -31,9 +31,6 @@ else()
   set(CMAKE_INSTALL_PREFIX "/opt/rocm" CACHE PATH "Install path prefix, prepended onto install directories")
 endif()
 
-#Need to add this to avoid CMake Error
-list( APPEND CMAKE_PREFIX_PATH /opt/rocm/hcc /opt/rocm/hip )
-
 # hipSPARSE project
 project(hipsparse LANGUAGES CXX)
 
