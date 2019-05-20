@@ -97,7 +97,25 @@ hipSPARSECI:
     {
         platform, project->
         
-        def command = """
+        def command
+        
+        if(platform.jenkinsLabel == 'cuda')
+        {
+            command = """
+                  set -x
+                  cd ${project.paths.project_build_prefix}/build/release
+                  make package
+                  rm -rf package && mkdir -p package
+                  mv *.rpm package/
+                  dpkg -c package/*.rpm
+              """
+            platform.runCommand(this, command)
+            platform.archiveArtifacts(this, """${project.paths.project_build_prefix}/build/release/package/*.rpm""")        
+        }
+        
+        else
+        {
+            command = """
                   set -x
                   cd ${project.paths.project_build_prefix}/build/release
                   make package
@@ -105,11 +123,10 @@ hipSPARSECI:
                   mv *.deb package/
                   dpkg -c package/*.deb
               """
-
-        platform.runCommand(this, command)
-        platform.archiveArtifacts(this, """${project.paths.project_build_prefix}/build/release/package/*.deb""")
+            platform.runCommand(this, command)
+            platform.archiveArtifacts(this, """${project.paths.project_build_prefix}/build/release/package/*.deb""")
+        }
     }
 
     buildProject(hipsparse, formatCheck, nodes.dockerArray, compileCommand, testCommand, packageCommand)
-    
 }
