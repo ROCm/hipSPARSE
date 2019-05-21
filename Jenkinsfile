@@ -38,6 +38,20 @@ hipSPARSECI:
     
     boolean formatCheck = false
 
+    def compileCommand =
+    {
+        platform, project->
+        
+        platform.runCommand(this, "")
+    }
+    
+    def testCommand =
+    {
+        platform, project->
+
+        platform.runCommand(this, "")
+    }
+
     def packageCommand =
     {
         platform, project->
