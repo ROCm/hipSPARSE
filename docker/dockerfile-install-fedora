@@ -11,9 +11,3 @@ COPY *.rpm /tmp/
 RUN dnf -y update && dnf install -y \
         /tmp/hipsparse-*.rpm \
     && dnf -y clean all \
-    && printf "ls -la /etc/ld.so.conf.d/\n" && ls -la /etc/ld.so.conf.d/ \
-    && printf "ls -la /opt/rocm/include\n" && ls -la /opt/rocm/include \
-    && printf "ls -la /opt/rocm/lib64\n" && ls -la /opt/rocm/lib64 \
-    && printf "ls -la /opt/rocm/lib64/cmake\n" && ls -la /opt/rocm/lib64/cmake \
-    && printf "ls -la /opt/rocm/hipsparse/include\n" && ls -la /opt/rocm/hipsparse/include \
-    && printf "ls -la /opt/rocm/hipsparse/lib64\n" && ls -la /opt/rocm/hipsparse/lib64
