@@ -31,6 +31,8 @@ else()
   set(CMAKE_INSTALL_PREFIX "/opt/rocm" CACHE PATH "Install path prefix, prepended onto install directories")
 endif()
 
+set(CMAKE_PREFIX_PATH "HIP")
+
 # hipSPARSE project
 project(hipsparse LANGUAGES CXX)
 
