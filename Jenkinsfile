@@ -104,7 +104,7 @@ hipSPARSECI:
             command = """
                   set -x
                   cd ${project.paths.project_build_prefix}/build/release
-                  export PATH=/opt/rocm/bin:$PATH
+                  export HIP_PLATFORM=hcc
                   make package
                   rm -rf package && mkdir -p package
                   mv *.rpm package/
@@ -119,7 +119,7 @@ hipSPARSECI:
             command = """
                   set -x
                   cd ${project.paths.project_build_prefix}/build/release
-                  export PATH=/opt/rocm/bin:$PATH
+                  export HIP_PLATFORM=hcc
                   make package
                   rm -rf package && mkdir -p package
                   mv *.deb package/
