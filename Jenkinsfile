@@ -34,7 +34,7 @@ hipSPARSECI:
     hipsparse.compiler.compiler_path = 'g++'
     
     // Define test architectures, optional rocm version argument is available
-    def nodes = new dockerNodes(['cuda'], hipsparse)
+    def nodes = new dockerNodes(['cuda','gfx900'], hipsparse)
     
     boolean formatCheck = false
 
@@ -51,7 +51,7 @@ hipSPARSECI:
             command = """#!/usr/bin/env bash
                   set -x
                   cd ${project.paths.project_build_prefix}
-                  LD_LIBRARY_PATH=/opt/rocm/hcc/lib CXX=${project.compiler.compiler_path} ${project.paths.build_command} -d --cuda
+                  LD_LIBRARY_PATH=/opt/rocm/hcc/lib CXX=g++ ${project.paths.build_command} -d --cuda
                 """
         } 
         else
@@ -70,7 +70,27 @@ hipSPARSECI:
     {
         platform, project->
 
-        platform.runCommand(this, "")
+        def command
+        
+        if(auxiliary.isJobStartedByTimer())
+        {
+            command = """#!/usr/bin/env bash
+                set -x
+                cd ${project.paths.project_build_prefix}/build/release/clients/tests
+                LD_LIBRARY_PATH=/opt/rocm/hcc/lib GTEST_LISTENER=NO_PASS_LINE_IN_LOG ./hipsparse-test --gtest_output=xml --gtest_color=yes #--gtest_filter=*nightly*-*known_bug* #--gtest_filter=*nightly*
+            """
+        }
+        else
+        {
+            command = """#!/usr/bin/env bash
+                set -x
+                cd ${project.paths.project_build_prefix}/build/release/clients/tests
+                LD_LIBRARY_PATH=/opt/rocm/hcc/lib GTEST_LISTENER=NO_PASS_LINE_IN_LOG ./hipsparse-test --gtest_output=xml --gtest_color=yes #--gtest_filter=*quick*:*pre_checkin*-*known_bug* #--gtest_filter=*checkin*
+            """
+        }
+
+        platform.runCommand(this, command)
+        junit "${project.paths.project_build_prefix}/build/release/clients/tests/*.xml"
     }
 
     def packageCommand =
@@ -79,33 +99,16 @@ hipSPARSECI:
         
         def command
         
-        if(platform.jenkinsLabel == 'cuda')
-        {
-            command = """
-                  set -x
-                  cd ${project.paths.project_build_prefix}/build/release
-                  make package
-                  rm -rf package && mkdir -p package
-                  mv *.rpm package/
-                  dpkg -c package/*.rpm
-              """
-            platform.runCommand(this, command)
-            platform.archiveArtifacts(this, """${project.paths.project_build_prefix}/build/release/package/*.rpm""")        
-        }
-        
-        else
-        {
-            command = """
-                  set -x
-                  cd ${project.paths.project_build_prefix}/build/release
-                  make package
-                  rm -rf package && mkdir -p package
-                  mv *.deb package/
-                  dpkg -c package/*.deb
-              """
-            platform.runCommand(this, command)
-            platform.archiveArtifacts(this, """${project.paths.project_build_prefix}/build/release/package/*.deb""")
-        }
+        command = """
+              set -x
+              cd ${project.paths.project_build_prefix}/build/release
+              make package
+              rm -rf package && mkdir -p package
+              mv *.deb package/
+              dpkg -c package/*.deb
+          """
+        platform.runCommand(this, command)
+        platform.archiveArtifacts(this, """${project.paths.project_build_prefix}/build/release/package/*.deb""")
     }
 
     buildProject(hipsparse, formatCheck, nodes.dockerArray, compileCommand, testCommand, packageCommand)
