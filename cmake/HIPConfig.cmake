@@ -40,15 +40,15 @@ endif()
 set(HIP_COMPILER "@HIP_COMPILER@")
 set(HIP_RUNTIME "@HIP_RUNTIME@")
 
-set_and_check( hip_INCLUDE_DIR "@PACKAGE_INCLUDE_INSTALL_DIR@" )
-set_and_check( hip_INCLUDE_DIRS "${hip_INCLUDE_DIR}" )
-set_and_check( hip_LIB_INSTALL_DIR "@PACKAGE_LIB_INSTALL_DIR@" )
-set_and_check( hip_BIN_INSTALL_DIR "@PACKAGE_BIN_INSTALL_DIR@" )
+set( hip_INCLUDE_DIR "@PACKAGE_INCLUDE_INSTALL_DIR@" )
+set( hip_INCLUDE_DIRS "${hip_INCLUDE_DIR}" )
+set( hip_LIB_INSTALL_DIR "@PACKAGE_LIB_INSTALL_DIR@" )
+set( hip_BIN_INSTALL_DIR "@PACKAGE_BIN_INSTALL_DIR@" )
 
-set_and_check(hip_HIPCC_EXECUTABLE "${hip_BIN_INSTALL_DIR}/hipcc")
-set_and_check(hip_HIPCONFIG_EXECUTABLE "${hip_BIN_INSTALL_DIR}/hipconfig")
+set(hip_HIPCC_EXECUTABLE "${hip_BIN_INSTALL_DIR}/hipcc")
+set(hip_HIPCONFIG_EXECUTABLE "${hip_BIN_INSTALL_DIR}/hipconfig")
 
-include( "${CMAKE_CURRENT_LIST_DIR}/hip-targets.cmake" )
+include(cmake/hip-targets.cmake)
 
 set( hip_LIBRARIES hip::host hip::device)
 set( hip_LIBRARY ${hip_LIBRARIES})
