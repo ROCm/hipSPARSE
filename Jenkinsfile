@@ -34,7 +34,7 @@ hipSPARSECI:
     hipsparse.compiler.compiler_path = '/opt/rocm/bin/hcc'
     
     // Define test architectures, optional rocm version argument is available
-    def nodes = new dockerNodes(['gfx900'], hipsparse)
+    def nodes = new dockerNodes(['gfx900','centOS'], hipsparse)
     
     boolean formatCheck = false
 
@@ -101,16 +101,32 @@ hipSPARSECI:
         
         def command
         
-        command = """
-              set -x
-              cd ${project.paths.project_build_prefix}/build/release
-              make package
-              rm -rf package && mkdir -p package
-              mv *.deb package/
-              dpkg -c package/*.deb
-          """
-        platform.runCommand(this, command)
-        platform.archiveArtifacts(this, """${project.paths.project_build_prefix}/build/release/package/*.deb""")
+        if(platform.jenkinsLabel == 'centOS')
+        {
+            command = """
+                set -x
+                cd ${project.paths.project_build_prefix}/build/release
+                make package
+                rm -rf package && mkdir -p package
+                mv *.rpm package/
+                rpm -c package/*.rpm
+            """
+            platform.runCommand(this, command)
+            platform.archiveArtifacts(this, """${project.paths.project_build_prefix}/build/release/package/*.deb""")
+        }
+        else
+        {
+            command = """
+                set -x
+                cd ${project.paths.project_build_prefix}/build/release
+                make package
+                rm -rf package && mkdir -p package
+                mv *.deb package/
+                dpkg -c package/*.deb
+            """
+            platform.runCommand(this, command)
+            platform.archiveArtifacts(this, """${project.paths.project_build_prefix}/build/release/package/*.rpm""")
+        }
     }
 
     buildProject(hipsparse, formatCheck, nodes.dockerArray, compileCommand, testCommand, packageCommand)
