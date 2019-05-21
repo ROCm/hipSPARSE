@@ -42,7 +42,28 @@ hipSPARSECI:
     {
         platform, project->
         
-        platform.runCommand(this, "")
+        def command
+
+        project.paths.construct_build_prefix()
+        
+        if(platform.jenkinsLabel == 'cuda')
+        {
+            command = """#!/usr/bin/env bash
+                  set -x
+                  cd ${project.paths.project_build_prefix}
+                  LD_LIBRARY_PATH=/opt/rocm/hcc/lib CXX=g++ ${project.paths.build_command} -d --cuda
+                """
+        } 
+        else
+        {
+            command = """#!/usr/bin/env bash
+                  set -x
+                  cd ${project.paths.project_build_prefix}
+                  LD_LIBRARY_PATH=/opt/rocm/hcc/lib CXX=${project.compiler.compiler_path} ${project.paths.build_command}
+                """
+        }
+        
+        platform.runCommand(this, command)
     }
     
     def testCommand =
