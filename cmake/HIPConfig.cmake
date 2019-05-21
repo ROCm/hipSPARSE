@@ -1,5 +1,3 @@
-@PACKAGE_INIT@
-
 include(CMakeFindDependencyMacro OPTIONAL RESULT_VARIABLE _CMakeFindDependencyMacro_FOUND)
 if (NOT _CMakeFindDependencyMacro_FOUND)
   macro(find_dependency dep)
