@@ -60,6 +60,7 @@ option(BUILD_VERBOSE "Output additional build information" OFF)
 
 # Dependencies
 include(cmake/Dependencies.cmake)
+include(cmake/FindHIP.cmake)
 
 # Setup version
 rocm_setup_version(VERSION 1.0.7.0 NO_GIT_TAG_VERSION)
