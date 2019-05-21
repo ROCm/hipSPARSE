@@ -31,10 +31,6 @@ else()
   set(CMAKE_INSTALL_PREFIX "/opt/rocm" CACHE PATH "Install path prefix, prepended onto install directories")
 endif()
 
-#Need to add this to avoid CMake Error
-set(CMAKE_MODULE_PATH "/opt/rocm/hip/cmake" ${CMAKE_MODULE_PATH})
-find_package(HIP)
-
 # hipSPARSE project
 project(hipsparse LANGUAGES CXX)
 
@@ -59,8 +55,8 @@ option(BUILD_SHARED_LIBS "Build hipSPARSE as a shared library" ON)
 option(BUILD_VERBOSE "Output additional build information" OFF)
 
 # Dependencies
+include(cmake/HIPConfig.cmake)
 include(cmake/Dependencies.cmake)
-include(cmake/FindHIP.cmake)
 
 # Setup version
 rocm_setup_version(VERSION 1.0.7.0 NO_GIT_TAG_VERSION)

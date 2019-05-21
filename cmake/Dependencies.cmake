@@ -27,12 +27,8 @@
 find_package(Git REQUIRED)
 
 # DownloadProject package
+include(cmake/HIPConfig.cmake)
 include(cmake/DownloadProject/DownloadProject.cmake)
-include(cmake/FindHIP.cmake)
-
-#Need to add this to avoid CMake Error
-set(CMAKE_MODULE_PATH "/opt/rocm/hip/cmake" ${CMAKE_MODULE_PATH})
-find_package(HIP)
 
 # HIP
 find_package(HIP 1.5.19055 REQUIRED CONFIG PATHS /opt/rocm) # ROCm 2.2
