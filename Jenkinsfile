@@ -38,61 +38,6 @@ hipSPARSECI:
     
     boolean formatCheck = false
 
-    def compileCommand =
-    {
-        platform, project->
-        
-        def command
-
-        project.paths.construct_build_prefix()
-        
-        if(platform.jenkinsLabel == 'cuda')
-        {
-            command = """#!/usr/bin/env bash
-                  set -x
-                  cd ${project.paths.project_build_prefix}
-                  LD_LIBRARY_PATH=/opt/rocm/hcc/lib CXX=g++ ${project.paths.build_command} -d --cuda
-                """
-        } 
-        else
-        {
-            command = """#!/usr/bin/env bash
-                  set -x
-                  cd ${project.paths.project_build_prefix}
-                  LD_LIBRARY_PATH=/opt/rocm/hcc/lib CXX=${project.compiler.compiler_path} ${project.paths.build_command}
-                """
-        }
-        
-        platform.runCommand(this, command)
-    }
-    
-    def testCommand =
-    {
-        platform, project->
-
-        def command
-        
-        if(auxiliary.isJobStartedByTimer())
-        {
-            command = """#!/usr/bin/env bash
-                set -x
-                cd ${project.paths.project_build_prefix}/build/release/clients/tests
-                LD_LIBRARY_PATH=/opt/rocm/hcc/lib GTEST_LISTENER=NO_PASS_LINE_IN_LOG ./hipsparse-test --gtest_output=xml --gtest_color=yes #--gtest_filter=*nightly*-*known_bug* #--gtest_filter=*nightly*
-            """
-        }
-        else
-        {
-            command = """#!/usr/bin/env bash
-                set -x
-                cd ${project.paths.project_build_prefix}/build/release/clients/tests
-                LD_LIBRARY_PATH=/opt/rocm/hcc/lib GTEST_LISTENER=NO_PASS_LINE_IN_LOG ./hipsparse-test --gtest_output=xml --gtest_color=yes #--gtest_filter=*quick*:*pre_checkin*-*known_bug* #--gtest_filter=*checkin*
-            """
-        }
-
-        platform.runCommand(this, command)
-        junit "${project.paths.project_build_prefix}/build/release/clients/tests/*.xml"
-    }
-
     def packageCommand =
     {
         platform, project->
