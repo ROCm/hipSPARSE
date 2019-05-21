@@ -31,10 +31,10 @@ hipSPARSECI:
     def hipsparse = new rocProject('hipsparse')
     // customize for project
     hipsparse.paths.build_command = './install.sh -c'
-    hipsparse.compiler.compiler_path = 'g++'
+    hipsparse.compiler.compiler_path = 'c++'
     
     // Define test architectures, optional rocm version argument is available
-    def nodes = new dockerNodes(['cuda','gfx900'], hipsparse)
+    def nodes = new dockerNodes(['gfx900'], hipsparse)
     
     boolean formatCheck = false
 

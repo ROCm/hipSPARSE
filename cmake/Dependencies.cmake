@@ -27,11 +27,7 @@
 find_package(Git REQUIRED)
 
 # DownloadProject package
-include(cmake/HIPConfig.cmake)
 include(cmake/DownloadProject/DownloadProject.cmake)
-
-# HIP
-find_package(HIP 1.5.19055 REQUIRED CONFIG PATHS /opt/rocm) # ROCm 2.2
 
 # Either rocSPARSE or cuSPARSE is required
 if(NOT BUILD_CUDA)
