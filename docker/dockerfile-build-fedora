@@ -29,7 +29,7 @@ RUN dnf -y update && dnf install -y \
     rpm-build \
     boost-devel \
     && \
-    dnf -y clean all
+    dnf -y clean all && dnf remove $(dnf repoquery --duplicated --latest-limit -1 -q)
 
 # docker pipeline runs containers with particular uid
 # create a jenkins user with this specific uid so it can use sudo priviledges
