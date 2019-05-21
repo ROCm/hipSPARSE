@@ -23,6 +23,12 @@
 
 cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
 
+IF(NOT DEFINED $ENV{HIP_PATH})
+      SET(HIP_PATH "/opt/rocm/hip")
+ELSE()
+        SET(HIP_PATH $ENV{HIP_PATH})
+ENDIF()
+
 # Consider removing this in the future
 # This should appear before the project command, because it does not use FORCE
 if(WIN32)
@@ -31,10 +37,22 @@ else()
   set(CMAKE_INSTALL_PREFIX "/opt/rocm" CACHE PATH "Install path prefix, prepended onto install directories")
 endif()
 
-set(CMAKE_PREFIX_PATH "HIP")
-
 # hipSPARSE project
 project(hipsparse LANGUAGES CXX)
+
+# Find HCC/HIP dependencies
+if( CMAKE_CXX_COMPILER MATCHES ".*/hcc$|.*/hipcc$" )
+  message( STATUS "Building with ROCm tools" )
+  find_package( hcc REQUIRED CONFIG PATHS /opt/rocm )
+endif( )
+
+# Append our library helper cmake path and the cmake path for hip (for convenience)
+# Users may override HIP path by specifying their own in CMAKE_MODULE_PATH
+# Adding FindHIP.cmake
+list( APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake  ${HIP_PATH}/cmake)
+
+# NOTE:  workaround until hcc & hip cmake modules fixes symlink logic in their config files; remove when fixed
+list( APPEND CMAKE_PREFIX_PATH /opt/rocm/hcc /opt/rocm/hip )
 
 # Set a default build type if none was specified
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
@@ -42,6 +60,10 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose the type of build." FORCE)
   set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "" "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 endif()
+
+# Quietly look for CUDA, but if not found it's not an error
+# The presense of hip is not sufficient to determine if we want a rocm or cuda backend
+find_package( CUDA QUIET )
 
 # RPATH
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE CACHE BOOLEAN "Add paths to linker search and installed rpath")

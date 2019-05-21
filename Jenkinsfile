@@ -31,7 +31,7 @@ hipSPARSECI:
     def hipsparse = new rocProject('hipsparse')
     // customize for project
     hipsparse.paths.build_command = './install.sh -c'
-    hipsparse.compiler.compiler_path = 'c++'
+    hipsparse.compiler.compiler_path = 'g++'
     
     // Define test architectures, optional rocm version argument is available
     def nodes = new dockerNodes(['cuda'], hipsparse)
@@ -51,7 +51,7 @@ hipSPARSECI:
             command = """#!/usr/bin/env bash
                   set -x
                   cd ${project.paths.project_build_prefix}
-                  LD_LIBRARY_PATH=/opt/rocm/hcc/lib CXX=g++ ${project.paths.build_command} -d --cuda
+                  LD_LIBRARY_PATH=/opt/rocm/hcc/lib CXX=${project.compiler.compiler_path} ${project.paths.build_command} -d --cuda
                 """
         } 
         else
