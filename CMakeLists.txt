@@ -32,7 +32,8 @@ else()
 endif()
 
 #Need to add this to avoid CMake Error
-list( APPEND CMAKE_PREFIX_PATH /opt/rocm/hcc /opt/rocm/hip )
+set(CMAKE_MODULE_PATH "/opt/rocm/hip/cmake" ${CMAKE_MODULE_PATH})
+find_package(HIP)
 
 # hipSPARSE project
 project(hipsparse LANGUAGES CXX)

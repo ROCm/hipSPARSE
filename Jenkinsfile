@@ -84,9 +84,6 @@ hipSPARSECI:
             command = """
                   set -x
                   cd ${project.paths.project_build_prefix}/build/release
-                  export HIP_PLATFORM=hcc
-                  CXX=/opt/rocm/hcc/bin/hcc 
-                  cmake -DHSA_LIBRARY=/opt/hsa-rocr-dev/lib/libhsa-runtime64.so -DHSA_HEADER=/opt/hsa-rocr-dev/include ..
                   make package
                   rm -rf package && mkdir -p package
                   mv *.rpm package/
@@ -101,9 +98,6 @@ hipSPARSECI:
             command = """
                   set -x
                   cd ${project.paths.project_build_prefix}/build/release
-                  export HIP_PLATFORM=hcc
-                  CXX=/opt/rocm/hcc/bin/hcc 
-                  cmake -DHSA_LIBRARY=/opt/hsa-rocr-dev/lib/libhsa-runtime64.so -DHSA_HEADER=/opt/hsa-rocr-dev/include ..
                   make package
                   rm -rf package && mkdir -p package
                   mv *.deb package/
