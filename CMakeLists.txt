@@ -55,7 +55,6 @@ option(BUILD_SHARED_LIBS "Build hipSPARSE as a shared library" ON)
 option(BUILD_VERBOSE "Output additional build information" OFF)
 
 # Dependencies
-include(cmake/VerifyCompiler.cmake)
 include(cmake/Dependencies.cmake)
 
 # Setup version
