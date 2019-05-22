@@ -30,7 +30,7 @@ hipSPARSECI:
 {
     def hipsparse = new rocProject('hipsparse')
     // customize for project
-    hipsparse.paths.build_command = './install.sh -c'
+    hipsparse.paths.build_command = './install.sh -d'
     hipsparse.compiler.compiler_path = '/opt/rocm/bin/hcc'
     
     // Define test architectures, optional rocm version argument is available
