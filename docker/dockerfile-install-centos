@@ -1,13 +1,13 @@
-# Parameters related to building hipsparse
+# Parameters related to building hipsparse on CentOS
 ARG base_image
 
 FROM ${base_image}
 MAINTAINER Nico Trost
 
-# Copy the debian package of hipsparse into the container from host
+# Copy the rpm package of hipsparse into the container from host
 COPY *.rpm /tmp/
 
-# Install the debian package
+# Install the rpm package
 RUN yum -y update && yum install -y \
     /tmp/hipsparse-*.rpm \
   && rm -f /tmp/*.rpm \
