@@ -51,8 +51,8 @@ hipSPARSECI:
             command = """#!/usr/bin/env bash
                   set -x
                   cd ${project.paths.project_build_prefix}
-                  export HIP_PLATFORM=/usr/local/cuda/bin/nvcc
-                  LD_LIBRARY_PATH=/opt/rocm/hcc/lib CXX=/usr/local/cuda/bin/nvcc ${project.paths.build_command} -d --cuda
+                  export HIP_PLATFORM=${project.compiler.compiler_path}
+                  LD_LIBRARY_PATH=/opt/rocm/hcc/lib CXX=g++ ${project.paths.build_command} -d --cuda
                 """
         } 
         else
