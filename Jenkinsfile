@@ -34,7 +34,7 @@ hipSPARSECI:
     hipsparse.compiler.compiler_path = '/opt/rocm/bin/hcc'
     
     // Define test architectures, optional rocm version argument is available
-    def nodes = new dockerNodes(['centOS'], hipsparse)
+    def nodes = new dockerNodes(['gfx900&&centos7'], hipsparse)
     
     boolean formatCheck = false
 
@@ -46,7 +46,7 @@ hipSPARSECI:
 
         project.paths.construct_build_prefix()
         
-        if(platform.jenkinsLabel == 'cuda')
+        if(platform.jenkinsLabel.contains('cuda'))
         {
             command = """#!/usr/bin/env bash
                   set -x
@@ -101,7 +101,7 @@ hipSPARSECI:
         
         def command
         
-        if(platform.jenkinsLabel == 'centOS')
+        if(platform.jenkinsLabel.contains('centos'))
         {
             command = """
                 set -x
