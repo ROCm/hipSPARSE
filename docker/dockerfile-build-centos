@@ -25,10 +25,6 @@ RUN yum -y update && yum install -y \
     && \
     yum -y clean all
 
-RUN sudo yum-config-manager --enable rhel-server--rhscl-7-rpms && \
-    sudo yum install devtoolset-7 && \
-    scl enable devtoolset-7 bash
-
 # docker pipeline runs containers with particular uid
 # create a jenkins user with this specific uid so it can use sudo priviledges
 # Grant any member of sudo group password-less sudo privileges

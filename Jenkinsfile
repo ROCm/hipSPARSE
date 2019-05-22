@@ -34,7 +34,7 @@ hipSPARSECI:
     hipsparse.compiler.compiler_path = '/opt/rocm/bin/hcc'
     
     // Define test architectures, optional rocm version argument is available
-    def nodes = new dockerNodes(['gfx900&&centos7'], hipsparse)
+    def nodes = new dockerNodes(['gfx900','gfx906&&cuda'], hipsparse)
     
     boolean formatCheck = false
 
