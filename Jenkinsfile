@@ -52,7 +52,7 @@ hipSPARSECI:
                   set -x
                   cd ${project.paths.project_build_prefix}
                   export HIP_PLATFORM=/usr/local/cuda-10.1/bin/nvcc
-                  LD_LIBRARY_PATH=/usr/local/cuda-10.1/lib64 CXX=/usr/local/cuda-10.1/bin/nvcc ${project.paths.build_command} -d --cuda
+                  LD_LIBRARY_PATH=/usr/local/cuda-10.1/lib64 CXX=/usr/local/cuda-10.1/bin/nvcc ${project.paths.build_command} --cuda
                 """
         } 
         else
