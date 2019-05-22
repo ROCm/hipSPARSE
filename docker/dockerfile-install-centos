@@ -8,10 +8,10 @@ MAINTAINER Nico Trost
 COPY *.rpm /tmp/
 
 # Install the debian package
-RUN dnf -y update && dnf install -y \
+RUN yum -y update && yum install -y \
     /tmp/hipsparse-*.rpm \
   && rm -f /tmp/*.rpm \
-  && dnf -y clean all \
+  && yum -y clean all \
   && rm -rf /var/lib/apt/lists/* \
   && printf "ls -la /etc/ld.so.conf.d/\n" && ls -la /etc/ld.so.conf.d/ \
   && printf "ls -la /opt/rocm/include\n" && ls -la /opt/rocm/include \

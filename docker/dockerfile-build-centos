@@ -10,7 +10,7 @@ ARG user_uid
 # Dependencies:
 # * hcc-config.cmake: pkg-config
 # * hipsparse-test: googletest
-RUN dnf -y update && dnf install -y \
+RUN yum -y update && yum install -y \
     rock-dkms \
     sudo \
     build-essential \
@@ -22,7 +22,7 @@ RUN dnf -y update && dnf install -y \
     pkg-config \
     libnuma1 \
     && \
-    dnf -y clean all
+    yum -y clean all
 
 # docker pipeline runs containers with particular uid
 # create a jenkins user with this specific uid so it can use sudo priviledges
