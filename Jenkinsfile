@@ -34,7 +34,7 @@ hipSPARSECI:
     hipsparse.compiler.compiler_path = '/opt/rocm/bin/hcc'
     
     // Define test architectures, optional rocm version argument is available
-    def nodes = new dockerNodes(['gfx900','gfx906'], hipsparse)
+    def nodes = new dockerNodes(['gfx900','cuda'], hipsparse)
     
     boolean formatCheck = false
 
@@ -101,6 +101,7 @@ hipSPARSECI:
         
         def command
         
+        //ignore this for now- CentOS support has not passed CI yet and may not be compatible with hipSPARSE
         if(platform.jenkinsLabel.contains('centos'))
         {
             command = """
@@ -112,7 +113,7 @@ hipSPARSECI:
                 rpm -c package/*.rpm
             """
             platform.runCommand(this, command)
-            platform.archiveArtifacts(this, """${project.paths.project_build_prefix}/build/release/package/*.deb""")
+            platform.archiveArtifacts(this, """${project.paths.project_build_prefix}/build/release/package/*.rpm""")
         }
         else
         {
@@ -125,7 +126,7 @@ hipSPARSECI:
                 dpkg -c package/*.deb
             """
             platform.runCommand(this, command)
-            platform.archiveArtifacts(this, """${project.paths.project_build_prefix}/build/release/package/*.rpm""")
+            platform.archiveArtifacts(this, """${project.paths.project_build_prefix}/build/release/package/*.deb""")
         }
     }
 
