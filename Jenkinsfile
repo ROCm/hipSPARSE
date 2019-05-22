@@ -30,7 +30,7 @@ hipSPARSECI:
 {
     def hipsparse = new rocProject('hipsparse')
     // customize for project
-    hipsparse.paths.build_command = './install.sh -d'
+    hipsparse.paths.build_command = './install.sh'
     hipsparse.compiler.compiler_path = '/opt/rocm/bin/hcc'
     
     // Define test architectures, optional rocm version argument is available
@@ -52,7 +52,7 @@ hipSPARSECI:
                   set -x
                   cd ${project.paths.project_build_prefix}
                   export HIP_PLATFORM=/usr/local/cuda-10.1/bin/nvcc
-                  LD_LIBRARY_PATH=/usr/local/cuda-10.1/lib64 CXX=/usr/local/cuda-10.1/bin/nvcc ${project.paths.build_command} --cuda
+                  LD_LIBRARY_PATH=/usr/local/cuda-10.1/lib64 CXX=/usr/local/cuda-10.1/bin/nvcc ${project.paths.build_command} -d --cuda
                 """
         } 
         else
@@ -61,7 +61,7 @@ hipSPARSECI:
                   set -x
                   cd ${project.paths.project_build_prefix}
                   export HIP_PLATFORM=${project.compiler.compiler_path}
-                  LD_LIBRARY_PATH=/opt/rocm/hcc/lib CXX=${project.compiler.compiler_path} ${project.paths.build_command}
+                  LD_LIBRARY_PATH=/opt/rocm/hcc/lib CXX=${project.compiler.compiler_path} ${project.paths.build_command} -id
                 """
         }
         
