@@ -36,7 +36,7 @@ hipSPARSECI:
     // Define test architectures, optional rocm version argument is available
     def nodes = new dockerNodes(['gfx900','cuda'], hipsparse)
     
-    boolean formatCheck = true
+    boolean formatCheck = false
 
     def compileCommand =
     {
@@ -51,8 +51,8 @@ hipSPARSECI:
             command = """#!/usr/bin/env bash
                   set -x
                   cd ${project.paths.project_build_prefix}
-                  export HIP_PLATFORM=${project.compiler.compiler_path}
-                  LD_LIBRARY_PATH=/opt/rocm/hcc/lib CXX=g++ ${project.paths.build_command} -d --cuda
+                  export HIP_PLATFORM=/usr/local/cuda-10.1/bin/nvcc
+                  LD_LIBRARY_PATH=/opt/rocm/hcc/lib CXX=/usr/local/cuda-10.1/bin/nvcc ${project.paths.build_command} -d --cuda
                 """
         } 
         else
