@@ -10,7 +10,7 @@ ARG user_uid
 # Dependencies:
 # * hcc-config.cmake: pkg-config
 # * hipsparse-test: googletest
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+RUN dnf -y update && dnf install -y \
     rock-dkms \
     sudo \
     build-essential \
@@ -22,13 +22,12 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-ins
     pkg-config \
     libnuma1 \
     && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+    dnf -y clean all
 
 # docker pipeline runs containers with particular uid
 # create a jenkins user with this specific uid so it can use sudo priviledges
 # Grant any member of sudo group password-less sudo privileges
-RUN useradd --create-home -u ${user_uid} -o -G sudo --shell /bin/bash jenkins && \
+RUN useradd --create-home -u ${user_uid} -o -G wheel --shell /bin/bash jenkins && \
     mkdir -p /etc/sudoers.d/ && \
     echo '%sudo   ALL=(ALL) NOPASSWD:ALL' | tee /etc/sudoers.d/sudo-nopasswd
 
