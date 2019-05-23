@@ -886,6 +886,62 @@ int usolve(int m,
     return -1;
 }
 
+/* ============================================================================================ */
+/*! \brief  Transpose sparse matrix using CSR storage format. */
+template <typename T>
+void transpose(int m,
+               int n,
+               int nnz,
+               const int* csr_row_ptr_A,
+               const int* csr_col_ind_A,
+               const T* csr_val_A,
+               int* csr_row_ptr_B,
+               int* csr_col_ind_B,
+               T* csr_val_B,
+               hipsparseIndexBase_t idx_base_A,
+               hipsparseIndexBase_t idx_base_B)
+{
+    memset(csr_row_ptr_B, 0, sizeof(int) * (n + 1));
+
+    // Determine nnz per column
+    for(int i = 0; i < nnz; ++i)
+    {
+        ++csr_row_ptr_B[csr_col_ind_A[i] + 1 - idx_base_A];
+    }
+
+    // Scan
+    for(int i = 0; i < n; ++i)
+    {
+        csr_row_ptr_B[i + 1] += csr_row_ptr_B[i];
+    }
+
+    // Fill row indices and values
+    for(int i = 0; i < m; ++i)
+    {
+        int row_begin = csr_row_ptr_A[i] - idx_base_A;
+        int row_end   = csr_row_ptr_A[i + 1] - idx_base_A;
+
+        for(int j = row_begin; j < row_end; ++j)
+        {
+            int col = csr_col_ind_A[j] - idx_base_A;
+            int idx = csr_row_ptr_B[col];
+
+            csr_col_ind_B[idx] = i + idx_base_B;
+            csr_val_B[idx]     = csr_val_A[j];
+
+            ++csr_row_ptr_B[col];
+        }
+    }
+
+    // Shift column pointer array
+    for(int i = n; i > 0; --i)
+    {
+        csr_row_ptr_B[i] = csr_row_ptr_B[i - 1] + idx_base_B;
+    }
+
+    csr_row_ptr_B[0] = idx_base_B;
+}
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -940,6 +996,7 @@ class Arguments
     hipsparseOperation_t transB    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
     hipsparseIndexBase_t idx_base  = HIPSPARSE_INDEX_BASE_ZERO;
     hipsparseIndexBase_t idx_base2 = HIPSPARSE_INDEX_BASE_ZERO;
+    hipsparseIndexBase_t idx_base3 = HIPSPARSE_INDEX_BASE_ZERO;
     hipsparseAction_t action       = HIPSPARSE_ACTION_NUMERIC;
     hipsparseHybPartition_t part   = HIPSPARSE_HYB_PARTITION_AUTO;
     hipsparseDiagType_t diag_type  = HIPSPARSE_DIAG_TYPE_NON_UNIT;
@@ -973,6 +1030,7 @@ class Arguments
         this->transB    = rhs.transB;
         this->idx_base  = rhs.idx_base;
         this->idx_base2 = rhs.idx_base2;
+        this->idx_base3 = rhs.idx_base3;
         this->action    = rhs.action;
         this->part      = rhs.part;
         this->diag_type = rhs.diag_type;
