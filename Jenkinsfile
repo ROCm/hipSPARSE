@@ -30,9 +30,8 @@ hipSPARSECI:
 {
     def hipsparse = new rocProject('hipsparse')
     // customize for project
-    hipsparse.paths.build_command = './install.sh -dc'
-    hipsparse.compiler.compiler_name = 'c++'
-    hipsparse.compiler.compiler_path = 'c++'
+    hipsparse.paths.build_command = './install.sh -cd'
+    hipsparse.compiler.compiler_path = 'g++' 
     
     // Define test architectures, optional rocm version argument is available
     def nodes = new dockerNodes(['gfx900','cuda'], hipsparse)
@@ -49,11 +48,11 @@ hipSPARSECI:
         
         if(platform.jenkinsLabel.contains('cuda'))
         {
+            hipsparse.compiler.compiler_name = 'nvcc'           
             command = """#!/usr/bin/env bash
                   set -x
                   cd ${project.paths.project_build_prefix}
-                  export HIP_PLATFORM=/usr/local/cuda-10.1/bin/nvcc
-                  LD_LIBRARY_PATH=/usr/local/cuda-10.1/lib64 CXX=${project.compiler.compiler_path} ${project.paths.build_command} --cuda
+                  CXX=${project.compiler.compiler_path} ${project.paths.build_command} --cuda
                 """
         } 
         else
@@ -61,8 +60,7 @@ hipSPARSECI:
             command = """#!/usr/bin/env bash
                   set -x
                   cd ${project.paths.project_build_prefix}
-                  export HIP_PLATFORM=${project.compiler.compiler_path}
-                  LD_LIBRARY_PATH=/opt/rocm/hcc/lib CXX=${project.compiler.compiler_path} ${project.paths.build_command}
+                  CXX=${project.compiler.compiler_path} ${project.paths.build_command}
                 """
         }
         
