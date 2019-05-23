@@ -52,7 +52,7 @@ hipSPARSECI:
             command = """#!/usr/bin/env bash
                   set -x
                   cd ${project.paths.project_build_prefix}
-                  CXX=${project.compiler.compiler_path} ${project.paths.build_command} --cuda
+                  sudo CXX=${project.compiler.compiler_path} ${project.paths.build_command} --cuda
                 """
         } 
         else
@@ -60,7 +60,7 @@ hipSPARSECI:
             command = """#!/usr/bin/env bash
                   set -x
                   cd ${project.paths.project_build_prefix}
-                  CXX=${project.compiler.compiler_path} ${project.paths.build_command}
+                  sudo CXX=${project.compiler.compiler_path} ${project.paths.build_command}
                 """
         }
         
