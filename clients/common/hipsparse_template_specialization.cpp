@@ -541,10 +541,26 @@ hipsparseStatus_t hipsparseXcsrgemm(hipsparseHandle_t handle,
                                     const int* csrRowPtrC,
                                     int* csrColIndC)
 {
-    return hipsparseScsrgemm(handle, transA, transB, m, n, k,
-                             descrA, nnzA, csrValA, csrRowPtrA, csrColIndA,
-                             descrB, nnzB, csrValB, csrRowPtrB, csrColIndB,
-                             descrC, csrValC, csrRowPtrC, csrColIndC);
+    return hipsparseScsrgemm(handle,
+                             transA,
+                             transB,
+                             m,
+                             n,
+                             k,
+                             descrA,
+                             nnzA,
+                             csrValA,
+                             csrRowPtrA,
+                             csrColIndA,
+                             descrB,
+                             nnzB,
+                             csrValB,
+                             csrRowPtrB,
+                             csrColIndB,
+                             descrC,
+                             csrValC,
+                             csrRowPtrC,
+                             csrColIndC);
 }
 
 template <>
@@ -569,10 +585,26 @@ hipsparseStatus_t hipsparseXcsrgemm(hipsparseHandle_t handle,
                                     const int* csrRowPtrC,
                                     int* csrColIndC)
 {
-    return hipsparseDcsrgemm(handle, transA, transB, m, n, k,
-                             descrA, nnzA, csrValA, csrRowPtrA, csrColIndA,
-                             descrB, nnzB, csrValB, csrRowPtrB, csrColIndB,
-                             descrC, csrValC, csrRowPtrC, csrColIndC);
+    return hipsparseDcsrgemm(handle,
+                             transA,
+                             transB,
+                             m,
+                             n,
+                             k,
+                             descrA,
+                             nnzA,
+                             csrValA,
+                             csrRowPtrA,
+                             csrColIndA,
+                             descrB,
+                             nnzB,
+                             csrValB,
+                             csrRowPtrB,
+                             csrColIndB,
+                             descrC,
+                             csrValC,
+                             csrRowPtrC,
+                             csrColIndC);
 }
 
 template <>
@@ -597,12 +629,26 @@ hipsparseStatus_t hipsparseXcsrgemm2_bufferSizeExt(hipsparseHandle_t handle,
                                                    csrgemm2Info_t info,
                                                    size_t* pBufferSizeInBytes)
 {
-    return hipsparseScsrgemm2_bufferSizeExt(handle, m, n, k, alpha,
-                                            descrA, nnzA, csrRowPtrA, csrColIndA,
-                                            descrB, nnzB, csrRowPtrB, csrColIndB,
+    return hipsparseScsrgemm2_bufferSizeExt(handle,
+                                            m,
+                                            n,
+                                            k,
+                                            alpha,
+                                            descrA,
+                                            nnzA,
+                                            csrRowPtrA,
+                                            csrColIndA,
+                                            descrB,
+                                            nnzB,
+                                            csrRowPtrB,
+                                            csrColIndB,
                                             beta,
-                                            descrD, nnzD, csrRowPtrD, csrColIndD,
-                                            info, pBufferSizeInBytes);
+                                            descrD,
+                                            nnzD,
+                                            csrRowPtrD,
+                                            csrColIndD,
+                                            info,
+                                            pBufferSizeInBytes);
 }
 
 template <>
@@ -627,12 +673,26 @@ hipsparseStatus_t hipsparseXcsrgemm2_bufferSizeExt(hipsparseHandle_t handle,
                                                    csrgemm2Info_t info,
                                                    size_t* pBufferSizeInBytes)
 {
-    return hipsparseDcsrgemm2_bufferSizeExt(handle, m, n, k, alpha,
-                                            descrA, nnzA, csrRowPtrA, csrColIndA,
-                                            descrB, nnzB, csrRowPtrB, csrColIndB,
+    return hipsparseDcsrgemm2_bufferSizeExt(handle,
+                                            m,
+                                            n,
+                                            k,
+                                            alpha,
+                                            descrA,
+                                            nnzA,
+                                            csrRowPtrA,
+                                            csrColIndA,
+                                            descrB,
+                                            nnzB,
+                                            csrRowPtrB,
+                                            csrColIndB,
                                             beta,
-                                            descrD, nnzD, csrRowPtrD, csrColIndD,
-                                            info, pBufferSizeInBytes);
+                                            descrD,
+                                            nnzD,
+                                            csrRowPtrD,
+                                            csrColIndD,
+                                            info,
+                                            pBufferSizeInBytes);
 }
 
 template <>
@@ -664,13 +724,33 @@ hipsparseStatus_t hipsparseXcsrgemm2(hipsparseHandle_t handle,
                                      const csrgemm2Info_t info,
                                      void* pBuffer)
 {
-    return hipsparseScsrgemm2(handle, m, n, k, alpha,
-                              descrA, nnzA, csrValA, csrRowPtrA, csrColIndA,
-                              descrB, nnzB, csrValB, csrRowPtrB, csrColIndB,
+    return hipsparseScsrgemm2(handle,
+                              m,
+                              n,
+                              k,
+                              alpha,
+                              descrA,
+                              nnzA,
+                              csrValA,
+                              csrRowPtrA,
+                              csrColIndA,
+                              descrB,
+                              nnzB,
+                              csrValB,
+                              csrRowPtrB,
+                              csrColIndB,
                               beta,
-                              descrD, nnzD, csrValD, csrRowPtrD, csrColIndD,
-                              descrC, csrValC, csrRowPtrC, csrColIndC,
-                              info, pBuffer);
+                              descrD,
+                              nnzD,
+                              csrValD,
+                              csrRowPtrD,
+                              csrColIndD,
+                              descrC,
+                              csrValC,
+                              csrRowPtrC,
+                              csrColIndC,
+                              info,
+                              pBuffer);
 }
 
 template <>
@@ -702,13 +782,33 @@ hipsparseStatus_t hipsparseXcsrgemm2(hipsparseHandle_t handle,
                                      const csrgemm2Info_t info,
                                      void* pBuffer)
 {
-    return hipsparseDcsrgemm2(handle, m, n, k, alpha,
-                              descrA, nnzA, csrValA, csrRowPtrA, csrColIndA,
-                              descrB, nnzB, csrValB, csrRowPtrB, csrColIndB,
+    return hipsparseDcsrgemm2(handle,
+                              m,
+                              n,
+                              k,
+                              alpha,
+                              descrA,
+                              nnzA,
+                              csrValA,
+                              csrRowPtrA,
+                              csrColIndA,
+                              descrB,
+                              nnzB,
+                              csrValB,
+                              csrRowPtrB,
+                              csrColIndB,
                               beta,
-                              descrD, nnzD, csrValD, csrRowPtrD, csrColIndD,
-                              descrC, csrValC, csrRowPtrC, csrColIndC,
-                              info, pBuffer);
+                              descrD,
+                              nnzD,
+                              csrValD,
+                              csrRowPtrD,
+                              csrColIndD,
+                              descrC,
+                              csrValC,
+                              csrRowPtrC,
+                              csrColIndC,
+                              info,
+                              pBuffer);
 }
 
 template <>
