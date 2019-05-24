@@ -1,6 +1,6 @@
 #!/usr/bin/env groovy
 // This shared library is available at https://github.com/ROCmSoftwarePlatform/rocJENKINS/
-@Library('rocJenkins@cuda-support') _
+@Library('rocJenkins@centos') _
 
 // This is file for internal AMD use.
 // If you are interested in running your own Jenkins, please raise a github issue for assistance.
@@ -51,7 +51,7 @@ hipSPARSECI:
             command = """#!/usr/bin/env bash
                   set -x
                   cd ${project.paths.project_build_prefix}
-                  LD_LIBRARY_PATH=/opt/rocm/hcc/lib CXX=/usr/bin/g++ ${project.paths.build_command} -d --cuda
+                  LD_LIBRARY_PATH=/opt/rocm/include CXX=/usr/bin/g++ ${project.paths.build_command}d --cuda
                 """
         } 
         else
