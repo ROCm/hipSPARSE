@@ -30,8 +30,8 @@ hipSPARSECI:
 {
     def hipsparse = new rocProject('hipsparse')
     // customize for project
-    hipsparse.paths.build_command = './install.sh -c'
-    hipsparse.compiler.compiler_path = '/opt/rocm/bin/hcc' 
+    hipsparse.paths.build_command = './install.sh -cd'
+    hipsparse.compiler.compiler_path = 'c++' 
     
     // Define test architectures, optional rocm version argument is available
     def nodes = new dockerNodes(['gfx900','cuda'], hipsparse)
@@ -51,7 +51,8 @@ hipSPARSECI:
             command = """#!/usr/bin/env bash
                   set -x
                   cd ${project.paths.project_build_prefix}
-                  LD_LIBRARY_PATH=/opt/rocm/include CXX=/usr/bin/g++ ${project.paths.build_command}d --cuda
+                  export PATH=/opt/rocm/include:$PATH
+                  LD_LIBRARY_PATH=/opt/rocm/hcc/lib CXX=/usr/bin/g++ ${project.paths.build_command} --cuda
                 """
         } 
         else
@@ -59,6 +60,7 @@ hipSPARSECI:
             command = """#!/usr/bin/env bash
                   set -x
                   cd ${project.paths.project_build_prefix}
+                  export PATH=/opt/rocm/include:$PATH
                   LD_LIBRARY_PATH=/opt/rocm/hcc/lib CXX=${project.compiler.compiler_path} ${project.paths.build_command}
                 """
         }
@@ -77,6 +79,7 @@ hipSPARSECI:
             command = """#!/usr/bin/env bash
                 set -x
                 cd ${project.paths.project_build_prefix}/build/release/clients/tests
+                export PATH=/opt/rocm/include:$PATH
                 LD_LIBRARY_PATH=/opt/rocm/hcc/lib GTEST_LISTENER=NO_PASS_LINE_IN_LOG ./hipsparse-test --gtest_output=xml --gtest_color=yes #--gtest_filter=*nightly*-*known_bug* #--gtest_filter=*nightly*
             """
         }
@@ -85,6 +88,7 @@ hipSPARSECI:
             command = """#!/usr/bin/env bash
                 set -x
                 cd ${project.paths.project_build_prefix}/build/release/clients/tests
+                export PATH=/opt/rocm/include:$PATH
                 LD_LIBRARY_PATH=/opt/rocm/hcc/lib GTEST_LISTENER=NO_PASS_LINE_IN_LOG ./hipsparse-test --gtest_output=xml --gtest_color=yes #--gtest_filter=*quick*:*pre_checkin*-*known_bug* #--gtest_filter=*checkin*
             """
         }
