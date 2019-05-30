@@ -27,9 +27,9 @@
 
 #include "arg_check.hpp"
 
-#include <memory>
 #include <hip/hip_runtime_api.h>
 #include <hipsparse.h>
+#include <memory>
 
 #define PRINT_IF_HIP_ERROR(INPUT_STATUS_FOR_CHECK)                \
     {                                                             \
@@ -44,98 +44,102 @@
         }                                                         \
     }
 
-namespace hipsparse_test {
-
-// device_malloc wraps hipMalloc and provides same API as malloc
-static void* device_malloc(size_t byte_size)
+namespace hipsparse_test
 {
-    void* pointer;
-    PRINT_IF_HIP_ERROR(hipMalloc(&pointer, byte_size));
-    return pointer;
-}
 
-// device_free wraps hipFree and provides same API as free
-static void device_free(void* ptr) { PRINT_IF_HIP_ERROR(hipFree(ptr)); }
-
-struct handle_struct
-{
-    hipsparseHandle_t handle;
-    handle_struct()
+    // device_malloc wraps hipMalloc and provides same API as malloc
+    static void* device_malloc(size_t byte_size)
     {
-        hipsparseStatus_t status = hipsparseCreate(&handle);
-        verify_hipsparse_status_success(status, "ERROR: handle_struct constructor");
+        void* pointer;
+        PRINT_IF_HIP_ERROR(hipMalloc(&pointer, byte_size));
+        return pointer;
     }
 
-    ~handle_struct()
+    // device_free wraps hipFree and provides same API as free
+    static void device_free(void* ptr)
     {
-        hipsparseStatus_t status = hipsparseDestroy(handle);
-        verify_hipsparse_status_success(status, "ERROR: handle_struct destructor");
-    }
-};
-
-struct descr_struct
-{
-    hipsparseMatDescr_t descr;
-    descr_struct()
-    {
-        hipsparseStatus_t status = hipsparseCreateMatDescr(&descr);
-        verify_hipsparse_status_success(status, "ERROR: descr_struct constructor");
+        PRINT_IF_HIP_ERROR(hipFree(ptr));
     }
 
-    ~descr_struct()
+    struct handle_struct
     {
-        hipsparseStatus_t status = hipsparseDestroyMatDescr(descr);
-        verify_hipsparse_status_success(status, "ERROR: descr_struct destructor");
-    }
-};
+        hipsparseHandle_t handle;
+        handle_struct()
+        {
+            hipsparseStatus_t status = hipsparseCreate(&handle);
+            verify_hipsparse_status_success(status, "ERROR: handle_struct constructor");
+        }
 
-struct hyb_struct
-{
-    hipsparseHybMat_t hyb;
-    hyb_struct()
-    {
-        hipsparseStatus_t status = hipsparseCreateHybMat(&hyb);
-        verify_hipsparse_status_success(status, "ERROR: hyb_struct constructor");
-    }
+        ~handle_struct()
+        {
+            hipsparseStatus_t status = hipsparseDestroy(handle);
+            verify_hipsparse_status_success(status, "ERROR: handle_struct destructor");
+        }
+    };
 
-    ~hyb_struct()
+    struct descr_struct
     {
-        hipsparseStatus_t status = hipsparseDestroyHybMat(hyb);
-        verify_hipsparse_status_success(status, "ERROR: hyb_struct destructor");
-    }
-};
+        hipsparseMatDescr_t descr;
+        descr_struct()
+        {
+            hipsparseStatus_t status = hipsparseCreateMatDescr(&descr);
+            verify_hipsparse_status_success(status, "ERROR: descr_struct constructor");
+        }
 
-struct csrsv2_struct
-{
-    csrsv2Info_t info;
-    csrsv2_struct()
-    {
-        hipsparseStatus_t status = hipsparseCreateCsrsv2Info(&info);
-        verify_hipsparse_status_success(status, "ERROR: csrsv2_struct constructor");
-    }
+        ~descr_struct()
+        {
+            hipsparseStatus_t status = hipsparseDestroyMatDescr(descr);
+            verify_hipsparse_status_success(status, "ERROR: descr_struct destructor");
+        }
+    };
 
-    ~csrsv2_struct()
+    struct hyb_struct
     {
-        hipsparseStatus_t status = hipsparseDestroyCsrsv2Info(info);
-        verify_hipsparse_status_success(status, "ERROR: csrsv2_struct destructor");
-    }
-};
+        hipsparseHybMat_t hyb;
+        hyb_struct()
+        {
+            hipsparseStatus_t status = hipsparseCreateHybMat(&hyb);
+            verify_hipsparse_status_success(status, "ERROR: hyb_struct constructor");
+        }
 
-struct csrilu02_struct
-{
-    csrilu02Info_t info;
-    csrilu02_struct()
-    {
-        hipsparseStatus_t status = hipsparseCreateCsrilu02Info(&info);
-        verify_hipsparse_status_success(status, "ERROR: csrilu02_struct constructor");
-    }
+        ~hyb_struct()
+        {
+            hipsparseStatus_t status = hipsparseDestroyHybMat(hyb);
+            verify_hipsparse_status_success(status, "ERROR: hyb_struct destructor");
+        }
+    };
 
-    ~csrilu02_struct()
+    struct csrsv2_struct
     {
-        hipsparseStatus_t status = hipsparseDestroyCsrilu02Info(info);
-        verify_hipsparse_status_success(status, "ERROR: csrilu02_struct destructor");
-    }
-};
+        csrsv2Info_t info;
+        csrsv2_struct()
+        {
+            hipsparseStatus_t status = hipsparseCreateCsrsv2Info(&info);
+            verify_hipsparse_status_success(status, "ERROR: csrsv2_struct constructor");
+        }
+
+        ~csrsv2_struct()
+        {
+            hipsparseStatus_t status = hipsparseDestroyCsrsv2Info(info);
+            verify_hipsparse_status_success(status, "ERROR: csrsv2_struct destructor");
+        }
+    };
+
+    struct csrilu02_struct
+    {
+        csrilu02Info_t info;
+        csrilu02_struct()
+        {
+            hipsparseStatus_t status = hipsparseCreateCsrilu02Info(&info);
+            verify_hipsparse_status_success(status, "ERROR: csrilu02_struct constructor");
+        }
+
+        ~csrilu02_struct()
+        {
+            hipsparseStatus_t status = hipsparseDestroyCsrilu02Info(info);
+            verify_hipsparse_status_success(status, "ERROR: csrilu02_struct destructor");
+        }
+    };
 
 } // namespace hipsparse_test
 
