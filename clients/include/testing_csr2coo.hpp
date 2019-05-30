@@ -25,13 +25,13 @@
 #ifndef TESTING_CSR2COO_HPP
 #define TESTING_CSR2COO_HPP
 
-#include "hipsparse_test_unique_ptr.hpp"
 #include "hipsparse.hpp"
-#include "utility.hpp"
+#include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
+#include "utility.hpp"
 
-#include <hipsparse.h>
 #include <algorithm>
+#include <hipsparse.h>
 #include <string>
 
 using namespace hipsparse;
@@ -43,18 +43,18 @@ void testing_csr2coo_bad_arg(void)
     // do not test for bad args
     return;
 #endif
-    int m         = 100;
-    int nnz       = 100;
-    int safe_size = 100;
+    int               m         = 100;
+    int               nnz       = 100;
+    int               safe_size = 100;
     hipsparseStatus_t status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
-    hipsparseHandle_t handle = unique_ptr_handle->handle;
+    hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
-    auto csr_row_ptr_managed =
-        hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-    auto coo_row_ind_managed =
-        hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+    auto csr_row_ptr_managed
+        = hipsparse_unique_ptr {device_malloc(sizeof(int) * safe_size), device_free};
+    auto coo_row_ind_managed
+        = hipsparse_unique_ptr {device_malloc(sizeof(int) * safe_size), device_free};
 
     int* csr_row_ptr = (int*)csr_row_ptr_managed.get();
     int* coo_row_ind = (int*)coo_row_ind_managed.get();
@@ -93,13 +93,13 @@ void testing_csr2coo_bad_arg(void)
 
 hipsparseStatus_t testing_csr2coo(Arguments argus)
 {
-    int m                         = argus.M;
-    int n                         = argus.N;
-    int safe_size                 = 100;
-    hipsparseIndexBase_t idx_base = argus.idx_base;
-    std::string binfile           = "";
-    std::string filename          = "";
-    hipsparseStatus_t status;
+    int                  m         = argus.M;
+    int                  n         = argus.N;
+    int                  safe_size = 100;
+    hipsparseIndexBase_t idx_base  = argus.idx_base;
+    std::string          binfile   = "";
+    std::string          filename  = "";
+    hipsparseStatus_t    status;
 
     // When in testing mode, M == N == -99 indicates that we are testing with a real
     // matrix from cise.ufl.edu
@@ -122,7 +122,7 @@ hipsparseStatus_t testing_csr2coo(Arguments argus)
     int nnz = m * scale * n;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
-    hipsparseHandle_t handle = unique_ptr_handle->handle;
+    hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
     // Argument sanity check before allocating invalid memory
     if(m <= 0 || n <= 0 || nnz <= 0)
@@ -131,10 +131,10 @@ hipsparseStatus_t testing_csr2coo(Arguments argus)
         // Do not test args in cusparse
         return HIPSPARSE_STATUS_SUCCESS;
 #endif
-        auto csr_row_ptr_managed =
-            hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto coo_row_ind_managed =
-            hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+        auto csr_row_ptr_managed
+            = hipsparse_unique_ptr {device_malloc(sizeof(int) * safe_size), device_free};
+        auto coo_row_ind_managed
+            = hipsparse_unique_ptr {device_malloc(sizeof(int) * safe_size), device_free};
 
         int* csr_row_ptr = (int*)csr_row_ptr_managed.get();
         int* coo_row_ind = (int*)coo_row_ind_managed.get();
@@ -161,9 +161,9 @@ hipsparseStatus_t testing_csr2coo(Arguments argus)
     }
 
     // Host structures
-    std::vector<int> hcsr_row_ptr;
-    std::vector<int> hcoo_row_ind;
-    std::vector<int> hcol_ind;
+    std::vector<int>   hcsr_row_ptr;
+    std::vector<int>   hcoo_row_ind;
+    std::vector<int>   hcol_ind;
     std::vector<float> hval(nnz);
 
     // Initial data on CPU
@@ -185,8 +185,8 @@ hipsparseStatus_t testing_csr2coo(Arguments argus)
     {
         if(filename != "")
         {
-            if(read_mtx_matrix(
-                   filename.c_str(), m, n, nnz, hcoo_row_ind, hcol_ind, hval, idx_base) != 0)
+            if(read_mtx_matrix(filename.c_str(), m, n, nnz, hcoo_row_ind, hcol_ind, hval, idx_base)
+               != 0)
             {
                 fprintf(stderr, "Cannot open [read] %s\n", filename.c_str());
                 return HIPSPARSE_STATUS_INTERNAL_ERROR;
@@ -212,9 +212,10 @@ hipsparseStatus_t testing_csr2coo(Arguments argus)
     }
 
     // Allocate memory on the device
-    auto dcsr_row_ptr_managed =
-        hipsparse_unique_ptr{device_malloc(sizeof(int) * (m + 1)), device_free};
-    auto dcoo_row_ind_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
+    auto dcsr_row_ptr_managed
+        = hipsparse_unique_ptr {device_malloc(sizeof(int) * (m + 1)), device_free};
+    auto dcoo_row_ind_managed
+        = hipsparse_unique_ptr {device_malloc(sizeof(int) * nnz), device_free};
 
     int* dcsr_row_ptr = (int*)dcsr_row_ptr_managed.get();
     int* dcoo_row_ind = (int*)dcoo_row_ind_managed.get();

@@ -23,10 +23,10 @@
 
 #include "utility.hpp"
 
+#include <hip/hip_runtime_api.h>
+#include <hipsparse.h>
 #include <stdio.h>
 #include <sys/time.h>
-#include <hipsparse.h>
-#include <hip/hip_runtime_api.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -54,7 +54,7 @@ void query_version(char* version)
 /*  device query and print out their ID and name; return number of compute-capable devices. */
 int query_device_property()
 {
-    int device_count;
+    int               device_count;
     hipsparseStatus_t status = (hipsparseStatus_t)hipGetDeviceCount(&device_count);
     if(status != HIPSPARSE_STATUS_SUCCESS)
     {
@@ -68,7 +68,7 @@ int query_device_property()
 
     for(int i = 0; i < device_count; i++)
     {
-        hipDeviceProp_t props;
+        hipDeviceProp_t   props;
         hipsparseStatus_t status = (hipsparseStatus_t)hipGetDeviceProperties(&props, i);
         if(status != HIPSPARSE_STATUS_SUCCESS)
         {

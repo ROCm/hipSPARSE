@@ -25,15 +25,15 @@
 #ifndef TESTING_UTILITY_HPP
 #define TESTING_UTILITY_HPP
 
-#include <stdlib.h>
-#include <stdio.h>
+#include "hipsparse.h"
+#include <algorithm>
+#include <hip/hip_runtime_api.h>
 #include <math.h>
+#include <sstream>
+#include <stdio.h>
+#include <stdlib.h>
 #include <string>
 #include <vector>
-#include <algorithm>
-#include <sstream>
-#include "hipsparse.h"
-#include <hip/hip_runtime_api.h>
 
 /*!\file
  * \brief provide data initialization and timing utilities.
@@ -113,7 +113,7 @@ template <typename I>
 void hipsparseInitIndex(I* x, int nnz, int start, int end)
 {
     std::vector<bool> check(end - start, false);
-    int num = 0;
+    int               num = 0;
     while(num < nnz)
     {
         int val = start + rand() % (end - start);
@@ -160,10 +160,10 @@ void hipsparseInitCSR(
 /* ============================================================================================ */
 /*! \brief  Generate 2D laplacian on unit square in CSR format */
 template <typename T>
-int gen_2d_laplacian(int ndim,
-                     std::vector<int>& rowptr,
-                     std::vector<int>& col,
-                     std::vector<T>& val,
+int gen_2d_laplacian(int                  ndim,
+                     std::vector<int>&    rowptr,
+                     std::vector<int>&    col,
+                     std::vector<T>&      val,
                      hipsparseIndexBase_t idx_base)
 {
     if(ndim == 0)
@@ -229,12 +229,12 @@ int gen_2d_laplacian(int ndim,
 /* ============================================================================================ */
 /*! \brief  Generate a random sparse matrix in COO format */
 template <typename T>
-void gen_matrix_coo(int m,
-                    int n,
-                    int nnz,
-                    std::vector<int>& row_ind,
-                    std::vector<int>& col_ind,
-                    std::vector<T>& val,
+void gen_matrix_coo(int                  m,
+                    int                  n,
+                    int                  nnz,
+                    std::vector<int>&    row_ind,
+                    std::vector<int>&    col_ind,
+                    std::vector<T>&      val,
                     hipsparseIndexBase_t idx_base)
 {
     if((int)row_ind.size() != nnz)
@@ -280,8 +280,8 @@ void gen_matrix_coo(int m,
         while(idx < i)
         {
             // Normal distribution around the diagonal
-            int rng = (i - begin) * sqrt(-2.0 * log((double)rand() / RAND_MAX)) *
-                      cos(2.0 * M_PI * (double)rand() / RAND_MAX);
+            int rng = (i - begin) * sqrt(-2.0 * log((double)rand() / RAND_MAX))
+                      * cos(2.0 * M_PI * (double)rand() / RAND_MAX);
 
             if(m <= n)
             {
@@ -333,13 +333,13 @@ void gen_matrix_coo(int m,
 /* ============================================================================================ */
 /*! \brief  Read matrix from mtx file in COO format */
 template <typename T>
-int read_mtx_matrix(const char* filename,
-                    int& nrow,
-                    int& ncol,
-                    int& nnz,
-                    std::vector<int>& row,
-                    std::vector<int>& col,
-                    std::vector<T>& val,
+int read_mtx_matrix(const char*          filename,
+                    int&                 nrow,
+                    int&                 ncol,
+                    int&                 nnz,
+                    std::vector<int>&    row,
+                    std::vector<int>&    col,
+                    std::vector<T>&      val,
                     hipsparseIndexBase_t idx_base)
 {
     printf("Reading matrix %s...", filename);
@@ -372,13 +372,13 @@ int read_mtx_matrix(const char* filename,
     }
 
     // Convert to lower case
-    for(char *p = array; *p != '\0'; *p = tolower(*p), p++)
+    for(char* p = array; *p != '\0'; *p = tolower(*p), p++)
         ;
-    for(char *p = coord; *p != '\0'; *p = tolower(*p), p++)
+    for(char* p = coord; *p != '\0'; *p = tolower(*p), p++)
         ;
-    for(char *p = data; *p != '\0'; *p = tolower(*p), p++)
+    for(char* p = data; *p != '\0'; *p = tolower(*p), p++)
         ;
-    for(char *p = type; *p != '\0'; *p = tolower(*p), p++)
+    for(char* p = type; *p != '\0'; *p = tolower(*p), p++)
         ;
 
     // Check banner
@@ -431,7 +431,7 @@ int read_mtx_matrix(const char* filename,
 
     std::vector<int> unsorted_row(nnz);
     std::vector<int> unsorted_col(nnz);
-    std::vector<T> unsorted_val(nnz);
+    std::vector<T>   unsorted_val(nnz);
 
     // Read entries
     int idx = 0;
@@ -444,7 +444,7 @@ int read_mtx_matrix(const char* filename,
 
         int irow;
         int icol;
-        T ival;
+        T   ival;
 
         std::istringstream ss(line);
 
@@ -527,13 +527,13 @@ int read_mtx_matrix(const char* filename,
 /* ============================================================================================ */
 /*! \brief  Read matrix from binary file in CSR format */
 template <typename T>
-int read_bin_matrix(const char* filename,
-                    int& nrow,
-                    int& ncol,
-                    int& nnz,
-                    std::vector<int>& ptr,
-                    std::vector<int>& col,
-                    std::vector<T>& val,
+int read_bin_matrix(const char*          filename,
+                    int&                 nrow,
+                    int&                 ncol,
+                    int&                 nnz,
+                    std::vector<int>&    ptr,
+                    std::vector<int>&    col,
+                    std::vector<T>&      val,
                     hipsparseIndexBase_t idx_base)
 {
     printf("Reading matrix %s...", filename);
@@ -679,18 +679,18 @@ int csrilu0(int m, const int* ptr, const int* col, T* val, hipsparseIndexBase_t 
 /* ============================================================================================ */
 /*! \brief  Sparse triangular lower solve using CSR storage format. */
 template <typename T>
-int lsolve(int m,
-           const int* ptr,
-           const int* col,
-           const T* val,
-           T alpha,
-           const T* x,
-           T* y,
+int lsolve(int                  m,
+           const int*           ptr,
+           const int*           col,
+           const T*             val,
+           T                    alpha,
+           const T*             x,
+           T*                   y,
            hipsparseIndexBase_t idx_base,
-           hipsparseDiagType_t diag_type,
-           unsigned int wf_size)
+           hipsparseDiagType_t  diag_type,
+           unsigned int         wf_size)
 {
-    int pivot = std::numeric_limits<int>::max();
+    int            pivot = std::numeric_limits<int>::max();
     std::vector<T> temp(wf_size);
 
     for(int i = 0; i < m; ++i)
@@ -717,7 +717,7 @@ int lsolve(int m,
                 }
 
                 int col_j = col[j] - idx_base;
-                T val_j   = val[j];
+                T   val_j = val[j];
 
                 if(col_j < i)
                 {
@@ -784,18 +784,18 @@ int lsolve(int m,
 /* ============================================================================================ */
 /*! \brief  Sparse triangular upper solve using CSR storage format. */
 template <typename T>
-int usolve(int m,
-           const int* ptr,
-           const int* col,
-           const T* val,
-           T alpha,
-           const T* x,
-           T* y,
+int usolve(int                  m,
+           const int*           ptr,
+           const int*           col,
+           const T*             val,
+           T                    alpha,
+           const T*             x,
+           T*                   y,
            hipsparseIndexBase_t idx_base,
-           hipsparseDiagType_t diag_type,
-           unsigned int wf_size)
+           hipsparseDiagType_t  diag_type,
+           unsigned int         wf_size)
 {
-    int pivot = std::numeric_limits<int>::max();
+    int            pivot = std::numeric_limits<int>::max();
     std::vector<T> temp(wf_size);
 
     for(int i = m - 1; i >= 0; --i)
@@ -822,7 +822,7 @@ int usolve(int m,
                 }
 
                 int col_j = col[j] - idx_base;
-                T val_j   = val[j];
+                T   val_j = val[j];
 
                 if(col_j < i)
                 {
@@ -924,7 +924,7 @@ double get_time_us_sync(hipStream_t stream);
 
 class Arguments
 {
-    public:
+public:
     int M   = 128;
     int N   = 128;
     int K   = 128;
@@ -936,14 +936,14 @@ class Arguments
     double alpha = 1.0;
     double beta  = 0.0;
 
-    hipsparseOperation_t transA    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
-    hipsparseOperation_t transB    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
-    hipsparseIndexBase_t idx_base  = HIPSPARSE_INDEX_BASE_ZERO;
-    hipsparseIndexBase_t idx_base2 = HIPSPARSE_INDEX_BASE_ZERO;
-    hipsparseAction_t action       = HIPSPARSE_ACTION_NUMERIC;
-    hipsparseHybPartition_t part   = HIPSPARSE_HYB_PARTITION_AUTO;
-    hipsparseDiagType_t diag_type  = HIPSPARSE_DIAG_TYPE_NON_UNIT;
-    hipsparseFillMode_t fill_mode  = HIPSPARSE_FILL_MODE_LOWER;
+    hipsparseOperation_t    transA    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
+    hipsparseOperation_t    transB    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
+    hipsparseIndexBase_t    idx_base  = HIPSPARSE_INDEX_BASE_ZERO;
+    hipsparseIndexBase_t    idx_base2 = HIPSPARSE_INDEX_BASE_ZERO;
+    hipsparseAction_t       action    = HIPSPARSE_ACTION_NUMERIC;
+    hipsparseHybPartition_t part      = HIPSPARSE_HYB_PARTITION_AUTO;
+    hipsparseDiagType_t     diag_type = HIPSPARSE_DIAG_TYPE_NON_UNIT;
+    hipsparseFillMode_t     fill_mode = HIPSPARSE_FILL_MODE_LOWER;
 
     int norm_check = 0;
     int unit_check = 1;

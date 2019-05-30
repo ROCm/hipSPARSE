@@ -25,13 +25,13 @@
 #ifndef TESTING_HYBMV_HPP
 #define TESTING_HYBMV_HPP
 
-#include "hipsparse_test_unique_ptr.hpp"
 #include "hipsparse.hpp"
-#include "utility.hpp"
+#include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
+#include "utility.hpp"
 
-#include <string>
 #include <hipsparse.h>
+#include <string>
 
 using namespace hipsparse;
 using namespace hipsparse_test;
@@ -42,39 +42,39 @@ using namespace hipsparse_test;
 
 struct testhyb
 {
-    int m;
-    int n;
+    int                     m;
+    int                     n;
     hipsparseHybPartition_t partition;
-    int ell_nnz;
-    int ell_width;
-    int* ell_col_ind;
-    void* ell_val;
-    int coo_nnz;
-    int* coo_row_ind;
-    int* coo_col_ind;
-    void* coo_val;
+    int                     ell_nnz;
+    int                     ell_width;
+    int*                    ell_col_ind;
+    void*                   ell_val;
+    int                     coo_nnz;
+    int*                    coo_row_ind;
+    int*                    coo_col_ind;
+    void*                   coo_val;
 };
 
 template <typename T>
 void testing_hybmv_bad_arg(void)
 {
-    int safe_size               = 100;
-    T alpha                     = 0.6;
-    T beta                      = 0.2;
-    hipsparseOperation_t transA = HIPSPARSE_OPERATION_NON_TRANSPOSE;
-    hipsparseStatus_t status;
+    int                  safe_size = 100;
+    T                    alpha     = 0.6;
+    T                    beta      = 0.2;
+    hipsparseOperation_t transA    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
+    hipsparseStatus_t    status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
-    hipsparseHandle_t handle = unique_ptr_handle->handle;
+    hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
     std::unique_ptr<descr_struct> unique_ptr_descr(new descr_struct);
-    hipsparseMatDescr_t descr = unique_ptr_descr->descr;
+    hipsparseMatDescr_t           descr = unique_ptr_descr->descr;
 
     std::unique_ptr<hyb_struct> unique_ptr_hyb(new hyb_struct);
-    hipsparseHybMat_t hyb = unique_ptr_hyb->hyb;
+    hipsparseHybMat_t           hyb = unique_ptr_hyb->hyb;
 
-    auto dx_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-    auto dy_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+    auto dx_managed = hipsparse_unique_ptr {device_malloc(sizeof(T) * safe_size), device_free};
+    auto dy_managed = hipsparse_unique_ptr {device_malloc(sizeof(T) * safe_size), device_free};
 
     T* dx = (T*)dx_managed.get();
     T* dy = (T*)dy_managed.get();
@@ -139,18 +139,18 @@ void testing_hybmv_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_hybmv(Arguments argus)
 {
-    int safe_size                 = 100;
-    int m                         = argus.M;
-    int n                         = argus.N;
-    T h_alpha                     = argus.alpha;
-    T h_beta                      = argus.beta;
-    hipsparseOperation_t transA   = argus.transA;
-    hipsparseIndexBase_t idx_base = argus.idx_base;
-    hipsparseHybPartition_t part  = argus.part;
-    int user_ell_width            = argus.ell_width;
-    std::string binfile           = "";
-    std::string filename          = "";
-    hipsparseStatus_t status;
+    int                     safe_size      = 100;
+    int                     m              = argus.M;
+    int                     n              = argus.N;
+    T                       h_alpha        = argus.alpha;
+    T                       h_beta         = argus.beta;
+    hipsparseOperation_t    transA         = argus.transA;
+    hipsparseIndexBase_t    idx_base       = argus.idx_base;
+    hipsparseHybPartition_t part           = argus.part;
+    int                     user_ell_width = argus.ell_width;
+    std::string             binfile        = "";
+    std::string             filename       = "";
+    hipsparseStatus_t       status;
 
     // When in testing mode, M == N == -99 indicates that we are testing with a real
     // matrix from cise.ufl.edu
@@ -166,16 +166,16 @@ hipsparseStatus_t testing_hybmv(Arguments argus)
     }
 
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
-    hipsparseHandle_t handle = test_handle->handle;
+    hipsparseHandle_t              handle = test_handle->handle;
 
     std::unique_ptr<descr_struct> test_descr(new descr_struct);
-    hipsparseMatDescr_t descr = test_descr->descr;
+    hipsparseMatDescr_t           descr = test_descr->descr;
 
     // Set matrix index base
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatIndexBase(descr, idx_base));
 
     std::unique_ptr<hyb_struct> test_hyb(new hyb_struct);
-    hipsparseHybMat_t hyb = test_hyb->hyb;
+    hipsparseHybMat_t           hyb = test_hyb->hyb;
 
     // Determine number of non-zero elements
     double scale = 0.02;
@@ -188,19 +188,20 @@ hipsparseStatus_t testing_hybmv(Arguments argus)
     // Argument sanity check before allocating invalid memory
     if(m <= 0 || n <= 0 || nnz <= 0)
     {
-        auto dptr_managed =
-            hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto dcol_managed =
-            hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto dval_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-        auto dx_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-        auto dy_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+        auto dptr_managed
+            = hipsparse_unique_ptr {device_malloc(sizeof(int) * safe_size), device_free};
+        auto dcol_managed
+            = hipsparse_unique_ptr {device_malloc(sizeof(int) * safe_size), device_free};
+        auto dval_managed
+            = hipsparse_unique_ptr {device_malloc(sizeof(T) * safe_size), device_free};
+        auto dx_managed = hipsparse_unique_ptr {device_malloc(sizeof(T) * safe_size), device_free};
+        auto dy_managed = hipsparse_unique_ptr {device_malloc(sizeof(T) * safe_size), device_free};
 
         int* dptr = (int*)dptr_managed.get();
         int* dcol = (int*)dcol_managed.get();
-        T* dval   = (T*)dval_managed.get();
-        T* dx     = (T*)dx_managed.get();
-        T* dy     = (T*)dy_managed.get();
+        T*   dval = (T*)dval_managed.get();
+        T*   dx   = (T*)dx_managed.get();
+        T*   dy   = (T*)dy_managed.get();
 
         if(!dval || !dptr || !dcol || !dx || !dy)
         {
@@ -210,8 +211,8 @@ hipsparseStatus_t testing_hybmv(Arguments argus)
         }
 
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
-        status =
-            hipsparseXcsr2hyb(handle, m, n, descr, dval, dptr, dcol, hyb, user_ell_width, part);
+        status
+            = hipsparseXcsr2hyb(handle, m, n, descr, dval, dptr, dcol, hyb, user_ell_width, part);
 
         if(m < 0 || n < 0 || nnz < 0)
         {
@@ -230,7 +231,7 @@ hipsparseStatus_t testing_hybmv(Arguments argus)
     std::vector<int> hcsr_row_ptr;
     std::vector<int> hcoo_row_ind;
     std::vector<int> hcol_ind;
-    std::vector<T> hval;
+    std::vector<T>   hval;
 
     // Initial Data on CPU
     srand(12345ULL);
@@ -251,8 +252,8 @@ hipsparseStatus_t testing_hybmv(Arguments argus)
     {
         if(filename != "")
         {
-            if(read_mtx_matrix(
-                   filename.c_str(), m, n, nnz, hcoo_row_ind, hcol_ind, hval, idx_base) != 0)
+            if(read_mtx_matrix(filename.c_str(), m, n, nnz, hcoo_row_ind, hcol_ind, hval, idx_base)
+               != 0)
             {
                 fprintf(stderr, "Cannot open [read] %s\n", filename.c_str());
                 return HIPSPARSE_STATUS_INTERNAL_ERROR;
@@ -290,23 +291,23 @@ hipsparseStatus_t testing_hybmv(Arguments argus)
     hy_gold = hy_1;
 
     // allocate memory on device
-    auto dptr_managed    = hipsparse_unique_ptr{device_malloc(sizeof(int) * (m + 1)), device_free};
-    auto dcol_managed    = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
-    auto dval_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
-    auto dx_managed      = hipsparse_unique_ptr{device_malloc(sizeof(T) * n), device_free};
-    auto dy_1_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * m), device_free};
-    auto dy_2_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * m), device_free};
-    auto d_alpha_managed = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
-    auto d_beta_managed  = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
+    auto dptr_managed    = hipsparse_unique_ptr {device_malloc(sizeof(int) * (m + 1)), device_free};
+    auto dcol_managed    = hipsparse_unique_ptr {device_malloc(sizeof(int) * nnz), device_free};
+    auto dval_managed    = hipsparse_unique_ptr {device_malloc(sizeof(T) * nnz), device_free};
+    auto dx_managed      = hipsparse_unique_ptr {device_malloc(sizeof(T) * n), device_free};
+    auto dy_1_managed    = hipsparse_unique_ptr {device_malloc(sizeof(T) * m), device_free};
+    auto dy_2_managed    = hipsparse_unique_ptr {device_malloc(sizeof(T) * m), device_free};
+    auto d_alpha_managed = hipsparse_unique_ptr {device_malloc(sizeof(T)), device_free};
+    auto d_beta_managed  = hipsparse_unique_ptr {device_malloc(sizeof(T)), device_free};
 
-    int* dptr  = (int*)dptr_managed.get();
-    int* dcol  = (int*)dcol_managed.get();
-    T* dval    = (T*)dval_managed.get();
-    T* dx      = (T*)dx_managed.get();
-    T* dy_1    = (T*)dy_1_managed.get();
-    T* dy_2    = (T*)dy_2_managed.get();
-    T* d_alpha = (T*)d_alpha_managed.get();
-    T* d_beta  = (T*)d_beta_managed.get();
+    int* dptr    = (int*)dptr_managed.get();
+    int* dcol    = (int*)dcol_managed.get();
+    T*   dval    = (T*)dval_managed.get();
+    T*   dx      = (T*)dx_managed.get();
+    T*   dy_1    = (T*)dy_1_managed.get();
+    T*   dy_2    = (T*)dy_2_managed.get();
+    T*   d_alpha = (T*)d_alpha_managed.get();
+    T*   d_beta  = (T*)d_beta_managed.get();
 
     if(!dval || !dptr || !dcol || !dx || !dy_1 || !dy_2 || !d_alpha || !d_beta)
     {
@@ -364,10 +365,10 @@ hipsparseStatus_t testing_hybmv(Arguments argus)
         int coo_nnz = dhyb->coo_nnz;
 
         std::vector<int> hell_col(ell_nnz);
-        std::vector<T> hell_val(ell_nnz);
+        std::vector<T>   hell_val(ell_nnz);
         std::vector<int> hcoo_row(coo_nnz);
         std::vector<int> hcoo_col(coo_nnz);
-        std::vector<T> hcoo_val(coo_nnz);
+        std::vector<T>   hcoo_val(coo_nnz);
 
         if(ell_nnz > 0)
         {

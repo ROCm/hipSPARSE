@@ -23,9 +23,9 @@
 
 #include "arg_check.hpp"
 
-#include <iostream>
 #include <hip/hip_runtime_api.h>
 #include <hipsparse.h>
+#include <iostream>
 
 #ifdef GOOGLE_TEST
 #include <gtest/gtest.h>

@@ -23,11 +23,11 @@
 
 #include "utility.hpp"
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <vector>
-#include <hipsparse.h>
 #include <hip/hip_runtime_api.h>
+#include <hipsparse.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <vector>
 
 int main(int argc, char* argv[])
 {
@@ -56,19 +56,19 @@ int main(int argc, char* argv[])
     hipsparseCreate(&handle);
 
     hipDeviceProp_t devProp;
-    int device_id = 0;
+    int             device_id = 0;
 
     hipGetDevice(&device_id);
     hipGetDeviceProperties(&devProp, device_id);
     printf("Device: %s\n", devProp.name);
 
     // Generate problem
-    std::vector<int> hAptr;
-    std::vector<int> hAcol;
+    std::vector<int>    hAptr;
+    std::vector<int>    hAcol;
     std::vector<double> hAval;
-    int m   = gen_2d_laplacian(ndim, hAptr, hAcol, hAval, HIPSPARSE_INDEX_BASE_ZERO);
-    int n   = m;
-    int nnz = hAptr[m];
+    int                 m = gen_2d_laplacian(ndim, hAptr, hAcol, hAval, HIPSPARSE_INDEX_BASE_ZERO);
+    int                 n = m;
+    int                 nnz = hAptr[m];
 
     // Sample some random data
     srand(12345ULL);
@@ -84,8 +84,8 @@ int main(int argc, char* argv[])
     hipsparseCreateMatDescr(&descrA);
 
     // Offload data to device
-    int* dAptr    = NULL;
-    int* dAcol    = NULL;
+    int*    dAptr = NULL;
+    int*    dAcol = NULL;
     double* dAval = NULL;
     double* dx    = NULL;
     double* dy    = NULL;
@@ -152,9 +152,9 @@ int main(int argc, char* argv[])
     }
 
     time = (get_time_us() - time) / (trials * batch_size * 1e3);
-    double bandwidth =
-        static_cast<double>(sizeof(double) * (2 * m + nnz) + sizeof(int) * (m + 1 + nnz)) / time /
-        1e6;
+    double bandwidth
+        = static_cast<double>(sizeof(double) * (2 * m + nnz) + sizeof(int) * (m + 1 + nnz)) / time
+          / 1e6;
     double gflops = static_cast<double>(2 * nnz) / time / 1e6;
     printf("m\t\tn\t\tnnz\t\talpha\tbeta\tGFlops\tGB/s\tusec\n");
     printf("%8d\t%8d\t%9d\t%0.2lf\t%0.2lf\t%0.2lf\t%0.2lf\t%0.2lf\n",

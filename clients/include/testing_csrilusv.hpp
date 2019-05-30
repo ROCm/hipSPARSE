@@ -25,16 +25,16 @@
 #ifndef TESTING_CSRILUSV_HPP
 #define TESTING_CSRILUSV_HPP
 
-#include "hipsparse_test_unique_ptr.hpp"
 #include "hipsparse.hpp"
-#include "utility.hpp"
+#include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
+#include "utility.hpp"
 
-#include <string>
-#include <cmath>
-#include <limits>
 #include <algorithm>
+#include <cmath>
 #include <hipsparse.h>
+#include <limits>
+#include <string>
 
 using namespace hipsparse;
 using namespace hipsparse_test;
@@ -45,13 +45,13 @@ hipsparseStatus_t testing_csrilusv(Arguments argus)
     hipsparseIndexBase_t idx_base = argus.idx_base;
 
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
-    hipsparseHandle_t handle = test_handle->handle;
+    hipsparseHandle_t              handle = test_handle->handle;
 
     std::unique_ptr<descr_struct> test_descr_M(new descr_struct);
-    hipsparseMatDescr_t descr_M = test_descr_M->descr;
+    hipsparseMatDescr_t           descr_M = test_descr_M->descr;
 
     std::unique_ptr<csrilu02_struct> test_csrilu02_info(new csrilu02_struct);
-    csrilu02Info_t info_M = test_csrilu02_info->info;
+    csrilu02Info_t                   info_M = test_csrilu02_info->info;
 
     // Initialize the matrix descriptor
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatIndexBase(descr_M, idx_base));
@@ -59,7 +59,7 @@ hipsparseStatus_t testing_csrilusv(Arguments argus)
     // Host structures
     std::vector<int> hcsr_row_ptr;
     std::vector<int> hcsr_col_ind;
-    std::vector<T> hcsr_val;
+    std::vector<T>   hcsr_val;
 
     // Initial Data on CPU
     int m;
@@ -67,21 +67,22 @@ hipsparseStatus_t testing_csrilusv(Arguments argus)
     int nnz;
 
     if(read_bin_matrix(
-           argus.filename.c_str(), m, n, nnz, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base) != 0)
+           argus.filename.c_str(), m, n, nnz, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base)
+       != 0)
     {
         fprintf(stderr, "Cannot open [read] %s\n", argus.filename.c_str());
         return HIPSPARSE_STATUS_INTERNAL_ERROR;
     }
 
     // Allocate memory on device
-    auto dptr_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * (m + 1)), device_free};
-    auto dcol_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
-    auto dval_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
-    auto d_position_managed = hipsparse_unique_ptr{device_malloc(sizeof(int)), device_free};
+    auto dptr_managed = hipsparse_unique_ptr {device_malloc(sizeof(int) * (m + 1)), device_free};
+    auto dcol_managed = hipsparse_unique_ptr {device_malloc(sizeof(int) * nnz), device_free};
+    auto dval_managed = hipsparse_unique_ptr {device_malloc(sizeof(T) * nnz), device_free};
+    auto d_position_managed = hipsparse_unique_ptr {device_malloc(sizeof(int)), device_free};
 
     int* dptr       = (int*)dptr_managed.get();
     int* dcol       = (int*)dcol_managed.get();
-    T* dval         = (T*)dval_managed.get();
+    T*   dval       = (T*)dval_managed.get();
     int* d_position = (int*)d_position_managed.get();
 
     if(!dval || !dptr || !dcol || !d_position)
@@ -103,7 +104,7 @@ hipsparseStatus_t testing_csrilusv(Arguments argus)
         hipsparseXcsrilu02_bufferSizeExt(handle, m, nnz, descr_M, dval, dptr, dcol, info_M, &size));
 
     // Allocate buffer on the device
-    auto dbuffer_managed = hipsparse_unique_ptr{device_malloc(sizeof(char) * size), device_free};
+    auto dbuffer_managed = hipsparse_unique_ptr {device_malloc(sizeof(char) * size), device_free};
 
     void* dbuffer = (void*)dbuffer_managed.get();
 
@@ -138,7 +139,7 @@ hipsparseStatus_t testing_csrilusv(Arguments argus)
                                              dbuffer));
 
     // Check for zero pivot
-    int hposition_1, hposition_2;
+    int               hposition_1, hposition_2;
     hipsparseStatus_t pivot_status_1, pivot_status_2;
 
     // Host pointer mode
@@ -155,8 +156,8 @@ hipsparseStatus_t testing_csrilusv(Arguments argus)
     CHECK_HIP_ERROR(hipMemcpy(&hposition_2, d_position, sizeof(int), hipMemcpyDeviceToHost));
 
     // Compute host reference csrilu0
-    int position_gold =
-        csrilu0(m, hcsr_row_ptr.data(), hcsr_col_ind.data(), hcsr_val.data(), idx_base);
+    int position_gold
+        = csrilu0(m, hcsr_row_ptr.data(), hcsr_col_ind.data(), hcsr_val.data(), idx_base);
 
     // Check zero pivot results
     unit_check_general(1, 1, 1, &position_gold, &hposition_1);
@@ -191,14 +192,14 @@ hipsparseStatus_t testing_csrilusv(Arguments argus)
 
     // Create matrix descriptors for csrsv
     std::unique_ptr<descr_struct> test_descr_L(new descr_struct);
-    hipsparseMatDescr_t descr_L = test_descr_L->descr;
+    hipsparseMatDescr_t           descr_L = test_descr_L->descr;
 
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatIndexBase(descr_L, idx_base));
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatFillMode(descr_L, HIPSPARSE_FILL_MODE_LOWER));
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatDiagType(descr_L, HIPSPARSE_DIAG_TYPE_UNIT));
 
     std::unique_ptr<descr_struct> test_descr_U(new descr_struct);
-    hipsparseMatDescr_t descr_U = test_descr_U->descr;
+    hipsparseMatDescr_t           descr_U = test_descr_U->descr;
 
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatIndexBase(descr_U, idx_base));
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatFillMode(descr_U, HIPSPARSE_FILL_MODE_UPPER));
@@ -231,7 +232,8 @@ hipsparseStatus_t testing_csrilusv(Arguments argus)
     size = std::max(size_lower, size_upper);
 
     // Allocate buffer on the device
-    auto dbuffer_sv_managed = hipsparse_unique_ptr{device_malloc(sizeof(char) * size), device_free};
+    auto dbuffer_sv_managed
+        = hipsparse_unique_ptr {device_malloc(sizeof(char) * size), device_free};
 
     void* dbuffer_sv = (void*)dbuffer_sv_managed.get();
 
@@ -274,12 +276,12 @@ hipsparseStatus_t testing_csrilusv(Arguments argus)
     std::vector<T> hz_gold(m);
 
     // Allocate device memory
-    auto dx_managed      = hipsparse_unique_ptr{device_malloc(sizeof(T) * m), device_free};
-    auto dy_1_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * m), device_free};
-    auto dy_2_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * m), device_free};
-    auto dz_1_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * m), device_free};
-    auto dz_2_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * m), device_free};
-    auto d_alpha_managed = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
+    auto dx_managed      = hipsparse_unique_ptr {device_malloc(sizeof(T) * m), device_free};
+    auto dy_1_managed    = hipsparse_unique_ptr {device_malloc(sizeof(T) * m), device_free};
+    auto dy_2_managed    = hipsparse_unique_ptr {device_malloc(sizeof(T) * m), device_free};
+    auto dz_1_managed    = hipsparse_unique_ptr {device_malloc(sizeof(T) * m), device_free};
+    auto dz_2_managed    = hipsparse_unique_ptr {device_malloc(sizeof(T) * m), device_free};
+    auto d_alpha_managed = hipsparse_unique_ptr {device_malloc(sizeof(T)), device_free};
 
     T* dx      = (T*)dx_managed.get();
     T* dy_1    = (T*)dy_1_managed.get();
