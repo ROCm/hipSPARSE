@@ -24,10 +24,10 @@
 #include "testing_csr2hyb.hpp"
 #include "utility.hpp"
 
-#include <hipsparse.h>
 #include <gtest/gtest.h>
-#include <vector>
+#include <hipsparse.h>
 #include <string>
+#include <vector>
 
 typedef std::tuple<int, int, hipsparseIndexBase_t, hipsparseHybPartition_t, int> csr2hyb_tuple;
 typedef std::tuple<hipsparseIndexBase_t, hipsparseHybPartition_t, int, std::string>
@@ -36,11 +36,11 @@ typedef std::tuple<hipsparseIndexBase_t, hipsparseHybPartition_t, int, std::stri
 int csr2hyb_M_range[] = {-1, 0, 10, 500, 872, 1000};
 int csr2hyb_N_range[] = {-3, 0, 33, 242, 623, 1000};
 
-hipsparseIndexBase_t csr2hyb_idx_base_range[] = {HIPSPARSE_INDEX_BASE_ZERO,
-                                                 HIPSPARSE_INDEX_BASE_ONE};
+hipsparseIndexBase_t csr2hyb_idx_base_range[]
+    = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
-hipsparseHybPartition_t csr2hyb_partition[] = {
-    HIPSPARSE_HYB_PARTITION_AUTO, HIPSPARSE_HYB_PARTITION_MAX, HIPSPARSE_HYB_PARTITION_USER};
+hipsparseHybPartition_t csr2hyb_partition[]
+    = {HIPSPARSE_HYB_PARTITION_AUTO, HIPSPARSE_HYB_PARTITION_MAX, HIPSPARSE_HYB_PARTITION_USER};
 
 int csr2hyb_ELL_range[] = {-33, -1, 0, INT32_MAX};
 
@@ -61,7 +61,7 @@ std::string csr2hyb_bin[] = {"rma10.bin",
 
 class parameterized_csr2hyb : public testing::TestWithParam<csr2hyb_tuple>
 {
-    protected:
+protected:
     parameterized_csr2hyb() {}
     virtual ~parameterized_csr2hyb() {}
     virtual void SetUp() {}
@@ -70,7 +70,7 @@ class parameterized_csr2hyb : public testing::TestWithParam<csr2hyb_tuple>
 
 class parameterized_csr2hyb_bin : public testing::TestWithParam<csr2hyb_bin_tuple>
 {
-    protected:
+protected:
     parameterized_csr2hyb_bin() {}
     virtual ~parameterized_csr2hyb_bin() {}
     virtual void SetUp() {}
@@ -103,7 +103,7 @@ Arguments setup_csr2hyb_arguments(csr2hyb_bin_tuple tup)
     std::string bin_file = std::get<3>(tup);
 
     // Get current executables absolute path
-    char path_exe[PATH_MAX];
+    char    path_exe[PATH_MAX];
     ssize_t len = readlink("/proc/self/exe", path_exe, sizeof(path_exe) - 1);
     if(len < 14)
     {
@@ -120,7 +120,10 @@ Arguments setup_csr2hyb_arguments(csr2hyb_bin_tuple tup)
     return arg;
 }
 
-TEST(csr2hyb_bad_arg, csr2hyb) { testing_csr2hyb_bad_arg<float>(); }
+TEST(csr2hyb_bad_arg, csr2hyb)
+{
+    testing_csr2hyb_bad_arg<float>();
+}
 
 TEST_P(parameterized_csr2hyb, csr2hyb_float)
 {

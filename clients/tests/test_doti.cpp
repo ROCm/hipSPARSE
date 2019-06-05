@@ -24,11 +24,11 @@
 #include "testing_doti.hpp"
 #include "utility.hpp"
 
-#include <hipsparse.h>
 #include <gtest/gtest.h>
+#include <hipsparse.h>
 #include <vector>
 
-typedef hipsparseIndexBase_t base;
+typedef hipsparseIndexBase_t       base;
 typedef std::tuple<int, int, base> doti_tuple;
 
 int doti_N_range[]   = {12000, 15332, 22031};
@@ -38,7 +38,7 @@ base doti_idx_base_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ON
 
 class parameterized_doti : public testing::TestWithParam<doti_tuple>
 {
-    protected:
+protected:
     parameterized_doti() {}
     virtual ~parameterized_doti() {}
     virtual void SetUp() {}
@@ -55,7 +55,10 @@ Arguments setup_doti_arguments(doti_tuple tup)
     return arg;
 }
 
-TEST(doti_bad_arg, doti_float) { testing_doti_bad_arg<float>(); }
+TEST(doti_bad_arg, doti_float)
+{
+    testing_doti_bad_arg<float>();
+}
 
 TEST_P(parameterized_doti, doti_float)
 {

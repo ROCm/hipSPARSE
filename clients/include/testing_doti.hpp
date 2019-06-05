@@ -25,10 +25,10 @@
 #ifndef TESTING_DOTI_HPP
 #define TESTING_DOTI_HPP
 
-#include "hipsparse_test_unique_ptr.hpp"
 #include "hipsparse.hpp"
-#include "utility.hpp"
+#include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
+#include "utility.hpp"
 
 #include <hipsparse.h>
 
@@ -46,18 +46,19 @@ void testing_doti_bad_arg(void)
     int safe_size = 100;
 
     hipsparseIndexBase_t idx_base = HIPSPARSE_INDEX_BASE_ZERO;
-    hipsparseStatus_t status;
+    hipsparseStatus_t    status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
-    hipsparseHandle_t handle = unique_ptr_handle->handle;
+    hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
-    auto dx_val_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-    auto dx_ind_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-    auto dy_managed     = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+    auto dx_val_managed = hipsparse_unique_ptr {device_malloc(sizeof(T) * safe_size), device_free};
+    auto dx_ind_managed
+        = hipsparse_unique_ptr {device_malloc(sizeof(int) * safe_size), device_free};
+    auto dy_managed = hipsparse_unique_ptr {device_malloc(sizeof(T) * safe_size), device_free};
 
-    T* dx_val   = (T*)dx_val_managed.get();
+    T*   dx_val = (T*)dx_val_managed.get();
     int* dx_ind = (int*)dx_ind_managed.get();
-    T* dy       = (T*)dy_managed.get();
+    T*   dy     = (T*)dy_managed.get();
 
     if(!dx_ind || !dx_val || !dy)
     {
@@ -111,14 +112,14 @@ void testing_doti_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_doti(Arguments argus)
 {
-    int N                         = argus.N;
-    int nnz                       = argus.nnz;
-    int safe_size                 = 100;
-    hipsparseIndexBase_t idx_base = argus.idx_base;
-    hipsparseStatus_t status;
+    int                  N         = argus.N;
+    int                  nnz       = argus.nnz;
+    int                  safe_size = 100;
+    hipsparseIndexBase_t idx_base  = argus.idx_base;
+    hipsparseStatus_t    status;
 
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
-    hipsparseHandle_t handle = test_handle->handle;
+    hipsparseHandle_t              handle = test_handle->handle;
 
     // Argument sanity check before allocating invalid memory
     if(nnz <= 0)
@@ -127,15 +128,15 @@ hipsparseStatus_t testing_doti(Arguments argus)
         // Do not test args in cusparse
         return HIPSPARSE_STATUS_SUCCESS;
 #endif
-        auto dx_ind_managed =
-            hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto dx_val_managed =
-            hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-        auto dy_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+        auto dx_ind_managed
+            = hipsparse_unique_ptr {device_malloc(sizeof(int) * safe_size), device_free};
+        auto dx_val_managed
+            = hipsparse_unique_ptr {device_malloc(sizeof(T) * safe_size), device_free};
+        auto dy_managed = hipsparse_unique_ptr {device_malloc(sizeof(T) * safe_size), device_free};
 
         int* dx_ind = (int*)dx_ind_managed.get();
-        T* dx_val   = (T*)dx_val_managed.get();
-        T* dy       = (T*)dy_managed.get();
+        T*   dx_val = (T*)dx_val_managed.get();
+        T*   dy     = (T*)dy_managed.get();
 
         if(!dx_ind || !dx_val || !dy)
         {
@@ -163,8 +164,8 @@ hipsparseStatus_t testing_doti(Arguments argus)
 
     // Host structures
     std::vector<int> hx_ind(nnz);
-    std::vector<T> hx_val(nnz);
-    std::vector<T> hy(N);
+    std::vector<T>   hx_val(nnz);
+    std::vector<T>   hy(N);
 
     T hresult_1;
     T hresult_2;
@@ -177,15 +178,15 @@ hipsparseStatus_t testing_doti(Arguments argus)
     hipsparseInit<T>(hy, 1, N);
 
     // allocate memory on device
-    auto dx_ind_managed    = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
-    auto dx_val_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
-    auto dy_managed        = hipsparse_unique_ptr{device_malloc(sizeof(T) * N), device_free};
-    auto dresult_2_managed = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
+    auto dx_ind_managed    = hipsparse_unique_ptr {device_malloc(sizeof(int) * nnz), device_free};
+    auto dx_val_managed    = hipsparse_unique_ptr {device_malloc(sizeof(T) * nnz), device_free};
+    auto dy_managed        = hipsparse_unique_ptr {device_malloc(sizeof(T) * N), device_free};
+    auto dresult_2_managed = hipsparse_unique_ptr {device_malloc(sizeof(T)), device_free};
 
-    int* dx_ind  = (int*)dx_ind_managed.get();
-    T* dx_val    = (T*)dx_val_managed.get();
-    T* dy        = (T*)dy_managed.get();
-    T* dresult_2 = (T*)dresult_2_managed.get();
+    int* dx_ind    = (int*)dx_ind_managed.get();
+    T*   dx_val    = (T*)dx_val_managed.get();
+    T*   dy        = (T*)dy_managed.get();
+    T*   dresult_2 = (T*)dresult_2_managed.get();
 
     if(!dx_ind || !dx_val || !dy || !dresult_2)
     {
