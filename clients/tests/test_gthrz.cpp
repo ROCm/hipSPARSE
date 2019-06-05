@@ -24,11 +24,11 @@
 #include "testing_gthrz.hpp"
 #include "utility.hpp"
 
-#include <hipsparse.h>
 #include <gtest/gtest.h>
+#include <hipsparse.h>
 #include <vector>
 
-typedef hipsparseIndexBase_t base;
+typedef hipsparseIndexBase_t       base;
 typedef std::tuple<int, int, base> gthrz_tuple;
 
 int gthrz_N_range[]   = {12000, 15332, 22031};
@@ -38,7 +38,7 @@ base gthrz_idx_base_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_O
 
 class parameterized_gthrz : public testing::TestWithParam<gthrz_tuple>
 {
-    protected:
+protected:
     parameterized_gthrz() {}
     virtual ~parameterized_gthrz() {}
     virtual void SetUp() {}
@@ -55,7 +55,10 @@ Arguments setup_gthrz_arguments(gthrz_tuple tup)
     return arg;
 }
 
-TEST(gthrz_bad_arg, gthrz_float) { testing_gthrz_bad_arg<float>(); }
+TEST(gthrz_bad_arg, gthrz_float)
+{
+    testing_gthrz_bad_arg<float>();
+}
 
 TEST_P(parameterized_gthrz, gthrz_float)
 {

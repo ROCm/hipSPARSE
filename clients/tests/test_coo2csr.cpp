@@ -24,19 +24,19 @@
 #include "testing_coo2csr.hpp"
 #include "utility.hpp"
 
-#include <hipsparse.h>
 #include <gtest/gtest.h>
-#include <vector>
+#include <hipsparse.h>
 #include <string>
+#include <vector>
 
-typedef std::tuple<int, int, hipsparseIndexBase_t> coo2csr_tuple;
+typedef std::tuple<int, int, hipsparseIndexBase_t>    coo2csr_tuple;
 typedef std::tuple<hipsparseIndexBase_t, std::string> coo2csr_bin_tuple;
 
 int coo2csr_M_range[] = {-1, 0, 10, 500, 872, 1000};
 int coo2csr_N_range[] = {-3, 0, 33, 242, 623, 1000};
 
-hipsparseIndexBase_t coo2csr_idx_base_range[] = {HIPSPARSE_INDEX_BASE_ZERO,
-                                                 HIPSPARSE_INDEX_BASE_ONE};
+hipsparseIndexBase_t coo2csr_idx_base_range[]
+    = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
 std::string coo2csr_bin[] = {"rma10.bin",
                              "mac_econ_fwd500.bin",
@@ -55,7 +55,7 @@ std::string coo2csr_bin[] = {"rma10.bin",
 
 class parameterized_coo2csr : public testing::TestWithParam<coo2csr_tuple>
 {
-    protected:
+protected:
     parameterized_coo2csr() {}
     virtual ~parameterized_coo2csr() {}
     virtual void SetUp() {}
@@ -64,7 +64,7 @@ class parameterized_coo2csr : public testing::TestWithParam<coo2csr_tuple>
 
 class parameterized_coo2csr_bin : public testing::TestWithParam<coo2csr_bin_tuple>
 {
-    protected:
+protected:
     parameterized_coo2csr_bin() {}
     virtual ~parameterized_coo2csr_bin() {}
     virtual void SetUp() {}
@@ -93,7 +93,7 @@ Arguments setup_coo2csr_arguments(coo2csr_bin_tuple tup)
     std::string bin_file = std::get<1>(tup);
 
     // Get current executables absolute path
-    char path_exe[PATH_MAX];
+    char    path_exe[PATH_MAX];
     ssize_t len = readlink("/proc/self/exe", path_exe, sizeof(path_exe) - 1);
     if(len < 14)
     {
@@ -110,7 +110,10 @@ Arguments setup_coo2csr_arguments(coo2csr_bin_tuple tup)
     return arg;
 }
 
-TEST(coo2csr_bad_arg, coo2csr) { testing_coo2csr_bad_arg(); }
+TEST(coo2csr_bad_arg, coo2csr)
+{
+    testing_coo2csr_bad_arg();
+}
 
 TEST_P(parameterized_coo2csr, coo2csr)
 {

@@ -25,13 +25,13 @@
 #ifndef TESTING_IDENTITY_HPP
 #define TESTING_IDENTITY_HPP
 
-#include "hipsparse_test_unique_ptr.hpp"
 #include "hipsparse.hpp"
-#include "utility.hpp"
+#include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
+#include "utility.hpp"
 
-#include <hipsparse.h>
 #include <algorithm>
+#include <hipsparse.h>
 
 using namespace hipsparse;
 using namespace hipsparse_test;
@@ -42,14 +42,14 @@ void testing_identity_bad_arg(void)
     // do not test for bad args
     return;
 #endif
-    int n         = 100;
-    int safe_size = 100;
+    int               n         = 100;
+    int               safe_size = 100;
     hipsparseStatus_t status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
-    hipsparseHandle_t handle = unique_ptr_handle->handle;
+    hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
-    auto p_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+    auto p_managed = hipsparse_unique_ptr {device_malloc(sizeof(int) * safe_size), device_free};
 
     int* p = (int*)p_managed.get();
 
@@ -78,12 +78,12 @@ void testing_identity_bad_arg(void)
 
 hipsparseStatus_t testing_identity(Arguments argus)
 {
-    int n         = argus.N;
-    int safe_size = 100;
+    int               n         = argus.N;
+    int               safe_size = 100;
     hipsparseStatus_t status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
-    hipsparseHandle_t handle = unique_ptr_handle->handle;
+    hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
     // Argument sanity check before allocating invalid memory
     if(n <= 0)
@@ -92,7 +92,7 @@ hipsparseStatus_t testing_identity(Arguments argus)
         // Do not test args in cusparse
         return HIPSPARSE_STATUS_SUCCESS;
 #endif
-        auto p_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+        auto p_managed = hipsparse_unique_ptr {device_malloc(sizeof(int) * safe_size), device_free};
 
         int* p = (int*)p_managed.get();
 
@@ -127,7 +127,7 @@ hipsparseStatus_t testing_identity(Arguments argus)
     }
 
     // Allocate memory on the device
-    auto dp_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * n), device_free};
+    auto dp_managed = hipsparse_unique_ptr {device_malloc(sizeof(int) * n), device_free};
 
     int* dp = (int*)dp_managed.get();
 

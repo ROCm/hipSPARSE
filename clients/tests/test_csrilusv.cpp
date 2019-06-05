@@ -24,11 +24,11 @@
 #include "testing_csrilusv.hpp"
 #include "utility.hpp"
 
-#include <hipsparse.h>
 #include <gtest/gtest.h>
+#include <hipsparse.h>
+#include <string>
 #include <unistd.h>
 #include <vector>
-#include <string>
 
 typedef hipsparseIndexBase_t base;
 
@@ -51,7 +51,7 @@ std::string csrilusv_bin[] = {"mac_econ_fwd500.bin",
 
 class parameterized_csrilusv_bin : public testing::TestWithParam<csrilusv_bin_tuple>
 {
-    protected:
+protected:
     parameterized_csrilusv_bin() {}
     virtual ~parameterized_csrilusv_bin() {}
     virtual void SetUp() {}
@@ -69,7 +69,7 @@ Arguments setup_csrilusv_arguments(csrilusv_bin_tuple tup)
     std::string bin_file = std::get<1>(tup);
 
     // Get current executables absolute path
-    char path_exe[PATH_MAX];
+    char    path_exe[PATH_MAX];
     ssize_t len = readlink("/proc/self/exe", path_exe, sizeof(path_exe) - 1);
     if(len < 14)
     {

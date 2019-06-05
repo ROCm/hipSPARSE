@@ -25,14 +25,14 @@
 #ifndef TESTING_CSRMV_HPP
 #define TESTING_CSRMV_HPP
 
-#include "hipsparse_test_unique_ptr.hpp"
 #include "hipsparse.hpp"
-#include "utility.hpp"
+#include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
+#include "utility.hpp"
 
-#include <string>
 #include <cmath>
 #include <hipsparse.h>
+#include <string>
 
 using namespace hipsparse;
 using namespace hipsparse_test;
@@ -44,32 +44,32 @@ void testing_csrmv_bad_arg(void)
     // do not test for bad args
     return;
 #endif
-    int n                       = 100;
-    int m                       = 100;
-    int nnz                     = 100;
-    int safe_size               = 100;
-    T alpha                     = 0.6;
-    T beta                      = 0.2;
-    hipsparseOperation_t transA = HIPSPARSE_OPERATION_NON_TRANSPOSE;
-    hipsparseStatus_t status;
+    int                  n         = 100;
+    int                  m         = 100;
+    int                  nnz       = 100;
+    int                  safe_size = 100;
+    T                    alpha     = 0.6;
+    T                    beta      = 0.2;
+    hipsparseOperation_t transA    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
+    hipsparseStatus_t    status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
-    hipsparseHandle_t handle = unique_ptr_handle->handle;
+    hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
     std::unique_ptr<descr_struct> unique_ptr_descr(new descr_struct);
-    hipsparseMatDescr_t descr = unique_ptr_descr->descr;
+    hipsparseMatDescr_t           descr = unique_ptr_descr->descr;
 
-    auto dptr_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-    auto dcol_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-    auto dval_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-    auto dx_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-    auto dy_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+    auto dptr_managed = hipsparse_unique_ptr {device_malloc(sizeof(int) * safe_size), device_free};
+    auto dcol_managed = hipsparse_unique_ptr {device_malloc(sizeof(int) * safe_size), device_free};
+    auto dval_managed = hipsparse_unique_ptr {device_malloc(sizeof(T) * safe_size), device_free};
+    auto dx_managed   = hipsparse_unique_ptr {device_malloc(sizeof(T) * safe_size), device_free};
+    auto dy_managed   = hipsparse_unique_ptr {device_malloc(sizeof(T) * safe_size), device_free};
 
     int* dptr = (int*)dptr_managed.get();
     int* dcol = (int*)dcol_managed.get();
-    T* dval   = (T*)dval_managed.get();
-    T* dx     = (T*)dx_managed.get();
-    T* dy     = (T*)dy_managed.get();
+    T*   dval = (T*)dval_managed.get();
+    T*   dx   = (T*)dx_managed.get();
+    T*   dy   = (T*)dy_managed.get();
 
     if(!dval || !dptr || !dcol || !dx || !dy)
     {
@@ -154,16 +154,16 @@ void testing_csrmv_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_csrmv(Arguments argus)
 {
-    int safe_size                 = 100;
-    int m                         = argus.M;
-    int n                         = argus.N;
-    T h_alpha                     = argus.alpha;
-    T h_beta                      = argus.beta;
-    hipsparseOperation_t transA   = argus.transA;
-    hipsparseIndexBase_t idx_base = argus.idx_base;
-    std::string binfile           = "";
-    std::string filename          = "";
-    hipsparseStatus_t status;
+    int                  safe_size = 100;
+    int                  m         = argus.M;
+    int                  n         = argus.N;
+    T                    h_alpha   = argus.alpha;
+    T                    h_beta    = argus.beta;
+    hipsparseOperation_t transA    = argus.transA;
+    hipsparseIndexBase_t idx_base  = argus.idx_base;
+    std::string          binfile   = "";
+    std::string          filename  = "";
+    hipsparseStatus_t    status;
 
     // When in testing mode, M == N == -99 indicates that we are testing with a real
     // matrix from cise.ufl.edu
@@ -179,10 +179,10 @@ hipsparseStatus_t testing_csrmv(Arguments argus)
     }
 
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
-    hipsparseHandle_t handle = test_handle->handle;
+    hipsparseHandle_t              handle = test_handle->handle;
 
     std::unique_ptr<descr_struct> test_descr(new descr_struct);
-    hipsparseMatDescr_t descr = test_descr->descr;
+    hipsparseMatDescr_t           descr = test_descr->descr;
 
     // Set matrix index base
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatIndexBase(descr, idx_base));
@@ -202,19 +202,20 @@ hipsparseStatus_t testing_csrmv(Arguments argus)
         // Do not test args in cusparse
         return HIPSPARSE_STATUS_SUCCESS;
 #endif
-        auto dptr_managed =
-            hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto dcol_managed =
-            hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto dval_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-        auto dx_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-        auto dy_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+        auto dptr_managed
+            = hipsparse_unique_ptr {device_malloc(sizeof(int) * safe_size), device_free};
+        auto dcol_managed
+            = hipsparse_unique_ptr {device_malloc(sizeof(int) * safe_size), device_free};
+        auto dval_managed
+            = hipsparse_unique_ptr {device_malloc(sizeof(T) * safe_size), device_free};
+        auto dx_managed = hipsparse_unique_ptr {device_malloc(sizeof(T) * safe_size), device_free};
+        auto dy_managed = hipsparse_unique_ptr {device_malloc(sizeof(T) * safe_size), device_free};
 
         int* dptr = (int*)dptr_managed.get();
         int* dcol = (int*)dcol_managed.get();
-        T* dval   = (T*)dval_managed.get();
-        T* dx     = (T*)dx_managed.get();
-        T* dy     = (T*)dy_managed.get();
+        T*   dval = (T*)dval_managed.get();
+        T*   dx   = (T*)dx_managed.get();
+        T*   dy   = (T*)dy_managed.get();
 
         if(!dval || !dptr || !dcol || !dx || !dy)
         {
@@ -243,7 +244,7 @@ hipsparseStatus_t testing_csrmv(Arguments argus)
     std::vector<int> hcsr_row_ptr;
     std::vector<int> hcoo_row_ind;
     std::vector<int> hcol_ind;
-    std::vector<T> hval;
+    std::vector<T>   hval;
 
     // Initial Data on CPU
     srand(12345ULL);
@@ -264,8 +265,8 @@ hipsparseStatus_t testing_csrmv(Arguments argus)
     {
         if(filename != "")
         {
-            if(read_mtx_matrix(
-                   filename.c_str(), m, n, nnz, hcoo_row_ind, hcol_ind, hval, idx_base) != 0)
+            if(read_mtx_matrix(filename.c_str(), m, n, nnz, hcoo_row_ind, hcol_ind, hval, idx_base)
+               != 0)
             {
                 fprintf(stderr, "Cannot open [read] %s\n", filename.c_str());
                 return HIPSPARSE_STATUS_INTERNAL_ERROR;
@@ -306,23 +307,23 @@ hipsparseStatus_t testing_csrmv(Arguments argus)
     hy_gold = hy_1;
 
     // allocate memory on device
-    auto dptr_managed    = hipsparse_unique_ptr{device_malloc(sizeof(int) * (m + 1)), device_free};
-    auto dcol_managed    = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
-    auto dval_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
-    auto dx_managed      = hipsparse_unique_ptr{device_malloc(sizeof(T) * n), device_free};
-    auto dy_1_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * m), device_free};
-    auto dy_2_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * m), device_free};
-    auto d_alpha_managed = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
-    auto d_beta_managed  = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
+    auto dptr_managed    = hipsparse_unique_ptr {device_malloc(sizeof(int) * (m + 1)), device_free};
+    auto dcol_managed    = hipsparse_unique_ptr {device_malloc(sizeof(int) * nnz), device_free};
+    auto dval_managed    = hipsparse_unique_ptr {device_malloc(sizeof(T) * nnz), device_free};
+    auto dx_managed      = hipsparse_unique_ptr {device_malloc(sizeof(T) * n), device_free};
+    auto dy_1_managed    = hipsparse_unique_ptr {device_malloc(sizeof(T) * m), device_free};
+    auto dy_2_managed    = hipsparse_unique_ptr {device_malloc(sizeof(T) * m), device_free};
+    auto d_alpha_managed = hipsparse_unique_ptr {device_malloc(sizeof(T)), device_free};
+    auto d_beta_managed  = hipsparse_unique_ptr {device_malloc(sizeof(T)), device_free};
 
-    int* dptr  = (int*)dptr_managed.get();
-    int* dcol  = (int*)dcol_managed.get();
-    T* dval    = (T*)dval_managed.get();
-    T* dx      = (T*)dx_managed.get();
-    T* dy_1    = (T*)dy_1_managed.get();
-    T* dy_2    = (T*)dy_2_managed.get();
-    T* d_alpha = (T*)d_alpha_managed.get();
-    T* d_beta  = (T*)d_beta_managed.get();
+    int* dptr    = (int*)dptr_managed.get();
+    int* dcol    = (int*)dcol_managed.get();
+    T*   dval    = (T*)dval_managed.get();
+    T*   dx      = (T*)dx_managed.get();
+    T*   dy_1    = (T*)dy_1_managed.get();
+    T*   dy_2    = (T*)dy_2_managed.get();
+    T*   d_alpha = (T*)d_alpha_managed.get();
+    T*   d_beta  = (T*)d_beta_managed.get();
 
     if(!dval || !dptr || !dcol || !dx || !dy_1 || !dy_2 || !d_alpha || !d_beta)
     {
@@ -476,8 +477,8 @@ hipsparseStatus_t testing_csrmv(Arguments argus)
         double gpu_gflops = flops / gpu_time_used / 1e6;
         size_t memtrans   = 2.0 * m + nnz;
         memtrans          = (h_beta != 0.0) ? memtrans + m : memtrans;
-        double bandwidth =
-            (memtrans * sizeof(T) + (m + 1 + nnz) * sizeof(int)) / gpu_time_used / 1e6;
+        double bandwidth
+            = (memtrans * sizeof(T) + (m + 1 + nnz) * sizeof(int)) / gpu_time_used / 1e6;
 
         printf("m\t\tn\t\tnnz\t\talpha\tbeta\tGFlops\tGB/s\tmsec\n");
         printf("%8d\t%8d\t%9d\t%0.2lf\t%0.2lf\t%0.2lf\t%0.2lf\t%0.2lf\n",

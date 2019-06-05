@@ -23,9 +23,9 @@
 
 #include "unit.hpp"
 
-#include <hipsparse.h>
-#include <hip/hip_runtime_api.h>
 #include <algorithm>
+#include <hip/hip_runtime_api.h>
+#include <hipsparse.h>
 #include <limits>
 
 #ifdef GOOGLE_TEST

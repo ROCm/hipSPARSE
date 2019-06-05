@@ -24,14 +24,14 @@
 #include "testing_csrmv.hpp"
 #include "utility.hpp"
 
-#include <hipsparse.h>
 #include <gtest/gtest.h>
+#include <hipsparse.h>
+#include <string>
 #include <unistd.h>
 #include <vector>
-#include <string>
 
-typedef hipsparseIndexBase_t base;
-typedef std::tuple<int, int, double, double, base> csrmv_tuple;
+typedef hipsparseIndexBase_t                          base;
+typedef std::tuple<int, int, double, double, base>    csrmv_tuple;
 typedef std::tuple<double, double, base, std::string> csrmv_bin_tuple;
 
 int csr_M_range[] = {-1, 0, 500, 7111};
@@ -59,7 +59,7 @@ std::string csr_bin[] = {"rma10.bin",
 
 class parameterized_csrmv : public testing::TestWithParam<csrmv_tuple>
 {
-    protected:
+protected:
     parameterized_csrmv() {}
     virtual ~parameterized_csrmv() {}
     virtual void SetUp() {}
@@ -68,7 +68,7 @@ class parameterized_csrmv : public testing::TestWithParam<csrmv_tuple>
 
 class parameterized_csrmv_bin : public testing::TestWithParam<csrmv_bin_tuple>
 {
-    protected:
+protected:
     parameterized_csrmv_bin() {}
     virtual ~parameterized_csrmv_bin() {}
     virtual void SetUp() {}
@@ -101,7 +101,7 @@ Arguments setup_csrmv_arguments(csrmv_bin_tuple tup)
     std::string bin_file = std::get<3>(tup);
 
     // Get current executables absolute path
-    char path_exe[PATH_MAX];
+    char    path_exe[PATH_MAX];
     ssize_t len = readlink("/proc/self/exe", path_exe, sizeof(path_exe) - 1);
     if(len < 14)
     {
@@ -118,7 +118,10 @@ Arguments setup_csrmv_arguments(csrmv_bin_tuple tup)
     return arg;
 }
 
-TEST(csrmv_bad_arg, csrmv_float) { testing_csrmv_bad_arg<float>(); }
+TEST(csrmv_bad_arg, csrmv_float)
+{
+    testing_csrmv_bad_arg<float>();
+}
 
 TEST_P(parameterized_csrmv, csrmv_float)
 {
