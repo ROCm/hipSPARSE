@@ -47,6 +47,7 @@ typedef void* hipsparseHybMat_t;
 #if defined(__HIP_PLATFORM_HCC__)
 typedef void* csrsv2Info_t;
 typedef void* csrilu02Info_t;
+typedef void* csrgemm2Info_t;
 #elif defined(__HIP_PLATFORM_NVCC__)
 struct csrsv2Info;
 typedef struct csrsv2Info* csrsv2Info_t;
