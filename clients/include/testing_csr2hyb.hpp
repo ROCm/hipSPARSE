@@ -25,13 +25,13 @@
 #ifndef TESTING_CSR2HYB_HPP
 #define TESTING_CSR2HYB_HPP
 
-#include "hipsparse_test_unique_ptr.hpp"
 #include "hipsparse.hpp"
-#include "utility.hpp"
+#include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
+#include "utility.hpp"
 
-#include <hipsparse.h>
 #include <algorithm>
+#include <hipsparse.h>
 #include <string>
 
 using namespace hipsparse;
@@ -43,45 +43,45 @@ using namespace hipsparse_test;
 
 struct test_hyb
 {
-    int m;
-    int n;
+    int                     m;
+    int                     n;
     hipsparseHybPartition_t partition;
-    int ell_nnz;
-    int ell_width;
-    int* ell_col_ind;
-    void* ell_val;
-    int coo_nnz;
-    int* coo_row_ind;
-    int* coo_col_ind;
-    void* coo_val;
+    int                     ell_nnz;
+    int                     ell_width;
+    int*                    ell_col_ind;
+    void*                   ell_val;
+    int                     coo_nnz;
+    int*                    coo_row_ind;
+    int*                    coo_col_ind;
+    void*                   coo_val;
 };
 
 template <typename T>
 void testing_csr2hyb_bad_arg(void)
 {
-    int m         = 100;
-    int n         = 100;
-    int safe_size = 100;
+    int               m         = 100;
+    int               n         = 100;
+    int               safe_size = 100;
     hipsparseStatus_t status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
-    hipsparseHandle_t handle = unique_ptr_handle->handle;
+    hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
     std::unique_ptr<descr_struct> unique_ptr_descr(new descr_struct);
-    hipsparseMatDescr_t descr = unique_ptr_descr->descr;
+    hipsparseMatDescr_t           descr = unique_ptr_descr->descr;
 
     std::unique_ptr<hyb_struct> unique_ptr_hyb(new hyb_struct);
-    hipsparseHybMat_t hyb = unique_ptr_hyb->hyb;
+    hipsparseHybMat_t           hyb = unique_ptr_hyb->hyb;
 
-    auto csr_row_ptr_managed =
-        hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-    auto csr_col_ind_managed =
-        hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-    auto csr_val_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+    auto csr_row_ptr_managed
+        = hipsparse_unique_ptr {device_malloc(sizeof(int) * safe_size), device_free};
+    auto csr_col_ind_managed
+        = hipsparse_unique_ptr {device_malloc(sizeof(int) * safe_size), device_free};
+    auto csr_val_managed = hipsparse_unique_ptr {device_malloc(sizeof(T) * safe_size), device_free};
 
     int* csr_row_ptr = (int*)csr_row_ptr_managed.get();
     int* csr_col_ind = (int*)csr_col_ind_managed.get();
-    T* csr_val       = (T*)csr_val_managed.get();
+    T*   csr_val     = (T*)csr_val_managed.get();
 
     if(!csr_row_ptr || !csr_col_ind || !csr_val)
     {
@@ -158,15 +158,15 @@ void testing_csr2hyb_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_csr2hyb(Arguments argus)
 {
-    int m                         = argus.M;
-    int n                         = argus.N;
-    int safe_size                 = 100;
-    hipsparseIndexBase_t idx_base = argus.idx_base;
-    hipsparseHybPartition_t part  = argus.part;
-    int user_ell_width            = argus.ell_width;
-    std::string binfile           = "";
-    std::string filename          = "";
-    hipsparseStatus_t status;
+    int                     m              = argus.M;
+    int                     n              = argus.N;
+    int                     safe_size      = 100;
+    hipsparseIndexBase_t    idx_base       = argus.idx_base;
+    hipsparseHybPartition_t part           = argus.part;
+    int                     user_ell_width = argus.ell_width;
+    std::string             binfile        = "";
+    std::string             filename       = "";
+    hipsparseStatus_t       status;
 
     // When in testing mode, M == N == -99 indicates that we are testing with a real
     // matrix from cise.ufl.edu
@@ -189,30 +189,30 @@ hipsparseStatus_t testing_csr2hyb(Arguments argus)
     int nnz = m * scale * n;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
-    hipsparseHandle_t handle = unique_ptr_handle->handle;
+    hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
     std::unique_ptr<descr_struct> unique_ptr_descr(new descr_struct);
-    hipsparseMatDescr_t descr = unique_ptr_descr->descr;
+    hipsparseMatDescr_t           descr = unique_ptr_descr->descr;
 
     // Set matrix index base
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatIndexBase(descr, idx_base));
 
     std::unique_ptr<hyb_struct> unique_ptr_hyb(new hyb_struct);
-    hipsparseHybMat_t hyb = unique_ptr_hyb->hyb;
+    hipsparseHybMat_t           hyb = unique_ptr_hyb->hyb;
 
     // Argument sanity check before allocating invalid memory
     if(m <= 0 || n <= 0 || nnz <= 0)
     {
-        auto csr_row_ptr_managed =
-            hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto csr_col_ind_managed =
-            hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto csr_val_managed =
-            hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+        auto csr_row_ptr_managed
+            = hipsparse_unique_ptr {device_malloc(sizeof(int) * safe_size), device_free};
+        auto csr_col_ind_managed
+            = hipsparse_unique_ptr {device_malloc(sizeof(int) * safe_size), device_free};
+        auto csr_val_managed
+            = hipsparse_unique_ptr {device_malloc(sizeof(T) * safe_size), device_free};
 
         int* csr_row_ptr = (int*)csr_row_ptr_managed.get();
         int* csr_col_ind = (int*)csr_col_ind_managed.get();
-        T* csr_val       = (T*)csr_val_managed.get();
+        T*   csr_val     = (T*)csr_val_managed.get();
 
         if(!csr_row_ptr || !csr_col_ind || !csr_val)
         {
@@ -242,14 +242,15 @@ hipsparseStatus_t testing_csr2hyb(Arguments argus)
     std::vector<int> hcsr_row_ptr;
     std::vector<int> hcoo_row_ind;
     std::vector<int> hcsr_col_ind;
-    std::vector<T> hcsr_val;
+    std::vector<T>   hcsr_val;
 
     // Sample initial COO matrix on CPU
     srand(12345ULL);
     if(binfile != "")
     {
         if(read_bin_matrix(
-               binfile.c_str(), m, n, nnz, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base) != 0)
+               binfile.c_str(), m, n, nnz, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base)
+           != 0)
         {
             fprintf(stderr, "Cannot open [read] %s\n", binfile.c_str());
             return HIPSPARSE_STATUS_INTERNAL_ERROR;
@@ -265,8 +266,8 @@ hipsparseStatus_t testing_csr2hyb(Arguments argus)
         if(filename != "")
         {
             if(read_mtx_matrix(
-                   filename.c_str(), m, n, nnz, hcoo_row_ind, hcsr_col_ind, hcsr_val, idx_base) !=
-               0)
+                   filename.c_str(), m, n, nnz, hcoo_row_ind, hcsr_col_ind, hcsr_val, idx_base)
+               != 0)
             {
                 fprintf(stderr, "Cannot open [read] %s\n", filename.c_str());
                 return HIPSPARSE_STATUS_INTERNAL_ERROR;
@@ -292,14 +293,15 @@ hipsparseStatus_t testing_csr2hyb(Arguments argus)
     }
 
     // Allocate memory on the device
-    auto dcsr_row_ptr_managed =
-        hipsparse_unique_ptr{device_malloc(sizeof(int) * (m + 1)), device_free};
-    auto dcsr_col_ind_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
-    auto dcsr_val_managed     = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
+    auto dcsr_row_ptr_managed
+        = hipsparse_unique_ptr {device_malloc(sizeof(int) * (m + 1)), device_free};
+    auto dcsr_col_ind_managed
+        = hipsparse_unique_ptr {device_malloc(sizeof(int) * nnz), device_free};
+    auto dcsr_val_managed = hipsparse_unique_ptr {device_malloc(sizeof(T) * nnz), device_free};
 
     int* dcsr_row_ptr = (int*)dcsr_row_ptr_managed.get();
     int* dcsr_col_ind = (int*)dcsr_col_ind_managed.get();
-    T* dcsr_val       = (T*)dcsr_val_managed.get();
+    T*   dcsr_val     = (T*)dcsr_val_managed.get();
 
     if(!dcsr_row_ptr || !dcsr_col_ind || !dcsr_val)
     {
@@ -377,10 +379,10 @@ hipsparseStatus_t testing_csr2hyb(Arguments argus)
 
     // Host structures for verification
     std::vector<int> hhyb_ell_col_ind_gold;
-    std::vector<T> hhyb_ell_val_gold;
+    std::vector<T>   hhyb_ell_val_gold;
     std::vector<int> hhyb_coo_row_ind_gold;
     std::vector<int> hhyb_coo_col_ind_gold;
-    std::vector<T> hhyb_coo_val_gold;
+    std::vector<T>   hhyb_coo_val_gold;
 
     // Host csr2hyb conversion
     int ell_width = 0;
@@ -463,10 +465,10 @@ hipsparseStatus_t testing_csr2hyb(Arguments argus)
 
     // Allocate verification structures
     std::vector<int> hhyb_ell_col_ind(ell_nnz);
-    std::vector<T> hhyb_ell_val(ell_nnz);
+    std::vector<T>   hhyb_ell_val(ell_nnz);
     std::vector<int> hhyb_coo_row_ind(coo_nnz);
     std::vector<int> hhyb_coo_col_ind(coo_nnz);
-    std::vector<T> hhyb_coo_val(coo_nnz);
+    std::vector<T>   hhyb_coo_val(coo_nnz);
 
     if(argus.unit_check)
     {

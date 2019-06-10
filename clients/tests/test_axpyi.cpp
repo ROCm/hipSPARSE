@@ -24,11 +24,11 @@
 #include "testing_axpyi.hpp"
 #include "utility.hpp"
 
-#include <hipsparse.h>
 #include <gtest/gtest.h>
+#include <hipsparse.h>
 #include <vector>
 
-typedef hipsparseIndexBase_t base;
+typedef hipsparseIndexBase_t               base;
 typedef std::tuple<int, int, double, base> axpyi_tuple;
 
 int axpyi_N_range[]   = {12000, 15332, 22031};
@@ -40,7 +40,7 @@ base axpyi_idx_base_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_O
 
 class parameterized_axpyi : public testing::TestWithParam<axpyi_tuple>
 {
-    protected:
+protected:
     parameterized_axpyi() {}
     virtual ~parameterized_axpyi() {}
     virtual void SetUp() {}
@@ -58,7 +58,10 @@ Arguments setup_axpyi_arguments(axpyi_tuple tup)
     return arg;
 }
 
-TEST(axpyi_bad_arg, axpyi_float) { testing_axpyi_bad_arg<float>(); }
+TEST(axpyi_bad_arg, axpyi_float)
+{
+    testing_axpyi_bad_arg<float>();
+}
 
 TEST_P(parameterized_axpyi, axpyi_float)
 {

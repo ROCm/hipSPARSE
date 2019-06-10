@@ -24,10 +24,10 @@
 #include "testing_hybmv.hpp"
 #include "utility.hpp"
 
-#include <hipsparse.h>
 #include <gtest/gtest.h>
-#include <vector>
+#include <hipsparse.h>
 #include <string>
+#include <vector>
 
 typedef std::tuple<int, int, double, double, hipsparseIndexBase_t, hipsparseHybPartition_t, int>
     hybmv_tuple;
@@ -42,8 +42,8 @@ std::vector<double> hyb_beta_range  = {0.0, 0.67, 1.0};
 
 hipsparseIndexBase_t hyb_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
-hipsparseHybPartition_t hyb_partition[] = {
-    HIPSPARSE_HYB_PARTITION_AUTO, HIPSPARSE_HYB_PARTITION_MAX, HIPSPARSE_HYB_PARTITION_USER};
+hipsparseHybPartition_t hyb_partition[]
+    = {HIPSPARSE_HYB_PARTITION_AUTO, HIPSPARSE_HYB_PARTITION_MAX, HIPSPARSE_HYB_PARTITION_USER};
 
 int hyb_ELL_range[] = {0, 1, 2};
 
@@ -64,7 +64,7 @@ std::string hyb_bin[] = {"rma10.bin",
 
 class parameterized_hybmv : public testing::TestWithParam<hybmv_tuple>
 {
-    protected:
+protected:
     parameterized_hybmv() {}
     virtual ~parameterized_hybmv() {}
     virtual void SetUp() {}
@@ -73,7 +73,7 @@ class parameterized_hybmv : public testing::TestWithParam<hybmv_tuple>
 
 class parameterized_hybmv_bin : public testing::TestWithParam<hybmv_bin_tuple>
 {
-    protected:
+protected:
     parameterized_hybmv_bin() {}
     virtual ~parameterized_hybmv_bin() {}
     virtual void SetUp() {}
@@ -110,7 +110,7 @@ Arguments setup_hybmv_arguments(hybmv_bin_tuple tup)
     std::string bin_file = std::get<5>(tup);
 
     // Get current executables absolute path
-    char path_exe[PATH_MAX];
+    char    path_exe[PATH_MAX];
     ssize_t len = readlink("/proc/self/exe", path_exe, sizeof(path_exe) - 1);
     if(len < 14)
     {
@@ -127,7 +127,10 @@ Arguments setup_hybmv_arguments(hybmv_bin_tuple tup)
     return arg;
 }
 
-TEST(hybmv_bad_arg, hybmv_float) { testing_hybmv_bad_arg<float>(); }
+TEST(hybmv_bad_arg, hybmv_float)
+{
+    testing_hybmv_bad_arg<float>();
+}
 
 TEST_P(parameterized_hybmv, hybmv_float)
 {
