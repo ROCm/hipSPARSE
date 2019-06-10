@@ -997,6 +997,7 @@ class Arguments
     hipsparseIndexBase_t idx_base  = HIPSPARSE_INDEX_BASE_ZERO;
     hipsparseIndexBase_t idx_base2 = HIPSPARSE_INDEX_BASE_ZERO;
     hipsparseIndexBase_t idx_base3 = HIPSPARSE_INDEX_BASE_ZERO;
+    hipsparseIndexBase_t idx_base4 = HIPSPARSE_INDEX_BASE_ZERO;
     hipsparseAction_t action       = HIPSPARSE_ACTION_NUMERIC;
     hipsparseHybPartition_t part   = HIPSPARSE_HYB_PARTITION_AUTO;
     hipsparseDiagType_t diag_type  = HIPSPARSE_DIAG_TYPE_NON_UNIT;
@@ -1031,6 +1032,7 @@ class Arguments
         this->idx_base  = rhs.idx_base;
         this->idx_base2 = rhs.idx_base2;
         this->idx_base3 = rhs.idx_base3;
+        this->idx_base4 = rhs.idx_base4;
         this->action    = rhs.action;
         this->part      = rhs.part;
         this->diag_type = rhs.diag_type;

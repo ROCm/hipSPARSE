@@ -45,12 +45,12 @@ base csrgemm_idxbaseC_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE
 trans csrgemm_transA_range[] = {HIPSPARSE_OPERATION_NON_TRANSPOSE};
 trans csrgemm_transB_range[] = {HIPSPARSE_OPERATION_NON_TRANSPOSE};
 
-std::string csrgemm_bin[] = {"rma10.bin",
+std::string csrgemm_bin[] = {/*"rma10.bin",*/
                              "mac_econ_fwd500.bin",
-                             "bibd_22_8.bin",
+                             /*"bibd_22_8.bin",*/
                              "mc2depi.bin",
                              "scircuit.bin",
-                             "bmwcra_1.bin",
+                             /*"bmwcra_1.bin",*/
                              "nos1.bin",
                              "nos2.bin",
                              "nos3.bin",
