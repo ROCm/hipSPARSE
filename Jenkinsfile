@@ -36,7 +36,7 @@ hipSPARSECI:
     hipsparse.compiler.compiler_path = 'c++'
 
     // Define test architectures, optional rocm version argument is available
-    def nodes = new dockerNodes(['gfx900', 'gfx906'], hipsparse)
+    def nodes = new dockerNodes(['gfx900 && centos7', 'gfx906'], hipsparse)
 
     boolean formatCheck = true
 
@@ -59,22 +59,44 @@ hipSPARSECI:
         platform, project->
 
         def command
-
-        if(auxiliary.isJobStartedByTimer())
+        
+        if(platform.jenkinsLabel.contains('centos'))
         {
-          command = """#!/usr/bin/env bash
-                set -x
-                cd ${project.paths.project_build_prefix}/build/release/clients/tests
-                LD_LIBRARY_PATH=/opt/rocm/hcc/lib GTEST_LISTENER=NO_PASS_LINE_IN_LOG ./hipsparse-test --gtest_output=xml --gtest_color=yes #--gtest_filter=*nightly*-*known_bug* #--gtest_filter=*nightly*
-            """
-        }
+            if(auxiliary.isJobStartedByTimer())
+            {
+                command = """#!/usr/bin/env bash
+                        set -x
+                        cd ${project.paths.project_build_prefix}/build/release/clients/tests
+                        LD_LIBRARY_PATH=/opt/rocm/hcc/lib GTEST_LISTENER=NO_PASS_LINE_IN_LOG sudo ./hipsparse-test --gtest_output=xml --gtest_color=yes #--gtest_filter=*nightly*-*known_bug* #--gtest_filter=*nightly*
+                    """
+            }
+            else
+            {
+                command = """#!/usr/bin/env bash
+                        set -x
+                        cd ${project.paths.project_build_prefix}/build/release/clients/tests
+                        LD_LIBRARY_PATH=/opt/rocm/hcc/lib GTEST_LISTENER=NO_PASS_LINE_IN_LOG sudo ./hipsparse-test --gtest_output=xml --gtest_color=yes #--gtest_filter=*quick*:*pre_checkin*-*known_bug* #--gtest_filter=*checkin*
+                    """
+            }
+        }           
         else
         {
-          command = """#!/usr/bin/env bash
-                set -x
-                cd ${project.paths.project_build_prefix}/build/release/clients/tests
-                LD_LIBRARY_PATH=/opt/rocm/hcc/lib GTEST_LISTENER=NO_PASS_LINE_IN_LOG ./hipsparse-test --gtest_output=xml --gtest_color=yes #--gtest_filter=*quick*:*pre_checkin*-*known_bug* #--gtest_filter=*checkin*
-            """
+            if(auxiliary.isJobStartedByTimer())
+            {
+                command = """#!/usr/bin/env bash
+                        set -x
+                        cd ${project.paths.project_build_prefix}/build/release/clients/tests
+                        LD_LIBRARY_PATH=/opt/rocm/hcc/lib GTEST_LISTENER=NO_PASS_LINE_IN_LOG ./hipsparse-test --gtest_output=xml --gtest_color=yes #--gtest_filter=*nightly*-*known_bug* #--gtest_filter=*nightly*
+                    """
+            }
+            else
+            {
+                command = """#!/usr/bin/env bash
+                        set -x
+                        cd ${project.paths.project_build_prefix}/build/release/clients/tests
+                        LD_LIBRARY_PATH=/opt/rocm/hcc/lib GTEST_LISTENER=NO_PASS_LINE_IN_LOG ./hipsparse-test --gtest_output=xml --gtest_color=yes #--gtest_filter=*quick*:*pre_checkin*-*known_bug* #--gtest_filter=*checkin*
+                    """
+            }
         }
 
         platform.runCommand(this, command)
@@ -85,17 +107,36 @@ hipSPARSECI:
     {
         platform, project->
 
-        def command = """
-                      set -x
-                      cd ${project.paths.project_build_prefix}/build/release
-                      make package
-                      rm -rf package && mkdir -p package
-                      mv *.deb package/
-                      dpkg -c package/*.deb
-                      """
+        def command 
+        
+        if(platform.jenkinsLabel.contains('centos'))
+        {
+            command = """
+                    set -x
+                    cd ${project.paths.project_build_prefix}/build/release
+                    make package
+                    rm -rf package && mkdir -p package
+                    mv *.rpm package/
+                    rpm -qlp package/*.rpm
+                """
 
-        platform.runCommand(this, command)
-        platform.archiveArtifacts(this, """${project.paths.project_build_prefix}/build/release/package/*.deb""")
+            platform.runCommand(this, command)
+            platform.archiveArtifacts(this, """${project.paths.project_build_prefix}/build/release/package/*.rpm""")        
+        }
+        else
+        {
+            command = """
+                    set -x
+                    cd ${project.paths.project_build_prefix}/build/release
+                    make package
+                    rm -rf package && mkdir -p package
+                    mv *.deb package/
+                    dpkg -c package/*.deb
+                """
+
+            platform.runCommand(this, command)
+            platform.archiveArtifacts(this, """${project.paths.project_build_prefix}/build/release/package/*.deb""")
+        }
     }
 
     buildProject(hipsparse, formatCheck, nodes.dockerArray, compileCommand, testCommand, packageCommand)
