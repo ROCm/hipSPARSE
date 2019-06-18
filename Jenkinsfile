@@ -48,7 +48,7 @@ hipSPARSECI:
         
         def command
         
-        if(platform.jenkinsLabel.contains('centos')
+        if(platform.jenkinsLabel.contains('centos'))
         {   
             command = """#!/usr/bin/env bash
                     set -x
