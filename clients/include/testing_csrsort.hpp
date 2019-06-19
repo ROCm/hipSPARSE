@@ -58,12 +58,12 @@ void testing_csrsort_bad_arg(void)
     size_t buffer_size = 0;
 
     auto csr_row_ptr_managed
-        = hipsparse_unique_ptr {device_malloc(sizeof(int) * safe_size), device_free};
+        = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
     auto csr_col_ind_managed
-        = hipsparse_unique_ptr {device_malloc(sizeof(int) * safe_size), device_free};
-    auto perm_managed = hipsparse_unique_ptr {device_malloc(sizeof(int) * safe_size), device_free};
+        = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+    auto perm_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
     auto buffer_managed
-        = hipsparse_unique_ptr {device_malloc(sizeof(char) * safe_size), device_free};
+        = hipsparse_unique_ptr{device_malloc(sizeof(char) * safe_size), device_free};
 
     int*  csr_row_ptr = (int*)csr_row_ptr_managed.get();
     int*  csr_col_ind = (int*)csr_col_ind_managed.get();
@@ -212,13 +212,13 @@ hipsparseStatus_t testing_csrsort(Arguments argus)
         return HIPSPARSE_STATUS_SUCCESS;
 #endif
         auto csr_row_ptr_managed
-            = hipsparse_unique_ptr {device_malloc(sizeof(int) * safe_size), device_free};
+            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
         auto csr_col_ind_managed
-            = hipsparse_unique_ptr {device_malloc(sizeof(int) * safe_size), device_free};
+            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
         auto perm_managed
-            = hipsparse_unique_ptr {device_malloc(sizeof(int) * safe_size), device_free};
+            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
         auto buffer_managed
-            = hipsparse_unique_ptr {device_malloc(sizeof(char) * safe_size), device_free};
+            = hipsparse_unique_ptr{device_malloc(sizeof(char) * safe_size), device_free};
 
         int*  csr_row_ptr = (int*)csr_row_ptr_managed.get();
         int*  csr_col_ind = (int*)csr_col_ind_managed.get();
@@ -350,13 +350,12 @@ hipsparseStatus_t testing_csrsort(Arguments argus)
 
     // Allocate memory on the device
     auto dcsr_row_ptr_managed
-        = hipsparse_unique_ptr {device_malloc(sizeof(int) * (m + 1)), device_free};
-    auto dcsr_col_ind_managed
-        = hipsparse_unique_ptr {device_malloc(sizeof(int) * nnz), device_free};
-    auto dcsr_val_managed = hipsparse_unique_ptr {device_malloc(sizeof(float) * nnz), device_free};
+        = hipsparse_unique_ptr{device_malloc(sizeof(int) * (m + 1)), device_free};
+    auto dcsr_col_ind_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
+    auto dcsr_val_managed = hipsparse_unique_ptr{device_malloc(sizeof(float) * nnz), device_free};
     auto dcsr_val_sorted_managed
-        = hipsparse_unique_ptr {device_malloc(sizeof(float) * nnz), device_free};
-    auto dperm_managed = hipsparse_unique_ptr {device_malloc(sizeof(int) * nnz), device_free};
+        = hipsparse_unique_ptr{device_malloc(sizeof(float) * nnz), device_free};
+    auto dperm_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
 
     int*   dcsr_row_ptr    = (int*)dcsr_row_ptr_managed.get();
     int*   dcsr_col_ind    = (int*)dcsr_col_ind_managed.get();
@@ -390,7 +389,7 @@ hipsparseStatus_t testing_csrsort(Arguments argus)
 
         // Allocate buffer on the device
         auto dbuffer_managed
-            = hipsparse_unique_ptr {device_malloc(sizeof(char) * buffer_size), device_free};
+            = hipsparse_unique_ptr{device_malloc(sizeof(char) * buffer_size), device_free};
 
         void* dbuffer = (void*)dbuffer_managed.get();
 
@@ -448,7 +447,7 @@ hipsparseStatus_t testing_csrsort(Arguments argus)
             handle, m, n, nnz, dcsr_row_ptr, dcsr_col_ind, &buffer_size);
 
         auto dbuffer_managed
-            = hipsparse_unique_ptr {device_malloc(sizeof(char) * buffer_size), device_free};
+            = hipsparse_unique_ptr{device_malloc(sizeof(char) * buffer_size), device_free};
         void* dbuffer = (void*)dbuffer_managed.get();
 
         for(int iter = 0; iter < number_cold_calls; ++iter)

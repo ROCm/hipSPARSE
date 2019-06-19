@@ -59,11 +59,11 @@ void testing_csrilu02_bad_arg(void)
     std::unique_ptr<csrilu02_struct> unique_ptr_csrilu02(new csrilu02_struct);
     csrilu02Info_t                   info = unique_ptr_csrilu02->info;
 
-    auto dptr_managed = hipsparse_unique_ptr {device_malloc(sizeof(int) * safe_size), device_free};
-    auto dcol_managed = hipsparse_unique_ptr {device_malloc(sizeof(int) * safe_size), device_free};
-    auto dval_managed = hipsparse_unique_ptr {device_malloc(sizeof(T) * safe_size), device_free};
+    auto dptr_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+    auto dcol_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+    auto dval_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
     auto dbuffer_managed
-        = hipsparse_unique_ptr {device_malloc(sizeof(char) * safe_size), device_free};
+        = hipsparse_unique_ptr{device_malloc(sizeof(char) * safe_size), device_free};
 
     int*  dptr    = (int*)dptr_managed.get();
     int*  dcol    = (int*)dcol_managed.get();
@@ -333,13 +333,12 @@ hipsparseStatus_t testing_csrilu02(Arguments argus)
         return HIPSPARSE_STATUS_SUCCESS;
 #endif
         auto dptr_managed
-            = hipsparse_unique_ptr {device_malloc(sizeof(int) * safe_size), device_free};
+            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
         auto dcol_managed
-            = hipsparse_unique_ptr {device_malloc(sizeof(int) * safe_size), device_free};
-        auto dval_managed
-            = hipsparse_unique_ptr {device_malloc(sizeof(T) * safe_size), device_free};
+            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+        auto dval_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
         auto buffer_managed
-            = hipsparse_unique_ptr {device_malloc(sizeof(char) * safe_size), device_free};
+            = hipsparse_unique_ptr{device_malloc(sizeof(char) * safe_size), device_free};
 
         int*  dptr   = (int*)dptr_managed.get();
         int*  dcol   = (int*)dcol_managed.get();
@@ -458,10 +457,10 @@ hipsparseStatus_t testing_csrilu02(Arguments argus)
     }
 
     // Allocate memory on device
-    auto dptr_managed = hipsparse_unique_ptr {device_malloc(sizeof(int) * (m + 1)), device_free};
-    auto dcol_managed = hipsparse_unique_ptr {device_malloc(sizeof(int) * nnz), device_free};
-    auto dval_managed = hipsparse_unique_ptr {device_malloc(sizeof(T) * nnz), device_free};
-    auto d_position_managed = hipsparse_unique_ptr {device_malloc(sizeof(int)), device_free};
+    auto dptr_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * (m + 1)), device_free};
+    auto dcol_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
+    auto dval_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
+    auto d_position_managed = hipsparse_unique_ptr{device_malloc(sizeof(int)), device_free};
 
     int* dptr       = (int*)dptr_managed.get();
     int* dcol       = (int*)dcol_managed.get();
@@ -486,7 +485,7 @@ hipsparseStatus_t testing_csrilu02(Arguments argus)
         hipsparseXcsrilu02_bufferSizeExt(handle, m, nnz, descr, dval, dptr, dcol, info, &size));
 
     // Allocate buffer on the device
-    auto dbuffer_managed = hipsparse_unique_ptr {device_malloc(sizeof(char) * size), device_free};
+    auto dbuffer_managed = hipsparse_unique_ptr{device_malloc(sizeof(char) * size), device_free};
 
     void* dbuffer = (void*)dbuffer_managed.get();
 
