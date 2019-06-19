@@ -75,10 +75,10 @@ hipsparseStatus_t testing_csrilusv(Arguments argus)
     }
 
     // Allocate memory on device
-    auto dptr_managed = hipsparse_unique_ptr {device_malloc(sizeof(int) * (m + 1)), device_free};
-    auto dcol_managed = hipsparse_unique_ptr {device_malloc(sizeof(int) * nnz), device_free};
-    auto dval_managed = hipsparse_unique_ptr {device_malloc(sizeof(T) * nnz), device_free};
-    auto d_position_managed = hipsparse_unique_ptr {device_malloc(sizeof(int)), device_free};
+    auto dptr_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * (m + 1)), device_free};
+    auto dcol_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
+    auto dval_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
+    auto d_position_managed = hipsparse_unique_ptr{device_malloc(sizeof(int)), device_free};
 
     int* dptr       = (int*)dptr_managed.get();
     int* dcol       = (int*)dcol_managed.get();
@@ -104,7 +104,7 @@ hipsparseStatus_t testing_csrilusv(Arguments argus)
         hipsparseXcsrilu02_bufferSizeExt(handle, m, nnz, descr_M, dval, dptr, dcol, info_M, &size));
 
     // Allocate buffer on the device
-    auto dbuffer_managed = hipsparse_unique_ptr {device_malloc(sizeof(char) * size), device_free};
+    auto dbuffer_managed = hipsparse_unique_ptr{device_malloc(sizeof(char) * size), device_free};
 
     void* dbuffer = (void*)dbuffer_managed.get();
 
@@ -232,8 +232,7 @@ hipsparseStatus_t testing_csrilusv(Arguments argus)
     size = std::max(size_lower, size_upper);
 
     // Allocate buffer on the device
-    auto dbuffer_sv_managed
-        = hipsparse_unique_ptr {device_malloc(sizeof(char) * size), device_free};
+    auto dbuffer_sv_managed = hipsparse_unique_ptr{device_malloc(sizeof(char) * size), device_free};
 
     void* dbuffer_sv = (void*)dbuffer_sv_managed.get();
 
@@ -276,12 +275,12 @@ hipsparseStatus_t testing_csrilusv(Arguments argus)
     std::vector<T> hz_gold(m);
 
     // Allocate device memory
-    auto dx_managed      = hipsparse_unique_ptr {device_malloc(sizeof(T) * m), device_free};
-    auto dy_1_managed    = hipsparse_unique_ptr {device_malloc(sizeof(T) * m), device_free};
-    auto dy_2_managed    = hipsparse_unique_ptr {device_malloc(sizeof(T) * m), device_free};
-    auto dz_1_managed    = hipsparse_unique_ptr {device_malloc(sizeof(T) * m), device_free};
-    auto dz_2_managed    = hipsparse_unique_ptr {device_malloc(sizeof(T) * m), device_free};
-    auto d_alpha_managed = hipsparse_unique_ptr {device_malloc(sizeof(T)), device_free};
+    auto dx_managed      = hipsparse_unique_ptr{device_malloc(sizeof(T) * m), device_free};
+    auto dy_1_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * m), device_free};
+    auto dy_2_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * m), device_free};
+    auto dz_1_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * m), device_free};
+    auto dz_2_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * m), device_free};
+    auto d_alpha_managed = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
 
     T* dx      = (T*)dx_managed.get();
     T* dy_1    = (T*)dy_1_managed.get();

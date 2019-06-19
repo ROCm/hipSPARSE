@@ -52,9 +52,9 @@ void testing_axpyi_bad_arg(void)
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
-    auto dxVal_managed = hipsparse_unique_ptr {device_malloc(sizeof(T) * safe_size), device_free};
-    auto dxInd_managed = hipsparse_unique_ptr {device_malloc(sizeof(int) * safe_size), device_free};
-    auto dy_managed    = hipsparse_unique_ptr {device_malloc(sizeof(T) * safe_size), device_free};
+    auto dxVal_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+    auto dxInd_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+    auto dy_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
 
     T*   dxVal = (T*)dxVal_managed.get();
     int* dxInd = (int*)dxInd_managed.get();
@@ -124,10 +124,10 @@ hipsparseStatus_t testing_axpyi(Arguments argus)
         return HIPSPARSE_STATUS_SUCCESS;
 #endif
         auto dxInd_managed
-            = hipsparse_unique_ptr {device_malloc(sizeof(int) * safe_size), device_free};
+            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
         auto dxVal_managed
-            = hipsparse_unique_ptr {device_malloc(sizeof(T) * safe_size), device_free};
-        auto dy_managed = hipsparse_unique_ptr {device_malloc(sizeof(T) * safe_size), device_free};
+            = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+        auto dy_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
 
         int* dxInd = (int*)dxInd_managed.get();
         T*   dxVal = (T*)dxVal_managed.get();
@@ -173,11 +173,11 @@ hipsparseStatus_t testing_axpyi(Arguments argus)
     hy_gold = hy_1;
 
     // allocate memory on device
-    auto dxInd_managed   = hipsparse_unique_ptr {device_malloc(sizeof(int) * nnz), device_free};
-    auto dxVal_managed   = hipsparse_unique_ptr {device_malloc(sizeof(T) * nnz), device_free};
-    auto dy_1_managed    = hipsparse_unique_ptr {device_malloc(sizeof(T) * N), device_free};
-    auto dy_2_managed    = hipsparse_unique_ptr {device_malloc(sizeof(T) * N), device_free};
-    auto d_alpha_managed = hipsparse_unique_ptr {device_malloc(sizeof(T)), device_free};
+    auto dxInd_managed   = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
+    auto dxVal_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
+    auto dy_1_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * N), device_free};
+    auto dy_2_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * N), device_free};
+    auto d_alpha_managed = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
 
     int* dxInd   = (int*)dxInd_managed.get();
     T*   dxVal   = (T*)dxVal_managed.get();

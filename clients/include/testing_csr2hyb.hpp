@@ -74,10 +74,10 @@ void testing_csr2hyb_bad_arg(void)
     hipsparseHybMat_t           hyb = unique_ptr_hyb->hyb;
 
     auto csr_row_ptr_managed
-        = hipsparse_unique_ptr {device_malloc(sizeof(int) * safe_size), device_free};
+        = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
     auto csr_col_ind_managed
-        = hipsparse_unique_ptr {device_malloc(sizeof(int) * safe_size), device_free};
-    auto csr_val_managed = hipsparse_unique_ptr {device_malloc(sizeof(T) * safe_size), device_free};
+        = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+    auto csr_val_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
 
     int* csr_row_ptr = (int*)csr_row_ptr_managed.get();
     int* csr_col_ind = (int*)csr_col_ind_managed.get();
@@ -204,11 +204,11 @@ hipsparseStatus_t testing_csr2hyb(Arguments argus)
     if(m <= 0 || n <= 0 || nnz <= 0)
     {
         auto csr_row_ptr_managed
-            = hipsparse_unique_ptr {device_malloc(sizeof(int) * safe_size), device_free};
+            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
         auto csr_col_ind_managed
-            = hipsparse_unique_ptr {device_malloc(sizeof(int) * safe_size), device_free};
+            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
         auto csr_val_managed
-            = hipsparse_unique_ptr {device_malloc(sizeof(T) * safe_size), device_free};
+            = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
 
         int* csr_row_ptr = (int*)csr_row_ptr_managed.get();
         int* csr_col_ind = (int*)csr_col_ind_managed.get();
@@ -294,10 +294,9 @@ hipsparseStatus_t testing_csr2hyb(Arguments argus)
 
     // Allocate memory on the device
     auto dcsr_row_ptr_managed
-        = hipsparse_unique_ptr {device_malloc(sizeof(int) * (m + 1)), device_free};
-    auto dcsr_col_ind_managed
-        = hipsparse_unique_ptr {device_malloc(sizeof(int) * nnz), device_free};
-    auto dcsr_val_managed = hipsparse_unique_ptr {device_malloc(sizeof(T) * nnz), device_free};
+        = hipsparse_unique_ptr{device_malloc(sizeof(int) * (m + 1)), device_free};
+    auto dcsr_col_ind_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
+    auto dcsr_val_managed     = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
 
     int* dcsr_row_ptr = (int*)dcsr_row_ptr_managed.get();
     int* dcsr_col_ind = (int*)dcsr_col_ind_managed.get();
