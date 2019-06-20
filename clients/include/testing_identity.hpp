@@ -49,7 +49,7 @@ void testing_identity_bad_arg(void)
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
-    auto p_managed = hipsparse_unique_ptr {device_malloc(sizeof(int) * safe_size), device_free};
+    auto p_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
 
     int* p = (int*)p_managed.get();
 
@@ -92,7 +92,7 @@ hipsparseStatus_t testing_identity(Arguments argus)
         // Do not test args in cusparse
         return HIPSPARSE_STATUS_SUCCESS;
 #endif
-        auto p_managed = hipsparse_unique_ptr {device_malloc(sizeof(int) * safe_size), device_free};
+        auto p_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
 
         int* p = (int*)p_managed.get();
 
@@ -127,7 +127,7 @@ hipsparseStatus_t testing_identity(Arguments argus)
     }
 
     // Allocate memory on the device
-    auto dp_managed = hipsparse_unique_ptr {device_malloc(sizeof(int) * n), device_free};
+    auto dp_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * n), device_free};
 
     int* dp = (int*)dp_managed.get();
 

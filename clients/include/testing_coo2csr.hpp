@@ -52,9 +52,9 @@ void testing_coo2csr_bad_arg(void)
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
     auto coo_row_ind_managed
-        = hipsparse_unique_ptr {device_malloc(sizeof(int) * safe_size), device_free};
+        = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
     auto csr_row_ptr_managed
-        = hipsparse_unique_ptr {device_malloc(sizeof(int) * safe_size), device_free};
+        = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
 
     int* coo_row_ind = (int*)coo_row_ind_managed.get();
     int* csr_row_ptr = (int*)csr_row_ptr_managed.get();
@@ -132,9 +132,9 @@ hipsparseStatus_t testing_coo2csr(Arguments argus)
         return HIPSPARSE_STATUS_SUCCESS;
 #endif
         auto coo_row_ind_managed
-            = hipsparse_unique_ptr {device_malloc(sizeof(int) * safe_size), device_free};
+            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
         auto csr_row_ptr_managed
-            = hipsparse_unique_ptr {device_malloc(sizeof(int) * safe_size), device_free};
+            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
 
         int* coo_row_ind = (int*)coo_row_ind_managed.get();
         int* csr_row_ptr = (int*)csr_row_ptr_managed.get();
@@ -225,10 +225,9 @@ hipsparseStatus_t testing_coo2csr(Arguments argus)
     std::vector<int> hcsr_row_ptr_gold(m + 1, 0);
 
     // Allocate memory on the device
-    auto dcoo_row_ind_managed
-        = hipsparse_unique_ptr {device_malloc(sizeof(int) * nnz), device_free};
+    auto dcoo_row_ind_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
     auto dcsr_row_ptr_managed
-        = hipsparse_unique_ptr {device_malloc(sizeof(int) * (m + 1)), device_free};
+        = hipsparse_unique_ptr{device_malloc(sizeof(int) * (m + 1)), device_free};
 
     int* dcoo_row_ind = (int*)dcoo_row_ind_managed.get();
     int* dcsr_row_ptr = (int*)dcsr_row_ptr_managed.get();
