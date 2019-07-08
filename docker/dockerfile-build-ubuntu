@@ -40,7 +40,7 @@ ARG HIPSPARSE_SRC_ROOT=/usr/local/src/hipSPARSE
 RUN mkdir -p ${ROCSPARSE_SRC_ROOT} && cd ${ROCSPARSE_SRC_ROOT} && \
     git clone -b develop --depth=1 https://github.com/ROCmSoftwarePlatform/rocSPARSE . && \
     mkdir -p build && cd build && \
-    EXPORT HCC_AMDGPU_TARGET=gfx900,gfx906 \
+    export HCC_AMDGPU_TARGET=gfx900,gfx906 && \
     HIP_PLATFORM=clang cmake -DBUILD_CLIENTS_SAMPLES=OFF -DHIP_COMPILER=clang .. && \
     HIP_PLATFORM=clang make -j $(nproc) install && \
     rm -rf ${ROCSPARSE_SRC_ROOT}
@@ -50,6 +50,7 @@ RUN mkdir -p ${ROCSPARSE_SRC_ROOT} && cd ${ROCSPARSE_SRC_ROOT} && \
 RUN mkdir -p ${HIPSPARSE_SRC_ROOT} && cd ${HIPSPARSE_SRC_ROOT} && \
     git clone -b develop --depth=1 https://github.com/ROCmSoftwarePlatform/hipSPARSE . && \
     mkdir -p build/deps && cd build/deps && \
+    export HCC_AMDGPU_TARGET=gfx900,gfx906 && \
     HIP_PLATFORM=clang cmake -DHIP_COMPILER=clang ${HIPSPARSE_SRC_ROOT}/deps && \
     HIP_PLATFORM=clang make -j $(nproc) install && \
     rm -rf ${HIPSPARSE_SRC_ROOT}
