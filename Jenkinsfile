@@ -1,6 +1,6 @@
 #!/usr/bin/env groovy
 // This shared library is available at https://github.com/ROCmSoftwarePlatform/rocJENKINS/
-@Library('rocJenkins') _
+@Library('rocJenkins@alution') _
 
 // This is file for internal AMD use.
 // If you are interested in running your own Jenkins, please raise a github issue for assistance.
@@ -36,7 +36,7 @@ hipSPARSECI:
     hipsparse.compiler.compiler_path = 'c++'
     
     // Define test architectures, optional rocm version argument is available
-    def nodes = new dockerNodes(['gfx900 && centos7', 'gfx906 && ubuntu', 'gfx900 && ubuntu && hip-clang', 'gfx906 && ubuntu && hip-clang'], hipsparse)
+    def nodes = new dockerNodes(['gfx900 && ubuntu && hip-clang && dkms', 'gfx906 && ubuntu && hip-clang && dkms'], hipsparse)
 
     boolean formatCheck = true
 
