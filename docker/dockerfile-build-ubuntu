@@ -40,7 +40,7 @@ ARG HIPSPARSE_SRC_ROOT=/usr/local/src/hipSPARSE
 RUN mkdir -p ${ROCSPARSE_SRC_ROOT} && cd ${ROCSPARSE_SRC_ROOT} && \
     git clone -b develop --depth=1 https://github.com/ROCmSoftwarePlatform/rocSPARSE . && \
     mkdir -p build && cd build && \
-    HIP_PLATFORM=clang cmake -DBUILD_CLIENTS_SAMPLES=OFF .. && \
+    HIP_PLATFORM=clang cmake -DBUILD_CLIENTS_SAMPLES=OFF -DHIP_COMPILER=clang .. && \
     HIP_PLATFORM=clang make -j $(nproc) install && \
     rm -rf ${ROCSPARSE_SRC_ROOT}
 
