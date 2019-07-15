@@ -29,7 +29,7 @@ import java.nio.file.Path;
 hipSPARSECI:
 {
 
-    def hipsparse = new rocProject('hipsparse')
+    def hipsparse = new rocProject('hipSPARSE')
     // customize for project
     hipsparse.paths.build_command = './install.sh -c'
     hipsparse.compiler.compiler_name = 'c++'
@@ -62,7 +62,7 @@ hipSPARSECI:
             command = """#!/usr/bin/env bash
                     set -x
                     cd ${project.paths.project_build_prefix}
-                    LD_LIBRARY_PATH=/opt/rocm/hcc/lib CXX=/opt/rocm/bin/hipcc ${project.paths.build_command} --hip-clang
+                    LD_LIBRARY_PATH=/opt/rocm/hcc/lib CXX=/opt/rocm/hip/bin/hipcc ${project.paths.build_command} --hip-clang
                 """
         }
         else
