@@ -36,7 +36,7 @@ hipSPARSECI:
     hipsparse.compiler.compiler_path = 'c++'
 
     // Define test architectures, optional rocm version argument is available
-    def nodes = new dockerNodes(['gfx900 && ubuntu && hip-clang && dkms'], hipsparse)
+    def nodes = new dockerNodes(['gfx900 && ubuntu && hip-clang', 'gfx906 && ubuntu && hip-clang'], hipsparse)
 
     boolean formatCheck = true
 
@@ -143,7 +143,7 @@ hipSPARSECI:
                 """
 
             platform.runCommand(this, command)
-            platform.archiveArtifacts(this, """${project.paths.project_build_prefix}/build/release/package/*.rpm""")        
+            platform.archiveArtifacts(this, """${project.paths.project_build_prefix}/build/release/package/*.rpm""")
         }
         else if(platform.jenkinsLabel.contains('hip-clang'))
         {
