@@ -34,9 +34,9 @@ hipSPARSECI:
     hipsparse.paths.build_command = './install.sh -c'
     hipsparse.compiler.compiler_name = 'c++'
     hipsparse.compiler.compiler_path = 'c++'
-    
+
     // Define test architectures, optional rocm version argument is available
-    def nodes = new dockerNodes(['gfx900 && centos7', 'gfx906'], hipsparse)
+    def nodes = new dockerNodes(['gfx900 && ubuntu && hip-clang && dkms', hipsparse)
 
     boolean formatCheck = true
 
@@ -45,16 +45,24 @@ hipSPARSECI:
         platform, project->
 
         project.paths.construct_build_prefix()
-        
+
         def command
-        
+
         if(platform.jenkinsLabel.contains('centos'))
-        {   
+        {
             command = """#!/usr/bin/env bash
                     set -x
                     cd ${project.paths.project_build_prefix}
                     export PATH=/opt/rocm/hsa/include:$PATH
                     LD_LIBRARY_PATH=/opt/rocm/hcc/lib CXX=/opt/rh/devtoolset-7/root/usr/bin/c++ ${project.paths.build_command}
+                """
+        }
+        else if(platform.jenkinsLabel.contains('hip-clang'))
+        {
+            command = """#!/usr/bin/env bash
+                    set -x
+                    cd ${project.paths.project_build_prefix}
+                    LD_LIBRARY_PATH=/opt/rocm/hcc/lib CXX=/opt/rocm/hip/bin/hipcc ${project.paths.build_command} --hip-clang
                 """
         }
         else
@@ -73,7 +81,7 @@ hipSPARSECI:
         platform, project->
 
         def command
-        
+
         if(platform.jenkinsLabel.contains('centos'))
         {
             if(auxiliary.isJobStartedByTimer())
@@ -92,7 +100,7 @@ hipSPARSECI:
                         LD_LIBRARY_PATH=/opt/rocm/hcc/lib GTEST_LISTENER=NO_PASS_LINE_IN_LOG sudo ./hipsparse-test --gtest_output=xml --gtest_color=yes #--gtest_filter=*quick*:*pre_checkin*-*known_bug* #--gtest_filter=*checkin*
                     """
             }
-        }           
+        }
         else
         {
             if(auxiliary.isJobStartedByTimer())
@@ -121,8 +129,8 @@ hipSPARSECI:
     {
         platform, project->
 
-        def command 
-        
+        def command
+
         if(platform.jenkinsLabel.contains('centos'))
         {
             command = """
@@ -136,6 +144,10 @@ hipSPARSECI:
 
             platform.runCommand(this, command)
             platform.archiveArtifacts(this, """${project.paths.project_build_prefix}/build/release/package/*.rpm""")        
+        }
+        else if(platform.jenkinsLabel.contains('hip-clang'))
+        {
+            packageCommand = null
         }
         else
         {

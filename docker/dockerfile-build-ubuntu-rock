@@ -2,26 +2,23 @@
 ARG base_image
 
 FROM ${base_image}
-MAINTAINER Nico Trost
+LABEL maintainer="nico.trost@amd.com"
 
 ARG user_uid
 
 # Install dependent packages
-# Dependencies:
+# Dependencies: rocsparse
 # * hcc-config.cmake: pkg-config
 # * hipsparse-test: googletest
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     rock-dkms \
     sudo \
-    build-essential \
     ca-certificates \
     git \
     make \
     cmake \
-    clang-format-3.8 \
     pkg-config \
     libnuma1 \
-    rocprim \
     && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
