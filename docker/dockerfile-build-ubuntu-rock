@@ -7,7 +7,7 @@ LABEL maintainer="nico.trost@amd.com"
 ARG user_uid
 
 # Install dependent packages
-# Dependencies: rocsparse
+# Dependencies: rocsparse rocprim
 # * hcc-config.cmake: pkg-config
 # * hipsparse-test: googletest
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
@@ -19,6 +19,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-ins
     cmake \
     pkg-config \
     libnuma1 \
+    rocprim \
     && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
