@@ -58,7 +58,7 @@ option(BUILD_VERBOSE "Output additional build information" OFF)
 include(cmake/Dependencies.cmake)
 
 # Setup version
-rocm_setup_version(VERSION 1.0.9.0 NO_GIT_TAG_VERSION)
+rocm_setup_version(VERSION 1.0.10.0 NO_GIT_TAG_VERSION)
 set(hipsparse_SOVERSION 0)
 
 # hipSPARSE library
