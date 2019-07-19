@@ -29,7 +29,7 @@ import java.nio.file.Path;
 hipSPARSECI:
 {
 
-    def hipsparse = new rocProject('hipsparse')
+    def hipsparse = new rocProject('hipSPARSE')
     // customize for project
     hipsparse.paths.build_command = './install.sh -c'
     hipsparse.compiler.compiler_name = 'c++'
