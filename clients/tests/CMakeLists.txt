@@ -23,25 +23,25 @@
 
 # Download some test matrices
 set(TEST_MATRICES
-#  SNAP/amazon0312
-#  Muite/Chebyshev4
-#  FEMLAB/sme3Dc
-#  Williams/webbase-1M
-#  Bova/rma10
-#  JGD_BIBD/bibd_22_8
-#  Williams/mac_econ_fwd500
-#  Williams/mc2depi
-#  Hamm/scircuit
-#  Sandia/ASIC_320k
-#  GHS_psdef/bmwcra_1
+  SNAP/amazon0312
+  Muite/Chebyshev4
+  FEMLAB/sme3Dc
+  Williams/webbase-1M
+  Bova/rma10
+  JGD_BIBD/bibd_22_8
+  Williams/mac_econ_fwd500
+  Williams/mc2depi
+  Hamm/scircuit
+  Sandia/ASIC_320k
+  GHS_psdef/bmwcra_1
   HB/nos1
-#  HB/nos2
-#  HB/nos3
-#  HB/nos4
-#  HB/nos5
-#  HB/nos6
-#  HB/nos7
-#  DNVS/shipsec1
+  HB/nos2
+  HB/nos3
+  HB/nos4
+  HB/nos5
+  HB/nos6
+  HB/nos7
+  DNVS/shipsec1
 )
 
 if(NOT TARGET hipsparse)
