@@ -38,13 +38,13 @@ ARG HIPSPARSE_SRC_ROOT=/usr/local/src/hipSPARSE
 # Build rocsparse and install into /usr/local
 RUN mkdir -p ${ROCSPARSE_SRC_ROOT} && cd ${ROCSPARSE_SRC_ROOT} && \
     git clone -b develop --depth=1 https://github.com/ROCmSoftwarePlatform/rocSPARSE . && \
-    ./install.sh -i && \
+    HCC_AMDGPU_TARGET=gfx803 ./install.sh -i --hip-clang && \
     rm -rf ${ROCSPARSE_SRC_ROOT}
 
 # Clone hipsparse repo
 # Build client dependencies and install into /usr/local
 RUN mkdir -p ${HIPSPARSE_SRC_ROOT} && cd ${HIPSPARSE_SRC_ROOT} && \
-    git  clone -b develop --depth=1 https://github.com/ROCmSoftwarePlatform/hipSPARSE . && \
+    git clone -b develop --depth=1 https://github.com/ROCmSoftwarePlatform/hipSPARSE . && \
     mkdir -p build/deps && cd build/deps && \
     cmake ${HIPSPARSE_SRC_ROOT}/deps && \
     make -j $(nproc) install && \
