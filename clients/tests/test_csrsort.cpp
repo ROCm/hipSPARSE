@@ -113,7 +113,7 @@ Arguments setup_csrsort_arguments(csrsort_bin_tuple tup)
     }
 
     // Matrices are stored at the same path in matrices directory
-    arg.filename = std::string(path_exe) + "matrices/" + bin_file;
+    arg.filename = std::string(path_exe) + "../matrices/" + bin_file;
 
     return arg;
 }
