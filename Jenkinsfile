@@ -114,7 +114,7 @@ hipSPARSECI:
         }
 
         platform.runCommand(this, command)
-        junit "${project.paths.project_build_prefix}/build/release/clients/tests/*.xml"
+        junit "${project.paths.project_build_prefix}/build/release/clients/staging/*.xml"
     }
 
     def packageCommand =
