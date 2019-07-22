@@ -58,7 +58,9 @@ std::string csrsv2_bin[] = {"rma10.bin",
                             "nos3.bin",
                             "nos4.bin",
                             "nos5.bin",
-                            "nos6.bin"};
+                            "nos6.bin",
+                            "amazon0312.bin",
+                            "sme3Dc.bin"};
 
 class parameterized_csrsv2 : public testing::TestWithParam<csrsv2_tuple>
 {
@@ -118,7 +120,7 @@ Arguments setup_csrsv2_arguments(csrsv2_bin_tuple tup)
     }
 
     // Matrices are stored at the same path in matrices directory
-    arg.filename = std::string(path_exe) + "matrices/" + bin_file;
+    arg.filename = std::string(path_exe) + "../matrices/" + bin_file;
 
     return arg;
 }

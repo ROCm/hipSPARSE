@@ -22,7 +22,7 @@
 # ########################################################################
 
 # The ROCm platform requires Ubuntu 16.04 or Fedora 24, which has cmake 3.5
-cmake_minimum_required( VERSION 3.5 )
+cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
 
 # Consider removing this in the future
 # This should appear before the project command, because it does not use FORCE
@@ -52,7 +52,12 @@ if(NOT TARGET hipsparse)
 endif()
 
 # Hip headers required of all clients; clients use hip to allocate device memory
-find_package(HIP REQUIRED CONFIG PATHS /opt/rocm)
+find_package(HIP 1.5.19211 REQUIRED)
+
+# Build flags
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 if(BUILD_CLIENTS_SAMPLES)
   add_subdirectory(samples)
