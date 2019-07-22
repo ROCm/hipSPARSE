@@ -66,19 +66,9 @@ option(BUILD_CUDA "Build hipSPARSE for CUDA" OFF)
 include(cmake/Dependencies.cmake)
 
 # Setup version
-set(VERSION_STRING "1.0.10.")
-# Check if BUILD_NUMBER if defined in a Jenkins environment
-if($ENV{BUILD_NUMBER})
-  string(CONCAT BUILD_VERSION ${VERSION_STRING} $ENV{BUILD_NUMBER})
-else()
-  string(CONCAT BUILD_VERSION ${VERSION_STRING} "0")
-endif()
-rocm_setup_version(VERSION ${BUILD_VERSION} NO_GIT_TAG_VERSION)
-set(hipsparse_SOVERSION 0)
-
-# Get the git tag version
-include(cmake/version.cmake)
-rocm_get_git_commit_id(hipsparse_VERSION_COMMIT_ID)
+set(VERSION_STRING "1.0.10")
+rocm_setup_version( VERSION ${VERSION_STRING} )
+set(hipsparse_SOVERSION 0.1)
 
 # hipSPARSE library
 add_subdirectory(library)
