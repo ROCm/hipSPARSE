@@ -40,7 +40,7 @@ std::string csrilusv_bin[] = {"mac_econ_fwd500.bin",
                               "mc2depi.bin",
                               "scircuit.bin",
 #if defined(__HIP_PLATFORM_HCC__)
-                              "bmwcra_1.bin",
+//                              "bmwcra_1.bin",
                               "nos1.bin",
 #endif
                               "nos3.bin",
