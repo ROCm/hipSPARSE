@@ -30,11 +30,11 @@
 #define _HIPSPARSE_VERSION_H_
 
 // clang-format off
-#define hipsparseVersionMajor @hipsparse_VERSION_MAJOR@
-#define hipsparseVersionMinor @hipsparse_VERSION_MINOR@
-#define hipsparseVersionPatch @hipsparse_VERSION_PATCH@
-#define hipsparseVersionTweak @hipsparse_VERSION_TWEAK@
-#define hipsparseGitRevision "@hipsparse_GIT_REVISION@"
+#define hipsparseVersionMajor    @hipsparse_VERSION_MAJOR@
+#define hipsparseVersionMinor    @hipsparse_VERSION_MINOR@
+#define hipsparseVersionPatch    @hipsparse_VERSION_PATCH@
+#define hipsparseVersionTweak    @hipsparse_VERSION_TWEAK@
+#define hipsparseVersionCommitID @hipsparse_VERSION_COMMIT_ID@
 // clang-format on
 
 #endif // _HIPSPARSE_VERSION_H_

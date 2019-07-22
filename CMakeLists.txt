@@ -31,8 +31,11 @@ else()
   set(CMAKE_INSTALL_PREFIX "/opt/rocm" CACHE PATH "Install path prefix, prepended onto install directories")
 endif()
 
-# hipSPARSE project
-project(hipsparse LANGUAGES CXX)
+# CMake modules
+list(APPEND CMAKE_MODULE_PATH
+     ${CMAKE_CURRENT_SOURCE_DIR}/cmake
+     /opt/rocm/hip/cmake
+)
 
 # Set a default build type if none was specified
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
@@ -41,30 +44,45 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "" "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 endif()
 
-# RPATH
-set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE CACHE BOOLEAN "Add paths to linker search and installed rpath")
+# Honor per-config flags in try_compile() source-file signature. cmake v3.7 and up
+if(POLICY CMP0066)
+  cmake_policy(SET CMP0066 NEW)
+endif()
+
+# hipSPARSE project
+project(hipsparse LANGUAGES CXX)
 
 # Force library install path to lib (CentOS 7 defaults to lib64)
 set(CMAKE_INSTALL_LIBDIR "lib" CACHE INTERNAL "Installation directory for libraries" FORCE)
 
 # Build options
+option(BUILD_SHARED_LIBS "Build hipSPARSE as a shared library" ON)
 option(BUILD_CLIENTS_TESTS "Build tests (requires googletest)" OFF)
 option(BUILD_CLIENTS_SAMPLES "Build examples" ON)
-option(BUILD_CUDA "Build hipSPARSE for CUDA" OFF)
-option(BUILD_SHARED_LIBS "Build hipSPARSE as a shared library" ON)
 option(BUILD_VERBOSE "Output additional build information" OFF)
+option(BUILD_CUDA "Build hipSPARSE for CUDA" OFF)
 
 # Dependencies
 include(cmake/Dependencies.cmake)
 
 # Setup version
-rocm_setup_version(VERSION 1.0.9.0 NO_GIT_TAG_VERSION)
+set(VERSION_STRING "1.0.10.")
+# Check if BUILD_NUMBER if defined in a Jenkins environment
+if($ENV{BUILD_NUMBER})
+  string(CONCAT BUILD_VERSION ${VERSION_STRING} $ENV{BUILD_NUMBER})
+else()
+  string(CONCAT BUILD_VERSION ${VERSION_STRING} "0")
+endif()
+rocm_setup_version(VERSION ${BUILD_VERSION} NO_GIT_TAG_VERSION)
 set(hipsparse_SOVERSION 0)
+
+# Get the git tag version
+include(cmake/version.cmake)
+rocm_get_git_commit_id(hipsparse_VERSION_COMMIT_ID)
 
 # hipSPARSE library
 add_subdirectory(library)
 
 if(BUILD_CLIENTS_SAMPLES OR BUILD_CLIENTS_TESTS)
-  enable_testing()
   add_subdirectory(clients)
 endif()

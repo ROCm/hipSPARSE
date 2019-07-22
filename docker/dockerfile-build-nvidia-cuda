@@ -2,7 +2,7 @@
 ARG base_image
 
 FROM ${base_image}
-MAINTAINER Nico Trost
+LABEL maintainer="nico.trost@amd.com"
 
 ARG user_uid
 ARG REPO_RADEON=repo.radeon.com

@@ -40,14 +40,16 @@ std::string csrilusv_bin[] = {"mac_econ_fwd500.bin",
                               "mc2depi.bin",
                               "scircuit.bin",
 #if defined(__HIP_PLATFORM_HCC__)
-                              "bmwcra_1.bin",
+//                              "bmwcra_1.bin",
                               "nos1.bin",
 #endif
                               "nos3.bin",
                               "nos4.bin",
                               "nos5.bin",
                               "nos6.bin",
-                              "nos7.bin"};
+                              "nos7.bin",
+                              "amazon0312.bin",
+                              "sme3Dc.bin"};
 
 class parameterized_csrilusv_bin : public testing::TestWithParam<csrilusv_bin_tuple>
 {
@@ -81,7 +83,7 @@ Arguments setup_csrilusv_arguments(csrilusv_bin_tuple tup)
     }
 
     // Matrices are stored at the same path in matrices directory
-    arg.filename = std::string(path_exe) + "matrices/" + bin_file;
+    arg.filename = std::string(path_exe) + "../matrices/" + bin_file;
 
     return arg;
 }

@@ -26,54 +26,40 @@
 # Git
 find_package(Git REQUIRED)
 
-# DownloadProject package
-include(cmake/DownloadProject/DownloadProject.cmake)
-
 # HIP
-find_package(HIP 1.5.19055 REQUIRED CONFIG PATHS /opt/rocm) # ROCm 2.2
+find_package(HIP 1.5.19211 REQUIRED) # ROCm 2.5
 
 # Either rocSPARSE or cuSPARSE is required
 if(NOT BUILD_CUDA)
-  find_package(rocsparse 1.0.2 REQUIRED) # ROCm 2.2
+  find_package(rocsparse 1.1.10 REQUIRED) # ROCm 2.5
 else()
   find_package(CUDA REQUIRED)
 endif()
 
-# Test dependencies
-if(BUILD_CLIENTS_TESTS)
-  if(NOT DEPENDENCIES_FORCE_DOWNLOAD)
-    find_package(GTest QUIET)
-  endif()
-  if(NOT GTEST_FOUND)
-    message(STATUS "GTest not found. Downloading and building GTest.")
-    set(GTEST_ROOT ${CMAKE_CURRENT_BINARY_DIR}/gtest CACHE PATH "")
-    download_project(PROJ        googletest
-             GIT_REPOSITORY      https://github.com/google/googletest.git
-             GIT_TAG             release-1.8.1
-             INSTALL_DIR         ${GTEST_ROOT}
-             CMAKE_ARGS          -DBUILD_GTEST=ON -DINSTALL_GTEST=ON -Dgtest_force_shared_crt=ON -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
-             LOG_DOWNLOAD        TRUE
-             LOG_CONFIGURE       TRUE
-             LOG_BUILD           TRUE
-             LOG_INSTALL         TRUE
-             BUILD_PROJECT       TRUE
-             UPDATE_DISCONNECTED TRUE
-    )
-  endif()
-  find_package(GTest REQUIRED)
-endif()
-
-# ROCm package
-find_package(ROCM QUIET CONFIG PATHS /opt/rocm)
+# ROCm cmake package
+set(PROJECT_EXTERN_DIR ${CMAKE_CURRENT_BINARY_DIR}/extern)
+find_package(ROCM QUIET CONFIG PATHS ${CMAKE_PREFIX_PATH})
 if(NOT ROCM_FOUND)
   set(rocm_cmake_tag "master" CACHE STRING "rocm-cmake tag to download")
   file(DOWNLOAD https://github.com/RadeonOpenCompute/rocm-cmake/archive/${rocm_cmake_tag}.zip
-       ${CMAKE_CURRENT_BINARY_DIR}/rocm-cmake-${rocm_cmake_tag}.zip
-  )
-  execute_process(COMMAND ${CMAKE_COMMAND} -E tar xzf ${CMAKE_CURRENT_BINARY_DIR}/rocm-cmake-${rocm_cmake_tag}.zip
-                  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-  )
-  find_package(ROCM REQUIRED CONFIG PATHS ${CMAKE_CURRENT_BINARY_DIR}/rocm-cmake-${rocm_cmake_tag})
+       ${PROJECT_EXTERN_DIR}/rocm-cmake-${rocm_cmake_tag}.zip STATUS status LOG log)
+
+  list(GET status 0 status_code)
+  list(GET status 1 status_string)
+
+  if(NOT status_code EQUAL 0)
+    message(FATAL_ERROR "error: downloading
+    'https://github.com/RadeonOpenCompute/rocm-cmake/archive/${rocm_cmake_tag}.zip' failed
+    status_code: ${status_code}
+    status_string: ${status_string}
+    log: ${log}
+    ")
+  endif()
+
+  execute_process(COMMAND ${CMAKE_COMMAND} -E tar xzf ${PROJECT_EXTERN_DIR}/rocm-cmake-${rocm_cmake_tag}.zip
+                  WORKING_DIRECTORY ${PROJECT_EXTERN_DIR})
+
+  find_package(ROCM REQUIRED CONFIG PATHS ${PROJECT_EXTERN_DIR}/rocm-cmake-${rocm_cmake_tag})
 endif()
 
 include(ROCMSetupVersion)
