@@ -66,8 +66,7 @@ option(BUILD_CUDA "Build hipSPARSE for CUDA" OFF)
 include(cmake/Dependencies.cmake)
 
 # Setup version
-set(VERSION_STRING "1.0.10")
-rocm_setup_version( VERSION ${VERSION_STRING} )
+rocm_setup_version(VERSION 1.0.10)
 set(hipsparse_SOVERSION 0.1)
 
 # hipSPARSE library
