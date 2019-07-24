@@ -32,7 +32,14 @@ int main(int argc, char* argv[])
     int version;
     hipsparseGetVersion(handle, &version);
 
-    printf("hipSPARSE version %d.%d.%d\n", version / 100000, version / 100 % 1000, version % 100);
+    char rev[128];
+    hipsparseGetGitRevision(handle, rev);
+
+    printf("hipSPARSE version %d.%d.%d-%s\n",
+           version / 100000,
+           version / 100 % 1000,
+           version % 100,
+           rev);
 
     hipsparseDestroy(handle);
 
