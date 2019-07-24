@@ -377,7 +377,7 @@ hipsparseStatus_t hipsparseGetGitRevision(hipsparseHandle_t handle, char* rev)
         return HIPSPARSE_STATUS_INVALID_VALUE;
     }
 
-    static constexpr char v[] = TO_STR(hipsparseVersionCommitID);
+    static constexpr char v[] = TO_STR(hipsparseVersionTweak);
 
     char hipsparse_rev[64];
     memcpy(hipsparse_rev, v, sizeof(v));
