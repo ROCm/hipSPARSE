@@ -23,6 +23,10 @@
 
 # Download some test matrices
 set(TEST_MATRICES
+  SNAP/amazon0312
+  Muite/Chebyshev4
+  FEMLAB/sme3Dc
+  Williams/webbase-1M
   Bova/rma10
   JGD_BIBD/bibd_22_8
   Williams/mac_econ_fwd500
@@ -37,6 +41,7 @@ set(TEST_MATRICES
   HB/nos5
   HB/nos6
   HB/nos7
+  DNVS/shipsec1
 )
 
 if(NOT TARGET hipsparse)
@@ -51,18 +56,19 @@ foreach(m ${TEST_MATRICES})
   list(GET sep_m 1 mat)
 
   # Download test matrices if not already downloaded
-  if(NOT EXISTS "${CMAKE_CURRENT_BINARY_DIR}/matrices/${mat}.bin")
+  set(CMAKE_MATRICES_DIR ${PROJECT_BINARY_DIR}/matrices)
+  if(NOT EXISTS "${CMAKE_MATRICES_DIR}/${mat}.bin")
     message("  Downloading and extracting test matrix ${m}.tar.gz")
     file(DOWNLOAD http://www.cise.ufl.edu/research/sparse/MM/${m}.tar.gz
-         ${CMAKE_CURRENT_BINARY_DIR}/matrices/${mat}.tar.gz)
+         ${CMAKE_MATRICES_DIR}/${mat}.tar.gz)
     execute_process(COMMAND tar xf ${mat}.tar.gz
-                    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/matrices)
+                    WORKING_DIRECTORY ${CMAKE_MATRICES_DIR})
     execute_process(COMMAND mv ${mat}/${mat}.mtx .
-                    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/matrices)
+                    WORKING_DIRECTORY ${CMAKE_MATRICES_DIR})
     execute_process(COMMAND ${CONVERT} ${mat}.mtx ${mat}.bin
-                    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/matrices)
+                    WORKING_DIRECTORY ${CMAKE_MATRICES_DIR})
     execute_process(COMMAND rm ${mat}.tar.gz ${mat} ${mat}.mtx -rf
-                    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/matrices)
+                    WORKING_DIRECTORY ${CMAKE_MATRICES_DIR})
   endif()
 endforeach()
 
@@ -108,27 +114,12 @@ set(HIPSPARSE_CLIENTS_COMMON
 
 add_executable(hipsparse-test ${HIPSPARSE_TEST_SOURCES} ${HIPSPARSE_CLIENTS_COMMON})
 
-target_include_directories(hipsparse-test
-                             PRIVATE
-                               $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
-                               $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/library/include>
-                               $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
-                               $<BUILD_INTERFACE:${hip_INCLUDE_DIRS}>)
-
-set(THREADS_PREFER_PTHREAD_FLAG ON)
-find_package(Threads REQUIRED)
-target_link_libraries(hipsparse-test PRIVATE Threads::Threads)
-target_link_libraries(hipsparse-test PRIVATE ${GTEST_BOTH_LIBRARIES})
-
-if(NOT TARGET hipsparse)
-  target_link_libraries(hipsparse-test PRIVATE ${HIPSPARSE_LIBRARIES})
-else()
-  target_link_libraries(hipsparse-test PRIVATE roc::hipsparse)
-endif()
-
-set_target_properties(hipsparse-test PROPERTIES CXX_STANDARD 11 CXX_STANDARD_REQUIRED ON)
-
 target_compile_definitions(hipsparse-test PRIVATE GOOGLE_TEST)
+
+target_include_directories(hipsparse-test
+  PRIVATE
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
+)
 
 target_include_directories(hipsparse-test
   SYSTEM
@@ -137,16 +128,29 @@ target_include_directories(hipsparse-test
       $<BUILD_INTERFACE:${HIP_INCLUDE_DIRS}>
 )
 
+if(NOT TARGET hipsparse)
+  target_link_libraries(hipsparse-test PRIVATE ${HIPSPARSE_LIBRARIES})
+else()
+  target_link_libraries(hipsparse-test PRIVATE roc::hipsparse)
+endif()
+
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
+target_link_libraries(hipsparse-test PRIVATE ${GTEST_BOTH_LIBRARIES} Threads::Threads)
+
 if(NOT BUILD_CUDA)
-  target_compile_definitions(hipsparse-test PRIVATE __HIP_PLATFORM_HCC__)
-  get_target_property(HIP_HCC_LOCATION hip::hip_hcc IMPORTED_LOCATION_RELEASE)
-  if(HIP_COMPILER STREQUAL "hcc")
-    get_target_property(HCC_AM_LOCATION hcc::hc_am IMPORTED_LOCATION_RELEASE)
+  if(CMAKE_CXX_COMPILER MATCHES ".*/hcc$")
+    target_link_libraries(hipsparse-test PRIVATE ${HIP_LIBRARIES})
+  elseif(NOT CMAKE_CXX_COMPILER MATCHES ".*/hipcc$")
+    target_compile_definitions(hipsparse-test PRIVATE __HIP_PLATFORM_HCC__)
+    get_target_property(HIPHCC_LOCATION hip::hip_hcc IMPORTED_LOCATION_RELEASE)
+    target_link_libraries(hipsparse-test PRIVATE ${HIPHCC_LOCATION})
   endif()
-  target_link_libraries(hipsparse-test PRIVATE ${HIP_HCC_LOCATION} ${HCC_AM_LOCATION})
 else()
   target_compile_definitions(hipsparse-test PRIVATE __HIP_PLATFORM_NVCC__)
   target_link_libraries(hipsparse-test PRIVATE ${CUDA_LIBRARIES})
 endif()
+
+set_target_properties(hipsparse-test PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/staging")
 
 add_test(hipsparse-test hipsparse-test)

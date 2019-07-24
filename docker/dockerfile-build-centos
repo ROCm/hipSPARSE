@@ -1,19 +1,15 @@
-# This Dockerfile provides a starting point for a ROCm installation of hipSPARSE.
-
-# Parameters related to building hip
+# Parameters related to building hipSPARSE
 ARG base_image
 
 FROM ${base_image}
 LABEL maintainer="nico.trost@amd.com"
 
-USER root
 ARG user_uid
 
 # Install dependent packages
 RUN yum install -y \
     sudo \
     rock-dkms \
-    rocprim \
     centos-release-scl \
     devtoolset-7 \
     ca-certificates \
@@ -23,8 +19,14 @@ RUN yum install -y \
     clang \
     clang-devel \
     gcc-c++ \
+    gtest-devel \
+    gtest \
     pkgconfig \
-    numactl-libs 
+    rocprim \
+    libcxx-devel \
+    numactl-libs \
+    rpm-build \
+    deltarpm
 
 RUN echo '#!/bin/bash' | tee /etc/profile.d/devtoolset7.sh && echo \
     'source scl_source enable devtoolset-7' >>/etc/profile.d/devtoolset7.sh
@@ -43,9 +45,7 @@ ARG HIPSPARSE_SRC_ROOT=/usr/local/src/hipSPARSE
 # Build rocsparse and install into /usr/local
 RUN mkdir -p ${ROCSPARSE_SRC_ROOT} && cd ${ROCSPARSE_SRC_ROOT} && \
     git clone -b develop --depth=1 https://github.com/ROCmSoftwarePlatform/rocSPARSE . && \
-    mkdir -p build && cd build && \
-    HIP_PLATFORM=hcc cmake3 -DBUILD_CLIENTS_SAMPLES=OFF .. && \
-    HIP_PLATFORM=hcc make -j $(nproc) install && \
+    HCC_AMDGPU_TARGET=gfx803 ./install.sh -i --hip-clang && \
     rm -rf ${ROCSPARSE_SRC_ROOT}
 
 # Clone hipsparse repo
@@ -53,6 +53,6 @@ RUN mkdir -p ${ROCSPARSE_SRC_ROOT} && cd ${ROCSPARSE_SRC_ROOT} && \
 RUN mkdir -p ${HIPSPARSE_SRC_ROOT} && cd ${HIPSPARSE_SRC_ROOT} && \
     git clone -b develop --depth=1 https://github.com/ROCmSoftwarePlatform/hipSPARSE . && \
     mkdir -p build/deps && cd build/deps && \
-    HIP_PLATFORM=hcc cmake3 ${HIPSPARSE_SRC_ROOT}/deps && \
-    HIP_PLATFORM=hcc make -j $(nproc) install && \
+    cmake3 ${HIPSPARSE_SRC_ROOT}/deps && \
+    make -j $(nproc) install && \
     rm -rf ${HIPSPARSE_SRC_ROOT}

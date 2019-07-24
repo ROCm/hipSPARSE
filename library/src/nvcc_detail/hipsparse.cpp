@@ -28,6 +28,9 @@
 #include <hip/hip_runtime_api.h>
 #include <stdio.h>
 
+#define TO_STR2(x) #x
+#define TO_STR(x) TO_STR2(x)
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -348,8 +351,15 @@ hipsparseStatus_t hipsparseGetGitRevision(hipsparseHandle_t handle, char* rev)
         return HIPSPARSE_STATUS_NOT_INITIALIZED;
     }
 
+    if(rev == nullptr)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
+
+    static constexpr char v[] = TO_STR(hipsparseVersionCommitID);
+
     char hipsparse_rev[64];
-    strcpy(hipsparse_rev, hipsparseGitRevision);
+    memcpy(hipsparse_rev, v, sizeof(v));
 
     // Get cuSPARSE version
     int cusparse_ver;
