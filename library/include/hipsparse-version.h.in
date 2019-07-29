@@ -34,7 +34,6 @@
 #define hipsparseVersionMinor    @hipsparse_VERSION_MINOR@
 #define hipsparseVersionPatch    @hipsparse_VERSION_PATCH@
 #define hipsparseVersionTweak    @hipsparse_VERSION_TWEAK@
-#define hipsparseVersionCommitID @hipsparse_VERSION_COMMIT_ID@
 // clang-format on
 
 #endif // _HIPSPARSE_VERSION_H_
