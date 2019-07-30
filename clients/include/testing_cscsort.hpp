@@ -39,6 +39,10 @@ using namespace hipsparse_test;
 
 void testing_cscsort_bad_arg(void)
 {
+#ifdef __HIP_PLATFORM_NVCC__
+    // do not test for bad args
+    return;
+#endif
     int               m         = 100;
     int               n         = 100;
     int               nnz       = 100;
@@ -203,6 +207,10 @@ hipsparseStatus_t testing_cscsort(Arguments argus)
     // Argument sanity check before allocating invalid memory
     if(m <= 0 || n <= 0 || nnz <= 0)
     {
+#ifdef __HIP_PLATFORM_NVCC__
+        // Do not test args in cusparse
+        return HIPSPARSE_STATUS_SUCCESS;
+#endif
         auto csc_col_ptr_managed
             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
         auto csc_row_ind_managed
@@ -355,7 +363,12 @@ hipsparseStatus_t testing_cscsort(Arguments argus)
     float* dcsc_val_sorted = (float*)dcsc_val_sorted_managed.get();
 
     // Set permutation vector, if asked for
+#ifdef __HIP_PLATFORM_NVCC__
+    // cusparse does not allow nullptr
+    int* dperm = (int*)dperm_managed.get();
+#else
     int* dperm = permute ? (int*)dperm_managed.get() : nullptr;
+#endif
 
     if(!dcsc_col_ptr || !dcsc_row_ind || !dcsc_val || !dcsc_val_sorted || (permute && !dperm))
     {
