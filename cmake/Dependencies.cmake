@@ -30,11 +30,11 @@ find_package(Git REQUIRED)
 include(cmake/DownloadProject/DownloadProject.cmake)
 
 # HIP
-find_package(HIP 1.5.19055 REQUIRED CONFIG PATHS /opt/rocm) # ROCm 2.2
+find_package(HIP REQUIRED CONFIG PATHS /opt/rocm)
 
 # Either rocSPARSE or cuSPARSE is required
 if(NOT BUILD_CUDA)
-  find_package(rocsparse 1.0.2 REQUIRED) # ROCm 2.2
+  find_package(rocsparse REQUIRED)
 else()
   find_package(CUDA REQUIRED)
 endif()
