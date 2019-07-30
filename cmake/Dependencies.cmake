@@ -27,11 +27,11 @@
 find_package(Git REQUIRED)
 
 # HIP
-find_package(HIP 1.5.19211 REQUIRED) # ROCm 2.5
+find_package(HIP REQUIRED)
 
 # Either rocSPARSE or cuSPARSE is required
 if(NOT BUILD_CUDA)
-  find_package(rocsparse 1.1.10 REQUIRED) # ROCm 2.5
+  find_package(rocsparse REQUIRED)
 else()
   find_package(CUDA REQUIRED)
 endif()
