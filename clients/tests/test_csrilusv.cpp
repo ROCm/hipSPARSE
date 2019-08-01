@@ -40,7 +40,7 @@ std::string csrilusv_bin[] = {"mac_econ_fwd500.bin",
                               "mc2depi.bin",
                               "scircuit.bin",
 #if defined(__HIP_PLATFORM_HCC__)
-//                              "bmwcra_1.bin",
+                              //                              "bmwcra_1.bin",
                               "nos1.bin",
 #endif
                               "nos3.bin",
@@ -104,7 +104,7 @@ TEST_P(parameterized_csrilusv_bin, csrilusv_bin_double)
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-INSTANTIATE_TEST_CASE_P(csrilusv_bin,
+INSTANTIATE_TEST_CASE_P(DISABLED_csrilusv_bin,
                         parameterized_csrilusv_bin,
                         testing::Combine(testing::ValuesIn(csrilusv_idxbase_range),
                                          testing::ValuesIn(csrilusv_bin)));
