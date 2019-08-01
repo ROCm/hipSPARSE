@@ -162,7 +162,7 @@ TEST_P(parameterized_csrsv2_bin, csrsv2_bin_double)
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-INSTANTIATE_TEST_CASE_P(csrsv2,
+INSTANTIATE_TEST_CASE_P(DISABLED_csrsv2,
                         parameterized_csrsv2,
                         testing::Combine(testing::ValuesIn(csrsv2_M_range),
                                          testing::ValuesIn(csrsv2_alpha_range),
@@ -171,7 +171,7 @@ INSTANTIATE_TEST_CASE_P(csrsv2,
                                          testing::ValuesIn(csrsv2_diag_range),
                                          testing::ValuesIn(csrsv2_fill_range)));
 
-INSTANTIATE_TEST_CASE_P(csrsv2_bin,
+INSTANTIATE_TEST_CASE_P(DISABLED_csrsv2_bin,
                         parameterized_csrsv2_bin,
                         testing::Combine(testing::ValuesIn(csrsv2_alpha_range),
                                          testing::ValuesIn(csrsv2_idxbase_range),
