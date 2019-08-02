@@ -84,7 +84,8 @@ else()
 endif()
 
 # Target properties
-set_target_properties(hipsparse PROPERTIES VERSION ${hipsparse_VERSION} SOVERSION ${hipsparse_SOVERSION} CXX_EXTENSIONS NO)
+rocm_set_soversion(hipsparse ${hipsparse_SOVERSION})
+set_target_properties(hipsparse PROPERTIES CXX_EXTENSIONS NO)
 set_target_properties(hipsparse PROPERTIES CXX_VISIBILITY_PRESET "hidden" VISIBILITY_INLINES_HIDDEN ON)
 set_target_properties(hipsparse PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/staging")
 set_target_propertieS(hipsparse PROPERTIES DEBUG_POSTFIX "-d")
