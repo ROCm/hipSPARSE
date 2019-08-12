@@ -24,14 +24,14 @@
 #include "testing_csrgemm2.hpp"
 #include "utility.hpp"
 
-#include <hipsparse.h>
 #include <gtest/gtest.h>
+#include <hipsparse.h>
 #include <string>
 
 typedef hipsparseIndexBase_t base;
 
 typedef std::tuple<int, int, int, double, base, base, base> csrgemm2_tuple;
-typedef std::tuple<double, base, base, base, std::string> csrgemm2_bin_tuple;
+typedef std::tuple<double, base, base, base, std::string>   csrgemm2_bin_tuple;
 
 double csrgemm2_alpha_range[] = {0.0, 2.0};
 
@@ -59,7 +59,7 @@ std::string csrgemm2_bin[] = {/*"rma10.bin",*/
 
 class parameterized_csrgemm2 : public testing::TestWithParam<csrgemm2_tuple>
 {
-    protected:
+protected:
     parameterized_csrgemm2() {}
     virtual ~parameterized_csrgemm2() {}
     virtual void SetUp() {}
@@ -68,7 +68,7 @@ class parameterized_csrgemm2 : public testing::TestWithParam<csrgemm2_tuple>
 
 class parameterized_csrgemm2_bin : public testing::TestWithParam<csrgemm2_bin_tuple>
 {
-    protected:
+protected:
     parameterized_csrgemm2_bin() {}
     virtual ~parameterized_csrgemm2_bin() {}
     virtual void SetUp() {}
@@ -105,7 +105,7 @@ Arguments setup_csrgemm2_arguments(csrgemm2_bin_tuple tup)
     std::string bin_file = std::get<4>(tup);
 
     // Get current executables absolute path
-    char path_exe[PATH_MAX];
+    char    path_exe[PATH_MAX];
     ssize_t len = readlink("/proc/self/exe", path_exe, sizeof(path_exe) - 1);
     if(len < 14)
     {
@@ -117,12 +117,15 @@ Arguments setup_csrgemm2_arguments(csrgemm2_bin_tuple tup)
     }
 
     // Matrices are stored at the same path in matrices directory
-    arg.filename = std::string(path_exe) + "matrices/" + bin_file;
+    arg.filename = std::string(path_exe) + "../matrices/" + bin_file;
 
     return arg;
 }
 
-TEST(csrgemm2_bad_arg, csrgemm2_float) { testing_csrgemm2_bad_arg<float>(); }
+TEST(csrgemm2_bad_arg, csrgemm2_float)
+{
+    testing_csrgemm2_bad_arg<float>();
+}
 
 TEST_P(parameterized_csrgemm2, csrgemm2_float)
 {
