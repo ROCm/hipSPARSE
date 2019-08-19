@@ -52,7 +52,7 @@ if(NOT TARGET hipsparse)
 endif()
 
 # Hip headers required of all clients; clients use hip to allocate device memory
-find_package(HIP 1.5.19211 REQUIRED)
+find_package(HIP REQUIRED)
 
 # Build flags
 set(CMAKE_CXX_STANDARD 11)
