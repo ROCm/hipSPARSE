@@ -141,21 +141,21 @@ namespace hipsparse_test
         }
     };
 
-struct csrgemm2_struct
-{
-    csrgemm2Info_t info;
-    csrgemm2_struct()
+    struct csrgemm2_struct
     {
-        hipsparseStatus_t status = hipsparseCreateCsrgemm2Info(&info);
-        verify_hipsparse_status_success(status, "ERROR: csrgemm2_struct constructor");
-    }
+        csrgemm2Info_t info;
+        csrgemm2_struct()
+        {
+            hipsparseStatus_t status = hipsparseCreateCsrgemm2Info(&info);
+            verify_hipsparse_status_success(status, "ERROR: csrgemm2_struct constructor");
+        }
 
-    ~csrgemm2_struct()
-    {
-        hipsparseStatus_t status = hipsparseDestroyCsrgemm2Info(info);
-        verify_hipsparse_status_success(status, "ERROR: csrgemm2_struct destructor");
-    }
-};
+        ~csrgemm2_struct()
+        {
+            hipsparseStatus_t status = hipsparseDestroyCsrgemm2Info(info);
+            verify_hipsparse_status_success(status, "ERROR: csrgemm2_struct destructor");
+        }
+    };
 
 } // namespace hipsparse_test
 
