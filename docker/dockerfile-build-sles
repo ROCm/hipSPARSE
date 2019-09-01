@@ -7,7 +7,7 @@ LABEL maintainer="rocsparse-maintainer@amd.com"
 ARG user_uid
 
 # Install dependent packages
-RUN zypper -y update && zypper install -y \
+RUN zypper -n update && zypper -n install \
     sudo \
     rock-dkms \
     ca-certificates \
