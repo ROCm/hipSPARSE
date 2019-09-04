@@ -76,14 +76,14 @@ void testing_csrilu02_bad_arg(void)
         return;
     }
 
-    // testing hipsparseXcsrilu02_bufferSizeExt
-    size_t size;
+    // testing hipsparseXcsrilu02_bufferSize
+    int size;
 
     // testing for(nullptr == dptr)
     {
         int* dptr_null = nullptr;
 
-        status = hipsparseXcsrilu02_bufferSizeExt(
+        status = hipsparseXcsrilu02_bufferSize(
             handle, m, nnz, descr, dval, dptr_null, dcol, info, &size);
         verify_hipsparse_status_invalid_pointer(status, "Error: dptr is nullptr");
     }
@@ -91,7 +91,7 @@ void testing_csrilu02_bad_arg(void)
     {
         int* dcol_null = nullptr;
 
-        status = hipsparseXcsrilu02_bufferSizeExt(
+        status = hipsparseXcsrilu02_bufferSize(
             handle, m, nnz, descr, dval, dptr, dcol_null, info, &size);
         verify_hipsparse_status_invalid_pointer(status, "Error: dcol is nullptr");
     }
@@ -99,15 +99,15 @@ void testing_csrilu02_bad_arg(void)
     {
         T* dval_null = nullptr;
 
-        status = hipsparseXcsrilu02_bufferSizeExt(
+        status = hipsparseXcsrilu02_bufferSize(
             handle, m, nnz, descr, dval_null, dptr, dcol, info, &size);
         verify_hipsparse_status_invalid_pointer(status, "Error: dval is nullptr");
     }
     // testing for(nullptr == buffer_size)
     {
-        size_t* size_null = nullptr;
+        int* size_null = nullptr;
 
-        status = hipsparseXcsrilu02_bufferSizeExt(
+        status = hipsparseXcsrilu02_bufferSize(
             handle, m, nnz, descr, dval, dptr, dcol, info, size_null);
         verify_hipsparse_status_invalid_pointer(status, "Error: size is nullptr");
     }
@@ -115,7 +115,7 @@ void testing_csrilu02_bad_arg(void)
     {
         hipsparseMatDescr_t descr_null = nullptr;
 
-        status = hipsparseXcsrilu02_bufferSizeExt(
+        status = hipsparseXcsrilu02_bufferSize(
             handle, m, nnz, descr_null, dval, dptr, dcol, info, &size);
         verify_hipsparse_status_invalid_pointer(status, "Error: descr is nullptr");
     }
@@ -123,7 +123,7 @@ void testing_csrilu02_bad_arg(void)
     {
         csrilu02Info_t info_null = nullptr;
 
-        status = hipsparseXcsrilu02_bufferSizeExt(
+        status = hipsparseXcsrilu02_bufferSize(
             handle, m, nnz, descr, dval, dptr, dcol, info_null, &size);
         verify_hipsparse_status_invalid_pointer(status, "Error: info is nullptr");
     }
@@ -131,7 +131,7 @@ void testing_csrilu02_bad_arg(void)
     {
         hipsparseHandle_t handle_null = nullptr;
 
-        status = hipsparseXcsrilu02_bufferSizeExt(
+        status = hipsparseXcsrilu02_bufferSize(
             handle_null, m, nnz, descr, dval, dptr, dcol, info, &size);
         verify_hipsparse_status_invalid_handle(status);
     }
@@ -290,7 +290,7 @@ hipsparseStatus_t testing_csrilu02(Arguments argus)
     std::string            binfile   = "";
     std::string            filename  = "";
     hipsparseStatus_t      status;
-    size_t                 size;
+    int                    size;
 
     // When in testing mode, M == N == -99 indicates that we are testing with a real
     // matrix from cise.ufl.edu
@@ -352,9 +352,9 @@ hipsparseStatus_t testing_csrilu02(Arguments argus)
             return HIPSPARSE_STATUS_ALLOC_FAILED;
         }
 
-        // Test hipsparseXcsrilu02_bufferSizeExt
-        status = hipsparseXcsrilu02_bufferSizeExt(
-            handle, m, nnz, descr, dval, dptr, dcol, info, &size);
+        // Test hipsparseXcsrilu02_bufferSize
+        status
+            = hipsparseXcsrilu02_bufferSize(handle, m, nnz, descr, dval, dptr, dcol, info, &size);
 
         if(m < 0 || nnz < 0)
         {
@@ -482,7 +482,7 @@ hipsparseStatus_t testing_csrilu02(Arguments argus)
 
     // Obtain csrilu02 buffer size
     CHECK_HIPSPARSE_ERROR(
-        hipsparseXcsrilu02_bufferSizeExt(handle, m, nnz, descr, dval, dptr, dcol, info, &size));
+        hipsparseXcsrilu02_bufferSize(handle, m, nnz, descr, dval, dptr, dcol, info, &size));
 
     // Allocate buffer on the device
     auto dbuffer_managed = hipsparse_unique_ptr{device_malloc(sizeof(char) * size), device_free};
