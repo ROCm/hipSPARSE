@@ -373,7 +373,7 @@ pushd .
         elevate_if_not_root dnf install hipsparse-*.rpm
       ;;
       sles)
-        elevate_if_not_root zypper -n --nogpg-checks install hipsparse-*.rpm
+        elevate_if_not_root zypper -n --nogpgcheck install hipsparse-*.rpm
       ;;
     esac
 
