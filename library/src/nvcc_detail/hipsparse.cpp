@@ -412,8 +412,7 @@ hipsparseStatus_t hipsparseDestroyMatDescr(hipsparseMatDescr_t descrA)
 
 hipsparseStatus_t hipsparseCopyMatDescr(hipsparseMatDescr_t dest, const hipsparseMatDescr_t src)
 {
-    return hipCUSPARSEStatusToHIPStatus(
-        cusparseCopyMatDescr((cusparseMatDescr_t)dest, (const cusparseMatDescr_t)src));
+    return HIPSPARSE_STATUS_INTERNAL_ERROR;
 }
 
 hipsparseStatus_t hipsparseSetMatType(hipsparseMatDescr_t descrA, hipsparseMatrixType_t type)
@@ -774,17 +773,7 @@ hipsparseStatus_t hipsparseScsrsv2_bufferSizeExt(hipsparseHandle_t         handl
                                                  csrsv2Info_t              info,
                                                  size_t*                   pBufferSize)
 {
-    return hipCUSPARSEStatusToHIPStatus(
-        cusparseScsrsv2_bufferSizeExt((cusparseHandle_t)handle,
-                                      hipOperationToCudaOperation(transA),
-                                      m,
-                                      nnz,
-                                      (cusparseMatDescr_t)descrA,
-                                      csrSortedValA,
-                                      csrSortedRowPtrA,
-                                      csrSortedColIndA,
-                                      (csrsv2Info_t)info,
-                                      pBufferSize));
+    return HIPSPARSE_STATUS_INTERNAL_ERROR;
 }
 
 hipsparseStatus_t hipsparseDcsrsv2_bufferSizeExt(hipsparseHandle_t         handle,
@@ -798,17 +787,7 @@ hipsparseStatus_t hipsparseDcsrsv2_bufferSizeExt(hipsparseHandle_t         handl
                                                  csrsv2Info_t              info,
                                                  size_t*                   pBufferSize)
 {
-    return hipCUSPARSEStatusToHIPStatus(
-        cusparseDcsrsv2_bufferSizeExt((cusparseHandle_t)handle,
-                                      hipOperationToCudaOperation(transA),
-                                      m,
-                                      nnz,
-                                      (cusparseMatDescr_t)descrA,
-                                      csrSortedValA,
-                                      csrSortedRowPtrA,
-                                      csrSortedColIndA,
-                                      (csrsv2Info_t)info,
-                                      pBufferSize));
+    return HIPSPARSE_STATUS_INTERNAL_ERROR;
 }
 
 hipsparseStatus_t hipsparseScsrsv2_analysis(hipsparseHandle_t         handle,
@@ -1536,15 +1515,7 @@ hipsparseStatus_t hipsparseScsrilu02_bufferSizeExt(hipsparseHandle_t         han
                                                    csrilu02Info_t            info,
                                                    size_t*                   pBufferSize)
 {
-    return hipCUSPARSEStatusToHIPStatus(cusparseScsrilu02_bufferSizeExt((cusparseHandle_t)handle,
-                                                                        m,
-                                                                        nnz,
-                                                                        (cusparseMatDescr_t)descrA,
-                                                                        csrSortedValA,
-                                                                        csrSortedRowPtrA,
-                                                                        csrSortedColIndA,
-                                                                        (csrilu02Info_t)info,
-                                                                        pBufferSize));
+    return HIPSPARSE_STATUS_INTERNAL_ERROR;
 }
 
 hipsparseStatus_t hipsparseDcsrilu02_bufferSizeExt(hipsparseHandle_t         handle,
@@ -1557,15 +1528,7 @@ hipsparseStatus_t hipsparseDcsrilu02_bufferSizeExt(hipsparseHandle_t         han
                                                    csrilu02Info_t            info,
                                                    size_t*                   pBufferSize)
 {
-    return hipCUSPARSEStatusToHIPStatus(cusparseDcsrilu02_bufferSizeExt((cusparseHandle_t)handle,
-                                                                        m,
-                                                                        nnz,
-                                                                        (cusparseMatDescr_t)descrA,
-                                                                        csrSortedValA,
-                                                                        csrSortedRowPtrA,
-                                                                        csrSortedColIndA,
-                                                                        (csrilu02Info_t)info,
-                                                                        pBufferSize));
+    return HIPSPARSE_STATUS_INTERNAL_ERROR;
 }
 
 hipsparseStatus_t hipsparseScsrilu02_analysis(hipsparseHandle_t         handle,
