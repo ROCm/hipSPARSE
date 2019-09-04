@@ -99,9 +99,9 @@ hipsparseStatus_t testing_csrilusv(Arguments argus)
     CHECK_HIP_ERROR(hipMemcpy(dval, hcsr_val.data(), sizeof(T) * nnz, hipMemcpyHostToDevice));
 
     // Obtain csrilu02 buffer size
-    size_t size;
+    int size;
     CHECK_HIPSPARSE_ERROR(
-        hipsparseXcsrilu02_bufferSizeExt(handle, m, nnz, descr_M, dval, dptr, dcol, info_M, &size));
+        hipsparseXcsrilu02_bufferSize(handle, m, nnz, descr_M, dval, dptr, dcol, info_M, &size));
 
     // Allocate buffer on the device
     auto dbuffer_managed = hipsparse_unique_ptr{device_malloc(sizeof(char) * size), device_free};
@@ -206,27 +206,27 @@ hipsparseStatus_t testing_csrilusv(Arguments argus)
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatDiagType(descr_U, HIPSPARSE_DIAG_TYPE_NON_UNIT));
 
     // Obtain csrsv buffer sizes
-    size_t size_lower, size_upper;
-    CHECK_HIPSPARSE_ERROR(hipsparseXcsrsv2_bufferSizeExt(handle,
-                                                         HIPSPARSE_OPERATION_NON_TRANSPOSE,
-                                                         m,
-                                                         nnz,
-                                                         descr_L,
-                                                         dval,
-                                                         dptr,
-                                                         dcol,
-                                                         info_L,
-                                                         &size_lower));
-    CHECK_HIPSPARSE_ERROR(hipsparseXcsrsv2_bufferSizeExt(handle,
-                                                         HIPSPARSE_OPERATION_NON_TRANSPOSE,
-                                                         m,
-                                                         nnz,
-                                                         descr_U,
-                                                         dval,
-                                                         dptr,
-                                                         dcol,
-                                                         info_U,
-                                                         &size_upper));
+    int size_lower, size_upper;
+    CHECK_HIPSPARSE_ERROR(hipsparseXcsrsv2_bufferSize(handle,
+                                                      HIPSPARSE_OPERATION_NON_TRANSPOSE,
+                                                      m,
+                                                      nnz,
+                                                      descr_L,
+                                                      dval,
+                                                      dptr,
+                                                      dcol,
+                                                      info_L,
+                                                      &size_lower));
+    CHECK_HIPSPARSE_ERROR(hipsparseXcsrsv2_bufferSize(handle,
+                                                      HIPSPARSE_OPERATION_NON_TRANSPOSE,
+                                                      m,
+                                                      nnz,
+                                                      descr_U,
+                                                      dval,
+                                                      dptr,
+                                                      dcol,
+                                                      info_U,
+                                                      &size_upper));
 
     // Pick maximum size so that we need only one buffer
     size = std::max(size_lower, size_upper);

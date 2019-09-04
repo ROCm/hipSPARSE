@@ -27,7 +27,7 @@
 find_package(Git REQUIRED)
 
 # HIP
-find_package(HIP REQUIRED)
+find_package(hip REQUIRED)
 
 # Either rocSPARSE or cuSPARSE is required
 if(NOT BUILD_CUDA)
