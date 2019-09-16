@@ -36,7 +36,7 @@ hipSPARSECI:
     hipsparse.compiler.compiler_path = 'c++'
 
     // Define test architectures, optional rocm version argument is available
-    def nodes = new dockerNodes(['gfx900 && centos7', 'gfx906 && centos7', 'gfx900 && ubuntu', 'gfx906 && ubuntu', 'gfx906 && sles'], hipsparse)
+    def nodes = new dockerNodes(['gfx900 && centos7', 'gfx906 && centos7', 'gfx900 && ubuntu', 'gfx906 && ubuntu'], hipsparse)
 
     boolean formatCheck = true
 
@@ -55,6 +55,14 @@ hipSPARSECI:
                     cd ${project.paths.project_build_prefix}
                     export PATH=/opt/rocm/hsa/include:$PATH
                     LD_LIBRARY_PATH=/opt/rocm/hcc/lib CXX=/opt/rh/devtoolset-7/root/usr/bin/c++ ${project.paths.build_command}
+                """
+        }
+        else if(platform.jenkinsLabel.contains('sles'))
+        {
+            command = """#!/usr/bin/env bash
+                    set -x
+                    cd ${project.paths.project_build_prefix}
+                    LD_LIBRARY_PATH=/opt/rocm/hcc/lib CXX=${project.compiler.compiler_path} sudo ${project.paths.build_command}
                 """
         }
         else
@@ -123,7 +131,7 @@ hipSPARSECI:
 
         def command
 
-        if(platform.jenkinsLabel.contains('centos') || platform.jenkinsLabel.contains('sles'))
+        if(platform.jenkinsLabel.contains('centos'))
         {
             command = """
                     set -x
@@ -137,7 +145,7 @@ hipSPARSECI:
             platform.runCommand(this, command)
             platform.archiveArtifacts(this, """${project.paths.project_build_prefix}/build/release/package/*.rpm""")
         }
-        else if(platform.jenkinsLabel.contains('hip-clang'))
+        else if(platform.jenkinsLabel.contains('hip-clang') || platform.jenkinsLabel.contains('sles'))
         {
             packageCommand = null
         }
