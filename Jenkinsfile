@@ -36,7 +36,7 @@ hipSPARSECI:
     hipsparse.compiler.compiler_path = 'c++'
 
     // Define test architectures, optional rocm version argument is available
-    def nodes = new dockerNodes(['gfx900 && centos7', 'gfx906 && centos7', 'gfx900 && ubuntu', 'gfx906 && ubuntu', 'gfx906 && sles'], hipsparse)
+    def nodes = new dockerNodes(['gfx900 && centos7', 'gfx906 && centos7', 'gfx900 && ubuntu', 'gfx906 && ubuntu'], hipsparse)
 
     boolean formatCheck = true
 
