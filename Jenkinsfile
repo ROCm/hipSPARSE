@@ -57,6 +57,14 @@ hipSPARSECI:
                     LD_LIBRARY_PATH=/opt/rocm/hcc/lib CXX=/opt/rh/devtoolset-7/root/usr/bin/c++ ${project.paths.build_command}
                 """
         }
+        else if(platform.jenkinsLabel.contains('sles'))
+        {
+            command = """#!/usr/bin/env bash
+                    set -x
+                    cd ${project.paths.project_build_prefix}
+                    LD_LIBRARY_PATH=/opt/rocm/hcc/lib CXX=${project.compiler.compiler_path} sudo ${project.paths.build_command}
+                """
+        }
         else
         {
             command = """#!/usr/bin/env bash
@@ -123,7 +131,7 @@ hipSPARSECI:
 
         def command
 
-        if(platform.jenkinsLabel.contains('centos') || platform.jenkinsLabel.contains('sles'))
+        if(platform.jenkinsLabel.contains('centos'))
         {
             command = """
                     set -x
@@ -137,7 +145,7 @@ hipSPARSECI:
             platform.runCommand(this, command)
             platform.archiveArtifacts(this, """${project.paths.project_build_prefix}/build/release/package/*.rpm""")
         }
-        else if(platform.jenkinsLabel.contains('hip-clang'))
+        else if(platform.jenkinsLabel.contains('hip-clang') || platform.jenkinsLabel.contains('sles'))
         {
             packageCommand = null
         }
