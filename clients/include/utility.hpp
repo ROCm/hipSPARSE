@@ -1199,7 +1199,7 @@ static void csrgemm2(int                  m,
         int* col_entry = &col[row_begin];
         T*   val_entry = &val[row_begin];
 
-        std::sort(perm.begin(), perm.end(), [&](const int&a, const int& b) {
+        std::sort(perm.begin(), perm.end(), [&](const int& a, const int& b) {
             return col_entry[a] <= col_entry[b];
         });
 

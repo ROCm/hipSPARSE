@@ -1554,13 +1554,14 @@ hipsparseStatus_t testing_csrgemm2_a(Arguments argus)
     int safe_nnz_A = std::max(nnz_A, one);
     int safe_nnz_B = std::max(nnz_B, one);
 
-    auto dAptr_managed  = hipsparse_unique_ptr{device_malloc(sizeof(int) * (M + 1)), device_free};
-    auto dAcol_managed  = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_nnz_A), device_free};
-    auto dAval_managed  = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_nnz_A), device_free};
-    auto dBptr_managed  = hipsparse_unique_ptr{device_malloc(sizeof(int) * (safe_K + 1)), device_free};
-    auto dBcol_managed  = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_nnz_B), device_free};
-    auto dBval_managed  = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_nnz_B), device_free};
-    auto dCptr_managed  = hipsparse_unique_ptr{device_malloc(sizeof(int) * (M + 1)), device_free};
+    auto dAptr_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * (M + 1)), device_free};
+    auto dAcol_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_nnz_A), device_free};
+    auto dAval_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_nnz_A), device_free};
+    auto dBptr_managed
+        = hipsparse_unique_ptr{device_malloc(sizeof(int) * (safe_K + 1)), device_free};
+    auto dBcol_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_nnz_B), device_free};
+    auto dBval_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_nnz_B), device_free};
+    auto dCptr_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * (M + 1)), device_free};
     auto dalpha_managed = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
 
     int* dAptr  = (int*)dAptr_managed.get();

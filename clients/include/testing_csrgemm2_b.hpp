@@ -989,13 +989,11 @@ hipsparseStatus_t testing_csrgemm2_b(Arguments argus)
 
         if(M < 0 || N < 0 || nnz_D < 0)
         {
-            verify_hipsparse_status_invalid_size(
-                status, "Error: M < 0 || N < 0 || nnz_D < 0");
+            verify_hipsparse_status_invalid_size(status, "Error: M < 0 || N < 0 || nnz_D < 0");
         }
         else
         {
-            verify_hipsparse_status_success(
-                status, "M >= 0 && N >= 0 && nnz_D >= 0");
+            verify_hipsparse_status_success(status, "M >= 0 && N >= 0 && nnz_D >= 0");
         }
 
         // Test hipsparseXcsrgemm2Nnz
@@ -1024,13 +1022,11 @@ hipsparseStatus_t testing_csrgemm2_b(Arguments argus)
 
         if(M < 0 || N < 0 || nnz_D < 0)
         {
-            verify_hipsparse_status_invalid_size(
-                status, "Error: M < 0 || N < 0 || nnz_D < 0");
+            verify_hipsparse_status_invalid_size(status, "Error: M < 0 || N < 0 || nnz_D < 0");
         }
         else
         {
-            verify_hipsparse_status_success(
-                status, "M >= 0 && N >= 0 && nnz_D >= 0");
+            verify_hipsparse_status_success(status, "M >= 0 && N >= 0 && nnz_D >= 0");
         }
 
         // Test hipsparseXcsrgemm2
@@ -1064,13 +1060,11 @@ hipsparseStatus_t testing_csrgemm2_b(Arguments argus)
 
         if(M < 0 || N < 0 || nnz_D < 0)
         {
-            verify_hipsparse_status_invalid_size(
-                status, "Error: M < 0 || N < 0 || nnz_D < 0");
+            verify_hipsparse_status_invalid_size(status, "Error: M < 0 || N < 0 || nnz_D < 0");
         }
         else
         {
-            verify_hipsparse_status_success(
-                status, "M >= 0 && N >= 0 && nnz_D >= 0");
+            verify_hipsparse_status_success(status, "M >= 0 && N >= 0 && nnz_D >= 0");
         }
 
         return HIPSPARSE_STATUS_SUCCESS;

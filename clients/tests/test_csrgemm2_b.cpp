@@ -30,8 +30,8 @@
 
 typedef hipsparseIndexBase_t base;
 
-typedef std::tuple<int, int, double, base, base> csrgemm2_b_tuple;
-typedef std::tuple<double, base, base, std::string>   csrgemm2_b_bin_tuple;
+typedef std::tuple<int, int, double, base, base>    csrgemm2_b_tuple;
+typedef std::tuple<double, base, base, std::string> csrgemm2_b_bin_tuple;
 
 double csrgemm2_b_beta_range[] = {0.0, 1.3};
 
