@@ -1,5 +1,5 @@
 /* ************************************************************************
- * Copyright (c) 2018 Advanced Micro Devices, Inc.
+ * Copyright (c) 2019 Advanced Micro Devices, Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,8 +22,8 @@
  * ************************************************************************ */
 
 #pragma once
-#ifndef TESTING_CSRGEMM2_HPP
-#define TESTING_CSRGEMM2_HPP
+#ifndef TESTING_CSRGEMM2_A_HPP
+#define TESTING_CSRGEMM2_A_HPP
 
 #include "hipsparse.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
@@ -37,7 +37,7 @@ using namespace hipsparse;
 using namespace hipsparse_test;
 
 template <typename T>
-void testing_csrgemm2_bad_arg(void)
+void testing_csrgemm2_a_bad_arg(void)
 {
 #ifdef __HIP_PLATFORM_NVCC__
     // do not test for bad args
@@ -1227,212 +1227,7 @@ void testing_csrgemm2_bad_arg(void)
 }
 
 template <typename T>
-static int csrgemm2_nnz(int                  m,
-                        int                  n,
-                        int                  k,
-                        const int*           csr_row_ptr_A,
-                        const int*           csr_col_ind_A,
-                        const int*           csr_row_ptr_B,
-                        const int*           csr_col_ind_B,
-                        T                    beta,
-                        const int*           csr_row_ptr_D,
-                        const int*           csr_col_ind_D,
-                        int*                 csr_row_ptr_C,
-                        hipsparseIndexBase_t idx_base_A,
-                        hipsparseIndexBase_t idx_base_B,
-                        hipsparseIndexBase_t idx_base_C,
-                        hipsparseIndexBase_t idx_base_D)
-{
-    std::vector<int> nnz(n, -1);
-
-    // Index base
-    csr_row_ptr_C[0] = idx_base_C;
-
-    // Loop over rows of A
-    for(int i = 0; i < m; ++i)
-    {
-        // Initialize csr row pointer with previous row offset
-        csr_row_ptr_C[i + 1] = csr_row_ptr_C[i];
-
-        int row_begin_A = csr_row_ptr_A[i] - idx_base_A;
-        int row_end_A   = csr_row_ptr_A[i + 1] - idx_base_A;
-
-        // Loop over columns of A
-        for(int j = row_begin_A; j < row_end_A; ++j)
-        {
-            // Current column of A
-            int col_A = csr_col_ind_A[j] - idx_base_A;
-
-            int row_begin_B = csr_row_ptr_B[col_A] - idx_base_B;
-            int row_end_B   = csr_row_ptr_B[col_A + 1] - idx_base_B;
-
-            // Loop over columns of B in row col_A
-            for(int k = row_begin_B; k < row_end_B; ++k)
-            {
-                // Current column of B
-                int col_B = csr_col_ind_B[k] - idx_base_B;
-
-                // Check if a new nnz is generated
-                if(nnz[col_B] != i)
-                {
-                    nnz[col_B] = i;
-                    ++csr_row_ptr_C[i + 1];
-                }
-            }
-        }
-
-        // Add nnz of D if beta != 0
-        if(beta != (T)0)
-        {
-            int row_begin_D = csr_row_ptr_D[i] - idx_base_D;
-            int row_end_D   = csr_row_ptr_D[i + 1] - idx_base_D;
-
-            // Loop over columns of D
-            for(int j = row_begin_D; j < row_end_D; ++j)
-            {
-                int col_D = csr_col_ind_D[j] - idx_base_D;
-
-                // Check if a new nnz is generated
-                if(nnz[col_D] != i)
-                {
-                    nnz[col_D] = i;
-                    ++csr_row_ptr_C[i + 1];
-                }
-            }
-        }
-    }
-
-    return csr_row_ptr_C[m] - idx_base_C;
-}
-
-template <typename T>
-static void csrgemm2(int                  m,
-                     int                  n,
-                     int                  k,
-                     T                    alpha,
-                     const int*           csr_row_ptr_A,
-                     const int*           csr_col_ind_A,
-                     const T*             csr_val_A,
-                     const int*           csr_row_ptr_B,
-                     const int*           csr_col_ind_B,
-                     const T*             csr_val_B,
-                     T                    beta,
-                     const int*           csr_row_ptr_D,
-                     const int*           csr_col_ind_D,
-                     const T*             csr_val_D,
-                     const int*           csr_row_ptr_C,
-                     int*                 csr_col_ind_C,
-                     T*                   csr_val_C,
-                     hipsparseIndexBase_t idx_base_A,
-                     hipsparseIndexBase_t idx_base_B,
-                     hipsparseIndexBase_t idx_base_C,
-                     hipsparseIndexBase_t idx_base_D)
-{
-    std::vector<int> nnz(n, -1);
-
-    // Loop over rows of A
-    for(int i = 0; i < m; ++i)
-    {
-        int row_begin_A = csr_row_ptr_A[i] - idx_base_A;
-        int row_end_A   = csr_row_ptr_A[i + 1] - idx_base_A;
-
-        int row_begin_C = csr_row_ptr_C[i] - idx_base_C;
-        int row_end_C   = row_begin_C;
-
-        // Loop over columns of A
-        for(int j = row_begin_A; j < row_end_A; ++j)
-        {
-            // Current column of A
-            int col_A = csr_col_ind_A[j] - idx_base_A;
-            // Current value of A
-            T val_A = alpha * csr_val_A[j];
-
-            int row_begin_B = csr_row_ptr_B[col_A] - idx_base_B;
-            int row_end_B   = csr_row_ptr_B[col_A + 1] - idx_base_B;
-
-            // Loop over columns of B in row col_A
-            for(int k = row_begin_B; k < row_end_B; ++k)
-            {
-                // Current column of B
-                int col_B = csr_col_ind_B[k] - idx_base_B;
-                // Current value of B
-                T val_B = csr_val_B[k];
-
-                // Check if a new nnz is generated or if the product is appended
-                if(nnz[col_B] < row_begin_C)
-                {
-                    nnz[col_B]               = row_end_C;
-                    csr_col_ind_C[row_end_C] = col_B + idx_base_C;
-                    csr_val_C[row_end_C]     = val_A * val_B;
-                    ++row_end_C;
-                }
-                else
-                {
-                    csr_val_C[nnz[col_B]] += val_A * val_B;
-                }
-            }
-        }
-
-        // Add nnz of D if beta != 0
-        if(beta != (T)0)
-        {
-            int row_begin_D = csr_row_ptr_D[i] - idx_base_D;
-            int row_end_D   = csr_row_ptr_D[i + 1] - idx_base_D;
-
-            // Loop over columns of D
-            for(int j = row_begin_D; j < row_end_D; ++j)
-            {
-                // Current column of D
-                int col_D = csr_col_ind_D[j] - idx_base_D;
-                // Current value of D
-                T val_D = beta * csr_val_D[j];
-
-                // Check if a new nnz is generated or if the value is added
-                if(nnz[col_D] < row_begin_C)
-                {
-                    nnz[col_D] = row_end_C;
-
-                    csr_col_ind_C[row_end_C] = col_D + idx_base_D;
-                    csr_val_C[row_end_C]     = val_D;
-                    ++row_end_C;
-                }
-                else
-                {
-                    csr_val_C[nnz[col_D]] += val_D;
-                }
-            }
-        }
-    }
-
-    // Sort column indices within each row
-    for(int i = 0; i < m; ++i)
-    {
-        int row_begin = csr_row_ptr_C[i] - idx_base_C;
-        int row_end   = csr_row_ptr_C[i + 1] - idx_base_C;
-
-        for(int j = row_begin; j < row_end; ++j)
-        {
-            for(int jj = row_begin; jj < row_end - 1; ++jj)
-            {
-                if(csr_col_ind_C[jj] > csr_col_ind_C[jj + 1])
-                {
-                    // swap elements
-                    int ind = csr_col_ind_C[jj];
-                    T   val = csr_val_C[jj];
-
-                    csr_col_ind_C[jj] = csr_col_ind_C[jj + 1];
-                    csr_val_C[jj]     = csr_val_C[jj + 1];
-
-                    csr_col_ind_C[jj + 1] = ind;
-                    csr_val_C[jj + 1]     = val;
-                }
-            }
-        }
-    }
-}
-
-template <typename T>
-hipsparseStatus_t testing_csrgemm2(Arguments argus)
+hipsparseStatus_t testing_csrgemm2_a(Arguments argus)
 {
     int                  safe_size  = 100;
     int                  M          = argus.M;
@@ -1443,9 +1238,12 @@ hipsparseStatus_t testing_csrgemm2(Arguments argus)
     hipsparseIndexBase_t idx_base_C = argus.idx_base3;
     std::string          binfile    = "";
     std::string          filename   = "";
-    T                    h_alpha    = argus.alpha;
-    hipsparseStatus_t    status;
-    size_t               size;
+    T                    alpha      = argus.alpha;
+
+    hipsparseStatus_t status;
+    size_t            size;
+
+    T* h_alpha = &alpha;
 
     // When in testing mode, M == N == -99 indicates that we are testing with a real
     // matrix from cise.ufl.edu
@@ -1471,6 +1269,9 @@ hipsparseStatus_t testing_csrgemm2(Arguments argus)
 
     std::unique_ptr<descr_struct> test_descr_C(new descr_struct);
     hipsparseMatDescr_t           descr_C = test_descr_C->descr;
+
+    std::unique_ptr<descr_struct> test_descr_D(new descr_struct);
+    hipsparseMatDescr_t           descr_D = test_descr_D->descr;
 
     std::unique_ptr<csrgemm2_struct> unique_ptr_csrgemm2(new csrgemm2_struct);
     csrgemm2Info_t                   info = unique_ptr_csrgemm2->info;
@@ -1498,6 +1299,10 @@ hipsparseStatus_t testing_csrgemm2(Arguments argus)
     // Argument sanity check before allocating invalid memory
     if(M <= 0 || N <= 0 || K <= 0 || nnz_A <= 0 || nnz_B <= 0)
     {
+#ifdef __HIP_PLATFORM_NVCC__
+        // do not test for zero
+        return HIPSPARSE_STATUS_SUCCESS;
+#endif
         auto dAptr_managed
             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
         auto dAcol_managed
@@ -1546,7 +1351,7 @@ hipsparseStatus_t testing_csrgemm2(Arguments argus)
                                                   M,
                                                   N,
                                                   K,
-                                                  &h_alpha,
+                                                  h_alpha,
                                                   descr_A,
                                                   nnz_A,
                                                   dAptr,
@@ -1556,7 +1361,7 @@ hipsparseStatus_t testing_csrgemm2(Arguments argus)
                                                   dBptr,
                                                   dBcol,
                                                   (T*)nullptr,
-                                                  nullptr,
+                                                  descr_D,
                                                   0,
                                                   nullptr,
                                                   nullptr,
@@ -1588,7 +1393,7 @@ hipsparseStatus_t testing_csrgemm2(Arguments argus)
                                        nnz_B,
                                        dBptr,
                                        dBcol,
-                                       nullptr,
+                                       descr_D,
                                        0,
                                        nullptr,
                                        nullptr,
@@ -1614,7 +1419,7 @@ hipsparseStatus_t testing_csrgemm2(Arguments argus)
                                     M,
                                     N,
                                     K,
-                                    &h_alpha,
+                                    h_alpha,
                                     descr_A,
                                     nnz_A,
                                     dAval,
@@ -1626,7 +1431,7 @@ hipsparseStatus_t testing_csrgemm2(Arguments argus)
                                     dBptr,
                                     dBcol,
                                     (T*)nullptr,
-                                    nullptr,
+                                    descr_D,
                                     0,
                                     (T*)nullptr,
                                     nullptr,
@@ -1656,6 +1461,12 @@ hipsparseStatus_t testing_csrgemm2(Arguments argus)
     std::vector<int> hcsr_row_ptr_A;
     std::vector<int> hcsr_col_ind_A;
     std::vector<T>   hcsr_val_A;
+    std::vector<int> hcsr_row_ptr_B;
+    std::vector<int> hcsr_col_ind_B;
+    std::vector<T>   hcsr_val_B;
+    std::vector<int> hcsr_row_ptr_D;
+    std::vector<int> hcsr_col_ind_D;
+    std::vector<T>   hcsr_val_D;
 
     // Initial Data on CPU
     srand(12345ULL);
@@ -1719,9 +1530,10 @@ hipsparseStatus_t testing_csrgemm2(Arguments argus)
     // B = A^T so that we can compute the square of A
     N     = M;
     nnz_B = nnz_A;
-    std::vector<int> hcsr_row_ptr_B(K + 1, 0);
-    std::vector<int> hcsr_col_ind_B(nnz_B);
-    std::vector<T>   hcsr_val_B(nnz_B);
+
+    hcsr_row_ptr_B.resize(K + 1, 0);
+    hcsr_col_ind_B.resize(nnz_B);
+    hcsr_val_B.resize(nnz_B);
 
     // B = A^T
     transpose(M,
@@ -1736,18 +1548,18 @@ hipsparseStatus_t testing_csrgemm2(Arguments argus)
               idx_base_A,
               idx_base_B);
 
-    // For simplicity, we generate a COO matrix for D
-    std::vector<int> hcsr_row_ptr_D;
-    std::vector<int> hcsr_col_ind_D;
-    std::vector<T>   hcsr_val_D;
-
     // Allocate memory on device
+    int one        = 1;
+    int safe_K     = std::max(K, one);
+    int safe_nnz_A = std::max(nnz_A, one);
+    int safe_nnz_B = std::max(nnz_B, one);
+
     auto dAptr_managed  = hipsparse_unique_ptr{device_malloc(sizeof(int) * (M + 1)), device_free};
-    auto dAcol_managed  = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz_A), device_free};
-    auto dAval_managed  = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz_A), device_free};
-    auto dBptr_managed  = hipsparse_unique_ptr{device_malloc(sizeof(int) * (K + 1)), device_free};
-    auto dBcol_managed  = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz_B), device_free};
-    auto dBval_managed  = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz_B), device_free};
+    auto dAcol_managed  = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_nnz_A), device_free};
+    auto dAval_managed  = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_nnz_A), device_free};
+    auto dBptr_managed  = hipsparse_unique_ptr{device_malloc(sizeof(int) * (safe_K + 1)), device_free};
+    auto dBcol_managed  = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_nnz_B), device_free};
+    auto dBval_managed  = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_nnz_B), device_free};
     auto dCptr_managed  = hipsparse_unique_ptr{device_malloc(sizeof(int) * (M + 1)), device_free};
     auto dalpha_managed = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
 
@@ -1780,7 +1592,7 @@ hipsparseStatus_t testing_csrgemm2(Arguments argus)
     CHECK_HIP_ERROR(
         hipMemcpy(dBcol, hcsr_col_ind_B.data(), sizeof(int) * nnz_B, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dBval, hcsr_val_B.data(), sizeof(T) * nnz_B, hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(hipMemcpy(dalpha, &h_alpha, sizeof(T), hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(dalpha, h_alpha, sizeof(T), hipMemcpyHostToDevice));
 
     // Obtain csrgemm2 buffer size
     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
@@ -1788,7 +1600,7 @@ hipsparseStatus_t testing_csrgemm2(Arguments argus)
                                                            M,
                                                            N,
                                                            K,
-                                                           &h_alpha,
+                                                           h_alpha,
                                                            descr_A,
                                                            nnz_A,
                                                            dAptr,
@@ -1798,7 +1610,7 @@ hipsparseStatus_t testing_csrgemm2(Arguments argus)
                                                            dBptr,
                                                            dBcol,
                                                            (T*)nullptr,
-                                                           nullptr,
+                                                           descr_D,
                                                            0,
                                                            nullptr,
                                                            nullptr,
@@ -1834,7 +1646,7 @@ hipsparseStatus_t testing_csrgemm2(Arguments argus)
                                                 nnz_B,
                                                 dBptr,
                                                 dBcol,
-                                                nullptr,
+                                                descr_D,
                                                 0,
                                                 nullptr,
                                                 nullptr,
@@ -1845,8 +1657,10 @@ hipsparseStatus_t testing_csrgemm2(Arguments argus)
                                                 dbuffer));
 
     // Allocate result matrix
-    auto dCcol_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * hnnz_C_1), device_free};
-    auto dCval_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * hnnz_C_1), device_free};
+    int safe_nnz_C = std::max(hnnz_C_1, one);
+
+    auto dCcol_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_nnz_C), device_free};
+    auto dCval_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_nnz_C), device_free};
 
     int* dCcol = (int*)dCcol_managed.get();
     T*   dCval = (T*)dCval_managed.get();
@@ -1876,7 +1690,7 @@ hipsparseStatus_t testing_csrgemm2(Arguments argus)
                                                     nnz_B,
                                                     dBptr,
                                                     dBcol,
-                                                    nullptr,
+                                                    descr_D,
                                                     0,
                                                     nullptr,
                                                     nullptr,
@@ -1894,11 +1708,12 @@ hipsparseStatus_t testing_csrgemm2(Arguments argus)
         int nnz_C_gold = csrgemm2_nnz(M,
                                       N,
                                       K,
+                                      h_alpha,
                                       hcsr_row_ptr_A.data(),
                                       hcsr_col_ind_A.data(),
                                       hcsr_row_ptr_B.data(),
                                       hcsr_col_ind_B.data(),
-                                      (T)0.0,
+                                      (T*)nullptr,
                                       hcsr_row_ptr_D.data(),
                                       hcsr_col_ind_D.data(),
                                       hcsr_row_ptr_C_gold.data(),
@@ -1906,6 +1721,12 @@ hipsparseStatus_t testing_csrgemm2(Arguments argus)
                                       idx_base_B,
                                       idx_base_C,
                                       HIPSPARSE_INDEX_BASE_ZERO);
+
+        // If nnz_C == 0, we are done
+        if(nnz_C_gold == 0)
+        {
+            return HIPSPARSE_STATUS_SUCCESS;
+        }
 
         std::vector<int> hcsr_col_ind_C_gold(nnz_C_gold);
         std::vector<T>   hcsr_val_C_gold(nnz_C_gold);
@@ -1920,7 +1741,7 @@ hipsparseStatus_t testing_csrgemm2(Arguments argus)
                  hcsr_row_ptr_B.data(),
                  hcsr_col_ind_B.data(),
                  hcsr_val_B.data(),
-                 (T)0.0,
+                 (T*)nullptr,
                  hcsr_row_ptr_D.data(),
                  hcsr_col_ind_D.data(),
                  hcsr_val_D.data(),
@@ -1948,7 +1769,7 @@ hipsparseStatus_t testing_csrgemm2(Arguments argus)
                                                  M,
                                                  N,
                                                  K,
-                                                 &h_alpha,
+                                                 h_alpha,
                                                  descr_A,
                                                  nnz_A,
                                                  dAval,
@@ -1960,7 +1781,7 @@ hipsparseStatus_t testing_csrgemm2(Arguments argus)
                                                  dBptr,
                                                  dBcol,
                                                  (T*)nullptr,
-                                                 nullptr,
+                                                 descr_D,
                                                  0,
                                                  (T*)nullptr,
                                                  nullptr,
@@ -1975,28 +1796,63 @@ hipsparseStatus_t testing_csrgemm2(Arguments argus)
         // Copy output from device to CPU
         std::vector<int> hcsr_row_ptr_C(M + 1);
         std::vector<int> hcsr_col_ind_C(nnz_C_gold);
-        std::vector<T>   hcsr_val_C(nnz_C_gold);
+        std::vector<T>   hcsr_val_C_1(nnz_C_gold);
+        std::vector<T>   hcsr_val_C_2(nnz_C_gold);
 
         CHECK_HIP_ERROR(
             hipMemcpy(hcsr_row_ptr_C.data(), dCptr, sizeof(int) * (M + 1), hipMemcpyDeviceToHost));
         CHECK_HIP_ERROR(hipMemcpy(
             hcsr_col_ind_C.data(), dCcol, sizeof(int) * nnz_C_gold, hipMemcpyDeviceToHost));
         CHECK_HIP_ERROR(
-            hipMemcpy(hcsr_val_C.data(), dCval, sizeof(T) * nnz_C_gold, hipMemcpyDeviceToHost));
+            hipMemcpy(hcsr_val_C_1.data(), dCval, sizeof(T) * nnz_C_gold, hipMemcpyDeviceToHost));
+
+        CHECK_HIP_ERROR(hipMemset(dCval, 0, sizeof(T) * nnz_C_gold));
 
         // Check structure and entries of C
         unit_check_general(1, M + 1, 1, hcsr_row_ptr_C_gold.data(), hcsr_row_ptr_C.data());
-        //        unit_check_general(1, nnz_C_gold, 1, hcsr_col_ind_C_gold.data(), hcsr_col_ind_C.data());
-        //        unit_check_near(1, nnz_C_gold, 1, hcsr_val_C_gold.data(), hcsr_val_C.data());
-        //        unit_check_general(1, nnz_C_gold, 1, hcsr_val_C_gold.data(), hcsr_val_C.data());
-    }
+        unit_check_general(1, nnz_C_gold, 1, hcsr_col_ind_C_gold.data(), hcsr_col_ind_C.data());
+        unit_check_near(1, nnz_C_gold, 1, hcsr_val_C_gold.data(), hcsr_val_C_1.data());
 
-    if(argus.timing)
-    {
-        // TODO
+#ifdef __HIP_PLATFORM_HCC__
+        // Device pointer mode
+        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
+        CHECK_HIPSPARSE_ERROR(hipsparseXcsrgemm2(handle,
+                                                 M,
+                                                 N,
+                                                 K,
+                                                 dalpha,
+                                                 descr_A,
+                                                 nnz_A,
+                                                 dAval,
+                                                 dAptr,
+                                                 dAcol,
+                                                 descr_B,
+                                                 nnz_B,
+                                                 dBval,
+                                                 dBptr,
+                                                 dBcol,
+                                                 (T*)nullptr,
+                                                 descr_D,
+                                                 0,
+                                                 (T*)nullptr,
+                                                 nullptr,
+                                                 nullptr,
+                                                 descr_C,
+                                                 dCval,
+                                                 dCptr,
+                                                 dCcol,
+                                                 info,
+                                                 dbuffer));
+
+        CHECK_HIP_ERROR(
+            hipMemcpy(hcsr_val_C_2.data(), dCval, sizeof(T) * nnz_C_gold, hipMemcpyDeviceToHost));
+
+        // Check device pointer results
+        unit_check_near(1, nnz_C_gold, 1, hcsr_val_C_gold.data(), hcsr_val_C_2.data());
+#endif
     }
 
     return HIPSPARSE_STATUS_SUCCESS;
 }
 
-#endif // TESTING_CSRGEMM2_HPP
+#endif // TESTING_CSRGEMM2_A_HPP
