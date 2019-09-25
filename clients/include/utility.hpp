@@ -35,6 +35,10 @@
 #include <string>
 #include <vector>
 
+#ifdef _OPENMP
+#include <omp.h>
+#endif
+
 /*!\file
  * \brief provide data initialization and timing utilities.
  */
@@ -954,6 +958,271 @@ void transpose(int                  m,
     }
 
     csr_row_ptr_B[0] = idx_base_B;
+}
+
+/* ============================================================================================ */
+/*! \brief  Compute sparse matrix sparse matrix multiplication. */
+template <typename T>
+static int csrgemm2_nnz(int                  m,
+                        int                  n,
+                        int                  k,
+                        const T*             alpha,
+                        const int*           csr_row_ptr_A,
+                        const int*           csr_col_ind_A,
+                        const int*           csr_row_ptr_B,
+                        const int*           csr_col_ind_B,
+                        const T*             beta,
+                        const int*           csr_row_ptr_D,
+                        const int*           csr_col_ind_D,
+                        int*                 csr_row_ptr_C,
+                        hipsparseIndexBase_t idx_base_A,
+                        hipsparseIndexBase_t idx_base_B,
+                        hipsparseIndexBase_t idx_base_C,
+                        hipsparseIndexBase_t idx_base_D)
+{
+#ifdef _OPENMP
+#pragma omp parallel
+#endif
+    {
+        std::vector<int> nnz(n, -1);
+
+#ifdef _OPENMP
+        int nthreads = omp_get_num_threads();
+        int tid      = omp_get_thread_num();
+#else
+        int nthreads = 1;
+        int tid      = 0;
+#endif
+
+        int rows_per_thread = (m + nthreads - 1) / nthreads;
+        int chunk_begin     = rows_per_thread * tid;
+        int chunk_end       = std::min(chunk_begin + rows_per_thread, m);
+
+        // Index base
+        csr_row_ptr_C[0] = idx_base_C;
+
+        // Loop over rows of A
+        for(int i = chunk_begin; i < chunk_end; ++i)
+        {
+            // Initialize csr row pointer with previous row offset
+            csr_row_ptr_C[i + 1] = 0;
+
+            if(alpha)
+            {
+                int row_begin_A = csr_row_ptr_A[i] - idx_base_A;
+                int row_end_A   = csr_row_ptr_A[i + 1] - idx_base_A;
+
+                // Loop over columns of A
+                for(int j = row_begin_A; j < row_end_A; ++j)
+                {
+                    // Current column of A
+                    int col_A = csr_col_ind_A[j] - idx_base_A;
+
+                    int row_begin_B = csr_row_ptr_B[col_A] - idx_base_B;
+                    int row_end_B   = csr_row_ptr_B[col_A + 1] - idx_base_B;
+
+                    // Loop over columns of B in row col_A
+                    for(int k = row_begin_B; k < row_end_B; ++k)
+                    {
+                        // Current column of B
+                        int col_B = csr_col_ind_B[k] - idx_base_B;
+
+                        // Check if a new nnz is generated
+                        if(nnz[col_B] != i)
+                        {
+                            nnz[col_B] = i;
+                            ++csr_row_ptr_C[i + 1];
+                        }
+                    }
+                }
+            }
+
+            // Add nnz of D if beta != 0
+            if(beta)
+            {
+                int row_begin_D = csr_row_ptr_D[i] - idx_base_D;
+                int row_end_D   = csr_row_ptr_D[i + 1] - idx_base_D;
+
+                // Loop over columns of D
+                for(int j = row_begin_D; j < row_end_D; ++j)
+                {
+                    int col_D = csr_col_ind_D[j] - idx_base_D;
+
+                    // Check if a new nnz is generated
+                    if(nnz[col_D] != i)
+                    {
+                        nnz[col_D] = i;
+                        ++csr_row_ptr_C[i + 1];
+                    }
+                }
+            }
+        }
+    }
+
+    // Scan to obtain row offsets
+    for(int i = 0; i < m; ++i)
+    {
+        csr_row_ptr_C[i + 1] += csr_row_ptr_C[i];
+    }
+
+    return csr_row_ptr_C[m] - idx_base_C;
+}
+
+template <typename T>
+static void csrgemm2(int                  m,
+                     int                  n,
+                     int                  k,
+                     const T*             alpha,
+                     const int*           csr_row_ptr_A,
+                     const int*           csr_col_ind_A,
+                     const T*             csr_val_A,
+                     const int*           csr_row_ptr_B,
+                     const int*           csr_col_ind_B,
+                     const T*             csr_val_B,
+                     const T*             beta,
+                     const int*           csr_row_ptr_D,
+                     const int*           csr_col_ind_D,
+                     const T*             csr_val_D,
+                     const int*           csr_row_ptr_C,
+                     int*                 csr_col_ind_C,
+                     T*                   csr_val_C,
+                     hipsparseIndexBase_t idx_base_A,
+                     hipsparseIndexBase_t idx_base_B,
+                     hipsparseIndexBase_t idx_base_C,
+                     hipsparseIndexBase_t idx_base_D)
+{
+#ifdef _OPENMP
+#pragma omp parallel
+#endif
+    {
+        std::vector<int> nnz(n, -1);
+
+#ifdef _OPENMP
+        int nthreads = omp_get_num_threads();
+        int tid      = omp_get_thread_num();
+#else
+        int nthreads = 1;
+        int tid      = 0;
+#endif
+
+        int rows_per_thread = (m + nthreads - 1) / nthreads;
+        int chunk_begin     = rows_per_thread * tid;
+        int chunk_end       = std::min(chunk_begin + rows_per_thread, m);
+
+        // Loop over rows of A
+        for(int i = chunk_begin; i < chunk_end; ++i)
+        {
+            int row_begin_C = csr_row_ptr_C[i] - idx_base_C;
+            int row_end_C   = row_begin_C;
+
+            if(alpha)
+            {
+                int row_begin_A = csr_row_ptr_A[i] - idx_base_A;
+                int row_end_A   = csr_row_ptr_A[i + 1] - idx_base_A;
+
+                // Loop over columns of A
+                for(int j = row_begin_A; j < row_end_A; ++j)
+                {
+                    // Current column of A
+                    int col_A = csr_col_ind_A[j] - idx_base_A;
+                    // Current value of A
+                    T val_A = *alpha * csr_val_A[j];
+
+                    int row_begin_B = csr_row_ptr_B[col_A] - idx_base_B;
+                    int row_end_B   = csr_row_ptr_B[col_A + 1] - idx_base_B;
+
+                    // Loop over columns of B in row col_A
+                    for(int k = row_begin_B; k < row_end_B; ++k)
+                    {
+                        // Current column of B
+                        int col_B = csr_col_ind_B[k] - idx_base_B;
+                        // Current value of B
+                        T val_B = csr_val_B[k];
+
+                        // Check if a new nnz is generated or if the product is appended
+                        if(nnz[col_B] < row_begin_C)
+                        {
+                            nnz[col_B]               = row_end_C;
+                            csr_col_ind_C[row_end_C] = col_B + idx_base_C;
+                            csr_val_C[row_end_C]     = val_A * val_B;
+                            ++row_end_C;
+                        }
+                        else
+                        {
+                            csr_val_C[nnz[col_B]] += val_A * val_B;
+                        }
+                    }
+                }
+            }
+
+            // Add nnz of D if beta != 0
+            if(beta)
+            {
+                int row_begin_D = csr_row_ptr_D[i] - idx_base_D;
+                int row_end_D   = csr_row_ptr_D[i + 1] - idx_base_D;
+
+                // Loop over columns of D
+                for(int j = row_begin_D; j < row_end_D; ++j)
+                {
+                    // Current column of D
+                    int col_D = csr_col_ind_D[j] - idx_base_D;
+                    // Current value of D
+                    T val_D = *beta * csr_val_D[j];
+
+                    // Check if a new nnz is generated or if the value is added
+                    if(nnz[col_D] < row_begin_C)
+                    {
+                        nnz[col_D] = row_end_C;
+
+                        csr_col_ind_C[row_end_C] = col_D + idx_base_C;
+                        csr_val_C[row_end_C]     = val_D;
+                        ++row_end_C;
+                    }
+                    else
+                    {
+                        csr_val_C[nnz[col_D]] += val_D;
+                    }
+                }
+            }
+        }
+    }
+
+    int nnz = csr_row_ptr_C[m] - idx_base_C;
+
+    std::vector<int> col(nnz);
+    std::vector<T>   val(nnz);
+
+    memcpy(col.data(), csr_col_ind_C, sizeof(int) * nnz);
+    memcpy(val.data(), csr_val_C, sizeof(T) * nnz);
+
+#ifdef _OPENMP
+#pragma omp parallel for
+#endif
+    for(int i = 0; i < m; ++i)
+    {
+        int row_begin = csr_row_ptr_C[i] - idx_base_C;
+        int row_end   = csr_row_ptr_C[i + 1] - idx_base_C;
+        int row_nnz   = row_end - row_begin;
+
+        std::vector<int> perm(row_nnz);
+        for(int j = 0; j < row_nnz; ++j)
+        {
+            perm[j] = j;
+        }
+
+        int* col_entry = &col[row_begin];
+        T*   val_entry = &val[row_begin];
+
+        std::sort(perm.begin(), perm.end(), [&](const int& a, const int& b) {
+            return col_entry[a] <= col_entry[b];
+        });
+
+        for(int j = 0; j < row_nnz; ++j)
+        {
+            csr_col_ind_C[row_begin + j] = col_entry[perm[j]];
+            csr_val_C[row_begin + j]     = val_entry[perm[j]];
+        }
+    }
 }
 
 #ifdef __cplusplus

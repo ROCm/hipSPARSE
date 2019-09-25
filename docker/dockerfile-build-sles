@@ -13,8 +13,8 @@ RUN zypper -n --no-gpg-checks install \
 #    rock-dkms \
     ca-certificates \
     git \
-    cmake \
     make \
+    cmake \
     gcc-c++ \
     pkg-config \
     dpkg \

@@ -19,8 +19,8 @@ RUN yum install -y \
     clang \
     clang-devel \
     gcc-c++ \
-    gtest-devel \
     gtest \
+    gtest-devel \
     pkgconfig \
     rocprim \
     libcxx-devel \

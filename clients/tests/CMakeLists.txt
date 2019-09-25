@@ -87,7 +87,8 @@ set(HIPSPARSE_TEST_SOURCES
   test_csrsv2.cpp
   test_csrmm.cpp
   test_csrgemm.cpp
-  test_csrgemm2.cpp
+  test_csrgemm2_a.cpp
+  test_csrgemm2_b.cpp
   test_csrilu02.cpp
   test_csr2coo.cpp
   test_csr2csc.cpp
@@ -116,6 +117,10 @@ add_executable(hipsparse-test ${HIPSPARSE_TEST_SOURCES} ${HIPSPARSE_CLIENTS_COMM
 
 target_compile_definitions(hipsparse-test PRIVATE GOOGLE_TEST)
 
+if(OPENMP_FOUND)
+  target_compile_options(hipsparse-test PRIVATE ${OpenMP_CXX_FLAGS})
+endif()
+
 target_include_directories(hipsparse-test
   PRIVATE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
@@ -137,6 +142,10 @@ endif()
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 target_link_libraries(hipsparse-test PRIVATE ${GTEST_BOTH_LIBRARIES} Threads::Threads)
+
+if(OPENMP_FOUND)
+  target_link_libraries(hipsparse-test PRIVATE ${OpenMP_CXX_FLAGS})
+endif()
 
 if(NOT BUILD_CUDA)
   if(CMAKE_CXX_COMPILER MATCHES ".*/hcc$")
