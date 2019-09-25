@@ -7,29 +7,29 @@ LABEL maintainer="rocsparse-maintainer@amd.com"
 ARG user_uid
 
 # Install dependent packages
-# Dependencies: rocsparse rocprim
-# * hcc-config.cmake: pkg-config
-# * hipsparse-test: googletest
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-    rock-dkms \
+RUN zypper refresh
+RUN zypper -n --no-gpg-checks install \
     sudo \
+#    rock-dkms \
     ca-certificates \
     git \
     make \
     cmake \
+    gcc-c++ \
     pkg-config \
+    dpkg \
     rocprim \
+    libcxxtools9 \
+    libboost_program_options1_66_0-devel \
     libnuma1 \
-    && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+    rpm-build
 
 # docker pipeline runs containers with particular uid
 # create a jenkins user with this specific uid so it can use sudo priviledges
 # Grant any member of sudo group password-less sudo privileges
-RUN useradd --create-home -u ${user_uid} -o -G sudo --shell /bin/bash jenkins && \
-    mkdir -p /etc/sudoers.d/ && \
-    echo '%sudo   ALL=(ALL) NOPASSWD:ALL' | tee /etc/sudoers.d/sudo-nopasswd
+RUN useradd --create-home -u ${user_uid} -o -G video --shell /bin/bash jenkins && \
+    echo '%video ALL=(ALL) NOPASSWD:ALL' | tee /etc/sudoers.d/sudo-nopasswd && \
+    chmod 400 /etc/sudoers.d/sudo-nopasswd
 
 ARG ROCSPARSE_SRC_ROOT=/usr/local/src/rocSPARSE
 ARG HIPSPARSE_SRC_ROOT=/usr/local/src/hipSPARSE

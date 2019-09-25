@@ -52,12 +52,15 @@ if(NOT TARGET hipsparse)
 endif()
 
 # Hip headers required of all clients; clients use hip to allocate device memory
-find_package(HIP 1.5.19211 REQUIRED)
+find_package(HIP REQUIRED)
 
 # Build flags
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+
+# If OpenMP is available, we can use it to speed up some tests
+find_package(OpenMP QUIET)
 
 if(BUILD_CLIENTS_SAMPLES)
   add_subdirectory(samples)
