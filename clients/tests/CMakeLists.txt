@@ -95,6 +95,7 @@ set(HIPSPARSE_TEST_SOURCES
   test_coo2csr.cpp
   test_identity.cpp
   test_csrsort.cpp
+  test_cscsort.cpp
   test_coosort.cpp
   test_csrilusv.cpp
 )
