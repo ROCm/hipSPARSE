@@ -965,6 +965,28 @@ hipsparseStatus_t hipsparseXcsrsort(hipsparseHandle_t         handle,
                                     int*                      P,
                                     void*                     pBuffer);
 
+/* Description: This routine computes the required buffer size for cscsort. */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseXcscsort_bufferSizeExt(hipsparseHandle_t handle,
+                                                  int               m,
+                                                  int               n,
+                                                  int               nnz,
+                                                  const int*        cscColPtr,
+                                                  const int*        cscRowInd,
+                                                  size_t*           pBufferSizeInBytes);
+
+/* Description: This routine sorts CSR format. */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseXcscsort(hipsparseHandle_t         handle,
+                                    int                       m,
+                                    int                       n,
+                                    int                       nnz,
+                                    const hipsparseMatDescr_t descrA,
+                                    const int*                cscColPtr,
+                                    int*                      cscRowInd,
+                                    int*                      P,
+                                    void*                     pBuffer);
+
 /* Description: This routine computes the required buffer size for coosort. */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseXcoosort_bufferSizeExt(hipsparseHandle_t handle,

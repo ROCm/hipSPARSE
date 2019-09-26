@@ -1798,6 +1798,39 @@ hipsparseStatus_t hipsparseXcsrsort(hipsparseHandle_t         handle,
                                                          pBuffer));
 }
 
+hipsparseStatus_t hipsparseXcscsort_bufferSizeExt(hipsparseHandle_t handle,
+                                                  int               m,
+                                                  int               n,
+                                                  int               nnz,
+                                                  const int*        cscColPtr,
+                                                  const int*        cscRowInd,
+                                                  size_t*           pBufferSizeInBytes)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseXcscsort_bufferSizeExt(
+        (cusparseHandle_t)handle, m, n, nnz, cscColPtr, cscRowInd, pBufferSizeInBytes));
+}
+
+hipsparseStatus_t hipsparseXcscsort(hipsparseHandle_t         handle,
+                                    int                       m,
+                                    int                       n,
+                                    int                       nnz,
+                                    const hipsparseMatDescr_t descrA,
+                                    const int*                cscColPtr,
+                                    int*                      cscRowInd,
+                                    int*                      P,
+                                    void*                     pBuffer)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseXcscsort((cusparseHandle_t)handle,
+                                                         m,
+                                                         n,
+                                                         nnz,
+                                                         (const cusparseMatDescr_t)descrA,
+                                                         cscColPtr,
+                                                         cscRowInd,
+                                                         P,
+                                                         pBuffer));
+}
+
 hipsparseStatus_t hipsparseXcoosort_bufferSizeExt(hipsparseHandle_t handle,
                                                   int               m,
                                                   int               n,
