@@ -25,8 +25,8 @@
 
 #include <hip/hip_runtime_api.h>
 #include <rocsparse.h>
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #define TO_STR2(x) #x
 #define TO_STR(x) TO_STR2(x)
