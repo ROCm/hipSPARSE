@@ -11,7 +11,6 @@ RUN zypper refresh
 RUN zypper -n --no-gpg-checks install \
     sudo \
 #    rock-dkms \
-    comgr \
     ca-certificates \
     git \
     cmake \
@@ -39,7 +38,7 @@ ARG HIPSPARSE_SRC_ROOT=/usr/local/src/hipSPARSE
 # Build rocsparse and install into /usr/local
 RUN mkdir -p ${ROCSPARSE_SRC_ROOT} && cd ${ROCSPARSE_SRC_ROOT} && \
     git clone -b develop --depth=1 https://github.com/ROCmSoftwarePlatform/rocSPARSE . && \
-    HCC_AMDGPU_TARGET=gfx803 ./install.sh -i && \
+    ./install.sh -i && \
     rm -rf ${ROCSPARSE_SRC_ROOT}
 
 # Clone hipsparse repo
