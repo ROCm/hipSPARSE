@@ -56,6 +56,11 @@ include(src/CMakeLists.txt)
 add_library(hipsparse ${hipsparse_source} ${hipsparse_headers_public})
 add_library(roc::hipsparse ALIAS hipsparse)
 
+# RUNPATH is set only when ROCM_RPATH is defined in the ENV
+if( DEFINED ENV{ROCM_RPATH} )
+  set ( CMAKE_SHARED_LINKER_FLAGS " -Wl,--enable-new-dtags -Wl,--rpath,$ENV{ROCM_RPATH}" )
+endif( )
+
 # Target compile definitions
 if(NOT BUILD_CUDA)
   target_compile_definitions(hipsparse PRIVATE __HIP_PLATFORM_HCC__)
@@ -140,7 +145,7 @@ else()
   set(package_name hipsparse-alt)
 endif()
 
-set(HIPSPARSE_CONFIG_DIR "\${CPACK_PACKAGING_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}" CACHE PATH "Path placed into ldconfig file")
+set(HIPSPARSE_CONFIG_DIR "/opt/rocm/${CMAKE_INSTALL_LIBDIR}" CACHE PATH "Path placed into ldconfig file")
 
 rocm_create_package(
   NAME ${package_name}
