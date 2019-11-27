@@ -509,47 +509,6 @@ hipsparseStatus_t testing_csr2hyb(Arguments argus)
         unit_check_general(1, coo_nnz, 1, hhyb_coo_val_gold.data(), hhyb_coo_val.data());
     }
 
-    if(argus.timing)
-    {
-        int number_cold_calls = 2;
-        int number_hot_calls  = argus.iters;
-
-        for(int iter = 0; iter < number_cold_calls; ++iter)
-        {
-            hipsparseXcsr2hyb(handle,
-                              m,
-                              n,
-                              descr,
-                              dcsr_val,
-                              dcsr_row_ptr,
-                              dcsr_col_ind,
-                              hyb,
-                              user_ell_width,
-                              part);
-        }
-
-        double gpu_time_used = get_time_us();
-
-        for(int iter = 0; iter < number_hot_calls; ++iter)
-        {
-            hipsparseXcsr2hyb(handle,
-                              m,
-                              n,
-                              descr,
-                              dcsr_val,
-                              dcsr_row_ptr,
-                              dcsr_col_ind,
-                              hyb,
-                              user_ell_width,
-                              part);
-        }
-
-        gpu_time_used = (get_time_us() - gpu_time_used) / (number_hot_calls * 1e3);
-
-        printf("m\t\tn\t\tnnz\t\tmsec\n");
-        printf("%8d\t%8d\t%9d\t%0.2lf\n", m, n, nnz, gpu_time_used);
-    }
-
     return HIPSPARSE_STATUS_SUCCESS;
 }
 

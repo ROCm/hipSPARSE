@@ -466,49 +466,6 @@ hipsparseStatus_t testing_hybmv(Arguments argus)
         unit_check_near(1, m, 1, hy_gold.data(), hy_2.data());
     }
 
-    if(argus.timing)
-    {
-        int number_cold_calls = 2;
-        int number_hot_calls  = argus.iters;
-        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
-
-        for(int iter = 0; iter < number_cold_calls; iter++)
-        {
-            hipsparseXhybmv(handle, transA, &h_alpha, descr, hyb, dx, &h_beta, dy_1);
-        }
-
-        double gpu_time_used = get_time_us(); // in microseconds
-
-        for(int iter = 0; iter < number_hot_calls; iter++)
-        {
-            hipsparseXhybmv(handle, transA, &h_alpha, descr, hyb, dx, &h_beta, dy_1);
-        }
-
-        testhyb* dhyb = (testhyb*)hyb;
-
-        // Convert to miliseconds per call
-        gpu_time_used     = (get_time_us() - gpu_time_used) / (number_hot_calls * 1e3);
-        size_t flops      = (h_alpha != one) ? 3.0 * nnz : 2.0 * nnz;
-        flops             = (h_beta != zero) ? flops + m : flops;
-        double gpu_gflops = flops / gpu_time_used / 1e6;
-        size_t ell_mem    = dhyb->ell_nnz * (sizeof(int) + sizeof(T));
-        size_t coo_mem    = dhyb->coo_nnz * (sizeof(int) * 2 + sizeof(T));
-        size_t memtrans   = (m + n) * sizeof(T) + ell_mem + coo_mem;
-        memtrans          = (h_beta != zero) ? memtrans + m : memtrans;
-        double bandwidth  = memtrans / gpu_time_used / 1e6;
-
-        printf("m\t\tn\t\tnnz\t\talpha\tbeta\tGFlops\tGB/s\tmsec\n");
-        printf("%8d\t%8d\t%9d\t%0.2lf\t%0.2lf\t%0.2lf\t%0.2lf\t%0.2lf\n",
-               m,
-               n,
-               dhyb->ell_nnz + dhyb->coo_nnz,
-               h_alpha,
-               h_beta,
-               gpu_gflops,
-               bandwidth,
-               gpu_time_used);
-    }
-
     return HIPSPARSE_STATUS_SUCCESS;
 }
 

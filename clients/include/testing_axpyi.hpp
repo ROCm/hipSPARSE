@@ -233,36 +233,6 @@ hipsparseStatus_t testing_axpyi(Arguments argus)
         }
     }
 
-    if(argus.timing)
-    {
-        int number_cold_calls = 2;
-        int number_hot_calls  = argus.iters;
-        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
-
-        for(int iter = 0; iter < number_cold_calls; iter++)
-        {
-            hipsparseXaxpyi(handle, nnz, &h_alpha, dxVal, dxInd, dy_1, idx_base);
-        }
-
-        double gpu_time_used = get_time_us(); // in microseconds
-
-        for(int iter = 0; iter < number_hot_calls; iter++)
-        {
-            hipsparseXaxpyi(handle, nnz, &h_alpha, dxVal, dxInd, dy_1, idx_base);
-        }
-
-        gpu_time_used     = (get_time_us() - gpu_time_used) / number_hot_calls;
-        double gpu_gflops = (2.0 * nnz) / 1e9 / gpu_time_used * 1e6 * 1;
-        double bandwidth  = (sizeof(int) * nnz + (sizeof(T) * (nnz + N))) / gpu_time_used / 1e3;
-
-        printf("nnz\t\talpha\tGFlops\tGB/s\tusec\n");
-        printf("%9d\t%0.2lf\t%0.2lf\t%0.2lf\t%0.2lf\n",
-               nnz,
-               h_alpha,
-               gpu_gflops,
-               bandwidth,
-               gpu_time_used);
-    }
     return HIPSPARSE_STATUS_SUCCESS;
 }
 

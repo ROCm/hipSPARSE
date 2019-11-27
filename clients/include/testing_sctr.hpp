@@ -204,30 +204,6 @@ hipsparseStatus_t testing_sctr(Arguments argus)
         unit_check_general(1, N, 1, hy_gold.data(), hy.data());
     }
 
-    if(argus.timing)
-    {
-        int number_cold_calls = 2;
-        int number_hot_calls  = argus.iters;
-        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
-
-        for(int iter = 0; iter < number_cold_calls; iter++)
-        {
-            hipsparseXsctr(handle, nnz, dx_val, dx_ind, dy, idx_base);
-        }
-
-        double gpu_time_used = get_time_us(); // in microseconds
-
-        for(int iter = 0; iter < number_hot_calls; iter++)
-        {
-            hipsparseXsctr(handle, nnz, dx_val, dx_ind, dy, idx_base);
-        }
-
-        gpu_time_used    = (get_time_us() - gpu_time_used) / number_hot_calls;
-        double bandwidth = (sizeof(int) * nnz + sizeof(T) * 2.0 * nnz) / gpu_time_used / 1e3;
-
-        printf("nnz\t\tGB/s\tusec\n");
-        printf("%9d\t%0.2lf\t%0.2lf\n", nnz, bandwidth, gpu_time_used);
-    }
     return HIPSPARSE_STATUS_SUCCESS;
 }
 

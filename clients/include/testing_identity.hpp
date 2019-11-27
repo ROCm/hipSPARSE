@@ -148,30 +148,6 @@ hipsparseStatus_t testing_identity(Arguments argus)
         unit_check_general(1, n, 1, hp_gold.data(), hp.data());
     }
 
-    if(argus.timing)
-    {
-        int number_cold_calls = 2;
-        int number_hot_calls  = argus.iters;
-
-        for(int iter = 0; iter < number_cold_calls; ++iter)
-        {
-            hipsparseCreateIdentityPermutation(handle, n, dp);
-        }
-
-        double gpu_time_used = get_time_us();
-
-        for(int iter = 0; iter < number_hot_calls; ++iter)
-        {
-            hipsparseCreateIdentityPermutation(handle, n, dp);
-        }
-
-        gpu_time_used = (get_time_us() - gpu_time_used) / (number_hot_calls * 1e3);
-
-        double bandwidth = sizeof(int) * n / gpu_time_used / 1e6;
-
-        printf("n\t\tGB/s\tmsec\n");
-        printf("%8d\t%0.2lf\t%0.2lf\n", n, bandwidth, gpu_time_used);
-    }
     return HIPSPARSE_STATUS_SUCCESS;
 }
 
