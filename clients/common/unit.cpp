@@ -81,6 +81,42 @@ void unit_check_general(int M, int N, int lda, double* hCPU, double* hGPU)
 }
 
 template <>
+void unit_check_general(int M, int N, int lda, hipComplex* hCPU, hipComplex* hGPU)
+{
+    for(int j = 0; j < N; j++)
+    {
+        for(int i = 0; i < M; i++)
+        {
+#ifdef GOOGLE_TEST
+            ASSERT_FLOAT_EQ(hCPU[i + j * lda].x, hGPU[i + j * lda].x);
+            ASSERT_FLOAT_EQ(hCPU[i + j * lda].y, hGPU[i + j * lda].y);
+#else
+            assert(hCPU[i + j * lda].x == hGPU[i + j * lda].x);
+            assert(hCPU[i + j * lda].y == hGPU[i + j * lda].y);
+#endif
+        }
+    }
+}
+
+template <>
+void unit_check_general(int M, int N, int lda, hipDoubleComplex* hCPU, hipDoubleComplex* hGPU)
+{
+    for(int j = 0; j < N; j++)
+    {
+        for(int i = 0; i < M; i++)
+        {
+#ifdef GOOGLE_TEST
+            ASSERT_DOUBLE_EQ(hCPU[i + j * lda].x, hGPU[i + j * lda].x);
+            ASSERT_DOUBLE_EQ(hCPU[i + j * lda].y, hGPU[i + j * lda].y);
+#else
+            assert(hCPU[i + j * lda].x == hGPU[i + j * lda].x);
+            assert(hCPU[i + j * lda].y == hGPU[i + j * lda].y);
+#endif
+        }
+    }
+}
+
+template <>
 void unit_check_general(int M, int N, int lda, int* hCPU, int* hGPU)
 {
     for(int j = 0; j < N; j++)
@@ -148,6 +184,53 @@ void unit_check_near(int M, int N, int lda, double* hCPU, double* hGPU)
             ASSERT_NEAR(hCPU[i + j * lda], hGPU[i + j * lda], compare_val);
 #else
             assert(std::abs(hCPU[i + j * lda] - hGPU[i + j * lda]) < compare_val);
+#endif
+        }
+    }
+}
+
+template <>
+void unit_check_near(int M, int N, int lda, hipComplex* hCPU, hipComplex* hGPU)
+{
+    for(int j = 0; j < N; j++)
+    {
+        for(int i = 0; i < M; i++)
+        {
+            hipComplex compare_val
+                = make_hipFloatComplex(std::max(std::abs(hCPU[i + j * lda].x * 1e-3f),
+                                                10 * std::numeric_limits<float>::epsilon()),
+                                       std::max(std::abs(hCPU[i + j * lda].y * 1e-3f),
+                                                10 * std::numeric_limits<float>::epsilon()));
+
+#ifdef GOOGLE_TEST
+            ASSERT_NEAR(hCPU[i + j * lda].x, hGPU[i + j * lda].x, compare_val.x);
+            ASSERT_NEAR(hCPU[i + j * lda].y, hGPU[i + j * lda].y, compare_val.y);
+#else
+            assert(std::abs(hCPU[i + j * lda].x - hGPU[i + j * lda].x) < compare_val.x);
+            assert(std::abs(hCPU[i + j * lda].y - hGPU[i + j * lda].y) < compare_val.y);
+#endif
+        }
+    }
+}
+
+template <>
+void unit_check_near(int M, int N, int lda, hipDoubleComplex* hCPU, hipDoubleComplex* hGPU)
+{
+    for(int j = 0; j < N; j++)
+    {
+        for(int i = 0; i < M; i++)
+        {
+            hipDoubleComplex compare_val
+                = make_hipDoubleComplex(std::max(std::abs(hCPU[i + j * lda].x * 1e-10),
+                                                 10 * std::numeric_limits<double>::epsilon()),
+                                        std::max(std::abs(hCPU[i + j * lda].y * 1e-10),
+                                                 10 * std::numeric_limits<double>::epsilon()));
+#ifdef GOOGLE_TEST
+            ASSERT_NEAR(hCPU[i + j * lda].x, hGPU[i + j * lda].x, compare_val.x);
+            ASSERT_NEAR(hCPU[i + j * lda].y, hGPU[i + j * lda].y, compare_val.y);
+#else
+            assert(std::abs(hCPU[i + j * lda].x - hGPU[i + j * lda].x) < compare_val.x);
+            assert(std::abs(hCPU[i + j * lda].y - hGPU[i + j * lda].y) < compare_val.y);
 #endif
         }
     }

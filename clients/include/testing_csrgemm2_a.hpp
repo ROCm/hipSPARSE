@@ -1238,7 +1238,7 @@ hipsparseStatus_t testing_csrgemm2_a(Arguments argus)
     hipsparseIndexBase_t idx_base_C = argus.idx_base3;
     std::string          binfile    = "";
     std::string          filename   = "";
-    T                    alpha      = argus.alpha;
+    T                    alpha      = make_DataType<T>(argus.alpha);
 
     hipsparseStatus_t status;
     size_t            size;

@@ -216,10 +216,10 @@ hipsparseStatus_t testing_doti(Arguments argus)
         // CPU
         double cpu_time_used = get_time_us();
 
-        hresult_gold = static_cast<T>(0);
+        hresult_gold = make_DataType<T>(0.0);
         for(int i = 0; i < nnz; ++i)
         {
-            hresult_gold += hy[hx_ind[i] - idx_base] * hx_val[i];
+            hresult_gold = hresult_gold + hy[hx_ind[i] - idx_base] * hx_val[i];
         }
 
         cpu_time_used = get_time_us() - cpu_time_used;

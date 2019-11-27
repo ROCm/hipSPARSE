@@ -76,6 +76,22 @@ TEST_P(parameterized_gthr, gthr_double)
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
+TEST_P(parameterized_gthr, gthr_float_complex)
+{
+    Arguments arg = setup_gthr_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_gthr<hipComplex>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+
+TEST_P(parameterized_gthr, gthr_double_complex)
+{
+    Arguments arg = setup_gthr_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_gthr<hipDoubleComplex>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+
 INSTANTIATE_TEST_CASE_P(gthr,
                         parameterized_gthr,
                         testing::Combine(testing::ValuesIn(gthr_N_range),

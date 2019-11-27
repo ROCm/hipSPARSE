@@ -79,6 +79,7 @@ set(HIPSPARSE_TEST_SOURCES
   hipsparse_gtest_main.cpp
   test_axpyi.cpp
   test_doti.cpp
+  test_dotci.cpp
   test_gthr.cpp
   test_gthrz.cpp
   test_roti.cpp

@@ -458,7 +458,7 @@ hipsparseStatus_t testing_csr2hyb(Arguments argus)
         {
             int idx                    = ELL_IND(i, p++, m, ell_width);
             hhyb_ell_col_ind_gold[idx] = -1;
-            hhyb_ell_val_gold[idx]     = static_cast<T>(0);
+            hhyb_ell_val_gold[idx]     = make_DataType<T>(0.0);
         }
     }
 

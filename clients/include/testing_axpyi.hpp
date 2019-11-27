@@ -109,7 +109,7 @@ hipsparseStatus_t testing_axpyi(Arguments argus)
     int                  N         = argus.N;
     int                  nnz       = argus.nnz;
     int                  safe_size = 100;
-    T                    h_alpha   = argus.alpha;
+    T                    h_alpha   = make_DataType<T>(argus.alpha);
     hipsparseIndexBase_t idx_base  = argus.idx_base;
     hipsparseStatus_t    status;
 
@@ -219,7 +219,7 @@ hipsparseStatus_t testing_axpyi(Arguments argus)
 
         for(int i = 0; i < nnz; ++i)
         {
-            hy_gold[hxInd[i] - idx_base] += h_alpha * hxVal[i];
+            hy_gold[hxInd[i] - idx_base] = hy_gold[hxInd[i] - idx_base] + h_alpha * hxVal[i];
         }
 
         cpu_time_used = get_time_us() - cpu_time_used;

@@ -443,7 +443,7 @@ hipsparseStatus_t testing_csrsv2(Arguments argus)
     hipsparseDiagType_t    diag_type = argus.diag_type;
     hipsparseFillMode_t    fill_mode = argus.fill_mode;
     hipsparseSolvePolicy_t policy    = HIPSPARSE_SOLVE_POLICY_USE_LEVEL;
-    T                      h_alpha   = argus.alpha;
+    T                      h_alpha   = make_DataType<T>(argus.alpha);
     std::string            binfile   = "";
     std::string            filename  = "";
     hipsparseStatus_t      status;

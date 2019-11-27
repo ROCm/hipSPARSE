@@ -157,8 +157,8 @@ hipsparseStatus_t testing_csrmv(Arguments argus)
     int                  safe_size = 100;
     int                  m         = argus.M;
     int                  n         = argus.N;
-    T                    h_alpha   = argus.alpha;
-    T                    h_beta    = argus.beta;
+    T                    h_alpha   = make_DataType<T>(argus.alpha);
+    T                    h_beta    = make_DataType<T>(argus.beta);
     hipsparseOperation_t transA    = argus.transA;
     hipsparseIndexBase_t idx_base  = argus.idx_base;
     std::string          binfile   = "";
@@ -405,7 +405,7 @@ hipsparseStatus_t testing_csrmv(Arguments argus)
 
         for(int i = 0; i < m; ++i)
         {
-            std::vector<T> sum(WF_SIZE, 0.0);
+            std::vector<T> sum(WF_SIZE, make_DataType<T>(0.0));
 
             for(int j = hcsr_row_ptr[i] - idx_base; j < hcsr_row_ptr[i + 1] - idx_base;
                 j += WF_SIZE)
@@ -414,7 +414,8 @@ hipsparseStatus_t testing_csrmv(Arguments argus)
                 {
                     if(j + k < hcsr_row_ptr[i + 1] - idx_base)
                     {
-                        sum[k] = fma(h_alpha * hval[j + k], hx[hcol_ind[j + k] - idx_base], sum[k]);
+                        sum[k] = testing_fma(
+                            h_alpha * hval[j + k], hx[hcol_ind[j + k] - idx_base], sum[k]);
                     }
                 }
             }
@@ -427,13 +428,13 @@ hipsparseStatus_t testing_csrmv(Arguments argus)
                 }
             }
 
-            if(h_beta == 0.0)
+            if(h_beta == make_DataType<T>(0.0))
             {
                 hy_gold[i] = sum[0];
             }
             else
             {
-                hy_gold[i] = std::fma(h_beta, hy_gold[i], sum[0]);
+                hy_gold[i] = testing_fma(h_beta, hy_gold[i], sum[0]);
             }
         }
 
@@ -470,12 +471,14 @@ hipsparseStatus_t testing_csrmv(Arguments argus)
         }
 
         // Convert to miliseconds per call
+        T zero            = make_DataType<T>(0.0);
+        T one             = make_DataType<T>(1.0);
         gpu_time_used     = (get_time_us() - gpu_time_used) / (number_hot_calls * 1e3);
-        size_t flops      = (h_alpha != 1.0) ? 3.0 * nnz : 2.0 * nnz;
-        flops             = (h_beta != 0.0) ? flops + m : flops;
+        size_t flops      = (h_alpha != one) ? 3.0 * nnz : 2.0 * nnz;
+        flops             = (h_beta != zero) ? flops + m : flops;
         double gpu_gflops = flops / gpu_time_used / 1e6;
         size_t memtrans   = 2.0 * m + nnz;
-        memtrans          = (h_beta != 0.0) ? memtrans + m : memtrans;
+        memtrans          = (h_beta != zero) ? memtrans + m : memtrans;
         double bandwidth
             = (memtrans * sizeof(T) + (m + 1 + nnz) * sizeof(int)) / gpu_time_used / 1e6;
 

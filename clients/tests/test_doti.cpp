@@ -76,6 +76,22 @@ TEST_P(parameterized_doti, doti_double)
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
+TEST_P(parameterized_doti, doti_float_complex)
+{
+    Arguments arg = setup_doti_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_doti<hipComplex>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+
+TEST_P(parameterized_doti, doti_double_complex)
+{
+    Arguments arg = setup_doti_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_doti<hipDoubleComplex>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+
 INSTANTIATE_TEST_CASE_P(doti,
                         parameterized_doti,
                         testing::Combine(testing::ValuesIn(doti_N_range),

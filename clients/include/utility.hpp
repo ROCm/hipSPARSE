@@ -83,15 +83,159 @@
         return error;                                            \
     }
 
+#ifdef __HIP_PLATFORM_NVCC__
+static inline hipComplex operator-(const hipComplex& op)
+{
+    hipComplex ret;
+    ret.x = -op.x;
+    ret.y = -op.y;
+    return ret;
+}
+static inline hipDoubleComplex operator-(const hipDoubleComplex& op)
+{
+    hipDoubleComplex ret;
+    ret.x = -op.x;
+    ret.y = -op.y;
+    return ret;
+}
+
+static inline bool operator==(const hipComplex& lhs, const hipComplex& rhs)
+{
+    return lhs.x == rhs.x && lhs.y == rhs.y;
+}
+static inline bool operator==(const hipDoubleComplex& lhs, const hipDoubleComplex& rhs)
+{
+    return lhs.x == rhs.x && lhs.y == rhs.y;
+}
+
+static inline bool operator!=(const hipComplex& lhs, const hipComplex& rhs)
+{
+    return !(lhs == rhs);
+}
+static inline bool operator!=(const hipDoubleComplex& lhs, const hipDoubleComplex& rhs)
+{
+    return !(lhs == rhs);
+}
+
+static inline hipComplex operator+(const hipComplex& lhs, const hipComplex& rhs)
+{
+    hipComplex ret;
+    ret.x = lhs.x + rhs.x;
+    ret.y = lhs.y + rhs.y;
+    return ret;
+}
+static inline hipDoubleComplex operator+(const hipDoubleComplex& lhs, const hipDoubleComplex& rhs)
+{
+    hipDoubleComplex ret;
+    ret.x = lhs.x + rhs.x;
+    ret.y = lhs.y + rhs.y;
+    return ret;
+}
+
+static inline hipComplex operator*(const hipComplex& lhs, const hipComplex& rhs)
+{
+    hipComplex ret;
+    ret.x = lhs.x * rhs.x - lhs.y * rhs.y;
+    ret.y = lhs.x * rhs.y + lhs.y * rhs.x;
+    return ret;
+}
+static inline hipDoubleComplex operator*(const hipDoubleComplex& lhs, const hipDoubleComplex& rhs)
+{
+    hipDoubleComplex ret;
+    ret.x = lhs.x * rhs.x - lhs.y * rhs.y;
+    ret.y = lhs.x * rhs.y + lhs.y * rhs.x;
+    return ret;
+}
+
+static inline hipComplex operator/(const hipComplex& lhs, const hipComplex& rhs)
+{
+    hipComplex ret;
+    ret.x = (lhs.x * rhs.x + lhs.y * rhs.y);
+    ret.y = (rhs.x * lhs.y - lhs.x * rhs.y);
+    ret.x = ret.x / (rhs.x * rhs.x + rhs.y * rhs.y);
+    ret.y = ret.y / (rhs.x * rhs.x + rhs.y * rhs.y);
+    return ret;
+}
+static inline hipDoubleComplex operator/(const hipDoubleComplex& lhs, const hipDoubleComplex& rhs)
+{
+    hipDoubleComplex ret;
+    ret.x = (lhs.x * rhs.x + lhs.y * rhs.y);
+    ret.y = (rhs.x * lhs.y - lhs.x * rhs.y);
+    ret.x = ret.x / (rhs.x * rhs.x + rhs.y * rhs.y);
+    ret.y = ret.y / (rhs.x * rhs.x + rhs.y * rhs.y);
+    return ret;
+}
+
+static inline hipComplex operator+=(hipComplex& lhs, const hipComplex& rhs)
+{
+    lhs.x += rhs.x;
+    lhs.y += rhs.y;
+    return lhs;
+}
+static inline hipDoubleComplex operator+=(hipDoubleComplex& lhs, const hipDoubleComplex& rhs)
+{
+    lhs.x += rhs.x;
+    lhs.y += rhs.y;
+    return lhs;
+}
+#endif
+
+/* ============================================================================================ */
+/*! \brief Make data type */
+template <typename T>
+inline T make_DataType2(double real, double imag)
+{
+    return static_cast<T>(real);
+}
+
+template <>
+inline hipComplex make_DataType2(double real, double imag)
+{
+    return make_hipFloatComplex(static_cast<float>(real), static_cast<float>(imag));
+}
+
+template <>
+inline hipDoubleComplex make_DataType2(double real, double imag)
+{
+    return make_hipDoubleComplex(real, imag);
+}
+
+template <typename T>
+inline T make_DataType(double real, double imag = 0.0)
+{
+    return make_DataType2<T>(real, imag);
+}
+
+/* ============================================================================================ */
+/*! \brief fma */
+template <typename T>
+inline T testing_fma(T p, T q, T r)
+{
+    return std::fma(p, q, r);
+}
+
+template <>
+inline hipComplex testing_fma(hipComplex p, hipComplex q, hipComplex r)
+{
+    return hipCfmaf(p, q, r);
+}
+
+template <>
+inline hipDoubleComplex testing_fma(hipDoubleComplex p, hipDoubleComplex q, hipDoubleComplex r)
+{
+    return hipCfma(p, q, r);
+}
+
 /* ============================================================================================ */
 /* generate random number :*/
 
 /*! \brief  generate a random number between [0, 0.999...] . */
 template <typename T>
-T random_generator()
+inline T random_generator()
 {
     // return rand()/( (T)RAND_MAX + 1);
-    return (T)(rand() % 10 + 1); // generate a integer number between [1, 10]
+    return make_DataType<T>(rand() % 10 + 1,
+                            rand() % 10 + 1); // generate a integer number between [1, 10]
 };
 
 /* ============================================================================================ */
@@ -195,32 +339,32 @@ int gen_2d_laplacian(int                  ndim,
             if(i != 0)
             {
                 col[nnz] = idx - ndim + idx_base;
-                val[nnz] = static_cast<T>(-1);
+                val[nnz] = make_DataType<T>(-1.0);
                 ++nnz;
             }
             // if no left boundary element, connect with left neighbor
             if(j != 0)
             {
                 col[nnz] = idx - 1 + idx_base;
-                val[nnz] = static_cast<T>(-1);
+                val[nnz] = make_DataType<T>(-1.0);
                 ++nnz;
             }
             // element itself
             col[nnz] = idx + idx_base;
-            val[nnz] = static_cast<T>(4);
+            val[nnz] = make_DataType<T>(4.0);
             ++nnz;
             // if no right boundary element, connect with right neighbor
             if(j != ndim - 1)
             {
                 col[nnz] = idx + 1 + idx_base;
-                val[nnz] = static_cast<T>(-1);
+                val[nnz] = make_DataType<T>(-1.0);
                 ++nnz;
             }
             // if no lower boundary element, connect with lower neighbor
             if(i != ndim - 1)
             {
                 col[nnz] = idx + ndim + idx_base;
-                val[nnz] = static_cast<T>(-1);
+                val[nnz] = make_DataType<T>(-1.0);
                 ++nnz;
             }
         }
@@ -336,6 +480,36 @@ void gen_matrix_coo(int                  m,
 
 /* ============================================================================================ */
 /*! \brief  Read matrix from mtx file in COO format */
+static inline void read_mtx_value(std::istringstream& is, int& row, int& col, float& val)
+{
+    is >> row >> col >> val;
+}
+
+static inline void read_mtx_value(std::istringstream& is, int& row, int& col, double& val)
+{
+    is >> row >> col >> val;
+}
+
+static inline void read_mtx_value(std::istringstream& is, int& row, int& col, hipComplex& val)
+{
+    float real;
+    float imag;
+
+    is >> row >> col >> real >> imag;
+
+    val = make_DataType<hipComplex>(real, imag);
+}
+
+static inline void read_mtx_value(std::istringstream& is, int& row, int& col, hipDoubleComplex& val)
+{
+    double real;
+    double imag;
+
+    is >> row >> col >> real >> imag;
+
+    val = make_DataType<hipDoubleComplex>(real, imag);
+}
+
 template <typename T>
 int read_mtx_matrix(const char*          filename,
                     int&                 nrow,
@@ -459,11 +633,11 @@ int read_mtx_matrix(const char*          filename,
         if(!strcmp(data, "pattern"))
         {
             ss >> irow >> icol;
-            ival = static_cast<T>(1);
+            ival = make_DataType<T>(1.0);
         }
         else
         {
-            ss >> irow >> icol >> ival;
+            read_mtx_value(ss, irow, icol, ival);
         }
 
         if(idx_base == HIPSPARSE_INDEX_BASE_ZERO)
@@ -580,7 +754,7 @@ int read_bin_matrix(const char*          filename,
 
     for(int i = 0; i < nnz; ++i)
     {
-        val[i] = static_cast<T>(tmp[i]);
+        val[i] = make_DataType<T>(tmp[i]);
     }
 
     if(idx_base == HIPSPARSE_INDEX_BASE_ONE)
@@ -642,7 +816,7 @@ int csrilu0(int m, const int* ptr, const int* col, T* val, hipsparseIndexBase_t 
                 int col_j  = col[j] - idx_base;
                 int diag_j = diag_offset[col_j];
 
-                if(val[diag_j] != static_cast<T>(0))
+                if(val[diag_j] != make_DataType<T>(0.0))
                 {
                     // multiplication factor
                     val[j] = val[j] / val[diag_j];
@@ -654,7 +828,7 @@ int csrilu0(int m, const int* ptr, const int* col, T* val, hipsparseIndexBase_t 
                         if(nnz_entries[col[k] - idx_base] != 0)
                         {
                             int idx  = nnz_entries[col[k] - idx_base];
-                            val[idx] = std::fma(-val[j], val[k], val[idx]);
+                            val[idx] = testing_fma(-val[j], val[k], val[idx]);
                         }
                     }
                 }
@@ -713,14 +887,14 @@ int lsolve(int                  m,
 
     for(int i = 0; i < m; ++i)
     {
-        temp.assign(wf_size, static_cast<T>(0));
+        temp.assign(wf_size, make_DataType<T>(0.0));
         temp[0] = alpha * x[i];
 
         int diag      = -1;
         int row_begin = ptr[i] - idx_base;
         int row_end   = ptr[i + 1] - idx_base;
 
-        T diag_val = static_cast<T>(0);
+        T diag_val = make_DataType<T>(0.0);
 
         for(unsigned int l = row_begin; l < row_end; l += wf_size)
         {
@@ -740,7 +914,7 @@ int lsolve(int                  m,
                 if(col_j < i)
                 {
                     // Lower part
-                    temp[k] = std::fma(-val[j], y[col_j], temp[k]);
+                    temp[k] = testing_fma(-val[j], y[col_j], temp[k]);
                 }
                 else if(col_j == i)
                 {
@@ -748,14 +922,14 @@ int lsolve(int                  m,
                     if(diag_type == HIPSPARSE_DIAG_TYPE_NON_UNIT)
                     {
                         // Check for numerical zero
-                        if(val_j == static_cast<T>(0))
+                        if(val_j == make_DataType<T>(0.0))
                         {
                             pivot = std::min(pivot, i + idx_base);
-                            val_j = static_cast<T>(1);
+                            val_j = make_DataType<T>(1.0);
                         }
 
                         diag     = j;
-                        diag_val = static_cast<T>(1) / val_j;
+                        diag_val = make_DataType<T>(1.0) / val_j;
                     }
 
                     break;
@@ -818,14 +992,14 @@ int usolve(int                  m,
 
     for(int i = m - 1; i >= 0; --i)
     {
-        temp.assign(wf_size, static_cast<T>(0));
+        temp.assign(wf_size, make_DataType<T>(0.0));
         temp[0] = alpha * x[i];
 
         int diag      = -1;
         int row_begin = ptr[i] - idx_base;
         int row_end   = ptr[i + 1] - idx_base;
 
-        T diag_val = static_cast<T>(0);
+        T diag_val = make_DataType<T>(0.0);
 
         for(int l = row_end - 1; l >= row_begin; l -= wf_size)
         {
@@ -853,14 +1027,14 @@ int usolve(int                  m,
                     if(diag_type == HIPSPARSE_DIAG_TYPE_NON_UNIT)
                     {
                         // Check for numerical zero
-                        if(val_j == static_cast<T>(0))
+                        if(val_j == make_DataType<T>(0.0))
                         {
                             pivot = std::min(pivot, i + idx_base);
-                            val_j = static_cast<T>(1);
+                            val_j = make_DataType<T>(1.0);
                         }
 
                         diag     = j;
-                        diag_val = static_cast<T>(1) / val_j;
+                        diag_val = make_DataType<T>(1.0) / val_j;
                     }
 
                     continue;
@@ -868,7 +1042,7 @@ int usolve(int                  m,
                 else
                 {
                     // Upper part
-                    temp[k] = std::fma(-val[j], y[col_j], temp[k]);
+                    temp[k] = testing_fma(-val[j], y[col_j], temp[k]);
                 }
             }
         }

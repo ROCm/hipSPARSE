@@ -146,6 +146,22 @@ TEST_P(parameterized_csr2hyb, csr2hyb_double)
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
+TEST_P(parameterized_csr2hyb, csr2hyb_float_complex)
+{
+    Arguments arg = setup_csr2hyb_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_csr2hyb<hipComplex>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+
+TEST_P(parameterized_csr2hyb, csr2hyb_double_complex)
+{
+    Arguments arg = setup_csr2hyb_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_csr2hyb<hipDoubleComplex>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+
 TEST_P(parameterized_csr2hyb_bin, csr2hyb_bin_float)
 {
     Arguments arg = setup_csr2hyb_arguments(GetParam());

@@ -142,8 +142,8 @@ hipsparseStatus_t testing_hybmv(Arguments argus)
     int                     safe_size      = 100;
     int                     m              = argus.M;
     int                     n              = argus.N;
-    T                       h_alpha        = argus.alpha;
-    T                       h_beta         = argus.beta;
+    T                       h_alpha        = make_DataType<T>(argus.alpha);
+    T                       h_beta         = make_DataType<T>(argus.beta);
     hipsparseOperation_t    transA         = argus.transA;
     hipsparseIndexBase_t    idx_base       = argus.idx_base;
     hipsparseHybPartition_t part           = argus.part;
@@ -151,6 +151,9 @@ hipsparseStatus_t testing_hybmv(Arguments argus)
     std::string             binfile        = "";
     std::string             filename       = "";
     hipsparseStatus_t       status;
+
+    T zero = make_DataType<T>(0.0);
+    T one  = make_DataType<T>(1.0);
 
     // When in testing mode, M == N == -99 indicates that we are testing with a real
     // matrix from cise.ufl.edu
@@ -411,7 +414,7 @@ hipsparseStatus_t testing_hybmv(Arguments argus)
         {
             for(int i = 0; i < m; ++i)
             {
-                T sum = static_cast<T>(0);
+                T sum = zero;
                 for(int p = 0; p < dhyb->ell_width; ++p)
                 {
                     int idx = ELL_IND(i, p, m, dhyb->ell_width);
@@ -419,7 +422,7 @@ hipsparseStatus_t testing_hybmv(Arguments argus)
 
                     if(col >= 0 && col < n)
                     {
-                        sum += hell_val[idx] * hx[col];
+                        sum = sum + hell_val[idx] * hx[col];
                     }
                     else
                     {
@@ -427,7 +430,7 @@ hipsparseStatus_t testing_hybmv(Arguments argus)
                     }
                 }
 
-                if(h_beta != static_cast<T>(0))
+                if(h_beta != zero)
                 {
                     hy_gold[i] = h_beta * hy_gold[i] + h_alpha * sum;
                 }
@@ -441,11 +444,11 @@ hipsparseStatus_t testing_hybmv(Arguments argus)
         // COO part
         if(coo_nnz > 0)
         {
-            T coo_beta = (ell_nnz > 0) ? static_cast<T>(1) : h_beta;
+            T coo_beta = (ell_nnz > 0) ? one : h_beta;
 
             for(int i = 0; i < m; ++i)
             {
-                hy_gold[i] *= coo_beta;
+                hy_gold[i] = hy_gold[i] * coo_beta;
             }
 
             for(int i = 0; i < coo_nnz; ++i)
@@ -453,7 +456,7 @@ hipsparseStatus_t testing_hybmv(Arguments argus)
                 int row = hcoo_row[i] - idx_base;
                 int col = hcoo_col[i] - idx_base;
 
-                hy_gold[row] += h_alpha * hcoo_val[i] * hx[col];
+                hy_gold[row] = hy_gold[row] + h_alpha * hcoo_val[i] * hx[col];
             }
         }
 
@@ -485,13 +488,13 @@ hipsparseStatus_t testing_hybmv(Arguments argus)
 
         // Convert to miliseconds per call
         gpu_time_used     = (get_time_us() - gpu_time_used) / (number_hot_calls * 1e3);
-        size_t flops      = (h_alpha != 1.0) ? 3.0 * nnz : 2.0 * nnz;
-        flops             = (h_beta != 0.0) ? flops + m : flops;
+        size_t flops      = (h_alpha != one) ? 3.0 * nnz : 2.0 * nnz;
+        flops             = (h_beta != zero) ? flops + m : flops;
         double gpu_gflops = flops / gpu_time_used / 1e6;
         size_t ell_mem    = dhyb->ell_nnz * (sizeof(int) + sizeof(T));
         size_t coo_mem    = dhyb->coo_nnz * (sizeof(int) * 2 + sizeof(T));
         size_t memtrans   = (m + n) * sizeof(T) + ell_mem + coo_mem;
-        memtrans          = (h_beta != 0.0) ? memtrans + m : memtrans;
+        memtrans          = (h_beta != zero) ? memtrans + m : memtrans;
         double bandwidth  = memtrans / gpu_time_used / 1e6;
 
         printf("m\t\tn\t\tnnz\t\talpha\tbeta\tGFlops\tGB/s\tmsec\n");

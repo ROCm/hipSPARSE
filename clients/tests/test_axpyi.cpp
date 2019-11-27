@@ -79,6 +79,22 @@ TEST_P(parameterized_axpyi, axpyi_double)
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
+TEST_P(parameterized_axpyi, axpyi_float_complex)
+{
+    Arguments arg = setup_axpyi_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_axpyi<hipComplex>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+
+TEST_P(parameterized_axpyi, axpyi_double_complex)
+{
+    Arguments arg = setup_axpyi_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_axpyi<hipDoubleComplex>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+
 INSTANTIATE_TEST_CASE_P(axpyi,
                         parameterized_axpyi,
                         testing::Combine(testing::ValuesIn(axpyi_N_range),

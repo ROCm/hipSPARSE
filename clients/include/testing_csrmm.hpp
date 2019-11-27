@@ -298,8 +298,8 @@ hipsparseStatus_t testing_csrmm(Arguments argus)
     int                  K         = argus.K;
     int                  ldb       = argus.ldb;
     int                  ldc       = argus.ldc;
-    T                    h_alpha   = argus.alpha;
-    T                    h_beta    = argus.beta;
+    T                    h_alpha   = make_DataType<T>(argus.alpha);
+    T                    h_beta    = make_DataType<T>(argus.beta);
     hipsparseOperation_t transA    = argus.transA;
     hipsparseOperation_t transB    = argus.transB;
     hipsparseIndexBase_t idx_base  = argus.idx_base;
@@ -656,12 +656,13 @@ hipsparseStatus_t testing_csrmm(Arguments argus)
         }
 
         // Convert to miliseconds per call
+        T zero            = make_DataType<T>(0.0);
         gpu_time_used     = (get_time_us() - gpu_time_used) / (number_hot_calls * 1e3);
         size_t flops      = 3.0 * nnz * Bncol;
-        flops             = (h_beta != 0.0) ? flops + Cnnz : flops;
+        flops             = (h_beta != zero) ? flops + Cnnz : flops;
         double gpu_gflops = flops / gpu_time_used / 1e6;
         size_t memtrans   = nnz + Cnnz + Bnnz;
-        memtrans          = (h_beta != 0.0) ? memtrans + Cnnz : memtrans;
+        memtrans          = (h_beta != zero) ? memtrans + Cnnz : memtrans;
         double bandwidth
             = (memtrans * sizeof(T) + (M + 1 + nnz) * sizeof(int)) / gpu_time_used / 1e6;
 
