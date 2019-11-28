@@ -125,10 +125,10 @@ install_packages( )
   fi
 
   # dependencies needed for library and clients to build
-  local library_dependencies_ubuntu=( "make" "cmake-curses-gui" "rocm-dev" "pkg-config" "libnuma1" )
+  local library_dependencies_ubuntu=( "make" "rocm-dev" "pkg-config" "libnuma1" )
   local library_dependencies_centos=( "epel-release" "make" "cmake3" "rocm-dev" "gcc-c++" "rpm-build" "numactl-libs" )
   local library_dependencies_fedora=( "make" "cmake" "rocm-dev" "gcc-c++" "libcxx-devel" "rpm-build" "numactl-libs" )
-  local library_dependencies_sles=( "make" "cmake" "rocm-dev" "gcc-c++" "libcxxtools9" "rpm-build" )
+  local library_dependencies_sles=( "make" "cmake" "rocm-dev" "gcc-c++" "libcxxtools9" "rpm-build" "pkg-config" "dpkg" )
 
   if [[ "${build_cuda}" == false ]]; then
     library_dependencies_ubuntu+=( "rocsparse" )
@@ -140,7 +140,7 @@ install_packages( )
   local client_dependencies_ubuntu=( "libboost-program-options-dev" )
   local client_dependencies_centos=( "boost-devel" )
   local client_dependencies_fedora=( "boost-devel" )
-  local client_dependencies_sles=( "libboost_program_options1_66_0-devel" "pkg-config" "dpkg" )
+  local client_dependencies_sles=( "libboost_program_options1_66_0-devel" )
 
   case "${ID}" in
     ubuntu)
