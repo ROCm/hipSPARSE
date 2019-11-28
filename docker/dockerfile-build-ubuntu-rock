@@ -14,9 +14,9 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-ins
     rock-dkms \
     sudo \
     ca-certificates \
+    make \
     git \
     cmake \
-    make \
     pkg-config \
     rocprim \
     libnuma1 \

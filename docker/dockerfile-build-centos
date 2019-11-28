@@ -14,8 +14,8 @@ RUN yum install -y \
     devtoolset-7 \
     ca-certificates \
     git \
-    make \
     cmake3 \
+    make \
     clang \
     clang-devel \
     gcc-c++ \
