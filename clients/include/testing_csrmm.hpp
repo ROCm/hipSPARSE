@@ -592,7 +592,7 @@ hipsparseStatus_t testing_csrmm(Arguments argus)
                     int Bidx = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE)
                                    ? (hcsr_col_indA[k] - idx_base + j * ldb)
                                    : (j + (hcsr_col_indA[k] - idx_base) * ldb);
-                    sum += h_alpha * hcsr_valA[k] * hB[Bidx];
+                    sum = sum + h_alpha * hcsr_valA[k] * hB[Bidx];
                 }
 
                 hC_gold[Cidx] = sum;

@@ -778,7 +778,7 @@ static void csrgemm(int                  m,
                 }
                 else
                 {
-                    csr_val_C[nnz[col_B]] += val_A * val_B;
+                    csr_val_C[nnz[col_B]] = csr_val_C[nnz[col_B]] + val_A * val_B;
                 }
             }
         }

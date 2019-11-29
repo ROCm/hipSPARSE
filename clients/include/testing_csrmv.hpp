@@ -424,7 +424,7 @@ hipsparseStatus_t testing_csrmv(Arguments argus)
             {
                 for(int k = 0; k < WF_SIZE - j; ++k)
                 {
-                    sum[k] += sum[k + j];
+                    sum[k] = sum[k] + sum[k + j];
                 }
             }
 

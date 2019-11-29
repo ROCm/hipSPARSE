@@ -946,7 +946,7 @@ int lsolve(int                  m,
         {
             for(unsigned int k = 0; k < wf_size - j; ++k)
             {
-                temp[k] += temp[k + j];
+                temp[k] = temp[k] + temp[k + j];
             }
         }
 
@@ -1051,7 +1051,7 @@ int usolve(int                  m,
         {
             for(unsigned int k = 0; k < wf_size - j; ++k)
             {
-                temp[k] += temp[k + j];
+                temp[k] = temp[k] + temp[k + j];
             }
         }
 
@@ -1323,7 +1323,7 @@ static void csrgemm2(int                  m,
                         }
                         else
                         {
-                            csr_val_C[nnz[col_B]] += val_A * val_B;
+                            csr_val_C[nnz[col_B]] = csr_val_C[nnz[col_B]] + val_A * val_B;
                         }
                     }
                 }
@@ -1354,7 +1354,7 @@ static void csrgemm2(int                  m,
                     }
                     else
                     {
-                        csr_val_C[nnz[col_D]] += val_D;
+                        csr_val_C[nnz[col_D]] = csr_val_C[nnz[col_D]] + val_D;
                     }
                 }
             }
