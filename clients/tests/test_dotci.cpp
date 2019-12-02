@@ -1,5 +1,5 @@
 /* ************************************************************************
- * Copyright (c) 2018 Advanced Micro Devices, Inc.
+ * Copyright (c) 2019 Advanced Micro Devices, Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,7 +21,7 @@
  *
  * ************************************************************************ */
 
-#include "testing_gthrz.hpp"
+#include "testing_dotci.hpp"
 #include "utility.hpp"
 
 #include <gtest/gtest.h>
@@ -29,23 +29,23 @@
 #include <vector>
 
 typedef hipsparseIndexBase_t       base;
-typedef std::tuple<int, int, base> gthrz_tuple;
+typedef std::tuple<int, int, base> dotci_tuple;
 
-int gthrz_N_range[]   = {12000, 15332, 22031};
-int gthrz_nnz_range[] = {-1, 0, 5, 10, 500, 1000, 7111, 10000};
+int dotci_N_range[]   = {12000, 15332, 22031};
+int dotci_nnz_range[] = {-1, 0, 5, 10, 500, 1000, 7111, 10000};
 
-base gthrz_idx_base_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+base dotci_idx_base_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
-class parameterized_gthrz : public testing::TestWithParam<gthrz_tuple>
+class parameterized_dotci : public testing::TestWithParam<dotci_tuple>
 {
 protected:
-    parameterized_gthrz() {}
-    virtual ~parameterized_gthrz() {}
+    parameterized_dotci() {}
+    virtual ~parameterized_dotci() {}
     virtual void SetUp() {}
     virtual void TearDown() {}
 };
 
-Arguments setup_gthrz_arguments(gthrz_tuple tup)
+Arguments setup_dotci_arguments(dotci_tuple tup)
 {
     Arguments arg;
     arg.N        = std::get<0>(tup);
@@ -55,45 +55,29 @@ Arguments setup_gthrz_arguments(gthrz_tuple tup)
     return arg;
 }
 
-TEST(gthrz_bad_arg, gthrz_float)
+TEST(dotci_bad_arg, dotci_float)
 {
-    testing_gthrz_bad_arg<float>();
+    testing_dotci_bad_arg<hipComplex>();
 }
 
-TEST_P(parameterized_gthrz, gthrz_float)
+TEST_P(parameterized_dotci, dotci_float_complex)
 {
-    Arguments arg = setup_gthrz_arguments(GetParam());
+    Arguments arg = setup_dotci_arguments(GetParam());
 
-    hipsparseStatus_t status = testing_gthrz<float>(arg);
+    hipsparseStatus_t status = testing_dotci<hipComplex>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-TEST_P(parameterized_gthrz, gthrz_double)
+TEST_P(parameterized_dotci, dotci_double_complex)
 {
-    Arguments arg = setup_gthrz_arguments(GetParam());
+    Arguments arg = setup_dotci_arguments(GetParam());
 
-    hipsparseStatus_t status = testing_gthrz<double>(arg);
+    hipsparseStatus_t status = testing_dotci<hipDoubleComplex>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-TEST_P(parameterized_gthrz, gthrz_float_complex)
-{
-    Arguments arg = setup_gthrz_arguments(GetParam());
-
-    hipsparseStatus_t status = testing_gthrz<hipComplex>(arg);
-    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
-}
-
-TEST_P(parameterized_gthrz, gthrz_double_complex)
-{
-    Arguments arg = setup_gthrz_arguments(GetParam());
-
-    hipsparseStatus_t status = testing_gthrz<hipDoubleComplex>(arg);
-    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
-}
-
-INSTANTIATE_TEST_CASE_P(gthrz,
-                        parameterized_gthrz,
-                        testing::Combine(testing::ValuesIn(gthrz_N_range),
-                                         testing::ValuesIn(gthrz_nnz_range),
-                                         testing::ValuesIn(gthrz_idx_base_range)));
+INSTANTIATE_TEST_CASE_P(dotci,
+                        parameterized_dotci,
+                        testing::Combine(testing::ValuesIn(dotci_N_range),
+                                         testing::ValuesIn(dotci_nnz_range),
+                                         testing::ValuesIn(dotci_idx_base_range)));

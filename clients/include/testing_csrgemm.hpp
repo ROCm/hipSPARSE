@@ -778,7 +778,7 @@ static void csrgemm(int                  m,
                 }
                 else
                 {
-                    csr_val_C[nnz[col_B]] += val_A * val_B;
+                    csr_val_C[nnz[col_B]] = csr_val_C[nnz[col_B]] + val_A * val_B;
                 }
             }
         }
@@ -1247,13 +1247,8 @@ hipsparseStatus_t testing_csrgemm(Arguments argus)
 
         // Check structure and entries of C
         unit_check_general(1, M + 1, 1, hcsr_row_ptr_C_gold.data(), hcsr_row_ptr_C.data());
-        //        unit_check_general(1, nnz_C_gold, 1, hcsr_col_ind_C_gold.data(), hcsr_col_ind_C.data());
-        //        unit_check_near(1, nnz_C_gold, 1, hcsr_val_C_gold.data(), hcsr_val_C.data());
-    }
-
-    if(argus.timing)
-    {
-        // TODO
+        unit_check_general(1, nnz_C_gold, 1, hcsr_col_ind_C_gold.data(), hcsr_col_ind_C.data());
+        unit_check_near(1, nnz_C_gold, 1, hcsr_val_C_gold.data(), hcsr_val_C.data());
     }
 
     return HIPSPARSE_STATUS_SUCCESS;

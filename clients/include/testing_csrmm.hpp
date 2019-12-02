@@ -298,8 +298,8 @@ hipsparseStatus_t testing_csrmm(Arguments argus)
     int                  K         = argus.K;
     int                  ldb       = argus.ldb;
     int                  ldc       = argus.ldc;
-    T                    h_alpha   = argus.alpha;
-    T                    h_beta    = argus.beta;
+    T                    h_alpha   = make_DataType<T>(argus.alpha);
+    T                    h_beta    = make_DataType<T>(argus.beta);
     hipsparseOperation_t transA    = argus.transA;
     hipsparseOperation_t transB    = argus.transB;
     hipsparseIndexBase_t idx_base  = argus.idx_base;
@@ -592,7 +592,7 @@ hipsparseStatus_t testing_csrmm(Arguments argus)
                     int Bidx = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE)
                                    ? (hcsr_col_indA[k] - idx_base + j * ldb)
                                    : (j + (hcsr_col_indA[k] - idx_base) * ldb);
-                    sum += h_alpha * hcsr_valA[k] * hB[Bidx];
+                    sum = sum + h_alpha * hcsr_valA[k] * hB[Bidx];
                 }
 
                 hC_gold[Cidx] = sum;
@@ -603,79 +603,6 @@ hipsparseStatus_t testing_csrmm(Arguments argus)
 
         unit_check_near(Cnrow, Cncol, ldc, hC_gold.data(), hC_1.data());
         unit_check_near(Cnrow, Cncol, ldc, hC_gold.data(), hC_2.data());
-    }
-
-    if(argus.timing)
-    {
-        int number_cold_calls = 2;
-        int number_hot_calls  = argus.iters;
-        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
-
-        for(int iter = 0; iter < number_cold_calls; iter++)
-        {
-            hipsparseXcsrmm2(handle,
-                             transA,
-                             transB,
-                             Anrow,
-                             Cncol,
-                             Ancol,
-                             nnz,
-                             &h_alpha,
-                             descr,
-                             dcsr_valA,
-                             dcsr_row_ptrA,
-                             dcsr_col_indA,
-                             dB,
-                             ldb,
-                             &h_beta,
-                             dC_1,
-                             ldc);
-        }
-
-        double gpu_time_used = get_time_us(); // in microseconds
-
-        for(int iter = 0; iter < number_hot_calls; iter++)
-        {
-            hipsparseXcsrmm2(handle,
-                             transA,
-                             transB,
-                             Anrow,
-                             Cncol,
-                             Ancol,
-                             nnz,
-                             &h_alpha,
-                             descr,
-                             dcsr_valA,
-                             dcsr_row_ptrA,
-                             dcsr_col_indA,
-                             dB,
-                             ldb,
-                             &h_beta,
-                             dC_1,
-                             ldc);
-        }
-
-        // Convert to miliseconds per call
-        gpu_time_used     = (get_time_us() - gpu_time_used) / (number_hot_calls * 1e3);
-        size_t flops      = 3.0 * nnz * Bncol;
-        flops             = (h_beta != 0.0) ? flops + Cnnz : flops;
-        double gpu_gflops = flops / gpu_time_used / 1e6;
-        size_t memtrans   = nnz + Cnnz + Bnnz;
-        memtrans          = (h_beta != 0.0) ? memtrans + Cnnz : memtrans;
-        double bandwidth
-            = (memtrans * sizeof(T) + (M + 1 + nnz) * sizeof(int)) / gpu_time_used / 1e6;
-
-        printf("m\t\tn\t\tk\t\tnnz\t\talpha\tbeta\tGFlops\tGB/s\tmsec\n");
-        printf("%8d\t%8d\t%8d\t%9d\t%0.2lf\t%0.2lf\t%0.2lf\t%0.2lf\t%0.2lf\n",
-               M,
-               N,
-               K,
-               nnz,
-               h_alpha,
-               h_beta,
-               gpu_gflops,
-               bandwidth,
-               gpu_time_used);
     }
 
     return HIPSPARSE_STATUS_SUCCESS;

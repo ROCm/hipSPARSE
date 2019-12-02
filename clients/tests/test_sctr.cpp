@@ -76,6 +76,22 @@ TEST_P(parameterized_sctr, sctr_double)
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
+TEST_P(parameterized_sctr, sctr_float_complex)
+{
+    Arguments arg = setup_sctr_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_sctr<hipComplex>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+
+TEST_P(parameterized_sctr, sctr_double_complex)
+{
+    Arguments arg = setup_sctr_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_sctr<hipDoubleComplex>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+
 INSTANTIATE_TEST_CASE_P(sctr,
                         parameterized_sctr,
                         testing::Combine(testing::ValuesIn(sctr_N_range),
