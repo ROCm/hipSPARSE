@@ -153,6 +153,22 @@ TEST_P(parameterized_hybmv, hybmv_double)
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
+TEST_P(parameterized_hybmv, hybmv_float_complex)
+{
+    Arguments arg = setup_hybmv_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_hybmv<hipComplex>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+
+TEST_P(parameterized_hybmv, hybmv_double_complex)
+{
+    Arguments arg = setup_hybmv_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_hybmv<hipDoubleComplex>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+
 TEST_P(parameterized_hybmv_bin, hybmv_bin_float)
 {
     Arguments arg = setup_hybmv_arguments(GetParam());

@@ -216,10 +216,10 @@ hipsparseStatus_t testing_doti(Arguments argus)
         // CPU
         double cpu_time_used = get_time_us();
 
-        hresult_gold = static_cast<T>(0);
+        hresult_gold = make_DataType<T>(0.0);
         for(int i = 0; i < nnz; ++i)
         {
-            hresult_gold += hy[hx_ind[i] - idx_base] * hx_val[i];
+            hresult_gold = hresult_gold + hy[hx_ind[i] - idx_base] * hx_val[i];
         }
 
         cpu_time_used = get_time_us() - cpu_time_used;
@@ -230,31 +230,6 @@ hipsparseStatus_t testing_doti(Arguments argus)
         unit_check_general(1, 1, 1, &hresult_gold, &hresult_2);
     }
 
-    if(argus.timing)
-    {
-        int number_cold_calls = 2;
-        int number_hot_calls  = argus.iters;
-        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
-
-        for(int iter = 0; iter < number_cold_calls; iter++)
-        {
-            hipsparseXdoti(handle, nnz, dx_val, dx_ind, dy, &hresult_1, idx_base);
-        }
-
-        double gpu_time_used = get_time_us(); // in microseconds
-
-        for(int iter = 0; iter < number_hot_calls; iter++)
-        {
-            hipsparseXdoti(handle, nnz, dx_val, dx_ind, dy, &hresult_1, idx_base);
-        }
-
-        gpu_time_used     = (get_time_us() - gpu_time_used) / number_hot_calls;
-        double gpu_gflops = (2.0 * nnz) / 1e9 / gpu_time_used * 1e6 * 1;
-        double bandwidth  = (sizeof(int) * nnz + sizeof(T) * nnz * 2.0) / gpu_time_used / 1e3;
-
-        printf("nnz\t\tGFlops\tGB/s\tusec\n");
-        printf("%9d\t%0.2lf\t%0.2lf\t%0.2lf\n", nnz, gpu_gflops, bandwidth, gpu_time_used);
-    }
     return HIPSPARSE_STATUS_SUCCESS;
 }
 

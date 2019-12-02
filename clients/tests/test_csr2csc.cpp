@@ -140,6 +140,22 @@ TEST_P(parameterized_csr2csc, csr2csc_double)
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
+TEST_P(parameterized_csr2csc, csr2csc_float_complex)
+{
+    Arguments arg = setup_csr2csc_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_csr2csc<hipComplex>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+
+TEST_P(parameterized_csr2csc, csr2csc_double_complex)
+{
+    Arguments arg = setup_csr2csc_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_csr2csc<hipDoubleComplex>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+
 TEST_P(parameterized_csr2csc_bin, csr2csc_bin_float)
 {
     Arguments arg = setup_csr2csc_arguments(GetParam());

@@ -49,6 +49,15 @@ namespace hipsparse
                                      hipsparseIndexBase_t idx_base);
 
     template <typename T>
+    hipsparseStatus_t hipsparseXdotci(hipsparseHandle_t    handle,
+                                      int                  nnz,
+                                      const T*             x_val,
+                                      const int*           x_ind,
+                                      const T*             y,
+                                      T*                   result,
+                                      hipsparseIndexBase_t idx_base);
+
+    template <typename T>
     hipsparseStatus_t hipsparseXgthr(hipsparseHandle_t    handle,
                                      int                  nnz,
                                      const T*             y,

@@ -134,6 +134,22 @@ TEST_P(parameterized_csrilu02, csrilu02_double)
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
+TEST_P(parameterized_csrilu02, csrilu02_float_complex)
+{
+    Arguments arg = setup_csrilu02_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_csrilu02<hipComplex>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+
+TEST_P(parameterized_csrilu02, csrilu02_double_complex)
+{
+    Arguments arg = setup_csrilu02_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_csrilu02<hipDoubleComplex>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+
 TEST_P(parameterized_csrilu02_bin, csrilu02_bin_float)
 {
     Arguments arg = setup_csrilu02_arguments(GetParam());

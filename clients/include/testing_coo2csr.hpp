@@ -273,30 +273,6 @@ hipsparseStatus_t testing_coo2csr(Arguments argus)
         unit_check_general(1, m + 1, 1, hcsr_row_ptr_gold.data(), hcsr_row_ptr.data());
     }
 
-    if(argus.timing)
-    {
-        int number_cold_calls = 2;
-        int number_hot_calls  = argus.iters;
-
-        for(int iter = 0; iter < number_cold_calls; ++iter)
-        {
-            hipsparseXcoo2csr(handle, dcoo_row_ind, nnz, m, dcsr_row_ptr, idx_base);
-        }
-
-        double gpu_time_used = get_time_us();
-
-        for(int iter = 0; iter < number_hot_calls; ++iter)
-        {
-            hipsparseXcoo2csr(handle, dcoo_row_ind, nnz, m, dcsr_row_ptr, idx_base);
-        }
-
-        gpu_time_used = (get_time_us() - gpu_time_used) / (number_hot_calls * 1e3);
-
-        double bandwidth = sizeof(int) * (nnz + m + 1) / gpu_time_used / 1e6;
-
-        printf("m\t\tn\t\tnnz\t\tGB/s\tmsec\n");
-        printf("%8d\t%8d\t%9d\t%0.2lf\t%0.2lf\n", m, n, nnz, bandwidth, gpu_time_used);
-    }
     return HIPSPARSE_STATUS_SUCCESS;
 }
 

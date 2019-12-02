@@ -437,38 +437,6 @@ hipsparseStatus_t testing_csrsort(Arguments argus)
         }
     }
 
-    if(argus.timing)
-    {
-        int number_cold_calls = 2;
-        int number_hot_calls  = argus.iters;
-
-        // Allocate buffer for csrsort
-        hipsparseXcsrsort_bufferSizeExt(
-            handle, m, n, nnz, dcsr_row_ptr, dcsr_col_ind, &buffer_size);
-
-        auto dbuffer_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(char) * buffer_size), device_free};
-        void* dbuffer = (void*)dbuffer_managed.get();
-
-        for(int iter = 0; iter < number_cold_calls; ++iter)
-        {
-            hipsparseXcsrsort(
-                handle, m, n, nnz, descr, dcsr_row_ptr, dcsr_col_ind, nullptr, dbuffer);
-        }
-
-        double gpu_time_used = get_time_us();
-
-        for(int iter = 0; iter < number_hot_calls; ++iter)
-        {
-            hipsparseXcsrsort(
-                handle, m, n, nnz, descr, dcsr_row_ptr, dcsr_col_ind, nullptr, dbuffer);
-        }
-
-        gpu_time_used = (get_time_us() - gpu_time_used) / (number_hot_calls * 1e3);
-
-        printf("m\t\tn\t\tnnz\t\tmsec\n");
-        printf("%8d\t%8d\t%9d\t%0.2lf\n", m, n, nnz, gpu_time_used);
-    }
     return HIPSPARSE_STATUS_SUCCESS;
 }
 

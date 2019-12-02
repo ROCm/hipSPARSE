@@ -147,6 +147,22 @@ TEST_P(parameterized_csrgemm, csrgemm_double)
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
+TEST_P(parameterized_csrgemm, csrgemm_float_complex)
+{
+    Arguments arg = setup_csrgemm_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_csrgemm<hipComplex>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+
+TEST_P(parameterized_csrgemm, csrgemm_double_complex)
+{
+    Arguments arg = setup_csrgemm_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_csrgemm<hipDoubleComplex>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+
 TEST_P(parameterized_csrgemm_bin, csrgemm_bin_float)
 {
     Arguments arg = setup_csrgemm_arguments(GetParam());

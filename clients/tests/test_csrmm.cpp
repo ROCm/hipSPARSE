@@ -33,33 +33,26 @@ typedef hipsparseOperation_t                                             trans;
 typedef std::tuple<int, int, int, double, double, base, trans, trans>    csrmm_tuple;
 typedef std::tuple<int, double, double, base, trans, trans, std::string> csrmm_bin_tuple;
 
-int csrmm_M_range[] = {-1, 0, 42, 511, 3521};
-int csrmm_N_range[] = {-1, 0, 13, 33, 64, 73};
-int csrmm_K_range[] = {-1, 0, 50, 254, 1942};
+int csrmm_M_range[] = {-1, 0, 42, 275, 2059};
+int csrmm_N_range[] = {-1, 0, 7, 19, 64, 78};
+int csrmm_K_range[] = {-1, 0, 50, 173, 1375};
 
-double csrmm_alpha_range[] = {-1.0, 0.0, 3.3};
-double csrmm_beta_range[]  = {-0.3, 0.0, 1.0};
+double csrmm_alpha_range[] = {-0.5, 2.0};
+double csrmm_beta_range[]  = {0.5, 0.0};
 
 base  csrmm_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 trans csrmm_transA_range[]  = {HIPSPARSE_OPERATION_NON_TRANSPOSE};
 trans csrmm_transB_range[]  = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPERATION_TRANSPOSE};
 
 std::string csrmm_bin[] = {"rma10.bin",
-                           "mac_econ_fwd500.bin",
                            "bibd_22_8.bin",
                            "mc2depi.bin",
                            "scircuit.bin",
-                           "ASIC_320k.bin",
-                           "bmwcra_1.bin",
                            "nos1.bin",
-                           "nos2.bin",
                            "nos3.bin",
-                           "nos4.bin",
                            "nos5.bin",
-                           "nos6.bin",
                            "nos7.bin",
                            "amazon0312.bin",
-                           "sme3Dc.bin",
                            "shipsec1.bin"};
 
 class parameterized_csrmm : public testing::TestWithParam<csrmm_tuple>
@@ -147,6 +140,22 @@ TEST_P(parameterized_csrmm, csrmm_double)
     Arguments arg = setup_csrmm_arguments(GetParam());
 
     hipsparseStatus_t status = testing_csrmm<double>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+
+TEST_P(parameterized_csrmm, csrmm_float_complex)
+{
+    Arguments arg = setup_csrmm_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_csrmm<hipComplex>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+
+TEST_P(parameterized_csrmm, csrmm_double_complex)
+{
+    Arguments arg = setup_csrmm_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_csrmm<hipDoubleComplex>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 

@@ -38,6 +38,7 @@
 #include "hipsparse-export.h"
 #include "hipsparse-version.h"
 
+#include <hip/hip_complex.h>
 #include <hip/hip_runtime_api.h>
 
 /* Opaque structures holding information */
@@ -222,6 +223,22 @@ hipsparseStatus_t hipsparseDaxpyi(hipsparseHandle_t    handle,
                                   const int*           xInd,
                                   double*              y,
                                   hipsparseIndexBase_t idxBase);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCaxpyi(hipsparseHandle_t    handle,
+                                  int                  nnz,
+                                  const hipComplex*    alpha,
+                                  const hipComplex*    xVal,
+                                  const int*           xInd,
+                                  hipComplex*          y,
+                                  hipsparseIndexBase_t idxBase);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseZaxpyi(hipsparseHandle_t       handle,
+                                  int                     nnz,
+                                  const hipDoubleComplex* alpha,
+                                  const hipDoubleComplex* xVal,
+                                  const int*              xInd,
+                                  hipDoubleComplex*       y,
+                                  hipsparseIndexBase_t    idxBase);
 
 /* Description: Compute the dot product of a sparse vector x
    with a dense vector y. */
@@ -233,7 +250,6 @@ hipsparseStatus_t hipsparseSdoti(hipsparseHandle_t    handle,
                                  const float*         y,
                                  float*               result,
                                  hipsparseIndexBase_t idxBase);
-
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDdoti(hipsparseHandle_t    handle,
                                  int                  nnz,
@@ -242,6 +258,41 @@ hipsparseStatus_t hipsparseDdoti(hipsparseHandle_t    handle,
                                  const double*        y,
                                  double*              result,
                                  hipsparseIndexBase_t idxBase);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCdoti(hipsparseHandle_t    handle,
+                                 int                  nnz,
+                                 const hipComplex*    xVal,
+                                 const int*           xInd,
+                                 const hipComplex*    y,
+                                 hipComplex*          result,
+                                 hipsparseIndexBase_t idxBase);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseZdoti(hipsparseHandle_t       handle,
+                                 int                     nnz,
+                                 const hipDoubleComplex* xVal,
+                                 const int*              xInd,
+                                 const hipDoubleComplex* y,
+                                 hipDoubleComplex*       result,
+                                 hipsparseIndexBase_t    idxBase);
+
+/* Description: Compute the conjugated dot product of a sparse
+   vector x with a dense vector y. */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCdotci(hipsparseHandle_t    handle,
+                                  int                  nnz,
+                                  const hipComplex*    xVal,
+                                  const int*           xInd,
+                                  const hipComplex*    y,
+                                  hipComplex*          result,
+                                  hipsparseIndexBase_t idxBase);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseZdotci(hipsparseHandle_t       handle,
+                                  int                     nnz,
+                                  const hipDoubleComplex* xVal,
+                                  const int*              xInd,
+                                  const hipDoubleComplex* y,
+                                  hipDoubleComplex*       result,
+                                  hipsparseIndexBase_t    idxBase);
 
 /* Description: Gathers the elements that are listed in xInd from
    a dense vector y and stores them in a sparse vector x. */
@@ -252,7 +303,6 @@ hipsparseStatus_t hipsparseSgthr(hipsparseHandle_t    handle,
                                  float*               xVal,
                                  const int*           xInd,
                                  hipsparseIndexBase_t idxBase);
-
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDgthr(hipsparseHandle_t    handle,
                                  int                  nnz,
@@ -260,6 +310,20 @@ hipsparseStatus_t hipsparseDgthr(hipsparseHandle_t    handle,
                                  double*              xVal,
                                  const int*           xInd,
                                  hipsparseIndexBase_t idxBase);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCgthr(hipsparseHandle_t    handle,
+                                 int                  nnz,
+                                 const hipComplex*    y,
+                                 hipComplex*          xVal,
+                                 const int*           xInd,
+                                 hipsparseIndexBase_t idxBase);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseZgthr(hipsparseHandle_t       handle,
+                                 int                     nnz,
+                                 const hipDoubleComplex* y,
+                                 hipDoubleComplex*       xVal,
+                                 const int*              xInd,
+                                 hipsparseIndexBase_t    idxBase);
 
 /* Description: Gathers the elements that are listed in xInd from
    a dense vector y and stores them in a sparse vector x. Gathered
@@ -271,12 +335,25 @@ hipsparseStatus_t hipsparseSgthrz(hipsparseHandle_t    handle,
                                   float*               xVal,
                                   const int*           xInd,
                                   hipsparseIndexBase_t idxBase);
-
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDgthrz(hipsparseHandle_t    handle,
                                   int                  nnz,
                                   double*              y,
                                   double*              xVal,
+                                  const int*           xInd,
+                                  hipsparseIndexBase_t idxBase);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCgthrz(hipsparseHandle_t    handle,
+                                  int                  nnz,
+                                  hipComplex*          y,
+                                  hipComplex*          xVal,
+                                  const int*           xInd,
+                                  hipsparseIndexBase_t idxBase);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseZgthrz(hipsparseHandle_t    handle,
+                                  int                  nnz,
+                                  hipDoubleComplex*    y,
+                                  hipDoubleComplex*    xVal,
                                   const int*           xInd,
                                   hipsparseIndexBase_t idxBase);
 
@@ -291,7 +368,6 @@ hipsparseStatus_t hipsparseSroti(hipsparseHandle_t    handle,
                                  const float*         c,
                                  const float*         s,
                                  hipsparseIndexBase_t idxBase);
-
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDroti(hipsparseHandle_t    handle,
                                  int                  nnz,
@@ -311,7 +387,6 @@ hipsparseStatus_t hipsparseSsctr(hipsparseHandle_t    handle,
                                  const int*           xInd,
                                  float*               y,
                                  hipsparseIndexBase_t idxBase);
-
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDsctr(hipsparseHandle_t    handle,
                                  int                  nnz,
@@ -319,6 +394,20 @@ hipsparseStatus_t hipsparseDsctr(hipsparseHandle_t    handle,
                                  const int*           xInd,
                                  double*              y,
                                  hipsparseIndexBase_t idxBase);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCsctr(hipsparseHandle_t    handle,
+                                 int                  nnz,
+                                 const hipComplex*    xVal,
+                                 const int*           xInd,
+                                 hipComplex*          y,
+                                 hipsparseIndexBase_t idxBase);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseZsctr(hipsparseHandle_t       handle,
+                                 int                     nnz,
+                                 const hipDoubleComplex* xVal,
+                                 const int*              xInd,
+                                 hipDoubleComplex*       y,
+                                 hipsparseIndexBase_t    idxBase);
 
 /* --- Sparse Level 2 routines --- */
 
@@ -352,6 +441,34 @@ hipsparseStatus_t hipsparseDcsrmv(hipsparseHandle_t         handle,
                                   const double*             x,
                                   const double*             beta,
                                   double*                   y);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCcsrmv(hipsparseHandle_t         handle,
+                                  hipsparseOperation_t      transA,
+                                  int                       m,
+                                  int                       n,
+                                  int                       nnz,
+                                  const hipComplex*         alpha,
+                                  const hipsparseMatDescr_t descrA,
+                                  const hipComplex*         csrSortedValA,
+                                  const int*                csrSortedRowPtrA,
+                                  const int*                csrSortedColIndA,
+                                  const hipComplex*         x,
+                                  const hipComplex*         beta,
+                                  hipComplex*               y);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseZcsrmv(hipsparseHandle_t         handle,
+                                  hipsparseOperation_t      transA,
+                                  int                       m,
+                                  int                       n,
+                                  int                       nnz,
+                                  const hipDoubleComplex*   alpha,
+                                  const hipsparseMatDescr_t descrA,
+                                  const hipDoubleComplex*   csrSortedValA,
+                                  const int*                csrSortedRowPtrA,
+                                  const int*                csrSortedColIndA,
+                                  const hipDoubleComplex*   x,
+                                  const hipDoubleComplex*   beta,
+                                  hipDoubleComplex*         y);
 
 /* Description: Solution of triangular linear system op(A) * x = alpha * f,
    where A is a sparse matrix in CSR storage format, x and f are dense vectors. */
@@ -370,7 +487,6 @@ hipsparseStatus_t hipsparseScsrsv2_bufferSize(hipsparseHandle_t         handle,
                                               const int*                csrSortedColIndA,
                                               csrsv2Info_t              info,
                                               int*                      pBufferSizeInBytes);
-
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDcsrsv2_bufferSize(hipsparseHandle_t         handle,
                                               hipsparseOperation_t      transA,
@@ -378,6 +494,28 @@ hipsparseStatus_t hipsparseDcsrsv2_bufferSize(hipsparseHandle_t         handle,
                                               int                       nnz,
                                               const hipsparseMatDescr_t descrA,
                                               double*                   csrSortedValA,
+                                              const int*                csrSortedRowPtrA,
+                                              const int*                csrSortedColIndA,
+                                              csrsv2Info_t              info,
+                                              int*                      pBufferSizeInBytes);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCcsrsv2_bufferSize(hipsparseHandle_t         handle,
+                                              hipsparseOperation_t      transA,
+                                              int                       m,
+                                              int                       nnz,
+                                              const hipsparseMatDescr_t descrA,
+                                              hipComplex*               csrSortedValA,
+                                              const int*                csrSortedRowPtrA,
+                                              const int*                csrSortedColIndA,
+                                              csrsv2Info_t              info,
+                                              int*                      pBufferSizeInBytes);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseZcsrsv2_bufferSize(hipsparseHandle_t         handle,
+                                              hipsparseOperation_t      transA,
+                                              int                       m,
+                                              int                       nnz,
+                                              const hipsparseMatDescr_t descrA,
+                                              hipDoubleComplex*         csrSortedValA,
                                               const int*                csrSortedRowPtrA,
                                               const int*                csrSortedColIndA,
                                               csrsv2Info_t              info,
@@ -394,7 +532,6 @@ hipsparseStatus_t hipsparseScsrsv2_bufferSizeExt(hipsparseHandle_t         handl
                                                  const int*                csrSortedColIndA,
                                                  csrsv2Info_t              info,
                                                  size_t*                   pBufferSize);
-
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDcsrsv2_bufferSizeExt(hipsparseHandle_t         handle,
                                                  hipsparseOperation_t      transA,
@@ -402,6 +539,28 @@ hipsparseStatus_t hipsparseDcsrsv2_bufferSizeExt(hipsparseHandle_t         handl
                                                  int                       nnz,
                                                  const hipsparseMatDescr_t descrA,
                                                  double*                   csrSortedValA,
+                                                 const int*                csrSortedRowPtrA,
+                                                 const int*                csrSortedColIndA,
+                                                 csrsv2Info_t              info,
+                                                 size_t*                   pBufferSize);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCcsrsv2_bufferSizeExt(hipsparseHandle_t         handle,
+                                                 hipsparseOperation_t      transA,
+                                                 int                       m,
+                                                 int                       nnz,
+                                                 const hipsparseMatDescr_t descrA,
+                                                 hipComplex*               csrSortedValA,
+                                                 const int*                csrSortedRowPtrA,
+                                                 const int*                csrSortedColIndA,
+                                                 csrsv2Info_t              info,
+                                                 size_t*                   pBufferSize);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseZcsrsv2_bufferSizeExt(hipsparseHandle_t         handle,
+                                                 hipsparseOperation_t      transA,
+                                                 int                       m,
+                                                 int                       nnz,
+                                                 const hipsparseMatDescr_t descrA,
+                                                 hipDoubleComplex*         csrSortedValA,
                                                  const int*                csrSortedRowPtrA,
                                                  const int*                csrSortedColIndA,
                                                  csrsv2Info_t              info,
@@ -419,7 +578,6 @@ hipsparseStatus_t hipsparseScsrsv2_analysis(hipsparseHandle_t         handle,
                                             csrsv2Info_t              info,
                                             hipsparseSolvePolicy_t    policy,
                                             void*                     pBuffer);
-
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDcsrsv2_analysis(hipsparseHandle_t         handle,
                                             hipsparseOperation_t      transA,
@@ -427,6 +585,30 @@ hipsparseStatus_t hipsparseDcsrsv2_analysis(hipsparseHandle_t         handle,
                                             int                       nnz,
                                             const hipsparseMatDescr_t descrA,
                                             const double*             csrSortedValA,
+                                            const int*                csrSortedRowPtrA,
+                                            const int*                csrSortedColIndA,
+                                            csrsv2Info_t              info,
+                                            hipsparseSolvePolicy_t    policy,
+                                            void*                     pBuffer);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCcsrsv2_analysis(hipsparseHandle_t         handle,
+                                            hipsparseOperation_t      transA,
+                                            int                       m,
+                                            int                       nnz,
+                                            const hipsparseMatDescr_t descrA,
+                                            const hipComplex*         csrSortedValA,
+                                            const int*                csrSortedRowPtrA,
+                                            const int*                csrSortedColIndA,
+                                            csrsv2Info_t              info,
+                                            hipsparseSolvePolicy_t    policy,
+                                            void*                     pBuffer);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseZcsrsv2_analysis(hipsparseHandle_t         handle,
+                                            hipsparseOperation_t      transA,
+                                            int                       m,
+                                            int                       nnz,
+                                            const hipsparseMatDescr_t descrA,
+                                            const hipDoubleComplex*   csrSortedValA,
                                             const int*                csrSortedRowPtrA,
                                             const int*                csrSortedColIndA,
                                             csrsv2Info_t              info,
@@ -448,7 +630,6 @@ hipsparseStatus_t hipsparseScsrsv2_solve(hipsparseHandle_t         handle,
                                          float*                    x,
                                          hipsparseSolvePolicy_t    policy,
                                          void*                     pBuffer);
-
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDcsrsv2_solve(hipsparseHandle_t         handle,
                                          hipsparseOperation_t      transA,
@@ -462,6 +643,36 @@ hipsparseStatus_t hipsparseDcsrsv2_solve(hipsparseHandle_t         handle,
                                          csrsv2Info_t              info,
                                          const double*             f,
                                          double*                   x,
+                                         hipsparseSolvePolicy_t    policy,
+                                         void*                     pBuffer);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCcsrsv2_solve(hipsparseHandle_t         handle,
+                                         hipsparseOperation_t      transA,
+                                         int                       m,
+                                         int                       nnz,
+                                         const hipComplex*         alpha,
+                                         const hipsparseMatDescr_t descrA,
+                                         const hipComplex*         csrSortedValA,
+                                         const int*                csrSortedRowPtrA,
+                                         const int*                csrSortedColIndA,
+                                         csrsv2Info_t              info,
+                                         const hipComplex*         f,
+                                         hipComplex*               x,
+                                         hipsparseSolvePolicy_t    policy,
+                                         void*                     pBuffer);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseZcsrsv2_solve(hipsparseHandle_t         handle,
+                                         hipsparseOperation_t      transA,
+                                         int                       m,
+                                         int                       nnz,
+                                         const hipDoubleComplex*   alpha,
+                                         const hipsparseMatDescr_t descrA,
+                                         const hipDoubleComplex*   csrSortedValA,
+                                         const int*                csrSortedRowPtrA,
+                                         const int*                csrSortedColIndA,
+                                         csrsv2Info_t              info,
+                                         const hipDoubleComplex*   f,
+                                         hipDoubleComplex*         x,
                                          hipsparseSolvePolicy_t    policy,
                                          void*                     pBuffer);
 
@@ -485,6 +696,24 @@ hipsparseStatus_t hipsparseDhybmv(hipsparseHandle_t         handle,
                                   const double*             x,
                                   const double*             beta,
                                   double*                   y);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseChybmv(hipsparseHandle_t         handle,
+                                  hipsparseOperation_t      transA,
+                                  const hipComplex*         alpha,
+                                  const hipsparseMatDescr_t descrA,
+                                  const hipsparseHybMat_t   hybA,
+                                  const hipComplex*         x,
+                                  const hipComplex*         beta,
+                                  hipComplex*               y);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseZhybmv(hipsparseHandle_t         handle,
+                                  hipsparseOperation_t      transA,
+                                  const hipDoubleComplex*   alpha,
+                                  const hipsparseMatDescr_t descrA,
+                                  const hipsparseHybMat_t   hybA,
+                                  const hipDoubleComplex*   x,
+                                  const hipDoubleComplex*   beta,
+                                  hipDoubleComplex*         y);
 
 /* --- Sparse Level 3 routines --- */
 
@@ -524,6 +753,40 @@ hipsparseStatus_t hipsparseDcsrmm(hipsparseHandle_t         handle,
                                   const double*             beta,
                                   double*                   C,
                                   int                       ldc);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCcsrmm(hipsparseHandle_t         handle,
+                                  hipsparseOperation_t      transA,
+                                  int                       m,
+                                  int                       n,
+                                  int                       k,
+                                  int                       nnz,
+                                  const hipComplex*         alpha,
+                                  const hipsparseMatDescr_t descrA,
+                                  const hipComplex*         csrSortedValA,
+                                  const int*                csrSortedRowPtrA,
+                                  const int*                csrSortedColIndA,
+                                  const hipComplex*         B,
+                                  int                       ldb,
+                                  const hipComplex*         beta,
+                                  hipComplex*               C,
+                                  int                       ldc);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseZcsrmm(hipsparseHandle_t         handle,
+                                  hipsparseOperation_t      transA,
+                                  int                       m,
+                                  int                       n,
+                                  int                       k,
+                                  int                       nnz,
+                                  const hipDoubleComplex*   alpha,
+                                  const hipsparseMatDescr_t descrA,
+                                  const hipDoubleComplex*   csrSortedValA,
+                                  const int*                csrSortedRowPtrA,
+                                  const int*                csrSortedColIndA,
+                                  const hipDoubleComplex*   B,
+                                  int                       ldb,
+                                  const hipDoubleComplex*   beta,
+                                  hipDoubleComplex*         C,
+                                  int                       ldc);
 
 /* Description: Matrix-matrix multiplication C = alpha * op(A) * op(B) + beta * C,
    where A is a sparse matrix in CSR storage format, B and C are dense matrices. */
@@ -562,6 +825,42 @@ hipsparseStatus_t hipsparseDcsrmm2(hipsparseHandle_t         handle,
                                    int                       ldb,
                                    const double*             beta,
                                    double*                   C,
+                                   int                       ldc);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCcsrmm2(hipsparseHandle_t         handle,
+                                   hipsparseOperation_t      transA,
+                                   hipsparseOperation_t      transB,
+                                   int                       m,
+                                   int                       n,
+                                   int                       k,
+                                   int                       nnz,
+                                   const hipComplex*         alpha,
+                                   const hipsparseMatDescr_t descrA,
+                                   const hipComplex*         csrSortedValA,
+                                   const int*                csrSortedRowPtrA,
+                                   const int*                csrSortedColIndA,
+                                   const hipComplex*         B,
+                                   int                       ldb,
+                                   const hipComplex*         beta,
+                                   hipComplex*               C,
+                                   int                       ldc);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseZcsrmm2(hipsparseHandle_t         handle,
+                                   hipsparseOperation_t      transA,
+                                   hipsparseOperation_t      transB,
+                                   int                       m,
+                                   int                       n,
+                                   int                       k,
+                                   int                       nnz,
+                                   const hipDoubleComplex*   alpha,
+                                   const hipsparseMatDescr_t descrA,
+                                   const hipDoubleComplex*   csrSortedValA,
+                                   const int*                csrSortedRowPtrA,
+                                   const int*                csrSortedColIndA,
+                                   const hipDoubleComplex*   B,
+                                   int                       ldb,
+                                   const hipDoubleComplex*   beta,
+                                   hipDoubleComplex*         C,
                                    int                       ldc);
 
 /* --- Sparse Extra routines --- */
@@ -608,7 +907,6 @@ hipsparseStatus_t hipsparseScsrgemm(hipsparseHandle_t         handle,
                                     float*                    csrValC,
                                     const int*                csrRowPtrC,
                                     int*                      csrColIndC);
-
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDcsrgemm(hipsparseHandle_t         handle,
                                     hipsparseOperation_t      transA,
@@ -628,6 +926,48 @@ hipsparseStatus_t hipsparseDcsrgemm(hipsparseHandle_t         handle,
                                     const int*                csrColIndB,
                                     const hipsparseMatDescr_t descrC,
                                     double*                   csrValC,
+                                    const int*                csrRowPtrC,
+                                    int*                      csrColIndC);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCcsrgemm(hipsparseHandle_t         handle,
+                                    hipsparseOperation_t      transA,
+                                    hipsparseOperation_t      transB,
+                                    int                       m,
+                                    int                       n,
+                                    int                       k,
+                                    const hipsparseMatDescr_t descrA,
+                                    int                       nnzA,
+                                    const hipComplex*         csrValA,
+                                    const int*                csrRowPtrA,
+                                    const int*                csrColIndA,
+                                    const hipsparseMatDescr_t descrB,
+                                    int                       nnzB,
+                                    const hipComplex*         csrValB,
+                                    const int*                csrRowPtrB,
+                                    const int*                csrColIndB,
+                                    const hipsparseMatDescr_t descrC,
+                                    hipComplex*               csrValC,
+                                    const int*                csrRowPtrC,
+                                    int*                      csrColIndC);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseZcsrgemm(hipsparseHandle_t         handle,
+                                    hipsparseOperation_t      transA,
+                                    hipsparseOperation_t      transB,
+                                    int                       m,
+                                    int                       n,
+                                    int                       k,
+                                    const hipsparseMatDescr_t descrA,
+                                    int                       nnzA,
+                                    const hipDoubleComplex*   csrValA,
+                                    const int*                csrRowPtrA,
+                                    const int*                csrColIndA,
+                                    const hipsparseMatDescr_t descrB,
+                                    int                       nnzB,
+                                    const hipDoubleComplex*   csrValB,
+                                    const int*                csrRowPtrB,
+                                    const int*                csrColIndB,
+                                    const hipsparseMatDescr_t descrC,
+                                    hipDoubleComplex*         csrValC,
                                     const int*                csrRowPtrC,
                                     int*                      csrColIndC);
 
@@ -654,7 +994,6 @@ hipsparseStatus_t hipsparseScsrgemm2_bufferSizeExt(hipsparseHandle_t         han
                                                    const int*                csrColIndD,
                                                    csrgemm2Info_t            info,
                                                    size_t*                   pBufferSizeInBytes);
-
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDcsrgemm2_bufferSizeExt(hipsparseHandle_t         handle,
                                                    int                       m,
@@ -670,6 +1009,48 @@ hipsparseStatus_t hipsparseDcsrgemm2_bufferSizeExt(hipsparseHandle_t         han
                                                    const int*                csrRowPtrB,
                                                    const int*                csrColIndB,
                                                    const double*             beta,
+                                                   const hipsparseMatDescr_t descrD,
+                                                   int                       nnzD,
+                                                   const int*                csrRowPtrD,
+                                                   const int*                csrColIndD,
+                                                   csrgemm2Info_t            info,
+                                                   size_t*                   pBufferSizeInBytes);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCcsrgemm2_bufferSizeExt(hipsparseHandle_t         handle,
+                                                   int                       m,
+                                                   int                       n,
+                                                   int                       k,
+                                                   const hipComplex*         alpha,
+                                                   const hipsparseMatDescr_t descrA,
+                                                   int                       nnzA,
+                                                   const int*                csrRowPtrA,
+                                                   const int*                csrColIndA,
+                                                   const hipsparseMatDescr_t descrB,
+                                                   int                       nnzB,
+                                                   const int*                csrRowPtrB,
+                                                   const int*                csrColIndB,
+                                                   const hipComplex*         beta,
+                                                   const hipsparseMatDescr_t descrD,
+                                                   int                       nnzD,
+                                                   const int*                csrRowPtrD,
+                                                   const int*                csrColIndD,
+                                                   csrgemm2Info_t            info,
+                                                   size_t*                   pBufferSizeInBytes);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseZcsrgemm2_bufferSizeExt(hipsparseHandle_t         handle,
+                                                   int                       m,
+                                                   int                       n,
+                                                   int                       k,
+                                                   const hipDoubleComplex*   alpha,
+                                                   const hipsparseMatDescr_t descrA,
+                                                   int                       nnzA,
+                                                   const int*                csrRowPtrA,
+                                                   const int*                csrColIndA,
+                                                   const hipsparseMatDescr_t descrB,
+                                                   int                       nnzB,
+                                                   const int*                csrRowPtrB,
+                                                   const int*                csrColIndB,
+                                                   const hipDoubleComplex*   beta,
                                                    const hipsparseMatDescr_t descrD,
                                                    int                       nnzD,
                                                    const int*                csrRowPtrD,
@@ -728,7 +1109,6 @@ hipsparseStatus_t hipsparseScsrgemm2(hipsparseHandle_t         handle,
                                      int*                      csrColIndC,
                                      const csrgemm2Info_t      info,
                                      void*                     pBuffer);
-
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDcsrgemm2(hipsparseHandle_t         handle,
                                      int                       m,
@@ -757,6 +1137,62 @@ hipsparseStatus_t hipsparseDcsrgemm2(hipsparseHandle_t         handle,
                                      int*                      csrColIndC,
                                      const csrgemm2Info_t      info,
                                      void*                     pBuffer);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCcsrgemm2(hipsparseHandle_t         handle,
+                                     int                       m,
+                                     int                       n,
+                                     int                       k,
+                                     const hipComplex*         alpha,
+                                     const hipsparseMatDescr_t descrA,
+                                     int                       nnzA,
+                                     const hipComplex*         csrValA,
+                                     const int*                csrRowPtrA,
+                                     const int*                csrColIndA,
+                                     const hipsparseMatDescr_t descrB,
+                                     int                       nnzB,
+                                     const hipComplex*         csrValB,
+                                     const int*                csrRowPtrB,
+                                     const int*                csrColIndB,
+                                     const hipComplex*         beta,
+                                     const hipsparseMatDescr_t descrD,
+                                     int                       nnzD,
+                                     const hipComplex*         csrValD,
+                                     const int*                csrRowPtrD,
+                                     const int*                csrColIndD,
+                                     const hipsparseMatDescr_t descrC,
+                                     hipComplex*               csrValC,
+                                     const int*                csrRowPtrC,
+                                     int*                      csrColIndC,
+                                     const csrgemm2Info_t      info,
+                                     void*                     pBuffer);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseZcsrgemm2(hipsparseHandle_t         handle,
+                                     int                       m,
+                                     int                       n,
+                                     int                       k,
+                                     const hipDoubleComplex*   alpha,
+                                     const hipsparseMatDescr_t descrA,
+                                     int                       nnzA,
+                                     const hipDoubleComplex*   csrValA,
+                                     const int*                csrRowPtrA,
+                                     const int*                csrColIndA,
+                                     const hipsparseMatDescr_t descrB,
+                                     int                       nnzB,
+                                     const hipDoubleComplex*   csrValB,
+                                     const int*                csrRowPtrB,
+                                     const int*                csrColIndB,
+                                     const hipDoubleComplex*   beta,
+                                     const hipsparseMatDescr_t descrD,
+                                     int                       nnzD,
+                                     const hipDoubleComplex*   csrValD,
+                                     const int*                csrRowPtrD,
+                                     const int*                csrColIndD,
+                                     const hipsparseMatDescr_t descrC,
+                                     hipDoubleComplex*         csrValC,
+                                     const int*                csrRowPtrC,
+                                     int*                      csrColIndC,
+                                     const csrgemm2Info_t      info,
+                                     void*                     pBuffer);
 
 /* --- Preconditioners --- */
 
@@ -776,13 +1212,32 @@ hipsparseStatus_t hipsparseScsrilu02_bufferSize(hipsparseHandle_t         handle
                                                 const int*                csrSortedColIndA,
                                                 csrilu02Info_t            info,
                                                 int*                      pBufferSizeInBytes);
-
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDcsrilu02_bufferSize(hipsparseHandle_t         handle,
                                                 int                       m,
                                                 int                       nnz,
                                                 const hipsparseMatDescr_t descrA,
                                                 double*                   csrSortedValA,
+                                                const int*                csrSortedRowPtrA,
+                                                const int*                csrSortedColIndA,
+                                                csrilu02Info_t            info,
+                                                int*                      pBufferSizeInBytes);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCcsrilu02_bufferSize(hipsparseHandle_t         handle,
+                                                int                       m,
+                                                int                       nnz,
+                                                const hipsparseMatDescr_t descrA,
+                                                hipComplex*               csrSortedValA,
+                                                const int*                csrSortedRowPtrA,
+                                                const int*                csrSortedColIndA,
+                                                csrilu02Info_t            info,
+                                                int*                      pBufferSizeInBytes);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseZcsrilu02_bufferSize(hipsparseHandle_t         handle,
+                                                int                       m,
+                                                int                       nnz,
+                                                const hipsparseMatDescr_t descrA,
+                                                hipDoubleComplex*         csrSortedValA,
                                                 const int*                csrSortedRowPtrA,
                                                 const int*                csrSortedColIndA,
                                                 csrilu02Info_t            info,
@@ -798,13 +1253,32 @@ hipsparseStatus_t hipsparseScsrilu02_bufferSizeExt(hipsparseHandle_t         han
                                                    const int*                csrSortedColIndA,
                                                    csrilu02Info_t            info,
                                                    size_t*                   pBufferSize);
-
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDcsrilu02_bufferSizeExt(hipsparseHandle_t         handle,
                                                    int                       m,
                                                    int                       nnz,
                                                    const hipsparseMatDescr_t descrA,
                                                    double*                   csrSortedValA,
+                                                   const int*                csrSortedRowPtrA,
+                                                   const int*                csrSortedColIndA,
+                                                   csrilu02Info_t            info,
+                                                   size_t*                   pBufferSize);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCcsrilu02_bufferSizeExt(hipsparseHandle_t         handle,
+                                                   int                       m,
+                                                   int                       nnz,
+                                                   const hipsparseMatDescr_t descrA,
+                                                   hipComplex*               csrSortedValA,
+                                                   const int*                csrSortedRowPtrA,
+                                                   const int*                csrSortedColIndA,
+                                                   csrilu02Info_t            info,
+                                                   size_t*                   pBufferSize);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseZcsrilu02_bufferSizeExt(hipsparseHandle_t         handle,
+                                                   int                       m,
+                                                   int                       nnz,
+                                                   const hipsparseMatDescr_t descrA,
+                                                   hipDoubleComplex*         csrSortedValA,
                                                    const int*                csrSortedRowPtrA,
                                                    const int*                csrSortedColIndA,
                                                    csrilu02Info_t            info,
@@ -821,13 +1295,34 @@ hipsparseStatus_t hipsparseScsrilu02_analysis(hipsparseHandle_t         handle,
                                               csrilu02Info_t            info,
                                               hipsparseSolvePolicy_t    policy,
                                               void*                     pBuffer);
-
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDcsrilu02_analysis(hipsparseHandle_t         handle,
                                               int                       m,
                                               int                       nnz,
                                               const hipsparseMatDescr_t descrA,
                                               const double*             csrSortedValA,
+                                              const int*                csrSortedRowPtrA,
+                                              const int*                csrSortedColIndA,
+                                              csrilu02Info_t            info,
+                                              hipsparseSolvePolicy_t    policy,
+                                              void*                     pBuffer);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCcsrilu02_analysis(hipsparseHandle_t         handle,
+                                              int                       m,
+                                              int                       nnz,
+                                              const hipsparseMatDescr_t descrA,
+                                              const hipComplex*         csrSortedValA,
+                                              const int*                csrSortedRowPtrA,
+                                              const int*                csrSortedColIndA,
+                                              csrilu02Info_t            info,
+                                              hipsparseSolvePolicy_t    policy,
+                                              void*                     pBuffer);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseZcsrilu02_analysis(hipsparseHandle_t         handle,
+                                              int                       m,
+                                              int                       nnz,
+                                              const hipsparseMatDescr_t descrA,
+                                              const hipDoubleComplex*   csrSortedValA,
                                               const int*                csrSortedRowPtrA,
                                               const int*                csrSortedColIndA,
                                               csrilu02Info_t            info,
@@ -847,13 +1342,38 @@ hipsparseStatus_t hipsparseScsrilu02(hipsparseHandle_t         handle,
                                      csrilu02Info_t         info,
                                      hipsparseSolvePolicy_t policy,
                                      void*                  pBuffer);
-
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDcsrilu02(hipsparseHandle_t         handle,
                                      int                       m,
                                      int                       nnz,
                                      const hipsparseMatDescr_t descrA,
                                      double*                   csrSortedValA_valM,
+                                     /* matrix A values are updated inplace
+                                        to be the preconditioner M values */
+                                     const int*             csrSortedRowPtrA,
+                                     const int*             csrSortedColIndA,
+                                     csrilu02Info_t         info,
+                                     hipsparseSolvePolicy_t policy,
+                                     void*                  pBuffer);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCcsrilu02(hipsparseHandle_t         handle,
+                                     int                       m,
+                                     int                       nnz,
+                                     const hipsparseMatDescr_t descrA,
+                                     hipComplex*               csrSortedValA_valM,
+                                     /* matrix A values are updated inplace
+                                        to be the preconditioner M values */
+                                     const int*             csrSortedRowPtrA,
+                                     const int*             csrSortedColIndA,
+                                     csrilu02Info_t         info,
+                                     hipsparseSolvePolicy_t policy,
+                                     void*                  pBuffer);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseZcsrilu02(hipsparseHandle_t         handle,
+                                     int                       m,
+                                     int                       nnz,
+                                     const hipsparseMatDescr_t descrA,
+                                     hipDoubleComplex*         csrSortedValA_valM,
                                      /* matrix A values are updated inplace
                                         to be the preconditioner M values */
                                      const int*             csrSortedRowPtrA,
@@ -889,7 +1409,6 @@ hipsparseStatus_t hipsparseScsr2csc(hipsparseHandle_t    handle,
                                     int*                 cscSortedColPtr,
                                     hipsparseAction_t    copyValues,
                                     hipsparseIndexBase_t idxBase);
-
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDcsr2csc(hipsparseHandle_t    handle,
                                     int                  m,
@@ -903,6 +1422,32 @@ hipsparseStatus_t hipsparseDcsr2csc(hipsparseHandle_t    handle,
                                     int*                 cscSortedColPtr,
                                     hipsparseAction_t    copyValues,
                                     hipsparseIndexBase_t idxBase);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCcsr2csc(hipsparseHandle_t    handle,
+                                    int                  m,
+                                    int                  n,
+                                    int                  nnz,
+                                    const hipComplex*    csrSortedVal,
+                                    const int*           csrSortedRowPtr,
+                                    const int*           csrSortedColInd,
+                                    hipComplex*          cscSortedVal,
+                                    int*                 cscSortedRowInd,
+                                    int*                 cscSortedColPtr,
+                                    hipsparseAction_t    copyValues,
+                                    hipsparseIndexBase_t idxBase);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseZcsr2csc(hipsparseHandle_t       handle,
+                                    int                     m,
+                                    int                     n,
+                                    int                     nnz,
+                                    const hipDoubleComplex* csrSortedVal,
+                                    const int*              csrSortedRowPtr,
+                                    const int*              csrSortedColInd,
+                                    hipDoubleComplex*       cscSortedVal,
+                                    int*                    cscSortedRowInd,
+                                    int*                    cscSortedColPtr,
+                                    hipsparseAction_t       copyValues,
+                                    hipsparseIndexBase_t    idxBase);
 
 /* Description: This routine converts a sparse matrix in CSR storage format
    to a sparse matrix in HYB storage format. */
@@ -923,6 +1468,28 @@ hipsparseStatus_t hipsparseDcsr2hyb(hipsparseHandle_t         handle,
                                     int                       n,
                                     const hipsparseMatDescr_t descrA,
                                     const double*             csrSortedValA,
+                                    const int*                csrSortedRowPtrA,
+                                    const int*                csrSortedColIndA,
+                                    hipsparseHybMat_t         hybA,
+                                    int                       userEllWidth,
+                                    hipsparseHybPartition_t   partitionType);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCcsr2hyb(hipsparseHandle_t         handle,
+                                    int                       m,
+                                    int                       n,
+                                    const hipsparseMatDescr_t descrA,
+                                    const hipComplex*         csrSortedValA,
+                                    const int*                csrSortedRowPtrA,
+                                    const int*                csrSortedColIndA,
+                                    hipsparseHybMat_t         hybA,
+                                    int                       userEllWidth,
+                                    hipsparseHybPartition_t   partitionType);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseZcsr2hyb(hipsparseHandle_t         handle,
+                                    int                       m,
+                                    int                       n,
+                                    const hipsparseMatDescr_t descrA,
+                                    const hipDoubleComplex*   csrSortedValA,
                                     const int*                csrSortedRowPtrA,
                                     const int*                csrSortedColIndA,
                                     hipsparseHybMat_t         hybA,

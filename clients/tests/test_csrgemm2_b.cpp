@@ -136,6 +136,22 @@ TEST_P(parameterized_csrgemm2_b, csrgemm2_b_double)
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
+TEST_P(parameterized_csrgemm2_b, csrgemm2_b_float_complex)
+{
+    Arguments arg = setup_csrgemm2_b_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_csrgemm2_b<hipComplex>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+
+TEST_P(parameterized_csrgemm2_b, csrgemm2_b_double_complex)
+{
+    Arguments arg = setup_csrgemm2_b_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_csrgemm2_b<hipDoubleComplex>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+
 TEST_P(parameterized_csrgemm2_b_bin, csrgemm2_b_bin_float)
 {
     Arguments arg = setup_csrgemm2_b_arguments(GetParam());

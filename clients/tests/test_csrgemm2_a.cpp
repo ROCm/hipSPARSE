@@ -33,7 +33,7 @@ typedef hipsparseIndexBase_t base;
 typedef std::tuple<int, int, int, double, base, base, base> csrgemm2_a_tuple;
 typedef std::tuple<double, base, base, base, std::string>   csrgemm2_a_bin_tuple;
 
-double csrgemm2_a_alpha_range[] = {0.0, 2.7};
+double csrgemm2_a_alpha_range[] = {0.0, 2.0};
 
 int csrgemm2_a_M_range[] = {-1, 0, 50, 647, 1799};
 int csrgemm2_a_N_range[] = {-1, 0, 13, 523, 3712};
@@ -139,6 +139,22 @@ TEST_P(parameterized_csrgemm2_a, csrgemm2_a_double)
     Arguments arg = setup_csrgemm2_a_arguments(GetParam());
 
     hipsparseStatus_t status = testing_csrgemm2_a<double>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+
+TEST_P(parameterized_csrgemm2_a, csrgemm2_a_float_complex)
+{
+    Arguments arg = setup_csrgemm2_a_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_csrgemm2_a<hipComplex>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+
+TEST_P(parameterized_csrgemm2_a, csrgemm2_a_double_complex)
+{
+    Arguments arg = setup_csrgemm2_a_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_csrgemm2_a<hipDoubleComplex>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 

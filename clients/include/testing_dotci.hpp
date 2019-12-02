@@ -1,5 +1,5 @@
 /* ************************************************************************
- * Copyright (c) 2018 Advanced Micro Devices, Inc.
+ * Copyright (c) 2019 Advanced Micro Devices, Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,8 +22,8 @@
  * ************************************************************************ */
 
 #pragma once
-#ifndef TESTING_AXPYI_HPP
-#define TESTING_AXPYI_HPP
+#ifndef TESTING_DOTCI_HPP
+#define TESTING_DOTCI_HPP
 
 #include "hipsparse.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
@@ -36,7 +36,7 @@ using namespace hipsparse;
 using namespace hipsparse_test;
 
 template <typename T>
-void testing_axpyi_bad_arg(void)
+void testing_dotci_bad_arg(void)
 {
 #ifdef __HIP_PLATFORM_NVCC__
     // do not test for bad args
@@ -44,7 +44,6 @@ void testing_axpyi_bad_arg(void)
 #endif
     int nnz       = 100;
     int safe_size = 100;
-    T   alpha     = 0.6;
 
     hipsparseIndexBase_t idx_base = HIPSPARSE_INDEX_BASE_ZERO;
     hipsparseStatus_t    status;
@@ -52,64 +51,79 @@ void testing_axpyi_bad_arg(void)
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
-    auto dxVal_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-    auto dxInd_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-    auto dy_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+    auto dx_val_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+    auto dx_ind_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+    auto dy_managed     = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
 
-    T*   dxVal = (T*)dxVal_managed.get();
-    int* dxInd = (int*)dxInd_managed.get();
-    T*   dy    = (T*)dy_managed.get();
+    T*   dx_val = (T*)dx_val_managed.get();
+    int* dx_ind = (int*)dx_ind_managed.get();
+    T*   dy     = (T*)dy_managed.get();
 
-    if(!dxInd || !dxVal || !dy)
+    if(!dx_ind || !dx_val || !dy)
     {
         PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
         return;
     }
 
-    // testing for(nullptr == dxInd)
-    {
-        int* dxInd_null = nullptr;
+    T result;
 
-        status = hipsparseXaxpyi(handle, nnz, &alpha, dxVal, dxInd_null, dy, idx_base);
-        verify_hipsparse_status_invalid_pointer(status, "Error: xInd is nullptr");
-    }
-    // testing for(nullptr == dxVal)
+    // testing for (nullptr == dx_val)
     {
-        T* dxVal_null = nullptr;
+        T* dx_val_null = nullptr;
 
-        status = hipsparseXaxpyi(handle, nnz, &alpha, dxVal_null, dxInd, dy, idx_base);
-        verify_hipsparse_status_invalid_pointer(status, "Error: xVal is nullptr");
+        status = hipsparseXdotci(handle, nnz, dx_val_null, dx_ind, dy, &result, idx_base);
+        verify_hipsparse_status_invalid_pointer(status, "Error: x_val is nullptr");
     }
-    // testing for(nullptr == dy)
+
+    // testing for (nullptr == dx_ind)
+    {
+        int* dx_ind_null = nullptr;
+
+        status = hipsparseXdotci(handle, nnz, dx_val, dx_ind_null, dy, &result, idx_base);
+        verify_hipsparse_status_invalid_pointer(status, "Error: x_ind is nullptr");
+    }
+
+    // testing for (nullptr == dy)
     {
         T* dy_null = nullptr;
 
-        status = hipsparseXaxpyi(handle, nnz, &alpha, dxVal, dxInd, dy_null, idx_base);
+        status = hipsparseXdotci(handle, nnz, dx_val, dx_ind, dy_null, &result, idx_base);
         verify_hipsparse_status_invalid_pointer(status, "Error: y is nullptr");
     }
-    // testing for(nullptr == d_alpha)
-    {
-        T* d_alpha_null = nullptr;
 
-        status = hipsparseXaxpyi(handle, nnz, d_alpha_null, dxVal, dxInd, dy, idx_base);
-        verify_hipsparse_status_invalid_pointer(status, "Error: alpha is nullptr");
+    // testing for (nullptr == result)
+    {
+        T* result_null = nullptr;
+
+        status = hipsparseXdotci(handle, nnz, dx_val, dx_ind, dy, result_null, idx_base);
+        verify_hipsparse_status_invalid_pointer(status, "Error: result is nullptr");
     }
+
     // testing for(nullptr == handle)
     {
         hipsparseHandle_t handle_null = nullptr;
 
-        status = hipsparseXaxpyi(handle_null, nnz, &alpha, dxVal, dxInd, dy, idx_base);
+        status = hipsparseXdotci(handle_null, nnz, dx_val, dx_ind, dy, &result, idx_base);
         verify_hipsparse_status_invalid_handle(status);
     }
 }
 
+static inline hipComplex testing_conj(hipComplex x)
+{
+    return make_DataType<hipComplex>(x.x, -x.y);
+}
+
+static inline hipDoubleComplex testing_conj(hipDoubleComplex x)
+{
+    return make_DataType<hipDoubleComplex>(x.x, -x.y);
+}
+
 template <typename T>
-hipsparseStatus_t testing_axpyi(Arguments argus)
+hipsparseStatus_t testing_dotci(Arguments argus)
 {
     int                  N         = argus.N;
     int                  nnz       = argus.nnz;
     int                  safe_size = 100;
-    T                    h_alpha   = make_DataType<T>(argus.alpha);
     hipsparseIndexBase_t idx_base  = argus.idx_base;
     hipsparseStatus_t    status;
 
@@ -123,25 +137,27 @@ hipsparseStatus_t testing_axpyi(Arguments argus)
         // Do not test args in cusparse
         return HIPSPARSE_STATUS_SUCCESS;
 #endif
-        auto dxInd_managed
+        auto dx_ind_managed
             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto dxVal_managed
+        auto dx_val_managed
             = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
         auto dy_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
 
-        int* dxInd = (int*)dxInd_managed.get();
-        T*   dxVal = (T*)dxVal_managed.get();
-        T*   dy    = (T*)dy_managed.get();
+        int* dx_ind = (int*)dx_ind_managed.get();
+        T*   dx_val = (T*)dx_val_managed.get();
+        T*   dy     = (T*)dy_managed.get();
 
-        if(!dxInd || !dxVal || !dy)
+        if(!dx_ind || !dx_val || !dy)
         {
             verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                            "!dxInd || !dxVal || !dy");
+                                            "!dx_ind || !dx_val || !dy");
             return HIPSPARSE_STATUS_ALLOC_FAILED;
         }
 
+        T result;
+
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
-        status = hipsparseXaxpyi(handle, nnz, &h_alpha, dxVal, dxInd, dy, idx_base);
+        status = hipsparseXdotci(handle, nnz, dx_val, dx_ind, dy, &result, idx_base);
 
         if(nnz < 0)
         {
@@ -156,84 +172,76 @@ hipsparseStatus_t testing_axpyi(Arguments argus)
     }
 
     // Host structures
-    std::vector<int> hxInd(nnz);
-    std::vector<T>   hxVal(nnz);
-    std::vector<T>   hy_1(N);
-    std::vector<T>   hy_2(N);
-    std::vector<T>   hy_gold(N);
+    std::vector<int> hx_ind(nnz);
+    std::vector<T>   hx_val(nnz);
+    std::vector<T>   hy(N);
+
+    T hresult_1;
+    T hresult_2;
+    T hresult_gold;
 
     // Initial Data on CPU
     srand(12345ULL);
-    hipsparseInitIndex(hxInd.data(), nnz, 1, N);
-    hipsparseInit<T>(hxVal, 1, nnz);
-    hipsparseInit<T>(hy_1, 1, N);
-
-    // copy vector is easy in STL; hy_gold = hx: save a copy in hy_gold which will be output of CPU
-    hy_2    = hy_1;
-    hy_gold = hy_1;
+    hipsparseInitIndex(hx_ind.data(), nnz, 1, N);
+    hipsparseInit<T>(hx_val, 1, nnz);
+    hipsparseInit<T>(hy, 1, N);
 
     // allocate memory on device
-    auto dxInd_managed   = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
-    auto dxVal_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
-    auto dy_1_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * N), device_free};
-    auto dy_2_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * N), device_free};
-    auto d_alpha_managed = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
+    auto dx_ind_managed    = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
+    auto dx_val_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
+    auto dy_managed        = hipsparse_unique_ptr{device_malloc(sizeof(T) * N), device_free};
+    auto dresult_2_managed = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
 
-    int* dxInd   = (int*)dxInd_managed.get();
-    T*   dxVal   = (T*)dxVal_managed.get();
-    T*   dy_1    = (T*)dy_1_managed.get();
-    T*   dy_2    = (T*)dy_2_managed.get();
-    T*   d_alpha = (T*)d_alpha_managed.get();
+    int* dx_ind    = (int*)dx_ind_managed.get();
+    T*   dx_val    = (T*)dx_val_managed.get();
+    T*   dy        = (T*)dy_managed.get();
+    T*   dresult_2 = (T*)dresult_2_managed.get();
 
-    if(!dxInd || !dxVal || !dy_1 || !dy_2 || !d_alpha)
+    if(!dx_ind || !dx_val || !dy || !dresult_2)
     {
         verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!dxInd || !dxVal || !dy_1 || !dy_2 || !d_alpha");
+                                        "!dx_ind || !dx_val || !dy || !dresult_2");
         return HIPSPARSE_STATUS_ALLOC_FAILED;
     }
 
     // copy data from CPU to device
-    CHECK_HIP_ERROR(hipMemcpy(dxInd, hxInd.data(), sizeof(int) * nnz, hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(hipMemcpy(dxVal, hxVal.data(), sizeof(T) * nnz, hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(hipMemcpy(dy_1, hy_1.data(), sizeof(T) * N, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(dx_ind, hx_ind.data(), sizeof(int) * nnz, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(dx_val, hx_val.data(), sizeof(T) * nnz, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(dy, hy.data(), sizeof(T) * N, hipMemcpyHostToDevice));
 
     if(argus.unit_check)
     {
-        CHECK_HIP_ERROR(hipMemcpy(dy_2, hy_2.data(), sizeof(T) * N, hipMemcpyHostToDevice));
-        CHECK_HIP_ERROR(hipMemcpy(d_alpha, &h_alpha, sizeof(T), hipMemcpyHostToDevice));
-
         // ROCSPARSE pointer mode host
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
-        CHECK_HIPSPARSE_ERROR(hipsparseXaxpyi(handle, nnz, &h_alpha, dxVal, dxInd, dy_1, idx_base));
+        CHECK_HIPSPARSE_ERROR(
+            hipsparseXdotci(handle, nnz, dx_val, dx_ind, dy, &hresult_1, idx_base));
 
         // ROCSPARSE pointer mode device
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
-        CHECK_HIPSPARSE_ERROR(hipsparseXaxpyi(handle, nnz, d_alpha, dxVal, dxInd, dy_2, idx_base));
+        CHECK_HIPSPARSE_ERROR(
+            hipsparseXdotci(handle, nnz, dx_val, dx_ind, dy, dresult_2, idx_base));
 
-        // copy output from device to CPU
-        CHECK_HIP_ERROR(hipMemcpy(hy_1.data(), dy_1, sizeof(T) * N, hipMemcpyDeviceToHost));
-        CHECK_HIP_ERROR(hipMemcpy(hy_2.data(), dy_2, sizeof(T) * N, hipMemcpyDeviceToHost));
+        // copy output from device to CPU^
+        CHECK_HIP_ERROR(hipMemcpy(&hresult_2, dresult_2, sizeof(T), hipMemcpyDeviceToHost));
 
         // CPU
         double cpu_time_used = get_time_us();
 
+        hresult_gold = make_DataType<T>(0.0);
         for(int i = 0; i < nnz; ++i)
         {
-            hy_gold[hxInd[i] - idx_base] = hy_gold[hxInd[i] - idx_base] + h_alpha * hxVal[i];
+            hresult_gold = hresult_gold + testing_conj(hx_val[i]) * hy[hx_ind[i] - idx_base];
         }
 
         cpu_time_used = get_time_us() - cpu_time_used;
 
         // enable unit check, notice unit check is not invasive, but norm check is,
         // unit check and norm check can not be interchanged their order
-        if(argus.unit_check)
-        {
-            unit_check_general(1, N, 1, hy_gold.data(), hy_1.data());
-            unit_check_general(1, N, 1, hy_gold.data(), hy_2.data());
-        }
+        unit_check_general(1, 1, 1, &hresult_gold, &hresult_1);
+        unit_check_general(1, 1, 1, &hresult_gold, &hresult_2);
     }
 
     return HIPSPARSE_STATUS_SUCCESS;
 }
 
-#endif // TESTING_AXPYI_HPP
+#endif // TESTING_DOTCI_HPP
