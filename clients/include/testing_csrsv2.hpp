@@ -745,9 +745,11 @@ hipsparseStatus_t testing_csrsv2(Arguments argus)
         double cpu_time_used = get_time_us();
 
         int position_gold;
-        if(fill_mode == HIPSPARSE_FILL_MODE_LOWER)
+        if((fill_mode == HIPSPARSE_FILL_MODE_LOWER && trans == HIPSPARSE_OPERATION_NON_TRANSPOSE)
+           || fill_mode == HIPSPARSE_FILL_MODE_UPPER && trans == HIPSPARSE_OPERATION_TRANSPOSE)
         {
-            position_gold = lsolve(m,
+            position_gold = lsolve(trans,
+                                   m,
                                    hcsr_row_ptr.data(),
                                    hcsr_col_ind.data(),
                                    hcsr_val.data(),
@@ -760,7 +762,8 @@ hipsparseStatus_t testing_csrsv2(Arguments argus)
         }
         else
         {
-            position_gold = usolve(m,
+            position_gold = usolve(trans,
+                                   m,
                                    hcsr_row_ptr.data(),
                                    hcsr_col_ind.data(),
                                    hcsr_val.data(),

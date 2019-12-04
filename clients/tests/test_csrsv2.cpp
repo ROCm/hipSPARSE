@@ -38,12 +38,12 @@ typedef hipsparseFillMode_t  fill;
 typedef std::tuple<int, double, base, op, diag, fill>         csrsv2_tuple;
 typedef std::tuple<double, base, op, diag, fill, std::string> csrsv2_bin_tuple;
 
-int csrsv2_M_range[] = {-1, 0, 50, 647};
+int csrsv2_M_range[] = {-1, 0, 647};
 
-double csrsv2_alpha_range[] = {1.0, 2.3, -3.7};
+double csrsv2_alpha_range[] = {1.0, 2.3};
 
 base csrsv2_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
-op   csrsv2_op_range[]      = {HIPSPARSE_OPERATION_NON_TRANSPOSE};
+op   csrsv2_op_range[]      = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPERATION_TRANSPOSE};
 diag csrsv2_diag_range[]    = {HIPSPARSE_DIAG_TYPE_NON_UNIT};
 fill csrsv2_fill_range[]    = {HIPSPARSE_FILL_MODE_LOWER, HIPSPARSE_FILL_MODE_UPPER};
 
