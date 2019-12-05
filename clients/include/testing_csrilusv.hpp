@@ -347,7 +347,8 @@ hipsparseStatus_t testing_csrilusv(Arguments argus)
     hipDeviceProp_t prop;
     hipGetDeviceProperties(&prop, 0);
 
-    position_gold = lsolve(m,
+    position_gold = lsolve(HIPSPARSE_OPERATION_NON_TRANSPOSE,
+                           m,
                            hcsr_row_ptr.data(),
                            hcsr_col_ind.data(),
                            hcsr_val.data(),
@@ -434,7 +435,8 @@ hipsparseStatus_t testing_csrilusv(Arguments argus)
     pivot_status_2 = hipsparseXcsrsv2_zeroPivot(handle, info_U, d_position);
 
     // Host csrsv
-    position_gold = usolve(m,
+    position_gold = usolve(HIPSPARSE_OPERATION_NON_TRANSPOSE,
+                           m,
                            hcsr_row_ptr.data(),
                            hcsr_col_ind.data(),
                            hcsr_val.data(),

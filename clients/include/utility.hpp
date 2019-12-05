@@ -871,7 +871,8 @@ int csrilu0(int m, const int* ptr, const int* col, T* val, hipsparseIndexBase_t 
 /* ============================================================================================ */
 /*! \brief  Sparse triangular lower solve using CSR storage format. */
 template <typename T>
-int lsolve(int                  m,
+int lsolve(hipsparseOperation_t trans,
+           int                  m,
            const int*           ptr,
            const int*           col,
            const T*             val,
@@ -882,6 +883,31 @@ int lsolve(int                  m,
            hipsparseDiagType_t  diag_type,
            unsigned int         wf_size)
 {
+    const int* csr_row_ptr = ptr;
+    const int* csr_col_ind = col;
+    const T*   csr_val     = val;
+
+    std::vector<int> vptr;
+    std::vector<int> vcol;
+    std::vector<T>   vval;
+
+    if(trans == HIPSPARSE_OPERATION_TRANSPOSE)
+    {
+        int nnz = ptr[m] - idx_base;
+
+        vptr.resize(m + 1);
+        vcol.resize(nnz);
+        vval.resize(nnz);
+
+        // Transpose
+        transpose(
+            m, m, nnz, ptr, col, val, vptr.data(), vcol.data(), vval.data(), idx_base, idx_base);
+
+        csr_row_ptr = vptr.data();
+        csr_col_ind = vcol.data();
+        csr_val     = vval.data();
+    }
+
     int            pivot = std::numeric_limits<int>::max();
     std::vector<T> temp(wf_size);
 
@@ -891,8 +917,8 @@ int lsolve(int                  m,
         temp[0] = alpha * x[i];
 
         int diag      = -1;
-        int row_begin = ptr[i] - idx_base;
-        int row_end   = ptr[i + 1] - idx_base;
+        int row_begin = csr_row_ptr[i] - idx_base;
+        int row_end   = csr_row_ptr[i + 1] - idx_base;
 
         T diag_val = make_DataType<T>(0.0);
 
@@ -908,13 +934,13 @@ int lsolve(int                  m,
                     break;
                 }
 
-                int col_j = col[j] - idx_base;
-                T   val_j = val[j];
+                int col_j = csr_col_ind[j] - idx_base;
+                T   val_j = csr_val[j];
 
                 if(col_j < i)
                 {
                     // Lower part
-                    temp[k] = testing_fma(-val[j], y[col_j], temp[k]);
+                    temp[k] = testing_fma(-csr_val[j], y[col_j], temp[k]);
                 }
                 else if(col_j == i)
                 {
@@ -976,7 +1002,8 @@ int lsolve(int                  m,
 /* ============================================================================================ */
 /*! \brief  Sparse triangular upper solve using CSR storage format. */
 template <typename T>
-int usolve(int                  m,
+int usolve(hipsparseOperation_t trans,
+           int                  m,
            const int*           ptr,
            const int*           col,
            const T*             val,
@@ -987,6 +1014,31 @@ int usolve(int                  m,
            hipsparseDiagType_t  diag_type,
            unsigned int         wf_size)
 {
+    const int* csr_row_ptr = ptr;
+    const int* csr_col_ind = col;
+    const T*   csr_val     = val;
+
+    std::vector<int> vptr;
+    std::vector<int> vcol;
+    std::vector<T>   vval;
+
+    if(trans == HIPSPARSE_OPERATION_TRANSPOSE)
+    {
+        int nnz = ptr[m] - idx_base;
+
+        vptr.resize(m + 1);
+        vcol.resize(nnz);
+        vval.resize(nnz);
+
+        // Transpose
+        transpose(
+            m, m, nnz, ptr, col, val, vptr.data(), vcol.data(), vval.data(), idx_base, idx_base);
+
+        csr_row_ptr = vptr.data();
+        csr_col_ind = vcol.data();
+        csr_val     = vval.data();
+    }
+
     int            pivot = std::numeric_limits<int>::max();
     std::vector<T> temp(wf_size);
 
@@ -996,8 +1048,8 @@ int usolve(int                  m,
         temp[0] = alpha * x[i];
 
         int diag      = -1;
-        int row_begin = ptr[i] - idx_base;
-        int row_end   = ptr[i + 1] - idx_base;
+        int row_begin = csr_row_ptr[i] - idx_base;
+        int row_end   = csr_row_ptr[i + 1] - idx_base;
 
         T diag_val = make_DataType<T>(0.0);
 
@@ -1013,8 +1065,8 @@ int usolve(int                  m,
                     break;
                 }
 
-                int col_j = col[j] - idx_base;
-                T   val_j = val[j];
+                int col_j = csr_col_ind[j] - idx_base;
+                T   val_j = csr_val[j];
 
                 if(col_j < i)
                 {
@@ -1042,7 +1094,7 @@ int usolve(int                  m,
                 else
                 {
                     // Upper part
-                    temp[k] = testing_fma(-val[j], y[col_j], temp[k]);
+                    temp[k] = testing_fma(-csr_val[j], y[col_j], temp[k]);
                 }
             }
         }
