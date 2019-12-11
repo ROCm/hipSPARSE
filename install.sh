@@ -217,10 +217,15 @@ supported_distro
 # #################################################
 install_package=false
 install_dependencies=false
-install_prefix=hipsparse-install
 build_clients=false
 build_cuda=false
 build_release=true
+install_prefix=hipsparse-install
+
+rocm_path=/opt/rocm
+if ! [ -z ${ROCM_PATH+x} ]; then
+    rocm_path=${ROCM_PATH}
+fi
 
 # #################################################
 # Parameter parsing
@@ -314,7 +319,7 @@ fi
 
 # We append customary rocm path; if user provides custom rocm path in ${path}, our
 # hard-coded path has lesser priority
-export PATH=${PATH}:/opt/rocm/bin
+export PATH=${PATH}:${rocm_path}/bin:/opt/rocm/bin
 
 pushd .
   # #################################################
@@ -338,7 +343,7 @@ pushd .
   fi
 
   # cpack
-  cmake_common_options="${cmake_common_options} -DCPACK_SET_DESTDIR=OFF -DCPACK_PACKAGING_INSTALL_PREFIX=/opt/rocm"
+  cmake_common_options="${cmake_common_options} -DCPACK_SET_DESTDIR=OFF -DCPACK_PACKAGING_INSTALL_PREFIX=${rocm_path}"
 
   # cuda or hip
   if [[ "${build_cuda}" == false ]]; then
@@ -348,7 +353,7 @@ pushd .
   fi
 
   # Build library
-  ${cmake_executable} ${cmake_common_options} ${cmake_client_options} -DCMAKE_INSTALL_PREFIX=hipsparse-install ../..
+  ${cmake_executable} ${cmake_common_options} ${cmake_client_options} -DCMAKE_INSTALL_PREFIX=${install_prefix} -DROCM_PATH=${rocm_path} ../..
   check_exit_code
 
   make -j$(nproc) install

@@ -48,7 +48,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 if(NOT TARGET hipsparse)
-  find_package(hipsparse REQUIRED CONFIG PATHS /opt/rocm/hipsparse)
+  find_package(hipsparse REQUIRED CONFIG PATHS ${ROCM_PATH}/hipsparse /opt/rocm/hipsparse)
 endif()
 
 # Hip headers required of all clients; clients use hip to allocate device memory
