@@ -783,6 +783,32 @@ int read_bin_matrix(const char*          filename,
 /*! \brief  Compute incomplete LU factorization without fill-ins and no pivoting using CSR
  *  matrix storage format.
  */
+static inline float testing_neg(float val)
+{
+    return -val;
+}
+
+static inline double testing_neg(double val)
+{
+    return -val;
+}
+
+static inline hipComplex testing_neg(hipComplex val)
+{
+    hipComplex ret;
+    ret.x = -val.x;
+    ret.y = -val.y;
+    return ret;
+}
+
+static inline hipDoubleComplex testing_neg(hipDoubleComplex val)
+{
+    hipDoubleComplex ret;
+    ret.x = -val.x;
+    ret.y = -val.y;
+    return ret;
+}
+
 template <typename T>
 int csrilu0(int m, const int* ptr, const int* col, T* val, hipsparseIndexBase_t idx_base)
 {
@@ -828,7 +854,7 @@ int csrilu0(int m, const int* ptr, const int* col, T* val, hipsparseIndexBase_t 
                         if(nnz_entries[col[k] - idx_base] != 0)
                         {
                             int idx  = nnz_entries[col[k] - idx_base];
-                            val[idx] = testing_fma(-val[j], val[k], val[idx]);
+                            val[idx] = testing_fma(testing_neg(val[j]), val[k], val[idx]);
                         }
                     }
                 }
