@@ -14,6 +14,7 @@ function display_help()
 #  echo "    [--prefix] Specify an alternate CMAKE_INSTALL_PREFIX for cmake"
   echo "    [-i|--install] install after build"
   echo "    [-d|--dependencies] install build dependencies"
+  echo "    [-r]--relocatable] create a package to support relocatable ROCm"
   echo "    [-c|--clients] build library clients too (combines with -i & -d)"
   echo "    [-g|--debug] -DCMAKE_BUILD_TYPE=Debug (default is =Release)"
   echo "    [--cuda] build library for cuda backend"
@@ -221,11 +222,8 @@ build_clients=false
 build_cuda=false
 build_release=true
 install_prefix=hipsparse-install
-
 rocm_path=/opt/rocm
-if ! [ -z ${ROCM_PATH+x} ]; then
-    rocm_path=${ROCM_PATH}
-fi
+build_relocatable=false
 
 # #################################################
 # Parameter parsing
@@ -234,7 +232,7 @@ fi
 # check if we have a modern version of getopt that can handle whitespace and long parameters
 getopt -T
 if [[ $? -eq 4 ]]; then
-  GETOPT_PARSE=$(getopt --name "${0}" --longoptions help,install,clients,dependencies,debug,cuda --options hicdg -- "$@")
+  GETOPT_PARSE=$(getopt --name "${0}" --longoptions help,install,clients,dependencies,debug,cuda,relocatable --options hicdgr -- "$@")
 else
   echo "Need a new version of getopt"
   exit 1
@@ -262,6 +260,9 @@ while true; do
     -c|--clients)
         build_clients=true
         shift ;;
+    -r|--relocatable)
+        build_relocatable=true
+        shift ;;
     -g|--debug)
         build_release=false
         shift ;;
@@ -277,6 +278,17 @@ while true; do
         ;;
   esac
 done
+
+if [[ "${build_relocatable}" == true ]]; then
+    if ! [ -z ${ROCM_PATH+x} ]; then
+        rocm_path=${ROCM_PATH}
+    fi
+
+    rocm_rpath=" -Wl,--enable-new-dtags -Wl,--rpath,/opt/rocm/lib:/opt/rocm/lib64"
+    if ! [ -z ${ROCM_RPATH+x} ]; then
+        rocm_rpath=" -Wl,--enable-new-dtags -Wl,--rpath,${ROCM_RPATH}"
+    fi
+fi
 
 build_dir=./build
 printf "\033[32mCreating project build directory in: \033[33m${build_dir}\033[0m\n"
@@ -319,7 +331,11 @@ fi
 
 # We append customary rocm path; if user provides custom rocm path in ${path}, our
 # hard-coded path has lesser priority
-export PATH=${PATH}:${rocm_path}/bin:/opt/rocm/bin
+if [[ "${build_relocatable}" == true ]]; then
+    export PATH=${rocm_path}/bin:${PATH}
+else
+    export PATH=${PATH}:/opt/rocm/bin
+fi
 
 pushd .
   # #################################################
@@ -343,7 +359,11 @@ pushd .
   fi
 
   # cpack
-  cmake_common_options="${cmake_common_options} -DCPACK_SET_DESTDIR=OFF -DCPACK_PACKAGING_INSTALL_PREFIX=${rocm_path}"
+  if [[ "${build_relocatable}" == true ]]; then
+    cmake_common_options="${cmake_common_options} -DCPACK_SET_DESTDIR=OFF -DCPACK_PACKAGING_INSTALL_PREFIX=${rocm_path}"
+  else
+    cmake_common_options="${cmake_common_options} -DCPACK_SET_DESTDIR=OFF -DCPACK_PACKAGING_INSTALL_PREFIX=/opt/rocm"
+  fi
 
   # cuda or hip
   if [[ "${build_cuda}" == false ]]; then
@@ -353,7 +373,18 @@ pushd .
   fi
 
   # Build library
-  ${cmake_executable} ${cmake_common_options} ${cmake_client_options} -DCMAKE_INSTALL_PREFIX=${install_prefix} -DROCM_PATH=${rocm_path} ../..
+  if [[ "${build_relocatable}" == true ]]; then
+    ${cmake_executable} ${cmake_common_options} ${cmake_client_options} \
+      -DCMAKE_INSTALL_PREFIX=${rocm_path} \
+      -DCMAKE_SHARED_LINKER_FLAGS=${rocm_rpath} \
+      -DCMAKE_PREFIX_PATH="${rocm_path} ${rocm_path}/hcc ${rocm_path}/hip" \
+      -DCMAKE_MODULE_PATH="${rocm_path}/hip/cmake" \
+      -DROCM_DISABLE_LDCONFIG=ON \
+      -DROCM_PATH=${rocm_path} ../..
+  else
+    ${cmake_executable} ${cmake_common_options} ${cmake_client_options} -DCMAKE_INSTALL_PREFIX=hipsparse-install -DROCM_PATH=${rocm_path} ../..
+  fi
+
   check_exit_code
 
   make -j$(nproc) install
