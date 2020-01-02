@@ -33,7 +33,7 @@ supported_distro( )
     ubuntu|centos|rhel|fedora|sles|opensuse-leap)
         true
         ;;
-    *)  printf "This script is currently supported on Ubuntu, CentOS, RHEL, Fedora and SLES\n"
+    *)  printf "This script is currently supported on Ubuntu, CentOS, RHEL, Fedora, SLES, and OpenSUSE-Leap\n"
         exit 2
         ;;
   esac
