@@ -1690,6 +1690,40 @@ hipsparseStatus_t hipsparseZcsr2hyb(hipsparseHandle_t         handle,
                                     int                       userEllWidth,
                                     hipsparseHybPartition_t   partitionType);
 
+/* Description: This routine converts a sparse matrix in HYB storage format
+   to a sparse matrix in CSR storage format. */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseShyb2csr(hipsparseHandle_t         handle,
+                                    const hipsparseMatDescr_t descrA,
+                                    const hipsparseHybMat_t   hybA,
+                                    float*                    csrSortedValA,
+                                    int*                      csrSortedRowPtrA,
+                                    int*                      csrSortedColIndA);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDhyb2csr(hipsparseHandle_t         handle,
+                                    const hipsparseMatDescr_t descrA,
+                                    const hipsparseHybMat_t   hybA,
+                                    double*                   csrSortedValA,
+                                    int*                      csrSortedRowPtrA,
+                                    int*                      csrSortedColIndA);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseChyb2csr(hipsparseHandle_t         handle,
+                                    const hipsparseMatDescr_t descrA,
+                                    const hipsparseHybMat_t   hybA,
+                                    hipComplex*               csrSortedValA,
+                                    int*                      csrSortedRowPtrA,
+                                    int*                      csrSortedColIndA);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseZhyb2csr(hipsparseHandle_t         handle,
+                                    const hipsparseMatDescr_t descrA,
+                                    const hipsparseHybMat_t   hybA,
+                                    hipDoubleComplex*         csrSortedValA,
+                                    int*                      csrSortedRowPtrA,
+                                    int*                      csrSortedColIndA);
+
 /* Description: This routine converts a sparse matrix in COO storage format
    to a sparse matrix in CSR storage format. */
 HIPSPARSE_EXPORT

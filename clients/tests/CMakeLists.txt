@@ -106,6 +106,7 @@ if(NOT BUILD_CUDA)
     list(APPEND HIPSPARSE_TEST_SOURCES
         test_hybmv.cpp
         test_csr2hyb.cpp
+        test_hyb2csr.cpp
     )
 endif()
 
