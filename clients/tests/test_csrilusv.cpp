@@ -104,7 +104,7 @@ TEST_P(parameterized_csrilusv_bin, csrilusv_bin_double)
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-INSTANTIATE_TEST_CASE_P(DISABLED_csrilusv_bin,
+INSTANTIATE_TEST_CASE_P(csrilusv_bin,
                         parameterized_csrilusv_bin,
                         testing::Combine(testing::ValuesIn(csrilusv_idxbase_range),
                                          testing::ValuesIn(csrilusv_bin)));

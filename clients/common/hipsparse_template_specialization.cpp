@@ -2427,6 +2427,382 @@ namespace hipsparse
     }
 
     template <>
+    hipsparseStatus_t hipsparseXcsric02_bufferSize(hipsparseHandle_t         handle,
+                                                   int                       m,
+                                                   int                       nnz,
+                                                   const hipsparseMatDescr_t descrA,
+                                                   float*                    csrSortedValA,
+                                                   const int*                csrSortedRowPtrA,
+                                                   const int*                csrSortedColIndA,
+                                                   csric02Info_t             info,
+                                                   int*                      pBufferSizeInBytes)
+    {
+        return hipsparseScsric02_bufferSize(handle,
+                                            m,
+                                            nnz,
+                                            descrA,
+                                            csrSortedValA,
+                                            csrSortedRowPtrA,
+                                            csrSortedColIndA,
+                                            info,
+                                            pBufferSizeInBytes);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXcsric02_bufferSize(hipsparseHandle_t         handle,
+                                                   int                       m,
+                                                   int                       nnz,
+                                                   const hipsparseMatDescr_t descrA,
+                                                   double*                   csrSortedValA,
+                                                   const int*                csrSortedRowPtrA,
+                                                   const int*                csrSortedColIndA,
+                                                   csric02Info_t             info,
+                                                   int*                      pBufferSizeInBytes)
+    {
+        return hipsparseDcsric02_bufferSize(handle,
+                                            m,
+                                            nnz,
+                                            descrA,
+                                            csrSortedValA,
+                                            csrSortedRowPtrA,
+                                            csrSortedColIndA,
+                                            info,
+                                            pBufferSizeInBytes);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXcsric02_bufferSize(hipsparseHandle_t         handle,
+                                                   int                       m,
+                                                   int                       nnz,
+                                                   const hipsparseMatDescr_t descrA,
+                                                   hipComplex*               csrSortedValA,
+                                                   const int*                csrSortedRowPtrA,
+                                                   const int*                csrSortedColIndA,
+                                                   csric02Info_t             info,
+                                                   int*                      pBufferSizeInBytes)
+    {
+        return hipsparseCcsric02_bufferSize(handle,
+                                            m,
+                                            nnz,
+                                            descrA,
+                                            csrSortedValA,
+                                            csrSortedRowPtrA,
+                                            csrSortedColIndA,
+                                            info,
+                                            pBufferSizeInBytes);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXcsric02_bufferSize(hipsparseHandle_t         handle,
+                                                   int                       m,
+                                                   int                       nnz,
+                                                   const hipsparseMatDescr_t descrA,
+                                                   hipDoubleComplex*         csrSortedValA,
+                                                   const int*                csrSortedRowPtrA,
+                                                   const int*                csrSortedColIndA,
+                                                   csric02Info_t             info,
+                                                   int*                      pBufferSizeInBytes)
+    {
+        return hipsparseZcsric02_bufferSize(handle,
+                                            m,
+                                            nnz,
+                                            descrA,
+                                            csrSortedValA,
+                                            csrSortedRowPtrA,
+                                            csrSortedColIndA,
+                                            info,
+                                            pBufferSizeInBytes);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXcsric02_bufferSizeExt(hipsparseHandle_t         handle,
+                                                      int                       m,
+                                                      int                       nnz,
+                                                      const hipsparseMatDescr_t descrA,
+                                                      float*                    csrSortedValA,
+                                                      const int*                csrSortedRowPtrA,
+                                                      const int*                csrSortedColIndA,
+                                                      csric02Info_t             info,
+                                                      size_t*                   pBufferSize)
+    {
+        return hipsparseScsric02_bufferSizeExt(handle,
+                                               m,
+                                               nnz,
+                                               descrA,
+                                               csrSortedValA,
+                                               csrSortedRowPtrA,
+                                               csrSortedColIndA,
+                                               info,
+                                               pBufferSize);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXcsric02_bufferSizeExt(hipsparseHandle_t         handle,
+                                                      int                       m,
+                                                      int                       nnz,
+                                                      const hipsparseMatDescr_t descrA,
+                                                      double*                   csrSortedValA,
+                                                      const int*                csrSortedRowPtrA,
+                                                      const int*                csrSortedColIndA,
+                                                      csric02Info_t             info,
+                                                      size_t*                   pBufferSize)
+    {
+        return hipsparseDcsric02_bufferSizeExt(handle,
+                                               m,
+                                               nnz,
+                                               descrA,
+                                               csrSortedValA,
+                                               csrSortedRowPtrA,
+                                               csrSortedColIndA,
+                                               info,
+                                               pBufferSize);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXcsric02_bufferSizeExt(hipsparseHandle_t         handle,
+                                                      int                       m,
+                                                      int                       nnz,
+                                                      const hipsparseMatDescr_t descrA,
+                                                      hipComplex*               csrSortedValA,
+                                                      const int*                csrSortedRowPtrA,
+                                                      const int*                csrSortedColIndA,
+                                                      csric02Info_t             info,
+                                                      size_t*                   pBufferSize)
+    {
+        return hipsparseCcsric02_bufferSizeExt(handle,
+                                               m,
+                                               nnz,
+                                               descrA,
+                                               csrSortedValA,
+                                               csrSortedRowPtrA,
+                                               csrSortedColIndA,
+                                               info,
+                                               pBufferSize);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXcsric02_bufferSizeExt(hipsparseHandle_t         handle,
+                                                      int                       m,
+                                                      int                       nnz,
+                                                      const hipsparseMatDescr_t descrA,
+                                                      hipDoubleComplex*         csrSortedValA,
+                                                      const int*                csrSortedRowPtrA,
+                                                      const int*                csrSortedColIndA,
+                                                      csric02Info_t             info,
+                                                      size_t*                   pBufferSize)
+    {
+        return hipsparseZcsric02_bufferSizeExt(handle,
+                                               m,
+                                               nnz,
+                                               descrA,
+                                               csrSortedValA,
+                                               csrSortedRowPtrA,
+                                               csrSortedColIndA,
+                                               info,
+                                               pBufferSize);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXcsric02_analysis(hipsparseHandle_t         handle,
+                                                 int                       m,
+                                                 int                       nnz,
+                                                 const hipsparseMatDescr_t descrA,
+                                                 const float*              csrSortedValA,
+                                                 const int*                csrSortedRowPtrA,
+                                                 const int*                csrSortedColIndA,
+                                                 csric02Info_t             info,
+                                                 hipsparseSolvePolicy_t    policy,
+                                                 void*                     pBuffer)
+    {
+        return hipsparseScsric02_analysis(handle,
+                                          m,
+                                          nnz,
+                                          descrA,
+                                          csrSortedValA,
+                                          csrSortedRowPtrA,
+                                          csrSortedColIndA,
+                                          info,
+                                          policy,
+                                          pBuffer);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXcsric02_analysis(hipsparseHandle_t         handle,
+                                                 int                       m,
+                                                 int                       nnz,
+                                                 const hipsparseMatDescr_t descrA,
+                                                 const double*             csrSortedValA,
+                                                 const int*                csrSortedRowPtrA,
+                                                 const int*                csrSortedColIndA,
+                                                 csric02Info_t             info,
+                                                 hipsparseSolvePolicy_t    policy,
+                                                 void*                     pBuffer)
+    {
+        return hipsparseDcsric02_analysis(handle,
+                                          m,
+                                          nnz,
+                                          descrA,
+                                          csrSortedValA,
+                                          csrSortedRowPtrA,
+                                          csrSortedColIndA,
+                                          info,
+                                          policy,
+                                          pBuffer);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXcsric02_analysis(hipsparseHandle_t         handle,
+                                                 int                       m,
+                                                 int                       nnz,
+                                                 const hipsparseMatDescr_t descrA,
+                                                 const hipComplex*         csrSortedValA,
+                                                 const int*                csrSortedRowPtrA,
+                                                 const int*                csrSortedColIndA,
+                                                 csric02Info_t             info,
+                                                 hipsparseSolvePolicy_t    policy,
+                                                 void*                     pBuffer)
+    {
+        return hipsparseCcsric02_analysis(handle,
+                                          m,
+                                          nnz,
+                                          descrA,
+                                          csrSortedValA,
+                                          csrSortedRowPtrA,
+                                          csrSortedColIndA,
+                                          info,
+                                          policy,
+                                          pBuffer);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXcsric02_analysis(hipsparseHandle_t         handle,
+                                                 int                       m,
+                                                 int                       nnz,
+                                                 const hipsparseMatDescr_t descrA,
+                                                 const hipDoubleComplex*   csrSortedValA,
+                                                 const int*                csrSortedRowPtrA,
+                                                 const int*                csrSortedColIndA,
+                                                 csric02Info_t             info,
+                                                 hipsparseSolvePolicy_t    policy,
+                                                 void*                     pBuffer)
+    {
+        return hipsparseZcsric02_analysis(handle,
+                                          m,
+                                          nnz,
+                                          descrA,
+                                          csrSortedValA,
+                                          csrSortedRowPtrA,
+                                          csrSortedColIndA,
+                                          info,
+                                          policy,
+                                          pBuffer);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXcsric02(hipsparseHandle_t         handle,
+                                        int                       m,
+                                        int                       nnz,
+                                        const hipsparseMatDescr_t descrA,
+                                        float*                    csrSortedValA_valM,
+                                        /* matrix A values are updated inplace
+                                        to be the preconditioner M values */
+                                        const int*             csrSortedRowPtrA,
+                                        const int*             csrSortedColIndA,
+                                        csric02Info_t          info,
+                                        hipsparseSolvePolicy_t policy,
+                                        void*                  pBuffer)
+    {
+        return hipsparseScsric02(handle,
+                                 m,
+                                 nnz,
+                                 descrA,
+                                 csrSortedValA_valM,
+                                 csrSortedRowPtrA,
+                                 csrSortedColIndA,
+                                 info,
+                                 policy,
+                                 pBuffer);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXcsric02(hipsparseHandle_t         handle,
+                                        int                       m,
+                                        int                       nnz,
+                                        const hipsparseMatDescr_t descrA,
+                                        double*                   csrSortedValA_valM,
+                                        /* matrix A values are updated inplace
+                                        to be the preconditioner M values */
+                                        const int*             csrSortedRowPtrA,
+                                        const int*             csrSortedColIndA,
+                                        csric02Info_t          info,
+                                        hipsparseSolvePolicy_t policy,
+                                        void*                  pBuffer)
+    {
+        return hipsparseDcsric02(handle,
+                                 m,
+                                 nnz,
+                                 descrA,
+                                 csrSortedValA_valM,
+                                 csrSortedRowPtrA,
+                                 csrSortedColIndA,
+                                 info,
+                                 policy,
+                                 pBuffer);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXcsric02(hipsparseHandle_t         handle,
+                                        int                       m,
+                                        int                       nnz,
+                                        const hipsparseMatDescr_t descrA,
+                                        hipComplex*               csrSortedValA_valM,
+                                        /* matrix A values are updated inplace
+                                        to be the preconditioner M values */
+                                        const int*             csrSortedRowPtrA,
+                                        const int*             csrSortedColIndA,
+                                        csric02Info_t          info,
+                                        hipsparseSolvePolicy_t policy,
+                                        void*                  pBuffer)
+    {
+        return hipsparseCcsric02(handle,
+                                 m,
+                                 nnz,
+                                 descrA,
+                                 csrSortedValA_valM,
+                                 csrSortedRowPtrA,
+                                 csrSortedColIndA,
+                                 info,
+                                 policy,
+                                 pBuffer);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXcsric02(hipsparseHandle_t         handle,
+                                        int                       m,
+                                        int                       nnz,
+                                        const hipsparseMatDescr_t descrA,
+                                        hipDoubleComplex*         csrSortedValA_valM,
+                                        /* matrix A values are updated inplace
+                                        to be the preconditioner M values */
+                                        const int*             csrSortedRowPtrA,
+                                        const int*             csrSortedColIndA,
+                                        csric02Info_t          info,
+                                        hipsparseSolvePolicy_t policy,
+                                        void*                  pBuffer)
+    {
+        return hipsparseZcsric02(handle,
+                                 m,
+                                 nnz,
+                                 descrA,
+                                 csrSortedValA_valM,
+                                 csrSortedRowPtrA,
+                                 csrSortedColIndA,
+                                 info,
+                                 policy,
+                                 pBuffer);
+    }
+
+    template <>
     hipsparseStatus_t hipsparseXcsr2csc(hipsparseHandle_t    handle,
                                         int                  m,
                                         int                  n,
@@ -2632,6 +3008,50 @@ namespace hipsparse
                                  hyb,
                                  user_ell_width,
                                  partition_type);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXhyb2csr(hipsparseHandle_t         handle,
+                                        const hipsparseMatDescr_t descrA,
+                                        const hipsparseHybMat_t   hybA,
+                                        float*                    csrValA,
+                                        int*                      csrRowPtrA,
+                                        int*                      csrColIndA)
+    {
+        return hipsparseShyb2csr(handle, descrA, hybA, csrValA, csrRowPtrA, csrColIndA);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXhyb2csr(hipsparseHandle_t         handle,
+                                        const hipsparseMatDescr_t descrA,
+                                        const hipsparseHybMat_t   hybA,
+                                        double*                   csrValA,
+                                        int*                      csrRowPtrA,
+                                        int*                      csrColIndA)
+    {
+        return hipsparseDhyb2csr(handle, descrA, hybA, csrValA, csrRowPtrA, csrColIndA);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXhyb2csr(hipsparseHandle_t         handle,
+                                        const hipsparseMatDescr_t descrA,
+                                        const hipsparseHybMat_t   hybA,
+                                        hipComplex*               csrValA,
+                                        int*                      csrRowPtrA,
+                                        int*                      csrColIndA)
+    {
+        return hipsparseChyb2csr(handle, descrA, hybA, csrValA, csrRowPtrA, csrColIndA);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXhyb2csr(hipsparseHandle_t         handle,
+                                        const hipsparseMatDescr_t descrA,
+                                        const hipsparseHybMat_t   hybA,
+                                        hipDoubleComplex*         csrValA,
+                                        int*                      csrRowPtrA,
+                                        int*                      csrColIndA)
+    {
+        return hipsparseZhyb2csr(handle, descrA, hybA, csrValA, csrRowPtrA, csrColIndA);
     }
 
 } // namespace hipsparse

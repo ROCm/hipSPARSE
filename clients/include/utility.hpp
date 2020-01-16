@@ -132,6 +132,21 @@ static inline hipDoubleComplex operator+(const hipDoubleComplex& lhs, const hipD
     return ret;
 }
 
+static inline hipComplex operator-(const hipComplex& lhs, const hipComplex& rhs)
+{
+    hipComplex ret;
+    ret.x = lhs.x - rhs.x;
+    ret.y = lhs.y - rhs.y;
+    return ret;
+}
+static inline hipDoubleComplex operator-(const hipDoubleComplex& lhs, const hipDoubleComplex& rhs)
+{
+    hipDoubleComplex ret;
+    ret.x = lhs.x - rhs.x;
+    ret.y = lhs.y - rhs.y;
+    return ret;
+}
+
 static inline hipComplex operator*(const hipComplex& lhs, const hipComplex& rhs)
 {
     hipComplex ret;
@@ -224,6 +239,28 @@ template <>
 inline hipDoubleComplex testing_fma(hipDoubleComplex p, hipDoubleComplex q, hipDoubleComplex r)
 {
     return hipCfma(p, q, r);
+}
+
+/* ============================================================================================ */
+/*! \brief abs */
+static inline float testing_abs(float x)
+{
+    return std::abs(x);
+}
+
+static inline double testing_abs(double x)
+{
+    return std::abs(x);
+}
+
+static inline float testing_abs(hipComplex x)
+{
+    return hipCabsf(x);
+}
+
+static inline double testing_abs(hipDoubleComplex x)
+{
+    return hipCabs(x);
 }
 
 /* ============================================================================================ */
@@ -948,6 +985,118 @@ int csrilu0(int m, const int* ptr, const int* col, T* val, hipsparseIndexBase_t 
     }
 
     return -1;
+}
+
+template <typename T>
+void csric0(int                  M,
+            const int*           csr_row_ptr,
+            const int*           csr_col_ind,
+            T*                   csr_val,
+            hipsparseIndexBase_t idx_base,
+            int&                 struct_pivot,
+            int&                 numeric_pivot)
+{
+    // Initialize pivot
+    struct_pivot  = -1;
+    numeric_pivot = -1;
+
+    // pointer of upper part of each row
+    std::vector<int> diag_offset(M);
+    std::vector<int> nnz_entries(M, 0);
+
+    // ai = 0 to N loop over all rows
+    for(int ai = 0; ai < M; ++ai)
+    {
+        // ai-th row entries
+        int row_begin = csr_row_ptr[ai] - idx_base;
+        int row_end   = csr_row_ptr[ai + 1] - idx_base;
+        int j;
+
+        // nnz position of ai-th row in val array
+        for(j = row_begin; j < row_end; ++j)
+        {
+            nnz_entries[csr_col_ind[j] - idx_base] = j;
+        }
+
+        T sum = make_DataType<T>(0.0);
+
+        bool has_diag = false;
+
+        // loop over ai-th row nnz entries
+        for(j = row_begin; j < row_end; ++j)
+        {
+            int col_j = csr_col_ind[j] - idx_base;
+            T   val_j = csr_val[j];
+
+            // Mark diagonal and skip row
+            if(col_j == ai)
+            {
+                has_diag = true;
+                break;
+            }
+
+            // Skip upper triangular
+            if(col_j > ai)
+            {
+                break;
+            }
+
+            int row_begin_j = csr_row_ptr[col_j] - idx_base;
+            int row_diag_j  = diag_offset[col_j];
+
+            T local_sum = make_DataType<T>(0.0);
+            T inv_diag  = csr_val[row_diag_j];
+
+            // Check for numeric zero
+            if(inv_diag == make_DataType<T>(0.0))
+            {
+                // Numerical zero diagonal
+                numeric_pivot = col_j + idx_base;
+                return;
+            }
+
+            inv_diag = make_DataType<T>(1.0) / inv_diag;
+
+            // loop over upper offset pointer and do linear combination for nnz entry
+            for(int k = row_begin_j; k < row_diag_j; ++k)
+            {
+                int col_k = csr_col_ind[k] - idx_base;
+
+                // if nnz at this position do linear combination
+                if(nnz_entries[col_k] != 0)
+                {
+                    int idx   = nnz_entries[col_k];
+                    local_sum = testing_fma(csr_val[k], csr_val[idx], local_sum);
+                }
+            }
+
+            val_j = (val_j - local_sum) * inv_diag;
+            sum   = testing_fma(val_j, val_j, sum);
+
+            csr_val[j] = val_j;
+        }
+
+        if(!has_diag)
+        {
+            // Structural (and numerical) zero diagonal
+            struct_pivot  = ai + idx_base;
+            numeric_pivot = ai + idx_base;
+            return;
+        }
+
+        // Process diagonal entry
+        T diag_entry = make_DataType<T>(std::sqrt(testing_abs(csr_val[j] - sum)));
+        csr_val[j]   = diag_entry;
+
+        // Store diagonal offset
+        diag_offset[ai] = j;
+
+        // clear nnz entries
+        for(j = row_begin; j < row_end; ++j)
+        {
+            nnz_entries[csr_col_ind[j] - idx_base] = 0;
+        }
+    }
 }
 
 /* ============================================================================================ */
