@@ -11,8 +11,8 @@ RUN zypper refresh && zypper -n --no-gpg-checks install \
     sudo \
     ca-certificates \
     git \
-    make \
     cmake \
+    make \
     gcc-c++ \
     pkg-config \
     python3-pip \

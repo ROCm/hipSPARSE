@@ -141,6 +141,22 @@ namespace hipsparse_test
         }
     };
 
+    struct csric02_struct
+    {
+        csric02Info_t info;
+        csric02_struct()
+        {
+            hipsparseStatus_t status = hipsparseCreateCsric02Info(&info);
+            verify_hipsparse_status_success(status, "ERROR: csric02_struct constructor");
+        }
+
+        ~csric02_struct()
+        {
+            hipsparseStatus_t status = hipsparseDestroyCsric02Info(info);
+            verify_hipsparse_status_success(status, "ERROR: csric02_struct destructor");
+        }
+    };
+
     struct csrgemm2_struct
     {
         csrgemm2Info_t info;

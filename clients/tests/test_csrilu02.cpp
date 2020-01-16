@@ -166,12 +166,12 @@ TEST_P(parameterized_csrilu02_bin, csrilu02_bin_double)
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-INSTANTIATE_TEST_CASE_P(DISABLED_csrilu02,
+INSTANTIATE_TEST_CASE_P(csrilu02,
                         parameterized_csrilu02,
                         testing::Combine(testing::ValuesIn(csrilu02_M_range),
                                          testing::ValuesIn(csrilu02_idxbase_range)));
 
-INSTANTIATE_TEST_CASE_P(DISABLED_csrilu02_bin,
+INSTANTIATE_TEST_CASE_P(csrilu02_bin,
                         parameterized_csrilu02_bin,
                         testing::Combine(testing::ValuesIn(csrilu02_idxbase_range),
                                          testing::ValuesIn(csrilu02_bin)));
