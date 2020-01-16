@@ -4291,6 +4291,142 @@ hipsparseStatus_t hipsparseZcsr2hyb(hipsparseHandle_t         handle,
                            hipHybPartToHCCHybPart(partitionType)));
 }
 
+hipsparseStatus_t hipsparseShyb2csr(hipsparseHandle_t         handle,
+                                    const hipsparseMatDescr_t descrA,
+                                    const hipsparseHybMat_t   hybA,
+                                    float*                    csrSortedValA,
+                                    int*                      csrSortedRowPtrA,
+                                    int*                      csrSortedColIndA)
+{
+    // Determine buffer size
+    size_t buffer_size = 0;
+    RETURN_IF_ROCSPARSE_ERROR(rocsparse_hyb2csr_buffer_size((rocsparse_handle)handle,
+                                                            (const rocsparse_mat_descr)descrA,
+                                                            (const rocsparse_hyb_mat)hybA,
+                                                            csrSortedRowPtrA,
+                                                            &buffer_size));
+
+    // Allocate buffer
+    void* buffer = nullptr;
+    RETURN_IF_HIP_ERROR(hipMalloc(&buffer, buffer_size));
+
+    // Format conversion
+    RETURN_IF_ROCSPARSE_ERROR(rocsparse_shyb2csr((rocsparse_handle)handle,
+                                                 (const rocsparse_mat_descr)descrA,
+                                                 (const rocsparse_hyb_mat)hybA,
+                                                 csrSortedValA,
+                                                 csrSortedRowPtrA,
+                                                 csrSortedColIndA,
+                                                 buffer));
+
+    // Free buffer
+    RETURN_IF_HIP_ERROR(hipFree(buffer));
+
+    return HIPSPARSE_STATUS_SUCCESS;
+}
+
+hipsparseStatus_t hipsparseDhyb2csr(hipsparseHandle_t         handle,
+                                    const hipsparseMatDescr_t descrA,
+                                    const hipsparseHybMat_t   hybA,
+                                    double*                   csrSortedValA,
+                                    int*                      csrSortedRowPtrA,
+                                    int*                      csrSortedColIndA)
+{
+    // Determine buffer size
+    size_t buffer_size = 0;
+    RETURN_IF_ROCSPARSE_ERROR(rocsparse_hyb2csr_buffer_size((rocsparse_handle)handle,
+                                                            (const rocsparse_mat_descr)descrA,
+                                                            (const rocsparse_hyb_mat)hybA,
+                                                            csrSortedRowPtrA,
+                                                            &buffer_size));
+
+    // Allocate buffer
+    void* buffer = nullptr;
+    RETURN_IF_HIP_ERROR(hipMalloc(&buffer, buffer_size));
+
+    // Format conversion
+    RETURN_IF_ROCSPARSE_ERROR(rocsparse_dhyb2csr((rocsparse_handle)handle,
+                                                 (const rocsparse_mat_descr)descrA,
+                                                 (const rocsparse_hyb_mat)hybA,
+                                                 csrSortedValA,
+                                                 csrSortedRowPtrA,
+                                                 csrSortedColIndA,
+                                                 buffer));
+
+    // Free buffer
+    RETURN_IF_HIP_ERROR(hipFree(buffer));
+
+    return HIPSPARSE_STATUS_SUCCESS;
+}
+
+hipsparseStatus_t hipsparseChyb2csr(hipsparseHandle_t         handle,
+                                    const hipsparseMatDescr_t descrA,
+                                    const hipsparseHybMat_t   hybA,
+                                    hipComplex*               csrSortedValA,
+                                    int*                      csrSortedRowPtrA,
+                                    int*                      csrSortedColIndA)
+{
+    // Determine buffer size
+    size_t buffer_size = 0;
+    RETURN_IF_ROCSPARSE_ERROR(rocsparse_hyb2csr_buffer_size((rocsparse_handle)handle,
+                                                            (const rocsparse_mat_descr)descrA,
+                                                            (const rocsparse_hyb_mat)hybA,
+                                                            csrSortedRowPtrA,
+                                                            &buffer_size));
+
+    // Allocate buffer
+    void* buffer = nullptr;
+    RETURN_IF_HIP_ERROR(hipMalloc(&buffer, buffer_size));
+
+    // Format conversion
+    RETURN_IF_ROCSPARSE_ERROR(rocsparse_chyb2csr((rocsparse_handle)handle,
+                                                 (const rocsparse_mat_descr)descrA,
+                                                 (const rocsparse_hyb_mat)hybA,
+                                                 (rocsparse_float_complex*)csrSortedValA,
+                                                 csrSortedRowPtrA,
+                                                 csrSortedColIndA,
+                                                 buffer));
+
+    // Free buffer
+    RETURN_IF_HIP_ERROR(hipFree(buffer));
+
+    return HIPSPARSE_STATUS_SUCCESS;
+}
+
+hipsparseStatus_t hipsparseZhyb2csr(hipsparseHandle_t         handle,
+                                    const hipsparseMatDescr_t descrA,
+                                    const hipsparseHybMat_t   hybA,
+                                    hipDoubleComplex*         csrSortedValA,
+                                    int*                      csrSortedRowPtrA,
+                                    int*                      csrSortedColIndA)
+{
+    // Determine buffer size
+    size_t buffer_size = 0;
+    RETURN_IF_ROCSPARSE_ERROR(rocsparse_hyb2csr_buffer_size((rocsparse_handle)handle,
+                                                            (const rocsparse_mat_descr)descrA,
+                                                            (const rocsparse_hyb_mat)hybA,
+                                                            csrSortedRowPtrA,
+                                                            &buffer_size));
+
+    // Allocate buffer
+    void* buffer = nullptr;
+    RETURN_IF_HIP_ERROR(hipMalloc(&buffer, buffer_size));
+
+    // Format conversion
+    RETURN_IF_ROCSPARSE_ERROR(rocsparse_zhyb2csr((rocsparse_handle)handle,
+                                                 (const rocsparse_mat_descr)descrA,
+                                                 (const rocsparse_hyb_mat)hybA,
+                                                 (rocsparse_double_complex*)csrSortedValA,
+                                                 csrSortedRowPtrA,
+                                                 csrSortedColIndA,
+                                                 buffer));
+
+    // Free buffer
+    RETURN_IF_HIP_ERROR(hipFree(buffer));
+
+    return HIPSPARSE_STATUS_SUCCESS;
+}
+
 hipsparseStatus_t hipsparseXcoo2csr(hipsparseHandle_t    handle,
                                     const int*           cooRowInd,
                                     int                  nnz,
