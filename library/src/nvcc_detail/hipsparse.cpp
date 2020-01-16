@@ -2922,6 +2922,66 @@ hipsparseStatus_t hipsparseZcsr2hyb(hipsparseHandle_t         handle,
                          hipHybPartitionToCudaHybPartition(partitionType)));
 }
 
+hipsparseStatus_t hipsparseShyb2csr(hipsparseHandle_t         handle,
+                                    const hipsparseMatDescr_t descrA,
+                                    const hipsparseHybMat_t   hybA,
+                                    float*                    csrSortedValA,
+                                    int*                      csrSortedRowPtrA,
+                                    int*                      csrSortedColIndA)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseShyb2csr((cusparseHandle_t)handle,
+                                                         (const cusparseMatDescr_t)descrA,
+                                                         (const cusparseHybMat_t)hybA,
+                                                         csrSortedValA,
+                                                         csrSortedRowPtrA,
+                                                         csrSortedColIndA));
+}
+
+hipsparseStatus_t hipsparseDhyb2csr(hipsparseHandle_t         handle,
+                                    const hipsparseMatDescr_t descrA,
+                                    const hipsparseHybMat_t   hybA,
+                                    double*                   csrSortedValA,
+                                    int*                      csrSortedRowPtrA,
+                                    int*                      csrSortedColIndA)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseDhyb2csr((cusparseHandle_t)handle,
+                                                         (const cusparseMatDescr_t)descrA,
+                                                         (const cusparseHybMat_t)hybA,
+                                                         csrSortedValA,
+                                                         csrSortedRowPtrA,
+                                                         csrSortedColIndA));
+}
+
+hipsparseStatus_t hipsparseChyb2csr(hipsparseHandle_t         handle,
+                                    const hipsparseMatDescr_t descrA,
+                                    const hipsparseHybMat_t   hybA,
+                                    hipComplex*               csrSortedValA,
+                                    int*                      csrSortedRowPtrA,
+                                    int*                      csrSortedColIndA)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseChyb2csr((cusparseHandle_t)handle,
+                                                         (const cusparseMatDescr_t)descrA,
+                                                         (const cusparseHybMat_t)hybA,
+                                                         csrSortedValA,
+                                                         csrSortedRowPtrA,
+                                                         csrSortedColIndA));
+}
+
+hipsparseStatus_t hipsparseZhyb2csr(hipsparseHandle_t         handle,
+                                    const hipsparseMatDescr_t descrA,
+                                    const hipsparseHybMat_t   hybA,
+                                    hipDoubleComplex*         csrSortedValA,
+                                    int*                      csrSortedRowPtrA,
+                                    int*                      csrSortedColIndA)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseZhyb2csr((cusparseHandle_t)handle,
+                                                         (const cusparseMatDescr_t)descrA,
+                                                         (const cusparseHybMat_t)hybA,
+                                                         csrSortedValA,
+                                                         csrSortedRowPtrA,
+                                                         csrSortedColIndA));
+}
+
 hipsparseStatus_t hipsparseXcoo2csr(hipsparseHandle_t    handle,
                                     const int*           cooRowInd,
                                     int                  nnz,

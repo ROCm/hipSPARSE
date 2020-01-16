@@ -2178,4 +2178,48 @@ namespace hipsparse
                                  partition_type);
     }
 
+    template <>
+    hipsparseStatus_t hipsparseXhyb2csr(hipsparseHandle_t         handle,
+                                        const hipsparseMatDescr_t descrA,
+                                        const hipsparseHybMat_t   hybA,
+                                        float*                    csrValA,
+                                        int*                      csrRowPtrA,
+                                        int*                      csrColIndA)
+    {
+        return hipsparseShyb2csr(handle, descrA, hybA, csrValA, csrRowPtrA, csrColIndA);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXhyb2csr(hipsparseHandle_t         handle,
+                                        const hipsparseMatDescr_t descrA,
+                                        const hipsparseHybMat_t   hybA,
+                                        double*                   csrValA,
+                                        int*                      csrRowPtrA,
+                                        int*                      csrColIndA)
+    {
+        return hipsparseDhyb2csr(handle, descrA, hybA, csrValA, csrRowPtrA, csrColIndA);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXhyb2csr(hipsparseHandle_t         handle,
+                                        const hipsparseMatDescr_t descrA,
+                                        const hipsparseHybMat_t   hybA,
+                                        hipComplex*               csrValA,
+                                        int*                      csrRowPtrA,
+                                        int*                      csrColIndA)
+    {
+        return hipsparseChyb2csr(handle, descrA, hybA, csrValA, csrRowPtrA, csrColIndA);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXhyb2csr(hipsparseHandle_t         handle,
+                                        const hipsparseMatDescr_t descrA,
+                                        const hipsparseHybMat_t   hybA,
+                                        hipDoubleComplex*         csrValA,
+                                        int*                      csrRowPtrA,
+                                        int*                      csrColIndA)
+    {
+        return hipsparseZhyb2csr(handle, descrA, hybA, csrValA, csrRowPtrA, csrColIndA);
+    }
+
 } // namespace hipsparse

@@ -335,6 +335,14 @@ namespace hipsparse
                                         int                       user_ell_width,
                                         hipsparseHybPartition_t   partition_type);
 
+    template <typename T>
+    hipsparseStatus_t hipsparseXhyb2csr(hipsparseHandle_t         handle,
+                                        const hipsparseMatDescr_t descrA,
+                                        const hipsparseHybMat_t   hybA,
+                                        T*                        csr_val,
+                                        int*                      csr_row_ptr,
+                                        int*                      csr_col_ind);
+
 } // namespace hipsparse
 
 #endif // _HIPSPARSE_HPP_
