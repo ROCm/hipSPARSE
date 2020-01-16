@@ -16,8 +16,8 @@ RUN yum install -y \
     git \
     make \
     cmake3 \
-    clang \
     clang-devel \
+    clang \
     gcc-c++ \
     gtest \
     gtest-devel \
