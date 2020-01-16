@@ -310,6 +310,54 @@ namespace hipsparse
                                          void*                  pBuffer);
 
     template <typename T>
+    hipsparseStatus_t hipsparseXcsric02_bufferSize(hipsparseHandle_t         handle,
+                                                   int                       m,
+                                                   int                       nnz,
+                                                   const hipsparseMatDescr_t descrA,
+                                                   T*                        csrSortedValA,
+                                                   const int*                csrSortedRowPtrA,
+                                                   const int*                csrSortedColIndA,
+                                                   csric02Info_t             info,
+                                                   int*                      pBufferSizeInBytes);
+
+    template <typename T>
+    hipsparseStatus_t hipsparseXcsric02_bufferSizeExt(hipsparseHandle_t         handle,
+                                                      int                       m,
+                                                      int                       nnz,
+                                                      const hipsparseMatDescr_t descrA,
+                                                      T*                        csrSortedValA,
+                                                      const int*                csrSortedRowPtrA,
+                                                      const int*                csrSortedColIndA,
+                                                      csric02Info_t             info,
+                                                      size_t*                   pBufferSize);
+
+    template <typename T>
+    hipsparseStatus_t hipsparseXcsric02_analysis(hipsparseHandle_t         handle,
+                                                 int                       m,
+                                                 int                       nnz,
+                                                 const hipsparseMatDescr_t descrA,
+                                                 const T*                  csrSortedValA,
+                                                 const int*                csrSortedRowPtrA,
+                                                 const int*                csrSortedColIndA,
+                                                 csric02Info_t             info,
+                                                 hipsparseSolvePolicy_t    policy,
+                                                 void*                     pBuffer);
+
+    template <typename T>
+    hipsparseStatus_t hipsparseXcsric02(hipsparseHandle_t         handle,
+                                        int                       m,
+                                        int                       nnz,
+                                        const hipsparseMatDescr_t descrA,
+                                        T*                        csrSortedValA_valM,
+                                        /* matrix A values are updated inplace
+                                        to be the preconditioner M values */
+                                        const int*             csrSortedRowPtrA,
+                                        const int*             csrSortedColIndA,
+                                        csric02Info_t          info,
+                                        hipsparseSolvePolicy_t policy,
+                                        void*                  pBuffer);
+
+    template <typename T>
     hipsparseStatus_t hipsparseXcsr2csc(hipsparseHandle_t    handle,
                                         int                  m,
                                         int                  n,

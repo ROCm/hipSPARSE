@@ -1,0 +1,167 @@
+/* ************************************************************************
+ * Copyright (c) 2018 Advanced Micro Devices, Inc.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *
+ * ************************************************************************ */
+
+#include "testing_csric02.hpp"
+#include "utility.hpp"
+
+#include <gtest/gtest.h>
+#include <hipsparse.h>
+#include <string>
+#include <unistd.h>
+#include <vector>
+
+typedef hipsparseIndexBase_t          base;
+typedef std::tuple<int, base>         csric02_tuple;
+typedef std::tuple<base, std::string> csric02_bin_tuple;
+
+int csric02_M_range[] = {-1, 0, 50, 426};
+
+base csric02_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+
+std::string csric02_bin[] = {"mac_econ_fwd500.bin",
+                             "nos3.bin",
+                             "nos4.bin",
+                             "nos5.bin",
+                             "nos6.bin",
+                             "nos7.bin",
+                             "scircuit.bin",
+                             "ASIC_320k.bin",
+                             "amazon0312.bin"};
+
+class parameterized_csric02 : public testing::TestWithParam<csric02_tuple>
+{
+protected:
+    parameterized_csric02() {}
+    virtual ~parameterized_csric02() {}
+    virtual void SetUp() {}
+    virtual void TearDown() {}
+};
+
+class parameterized_csric02_bin : public testing::TestWithParam<csric02_bin_tuple>
+{
+protected:
+    parameterized_csric02_bin() {}
+    virtual ~parameterized_csric02_bin() {}
+    virtual void SetUp() {}
+    virtual void TearDown() {}
+};
+
+Arguments setup_csric02_arguments(csric02_tuple tup)
+{
+    Arguments arg;
+    arg.M        = std::get<0>(tup);
+    arg.idx_base = std::get<1>(tup);
+    arg.timing   = 0;
+    return arg;
+}
+
+Arguments setup_csric02_arguments(csric02_bin_tuple tup)
+{
+    Arguments arg;
+    arg.M        = -99;
+    arg.idx_base = std::get<0>(tup);
+    arg.timing   = 0;
+
+    // Determine absolute path of test matrix
+    std::string bin_file = std::get<1>(tup);
+
+    // Get current executables absolute path
+    char    path_exe[PATH_MAX];
+    ssize_t len = readlink("/proc/self/exe", path_exe, sizeof(path_exe) - 1);
+    if(len < 14)
+    {
+        path_exe[0] = '\0';
+    }
+    else
+    {
+        path_exe[len - 14] = '\0';
+    }
+
+    // Matrices are stored at the same path in matrices directory
+    arg.filename = std::string(path_exe) + "../matrices/" + bin_file;
+
+    return arg;
+}
+
+TEST(csric02_bad_arg, csric02_float)
+{
+    testing_csric02_bad_arg<float>();
+}
+
+TEST_P(parameterized_csric02, csric02_float)
+{
+    Arguments arg = setup_csric02_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_csric02<float>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+
+TEST_P(parameterized_csric02, csric02_double)
+{
+    Arguments arg = setup_csric02_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_csric02<double>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+
+TEST_P(parameterized_csric02, csric02_float_complex)
+{
+    Arguments arg = setup_csric02_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_csric02<hipComplex>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+
+TEST_P(parameterized_csric02, csric02_double_complex)
+{
+    Arguments arg = setup_csric02_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_csric02<hipDoubleComplex>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+
+TEST_P(parameterized_csric02_bin, csric02_bin_float)
+{
+    Arguments arg = setup_csric02_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_csric02<float>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+
+TEST_P(parameterized_csric02_bin, csric02_bin_double)
+{
+    Arguments arg = setup_csric02_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_csric02<double>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+
+INSTANTIATE_TEST_CASE_P(csric02,
+                        parameterized_csric02,
+                        testing::Combine(testing::ValuesIn(csric02_M_range),
+                                         testing::ValuesIn(csric02_idxbase_range)));
+
+INSTANTIATE_TEST_CASE_P(csric02_bin,
+                        parameterized_csric02_bin,
+                        testing::Combine(testing::ValuesIn(csric02_idxbase_range),
+                                         testing::ValuesIn(csric02_bin)));
