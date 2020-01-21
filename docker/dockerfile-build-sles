@@ -11,10 +11,10 @@ RUN zypper refresh && zypper -n --no-gpg-checks install \
     sudo \
     ca-certificates \
     git \
-    cmake \
     make \
-    gcc-c++ \
+    cmake \
     pkg-config \
+    gcc-c++ \
     python3-pip \
     dpkg \
     rocprim \
