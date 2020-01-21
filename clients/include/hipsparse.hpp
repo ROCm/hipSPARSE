@@ -189,6 +189,63 @@ namespace hipsparse
                                        int                       ldc);
 
     template <typename T>
+    hipsparseStatus_t hipsparseXcsrsm2_bufferSizeExt(hipsparseHandle_t         handle,
+                                                     int                       algo,
+                                                     hipsparseOperation_t      transA,
+                                                     hipsparseOperation_t      transB,
+                                                     int                       m,
+                                                     int                       nrhs,
+                                                     int                       nnz,
+                                                     const T*                  alpha,
+                                                     const hipsparseMatDescr_t descrA,
+                                                     const T*                  csrSortedValA,
+                                                     const int*                csrSortedRowPtrA,
+                                                     const int*                csrSortedColIndA,
+                                                     const T*                  B,
+                                                     int                       ldb,
+                                                     csrsm2Info_t              info,
+                                                     hipsparseSolvePolicy_t    policy,
+                                                     size_t*                   pBufferSize);
+
+    template <typename T>
+    hipsparseStatus_t hipsparseXcsrsm2_analysis(hipsparseHandle_t         handle,
+                                                int                       algo,
+                                                hipsparseOperation_t      transA,
+                                                hipsparseOperation_t      transB,
+                                                int                       m,
+                                                int                       nrhs,
+                                                int                       nnz,
+                                                const T*                  alpha,
+                                                const hipsparseMatDescr_t descrA,
+                                                const T*                  csrSortedValA,
+                                                const int*                csrSortedRowPtrA,
+                                                const int*                csrSortedColIndA,
+                                                const T*                  B,
+                                                int                       ldb,
+                                                csrsm2Info_t              info,
+                                                hipsparseSolvePolicy_t    policy,
+                                                void*                     pBuffer);
+
+    template <typename T>
+    hipsparseStatus_t hipsparseXcsrsm2_solve(hipsparseHandle_t         handle,
+                                             int                       algo,
+                                             hipsparseOperation_t      transA,
+                                             hipsparseOperation_t      transB,
+                                             int                       m,
+                                             int                       nrhs,
+                                             int                       nnz,
+                                             const T*                  alpha,
+                                             const hipsparseMatDescr_t descrA,
+                                             const T*                  csrSortedValA,
+                                             const int*                csrSortedRowPtrA,
+                                             const int*                csrSortedColIndA,
+                                             T*                        B,
+                                             int                       ldb,
+                                             csrsm2Info_t              info,
+                                             hipsparseSolvePolicy_t    policy,
+                                             void*                     pBuffer);
+
+    template <typename T>
     hipsparseStatus_t hipsparseXcsrgemm(hipsparseHandle_t         handle,
                                         hipsparseOperation_t      transA,
                                         hipsparseOperation_t      transB,
