@@ -13,8 +13,8 @@ RUN zypper refresh && zypper -n --no-gpg-checks install \
     git \
     make \
     cmake \
-    gcc-c++ \
     pkg-config \
+    gcc-c++ \
     python3-pip \
     dpkg \
     rocprim \
