@@ -112,11 +112,16 @@ rocm_install_targets(TARGETS hipsparse
 )
 
 # Export targets
-rocm_export_targets(TARGETS roc::hipsparse
-                    PREFIX hipsparse
-                    DEPENDS PACKAGE hip
-                    NAMESPACE roc::
-)
+if(NOT BUILD_CUDA)
+  rocm_export_targets(TARGETS roc::hipsparse
+                      PREFIX hipsparse
+                      DEPENDS PACKAGE hip
+                      NAMESPACE roc::)
+else()
+  rocm_export_targets(TARGETS roc::hipsparse
+                      PREFIX hipsparse
+                      NAMESPACE roc::)
+endif()
 
 # Symbolic links
 rocm_install_symlink_subdir(hipsparse)
