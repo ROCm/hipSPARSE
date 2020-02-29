@@ -27,12 +27,13 @@
 find_package(Git REQUIRED)
 
 # HIP
-find_package(hip REQUIRED)
+find_package(HIP REQUIRED)
 
 # Either rocSPARSE or cuSPARSE is required
 if(NOT BUILD_CUDA)
   find_package(rocsparse REQUIRED)
 else()
+  set(HIP_INCLUDE_DIRS "${HIP_ROOT_DIR}/include")
   find_package(CUDA REQUIRED)
 endif()
 
