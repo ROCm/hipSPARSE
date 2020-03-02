@@ -126,17 +126,10 @@ install_packages( )
   fi
 
   # dependencies needed for library and clients to build
-  local library_dependencies_ubuntu=( "make" "rocm-dev" "pkg-config" "libnuma1" )
-  local library_dependencies_centos=( "epel-release" "make" "cmake3" "rocm-dev" "gcc-c++" "rpm-build" "numactl-libs" )
-  local library_dependencies_fedora=( "make" "cmake" "rocm-dev" "gcc-c++" "libcxx-devel" "rpm-build" "numactl-libs" )
-  local library_dependencies_sles=( "make" "cmake" "rocm-dev" "gcc-c++" "libcxxtools9" "rpm-build" "pkg-config" "dpkg" )
-
-  if [[ "${build_cuda}" == false ]]; then
-    library_dependencies_ubuntu+=( "rocsparse" )
-    library_dependencies_centos+=( "rocsparse" )
-    library_dependencies_fedora+=( "rocsparse" )
-    library_dependencies_sles+=( "rocsparse" )
-  fi
+  local library_dependencies_ubuntu=( "make" "pkg-config" "libnuma1" )
+  local library_dependencies_centos=( "epel-release" "make" "cmake3" "gcc-c++" "rpm-build" "numactl-libs" )
+  local library_dependencies_fedora=( "make" "cmake" "gcc-c++" "libcxx-devel" "rpm-build" "numactl-libs" )
+  local library_dependencies_sles=( "make" "cmake" "gcc-c++" "libcxxtools9" "rpm-build" "pkg-config" "dpkg" )
 
   local client_dependencies_ubuntu=( "libboost-program-options-dev" )
   local client_dependencies_centos=( "boost-devel" )
@@ -375,13 +368,13 @@ pushd .
   # Build library
   if [[ "${build_relocatable}" == true ]]; then
     ${cmake_executable} ${cmake_common_options} ${cmake_client_options} \
-      -DCMAKE_INSTALL_PREFIX=${rocm_path} \
-      -DCMAKE_SHARED_LINKER_FLAGS=${rocm_rpath} \
+      -DCMAKE_INSTALL_PREFIX="${rocm_path}" \
+      -DCMAKE_SHARED_LINKER_FLAGS="${rocm_rpath}" \
       -DCMAKE_PREFIX_PATH="${rocm_path} ${rocm_path}/hcc ${rocm_path}/hip" \
       -DCMAKE_MODULE_PATH="${rocm_path}/hip/cmake" \
       -DCMAKE_EXE_LINKER_FLAGS=" -Wl,--enable-new-dtags -Wl,--rpath,${rocm_path}/lib:${rocm_path}/lib64" \
       -DROCM_DISABLE_LDCONFIG=ON \
-      -DROCM_PATH=${rocm_path} ../..
+      -DROCM_PATH="${rocm_path}" ../..
   else
     ${cmake_executable} ${cmake_common_options} ${cmake_client_options} -DCMAKE_INSTALL_PREFIX=hipsparse-install -DROCM_PATH=${rocm_path} ../..
   fi
