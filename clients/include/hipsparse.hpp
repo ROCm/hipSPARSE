@@ -415,6 +415,17 @@ namespace hipsparse
                                         void*                  pBuffer);
 
     template <typename T>
+    hipsparseStatus_t hipsparseXnnz(hipsparseHandle_t    handle,
+				    hipsparseDirection_t dirA,
+				    int                  m,
+				    int                  n,
+				    const hipsparseMatDescr_t descrA,
+				    const T*             A,
+				    int 		 lda,
+				    int*                 nnzPerRowColumn,
+				    int*                 nnzTotalDevHostPtr);
+
+    template <typename T>
     hipsparseStatus_t hipsparseXcsr2csc(hipsparseHandle_t    handle,
                                         int                  m,
                                         int                  n,

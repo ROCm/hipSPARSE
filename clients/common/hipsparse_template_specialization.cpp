@@ -2802,6 +2802,95 @@ namespace hipsparse
                                  pBuffer);
     }
 
+  
+    template <>
+    hipsparseStatus_t hipsparseXnnz(hipsparseHandle_t    handle,
+				    hipsparseDirection_t dirA,
+				    int                  m,
+				    int                  n,
+				    const hipsparseMatDescr_t descrA,
+				    const float*             A,
+				    int 		 lda,
+				    int*                 nnzPerRowColumn,
+				    int*                 nnzTotalDevHostPtr)
+    {
+      return hipsparseSnnz(handle,
+			   dirA,
+			   m,
+			   n,
+			   descrA,
+			   A,
+			   lda,
+			   nnzPerRowColumn,
+			   nnzTotalDevHostPtr);
+    }
+
+  template <>
+    hipsparseStatus_t hipsparseXnnz(hipsparseHandle_t    handle,
+				    hipsparseDirection_t dirA,
+				    int                  m,
+				    int                  n,
+				    const hipsparseMatDescr_t descrA,
+				    const double*             A,
+				    int 		 lda,
+				    int*                 nnzPerRowColumn,
+				    int*                 nnzTotalDevHostPtr)
+    {
+      return hipsparseDnnz(handle,
+			   dirA,
+			   m,
+			   n,
+			   descrA,
+			   A,
+			   lda,
+			   nnzPerRowColumn,
+			   nnzTotalDevHostPtr);
+    }
+
+  template <>
+    hipsparseStatus_t hipsparseXnnz(hipsparseHandle_t    handle,
+				    hipsparseDirection_t dirA,
+				    int                  m,
+				    int                  n,
+				    const hipsparseMatDescr_t descrA,
+				    const hipComplex*             A,
+				    int 		 lda,
+				    int*                 nnzPerRowColumn,
+				    int*                 nnzTotalDevHostPtr)
+    {
+      return hipsparseCnnz(handle,
+			   dirA,
+			   m,
+			   n,
+			   descrA,
+			   A,
+			   lda,
+			   nnzPerRowColumn,
+			   nnzTotalDevHostPtr);
+    }
+
+  template <>
+    hipsparseStatus_t hipsparseXnnz(hipsparseHandle_t    handle,
+				    hipsparseDirection_t dirA,
+				    int                  m,
+				    int                  n,
+				    const hipsparseMatDescr_t descrA,
+				    const hipDoubleComplex*             A,
+				    int 		 lda,
+				    int*                 nnzPerRowColumn,
+				    int*                 nnzTotalDevHostPtr)
+    {
+      return hipsparseZnnz(handle,
+			   dirA,
+			   m,
+			   n,
+			   descrA,
+			   A,
+			   lda,
+			   nnzPerRowColumn,
+			   nnzTotalDevHostPtr);
+    }
+
     template <>
     hipsparseStatus_t hipsparseXcsr2csc(hipsparseHandle_t    handle,
                                         int                  m,
