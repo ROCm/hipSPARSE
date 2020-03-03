@@ -29,11 +29,10 @@
 #include <string>
 #include <vector>
 
-typedef std::tuple<int, int, int>    nnz_tuple;
+typedef std::tuple<int, int, int> nnz_tuple;
 
-
-int nnz_M_range[] = {-1, 0, 10, 500, 872, 1000};
-int nnz_N_range[] = {-3, 0, 33, 242, 623, 1000};
+int nnz_M_range[]  = {-1, 0, 10, 500, 872, 1000};
+int nnz_N_range[]  = {-3, 0, 33, 242, 623, 1000};
 int nnz_LD_range[] = {5, 500, 1000};
 
 class parameterized_nnz : public testing::TestWithParam<nnz_tuple>
@@ -48,16 +47,16 @@ protected:
 Arguments setup_nnz_arguments(nnz_tuple tup)
 {
     Arguments arg;
-    arg.M        = std::get<0>(tup);
-    arg.N        = std::get<1>(tup);
-    arg.lda      = std::get<2>(tup);
-    arg.timing   = 0;
+    arg.M      = std::get<0>(tup);
+    arg.N      = std::get<1>(tup);
+    arg.lda    = std::get<2>(tup);
+    arg.timing = 0;
     return arg;
 }
 
 TEST(nnz_bad_arg, nnz)
 {
-  testing_nnz_bad_arg<float>();
+    testing_nnz_bad_arg<float>();
 }
 
 TEST_P(parameterized_nnz, nnz_float)

@@ -414,21 +414,18 @@ int gen_2d_laplacian(int                  ndim,
 /* ============================================================================================ */
 /*! \brief  Generate a random dense matrix */
 template <typename T>
-void gen_dense_matrix(int                  m,
-		      int                  n,
-		      T * A,
-		      int lda)
+void gen_dense_matrix(int m, int n, T* A, int lda)
 {
 
-  for (int j=0;j<n;++j)
+    for(int j = 0; j < n; ++j)
     {
-      for (int i=0;i<m;++i)
-	{
-	  A[j*lda+i] = (rand() % 10) < 7 ? T(0) : T(1);
-	}      
+        for(int i = 0; i < m; ++i)
+        {
+            A[j * lda + i] = (rand() % 10) < 7 ? T(0) : T(1);
+        }
     }
 }
- 
+
 /* ============================================================================================ */
 /*! \brief  Generate a random sparse matrix in COO format */
 template <typename T>
@@ -864,16 +861,15 @@ static inline hipDoubleComplex testing_neg(hipDoubleComplex val)
     return ret;
 }
 
-
 template <typename T>
-hipsparseStatus_t host_nnz(hipsparseDirection_t     dirA,
-                          int             m,
-                          int             n,
-                          const hipsparseMatDescr_t descrA,
-                          const T*                  A,
-                          int             lda,
-                          int*            nnzPerRowColumn,
-                          int*            nnzTotalDevHostPtr)
+hipsparseStatus_t host_nnz(hipsparseDirection_t      dirA,
+                           int                       m,
+                           int                       n,
+                           const hipsparseMatDescr_t descrA,
+                           const T*                  A,
+                           int                       lda,
+                           int*                      nnzPerRowColumn,
+                           int*                      nnzTotalDevHostPtr)
 {
     int mn = (dirA == HIPSPARSE_DIRECTION_ROW) ? m : n;
     for(int j = 0; j < mn; ++j)

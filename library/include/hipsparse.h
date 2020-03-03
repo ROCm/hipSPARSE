@@ -141,7 +141,6 @@ HIPSPARSE_DIRECTION_ROW = 0,
 HIPSPARSE_DIRECTION_COLUMN = 1
 } hipsparseDirection_t;
 
-
 // clang-format on
 
 #ifdef __cplusplus
@@ -1830,49 +1829,48 @@ hipsparseStatus_t hipsparseZcsric02(hipsparseHandle_t         handle,
 /* Description: 
    This function computes the number of nonzero elements per row or column and the total number of nonzero elements in a dense matrix. */
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseSnnz(hipsparseHandle_t    handle,
-				hipsparseDirection_t dirA,
-				int m,
-				int n,
-				const hipsparseMatDescr_t descrA,
-				const float* A,
-				int lda,
-				int * nnzPerRowColumn,
-				int * nnzTotalDevHostPtr);
+hipsparseStatus_t hipsparseSnnz(hipsparseHandle_t         handle,
+                                hipsparseDirection_t      dirA,
+                                int                       m,
+                                int                       n,
+                                const hipsparseMatDescr_t descrA,
+                                const float*              A,
+                                int                       lda,
+                                int*                      nnzPerRowColumn,
+                                int*                      nnzTotalDevHostPtr);
 
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseDnnz(hipsparseHandle_t    handle,
-				hipsparseDirection_t dirA,
-				int m,
-				int n,
-				const hipsparseMatDescr_t descrA,
-				const double* A,
-				int lda,
-				int * nnzPerRowColumn,
-				int * nnzTotalDevHostPtr);
+hipsparseStatus_t hipsparseDnnz(hipsparseHandle_t         handle,
+                                hipsparseDirection_t      dirA,
+                                int                       m,
+                                int                       n,
+                                const hipsparseMatDescr_t descrA,
+                                const double*             A,
+                                int                       lda,
+                                int*                      nnzPerRowColumn,
+                                int*                      nnzTotalDevHostPtr);
 
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseCnnz(hipsparseHandle_t    handle,
-				hipsparseDirection_t dirA,
-				int m,
-				int n,
-				const hipsparseMatDescr_t descrA,
-				const hipComplex* A,
-				int lda,
-				int * nnzPerRowColumn,
-				int * nnzTotalDevHostPtr);
+hipsparseStatus_t hipsparseCnnz(hipsparseHandle_t         handle,
+                                hipsparseDirection_t      dirA,
+                                int                       m,
+                                int                       n,
+                                const hipsparseMatDescr_t descrA,
+                                const hipComplex*         A,
+                                int                       lda,
+                                int*                      nnzPerRowColumn,
+                                int*                      nnzTotalDevHostPtr);
 
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseZnnz(hipsparseHandle_t    handle,
-				hipsparseDirection_t dirA,
-				int m,
-				int n,
-				const hipsparseMatDescr_t descrA,
-				const hipDoubleComplex* A,
-				int lda,
-				int * nnzPerRowColumn,
-				int * nnzTotalDevHostPtr);
-  
+hipsparseStatus_t hipsparseZnnz(hipsparseHandle_t         handle,
+                                hipsparseDirection_t      dirA,
+                                int                       m,
+                                int                       n,
+                                const hipsparseMatDescr_t descrA,
+                                const hipDoubleComplex*   A,
+                                int                       lda,
+                                int*                      nnzPerRowColumn,
+                                int*                      nnzTotalDevHostPtr);
 
 /* Description: This routine converts a sparse matrix in CSR storage format
    to a sparse matrix in COO storage format. */
