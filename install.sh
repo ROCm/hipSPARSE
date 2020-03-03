@@ -127,9 +127,17 @@ install_packages( )
 
   # dependencies needed for library and clients to build
   local library_dependencies_ubuntu=( "make" "pkg-config" "libnuma1" )
-  local library_dependencies_centos=( "epel-release" "make" "cmake3" "gcc-c++" "rpm-build" "numactl-libs" )
+  local library_dependencies_centos=( "epel-release" "make" "cmake3" "gcc-c++" "rpm-build" )
   local library_dependencies_fedora=( "make" "cmake" "gcc-c++" "libcxx-devel" "rpm-build" "numactl-libs" )
   local library_dependencies_sles=( "make" "cmake" "gcc-c++" "libcxxtools9" "rpm-build" "pkg-config" "dpkg" )
+
+  if [[ "${ID}" == "centos" ]]; then
+    if [[ "${VERSION_ID}" == "6" ]]; then
+      library_dependencies_centos+=( "numactl" )
+    else
+      library_dependencies_centos+=( "numactl-libs" )
+    fi
+  fi
 
   local client_dependencies_ubuntu=( "libboost-program-options-dev" )
   local client_dependencies_centos=( "boost-devel" )
@@ -195,11 +203,14 @@ if [[ $? -ne 0 ]]; then
   exit 1
 fi
 
-# os-release file describes the system
+# /etc/*-release files describe the system
 if [[ -e "/etc/os-release" ]]; then
   source /etc/os-release
+elif [[ -e "/etc/centos-release" ]]; then
+  ID=$(cat /etc/centos-release | awk '{print tolower($1)}')
+  VERSION_ID=$(cat /etc/centos-release | grep -oP '(?<=release )[^ ]*' | cut -d "." -f1)
 else
-  echo "This script depends on the /etc/os-release file"
+  echo "This script depends on the /etc/*-release files"
   exit 2
 fi
 
