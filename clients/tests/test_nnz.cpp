@@ -47,9 +47,9 @@ protected:
 Arguments setup_nnz_arguments(nnz_tuple tup)
 {
     Arguments arg;
-    arg.M      = std::get<0>(tup);
-    arg.N      = std::get<1>(tup);
-    arg.lda    = std::get<2>(tup);
+    arg.M   = std::get<0>(tup);
+    arg.N   = std::get<1>(tup);
+    arg.lda = std::get<2>(tup);
     return arg;
 }
 
