@@ -327,8 +327,6 @@ hipsparseHybPartition_t HCCHybPartToHIPHybPart(rocsparse_hyb_partition_ partitio
     }
 }
 
-
-
 rocsparse_direction_ hipDirectionToHCCDirection(hipsparseDirection_t op)
 {
     switch(op)
@@ -354,7 +352,6 @@ hipsparseDirection_t HCCDirectionToHIPDirection(rocsparse_direction_ op)
         throw "Non existent rocsparse_direction_";
     }
 }
-
 
 // TODO side
 
@@ -4938,7 +4935,7 @@ hipsparseStatus_t hipsparseSnnz(hipsparseHandle_t         handle,
                                 int*                      nnzTotalDevHostPtr)
 {
     RETURN_IF_ROCSPARSE_ERROR(rocsparse_snnz((rocsparse_handle)handle,
-					     hipDirectionToHCCDirection(dirA),
+                                             hipDirectionToHCCDirection(dirA),
                                              m,
                                              n,
                                              (const rocsparse_mat_descr)descrA,
@@ -4960,7 +4957,7 @@ hipsparseStatus_t hipsparseDnnz(hipsparseHandle_t         handle,
                                 int*                      nnzTotalDevHostPtr)
 {
     RETURN_IF_ROCSPARSE_ERROR(rocsparse_dnnz((rocsparse_handle)handle,
-					     hipDirectionToHCCDirection(dirA),
+                                             hipDirectionToHCCDirection(dirA),
                                              m,
                                              n,
                                              (const rocsparse_mat_descr)descrA,
@@ -4982,7 +4979,7 @@ hipsparseStatus_t hipsparseCnnz(hipsparseHandle_t         handle,
                                 int*                      nnzTotalDevHostPtr)
 {
     RETURN_IF_ROCSPARSE_ERROR(rocsparse_cnnz((rocsparse_handle)handle,
-					     hipDirectionToHCCDirection(dirA),
+                                             hipDirectionToHCCDirection(dirA),
                                              m,
                                              n,
                                              (const rocsparse_mat_descr)descrA,
@@ -5004,7 +5001,7 @@ hipsparseStatus_t hipsparseZnnz(hipsparseHandle_t         handle,
                                 int*                      nnzTotalDevHostPtr)
 {
     RETURN_IF_ROCSPARSE_ERROR(rocsparse_znnz((rocsparse_handle)handle,
-					     hipDirectionToHCCDirection(dirA),
+                                             hipDirectionToHCCDirection(dirA),
                                              m,
                                              n,
                                              (const rocsparse_mat_descr)descrA,

@@ -420,10 +420,10 @@ void gen_dense_random_sparsity_pattern(int m, int n, T* A, int lda, float sparsi
     {
         for(int i = 0; i < m; ++i)
         {
-	  const float d = ((float)rand())/((float)RAND_MAX);	  
-	  A[j * lda + i] = (d < sparsity_ratio)
-	    ? make_DataType<T>(rand())/make_DataType<T>(RAND_MAX)
-	    : make_DataType<T>(0);
+            const float d  = ((float)rand()) / ((float)RAND_MAX);
+            A[j * lda + i] = (d < sparsity_ratio)
+                                 ? make_DataType<T>(rand()) / make_DataType<T>(RAND_MAX)
+                                 : make_DataType<T>(0);
         }
     }
 }
@@ -899,16 +899,16 @@ hipsparseStatus_t host_nnz(hipsparseDirection_t      dirA,
             }
         }
     }
-    
+
     int sum = 0;
 #ifdef _OPENMP
-#pragma omp parallel for reduction (+:sum)
+#pragma omp parallel for reduction(+ : sum)
 #endif
     for(int j = 0; j < mn; ++j)
-      {
-	sum = sum + nnzPerRowColumn[j];
-      }
-    nnzTotalDevHostPtr[0]  = sum;
+    {
+        sum = sum + nnzPerRowColumn[j];
+    }
+    nnzTotalDevHostPtr[0] = sum;
     return HIPSPARSE_STATUS_SUCCESS;
 }
 

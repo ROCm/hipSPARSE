@@ -50,7 +50,7 @@ void testing_nnz_bad_arg(void)
     static constexpr int                  N         = 10;
     static constexpr int                  lda       = M;
     static constexpr hipsparseDirection_t dirA      = HIPSPARSE_DIRECTION_ROW;
-    hipsparseStatus_t status;
+    hipsparseStatus_t                     status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -116,16 +116,26 @@ void testing_nnz_bad_arg(void)
     // Testing invalid direction
     //
     try
-      {
-	status = hipsparseXnnz(handle, (hipsparseDirection_t)77, -1, -1, descrA, (const T*)nullptr, -1, nullptr, nullptr);
-	//
-	// An exception should be thrown.
-	//
-	verify_hipsparse_status_internal_error(HIPSPARSE_STATUS_SUCCESS, "Error: an exception must be thrown from the conversion of the hipsparseDirection_t.");
-      }
+    {
+        status = hipsparseXnnz(handle,
+                               (hipsparseDirection_t)77,
+                               -1,
+                               -1,
+                               descrA,
+                               (const T*)nullptr,
+                               -1,
+                               nullptr,
+                               nullptr);
+        //
+        // An exception should be thrown.
+        //
+        verify_hipsparse_status_internal_error(
+            HIPSPARSE_STATUS_SUCCESS,
+            "Error: an exception must be thrown from the conversion of the hipsparseDirection_t.");
+    }
     catch(...)
-      {
-      }
+    {
+    }
 
     //
     // Testing invalid size on M
