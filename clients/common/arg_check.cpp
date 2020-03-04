@@ -109,6 +109,19 @@ void verify_hipsparse_status_invalid_handle(hipsparseStatus_t status)
 #endif
 }
 
+void verify_hipsparse_status_internal_error(hipsparseStatus_t status, const char* message)
+{
+#ifdef GOOGLE_TEST
+    ASSERT_EQ(status, HIPSPARSE_STATUS_INTERNAL_ERROR);
+#else
+    if(status != HIPSPARSE_STATUS_INTERNAL_ERROR)
+    {
+        std::cerr << "rocSPARSE TEST ERROR: status != HIPSPARSE_STATUS_INTERNAL_ERROR, ";
+        std::cerr << message << std::endl;
+    }
+#endif
+}
+
 void verify_hipsparse_status_success(hipsparseStatus_t status, const char* message)
 {
 #ifdef GOOGLE_TEST
