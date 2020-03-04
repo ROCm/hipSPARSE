@@ -50,7 +50,6 @@ void testing_nnz_bad_arg(void)
     static constexpr int                  N         = 10;
     static constexpr int                  lda       = M;
     static constexpr hipsparseDirection_t dirA      = HIPSPARSE_DIRECTION_ROW;
-
     hipsparseStatus_t status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
@@ -116,9 +115,17 @@ void testing_nnz_bad_arg(void)
     //
     // Testing invalid direction
     //
-    status = hipsparseXnnz(
-        handle, (hipsparseDirection_t)77, -1, -1, descrA, (const T*)nullptr, -1, nullptr, nullptr);
-    verify_hipsparse_status_invalid_value(status, "Error: invalid direction must be detected.");
+    try
+      {
+	status = hipsparseXnnz(handle, (hipsparseDirection_t)77, -1, -1, descrA, (const T*)nullptr, -1, nullptr, nullptr);
+	//
+	// An exception should be thrown.
+	//
+	verify_hipsparse_status_internal_error(HIPSPARSE_STATUS_SUCCESS, "Error: an exception must be thrown from the conversion of the hipsparseDirection_t.");
+      }
+    catch(...)
+      {
+      }
 
     //
     // Testing invalid size on M
@@ -268,7 +275,7 @@ hipsparseStatus_t testing_nnz(Arguments argus)
     // Initialize a random dense matrix.
     //
     srand(0);
-    gen_dense_matrix(M, N, h_A.data(), lda);
+    gen_dense_random_sparsity_pattern(M, N, h_A.data(), lda, 0.2);
 
     //
     // Transfer.

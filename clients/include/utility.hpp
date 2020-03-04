@@ -412,16 +412,18 @@ int gen_2d_laplacian(int                  ndim,
 }
 
 /* ============================================================================================ */
-/*! \brief  Generate a random dense matrix */
+/*! \brief  Generate a random sparsity pattern with a dense format, generated floating point values of type T are positive and normalized. */
 template <typename T>
-void gen_dense_matrix(int m, int n, T* A, int lda)
+void gen_dense_random_sparsity_pattern(int m, int n, T* A, int lda, float sparsity_ratio = 0.3)
 {
-
     for(int j = 0; j < n; ++j)
     {
         for(int i = 0; i < m; ++i)
         {
-            A[j * lda + i] = (rand() % 10) < 7 ? T(0) : T(1);
+	  const float d = ((float)rand())/((float)RAND_MAX);	  
+	  A[j * lda + i] = (d < sparsity_ratio)
+	    ? make_DataType<T>(rand())/make_DataType<T>(RAND_MAX)
+	    : make_DataType<T>(0);
         }
     }
 }
@@ -872,6 +874,9 @@ hipsparseStatus_t host_nnz(hipsparseDirection_t      dirA,
                            int*                      nnzTotalDevHostPtr)
 {
     int mn = (dirA == HIPSPARSE_DIRECTION_ROW) ? m : n;
+#ifdef _OPENMP
+#pragma omp parallel for
+#endif
     for(int j = 0; j < mn; ++j)
     {
         nnzPerRowColumn[j] = 0;
@@ -894,13 +899,16 @@ hipsparseStatus_t host_nnz(hipsparseDirection_t      dirA,
             }
         }
     }
-
-    nnzTotalDevHostPtr[0] = 0;
+    
+    int sum = 0;
+#ifdef _OPENMP
+#pragma omp parallel for reduction (+:sum)
+#endif
     for(int j = 0; j < mn; ++j)
-    {
-        nnzTotalDevHostPtr[0] += nnzPerRowColumn[j];
-    }
-
+      {
+	sum = sum + nnzPerRowColumn[j];
+      }
+    nnzTotalDevHostPtr[0]  = sum;
     return HIPSPARSE_STATUS_SUCCESS;
 }
 
