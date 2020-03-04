@@ -412,6 +412,23 @@ int gen_2d_laplacian(int                  ndim,
 }
 
 /* ============================================================================================ */
+/*! \brief  Generate a random sparsity pattern with a dense format, generated floating point values of type T are positive and normalized. */
+template <typename T>
+void gen_dense_random_sparsity_pattern(int m, int n, T* A, int lda, float sparsity_ratio = 0.3)
+{
+    for(int j = 0; j < n; ++j)
+    {
+        for(int i = 0; i < m; ++i)
+        {
+            const float d  = ((float)rand()) / ((float)RAND_MAX);
+            A[j * lda + i] = (d < sparsity_ratio)
+                                 ? make_DataType<T>(rand()) / make_DataType<T>(RAND_MAX)
+                                 : make_DataType<T>(0);
+        }
+    }
+}
+
+/* ============================================================================================ */
 /*! \brief  Generate a random sparse matrix in COO format */
 template <typename T>
 void gen_matrix_coo(int                  m,
@@ -844,6 +861,55 @@ static inline hipDoubleComplex testing_neg(hipDoubleComplex val)
     ret.x = -val.x;
     ret.y = -val.y;
     return ret;
+}
+
+template <typename T>
+hipsparseStatus_t host_nnz(hipsparseDirection_t      dirA,
+                           int                       m,
+                           int                       n,
+                           const hipsparseMatDescr_t descrA,
+                           const T*                  A,
+                           int                       lda,
+                           int*                      nnzPerRowColumn,
+                           int*                      nnzTotalDevHostPtr)
+{
+    int mn = (dirA == HIPSPARSE_DIRECTION_ROW) ? m : n;
+#ifdef _OPENMP
+#pragma omp parallel for
+#endif
+    for(int j = 0; j < mn; ++j)
+    {
+        nnzPerRowColumn[j] = 0;
+    }
+
+    for(int j = 0; j < n; ++j)
+    {
+        for(int i = 0; i < m; ++i)
+        {
+            if(A[j * lda + i] != 0)
+            {
+                if(dirA == HIPSPARSE_DIRECTION_ROW)
+                {
+                    nnzPerRowColumn[i] += 1;
+                }
+                else
+                {
+                    nnzPerRowColumn[j] += 1;
+                }
+            }
+        }
+    }
+
+    int sum = 0;
+#ifdef _OPENMP
+#pragma omp parallel for reduction(+ : sum)
+#endif
+    for(int j = 0; j < mn; ++j)
+    {
+        sum = sum + nnzPerRowColumn[j];
+    }
+    nnzTotalDevHostPtr[0] = sum;
+    return HIPSPARSE_STATUS_SUCCESS;
 }
 
 template <typename T>
@@ -2082,6 +2148,7 @@ public:
     int K   = 128;
     int nnz = 32;
 
+    int lda;
     int ldb;
     int ldc;
 
@@ -2098,6 +2165,7 @@ public:
     hipsparseHybPartition_t part      = HIPSPARSE_HYB_PARTITION_AUTO;
     hipsparseDiagType_t     diag_type = HIPSPARSE_DIAG_TYPE_NON_UNIT;
     hipsparseFillMode_t     fill_mode = HIPSPARSE_FILL_MODE_LOWER;
+    hipsparseDirection_t    dirA      = HIPSPARSE_DIRECTION_ROW;
 
     int norm_check = 0;
     int unit_check = 1;
@@ -2117,6 +2185,7 @@ public:
         this->K   = rhs.K;
         this->nnz = rhs.nnz;
 
+        this->lda = rhs.lda;
         this->ldb = rhs.ldb;
         this->ldc = rhs.ldc;
 
@@ -2133,6 +2202,7 @@ public:
         this->part      = rhs.part;
         this->diag_type = rhs.diag_type;
         this->fill_mode = rhs.fill_mode;
+        this->dirA      = rhs.dirA;
 
         this->norm_check = rhs.norm_check;
         this->unit_check = rhs.unit_check;

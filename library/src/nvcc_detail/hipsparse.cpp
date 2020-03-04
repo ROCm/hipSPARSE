@@ -267,6 +267,32 @@ hipsparseOperation_t CudaOperationToHIPOperation(cusparseOperation_t op)
     }
 }
 
+cusparseDirection_t hipDirectionToCudaDirection(hipsparseDirection_t op)
+{
+    switch(op)
+    {
+    case HIPSPARSE_DIRECTION_ROW:
+        return CUSPARSE_DIRECTION_ROW;
+    case HIPSPARSE_DIRECTION_COLUMN:
+        return CUSPARSE_DIRECTION_COLUMN;
+    default:
+        throw "Non existent hipsparseDirection_t";
+    }
+}
+
+hipsparseDirection_t CudaDirectionToHIPDirection(cusparseDirection_t op)
+{
+    switch(op)
+    {
+    case CUSPARSE_DIRECTION_ROW:
+        return HIPSPARSE_DIRECTION_ROW;
+    case CUSPARSE_DIRECTION_COLUMN:
+        return HIPSPARSE_DIRECTION_COLUMN;
+    default:
+        throw "Non existent cusparseDirection_t";
+    }
+}
+
 cusparseHybPartition_t hipHybPartitionToCudaHybPartition(hipsparseHybPartition_t part)
 {
     switch(part)
@@ -3516,6 +3542,90 @@ hipsparseStatus_t hipsparseZcsric02(hipsparseHandle_t         handle,
                                                          (csric02Info_t)info,
                                                          hipPolicyToCudaPolicy(policy),
                                                          pBuffer));
+}
+
+hipsparseStatus_t hipsparseSnnz(hipsparseHandle_t         handle,
+                                hipsparseDirection_t      dirA,
+                                int                       m,
+                                int                       n,
+                                const hipsparseMatDescr_t descrA,
+                                const float*              A,
+                                int                       lda,
+                                int*                      nnzPerRowColumn,
+                                int*                      nnzTotalDevHostPtr)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseSnnz((cusparseHandle_t)handle,
+                                                     hipDirectionToCudaDirection(dirA),
+                                                     m,
+                                                     n,
+                                                     descrA,
+                                                     A,
+                                                     lda,
+                                                     nnzPerRowColumn,
+                                                     nnzTotalDevHostPtr));
+}
+
+hipsparseStatus_t hipsparseDnnz(hipsparseHandle_t         handle,
+                                hipsparseDirection_t      dirA,
+                                int                       m,
+                                int                       n,
+                                const hipsparseMatDescr_t descrA,
+                                const double*             A,
+                                int                       lda,
+                                int*                      nnzPerRowColumn,
+                                int*                      nnzTotalDevHostPtr)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseDnnz((cusparseHandle_t)handle,
+                                                     hipDirectionToCudaDirection(dirA),
+                                                     m,
+                                                     n,
+                                                     descrA,
+                                                     A,
+                                                     lda,
+                                                     nnzPerRowColumn,
+                                                     nnzTotalDevHostPtr));
+}
+
+hipsparseStatus_t hipsparseCnnz(hipsparseHandle_t         handle,
+                                hipsparseDirection_t      dirA,
+                                int                       m,
+                                int                       n,
+                                const hipsparseMatDescr_t descrA,
+                                const hipComplex*         A,
+                                int                       lda,
+                                int*                      nnzPerRowColumn,
+                                int*                      nnzTotalDevHostPtr)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseCnnz((cusparseHandle_t)handle,
+                                                     hipDirectionToCudaDirection(dirA),
+                                                     m,
+                                                     n,
+                                                     descrA,
+                                                     A,
+                                                     lda,
+                                                     nnzPerRowColumn,
+                                                     nnzTotalDevHostPtr));
+}
+
+hipsparseStatus_t hipsparseZnnz(hipsparseHandle_t         handle,
+                                hipsparseDirection_t      dirA,
+                                int                       m,
+                                int                       n,
+                                const hipsparseMatDescr_t descrA,
+                                const hipDoubleComplex*   A,
+                                int                       lda,
+                                int*                      nnzPerRowColumn,
+                                int*                      nnzTotalDevHostPtr)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseZnnz((cusparseHandle_t)handle,
+                                                     hipDirectionToCudaDirection(dirA),
+                                                     m,
+                                                     n,
+                                                     descrA,
+                                                     A,
+                                                     lda,
+                                                     nnzPerRowColumn,
+                                                     nnzTotalDevHostPtr));
 }
 
 hipsparseStatus_t hipsparseXcsr2coo(hipsparseHandle_t    handle,
