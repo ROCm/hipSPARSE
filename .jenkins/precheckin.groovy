@@ -18,7 +18,7 @@ def runCI =
     prj.paths.build_command = './install.sh -c'
     prj.compiler.compiler_name = 'c++'
     prj.compiler.compiler_path = 'c++'
-    
+
     // Define test architectures, optional rocm version argument is available
     def nodes = new dockerNodes(nodeDetails, jobName, prj)
 
@@ -38,7 +38,9 @@ def runCI =
     {
         platform, project->
 
-        commonGroovy.runTestCommand(platform, project)
+        def gfilter = "*checkin*"
+
+        commonGroovy.runTestCommand(platform, project, gfilter)
     }
 
     def packageCommand =

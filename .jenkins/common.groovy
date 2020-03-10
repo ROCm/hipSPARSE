@@ -35,10 +35,9 @@ def runCompileCommand(platform, project)
     platform.runCommand(this, command)
 }
 
-def runTestCommand (platform, project)
+def runTestCommand (platform, project, gfilter)
 {
     String sudo = auxiliary.sudo(platform.jenkinsLabel)
-    def gfilter = auxiliary.isJobStartedByTimer() ? "*nightly*" : "*checkin*"
     def command = """#!/usr/bin/env bash
                     set -x
                     cd ${project.paths.project_build_prefix}/build/release/clients/staging
@@ -51,7 +50,6 @@ def runTestCommand (platform, project)
 
 def runPackageCommand(platform, project)
 {
-    platform, project->
 
     def command
 
