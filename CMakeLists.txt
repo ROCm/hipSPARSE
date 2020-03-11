@@ -31,10 +31,12 @@ else()
   set(CMAKE_INSTALL_PREFIX "/opt/rocm" CACHE PATH "Install path prefix, prepended onto install directories")
 endif()
 
+list( APPEND CMAKE_PREFIX_PATH /opt/rocm/hcc /opt/rocm/hip )
+
 # CMake modules
 list(APPEND CMAKE_MODULE_PATH
      ${CMAKE_CURRENT_SOURCE_DIR}/cmake
-     /opt/rocm/hip/cmake
+     ${CMAKE_PREFIX_PATH}/cmake
 )
 
 # Set a default build type if none was specified
@@ -68,6 +70,13 @@ include(cmake/Dependencies.cmake)
 # Setup version
 rocm_setup_version(VERSION 1.5.4)
 set(hipsparse_SOVERSION 0.1)
+
+# Look for libamdhip64
+find_library(
+  LIBAMDHIP64_LIBRARY
+  NAMES libamdhip64.so
+  HINTS "${CMAKE_PREFIX_PATH}/lib" )
+message("amdhip64: ${LIBAMDHIP64_LIBRARY}")
 
 # hipSPARSE library
 add_subdirectory(library)
