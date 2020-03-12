@@ -18,6 +18,7 @@ function display_help()
   echo "    [-c|--clients] build library clients too (combines with -i & -d)"
   echo "    [-g|--debug] -DCMAKE_BUILD_TYPE=Debug (default is =Release)"
   echo "    [--cuda] build library for cuda backend"
+  echo "    [--static] build static library"
 }
 
 # This function is helpful for dockerfiles that do not have sudo installed, but the default user is root
@@ -224,6 +225,7 @@ install_package=false
 install_dependencies=false
 build_clients=false
 build_cuda=false
+build_static=false
 build_release=true
 install_prefix=hipsparse-install
 rocm_path=/opt/rocm
@@ -236,7 +238,7 @@ build_relocatable=false
 # check if we have a modern version of getopt that can handle whitespace and long parameters
 getopt -T
 if [[ $? -eq 4 ]]; then
-  GETOPT_PARSE=$(getopt --name "${0}" --longoptions help,install,clients,dependencies,debug,cuda,relocatable --options hicdgr -- "$@")
+  GETOPT_PARSE=$(getopt --name "${0}" --longoptions help,install,clients,dependencies,debug,cuda,static,relocatable --options hicdgr -- "$@")
 else
   echo "Need a new version of getopt"
   exit 1
@@ -272,6 +274,9 @@ while true; do
         shift ;;
     --cuda)
         build_cuda=true
+        shift ;;
+    --static)
+        build_static=true
         shift ;;
     --prefix)
         install_prefix=${2}
@@ -355,6 +360,11 @@ pushd .
   else
     mkdir -p ${build_dir}/debug/clients && cd ${build_dir}/debug
     cmake_common_options="${cmake_common_options} -DCMAKE_BUILD_TYPE=Debug"
+  fi
+
+  # library type
+  if [[ "${build_static}" == true ]]; then
+    cmake_common_options="${cmake_common_options} -DBUILD_SHARED_LIBS=OFF"
   fi
 
   # clients
