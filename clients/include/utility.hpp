@@ -2147,6 +2147,7 @@ public:
     int N   = 128;
     int K   = 128;
     int nnz = 32;
+    int block_dim = 1;
 
     int lda;
     int ldb;

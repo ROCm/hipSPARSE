@@ -3847,6 +3847,248 @@ hipsparseStatus_t hipsparseZcsr2hyb(hipsparseHandle_t         handle,
                          hipHybPartitionToCudaHybPartition(partitionType)));
 }
 
+
+
+
+
+hipsparseStatus_t hipsparseScsr2bsr(hipsparseHandle_t    handle,
+                                    int                  m,
+                                    int                  n,
+                                    int                  nnz,
+                                    const float*         csrSortedVal,
+                                    const int*           csrSortedRowPtr,
+                                    const int*           csrSortedColInd,
+                                    float*               cscSortedVal,
+                                    int*                 cscSortedRowInd,
+                                    int*                 cscSortedColPtr,
+                                    hipsparseAction_t    copyValues,
+                                    hipsparseIndexBase_t idxBase)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseScsr2bsr((cusparseHandle_t)handle,
+                                                         m,
+                                                         n,
+                                                         nnz,
+                                                         csrSortedVal,
+                                                         csrSortedRowPtr,
+                                                         csrSortedColInd,
+                                                         cscSortedVal,
+                                                         cscSortedRowInd,
+                                                         cscSortedColPtr,
+                                                         hipActionToCudaAction(copyValues),
+                                                         hipIndexBaseToCudaIndexBase(idxBase)));
+}
+
+hipsparseStatus_t hipsparseDcsr2bsr(hipsparseHandle_t    handle,
+                                    int                  m,
+                                    int                  n,
+                                    int                  nnz,
+                                    const double*        csrSortedVal,
+                                    const int*           csrSortedRowPtr,
+                                    const int*           csrSortedColInd,
+                                    double*              cscSortedVal,
+                                    int*                 cscSortedRowInd,
+                                    int*                 cscSortedColPtr,
+                                    hipsparseAction_t    copyValues,
+                                    hipsparseIndexBase_t idxBase)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseDcsr2bsr((cusparseHandle_t)handle,
+                                                         m,
+                                                         n,
+                                                         nnz,
+                                                         csrSortedVal,
+                                                         csrSortedRowPtr,
+                                                         csrSortedColInd,
+                                                         cscSortedVal,
+                                                         cscSortedRowInd,
+                                                         cscSortedColPtr,
+                                                         hipActionToCudaAction(copyValues),
+                                                         hipIndexBaseToCudaIndexBase(idxBase)));
+}
+
+hipsparseStatus_t hipsparseCcsr2bsr(hipsparseHandle_t    handle,
+                                    int                  m,
+                                    int                  n,
+                                    int                  nnz,
+                                    const hipComplex*    csrSortedVal,
+                                    const int*           csrSortedRowPtr,
+                                    const int*           csrSortedColInd,
+                                    hipComplex*          cscSortedVal,
+                                    int*                 cscSortedRowInd,
+                                    int*                 cscSortedColPtr,
+                                    hipsparseAction_t    copyValues,
+                                    hipsparseIndexBase_t idxBase)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseCcsr2bsr((cusparseHandle_t)handle,
+                                                         m,
+                                                         n,
+                                                         nnz,
+                                                         (const cuComplex*)csrSortedVal,
+                                                         csrSortedRowPtr,
+                                                         csrSortedColInd,
+                                                         (cuComplex*)cscSortedVal,
+                                                         cscSortedRowInd,
+                                                         cscSortedColPtr,
+                                                         hipActionToCudaAction(copyValues),
+                                                         hipIndexBaseToCudaIndexBase(idxBase)));
+}
+
+hipsparseStatus_t hipsparseZcsr2bsr(hipsparseHandle_t       handle,
+                                    int                     m,
+                                    int                     n,
+                                    int                     nnz,
+                                    const hipDoubleComplex* csrSortedVal,
+                                    const int*              csrSortedRowPtr,
+                                    const int*              csrSortedColInd,
+                                    hipDoubleComplex*       cscSortedVal,
+                                    int*                    cscSortedRowInd,
+                                    int*                    cscSortedColPtr,
+                                    hipsparseAction_t       copyValues,
+                                    hipsparseIndexBase_t    idxBase)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseZcsr2bsr((cusparseHandle_t)handle,
+                                                         m,
+                                                         n,
+                                                         nnz,
+                                                         (const cuDoubleComplex*)csrSortedVal,
+                                                         csrSortedRowPtr,
+                                                         csrSortedColInd,
+                                                         (cuDoubleComplex*)cscSortedVal,
+                                                         cscSortedRowInd,
+                                                         cscSortedColPtr,
+                                                         hipActionToCudaAction(copyValues),
+                                                         hipIndexBaseToCudaIndexBase(idxBase)));
+}
+
+
+
+
+hipsparseStatus_t hipsparseSbsr2csr(hipsparseHandle_t    handle,
+                                    int                  m,
+                                    int                  n,
+                                    int                  nnz,
+                                    const float*         csrSortedVal,
+                                    const int*           csrSortedRowPtr,
+                                    const int*           csrSortedColInd,
+                                    float*               cscSortedVal,
+                                    int*                 cscSortedRowInd,
+                                    int*                 cscSortedColPtr,
+                                    hipsparseAction_t    copyValues,
+                                    hipsparseIndexBase_t idxBase)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseSbsr2csr((cusparseHandle_t)handle,
+                                                         m,
+                                                         n,
+                                                         nnz,
+                                                         csrSortedVal,
+                                                         csrSortedRowPtr,
+                                                         csrSortedColInd,
+                                                         cscSortedVal,
+                                                         cscSortedRowInd,
+                                                         cscSortedColPtr,
+                                                         hipActionToCudaAction(copyValues),
+                                                         hipIndexBaseToCudaIndexBase(idxBase)));
+}
+
+hipsparseStatus_t hipsparseDbsr2csr(hipsparseHandle_t    handle,
+                                    int                  m,
+                                    int                  n,
+                                    int                  nnz,
+                                    const double*        csrSortedVal,
+                                    const int*           csrSortedRowPtr,
+                                    const int*           csrSortedColInd,
+                                    double*              cscSortedVal,
+                                    int*                 cscSortedRowInd,
+                                    int*                 cscSortedColPtr,
+                                    hipsparseAction_t    copyValues,
+                                    hipsparseIndexBase_t idxBase)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseDbsr2csr((cusparseHandle_t)handle,
+                                                         m,
+                                                         n,
+                                                         nnz,
+                                                         csrSortedVal,
+                                                         csrSortedRowPtr,
+                                                         csrSortedColInd,
+                                                         cscSortedVal,
+                                                         cscSortedRowInd,
+                                                         cscSortedColPtr,
+                                                         hipActionToCudaAction(copyValues),
+                                                         hipIndexBaseToCudaIndexBase(idxBase)));
+}
+
+hipsparseStatus_t hipsparseCbsr2csr(hipsparseHandle_t    handle,
+                                    int                  m,
+                                    int                  n,
+                                    int                  nnz,
+                                    const hipComplex*    csrSortedVal,
+                                    const int*           csrSortedRowPtr,
+                                    const int*           csrSortedColInd,
+                                    hipComplex*          cscSortedVal,
+                                    int*                 cscSortedRowInd,
+                                    int*                 cscSortedColPtr,
+                                    hipsparseAction_t    copyValues,
+                                    hipsparseIndexBase_t idxBase)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseCbsr2csr((cusparseHandle_t)handle,
+                                                         m,
+                                                         n,
+                                                         nnz,
+                                                         (const cuComplex*)csrSortedVal,
+                                                         csrSortedRowPtr,
+                                                         csrSortedColInd,
+                                                         (cuComplex*)cscSortedVal,
+                                                         cscSortedRowInd,
+                                                         cscSortedColPtr,
+                                                         hipActionToCudaAction(copyValues),
+                                                         hipIndexBaseToCudaIndexBase(idxBase)));
+}
+
+hipsparseStatus_t hipsparseZbsr2csr(hipsparseHandle_t       handle,
+                                    int                     m,
+                                    int                     n,
+                                    int                     nnz,
+                                    const hipDoubleComplex* csrSortedVal,
+                                    const int*              csrSortedRowPtr,
+                                    const int*              csrSortedColInd,
+                                    hipDoubleComplex*       cscSortedVal,
+                                    int*                    cscSortedRowInd,
+                                    int*                    cscSortedColPtr,
+                                    hipsparseAction_t       copyValues,
+                                    hipsparseIndexBase_t    idxBase)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseZbsr2csr((cusparseHandle_t)handle,
+                                                         m,
+                                                         n,
+                                                         nnz,
+                                                         (const cuDoubleComplex*)csrSortedVal,
+                                                         csrSortedRowPtr,
+                                                         csrSortedColInd,
+                                                         (cuDoubleComplex*)cscSortedVal,
+                                                         cscSortedRowInd,
+                                                         cscSortedColPtr,
+                                                         hipActionToCudaAction(copyValues),
+                                                         hipIndexBaseToCudaIndexBase(idxBase)));
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 hipsparseStatus_t hipsparseShyb2csr(hipsparseHandle_t         handle,
                                     const hipsparseMatDescr_t descrA,
                                     const hipsparseHybMat_t   hybA,

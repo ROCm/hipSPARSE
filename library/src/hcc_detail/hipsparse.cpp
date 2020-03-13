@@ -4788,6 +4788,494 @@ hipsparseStatus_t hipsparseZcsr2hyb(hipsparseHandle_t         handle,
                            hipHybPartToHCCHybPart(partitionType)));
 }
 
+hipsparseStatus_t hipsparseScsr2bsr(hipsparseHandle_t    handle,
+                                    hipsparseDirection_t dirA,
+                                    int                  m,
+                                    int                  n,
+                                    hipsparseMatDescr_t  descrA,
+                                    const float*         csrValA,
+                                    const int*           csrRowPtrA,
+                                    const int*           csrColIndA,
+                                    int                  blockDim,
+                                    hipsparseMatDescr_t  descrC,
+                                    float*               bsrValC,
+                                    int*                 bsrRowPtrC,
+                                    int*                 bsrColIndC)
+{
+    // // Determine buffer size
+    // size_t buffer_size = 0;
+    // RETURN_IF_ROCSPARSE_ERROR(rocsparse_csr2csc_buffer_size((rocsparse_handle)handle,
+    //                                                         m,
+    //                                                         n,
+    //                                                         nnz,
+    //                                                         csrSortedRowPtr,
+    //                                                         csrSortedColInd,
+    //                                                         hipActionToHCCAction(copyValues),
+    //                                                         &buffer_size));
+
+    // // Allocate buffer
+    // void* buffer = nullptr;
+    // RETURN_IF_HIP_ERROR(hipMalloc(&buffer, buffer_size));
+
+    // // Obtain stream, to explicitly sync (cusparse csr2csc is blocking)
+    // hipStream_t stream;
+    // RETURN_IF_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
+
+    // // Format conversion
+    // RETURN_IF_ROCSPARSE_ERROR(rocsparse_scsr2csc((rocsparse_handle)handle,
+    //                                              m,
+    //                                              n,
+    //                                              nnz,
+    //                                              csrSortedVal,
+    //                                              csrSortedRowPtr,
+    //                                              csrSortedColInd,
+    //                                              cscSortedVal,
+    //                                              cscSortedRowInd,
+    //                                              cscSortedColPtr,
+    //                                              hipActionToHCCAction(copyValues),
+    //                                              hipBaseToHCCBase(idxBase),
+    //                                              buffer));
+
+    // // Free buffer
+    // RETURN_IF_HIP_ERROR(hipFree(buffer));
+
+    // // Synchronize stream
+    // RETURN_IF_HIP_ERROR(hipStreamSynchronize(stream));
+
+    return HIPSPARSE_STATUS_SUCCESS;
+}
+
+hipsparseStatus_t hipsparseDcsr2bsr(hipsparseHandle_t    handle,
+                                    hipsparseDirection_t dirA,
+                                    int                  m,
+                                    int                  n,
+                                    hipsparseMatDescr_t  descrA,
+                                    const double*        csrValA,
+                                    const int*           csrRowPtrA,
+                                    const int*           csrColIndA,
+                                    int                  blockDim,
+                                    hipsparseMatDescr_t  descrC,
+                                    double*              bsrValC,
+                                    int*                 bsrRowPtrC,
+                                    int*                 bsrColIndC)
+{
+    // // Determine buffer size
+    // size_t buffer_size = 0;
+    // RETURN_IF_ROCSPARSE_ERROR(rocsparse_csr2csc_buffer_size((rocsparse_handle)handle,
+    //                                                         m,
+    //                                                         n,
+    //                                                         nnz,
+    //                                                         csrSortedRowPtr,
+    //                                                         csrSortedColInd,
+    //                                                         hipActionToHCCAction(copyValues),
+    //                                                         &buffer_size));
+
+    // // Allocate buffer
+    // void* buffer = nullptr;
+    // RETURN_IF_HIP_ERROR(hipMalloc(&buffer, buffer_size));
+
+    // // Obtain stream, to explicitly sync (cusparse csr2csc is blocking)
+    // hipStream_t stream;
+    // RETURN_IF_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
+
+    // // Format conversion
+    // RETURN_IF_ROCSPARSE_ERROR(rocsparse_dcsr2csc((rocsparse_handle)handle,
+    //                                              m,
+    //                                              n,
+    //                                              nnz,
+    //                                              csrSortedVal,
+    //                                              csrSortedRowPtr,
+    //                                              csrSortedColInd,
+    //                                              cscSortedVal,
+    //                                              cscSortedRowInd,
+    //                                              cscSortedColPtr,
+    //                                              hipActionToHCCAction(copyValues),
+    //                                              hipBaseToHCCBase(idxBase),
+    //                                              buffer));
+
+    // // Free buffer
+    // RETURN_IF_HIP_ERROR(hipFree(buffer));
+
+    // // Synchronize stream
+    // RETURN_IF_HIP_ERROR(hipStreamSynchronize(stream));
+
+    return HIPSPARSE_STATUS_SUCCESS;
+}
+
+hipsparseStatus_t hipsparseCcsr2bsr(hipsparseHandle_t    handle,
+                                    hipsparseDirection_t dirA,
+                                    int                  m,
+                                    int                  n,
+                                    hipsparseMatDescr_t  descrA,
+                                    const hipComplex*    csrValA,
+                                    const int*           csrRowPtrA,
+                                    const int*           csrColIndA,
+                                    int                  blockDim,
+                                    hipsparseMatDescr_t  descrC,
+                                    hipComplex*          bsrValC,
+                                    int*                 bsrRowPtrC,
+                                    int*                 bsrColIndC)
+{
+    // // Determine buffer size
+    // size_t buffer_size = 0;
+    // RETURN_IF_ROCSPARSE_ERROR(rocsparse_csr2csc_buffer_size((rocsparse_handle)handle,
+    //                                                         m,
+    //                                                         n,
+    //                                                         nnz,
+    //                                                         csrSortedRowPtr,
+    //                                                         csrSortedColInd,
+    //                                                         hipActionToHCCAction(copyValues),
+    //                                                         &buffer_size));
+
+    // // Allocate buffer
+    // void* buffer = nullptr;
+    // RETURN_IF_HIP_ERROR(hipMalloc(&buffer, buffer_size));
+
+    // // Obtain stream, to explicitly sync (cusparse csr2csc is blocking)
+    // hipStream_t stream;
+    // RETURN_IF_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
+
+    // // Format conversion
+    // RETURN_IF_ROCSPARSE_ERROR(rocsparse_ccsr2csc((rocsparse_handle)handle,
+    //                                              m,
+    //                                              n,
+    //                                              nnz,
+    //                                              (const rocsparse_float_complex*)csrSortedVal,
+    //                                              csrSortedRowPtr,
+    //                                              csrSortedColInd,
+    //                                              (rocsparse_float_complex*)cscSortedVal,
+    //                                              cscSortedRowInd,
+    //                                              cscSortedColPtr,
+    //                                              hipActionToHCCAction(copyValues),
+    //                                              hipBaseToHCCBase(idxBase),
+    //                                              buffer));
+
+    // // Free buffer
+    // RETURN_IF_HIP_ERROR(hipFree(buffer));
+
+    // // Synchronize stream
+    // RETURN_IF_HIP_ERROR(hipStreamSynchronize(stream));
+
+    return HIPSPARSE_STATUS_SUCCESS;
+}
+
+hipsparseStatus_t hipsparseZcsr2bsr(hipsparseHandle_t       handle,
+                                    hipsparseDirection_t    dirA,
+                                    int                     m,
+                                    int                     n,
+                                    hipsparseMatDescr_t     descrA,
+                                    const hipDoubleComplex* csrValA,
+                                    const int*              csrRowPtrA,
+                                    const int*              csrColIndA,
+                                    int                     blockDim,
+                                    hipsparseMatDescr_t     descrC,
+                                    hipDoubleComplex*       bsrValC,
+                                    int*                    bsrRowPtrC,
+                                    int*                    bsrColIndC)
+{
+    // // Determine buffer size
+    // size_t buffer_size = 0;
+    // RETURN_IF_ROCSPARSE_ERROR(rocsparse_csr2csc_buffer_size((rocsparse_handle)handle,
+    //                                                         m,
+    //                                                         n,
+    //                                                         nnz,
+    //                                                         csrSortedRowPtr,
+    //                                                         csrSortedColInd,
+    //                                                         hipActionToHCCAction(copyValues),
+    //                                                         &buffer_size));
+
+    // // Allocate buffer
+    // void* buffer = nullptr;
+    // RETURN_IF_HIP_ERROR(hipMalloc(&buffer, buffer_size));
+
+    // // Obtain stream, to explicitly sync (cusparse csr2csc is blocking)
+    // hipStream_t stream;
+    // RETURN_IF_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
+
+    // // Format conversion
+    // RETURN_IF_ROCSPARSE_ERROR(rocsparse_zcsr2csc((rocsparse_handle)handle,
+    //                                              m,
+    //                                              n,
+    //                                              nnz,
+    //                                              (const rocsparse_double_complex*)csrSortedVal,
+    //                                              csrSortedRowPtr,
+    //                                              csrSortedColInd,
+    //                                              (rocsparse_double_complex*)cscSortedVal,
+    //                                              cscSortedRowInd,
+    //                                              cscSortedColPtr,
+    //                                              hipActionToHCCAction(copyValues),
+    //                                              hipBaseToHCCBase(idxBase),
+    //                                              buffer));
+
+    // // Free buffer
+    // RETURN_IF_HIP_ERROR(hipFree(buffer));
+
+    // // Synchronize stream
+    // RETURN_IF_HIP_ERROR(hipStreamSynchronize(stream));
+
+    return HIPSPARSE_STATUS_SUCCESS;
+}
+
+hipsparseStatus_t hipsparseSbsr2csr(hipsparseHandle_t    handle,
+                                    hipsparseDirection_t dirA,
+                                    int                  m,
+                                    int                  n,
+                                    hipsparseMatDescr_t  descrA,
+                                    const float*         bsrValA,
+                                    const int*           bsrRowPtrA,
+                                    const int*           bsrColIndA,
+                                    int                  blockDim,
+                                    hipsparseMatDescr_t  descrC,
+                                    float*               csrValC,
+                                    int*                 csrRowPtrC,
+                                    int*                 csrColIndC)
+{
+    // // Determine buffer size
+    // size_t buffer_size = 0;
+    // RETURN_IF_ROCSPARSE_ERROR(rocsparse_csr2csc_buffer_size((rocsparse_handle)handle,
+    //                                                         m,
+    //                                                         n,
+    //                                                         nnz,
+    //                                                         csrSortedRowPtr,
+    //                                                         csrSortedColInd,
+    //                                                         hipActionToHCCAction(copyValues),
+    //                                                         &buffer_size));
+
+    // // Allocate buffer
+    // void* buffer = nullptr;
+    // RETURN_IF_HIP_ERROR(hipMalloc(&buffer, buffer_size));
+
+    // // Obtain stream, to explicitly sync (cusparse csr2csc is blocking)
+    // hipStream_t stream;
+    // RETURN_IF_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
+
+    // // Format conversion
+    // RETURN_IF_ROCSPARSE_ERROR(rocsparse_scsr2csc((rocsparse_handle)handle,
+    //                                              m,
+    //                                              n,
+    //                                              nnz,
+    //                                              csrSortedVal,
+    //                                              csrSortedRowPtr,
+    //                                              csrSortedColInd,
+    //                                              cscSortedVal,
+    //                                              cscSortedRowInd,
+    //                                              cscSortedColPtr,
+    //                                              hipActionToHCCAction(copyValues),
+    //                                              hipBaseToHCCBase(idxBase),
+    //                                              buffer));
+
+    // // Free buffer
+    // RETURN_IF_HIP_ERROR(hipFree(buffer));
+
+    // // Synchronize stream
+    // RETURN_IF_HIP_ERROR(hipStreamSynchronize(stream));
+
+    return HIPSPARSE_STATUS_SUCCESS;
+}
+
+hipsparseStatus_t hipsparseDbsr2csr(hipsparseHandle_t    handle,
+                                    hipsparseDirection_t dirA,
+                                    int                  m,
+                                    int                  n,
+                                    hipsparseMatDescr_t  descrA,
+                                    const double*        bsrValA,
+                                    const int*           bsrRowPtrA,
+                                    const int*           bsrColIndA,
+                                    int                  blockDim,
+                                    hipsparseMatDescr_t  descrC,
+                                    double*              csrValC,
+                                    int*                 csrRowPtrC,
+                                    int*                 csrColIndC)
+{
+    // // Determine buffer size
+    // size_t buffer_size = 0;
+    // RETURN_IF_ROCSPARSE_ERROR(rocsparse_csr2csc_buffer_size((rocsparse_handle)handle,
+    //                                                         m,
+    //                                                         n,
+    //                                                         nnz,
+    //                                                         csrSortedRowPtr,
+    //                                                         csrSortedColInd,
+    //                                                         hipActionToHCCAction(copyValues),
+    //                                                         &buffer_size));
+
+    // // Allocate buffer
+    // void* buffer = nullptr;
+    // RETURN_IF_HIP_ERROR(hipMalloc(&buffer, buffer_size));
+
+    // // Obtain stream, to explicitly sync (cusparse csr2csc is blocking)
+    // hipStream_t stream;
+    // RETURN_IF_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
+
+    // // Format conversion
+    // RETURN_IF_ROCSPARSE_ERROR(rocsparse_dcsr2csc((rocsparse_handle)handle,
+    //                                              m,
+    //                                              n,
+    //                                              nnz,
+    //                                              csrSortedVal,
+    //                                              csrSortedRowPtr,
+    //                                              csrSortedColInd,
+    //                                              cscSortedVal,
+    //                                              cscSortedRowInd,
+    //                                              cscSortedColPtr,
+    //                                              hipActionToHCCAction(copyValues),
+    //                                              hipBaseToHCCBase(idxBase),
+    //                                              buffer));
+
+    // // Free buffer
+    // RETURN_IF_HIP_ERROR(hipFree(buffer));
+
+    // // Synchronize stream
+    // RETURN_IF_HIP_ERROR(hipStreamSynchronize(stream));
+
+    return HIPSPARSE_STATUS_SUCCESS;
+}
+
+hipsparseStatus_t hipsparseCbsr2csr(hipsparseHandle_t    handle,
+                                    hipsparseDirection_t dirA,
+                                    int                  m,
+                                    int                  n,
+                                    hipsparseMatDescr_t  descrA,
+                                    const hipComplex*    bsrValA,
+                                    const int*           bsrRowPtrA,
+                                    const int*           bsrColIndA,
+                                    int                  blockDim,
+                                    hipsparseMatDescr_t  descrC,
+                                    hipComplex*          csrValC,
+                                    int*                 csrRowPtrC,
+                                    int*                 csrColIndC)
+{
+    // // Determine buffer size
+    // size_t buffer_size = 0;
+    // RETURN_IF_ROCSPARSE_ERROR(rocsparse_csr2csc_buffer_size((rocsparse_handle)handle,
+    //                                                         m,
+    //                                                         n,
+    //                                                         nnz,
+    //                                                         csrSortedRowPtr,
+    //                                                         csrSortedColInd,
+    //                                                         hipActionToHCCAction(copyValues),
+    //                                                         &buffer_size));
+
+    // // Allocate buffer
+    // void* buffer = nullptr;
+    // RETURN_IF_HIP_ERROR(hipMalloc(&buffer, buffer_size));
+
+    // // Obtain stream, to explicitly sync (cusparse csr2csc is blocking)
+    // hipStream_t stream;
+    // RETURN_IF_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
+
+    // // Format conversion
+    // RETURN_IF_ROCSPARSE_ERROR(rocsparse_ccsr2csc((rocsparse_handle)handle,
+    //                                              m,
+    //                                              n,
+    //                                              nnz,
+    //                                              (const rocsparse_float_complex*)csrSortedVal,
+    //                                              csrSortedRowPtr,
+    //                                              csrSortedColInd,
+    //                                              (rocsparse_float_complex*)cscSortedVal,
+    //                                              cscSortedRowInd,
+    //                                              cscSortedColPtr,
+    //                                              hipActionToHCCAction(copyValues),
+    //                                              hipBaseToHCCBase(idxBase),
+    //                                              buffer));
+
+    // // Free buffer
+    // RETURN_IF_HIP_ERROR(hipFree(buffer));
+
+    // // Synchronize stream
+    // RETURN_IF_HIP_ERROR(hipStreamSynchronize(stream));
+
+    return HIPSPARSE_STATUS_SUCCESS;
+}
+
+hipsparseStatus_t hipsparseZbsr2csr(hipsparseHandle_t       handle,
+                                    hipsparseDirection_t    dirA,
+                                    int                     m,
+                                    int                     n,
+                                    hipsparseMatDescr_t     descrA,
+                                    const hipDoubleComplex* bsrValA,
+                                    const int*              bsrRowPtrA,
+                                    const int*              bsrColIndA,
+                                    int                     blockDim,
+                                    hipsparseMatDescr_t     descrC,
+                                    hipDoubleComplex*       csrValC,
+                                    int*                    csrRowPtrC,
+                                    int*                    csrColIndC)
+{
+    // // Determine buffer size
+    // size_t buffer_size = 0;
+    // RETURN_IF_ROCSPARSE_ERROR(rocsparse_csr2csc_buffer_size((rocsparse_handle)handle,
+    //                                                         m,
+    //                                                         n,
+    //                                                         nnz,
+    //                                                         csrSortedRowPtr,
+    //                                                         csrSortedColInd,
+    //                                                         hipActionToHCCAction(copyValues),
+    //                                                         &buffer_size));
+
+    // // Allocate buffer
+    // void* buffer = nullptr;
+    // RETURN_IF_HIP_ERROR(hipMalloc(&buffer, buffer_size));
+
+    // // Obtain stream, to explicitly sync (cusparse csr2csc is blocking)
+    // hipStream_t stream;
+    // RETURN_IF_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
+
+    // // Format conversion
+    // RETURN_IF_ROCSPARSE_ERROR(rocsparse_zcsr2csc((rocsparse_handle)handle,
+    //                                              m,
+    //                                              n,
+    //                                              nnz,
+    //                                              (const rocsparse_double_complex*)csrSortedVal,
+    //                                              csrSortedRowPtr,
+    //                                              csrSortedColInd,
+    //                                              (rocsparse_double_complex*)cscSortedVal,
+    //                                              cscSortedRowInd,
+    //                                              cscSortedColPtr,
+    //                                              hipActionToHCCAction(copyValues),
+    //                                              hipBaseToHCCBase(idxBase),
+    //                                              buffer));
+
+    // // Free buffer
+    // RETURN_IF_HIP_ERROR(hipFree(buffer));
+
+    // // Synchronize stream
+    // RETURN_IF_HIP_ERROR(hipStreamSynchronize(stream));
+
+    return HIPSPARSE_STATUS_SUCCESS;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 hipsparseStatus_t hipsparseShyb2csr(hipsparseHandle_t         handle,
                                     const hipsparseMatDescr_t descrA,
                                     const hipsparseHybMat_t   hybA,
@@ -5009,6 +5497,30 @@ hipsparseStatus_t hipsparseZnnz(hipsparseHandle_t         handle,
                                              lda,
                                              nnzPerRowColumn,
                                              nnzTotalDevHostPtr));
+    return HIPSPARSE_STATUS_SUCCESS;
+}
+
+hipsparseStatus_t hipsparseXcsr2bsr_nnz(hipsparseHandle_t    handle,
+                                        hipsparseDirection_t dir,
+                                        int                  m,
+                                        int                  n,
+                                        hipsparseMatDescr_t  csr_descr,
+                                        const int*           csr_row_ptr,
+                                        const int*           csr_col_ind,
+                                        int                  block_dim,
+                                        hipsparseMatDescr_t  bsr_descr,
+                                        int*                 bsr_row_ptr,
+                                        int*                 bsr_nnzb)
+{
+    // RETURN_IF_ROCSPARSE_ERROR(rocsparse_snnz((rocsparse_handle)handle,
+    //                                          hipDirectionToHCCDirection(dirA),
+    //                                          m,
+    //                                          n,
+    //                                          (const rocsparse_mat_descr)descrA,
+    //                                          A,
+    //                                          lda,
+    //                                          nnzPerRowColumn,
+    //                                          nnzTotalDevHostPtr));
     return HIPSPARSE_STATUS_SUCCESS;
 }
 
