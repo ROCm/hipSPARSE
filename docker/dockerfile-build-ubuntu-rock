@@ -6,6 +6,8 @@ LABEL maintainer="rocsparse-maintainer@amd.com"
 
 ARG user_uid
 
+ARG library_dependencies="rocSPARSE"
+
 # Install dependent packages
 # Dependencies: rocsparse rocprim
 # * hcc-config.cmake: pkg-config
@@ -20,6 +22,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-ins
     pkg-config \
     rocprim \
     libnuma1 \
+    ${library_dependencies} \
     && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*

@@ -6,11 +6,20 @@ def runCompileCommand(platform, project)
     project.paths.construct_build_prefix()
 
     def command
+    def getDependency = ""
+    if (project.installLibraryDependenciesFromCI)
+    {
+        project.libraryDependencies.each
+        { libraryName ->
+            getDependency += auxiliary.getLibrary(libraryName, platform.jenkinsLabel, 'develop')
+        }
+    }
 
     if(platform.jenkinsLabel.contains('centos'))
     {
         command = """#!/usr/bin/env bash
                 set -x
+                ${getDependency}
                 cd ${project.paths.project_build_prefix}
                 export PATH=/opt/rocm/hsa/include:$PATH
                 LD_LIBRARY_PATH=/opt/rocm/hcc/lib CXX=/opt/rh/devtoolset-7/root/usr/bin/c++ ${project.paths.build_command}
@@ -20,6 +29,7 @@ def runCompileCommand(platform, project)
     {
         command = """#!/usr/bin/env bash
                 set -x
+                ${getDependency}
                 cd ${project.paths.project_build_prefix}
                 LD_LIBRARY_PATH=/opt/rocm/hcc/lib CXX=${project.compiler.compiler_path} ${project.paths.build_command}
             """
@@ -28,6 +38,7 @@ def runCompileCommand(platform, project)
     {
         command = """#!/usr/bin/env bash
                 set -x
+                ${getDependency}
                 cd ${project.paths.project_build_prefix}
                 LD_LIBRARY_PATH=/opt/rocm/hcc/lib CXX=${project.compiler.compiler_path} ${project.paths.build_command}
             """
