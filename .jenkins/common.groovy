@@ -6,12 +6,12 @@ def runCompileCommand(platform, project)
     project.paths.construct_build_prefix()
 
     def command
-    def getDependency = ""
+    def getDependenciesCommand = ""
     if (project.installLibraryDependenciesFromCI)
     {
         project.libraryDependencies.each
         { libraryName ->
-            getDependency += auxiliary.getLibrary(libraryName, platform.jenkinsLabel, 'develop')
+            getDependenciesCommand += auxiliary.getLibrary(libraryName, platform.jenkinsLabel, 'develop')
         }
     }
 
@@ -19,7 +19,7 @@ def runCompileCommand(platform, project)
     {
         command = """#!/usr/bin/env bash
                 set -x
-                ${getDependency}
+                ${getDependenciesCommand}
                 cd ${project.paths.project_build_prefix}
                 export PATH=/opt/rocm/hsa/include:$PATH
                 LD_LIBRARY_PATH=/opt/rocm/hcc/lib CXX=/opt/rh/devtoolset-7/root/usr/bin/c++ ${project.paths.build_command}
@@ -29,7 +29,7 @@ def runCompileCommand(platform, project)
     {
         command = """#!/usr/bin/env bash
                 set -x
-                ${getDependency}
+                ${getDependenciesCommand}
                 cd ${project.paths.project_build_prefix}
                 LD_LIBRARY_PATH=/opt/rocm/hcc/lib CXX=${project.compiler.compiler_path} ${project.paths.build_command}
             """
@@ -38,7 +38,7 @@ def runCompileCommand(platform, project)
     {
         command = """#!/usr/bin/env bash
                 set -x
-                ${getDependency}
+                ${getDependenciesCommand}
                 cd ${project.paths.project_build_prefix}
                 LD_LIBRARY_PATH=/opt/rocm/hcc/lib CXX=${project.compiler.compiler_path} ${project.paths.build_command}
             """
@@ -48,8 +48,17 @@ def runCompileCommand(platform, project)
 
 def runTestCommand (platform, project, gfilter)
 {
+    if (project.installLibraryDependenciesFromCI)
+    {
+        project.libraryDependencies.each
+        { libraryName ->
+            getDependenciesCommand += auxiliary.getLibrary(libraryName, platform.jenkinsLabel, 'develop')
+        }
+    }
+
     String sudo = auxiliary.sudo(platform.jenkinsLabel)
     def command = """#!/usr/bin/env bash
+                    ${getDependenciesCommand}
                     set -x
                     cd ${project.paths.project_build_prefix}/build/release/clients/staging
                     ${sudo} LD_LIBRARY_PATH=/opt/rocm/hcc/lib GTEST_LISTENER=NO_PASS_LINE_IN_LOG ./hipsparse-test --gtest_also_run_disabled_tests --gtest_output=xml --gtest_color=yes #--gtest_filter=${gfilter}-*known_bug*
