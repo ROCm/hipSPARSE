@@ -48,6 +48,7 @@ def runCompileCommand(platform, project)
 
 def runTestCommand (platform, project, gfilter)
 {
+    def getDependenciesCommand = ""
     if (project.installLibraryDependenciesFromCI)
     {
         project.libraryDependencies.each
