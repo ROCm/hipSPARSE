@@ -48,18 +48,8 @@ def runCompileCommand(platform, project)
 
 def runTestCommand (platform, project, gfilter)
 {
-    def getDependenciesCommand = ""
-    if (project.installLibraryDependenciesFromCI)
-    {
-        project.libraryDependencies.each
-        { libraryName ->
-            getDependenciesCommand += auxiliary.getLibrary(libraryName, platform.jenkinsLabel, 'develop')
-        }
-    }
-
     String sudo = auxiliary.sudo(platform.jenkinsLabel)
     def command = """#!/usr/bin/env bash
-                    ${getDependenciesCommand}
                     set -x
                     cd ${project.paths.project_build_prefix}/build/release/clients/staging
                     ${sudo} LD_LIBRARY_PATH=/opt/rocm/hcc/lib GTEST_LISTENER=NO_PASS_LINE_IN_LOG ./hipsparse-test --gtest_also_run_disabled_tests --gtest_output=xml --gtest_color=yes #--gtest_filter=${gfilter}-*known_bug*
