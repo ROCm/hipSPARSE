@@ -912,20 +912,19 @@ hipsparseStatus_t host_nnz(hipsparseDirection_t      dirA,
     return HIPSPARSE_STATUS_SUCCESS;
 }
 
-
 template <hipsparseDirection_t DIRA, typename T>
-hipsparseStatus_t host_dense2csx(int        m,
-                                int        n,
-                                hipsparseIndexBase_t base,
-                                const T*             A,
-                                int        ld,
-                                const int* nnz_per_row_columns,
-                                T*                   csx_val,
-                                int*       csx_row_col_ptr,
-                                int*       csx_col_row_ind)
+hipsparseStatus_t host_dense2csx(int                  m,
+                                 int                  n,
+                                 hipsparseIndexBase_t base,
+                                 const T*             A,
+                                 int                  ld,
+                                 const int*           nnz_per_row_columns,
+                                 T*                   csx_val,
+                                 int*                 csx_row_col_ptr,
+                                 int*                 csx_col_row_ind)
 {
     static constexpr T s_zero = {};
-    int      len    = (HIPSPARSE_DIRECTION_ROW == DIRA) ? m : n;
+    int                len    = (HIPSPARSE_DIRECTION_ROW == DIRA) ? m : n;
     *csx_row_col_ptr          = base;
     for(int i = 0; i < len; ++i)
     {
@@ -976,14 +975,14 @@ hipsparseStatus_t host_dense2csx(int        m,
 }
 
 template <hipsparseDirection_t DIRA, typename T>
-hipsparseStatus_t host_csx2dense(int        m,
-				 int        n,
-				 hipsparseIndexBase_t base,
-				 const T*             csx_val,
-				 const int* csx_row_col_ptr,
-				 const int* csx_col_row_ind,
-				 T*                   A,
-				 int        ld)
+hipsparseStatus_t host_csx2dense(int                  m,
+                                 int                  n,
+                                 hipsparseIndexBase_t base,
+                                 const T*             csx_val,
+                                 const int*           csx_row_col_ptr,
+                                 const int*           csx_col_row_ind,
+                                 T*                   A,
+                                 int                  ld)
 {
     static constexpr T s_zero = {};
     switch(DIRA)
@@ -1028,9 +1027,6 @@ hipsparseStatus_t host_csx2dense(int        m,
 
     return HIPSPARSE_STATUS_INVALID_VALUE;
 }
-
-
-
 
 template <typename T>
 inline void host_csr_to_csc(int                     M,

@@ -2862,235 +2862,237 @@ namespace hipsparse
             handle, dirA, m, n, descrA, A, lda, nnzPerRowColumn, nnzTotalDevHostPtr);
     }
 
-  template <>
-  hipsparseStatus_t hipsparseXdense2csr(hipsparseHandle_t          handle,
-					int             m,
-					int             n,
-					const hipsparseMatDescr_t descr,
-					const float*              A,
-					int             ld,
-					const int*      nnz_per_rows,
-					float*                    csr_val,
-					int*            csr_row_ptr,
-					int*            csr_col_ind)
-  {
-    return hipsparseSdense2csr(handle,m,n,descr,A,ld,nnz_per_rows,csr_val,csr_row_ptr,csr_col_ind);
-  }
+    template <>
+    hipsparseStatus_t hipsparseXdense2csr(hipsparseHandle_t         handle,
+                                          int                       m,
+                                          int                       n,
+                                          const hipsparseMatDescr_t descr,
+                                          const float*              A,
+                                          int                       ld,
+                                          const int*                nnz_per_rows,
+                                          float*                    csr_val,
+                                          int*                      csr_row_ptr,
+                                          int*                      csr_col_ind)
+    {
+        return hipsparseSdense2csr(
+            handle, m, n, descr, A, ld, nnz_per_rows, csr_val, csr_row_ptr, csr_col_ind);
+    }
 
-  template <>
-  hipsparseStatus_t hipsparseXdense2csr(hipsparseHandle_t          handle,
-					int             m,
-					int             n,
-					const hipsparseMatDescr_t descr,
-					const double*              A,
-					int             ld,
-					const int*      nnz_per_rows,
-					double*                    csr_val,
-					int*            csr_row_ptr,
-					int*            csr_col_ind)
-  {
-    return hipsparseDdense2csr(handle,m,n,descr,A,ld,nnz_per_rows,csr_val,csr_row_ptr,csr_col_ind);
-  }
+    template <>
+    hipsparseStatus_t hipsparseXdense2csr(hipsparseHandle_t         handle,
+                                          int                       m,
+                                          int                       n,
+                                          const hipsparseMatDescr_t descr,
+                                          const double*             A,
+                                          int                       ld,
+                                          const int*                nnz_per_rows,
+                                          double*                   csr_val,
+                                          int*                      csr_row_ptr,
+                                          int*                      csr_col_ind)
+    {
+        return hipsparseDdense2csr(
+            handle, m, n, descr, A, ld, nnz_per_rows, csr_val, csr_row_ptr, csr_col_ind);
+    }
 
-  template <>
-  hipsparseStatus_t hipsparseXdense2csr(hipsparseHandle_t          handle,
-					int             m,
-					int             n,
-					const hipsparseMatDescr_t descr,
-					const hipComplex*              A,
-					int             ld,
-					const int*      nnz_per_rows,
-					hipComplex*                    csr_val,
-					int*            csr_row_ptr,
-					int*            csr_col_ind)
-  {
-    return hipsparseCdense2csr(handle,m,n,descr,A,ld,nnz_per_rows,csr_val,csr_row_ptr,csr_col_ind);
-  }
+    template <>
+    hipsparseStatus_t hipsparseXdense2csr(hipsparseHandle_t         handle,
+                                          int                       m,
+                                          int                       n,
+                                          const hipsparseMatDescr_t descr,
+                                          const hipComplex*         A,
+                                          int                       ld,
+                                          const int*                nnz_per_rows,
+                                          hipComplex*               csr_val,
+                                          int*                      csr_row_ptr,
+                                          int*                      csr_col_ind)
+    {
+        return hipsparseCdense2csr(
+            handle, m, n, descr, A, ld, nnz_per_rows, csr_val, csr_row_ptr, csr_col_ind);
+    }
 
-  template <>
-  hipsparseStatus_t hipsparseXdense2csr(hipsparseHandle_t          handle,
-					int             m,
-					int             n,
-					const hipsparseMatDescr_t descr,
-					const hipDoubleComplex*              A,
-					int             ld,
-					const int*      nnz_per_rows,
-					hipDoubleComplex*                    csr_val,
-					int*            csr_row_ptr,
-					int*            csr_col_ind)
-  {
-    return hipsparseZdense2csr(handle,m,n,descr,A,ld,nnz_per_rows,csr_val,csr_row_ptr,csr_col_ind);
-  }
+    template <>
+    hipsparseStatus_t hipsparseXdense2csr(hipsparseHandle_t         handle,
+                                          int                       m,
+                                          int                       n,
+                                          const hipsparseMatDescr_t descr,
+                                          const hipDoubleComplex*   A,
+                                          int                       ld,
+                                          const int*                nnz_per_rows,
+                                          hipDoubleComplex*         csr_val,
+                                          int*                      csr_row_ptr,
+                                          int*                      csr_col_ind)
+    {
+        return hipsparseZdense2csr(
+            handle, m, n, descr, A, ld, nnz_per_rows, csr_val, csr_row_ptr, csr_col_ind);
+    }
 
+    template <>
+    hipsparseStatus_t hipsparseXdense2csc(hipsparseHandle_t         handle,
+                                          int                       m,
+                                          int                       n,
+                                          const hipsparseMatDescr_t descr,
+                                          const float*              A,
+                                          int                       ld,
+                                          const int*                nnz_per_columns,
+                                          float*                    csc_val,
+                                          int*                      csc_row_ind,
+                                          int*                      csc_col_ptr)
+    {
+        return hipsparseSdense2csc(
+            handle, m, n, descr, A, ld, nnz_per_columns, csc_val, csc_row_ind, csc_col_ptr);
+    }
+    template <>
+    hipsparseStatus_t hipsparseXdense2csc(hipsparseHandle_t         handle,
+                                          int                       m,
+                                          int                       n,
+                                          const hipsparseMatDescr_t descr,
+                                          const double*             A,
+                                          int                       ld,
+                                          const int*                nnz_per_columns,
+                                          double*                   csc_val,
+                                          int*                      csc_row_ind,
+                                          int*                      csc_col_ptr)
+    {
+        return hipsparseDdense2csc(
+            handle, m, n, descr, A, ld, nnz_per_columns, csc_val, csc_row_ind, csc_col_ptr);
+    }
+    template <>
+    hipsparseStatus_t hipsparseXdense2csc(hipsparseHandle_t         handle,
+                                          int                       m,
+                                          int                       n,
+                                          const hipsparseMatDescr_t descr,
+                                          const hipComplex*         A,
+                                          int                       ld,
+                                          const int*                nnz_per_columns,
+                                          hipComplex*               csc_val,
+                                          int*                      csc_row_ind,
+                                          int*                      csc_col_ptr)
+    {
+        return hipsparseCdense2csc(
+            handle, m, n, descr, A, ld, nnz_per_columns, csc_val, csc_row_ind, csc_col_ptr);
+    }
+    template <>
+    hipsparseStatus_t hipsparseXdense2csc(hipsparseHandle_t         handle,
+                                          int                       m,
+                                          int                       n,
+                                          const hipsparseMatDescr_t descr,
+                                          const hipDoubleComplex*   A,
+                                          int                       ld,
+                                          const int*                nnz_per_columns,
+                                          hipDoubleComplex*         csc_val,
+                                          int*                      csc_row_ind,
+                                          int*                      csc_col_ptr)
+    {
+        return hipsparseZdense2csc(
+            handle, m, n, descr, A, ld, nnz_per_columns, csc_val, csc_row_ind, csc_col_ptr);
+    }
 
-  
-  template <>
-  hipsparseStatus_t hipsparseXdense2csc(hipsparseHandle_t          handle,
-					int             m,
-					int             n,
-					const hipsparseMatDescr_t descr,
-					const float*              A,
-					int             ld,
-					const int*      nnz_per_columns,
-					float*                    csc_val,
-					int*                 csc_row_ind,
-					int*                 csc_col_ptr)
-      {
-    return hipsparseSdense2csc(handle,m,n,descr,A,ld,nnz_per_columns,csc_val,csc_row_ind,csc_col_ptr);
-  }
-  template <>
-  hipsparseStatus_t hipsparseXdense2csc(hipsparseHandle_t          handle,
-					int             m,
-					int             n,
-					const hipsparseMatDescr_t descr,
-					const double*              A,
-					int             ld,
-					const int*      nnz_per_columns,
-					double*                    csc_val,
-					int*                 csc_row_ind,
-					int*                 csc_col_ptr)
-      {
-    return hipsparseDdense2csc(handle,m,n,descr,A,ld,nnz_per_columns,csc_val,csc_row_ind,csc_col_ptr);
-  }
-  template <>
-  hipsparseStatus_t hipsparseXdense2csc(hipsparseHandle_t          handle,
-					int             m,
-					int             n,
-					const hipsparseMatDescr_t descr,
-					const hipComplex*              A,
-					int             ld,
-					const int*      nnz_per_columns,
-					hipComplex*                    csc_val,
-					int*                 csc_row_ind,
-					int*                 csc_col_ptr)
-      {
-    return hipsparseCdense2csc(handle,m,n,descr,A,ld,nnz_per_columns,csc_val,csc_row_ind,csc_col_ptr);
-  }
-  template <>
-  hipsparseStatus_t hipsparseXdense2csc(hipsparseHandle_t          handle,
-					int             m,
-					int             n,
-					const hipsparseMatDescr_t descr,
-					const hipDoubleComplex*              A,
-					int             ld,
-					const int*      nnz_per_columns,
-					hipDoubleComplex*                    csc_val,
-					int*                 csc_row_ind,
-					int*                 csc_col_ptr)
-      {
-    return hipsparseZdense2csc(handle,m,n,descr,A,ld,nnz_per_columns,csc_val,csc_row_ind,csc_col_ptr);
-  }
+    template <>
+    hipsparseStatus_t hipsparseXcsr2dense(hipsparseHandle_t         handle,
+                                          int                       m,
+                                          int                       n,
+                                          const hipsparseMatDescr_t descr,
+                                          const float*              csr_val,
+                                          const int*                csr_row_ptr,
+                                          const int*                csr_col_ind,
+                                          float*                    A,
+                                          int                       ld)
+    {
+        return hipsparseScsr2dense(handle, m, n, descr, csr_val, csr_row_ptr, csr_col_ind, A, ld);
+    }
+    template <>
+    hipsparseStatus_t hipsparseXcsr2dense(hipsparseHandle_t         handle,
+                                          int                       m,
+                                          int                       n,
+                                          const hipsparseMatDescr_t descr,
+                                          const double*             csr_val,
+                                          const int*                csr_row_ptr,
+                                          const int*                csr_col_ind,
+                                          double*                   A,
+                                          int                       ld)
+    {
+        return hipsparseDcsr2dense(handle, m, n, descr, csr_val, csr_row_ptr, csr_col_ind, A, ld);
+    }
+    template <>
+    hipsparseStatus_t hipsparseXcsr2dense(hipsparseHandle_t         handle,
+                                          int                       m,
+                                          int                       n,
+                                          const hipsparseMatDescr_t descr,
+                                          const hipComplex*         csr_val,
+                                          const int*                csr_row_ptr,
+                                          const int*                csr_col_ind,
+                                          hipComplex*               A,
+                                          int                       ld)
+    {
+        return hipsparseCcsr2dense(handle, m, n, descr, csr_val, csr_row_ptr, csr_col_ind, A, ld);
+    }
+    template <>
+    hipsparseStatus_t hipsparseXcsr2dense(hipsparseHandle_t         handle,
+                                          int                       m,
+                                          int                       n,
+                                          const hipsparseMatDescr_t descr,
+                                          const hipDoubleComplex*   csr_val,
+                                          const int*                csr_row_ptr,
+                                          const int*                csr_col_ind,
+                                          hipDoubleComplex*         A,
+                                          int                       ld)
+    {
+        return hipsparseZcsr2dense(handle, m, n, descr, csr_val, csr_row_ptr, csr_col_ind, A, ld);
+    }
 
+    template <>
+    hipsparseStatus_t hipsparseXcsc2dense(hipsparseHandle_t         handle,
+                                          int                       m,
+                                          int                       n,
+                                          const hipsparseMatDescr_t descr,
+                                          const float*              csc_val,
+                                          const int*                csc_row_ind,
+                                          const int*                csc_col_ptr,
+                                          float*                    A,
+                                          int                       ld)
+    {
+        return hipsparseScsc2dense(handle, m, n, descr, csc_val, csc_row_ind, csc_col_ptr, A, ld);
+    }
+    template <>
+    hipsparseStatus_t hipsparseXcsc2dense(hipsparseHandle_t         handle,
+                                          int                       m,
+                                          int                       n,
+                                          const hipsparseMatDescr_t descr,
+                                          const double*             csc_val,
+                                          const int*                csc_row_ind,
+                                          const int*                csc_col_ptr,
+                                          double*                   A,
+                                          int                       ld)
+    {
+        return hipsparseDcsc2dense(handle, m, n, descr, csc_val, csc_row_ind, csc_col_ptr, A, ld);
+    }
+    template <>
+    hipsparseStatus_t hipsparseXcsc2dense(hipsparseHandle_t         handle,
+                                          int                       m,
+                                          int                       n,
+                                          const hipsparseMatDescr_t descr,
+                                          const hipComplex*         csc_val,
+                                          const int*                csc_row_ind,
+                                          const int*                csc_col_ptr,
+                                          hipComplex*               A,
+                                          int                       ld)
+    {
+        return hipsparseCcsc2dense(handle, m, n, descr, csc_val, csc_row_ind, csc_col_ptr, A, ld);
+    }
+    template <>
+    hipsparseStatus_t hipsparseXcsc2dense(hipsparseHandle_t         handle,
+                                          int                       m,
+                                          int                       n,
+                                          const hipsparseMatDescr_t descr,
+                                          const hipDoubleComplex*   csc_val,
+                                          const int*                csc_row_ind,
+                                          const int*                csc_col_ptr,
+                                          hipDoubleComplex*         A,
+                                          int                       ld)
+    {
+        return hipsparseZcsc2dense(handle, m, n, descr, csc_val, csc_row_ind, csc_col_ptr, A, ld);
+    }
 
-  template <>
-  hipsparseStatus_t hipsparseXcsr2dense(hipsparseHandle_t          handle,
-					int             m,
-					int             n,
-					const hipsparseMatDescr_t descr,
-					const float*              csr_val,
-					const int*      csr_row_ptr,
-					const int*      csr_col_ind,
-					float*                    A,
-					int             ld)
-      {
-    return hipsparseScsr2dense(handle,m,n,descr,csr_val,csr_row_ptr,csr_col_ind,A,ld);
-  }
-  template <>
-  hipsparseStatus_t hipsparseXcsr2dense(hipsparseHandle_t          handle,
-					int             m,
-					int             n,
-					const hipsparseMatDescr_t descr,
-					const double*              csr_val,
-					const int*      csr_row_ptr,
-					const int*      csr_col_ind,
-					double*                    A,
-					int             ld)
-      {
-    return hipsparseDcsr2dense(handle,m,n,descr,csr_val,csr_row_ptr,csr_col_ind,A,ld);
-  }
-  template <>
-  hipsparseStatus_t hipsparseXcsr2dense(hipsparseHandle_t          handle,
-					int             m,
-					int             n,
-					const hipsparseMatDescr_t descr,
-					const hipComplex*              csr_val,
-					const int*      csr_row_ptr,
-					const int*      csr_col_ind,
-					hipComplex*                    A,
-					int             ld)
-      {
-    return hipsparseCcsr2dense(handle,m,n,descr,csr_val,csr_row_ptr,csr_col_ind,A,ld);
-  }
-  template <>
-  hipsparseStatus_t hipsparseXcsr2dense(hipsparseHandle_t          handle,
-					int             m,
-					int             n,
-					const hipsparseMatDescr_t descr,
-					const hipDoubleComplex*              csr_val,
-					const int*      csr_row_ptr,
-					const int*      csr_col_ind,
-					hipDoubleComplex*                    A,
-					int             ld)
-      {
-    return hipsparseZcsr2dense(handle,m,n,descr,csr_val,csr_row_ptr,csr_col_ind,A,ld);
-  }
-
-
-  template <>
-  hipsparseStatus_t hipsparseXcsc2dense(hipsparseHandle_t          handle,
-					int             m,
-					int             n,
-					const hipsparseMatDescr_t descr,
-					const float*              csc_val,
-					const int*      csc_row_ind,
-					const int*      csc_col_ptr,
-					float*                    A,
-					int             ld)
-  {
-    return hipsparseScsc2dense(handle,m,n,descr,csc_val,csc_row_ind,csc_col_ptr,A,ld);
-  }
-  template <>
-  hipsparseStatus_t hipsparseXcsc2dense(hipsparseHandle_t          handle,
-					int             m,
-					int             n,
-					const hipsparseMatDescr_t descr,
-					const double*              csc_val,
-					const int*      csc_row_ind,
-					const int*      csc_col_ptr,
-					double*                    A,
-					int             ld)
-  {
-    return hipsparseDcsc2dense(handle,m,n,descr,csc_val,csc_row_ind,csc_col_ptr,A,ld);
-  }
-  template <>
-  hipsparseStatus_t hipsparseXcsc2dense(hipsparseHandle_t          handle,
-					int             m,
-					int             n,
-					const hipsparseMatDescr_t descr,
-					const hipComplex*              csc_val,
-					const int*      csc_row_ind,
-					const int*      csc_col_ptr,
-					hipComplex*                    A,
-					int             ld)
-  {
-    return hipsparseCcsc2dense(handle,m,n,descr,csc_val,csc_row_ind,csc_col_ptr,A,ld);
-  }
-  template <>
-  hipsparseStatus_t hipsparseXcsc2dense(hipsparseHandle_t          handle,
-					int             m,
-					int             n,
-					const hipsparseMatDescr_t descr,
-					const hipDoubleComplex*              csc_val,
-					const int*      csc_row_ind,
-					const int*      csc_col_ptr,
-					hipDoubleComplex*                    A,
-					int             ld)
-  {
-    return hipsparseZcsc2dense(handle,m,n,descr,csc_val,csc_row_ind,csc_col_ptr,A,ld);
-  }
-
-
-  
     template <>
     hipsparseStatus_t hipsparseXcsr2csc(hipsparseHandle_t    handle,
                                         int                  m,
