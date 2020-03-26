@@ -5108,7 +5108,6 @@ hipsparseStatus_t hipsparseZdense2csr(hipsparseHandle_t         handle,
     return HIPSPARSE_STATUS_SUCCESS;
 }
 
-
 hipsparseStatus_t hipsparseSdense2csc(hipsparseHandle_t         handle,
                                       int                       m,
                                       int                       n,
