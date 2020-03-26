@@ -28,12 +28,12 @@
 #include <hipsparse.h>
 #include <string>
 #include <vector>
-typedef hipsparseIndexBase_t       base;
-typedef std::tuple<int, int, int,base> csr2dense_tuple;
+typedef hipsparseIndexBase_t            base;
+typedef std::tuple<int, int, int, base> csr2dense_tuple;
 
-int csr2dense_M_range[]  = {-1, 0, 10, 500, 872, 1000};
-int csr2dense_N_range[]  = {-3, 0, 33, 242, 623, 1000};
-int csr2dense_LD_range[] = {5, 500, 1000};
+int  csr2dense_M_range[]        = {-1, 0, 10, 500, 872, 1000};
+int  csr2dense_N_range[]        = {-3, 0, 33, 242, 623, 1000};
+int  csr2dense_LD_range[]       = {5, 500, 1000};
 base csr2dense_idx_base_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
 class parameterized_csr2dense : public testing::TestWithParam<csr2dense_tuple>
@@ -48,9 +48,9 @@ protected:
 Arguments setup_csr2dense_arguments(csr2dense_tuple tup)
 {
     Arguments arg;
-    arg.M   = std::get<0>(tup);
-    arg.N   = std::get<1>(tup);
-    arg.lda = std::get<2>(tup);
+    arg.M        = std::get<0>(tup);
+    arg.N        = std::get<1>(tup);
+    arg.lda      = std::get<2>(tup);
     arg.idx_base = std::get<3>(tup);
     return arg;
 }
@@ -97,4 +97,4 @@ INSTANTIATE_TEST_CASE_P(csr2dense,
                         testing::Combine(testing::ValuesIn(csr2dense_M_range),
                                          testing::ValuesIn(csr2dense_N_range),
                                          testing::ValuesIn(csr2dense_LD_range),
-					 testing::ValuesIn(csr2dense_idx_base_range)));
+                                         testing::ValuesIn(csr2dense_idx_base_range)));
