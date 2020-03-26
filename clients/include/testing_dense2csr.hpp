@@ -29,15 +29,15 @@
 template <typename T>
 void testing_dense2csr_bad_arg(void)
 {
-  static constexpr hipsparseDirection_t DIRA = HIPSPARSE_DIRECTION_ROW;
-  testing_dense2csx_bad_arg<DIRA,T>(hipsparseXdense2csr<T>);
+    static constexpr hipsparseDirection_t DIRA = HIPSPARSE_DIRECTION_ROW;
+    testing_dense2csx_bad_arg<DIRA, T>(hipsparseXdense2csr<T>);
 }
 
 template <typename T>
 hipsparseStatus_t testing_dense2csr(Arguments argus)
 {
-  static constexpr hipsparseDirection_t DIRA = HIPSPARSE_DIRECTION_ROW;
-  return testing_dense2csx<DIRA,T>(argus,hipsparseXdense2csr<T>);
+    static constexpr hipsparseDirection_t DIRA = HIPSPARSE_DIRECTION_ROW;
+    return testing_dense2csx<DIRA, T>(argus, hipsparseXdense2csr<T>);
 }
 
 #endif // TESTING_DENSE2CSR
