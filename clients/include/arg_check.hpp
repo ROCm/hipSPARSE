@@ -27,6 +27,8 @@
 
 #include <hipsparse.h>
 
+void verify_hipsparse_status(hipsparseStatus_t status, hipsparseStatus_t expected_status, const char* message);
+
 void verify_hipsparse_status_invalid_pointer(hipsparseStatus_t status, const char* message);
 
 void verify_hipsparse_status_invalid_size(hipsparseStatus_t status, const char* message);
