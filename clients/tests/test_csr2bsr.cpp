@@ -32,22 +32,34 @@
 typedef std::tuple<int, int, int, hipsparseIndexBase_t, hipsparseIndexBase_t, hipsparseDirection_t>    csr2bsr_tuple;
 typedef std::tuple<int, hipsparseIndexBase_t, hipsparseIndexBase_t, hipsparseDirection_t, std::string> csr2bsr_bin_tuple;
 
-int csr2bsr_M_range[] = {-1, 0, 10, 500, 872, 1000};
-int csr2bsr_N_range[] = {-3, 0, 33, 242, 623, 1000};
-int csr2bsr_block_dim_range[] = {-1, 0, 1, 2, 3, 4, 16};
+// Random matrices
+int csr2bsr_M_range[] = {-1, 0, 872, 13095, 21453};
+int csr2bsr_N_range[] = {-3, 0, 623, 12766, 29285};
+int csr2bsr_block_dim_range[] = {-1, 0, 1, 2, 4, 7, 16};
 
 hipsparseIndexBase_t csr2bsr_csr_base_range[]
-    = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+    = {HIPSPARSE_INDEX_BASE_ZERO};
 
 hipsparseIndexBase_t csr2bsr_bsr_base_range[]
-    = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+    = {HIPSPARSE_INDEX_BASE_ONE};
 
 hipsparseDirection_t csr2bsr_dir_range[]
     = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COLUMN};
 
+// Matrices from files (float and double)
+int csr2bsr_block_dim_range_bin[] = {5};
+
+hipsparseIndexBase_t csr2bsr_csr_base_range_bin[]
+    = {HIPSPARSE_INDEX_BASE_ONE};
+
+hipsparseIndexBase_t csr2bsr_bsr_base_range_bin[]
+    = {HIPSPARSE_INDEX_BASE_ONE};
+
+hipsparseDirection_t csr2bsr_dir_range_bin[]
+    = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COLUMN};
+
 std::string csr2bsr_bin[] = {"rma10.bin",
                              "mac_econ_fwd500.bin",
-                             "bibd_22_8.bin",
                              "mc2depi.bin",
                              "scircuit.bin",
                              "ASIC_320k.bin",
@@ -62,7 +74,6 @@ std::string csr2bsr_bin[] = {"rma10.bin",
                              "amazon0312.bin",
                              "Chebyshev4.bin",
                              "sme3Dc.bin",
-                             "webbase-1M.bin",
                              "shipsec1.bin"};
 
 class parameterized_csr2bsr : public testing::TestWithParam<csr2bsr_tuple>
@@ -192,8 +203,8 @@ INSTANTIATE_TEST_CASE_P(csr2bsr,
 
 INSTANTIATE_TEST_CASE_P(csr2bsr_bin,
                         parameterized_csr2bsr_bin,
-                        testing::Combine(testing::ValuesIn(csr2bsr_block_dim_range),
-                                         testing::ValuesIn(csr2bsr_bsr_base_range),
-                                         testing::ValuesIn(csr2bsr_csr_base_range),
-                                         testing::ValuesIn(csr2bsr_dir_range),
+                        testing::Combine(testing::ValuesIn(csr2bsr_block_dim_range_bin),
+                                         testing::ValuesIn(csr2bsr_bsr_base_range_bin),
+                                         testing::ValuesIn(csr2bsr_csr_base_range_bin),
+                                         testing::ValuesIn(csr2bsr_dir_range_bin),
                                          testing::ValuesIn(csr2bsr_bin)));

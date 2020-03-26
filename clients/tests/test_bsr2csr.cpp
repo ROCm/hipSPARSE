@@ -1,5 +1,5 @@
 /* ************************************************************************
- * Copyright (c) 2018 Advanced Micro Devices, Inc.
+ * Copyright (c) 2020 Advanced Micro Devices, Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,22 +32,34 @@
 typedef std::tuple<int, int, int, hipsparseIndexBase_t, hipsparseIndexBase_t, hipsparseDirection_t>    bsr2csr_tuple;
 typedef std::tuple<int, hipsparseIndexBase_t, hipsparseIndexBase_t, hipsparseDirection_t, std::string> bsr2csr_bin_tuple;
 
-int bsr2csr_M_range[] = {-1, 0, 10, 500, 872, 1000};
-int bsr2csr_N_range[] = {-3, 0, 33, 242, 623, 1000};
-int bsr2csr_block_dim_range[] = {-1, 0, 1, 2, 3, 4, 16};
+// Random matrices
+int bsr2csr_M_range[] = {-1, 0, 872, 13095, 21453};
+int bsr2csr_N_range[] = {-3, 0, 623, 12766, 29285};
+int bsr2csr_block_dim_range[] = {-1, 0, 1, 2, 4, 7, 16};
 
 hipsparseIndexBase_t bsr2csr_csr_base_range[]
-    = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+    = {HIPSPARSE_INDEX_BASE_ZERO};
 
 hipsparseIndexBase_t bsr2csr_bsr_base_range[]
-    = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+    = {HIPSPARSE_INDEX_BASE_ONE};
 
 hipsparseDirection_t bsr2csr_dir_range[]
     = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COLUMN};
 
+// Matrices from files (float and double)
+int bsr2csr_block_dim_range_bin[] = {5};
+
+hipsparseIndexBase_t bsr2csr_csr_base_range_bin[]
+    = {HIPSPARSE_INDEX_BASE_ONE};
+
+hipsparseIndexBase_t bsr2csr_bsr_base_range_bin[]
+    = {HIPSPARSE_INDEX_BASE_ONE};
+
+hipsparseDirection_t bsr2csr_dir_range_bin[]
+    = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COLUMN};
+
 std::string bsr2csr_bin[] = {"rma10.bin",
                              "mac_econ_fwd500.bin",
-                             "bibd_22_8.bin",
                              "mc2depi.bin",
                              "scircuit.bin",
                              "ASIC_320k.bin",
@@ -62,7 +74,6 @@ std::string bsr2csr_bin[] = {"rma10.bin",
                              "amazon0312.bin",
                              "Chebyshev4.bin",
                              "sme3Dc.bin",
-                             "webbase-1M.bin",
                              "shipsec1.bin"};
 
 class parameterized_bsr2csr : public testing::TestWithParam<bsr2csr_tuple>
@@ -192,8 +203,8 @@ INSTANTIATE_TEST_CASE_P(bsr2csr,
 
 INSTANTIATE_TEST_CASE_P(bsr2csr_bin,
                         parameterized_bsr2csr_bin,
-                        testing::Combine(testing::ValuesIn(bsr2csr_block_dim_range),
-                                         testing::ValuesIn(bsr2csr_bsr_base_range),
-                                         testing::ValuesIn(bsr2csr_csr_base_range),
-                                         testing::ValuesIn(bsr2csr_dir_range),
+                        testing::Combine(testing::ValuesIn(bsr2csr_block_dim_range_bin),
+                                         testing::ValuesIn(bsr2csr_bsr_base_range_bin),
+                                         testing::ValuesIn(bsr2csr_csr_base_range_bin),
+                                         testing::ValuesIn(bsr2csr_dir_range_bin),
                                          testing::ValuesIn(bsr2csr_bin)));

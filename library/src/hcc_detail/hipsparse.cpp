@@ -5028,38 +5028,6 @@ hipsparseStatus_t hipsparseZbsr2csr(hipsparseHandle_t          handle,
     return HIPSPARSE_STATUS_SUCCESS;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 hipsparseStatus_t hipsparseShyb2csr(hipsparseHandle_t         handle,
                                     const hipsparseMatDescr_t descrA,
                                     const hipsparseHybMat_t   hybA,
