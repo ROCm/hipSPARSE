@@ -18,7 +18,7 @@ def runCompileCommand(platform, project)
     if(platform.jenkinsLabel.contains('centos'))
     {
         command = """#!/usr/bin/env bash
-                set -x
+                set -xeo pipefail
                 ${getDependenciesCommand}
                 cd ${project.paths.project_build_prefix}
                 export PATH=/opt/rocm/hsa/include:$PATH
@@ -28,7 +28,7 @@ def runCompileCommand(platform, project)
     else if(platform.jenkinsLabel.contains('sles'))
     {
         command = """#!/usr/bin/env bash
-                set -x
+                set -xeo pipefail
                 ${getDependenciesCommand}
                 cd ${project.paths.project_build_prefix}
                 LD_LIBRARY_PATH=/opt/rocm/hcc/lib CXX=${project.compiler.compiler_path} ${project.paths.build_command}
