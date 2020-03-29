@@ -29,6 +29,7 @@ RUN yum install -y \
     rpm-build \
     deltarpm \
     wget \
+    unzip \
     ${library_dependencies}
 
 

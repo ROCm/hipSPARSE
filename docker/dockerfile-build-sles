@@ -25,6 +25,7 @@ RUN zypper refresh && zypper -n --no-gpg-checks install \
     libnuma1 \
     rpm-build \
     wget \
+    unzip \
     ${library_dependencies}
 
 RUN pip3 install pyyaml
