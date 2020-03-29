@@ -19,8 +19,8 @@ def runCompileCommand(platform, project)
     {
         command = """#!/usr/bin/env bash
                 set -xeo pipefail
-                ${getDependenciesCommand}
                 cd ${project.paths.project_build_prefix}
+                ${getDependenciesCommand}
                 export PATH=/opt/rocm/hsa/include:$PATH
                 LD_LIBRARY_PATH=/opt/rocm/hcc/lib CXX=/opt/rh/devtoolset-7/root/usr/bin/c++ ${project.paths.build_command}
             """
@@ -29,8 +29,8 @@ def runCompileCommand(platform, project)
     {
         command = """#!/usr/bin/env bash
                 set -xeo pipefail
-                ${getDependenciesCommand}
                 cd ${project.paths.project_build_prefix}
+                ${getDependenciesCommand}
                 LD_LIBRARY_PATH=/opt/rocm/hcc/lib CXX=${project.compiler.compiler_path} ${project.paths.build_command}
             """
     }
@@ -38,8 +38,8 @@ def runCompileCommand(platform, project)
     {
         command = """#!/usr/bin/env bash
                 set -x
-                ${getDependenciesCommand}
                 cd ${project.paths.project_build_prefix}
+                ${getDependenciesCommand}
                 LD_LIBRARY_PATH=/opt/rocm/hcc/lib CXX=${project.compiler.compiler_path} ${project.paths.build_command}
             """
     }
