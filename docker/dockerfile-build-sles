@@ -6,6 +6,8 @@ LABEL maintainer="rocsparse-maintainer@amd.com"
 
 ARG user_uid
 
+ARG library_dependencies="rocsparse rocprim"
+
 # Install dependent packages
 RUN zypper refresh && zypper -n --no-gpg-checks install \
     sudo \
@@ -21,7 +23,9 @@ RUN zypper refresh && zypper -n --no-gpg-checks install \
     libcxxtools9 \
     libboost_program_options1_66_0-devel \
     libnuma1 \
-    rpm-build
+    rpm-build \
+    wget \
+    ${library_dependencies}
 
 RUN pip3 install pyyaml
 
@@ -32,15 +36,7 @@ RUN useradd --create-home -u ${user_uid} -o -G video --shell /bin/bash jenkins &
     echo '%video ALL=(ALL) NOPASSWD:ALL' | tee /etc/sudoers.d/sudo-nopasswd && \
     chmod 400 /etc/sudoers.d/sudo-nopasswd
 
-ARG ROCSPARSE_SRC_ROOT=/usr/local/src/rocSPARSE
 ARG HIPSPARSE_SRC_ROOT=/usr/local/src/hipSPARSE
-
-# Clone rocsparse repo
-# Build rocsparse and install into /usr/local
-RUN mkdir -p ${ROCSPARSE_SRC_ROOT} && cd ${ROCSPARSE_SRC_ROOT} && \
-    git clone -b develop --depth=1 https://github.com/ROCmSoftwarePlatform/rocSPARSE . && \
-    ./install.sh -di && \
-    rm -rf ${ROCSPARSE_SRC_ROOT}
 
 # Clone hipsparse repo
 # Build client dependencies and install into /usr/local
