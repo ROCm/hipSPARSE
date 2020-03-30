@@ -277,7 +277,7 @@ hipsparseStatus_t testing_nnz(Arguments argus)
     {
         for(int j = 0; j < N; ++j)
         {
-            h_A[j * lda + i] = T(-1.0);
+            h_A[j * lda + i] = make_DataType<T>(-1);
         }
     }
 
