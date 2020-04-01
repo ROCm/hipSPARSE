@@ -426,6 +426,16 @@ namespace hipsparse
                                     int*                      nnzTotalDevHostPtr);
 
     template <typename T>
+    hipsparseStatus_t hipsparseXnnz_compress(hipsparseHandle_t handle,
+                                             int                        m,
+                                             const hipsparseMatDescr_t  descrA,
+                                             const T*                   csrValA,
+                                             const int*                 csrRowPtrA,
+                                             int*                       nnzPerRow,
+                                             int*                       nnzC,
+                                             T                          tol);
+
+    template <typename T>
     hipsparseStatus_t hipsparseXcsr2csc(hipsparseHandle_t    handle,
                                         int                  m,
                                         int                  n,
@@ -458,6 +468,21 @@ namespace hipsparse
                                         T*                        csr_val,
                                         int*                      csr_row_ptr,
                                         int*                      csr_col_ind);
+
+    template <typename T>
+    hipsparseStatus_t hipsparseXcsr2csr_compress(hipsparseHandle_t         handle,
+                                                 int                       m,
+                                                 int                       n,
+                                                 const hipsparseMatDescr_t descrA,
+                                                 const T*                  csrValA,
+                                                 const int*                csrColIndA,
+                                                 const int*                csrRowPtrA,
+                                                 int                       nnzA,
+                                                 const int*                nnzPerRow,
+                                                 T*                        csrValC,
+                                                 int*                      csrColIndC,
+                                                 int*                      csrRowPtrC,
+                                                 T                         tol);
 
 } // namespace hipsparse
 

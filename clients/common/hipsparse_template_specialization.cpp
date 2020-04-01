@@ -2863,6 +2863,62 @@ namespace hipsparse
     }
 
     template <>
+    hipsparseStatus_t hipsparseXnnz_compress(hipsparseHandle_t         handle,
+                                             int                       m,
+                                             const hipsparseMatDescr_t descrA,
+                                             const float*              csrValA,
+                                             const int*                csrRowPtrA,
+                                             int*                      nnzPerRow,
+                                             int*                      nnzC,
+                                             float                     tol)
+    {
+        return hipsparseSnnz_compress(
+            handle, m, descrA, csrValA, csrRowPtrA, nnzPerRow, nnzC, tol);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXnnz_compress(hipsparseHandle_t         handle,
+                                             int                       m,
+                                             const hipsparseMatDescr_t descrA,
+                                             const double*             csrValA,
+                                             const int*                csrRowPtrA,
+                                             int*                      nnzPerRow,
+                                             int*                      nnzC,
+                                             double                    tol)
+    {
+        return hipsparseDnnz_compress(
+            handle, m, descrA, csrValA, csrRowPtrA, nnzPerRow, nnzC, tol);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXnnz_compress(hipsparseHandle_t         handle,
+                                             int                       m,
+                                             const hipsparseMatDescr_t descrA,
+                                             const hipComplex*         csrValA,
+                                             const int*                csrRowPtrA,
+                                             int*                      nnzPerRow,
+                                             int*                      nnzC,
+                                             hipComplex                tol)
+    {
+        return hipsparseCnnz_compress(
+            handle, m, descrA, csrValA, csrRowPtrA, nnzPerRow, nnzC, tol);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXnnz_compress(hipsparseHandle_t         handle,
+                                             int                       m,
+                                             const hipsparseMatDescr_t descrA,
+                                             const hipDoubleComplex*   csrValA,
+                                             const int*                csrRowPtrA,
+                                             int*                      nnzPerRow,
+                                             int*                      nnzC,
+                                             hipDoubleComplex          tol)
+    {
+        return hipsparseZnnz_compress(
+            handle, m, descrA, csrValA, csrRowPtrA, nnzPerRow, nnzC, tol);
+    }
+
+    template <>
     hipsparseStatus_t hipsparseXcsr2csc(hipsparseHandle_t    handle,
                                         int                  m,
                                         int                  n,
@@ -3112,6 +3168,126 @@ namespace hipsparse
                                         int*                      csrColIndA)
     {
         return hipsparseZhyb2csr(handle, descrA, hybA, csrValA, csrRowPtrA, csrColIndA);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXcsr2csr_compress(hipsparseHandle_t         handle,
+                                                 int                       m,
+                                                 int                       n,
+                                                 const hipsparseMatDescr_t descrA,
+                                                 const float*              csrValA,
+                                                 const int*                csrColIndA,
+                                                 const int*                csrRowPtrA,
+                                                 int                       nnzA,
+                                                 const int*                nnzPerRow,
+                                                 float*                    csrValC,
+                                                 int*                      csrColIndC,
+                                                 int*                      csrRowPtrC,
+                                                 float                     tol)
+    {
+        return hipsparseScsr2csr_compress(handle,
+                                          m,
+                                          n,
+                                          descrA,
+                                          csrValA,
+                                          csrColIndA,
+                                          csrRowPtrA,
+                                          nnzA,
+                                          nnzPerRow,
+                                          csrValC,
+                                          csrColIndC,
+                                          csrRowPtrC,
+                                          tol);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXcsr2csr_compress(hipsparseHandle_t         handle,
+                                                 int                       m,
+                                                 int                       n,
+                                                 const hipsparseMatDescr_t descrA,
+                                                 const double*             csrValA,
+                                                 const int*                csrColIndA,
+                                                 const int*                csrRowPtrA,
+                                                 int                       nnzA,
+                                                 const int*                nnzPerRow,
+                                                 double*                   csrValC,
+                                                 int*                      csrColIndC,
+                                                 int*                      csrRowPtrC,
+                                                 double                    tol)
+    {
+        return hipsparseDcsr2csr_compress(handle,
+                                          m,
+                                          n,
+                                          descrA,
+                                          csrValA,
+                                          csrColIndA,
+                                          csrRowPtrA,
+                                          nnzA,
+                                          nnzPerRow,
+                                          csrValC,
+                                          csrColIndC,
+                                          csrRowPtrC,
+                                          tol);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXcsr2csr_compress(hipsparseHandle_t         handle,
+                                                 int                       m,
+                                                 int                       n,
+                                                 const hipsparseMatDescr_t descrA,
+                                                 const hipComplex*         csrValA,
+                                                 const int*                csrColIndA,
+                                                 const int*                csrRowPtrA,
+                                                 int                       nnzA,
+                                                 const int*                nnzPerRow,
+                                                 hipComplex*               csrValC,
+                                                 int*                      csrColIndC,
+                                                 int*                      csrRowPtrC,
+                                                 hipComplex                tol)
+    {
+        return hipsparseCcsr2csr_compress(handle,
+                                          m,
+                                          n,
+                                          descrA,
+                                          csrValA,
+                                          csrColIndA,
+                                          csrRowPtrA,
+                                          nnzA,
+                                          nnzPerRow,
+                                          csrValC,
+                                          csrColIndC,
+                                          csrRowPtrC,
+                                          tol);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXcsr2csr_compress(hipsparseHandle_t         handle,
+                                                 int                       m,
+                                                 int                       n,
+                                                 const hipsparseMatDescr_t descrA,
+                                                 const hipDoubleComplex*   csrValA,
+                                                 const int*                csrColIndA,
+                                                 const int*                csrRowPtrA,
+                                                 int                       nnzA,
+                                                 const int*                nnzPerRow,
+                                                 hipDoubleComplex*         csrValC,
+                                                 int*                      csrColIndC,
+                                                 int*                      csrRowPtrC,
+                                                 hipDoubleComplex          tol)
+    {
+        return hipsparseZcsr2csr_compress(handle,
+                                          m,
+                                          n,
+                                          descrA,
+                                          csrValA,
+                                          csrColIndA,
+                                          csrRowPtrA,
+                                          nnzA,
+                                          nnzPerRow,
+                                          csrValC,
+                                          csrColIndC,
+                                          csrRowPtrC,
+                                          tol);
     }
 
 } // namespace hipsparse

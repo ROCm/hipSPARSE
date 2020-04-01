@@ -1872,6 +1872,49 @@ hipsparseStatus_t hipsparseZnnz(hipsparseHandle_t         handle,
                                 int*                      nnzPerRowColumn,
                                 int*                      nnzTotalDevHostPtr);
 
+/* Description: 
+   This function computes the number of nonzero elements per row and the total number of nonzero elements in the compressed version of the 
+   input CSR matrix where the matrix is compressed by removing elements less than the tolerance. */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSnnz_compress(hipsparseHandle_t          handle,
+                                         int                        m,
+                                         const hipsparseMatDescr_t  descrA,
+                                         const float*               csrValA,
+                                         const int*                 csrRowPtrA,
+                                         int*                       nnzPerRow,
+                                         int*                       nnzC,
+                                         float                      tol);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDnnz_compress(hipsparseHandle_t          handle,
+                                         int                        m,
+                                         const hipsparseMatDescr_t  descrA,
+                                         const double*              csrValA,
+                                         const int*                 csrRowPtrA,
+                                         int*                       nnzPerRow,
+                                         int*                       nnzC,
+                                         double                     tol);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCnnz_compress(hipsparseHandle_t          handle,
+                                         int                        m,
+                                         const hipsparseMatDescr_t  descrA,
+                                         const hipComplex*          csrValA,
+                                         const int*                 csrRowPtrA,
+                                         int*                       nnzPerRow,
+                                         int*                       nnzC,
+                                         hipComplex                 tol);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseZnnz_compress(hipsparseHandle_t          handle,
+                                         int                        m,
+                                         const hipsparseMatDescr_t  descrA,
+                                         const hipDoubleComplex*    csrValA,
+                                         const int*                 csrRowPtrA,
+                                         int*                       nnzPerRow,
+                                         int*                       nnzC,
+                                         hipDoubleComplex           tol);
+
 /* Description: This routine converts a sparse matrix in CSR storage format
    to a sparse matrix in COO storage format. */
 HIPSPARSE_EXPORT
@@ -1983,6 +2026,64 @@ hipsparseStatus_t hipsparseZcsr2hyb(hipsparseHandle_t         handle,
                                     hipsparseHybMat_t         hybA,
                                     int                       userEllWidth,
                                     hipsparseHybPartition_t   partitionType);
+
+/* Description: This routine compresses the input CSR matrix by removing elements that are less than the non-negative tolerance */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseScsr2csr_compress(hipsparseHandle_t         handle,
+                                             int                       m,
+                                             int                       n,
+                                             const hipsparseMatDescr_t descrA,
+                                             const float*              csrValA,
+                                             const int*                csrColIndA,
+                                             const int*                csrRowPtrA,
+                                             int                       nnzA,
+                                             const int*                nnzPerRow,
+                                             float*                    csrValC,
+                                             int*                      csrColIndC,
+                                             int*                      csrRowPtrC,
+                                             float                     tol);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDcsr2csr_compress(hipsparseHandle_t         handle,
+                                             int                       m,
+                                             int                       n,
+                                             const hipsparseMatDescr_t descrA,
+                                             const double*             csrValA,
+                                             const int*                csrColIndA,
+                                             const int*                csrRowPtrA,
+                                             int                       nnzA,
+                                             const int*                nnzPerRow,
+                                             double*                   csrValC,
+                                             int*                      csrColIndC,
+                                             int*                      csrRowPtrC,
+                                             double                    tol);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCcsr2csr_compress(hipsparseHandle_t         handle,
+                                             int                       m,
+                                             int                       n,
+                                             const hipsparseMatDescr_t descrA,
+                                             const hipComplex*         csrValA,
+                                             const int*                csrColIndA,
+                                             const int*                csrRowPtrA,
+                                             int                       nnzA,
+                                             const int*                nnzPerRow,
+                                             hipComplex*               csrValC,
+                                             int*                      csrColIndC,
+                                             int*                      csrRowPtrC,
+                                             hipComplex                tol);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseZcsr2csr_compress(hipsparseHandle_t         handle,
+                                             int                       m,
+                                             int                       n,
+                                             const hipsparseMatDescr_t descrA,
+                                             const hipDoubleComplex*   csrValA,
+                                             const int*                csrColIndA,
+                                             const int*                csrRowPtrA,
+                                             int                       nnzA,
+                                             const int*                nnzPerRow,
+                                             hipDoubleComplex*         csrValC,
+                                             int*                      csrColIndC,
+                                             int*                      csrRowPtrC,
+                                             hipDoubleComplex          tol);
 
 /* Description: This routine converts a sparse matrix in HYB storage format
    to a sparse matrix in CSR storage format. */
