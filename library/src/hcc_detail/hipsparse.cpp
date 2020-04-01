@@ -5252,7 +5252,7 @@ hipsparseStatus_t hipsparseZnnz(hipsparseHandle_t         handle,
     return HIPSPARSE_STATUS_SUCCESS;
 }
 
-hipsparseStatus_t hipsparseXcsr2bsr_nnz(hipsparseHandle_t          handle,
+hipsparseStatus_t hipsparseXcsr2bsrNnz(hipsparseHandle_t          handle,
                                         hipsparseDirection_t       dirA,
                                         int                        m,
                                         int                        n,
@@ -5265,16 +5265,16 @@ hipsparseStatus_t hipsparseXcsr2bsr_nnz(hipsparseHandle_t          handle,
                                         int*                       bsrNnzb)
 {
     RETURN_IF_ROCSPARSE_ERROR(rocsparse_csr2bsr_nnz((rocsparse_handle)handle,
-                                             hipDirectionToHCCDirection(dirA),
-                                             m,
-                                             n,
-                                             (const rocsparse_mat_descr)descrA,
-                                             csrRowPtrA,
-                                             csrColIndA,
-                                             blockDim,
-                                             (const rocsparse_mat_descr)descrC,
-                                             bsrRowPtrC,
-                                             bsrNnzb));
+                                                    hipDirectionToHCCDirection(dirA),
+                                                    m,
+                                                    n,
+                                                    (const rocsparse_mat_descr)descrA,
+                                                    csrRowPtrA,
+                                                    csrColIndA,
+                                                    blockDim,
+                                                    (const rocsparse_mat_descr)descrC,
+                                                    bsrRowPtrC,
+                                                    bsrNnzb));
     return HIPSPARSE_STATUS_SUCCESS;
 }
 

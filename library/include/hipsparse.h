@@ -1873,19 +1873,20 @@ hipsparseStatus_t hipsparseZnnz(hipsparseHandle_t         handle,
                                 int*                      nnzTotalDevHostPtr);
 
 /* Description: 
-   This function computes the number of nonzero elements per row or column and the total number of nonzero elements in a dense matrix. */
+   This function computes the number of nonzero block columns per block row and the total number of blocks in the BSR 
+   matrix where the BSR matrix is formed by converting the input CSR matrix. */
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseXcsr2bsr_nnz(hipsparseHandle_t          handle,
-                                        hipsparseDirection_t       dirA,
-                                        int                        m,
-                                        int                        n,
-                                        const hipsparseMatDescr_t  descrA,
-                                        const int*                 csrRowPtrA,
-                                        const int*                 csrColIndA,
-                                        int                        blockDim,
-                                        const hipsparseMatDescr_t  descrC,
-                                        int*                       bsrRowPtrC,
-                                        int*                       bsrNnzb);
+hipsparseStatus_t hipsparseXcsr2bsrNnz(hipsparseHandle_t          handle,
+                                       hipsparseDirection_t       dirA,
+                                       int                        m,
+                                       int                        n,
+                                       const hipsparseMatDescr_t  descrA,
+                                       const int*                 csrRowPtrA,
+                                       const int*                 csrColIndA,
+                                       int                        blockDim,
+                                       const hipsparseMatDescr_t  descrC,
+                                       int*                       bsrRowPtrC,
+                                       int*                       bsrNnzb);
 
 /* Description: This routine converts a sparse matrix in CSR storage format
    to a sparse matrix in COO storage format. */

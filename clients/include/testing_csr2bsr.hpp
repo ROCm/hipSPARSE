@@ -88,12 +88,12 @@ void testing_csr2bsr_bad_arg(void)
         return;
     }
 
-    // Testing hipsparseXcsr2bsr_nnz()
+    // Testing hipsparseXcsr2bsrNnz()
 
     int bsr_nnzb;
 
     // Test invalid handle
-    status = hipsparseXcsr2bsr_nnz(nullptr,
+    status = hipsparseXcsr2bsrNnz(nullptr,
                                     dir,
                                     m,
                                     n,
@@ -107,7 +107,7 @@ void testing_csr2bsr_bad_arg(void)
     verify_hipsparse_status_invalid_handle(status);
 
     // Test invalid pointers
-    status = hipsparseXcsr2bsr_nnz(handle,
+    status = hipsparseXcsr2bsrNnz(handle,
                                     dir,
                                     m,
                                     n,
@@ -120,7 +120,7 @@ void testing_csr2bsr_bad_arg(void)
                                     &bsr_nnzb);
     verify_hipsparse_status_invalid_pointer(status, "Error: csr_descr is nullptr");
 
-    status = hipsparseXcsr2bsr_nnz(handle,
+    status = hipsparseXcsr2bsrNnz(handle,
                                     dir,
                                     m,
                                     n,
@@ -133,7 +133,7 @@ void testing_csr2bsr_bad_arg(void)
                                     &bsr_nnzb);
     verify_hipsparse_status_invalid_pointer(status, "Error: csr_row_ptr is nullptr");
 
-    status = hipsparseXcsr2bsr_nnz(handle,
+    status = hipsparseXcsr2bsrNnz(handle,
                                     dir,
                                     m,
                                     n,
@@ -146,7 +146,7 @@ void testing_csr2bsr_bad_arg(void)
                                     &bsr_nnzb);
     verify_hipsparse_status_invalid_pointer(status, "Error: csr_col_ind is nullptr");
     
-    status = hipsparseXcsr2bsr_nnz(handle,
+    status = hipsparseXcsr2bsrNnz(handle,
                                     dir,
                                     m,
                                     n,
@@ -159,7 +159,7 @@ void testing_csr2bsr_bad_arg(void)
                                     &bsr_nnzb);
     verify_hipsparse_status_invalid_pointer(status, "Error: bsr_descr is nullptr");
     
-    status = hipsparseXcsr2bsr_nnz(handle,
+    status = hipsparseXcsr2bsrNnz(handle,
                                     dir,
                                     m,
                                     n,
@@ -172,7 +172,7 @@ void testing_csr2bsr_bad_arg(void)
                                     &bsr_nnzb);
     verify_hipsparse_status_invalid_pointer(status, "Error: bsr_row_ptr is nullptr");
 
-    status = hipsparseXcsr2bsr_nnz(handle,
+    status = hipsparseXcsr2bsrNnz(handle,
                                     dir,
                                     m,
                                     n,
@@ -186,7 +186,7 @@ void testing_csr2bsr_bad_arg(void)
     verify_hipsparse_status_invalid_pointer(status, "Error: bsr_nnzb is nullptr");
 
     // Test invalid sizes
-    status = hipsparseXcsr2bsr_nnz(handle,
+    status = hipsparseXcsr2bsrNnz(handle,
                                     dir,
                                     -1,
                                     n,
@@ -199,7 +199,7 @@ void testing_csr2bsr_bad_arg(void)
                                     &bsr_nnzb);
     verify_hipsparse_status_invalid_size(status, "Error: m is invalid");  
 
-    status = hipsparseXcsr2bsr_nnz(handle,
+    status = hipsparseXcsr2bsrNnz(handle,
                                     dir,
                                     m,
                                     -1,
@@ -212,7 +212,7 @@ void testing_csr2bsr_bad_arg(void)
                                     &bsr_nnzb);
     verify_hipsparse_status_invalid_size(status, "Error: n is invalid");  
 
-    status = hipsparseXcsr2bsr_nnz(handle,
+    status = hipsparseXcsr2bsrNnz(handle,
                                     dir,
                                     m,
                                     n,
@@ -485,7 +485,7 @@ hipsparseStatus_t testing_csr2bsr(Arguments argus)
 
         int bsr_nnzb;
 
-        status = hipsparseXcsr2bsr_nnz(handle,
+        status = hipsparseXcsr2bsrNnz(handle,
                                        dir,
                                        m,
                                        n,
@@ -617,7 +617,7 @@ hipsparseStatus_t testing_csr2bsr(Arguments argus)
     {
         // Obtain BSR nnzb
         int bsr_nnzb;
-        CHECK_HIPSPARSE_ERROR(hipsparseXcsr2bsr_nnz(handle,
+        CHECK_HIPSPARSE_ERROR(hipsparseXcsr2bsrNnz(handle,
                                                     dir,
                                                     m,
                                                     n,
