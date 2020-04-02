@@ -90,10 +90,10 @@ void testing_csx2dense_bad_arg(FUNC& csx2dense)
                        M,
                        N,
                        nullptr,
-                       (const T*)d_csx_val,
+                       d_csx_val,
                        d_csx_row_col_ptr,
                        d_csx_col_row_ind,
-                       (T*)d_dense_val,
+                       d_dense_val,
                        LD);
     verify_hipsparse_status_invalid_pointer(status, "Error: an invalid pointer must be detected.");
 
@@ -104,23 +104,23 @@ void testing_csx2dense_bad_arg(FUNC& csx2dense)
                        (const T*)nullptr,
                        d_csx_row_col_ptr,
                        d_csx_col_row_ind,
-                       (T*)d_dense_val,
+                       d_dense_val,
                        LD);
     verify_hipsparse_status_invalid_pointer(status, "Error: an invalid pointer must be detected.");
 
     status = csx2dense(
-        handle, M, N, descr, (const T*)d_csx_val, nullptr, d_csx_col_row_ind, (T*)d_dense_val, LD);
+        handle, M, N, descr, d_csx_val, nullptr, d_csx_col_row_ind, d_dense_val, LD);
     verify_hipsparse_status_invalid_pointer(status, "Error: an invalid pointer must be detected.");
 
     status = csx2dense(
-        handle, M, N, descr, (const T*)d_csx_val, d_csx_row_col_ptr, nullptr, (T*)d_dense_val, LD);
+        handle, M, N, descr, d_csx_val, d_csx_row_col_ptr, nullptr, d_dense_val, LD);
     verify_hipsparse_status_invalid_pointer(status, "Error: an invalid pointer must be detected.");
 
     status = csx2dense(handle,
                        M,
                        N,
                        descr,
-                       (const T*)d_csx_val,
+                       d_csx_val,
                        d_csx_row_col_ptr,
                        d_csx_col_row_ind,
                        (T*)nullptr,
@@ -134,12 +134,12 @@ void testing_csx2dense_bad_arg(FUNC& csx2dense)
                        -1,
                        N,
                        descr,
-                       (const T*)d_csx_val,
+                       d_csx_val,
                        d_csx_row_col_ptr,
                        d_csx_col_row_ind,
-                       (T*)d_dense_val,
+                       d_dense_val,
                        LD);
-    verify_hipsparse_status_invalid_pointer(status, "Error: an invalid size must be detected.");
+    verify_hipsparse_status_invalid_size(status, "Error: an invalid size must be detected.");
     //
     // Testing invalid size on N
     //
@@ -147,12 +147,12 @@ void testing_csx2dense_bad_arg(FUNC& csx2dense)
                        M,
                        -1,
                        descr,
-                       (const T*)d_csx_val,
+                       d_csx_val,
                        d_csx_row_col_ptr,
                        d_csx_col_row_ind,
-                       (T*)d_dense_val,
+                       d_dense_val,
                        LD);
-    verify_hipsparse_status_invalid_pointer(status, "Error: an invalid size must be detected.");
+    verify_hipsparse_status_invalid_size(status, "Error: an invalid size must be detected.");
     //
     // Testing invalid size on LD
     //
@@ -160,12 +160,12 @@ void testing_csx2dense_bad_arg(FUNC& csx2dense)
                        M,
                        -1,
                        descr,
-                       (const T*)d_csx_val,
+                       d_csx_val,
                        d_csx_row_col_ptr,
                        d_csx_col_row_ind,
-                       (T*)d_dense_val,
+                       d_dense_val,
                        M - 1);
-    verify_hipsparse_status_invalid_pointer(status, "Error: an invalid size must be detected.");
+    verify_hipsparse_status_invalid_size(status, "Error: an invalid size must be detected.");
 }
 
 template <hipsparseDirection_t DIRA, typename T, typename FUNC1, typename FUNC2>
@@ -262,7 +262,7 @@ hipsparseStatus_t testing_csx2dense(const Arguments& argus, FUNC1& csx2dense, FU
     int nnz;
     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
     CHECK_HIPSPARSE_ERROR(hipsparseXnnz(
-        handle, DIRA, M, N, descr, (const T*)d_dense_val, LD, d_nnzPerRowColumn, &nnz));
+        handle, DIRA, M, N, descr, d_dense_val, LD, d_nnzPerRowColumn, &nnz));
 
     //
     // Transfer.
@@ -303,7 +303,7 @@ hipsparseStatus_t testing_csx2dense(const Arguments& argus, FUNC1& csx2dense, FU
                                         M,
                                         N,
                                         descr,
-                                        (const T*)d_dense_val,
+                                        d_dense_val,
                                         LD,
                                         d_nnzPerRowColumn,
                                         d_csx_val,
@@ -316,7 +316,7 @@ hipsparseStatus_t testing_csx2dense(const Arguments& argus, FUNC1& csx2dense, FU
                                         M,
                                         N,
                                         descr,
-                                        (const T*)d_dense_val,
+                                        d_dense_val,
                                         LD,
                                         d_nnzPerRowColumn,
                                         d_csx_val,
@@ -354,10 +354,10 @@ hipsparseStatus_t testing_csx2dense(const Arguments& argus, FUNC1& csx2dense, FU
         host_csx2dense<DIRA, T>(M,
                                 N,
                                 hipsparseGetMatIndexBase(descr),
-                                (const T*)cpu_csx_val.data(),
+                                cpu_csx_val.data(),
                                 cpu_csx_row_col_ptr.data(),
                                 cpu_csx_col_row_ind.data(),
-                                (T*)h_dense_val.data(),
+                                h_dense_val.data(),
                                 LD);
 
         if(DIRA == HIPSPARSE_DIRECTION_ROW)
@@ -366,10 +366,10 @@ hipsparseStatus_t testing_csx2dense(const Arguments& argus, FUNC1& csx2dense, FU
                                             M,
                                             N,
                                             descr,
-                                            (const T*)d_csx_val,
+                                            d_csx_val,
                                             d_csx_row_col_ptr,
                                             d_csx_col_row_ind,
-                                            (T*)d_dense_val,
+                                            d_dense_val,
                                             LD));
         }
         else
@@ -378,16 +378,16 @@ hipsparseStatus_t testing_csx2dense(const Arguments& argus, FUNC1& csx2dense, FU
                                             M,
                                             N,
                                             descr,
-                                            (const T*)d_csx_val,
+                                            d_csx_val,
                                             d_csx_col_row_ind,
                                             d_csx_row_col_ptr,
-                                            (T*)d_dense_val,
+                                            d_dense_val,
                                             LD));
         }
         void* buffer = malloc(sizeof(T) * LD * N);
         CHECK_HIP_ERROR(hipMemcpy(buffer, d_dense_val, sizeof(T) * LD * N, hipMemcpyDeviceToHost));
-        unit_check_general(M, N, LD, (T*)h_dense_val.data(), (T*)buffer);
-        unit_check_general(M, N, LD, (T*)h_dense_val.data(), (T*)h_dense_val_ref.data());
+        unit_check_general(M, N, LD, h_dense_val.data(), (T*)buffer);
+        unit_check_general(M, N, LD, h_dense_val.data(), h_dense_val_ref.data());
         free(buffer);
         buffer = nullptr;
     }

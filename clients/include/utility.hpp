@@ -864,14 +864,14 @@ static inline hipDoubleComplex testing_neg(hipDoubleComplex val)
 }
 
 template <typename T>
-hipsparseStatus_t host_nnz(hipsparseDirection_t      dirA,
-                           int                       m,
-                           int                       n,
-                           const hipsparseMatDescr_t descrA,
-                           const T*                  A,
-                           int                       lda,
-                           int*                      nnzPerRowColumn,
-                           int*                      nnzTotalDevHostPtr)
+void host_nnz(hipsparseDirection_t      dirA,
+	      int                       m,
+	      int                       n,
+	      const hipsparseMatDescr_t descrA,
+	      const T*                  A,
+	      int                       lda,
+	      int*                      nnzPerRowColumn,
+	      int*                      nnzTotalDevHostPtr)
 {
     int mn = (dirA == HIPSPARSE_DIRECTION_ROW) ? m : n;
 #ifdef _OPENMP
@@ -909,11 +909,10 @@ hipsparseStatus_t host_nnz(hipsparseDirection_t      dirA,
         sum = sum + nnzPerRowColumn[j];
     }
     nnzTotalDevHostPtr[0] = sum;
-    return HIPSPARSE_STATUS_SUCCESS;
 }
 
 template <hipsparseDirection_t DIRA, typename T>
-hipsparseStatus_t host_dense2csx(int                  m,
+void host_dense2csx(int                  m,
                                  int                  n,
                                  hipsparseIndexBase_t base,
                                  const T*             A,
@@ -946,7 +945,7 @@ hipsparseStatus_t host_dense2csx(int                  m,
                 }
             }
         }
-        return HIPSPARSE_STATUS_SUCCESS;
+	break;
     }
 
     case HIPSPARSE_DIRECTION_ROW:
@@ -967,15 +966,15 @@ hipsparseStatus_t host_dense2csx(int                  m,
                 }
             }
         }
-        return HIPSPARSE_STATUS_SUCCESS;
+        break;
     }
     }
 
-    return HIPSPARSE_STATUS_INVALID_VALUE;
+
 }
 
 template <hipsparseDirection_t DIRA, typename T>
-hipsparseStatus_t host_csx2dense(int                  m,
+void host_csx2dense(int                  m,
                                  int                  n,
                                  hipsparseIndexBase_t base,
                                  const T*             csx_val,
@@ -1002,7 +1001,7 @@ hipsparseStatus_t host_csx2dense(int                  m,
                 A[(csx_col_row_ind[at] - base) + ld * col] = csx_val[at];
             }
         }
-        return HIPSPARSE_STATUS_SUCCESS;
+	break;
     }
 
     case HIPSPARSE_DIRECTION_ROW:
@@ -1021,11 +1020,10 @@ hipsparseStatus_t host_csx2dense(int                  m,
                 A[(csx_col_row_ind[at] - base) * ld + row] = csx_val[at];
             }
         }
-        return HIPSPARSE_STATUS_SUCCESS;
+        break;
     }
     }
-
-    return HIPSPARSE_STATUS_INVALID_VALUE;
+    
 }
 
 template <typename T>
