@@ -3640,7 +3640,7 @@ hipsparseStatus_t hipsparseXcsr2bsrNnz(hipsparseHandle_t          handle,
                                        int*                       bsrRowPtrC,
                                        int*                       bsrNnzb)
 {
-    return hipCUSPARSEStatusToHIPStatus(cusparseScsr2bsrNnz((cusparseHandle_t)handle,
+    return hipCUSPARSEStatusToHIPStatus(cusparseXcsr2bsrNnz((cusparseHandle_t)handle,
                                                             hipDirectionToCudaDirection(dirA),
                                                             m,
                                                             n,
