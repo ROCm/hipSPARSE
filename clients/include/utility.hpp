@@ -887,7 +887,7 @@ hipsparseStatus_t host_nnz(hipsparseDirection_t      dirA,
     {
         for(int i = 0; i < m; ++i)
         {
-            if(A[j * lda + i] != 0)
+            if(A[j * lda + i] != make_DataType<T>(0))
             {
                 if(dirA == HIPSPARSE_DIRECTION_ROW)
                 {
