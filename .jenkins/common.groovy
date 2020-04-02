@@ -6,12 +6,21 @@ def runCompileCommand(platform, project)
     project.paths.construct_build_prefix()
 
     def command
+    def getDependenciesCommand = ""
+    if (project.installLibraryDependenciesFromCI)
+    {
+        project.libraryDependencies.each
+        { libraryName ->
+            getDependenciesCommand += auxiliary.getLibrary(libraryName, platform.jenkinsLabel, 'develop')
+        }
+    }
 
     if(platform.jenkinsLabel.contains('centos'))
     {
         command = """#!/usr/bin/env bash
                 set -x
                 cd ${project.paths.project_build_prefix}
+                ${getDependenciesCommand}
                 export PATH=/opt/rocm/hsa/include:$PATH
                 LD_LIBRARY_PATH=/opt/rocm/hcc/lib CXX=/opt/rh/devtoolset-7/root/usr/bin/c++ ${project.paths.build_command}
             """
@@ -21,6 +30,7 @@ def runCompileCommand(platform, project)
         command = """#!/usr/bin/env bash
                 set -x
                 cd ${project.paths.project_build_prefix}
+                ${getDependenciesCommand}
                 LD_LIBRARY_PATH=/opt/rocm/hcc/lib CXX=${project.compiler.compiler_path} ${project.paths.build_command}
             """
     }
@@ -29,6 +39,7 @@ def runCompileCommand(platform, project)
         command = """#!/usr/bin/env bash
                 set -x
                 cd ${project.paths.project_build_prefix}
+                ${getDependenciesCommand}
                 LD_LIBRARY_PATH=/opt/rocm/hcc/lib CXX=${project.compiler.compiler_path} ${project.paths.build_command}
             """
     }
@@ -66,10 +77,6 @@ def runPackageCommand(platform, project)
 
         platform.runCommand(this, command)
         platform.archiveArtifacts(this, """${project.paths.project_build_prefix}/build/release/package/*.rpm""")
-    }
-    else if(platform.jenkinsLabel.contains('hip-clang'))
-    {
-        packageCommand = null
     }
     else
     {
