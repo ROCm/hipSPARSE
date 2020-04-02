@@ -294,8 +294,8 @@ hipsparseStatus_t testing_dense2csx(const Arguments& argus, FUNC& dense2csx)
 
     int nnz;
     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
-    CHECK_HIPSPARSE_ERROR(hipsparseXnnz(
-        handle, DIRA, M, N, descr, d_dense_val, LD, d_nnzPerRowColumn, &nnz));
+    CHECK_HIPSPARSE_ERROR(
+        hipsparseXnnz(handle, DIRA, M, N, descr, d_dense_val, LD, d_nnzPerRowColumn, &nnz));
 
     //
     // Transfer.

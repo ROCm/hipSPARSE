@@ -865,13 +865,13 @@ static inline hipDoubleComplex testing_neg(hipDoubleComplex val)
 
 template <typename T>
 void host_nnz(hipsparseDirection_t      dirA,
-	      int                       m,
-	      int                       n,
-	      const hipsparseMatDescr_t descrA,
-	      const T*                  A,
-	      int                       lda,
-	      int*                      nnzPerRowColumn,
-	      int*                      nnzTotalDevHostPtr)
+              int                       m,
+              int                       n,
+              const hipsparseMatDescr_t descrA,
+              const T*                  A,
+              int                       lda,
+              int*                      nnzPerRowColumn,
+              int*                      nnzTotalDevHostPtr)
 {
     int mn = (dirA == HIPSPARSE_DIRECTION_ROW) ? m : n;
 #ifdef _OPENMP
@@ -913,14 +913,14 @@ void host_nnz(hipsparseDirection_t      dirA,
 
 template <hipsparseDirection_t DIRA, typename T>
 void host_dense2csx(int                  m,
-                                 int                  n,
-                                 hipsparseIndexBase_t base,
-                                 const T*             A,
-                                 int                  ld,
-                                 const int*           nnz_per_row_columns,
-                                 T*                   csx_val,
-                                 int*                 csx_row_col_ptr,
-                                 int*                 csx_col_row_ind)
+                    int                  n,
+                    hipsparseIndexBase_t base,
+                    const T*             A,
+                    int                  ld,
+                    const int*           nnz_per_row_columns,
+                    T*                   csx_val,
+                    int*                 csx_row_col_ptr,
+                    int*                 csx_col_row_ind)
 {
     static constexpr T s_zero = {};
     int                len    = (HIPSPARSE_DIRECTION_ROW == DIRA) ? m : n;
@@ -945,7 +945,7 @@ void host_dense2csx(int                  m,
                 }
             }
         }
-	break;
+        break;
     }
 
     case HIPSPARSE_DIRECTION_ROW:
@@ -969,19 +969,17 @@ void host_dense2csx(int                  m,
         break;
     }
     }
-
-
 }
 
 template <hipsparseDirection_t DIRA, typename T>
 void host_csx2dense(int                  m,
-                                 int                  n,
-                                 hipsparseIndexBase_t base,
-                                 const T*             csx_val,
-                                 const int*           csx_row_col_ptr,
-                                 const int*           csx_col_row_ind,
-                                 T*                   A,
-                                 int                  ld)
+                    int                  n,
+                    hipsparseIndexBase_t base,
+                    const T*             csx_val,
+                    const int*           csx_row_col_ptr,
+                    const int*           csx_col_row_ind,
+                    T*                   A,
+                    int                  ld)
 {
     static constexpr T s_zero = {};
     switch(DIRA)
@@ -1001,7 +999,7 @@ void host_csx2dense(int                  m,
                 A[(csx_col_row_ind[at] - base) + ld * col] = csx_val[at];
             }
         }
-	break;
+        break;
     }
 
     case HIPSPARSE_DIRECTION_ROW:
@@ -1023,7 +1021,6 @@ void host_csx2dense(int                  m,
         break;
     }
     }
-    
 }
 
 template <typename T>
