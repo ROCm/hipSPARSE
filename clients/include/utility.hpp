@@ -1002,7 +1002,7 @@ inline void host_csr_to_bsr(hipsparseDirection_t    direction,
         nnzb = bsr_row_ptr[mb] - bsr_row_ptr[0];
 
         bsr_col_ind.resize(nnzb, 0);
-        bsr_val.resize(nnzb * block_dim * block_dim, static_cast<T>(0));
+        bsr_val.resize(nnzb * block_dim * block_dim, make_DataType<T>(0));
 #ifdef _OPENMP
 #pragma omp parallel for schedule(dynamic, 1024)
 #endif
@@ -1059,7 +1059,7 @@ inline void host_csr_to_bsr(hipsparseDirection_t    direction,
 
     // find bsr col indices array
     bsr_col_ind.resize(nnzb, 0);
-    bsr_val.resize(nnzb * block_dim * block_dim, static_cast<T>(0));
+    bsr_val.resize(nnzb * block_dim * block_dim, make_DataType<T>(0));
 
     int colIndex = 0;
 
@@ -1151,7 +1151,7 @@ inline void host_bsr_to_csr(hipsparseDirection_t    direction,
 
     csr_row_ptr.resize(m + 1, 0);
     csr_col_ind.resize(nnzb * block_dim * block_dim, 0);
-    csr_val.resize(nnzb * block_dim * block_dim, static_cast<T>(0));
+    csr_val.resize(nnzb * block_dim * block_dim, make_DataType<T>(0));
 
     // quick return if block_dim == 1
     if(block_dim == 1)
