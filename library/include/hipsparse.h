@@ -1873,6 +1873,21 @@ hipsparseStatus_t hipsparseZnnz(hipsparseHandle_t         handle,
                                 int*                      nnzTotalDevHostPtr);
 
 /* Description: 
+   This function computes the number of nonzero block columns per block row and the total number of blocks in the BSR 
+   matrix where the BSR matrix is formed by converting the input CSR matrix. */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseXcsr2bsrNnz(hipsparseHandle_t          handle,
+                                       hipsparseDirection_t       dirA,
+                                       int                        m,
+                                       int                        n,
+                                       const hipsparseMatDescr_t  descrA,
+                                       const int*                 csrRowPtrA,
+                                       const int*                 csrColIndA,
+                                       int                        blockDim,
+                                       const hipsparseMatDescr_t  descrC,
+                                       int*                       bsrRowPtrC,
+                                       int*                       bsrNnzb);
+
    This function computes the number of nonzero elements per row and the total number of nonzero elements in the compressed version of the 
    input CSR matrix where the matrix is compressed by removing elements less than the tolerance. */
 HIPSPARSE_EXPORT
@@ -2026,6 +2041,124 @@ hipsparseStatus_t hipsparseZcsr2hyb(hipsparseHandle_t         handle,
                                     hipsparseHybMat_t         hybA,
                                     int                       userEllWidth,
                                     hipsparseHybPartition_t   partitionType);
+
+/* Description: This routine converts a sparse matrix in CSR storage format
+   to a sparse matrix in BSR storage format. */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseScsr2bsr(hipsparseHandle_t          handle,
+                                    hipsparseDirection_t       dirA,
+                                    int                        m,
+                                    int                        n,
+                                    const hipsparseMatDescr_t  descrA,
+                                    const float*               csrValA,
+                                    const int*                 csrRowPtrA,
+                                    const int*                 csrColIndA,
+                                    int                        blockDim,
+                                    const hipsparseMatDescr_t  descrC,
+                                    float*                     bsrValC,
+                                    int*                       bsrRowPtrC,
+                                    int *                      bsrColIndC);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDcsr2bsr(hipsparseHandle_t          handle,
+                                    hipsparseDirection_t       dirA,
+                                    int                        m,
+                                    int                        n,
+                                    const hipsparseMatDescr_t  descrA,
+                                    const double*              csrValA,
+                                    const int*                 csrRowPtrA,
+                                    const int*                 csrColIndA,
+                                    int                        blockDim,
+                                    const hipsparseMatDescr_t  descrC,
+                                    double*                    bsrValC,
+                                    int*                       bsrRowPtrC,
+                                    int *                      bsrColIndC);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCcsr2bsr(hipsparseHandle_t          handle,
+                                    hipsparseDirection_t       dirA,
+                                    int                        m,
+                                    int                        n,
+                                    const hipsparseMatDescr_t  descrA,
+                                    const hipComplex*          csrValA,
+                                    const int*                 csrRowPtrA,
+                                    const int*                 csrColIndA,
+                                    int                        blockDim,
+                                    const hipsparseMatDescr_t  descrC,
+                                    hipComplex*                bsrValC,
+                                    int*                       bsrRowPtrC,
+                                    int *                      bsrColIndC);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseZcsr2bsr(hipsparseHandle_t          handle,
+                                    hipsparseDirection_t       dirA,
+                                    int                        m,
+                                    int                        n,
+                                    const hipsparseMatDescr_t  descrA,
+                                    const hipDoubleComplex*    csrValA,
+                                    const int*                 csrRowPtrA,
+                                    const int*                 csrColIndA,
+                                    int                        blockDim,
+                                    const hipsparseMatDescr_t  descrC,
+                                    hipDoubleComplex*          bsrValC,
+                                    int*                       bsrRowPtrC,
+                                    int *                      bsrColIndC);
+
+/* Description: This routine converts a sparse matrix in BSR storage format
+   to a sparse matrix in CSR storage format. */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSbsr2csr(hipsparseHandle_t          handle,
+                                    hipsparseDirection_t       dirA,
+                                    int                        mb,
+                                    int                        nb,
+                                    const hipsparseMatDescr_t  descrA,
+                                    const float*               bsrValA,
+                                    const int*                 bsrRowPtrA,
+                                    const int*                 bsrColIndA,
+                                    int                        blockDim,
+                                    const hipsparseMatDescr_t  descrC,
+                                    float*                     csrValC,
+                                    int*                       csrRowPtrC,
+                                    int *                      csrColIndC);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDbsr2csr(hipsparseHandle_t          handle,
+                                    hipsparseDirection_t       dirA,
+                                    int                        mb,
+                                    int                        nb,
+                                    const hipsparseMatDescr_t  descrA,
+                                    const double*              bsrValA,
+                                    const int*                 bsrRowPtrA,
+                                    const int*                 bsrColIndA,
+                                    int                        blockDim,
+                                    const hipsparseMatDescr_t  descrC,
+                                    double*                    csrValC,
+                                    int*                       csrRowPtrC,
+                                    int *                      csrColIndC);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCbsr2csr(hipsparseHandle_t          handle,
+                                    hipsparseDirection_t       dirA,
+                                    int                        mb,
+                                    int                        nb,
+                                    const hipsparseMatDescr_t  descrA,
+                                    const hipComplex*          bsrValA,
+                                    const int*                 bsrRowPtrA,
+                                    const int*                 bsrColIndA,
+                                    int                        blockDim,
+                                    const hipsparseMatDescr_t  descrC,
+                                    hipComplex*                csrValC,
+                                    int*                       csrRowPtrC,
+                                    int *                      csrColIndC);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseZbsr2csr(hipsparseHandle_t          handle,
+                                    hipsparseDirection_t       dirA,
+                                    int                        mb,
+                                    int                        nb,
+                                    const hipsparseMatDescr_t  descrA,
+                                    const hipDoubleComplex*    bsrValA,
+                                    const int*                 bsrRowPtrA,
+                                    const int*                 bsrColIndA,
+                                    int                        blockDim,
+                                    const hipsparseMatDescr_t  descrC,
+                                    hipDoubleComplex*          csrValC,
+                                    int*                       csrRowPtrC,
+                                    int *                      csrColIndC);
 
 /* Description: This routine compresses the input CSR matrix by removing elements that are less than the non-negative tolerance */
 HIPSPARSE_EXPORT

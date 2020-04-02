@@ -462,6 +462,36 @@ namespace hipsparse
                                         hipsparseHybPartition_t   partition_type);
 
     template <typename T>
+    hipsparseStatus_t hipsparseXcsr2bsr(hipsparseHandle_t          handle,
+                                        hipsparseDirection_t       dirA,
+                                        int                        m,
+                                        int                        n,
+                                        const hipsparseMatDescr_t  descrA,
+                                        const T*                   csrValA,
+                                        const int*                 csrRowPtrA,
+                                        const int*                 csrColIndA,
+                                        int                        blockDim,
+                                        const hipsparseMatDescr_t  descrC,
+                                        T*                         bsrValC,
+                                        int*                       bsrRowPtrC,
+                                        int*                       bsrColIndC);
+
+    template <typename T>
+    hipsparseStatus_t hipsparseXbsr2csr(hipsparseHandle_t          handle,
+                                        hipsparseDirection_t       dirA,
+                                        int                        mb,
+                                        int                        nb,
+                                        const hipsparseMatDescr_t  descrA,
+                                        const T*                   bsrValA,
+                                        const int*                 bsrRowPtrA,
+                                        const int*                 bsrColIndA,
+                                        int                        blockDim,
+                                        const hipsparseMatDescr_t  descrC,
+                                        T*                         csrValC,
+                                        int*                       csrRowPtrC,
+                                        int*                       csrColIndC);
+
+    template <typename T>
     hipsparseStatus_t hipsparseXhyb2csr(hipsparseHandle_t         handle,
                                         const hipsparseMatDescr_t descrA,
                                         const hipsparseHybMat_t   hybA,
