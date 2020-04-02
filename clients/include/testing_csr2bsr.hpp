@@ -497,6 +497,15 @@ hipsparseStatus_t testing_csr2bsr(Arguments argus)
                                        dbsr_row_ptr,
                                        &bsr_nnzb);
 
+        if(m < 0 || n < 0 || block_dim < 0)
+        {
+            verify_hipsparse_status_invalid_size(status, "Error: m < 0 || n < 0 || block_dim < 0");
+        }
+        else
+        {
+            verify_hipsparse_status_success(status, "m >= 0 && n >= 0 && block_dim >= 0");
+        }
+
         status = hipsparseXcsr2bsr(handle,
                                    dir,
                                    m,
@@ -615,8 +624,10 @@ hipsparseStatus_t testing_csr2bsr(Arguments argus)
 
     if(argus.unit_check)
     {
-        // Obtain BSR nnzb
-        int bsr_nnzb;
+        // Obtain BSR nnzb first on the host and then using the device and ensure they give the same results
+        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
+
+        int hbsr_nnzb;
         CHECK_HIPSPARSE_ERROR(hipsparseXcsr2bsrNnz(handle,
                                                     dir,
                                                     m,
@@ -627,11 +638,33 @@ hipsparseStatus_t testing_csr2bsr(Arguments argus)
                                                     block_dim,
                                                     bsr_descr,
                                                     dbsr_row_ptr,
-                                                    &bsr_nnzb));
+                                                    &hbsr_nnzb));
+
+        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
+
+        auto dbsr_nnzb_managed = hipsparse_unique_ptr{device_malloc(sizeof(int)), device_free};
+        int* dbsr_nnzb = (int*)dbsr_nnzb_managed.get();
+        CHECK_HIPSPARSE_ERROR(hipsparseXcsr2bsrNnz(handle,
+                                                    dir,
+                                                    m,
+                                                    n,
+                                                    csr_descr,
+                                                    dcsr_row_ptr,
+                                                    dcsr_col_ind,
+                                                    block_dim,
+                                                    bsr_descr,
+                                                    dbsr_row_ptr,
+                                                    dbsr_nnzb));
+
+        int hbsr_nnzb_copied_from_device;
+        CHECK_HIP_ERROR(hipMemcpy(&hbsr_nnzb_copied_from_device, dbsr_nnzb, sizeof(int), hipMemcpyDeviceToHost));
+
+        // Check that using host and device pointer mode gives the same result
+        unit_check_general(1, 1, 1, &hbsr_nnzb_copied_from_device, &hbsr_nnzb);
 
         // Allocate memory on the device
-        auto dbsr_col_ind_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * bsr_nnzb), device_free};
-        auto dbsr_val_managed     = hipsparse_unique_ptr{device_malloc(sizeof(T) * bsr_nnzb * block_dim * block_dim), device_free};
+        auto dbsr_col_ind_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * hbsr_nnzb), device_free};
+        auto dbsr_val_managed     = hipsparse_unique_ptr{device_malloc(sizeof(T) * hbsr_nnzb * block_dim * block_dim), device_free};
 
         int* dbsr_col_ind = (int*)dbsr_col_ind_managed.get();
         T*   dbsr_val     = (T*)dbsr_val_managed.get();
@@ -659,20 +692,20 @@ hipsparseStatus_t testing_csr2bsr(Arguments argus)
 
         // Copy output from device to host
         std::vector<int> hbsr_row_ptr(mb + 1);
-        std::vector<int> hbsr_col_ind(bsr_nnzb);
-        std::vector<T>   hbsr_val(bsr_nnzb * block_dim * block_dim);
+        std::vector<int> hbsr_col_ind(hbsr_nnzb);
+        std::vector<T>   hbsr_val(hbsr_nnzb * block_dim * block_dim);
 
         CHECK_HIP_ERROR(
-            hipMemcpy(hbsr_row_ptr.data(), dbsr_row_ptr, sizeof(int) * (mb + 1), hipMemcpyDeviceToHost));
+            hipMemcpy(hbsr_row_ptr.data(), dbsr_row_ptr, sizeof(int) * (mb + 1), hipMemcpyDeviceToHost  ));
         CHECK_HIP_ERROR(hipMemcpy(
-            hbsr_col_ind.data(), dbsr_col_ind, sizeof(int) * bsr_nnzb, hipMemcpyDeviceToHost));
+            hbsr_col_ind.data(), dbsr_col_ind, sizeof(int) * hbsr_nnzb, hipMemcpyDeviceToHost));
         CHECK_HIP_ERROR(
-            hipMemcpy(hbsr_val.data(), dbsr_val, sizeof(T) * bsr_nnzb * block_dim * block_dim, hipMemcpyDeviceToHost));
+            hipMemcpy(hbsr_val.data(), dbsr_val, sizeof(T) * hbsr_nnzb * block_dim * block_dim, hipMemcpyDeviceToHost));
 
         // Host csr2bsr conversion
         std::vector<int> hbsr_row_ptr_gold(mb + 1);
-        std::vector<int> hbsr_col_ind_gold(bsr_nnzb, 0);
-        std::vector<T>   hbsr_val_gold(bsr_nnzb * block_dim * block_dim);
+        std::vector<int> hbsr_col_ind_gold(hbsr_nnzb, 0);
+        std::vector<T>   hbsr_val_gold(hbsr_nnzb * block_dim * block_dim);
 
         // call host csr2bsr here
         int bsr_nnzb_gold;
@@ -691,10 +724,10 @@ hipsparseStatus_t testing_csr2bsr(Arguments argus)
                         hbsr_val_gold);
 
         // Unit check
-        unit_check_general(1, 1, 1, &bsr_nnzb_gold, &bsr_nnzb);
+        unit_check_general(1, 1, 1, &bsr_nnzb_gold, &hbsr_nnzb);
         unit_check_general(1, mb + 1, 1, hbsr_row_ptr_gold.data(), hbsr_row_ptr.data());
-        unit_check_general(1, bsr_nnzb, 1, hbsr_col_ind_gold.data(), hbsr_col_ind.data());
-        unit_check_general(1, bsr_nnzb * block_dim * block_dim, 1, hbsr_val_gold.data(), hbsr_val.data());
+        unit_check_general(1, hbsr_nnzb, 1, hbsr_col_ind_gold.data(), hbsr_col_ind.data());
+        unit_check_general(1, hbsr_nnzb * block_dim * block_dim, 1, hbsr_val_gold.data(), hbsr_val.data());
     }
 
     return HIPSPARSE_STATUS_SUCCESS;
