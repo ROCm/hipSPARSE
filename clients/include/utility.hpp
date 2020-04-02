@@ -1037,8 +1037,8 @@ inline void host_csr_to_bsr(hipsparseDirection_t    direction,
         std::vector<int> temp(nb, 0);
         for(int j = start; j < end; j++)
         {
-            int blockCol = (csr_col_ind[j] - csr_base) / block_dim;
-            temp[blockCol]         = 1;
+            int blockCol   = (csr_col_ind[j] - csr_base) / block_dim;
+            temp[blockCol] = 1;
         }
 
         int sum = 0;
@@ -1072,8 +1072,8 @@ inline void host_csr_to_bsr(hipsparseDirection_t    direction,
 
         for(int j = start; j < end; j++)
         {
-            int blockCol = (csr_col_ind[j] - csr_base) / block_dim;
-            temp[blockCol]         = 1;
+            int blockCol   = (csr_col_ind[j] - csr_base) / block_dim;
+            temp[blockCol] = 1;
         }
 
         for(int j = 0; j < nb; j++)
@@ -1099,8 +1099,7 @@ inline void host_csr_to_bsr(hipsparseDirection_t    direction,
             int blockCol = (csr_col_ind[j] - csr_base) / block_dim;
 
             colIndex = -1;
-            for(int k = bsr_row_ptr[blockRow] - bsr_base;
-                k < bsr_row_ptr[blockRow + 1] - bsr_base;
+            for(int k = bsr_row_ptr[blockRow] - bsr_base; k < bsr_row_ptr[blockRow + 1] - bsr_base;
                 k++)
             {
                 if(bsr_col_ind[k] - bsr_base == blockCol)
@@ -1124,7 +1123,7 @@ inline void host_csr_to_bsr(hipsparseDirection_t    direction,
             }
 
             int index = (bsr_row_ptr[blockRow] - bsr_base) * block_dim * block_dim
-                                  + colIndex * block_dim * block_dim + blockIndex;
+                        + colIndex * block_dim * block_dim + blockIndex;
 
             bsr_val[index] = csr_val[j];
         }
@@ -1207,9 +1206,8 @@ inline void host_bsr_to_csr(hipsparseDirection_t    direction,
 
         for(int j = bsr_row_ptr[i] - bsr_base; j < bsr_row_ptr[i + 1] - bsr_base; j++)
         {
-            int col = bsr_col_ind[j] - bsr_base;
-            int offset
-                = entries_in_row_sum + block_dim * (j - (bsr_row_ptr[i] - bsr_base));
+            int col    = bsr_col_ind[j] - bsr_base;
+            int offset = entries_in_row_sum + block_dim * (j - (bsr_row_ptr[i] - bsr_base));
 
             for(int k = 0; k < block_dim; k++)
             {
@@ -1226,6 +1224,208 @@ inline void host_bsr_to_csr(hipsparseDirection_t    direction,
                         csr_val[offset + k * entries_in_Row + l]
                             = bsr_val[j * entries_in_block + k + block_dim * l];
                     }
+                }
+            }
+        }
+    }
+}
+
+template <typename T>
+inline void host_bsrmv(hipsparseDirection_t dir,
+                       hipsparseOperation_t trans,
+                       int                  mb,
+                       int                  nb,
+                       int                  nnzb,
+                       T                    alpha,
+                       const int*           bsr_row_ptr,
+                       const int*           bsr_col_ind,
+                       const T*             bsr_val,
+                       int                  bsr_dim,
+                       const T*             x,
+                       T                    beta,
+                       T*                   y,
+                       hipsparseIndexBase_t base)
+{
+    // Quick return
+    if(alpha == make_DataType<T>(0))
+    {
+        if(beta != make_DataType<T>(1))
+        {
+            for(int i = 0; i < mb * bsr_dim; ++i)
+            {
+                y[i] = beta * y[i];
+            }
+        }
+
+        return;
+    }
+
+    int WFSIZE;
+
+    if(bsr_dim == 2)
+    {
+        int blocks_per_row = nnzb / mb;
+
+        if(blocks_per_row < 8)
+        {
+            WFSIZE = 4;
+        }
+        else if(blocks_per_row < 16)
+        {
+            WFSIZE = 8;
+        }
+        else if(blocks_per_row < 32)
+        {
+            WFSIZE = 16;
+        }
+        else if(blocks_per_row < 64)
+        {
+            WFSIZE = 32;
+        }
+        else
+        {
+            WFSIZE = 64;
+        }
+    }
+    else if(bsr_dim <= 8)
+    {
+        WFSIZE = 8;
+    }
+    else if(bsr_dim <= 16)
+    {
+        WFSIZE = 16;
+    }
+    else
+    {
+        WFSIZE = 32;
+    }
+
+#ifdef _OPENMP
+#pragma omp parallel for schedule(dynamic, 1024)
+#endif
+    for(int row = 0; row < mb; ++row)
+    {
+        int row_begin = bsr_row_ptr[row] - base;
+        int row_end   = bsr_row_ptr[row + 1] - base;
+
+        if(bsr_dim == 2)
+        {
+            std::vector<T> sum0(WFSIZE, make_DataType<T>(0));
+            std::vector<T> sum1(WFSIZE, make_DataType<T>(0));
+
+            for(int j = row_begin; j < row_end; j += WFSIZE)
+            {
+                for(int k = 0; k < WFSIZE; ++k)
+                {
+                    if(j + k < row_end)
+                    {
+                        int col = bsr_col_ind[j + k] - base;
+
+                        if(dir == HIPSPARSE_DIRECTION_COLUMN)
+                        {
+                            sum0[k] = testing_fma(bsr_val[bsr_dim * bsr_dim * (j + k) + 0],
+                                                  x[col * bsr_dim + 0],
+                                                  sum0[k]);
+                            sum1[k] = testing_fma(bsr_val[bsr_dim * bsr_dim * (j + k) + 1],
+                                                  x[col * bsr_dim + 0],
+                                                  sum1[k]);
+                            sum0[k] = testing_fma(bsr_val[bsr_dim * bsr_dim * (j + k) + 2],
+                                                  x[col * bsr_dim + 1],
+                                                  sum0[k]);
+                            sum1[k] = testing_fma(bsr_val[bsr_dim * bsr_dim * (j + k) + 3],
+                                                  x[col * bsr_dim + 1],
+                                                  sum1[k]);
+                        }
+                        else
+                        {
+                            sum0[k] = testing_fma(bsr_val[bsr_dim * bsr_dim * (j + k) + 0],
+                                                  x[col * bsr_dim + 0],
+                                                  sum0[k]);
+                            sum0[k] = testing_fma(bsr_val[bsr_dim * bsr_dim * (j + k) + 1],
+                                                  x[col * bsr_dim + 1],
+                                                  sum0[k]);
+                            sum1[k] = testing_fma(bsr_val[bsr_dim * bsr_dim * (j + k) + 2],
+                                                  x[col * bsr_dim + 0],
+                                                  sum1[k]);
+                            sum1[k] = testing_fma(bsr_val[bsr_dim * bsr_dim * (j + k) + 3],
+                                                  x[col * bsr_dim + 1],
+                                                  sum1[k]);
+                        }
+                    }
+                }
+            }
+
+            for(unsigned int j = 1; j < WFSIZE; j <<= 1)
+            {
+                for(unsigned int k = 0; k < WFSIZE - j; ++k)
+                {
+                    sum0[k] = sum0[k] + sum0[k + j];
+                    sum1[k] = sum1[k] + sum1[k + j];
+                }
+            }
+
+            if(beta != make_DataType<T>(0))
+            {
+                y[row * bsr_dim + 0] = testing_fma(beta, y[row * bsr_dim + 0], alpha * sum0[0]);
+                y[row * bsr_dim + 1] = testing_fma(beta, y[row * bsr_dim + 1], alpha * sum1[0]);
+            }
+            else
+            {
+                y[row * bsr_dim + 0] = alpha * sum0[0];
+                y[row * bsr_dim + 1] = alpha * sum1[0];
+            }
+        }
+        else
+        {
+            for(int bi = 0; bi < bsr_dim; ++bi)
+            {
+                std::vector<T> sum(WFSIZE, make_DataType<T>(0));
+
+                for(int j = row_begin; j < row_end; ++j)
+                {
+                    int col = bsr_col_ind[j] - base;
+
+                    for(int bj = 0; bj < bsr_dim; bj += WFSIZE)
+                    {
+                        for(unsigned int k = 0; k < WFSIZE; ++k)
+                        {
+                            if(bj + k < bsr_dim)
+                            {
+                                if(dir == HIPSPARSE_DIRECTION_COLUMN)
+                                {
+                                    sum[k] = testing_fma(
+                                        bsr_val[bsr_dim * bsr_dim * j + bsr_dim * (bj + k) + bi],
+                                        x[bsr_dim * col + (bj + k)],
+                                        sum[k]);
+                                }
+                                else
+                                {
+                                    sum[k] = testing_fma(
+                                        bsr_val[bsr_dim * bsr_dim * j + bsr_dim * bi + (bj + k)],
+                                        x[bsr_dim * col + (bj + k)],
+                                        sum[k]);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                for(unsigned int j = 1; j < WFSIZE; j <<= 1)
+                {
+                    for(unsigned int k = 0; k < WFSIZE - j; ++k)
+                    {
+                        sum[k] = sum[k] + sum[k + j];
+                    }
+                }
+
+                if(beta != make_DataType<T>(0))
+                {
+                    y[row * bsr_dim + bi]
+                        = testing_fma(beta, y[row * bsr_dim + bi], alpha * sum[0]);
+                }
+                else
+                {
+                    y[row * bsr_dim + bi] = alpha * sum[0];
                 }
             }
         }
@@ -2407,10 +2607,10 @@ double get_time_us_sync(hipStream_t stream);
 class Arguments
 {
 public:
-    int M   = 128;
-    int N   = 128;
-    int K   = 128;
-    int nnz = 32;
+    int M         = 128;
+    int N         = 128;
+    int K         = 128;
+    int nnz       = 32;
     int block_dim = 1;
 
     int lda;
@@ -2445,10 +2645,11 @@ public:
 
     Arguments& operator=(const Arguments& rhs)
     {
-        this->M   = rhs.M;
-        this->N   = rhs.N;
-        this->K   = rhs.K;
-        this->nnz = rhs.nnz;
+        this->M         = rhs.M;
+        this->N         = rhs.N;
+        this->K         = rhs.K;
+        this->nnz       = rhs.nnz;
+        this->block_dim = rhs.block_dim;
 
         this->lda = rhs.lda;
         this->ldb = rhs.ldb;
