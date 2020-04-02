@@ -1873,7 +1873,7 @@ hipsparseStatus_t hipsparseZnnz(hipsparseHandle_t         handle,
                                 int*                      nnzTotalDevHostPtr);
 
 /* Description: 
-   This function This function converts the matrix A in dense format into a sparse matrix in CSR format. */
+   This function converts the matrix A in dense format into a sparse matrix in CSR format. */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSdense2csr(hipsparseHandle_t         handle,
                                       int                       m,
