@@ -49,7 +49,7 @@ void testing_csr2csr_compress_bad_arg(void)
     int               n         = 100;
     int               nnz_A     = 100;
     int               safe_size = 100;
-    T                 tol       = static_cast<T>(0);
+    T                 tol       = make_DataType<T>(0);
     hipsparseIndexBase_t csr_idx_base  = HIPSPARSE_INDEX_BASE_ZERO;
     hipsparseStatus_t status;
 
@@ -173,7 +173,7 @@ void testing_csr2csr_compress_bad_arg(void)
                                     csr_row_ptr_A,
                                     nnz_per_row,
                                     nnz_C,
-                                    static_cast<T>(-1));
+                                    make_DataType<T>(-1));
     verify_hipsparse_status_invalid_size(status, "Error: Tolerance is invalid");
 
     // Testing hipsparseXcsr2csr_compress()
@@ -383,7 +383,7 @@ hipsparseStatus_t testing_csr2csr_compress(Arguments argus)
 {
     int                  m         = argus.M;
     int                  n         = argus.N;
-    T                    tol       = static_cast<T>(argus.alpha);
+    T                    tol       = make_DataType<T>(argus.alpha);
 
     int                  safe_size = 100;
     hipsparseIndexBase_t idx_base  = argus.idx_base;
@@ -414,7 +414,7 @@ hipsparseStatus_t testing_csr2csr_compress(Arguments argus)
     hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE);
 
     // Argument sanity check before allocating invalid memory
-    if(m <= 0 || n <= 0 || testing_real(tol) < testing_real(static_cast<T>(0)))
+    if(m <= 0 || n <= 0 || testing_real(tol) < testing_real(make_DataType<T>(0)))
     {
 #ifdef __HIP_PLATFORM_NVCC__
         // Do not test args in cusparse
@@ -473,7 +473,7 @@ hipsparseStatus_t testing_csr2csr_compress(Arguments argus)
         {
             verify_hipsparse_status_invalid_size(status, "Error: m < 0 || n < 0");
         }
-        else if(testing_real(tol) < testing_real(static_cast<T>(0)))
+        else if(testing_real(tol) < testing_real(make_DataType<T>(0)))
         {
             verify_hipsparse_status_invalid_value(status, "Error: real(tol) < 0");
         }
