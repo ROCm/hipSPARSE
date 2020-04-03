@@ -426,7 +426,7 @@ namespace hipsparse
                                     int*                      nnzTotalDevHostPtr);
 
     template <typename T>
-    hipsparseStatus_t hipsparseXnnz_compress(hipsparseHandle_t handle,
+    hipsparseStatus_t hipsparseXnnz_compress(hipsparseHandle_t          handle,
                                              int                        m,
                                              const hipsparseMatDescr_t  descrA,
                                              const T*                   csrValA,
