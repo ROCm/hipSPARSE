@@ -1888,6 +1888,7 @@ hipsparseStatus_t hipsparseXcsr2bsrNnz(hipsparseHandle_t          handle,
                                        int*                       bsrRowPtrC,
                                        int*                       bsrNnzb);
 
+/* Description:
    This function computes the number of nonzero elements per row and the total number of nonzero elements in the compressed version of the 
    input CSR matrix where the matrix is compressed by removing elements less than the tolerance. */
 HIPSPARSE_EXPORT

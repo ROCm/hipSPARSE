@@ -32,9 +32,9 @@
 typedef std::tuple<int, int, double, hipsparseIndexBase_t>    csr2csr_compress_tuple;
 typedef std::tuple<double, hipsparseIndexBase_t, std::string> csr2csr_compress_bin_tuple;
 
-int csr2csr_compress_M_range[] = {-1, 0, 10, 500, 872, 1000};
-int csr2csr_compress_N_range[] = {-3, 0, 33, 242, 623, 1000};
-double csr2csr_compress_alpha_range[] = {0.0, 0.001, 0.01, 0.5, 1.7, 2.3};
+int csr2csr_compress_M_range[] = {-1, 0, 10, 500, 872, 465327};
+int csr2csr_compress_N_range[] = {-3, 0, 33, 242, 623, 592645};
+double csr2csr_compress_alpha_range[] = {-0.001, 0.0, 0.0012, 0.08736, 0.33333, 0.5, 1.0, 1.7};
 
 hipsparseIndexBase_t csr2csr_compress_base_range[]
     = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};

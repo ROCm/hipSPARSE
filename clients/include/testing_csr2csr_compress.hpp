@@ -90,8 +90,6 @@ void testing_csr2csr_compress_bad_arg(void)
         return;
     }
 
-    std::cout << "AAAA" << std::endl;
-
     // Testing hipsparseXnnz_compress()
 
     // Test invalid handle
@@ -104,8 +102,6 @@ void testing_csr2csr_compress_bad_arg(void)
                                     nnz_C,
                                     tol);
     verify_hipsparse_status_invalid_handle(status);
-
-    std::cout << "BBBB" << std::endl;
 
     // Test invalid pointers
     status = hipsparseXnnz_compress(handle,
@@ -158,8 +154,6 @@ void testing_csr2csr_compress_bad_arg(void)
                                     tol);
     verify_hipsparse_status_invalid_pointer(status, "Error: Total number of elements pointer is invalid");
 
-    std::cout << "CCCC" << std::endl;
-
     // Test invalid size
     status = hipsparseXnnz_compress(handle,
                                     -1,
@@ -181,9 +175,6 @@ void testing_csr2csr_compress_bad_arg(void)
                                     nnz_C,
                                     static_cast<T>(-1));
     verify_hipsparse_status_invalid_size(status, "Error: Tolerance is invalid");
-
-    std::cout << "DDDD" << std::endl;
-
 
     // Testing hipsparseXcsr2csr_compress()
 
@@ -385,8 +376,6 @@ void testing_csr2csr_compress_bad_arg(void)
                                         csr_row_ptr_C,
                                         static_cast<T>(-1));
     verify_hipsparse_status_invalid_value(status, "Error: Tolerance is invalid");
-
-    std::cout << "EEEE" << std::endl;
 }
 
 template <typename T>
@@ -401,8 +390,6 @@ hipsparseStatus_t testing_csr2csr_compress(Arguments argus)
     std::string          binfile   = "";
     std::string          filename  = "";
     hipsparseStatus_t    status;
-
-    std::cout << "m: " << m << " n: " << n << " tol: " << tol << " idx_base: " << idx_base << std::endl;
 
     // When in testing mode, M == N == -99 indicates that we are testing with a real
     // matrix from cise.ufl.edu
@@ -424,8 +411,10 @@ hipsparseStatus_t testing_csr2csr_compress(Arguments argus)
 
     hipsparseSetMatIndexBase(csr_descr, idx_base);
 
+    hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE);
+
     // Argument sanity check before allocating invalid memory
-    if(m <= 0 || n <= 0)
+    if(m <= 0 || n <= 0 || testing_real(tol) < testing_real(static_cast<T>(0)))
     {
 #ifdef __HIP_PLATFORM_NVCC__
         // Do not test args in cusparse
@@ -466,24 +455,6 @@ hipsparseStatus_t testing_csr2csr_compress(Arguments argus)
             return HIPSPARSE_STATUS_ALLOC_FAILED;
         }
 
-        status = hipsparseXnnz_compress(handle,
-                                        m,
-                                        csr_descr,
-                                        dcsr_val_A,
-                                        dcsr_row_ptr_A,
-                                        dnnz_per_row,
-                                        dnnz_C,
-                                        tol);
-
-        if(m < 0 || n < 0)
-        {
-            verify_hipsparse_status_invalid_size(status, "Error: m < 0 || n < 0");
-        }
-        else
-        {
-            verify_hipsparse_status_success(status, "m >= 0 && n >= 0");
-        }
-
         status = hipsparseXcsr2csr_compress(handle,
                                             m,
                                             n,
@@ -501,6 +472,10 @@ hipsparseStatus_t testing_csr2csr_compress(Arguments argus)
         if(m < 0 || n < 0)
         {
             verify_hipsparse_status_invalid_size(status, "Error: m < 0 || n < 0");
+        }
+        else if(testing_real(tol) < testing_real(static_cast<T>(0)))
+        {
+            verify_hipsparse_status_invalid_value(status, "Error: real(tol) < 0");
         }
         else
         {
@@ -577,7 +552,7 @@ hipsparseStatus_t testing_csr2csr_compress(Arguments argus)
     auto dcsr_row_ptr_A_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * (m + 1)), device_free};
     auto dcsr_col_ind_A_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * hnnz_A), device_free};
     auto dcsr_val_A_managed     = hipsparse_unique_ptr{device_malloc(sizeof(T) * hnnz_A), device_free};
-    auto dcsr_row_ptr_C_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * hnnz_A), device_free};
+    auto dcsr_row_ptr_C_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * (m + 1)), device_free};
     auto dnnz_per_row_managed   = hipsparse_unique_ptr{device_malloc(sizeof(int) * m), device_free};
 
     int* dcsr_row_ptr_A = (int*)dcsr_row_ptr_A_managed.get();
@@ -586,11 +561,11 @@ hipsparseStatus_t testing_csr2csr_compress(Arguments argus)
     int* dcsr_row_ptr_C = (int*)dcsr_row_ptr_C_managed.get();
     int* dnnz_per_row   = (int*)dnnz_per_row_managed.get();
 
-    if(!dcsr_row_ptr_A || !dcsr_col_ind_A || !dcsr_val_A || !dnnz_per_row)
+    if(!dcsr_row_ptr_A || !dcsr_col_ind_A || !dcsr_val_A || !dcsr_row_ptr_C || !dnnz_per_row)
     {
         verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
                                         "!dcsr_row_ptr_A || !dcsr_col_ind_A || !dcsr_val_A || "
-                                        "!dnnz_per_row");
+                                        "!dcsr_row_ptr_C || !dnnz_per_row");
         return HIPSPARSE_STATUS_ALLOC_FAILED;
     }
 
@@ -634,12 +609,24 @@ hipsparseStatus_t testing_csr2csr_compress(Arguments argus)
 
         unit_check_general(1, 1, 1, &hnnz_C_copied_from_device, &hnnz_C);
 
+        if(hnnz_C == 0)
+        {
+            return HIPSPARSE_STATUS_SUCCESS;
+        }
+
         // Allocate device memory for compressed CSR columns indices and values
         auto dcsr_col_ind_C_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * hnnz_C), device_free};
         auto dcsr_val_C_managed     = hipsparse_unique_ptr{device_malloc(sizeof(T) * hnnz_C), device_free};
 
         int* dcsr_col_ind_C = (int*)dcsr_col_ind_C_managed.get();
         T*   dcsr_val_C     = (T*)dcsr_val_C_managed.get();
+
+        if(!dcsr_col_ind_C || !dcsr_val_C)
+        {
+            verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
+                                            "!dcsr_col_ind_C || !dcsr_val_C");
+            return HIPSPARSE_STATUS_ALLOC_FAILED;
+        }
 
         CHECK_HIPSPARSE_ERROR(hipsparseXcsr2csr_compress(handle,
                                                          m,
@@ -669,12 +656,21 @@ hipsparseStatus_t testing_csr2csr_compress(Arguments argus)
             hipMemcpy(hcsr_val_C.data(), dcsr_val_C, sizeof(T) * hnnz_C, hipMemcpyDeviceToHost));
 
         // Host csr2csc conversion
-        std::vector<int> hcsr_row_ptr_C_gold(m + 1);
-        std::vector<int> hcsr_col_ind_C_gold(hnnz_C);
-        std::vector<T>   hcsr_val_gold(hnnz_C);
+        std::vector<int> hcsr_row_ptr_C_gold;
+        std::vector<int> hcsr_col_ind_C_gold;
+        std::vector<T>   hcsr_val_gold;
 
         // Call host conversion here
-
+        host_csr_to_csr_compress<T>(m,
+                                    n,
+                                    hcsr_row_ptr_A,
+                                    hcsr_col_ind_A,
+                                    hcsr_val_A,
+                                    hcsr_row_ptr_C_gold,
+                                    hcsr_col_ind_C_gold,
+                                    hcsr_val_gold,
+                                    idx_base,
+                                    tol);
 
         // Unit check
         unit_check_general(1, m + 1, 1, hcsr_row_ptr_C_gold.data(), hcsr_row_ptr_C.data());
