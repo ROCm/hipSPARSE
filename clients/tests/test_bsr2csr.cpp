@@ -29,29 +29,31 @@
 #include <string>
 #include <vector>
 
-typedef std::tuple<int, int, int, hipsparseIndexBase_t, hipsparseIndexBase_t, hipsparseDirection_t>
-    bsr2csr_tuple;
-typedef std::
-    tuple<int, hipsparseIndexBase_t, hipsparseIndexBase_t, hipsparseDirection_t, std::string>
-        bsr2csr_bin_tuple;
+typedef std::tuple<int, int, int, hipsparseIndexBase_t, hipsparseIndexBase_t, hipsparseDirection_t>    bsr2csr_tuple;
+typedef std::tuple<int, hipsparseIndexBase_t, hipsparseIndexBase_t, hipsparseDirection_t, std::string> bsr2csr_bin_tuple;
 
 // Random matrices
-int bsr2csr_M_range[]         = {-1, 0, 872, 13095, 21453};
-int bsr2csr_N_range[]         = {-3, 0, 623, 12766, 29285};
+int bsr2csr_M_range[] = {-1, 0, 872, 13095, 21453};
+int bsr2csr_N_range[] = {-3, 0, 623, 12766, 29285};
 int bsr2csr_block_dim_range[] = {-1, 0, 1, 2, 4, 7, 16};
 
-hipsparseIndexBase_t bsr2csr_csr_base_range[] = {HIPSPARSE_INDEX_BASE_ZERO};
+hipsparseIndexBase_t bsr2csr_csr_base_range[]
+    = {HIPSPARSE_INDEX_BASE_ZERO};
 
-hipsparseIndexBase_t bsr2csr_bsr_base_range[] = {HIPSPARSE_INDEX_BASE_ONE};
+hipsparseIndexBase_t bsr2csr_bsr_base_range[]
+    = {HIPSPARSE_INDEX_BASE_ONE};
 
-hipsparseDirection_t bsr2csr_dir_range[] = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COLUMN};
+hipsparseDirection_t bsr2csr_dir_range[]
+    = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COLUMN};
 
 // Matrices from files (float and double)
 int bsr2csr_block_dim_range_bin[] = {5};
 
-hipsparseIndexBase_t bsr2csr_csr_base_range_bin[] = {HIPSPARSE_INDEX_BASE_ONE};
+hipsparseIndexBase_t bsr2csr_csr_base_range_bin[]
+    = {HIPSPARSE_INDEX_BASE_ONE};
 
-hipsparseIndexBase_t bsr2csr_bsr_base_range_bin[] = {HIPSPARSE_INDEX_BASE_ONE};
+hipsparseIndexBase_t bsr2csr_bsr_base_range_bin[]
+    = {HIPSPARSE_INDEX_BASE_ONE};
 
 hipsparseDirection_t bsr2csr_dir_range_bin[]
     = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COLUMN};
@@ -95,26 +97,26 @@ protected:
 Arguments setup_bsr2csr_arguments(bsr2csr_tuple tup)
 {
     Arguments arg;
-    arg.M         = std::get<0>(tup);
-    arg.N         = std::get<1>(tup);
+    arg.M        = std::get<0>(tup);
+    arg.N        = std::get<1>(tup);
     arg.block_dim = std::get<2>(tup);
-    arg.idx_base  = std::get<3>(tup);
+    arg.idx_base = std::get<3>(tup);
     arg.idx_base2 = std::get<4>(tup);
-    arg.dirA      = std::get<5>(tup);
-    arg.timing    = 0;
+    arg.dirA = std::get<5>(tup);
+    arg.timing   = 0;
     return arg;
 }
 
 Arguments setup_bsr2csr_arguments(bsr2csr_bin_tuple tup)
 {
     Arguments arg;
-    arg.M         = -99;
-    arg.N         = -99;
+    arg.M        = -99;
+    arg.N        = -99;
     arg.block_dim = std::get<0>(tup);
-    arg.idx_base  = std::get<1>(tup);
+    arg.idx_base   = std::get<1>(tup);
     arg.idx_base2 = std::get<2>(tup);
-    arg.dirA      = std::get<3>(tup);
-    arg.timing    = 0;
+    arg.dirA = std::get<3>(tup);
+    arg.timing   = 0;
 
     // Determine absolute path of test matrix
     std::string bin_file = std::get<4>(tup);
