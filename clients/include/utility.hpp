@@ -865,14 +865,14 @@ static inline hipDoubleComplex testing_neg(hipDoubleComplex val)
 }
 
 template <typename T>
-void host_nnz(hipsparseDirection_t      dirA,
-              int                       m,
-              int                       n,
-              const hipsparseMatDescr_t descrA,
-              const T*                  A,
-              int                       lda,
-              int*                      nnzPerRowColumn,
-              int*                      nnzTotalDevHostPtr)
+hipsparseStatus_t host_nnz(hipsparseDirection_t      dirA,
+                           int                       m,
+                           int                       n,
+                           const hipsparseMatDescr_t descrA,
+                           const T*                  A,
+                           int                       lda,
+                           int*                      nnzPerRowColumn,
+                           int*                      nnzTotalDevHostPtr)
 {
     int mn = (dirA == HIPSPARSE_DIRECTION_ROW) ? m : n;
 #ifdef _OPENMP
@@ -910,118 +910,7 @@ void host_nnz(hipsparseDirection_t      dirA,
         sum = sum + nnzPerRowColumn[j];
     }
     nnzTotalDevHostPtr[0] = sum;
-}
-
-template <hipsparseDirection_t DIRA, typename T>
-void host_dense2csx(int                  m,
-                    int                  n,
-                    hipsparseIndexBase_t base,
-                    const T*             A,
-                    int                  ld,
-                    const int*           nnz_per_row_columns,
-                    T*                   csx_val,
-                    int*                 csx_row_col_ptr,
-                    int*                 csx_col_row_ind)
-{
-    static constexpr T s_zero = {};
-    int                len    = (HIPSPARSE_DIRECTION_ROW == DIRA) ? m : n;
-    *csx_row_col_ptr          = base;
-    for(int i = 0; i < len; ++i)
-    {
-        csx_row_col_ptr[i + 1] = nnz_per_row_columns[i] + csx_row_col_ptr[i];
-    }
-
-    switch(DIRA)
-    {
-    case HIPSPARSE_DIRECTION_COLUMN:
-    {
-        for(int j = 0; j < n; ++j)
-        {
-            for(int i = 0; i < m; ++i)
-            {
-                if(A[j * ld + i] != s_zero)
-                {
-                    *csx_val++         = A[j * ld + i];
-                    *csx_col_row_ind++ = i + base;
-                }
-            }
-        }
-        break;
-    }
-
-    case HIPSPARSE_DIRECTION_ROW:
-    {
-        //
-        // Does not matter having an orthogonal traversal ... testing only.
-        // Otherwise, we would use csxRowPtrA to store the shifts.
-        // and once the job is done a simple memory move would reinitialize the csxRowPtrA to its initial state)
-        //
-        for(int i = 0; i < m; ++i)
-        {
-            for(int j = 0; j < n; ++j)
-            {
-                if(A[j * ld + i] != s_zero)
-                {
-                    *csx_val++         = A[j * ld + i];
-                    *csx_col_row_ind++ = j + base;
-                }
-            }
-        }
-        break;
-    }
-    }
-}
-
-template <hipsparseDirection_t DIRA, typename T>
-void host_csx2dense(int                  m,
-                    int                  n,
-                    hipsparseIndexBase_t base,
-                    const T*             csx_val,
-                    const int*           csx_row_col_ptr,
-                    const int*           csx_col_row_ind,
-                    T*                   A,
-                    int                  ld)
-{
-    static constexpr T s_zero = {};
-    switch(DIRA)
-    {
-    case HIPSPARSE_DIRECTION_COLUMN:
-    {
-        static constexpr T s_zero = {};
-        for(int col = 0; col < n; ++col)
-        {
-            for(int row = 0; row < m; ++row)
-            {
-                A[row + ld * col] = s_zero;
-            }
-            const int bound = csx_row_col_ptr[col + 1] - base;
-            for(int at = csx_row_col_ptr[col] - base; at < bound; ++at)
-            {
-                A[(csx_col_row_ind[at] - base) + ld * col] = csx_val[at];
-            }
-        }
-        break;
-    }
-
-    case HIPSPARSE_DIRECTION_ROW:
-    {
-        static constexpr T s_zero = {};
-        for(int row = 0; row < m; ++row)
-        {
-            for(int col = 0; col < n; ++col)
-            {
-                A[col * ld + row] = s_zero;
-            }
-
-            const int bound = csx_row_col_ptr[row + 1] - base;
-            for(int at = csx_row_col_ptr[row] - base; at < bound; ++at)
-            {
-                A[(csx_col_row_ind[at] - base) * ld + row] = csx_val[at];
-            }
-        }
-        break;
-    }
-    }
+    return HIPSPARSE_STATUS_SUCCESS;
 }
 
 template <typename T>
@@ -1148,8 +1037,8 @@ inline void host_csr_to_bsr(hipsparseDirection_t    direction,
         std::vector<int> temp(nb, 0);
         for(int j = start; j < end; j++)
         {
-            int blockCol   = (csr_col_ind[j] - csr_base) / block_dim;
-            temp[blockCol] = 1;
+            int blockCol = (csr_col_ind[j] - csr_base) / block_dim;
+            temp[blockCol]         = 1;
         }
 
         int sum = 0;
@@ -1183,8 +1072,8 @@ inline void host_csr_to_bsr(hipsparseDirection_t    direction,
 
         for(int j = start; j < end; j++)
         {
-            int blockCol   = (csr_col_ind[j] - csr_base) / block_dim;
-            temp[blockCol] = 1;
+            int blockCol = (csr_col_ind[j] - csr_base) / block_dim;
+            temp[blockCol]         = 1;
         }
 
         for(int j = 0; j < nb; j++)
@@ -1210,7 +1099,8 @@ inline void host_csr_to_bsr(hipsparseDirection_t    direction,
             int blockCol = (csr_col_ind[j] - csr_base) / block_dim;
 
             colIndex = -1;
-            for(int k = bsr_row_ptr[blockRow] - bsr_base; k < bsr_row_ptr[blockRow + 1] - bsr_base;
+            for(int k = bsr_row_ptr[blockRow] - bsr_base;
+                k < bsr_row_ptr[blockRow + 1] - bsr_base;
                 k++)
             {
                 if(bsr_col_ind[k] - bsr_base == blockCol)
@@ -1234,7 +1124,7 @@ inline void host_csr_to_bsr(hipsparseDirection_t    direction,
             }
 
             int index = (bsr_row_ptr[blockRow] - bsr_base) * block_dim * block_dim
-                        + colIndex * block_dim * block_dim + blockIndex;
+                                  + colIndex * block_dim * block_dim + blockIndex;
 
             bsr_val[index] = csr_val[j];
         }
@@ -1317,8 +1207,9 @@ inline void host_bsr_to_csr(hipsparseDirection_t    direction,
 
         for(int j = bsr_row_ptr[i] - bsr_base; j < bsr_row_ptr[i + 1] - bsr_base; j++)
         {
-            int col    = bsr_col_ind[j] - bsr_base;
-            int offset = entries_in_row_sum + block_dim * (j - (bsr_row_ptr[i] - bsr_base));
+            int col = bsr_col_ind[j] - bsr_base;
+            int offset
+                = entries_in_row_sum + block_dim * (j - (bsr_row_ptr[i] - bsr_base));
 
             for(int k = 0; k < block_dim; k++)
             {
@@ -2516,10 +2407,10 @@ double get_time_us_sync(hipStream_t stream);
 class Arguments
 {
 public:
-    int M         = 128;
-    int N         = 128;
-    int K         = 128;
-    int nnz       = 32;
+    int M   = 128;
+    int N   = 128;
+    int K   = 128;
+    int nnz = 32;
     int block_dim = 1;
 
     int lda;
