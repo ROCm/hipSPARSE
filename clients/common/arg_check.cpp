@@ -44,6 +44,22 @@
         }                                                         \
     }
 
+void verify_hipsparse_status(hipsparseStatus_t status,
+                             hipsparseStatus_t expected_status,
+                             const char*       message)
+{
+#ifdef GOOGLE_TEST
+    ASSERT_EQ(status, expected_status);
+#else
+    if(status != expected_status)
+    {
+        std::cerr << "rocSPARSE TEST ERROR: status(=" << status
+                  << ") != expected_status(= " << expected_status << "), ";
+        std::cerr << message << std::endl;
+    }
+#endif
+}
+
 void verify_hipsparse_status_invalid_pointer(hipsparseStatus_t status, const char* message)
 {
 #ifdef GOOGLE_TEST
