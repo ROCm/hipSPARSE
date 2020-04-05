@@ -94,6 +94,10 @@ set(HIPSPARSE_TEST_SOURCES
   test_csrilu02.cpp
   test_csric02.cpp
   test_nnz.cpp
+  test_csr2dense.cpp
+  test_csc2dense.cpp
+  test_dense2csr.cpp
+  test_dense2csc.cpp
   test_csr2coo.cpp
   test_csr2csc.cpp
   test_csr2bsr.cpp
