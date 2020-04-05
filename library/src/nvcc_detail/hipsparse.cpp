@@ -3715,7 +3715,7 @@ hipsparseStatus_t hipsparseZdense2csr(hipsparseHandle_t         handle,
                                                            (const cuDoubleComplex*)A,
                                                            ld,
                                                            nnzPerRow,
-                                                           (const cuDoubleComplex*)csrVal,
+                                                           (cuDoubleComplex*)csrVal,
                                                            csrRowPtr,
                                                            csrColInd));
 }
@@ -3955,7 +3955,7 @@ hipsparseStatus_t hipsparseCcsc2dense(hipsparseHandle_t         handle,
                                                            (const cuComplex*)cscVal,
                                                            cscRowInd,
                                                            cscColPtr,
-                                                           (const cuComplex*)A,
+                                                           (cuComplex*)A,
                                                            ld));
 }
 
