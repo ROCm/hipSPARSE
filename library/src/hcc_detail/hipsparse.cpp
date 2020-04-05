@@ -4788,19 +4788,19 @@ hipsparseStatus_t hipsparseZcsr2hyb(hipsparseHandle_t         handle,
                            hipHybPartToHCCHybPart(partitionType)));
 }
 
-hipsparseStatus_t hipsparseScsr2bsr(hipsparseHandle_t          handle,
-                                    hipsparseDirection_t       dirA,
-                                    int                        m,
-                                    int                        n,
-                                    const hipsparseMatDescr_t  descrA,
-                                    const float*               csrValA,
-                                    const int*                 csrRowPtrA,
-                                    const int*                 csrColIndA,
-                                    int                        blockDim,
-                                    const hipsparseMatDescr_t  descrC,
-                                    float*                     bsrValC,
-                                    int*                       bsrRowPtrC,
-                                    int*                       bsrColIndC)
+hipsparseStatus_t hipsparseScsr2bsr(hipsparseHandle_t         handle,
+                                    hipsparseDirection_t      dirA,
+                                    int                       m,
+                                    int                       n,
+                                    const hipsparseMatDescr_t descrA,
+                                    const float*              csrValA,
+                                    const int*                csrRowPtrA,
+                                    const int*                csrColIndA,
+                                    int                       blockDim,
+                                    const hipsparseMatDescr_t descrC,
+                                    float*                    bsrValC,
+                                    int*                      bsrRowPtrC,
+                                    int*                      bsrColIndC)
 {
     RETURN_IF_ROCSPARSE_ERROR(rocsparse_scsr2bsr((rocsparse_handle)handle,
                                                  hipDirectionToHCCDirection(dirA),
@@ -4818,19 +4818,19 @@ hipsparseStatus_t hipsparseScsr2bsr(hipsparseHandle_t          handle,
     return HIPSPARSE_STATUS_SUCCESS;
 }
 
-hipsparseStatus_t hipsparseDcsr2bsr(hipsparseHandle_t          handle,
-                                    hipsparseDirection_t       dirA,
-                                    int                        m,
-                                    int                        n,
-                                    const hipsparseMatDescr_t  descrA,
-                                    const double*              csrValA,
-                                    const int*                 csrRowPtrA,
-                                    const int*                 csrColIndA,
-                                    int                        blockDim,
-                                    const hipsparseMatDescr_t  descrC,
-                                    double*                    bsrValC,
-                                    int*                       bsrRowPtrC,
-                                    int*                       bsrColIndC)
+hipsparseStatus_t hipsparseDcsr2bsr(hipsparseHandle_t         handle,
+                                    hipsparseDirection_t      dirA,
+                                    int                       m,
+                                    int                       n,
+                                    const hipsparseMatDescr_t descrA,
+                                    const double*             csrValA,
+                                    const int*                csrRowPtrA,
+                                    const int*                csrColIndA,
+                                    int                       blockDim,
+                                    const hipsparseMatDescr_t descrC,
+                                    double*                   bsrValC,
+                                    int*                      bsrRowPtrC,
+                                    int*                      bsrColIndC)
 {
     RETURN_IF_ROCSPARSE_ERROR(rocsparse_dcsr2bsr((rocsparse_handle)handle,
                                                  hipDirectionToHCCDirection(dirA),
@@ -4848,19 +4848,19 @@ hipsparseStatus_t hipsparseDcsr2bsr(hipsparseHandle_t          handle,
     return HIPSPARSE_STATUS_SUCCESS;
 }
 
-hipsparseStatus_t hipsparseCcsr2bsr(hipsparseHandle_t          handle,
-                                    hipsparseDirection_t       dirA,
-                                    int                        m,
-                                    int                        n,
-                                    const hipsparseMatDescr_t  descrA,
-                                    const hipComplex*          csrValA,
-                                    const int*                 csrRowPtrA,
-                                    const int*                 csrColIndA,
-                                    int                        blockDim,
-                                    const hipsparseMatDescr_t  descrC,
-                                    hipComplex*                bsrValC,
-                                    int*                       bsrRowPtrC,
-                                    int*                       bsrColIndC)
+hipsparseStatus_t hipsparseCcsr2bsr(hipsparseHandle_t         handle,
+                                    hipsparseDirection_t      dirA,
+                                    int                       m,
+                                    int                       n,
+                                    const hipsparseMatDescr_t descrA,
+                                    const hipComplex*         csrValA,
+                                    const int*                csrRowPtrA,
+                                    const int*                csrColIndA,
+                                    int                       blockDim,
+                                    const hipsparseMatDescr_t descrC,
+                                    hipComplex*               bsrValC,
+                                    int*                      bsrRowPtrC,
+                                    int*                      bsrColIndC)
 {
     RETURN_IF_ROCSPARSE_ERROR(rocsparse_ccsr2bsr((rocsparse_handle)handle,
                                                  hipDirectionToHCCDirection(dirA),
@@ -4878,19 +4878,19 @@ hipsparseStatus_t hipsparseCcsr2bsr(hipsparseHandle_t          handle,
     return HIPSPARSE_STATUS_SUCCESS;
 }
 
-hipsparseStatus_t hipsparseZcsr2bsr(hipsparseHandle_t          handle,
-                                    hipsparseDirection_t       dirA,
-                                    int                        m,
-                                    int                        n,
-                                    const hipsparseMatDescr_t  descrA,
-                                    const hipDoubleComplex*    csrValA,
-                                    const int*                 csrRowPtrA,
-                                    const int*                 csrColIndA,
-                                    int                        blockDim,
-                                    const hipsparseMatDescr_t  descrC,
-                                    hipDoubleComplex*          bsrValC,
-                                    int*                       bsrRowPtrC,
-                                    int*                       bsrColIndC)
+hipsparseStatus_t hipsparseZcsr2bsr(hipsparseHandle_t         handle,
+                                    hipsparseDirection_t      dirA,
+                                    int                       m,
+                                    int                       n,
+                                    const hipsparseMatDescr_t descrA,
+                                    const hipDoubleComplex*   csrValA,
+                                    const int*                csrRowPtrA,
+                                    const int*                csrColIndA,
+                                    int                       blockDim,
+                                    const hipsparseMatDescr_t descrC,
+                                    hipDoubleComplex*         bsrValC,
+                                    int*                      bsrRowPtrC,
+                                    int*                      bsrColIndC)
 {
     RETURN_IF_ROCSPARSE_ERROR(rocsparse_zcsr2bsr((rocsparse_handle)handle,
                                                  hipDirectionToHCCDirection(dirA),
@@ -4908,19 +4908,19 @@ hipsparseStatus_t hipsparseZcsr2bsr(hipsparseHandle_t          handle,
     return HIPSPARSE_STATUS_SUCCESS;
 }
 
-hipsparseStatus_t hipsparseSbsr2csr(hipsparseHandle_t          handle,
-                                    hipsparseDirection_t       dirA,
-                                    int                        mb,
-                                    int                        nb,
-                                    const hipsparseMatDescr_t  descrA,
-                                    const float*               bsrValA,
-                                    const int*                 bsrRowPtrA,
-                                    const int*                 bsrColIndA,
-                                    int                        blockDim,
-                                    const hipsparseMatDescr_t  descrC,
-                                    float*                     csrValC,
-                                    int*                       csrRowPtrC,
-                                    int*                       csrColIndC)
+hipsparseStatus_t hipsparseSbsr2csr(hipsparseHandle_t         handle,
+                                    hipsparseDirection_t      dirA,
+                                    int                       mb,
+                                    int                       nb,
+                                    const hipsparseMatDescr_t descrA,
+                                    const float*              bsrValA,
+                                    const int*                bsrRowPtrA,
+                                    const int*                bsrColIndA,
+                                    int                       blockDim,
+                                    const hipsparseMatDescr_t descrC,
+                                    float*                    csrValC,
+                                    int*                      csrRowPtrC,
+                                    int*                      csrColIndC)
 {
     RETURN_IF_ROCSPARSE_ERROR(rocsparse_sbsr2csr((rocsparse_handle)handle,
                                                  hipDirectionToHCCDirection(dirA),
@@ -4938,19 +4938,19 @@ hipsparseStatus_t hipsparseSbsr2csr(hipsparseHandle_t          handle,
     return HIPSPARSE_STATUS_SUCCESS;
 }
 
-hipsparseStatus_t hipsparseDbsr2csr(hipsparseHandle_t          handle,
-                                    hipsparseDirection_t       dirA,
-                                    int                        mb,
-                                    int                        nb,
-                                    const hipsparseMatDescr_t  descrA,
-                                    const double*              bsrValA,
-                                    const int*                 bsrRowPtrA,
-                                    const int*                 bsrColIndA,
-                                    int                        blockDim,
-                                    const hipsparseMatDescr_t  descrC,
-                                    double*                    csrValC,
-                                    int*                       csrRowPtrC,
-                                    int*                       csrColIndC)
+hipsparseStatus_t hipsparseDbsr2csr(hipsparseHandle_t         handle,
+                                    hipsparseDirection_t      dirA,
+                                    int                       mb,
+                                    int                       nb,
+                                    const hipsparseMatDescr_t descrA,
+                                    const double*             bsrValA,
+                                    const int*                bsrRowPtrA,
+                                    const int*                bsrColIndA,
+                                    int                       blockDim,
+                                    const hipsparseMatDescr_t descrC,
+                                    double*                   csrValC,
+                                    int*                      csrRowPtrC,
+                                    int*                      csrColIndC)
 {
     RETURN_IF_ROCSPARSE_ERROR(rocsparse_dbsr2csr((rocsparse_handle)handle,
                                                  hipDirectionToHCCDirection(dirA),
@@ -4968,19 +4968,19 @@ hipsparseStatus_t hipsparseDbsr2csr(hipsparseHandle_t          handle,
     return HIPSPARSE_STATUS_SUCCESS;
 }
 
-hipsparseStatus_t hipsparseCbsr2csr(hipsparseHandle_t          handle,
-                                    hipsparseDirection_t       dirA,
-                                    int                        mb,
-                                    int                        nb,
-                                    const hipsparseMatDescr_t  descrA,
-                                    const hipComplex*          bsrValA,
-                                    const int*                 bsrRowPtrA,
-                                    const int*                 bsrColIndA,
-                                    int                        blockDim,
-                                    const hipsparseMatDescr_t  descrC,
-                                    hipComplex*                csrValC,
-                                    int*                       csrRowPtrC,
-                                    int*                       csrColIndC)
+hipsparseStatus_t hipsparseCbsr2csr(hipsparseHandle_t         handle,
+                                    hipsparseDirection_t      dirA,
+                                    int                       mb,
+                                    int                       nb,
+                                    const hipsparseMatDescr_t descrA,
+                                    const hipComplex*         bsrValA,
+                                    const int*                bsrRowPtrA,
+                                    const int*                bsrColIndA,
+                                    int                       blockDim,
+                                    const hipsparseMatDescr_t descrC,
+                                    hipComplex*               csrValC,
+                                    int*                      csrRowPtrC,
+                                    int*                      csrColIndC)
 {
     RETURN_IF_ROCSPARSE_ERROR(rocsparse_cbsr2csr((rocsparse_handle)handle,
                                                  hipDirectionToHCCDirection(dirA),
@@ -4998,19 +4998,19 @@ hipsparseStatus_t hipsparseCbsr2csr(hipsparseHandle_t          handle,
     return HIPSPARSE_STATUS_SUCCESS;
 }
 
-hipsparseStatus_t hipsparseZbsr2csr(hipsparseHandle_t          handle,
-                                    hipsparseDirection_t       dirA,
-                                    int                        mb,
-                                    int                        nb,
-                                    const hipsparseMatDescr_t  descrA,
-                                    const hipDoubleComplex*    bsrValA,
-                                    const int*                 bsrRowPtrA,
-                                    const int*                 bsrColIndA,
-                                    int                        blockDim,
-                                    const hipsparseMatDescr_t  descrC,
-                                    hipDoubleComplex*          csrValC,
-                                    int*                       csrRowPtrC,
-                                    int*                       csrColIndC)
+hipsparseStatus_t hipsparseZbsr2csr(hipsparseHandle_t         handle,
+                                    hipsparseDirection_t      dirA,
+                                    int                       mb,
+                                    int                       nb,
+                                    const hipsparseMatDescr_t descrA,
+                                    const hipDoubleComplex*   bsrValA,
+                                    const int*                bsrRowPtrA,
+                                    const int*                bsrColIndA,
+                                    int                       blockDim,
+                                    const hipsparseMatDescr_t descrC,
+                                    hipDoubleComplex*         csrValC,
+                                    int*                      csrRowPtrC,
+                                    int*                      csrColIndC)
 {
     RETURN_IF_ROCSPARSE_ERROR(rocsparse_zbsr2csr((rocsparse_handle)handle,
                                                  hipDirectionToHCCDirection(dirA),
@@ -5251,7 +5251,6 @@ hipsparseStatus_t hipsparseZnnz(hipsparseHandle_t         handle,
                                              nnzTotalDevHostPtr));
     return HIPSPARSE_STATUS_SUCCESS;
 }
-
 
 hipsparseStatus_t hipsparseSdense2csr(hipsparseHandle_t         handle,
                                       int                       m,
@@ -5618,20 +5617,19 @@ hipsparseStatus_t hipsparseZcsc2dense(hipsparseHandle_t         handle,
                                                    cscRowInd,
                                                    (rocsparse_double_complex*)A,
                                                    ld));
-
 }
 
-hipsparseStatus_t hipsparseXcsr2bsrNnz(hipsparseHandle_t          handle,
-                                        hipsparseDirection_t       dirA,
-                                        int                        m,
-                                        int                        n,
-                                        const hipsparseMatDescr_t  descrA,
-                                        const int*                 csrRowPtrA,
-                                        const int*                 csrColIndA,
-                                        int                        blockDim,
-                                        const hipsparseMatDescr_t  descrC,
-                                        int*                       bsrRowPtrC,
-                                        int*                       bsrNnzb)
+hipsparseStatus_t hipsparseXcsr2bsrNnz(hipsparseHandle_t         handle,
+                                       hipsparseDirection_t      dirA,
+                                       int                       m,
+                                       int                       n,
+                                       const hipsparseMatDescr_t descrA,
+                                       const int*                csrRowPtrA,
+                                       const int*                csrColIndA,
+                                       int                       blockDim,
+                                       const hipsparseMatDescr_t descrC,
+                                       int*                      bsrRowPtrC,
+                                       int*                      bsrNnzb)
 {
     RETURN_IF_ROCSPARSE_ERROR(rocsparse_csr2bsr_nnz((rocsparse_handle)handle,
                                                     hipDirectionToHCCDirection(dirA),

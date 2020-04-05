@@ -1148,8 +1148,8 @@ inline void host_csr_to_bsr(hipsparseDirection_t    direction,
         std::vector<int> temp(nb, 0);
         for(int j = start; j < end; j++)
         {
-            int blockCol = (csr_col_ind[j] - csr_base) / block_dim;
-            temp[blockCol]         = 1;
+            int blockCol   = (csr_col_ind[j] - csr_base) / block_dim;
+            temp[blockCol] = 1;
         }
 
         int sum = 0;
@@ -1183,8 +1183,8 @@ inline void host_csr_to_bsr(hipsparseDirection_t    direction,
 
         for(int j = start; j < end; j++)
         {
-            int blockCol = (csr_col_ind[j] - csr_base) / block_dim;
-            temp[blockCol]         = 1;
+            int blockCol   = (csr_col_ind[j] - csr_base) / block_dim;
+            temp[blockCol] = 1;
         }
 
         for(int j = 0; j < nb; j++)
@@ -1210,8 +1210,7 @@ inline void host_csr_to_bsr(hipsparseDirection_t    direction,
             int blockCol = (csr_col_ind[j] - csr_base) / block_dim;
 
             colIndex = -1;
-            for(int k = bsr_row_ptr[blockRow] - bsr_base;
-                k < bsr_row_ptr[blockRow + 1] - bsr_base;
+            for(int k = bsr_row_ptr[blockRow] - bsr_base; k < bsr_row_ptr[blockRow + 1] - bsr_base;
                 k++)
             {
                 if(bsr_col_ind[k] - bsr_base == blockCol)
@@ -1235,7 +1234,7 @@ inline void host_csr_to_bsr(hipsparseDirection_t    direction,
             }
 
             int index = (bsr_row_ptr[blockRow] - bsr_base) * block_dim * block_dim
-                                  + colIndex * block_dim * block_dim + blockIndex;
+                        + colIndex * block_dim * block_dim + blockIndex;
 
             bsr_val[index] = csr_val[j];
         }
@@ -1318,9 +1317,8 @@ inline void host_bsr_to_csr(hipsparseDirection_t    direction,
 
         for(int j = bsr_row_ptr[i] - bsr_base; j < bsr_row_ptr[i + 1] - bsr_base; j++)
         {
-            int col = bsr_col_ind[j] - bsr_base;
-            int offset
-                = entries_in_row_sum + block_dim * (j - (bsr_row_ptr[i] - bsr_base));
+            int col    = bsr_col_ind[j] - bsr_base;
+            int offset = entries_in_row_sum + block_dim * (j - (bsr_row_ptr[i] - bsr_base));
 
             for(int k = 0; k < block_dim; k++)
             {
@@ -2518,10 +2516,10 @@ double get_time_us_sync(hipStream_t stream);
 class Arguments
 {
 public:
-    int M   = 128;
-    int N   = 128;
-    int K   = 128;
-    int nnz = 32;
+    int M         = 128;
+    int N         = 128;
+    int K         = 128;
+    int nnz       = 32;
     int block_dim = 1;
 
     int lda;
