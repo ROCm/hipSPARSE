@@ -1,5 +1,5 @@
 /* ************************************************************************
- * Copyright (c) 2018 Advanced Micro Devices, Inc.
+ * Copyright (c) 2020 Advanced Micro Devices, Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,29 +20,24 @@
  * THE SOFTWARE.
  *
  * ************************************************************************ */
-
 #pragma once
-#ifndef ARG_CHECK_HPP
-#define ARG_CHECK_HPP
+#ifndef TESTING_CSC2DENSE_HPP
+#define TESTING_CSC2DENSE_HPP
 
-#include <hipsparse.h>
+#include "testing_csx2dense.hpp"
 
-void verify_hipsparse_status(hipsparseStatus_t status,
-                             hipsparseStatus_t expected_status,
-                             const char*       message);
+template <typename T>
+void testing_csc2dense_bad_arg(void)
+{
+    static constexpr hipsparseDirection_t DIRA = HIPSPARSE_DIRECTION_COLUMN;
+    testing_csx2dense_bad_arg<DIRA, T>(hipsparseXcsc2dense<T>);
+}
 
-void verify_hipsparse_status_invalid_pointer(hipsparseStatus_t status, const char* message);
+template <typename T>
+hipsparseStatus_t testing_csc2dense(Arguments argus)
+{
+    static constexpr hipsparseDirection_t DIRA = HIPSPARSE_DIRECTION_COLUMN;
+    return testing_csx2dense<DIRA, T>(argus, hipsparseXcsc2dense<T>, hipsparseXdense2csc<T>);
+}
 
-void verify_hipsparse_status_invalid_size(hipsparseStatus_t status, const char* message);
-
-void verify_hipsparse_status_invalid_value(hipsparseStatus_t status, const char* message);
-
-void verify_hipsparse_status_zero_pivot(hipsparseStatus_t status, const char* message);
-
-void verify_hipsparse_status_invalid_handle(hipsparseStatus_t status);
-
-void verify_hipsparse_status_internal_error(hipsparseStatus_t status, const char* message);
-
-void verify_hipsparse_status_success(hipsparseStatus_t status, const char* message);
-
-#endif // ARG_CHECK_HPP
+#endif // TESTING_CSC2DENSE
