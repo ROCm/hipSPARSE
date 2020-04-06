@@ -4713,6 +4713,90 @@ hipsparseStatus_t hipsparseXcsr2bsrNnz(hipsparseHandle_t         handle,
                                                             bsrNnzb));
 }
 
+hipsparseStatus_t hipsparseSnnz_compress(hipsparseHandle_t          handle,
+                                         int                        m,
+                                         const hipsparseMatDescr_t  descrA,
+                                         const float*               csrValA,
+                                         const int*                 csrRowPtrA,
+                                         int*                       nnzPerRow,
+                                         int*                       nnzC,
+                                         float                      tol)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseSnnz_compress((cusparseHandle_t)handle,
+                                                               m,
+                                                              (const cusparseMatDescr_t)descrA,
+                                                               csrValA,
+                                                               csrRowPtrA,
+                                                               nnzPerRow,
+                                                               nnzC,
+                                                               tol));
+}
+
+hipsparseStatus_t hipsparseDnnz_compress(hipsparseHandle_t          handle,
+                                         int                        m,
+                                         const hipsparseMatDescr_t  descrA,
+                                         const double*              csrValA,
+                                         const int*                 csrRowPtrA,
+                                         int*                       nnzPerRow,
+                                         int*                       nnzC,
+                                         double                     tol)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseDnnz_compress((cusparseHandle_t)handle,
+                                                               m,
+                                                              ((const cusparseMatDescr_t))descrA,
+                                                               csrValA,
+                                                               csrRowPtrA,
+                                                               nnzPerRow,
+                                                               nnzC,
+                                                               tol));
+}
+
+hipsparseStatus_t hipsparseCnnz_compress(hipsparseHandle_t          handle,
+                                         int                        m,
+                                         const hipsparseMatDescr_t  descrA,
+                                         const hipComplex*          csrValA,
+                                         const int*                 csrRowPtrA,
+                                         int*                       nnzPerRow,
+                                         int*                       nnzC,
+                                         hipComplex                 tol)
+{
+    cuComplex cutol;
+    cutol.x = tol.x;
+    cutol.y = tol.y;
+
+    return hipCUSPARSEStatusToHIPStatus(cusparseCnnz_compress((cusparseHandle_t)handle,
+                                                               m,
+                                                              (const cusparseMatDescr_t)descrA,
+                                                              (const cuComplex*)csrValA,
+                                                               csrRowPtrA,
+                                                               nnzPerRow,
+                                                               nnzC,
+                                                              cutol));
+}
+
+hipsparseStatus_t hipsparseZnnz_compress(hipsparseHandle_t          handle,
+                                         int                        m,
+                                         const hipsparseMatDescr_t  descrA,
+                                         const hipDoubleComplex*    csrValA,
+                                         const int*                 csrRowPtrA,
+                                         int*                       nnzPerRow,
+                                         int*                       nnzC,
+                                         hipDoubleComplex           tol)
+{
+    cuDoubleComplex cutol;
+    cutol.x = tol.x;
+    cutol.y = tol.y;
+
+    return hipCUSPARSEStatusToHIPStatus(cusparseZnnz_compress((cusparseHandle_t)handle,
+                                                               m,
+                                                              (const cusparseMatDescr_t)descrA,
+                                                              (const cuDoubleComplex*)csrValA,
+                                                               csrRowPtrA,
+                                                               nnzPerRow,
+                                                               nnzC,
+                                                               cutol));
+}
+
 hipsparseStatus_t hipsparseXcsr2coo(hipsparseHandle_t    handle,
                                     const int*           csrRowPtr,
                                     int                  nnz,
@@ -5162,6 +5246,130 @@ hipsparseStatus_t hipsparseZbsr2csr(hipsparseHandle_t         handle,
                                                          (cuDoubleComplex*)csrValC,
                                                          csrRowPtrC,
                                                          csrColIndC));
+}
+
+hipsparseStatus_t hipsparseScsr2csr_compress(hipsparseHandle_t         handle,
+                                             int                       m,
+                                             int                       n,
+                                             const hipsparseMatDescr_t descrA,
+                                             const float*              csrValA,
+                                             const int*                csrColIndA,
+                                             const int*                csrRowPtrA,
+                                             int                       nnzA,
+                                             const int*                nnzPerRow,
+                                             float*                    csrValC,
+                                             int*                      csrColIndC,
+                                             int*                      csrRowPtrC,
+                                             float                     tol)
+{
+    return hipCUSPARSEStatusToHIPStatus(cupsparseScsr2csr_compress((cusparseHandle_t)handle,
+                                                                   m,
+                                                                   n,
+                                                                   (const cusparseMatDescr_t)descrA,
+                                                                   csrValA,
+                                                                   csrColIndA,
+                                                                   csrRowPtrA,
+                                                                   nnzA,
+                                                                   nnzPerRow,
+                                                                   csrValC,
+                                                                   csrColIndC,
+                                                                   csrRowPtrC,
+                                                                   tol));
+}
+
+hipsparseStatus_t hipsparseDcsr2csr_compress(hipsparseHandle_t         handle,
+                                             int                       m,
+                                             int                       n,
+                                             const hipsparseMatDescr_t descrA,
+                                             const double*             csrValA,
+                                             const int*                csrColIndA,
+                                             const int*                csrRowPtrA,
+                                             int                       nnzA,
+                                             const int*                nnzPerRow,
+                                             double*                   csrValC,
+                                             int*                      csrColIndC,
+                                             int*                      csrRowPtrC,
+                                             double                    tol)
+{
+    return hipCUSPARSEStatusToHIPStatus(cupsparseDcsr2csr_compress((cusparseHandle_t)handle,
+                                                                   m,
+                                                                   n,
+                                                                   (const cusparseMatDescr_t)descrA,
+                                                                   csrValA,
+                                                                   csrColIndA,
+                                                                   csrRowPtrA,
+                                                                   nnzA,
+                                                                   nnzPerRow,
+                                                                   csrValC,
+                                                                   csrColIndC,
+                                                                   csrRowPtrC,
+                                                                   tol));
+}
+
+hipsparseStatus_t hipsparseCcsr2csr_compress(hipsparseHandle_t         handle,
+                                             int                       m,
+                                             int                       n,
+                                             const hipsparseMatDescr_t descrA,
+                                             const hipComplex*         csrValA,
+                                             const int*                csrColIndA,
+                                             const int*                csrRowPtrA,
+                                             int                       nnzA,
+                                             const int*                nnzPerRow,
+                                             hipComplex*               csrValC,
+                                             int*                      csrColIndC,
+                                             int*                      csrRowPtrC,
+                                             hipComplex                tol)
+{
+    cuComplex cutol;
+    cutol.x = tol.x;
+    cutol.y = tol.y;
+
+    return hipCUSPARSEStatusToHIPStatus( cupsparseCcsr2csr_compress((cusparseHandle_t)handle,
+                                                                    m,
+                                                                    n,
+                                                                    (const cusparseMatDescr_t)descrA,
+                                                                    (const cuComplex*)csrValA,
+                                                                    csrColIndA,
+                                                                    csrRowPtrA,
+                                                                    nnzA,
+                                                                    nnzPerRow,
+                                                                    (cuComplex*)csrValC,
+                                                                    csrColIndC,
+                                                                    csrRowPtrC,
+                                                                    cutol));
+}
+
+hipsparseStatus_t hipsparseZcsr2csr_compress(hipsparseHandle_t         handle,
+                                             int                       m,
+                                             int                       n,
+                                             const hipsparseMatDescr_t descrA,
+                                             const hipDoubleComplex*   csrValA,
+                                             const int*                csrColIndA,
+                                             const int*                csrRowPtrA,
+                                             int                       nnzA,
+                                             const int*                nnzPerRow,
+                                             hipDoubleComplex*         csrValC,
+                                             int*                      csrColIndC,
+                                             int*                      csrRowPtrC,
+                                             hipDoubleComplex          tol)
+{
+    cuDoubleComplex cutol;
+    cutol.x = tol.x;
+    cutol.y = tol.y;
+
+    return hipCUSPARSEStatusToHIPStatus(cupsparseZcsr2csr_compress((cusparseHandle_t)handle,
+                                                                   m,
+                                                                   n,
+                                                                   (const cusparseMatDescr_t)descrA,
+                                                                   (const cuDoubleComplex*)csrValA,
+                                                                   csrColIndA,
+                                                                   csrRowPtrA,
+                                                                   nnzA,
+                                                                   nnzPerRow,
+                                                                   (cuComplex*)csrValC,
+                                                                   csrColIndC,
+                                                                   csrRowPtrC,
+                                                                   cutol));
 }
 
 hipsparseStatus_t hipsparseShyb2csr(hipsparseHandle_t         handle,
