@@ -1,5 +1,5 @@
 /* ************************************************************************
- * Copyright (c) 2018 Advanced Micro Devices, Inc.
+ * Copyright (c) 2018-2020 Advanced Micro Devices, Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -888,14 +888,14 @@ static inline hipDoubleComplex testing_neg(hipDoubleComplex val)
 }
 
 template <typename T>
-hipsparseStatus_t host_nnz(hipsparseDirection_t      dirA,
-                           int                       m,
-                           int                       n,
-                           const hipsparseMatDescr_t descrA,
-                           const T*                  A,
-                           int                       lda,
-                           int*                      nnzPerRowColumn,
-                           int*                      nnzTotalDevHostPtr)
+void host_nnz(hipsparseDirection_t      dirA,
+              int                       m,
+              int                       n,
+              const hipsparseMatDescr_t descrA,
+              const T*                  A,
+              int                       lda,
+              int*                      nnzPerRowColumn,
+              int*                      nnzTotalDevHostPtr)
 {
     int mn = (dirA == HIPSPARSE_DIRECTION_ROW) ? m : n;
 #ifdef _OPENMP
@@ -933,7 +933,118 @@ hipsparseStatus_t host_nnz(hipsparseDirection_t      dirA,
         sum = sum + nnzPerRowColumn[j];
     }
     nnzTotalDevHostPtr[0] = sum;
-    return HIPSPARSE_STATUS_SUCCESS;
+}
+
+template <hipsparseDirection_t DIRA, typename T>
+void host_dense2csx(int                  m,
+                    int                  n,
+                    hipsparseIndexBase_t base,
+                    const T*             A,
+                    int                  ld,
+                    const int*           nnz_per_row_columns,
+                    T*                   csx_val,
+                    int*                 csx_row_col_ptr,
+                    int*                 csx_col_row_ind)
+{
+    static constexpr T s_zero = {};
+    int                len    = (HIPSPARSE_DIRECTION_ROW == DIRA) ? m : n;
+    *csx_row_col_ptr          = base;
+    for(int i = 0; i < len; ++i)
+    {
+        csx_row_col_ptr[i + 1] = nnz_per_row_columns[i] + csx_row_col_ptr[i];
+    }
+
+    switch(DIRA)
+    {
+    case HIPSPARSE_DIRECTION_COLUMN:
+    {
+        for(int j = 0; j < n; ++j)
+        {
+            for(int i = 0; i < m; ++i)
+            {
+                if(A[j * ld + i] != s_zero)
+                {
+                    *csx_val++         = A[j * ld + i];
+                    *csx_col_row_ind++ = i + base;
+                }
+            }
+        }
+        break;
+    }
+
+    case HIPSPARSE_DIRECTION_ROW:
+    {
+        //
+        // Does not matter having an orthogonal traversal ... testing only.
+        // Otherwise, we would use csxRowPtrA to store the shifts.
+        // and once the job is done a simple memory move would reinitialize the csxRowPtrA to its initial state)
+        //
+        for(int i = 0; i < m; ++i)
+        {
+            for(int j = 0; j < n; ++j)
+            {
+                if(A[j * ld + i] != s_zero)
+                {
+                    *csx_val++         = A[j * ld + i];
+                    *csx_col_row_ind++ = j + base;
+                }
+            }
+        }
+        break;
+    }
+    }
+}
+
+template <hipsparseDirection_t DIRA, typename T>
+void host_csx2dense(int                  m,
+                    int                  n,
+                    hipsparseIndexBase_t base,
+                    const T*             csx_val,
+                    const int*           csx_row_col_ptr,
+                    const int*           csx_col_row_ind,
+                    T*                   A,
+                    int                  ld)
+{
+    static constexpr T s_zero = {};
+    switch(DIRA)
+    {
+    case HIPSPARSE_DIRECTION_COLUMN:
+    {
+        static constexpr T s_zero = {};
+        for(int col = 0; col < n; ++col)
+        {
+            for(int row = 0; row < m; ++row)
+            {
+                A[row + ld * col] = s_zero;
+            }
+            const int bound = csx_row_col_ptr[col + 1] - base;
+            for(int at = csx_row_col_ptr[col] - base; at < bound; ++at)
+            {
+                A[(csx_col_row_ind[at] - base) + ld * col] = csx_val[at];
+            }
+        }
+        break;
+    }
+
+    case HIPSPARSE_DIRECTION_ROW:
+    {
+        static constexpr T s_zero = {};
+        for(int row = 0; row < m; ++row)
+        {
+            for(int col = 0; col < n; ++col)
+            {
+                A[col * ld + row] = s_zero;
+            }
+
+            const int bound = csx_row_col_ptr[row + 1] - base;
+            for(int at = csx_row_col_ptr[row] - base; at < bound; ++at)
+            {
+                A[(csx_col_row_ind[at] - base) * ld + row] = csx_val[at];
+            }
+        }
+        break;
+    }
+    }
 }
 
 template <typename T>
@@ -1144,8 +1255,8 @@ inline void host_csr_to_bsr(hipsparseDirection_t    direction,
         std::vector<int> temp(nb, 0);
         for(int j = start; j < end; j++)
         {
-            int blockCol = (csr_col_ind[j] - csr_base) / block_dim;
-            temp[blockCol]         = 1;
+            int blockCol   = (csr_col_ind[j] - csr_base) / block_dim;
+            temp[blockCol] = 1;
         }
 
         int sum = 0;
@@ -1179,8 +1290,8 @@ inline void host_csr_to_bsr(hipsparseDirection_t    direction,
 
         for(int j = start; j < end; j++)
         {
-            int blockCol = (csr_col_ind[j] - csr_base) / block_dim;
-            temp[blockCol]         = 1;
+            int blockCol   = (csr_col_ind[j] - csr_base) / block_dim;
+            temp[blockCol] = 1;
         }
 
         for(int j = 0; j < nb; j++)
@@ -1206,8 +1317,7 @@ inline void host_csr_to_bsr(hipsparseDirection_t    direction,
             int blockCol = (csr_col_ind[j] - csr_base) / block_dim;
 
             colIndex = -1;
-            for(int k = bsr_row_ptr[blockRow] - bsr_base;
-                k < bsr_row_ptr[blockRow + 1] - bsr_base;
+            for(int k = bsr_row_ptr[blockRow] - bsr_base; k < bsr_row_ptr[blockRow + 1] - bsr_base;
                 k++)
             {
                 if(bsr_col_ind[k] - bsr_base == blockCol)
@@ -1231,7 +1341,7 @@ inline void host_csr_to_bsr(hipsparseDirection_t    direction,
             }
 
             int index = (bsr_row_ptr[blockRow] - bsr_base) * block_dim * block_dim
-                                  + colIndex * block_dim * block_dim + blockIndex;
+                        + colIndex * block_dim * block_dim + blockIndex;
 
             bsr_val[index] = csr_val[j];
         }
@@ -1314,9 +1424,8 @@ inline void host_bsr_to_csr(hipsparseDirection_t    direction,
 
         for(int j = bsr_row_ptr[i] - bsr_base; j < bsr_row_ptr[i + 1] - bsr_base; j++)
         {
-            int col = bsr_col_ind[j] - bsr_base;
-            int offset
-                = entries_in_row_sum + block_dim * (j - (bsr_row_ptr[i] - bsr_base));
+            int col    = bsr_col_ind[j] - bsr_base;
+            int offset = entries_in_row_sum + block_dim * (j - (bsr_row_ptr[i] - bsr_base));
 
             for(int k = 0; k < block_dim; k++)
             {
@@ -1333,6 +1442,208 @@ inline void host_bsr_to_csr(hipsparseDirection_t    direction,
                         csr_val[offset + k * entries_in_Row + l]
                             = bsr_val[j * entries_in_block + k + block_dim * l];
                     }
+                }
+            }
+        }
+    }
+}
+
+template <typename T>
+inline void host_bsrmv(hipsparseDirection_t dir,
+                       hipsparseOperation_t trans,
+                       int                  mb,
+                       int                  nb,
+                       int                  nnzb,
+                       T                    alpha,
+                       const int*           bsr_row_ptr,
+                       const int*           bsr_col_ind,
+                       const T*             bsr_val,
+                       int                  bsr_dim,
+                       const T*             x,
+                       T                    beta,
+                       T*                   y,
+                       hipsparseIndexBase_t base)
+{
+    // Quick return
+    if(alpha == make_DataType<T>(0))
+    {
+        if(beta != make_DataType<T>(1))
+        {
+            for(int i = 0; i < mb * bsr_dim; ++i)
+            {
+                y[i] = beta * y[i];
+            }
+        }
+
+        return;
+    }
+
+    int WFSIZE;
+
+    if(bsr_dim == 2)
+    {
+        int blocks_per_row = nnzb / mb;
+
+        if(blocks_per_row < 8)
+        {
+            WFSIZE = 4;
+        }
+        else if(blocks_per_row < 16)
+        {
+            WFSIZE = 8;
+        }
+        else if(blocks_per_row < 32)
+        {
+            WFSIZE = 16;
+        }
+        else if(blocks_per_row < 64)
+        {
+            WFSIZE = 32;
+        }
+        else
+        {
+            WFSIZE = 64;
+        }
+    }
+    else if(bsr_dim <= 8)
+    {
+        WFSIZE = 8;
+    }
+    else if(bsr_dim <= 16)
+    {
+        WFSIZE = 16;
+    }
+    else
+    {
+        WFSIZE = 32;
+    }
+
+#ifdef _OPENMP
+#pragma omp parallel for schedule(dynamic, 1024)
+#endif
+    for(int row = 0; row < mb; ++row)
+    {
+        int row_begin = bsr_row_ptr[row] - base;
+        int row_end   = bsr_row_ptr[row + 1] - base;
+
+        if(bsr_dim == 2)
+        {
+            std::vector<T> sum0(WFSIZE, make_DataType<T>(0));
+            std::vector<T> sum1(WFSIZE, make_DataType<T>(0));
+
+            for(int j = row_begin; j < row_end; j += WFSIZE)
+            {
+                for(int k = 0; k < WFSIZE; ++k)
+                {
+                    if(j + k < row_end)
+                    {
+                        int col = bsr_col_ind[j + k] - base;
+
+                        if(dir == HIPSPARSE_DIRECTION_COLUMN)
+                        {
+                            sum0[k] = testing_fma(bsr_val[bsr_dim * bsr_dim * (j + k) + 0],
+                                                  x[col * bsr_dim + 0],
+                                                  sum0[k]);
+                            sum1[k] = testing_fma(bsr_val[bsr_dim * bsr_dim * (j + k) + 1],
+                                                  x[col * bsr_dim + 0],
+                                                  sum1[k]);
+                            sum0[k] = testing_fma(bsr_val[bsr_dim * bsr_dim * (j + k) + 2],
+                                                  x[col * bsr_dim + 1],
+                                                  sum0[k]);
+                            sum1[k] = testing_fma(bsr_val[bsr_dim * bsr_dim * (j + k) + 3],
+                                                  x[col * bsr_dim + 1],
+                                                  sum1[k]);
+                        }
+                        else
+                        {
+                            sum0[k] = testing_fma(bsr_val[bsr_dim * bsr_dim * (j + k) + 0],
+                                                  x[col * bsr_dim + 0],
+                                                  sum0[k]);
+                            sum0[k] = testing_fma(bsr_val[bsr_dim * bsr_dim * (j + k) + 1],
+                                                  x[col * bsr_dim + 1],
+                                                  sum0[k]);
+                            sum1[k] = testing_fma(bsr_val[bsr_dim * bsr_dim * (j + k) + 2],
+                                                  x[col * bsr_dim + 0],
+                                                  sum1[k]);
+                            sum1[k] = testing_fma(bsr_val[bsr_dim * bsr_dim * (j + k) + 3],
+                                                  x[col * bsr_dim + 1],
+                                                  sum1[k]);
+                        }
+                    }
+                }
+            }
+
+            for(unsigned int j = 1; j < WFSIZE; j <<= 1)
+            {
+                for(unsigned int k = 0; k < WFSIZE - j; ++k)
+                {
+                    sum0[k] = sum0[k] + sum0[k + j];
+                    sum1[k] = sum1[k] + sum1[k + j];
+                }
+            }
+
+            if(beta != make_DataType<T>(0))
+            {
+                y[row * bsr_dim + 0] = testing_fma(beta, y[row * bsr_dim + 0], alpha * sum0[0]);
+                y[row * bsr_dim + 1] = testing_fma(beta, y[row * bsr_dim + 1], alpha * sum1[0]);
+            }
+            else
+            {
+                y[row * bsr_dim + 0] = alpha * sum0[0];
+                y[row * bsr_dim + 1] = alpha * sum1[0];
+            }
+        }
+        else
+        {
+            for(int bi = 0; bi < bsr_dim; ++bi)
+            {
+                std::vector<T> sum(WFSIZE, make_DataType<T>(0));
+
+                for(int j = row_begin; j < row_end; ++j)
+                {
+                    int col = bsr_col_ind[j] - base;
+
+                    for(int bj = 0; bj < bsr_dim; bj += WFSIZE)
+                    {
+                        for(unsigned int k = 0; k < WFSIZE; ++k)
+                        {
+                            if(bj + k < bsr_dim)
+                            {
+                                if(dir == HIPSPARSE_DIRECTION_COLUMN)
+                                {
+                                    sum[k] = testing_fma(
+                                        bsr_val[bsr_dim * bsr_dim * j + bsr_dim * (bj + k) + bi],
+                                        x[bsr_dim * col + (bj + k)],
+                                        sum[k]);
+                                }
+                                else
+                                {
+                                    sum[k] = testing_fma(
+                                        bsr_val[bsr_dim * bsr_dim * j + bsr_dim * bi + (bj + k)],
+                                        x[bsr_dim * col + (bj + k)],
+                                        sum[k]);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                for(unsigned int j = 1; j < WFSIZE; j <<= 1)
+                {
+                    for(unsigned int k = 0; k < WFSIZE - j; ++k)
+                    {
+                        sum[k] = sum[k] + sum[k + j];
+                    }
+                }
+
+                if(beta != make_DataType<T>(0))
+                {
+                    y[row * bsr_dim + bi]
+                        = testing_fma(beta, y[row * bsr_dim + bi], alpha * sum[0]);
+                }
+                else
+                {
+                    y[row * bsr_dim + bi] = alpha * sum[0];
                 }
             }
         }
@@ -2211,6 +2522,219 @@ void transpose(int                  m,
 }
 
 /* ============================================================================================ */
+/*! \brief  Compute sparse matrix sparse matrix addition. */
+template <typename T>
+static int host_csrgeam_nnz(int                  M,
+                            int                  N,
+                            T                    alpha,
+                            const int*           csr_row_ptr_A,
+                            const int*           csr_col_ind_A,
+                            T                    beta,
+                            const int*           csr_row_ptr_B,
+                            const int*           csr_col_ind_B,
+                            int*                 csr_row_ptr_C,
+                            hipsparseIndexBase_t base_A,
+                            hipsparseIndexBase_t base_B,
+                            hipsparseIndexBase_t base_C)
+{
+#ifdef _OPENMP
+#pragma omp parallel
+#endif
+    {
+        std::vector<int> nnz(N, -1);
+
+#ifdef _OPENMP
+        int nthreads = omp_get_num_threads();
+        int tid      = omp_get_thread_num();
+#else
+        int nthreads = 1;
+        int tid      = 0;
+#endif
+
+        int rows_per_thread = (M + nthreads - 1) / nthreads;
+        int chunk_begin     = rows_per_thread * tid;
+        int chunk_end       = std::min(chunk_begin + rows_per_thread, M);
+
+        // Index base
+        csr_row_ptr_C[0] = base_C;
+
+        // Loop over rows
+        for(int i = chunk_begin; i < chunk_end; ++i)
+        {
+            // Initialize csr row pointer with previous row offset
+            csr_row_ptr_C[i + 1] = 0;
+
+            int row_begin_A = csr_row_ptr_A[i] - base_A;
+            int row_end_A   = csr_row_ptr_A[i + 1] - base_A;
+
+            // Loop over columns of A
+            for(int j = row_begin_A; j < row_end_A; ++j)
+            {
+                int col_A = csr_col_ind_A[j] - base_A;
+
+                nnz[col_A] = i;
+                ++csr_row_ptr_C[i + 1];
+            }
+
+            int row_begin_B = csr_row_ptr_B[i] - base_B;
+            int row_end_B   = csr_row_ptr_B[i + 1] - base_B;
+
+            // Loop over columns of B
+            for(int j = row_begin_B; j < row_end_B; ++j)
+            {
+                int col_B = csr_col_ind_B[j] - base_B;
+
+                // Check if a new nnz is generated
+                if(nnz[col_B] != i)
+                {
+                    nnz[col_B] = i;
+                    ++csr_row_ptr_C[i + 1];
+                }
+            }
+        }
+    }
+
+    // Scan to obtain row offsets
+    for(int i = 0; i < M; ++i)
+    {
+        csr_row_ptr_C[i + 1] += csr_row_ptr_C[i];
+    }
+
+    return csr_row_ptr_C[M] - base_C;
+}
+
+template <typename T>
+static void host_csrgeam(int                  M,
+                         int                  N,
+                         T                    alpha,
+                         const int*           csr_row_ptr_A,
+                         const int*           csr_col_ind_A,
+                         const T*             csr_val_A,
+                         T                    beta,
+                         const int*           csr_row_ptr_B,
+                         const int*           csr_col_ind_B,
+                         const T*             csr_val_B,
+                         const int*           csr_row_ptr_C,
+                         int*                 csr_col_ind_C,
+                         T*                   csr_val_C,
+                         hipsparseIndexBase_t base_A,
+                         hipsparseIndexBase_t base_B,
+                         hipsparseIndexBase_t base_C)
+{
+#ifdef _OPENMP
+#pragma omp parallel
+#endif
+    {
+        std::vector<int> nnz(N, -1);
+
+#ifdef _OPENMP
+        int nthreads = omp_get_num_threads();
+        int tid      = omp_get_thread_num();
+#else
+        int nthreads = 1;
+        int tid      = 0;
+#endif
+
+        int rows_per_thread = (M + nthreads - 1) / nthreads;
+        int chunk_begin     = rows_per_thread * tid;
+        int chunk_end       = std::min(chunk_begin + rows_per_thread, M);
+
+        // Loop over rows
+        for(int i = chunk_begin; i < chunk_end; ++i)
+        {
+            int row_begin_C = csr_row_ptr_C[i] - base_C;
+            int row_end_C   = row_begin_C;
+
+            int row_begin_A = csr_row_ptr_A[i] - base_A;
+            int row_end_A   = csr_row_ptr_A[i + 1] - base_A;
+
+            // Copy A into C
+            for(int j = row_begin_A; j < row_end_A; ++j)
+            {
+                // Current column of A
+                int col_A = csr_col_ind_A[j] - base_A;
+
+                // Current value of A
+                T val_A = alpha * csr_val_A[j];
+
+                nnz[col_A] = row_end_C;
+
+                csr_col_ind_C[row_end_C] = col_A + base_C;
+                csr_val_C[row_end_C]     = val_A;
+                ++row_end_C;
+            }
+
+            int row_begin_B = csr_row_ptr_B[i] - base_B;
+            int row_end_B   = csr_row_ptr_B[i + 1] - base_B;
+
+            // Loop over columns of B
+            for(int j = row_begin_B; j < row_end_B; ++j)
+            {
+                // Current column of B
+                int col_B = csr_col_ind_B[j] - base_B;
+
+                // Current value of B
+                T val_B = beta * csr_val_B[j];
+
+                // Check if a new nnz is generated or if the value is added
+                if(nnz[col_B] < row_begin_C)
+                {
+                    nnz[col_B] = row_end_C;
+
+                    csr_col_ind_C[row_end_C] = col_B + base_C;
+                    csr_val_C[row_end_C]     = val_B;
+                    ++row_end_C;
+                }
+                else
+                {
+                    csr_val_C[nnz[col_B]] = csr_val_C[nnz[col_B]] + val_B;
+                }
+            }
+        }
+    }
+
+    int nnz = csr_row_ptr_C[M] - base_C;
+
+    std::vector<int> col(nnz);
+    std::vector<T>   val(nnz);
+
+    for(int i = 0; i < nnz; ++i)
+    {
+        col[i] = csr_col_ind_C[i];
+        val[i] = csr_val_C[i];
+    }
+
+#ifdef _OPENMP
+#pragma omp parallel for schedule(dynamic, 1024)
+#endif
+    for(int i = 0; i < M; ++i)
+    {
+        int row_begin = csr_row_ptr_C[i] - base_C;
+        int row_end   = csr_row_ptr_C[i + 1] - base_C;
+        int row_nnz   = row_end - row_begin;
+
+        std::vector<int> perm(row_nnz);
+        for(int j = 0; j < row_nnz; ++j)
+        {
+            perm[j] = j;
+        }
+
+        int* col_entry = &col[row_begin];
+        T*   val_entry = &val[row_begin];
+
+        std::sort(perm.begin(), perm.end(), [&](const int& a, const int& b) {
+            return col_entry[a] <= col_entry[b];
+        });
+
+        for(int j = 0; j < row_nnz; ++j)
+        {
+            csr_col_ind_C[row_begin + j] = col_entry[perm[j]];
+            csr_val_C[row_begin + j]     = val_entry[perm[j]];
+        }
+    }
+}
+
+/* ============================================================================================ */
 /*! \brief  Compute sparse matrix sparse matrix multiplication. */
 template <typename T>
 static int csrgemm2_nnz(int                  m,
@@ -2514,10 +3038,10 @@ double get_time_us_sync(hipStream_t stream);
 class Arguments
 {
 public:
-    int M   = 128;
-    int N   = 128;
-    int K   = 128;
-    int nnz = 32;
+    int M         = 128;
+    int N         = 128;
+    int K         = 128;
+    int nnz       = 32;
     int block_dim = 1;
 
     int lda;
@@ -2554,10 +3078,11 @@ public:
 
     Arguments& operator=(const Arguments& rhs)
     {
-        this->M   = rhs.M;
-        this->N   = rhs.N;
-        this->K   = rhs.K;
-        this->nnz = rhs.nnz;
+        this->M         = rhs.M;
+        this->N         = rhs.N;
+        this->K         = rhs.K;
+        this->nnz       = rhs.nnz;
+        this->block_dim = rhs.block_dim;
 
         this->lda = rhs.lda;
         this->ldb = rhs.ldb;

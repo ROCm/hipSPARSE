@@ -1,5 +1,5 @@
 /* ************************************************************************
- * Copyright (c) 2018 Advanced Micro Devices, Inc.
+ * Copyright (c) 2018-2020 Advanced Micro Devices, Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -43,6 +43,22 @@
                     __LINE__);                                    \
         }                                                         \
     }
+
+void verify_hipsparse_status(hipsparseStatus_t status,
+                             hipsparseStatus_t expected_status,
+                             const char*       message)
+{
+#ifdef GOOGLE_TEST
+    ASSERT_EQ(status, expected_status);
+#else
+    if(status != expected_status)
+    {
+        std::cerr << "rocSPARSE TEST ERROR: status(=" << status
+                  << ") != expected_status(= " << expected_status << "), ";
+        std::cerr << message << std::endl;
+    }
+#endif
+}
 
 void verify_hipsparse_status_invalid_pointer(hipsparseStatus_t status, const char* message)
 {
