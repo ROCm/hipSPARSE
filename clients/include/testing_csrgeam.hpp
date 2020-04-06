@@ -685,217 +685,6 @@ void testing_csrgeam_bad_arg(void)
 }
 
 template <typename T>
-static int csrgeam_nnz(int                  M,
-                       int                  N,
-                       T                    alpha,
-                       const int*           csr_row_ptr_A,
-                       const int*           csr_col_ind_A,
-                       T                    beta,
-                       const int*           csr_row_ptr_B,
-                       const int*           csr_col_ind_B,
-                       int*                 csr_row_ptr_C,
-                       hipsparseIndexBase_t base_A,
-                       hipsparseIndexBase_t base_B,
-                       hipsparseIndexBase_t base_C)
-{
-#ifdef _OPENMP
-#pragma omp parallel
-#endif
-    {
-        std::vector<int> nnz(N, -1);
-
-#ifdef _OPENMP
-        int nthreads = omp_get_num_threads();
-        int tid      = omp_get_thread_num();
-#else
-        int nthreads = 1;
-        int tid      = 0;
-#endif
-
-        int rows_per_thread = (M + nthreads - 1) / nthreads;
-        int chunk_begin     = rows_per_thread * tid;
-        int chunk_end       = std::min(chunk_begin + rows_per_thread, M);
-
-        // Index base
-        csr_row_ptr_C[0] = base_C;
-
-        // Loop over rows
-        for(int i = chunk_begin; i < chunk_end; ++i)
-        {
-            // Initialize csr row pointer with previous row offset
-            csr_row_ptr_C[i + 1] = 0;
-
-            int row_begin_A = csr_row_ptr_A[i] - base_A;
-            int row_end_A   = csr_row_ptr_A[i + 1] - base_A;
-
-            // Loop over columns of A
-            for(int j = row_begin_A; j < row_end_A; ++j)
-            {
-                int col_A = csr_col_ind_A[j] - base_A;
-
-                nnz[col_A] = i;
-                ++csr_row_ptr_C[i + 1];
-            }
-
-            int row_begin_B = csr_row_ptr_B[i] - base_B;
-            int row_end_B   = csr_row_ptr_B[i + 1] - base_B;
-
-            // Loop over columns of B
-            for(int j = row_begin_B; j < row_end_B; ++j)
-            {
-                int col_B = csr_col_ind_B[j] - base_B;
-
-                // Check if a new nnz is generated
-                if(nnz[col_B] != i)
-                {
-                    nnz[col_B] = i;
-                    ++csr_row_ptr_C[i + 1];
-                }
-            }
-        }
-    }
-
-    // Scan to obtain row offsets
-    for(int i = 0; i < M; ++i)
-    {
-        csr_row_ptr_C[i + 1] += csr_row_ptr_C[i];
-    }
-
-    return csr_row_ptr_C[M] - base_C;
-}
-
-template <typename T>
-static void csrgeam(int                  M,
-                    int                  N,
-                    T                    alpha,
-                    const int*           csr_row_ptr_A,
-                    const int*           csr_col_ind_A,
-                    const T*             csr_val_A,
-                    T                    beta,
-                    const int*           csr_row_ptr_B,
-                    const int*           csr_col_ind_B,
-                    const T*             csr_val_B,
-                    const int*           csr_row_ptr_C,
-                    int*                 csr_col_ind_C,
-                    T*                   csr_val_C,
-                    hipsparseIndexBase_t base_A,
-                    hipsparseIndexBase_t base_B,
-                    hipsparseIndexBase_t base_C)
-{
-#ifdef _OPENMP
-#pragma omp parallel
-#endif
-    {
-        std::vector<int> nnz(N, -1);
-
-#ifdef _OPENMP
-        int nthreads = omp_get_num_threads();
-        int tid      = omp_get_thread_num();
-#else
-        int nthreads = 1;
-        int tid      = 0;
-#endif
-
-        int rows_per_thread = (M + nthreads - 1) / nthreads;
-        int chunk_begin     = rows_per_thread * tid;
-        int chunk_end       = std::min(chunk_begin + rows_per_thread, M);
-
-        // Loop over rows
-        for(int i = chunk_begin; i < chunk_end; ++i)
-        {
-            int row_begin_C = csr_row_ptr_C[i] - base_C;
-            int row_end_C   = row_begin_C;
-
-            int row_begin_A = csr_row_ptr_A[i] - base_A;
-            int row_end_A   = csr_row_ptr_A[i + 1] - base_A;
-
-            // Copy A into C
-            for(int j = row_begin_A; j < row_end_A; ++j)
-            {
-                // Current column of A
-                int col_A = csr_col_ind_A[j] - base_A;
-
-                // Current value of A
-                T val_A = alpha * csr_val_A[j];
-
-                nnz[col_A] = row_end_C;
-
-                csr_col_ind_C[row_end_C] = col_A + base_C;
-                csr_val_C[row_end_C]     = val_A;
-                ++row_end_C;
-            }
-
-            int row_begin_B = csr_row_ptr_B[i] - base_B;
-            int row_end_B   = csr_row_ptr_B[i + 1] - base_B;
-
-            // Loop over columns of B
-            for(int j = row_begin_B; j < row_end_B; ++j)
-            {
-                // Current column of B
-                int col_B = csr_col_ind_B[j] - base_B;
-
-                // Current value of B
-                T val_B = beta * csr_val_B[j];
-
-                // Check if a new nnz is generated or if the value is added
-                if(nnz[col_B] < row_begin_C)
-                {
-                    nnz[col_B] = row_end_C;
-
-                    csr_col_ind_C[row_end_C] = col_B + base_C;
-                    csr_val_C[row_end_C]     = val_B;
-                    ++row_end_C;
-                }
-                else
-                {
-                    csr_val_C[nnz[col_B]] = csr_val_C[nnz[col_B]] + val_B;
-                }
-            }
-        }
-    }
-
-    int nnz = csr_row_ptr_C[M] - base_C;
-
-    std::vector<int> col(nnz);
-    std::vector<T>   val(nnz);
-
-    for(int i = 0; i < nnz; ++i)
-    {
-        col[i] = csr_col_ind_C[i];
-        val[i] = csr_val_C[i];
-    }
-
-#ifdef _OPENMP
-#pragma omp parallel for schedule(dynamic, 1024)
-#endif
-    for(int i = 0; i < M; ++i)
-    {
-        int row_begin = csr_row_ptr_C[i] - base_C;
-        int row_end   = csr_row_ptr_C[i + 1] - base_C;
-        int row_nnz   = row_end - row_begin;
-
-        std::vector<int> perm(row_nnz);
-        for(int j = 0; j < row_nnz; ++j)
-        {
-            perm[j] = j;
-        }
-
-        int* col_entry = &col[row_begin];
-        T*   val_entry = &val[row_begin];
-
-        std::sort(perm.begin(), perm.end(), [&](const int& a, const int& b) {
-            return col_entry[a] <= col_entry[b];
-        });
-
-        for(int j = 0; j < row_nnz; ++j)
-        {
-            csr_col_ind_C[row_begin + j] = col_entry[perm[j]];
-            csr_val_C[row_begin + j]     = val_entry[perm[j]];
-        }
-    }
-}
-
-template <typename T>
 hipsparseStatus_t testing_csrgeam(Arguments argus)
 {
     int                  safe_size  = 100;
@@ -1253,38 +1042,38 @@ hipsparseStatus_t testing_csrgeam(Arguments argus)
 
         double cpu_time_used = get_time_us();
 
-        int nnz_C_gold = csrgeam_nnz(M,
-                                     N,
-                                     h_alpha,
-                                     hcsr_row_ptr_A.data(),
-                                     hcsr_col_ind_A.data(),
-                                     h_beta,
-                                     hcsr_row_ptr_B.data(),
-                                     hcsr_col_ind_B.data(),
-                                     hcsr_row_ptr_C_gold.data(),
-                                     idx_base_A,
-                                     idx_base_B,
-                                     idx_base_C);
+        int nnz_C_gold = host_csrgeam_nnz(M,
+                                          N,
+                                          h_alpha,
+                                          hcsr_row_ptr_A.data(),
+                                          hcsr_col_ind_A.data(),
+                                          h_beta,
+                                          hcsr_row_ptr_B.data(),
+                                          hcsr_col_ind_B.data(),
+                                          hcsr_row_ptr_C_gold.data(),
+                                          idx_base_A,
+                                          idx_base_B,
+                                          idx_base_C);
 
         std::vector<int> hcsr_col_ind_C_gold(nnz_C_gold);
         std::vector<T>   hcsr_val_C_gold(nnz_C_gold);
 
-        csrgeam(M,
-                N,
-                h_alpha,
-                hcsr_row_ptr_A.data(),
-                hcsr_col_ind_A.data(),
-                hcsr_val_A.data(),
-                h_beta,
-                hcsr_row_ptr_B.data(),
-                hcsr_col_ind_B.data(),
-                hcsr_val_B.data(),
-                hcsr_row_ptr_C_gold.data(),
-                hcsr_col_ind_C_gold.data(),
-                hcsr_val_C_gold.data(),
-                idx_base_A,
-                idx_base_B,
-                idx_base_C);
+        host_csrgeam(M,
+                     N,
+                     h_alpha,
+                     hcsr_row_ptr_A.data(),
+                     hcsr_col_ind_A.data(),
+                     hcsr_val_A.data(),
+                     h_beta,
+                     hcsr_row_ptr_B.data(),
+                     hcsr_col_ind_B.data(),
+                     hcsr_val_B.data(),
+                     hcsr_row_ptr_C_gold.data(),
+                     hcsr_col_ind_C_gold.data(),
+                     hcsr_val_C_gold.data(),
+                     idx_base_A,
+                     idx_base_B,
+                     idx_base_C);
 
         cpu_time_used = get_time_us() - cpu_time_used;
 
