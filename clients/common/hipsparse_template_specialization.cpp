@@ -3528,8 +3528,7 @@ namespace hipsparse
                                              int*                      nnzC,
                                              float                     tol)
     {
-        return hipsparseSnnz_compress(
-            handle, m, descrA, csrValA, csrRowPtrA, nnzPerRow, nnzC, tol);
+        return hipsparseSnnz_compress(handle, m, descrA, csrValA, csrRowPtrA, nnzPerRow, nnzC, tol);
     }
 
     template <>
@@ -3542,8 +3541,7 @@ namespace hipsparse
                                              int*                      nnzC,
                                              double                    tol)
     {
-        return hipsparseDnnz_compress(
-            handle, m, descrA, csrValA, csrRowPtrA, nnzPerRow, nnzC, tol);
+        return hipsparseDnnz_compress(handle, m, descrA, csrValA, csrRowPtrA, nnzPerRow, nnzC, tol);
     }
 
     template <>
@@ -3556,8 +3554,7 @@ namespace hipsparse
                                              int*                      nnzC,
                                              hipComplex                tol)
     {
-        return hipsparseCnnz_compress(
-            handle, m, descrA, csrValA, csrRowPtrA, nnzPerRow, nnzC, tol);
+        return hipsparseCnnz_compress(handle, m, descrA, csrValA, csrRowPtrA, nnzPerRow, nnzC, tol);
     }
 
     template <>
@@ -3570,8 +3567,7 @@ namespace hipsparse
                                              int*                      nnzC,
                                              hipDoubleComplex          tol)
     {
-        return hipsparseZnnz_compress(
-            handle, m, descrA, csrValA, csrRowPtrA, nnzPerRow, nnzC, tol);
+        return hipsparseZnnz_compress(handle, m, descrA, csrValA, csrRowPtrA, nnzPerRow, nnzC, tol);
     }
 
     template <>
