@@ -324,8 +324,8 @@ hipsparseStatus_t testing_bsrmv(Arguments argus)
     // Set matrix index base
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatIndexBase(descr, idx_base));
 
-    int mb = (m + block_dim - 1) / block_dim;
-    int nb = (n + block_dim - 1) / block_dim;
+    int mb = (block_dim == 0) ? -1 : (m + block_dim - 1) / block_dim;
+    int nb = (block_dim == 0) ? -1 : (n + block_dim - 1) / block_dim;
 
     // Argument sanity check before allocating invalid memory
     if(mb <= 0 || nb <= 0 || m <= 0 || n <= 0 || block_dim <= 0)
@@ -373,7 +373,7 @@ hipsparseStatus_t testing_bsrmv(Arguments argus)
                                  &h_beta,
                                  dy);
 
-        if(mb < 0 || nb < 0 || block_dim < 0)
+        if(mb < 0 || nb < 0 || block_dim <= 0)
         {
             verify_hipsparse_status_invalid_size(status,
                                                  "Error: mb < 0 || nb < 0 || block_dim < 0");
