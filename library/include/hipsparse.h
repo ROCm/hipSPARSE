@@ -1,5 +1,5 @@
 /* ************************************************************************
- * Copyright (c) 2018 Advanced Micro Devices, Inc.
+ * Copyright (c) 2018-2020 Advanced Micro Devices, Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -733,6 +733,73 @@ hipsparseStatus_t hipsparseZhybmv(hipsparseHandle_t         handle,
                                   const hipDoubleComplex*   alpha,
                                   const hipsparseMatDescr_t descrA,
                                   const hipsparseHybMat_t   hybA,
+                                  const hipDoubleComplex*   x,
+                                  const hipDoubleComplex*   beta,
+                                  hipDoubleComplex*         y);
+
+/* Description: Matrix-vector multiplication  y = alpha * op(A) * x  + beta * y,
+   where A is a sparse matrix in BSR storage format, x and y are dense vectors. */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSbsrmv(hipsparseHandle_t         handle,
+                                  hipsparseDirection_t      dirA,
+                                  hipsparseOperation_t      transA,
+                                  int                       mb,
+                                  int                       nb,
+                                  int                       nnzb,
+                                  const float*              alpha,
+                                  const hipsparseMatDescr_t descrA,
+                                  const float*              bsrSortedValA,
+                                  const int*                bsrSortedRowPtrA,
+                                  const int*                bsrSortedColIndA,
+                                  int                       blockDim,
+                                  const float*              x,
+                                  const float*              beta,
+                                  float*                    y);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDbsrmv(hipsparseHandle_t         handle,
+                                  hipsparseDirection_t      dirA,
+                                  hipsparseOperation_t      transA,
+                                  int                       mb,
+                                  int                       nb,
+                                  int                       nnzb,
+                                  const double*             alpha,
+                                  const hipsparseMatDescr_t descrA,
+                                  const double*             bsrSortedValA,
+                                  const int*                bsrSortedRowPtrA,
+                                  const int*                bsrSortedColIndA,
+                                  int                       blockDim,
+                                  const double*             x,
+                                  const double*             beta,
+                                  double*                   y);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCbsrmv(hipsparseHandle_t         handle,
+                                  hipsparseDirection_t      dirA,
+                                  hipsparseOperation_t      transA,
+                                  int                       mb,
+                                  int                       nb,
+                                  int                       nnzb,
+                                  const hipComplex*         alpha,
+                                  const hipsparseMatDescr_t descrA,
+                                  const hipComplex*         bsrSortedValA,
+                                  const int*                bsrSortedRowPtrA,
+                                  const int*                bsrSortedColIndA,
+                                  int                       blockDim,
+                                  const hipComplex*         x,
+                                  const hipComplex*         beta,
+                                  hipComplex*               y);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseZbsrmv(hipsparseHandle_t         handle,
+                                  hipsparseDirection_t      dirA,
+                                  hipsparseOperation_t      transA,
+                                  int                       mb,
+                                  int                       nb,
+                                  int                       nnzb,
+                                  const hipDoubleComplex*   alpha,
+                                  const hipsparseMatDescr_t descrA,
+                                  const hipDoubleComplex*   bsrSortedValA,
+                                  const int*                bsrSortedRowPtrA,
+                                  const int*                bsrSortedColIndA,
+                                  int                       blockDim,
                                   const hipDoubleComplex*   x,
                                   const hipDoubleComplex*   beta,
                                   hipDoubleComplex*         y);

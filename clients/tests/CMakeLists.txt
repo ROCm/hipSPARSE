@@ -1,5 +1,5 @@
 # ########################################################################
-# Copyright (c) 2018 Advanced Micro Devices, Inc.
+# Copyright (c) 2018-2020 Advanced Micro Devices, Inc.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -84,6 +84,7 @@ set(HIPSPARSE_TEST_SOURCES
   test_gthrz.cpp
   test_roti.cpp
   test_sctr.cpp
+  test_bsrmv.cpp
   test_csrmv.cpp
   test_csrsv2.cpp
   test_csrmm.cpp
