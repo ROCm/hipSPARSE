@@ -1157,37 +1157,37 @@ hipsparseStatus_t testing_csrgeam2(Arguments argus)
         std::vector<int> hcsr_row_ptr_C_gold(M + 1);
 
         int nnz_C_gold = host_csrgeam_nnz(M,
-                                     N,
-                                     h_alpha,
-                                     hcsr_row_ptr_A.data(),
-                                     hcsr_col_ind_A.data(),
-                                     h_beta,
-                                     hcsr_row_ptr_B.data(),
-                                     hcsr_col_ind_B.data(),
-                                     hcsr_row_ptr_C_gold.data(),
-                                     idx_base_A,
-                                     idx_base_B,
-                                     idx_base_C);
+                                          N,
+                                          h_alpha,
+                                          hcsr_row_ptr_A.data(),
+                                          hcsr_col_ind_A.data(),
+                                          h_beta,
+                                          hcsr_row_ptr_B.data(),
+                                          hcsr_col_ind_B.data(),
+                                          hcsr_row_ptr_C_gold.data(),
+                                          idx_base_A,
+                                          idx_base_B,
+                                          idx_base_C);
 
         std::vector<int> hcsr_col_ind_C_gold(nnz_C_gold);
         std::vector<T>   hcsr_val_C_gold(nnz_C_gold);
 
         host_csrgeam(M,
-                N,
-                h_alpha,
-                hcsr_row_ptr_A.data(),
-                hcsr_col_ind_A.data(),
-                hcsr_val_A.data(),
-                h_beta,
-                hcsr_row_ptr_B.data(),
-                hcsr_col_ind_B.data(),
-                hcsr_val_B.data(),
-                hcsr_row_ptr_C_gold.data(),
-                hcsr_col_ind_C_gold.data(),
-                hcsr_val_C_gold.data(),
-                idx_base_A,
-                idx_base_B,
-                idx_base_C);
+                     N,
+                     h_alpha,
+                     hcsr_row_ptr_A.data(),
+                     hcsr_col_ind_A.data(),
+                     hcsr_val_A.data(),
+                     h_beta,
+                     hcsr_row_ptr_B.data(),
+                     hcsr_col_ind_B.data(),
+                     hcsr_val_B.data(),
+                     hcsr_row_ptr_C_gold.data(),
+                     hcsr_col_ind_C_gold.data(),
+                     hcsr_val_C_gold.data(),
+                     idx_base_A,
+                     idx_base_B,
+                     idx_base_C);
 
         // Copy output from device to CPU
         int hnnz_C_2;
