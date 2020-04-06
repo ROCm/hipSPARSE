@@ -28,6 +28,7 @@
 #include "hipsparse.h"
 #include <algorithm>
 #include <assert.h>
+#include <complex>
 #include <hip/hip_runtime_api.h>
 #include <math.h>
 #include <sstream>
@@ -35,7 +36,6 @@
 #include <stdlib.h>
 #include <string>
 #include <vector>
-#include <complex>
 
 #ifdef _OPENMP
 #include <omp.h>
@@ -3048,10 +3048,10 @@ public:
     int ldb;
     int ldc;
 
-    double alpha = 1.0;
+    double alpha  = 1.0;
     double alphai = 0.0;
-    double beta = 0.0;
-    double betai = 0.0;
+    double beta   = 0.0;
+    double betai  = 0.0;
 
     hipsparseOperation_t    transA    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
     hipsparseOperation_t    transB    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
