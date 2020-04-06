@@ -859,6 +859,142 @@ namespace hipsparse
     }
 
     template <>
+    hipsparseStatus_t hipsparseXbsrmv(hipsparseHandle_t         handle,
+                                      hipsparseDirection_t      dirA,
+                                      hipsparseOperation_t      transA,
+                                      int                       mb,
+                                      int                       nb,
+                                      int                       nnzb,
+                                      const float*              alpha,
+                                      const hipsparseMatDescr_t descrA,
+                                      const float*              bsrSortedValA,
+                                      const int*                bsrSortedRowPtrA,
+                                      const int*                bsrSortedColIndA,
+                                      int                       blockDim,
+                                      const float*              x,
+                                      const float*              beta,
+                                      float*                    y)
+    {
+        return hipsparseSbsrmv(handle,
+                               dirA,
+                               transA,
+                               mb,
+                               nb,
+                               nnzb,
+                               alpha,
+                               descrA,
+                               bsrSortedValA,
+                               bsrSortedRowPtrA,
+                               bsrSortedColIndA,
+                               blockDim,
+                               x,
+                               beta,
+                               y);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXbsrmv(hipsparseHandle_t         handle,
+                                      hipsparseDirection_t      dirA,
+                                      hipsparseOperation_t      transA,
+                                      int                       mb,
+                                      int                       nb,
+                                      int                       nnzb,
+                                      const double*             alpha,
+                                      const hipsparseMatDescr_t descrA,
+                                      const double*             bsrSortedValA,
+                                      const int*                bsrSortedRowPtrA,
+                                      const int*                bsrSortedColIndA,
+                                      int                       blockDim,
+                                      const double*             x,
+                                      const double*             beta,
+                                      double*                   y)
+    {
+        return hipsparseDbsrmv(handle,
+                               dirA,
+                               transA,
+                               mb,
+                               nb,
+                               nnzb,
+                               alpha,
+                               descrA,
+                               bsrSortedValA,
+                               bsrSortedRowPtrA,
+                               bsrSortedColIndA,
+                               blockDim,
+                               x,
+                               beta,
+                               y);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXbsrmv(hipsparseHandle_t         handle,
+                                      hipsparseDirection_t      dirA,
+                                      hipsparseOperation_t      transA,
+                                      int                       mb,
+                                      int                       nb,
+                                      int                       nnzb,
+                                      const hipComplex*         alpha,
+                                      const hipsparseMatDescr_t descrA,
+                                      const hipComplex*         bsrSortedValA,
+                                      const int*                bsrSortedRowPtrA,
+                                      const int*                bsrSortedColIndA,
+                                      int                       blockDim,
+                                      const hipComplex*         x,
+                                      const hipComplex*         beta,
+                                      hipComplex*               y)
+    {
+        return hipsparseCbsrmv(handle,
+                               dirA,
+                               transA,
+                               mb,
+                               nb,
+                               nnzb,
+                               alpha,
+                               descrA,
+                               bsrSortedValA,
+                               bsrSortedRowPtrA,
+                               bsrSortedColIndA,
+                               blockDim,
+                               x,
+                               beta,
+                               y);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXbsrmv(hipsparseHandle_t         handle,
+                                      hipsparseDirection_t      dirA,
+                                      hipsparseOperation_t      transA,
+                                      int                       mb,
+                                      int                       nb,
+                                      int                       nnzb,
+                                      const hipDoubleComplex*   alpha,
+                                      const hipsparseMatDescr_t descrA,
+                                      const hipDoubleComplex*   bsrSortedValA,
+                                      const int*                bsrSortedRowPtrA,
+                                      const int*                bsrSortedColIndA,
+                                      int                       blockDim,
+                                      const hipDoubleComplex*   x,
+                                      const hipDoubleComplex*   beta,
+                                      hipDoubleComplex*         y)
+    {
+        return hipsparseZbsrmv(handle,
+                               dirA,
+                               transA,
+                               mb,
+                               nb,
+                               nnzb,
+                               alpha,
+                               descrA,
+                               bsrSortedValA,
+                               bsrSortedRowPtrA,
+                               bsrSortedColIndA,
+                               blockDim,
+                               x,
+                               beta,
+                               y);
+    }
+
+    template <>
     hipsparseStatus_t hipsparseXcsrmm2(hipsparseHandle_t         handle,
                                        hipsparseOperation_t      trans_A,
                                        hipsparseOperation_t      trans_B,
