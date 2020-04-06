@@ -253,6 +253,22 @@ void testing_csrgeam2_bad_arg(void)
                                                                   nullptr,
                                                                   dbuffer),
                                             "Error: invalid nnz_C pointer");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsrgeam2Nnz(handle,
+                                                                  safe_size,
+                                                                  safe_size,
+                                                                  descr_A,
+                                                                  safe_size,
+                                                                  dAptr,
+                                                                  dAcol,
+                                                                  descr_B,
+                                                                  safe_size,
+                                                                  dBptr,
+                                                                  dBcol,
+                                                                  descr_C,
+                                                                  dCptr,
+                                                                  &nnz_C,
+                                                                  nullptr),
+                                            "Error: invalid buffer pointer");
 
     // testing hipsparseXcsrgeam2
     verify_hipsparse_status_invalid_handle(hipsparseXcsrgeam2(nullptr,
@@ -569,6 +585,27 @@ void testing_csrgeam2_bad_arg(void)
                                                                nullptr,
                                                                dbuffer),
                                             "Error: invalid dCcol pointer");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsrgeam2(handle,
+                                                               safe_size,
+                                                               safe_size,
+                                                               &alpha,
+                                                               descr_A,
+                                                               safe_size,
+                                                               dAval,
+                                                               dAptr,
+                                                               dAcol,
+                                                               &beta,
+                                                               descr_B,
+                                                               safe_size,
+                                                               dBval,
+                                                               dBptr,
+                                                               dBcol,
+                                                               descr_C,
+                                                               dCval,
+                                                               dCptr,
+                                                               dCcol,
+                                                               nullptr),
+                                            "Error: invalid buffer pointer");
 
     // testing invalid sizes
     verify_hipsparse_status_invalid_size(hipsparseXcsrgeam2Nnz(handle,
@@ -1367,8 +1404,6 @@ hipsparseStatus_t testing_csrgeam2(Arguments argus)
         // Compute csrgemm host solution
         std::vector<int> hcsr_row_ptr_C_gold(M + 1);
 
-        double cpu_time_used = get_time_us();
-
         int nnz_C_gold = csrgeam_nnz(M,
                                      N,
                                      h_alpha,
@@ -1401,8 +1436,6 @@ hipsparseStatus_t testing_csrgeam2(Arguments argus)
                 idx_base_A,
                 idx_base_B,
                 idx_base_C);
-
-        cpu_time_used = get_time_us() - cpu_time_used;
 
         // Copy output from device to CPU
         int hnnz_C_2;
