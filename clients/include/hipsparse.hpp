@@ -283,9 +283,9 @@ namespace hipsparse
                                                        const int*                csrRowPtrB,
                                                        const int*                csrColIndB,
                                                        const hipsparseMatDescr_t descrC,
-                                                       T*                        csrValC,
-                                                       int*                      csrRowPtrC,
-                                                       int*                      csrColIndC,
+                                                       const T*                  csrValC,
+                                                       const int*                csrRowPtrC,
+                                                       const int*                csrColIndC,
                                                        size_t* pBufferSizeInBytes);
 
     template <typename T>
