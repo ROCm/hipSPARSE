@@ -443,6 +443,52 @@ namespace hipsparse
                                     int*                      nnzTotalDevHostPtr);
 
     template <typename T>
+    hipsparseStatus_t hipsparseXdense2csr(hipsparseHandle_t         handle,
+                                          int                       m,
+                                          int                       n,
+                                          const hipsparseMatDescr_t descr,
+                                          const T*                  A,
+                                          int                       ld,
+                                          const int*                nnzPerRow,
+                                          T*                        csrVal,
+                                          int*                      csrRowPtr,
+                                          int*                      csrColInd);
+
+    template <typename T>
+    hipsparseStatus_t hipsparseXdense2csc(hipsparseHandle_t         handle,
+                                          int                       m,
+                                          int                       n,
+                                          const hipsparseMatDescr_t descr,
+                                          const T*                  A,
+                                          int                       ld,
+                                          const int*                nnzPerColumn,
+                                          T*                        cscVal,
+                                          int*                      cscRowInd,
+                                          int*                      cscColPtr);
+
+    template <typename T>
+    hipsparseStatus_t hipsparseXcsr2dense(hipsparseHandle_t         handle,
+                                          int                       m,
+                                          int                       n,
+                                          const hipsparseMatDescr_t descr,
+                                          const T*                  csrVal,
+                                          const int*                csrRowPtr,
+                                          const int*                csrColInd,
+                                          T*                        A,
+                                          int                       ld);
+
+    template <typename T>
+    hipsparseStatus_t hipsparseXcsc2dense(hipsparseHandle_t         handle,
+                                          int                       m,
+                                          int                       n,
+                                          const hipsparseMatDescr_t descr,
+                                          const T*                  cscVal,
+                                          const int*                cscRowInd,
+                                          const int*                cscColPtr,
+                                          T*                        A,
+                                          int                       ld);
+
+    template <typename T>
     hipsparseStatus_t hipsparseXcsr2csc(hipsparseHandle_t    handle,
                                         int                  m,
                                         int                  n,
