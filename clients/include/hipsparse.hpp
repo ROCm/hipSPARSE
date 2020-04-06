@@ -170,6 +170,23 @@ namespace hipsparse
                                       T*                        y);
 
     template <typename T>
+    hipsparseStatus_t hipsparseXbsrmv(hipsparseHandle_t         handle,
+                                      hipsparseDirection_t      dirA,
+                                      hipsparseOperation_t      transA,
+                                      int                       mb,
+                                      int                       nb,
+                                      int                       nnzb,
+                                      const T*                  alpha,
+                                      const hipsparseMatDescr_t descrA,
+                                      const T*                  bsrSortedValA,
+                                      const int*                bsrSortedRowPtrA,
+                                      const int*                bsrSortedColIndA,
+                                      int                       blockDim,
+                                      const T*                  x,
+                                      const T*                  beta,
+                                      T*                        y);
+
+    template <typename T>
     hipsparseStatus_t hipsparseXcsrmm2(hipsparseHandle_t         handle,
                                        hipsparseOperation_t      transA,
                                        hipsparseOperation_t      transB,
