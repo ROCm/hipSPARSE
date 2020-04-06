@@ -5664,6 +5664,130 @@ hipsparseStatus_t hipsparseZbsr2csr(hipsparseHandle_t         handle,
     return HIPSPARSE_STATUS_SUCCESS;
 }
 
+hipsparseStatus_t hipsparseScsr2csr_compress(hipsparseHandle_t         handle,
+                                             int                       m,
+                                             int                       n,
+                                             const hipsparseMatDescr_t descrA,
+                                             const float*              csrValA,
+                                             const int*                csrColIndA,
+                                             const int*                csrRowPtrA,
+                                             int                       nnzA,
+                                             const int*                nnzPerRow,
+                                             float*                    csrValC,
+                                             int*                      csrColIndC,
+                                             int*                      csrRowPtrC,
+                                             float                     tol)
+{
+    return rocSPARSEStatusToHIPStatus(rocsparse_scsr2csr_compress((rocsparse_handle)handle,
+                                                                   m,
+                                                                   n,
+                                                                   (const rocsparse_mat_descr)descrA,
+                                                                   csrValA,
+                                                                   csrColIndA,
+                                                                   csrRowPtrA,
+                                                                   nnzA,
+                                                                   nnzPerRow,
+                                                                   csrValC,
+                                                                   csrColIndC,
+                                                                   csrRowPtrC,
+                                                                   tol));
+}
+
+hipsparseStatus_t hipsparseDcsr2csr_compress(hipsparseHandle_t         handle,
+                                             int                       m,
+                                             int                       n,
+                                             const hipsparseMatDescr_t descrA,
+                                             const double*             csrValA,
+                                             const int*                csrColIndA,
+                                             const int*                csrRowPtrA,
+                                             int                       nnzA,
+                                             const int*                nnzPerRow,
+                                             double*                   csrValC,
+                                             int*                      csrColIndC,
+                                             int*                      csrRowPtrC,
+                                             double                    tol)
+{
+    return rocSPARSEStatusToHIPStatus(rocsparse_dcsr2csr_compress((rocsparse_handle)handle,
+                                                                   m,
+                                                                   n,
+                                                                   (const rocsparse_mat_descr)descrA,
+                                                                   csrValA,
+                                                                   csrColIndA,
+                                                                   csrRowPtrA,
+                                                                   nnzA,
+                                                                   nnzPerRow,
+                                                                   csrValC,
+                                                                   csrColIndC,
+                                                                   csrRowPtrC,
+                                                                   tol));
+}
+
+hipsparseStatus_t hipsparseCcsr2csr_compress(hipsparseHandle_t         handle,
+                                             int                       m,
+                                             int                       n,
+                                             const hipsparseMatDescr_t descrA,
+                                             const hipComplex*         csrValA,
+                                             const int*                csrColIndA,
+                                             const int*                csrRowPtrA,
+                                             int                       nnzA,
+                                             const int*                nnzPerRow,
+                                             hipComplex*               csrValC,
+                                             int*                      csrColIndC,
+                                             int*                      csrRowPtrC,
+                                             hipComplex                tol)
+{
+    rocsparse_float_complex rtol;
+    rtol.x = tol.x;
+    rtol.y = tol.y;
+
+    return rocSPARSEStatusToHIPStatus( rocsparse_ccsr2csr_compress((rocsparse_handle)handle,
+                                                                    m,
+                                                                    n,
+                                                                    (const rocsparse_mat_descr)descrA,
+                                                                    (const rocsparse_float_complex*)csrValA,
+                                                                    csrColIndA,
+                                                                    csrRowPtrA,
+                                                                    nnzA,
+                                                                    nnzPerRow,
+                                                                    (rocsparse_float_complex*)csrValC,
+                                                                    csrColIndC,
+                                                                    csrRowPtrC,
+                                                                    rtol));
+}
+
+hipsparseStatus_t hipsparseZcsr2csr_compress(hipsparseHandle_t         handle,
+                                             int                       m,
+                                             int                       n,
+                                             const hipsparseMatDescr_t descrA,
+                                             const hipDoubleComplex*   csrValA,
+                                             const int*                csrColIndA,
+                                             const int*                csrRowPtrA,
+                                             int                       nnzA,
+                                             const int*                nnzPerRow,
+                                             hipDoubleComplex*         csrValC,
+                                             int*                      csrColIndC,
+                                             int*                      csrRowPtrC,
+                                             hipDoubleComplex          tol)
+{
+    rocsparse_double_complex rtol;
+    rtol.x = tol.x;
+    rtol.y = tol.y;
+
+    return rocSPARSEStatusToHIPStatus(rocsparse_zcsr2csr_compress((rocsparse_handle)handle,
+                                                                   m,
+                                                                   n,
+                                                                   (const rocsparse_mat_descr)descrA,
+                                                                   (const rocsparse_double_complex*)csrValA,
+                                                                   csrColIndA,
+                                                                   csrRowPtrA,
+                                                                   nnzA,
+                                                                   nnzPerRow,
+                                                                   (rocsparse_double_complex*)csrValC,
+                                                                   csrColIndC,
+                                                                   csrRowPtrC,
+                                                                   rtol));
+}
+
 hipsparseStatus_t hipsparseShyb2csr(hipsparseHandle_t         handle,
                                     const hipsparseMatDescr_t descrA,
                                     const hipsparseHybMat_t   hybA,
@@ -6279,6 +6403,94 @@ hipsparseStatus_t hipsparseXcsr2bsrNnz(hipsparseHandle_t         handle,
                                                     bsrRowPtrC,
                                                     bsrNnzb));
 
+    return HIPSPARSE_STATUS_SUCCESS;
+}
+
+hipsparseStatus_t hipsparseSnnz_compress(hipsparseHandle_t          handle,
+                                         int                        m,
+                                         const hipsparseMatDescr_t  descrA,
+                                         const float*               csrValA,
+                                         const int*                 csrRowPtrA,
+                                         int*                       nnzPerRow,
+                                         int*                       nnzC,
+                                         float                      tol)
+{
+    RETURN_IF_ROCSPARSE_ERROR(rocsparse_snnz_compress((rocsparse_handle)handle,
+                                                       m,
+                                                       (const rocsparse_mat_descr)descrA,
+                                                       csrValA,
+                                                       csrRowPtrA,
+                                                       nnzPerRow,
+                                                       nnzC,
+                                                       tol));
+    return HIPSPARSE_STATUS_SUCCESS;
+}
+
+hipsparseStatus_t hipsparseDnnz_compress(hipsparseHandle_t          handle,
+                                         int                        m,
+                                         const hipsparseMatDescr_t  descrA,
+                                         const double*              csrValA,
+                                         const int*                 csrRowPtrA,
+                                         int*                       nnzPerRow,
+                                         int*                       nnzC,
+                                         double                     tol)
+{
+    RETURN_IF_ROCSPARSE_ERROR(rocsparse_dnnz_compress((rocsparse_handle)handle,
+                                                       m,
+                                                       (const rocsparse_mat_descr)descrA,
+                                                       csrValA,
+                                                       csrRowPtrA,
+                                                       nnzPerRow,
+                                                       nnzC,
+                                                       tol));
+    return HIPSPARSE_STATUS_SUCCESS;
+}
+
+hipsparseStatus_t hipsparseCnnz_compress(hipsparseHandle_t          handle,
+                                         int                        m,
+                                         const hipsparseMatDescr_t  descrA,
+                                         const hipComplex*          csrValA,
+                                         const int*                 csrRowPtrA,
+                                         int*                       nnzPerRow,
+                                         int*                       nnzC,
+                                         hipComplex                 tol)
+{
+    rocsparse_float_complex rtol;
+    rtol.x = tol.x;
+    rtol.y = tol.y;
+
+    RETURN_IF_ROCSPARSE_ERROR(rocsparse_cnnz_compress((rocsparse_handle)handle,
+                                                       m,
+                                                       (const rocsparse_mat_descr)descrA,
+                                                       (const rocsparse_float_complex*)csrValA,
+                                                       csrRowPtrA,
+                                                       nnzPerRow,
+                                                       nnzC,
+                                                       rtol));
+    return HIPSPARSE_STATUS_SUCCESS;
+}
+
+hipsparseStatus_t hipsparseZnnz_compress(hipsparseHandle_t          handle,
+                                         int                        m,
+                                         const hipsparseMatDescr_t  descrA,
+                                         const hipDoubleComplex*    csrValA,
+                                         const int*                 csrRowPtrA,
+                                         int*                       nnzPerRow,
+                                         int*                       nnzC,
+                                         hipDoubleComplex           tol)
+{
+    rocsparse_double_complex rtol;
+    rtol.x = tol.x;
+    rtol.y = tol.y;
+
+    RETURN_IF_ROCSPARSE_ERROR(rocsparse_znnz_compress((rocsparse_handle)handle,
+                                                       m,
+                                                       (const rocsparse_mat_descr)descrA,
+                                                       (const rocsparse_double_complex*)csrValA,
+                                                       csrRowPtrA,
+                                                       nnzPerRow,
+                                                       nnzC,
+                                                       rtol));
     return HIPSPARSE_STATUS_SUCCESS;
 }
 

@@ -35,6 +35,7 @@
 #include <stdlib.h>
 #include <string>
 #include <vector>
+#include <complex>
 
 #ifdef _OPENMP
 #include <omp.h>
@@ -262,6 +263,28 @@ static inline float testing_abs(hipComplex x)
 static inline double testing_abs(hipDoubleComplex x)
 {
     return hipCabs(x);
+}
+
+/* ============================================================================================ */
+/*! \brief real */
+static inline float testing_real(float x)
+{
+    return std::real(x);
+}
+
+static inline double testing_real(double x)
+{
+    return std::real(x);
+}
+
+static inline float testing_real(hipComplex x)
+{
+    return hipCrealf(x);
+}
+
+static inline double testing_real(hipDoubleComplex x)
+{
+    return hipCreal(x);
 }
 
 /* ============================================================================================ */
@@ -1021,6 +1044,90 @@ void host_csx2dense(int                  m,
         }
         break;
     }
+    }
+}
+
+template <typename T>
+inline void host_csr_to_csr_compress(int                     M,
+                                     int                     N,
+                                     const std::vector<int>& csr_row_ptr_A,
+                                     const std::vector<int>& csr_col_ind_A,
+                                     const std::vector<T>&   csr_val_A,
+                                     std::vector<int>&       csr_row_ptr_C,
+                                     std::vector<int>&       csr_col_ind_C,
+                                     std::vector<T>&         csr_val_C,
+                                     hipsparseIndexBase_t    base,
+                                     T                       tol)
+{
+    if(M <= 0 || N <= 0)
+    {
+        return;
+    }
+
+    // find how many entries will be in each compressed CSR matrix row
+    std::vector<int> nnz_per_row(M);
+
+#ifdef _OPENMP
+#pragma omp parallel for schedule(dynamic, 1024)
+#endif
+    for(int i = 0; i < M; i++)
+    {
+        int start = csr_row_ptr_A[i] - base;
+        int end   = csr_row_ptr_A[i + 1] - base;
+        int count = 0;
+
+        for(int j = start; j < end; j++)
+        {
+            if(testing_abs(csr_val_A[j]) > testing_real(tol)
+               && testing_abs(csr_val_A[j]) > std::numeric_limits<float>::min())
+            {
+                count++;
+            }
+        }
+
+        nnz_per_row[i] = count;
+    }
+
+    // add up total number of entries
+    int nnz_C = 0;
+    for(int i = 0; i < M; i++)
+    {
+        nnz_C += nnz_per_row[i];
+    }
+
+    //column indices and value arrays for compressed CSR matrix
+    csr_col_ind_C.resize(nnz_C);
+    csr_val_C.resize(nnz_C);
+
+    // fill in row pointer array for compressed CSR matrix
+    csr_row_ptr_C.resize(M + 1);
+
+    csr_row_ptr_C[0] = base;
+    for(int i = 0; i < M; i++)
+    {
+        csr_row_ptr_C[i + 1] = csr_row_ptr_C[i] + nnz_per_row[i];
+    }
+
+    // fill in column indices and value arrays for compressed CSR matrix
+#ifdef _OPENMP
+#pragma omp parallel for schedule(dynamic, 1024)
+#endif
+    for(int i = 0; i < M; i++)
+    {
+        int start = csr_row_ptr_A[i] - base;
+        int end   = csr_row_ptr_A[i + 1] - base;
+        int index = csr_row_ptr_C[i] - base;
+
+        for(int j = start; j < end; j++)
+        {
+            if(testing_abs(csr_val_A[j]) > testing_real(tol)
+               && testing_abs(csr_val_A[j]) > std::numeric_limits<float>::min())
+            {
+                csr_col_ind_C[index] = csr_col_ind_A[j];
+                csr_val_C[index]     = csr_val_A[j];
+                index++;
+            }
+        }
     }
 }
 
@@ -2942,7 +3049,9 @@ public:
     int ldc;
 
     double alpha = 1.0;
-    double beta  = 0.0;
+    double alphai = 0.0;
+    double beta = 0.0;
+    double betai = 0.0;
 
     hipsparseOperation_t    transA    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
     hipsparseOperation_t    transB    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
