@@ -5682,13 +5682,13 @@ hipsparseStatus_t hipsparseScsr2csr_compress(hipsparseHandle_t         handle,
                                                                   n,
                                                                   (const rocsparse_mat_descr)descrA,
                                                                   csrValA,
-                                                                  csrColIndA,
                                                                   csrRowPtrA,
+                                                                  csrColIndA,
                                                                   nnzA,
                                                                   nnzPerRow,
                                                                   csrValC,
-                                                                  csrColIndC,
                                                                   csrRowPtrC,
+                                                                  csrColIndC,
                                                                   tol));
 }
 
@@ -5711,13 +5711,13 @@ hipsparseStatus_t hipsparseDcsr2csr_compress(hipsparseHandle_t         handle,
                                                                   n,
                                                                   (const rocsparse_mat_descr)descrA,
                                                                   csrValA,
-                                                                  csrColIndA,
                                                                   csrRowPtrA,
+                                                                  csrColIndA,
                                                                   nnzA,
                                                                   nnzPerRow,
                                                                   csrValC,
-                                                                  csrColIndC,
                                                                   csrRowPtrC,
+                                                                  csrColIndC,
                                                                   tol));
 }
 
@@ -5745,13 +5745,13 @@ hipsparseStatus_t hipsparseCcsr2csr_compress(hipsparseHandle_t         handle,
                                     n,
                                     (const rocsparse_mat_descr)descrA,
                                     (const rocsparse_float_complex*)csrValA,
-                                    csrColIndA,
                                     csrRowPtrA,
+                                    csrColIndA,
                                     nnzA,
                                     nnzPerRow,
                                     (rocsparse_float_complex*)csrValC,
-                                    csrColIndC,
                                     csrRowPtrC,
+                                    csrColIndC,
                                     rtol));
 }
 
@@ -5779,13 +5779,13 @@ hipsparseStatus_t hipsparseZcsr2csr_compress(hipsparseHandle_t         handle,
                                     n,
                                     (const rocsparse_mat_descr)descrA,
                                     (const rocsparse_double_complex*)csrValA,
-                                    csrColIndA,
                                     csrRowPtrA,
+                                    csrColIndA,
                                     nnzA,
                                     nnzPerRow,
                                     (rocsparse_double_complex*)csrValC,
-                                    csrColIndC,
                                     csrRowPtrC,
+                                    csrColIndC,
                                     rtol));
 }
 
