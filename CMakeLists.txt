@@ -52,7 +52,7 @@ if(POLICY CMP0066)
 endif()
 
 # hipSPARSE project
-project(hipsparse LANGUAGES CXX)
+project(hipsparse LANGUAGES CXX Fortran)
 
 # Force library install path to lib (CentOS 7 defaults to lib64)
 set(CMAKE_INSTALL_LIBDIR "lib" CACHE INTERNAL "Installation directory for libraries" FORCE)
