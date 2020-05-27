@@ -52,7 +52,7 @@ if(POLICY CMP0066)
 endif()
 
 # hipSPARSE project
-project(hipsparse LANGUAGES CXX)
+project(hipsparse LANGUAGES CXX Fortran)
 
 # Force library install path to lib (CentOS 7 defaults to lib64)
 set(CMAKE_INSTALL_LIBDIR "lib" CACHE INTERNAL "Installation directory for libraries" FORCE)
@@ -68,7 +68,7 @@ option(BUILD_CUDA "Build hipSPARSE for CUDA" OFF)
 include(cmake/Dependencies.cmake)
 
 # Setup version
-rocm_setup_version(VERSION 1.6.5)
+rocm_setup_version(VERSION 1.7.0)
 set(hipsparse_SOVERSION 0.1)
 
 # Look for libamdhip64

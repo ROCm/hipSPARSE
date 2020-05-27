@@ -5,7 +5,6 @@ FROM ${base_image}
 LABEL maintainer="rocsparse-maintainer@amd.com"
 
 ARG user_uid
-
 ARG library_dependencies="rocsparse rocprim"
 
 # Install dependent packages
@@ -20,6 +19,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-ins
     make \
     cmake \
     pkg-config \
+    gfortran \
     libnuma1 \
     wget \
     unzip \

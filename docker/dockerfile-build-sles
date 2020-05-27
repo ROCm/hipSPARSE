@@ -5,21 +5,21 @@ FROM ${base_image}
 LABEL maintainer="rocsparse-maintainer@amd.com"
 
 ARG user_uid
-
 ARG library_dependencies="rocsparse rocprim"
 
 # Install dependent packages
-RUN zypper refresh && zypper -n --no-gpg-checks install \
+RUN zypper refresh
+RUN zypper -n --no-gpg-checks install \
     sudo \
     ca-certificates \
     git \
     cmake \
     make \
-    pkg-config \
     gcc-c++ \
+    gcc-fortran \
+    pkg-config \
     python3-pip \
     dpkg \
-    rocprim \
     libcxxtools9 \
     libboost_program_options1_66_0-devel \
     libnuma1 \
@@ -27,6 +27,7 @@ RUN zypper refresh && zypper -n --no-gpg-checks install \
     wget \
     unzip \
     ${library_dependencies}
+
 
 RUN pip3 install pyyaml
 

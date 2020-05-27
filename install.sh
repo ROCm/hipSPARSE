@@ -127,23 +127,23 @@ install_packages( )
   fi
 
   # dependencies needed for library and clients to build
-  local library_dependencies_ubuntu=( "make" "pkg-config" "libnuma1" )
-  local library_dependencies_centos=( "epel-release" "make" "cmake3" "gcc-c++" "rpm-build" )
-  local library_dependencies_fedora=( "make" "cmake" "gcc-c++" "libcxx-devel" "rpm-build" "numactl-libs" )
-  local library_dependencies_sles=( "make" "cmake" "gcc-c++" "libcxxtools9" "rpm-build" "pkg-config" "dpkg" )
+  local library_dependencies_ubuntu=( "gfortran" "make" "pkg-config" "libnuma1" )
+  local library_dependencies_centos=( "devtoolset-7-gcc-gfortran" "epel-release" "make" "cmake3" "gcc-c++" "rpm-build" )
+  local library_dependencies_fedora=( "gcc-gfortran" "make" "cmake" "gcc-c++" "libcxx-devel" "rpm-build" "numactl-libs" )
+  local library_dependencies_sles=( "gcc-fortran" "make" "cmake" "gcc-c++" "libcxxtools9" "rpm-build" "pkg-config" "dpkg" )
 
-  if [[ "${ID}" == "centos" ]]; then
+  local client_dependencies_ubuntu=( "libboost-program-options-dev" )
+  local client_dependencies_centos=( "boost-devel" )
+  local client_dependencies_fedora=( "boost-devel" )
+  local client_dependencies_sles=( "libboost_program_options1_66_0-devel" )
+
+  if [[ ( "${ID}" == "centos" ) || ( "${ID}" == "rhel" ) ]]; then
     if [[ "${VERSION_ID}" == "6" ]]; then
       library_dependencies_centos+=( "numactl" )
     else
       library_dependencies_centos+=( "numactl-libs" )
     fi
   fi
-
-  local client_dependencies_ubuntu=( "libboost-program-options-dev" )
-  local client_dependencies_centos=( "boost-devel" )
-  local client_dependencies_fedora=( "boost-devel" )
-  local client_dependencies_sles=( "libboost_program_options1_66_0-devel" )
 
   case "${ID}" in
     ubuntu)
