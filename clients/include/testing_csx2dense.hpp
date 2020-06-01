@@ -206,7 +206,7 @@ hipsparseStatus_t testing_csx2dense(const Arguments& argus, FUNC1& csx2dense, FU
     {
         for(int j = 0; j < N; ++j)
         {
-            h_dense_val_ref[j * LD + i] = T(-1.0);
+            h_dense_val_ref[j * LD + i] = make_DataType<T>(-1);
         }
     }
 
@@ -309,7 +309,7 @@ hipsparseStatus_t testing_csx2dense(const Arguments& argus, FUNC1& csx2dense, FU
         {
             for(int j = 0; j < N; ++j)
             {
-                h_dense_val[j * LD + i] = T(-2);
+                h_dense_val[j * LD + i] = make_DataType<T>(-2);
             }
         }
         CHECK_HIP_ERROR(
