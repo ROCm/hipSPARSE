@@ -164,13 +164,13 @@ install_packages( )
 #     yum -y update brings *all* installed packages up to date
 #     without seeking user approval
 #     elevate_if_not_root yum -y update
-      if [[ ( "${VERSION_ID}" -ge 8 ) ]]; then
+      if [[ ( "${VERSION_ID}" -eq 8 ) ]]; then
         install_yum_packages "${library_dependencies_centos_8[@]}"
 
         if [[ "${build_clients}" == true ]]; then
           install_yum_packages "${client_dependencies_centos_8[@]}"
         fi
-      elif [[ ( "${VERSION_ID}" -ge 6 ) ]]; then
+      elif [[ ( "${VERSION_ID}" -eq 6 ) ]]; then
         install_yum_packages "${library_dependencies_centos_6[@]}"
 
         if [[ "${build_clients}" == true ]]; then
