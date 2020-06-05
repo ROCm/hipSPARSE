@@ -128,20 +128,25 @@ install_packages( )
 
   # dependencies needed for library and clients to build
   local library_dependencies_ubuntu=( "gfortran" "make" "pkg-config" "libnuma1" )
-  local library_dependencies_centos=( "devtoolset-7-gcc-gfortran" "epel-release" "make" "cmake3" "gcc-c++" "rpm-build" )
-  local library_dependencies_fedora=( "gcc-gfortran" "make" "cmake" "gcc-c++" "libcxx-devel" "rpm-build" "numactl-libs" )
-  local library_dependencies_sles=( "gcc-fortran" "make" "cmake" "gcc-c++" "libcxxtools9" "rpm-build" "pkg-config" "dpkg" )
+  local library_dependencies_centos_6=( "epel-release" "make" "cmake3" "gcc-c++" "rpm-build" )
+  local library_dependencies_centos_7=( "epel-release" "make" "cmake3" "gcc-c++" "rpm-build" )
+  local library_dependencies_centos_8=( "epel-release" "make" "cmake3" "gcc-c++" "rpm-build" )
+  local library_dependencies_fedora=( "make" "cmake" "gcc-c++" "libcxx-devel" "rpm-build" "numactl-libs" )
+  local library_dependencies_sles=( "make" "cmake" "gcc-c++" "libcxxtools9" "rpm-build" "pkg-config" "dpkg" )
 
   local client_dependencies_ubuntu=( "libboost-program-options-dev" )
-  local client_dependencies_centos=( "boost-devel" )
-  local client_dependencies_fedora=( "boost-devel" )
-  local client_dependencies_sles=( "libboost_program_options1_66_0-devel" )
+  local client_dependencies_centos_6=( "gcc-gfortran" "boost-devel" )
+  local client_dependencies_centos_7=( "devtoolset-7-gcc-gfortran" "boost-devel" )
+  local client_dependencies_centos_8=( "gcc-gfortran" "boost-devel" )
+  local client_dependencies_fedora=( "gcc-gfortran" "boost-devel" )
+  local client_dependencies_sles=( "gcc-gfortran" "libboost_program_options1_66_0-devel" )
 
   if [[ ( "${ID}" == "centos" ) || ( "${ID}" == "rhel" ) ]]; then
     if [[ "${VERSION_ID}" == "6" ]]; then
-      library_dependencies_centos+=( "numactl" )
+      library_dependencies_centos_6+=( "numactl" )
     else
-      library_dependencies_centos+=( "numactl-libs" )
+      library_dependencies_centos_7+=( "numactl-libs" )
+      library_dependencies_centos_8+=( "numactl-libs" )
     fi
   fi
 
@@ -159,10 +164,24 @@ install_packages( )
 #     yum -y update brings *all* installed packages up to date
 #     without seeking user approval
 #     elevate_if_not_root yum -y update
-      install_yum_packages "${library_dependencies_centos[@]}"
+      if [[ ( "${VERSION_ID}" -eq 8 ) ]]; then
+        install_yum_packages "${library_dependencies_centos_8[@]}"
 
-      if [[ "${build_clients}" == true ]]; then
-        install_yum_packages "${client_dependencies_centos[@]}"
+        if [[ "${build_clients}" == true ]]; then
+          install_yum_packages "${client_dependencies_centos_8[@]}"
+        fi
+      elif [[ ( "${VERSION_ID}" -eq 6 ) ]]; then
+        install_yum_packages "${library_dependencies_centos_6[@]}"
+
+        if [[ "${build_clients}" == true ]]; then
+          install_yum_packages "${client_dependencies_centos_6[@]}"
+        fi
+      else
+        install_yum_packages "${library_dependencies_centos_7[@]}"
+
+        if [[ "${build_clients}" == true ]]; then
+          install_yum_packages "${client_dependencies_centos_7[@]}"
+        fi
       fi
       ;;
 
