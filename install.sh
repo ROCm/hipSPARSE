@@ -139,7 +139,7 @@ install_packages( )
   local client_dependencies_centos_7=( "devtoolset-7-gcc-gfortran" "boost-devel" )
   local client_dependencies_centos_8=( "gcc-gfortran" "boost-devel" )
   local client_dependencies_fedora=( "gcc-gfortran" "boost-devel" )
-  local client_dependencies_sles=( "gcc-gfortran" "libboost_program_options1_66_0-devel" )
+  local client_dependencies_sles=( "gcc-fortran" "libboost_program_options1_66_0-devel" )
 
   if [[ ( "${ID}" == "centos" ) || ( "${ID}" == "rhel" ) ]]; then
     if [[ "${VERSION_ID}" == "6" ]]; then
