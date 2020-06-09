@@ -52,6 +52,12 @@ set(INCLUDE_INSTALL_DIR ${CMAKE_INSTALL_INCLUDEDIR})
 # Include sources
 include(src/CMakeLists.txt)
 
+# Set Fortran module output directory
+set(CMAKE_Fortran_MODULE_DIRECTORY ${PROJECT_BINARY_DIR}/include)
+
+# Create hipSPARSE Fortran module
+add_library(hipsparse_fortran OBJECT ${hipsparse_f90_source})
+
 # Create hipSPARSE library
 add_library(hipsparse ${hipsparse_source} ${hipsparse_headers_public})
 add_library(roc::hipsparse ALIAS hipsparse)

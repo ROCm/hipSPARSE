@@ -2281,19 +2281,285 @@ void csrsm(int                     M,
 }
 
 /* ============================================================================================ */
+/*! \brief  Sparse triangular lower solve using BSR storage format. */
+template <typename T>
+int bsr_lsolve(hipsparseDirection_t dir,
+               hipsparseOperation_t trans,
+               int                  mb,
+               const int*           ptr,
+               const int*           col,
+               const T*             val,
+               int                  bsr_dim,
+               T                    alpha,
+               const T*             x,
+               T*                   y,
+               hipsparseIndexBase_t base,
+               hipsparseDiagType_t  diag_type)
+{
+    const int* bsr_row_ptr = ptr;
+    const int* bsr_col_ind = col;
+    const T*   bsr_val     = val;
+
+    std::vector<int> vptr;
+    std::vector<int> vcol;
+    std::vector<T>   vval;
+
+    if(trans == HIPSPARSE_OPERATION_TRANSPOSE)
+    {
+        int nnzb = ptr[mb] - base;
+
+        vptr.resize(mb + 1);
+        vcol.resize(nnzb);
+        vval.resize(nnzb * bsr_dim * bsr_dim);
+
+        // Transpose
+        transpose_bsr(mb,
+                      mb,
+                      nnzb,
+                      bsr_dim,
+                      ptr,
+                      col,
+                      val,
+                      vptr.data(),
+                      vcol.data(),
+                      vval.data(),
+                      base,
+                      base);
+
+        bsr_row_ptr = vptr.data();
+        bsr_col_ind = vcol.data();
+        bsr_val     = vval.data();
+    }
+
+    int pivot = std::numeric_limits<int>::max();
+
+    // Process lower triangular part
+    for(int bsr_row = 0; bsr_row < mb; ++bsr_row)
+    {
+        int bsr_row_begin = bsr_row_ptr[bsr_row] - base;
+        int bsr_row_end   = bsr_row_ptr[bsr_row + 1] - base;
+
+        for(int bi = 0; bi < bsr_dim; ++bi)
+        {
+            int local_row = bsr_row * bsr_dim + bi;
+
+            T sum = alpha * x[local_row];
+
+            int diag     = -1;
+            T   diag_val = make_DataType<T>(0);
+
+            for(int j = bsr_row_begin; j < bsr_row_end; ++j)
+            {
+                int bsr_col = bsr_col_ind[j] - base;
+
+                for(int bj = 0; bj < bsr_dim; ++bj)
+                {
+                    int local_col = bsr_col * bsr_dim + bj;
+                    T   local_val = dir == HIPSPARSE_DIRECTION_ROW
+                                      ? bsr_val[bsr_dim * bsr_dim * j + bi * bsr_dim + bj]
+                                      : bsr_val[bsr_dim * bsr_dim * j + bi + bj * bsr_dim];
+
+                    // Ignore all entries that are above the diagonal
+                    if(local_col > local_row)
+                    {
+                        break;
+                    }
+
+                    // Diagonal
+                    if(local_col == local_row)
+                    {
+                        if(diag_type == HIPSPARSE_DIAG_TYPE_NON_UNIT)
+                        {
+                            // Check for numerical zero
+                            if(local_val == make_DataType<T>(0))
+                            {
+                                pivot     = std::min(pivot, bsr_row + base);
+                                local_val = make_DataType<T>(1);
+                            }
+
+                            diag     = j;
+                            diag_val = make_DataType<T>(1) / local_val;
+                        }
+
+                        break;
+                    }
+
+                    // Lower triangular part
+                    sum = testing_fma(-local_val, y[local_col], sum);
+                }
+            }
+
+            if(diag_type == HIPSPARSE_DIAG_TYPE_NON_UNIT)
+            {
+                if(diag == -1)
+                {
+                    pivot = std::min(pivot, bsr_row + base);
+                }
+
+                y[local_row] = sum * diag_val;
+            }
+            else
+            {
+                y[local_row] = sum;
+            }
+        }
+    }
+
+    if(pivot != std::numeric_limits<int>::max())
+    {
+        return pivot;
+    }
+
+    return -1;
+}
+
+/* ============================================================================================ */
+/*! \brief  Sparse triangular upper solve using BSR storage format. */
+template <typename T>
+int bsr_usolve(hipsparseDirection_t dir,
+               hipsparseOperation_t trans,
+               int                  mb,
+               const int*           ptr,
+               const int*           col,
+               const T*             val,
+               int                  bsr_dim,
+               T                    alpha,
+               const T*             x,
+               T*                   y,
+               hipsparseIndexBase_t base,
+               hipsparseDiagType_t  diag_type)
+{
+    const int* bsr_row_ptr = ptr;
+    const int* bsr_col_ind = col;
+    const T*   bsr_val     = val;
+
+    std::vector<int> vptr;
+    std::vector<int> vcol;
+    std::vector<T>   vval;
+
+    if(trans == HIPSPARSE_OPERATION_TRANSPOSE)
+    {
+        int nnzb = ptr[mb] - base;
+
+        vptr.resize(mb + 1);
+        vcol.resize(nnzb);
+        vval.resize(nnzb * bsr_dim * bsr_dim);
+
+        // Transpose
+        transpose_bsr(mb,
+                      mb,
+                      nnzb,
+                      bsr_dim,
+                      ptr,
+                      col,
+                      val,
+                      vptr.data(),
+                      vcol.data(),
+                      vval.data(),
+                      base,
+                      base);
+
+        bsr_row_ptr = vptr.data();
+        bsr_col_ind = vcol.data();
+        bsr_val     = vval.data();
+    }
+
+    int pivot = std::numeric_limits<int>::max();
+
+    // Process upper triangular part
+    for(int bsr_row = mb - 1; bsr_row >= 0; --bsr_row)
+    {
+        int bsr_row_begin = bsr_row_ptr[bsr_row] - base;
+        int bsr_row_end   = bsr_row_ptr[bsr_row + 1] - base;
+
+        for(int bi = bsr_dim - 1; bi >= 0; --bi)
+        {
+            int local_row = bsr_row * bsr_dim + bi;
+
+            T sum = alpha * x[local_row];
+
+            int diag     = -1;
+            T   diag_val = make_DataType<T>(0);
+
+            for(int j = bsr_row_end - 1; j >= bsr_row_begin; --j)
+            {
+                int bsr_col = bsr_col_ind[j] - base;
+
+                for(int bj = bsr_dim - 1; bj >= 0; --bj)
+                {
+                    int local_col = bsr_col * bsr_dim + bj;
+                    T   local_val = dir == HIPSPARSE_DIRECTION_ROW
+                                      ? bsr_val[bsr_dim * bsr_dim * j + bi * bsr_dim + bj]
+                                      : bsr_val[bsr_dim * bsr_dim * j + bi + bj * bsr_dim];
+
+                    // Ignore all entries that are below the diagonal
+                    if(local_col < local_row)
+                    {
+                        continue;
+                    }
+
+                    // Diagonal
+                    if(local_col == local_row)
+                    {
+                        if(diag_type == HIPSPARSE_DIAG_TYPE_NON_UNIT)
+                        {
+                            // Check for numerical zero
+                            if(local_val == make_DataType<T>(0))
+                            {
+                                pivot     = std::min(pivot, bsr_row + base);
+                                local_val = make_DataType<T>(1);
+                            }
+
+                            diag     = j;
+                            diag_val = make_DataType<T>(1) / local_val;
+                        }
+
+                        continue;
+                    }
+
+                    // Upper triangular part
+                    sum = testing_fma(-local_val, y[local_col], sum);
+                }
+            }
+
+            if(diag_type == HIPSPARSE_DIAG_TYPE_NON_UNIT)
+            {
+                if(diag == -1)
+                {
+                    pivot = std::min(pivot, bsr_row + base);
+                }
+
+                y[local_row] = sum * diag_val;
+            }
+            else
+            {
+                y[local_row] = sum;
+            }
+        }
+    }
+
+    if(pivot != std::numeric_limits<int>::max())
+    {
+        return pivot;
+    }
+
+    return -1;
+}
+
+/* ============================================================================================ */
 /*! \brief  Sparse triangular lower solve using CSR storage format. */
 template <typename T>
-int lsolve(hipsparseOperation_t trans,
-           int                  m,
-           const int*           ptr,
-           const int*           col,
-           const T*             val,
-           T                    alpha,
-           const T*             x,
-           T*                   y,
-           hipsparseIndexBase_t idx_base,
-           hipsparseDiagType_t  diag_type,
-           unsigned int         wf_size)
+int csr_lsolve(hipsparseOperation_t trans,
+               int                  m,
+               const int*           ptr,
+               const int*           col,
+               const T*             val,
+               T                    alpha,
+               const T*             x,
+               T*                   y,
+               hipsparseIndexBase_t idx_base,
+               hipsparseDiagType_t  diag_type,
+               unsigned int         wf_size)
 {
     const int* csr_row_ptr = ptr;
     const int* csr_col_ind = col;
@@ -2312,7 +2578,7 @@ int lsolve(hipsparseOperation_t trans,
         vval.resize(nnz);
 
         // Transpose
-        transpose(
+        transpose_csr(
             m, m, nnz, ptr, col, val, vptr.data(), vcol.data(), vval.data(), idx_base, idx_base);
 
         csr_row_ptr = vptr.data();
@@ -2414,17 +2680,17 @@ int lsolve(hipsparseOperation_t trans,
 /* ============================================================================================ */
 /*! \brief  Sparse triangular upper solve using CSR storage format. */
 template <typename T>
-int usolve(hipsparseOperation_t trans,
-           int                  m,
-           const int*           ptr,
-           const int*           col,
-           const T*             val,
-           T                    alpha,
-           const T*             x,
-           T*                   y,
-           hipsparseIndexBase_t idx_base,
-           hipsparseDiagType_t  diag_type,
-           unsigned int         wf_size)
+int csr_usolve(hipsparseOperation_t trans,
+               int                  m,
+               const int*           ptr,
+               const int*           col,
+               const T*             val,
+               T                    alpha,
+               const T*             x,
+               T*                   y,
+               hipsparseIndexBase_t idx_base,
+               hipsparseDiagType_t  diag_type,
+               unsigned int         wf_size)
 {
     const int* csr_row_ptr = ptr;
     const int* csr_col_ind = col;
@@ -2443,7 +2709,7 @@ int usolve(hipsparseOperation_t trans,
         vval.resize(nnz);
 
         // Transpose
-        transpose(
+        transpose_csr(
             m, m, nnz, ptr, col, val, vptr.data(), vcol.data(), vval.data(), idx_base, idx_base);
 
         csr_row_ptr = vptr.data();
@@ -2545,17 +2811,17 @@ int usolve(hipsparseOperation_t trans,
 /* ============================================================================================ */
 /*! \brief  Transpose sparse matrix using CSR storage format. */
 template <typename T>
-void transpose(int                  m,
-               int                  n,
-               int                  nnz,
-               const int*           csr_row_ptr_A,
-               const int*           csr_col_ind_A,
-               const T*             csr_val_A,
-               int*                 csr_row_ptr_B,
-               int*                 csr_col_ind_B,
-               T*                   csr_val_B,
-               hipsparseIndexBase_t idx_base_A,
-               hipsparseIndexBase_t idx_base_B)
+void transpose_csr(int                  m,
+                   int                  n,
+                   int                  nnz,
+                   const int*           csr_row_ptr_A,
+                   const int*           csr_col_ind_A,
+                   const T*             csr_val_A,
+                   int*                 csr_row_ptr_B,
+                   int*                 csr_col_ind_B,
+                   T*                   csr_val_B,
+                   hipsparseIndexBase_t idx_base_A,
+                   hipsparseIndexBase_t idx_base_B)
 {
     memset(csr_row_ptr_B, 0, sizeof(int) * (n + 1));
 
@@ -2596,6 +2862,71 @@ void transpose(int                  m,
     }
 
     csr_row_ptr_B[0] = idx_base_B;
+}
+
+/* ============================================================================================ */
+/*! \brief  Transpose sparse matrix using CSR storage format. */
+template <typename T>
+void transpose_bsr(int                  mb,
+                   int                  nb,
+                   int                  nnzb,
+                   int                  bsr_dim,
+                   const int*           bsr_row_ptr_A,
+                   const int*           bsr_col_ind_A,
+                   const T*             bsr_val_A,
+                   int*                 bsr_row_ptr_B,
+                   int*                 bsr_col_ind_B,
+                   T*                   bsr_val_B,
+                   hipsparseIndexBase_t idx_base_A,
+                   hipsparseIndexBase_t idx_base_B)
+{
+    memset(bsr_row_ptr_B, 0, sizeof(int) * (nb + 1));
+
+    // Determine nnz per column
+    for(int i = 0; i < nnzb; ++i)
+    {
+        ++bsr_row_ptr_B[bsr_col_ind_A[i] + 1 - idx_base_A];
+    }
+
+    // Scan
+    for(int i = 0; i < nb; ++i)
+    {
+        bsr_row_ptr_B[i + 1] += bsr_row_ptr_B[i];
+    }
+
+    // Fill row indices and values
+    for(int i = 0; i < mb; ++i)
+    {
+        int row_begin = bsr_row_ptr_A[i] - idx_base_A;
+        int row_end   = bsr_row_ptr_A[i + 1] - idx_base_A;
+
+        for(int j = row_begin; j < row_end; ++j)
+        {
+            int col = bsr_col_ind_A[j] - idx_base_A;
+            int idx = bsr_row_ptr_B[col];
+
+            bsr_col_ind_B[idx] = i + idx_base_B;
+
+            for(int bi = 0; bi < bsr_dim; ++bi)
+            {
+                for(int bj = 0; bj < bsr_dim; ++bj)
+                {
+                    bsr_val_B[bsr_dim * bsr_dim * idx + bi + bj * bsr_dim]
+                        = bsr_val_A[bsr_dim * bsr_dim * j + bi * bsr_dim + bj];
+                }
+            }
+
+            ++bsr_row_ptr_B[col];
+        }
+    }
+
+    // Shift column pointer array
+    for(int i = nb; i > 0; --i)
+    {
+        bsr_row_ptr_B[i] = bsr_row_ptr_B[i - 1] + idx_base_B;
+    }
+
+    bsr_row_ptr_B[0] = idx_base_B;
 }
 
 /* ============================================================================================ */

@@ -276,7 +276,7 @@ hipsparseStatus_t testing_dense2csx(const Arguments& argus, FUNC& dense2csx)
     {
         for(int j = 0; j < N; ++j)
         {
-            h_dense_val[j * LD + i] = T(-1.0);
+            h_dense_val[j * LD + i] = make_DataType<T>(-1);
         }
     }
 

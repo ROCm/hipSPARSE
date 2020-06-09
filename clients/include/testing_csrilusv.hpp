@@ -347,17 +347,17 @@ hipsparseStatus_t testing_csrilusv(Arguments argus)
     hipDeviceProp_t prop;
     hipGetDeviceProperties(&prop, 0);
 
-    position_gold = lsolve(HIPSPARSE_OPERATION_NON_TRANSPOSE,
-                           m,
-                           hcsr_row_ptr.data(),
-                           hcsr_col_ind.data(),
-                           hcsr_val.data(),
-                           h_alpha,
-                           hx.data(),
-                           hz_gold.data(),
-                           idx_base,
-                           HIPSPARSE_DIAG_TYPE_UNIT,
-                           prop.warpSize);
+    position_gold = csr_lsolve(HIPSPARSE_OPERATION_NON_TRANSPOSE,
+                               m,
+                               hcsr_row_ptr.data(),
+                               hcsr_col_ind.data(),
+                               hcsr_val.data(),
+                               h_alpha,
+                               hx.data(),
+                               hz_gold.data(),
+                               idx_base,
+                               HIPSPARSE_DIAG_TYPE_UNIT,
+                               prop.warpSize);
 
     // Check zero pivot results
     unit_check_general(1, 1, 1, &position_gold, &hposition_1);
@@ -435,17 +435,17 @@ hipsparseStatus_t testing_csrilusv(Arguments argus)
     pivot_status_2 = hipsparseXcsrsv2_zeroPivot(handle, info_U, d_position);
 
     // Host csrsv
-    position_gold = usolve(HIPSPARSE_OPERATION_NON_TRANSPOSE,
-                           m,
-                           hcsr_row_ptr.data(),
-                           hcsr_col_ind.data(),
-                           hcsr_val.data(),
-                           h_alpha,
-                           hz_gold.data(),
-                           hy_gold.data(),
-                           idx_base,
-                           HIPSPARSE_DIAG_TYPE_NON_UNIT,
-                           prop.warpSize);
+    position_gold = csr_usolve(HIPSPARSE_OPERATION_NON_TRANSPOSE,
+                               m,
+                               hcsr_row_ptr.data(),
+                               hcsr_col_ind.data(),
+                               hcsr_val.data(),
+                               h_alpha,
+                               hz_gold.data(),
+                               hy_gold.data(),
+                               idx_base,
+                               HIPSPARSE_DIAG_TYPE_NON_UNIT,
+                               prop.warpSize);
 
     // Check zero pivot results
     unit_check_general(1, 1, 1, &position_gold, &hposition_1);

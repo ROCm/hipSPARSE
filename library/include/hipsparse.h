@@ -46,12 +46,15 @@ typedef void* hipsparseHandle_t;
 typedef void* hipsparseMatDescr_t;
 typedef void* hipsparseHybMat_t;
 #if defined(__HIP_PLATFORM_HCC__)
+typedef void* bsrsv2Info_t;
 typedef void* csrsv2Info_t;
 typedef void* csrsm2Info_t;
 typedef void* csrilu02Info_t;
 typedef void* csric02Info_t;
 typedef void* csrgemm2Info_t;
 #elif defined(__HIP_PLATFORM_NVCC__)
+struct bsrsv2Info;
+typedef struct bsrsv2Info* bsrsv2Info_t;
 struct csrsv2Info;
 typedef struct csrsv2Info* csrsv2Info_t;
 struct csrsm2Info;
@@ -200,6 +203,11 @@ HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroyHybMat(hipsparseHybMat_t hybA);
 
 /* Info structures */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCreateBsrsv2Info(bsrsv2Info_t* info);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDestroyBsrsv2Info(bsrsv2Info_t info);
+
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreateCsrsv2Info(csrsv2Info_t* info);
 HIPSPARSE_EXPORT
@@ -803,6 +811,244 @@ hipsparseStatus_t hipsparseZbsrmv(hipsparseHandle_t         handle,
                                   const hipDoubleComplex*   x,
                                   const hipDoubleComplex*   beta,
                                   hipDoubleComplex*         y);
+
+/* Description: Solution of triangular linear system op(A) * x = alpha * f,
+   where A is a sparse matrix in BSR storage format, x and f are dense vectors. */
+HIPSPARSE_EXPORT
+hipsparseStatus_t
+    hipsparseXbsrsv2_zeroPivot(hipsparseHandle_t handle, bsrsv2Info_t info, int* position);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSbsrsv2_bufferSize(hipsparseHandle_t         handle,
+                                              hipsparseDirection_t      dirA,
+                                              hipsparseOperation_t      transA,
+                                              int                       mb,
+                                              int                       nnzb,
+                                              const hipsparseMatDescr_t descrA,
+                                              float*                    bsrSortedValA,
+                                              const int*                bsrSortedRowPtrA,
+                                              const int*                bsrSortedColIndA,
+                                              int                       blockDim,
+                                              bsrsv2Info_t              info,
+                                              int*                      pBufferSizeInBytes);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDbsrsv2_bufferSize(hipsparseHandle_t         handle,
+                                              hipsparseDirection_t      dirA,
+                                              hipsparseOperation_t      transA,
+                                              int                       mb,
+                                              int                       nnzb,
+                                              const hipsparseMatDescr_t descrA,
+                                              double*                   bsrSortedValA,
+                                              const int*                bsrSortedRowPtrA,
+                                              const int*                bsrSortedColIndA,
+                                              int                       blockDim,
+                                              bsrsv2Info_t              info,
+                                              int*                      pBufferSizeInBytes);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCbsrsv2_bufferSize(hipsparseHandle_t         handle,
+                                              hipsparseDirection_t      dirA,
+                                              hipsparseOperation_t      transA,
+                                              int                       mb,
+                                              int                       nnzb,
+                                              const hipsparseMatDescr_t descrA,
+                                              hipComplex*               bsrSortedValA,
+                                              const int*                bsrSortedRowPtrA,
+                                              const int*                bsrSortedColIndA,
+                                              int                       blockDim,
+                                              bsrsv2Info_t              info,
+                                              int*                      pBufferSizeInBytes);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseZbsrsv2_bufferSize(hipsparseHandle_t         handle,
+                                              hipsparseDirection_t      dirA,
+                                              hipsparseOperation_t      transA,
+                                              int                       mb,
+                                              int                       nnzb,
+                                              const hipsparseMatDescr_t descrA,
+                                              hipDoubleComplex*         bsrSortedValA,
+                                              const int*                bsrSortedRowPtrA,
+                                              const int*                bsrSortedColIndA,
+                                              int                       blockDim,
+                                              bsrsv2Info_t              info,
+                                              int*                      pBufferSizeInBytes);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSbsrsv2_bufferSizeExt(hipsparseHandle_t         handle,
+                                                 hipsparseDirection_t      dirA,
+                                                 hipsparseOperation_t      transA,
+                                                 int                       mb,
+                                                 int                       nnzb,
+                                                 const hipsparseMatDescr_t descrA,
+                                                 float*                    bsrSortedValA,
+                                                 const int*                bsrSortedRowPtrA,
+                                                 const int*                bsrSortedColIndA,
+                                                 int                       blockDim,
+                                                 bsrsv2Info_t              info,
+                                                 size_t*                   pBufferSize);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDbsrsv2_bufferSizeExt(hipsparseHandle_t         handle,
+                                                 hipsparseDirection_t      dirA,
+                                                 hipsparseOperation_t      transA,
+                                                 int                       mb,
+                                                 int                       nnzb,
+                                                 const hipsparseMatDescr_t descrA,
+                                                 double*                   bsrSortedValA,
+                                                 const int*                bsrSortedRowPtrA,
+                                                 const int*                bsrSortedColIndA,
+                                                 int                       blockDim,
+                                                 bsrsv2Info_t              info,
+                                                 size_t*                   pBufferSize);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCbsrsv2_bufferSizeExt(hipsparseHandle_t         handle,
+                                                 hipsparseDirection_t      dirA,
+                                                 hipsparseOperation_t      transA,
+                                                 int                       mb,
+                                                 int                       nnzb,
+                                                 const hipsparseMatDescr_t descrA,
+                                                 hipComplex*               bsrSortedValA,
+                                                 const int*                bsrSortedRowPtrA,
+                                                 const int*                bsrSortedColIndA,
+                                                 int                       blockDim,
+                                                 bsrsv2Info_t              info,
+                                                 size_t*                   pBufferSize);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseZbsrsv2_bufferSizeExt(hipsparseHandle_t         handle,
+                                                 hipsparseDirection_t      dirA,
+                                                 hipsparseOperation_t      transA,
+                                                 int                       mb,
+                                                 int                       nnzb,
+                                                 const hipsparseMatDescr_t descrA,
+                                                 hipDoubleComplex*         bsrSortedValA,
+                                                 const int*                bsrSortedRowPtrA,
+                                                 const int*                bsrSortedColIndA,
+                                                 int                       blockDim,
+                                                 bsrsv2Info_t              info,
+                                                 size_t*                   pBufferSize);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSbsrsv2_analysis(hipsparseHandle_t         handle,
+                                            hipsparseDirection_t      dirA,
+                                            hipsparseOperation_t      transA,
+                                            int                       mb,
+                                            int                       nnzb,
+                                            const hipsparseMatDescr_t descrA,
+                                            const float*              bsrSortedValA,
+                                            const int*                bsrSortedRowPtrA,
+                                            const int*                bsrSortedColIndA,
+                                            int                       blockDim,
+                                            bsrsv2Info_t              info,
+                                            hipsparseSolvePolicy_t    policy,
+                                            void*                     pBuffer);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDbsrsv2_analysis(hipsparseHandle_t         handle,
+                                            hipsparseDirection_t      dirA,
+                                            hipsparseOperation_t      transA,
+                                            int                       mb,
+                                            int                       nnzb,
+                                            const hipsparseMatDescr_t descrA,
+                                            const double*             bsrSortedValA,
+                                            const int*                bsrSortedRowPtrA,
+                                            const int*                bsrSortedColIndA,
+                                            int                       blockDim,
+                                            bsrsv2Info_t              info,
+                                            hipsparseSolvePolicy_t    policy,
+                                            void*                     pBuffer);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCbsrsv2_analysis(hipsparseHandle_t         handle,
+                                            hipsparseDirection_t      dirA,
+                                            hipsparseOperation_t      transA,
+                                            int                       mb,
+                                            int                       nnzb,
+                                            const hipsparseMatDescr_t descrA,
+                                            const hipComplex*         bsrSortedValA,
+                                            const int*                bsrSortedRowPtrA,
+                                            const int*                bsrSortedColIndA,
+                                            int                       blockDim,
+                                            bsrsv2Info_t              info,
+                                            hipsparseSolvePolicy_t    policy,
+                                            void*                     pBuffer);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseZbsrsv2_analysis(hipsparseHandle_t         handle,
+                                            hipsparseDirection_t      dirA,
+                                            hipsparseOperation_t      transA,
+                                            int                       mb,
+                                            int                       nnzb,
+                                            const hipsparseMatDescr_t descrA,
+                                            const hipDoubleComplex*   bsrSortedValA,
+                                            const int*                bsrSortedRowPtrA,
+                                            const int*                bsrSortedColIndA,
+                                            int                       blockDim,
+                                            bsrsv2Info_t              info,
+                                            hipsparseSolvePolicy_t    policy,
+                                            void*                     pBuffer);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSbsrsv2_solve(hipsparseHandle_t         handle,
+                                         hipsparseDirection_t      dirA,
+                                         hipsparseOperation_t      transA,
+                                         int                       mb,
+                                         int                       nnzb,
+                                         const float*              alpha,
+                                         const hipsparseMatDescr_t descrA,
+                                         const float*              bsrSortedValA,
+                                         const int*                bsrSortedRowPtrA,
+                                         const int*                bsrSortedColIndA,
+                                         int                       blockDim,
+                                         bsrsv2Info_t              info,
+                                         const float*              f,
+                                         float*                    x,
+                                         hipsparseSolvePolicy_t    policy,
+                                         void*                     pBuffer);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDbsrsv2_solve(hipsparseHandle_t         handle,
+                                         hipsparseDirection_t      dirA,
+                                         hipsparseOperation_t      transA,
+                                         int                       mb,
+                                         int                       nnzb,
+                                         const double*             alpha,
+                                         const hipsparseMatDescr_t descrA,
+                                         const double*             bsrSortedValA,
+                                         const int*                bsrSortedRowPtrA,
+                                         const int*                bsrSortedColIndA,
+                                         int                       blockDim,
+                                         bsrsv2Info_t              info,
+                                         const double*             f,
+                                         double*                   x,
+                                         hipsparseSolvePolicy_t    policy,
+                                         void*                     pBuffer);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCbsrsv2_solve(hipsparseHandle_t         handle,
+                                         hipsparseDirection_t      dirA,
+                                         hipsparseOperation_t      transA,
+                                         int                       mb,
+                                         int                       nnzb,
+                                         const hipComplex*         alpha,
+                                         const hipsparseMatDescr_t descrA,
+                                         const hipComplex*         bsrSortedValA,
+                                         const int*                bsrSortedRowPtrA,
+                                         const int*                bsrSortedColIndA,
+                                         int                       blockDim,
+                                         bsrsv2Info_t              info,
+                                         const hipComplex*         f,
+                                         hipComplex*               x,
+                                         hipsparseSolvePolicy_t    policy,
+                                         void*                     pBuffer);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseZbsrsv2_solve(hipsparseHandle_t         handle,
+                                         hipsparseDirection_t      dirA,
+                                         hipsparseOperation_t      transA,
+                                         int                       mb,
+                                         int                       nnzb,
+                                         const hipDoubleComplex*   alpha,
+                                         const hipsparseMatDescr_t descrA,
+                                         const hipDoubleComplex*   bsrSortedValA,
+                                         const int*                bsrSortedRowPtrA,
+                                         const int*                bsrSortedColIndA,
+                                         int                       blockDim,
+                                         bsrsv2Info_t              info,
+                                         const hipDoubleComplex*   f,
+                                         hipDoubleComplex*         x,
+                                         hipsparseSolvePolicy_t    policy,
+                                         void*                     pBuffer);
 
 /* --- Sparse Level 3 routines --- */
 /* Description: Matrix-matrix multiplication C = alpha * op(A) * B + beta * C,

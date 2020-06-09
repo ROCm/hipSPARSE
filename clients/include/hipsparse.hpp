@@ -187,6 +187,67 @@ namespace hipsparse
                                       T*                        y);
 
     template <typename T>
+    hipsparseStatus_t hipsparseXbsrsv2_bufferSize(hipsparseHandle_t         handle,
+                                                  hipsparseDirection_t      dir,
+                                                  hipsparseOperation_t      transA,
+                                                  int                       mb,
+                                                  int                       nnzb,
+                                                  const hipsparseMatDescr_t descrA,
+                                                  T*                        bsrSortedValA,
+                                                  const int*                bsrSortedRowPtrA,
+                                                  const int*                bsrSortedColIndA,
+                                                  int                       blockDim,
+                                                  bsrsv2Info_t              info,
+                                                  int*                      pBufferSizeInBytes);
+
+    template <typename T>
+    hipsparseStatus_t hipsparseXbsrsv2_bufferSizeExt(hipsparseHandle_t         handle,
+                                                     hipsparseDirection_t      dir,
+                                                     hipsparseOperation_t      transA,
+                                                     int                       mb,
+                                                     int                       nnzb,
+                                                     const hipsparseMatDescr_t descrA,
+                                                     T*                        bsrSortedValA,
+                                                     const int*                bsrSortedRowPtrA,
+                                                     const int*                bsrSortedColIndA,
+                                                     int                       blockDim,
+                                                     bsrsv2Info_t              info,
+                                                     size_t*                   pBufferSize);
+
+    template <typename T>
+    hipsparseStatus_t hipsparseXbsrsv2_analysis(hipsparseHandle_t         handle,
+                                                hipsparseDirection_t      dir,
+                                                hipsparseOperation_t      transA,
+                                                int                       mb,
+                                                int                       nnzb,
+                                                const hipsparseMatDescr_t descrA,
+                                                const T*                  bsrSortedValA,
+                                                const int*                bsrSortedRowPtrA,
+                                                const int*                bsrSortedColIndA,
+                                                int                       blockDim,
+                                                bsrsv2Info_t              info,
+                                                hipsparseSolvePolicy_t    policy,
+                                                void*                     pBuffer);
+
+    template <typename T>
+    hipsparseStatus_t hipsparseXbsrsv2_solve(hipsparseHandle_t         handle,
+                                             hipsparseDirection_t      dir,
+                                             hipsparseOperation_t      transA,
+                                             int                       mb,
+                                             int                       nnzb,
+                                             const T*                  alpha,
+                                             const hipsparseMatDescr_t descrA,
+                                             const T*                  bsrSortedValA,
+                                             const int*                bsrSortedRowPtrA,
+                                             const int*                bsrSortedColIndA,
+                                             int                       blockDim,
+                                             bsrsv2Info_t              info,
+                                             const T*                  f,
+                                             T*                        x,
+                                             hipsparseSolvePolicy_t    policy,
+                                             void*                     pBuffer);
+
+    template <typename T>
     hipsparseStatus_t hipsparseXbsrmm(hipsparseHandle_t         handle,
                                       hipsparseDirection_t      dirA,
                                       hipsparseOperation_t      transA,

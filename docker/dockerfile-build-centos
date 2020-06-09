@@ -5,11 +5,10 @@ FROM ${base_image}
 LABEL maintainer="rocsparse-maintainer@amd.com"
 
 ARG user_uid
-
 ARG library_dependencies="rocsparse rocprim"
 
 # Install dependent packages
-RUN yum install -y \
+RUN yum install -y --nogpgcheck\
     sudo \
     rock-dkms \
     centos-release-scl \
@@ -20,9 +19,11 @@ RUN yum install -y \
     make \
     clang \
     clang-devel \
+    devtoolset-7-gcc-gfortran \
+    gcc-gfortran \
     gcc-c++ \
-    gtest \
     gtest-devel \
+    gtest \
     pkgconfig \
     libcxx-devel \
     numactl-libs \
@@ -31,7 +32,6 @@ RUN yum install -y \
     wget \
     unzip \
     ${library_dependencies}
-
 
 RUN echo '#!/bin/bash' | tee /etc/profile.d/devtoolset7.sh && echo \
     'source scl_source enable devtoolset-7' >>/etc/profile.d/devtoolset7.sh

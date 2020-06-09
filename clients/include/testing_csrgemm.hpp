@@ -1053,17 +1053,17 @@ hipsparseStatus_t testing_csrgemm(Arguments argus)
     std::vector<T>   hcsr_val_B(nnz_B);
 
     // B = A^T
-    transpose(M,
-              K,
-              nnz_A,
-              hcsr_row_ptr_A.data(),
-              hcsr_col_ind_A.data(),
-              hcsr_val_A.data(),
-              hcsr_row_ptr_B.data(),
-              hcsr_col_ind_B.data(),
-              hcsr_val_B.data(),
-              idx_base_A,
-              idx_base_B);
+    transpose_csr(M,
+                  K,
+                  nnz_A,
+                  hcsr_row_ptr_A.data(),
+                  hcsr_col_ind_A.data(),
+                  hcsr_val_A.data(),
+                  hcsr_row_ptr_B.data(),
+                  hcsr_col_ind_B.data(),
+                  hcsr_val_B.data(),
+                  idx_base_A,
+                  idx_base_B);
 
     // Allocate memory on device
     auto dAptr_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * (M + 1)), device_free};
