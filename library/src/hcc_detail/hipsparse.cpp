@@ -1844,7 +1844,7 @@ hipsparseStatus_t hipsparseSbsrmm(hipsparseHandle_t         handle,
                                   int                       ldc)
 {
     return rocSPARSEStatusToHIPStatus(rocsparse_sbsrmm((rocsparse_handle)handle,
-                                                       (rocsparse_direction)dirA,
+                                                       hipDirectionToHCCDirection(dirA),
                                                        hipOperationToHCCOperation(transA),
                                                        hipOperationToHCCOperation(transB),
                                                        mb,
@@ -1885,7 +1885,7 @@ hipsparseStatus_t hipsparseDbsrmm(hipsparseHandle_t         handle,
                                   int                       ldc)
 {
     return rocSPARSEStatusToHIPStatus(rocsparse_dbsrmm((rocsparse_handle)handle,
-                                                       (rocsparse_direction)dirA,
+                                                       hipDirectionToHCCDirection(dirA),
                                                        hipOperationToHCCOperation(transA),
                                                        hipOperationToHCCOperation(transB),
                                                        mb,
@@ -1927,7 +1927,7 @@ hipsparseStatus_t hipsparseCbsrmm(hipsparseHandle_t         handle,
 {
     return rocSPARSEStatusToHIPStatus(
         rocsparse_cbsrmm((rocsparse_handle)handle,
-                        (rocsparse_direction)dirA,
+                        hipDirectionToHCCDirection(dirA),
                         hipOperationToHCCOperation(transA),
                         hipOperationToHCCOperation(transB),
                         mb,
