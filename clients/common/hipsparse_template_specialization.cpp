@@ -3570,6 +3570,368 @@ namespace hipsparse
                                   pBuffer);
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    template <>
+    hipsparseStatus_t hipsparseXbsric02_bufferSize(hipsparseHandle_t         handle,
+                                                   hipsparseDirection_t      dirA,
+                                                   int                       mb,
+                                                   int                       nnzb,
+                                                   const hipsparseMatDescr_t descrA,
+                                                   float*                    bsrValA,
+                                                   const int*                bsrRowPtrA,
+                                                   const int*                bsrColIndA,
+                                                   int                       blockDim,
+                                                   bsric02Info_t             info,
+                                                   int*                      pBufferSizeInBytes)
+    {
+        return hipsparseSbsric02_bufferSize(handle,
+                                            dirA,
+                                            mb,
+                                            nnzb,
+                                            descrA,
+                                            bsrValA,
+                                            bsrRowPtrA,
+                                            bsrColIndA,
+                                            blockDim,
+                                            info,
+                                            pBufferSizeInBytes);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXbsric02_bufferSize(hipsparseHandle_t         handle,
+                                                   hipsparseDirection_t      dirA,
+                                                   int                       mb,
+                                                   int                       nnzb,
+                                                   const hipsparseMatDescr_t descrA,
+                                                   double*                   bsrValA,
+                                                   const int*                bsrRowPtrA,
+                                                   const int*                bsrColIndA,
+                                                   int                       blockDim,
+                                                   bsric02Info_t             info,
+                                                   int*                      pBufferSizeInBytes)
+    {
+        return hipsparseDbsric02_bufferSize(handle,
+                                            dirA,
+                                            mb,
+                                            nnzb,
+                                            descrA,
+                                            bsrValA,
+                                            bsrRowPtrA,
+                                            bsrColIndA,
+                                            blockDim,
+                                            info,
+                                            pBufferSizeInBytes);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXbsric02_bufferSize(hipsparseHandle_t         handle,
+                                                   hipsparseDirection_t      dirA,
+                                                   int                       mb,
+                                                   int                       nnzb,
+                                                   const hipsparseMatDescr_t descrA,
+                                                   hipComplex*               bsrValA,
+                                                   const int*                bsrRowPtrA,
+                                                   const int*                bsrColIndA,
+                                                   int                       blockDim,
+                                                   bsric02Info_t             info,
+                                                   int*                      pBufferSizeInBytes)
+    {
+        return hipsparseCbsric02_bufferSize(handle,
+                                            dirA,
+                                            mb,
+                                            nnzb,
+                                            descrA,
+                                            bsrValA,
+                                            bsrRowPtrA,
+                                            bsrColIndA,
+                                            blockDim,
+                                            info,
+                                            pBufferSizeInBytes);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXbsric02_bufferSize(hipsparseHandle_t         handle,
+                                                   hipsparseDirection_t      dirA,
+                                                   int                       mb,
+                                                   int                       nnzb,
+                                                   const hipsparseMatDescr_t descrA,
+                                                   hipDoubleComplex*         bsrValA,
+                                                   const int*                bsrRowPtrA,
+                                                   const int*                bsrColIndA,
+                                                   int                       blockDim,
+                                                   bsric02Info_t             info,
+                                                   int*                      pBufferSizeInBytes)
+    {
+        return hipsparseZbsric02_bufferSize(handle,
+                                            dirA,
+                                            mb,
+                                            nnzb,
+                                            descrA,
+                                            bsrValA,
+                                            bsrRowPtrA,
+                                            bsrColIndA,
+                                            blockDim,
+                                            info,
+                                            pBufferSizeInBytes);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXbsric02_analysis(hipsparseHandle_t         handle,
+                                                 hipsparseDirection_t      dirA,
+                                                 int                       mb,
+                                                 int                       nnzb,
+                                                 const hipsparseMatDescr_t descrA,
+                                                 const float*              bsrValA,
+                                                 const int*                bsrRowPtrA,
+                                                 const int*                bsrColIndA,
+                                                 int                       block_dim,
+                                                 bsric02Info_t             info,
+                                                 hipsparseSolvePolicy_t    policy,
+                                                 void*                     pBuffer)
+    {
+        return hipsparseSbsric02_analysis(handle,
+                                          dirA,
+                                          mb,
+                                          nnzb,
+                                          descrA,
+                                          bsrValA,
+                                          bsrRowPtrA,
+                                          bsrColIndA,
+                                          block_dim,
+                                          info,
+                                          policy,
+                                          pBuffer);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXbsric02_analysis(hipsparseHandle_t         handle,
+                                                 hipsparseDirection_t      dirA,
+                                                 int                       mb,
+                                                 int                       nnzb,
+                                                 const hipsparseMatDescr_t descrA,
+                                                 const double*             bsrValA,
+                                                 const int*                bsrRowPtrA,
+                                                 const int*                bsrColIndA,
+                                                 int                       block_dim,
+                                                 bsric02Info_t             info,
+                                                 hipsparseSolvePolicy_t    policy,
+                                                 void*                     pBuffer)
+    {
+        return hipsparseDbsric02_analysis(handle,
+                                          dirA,
+                                          mb,
+                                          nnzb,
+                                          descrA,
+                                          bsrValA,
+                                          bsrRowPtrA,
+                                          bsrColIndA,
+                                          block_dim,
+                                          info,
+                                          policy,
+                                          pBuffer);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXbsric02_analysis(hipsparseHandle_t         handle,
+                                                 hipsparseDirection_t      dirA,
+                                                 int                       mb,
+                                                 int                       nnzb,
+                                                 const hipsparseMatDescr_t descrA,
+                                                 const hipComplex*         bsrValA,
+                                                 const int*                bsrRowPtrA,
+                                                 const int*                bsrColIndA,
+                                                 int                       block_dim,
+                                                 bsric02Info_t             info,
+                                                 hipsparseSolvePolicy_t    policy,
+                                                 void*                     pBuffer)
+    {
+        return hipsparseCbsric02_analysis(handle,
+                                          dirA,
+                                          mb,
+                                          nnzb,
+                                          descrA,
+                                          bsrValA,
+                                          bsrRowPtrA,
+                                          bsrColIndA,
+                                          block_dim,
+                                          info,
+                                          policy,
+                                          pBuffer);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXbsric02_analysis(hipsparseHandle_t         handle,
+                                                 hipsparseDirection_t      dirA,
+                                                 int                       mb,
+                                                 int                       nnzb,
+                                                 const hipsparseMatDescr_t descrA,
+                                                 const hipDoubleComplex*   bsrValA,
+                                                 const int*                bsrRowPtrA,
+                                                 const int*                bsrColIndA,
+                                                 int                       block_dim,
+                                                 bsric02Info_t             info,
+                                                 hipsparseSolvePolicy_t    policy,
+                                                 void*                     pBuffer)
+    {
+        return hipsparseZbsric02_analysis(handle,
+                                          dirA,
+                                          mb,
+                                          nnzb,
+                                          descrA,
+                                          bsrValA,
+                                          bsrRowPtrA,
+                                          bsrColIndA,
+                                          block_dim,
+                                          info,
+                                          policy,
+                                          pBuffer);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXbsric02(hipsparseHandle_t         handle,
+                                        hipsparseDirection_t      dirA,
+                                        int                       mb,
+                                        int                       nnzb,
+                                        const hipsparseMatDescr_t descrA,
+                                        float*                    bsrValA,
+                                        const int*                bsrRowPtrA,
+                                        const int*                bsrColIndA,
+                                        int                       block_dim,
+                                        bsric02Info_t             info,
+                                        hipsparseSolvePolicy_t    policy,
+                                        void*                     pBuffer)
+    {
+        return hipsparseSbsric02(handle,
+                                 dirA,
+                                 mb,
+                                 nnzb,
+                                 descrA,
+                                 bsrValA,
+                                 bsrRowPtrA,
+                                 bsrColIndA,
+                                 block_dim,
+                                 info,
+                                 policy,
+                                 pBuffer);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXbsric02(hipsparseHandle_t         handle,
+                                        hipsparseDirection_t      dirA,
+                                        int                       mb,
+                                        int                       nnzb,
+                                        const hipsparseMatDescr_t descrA,
+                                        double*                   bsrValA,
+                                        const int*                bsrRowPtrA,
+                                        const int*                bsrColIndA,
+                                        int                       block_dim,
+                                        bsric02Info_t             info,
+                                        hipsparseSolvePolicy_t    policy,
+                                        void*                     pBuffer)
+    {
+        return hipsparseDbsric02(handle,
+                                 dirA,
+                                 mb,
+                                 nnzb,
+                                 descrA,
+                                 bsrValA,
+                                 bsrRowPtrA,
+                                 bsrColIndA,
+                                 block_dim,
+                                 info,
+                                 policy,
+                                 pBuffer);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXbsric02(hipsparseHandle_t         handle,
+                                        hipsparseDirection_t      dirA,
+                                        int                       mb,
+                                        int                       nnzb,
+                                        const hipsparseMatDescr_t descrA,
+                                        hipComplex*               bsrValA,
+                                        const int*                bsrRowPtrA,
+                                        const int*                bsrColIndA,
+                                        int                       block_dim,
+                                        bsric02Info_t             info,
+                                        hipsparseSolvePolicy_t    policy,
+                                        void*                     pBuffer)
+    {
+        return hipsparseCbsric02(handle,
+                                 dirA,
+                                 mb,
+                                 nnzb,
+                                 descrA,
+                                 bsrValA,
+                                 bsrRowPtrA,
+                                 bsrColIndA,
+                                 block_dim,
+                                 info,
+                                 policy,
+                                 pBuffer);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXbsric02(hipsparseHandle_t         handle,
+                                        hipsparseDirection_t      dirA,
+                                        int                       mb,
+                                        int                       nnzb,
+                                        const hipsparseMatDescr_t descrA,
+                                        hipDoubleComplex*         bsrValA,
+                                        const int*                bsrRowPtrA,
+                                        const int*                bsrColIndA,
+                                        int                       block_dim,
+                                        bsric02Info_t             info,
+                                        hipsparseSolvePolicy_t    policy,
+                                        void*                     pBuffer)
+    {
+        return hipsparseZbsric02(handle,
+                                 dirA,
+                                 mb,
+                                 nnzb,
+                                 descrA,
+                                 bsrValA,
+                                 bsrRowPtrA,
+                                 bsrColIndA,
+                                 block_dim,
+                                 info,
+                                 policy,
+                                 pBuffer);
+    }
+
     template <>
     hipsparseStatus_t hipsparseXcsric02_bufferSize(hipsparseHandle_t         handle,
                                                    int                       m,

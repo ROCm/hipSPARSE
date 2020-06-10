@@ -510,6 +510,47 @@ namespace hipsparse
                                          void*                  pBuffer);
 
     template <typename T>
+    hipsparseStatus_t hipsparseXbsric02_bufferSize(hipsparseHandle_t         handle,
+                                                   hipsparseDirection_t      dirA,
+                                                   int                       mb,
+                                                   int                       nnzb,
+                                                   const hipsparseMatDescr_t descrA,
+                                                   T*                        bsrValA,
+                                                   const int*                bsrRowPtrA,
+                                                   const int*                bsrColIndA,
+                                                   int                       block_dim,
+                                                   bsric02Info_t             info,
+                                                   int*                      pBufferSizeInBytes);
+
+    template <typename T>
+    hipsparseStatus_t hipsparseXbsric02_analysis(hipsparseHandle_t         handle,
+                                                 hipsparseDirection_t      dirA,
+                                                 int                       mb,
+                                                 int                       nnzb,
+                                                 const hipsparseMatDescr_t descrA,
+                                                 const T*                  bsrValA,
+                                                 const int*                bsrRowPtrA,
+                                                 const int*                bsrColIndA,
+                                                 int                       block_dim,
+                                                 bsric02Info_t             info,
+                                                 hipsparseSolvePolicy_t    policy,
+                                                 void*                     pBuffer);
+
+    template <typename T>
+    hipsparseStatus_t hipsparseXbsric02(hipsparseHandle_t         handle,
+                                        hipsparseDirection_t      dirA,
+                                        int                       mb,
+                                        int                       nnzb,
+                                        const hipsparseMatDescr_t descrA,
+                                        T*                        bsrValA,
+                                        const int*                bsrRowPtrA,
+                                        const int*                bsrColIndA,
+                                        int                       block_dim,
+                                        bsric02Info_t             info,
+                                        hipsparseSolvePolicy_t    policy,
+                                        void*                     pBuffer);
+
+    template <typename T>
     hipsparseStatus_t hipsparseXcsric02_bufferSize(hipsparseHandle_t         handle,
                                                    int                       m,
                                                    int                       nnz,
