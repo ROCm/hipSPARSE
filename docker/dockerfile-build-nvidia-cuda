@@ -11,7 +11,6 @@ ARG REPO_RADEON=repo.radeon.com
 # Dependencies:
 # * hcc-config.cmake: pkg-config
 # * hipsparse-test: googletest
-# * hipsparse-bench: libboost-program-options-dev
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends curl && \
     curl -sL http://${REPO_RADEON}/rocm/apt/debian/rocm.gpg.key | apt-key add - && \
     echo deb [arch=amd64] http://${REPO_RADEON}/rocm/apt/debian/ xenial main | tee /etc/apt/sources.list.d/rocm.list && \
@@ -24,7 +23,6 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-ins
     cmake \
     pkg-config \
     libnuma1 \
-    libboost-program-options-dev \
     && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
