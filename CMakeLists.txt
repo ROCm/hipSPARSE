@@ -57,6 +57,11 @@ project(hipsparse LANGUAGES CXX Fortran)
 # Force library install path to lib (CentOS 7 defaults to lib64)
 set(CMAKE_INSTALL_LIBDIR "lib" CACHE INTERNAL "Installation directory for libraries" FORCE)
 
+# Build flags
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
 # Build options
 option(BUILD_SHARED_LIBS "Build hipSPARSE as a shared library" ON)
 option(BUILD_CLIENTS_TESTS "Build tests (requires googletest)" OFF)
