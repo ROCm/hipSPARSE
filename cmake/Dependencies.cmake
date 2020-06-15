@@ -38,9 +38,9 @@ else()
 endif()
 
 # ROCm cmake package
-set(PROJECT_EXTERN_DIR ${CMAKE_CURRENT_BINARY_DIR}/extern)
 find_package(ROCM QUIET CONFIG PATHS ${CMAKE_PREFIX_PATH})
 if(NOT ROCM_FOUND)
+  set(PROJECT_EXTERN_DIR ${CMAKE_CURRENT_BINARY_DIR}/extern)
   set(rocm_cmake_tag "master" CACHE STRING "rocm-cmake tag to download")
   file(DOWNLOAD https://github.com/RadeonOpenCompute/rocm-cmake/archive/${rocm_cmake_tag}.zip
        ${PROJECT_EXTERN_DIR}/rocm-cmake-${rocm_cmake_tag}.zip STATUS status LOG log)

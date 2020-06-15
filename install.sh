@@ -134,12 +134,11 @@ install_packages( )
   local library_dependencies_fedora=( "make" "cmake" "gcc-c++" "libcxx-devel" "rpm-build" "numactl-libs" )
   local library_dependencies_sles=( "make" "cmake" "gcc-c++" "libcxxtools9" "rpm-build" "pkg-config" "dpkg" )
 
-  local client_dependencies_ubuntu=( "libboost-program-options-dev" )
-  local client_dependencies_centos_6=( "gcc-gfortran" "boost-devel" )
-  local client_dependencies_centos_7=( "devtoolset-7-gcc-gfortran" "boost-devel" )
-  local client_dependencies_centos_8=( "gcc-gfortran" "boost-devel" )
-  local client_dependencies_fedora=( "gcc-gfortran" "boost-devel" )
-  local client_dependencies_sles=( "gcc-fortran" "libboost_program_options1_66_0-devel" )
+  local client_dependencies_centos_6=( "gcc-gfortran" )
+  local client_dependencies_centos_7=( "devtoolset-7-gcc-gfortran" )
+  local client_dependencies_centos_8=( "gcc-gfortran" )
+  local client_dependencies_fedora=( "gcc-gfortran" )
+  local client_dependencies_sles=( "gcc-fortran" )
 
   if [[ ( "${ID}" == "centos" ) || ( "${ID}" == "rhel" ) ]]; then
     if [[ "${VERSION_ID}" == "6" ]]; then
@@ -154,10 +153,6 @@ install_packages( )
     ubuntu)
       elevate_if_not_root apt update
       install_apt_packages "${library_dependencies_ubuntu[@]}"
-
-      if [[ "${build_clients}" == true ]]; then
-        install_apt_packages "${client_dependencies_ubuntu[@]}"
-      fi
       ;;
 
     centos|rhel)
