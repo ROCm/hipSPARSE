@@ -6927,6 +6927,7 @@ hipsparseStatus_t hipsparseZcsc2dense(hipsparseHandle_t         handle,
                                                    cscRowInd,
                                                    (rocsparse_double_complex*)A,
                                                    ld));
+    return HIPSPARSE_STATUS_SUCCESS;
 }
 
 hipsparseStatus_t hipsparseXcsr2bsrNnz(hipsparseHandle_t         handle,
