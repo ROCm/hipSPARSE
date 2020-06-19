@@ -64,6 +64,8 @@ find_package(OpenMP QUIET)
 
 if(OPENMP_FOUND)
   if(NOT TARGET OpenMP::OpenMP_CXX)
+    find_package(Threads REQUIRED)
+
     # OpenMP cmake fix for cmake <= 3.9
     add_library(OpenMP::OpenMP_CXX IMPORTED INTERFACE)
     set_property(TARGET OpenMP::OpenMP_CXX PROPERTY INTERFACE_COMPILE_OPTIONS ${OpenMP_CXX_FLAGS})
