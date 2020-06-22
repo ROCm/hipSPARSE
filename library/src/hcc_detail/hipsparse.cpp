@@ -6284,10 +6284,6 @@ hipsparseStatus_t hipsparseCcsr2csr_compress(hipsparseHandle_t         handle,
                                              int*                      csrRowPtrC,
                                              hipComplex                tol)
 {
-    rocsparse_float_complex rtol;
-    rtol.x = tol.x;
-    rtol.y = tol.y;
-
     return rocSPARSEStatusToHIPStatus(
         rocsparse_ccsr2csr_compress((rocsparse_handle)handle,
                                     m,
@@ -6301,7 +6297,7 @@ hipsparseStatus_t hipsparseCcsr2csr_compress(hipsparseHandle_t         handle,
                                     (rocsparse_float_complex*)csrValC,
                                     csrRowPtrC,
                                     csrColIndC,
-                                    rtol));
+                                    {hipCrealf(tol), hipCimagf(tol)}));
 }
 
 hipsparseStatus_t hipsparseZcsr2csr_compress(hipsparseHandle_t         handle,
@@ -6318,10 +6314,6 @@ hipsparseStatus_t hipsparseZcsr2csr_compress(hipsparseHandle_t         handle,
                                              int*                      csrRowPtrC,
                                              hipDoubleComplex          tol)
 {
-    rocsparse_double_complex rtol;
-    rtol.x = tol.x;
-    rtol.y = tol.y;
-
     return rocSPARSEStatusToHIPStatus(
         rocsparse_zcsr2csr_compress((rocsparse_handle)handle,
                                     m,
@@ -6335,7 +6327,7 @@ hipsparseStatus_t hipsparseZcsr2csr_compress(hipsparseHandle_t         handle,
                                     (rocsparse_double_complex*)csrValC,
                                     csrRowPtrC,
                                     csrColIndC,
-                                    rtol));
+                                    {hipCreal(tol), hipCimag(tol)}));
 }
 
 hipsparseStatus_t hipsparseShyb2csr(hipsparseHandle_t         handle,
@@ -7006,10 +6998,6 @@ hipsparseStatus_t hipsparseCnnz_compress(hipsparseHandle_t         handle,
                                          int*                      nnzC,
                                          hipComplex                tol)
 {
-    rocsparse_float_complex rtol;
-    rtol.x = tol.x;
-    rtol.y = tol.y;
-
     RETURN_IF_ROCSPARSE_ERROR(rocsparse_cnnz_compress((rocsparse_handle)handle,
                                                       m,
                                                       (const rocsparse_mat_descr)descrA,
@@ -7017,7 +7005,7 @@ hipsparseStatus_t hipsparseCnnz_compress(hipsparseHandle_t         handle,
                                                       csrRowPtrA,
                                                       nnzPerRow,
                                                       nnzC,
-                                                      rtol));
+                                                      {hipCrealf(tol), hipCimagf(tol)}));
     return HIPSPARSE_STATUS_SUCCESS;
 }
 
@@ -7030,10 +7018,6 @@ hipsparseStatus_t hipsparseZnnz_compress(hipsparseHandle_t         handle,
                                          int*                      nnzC,
                                          hipDoubleComplex          tol)
 {
-    rocsparse_double_complex rtol;
-    rtol.x = tol.x;
-    rtol.y = tol.y;
-
     RETURN_IF_ROCSPARSE_ERROR(rocsparse_znnz_compress((rocsparse_handle)handle,
                                                       m,
                                                       (const rocsparse_mat_descr)descrA,
@@ -7041,7 +7025,7 @@ hipsparseStatus_t hipsparseZnnz_compress(hipsparseHandle_t         handle,
                                                       csrRowPtrA,
                                                       nnzPerRow,
                                                       nnzC,
-                                                      rtol));
+                                                      {hipCreal(tol), hipCimag(tol)}));
     return HIPSPARSE_STATUS_SUCCESS;
 }
 
