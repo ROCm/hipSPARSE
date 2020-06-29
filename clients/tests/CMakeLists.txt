@@ -197,7 +197,7 @@ target_include_directories(hipsparse-test PRIVATE $<BUILD_INTERFACE:${CMAKE_CURR
 target_link_libraries(hipsparse-test PRIVATE GTest::GTest roc::hipsparse)
 
 # Add OpenMP if available
-if(OPENMP_FOUND)
+if(OPENMP_FOUND AND THREADS_FOUND)
   target_link_libraries(hipsparse-test PRIVATE OpenMP::OpenMP_CXX)
 endif()
 
