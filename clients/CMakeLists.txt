@@ -61,8 +61,9 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 # If OpenMP is available, we can use it to speed up some tests
 find_package(OpenMP QUIET)
+find_package(Threads QUIET)
 
-if(OPENMP_FOUND)
+if(OPENMP_FOUND AND THREADS_FOUND)
   if(NOT TARGET OpenMP::OpenMP_CXX)
     # OpenMP cmake fix for cmake <= 3.9
     add_library(OpenMP::OpenMP_CXX IMPORTED INTERFACE)
