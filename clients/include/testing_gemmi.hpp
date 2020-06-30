@@ -318,13 +318,17 @@ hipsparseStatus_t testing_gemmi(Arguments argus)
     }
     int nnz = K * scale * N;
 
+#ifdef __HIP_PLATFORM_NVCC__
+    // Do not test args in cusparse
+    if(M <= 0 || N <= 0 || K <= 0)
+    {
+        return HIPSPARSE_STATUS_SUCCESS;
+    }
+#endif
+
     // Argument sanity check before allocating invalid memory
     if(M <= 0 || N <= 0 || K < 0)
     {
-#ifdef __HIP_PLATFORM_NVCC__
-        // Do not test args in cusparse
-        return HIPSPARSE_STATUS_SUCCESS;
-#endif
         auto dptr_managed
             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
         auto drow_managed
