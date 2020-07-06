@@ -21,7 +21,6 @@ RUN zypper -n --no-gpg-checks install \
     python3-pip \
     dpkg \
     libcxxtools9 \
-    libboost_program_options1_66_0-devel \
     libnuma1 \
     rpm-build \
     wget \
