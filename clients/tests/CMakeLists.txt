@@ -143,6 +143,7 @@ set(HIPSPARSE_TEST_SOURCES
   test_bsrsv2.cpp
   test_csrmv.cpp
   test_csrsv2.cpp
+  test_bsrmm.cpp
   test_csrmm.cpp
   test_csrsm2.cpp
   test_csrgeam.cpp
