@@ -1514,6 +1514,72 @@ hipsparseStatus_t hipsparseZcsrsm2_solve(hipsparseHandle_t         handle,
                                          hipsparseSolvePolicy_t    policy,
                                          void*                     pBuffer);
 
+/* Description: Matrix-matrix multiplication C = alpha * A * B + beta * C,
+   where B is a sparse matrix in CSC storage format, A and C are dense matrices. */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSgemmi(hipsparseHandle_t handle,
+                                  int               m,
+                                  int               n,
+                                  int               k,
+                                  int               nnz,
+                                  const float*      alpha,
+                                  const float*      A,
+                                  int               lda,
+                                  const float*      cscValB,
+                                  const int*        cscColPtrB,
+                                  const int*        cscRowIndB,
+                                  const float*      beta,
+                                  float*            C,
+                                  int               ldc);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDgemmi(hipsparseHandle_t handle,
+                                  int               m,
+                                  int               n,
+                                  int               k,
+                                  int               nnz,
+                                  const double*     alpha,
+                                  const double*     A,
+                                  int               lda,
+                                  const double*     cscValB,
+                                  const int*        cscColPtrB,
+                                  const int*        cscRowIndB,
+                                  const double*     beta,
+                                  double*           C,
+                                  int               ldc);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCgemmi(hipsparseHandle_t handle,
+                                  int               m,
+                                  int               n,
+                                  int               k,
+                                  int               nnz,
+                                  const hipComplex* alpha,
+                                  const hipComplex* A,
+                                  int               lda,
+                                  const hipComplex* cscValB,
+                                  const int*        cscColPtrB,
+                                  const int*        cscRowIndB,
+                                  const hipComplex* beta,
+                                  hipComplex*       C,
+                                  int               ldc);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseZgemmi(hipsparseHandle_t       handle,
+                                  int                     m,
+                                  int                     n,
+                                  int                     k,
+                                  int                     nnz,
+                                  const hipDoubleComplex* alpha,
+                                  const hipDoubleComplex* A,
+                                  int                     lda,
+                                  const hipDoubleComplex* cscValB,
+                                  const int*              cscColPtrB,
+                                  const int*              cscRowIndB,
+                                  const hipDoubleComplex* beta,
+                                  hipDoubleComplex*       C,
+                                  int                     ldc);
+
 /* --- Sparse Extra routines --- */
 
 /* Description: Sparse matrix sparse matrix addition C = alpha * A + beta * B, where A, B

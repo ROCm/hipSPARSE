@@ -2259,6 +2259,86 @@ namespace hipsparse
     }
 
     template <>
+    hipsparseStatus_t hipsparseXgemmi(hipsparseHandle_t handle,
+                                      int               m,
+                                      int               n,
+                                      int               k,
+                                      int               nnz,
+                                      const float*      alpha,
+                                      const float*      A,
+                                      int               lda,
+                                      const float*      cscValB,
+                                      const int*        cscColPtrB,
+                                      const int*        cscRowIndB,
+                                      const float*      beta,
+                                      float*            C,
+                                      int               ldc)
+    {
+        return hipsparseSgemmi(
+            handle, m, n, k, nnz, alpha, A, lda, cscValB, cscColPtrB, cscRowIndB, beta, C, ldc);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXgemmi(hipsparseHandle_t handle,
+                                      int               m,
+                                      int               n,
+                                      int               k,
+                                      int               nnz,
+                                      const double*     alpha,
+                                      const double*     A,
+                                      int               lda,
+                                      const double*     cscValB,
+                                      const int*        cscColPtrB,
+                                      const int*        cscRowIndB,
+                                      const double*     beta,
+                                      double*           C,
+                                      int               ldc)
+    {
+        return hipsparseDgemmi(
+            handle, m, n, k, nnz, alpha, A, lda, cscValB, cscColPtrB, cscRowIndB, beta, C, ldc);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXgemmi(hipsparseHandle_t handle,
+                                      int               m,
+                                      int               n,
+                                      int               k,
+                                      int               nnz,
+                                      const hipComplex* alpha,
+                                      const hipComplex* A,
+                                      int               lda,
+                                      const hipComplex* cscValB,
+                                      const int*        cscColPtrB,
+                                      const int*        cscRowIndB,
+                                      const hipComplex* beta,
+                                      hipComplex*       C,
+                                      int               ldc)
+    {
+        return hipsparseCgemmi(
+            handle, m, n, k, nnz, alpha, A, lda, cscValB, cscColPtrB, cscRowIndB, beta, C, ldc);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXgemmi(hipsparseHandle_t       handle,
+                                      int                     m,
+                                      int                     n,
+                                      int                     k,
+                                      int                     nnz,
+                                      const hipDoubleComplex* alpha,
+                                      const hipDoubleComplex* A,
+                                      int                     lda,
+                                      const hipDoubleComplex* cscValB,
+                                      const int*              cscColPtrB,
+                                      const int*              cscRowIndB,
+                                      const hipDoubleComplex* beta,
+                                      hipDoubleComplex*       C,
+                                      int                     ldc)
+    {
+        return hipsparseZgemmi(
+            handle, m, n, k, nnz, alpha, A, lda, cscValB, cscColPtrB, cscRowIndB, beta, C, ldc);
+    }
+
+    template <>
     hipsparseStatus_t hipsparseXcsrgeam(hipsparseHandle_t         handle,
                                         int                       m,
                                         int                       n,

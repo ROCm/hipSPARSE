@@ -1814,6 +1814,95 @@ module hipsparse
             type(c_ptr), value :: buffer
         end function hipsparseZcsrsm2_solve
 
+!       hipsparseXgemmi
+        function hipsparseSgemmi(handle, m, n, k, nnz, alpha, A, lda, cscValB, &
+                cscColPtrB, cscRowIndB, beta, C, ldc) &
+                result(c_int) &
+                bind(c, name = 'hipsparseSgemmi')
+            use iso_c_binding
+            implicit none
+            type(c_ptr), value :: handle
+            integer(c_int), value :: m
+            integer(c_int), value :: n
+            integer(c_int), value :: k
+            integer(c_int), value :: nnz
+            type(c_ptr), intent(in), value :: alpha
+            type(c_ptr), intent(in), value :: A
+            integer(c_int), value :: lda
+            type(c_ptr), intent(in), value :: cscValB
+            type(c_ptr), intent(in), value :: cscColPtrB
+            type(c_ptr), intent(in), value :: cscRowIndB
+            type(c_ptr), intent(in), value :: beta
+            type(c_ptr), value :: C
+            integer(c_int), value :: ldc
+        end function hipsparseSgemmi
+
+        function hipsparseDgemmi(handle, m, n, k, nnz, alpha, A, lda, cscValB, &
+                cscColPtrB, cscRowIndB, beta, C, ldc) &
+                result(c_int) &
+                bind(c, name = 'hipsparseDgemmi')
+            use iso_c_binding
+            implicit none
+            type(c_ptr), value :: handle
+            integer(c_int), value :: m
+            integer(c_int), value :: n
+            integer(c_int), value :: k
+            integer(c_int), value :: nnz
+            type(c_ptr), intent(in), value :: alpha
+            type(c_ptr), intent(in), value :: A
+            integer(c_int), value :: lda
+            type(c_ptr), intent(in), value :: cscValB
+            type(c_ptr), intent(in), value :: cscColPtrB
+            type(c_ptr), intent(in), value :: cscRowIndB
+            type(c_ptr), intent(in), value :: beta
+            type(c_ptr), value :: C
+            integer(c_int), value :: ldc
+        end function hipsparseDgemmi
+
+        function hipsparseCgemmi(handle, m, n, k, nnz, alpha, A, lda, cscValB, &
+                cscColPtrB, cscRowIndB, beta, C, ldc) &
+                result(c_int) &
+                bind(c, name = 'hipsparseCgemmi')
+            use iso_c_binding
+            implicit none
+            type(c_ptr), value :: handle
+            integer(c_int), value :: m
+            integer(c_int), value :: n
+            integer(c_int), value :: k
+            integer(c_int), value :: nnz
+            type(c_ptr), intent(in), value :: alpha
+            type(c_ptr), intent(in), value :: A
+            integer(c_int), value :: lda
+            type(c_ptr), intent(in), value :: cscValB
+            type(c_ptr), intent(in), value :: cscColPtrB
+            type(c_ptr), intent(in), value :: cscRowIndB
+            type(c_ptr), intent(in), value :: beta
+            type(c_ptr), value :: C
+            integer(c_int), value :: ldc
+        end function hipsparseCgemmi
+
+        function hipsparseZgemmi(handle, m, n, k, nnz, alpha, A, lda, cscValB, &
+                cscColPtrB, cscRowIndB, beta, C, ldc) &
+                result(c_int) &
+                bind(c, name = 'hipsparseZgemmi')
+            use iso_c_binding
+            implicit none
+            type(c_ptr), value :: handle
+            integer(c_int), value :: m
+            integer(c_int), value :: n
+            integer(c_int), value :: k
+            integer(c_int), value :: nnz
+            type(c_ptr), intent(in), value :: alpha
+            type(c_ptr), intent(in), value :: A
+            integer(c_int), value :: lda
+            type(c_ptr), intent(in), value :: cscValB
+            type(c_ptr), intent(in), value :: cscColPtrB
+            type(c_ptr), intent(in), value :: cscRowIndB
+            type(c_ptr), intent(in), value :: beta
+            type(c_ptr), value :: C
+            integer(c_int), value :: ldc
+        end function hipsparseZgemmi
+
 ! ===========================================================================
 !   extra SPARSE
 ! ===========================================================================
