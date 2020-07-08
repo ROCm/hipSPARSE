@@ -345,6 +345,22 @@ namespace hipsparse
                                              void*                     pBuffer);
 
     template <typename T>
+    hipsparseStatus_t hipsparseXgemmi(hipsparseHandle_t handle,
+                                      int               m,
+                                      int               n,
+                                      int               k,
+                                      int               nnz,
+                                      const T*          alpha,
+                                      const T*          A,
+                                      int               lda,
+                                      const T*          cscValB,
+                                      const int*        cscColPtrB,
+                                      const int*        cscRowIndB,
+                                      const T*          beta,
+                                      T*                C,
+                                      int               ldc);
+
+    template <typename T>
     hipsparseStatus_t hipsparseXcsrgeam(hipsparseHandle_t         handle,
                                         int                       m,
                                         int                       n,

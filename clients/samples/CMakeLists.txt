@@ -51,7 +51,7 @@ add_hipsparse_example(example_csrmv.cpp)
 add_hipsparse_example(example_hybmv.cpp)
 
 # Fortran examples
-if(TARGET hipsparse)
+if(TARGET hipsparse AND NOT BUILD_CUDA)
   # Compile Fortran examples only if built directly with package
   # else the Fortran module file is not generated
   add_hipsparse_example(example_fortran_auxiliary.f90)
