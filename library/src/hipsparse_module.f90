@@ -1291,7 +1291,7 @@ module hipsparse
 ! ===========================================================================
 
 !       hipsparseXbsrmm
-        function hipsparseSbsrmm(handle, dirA, transA, mb, n, kb, nnzb, alpha, descrA, bsrValA, &
+        function hipsparseSbsrmm(handle, dirA, transA, transB, mb, n, kb, nnzb, alpha, descrA, bsrValA, &
                 bsrRowPtrA, bsrColIndA, blockDim, B, ldb, beta, C, ldc) &
                 result(c_int) &
                 bind(c, name = 'hipsparseSbsrmm')
@@ -1300,6 +1300,7 @@ module hipsparse
             type(c_ptr), value :: handle
             integer(c_int), value :: dirA
             integer(c_int), value :: transA
+            integer(c_int), value :: transB
             integer(c_int), value :: mb
             integer(c_int), value :: n
             integer(c_int), value :: kb
@@ -1317,7 +1318,7 @@ module hipsparse
             integer(c_int), value :: ldc
         end function hipsparseSbsrmm
 
-        function hipsparseDbsrmm(handle, dirA, transA, mb, n, kb, nnzb, alpha, descrA, bsrValA, &
+        function hipsparseDbsrmm(handle, dirA, transA, transB, mb, n, kb, nnzb, alpha, descrA, bsrValA, &
                 bsrRowPtrA, bsrColIndA, blockDim, B, ldb, beta, C, ldc) &
                 result(c_int) &
                 bind(c, name = 'hipsparseDbsrmm')
@@ -1326,6 +1327,7 @@ module hipsparse
             type(c_ptr), value :: handle
             integer(c_int), value :: dirA
             integer(c_int), value :: transA
+            integer(c_int), value :: transB
             integer(c_int), value :: mb
             integer(c_int), value :: n
             integer(c_int), value :: kb
@@ -1343,7 +1345,7 @@ module hipsparse
             integer(c_int), value :: ldc
         end function hipsparseDbsrmm
 
-        function hipsparseCbsrmm(handle, dirA, transA, mb, n, kb, nnzb, alpha, descrA, bsrValA, &
+        function hipsparseCbsrmm(handle, dirA, transA, transB, mb, n, kb, nnzb, alpha, descrA, bsrValA, &
                 bsrRowPtrA, bsrColIndA, blockDim, B, ldb, beta, C, ldc) &
                 result(c_int) &
                 bind(c, name = 'hipsparseCbsrmm')
@@ -1352,6 +1354,7 @@ module hipsparse
             type(c_ptr), value :: handle
             integer(c_int), value :: dirA
             integer(c_int), value :: transA
+            integer(c_int), value :: transB
             integer(c_int), value :: mb
             integer(c_int), value :: n
             integer(c_int), value :: kb
@@ -1369,7 +1372,7 @@ module hipsparse
             integer(c_int), value :: ldc
         end function hipsparseCbsrmm
 
-        function hipsparseZbsrmm(handle, dirA, transA, mb, n, kb, nnzb, alpha, descrA, bsrValA, &
+        function hipsparseZbsrmm(handle, dirA, transA, transB, mb, n, kb, nnzb, alpha, descrA, bsrValA, &
                 bsrRowPtrA, bsrColIndA, blockDim, B, ldb, beta, C, ldc) &
                 result(c_int) &
                 bind(c, name = 'hipsparseZbsrmm')
@@ -1378,6 +1381,7 @@ module hipsparse
             type(c_ptr), value :: handle
             integer(c_int), value :: dirA
             integer(c_int), value :: transA
+            integer(c_int), value :: transB
             integer(c_int), value :: mb
             integer(c_int), value :: n
             integer(c_int), value :: kb
