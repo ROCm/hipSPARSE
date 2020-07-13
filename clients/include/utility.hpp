@@ -266,6 +266,28 @@ static inline double testing_abs(hipDoubleComplex x)
 }
 
 /* ============================================================================================ */
+/*! \brief conj */
+static inline float testing_conj(float x)
+{
+    return x;
+}
+
+static inline double testing_conj(double x)
+{
+    return x;
+}
+
+static inline hipComplex testing_conj(hipComplex x)
+{
+    return make_DataType<hipComplex>(x.x, -x.y);
+}
+
+static inline hipDoubleComplex testing_conj(hipDoubleComplex x)
+{
+    return make_DataType<hipDoubleComplex>(x.x, -x.y);
+}
+
+/* ============================================================================================ */
 /*! \brief real */
 static inline float testing_real(float x)
 {
@@ -1736,7 +1758,7 @@ int csrilu0(int m, const int* ptr, const int* col, T* val, hipsparseIndexBase_t 
 }
 
 template <typename T>
-inline void host_bsric0(hipsparseDirection_t    direction,
+inline void host_bsric02(hipsparseDirection_t    direction,
                         int                     Mb,
                         int                     block_dim,
                         const std::vector<int>& bsr_row_ptr,
@@ -1761,7 +1783,7 @@ inline void host_bsric0(hipsparseDirection_t    direction,
     // pointer of upper part of each row
     std::vector<int> diag_block_offset(Mb);
     std::vector<int> diag_offset(M, -1);
-    std::vector<int> nnz_entries(M, 0);
+    std::vector<int> nnz_entries(M, -1);
 
 #ifdef _OPENMP
 #pragma omp parallel for schedule(dynamic, 1024)
@@ -1880,23 +1902,22 @@ inline void host_bsric0(hipsparseDirection_t    direction,
 
                     for(int m = 0; m < block_dim; m++)
                     {
-                        if(nnz_entries[block_dim * block_col_l + m] != 0
-                           && block_dim * block_col_l + m < col_j)
+                        int idx = nnz_entries[block_dim * block_col_l + m];
+                        
+                        if(idx != -1 && block_dim * block_col_l + m < col_j)
                         {
-                            int idx = nnz_entries[block_dim * block_col_l + m];
-
                             if(direction == HIPSPARSE_DIRECTION_ROW)
                             {
                                 local_sum = testing_fma(bsr_val[block_dim * block_dim * l
                                                              + block_dim * local_row_j + m],
-                                                     bsr_val[idx],
+                                                     testing_conj(bsr_val[idx]),
                                                      local_sum);
                             }
                             else
                             {
                                 local_sum = testing_fma(bsr_val[block_dim * block_dim * l
                                                              + block_dim * m + local_row_j],
-                                                     bsr_val[idx],
+                                                     testing_conj(bsr_val[idx]),
                                                      local_sum);
                             }
                         }
@@ -1904,7 +1925,7 @@ inline void host_bsric0(hipsparseDirection_t    direction,
                 }
 
                 val_j = (val_j - local_sum) * inv_diag;
-                sum   = testing_fma(val_j, val_j, sum);
+                sum   = testing_fma(val_j, testing_conj(val_j), sum);
 
                 if(direction == HIPSPARSE_DIRECTION_ROW)
                 {
@@ -1937,6 +1958,17 @@ inline void host_bsric0(hipsparseDirection_t    direction,
             T diag_entry            = make_DataType<T>(std::sqrt(testing_abs(bsr_val[diag_val_index] - sum)));
             bsr_val[diag_val_index] = diag_entry;
 
+            if(diag_entry == make_DataType<T>(0))
+            {
+                // Numerical non-invertible block diagonal
+                if(*numeric_pivot == -1)
+                {
+                    *numeric_pivot = i / block_dim + base;
+                }
+
+                *numeric_pivot = std::min(*numeric_pivot, i / block_dim + base);
+            }
+
             // Store diagonal offset
             diag_offset[i] = diag_val_index;
         }
@@ -1949,11 +1981,11 @@ inline void host_bsric0(hipsparseDirection_t    direction,
             {
                 if(direction == HIPSPARSE_DIRECTION_ROW)
                 {
-                    nnz_entries[block_dim * block_col_j + k] = 0;
+                    nnz_entries[block_dim * block_col_j + k] = -1;
                 }
                 else
                 {
-                    nnz_entries[block_dim * block_col_j + k] = 0;
+                    nnz_entries[block_dim * block_col_j + k] = -1;
                 }
             }
         }
@@ -2039,12 +2071,12 @@ void csric0(int                  M,
                 if(nnz_entries[col_k] != 0)
                 {
                     int idx   = nnz_entries[col_k];
-                    local_sum = testing_fma(csr_val[k], csr_val[idx], local_sum);
+                    local_sum = testing_fma(csr_val[k], testing_conj(csr_val[idx]), local_sum);
                 }
             }
 
             val_j = (val_j - local_sum) * inv_diag;
-            sum   = testing_fma(val_j, val_j, sum);
+            sum   = testing_fma(val_j, testing_conj(val_j), sum);
 
             csr_val[j] = val_j;
         }

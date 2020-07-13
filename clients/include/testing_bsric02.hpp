@@ -316,8 +316,6 @@ hipsparseStatus_t testing_bsric02(Arguments argus)
         mb = (m + block_dim - 1) / block_dim;
     }
 
-    std::cout << "m: " << m << " mb: " << mb << " block_dim " << block_dim << " base: " << idx_base << " direction: " << dir << " binfile: " << binfile << std::endl;
-
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
     hipsparseHandle_t              handle = test_handle->handle;
 
@@ -654,7 +652,7 @@ hipsparseStatus_t testing_bsric02(Arguments argus)
 
         int numerical_pivot;
         int structural_pivot;
-        host_bsric0<T>(dir,
+        host_bsric02<T>(dir,
                        mb,
                        block_dim,
                        hbsr_row_ptr,

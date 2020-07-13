@@ -42,14 +42,12 @@ base bsric02_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_
 dir  bsric02_dir_range[]     = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COLUMN};
 
 std::string bsric02_bin[] = {"mac_econ_fwd500.bin",
-                             "nos3.bin",
                              "nos4.bin",
                              "nos5.bin",
                              "nos6.bin",
                              "nos7.bin",
                              "scircuit.bin",
-                             "ASIC_320k.bin",
-                             "amazon0312.bin"};
+                             "Chebyshev4.bin"};
 
 class parameterized_bsric02 : public testing::TestWithParam<bsric02_tuple>
 {
