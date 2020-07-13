@@ -1673,6 +1673,83 @@ inline void host_bsrmv(hipsparseDirection_t dir,
 }
 
 template <typename T>
+inline void host_bsrmm(int                     Mb,
+                       int                     N,
+                       int                     Kb,
+                       int                     block_dim,
+                       hipsparseDirection_t               dir,
+                       hipsparseOperation_t               transA,
+                       hipsparseOperation_t               transB,
+                       T                                 alpha,
+                       const std::vector<int>& bsr_row_ptr_A,
+                       const std::vector<int>& bsr_col_ind_A,
+                       const std::vector<T>&             bsr_val_A,
+                       const std::vector<T>&             B,
+                       int                     ldb,
+                       T                                 beta,
+                       std::vector<T>&                   C,
+                       int                     ldc,
+                       hipsparseIndexBase_t              base)
+{
+    if(transA != HIPSPARSE_OPERATION_NON_TRANSPOSE)
+    {
+        return;
+    }
+
+    if(transB != HIPSPARSE_OPERATION_NON_TRANSPOSE && transB != HIPSPARSE_OPERATION_TRANSPOSE)
+    {
+        return;
+    }
+
+    int M = Mb * block_dim;
+    int K = Kb * block_dim;
+
+#ifdef _OPENMP
+#pragma omp parallel for schedule(dynamic, 1024)
+#endif
+    for(int i = 0; i < M; i++)
+    {
+        int local_row = i % block_dim;
+
+        int row_begin = bsr_row_ptr_A[i / block_dim] - base;
+        int row_end   = bsr_row_ptr_A[i / block_dim + 1] - base;
+
+        for(int j = 0; j < N; j++)
+        {
+            int idx_C = i + j * ldc;
+
+            T sum = static_cast<T>(0);
+
+            for(int s = row_begin; s < row_end; s++)
+            {
+                for(int t = 0; t < block_dim; t++)
+                {
+                    int idx_A
+                        = (dir == HIPSPARSE_DIRECTION_ROW)
+                              ? block_dim * block_dim * s + block_dim * local_row + t
+                              : block_dim * block_dim * s + block_dim * t + local_row;
+                    int idx_B
+                        = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE)
+                              ? j * ldb + block_dim * (bsr_col_ind_A[s] - base) + t
+                              : (block_dim * (bsr_col_ind_A[s] - base) + t) * ldb + j;
+
+                    sum = sum + alpha * bsr_val_A[idx_A] * B[idx_B];
+                }
+            }
+
+            if(beta == static_cast<T>(0))
+            {
+                C[idx_C] = sum;
+            }
+            else
+            {
+                C[idx_C] = sum + beta * C[idx_C]; 
+            }
+        }
+    }
+}
+
+template <typename T>
 int csrilu0(int m, const int* ptr, const int* col, T* val, hipsparseIndexBase_t idx_base)
 {
     // pointer of upper part of each row

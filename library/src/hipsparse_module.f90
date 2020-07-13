@@ -1307,6 +1307,115 @@ module hipsparse
 !   level 3 SPARSE
 ! ===========================================================================
 
+!       hipsparseXbsrmm
+        function hipsparseSbsrmm(handle, dirA, transA, transB, mb, n, kb, nnzb, alpha, descrA, bsrValA, &
+                bsrRowPtrA, bsrColIndA, blockDim, B, ldb, beta, C, ldc) &
+                result(c_int) &
+                bind(c, name = 'hipsparseSbsrmm')
+            use iso_c_binding
+            implicit none
+            type(c_ptr), value :: handle
+            integer(c_int), value :: dirA
+            integer(c_int), value :: transA
+            integer(c_int), value :: transB
+            integer(c_int), value :: mb
+            integer(c_int), value :: n
+            integer(c_int), value :: kb
+            integer(c_int), value :: nnzb
+            type(c_ptr), intent(in), value :: alpha
+            type(c_ptr), intent(in), value :: descrA
+            type(c_ptr), intent(in), value :: bsrValA
+            type(c_ptr), intent(in), value :: bsrRowPtrA
+            type(c_ptr), intent(in), value :: bsrColIndA
+            integer(c_int), value :: blockDim
+            type(c_ptr), intent(in), value :: B
+            integer(c_int), value :: ldb
+            type(c_ptr), intent(in), value :: beta
+            type(c_ptr), value :: C
+            integer(c_int), value :: ldc
+        end function hipsparseSbsrmm
+
+        function hipsparseDbsrmm(handle, dirA, transA, transB, mb, n, kb, nnzb, alpha, descrA, bsrValA, &
+                bsrRowPtrA, bsrColIndA, blockDim, B, ldb, beta, C, ldc) &
+                result(c_int) &
+                bind(c, name = 'hipsparseDbsrmm')
+            use iso_c_binding
+            implicit none
+            type(c_ptr), value :: handle
+            integer(c_int), value :: dirA
+            integer(c_int), value :: transA
+            integer(c_int), value :: transB
+            integer(c_int), value :: mb
+            integer(c_int), value :: n
+            integer(c_int), value :: kb
+            integer(c_int), value :: nnzb
+            type(c_ptr), intent(in), value :: alpha
+            type(c_ptr), intent(in), value :: descrA
+            type(c_ptr), intent(in), value :: bsrValA
+            type(c_ptr), intent(in), value :: bsrRowPtrA
+            type(c_ptr), intent(in), value :: bsrColIndA
+            integer(c_int), value :: blockDim
+            type(c_ptr), intent(in), value :: B
+            integer(c_int), value :: ldb
+            type(c_ptr), intent(in), value :: beta
+            type(c_ptr), value :: C
+            integer(c_int), value :: ldc
+        end function hipsparseDbsrmm
+
+        function hipsparseCbsrmm(handle, dirA, transA, transB, mb, n, kb, nnzb, alpha, descrA, bsrValA, &
+                bsrRowPtrA, bsrColIndA, blockDim, B, ldb, beta, C, ldc) &
+                result(c_int) &
+                bind(c, name = 'hipsparseCbsrmm')
+            use iso_c_binding
+            implicit none
+            type(c_ptr), value :: handle
+            integer(c_int), value :: dirA
+            integer(c_int), value :: transA
+            integer(c_int), value :: transB
+            integer(c_int), value :: mb
+            integer(c_int), value :: n
+            integer(c_int), value :: kb
+            integer(c_int), value :: nnzb
+            type(c_ptr), intent(in), value :: alpha
+            type(c_ptr), intent(in), value :: descrA
+            type(c_ptr), intent(in), value :: bsrValA
+            type(c_ptr), intent(in), value :: bsrRowPtrA
+            type(c_ptr), intent(in), value :: bsrColIndA
+            integer(c_int), value :: blockDim
+            type(c_ptr), intent(in), value :: B
+            integer(c_int), value :: ldb
+            type(c_ptr), intent(in), value :: beta
+            type(c_ptr), value :: C
+            integer(c_int), value :: ldc
+        end function hipsparseCbsrmm
+
+        function hipsparseZbsrmm(handle, dirA, transA, transB, mb, n, kb, nnzb, alpha, descrA, bsrValA, &
+                bsrRowPtrA, bsrColIndA, blockDim, B, ldb, beta, C, ldc) &
+                result(c_int) &
+                bind(c, name = 'hipsparseZbsrmm')
+            use iso_c_binding
+            implicit none
+            type(c_ptr), value :: handle
+            integer(c_int), value :: dirA
+            integer(c_int), value :: transA
+            integer(c_int), value :: transB
+            integer(c_int), value :: mb
+            integer(c_int), value :: n
+            integer(c_int), value :: kb
+            integer(c_int), value :: nnzb
+            type(c_ptr), intent(in), value :: alpha
+            type(c_ptr), intent(in), value :: descrA
+            type(c_ptr), intent(in), value :: bsrValA
+            type(c_ptr), intent(in), value :: bsrRowPtrA
+            type(c_ptr), intent(in), value :: bsrColIndA
+            integer(c_int), value :: blockDim
+            type(c_ptr), intent(in), value :: B
+            integer(c_int), value :: ldb
+            type(c_ptr), intent(in), value :: beta
+            type(c_ptr), value :: C
+            integer(c_int), value :: ldc
+        end function hipsparseZbsrmm
+
 !       hipsparseXcsrmm
         function hipsparseScsrmm(handle, transA, m, n, k, nnz, alpha, descrA, csrValA, &
                 csrRowPtrA, csrColIndA, B, ldb, beta, C, ldc) &
@@ -1830,6 +1939,95 @@ module hipsparse
             integer(c_int), value :: policy
             type(c_ptr), value :: buffer
         end function hipsparseZcsrsm2_solve
+
+!       hipsparseXgemmi
+        function hipsparseSgemmi(handle, m, n, k, nnz, alpha, A, lda, cscValB, &
+                cscColPtrB, cscRowIndB, beta, C, ldc) &
+                result(c_int) &
+                bind(c, name = 'hipsparseSgemmi')
+            use iso_c_binding
+            implicit none
+            type(c_ptr), value :: handle
+            integer(c_int), value :: m
+            integer(c_int), value :: n
+            integer(c_int), value :: k
+            integer(c_int), value :: nnz
+            type(c_ptr), intent(in), value :: alpha
+            type(c_ptr), intent(in), value :: A
+            integer(c_int), value :: lda
+            type(c_ptr), intent(in), value :: cscValB
+            type(c_ptr), intent(in), value :: cscColPtrB
+            type(c_ptr), intent(in), value :: cscRowIndB
+            type(c_ptr), intent(in), value :: beta
+            type(c_ptr), value :: C
+            integer(c_int), value :: ldc
+        end function hipsparseSgemmi
+
+        function hipsparseDgemmi(handle, m, n, k, nnz, alpha, A, lda, cscValB, &
+                cscColPtrB, cscRowIndB, beta, C, ldc) &
+                result(c_int) &
+                bind(c, name = 'hipsparseDgemmi')
+            use iso_c_binding
+            implicit none
+            type(c_ptr), value :: handle
+            integer(c_int), value :: m
+            integer(c_int), value :: n
+            integer(c_int), value :: k
+            integer(c_int), value :: nnz
+            type(c_ptr), intent(in), value :: alpha
+            type(c_ptr), intent(in), value :: A
+            integer(c_int), value :: lda
+            type(c_ptr), intent(in), value :: cscValB
+            type(c_ptr), intent(in), value :: cscColPtrB
+            type(c_ptr), intent(in), value :: cscRowIndB
+            type(c_ptr), intent(in), value :: beta
+            type(c_ptr), value :: C
+            integer(c_int), value :: ldc
+        end function hipsparseDgemmi
+
+        function hipsparseCgemmi(handle, m, n, k, nnz, alpha, A, lda, cscValB, &
+                cscColPtrB, cscRowIndB, beta, C, ldc) &
+                result(c_int) &
+                bind(c, name = 'hipsparseCgemmi')
+            use iso_c_binding
+            implicit none
+            type(c_ptr), value :: handle
+            integer(c_int), value :: m
+            integer(c_int), value :: n
+            integer(c_int), value :: k
+            integer(c_int), value :: nnz
+            type(c_ptr), intent(in), value :: alpha
+            type(c_ptr), intent(in), value :: A
+            integer(c_int), value :: lda
+            type(c_ptr), intent(in), value :: cscValB
+            type(c_ptr), intent(in), value :: cscColPtrB
+            type(c_ptr), intent(in), value :: cscRowIndB
+            type(c_ptr), intent(in), value :: beta
+            type(c_ptr), value :: C
+            integer(c_int), value :: ldc
+        end function hipsparseCgemmi
+
+        function hipsparseZgemmi(handle, m, n, k, nnz, alpha, A, lda, cscValB, &
+                cscColPtrB, cscRowIndB, beta, C, ldc) &
+                result(c_int) &
+                bind(c, name = 'hipsparseZgemmi')
+            use iso_c_binding
+            implicit none
+            type(c_ptr), value :: handle
+            integer(c_int), value :: m
+            integer(c_int), value :: n
+            integer(c_int), value :: k
+            integer(c_int), value :: nnz
+            type(c_ptr), intent(in), value :: alpha
+            type(c_ptr), intent(in), value :: A
+            integer(c_int), value :: lda
+            type(c_ptr), intent(in), value :: cscValB
+            type(c_ptr), intent(in), value :: cscColPtrB
+            type(c_ptr), intent(in), value :: cscRowIndB
+            type(c_ptr), intent(in), value :: beta
+            type(c_ptr), value :: C
+            integer(c_int), value :: ldc
+        end function hipsparseZgemmi
 
 ! ===========================================================================
 !   extra SPARSE

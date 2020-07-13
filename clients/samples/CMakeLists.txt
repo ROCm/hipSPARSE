@@ -28,37 +28,17 @@ function(add_hipsparse_example EXAMPLE_SOURCE)
   get_filename_component(EXAMPLE_TARGET ${EXAMPLE_SOURCE} NAME_WE)
   add_executable(${EXAMPLE_TARGET} ${EXAMPLE_SOURCE} ${HIPSPARSE_CLIENTS_COMMON})
 
-  # hipSPARSE headers
-  target_include_directories(${EXAMPLE_TARGET}
-    PRIVATE
-      $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
-      $<BUILD_INTERFACE:${HIP_INCLUDE_DIRS}>
-      $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/library/include>
-      $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
-  )
+  # Include common client headers
+  target_include_directories(${EXAMPLE_TARGET} PRIVATE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>)
 
-  # hipSPARSE library
-  if(NOT TARGET hipsparse)
-    target_link_libraries(${EXAMPLE_TARGET} PRIVATE ${HIPSPARSE_LIBRARIES})
-  else()
-    target_link_libraries(${EXAMPLE_TARGET} PRIVATE roc::hipsparse)
-  endif()
+  # Linker dependencies
+  target_link_libraries(${EXAMPLE_TARGET} PRIVATE roc::hipsparse)
 
   if(NOT BUILD_CUDA)
-    target_compile_definitions(${EXAMPLE_TARGET} PRIVATE __HIP_PLATFORM_HCC__)
-    if( CMAKE_CXX_COMPILER MATCHES ".*/hcc$" )
-        target_link_libraries( ${EXAMPLE_TARGET} PRIVATE ${HIP_LIBRARIES} )
-    endif( )
-    if ( LIBAMDHIP64_LIBRARY )
-      target_include_directories(${EXAMPLE_TARGET} PRIVATE ${ROCM_PATH}/hip/include)
-      target_link_libraries( ${EXAMPLE_TARGET} PRIVATE hip::amdhip64 )
-    else ( )
-      target_include_directories(${EXAMPLE_TARGET} PRIVATE ${ROCM_PATH}/hsa/include)
-      get_target_property( HIP_HCC_LOCATION hip::hip_hcc IMPORTED_LOCATION_RELEASE )
-      target_link_libraries( ${EXAMPLE_TARGET} PRIVATE ${HIP_HCC_LOCATION} )
-    endif( )
+    target_link_libraries(${EXAMPLE_TARGET} PRIVATE hip::host)
   else()
     target_compile_definitions(${EXAMPLE_TARGET} PRIVATE __HIP_PLATFORM_NVCC__)
+    target_include_directories(${EXAMPLE_TARGET} PRIVATE ${HIP_INCLUDE_DIRS})
     target_link_libraries(${EXAMPLE_TARGET} PRIVATE ${CUDA_LIBRARIES})
   endif()
 
@@ -69,12 +49,19 @@ endfunction()
 add_hipsparse_example(example_handle.cpp)
 add_hipsparse_example(example_csrmv.cpp)
 add_hipsparse_example(example_hybmv.cpp)
-add_hipsparse_example(example_fortran_auxiliary.f90)
-add_hipsparse_example(example_fortran_csrsv2.f90)
-add_hipsparse_example(example_fortran_bsric02.f90)
-add_hipsparse_example(example_fortran_csric02.f90)
-add_hipsparse_example(example_fortran_csrilu02.f90)
-add_hipsparse_example(example_fortran_csrsm2.f90)
-add_hipsparse_example(example_fortran_dotci.f90)
-add_hipsparse_example(example_fortran_roti.f90)
-add_hipsparse_example(example_fortran_spmv.f90)
+
+# Fortran examples
+if(TARGET hipsparse AND NOT BUILD_CUDA)
+  # Compile Fortran examples only if built directly with package
+  # else the Fortran module file is not generated
+  add_hipsparse_example(example_fortran_auxiliary.f90)
+  add_hipsparse_example(example_fortran_csrsv2.f90)
+  add_hipsparse_example(example_fortran_bsric02.f90)
+  add_hipsparse_example(example_fortran_csric02.f90)
+  add_hipsparse_example(example_fortran_csrilu02.f90)
+  add_hipsparse_example(example_fortran_csrsm2.f90)
+  add_hipsparse_example(example_fortran_dotci.f90)
+  add_hipsparse_example(example_fortran_roti.f90)
+  add_hipsparse_example(example_fortran_spmv.f90)
+  add_hipsparse_example(example_fortran_bsrmm.f90)
+endif()

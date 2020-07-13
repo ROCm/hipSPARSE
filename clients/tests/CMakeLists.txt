@@ -21,6 +21,8 @@
 #
 # ########################################################################
 
+find_package(GTest REQUIRED)
+
 # Download some test matrices
 set(TEST_MATRICES
   SNAP/amazon0312
@@ -128,9 +130,6 @@ foreach(i RANGE 0 ${len1})
   endif()
 endforeach()
 
-
-find_package(GTest REQUIRED)
-
 set(HIPSPARSE_TEST_SOURCES
   hipsparse_gtest_main.cpp
   test_axpyi.cpp
@@ -144,8 +143,10 @@ set(HIPSPARSE_TEST_SOURCES
   test_bsrsv2.cpp
   test_csrmv.cpp
   test_csrsv2.cpp
+  test_bsrmm.cpp
   test_csrmm.cpp
   test_csrsm2.cpp
+  test_gemmi.cpp
   test_csrgeam.cpp
   test_csrgeam2.cpp
   test_csrgemm.cpp
@@ -189,50 +190,25 @@ set(HIPSPARSE_CLIENTS_COMMON
 
 add_executable(hipsparse-test ${HIPSPARSE_TEST_SOURCES} ${HIPSPARSE_CLIENTS_COMMON})
 
+# Set GOOGLE_TEST definition
 target_compile_definitions(hipsparse-test PRIVATE GOOGLE_TEST)
 
-if(OPENMP_FOUND)
-  target_compile_options(hipsparse-test PRIVATE ${OpenMP_CXX_FLAGS})
-endif()
+# Internal common header
+target_include_directories(hipsparse-test PRIVATE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>)
 
-target_include_directories(hipsparse-test
-  PRIVATE
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
-)
+# Target link libraries
+target_link_libraries(hipsparse-test PRIVATE GTest::GTest roc::hipsparse)
 
-target_include_directories(hipsparse-test
-  SYSTEM
-    PRIVATE
-      $<BUILD_INTERFACE:${GTEST_INCLUDE_DIRS}>
-      $<BUILD_INTERFACE:${HIP_INCLUDE_DIRS}>
-)
-
-if(NOT TARGET hipsparse)
-  target_link_libraries(hipsparse-test PRIVATE ${HIPSPARSE_LIBRARIES})
-else()
-  target_link_libraries(hipsparse-test PRIVATE roc::hipsparse)
-endif()
-
-set(THREADS_PREFER_PTHREAD_FLAG ON)
-find_package(Threads REQUIRED)
-target_link_libraries(hipsparse-test PRIVATE ${GTEST_BOTH_LIBRARIES} Threads::Threads)
-
-if(OPENMP_FOUND)
-  target_link_libraries(hipsparse-test PRIVATE ${OpenMP_CXX_FLAGS})
+# Add OpenMP if available
+if(OPENMP_FOUND AND THREADS_FOUND)
+  target_link_libraries(hipsparse-test PRIVATE OpenMP::OpenMP_CXX)
 endif()
 
 if(NOT BUILD_CUDA)
-  target_compile_definitions(hipsparse-test PRIVATE __HIP_PLATFORM_HCC__)
-  if ( LIBAMDHIP64_LIBRARY )
-    target_include_directories(hipsparse-test PRIVATE ${ROCM_PATH}/hip/include)
-    target_link_libraries( hipsparse-test PRIVATE hip::amdhip64 )
-  else ( )
-    target_include_directories(hipsparse-test PRIVATE ${ROCM_PATH}/hsa/include)
-    get_target_property( HIP_HCC_LOCATION hip::hip_hcc IMPORTED_LOCATION_RELEASE )
-    target_link_libraries( hipsparse-test PRIVATE ${HIP_HCC_LOCATION} )
-  endif( )
+  target_link_libraries(hipsparse-test PRIVATE hip::host)
 else()
   target_compile_definitions(hipsparse-test PRIVATE __HIP_PLATFORM_NVCC__)
+  target_include_directories(hipsparse-test PRIVATE ${HIP_INCLUDE_DIRS})
   target_link_libraries(hipsparse-test PRIVATE ${CUDA_LIBRARIES})
 endif()
 
