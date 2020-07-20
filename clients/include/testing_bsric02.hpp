@@ -408,6 +408,7 @@ hipsparseStatus_t testing_bsric02(Arguments argus)
     std::vector<int> hcsr_col_ind;
     std::vector<T>   hcsr_val;
     int              nnz;
+    
     srand(12345ULL);
     if(binfile != "")
     {
