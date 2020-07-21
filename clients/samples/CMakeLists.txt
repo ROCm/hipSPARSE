@@ -56,6 +56,7 @@ if(TARGET hipsparse AND NOT BUILD_CUDA)
   # else the Fortran module file is not generated
   add_hipsparse_example(example_fortran_auxiliary.f90)
   add_hipsparse_example(example_fortran_csrsv2.f90)
+  add_hipsparse_example(example_fortran_bsric02.f90)
   add_hipsparse_example(example_fortran_csric02.f90)
   add_hipsparse_example(example_fortran_csrilu02.f90)
   add_hipsparse_example(example_fortran_csrsm2.f90)
