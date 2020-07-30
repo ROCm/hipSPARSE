@@ -15,7 +15,7 @@ def runCI =
 
     def prj = new rocProject('hipSPARSE', 'PreCheckin')
 
-    prj.paths.build_command = './install.sh -c'
+    prj.paths.build_command = './install.sh -c --static'
     prj.compiler.compiler_name = 'c++'
     prj.compiler.compiler_path = 'c++'
     prj.libraryDependencies = ['rocSPARSE-internal', 'rocPRIM']
