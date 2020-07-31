@@ -16,8 +16,8 @@ def runCI =
     def prj = new rocProject('hipSPARSE', 'Static Library PreCheckin')
 
     prj.paths.build_command = './install.sh -c --static'
-    prj.compiler.compiler_name = 'c++'
-    prj.compiler.compiler_path = 'c++'
+    prj.compiler.compiler_name = 'hipcc'
+    prj.compiler.compiler_path = '/opt/rocm/bin'
     prj.libraryDependencies = ['rocSPARSE-internal', 'rocPRIM']
 
     // Define test architectures, optional rocm version argument is available
