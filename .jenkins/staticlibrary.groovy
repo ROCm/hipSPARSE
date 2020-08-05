@@ -13,11 +13,11 @@ def runCI =
 {
     nodeDetails, jobName->
 
-    def prj = new rocProject('hipSPARSE', 'PreCheckin')
+    def prj = new rocProject('hipSPARSE', 'Static Library PreCheckin')
 
-    prj.paths.build_command = './install.sh -c'
-    prj.compiler.compiler_name = 'c++'
-    prj.compiler.compiler_path = 'c++'
+    prj.paths.build_command = './install.sh -c --static'
+    prj.compiler.compiler_name = 'hipcc'
+    prj.compiler.compiler_path = '/opt/rocm/bin/hipcc'
     prj.libraryDependencies = ['rocSPARSE-internal', 'rocPRIM']
 
     // Define test architectures, optional rocm version argument is available
@@ -32,7 +32,7 @@ def runCI =
         platform, project->
 
         commonGroovy = load "${project.paths.project_src_prefix}/.jenkins/common.groovy"
-        commonGroovy.runCompileCommand(platform, project)
+        commonGroovy.runCompileCommand(platform, project,true)
     }
 
     def testCommand =
