@@ -2846,6 +2846,161 @@ hipsparseStatus_t hipsparseZdense2csr(hipsparseHandle_t         handle,
                                       hipDoubleComplex*         csr_val,
                                       int*                      csr_row_ptr,
                                       int*                      csr_col_ind);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpruneDense2csr_bufferSize(hipsparseHandle_t         handle,
+                                                        int                       m,
+                                                        int                       n,
+                                                        const float*              A,
+                                                        int                       lda,
+                                                        const float*              threshold,
+                                                        const hipsparseMatDescr_t descr,
+                                                        const float*              csrVal,
+                                                        const int*                csrRowPtr,
+                                                        const int*                csrColInd,
+                                                        size_t*                   bufferSize);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDpruneDense2csr_bufferSize(hipsparseHandle_t         handle,
+                                                    int                       m,
+                                                    int                       n,
+                                                    const double*             A,
+                                                    int                       lda,
+                                                    const double*             threshold,
+                                                    const hipsparseMatDescr_t descr,
+                                                    const double*             csrVal,
+                                                    const int*                csrRowPtr,
+                                                    const int*                csrColInd,
+                                                    size_t*                   bufferSize);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpruneDense2csr_bufferSizeExt(hipsparseHandle_t         handle,
+                                                            int                       m,
+                                                            int                       n,
+                                                            const float*              A,
+                                                            int                       lda,
+                                                            const float*              threshold,
+                                                            const hipsparseMatDescr_t descr,
+                                                            const float*              csrVal,
+                                                            const int*                csrRowPtr,
+                                                            const int*                csrColInd,
+                                                            size_t*                   bufferSize);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDpruneDense2csr_bufferSizeExt(hipsparseHandle_t         handle,
+                                                    int                       m,
+                                                    int                       n,
+                                                    const double*             A,
+                                                    int                       lda,
+                                                    const double*             threshold,
+                                                    const hipsparseMatDescr_t descr,
+                                                    const double*             csrVal,
+                                                    const int*                csrRowPtr,
+                                                    const int*                csrColInd,
+                                                    size_t*                   bufferSize);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpruneDense2csrNnz(hipsparseHandle_t         handle,
+                                                int                       m,
+                                                int                       n,
+                                                const float*              A,
+                                                int                       lda,
+                                                const float*              threshold,
+                                                const hipsparseMatDescr_t descr,
+                                                int*                      csrRowPtr,
+                                                int*                      nnzTotalDevHostPtr,
+                                                void*                     buffer);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDpruneDense2csrNnz(hipsparseHandle_t         handle,
+                                            int                       m,
+                                            int                       n,
+                                            const double*             A,
+                                            int                       lda,
+                                            const double*             threshold,
+                                            const hipsparseMatDescr_t descr,
+                                            int*                      csrRowPtr,
+                                            int*                      nnzTotalDevHostPtr,
+                                            void*                     buffer);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpruneDense2csr(hipsparseHandle_t         handle,
+                                            int                       m,
+                                            int                       n,
+                                            const float*              A,
+                                            int                       lda,
+                                            const float*              threshold,
+                                            const hipsparseMatDescr_t descr,
+                                            float*                    csrVal,
+                                            const int*                csrRowPtr,
+                                            int*                      csrColInd,
+                                            void*                     buffer);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDpruneDense2csr(hipsparseHandle_t         handle,
+                                        int                       m,
+                                        int                       n,
+                                        const double*             A,
+                                        int                       lda,
+                                        const double*             threshold,
+                                        const hipsparseMatDescr_t descr,
+                                        double*                   csrVal,
+                                        const int*                csrRowPtr,
+                                        int*                      csrColInd,
+                                        void*                     buffer);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* Description: 
    This function converts the matrix A in dense format into a sparse matrix in CSC format */
 HIPSPARSE_EXPORT

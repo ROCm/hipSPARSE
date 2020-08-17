@@ -668,6 +668,99 @@ namespace hipsparse
                                           int*                      csrRowPtr,
                                           int*                      csrColInd);
 
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    template <typename T>
+    hipsparseStatus_t hipsparseXpruneDense2csr_bufferSize(hipsparseHandle_t         handle,
+                                                          int                       m,
+                                                          int                       n,
+                                                          const T*                  A,
+                                                          int                       lda,
+                                                          const T*                  threshold,
+                                                          const hipsparseMatDescr_t descr,
+                                                          const T*                  csrVal,
+                                                          const int*                csrRowPtr,
+                                                          const int*                csrColInd,
+                                                          size_t*                   bufferSize);
+
+    template <typename T>
+    hipsparseStatus_t hipsparseXpruneDense2csr_bufferSizeExt(hipsparseHandle_t         handle,
+                                                             int                       m,
+                                                             int                       n,
+                                                             const T*                  A,
+                                                             int                       lda,
+                                                             const T*                  threshold,
+                                                             const hipsparseMatDescr_t descr,
+                                                             const T*                  csrVal,
+                                                             const int*                csrRowPtr,
+                                                             const int*                csrColInd,
+                                                             size_t*                   bufferSize);
+
+    template <typename T>
+    hipsparseStatus_t hipsparseXpruneDense2csrNnz(hipsparseHandle_t         handle,
+                                                  int                       m,
+                                                  int                       n,
+                                                  const T*                  A,
+                                                  int                       lda,
+                                                  const T*                  threshold,
+                                                  const hipsparseMatDescr_t descr,
+                                                  int*                      csrRowPtr,
+                                                  int*                      nnzTotalDevHostPtr,
+                                                  void*                     buffer);
+
+    template <typename T>
+    hipsparseStatus_t hipsparseXpruneDense2csr(hipsparseHandle_t         handle,
+                                               int                       m,
+                                               int                       n,
+                                               const T*                  A,
+                                               int                       lda,
+                                               const T*                  threshold,
+                                               const hipsparseMatDescr_t descr,
+                                               T*                        csrVal,
+                                               const int*                csrRowPtr,
+                                               int*                      csrColInd,
+                                               void*                     buffer);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     template <typename T>
     hipsparseStatus_t hipsparseXdense2csc(hipsparseHandle_t         handle,
                                           int                       m,

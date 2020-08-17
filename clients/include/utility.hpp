@@ -1017,6 +1017,67 @@ void host_dense2csx(int                  m,
     }
 }
 
+template <typename T>
+void host_prune_dense2csr(int               m,
+                          int               n,
+                          const std::vector<T>&       A,
+                          int               lda,
+                          T                           threshold,
+                          std::vector<T>&             csr_val,
+                          std::vector<int>& csr_row_ptr,
+                          std::vector<int>& csr_col_ind)
+{
+    if(threshold < 0)
+    {
+        return;
+    }
+
+    if(m < 0 || n < 0)
+    {
+        return;
+    }
+
+    std::vector<int> nnz_per_row(m, 0);
+
+    int nnz = 0;
+
+    for(int i = 0; i < m; i++)
+    {
+        for(int j = 0; j < n; j++)
+        {
+            if(std::abs(A[lda * j + i]) > threshold)
+            {
+                nnz_per_row[i]++;
+                nnz++;
+            }
+        }
+    }
+
+    csr_row_ptr.resize(m + 1, 0);
+    csr_col_ind.resize(nnz);
+    csr_val.resize(nnz);
+    
+    for(int i = 0; i < m; i++)
+    {
+        csr_row_ptr[i + 1] = csr_row_ptr[i] + nnz_per_row[i];
+    }
+
+    int index = 0;
+    for(int i = 0; i < m; i++)
+    {
+        for(int j = 0; j < n; j++)
+        {
+            if(std::abs(A[lda * j + i]) > threshold)
+            {
+                csr_val[index] = A[lda * j + i];
+                csr_col_ind[index] = j;
+
+                index++;
+            }
+        }
+    }
+}
+
 template <hipsparseDirection_t DIRA, typename T>
 void host_csx2dense(int                  m,
                     int                  n,
