@@ -5503,6 +5503,182 @@ hipsparseStatus_t hipsparseZdense2csr(hipsparseHandle_t         handle,
                                                            csrColInd));
 }
 
+hipsparseStatus_t hipsparseSpruneDense2csr_bufferSize(hipsparseHandle_t         handle,
+                                                        int                       m,
+                                                        int                       n,
+                                                        const float*              A,
+                                                        int                       lda,
+                                                        const float*              threshold,
+                                                        const hipsparseMatDescr_t descr,
+                                                        const float*              csrVal,
+                                                        const int*                csrRowPtr,
+                                                        const int*                csrColInd,
+                                                        size_t*                   bufferSize)
+{
+    return HIPSPARSE_STATUS_INTERNAL_ERROR;
+}
+
+hipsparseStatus_t hipsparseDpruneDense2csr_bufferSize(hipsparseHandle_t         handle,
+                                                    int                       m,
+                                                    int                       n,
+                                                    const double*             A,
+                                                    int                       lda,
+                                                    const double*             threshold,
+                                                    const hipsparseMatDescr_t descr,
+                                                    const double*             csrVal,
+                                                    const int*                csrRowPtr,
+                                                    const int*                csrColInd,
+                                                    size_t*                   bufferSize)
+{
+    return HIPSPARSE_STATUS_INTERNAL_ERROR;
+}
+
+hipsparseStatus_t hipsparseSpruneDense2csr_bufferSizeExt(hipsparseHandle_t         handle,
+                                                            int                       m,
+                                                            int                       n,
+                                                            const float*              A,
+                                                            int                       lda,
+                                                            const float*              threshold,
+                                                            const hipsparseMatDescr_t descr,
+                                                            const float*              csrVal,
+                                                            const int*                csrRowPtr,
+                                                            const int*                csrColInd,
+                                                            size_t*                   bufferSize)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseSpruneDense2csr_bufferSizeExt((cusparseHandle_t)handle,
+                                                                    m,
+                                                                    n,
+                                                                    A,
+                                                                    lda,
+                                                                    threshold,
+                                                                    (const cusparseMatDescr_t)descr,
+                                                                    csrVal,
+                                                                    csrRowPtr,
+                                                                    csrColInd,
+                                                                    bufferSize));
+}
+
+hipsparseStatus_t hipsparseDpruneDense2csr_bufferSizeExt(hipsparseHandle_t         handle,
+                                                    int                       m,
+                                                    int                       n,
+                                                    const double*             A,
+                                                    int                       lda,
+                                                    const double*             threshold,
+                                                    const hipsparseMatDescr_t descr,
+                                                    const double*             csrVal,
+                                                    const int*                csrRowPtr,
+                                                    const int*                csrColInd,
+                                                    size_t*                   bufferSize)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseDpruneDense2csr_bufferSizeExt((cusparseHandle_t)handle,
+                                                                    m,
+                                                                    n,
+                                                                    A,
+                                                                    lda,
+                                                                    threshold,
+                                                                    (const cusparseMatDescr_t)descr,
+                                                                    csrVal,
+                                                                    csrRowPtr,
+                                                                    csrColInd,
+                                                                    bufferSize));
+}
+
+hipsparseStatus_t hipsparseSpruneDense2csrNnz(hipsparseHandle_t         handle,
+                                                int                       m,
+                                                int                       n,
+                                                const float*              A,
+                                                int                       lda,
+                                                const float*              threshold,
+                                                const hipsparseMatDescr_t descr,
+                                                int*                      csrRowPtr,
+                                                int*                      nnzTotalDevHostPtr,
+                                                void*                     buffer)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseSpruneDense2csrNnz((cusparseHandle_t)handle,
+                                                                    m,
+                                                                    n,
+                                                                    A,
+                                                                    lda,
+                                                                    threshold,
+                                                                    (const cusparseMatDescr_t)descr,
+                                                                    csrRowPtr,
+                                                                    nnzTotalDevHostPtr,
+                                                                    buffer));
+}
+
+hipsparseStatus_t hipsparseDpruneDense2csrNnz(hipsparseHandle_t         handle,
+                                            int                       m,
+                                            int                       n,
+                                            const double*             A,
+                                            int                       lda,
+                                            const double*             threshold,
+                                            const hipsparseMatDescr_t descr,
+                                            int*                      csrRowPtr,
+                                            int*                      nnzTotalDevHostPtr,
+                                            void*                     buffer)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseDpruneDense2csrNnz((cusparseHandle_t)handle,
+                                                                    m,
+                                                                    n,
+                                                                    A,
+                                                                    lda,
+                                                                    threshold,
+                                                                    (const cusparseMatDescr_t)descr,
+                                                                    csrRowPtr,
+                                                                    nnzTotalDevHostPtr,
+                                                                    buffer));
+}
+
+hipsparseStatus_t hipsparseSpruneDense2csr(hipsparseHandle_t         handle,
+                                           int                       m,
+                                           int                       n,
+                                           const float*              A,
+                                           int                       lda,
+                                           const float*              threshold,
+                                           const hipsparseMatDescr_t descr,
+                                           float*                    csrVal,
+                                           const int*                csrRowPtr,
+                                           int*                      csrColInd,
+                                           void*                     buffer)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseSpruneDense2csr((cusparseHandle_t)handle,
+                                                                    m,
+                                                                    n,
+                                                                    A,
+                                                                    lda,
+                                                                    threshold,
+                                                                    (const cusparseMatDescr_t)descr,
+                                                                    csrVal,
+                                                                    csrRowPtr,
+                                                                    csrColInd,
+                                                                    buffer));
+}
+
+hipsparseStatus_t hipsparseDpruneDense2csr(hipsparseHandle_t         handle,
+                                      int                       m,
+                                      int                       n,
+                                      const double*             A,
+                                      int                       lda,
+                                      const double*             threshold,
+                                      const hipsparseMatDescr_t descr,
+                                      double*                   csrVal,
+                                      const int*                csrRowPtr,
+                                      int*                      csrColInd,
+                                      void*                     buffer)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseDpruneDense2csr((cusparseHandle_t)handle,
+                                                                    m,
+                                                                    n,
+                                                                    A,
+                                                                    lda,
+                                                                    threshold,
+                                                                    (const cusparseMatDescr_t)descr,
+                                                                    csrVal,
+                                                                    csrRowPtr,
+                                                                    csrColInd,
+                                                                    buffer));
+}
+
 hipsparseStatus_t hipsparseSdense2csc(hipsparseHandle_t         handle,
                                       int                       m,
                                       int                       n,

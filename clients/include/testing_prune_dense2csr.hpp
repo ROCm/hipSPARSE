@@ -34,8 +34,6 @@
 #include <hipsparse.h>
 #include <string>
 
-#include <iostream>
-
 using namespace hipsparse;
 using namespace hipsparse_test;
 
@@ -487,29 +485,10 @@ hipsparseStatus_t testing_prune_dense2csr(Arguments argus)
     srand(0);
     gen_dense_random_sparsity_pattern(M, N, h_A.data(), LDA, 0.2);
 
-
-    std::cout << "LDA: " << LDA << " M: " << M << " N: " << N << " threshold: " << threshold << " base: " << idx_base << std::endl;
-    if(LDA <= 64 && N <= 64)
-    {
-        for(int i = 0; i < LDA; ++i)
-        {
-            for(int j = 0; j < N; ++j)
-            {
-                std::cout << h_A[j * LDA + i] << " ";
-            }
-            std::cout << "" << std::endl;
-        }
-    }
-
-
-
-
-
-
     // Transfer.
     CHECK_HIP_ERROR(hipMemcpy(d_A, h_A.data(), sizeof(T) * LDA * N, hipMemcpyHostToDevice));
 
-    size_t buffer_size = 0;
+    size_t buffer_size = 512;
     CHECK_HIPSPARSE_ERROR(hipsparseXpruneDense2csr_bufferSize(handle,
                                                               M,
                                                               N,
@@ -534,8 +513,21 @@ hipsparseStatus_t testing_prune_dense2csr(Arguments argus)
         return HIPSPARSE_STATUS_ALLOC_FAILED;
     }
 
-    std::cout << "AAAA" << std::endl;
+    auto d_threshold_managed
+        = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
 
+    T* d_threshold = (T*)d_threshold_managed.get();
+
+    if(!d_threshold )
+    {
+        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
+                                        "!d_threshold");
+        return HIPSPARSE_STATUS_ALLOC_FAILED;
+    }
+
+    CHECK_HIP_ERROR(hipMemcpy(d_threshold, &threshold, sizeof(T), hipMemcpyHostToDevice));
+
+    CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
     CHECK_HIPSPARSE_ERROR(hipsparseXpruneDense2csrNnz(handle,
                                 M,
                                 N,
@@ -547,33 +539,48 @@ hipsparseStatus_t testing_prune_dense2csr(Arguments argus)
                                 &h_nnz_total_dev_host_ptr[0],
                                 d_temp_buffer));
 
-    std::cout << "h_nnz_total_dev_host_ptr: " << h_nnz_total_dev_host_ptr[0] << std::endl;
-
-    int* d_csr_col_ind = nullptr;
-    T* d_csr_val = nullptr;
-
-    if(h_nnz_total_dev_host_ptr[0] > 0)
-    {
-        auto d_csr_col_ind_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * h_nnz_total_dev_host_ptr[0]), device_free};
-        auto d_csr_val_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(T) * h_nnz_total_dev_host_ptr[0]), device_free};
-
-        d_csr_col_ind = (int*)d_csr_col_ind_managed.get();
-        d_csr_val = (T*)d_csr_val_managed.get();
-
-        if(!d_csr_col_ind || !d_csr_val )
-        {
-            verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                            "!d_csr_col_ind || !d_csr_val");
-            return HIPSPARSE_STATUS_ALLOC_FAILED;
-        }
-    }
+    CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
+    CHECK_HIPSPARSE_ERROR(hipsparseXpruneDense2csrNnz(handle,
+                                M,
+                                N,
+                                d_A,
+                                LDA,
+                                d_threshold,
+                                descr,
+                                d_csr_row_ptr,
+                                d_nnz_total_dev_host_ptr,
+                                d_temp_buffer));
 
     if(argus.unit_check)
     {
+        std::vector<int> h_nnz_total_copied_from_device(1);
+        CHECK_HIP_ERROR(hipMemcpy(h_nnz_total_copied_from_device.data(),
+                                  d_nnz_total_dev_host_ptr,
+                                  sizeof(int),
+                                  hipMemcpyDeviceToHost));
+
+        unit_check_general<int>(
+           1, 1, 1, h_nnz_total_dev_host_ptr.data(), h_nnz_total_copied_from_device.data());
+
+        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
+
         if(h_nnz_total_dev_host_ptr[0] > 0)
         {
+            auto d_csr_col_ind_managed
+                = hipsparse_unique_ptr{device_malloc(sizeof(int) * h_nnz_total_dev_host_ptr[0]), device_free};
+            auto d_csr_val_managed
+                = hipsparse_unique_ptr{device_malloc(sizeof(T) * h_nnz_total_dev_host_ptr[0]), device_free};
+
+            int* d_csr_col_ind = (int*)d_csr_col_ind_managed.get();
+            T* d_csr_val = (T*)d_csr_val_managed.get();
+
+            if(!d_csr_col_ind || !d_csr_val )
+            {
+                verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
+                                                "!d_csr_col_ind || !d_csr_val");
+                return HIPSPARSE_STATUS_ALLOC_FAILED;
+            }
+
             CHECK_HIPSPARSE_ERROR(hipsparseXpruneDense2csr(handle,
                                                     M,
                                                     N,
@@ -585,52 +592,41 @@ hipsparseStatus_t testing_prune_dense2csr(Arguments argus)
                                                     d_csr_row_ptr,
                                                     d_csr_col_ind,
                                                     d_temp_buffer));
-        }
 
-        std::cout << "XXXX" << std::endl;
+            std::vector<int> h_csr_row_ptr(M + 1);
+            std::vector<int> h_csr_col_ind(h_nnz_total_dev_host_ptr[0]);
+            std::vector<T> h_csr_val(h_nnz_total_dev_host_ptr[0]);
 
-        std::vector<int> h_csr_row_ptr(M + 1);
-        std::vector<int> h_csr_col_ind(h_nnz_total_dev_host_ptr[0]);
-        std::vector<T> h_csr_val(h_nnz_total_dev_host_ptr[0]);
-
-        CHECK_HIP_ERROR(hipMemcpy(
+            CHECK_HIP_ERROR(hipMemcpy(
             h_csr_row_ptr.data(), d_csr_row_ptr, sizeof(int) * (M + 1), hipMemcpyDeviceToHost));
 
-        std::cout << "YYYY" << std::endl;
-
-        for(int i = 0; i < h_csr_row_ptr.size(); i++)
-        {
-            std::cout << h_csr_row_ptr[i] << " ";
-        }
-        std::cout << "" << std::endl;
-
-        if(h_nnz_total_dev_host_ptr[0] > 0)
-        {
             CHECK_HIP_ERROR(hipMemcpy(
                 h_csr_col_ind.data(), d_csr_col_ind, sizeof(int) * h_nnz_total_dev_host_ptr[0], hipMemcpyDeviceToHost));
             CHECK_HIP_ERROR(hipMemcpy(
                 h_csr_val.data(), d_csr_val, sizeof(T) * h_nnz_total_dev_host_ptr[0], hipMemcpyDeviceToHost));
+
+            // call host and check results
+            std::vector<int> h_nnz_cpu(1);
+            std::vector<int> h_csr_row_ptr_cpu;
+            std::vector<int> h_csr_col_ind_cpu;
+            std::vector<T> h_csr_val_cpu;
+
+            host_prune_dense2csr(M,
+                                N,
+                                h_A,
+                                LDA,
+                                idx_base,
+                                threshold,
+                                h_nnz_cpu[0],
+                                h_csr_val_cpu,
+                                h_csr_row_ptr_cpu,
+                                h_csr_col_ind_cpu);
+
+            unit_check_general<int>(1, 1, 1, h_nnz_cpu.data(), h_nnz_total_dev_host_ptr.data());
+            unit_check_general<int>(1, (M + 1), 1, h_csr_row_ptr_cpu.data(), h_csr_row_ptr.data());
+            unit_check_general<int>(1, h_nnz_total_dev_host_ptr[0], 1, h_csr_col_ind_cpu.data(), h_csr_col_ind.data());
+            unit_check_general<T>(1, h_nnz_total_dev_host_ptr[0], 1, h_csr_val_cpu.data(), h_csr_val.data());
         }
-
-        std::cout << "ZZZZ" << std::endl;
-
-        // call host and check results
-        std::vector<int> h_csr_row_ptr_cpu;
-        std::vector<int> h_csr_col_ind_cpu;
-        std::vector<T> h_csr_val_cpu;
-
-        host_prune_dense2csr(M,
-                             N,
-                             h_A,
-                             LDA,
-                             threshold,
-                             h_csr_val_cpu,
-                             h_csr_row_ptr_cpu,
-                             h_csr_col_ind_cpu);
-
-        unit_check_general<int>(1, (M + 1), 1, h_csr_row_ptr_cpu.data(), h_csr_row_ptr.data());
-        unit_check_general<int>(1, h_nnz_total_dev_host_ptr[0], 1, h_csr_col_ind_cpu.data(), h_csr_col_ind.data());
-        unit_check_general<T>(1, h_nnz_total_dev_host_ptr[0], 1, h_csr_val_cpu.data(), h_csr_val.data());
     }
 
     return HIPSPARSE_STATUS_SUCCESS;

@@ -4732,35 +4732,6 @@ namespace hipsparse
             handle, m, n, descr, A, ld, nnzPerRow, csrVal, csrRowPtr, csrColInd);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     template <>
     hipsparseStatus_t hipsparseXpruneDense2csr_bufferSize(hipsparseHandle_t         handle,
                                                           int                       m,
@@ -4894,28 +4865,6 @@ namespace hipsparse
         return hipsparseDpruneDense2csr(
             handle, m, n, A, lda, threshold, descr, csrVal, csrRowPtr, csrColInd, buffer);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     template <>
     hipsparseStatus_t hipsparseXdense2csc(hipsparseHandle_t         handle,

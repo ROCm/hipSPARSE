@@ -1018,28 +1018,25 @@ void host_dense2csx(int                  m,
 }
 
 template <typename T>
-void host_prune_dense2csr(int               m,
-                          int               n,
-                          const std::vector<T>&       A,
-                          int               lda,
-                          T                           threshold,
-                          std::vector<T>&             csr_val,
-                          std::vector<int>& csr_row_ptr,
-                          std::vector<int>& csr_col_ind)
+void host_prune_dense2csr(int                   m,
+                          int                   n,
+                          const std::vector<T>& A,
+                          int                   lda,
+                          hipsparseIndexBase_t  base,
+                          T                     threshold,
+                          int&                  nnz,
+                          std::vector<T>&       csr_val,
+                          std::vector<int>&     csr_row_ptr,
+                          std::vector<int>&     csr_col_ind)
 {
-    if(threshold < 0)
-    {
-        return;
-    }
-
-    if(m < 0 || n < 0)
+    if(m < 0 || n < 0 || lda < m)
     {
         return;
     }
 
     std::vector<int> nnz_per_row(m, 0);
 
-    int nnz = 0;
+    nnz = 0;
 
     for(int i = 0; i < m; i++)
     {
@@ -1056,6 +1053,8 @@ void host_prune_dense2csr(int               m,
     csr_row_ptr.resize(m + 1, 0);
     csr_col_ind.resize(nnz);
     csr_val.resize(nnz);
+
+    csr_row_ptr[0] = base;
     
     for(int i = 0; i < m; i++)
     {
@@ -1070,7 +1069,7 @@ void host_prune_dense2csr(int               m,
             if(std::abs(A[lda * j + i]) > threshold)
             {
                 csr_val[index] = A[lda * j + i];
-                csr_col_ind[index] = j;
+                csr_col_ind[index] = j + base;
 
                 index++;
             }

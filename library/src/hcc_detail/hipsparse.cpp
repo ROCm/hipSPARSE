@@ -29,6 +29,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <iostream>
+
 #define TO_STR2(x) #x
 #define TO_STR(x) TO_STR2(x)
 
@@ -7411,29 +7413,6 @@ hipsparseStatus_t hipsparseZdense2csr(hipsparseHandle_t         handle,
     return HIPSPARSE_STATUS_SUCCESS;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 hipsparseStatus_t hipsparseSpruneDense2csr_bufferSize(hipsparseHandle_t         handle,
                                                         int                       m,
                                                         int                       n,
@@ -7645,36 +7624,6 @@ hipsparseStatus_t hipsparseDpruneDense2csr(hipsparseHandle_t         handle,
 
     return HIPSPARSE_STATUS_SUCCESS;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 hipsparseStatus_t hipsparseSdense2csc(hipsparseHandle_t         handle,
                                       int                       m,
