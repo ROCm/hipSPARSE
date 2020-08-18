@@ -2847,26 +2847,6 @@ hipsparseStatus_t hipsparseZdense2csr(hipsparseHandle_t         handle,
                                       int*                      csr_row_ptr,
                                       int*                      csr_col_ind);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpruneDense2csr_bufferSize(hipsparseHandle_t         handle,
                                                         int                       m,

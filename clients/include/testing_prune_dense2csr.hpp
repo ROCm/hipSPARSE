@@ -1,25 +1,25 @@
 /* ************************************************************************
- * Copyright (c) 2020 Advanced Micro Devices, Inc.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- *
- * ************************************************************************ */
+* Copyright (c) 2020 Advanced Micro Devices, Inc.
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+* THE SOFTWARE.
+*
+* ************************************************************************ */
 
 #pragma once
 #ifndef TESTING_PRUNE_DENSE2CSR_HPP
@@ -82,7 +82,7 @@ void testing_prune_dense2csr_bad_arg(void)
         PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
         return;
     }
-   
+
     // Test hipsparseXpruneDense2csr_bufferSize
     status = hipsparseXpruneDense2csr_bufferSize(nullptr,
                                 M,
@@ -490,16 +490,16 @@ hipsparseStatus_t testing_prune_dense2csr(Arguments argus)
 
     size_t buffer_size = 512;
     CHECK_HIPSPARSE_ERROR(hipsparseXpruneDense2csr_bufferSize(handle,
-                                                              M,
-                                                              N,
-                                                              d_A,
-                                                              LDA,
-                                                              &threshold,
-                                                              descr,
-                                                              (const T*)nullptr,
-                                                              d_csr_row_ptr,
-                                                              (const int*)nullptr,
-                                                              &buffer_size));
+                                                            M,
+                                                            N,
+                                                            d_A,
+                                                            LDA,
+                                                            &threshold,
+                                                            descr,
+                                                            (const T*)nullptr,
+                                                            d_csr_row_ptr,
+                                                            (const int*)nullptr,
+                                                            &buffer_size));
 
     auto d_temp_buffer_managed
         = hipsparse_unique_ptr{device_malloc(buffer_size), device_free};
@@ -555,12 +555,12 @@ hipsparseStatus_t testing_prune_dense2csr(Arguments argus)
     {
         std::vector<int> h_nnz_total_copied_from_device(1);
         CHECK_HIP_ERROR(hipMemcpy(h_nnz_total_copied_from_device.data(),
-                                  d_nnz_total_dev_host_ptr,
-                                  sizeof(int),
-                                  hipMemcpyDeviceToHost));
+                                d_nnz_total_dev_host_ptr,
+                                sizeof(int),
+                                hipMemcpyDeviceToHost));
 
         unit_check_general<int>(
-           1, 1, 1, h_nnz_total_dev_host_ptr.data(), h_nnz_total_copied_from_device.data());
+        1, 1, 1, h_nnz_total_dev_host_ptr.data(), h_nnz_total_copied_from_device.data());
 
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
 

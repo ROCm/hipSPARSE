@@ -668,21 +668,6 @@ namespace hipsparse
                                           int*                      csrRowPtr,
                                           int*                      csrColInd);
 
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     template <typename T>
     hipsparseStatus_t hipsparseXpruneDense2csr_bufferSize(hipsparseHandle_t         handle,
                                                           int                       m,
