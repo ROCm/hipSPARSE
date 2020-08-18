@@ -3818,40 +3818,6 @@ namespace hipsparse
                                 pBuffer);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     template <>
     hipsparseStatus_t hipsparseXbsric02_bufferSize(hipsparseHandle_t         handle,
                                                 hipsparseDirection_t      dirA,

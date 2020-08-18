@@ -719,33 +719,6 @@ namespace hipsparse
                                                int*                      csrColInd,
                                                void*                     buffer);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     template <typename T>
     hipsparseStatus_t hipsparseXdense2csc(hipsparseHandle_t         handle,
                                           int                       m,
