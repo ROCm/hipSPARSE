@@ -367,6 +367,8 @@ pushd .
   cmake_common_options=""
   cmake_client_options=""
 
+  cmake_build_static_options=""
+
   # build type
   if [[ "${build_release}" == true ]]; then
     mkdir -p ${build_dir}/release/clients && cd ${build_dir}/release
@@ -379,6 +381,7 @@ pushd .
   # library type
   if [[ "${build_static}" == true ]]; then
     cmake_common_options="${cmake_common_options} -DBUILD_SHARED_LIBS=OFF"
+    cmake_build_static_options=" -no-pie"
   fi
 
   # clients
@@ -407,11 +410,11 @@ pushd .
       -DCMAKE_SHARED_LINKER_FLAGS="${rocm_rpath}" \
       -DCMAKE_PREFIX_PATH="${rocm_path} ${rocm_path}/hcc ${rocm_path}/hip" \
       -DCMAKE_MODULE_PATH="${rocm_path}/hip/cmake" \
-      -DCMAKE_EXE_LINKER_FLAGS=" -Wl,--enable-new-dtags -Wl,--rpath,${rocm_path}/lib:${rocm_path}/lib64" \
+      -DCMAKE_EXE_LINKER_FLAGS=" -Wl,--enable-new-dtags -Wl,--rpath,${rocm_path}/lib:${rocm_path}/lib64 ${cmake_build_static_options}" \
       -DROCM_DISABLE_LDCONFIG=ON \
       -DROCM_PATH="${rocm_path}" ../..
   else
-    ${cmake_executable} ${cmake_common_options} ${cmake_client_options} -DCMAKE_INSTALL_PREFIX=hipsparse-install -DROCM_PATH=${rocm_path} ../..
+    ${cmake_executable} -DCMAKE_EXE_LINKER_FLAGS=" ${cmake_build_static_options}" ${cmake_common_options} ${cmake_client_options} -DCMAKE_INSTALL_PREFIX=hipsparse-install -DROCM_PATH=${rocm_path} ../..
   fi
 
   check_exit_code "$?"
