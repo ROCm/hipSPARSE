@@ -244,7 +244,7 @@ hipsparseStatus_t hipsparseDestroyCsrgemm2Info(csrgemm2Info_t info);
 /* --- Sparse Level 1 routines --- */
 
 /* Description: Addition of a scalar multiple of a sparse vector x
-    and a dense vector y. */
+and a dense vector y. */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSaxpyi(hipsparseHandle_t    handle,
                                   int                  nnz,
