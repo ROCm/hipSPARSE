@@ -30,12 +30,12 @@ namespace hipsparse
 
     template <>
     hipsparseStatus_t hipsparseXaxpyi(hipsparseHandle_t    handle,
-                                    int                  nnz,
-                                    const float*         alpha,
-                                    const float*         x_val,
-                                    const int*           x_ind,
-                                    float*               y,
-                                    hipsparseIndexBase_t idx_base)
+                                        int                  nnz,
+                                        const float*         alpha,
+                                        const float*         x_val,
+                                        const int*           x_ind,
+                                        float*               y,
+                                        hipsparseIndexBase_t idx_base)
     {
         return hipsparseSaxpyi(handle, nnz, alpha, x_val, x_ind, y, idx_base);
     }
