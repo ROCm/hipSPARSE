@@ -7480,147 +7480,147 @@ hipsparseStatus_t hipsparseSpruneDense2csr_bufferSizeExt(hipsparseHandle_t      
                                                             size_t*                   bufferSize)
 {
     RETURN_IF_ROCSPARSE_ERROR(rocsparse_sprune_dense2csr_buffer_size((rocsparse_handle)handle,
-                                                                    m,
-                                                                    n,
-                                                                    A,
-                                                                    lda,
-                                                                    threshold,
-                                                                    (const rocsparse_mat_descr)descr,
-                                                                    csrVal,
-                                                                    csrRowPtr,
-                                                                    csrColInd,
-                                                                    bufferSize));
+                                                                     m,
+                                                                     n,
+                                                                     A,
+                                                                     lda,
+                                                                     threshold,
+                                                                     (const rocsparse_mat_descr)descr,
+                                                                     csrVal,
+                                                                     csrRowPtr,
+                                                                     csrColInd,
+                                                                     bufferSize));
 
     return HIPSPARSE_STATUS_SUCCESS;
 }
 
 hipsparseStatus_t hipsparseDpruneDense2csr_bufferSizeExt(hipsparseHandle_t         handle,
-                                                    int                       m,
-                                                    int                       n,
-                                                    const double*             A,
-                                                    int                       lda,
-                                                    const double*             threshold,
-                                                    const hipsparseMatDescr_t descr,
-                                                    const double*             csrVal,
-                                                    const int*                csrRowPtr,
-                                                    const int*                csrColInd,
-                                                    size_t*                   bufferSize)
+                                                         int                       m,
+                                                         int                       n,
+                                                         const double*             A,
+                                                         int                       lda,
+                                                         const double*             threshold,
+                                                         const hipsparseMatDescr_t descr,
+                                                         const double*             csrVal,
+                                                         const int*                csrRowPtr,
+                                                         const int*                csrColInd,
+                                                         size_t*                   bufferSize)
 {
     RETURN_IF_ROCSPARSE_ERROR(rocsparse_dprune_dense2csr_buffer_size((rocsparse_handle)handle,
-                                                                    m,
-                                                                    n,
-                                                                    A,
-                                                                    lda,
-                                                                    threshold,
-                                                                    (const rocsparse_mat_descr)descr,
-                                                                    csrVal,
-                                                                    csrRowPtr,
-                                                                    csrColInd,
-                                                                    bufferSize));
+                                                                     m,
+                                                                     n,
+                                                                     A,
+                                                                     lda,
+                                                                     threshold,
+                                                                     (const rocsparse_mat_descr)descr,
+                                                                     csrVal,
+                                                                     csrRowPtr,
+                                                                     csrColInd,
+                                                                     bufferSize));
 
     return HIPSPARSE_STATUS_SUCCESS;
 }
 
 hipsparseStatus_t hipsparseSpruneDense2csrNnz(hipsparseHandle_t         handle,
-                                                int                       m,
-                                                int                       n,
-                                                const float*              A,
-                                                int                       lda,
-                                                const float*              threshold,
-                                                const hipsparseMatDescr_t descr,
-                                                int*                      csrRowPtr,
-                                                int*                      nnzTotalDevHostPtr,
-                                                void*                     buffer)
+                                              int                       m,
+                                              int                       n,
+                                              const float*              A,
+                                              int                       lda,
+                                              const float*              threshold,
+                                              const hipsparseMatDescr_t descr,
+                                              int*                      csrRowPtr,
+                                              int*                      nnzTotalDevHostPtr,
+                                              void*                     buffer)
 {
     RETURN_IF_ROCSPARSE_ERROR(rocsparse_sprune_dense2csr_nnz((rocsparse_handle)handle,
-                                                                    m,
-                                                                    n,
-                                                                    A,
-                                                                    lda,
-                                                                    threshold,
-                                                                    (const rocsparse_mat_descr)descr,
-                                                                    csrRowPtr,
-                                                                    nnzTotalDevHostPtr,
-                                                                    buffer));
+                                                             m,
+                                                             n,
+                                                             A,
+                                                             lda,
+                                                             threshold,
+                                                             (const rocsparse_mat_descr)descr,
+                                                             csrRowPtr,
+                                                             nnzTotalDevHostPtr,
+                                                             buffer));
 
     return HIPSPARSE_STATUS_SUCCESS;
 }
 
 hipsparseStatus_t hipsparseDpruneDense2csrNnz(hipsparseHandle_t         handle,
-                                            int                       m,
-                                            int                       n,
-                                            const double*             A,
-                                            int                       lda,
-                                            const double*             threshold,
-                                            const hipsparseMatDescr_t descr,
-                                            int*                      csrRowPtr,
-                                            int*                      nnzTotalDevHostPtr,
-                                            void*                     buffer)
+                                             int                       m,
+                                             int                       n,
+                                             const double*             A,
+                                             int                       lda,
+                                             const double*             threshold,
+                                             const hipsparseMatDescr_t descr,
+                                             int*                      csrRowPtr,
+                                             int*                      nnzTotalDevHostPtr,
+                                             void*                     buffer)
 {
     RETURN_IF_ROCSPARSE_ERROR(rocsparse_dprune_dense2csr_nnz((rocsparse_handle)handle,
-                                                                    m,
-                                                                    n,
-                                                                    A,
-                                                                    lda,
-                                                                    threshold,
-                                                                    (const rocsparse_mat_descr)descr,
-                                                                    csrRowPtr,
-                                                                    nnzTotalDevHostPtr,
-                                                                    buffer));
+                                                             m,
+                                                             n,
+                                                             A,
+                                                             lda,
+                                                             threshold,
+                                                             (const rocsparse_mat_descr)descr,
+                                                             csrRowPtr,
+                                                             nnzTotalDevHostPtr,
+                                                             buffer));
 
     return HIPSPARSE_STATUS_SUCCESS;
 }
 
 hipsparseStatus_t hipsparseSpruneDense2csr(hipsparseHandle_t         handle,
-                                        int                       m,
-                                        int                       n,
-                                        const float*              A,
-                                        int                       lda,
-                                        const float*              threshold,
-                                        const hipsparseMatDescr_t descr,
-                                        float*                    csrVal,
-                                        const int*                csrRowPtr,
-                                        int*                      csrColInd,
-                                        void*                     buffer)
+                                           int                       m,
+                                           int                       n,
+                                           const float*              A,
+                                           int                       lda,
+                                           const float*              threshold,
+                                           const hipsparseMatDescr_t descr,
+                                           float*                    csrVal,
+                                           const int*                csrRowPtr,
+                                           int*                      csrColInd,
+                                           void*                     buffer)
 {
     RETURN_IF_ROCSPARSE_ERROR(rocsparse_sprune_dense2csr((rocsparse_handle)handle,
-                                                                    m,
-                                                                    n,
-                                                                    A,
-                                                                    lda,
-                                                                    threshold,
-                                                                    (const rocsparse_mat_descr)descr,
-                                                                    csrVal,
-                                                                    csrRowPtr,
-                                                                    csrColInd,
-                                                                    buffer));
+                                                         m,
+                                                         n,
+                                                         A,
+                                                         lda,
+                                                         threshold,
+                                                         (const rocsparse_mat_descr)descr,
+                                                         csrVal,
+                                                         csrRowPtr,
+                                                         csrColInd,
+                                                         buffer));
 
     return HIPSPARSE_STATUS_SUCCESS;
 }
 
 hipsparseStatus_t hipsparseDpruneDense2csr(hipsparseHandle_t         handle,
-                                    int                       m,
-                                    int                       n,
-                                    const double*             A,
-                                    int                       lda,
-                                    const double*             threshold,
-                                    const hipsparseMatDescr_t descr,
-                                    double*                   csrVal,
-                                    const int*                csrRowPtr,
-                                    int*                      csrColInd,
-                                    void*                     buffer)
+                                           int                       m,
+                                           int                       n,
+                                           const double*             A,
+                                           int                       lda,
+                                           const double*             threshold,
+                                           const hipsparseMatDescr_t descr,
+                                           double*                   csrVal,
+                                           const int*                csrRowPtr,
+                                           int*                      csrColInd,
+                                           void*                     buffer)
 {
     RETURN_IF_ROCSPARSE_ERROR(rocsparse_dprune_dense2csr((rocsparse_handle)handle,
-                                                                    m,
-                                                                    n,
-                                                                    A,
-                                                                    lda,
-                                                                    threshold,
-                                                                    (const rocsparse_mat_descr)descr,
-                                                                    csrVal,
-                                                                    csrRowPtr,
-                                                                    csrColInd,
-                                                                    buffer));
+                                                         m,
+                                                         n,
+                                                         A,
+                                                         lda,
+                                                         threshold,
+                                                         (const rocsparse_mat_descr)descr,
+                                                         csrVal,
+                                                         csrRowPtr,
+                                                         csrColInd,
+                                                         buffer));
 
     return HIPSPARSE_STATUS_SUCCESS;
 }
