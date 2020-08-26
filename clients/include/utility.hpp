@@ -1019,15 +1019,15 @@ void host_dense2csx(int                  m,
 
 template <typename T>
 void host_prune_dense2csr(int                   m,
-                          int                   n,
-                          const std::vector<T>& A,
-                          int                   lda,
-                          hipsparseIndexBase_t  base,
-                          T                     threshold,
-                          int&                  nnz,
-                          std::vector<T>&       csr_val,
-                          std::vector<int>&     csr_row_ptr,
-                          std::vector<int>&     csr_col_ind)
+                        int                   n,
+                        const std::vector<T>& A,
+                        int                   lda,
+                        hipsparseIndexBase_t  base,
+                        T                     threshold,
+                        int&                  nnz,
+                        std::vector<T>&       csr_val,
+                        std::vector<int>&     csr_row_ptr,
+                        std::vector<int>&     csr_col_ind)
 {
     if(m < 0 || n < 0 || lda < m)
     {
