@@ -566,461 +566,461 @@ hipsparseStatus_t hipsparseDestroyCsrgemm2Info(csrgemm2Info_t info)
 }
 
 hipsparseStatus_t hipsparseSaxpyi(hipsparseHandle_t    handle,
-                                int                  nnz,
-                                const float*         alpha,
-                                const float*         xVal,
-                                const int*           xInd,
-                                float*               y,
-                                hipsparseIndexBase_t idxBase)
+                                    int                  nnz,
+                                    const float*         alpha,
+                                    const float*         xVal,
+                                    const int*           xInd,
+                                    float*               y,
+                                    hipsparseIndexBase_t idxBase)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseSaxpyi(
         (cusparseHandle_t)handle, nnz, alpha, xVal, xInd, y, hipIndexBaseToCudaIndexBase(idxBase)));
 }
 
 hipsparseStatus_t hipsparseDaxpyi(hipsparseHandle_t    handle,
-                                int                  nnz,
-                                const double*        alpha,
-                                const double*        xVal,
-                                const int*           xInd,
-                                double*              y,
-                                hipsparseIndexBase_t idxBase)
+                                    int                  nnz,
+                                    const double*        alpha,
+                                    const double*        xVal,
+                                    const int*           xInd,
+                                    double*              y,
+                                    hipsparseIndexBase_t idxBase)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseDaxpyi(
         (cusparseHandle_t)handle, nnz, alpha, xVal, xInd, y, hipIndexBaseToCudaIndexBase(idxBase)));
 }
 
 hipsparseStatus_t hipsparseCaxpyi(hipsparseHandle_t    handle,
-                                int                  nnz,
-                                const hipComplex*    alpha,
-                                const hipComplex*    xVal,
-                                const int*           xInd,
-                                hipComplex*          y,
-                                hipsparseIndexBase_t idxBase)
+                                    int                  nnz,
+                                    const hipComplex*    alpha,
+                                    const hipComplex*    xVal,
+                                    const int*           xInd,
+                                    hipComplex*          y,
+                                    hipsparseIndexBase_t idxBase)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseCaxpyi((cusparseHandle_t)handle,
-                                                    nnz,
-                                                    (const cuComplex*)alpha,
-                                                    (const cuComplex*)xVal,
-                                                    xInd,
-                                                    (cuComplex*)y,
-                                                    hipIndexBaseToCudaIndexBase(idxBase)));
+                                                        nnz,
+                                                        (const cuComplex*)alpha,
+                                                        (const cuComplex*)xVal,
+                                                        xInd,
+                                                        (cuComplex*)y,
+                                                        hipIndexBaseToCudaIndexBase(idxBase)));
 }
 
 hipsparseStatus_t hipsparseZaxpyi(hipsparseHandle_t       handle,
-                                int                     nnz,
-                                const hipDoubleComplex* alpha,
-                                const hipDoubleComplex* xVal,
-                                const int*              xInd,
-                                hipDoubleComplex*       y,
-                                hipsparseIndexBase_t    idxBase)
+                                    int                     nnz,
+                                    const hipDoubleComplex* alpha,
+                                    const hipDoubleComplex* xVal,
+                                    const int*              xInd,
+                                    hipDoubleComplex*       y,
+                                    hipsparseIndexBase_t    idxBase)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseZaxpyi((cusparseHandle_t)handle,
-                                                    nnz,
-                                                    (const cuDoubleComplex*)alpha,
-                                                    (const cuDoubleComplex*)xVal,
-                                                    xInd,
-                                                    (cuDoubleComplex*)y,
-                                                    hipIndexBaseToCudaIndexBase(idxBase)));
+                                                        nnz,
+                                                        (const cuDoubleComplex*)alpha,
+                                                        (const cuDoubleComplex*)xVal,
+                                                        xInd,
+                                                        (cuDoubleComplex*)y,
+                                                        hipIndexBaseToCudaIndexBase(idxBase)));
 }
 
 hipsparseStatus_t hipsparseSdoti(hipsparseHandle_t    handle,
-                                int                  nnz,
-                                const float*         xVal,
-                                const int*           xInd,
-                                const float*         y,
-                                float*               result,
-                                hipsparseIndexBase_t idxBase)
+                                    int                  nnz,
+                                    const float*         xVal,
+                                    const int*           xInd,
+                                    const float*         y,
+                                    float*               result,
+                                    hipsparseIndexBase_t idxBase)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseSdoti((cusparseHandle_t)handle,
-                                                    nnz,
-                                                    xVal,
-                                                    xInd,
-                                                    y,
-                                                    result,
-                                                    hipIndexBaseToCudaIndexBase(idxBase)));
+                                                        nnz,
+                                                        xVal,
+                                                        xInd,
+                                                        y,
+                                                        result,
+                                                        hipIndexBaseToCudaIndexBase(idxBase)));
 }
 
 hipsparseStatus_t hipsparseDdoti(hipsparseHandle_t    handle,
-                                int                  nnz,
-                                const double*        xVal,
-                                const int*           xInd,
-                                const double*        y,
-                                double*              result,
-                                hipsparseIndexBase_t idxBase)
+                                    int                  nnz,
+                                    const double*        xVal,
+                                    const int*           xInd,
+                                    const double*        y,
+                                    double*              result,
+                                    hipsparseIndexBase_t idxBase)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseDdoti((cusparseHandle_t)handle,
-                                                    nnz,
-                                                    xVal,
-                                                    xInd,
-                                                    y,
-                                                    result,
-                                                    hipIndexBaseToCudaIndexBase(idxBase)));
+                                                        nnz,
+                                                        xVal,
+                                                        xInd,
+                                                        y,
+                                                        result,
+                                                        hipIndexBaseToCudaIndexBase(idxBase)));
 }
 
 hipsparseStatus_t hipsparseCdoti(hipsparseHandle_t    handle,
-                                int                  nnz,
-                                const hipComplex*    xVal,
-                                const int*           xInd,
-                                const hipComplex*    y,
-                                hipComplex*          result,
-                                hipsparseIndexBase_t idxBase)
+                                    int                  nnz,
+                                    const hipComplex*    xVal,
+                                    const int*           xInd,
+                                    const hipComplex*    y,
+                                    hipComplex*          result,
+                                    hipsparseIndexBase_t idxBase)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseCdoti((cusparseHandle_t)handle,
-                                                    nnz,
-                                                    (const cuComplex*)xVal,
-                                                    xInd,
-                                                    (const cuComplex*)y,
-                                                    (cuComplex*)result,
-                                                    hipIndexBaseToCudaIndexBase(idxBase)));
+                                                        nnz,
+                                                        (const cuComplex*)xVal,
+                                                        xInd,
+                                                        (const cuComplex*)y,
+                                                        (cuComplex*)result,
+                                                        hipIndexBaseToCudaIndexBase(idxBase)));
 }
 
 hipsparseStatus_t hipsparseZdoti(hipsparseHandle_t       handle,
-                                int                     nnz,
-                                const hipDoubleComplex* xVal,
-                                const int*              xInd,
-                                const hipDoubleComplex* y,
-                                hipDoubleComplex*       result,
-                                hipsparseIndexBase_t    idxBase)
-{
+                                    int                     nnz,
+                                    const hipDoubleComplex* xVal,
+                                    const int*              xInd,
+                                    const hipDoubleComplex* y,
+                                    hipDoubleComplex*       result,
+                                    hipsparseIndexBase_t    idxBase)
+    {
     return hipCUSPARSEStatusToHIPStatus(cusparseZdoti((cusparseHandle_t)handle,
-                                                    nnz,
-                                                    (const cuDoubleComplex*)xVal,
-                                                    xInd,
-                                                    (const cuDoubleComplex*)y,
-                                                    (cuDoubleComplex*)result,
-                                                    hipIndexBaseToCudaIndexBase(idxBase)));
+                                                        nnz,
+                                                        (const cuDoubleComplex*)xVal,
+                                                        xInd,
+                                                        (const cuDoubleComplex*)y,
+                                                        (cuDoubleComplex*)result,
+                                                        hipIndexBaseToCudaIndexBase(idxBase)));
 }
 
 hipsparseStatus_t hipsparseCdotci(hipsparseHandle_t    handle,
-                                int                  nnz,
-                                const hipComplex*    xVal,
-                                const int*           xInd,
-                                const hipComplex*    y,
-                                hipComplex*          result,
-                                hipsparseIndexBase_t idxBase)
+                                    int                  nnz,
+                                    const hipComplex*    xVal,
+                                    const int*           xInd,
+                                    const hipComplex*    y,
+                                    hipComplex*          result,
+                                    hipsparseIndexBase_t idxBase)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseCdotci((cusparseHandle_t)handle,
-                                                    nnz,
-                                                    (const cuComplex*)xVal,
-                                                    xInd,
-                                                    (const cuComplex*)y,
-                                                    (cuComplex*)result,
-                                                    hipIndexBaseToCudaIndexBase(idxBase)));
+                                                        nnz,
+                                                        (const cuComplex*)xVal,
+                                                        xInd,
+                                                        (const cuComplex*)y,
+                                                        (cuComplex*)result,
+                                                        hipIndexBaseToCudaIndexBase(idxBase)));
 }
 
 hipsparseStatus_t hipsparseZdotci(hipsparseHandle_t       handle,
-                                int                     nnz,
-                                const hipDoubleComplex* xVal,
-                                const int*              xInd,
-                                const hipDoubleComplex* y,
-                                hipDoubleComplex*       result,
-                                hipsparseIndexBase_t    idxBase)
+                                    int                     nnz,
+                                    const hipDoubleComplex* xVal,
+                                    const int*              xInd,
+                                    const hipDoubleComplex* y,
+                                    hipDoubleComplex*       result,
+                                    hipsparseIndexBase_t    idxBase)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseZdotci((cusparseHandle_t)handle,
-                                                    nnz,
-                                                    (const cuDoubleComplex*)xVal,
-                                                    xInd,
-                                                    (const cuDoubleComplex*)y,
-                                                    (cuDoubleComplex*)result,
-                                                    hipIndexBaseToCudaIndexBase(idxBase)));
+                                                        nnz,
+                                                        (const cuDoubleComplex*)xVal,
+                                                        xInd,
+                                                        (const cuDoubleComplex*)y,
+                                                        (cuDoubleComplex*)result,
+                                                        hipIndexBaseToCudaIndexBase(idxBase)));
 }
 
 hipsparseStatus_t hipsparseSgthr(hipsparseHandle_t    handle,
-                                int                  nnz,
-                                const float*         y,
-                                float*               xVal,
-                                const int*           xInd,
-                                hipsparseIndexBase_t idxBase)
+                                    int                  nnz,
+                                    const float*         y,
+                                    float*               xVal,
+                                    const int*           xInd,
+                                    hipsparseIndexBase_t idxBase)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseSgthr(
         (cusparseHandle_t)handle, nnz, y, xVal, xInd, hipIndexBaseToCudaIndexBase(idxBase)));
 }
 
 hipsparseStatus_t hipsparseDgthr(hipsparseHandle_t    handle,
-                                int                  nnz,
-                                const double*        y,
-                                double*              xVal,
-                                const int*           xInd,
-                                hipsparseIndexBase_t idxBase)
+                                    int                  nnz,
+                                    const double*        y,
+                                    double*              xVal,
+                                    const int*           xInd,
+                                    hipsparseIndexBase_t idxBase)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseDgthr(
         (cusparseHandle_t)handle, nnz, y, xVal, xInd, hipIndexBaseToCudaIndexBase(idxBase)));
 }
 
 hipsparseStatus_t hipsparseCgthr(hipsparseHandle_t    handle,
-                                int                  nnz,
-                                const hipComplex*    y,
-                                hipComplex*          xVal,
-                                const int*           xInd,
-                                hipsparseIndexBase_t idxBase)
+                                    int                  nnz,
+                                    const hipComplex*    y,
+                                    hipComplex*          xVal,
+                                    const int*           xInd,
+                                    hipsparseIndexBase_t idxBase)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseCgthr((cusparseHandle_t)handle,
-                                                    nnz,
-                                                    (const cuComplex*)y,
-                                                    (cuComplex*)xVal,
-                                                    xInd,
-                                                    hipIndexBaseToCudaIndexBase(idxBase)));
+                                                        nnz,
+                                                        (const cuComplex*)y,
+                                                        (cuComplex*)xVal,
+                                                        xInd,
+                                                        hipIndexBaseToCudaIndexBase(idxBase)));
 }
 
 hipsparseStatus_t hipsparseZgthr(hipsparseHandle_t       handle,
-                                int                     nnz,
-                                const hipDoubleComplex* y,
-                                hipDoubleComplex*       xVal,
-                                const int*              xInd,
-                                hipsparseIndexBase_t    idxBase)
+                                    int                     nnz,
+                                    const hipDoubleComplex* y,
+                                    hipDoubleComplex*       xVal,
+                                    const int*              xInd,
+                                    hipsparseIndexBase_t    idxBase)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseZgthr((cusparseHandle_t)handle,
-                                                    nnz,
-                                                    (const cuDoubleComplex*)y,
-                                                    (cuDoubleComplex*)xVal,
-                                                    xInd,
-                                                    hipIndexBaseToCudaIndexBase(idxBase)));
+                                                        nnz,
+                                                        (const cuDoubleComplex*)y,
+                                                        (cuDoubleComplex*)xVal,
+                                                        xInd,
+                                                        hipIndexBaseToCudaIndexBase(idxBase)));
 }
 
 hipsparseStatus_t hipsparseSgthrz(hipsparseHandle_t    handle,
-                                int                  nnz,
-                                float*               y,
-                                float*               xVal,
-                                const int*           xInd,
-                                hipsparseIndexBase_t idxBase)
+                                    int                  nnz,
+                                    float*               y,
+                                    float*               xVal,
+                                    const int*           xInd,
+                                    hipsparseIndexBase_t idxBase)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseSgthrz(
         (cusparseHandle_t)handle, nnz, y, xVal, xInd, hipIndexBaseToCudaIndexBase(idxBase)));
 }
 
 hipsparseStatus_t hipsparseDgthrz(hipsparseHandle_t    handle,
-                                int                  nnz,
-                                double*              y,
-                                double*              xVal,
-                                const int*           xInd,
-                                hipsparseIndexBase_t idxBase)
+                                    int                  nnz,
+                                    double*              y,
+                                    double*              xVal,
+                                    const int*           xInd,
+                                    hipsparseIndexBase_t idxBase)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseDgthrz(
         (cusparseHandle_t)handle, nnz, y, xVal, xInd, hipIndexBaseToCudaIndexBase(idxBase)));
 }
 
 hipsparseStatus_t hipsparseCgthrz(hipsparseHandle_t    handle,
-                                int                  nnz,
-                                hipComplex*          y,
-                                hipComplex*          xVal,
-                                const int*           xInd,
-                                hipsparseIndexBase_t idxBase)
+                                    int                  nnz,
+                                    hipComplex*          y,
+                                    hipComplex*          xVal,
+                                    const int*           xInd,
+                                    hipsparseIndexBase_t idxBase)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseCgthrz((cusparseHandle_t)handle,
-                                                    nnz,
-                                                    (cuComplex*)y,
-                                                    (cuComplex*)xVal,
-                                                    xInd,
-                                                    hipIndexBaseToCudaIndexBase(idxBase)));
+                                                        nnz,
+                                                        (cuComplex*)y,
+                                                        (cuComplex*)xVal,
+                                                        xInd,
+                                                        hipIndexBaseToCudaIndexBase(idxBase)));
 }
 
 hipsparseStatus_t hipsparseZgthrz(hipsparseHandle_t    handle,
-                                int                  nnz,
-                                hipDoubleComplex*    y,
-                                hipDoubleComplex*    xVal,
-                                const int*           xInd,
-                                hipsparseIndexBase_t idxBase)
+                                    int                  nnz,
+                                    hipDoubleComplex*    y,
+                                    hipDoubleComplex*    xVal,
+                                    const int*           xInd,
+                                    hipsparseIndexBase_t idxBase)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseZgthrz((cusparseHandle_t)handle,
-                                                    nnz,
-                                                    (cuDoubleComplex*)y,
-                                                    (cuDoubleComplex*)xVal,
-                                                    xInd,
-                                                    hipIndexBaseToCudaIndexBase(idxBase)));
+                                                        nnz,
+                                                        (cuDoubleComplex*)y,
+                                                        (cuDoubleComplex*)xVal,
+                                                        xInd,
+                                                        hipIndexBaseToCudaIndexBase(idxBase)));
 }
 
 hipsparseStatus_t hipsparseSroti(hipsparseHandle_t    handle,
-                                int                  nnz,
-                                float*               xVal,
-                                const int*           xInd,
-                                float*               y,
-                                const float*         c,
-                                const float*         s,
-                                hipsparseIndexBase_t idxBase)
+                                    int                  nnz,
+                                    float*               xVal,
+                                    const int*           xInd,
+                                    float*               y,
+                                    const float*         c,
+                                    const float*         s,
+                                    hipsparseIndexBase_t idxBase)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseSroti(
         (cusparseHandle_t)handle, nnz, xVal, xInd, y, c, s, hipIndexBaseToCudaIndexBase(idxBase)));
 }
 
 hipsparseStatus_t hipsparseDroti(hipsparseHandle_t    handle,
-                                int                  nnz,
-                                double*              xVal,
-                                const int*           xInd,
-                                double*              y,
-                                const double*        c,
-                                const double*        s,
-                                hipsparseIndexBase_t idxBase)
+                                    int                  nnz,
+                                    double*              xVal,
+                                    const int*           xInd,
+                                    double*              y,
+                                    const double*        c,
+                                    const double*        s,
+                                    hipsparseIndexBase_t idxBase)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseDroti(
         (cusparseHandle_t)handle, nnz, xVal, xInd, y, c, s, hipIndexBaseToCudaIndexBase(idxBase)));
 }
 
 hipsparseStatus_t hipsparseSsctr(hipsparseHandle_t    handle,
-                                int                  nnz,
-                                const float*         xVal,
-                                const int*           xInd,
-                                float*               y,
-                                hipsparseIndexBase_t idxBase)
+                                    int                  nnz,
+                                    const float*         xVal,
+                                    const int*           xInd,
+                                    float*               y,
+                                    hipsparseIndexBase_t idxBase)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseSsctr(
         (cusparseHandle_t)handle, nnz, xVal, xInd, y, hipIndexBaseToCudaIndexBase(idxBase)));
 }
 
 hipsparseStatus_t hipsparseDsctr(hipsparseHandle_t    handle,
-                                int                  nnz,
-                                const double*        xVal,
-                                const int*           xInd,
-                                double*              y,
-                                hipsparseIndexBase_t idxBase)
+                                    int                  nnz,
+                                    const double*        xVal,
+                                    const int*           xInd,
+                                    double*              y,
+                                    hipsparseIndexBase_t idxBase)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseDsctr(
         (cusparseHandle_t)handle, nnz, xVal, xInd, y, hipIndexBaseToCudaIndexBase(idxBase)));
 }
 
 hipsparseStatus_t hipsparseCsctr(hipsparseHandle_t    handle,
-                                int                  nnz,
-                                const hipComplex*    xVal,
-                                const int*           xInd,
-                                hipComplex*          y,
-                                hipsparseIndexBase_t idxBase)
+                                    int                  nnz,
+                                    const hipComplex*    xVal,
+                                    const int*           xInd,
+                                    hipComplex*          y,
+                                    hipsparseIndexBase_t idxBase)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseCsctr((cusparseHandle_t)handle,
-                                                    nnz,
-                                                    (const cuComplex*)xVal,
-                                                    xInd,
-                                                    (cuComplex*)y,
-                                                    hipIndexBaseToCudaIndexBase(idxBase)));
+                                                        nnz,
+                                                        (const cuComplex*)xVal,
+                                                        xInd,
+                                                        (cuComplex*)y,
+                                                        hipIndexBaseToCudaIndexBase(idxBase)));
 }
 
 hipsparseStatus_t hipsparseZsctr(hipsparseHandle_t       handle,
-                                int                     nnz,
-                                const hipDoubleComplex* xVal,
-                                const int*              xInd,
-                                hipDoubleComplex*       y,
-                                hipsparseIndexBase_t    idxBase)
+                                    int                     nnz,
+                                    const hipDoubleComplex* xVal,
+                                    const int*              xInd,
+                                    hipDoubleComplex*       y,
+                                    hipsparseIndexBase_t    idxBase)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseZsctr((cusparseHandle_t)handle,
-                                                    nnz,
-                                                    (const cuDoubleComplex*)xVal,
-                                                    xInd,
-                                                    (cuDoubleComplex*)y,
-                                                    hipIndexBaseToCudaIndexBase(idxBase)));
+                                                        nnz,
+                                                        (const cuDoubleComplex*)xVal,
+                                                        xInd,
+                                                        (cuDoubleComplex*)y,
+                                                        hipIndexBaseToCudaIndexBase(idxBase)));
 }
 
 hipsparseStatus_t hipsparseScsrmv(hipsparseHandle_t         handle,
-                                hipsparseOperation_t      transA,
-                                int                       m,
-                                int                       n,
-                                int                       nnz,
-                                const float*              alpha,
-                                const hipsparseMatDescr_t descrA,
-                                const float*              csrSortedValA,
-                                const int*                csrSortedRowPtrA,
-                                const int*                csrSortedColIndA,
-                                const float*              x,
-                                const float*              beta,
-                                float*                    y)
+                                    hipsparseOperation_t      transA,
+                                    int                       m,
+                                    int                       n,
+                                    int                       nnz,
+                                    const float*              alpha,
+                                    const hipsparseMatDescr_t descrA,
+                                    const float*              csrSortedValA,
+                                    const int*                csrSortedRowPtrA,
+                                    const int*                csrSortedColIndA,
+                                    const float*              x,
+                                    const float*              beta,
+                                    float*                    y)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseScsrmv((cusparseHandle_t)handle,
-                                                    hipOperationToCudaOperation(transA),
-                                                    m,
-                                                    n,
-                                                    nnz,
-                                                    alpha,
-                                                    (const cusparseMatDescr_t)descrA,
-                                                    csrSortedValA,
-                                                    csrSortedRowPtrA,
-                                                    csrSortedColIndA,
-                                                    x,
-                                                    beta,
-                                                    y));
+                                                        hipOperationToCudaOperation(transA),
+                                                        m,
+                                                        n,
+                                                        nnz,
+                                                        alpha,
+                                                        (const cusparseMatDescr_t)descrA,
+                                                        csrSortedValA,
+                                                        csrSortedRowPtrA,
+                                                        csrSortedColIndA,
+                                                        x,
+                                                        beta,
+                                                        y));
 }
 
 hipsparseStatus_t hipsparseDcsrmv(hipsparseHandle_t         handle,
-                                hipsparseOperation_t      transA,
-                                int                       m,
-                                int                       n,
-                                int                       nnz,
-                                const double*             alpha,
-                                const hipsparseMatDescr_t descrA,
-                                const double*             csrSortedValA,
-                                const int*                csrSortedRowPtrA,
-                                const int*                csrSortedColIndA,
-                                const double*             x,
-                                const double*             beta,
-                                double*                   y)
+                                    hipsparseOperation_t      transA,
+                                    int                       m,
+                                    int                       n,
+                                    int                       nnz,
+                                    const double*             alpha,
+                                    const hipsparseMatDescr_t descrA,
+                                    const double*             csrSortedValA,
+                                    const int*                csrSortedRowPtrA,
+                                    const int*                csrSortedColIndA,
+                                    const double*             x,
+                                    const double*             beta,
+                                    double*                   y)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseDcsrmv((cusparseHandle_t)handle,
-                                                    hipOperationToCudaOperation(transA),
-                                                    m,
-                                                    n,
-                                                    nnz,
-                                                    alpha,
-                                                    (const cusparseMatDescr_t)descrA,
-                                                    csrSortedValA,
-                                                    csrSortedRowPtrA,
-                                                    csrSortedColIndA,
-                                                    x,
-                                                    beta,
-                                                    y));
+                                                        hipOperationToCudaOperation(transA),
+                                                        m,
+                                                        n,
+                                                        nnz,
+                                                        alpha,
+                                                        (const cusparseMatDescr_t)descrA,
+                                                        csrSortedValA,
+                                                        csrSortedRowPtrA,
+                                                        csrSortedColIndA,
+                                                        x,
+                                                        beta,
+                                                        y));
 }
 
 hipsparseStatus_t hipsparseCcsrmv(hipsparseHandle_t         handle,
-                                hipsparseOperation_t      transA,
-                                int                       m,
-                                int                       n,
-                                int                       nnz,
-                                const hipComplex*         alpha,
-                                const hipsparseMatDescr_t descrA,
-                                const hipComplex*         csrSortedValA,
-                                const int*                csrSortedRowPtrA,
-                                const int*                csrSortedColIndA,
-                                const hipComplex*         x,
-                                const hipComplex*         beta,
-                                hipComplex*               y)
+                                    hipsparseOperation_t      transA,
+                                    int                       m,
+                                    int                       n,
+                                    int                       nnz,
+                                    const hipComplex*         alpha,
+                                    const hipsparseMatDescr_t descrA,
+                                    const hipComplex*         csrSortedValA,
+                                    const int*                csrSortedRowPtrA,
+                                    const int*                csrSortedColIndA,
+                                    const hipComplex*         x,
+                                    const hipComplex*         beta,
+                                    hipComplex*               y)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseCcsrmv((cusparseHandle_t)handle,
-                                                    hipOperationToCudaOperation(transA),
-                                                    m,
-                                                    n,
-                                                    nnz,
-                                                    (const cuComplex*)alpha,
-                                                    (const cusparseMatDescr_t)descrA,
-                                                    (const cuComplex*)csrSortedValA,
-                                                    csrSortedRowPtrA,
-                                                    csrSortedColIndA,
-                                                    (const cuComplex*)x,
-                                                    (const cuComplex*)beta,
-                                                    (cuComplex*)y));
+                                                        hipOperationToCudaOperation(transA),
+                                                        m,
+                                                        n,
+                                                        nnz,
+                                                        (const cuComplex*)alpha,
+                                                        (const cusparseMatDescr_t)descrA,
+                                                        (const cuComplex*)csrSortedValA,
+                                                        csrSortedRowPtrA,
+                                                        csrSortedColIndA,
+                                                        (const cuComplex*)x,
+                                                        (const cuComplex*)beta,
+                                                        (cuComplex*)y));
 }
 
 hipsparseStatus_t hipsparseZcsrmv(hipsparseHandle_t         handle,
-                                hipsparseOperation_t      transA,
-                                int                       m,
-                                int                       n,
-                                int                       nnz,
-                                const hipDoubleComplex*   alpha,
-                                const hipsparseMatDescr_t descrA,
-                                const hipDoubleComplex*   csrSortedValA,
-                                const int*                csrSortedRowPtrA,
-                                const int*                csrSortedColIndA,
-                                const hipDoubleComplex*   x,
-                                const hipDoubleComplex*   beta,
-                                hipDoubleComplex*         y)
+                                    hipsparseOperation_t      transA,
+                                    int                       m,
+                                    int                       n,
+                                    int                       nnz,
+                                    const hipDoubleComplex*   alpha,
+                                    const hipsparseMatDescr_t descrA,
+                                    const hipDoubleComplex*   csrSortedValA,
+                                    const int*                csrSortedRowPtrA,
+                                    const int*                csrSortedColIndA,
+                                    const hipDoubleComplex*   x,
+                                    const hipDoubleComplex*   beta,
+                                    hipDoubleComplex*         y)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseZcsrmv((cusparseHandle_t)handle,
-                                                    hipOperationToCudaOperation(transA),
-                                                    m,
-                                                    n,
-                                                    nnz,
-                                                    (const cuDoubleComplex*)alpha,
-                                                    (const cusparseMatDescr_t)descrA,
-                                                    (const cuDoubleComplex*)csrSortedValA,
-                                                    csrSortedRowPtrA,
-                                                    csrSortedColIndA,
-                                                    (const cuDoubleComplex*)x,
-                                                    (const cuDoubleComplex*)beta,
-                                                    (cuDoubleComplex*)y));
+                                                        hipOperationToCudaOperation(transA),
+                                                        m,
+                                                        n,
+                                                        nnz,
+                                                        (const cuDoubleComplex*)alpha,
+                                                        (const cusparseMatDescr_t)descrA,
+                                                        (const cuDoubleComplex*)csrSortedValA,
+                                                        csrSortedRowPtrA,
+                                                        csrSortedColIndA,
+                                                        (const cuDoubleComplex*)x,
+                                                        (const cuDoubleComplex*)beta,
+                                                        (cuDoubleComplex*)y));
 }
 
 hipsparseStatus_t
