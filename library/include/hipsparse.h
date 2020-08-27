@@ -1,25 +1,25 @@
 /* ************************************************************************
- * Copyright (c) 2018-2020 Advanced Micro Devices, Inc.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- *
- * ************************************************************************ */
+* Copyright (c) 2018-2020 Advanced Micro Devices, Inc.
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+* THE SOFTWARE.
+*
+* ************************************************************************ */
 
 //! HIP = Heterogeneous-compute Interface for Portability
 //!
@@ -244,7 +244,7 @@ hipsparseStatus_t hipsparseDestroyCsrgemm2Info(csrgemm2Info_t info);
 /* --- Sparse Level 1 routines --- */
 
 /* Description: Addition of a scalar multiple of a sparse vector x
-   and a dense vector y. */
+and a dense vector y. */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSaxpyi(hipsparseHandle_t    handle,
                                   int                  nnz,
@@ -279,7 +279,7 @@ hipsparseStatus_t hipsparseZaxpyi(hipsparseHandle_t       handle,
                                   hipsparseIndexBase_t    idxBase);
 
 /* Description: Compute the dot product of a sparse vector x
-   with a dense vector y. */
+with a dense vector y. */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSdoti(hipsparseHandle_t    handle,
                                  int                  nnz,
@@ -314,7 +314,7 @@ hipsparseStatus_t hipsparseZdoti(hipsparseHandle_t       handle,
                                  hipsparseIndexBase_t    idxBase);
 
 /* Description: Compute the conjugated dot product of a sparse
-   vector x with a dense vector y. */
+vector x with a dense vector y. */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCdotci(hipsparseHandle_t    handle,
                                   int                  nnz,
@@ -333,7 +333,7 @@ hipsparseStatus_t hipsparseZdotci(hipsparseHandle_t       handle,
                                   hipsparseIndexBase_t    idxBase);
 
 /* Description: Gathers the elements that are listed in xInd from
-   a dense vector y and stores them in a sparse vector x. */
+a dense vector y and stores them in a sparse vector x. */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSgthr(hipsparseHandle_t    handle,
                                  int                  nnz,
@@ -364,8 +364,8 @@ hipsparseStatus_t hipsparseZgthr(hipsparseHandle_t       handle,
                                  hipsparseIndexBase_t    idxBase);
 
 /* Description: Gathers the elements that are listed in xInd from
-   a dense vector y and stores them in a sparse vector x. Gathered
-   elements are replaced by zero in y. */
+a dense vector y and stores them in a sparse vector x. Gathered
+elements are replaced by zero in y. */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSgthrz(hipsparseHandle_t    handle,
                                   int                  nnz,
@@ -396,7 +396,7 @@ hipsparseStatus_t hipsparseZgthrz(hipsparseHandle_t    handle,
                                   hipsparseIndexBase_t idxBase);
 
 /* Description: Applies the Givens rotation matrix to a sparse vector
-   x and a dense vector y. */
+x and a dense vector y. */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSroti(hipsparseHandle_t    handle,
                                  int                  nnz,
@@ -417,7 +417,7 @@ hipsparseStatus_t hipsparseDroti(hipsparseHandle_t    handle,
                                  hipsparseIndexBase_t idxBase);
 
 /* Description: Scatters elements listed in xInd from a sparse vector x
-   into a dense vector y. */
+into a dense vector y. */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSsctr(hipsparseHandle_t    handle,
                                  int                  nnz,
@@ -450,7 +450,7 @@ hipsparseStatus_t hipsparseZsctr(hipsparseHandle_t       handle,
 /* --- Sparse Level 2 routines --- */
 
 /* Description: Matrix-vector multiplication  y = alpha * op(A) * x  + beta * y,
-   where A is a sparse matrix in CSR storage format, x and y are dense vectors. */
+where A is a sparse matrix in CSR storage format, x and y are dense vectors. */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseScsrmv(hipsparseHandle_t         handle,
                                   hipsparseOperation_t      transA,
@@ -509,7 +509,7 @@ hipsparseStatus_t hipsparseZcsrmv(hipsparseHandle_t         handle,
                                   hipDoubleComplex*         y);
 
 /* Description: Solution of triangular linear system op(A) * x = alpha * f,
-   where A is a sparse matrix in CSR storage format, x and f are dense vectors. */
+where A is a sparse matrix in CSR storage format, x and f are dense vectors. */
 HIPSPARSE_EXPORT
 hipsparseStatus_t
     hipsparseXcsrsv2_zeroPivot(hipsparseHandle_t handle, csrsv2Info_t info, int* position);
@@ -715,7 +715,7 @@ hipsparseStatus_t hipsparseZcsrsv2_solve(hipsparseHandle_t         handle,
                                          void*                     pBuffer);
 
 /* Description: Matrix-vector multiplication  y = alpha * op(A) * x  + beta * y,
-   where A is a sparse matrix in HYB storage format, x and y are dense vectors. */
+where A is a sparse matrix in HYB storage format, x and y are dense vectors. */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseShybmv(hipsparseHandle_t         handle,
                                   hipsparseOperation_t      transA,
@@ -754,7 +754,7 @@ hipsparseStatus_t hipsparseZhybmv(hipsparseHandle_t         handle,
                                   hipDoubleComplex*         y);
 
 /* Description: Matrix-vector multiplication  y = alpha * op(A) * x  + beta * y,
-   where A is a sparse matrix in BSR storage format, x and y are dense vectors. */
+where A is a sparse matrix in BSR storage format, x and y are dense vectors. */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSbsrmv(hipsparseHandle_t         handle,
                                   hipsparseDirection_t      dirA,
@@ -821,7 +821,7 @@ hipsparseStatus_t hipsparseZbsrmv(hipsparseHandle_t         handle,
                                   hipDoubleComplex*         y);
 
 /* Description: Solution of triangular linear system op(A) * x = alpha * f,
-   where A is a sparse matrix in BSR storage format, x and f are dense vectors. */
+where A is a sparse matrix in BSR storage format, x and f are dense vectors. */
 HIPSPARSE_EXPORT
 hipsparseStatus_t
     hipsparseXbsrsv2_zeroPivot(hipsparseHandle_t handle, bsrsv2Info_t info, int* position);
@@ -1060,7 +1060,7 @@ hipsparseStatus_t hipsparseZbsrsv2_solve(hipsparseHandle_t         handle,
 
 /* --- Sparse Level 3 routines --- */
 /* Description: Matrix-matrix multiplication C = alpha * op(A) * B + beta * C,
-   where A is a sparse matrix in BSR storage format, B and C are dense matrices. */
+where A is a sparse matrix in BSR storage format, B and C are dense matrices. */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSbsrmm(hipsparseHandle_t         handle,
                                   hipsparseDirection_t      dirA,
@@ -1143,7 +1143,7 @@ hipsparseStatus_t hipsparseZbsrmm(hipsparseHandle_t         handle,
                                   int                       ldc);
 
 /* Description: Matrix-matrix multiplication C = alpha * op(A) * B + beta * C,
-   where A is a sparse matrix in CSR storage format, B and C are dense matrices. */
+where A is a sparse matrix in CSR storage format, B and C are dense matrices. */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseScsrmm(hipsparseHandle_t         handle,
                                   hipsparseOperation_t      transA,
@@ -1214,7 +1214,7 @@ hipsparseStatus_t hipsparseZcsrmm(hipsparseHandle_t         handle,
                                   int                       ldc);
 
 /* Description: Matrix-matrix multiplication C = alpha * op(A) * op(B) + beta * C,
-   where A is a sparse matrix in CSR storage format, B and C are dense matrices. */
+where A is a sparse matrix in CSR storage format, B and C are dense matrices. */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseScsrmm2(hipsparseHandle_t         handle,
                                    hipsparseOperation_t      transA,
@@ -1289,7 +1289,7 @@ hipsparseStatus_t hipsparseZcsrmm2(hipsparseHandle_t         handle,
                                    int                       ldc);
 
 /* Description: Solution of triangular linear system op(A) * op(X) = alpha * op(B),
-   where A is a sparse matrix in CSR storage format, X and B are dense matrices. */
+where A is a sparse matrix in CSR storage format, X and B are dense matrices. */
 HIPSPARSE_EXPORT
 hipsparseStatus_t
     hipsparseXcsrsm2_zeroPivot(hipsparseHandle_t handle, csrsm2Info_t info, int* position);
@@ -1523,7 +1523,7 @@ hipsparseStatus_t hipsparseZcsrsm2_solve(hipsparseHandle_t         handle,
                                          void*                     pBuffer);
 
 /* Description: Matrix-matrix multiplication C = alpha * A * B + beta * C,
-   where B is a sparse matrix in CSC storage format, A and C are dense matrices. */
+where B is a sparse matrix in CSC storage format, A and C are dense matrices. */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSgemmi(hipsparseHandle_t handle,
                                   int               m,
@@ -1591,7 +1591,7 @@ hipsparseStatus_t hipsparseZgemmi(hipsparseHandle_t       handle,
 /* --- Sparse Extra routines --- */
 
 /* Description: Sparse matrix sparse matrix addition C = alpha * A + beta * B, where A, B
-   and C are sparse matrices in CSR storage format. */
+and C are sparse matrices in CSR storage format. */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseXcsrgeamNnz(hipsparseHandle_t         handle,
                                        int                       m,
@@ -1886,7 +1886,7 @@ hipsparseStatus_t hipsparseZcsrgeam2(hipsparseHandle_t         handle,
                                      void*                     pBuffer);
 
 /* Description: Sparse matrix sparse matrix multiplication C = op(A) * op(B), where A, B
-   and C are sparse matrices in CSR storage format. */
+and C are sparse matrices in CSR storage format. */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseXcsrgemmNnz(hipsparseHandle_t         handle,
                                        hipsparseOperation_t      transA,
@@ -1992,7 +1992,7 @@ hipsparseStatus_t hipsparseZcsrgemm(hipsparseHandle_t         handle,
                                     int*                      csrColIndC);
 
 /* Description: Sparse matrix sparse matrix multiplication C = alpha * A * B + beta * D,
-   where A, B and D are sparse matrices in CSR storage format. */
+where A, B and D are sparse matrices in CSR storage format. */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseScsrgemm2_bufferSizeExt(hipsparseHandle_t         handle,
                                                    int                       m,
@@ -2217,7 +2217,7 @@ hipsparseStatus_t hipsparseZcsrgemm2(hipsparseHandle_t         handle,
 /* --- Preconditioners --- */
 
 /* Description: Compute the incomplete-LU factorization with 0 fill-in (ILU0)
-   of the matrix A stored in CSR format. */
+of the matrix A stored in CSR format. */
 HIPSPARSE_EXPORT
 hipsparseStatus_t
     hipsparseXcsrilu02_zeroPivot(hipsparseHandle_t handle, csrilu02Info_t info, int* position);
@@ -2403,7 +2403,7 @@ hipsparseStatus_t hipsparseZcsrilu02(hipsparseHandle_t         handle,
                                      void*                  pBuffer);
 
 /* Description: Compute the incomplete Cholesky factorization with 0 fill-in (IC0)
-   of the matrix A stored in BSR format. */
+of the matrix A stored in BSR format. */
 HIPSPARSE_EXPORT
 hipsparseStatus_t
     hipsparseXbsric02_zeroPivot(hipsparseHandle_t handle, bsric02Info_t info, int* position);
@@ -2564,7 +2564,7 @@ hipsparseStatus_t hipsparseZbsric02(hipsparseHandle_t         handle,
                                     void*                     pBuffer);
 
 /* Description: Compute the incomplete Cholesky factorization with 0 fill-in (IC0)
-   of the matrix A stored in CSR format. */
+of the matrix A stored in CSR format. */
 HIPSPARSE_EXPORT
 hipsparseStatus_t
     hipsparseXcsric02_zeroPivot(hipsparseHandle_t handle, csric02Info_t info, int* position);
@@ -2752,7 +2752,7 @@ hipsparseStatus_t hipsparseZcsric02(hipsparseHandle_t         handle,
 /* --- Sparse Format Conversion --- */
 
 /* Description: 
-   This function computes the number of nonzero elements per row or column and the total number of nonzero elements in a dense matrix. */
+This function computes the number of nonzero elements per row or column and the total number of nonzero elements in a dense matrix. */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSnnz(hipsparseHandle_t         handle,
                                 hipsparseDirection_t      dirA,
@@ -2798,7 +2798,7 @@ hipsparseStatus_t hipsparseZnnz(hipsparseHandle_t         handle,
                                 int*                      nnzTotalDevHostPtr);
 
 /* Description: 
-   This function converts the matrix A in dense format into a sparse matrix in CSR format. */
+This function converts the matrix A in dense format into a sparse matrix in CSR format. */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSdense2csr(hipsparseHandle_t         handle,
                                       int                       m,
@@ -2846,8 +2846,111 @@ hipsparseStatus_t hipsparseZdense2csr(hipsparseHandle_t         handle,
                                       hipDoubleComplex*         csr_val,
                                       int*                      csr_row_ptr,
                                       int*                      csr_col_ind);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpruneDense2csr_bufferSize(hipsparseHandle_t         handle,
+                                                      int                       m,
+                                                      int                       n,
+                                                      const float*              A,
+                                                      int                       lda,
+                                                      const float*              threshold,
+                                                      const hipsparseMatDescr_t descr,
+                                                      const float*              csrVal,
+                                                      const int*                csrRowPtr,
+                                                      const int*                csrColInd,
+                                                      size_t*                   bufferSize);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDpruneDense2csr_bufferSize(hipsparseHandle_t         handle,
+                                                      int                       m,
+                                                      int                       n,
+                                                      const double*             A,
+                                                      int                       lda,
+                                                      const double*             threshold,
+                                                      const hipsparseMatDescr_t descr,
+                                                      const double*             csrVal,
+                                                      const int*                csrRowPtr,
+                                                      const int*                csrColInd,
+                                                      size_t*                   bufferSize);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpruneDense2csr_bufferSizeExt(hipsparseHandle_t         handle,
+                                                         int                       m,
+                                                         int                       n,
+                                                         const float*              A,
+                                                         int                       lda,
+                                                         const float*              threshold,
+                                                         const hipsparseMatDescr_t descr,
+                                                         const float*              csrVal,
+                                                         const int*                csrRowPtr,
+                                                         const int*                csrColInd,
+                                                         size_t*                   bufferSize);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDpruneDense2csr_bufferSizeExt(hipsparseHandle_t         handle,
+                                                         int                       m,
+                                                         int                       n,
+                                                         const double*             A,
+                                                         int                       lda,
+                                                         const double*             threshold,
+                                                         const hipsparseMatDescr_t descr,
+                                                         const double*             csrVal,
+                                                         const int*                csrRowPtr,
+                                                         const int*                csrColInd,
+                                                         size_t*                   bufferSize);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpruneDense2csrNnz(hipsparseHandle_t         handle,
+                                              int                       m,
+                                              int                       n,
+                                              const float*              A,
+                                              int                       lda,
+                                              const float*              threshold,
+                                              const hipsparseMatDescr_t descr,
+                                              int*                      csrRowPtr,
+                                              int*                      nnzTotalDevHostPtr,
+                                              void*                     buffer);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDpruneDense2csrNnz(hipsparseHandle_t         handle,
+                                              int                       m,
+                                              int                       n,
+                                              const double*             A,
+                                              int                       lda,
+                                              const double*             threshold,
+                                              const hipsparseMatDescr_t descr,
+                                              int*                      csrRowPtr,
+                                              int*                      nnzTotalDevHostPtr,
+                                              void*                     buffer);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpruneDense2csr(hipsparseHandle_t         handle,
+                                           int                       m,
+                                           int                       n,
+                                           const float*              A,
+                                           int                       lda,
+                                           const float*              threshold,
+                                           const hipsparseMatDescr_t descr,
+                                           float*                    csrVal,
+                                           const int*                csrRowPtr,
+                                           int*                      csrColInd,
+                                           void*                     buffer);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDpruneDense2csr(hipsparseHandle_t         handle,
+                                           int                       m,
+                                           int                       n,
+                                           const double*             A,
+                                           int                       lda,
+                                           const double*             threshold,
+                                           const hipsparseMatDescr_t descr,
+                                           double*                   csrVal,
+                                           const int*                csrRowPtr,
+                                           int*                      csrColInd,
+                                           void*                     buffer);
+
 /* Description: 
-   This function converts the matrix A in dense format into a sparse matrix in CSC format */
+This function converts the matrix A in dense format into a sparse matrix in CSC format */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSdense2csc(hipsparseHandle_t         handle,
                                       int                       m,
@@ -2895,7 +2998,7 @@ hipsparseStatus_t hipsparseZdense2csc(hipsparseHandle_t         handle,
                                       int*                      csc_row_ind,
                                       int*                      csc_col_ptr);
 /* Description:
-   This function converts the sparse matrix in CSR format into a dense matrix */
+This function converts the sparse matrix in CSR format into a dense matrix */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseScsr2dense(hipsparseHandle_t         handle,
                                       int                       m,
@@ -2941,7 +3044,7 @@ hipsparseStatus_t hipsparseZcsr2dense(hipsparseHandle_t         handle,
                                       int                       ld);
 
 /* Description:
-   This function converts the sparse matrix in CSC format into a dense matrix. */
+This function converts the sparse matrix in CSC format into a dense matrix. */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseScsc2dense(hipsparseHandle_t         handle,
                                       int                       m,
@@ -2986,8 +3089,8 @@ hipsparseStatus_t hipsparseZcsc2dense(hipsparseHandle_t         handle,
                                       hipDoubleComplex*         A,
                                       int                       ld);
 /* Description:
-   This function computes the number of nonzero block columns per block row and the total number of blocks in the BSR 
-   matrix where the BSR matrix is formed by converting the input CSR matrix. */
+This function computes the number of nonzero block columns per block row and the total number of blocks in the BSR 
+matrix where the BSR matrix is formed by converting the input CSR matrix. */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseXcsr2bsrNnz(hipsparseHandle_t         handle,
                                        hipsparseDirection_t      dirA,
@@ -3002,9 +3105,9 @@ hipsparseStatus_t hipsparseXcsr2bsrNnz(hipsparseHandle_t         handle,
                                        int*                      bsrNnzb);
 
 /* Description:
-   This function computes the number of nonzero elements per row and the total number of nonzero elements 
-   in the compressed version of the input CSR matrix where the matrix is compressed by removing elements 
-   less than pr equal to the tolerance. */
+This function computes the number of nonzero elements per row and the total number of nonzero elements 
+in the compressed version of the input CSR matrix where the matrix is compressed by removing elements 
+less than pr equal to the tolerance. */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSnnz_compress(hipsparseHandle_t         handle,
                                          int                       m,
@@ -3046,7 +3149,7 @@ hipsparseStatus_t hipsparseZnnz_compress(hipsparseHandle_t         handle,
                                          hipDoubleComplex          tol);
 
 /* Description: This routine converts a sparse matrix in CSR storage format
-   to a sparse matrix in COO storage format. */
+to a sparse matrix in COO storage format. */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseXcsr2coo(hipsparseHandle_t    handle,
                                     const int*           csrRowPtr,
@@ -3056,7 +3159,7 @@ hipsparseStatus_t hipsparseXcsr2coo(hipsparseHandle_t    handle,
                                     hipsparseIndexBase_t idxBase);
 
 /* Description: This routine converts a sparse matrix in CSR storage format
-   to a sparse matrix in CSC storage format. */
+to a sparse matrix in CSC storage format. */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseScsr2csc(hipsparseHandle_t    handle,
                                     int                  m,
@@ -3111,7 +3214,7 @@ hipsparseStatus_t hipsparseZcsr2csc(hipsparseHandle_t       handle,
                                     hipsparseIndexBase_t    idxBase);
 
 /* Description: This routine converts a sparse matrix in CSR storage format
-   to a sparse matrix in HYB storage format. */
+to a sparse matrix in HYB storage format. */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseScsr2hyb(hipsparseHandle_t         handle,
                                     int                       m,
@@ -3158,7 +3261,7 @@ hipsparseStatus_t hipsparseZcsr2hyb(hipsparseHandle_t         handle,
                                     hipsparseHybPartition_t   partitionType);
 
 /* Description: This routine converts a sparse matrix in CSR storage format
-   to a sparse matrix in BSR storage format. */
+to a sparse matrix in BSR storage format. */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseScsr2bsr(hipsparseHandle_t         handle,
                                     hipsparseDirection_t      dirA,
@@ -3217,7 +3320,7 @@ hipsparseStatus_t hipsparseZcsr2bsr(hipsparseHandle_t         handle,
                                     int*                      bsrColIndC);
 
 /* Description: This routine converts a sparse matrix in BSR storage format
-   to a sparse matrix in CSR storage format. */
+to a sparse matrix in CSR storage format. */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSbsr2csr(hipsparseHandle_t         handle,
                                     hipsparseDirection_t      dirA,
@@ -3276,7 +3379,7 @@ hipsparseStatus_t hipsparseZbsr2csr(hipsparseHandle_t         handle,
                                     int*                      csrColIndC);
 
 /* Description: This routine compresses the input CSR matrix by removing elements that 
-   are less than or equal to the non-negative tolerance */
+are less than or equal to the non-negative tolerance */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseScsr2csr_compress(hipsparseHandle_t         handle,
                                              int                       m,
@@ -3335,7 +3438,7 @@ hipsparseStatus_t hipsparseZcsr2csr_compress(hipsparseHandle_t         handle,
                                              hipDoubleComplex          tol);
 
 /* Description: This routine converts a sparse matrix in HYB storage format
-   to a sparse matrix in CSR storage format. */
+to a sparse matrix in CSR storage format. */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseShyb2csr(hipsparseHandle_t         handle,
                                     const hipsparseMatDescr_t descrA,
@@ -3369,7 +3472,7 @@ hipsparseStatus_t hipsparseZhyb2csr(hipsparseHandle_t         handle,
                                     int*                      csrSortedColIndA);
 
 /* Description: This routine converts a sparse matrix in COO storage format
-   to a sparse matrix in CSR storage format. */
+to a sparse matrix in CSR storage format. */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseXcoo2csr(hipsparseHandle_t    handle,
                                     const int*           cooRowInd,

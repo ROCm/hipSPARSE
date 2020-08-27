@@ -90,8 +90,8 @@ foreach(i RANGE 0 ${len1})
   if(NOT EXISTS "${CMAKE_MATRICES_DIR}/${mat}.bin")
     message("-- Downloading and extracting test matrix ${m}.tar.gz")
     file(DOWNLOAD https://sparse.tamu.edu/MM/${m}.tar.gz ${CMAKE_MATRICES_DIR}/${mat}.tar.gz
-         INACTIVITY_TIMEOUT 3
-         STATUS DL)
+        INACTIVITY_TIMEOUT 3
+        STATUS DL)
 
     list(GET DL 0 stat)
     list(GET DL 1 msg)
@@ -100,8 +100,8 @@ foreach(i RANGE 0 ${len1})
       message("-- Timeout has been reached, trying mirror ...")
       # Try again using ufl links
       file(DOWNLOAD https://www.cise.ufl.edu/research/sparse/MM/${m}.tar.gz ${CMAKE_MATRICES_DIR}/${mat}.tar.gz
-           INACTIVITY_TIMEOUT 3
-           STATUS DL)
+          INACTIVITY_TIMEOUT 3
+          STATUS DL)
 
       list(GET DL 0 stat)
       list(GET DL 1 msg)
@@ -159,6 +159,7 @@ set(HIPSPARSE_TEST_SOURCES
   test_csr2dense.cpp
   test_csc2dense.cpp
   test_dense2csr.cpp
+  test_prune_dense2csr.cpp
   test_dense2csc.cpp
   test_csr2coo.cpp
   test_csr2csc.cpp
