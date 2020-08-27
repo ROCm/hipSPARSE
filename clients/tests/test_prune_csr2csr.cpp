@@ -29,8 +29,10 @@
 #include <string>
 #include <vector>
 
-typedef std::tuple<int, int, double, hipsparseIndexBase_t, hipsparseIndexBase_t>    prune_csr2csr_tuple;
-typedef std::tuple<double, hipsparseIndexBase_t, hipsparseIndexBase_t, std::string> prune_csr2csr_bin_tuple;
+typedef std::tuple<int, int, double, hipsparseIndexBase_t, hipsparseIndexBase_t>
+    prune_csr2csr_tuple;
+typedef std::tuple<double, hipsparseIndexBase_t, hipsparseIndexBase_t, std::string>
+    prune_csr2csr_bin_tuple;
 
 int    prune_csr2csr_M_range[]     = {-1, 0, 10, 500, 872, 465327};
 int    prune_csr2csr_N_range[]     = {-3, 0, 33, 242, 623, 592645};
@@ -43,24 +45,24 @@ hipsparseIndexBase_t prune_csr2csr_base_C_range[]
     = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
 std::string prune_csr2csr_bin[] = {"rma10.bin",
-                                      "mac_econ_fwd500.bin",
-                                      "bibd_22_8.bin",
-                                      "mc2depi.bin",
-                                      "scircuit.bin",
-                                      "ASIC_320k.bin",
-                                      "bmwcra_1.bin",
-                                      "nos1.bin",
-                                      "nos2.bin",
-                                      "nos3.bin",
-                                      "nos4.bin",
-                                      "nos5.bin",
-                                      "nos6.bin",
-                                      "nos7.bin",
-                                      "amazon0312.bin",
-                                      "Chebyshev4.bin",
-                                      "sme3Dc.bin",
-                                      "webbase-1M.bin",
-                                      "shipsec1.bin"};
+                                   "mac_econ_fwd500.bin",
+                                   "bibd_22_8.bin",
+                                   "mc2depi.bin",
+                                   "scircuit.bin",
+                                   "ASIC_320k.bin",
+                                   "bmwcra_1.bin",
+                                   "nos1.bin",
+                                   "nos2.bin",
+                                   "nos3.bin",
+                                   "nos4.bin",
+                                   "nos5.bin",
+                                   "nos6.bin",
+                                   "nos7.bin",
+                                   "amazon0312.bin",
+                                   "Chebyshev4.bin",
+                                   "sme3Dc.bin",
+                                   "webbase-1M.bin",
+                                   "shipsec1.bin"};
 
 class parameterized_prune_csr2csr : public testing::TestWithParam<prune_csr2csr_tuple>
 {
@@ -88,7 +90,7 @@ Arguments setup_prune_csr2csr_arguments(prune_csr2csr_tuple tup)
     arg.alpha     = std::get<2>(tup);
     arg.idx_base  = std::get<3>(tup);
     arg.idx_base2 = std::get<4>(tup);
-    arg.timing   = 0;
+    arg.timing    = 0;
     return arg;
 }
 
@@ -100,7 +102,7 @@ Arguments setup_prune_csr2csr_arguments(prune_csr2csr_bin_tuple tup)
     arg.alpha     = std::get<0>(tup);
     arg.idx_base  = std::get<1>(tup);
     arg.idx_base2 = std::get<2>(tup);
-    arg.timing   = 0;
+    arg.timing    = 0;
 
     // Determine absolute path of test matrix
     std::string bin_file = std::get<3>(tup);
