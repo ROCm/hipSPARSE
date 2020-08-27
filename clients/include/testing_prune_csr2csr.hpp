@@ -737,8 +737,7 @@ hipsparseStatus_t testing_prune_csr2csr(Arguments argus)
         = hipsparse_unique_ptr{device_malloc(sizeof(int) * (M + 1)), device_free};
     auto d_csr_col_ind_A_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz_A), device_free};
-    auto d_csr_val_A_managed
-        = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz_A), device_free};
+    auto d_csr_val_A_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz_A), device_free};
 
     int* d_nnz_total_dev_host_ptr = (int*)d_nnz_total_dev_host_ptr_managed.get();
     int* d_csr_row_ptr_C          = (int*)d_csr_row_ptr_C_managed.get();

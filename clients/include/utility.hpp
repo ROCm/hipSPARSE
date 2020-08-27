@@ -1183,7 +1183,8 @@ inline void host_prune_csr_to_csr(int                     M,
     {
         for(int j = csr_row_ptr_A[i] - csr_base_A; j < csr_row_ptr_A[i + 1] - csr_base_A; j++)
         {
-            if(testing_abs(csr_val_A[j]) > threshold && testing_abs(csr_val_A[j]) > std::numeric_limits<float>::min())
+            if(testing_abs(csr_val_A[j]) > threshold
+               && testing_abs(csr_val_A[j]) > std::numeric_limits<float>::min())
             {
                 nnz_per_row[i]++;
                 nnz_C++;
@@ -1206,10 +1207,11 @@ inline void host_prune_csr_to_csr(int                     M,
     {
         for(int j = csr_row_ptr_A[i] - csr_base_A; j < csr_row_ptr_A[i + 1] - csr_base_A; j++)
         {
-            if(testing_abs(csr_val_A[j]) > threshold && testing_abs(csr_val_A[j]) > std::numeric_limits<float>::min())
+            if(testing_abs(csr_val_A[j]) > threshold
+               && testing_abs(csr_val_A[j]) > std::numeric_limits<float>::min())
             {
                 csr_col_ind_C[index] = (csr_col_ind_A[j] - csr_base_A) + csr_base_C;
-                csr_val_C[index] = csr_val_A[j];
+                csr_val_C[index]     = csr_val_A[j];
 
                 index++;
             }
@@ -1741,19 +1743,19 @@ inline void host_bsrmm(int                     Mb,
                        int                     N,
                        int                     Kb,
                        int                     block_dim,
-                       hipsparseDirection_t               dir,
-                       hipsparseOperation_t               transA,
-                       hipsparseOperation_t               transB,
-                       T                                 alpha,
+                       hipsparseDirection_t    dir,
+                       hipsparseOperation_t    transA,
+                       hipsparseOperation_t    transB,
+                       T                       alpha,
                        const std::vector<int>& bsr_row_ptr_A,
                        const std::vector<int>& bsr_col_ind_A,
-                       const std::vector<T>&             bsr_val_A,
-                       const std::vector<T>&             B,
+                       const std::vector<T>&   bsr_val_A,
+                       const std::vector<T>&   B,
                        int                     ldb,
-                       T                                 beta,
-                       std::vector<T>&                   C,
+                       T                       beta,
+                       std::vector<T>&         C,
                        int                     ldc,
-                       hipsparseIndexBase_t              base)
+                       hipsparseIndexBase_t    base)
 {
     if(transA != HIPSPARSE_OPERATION_NON_TRANSPOSE)
     {
@@ -1788,14 +1790,12 @@ inline void host_bsrmm(int                     Mb,
             {
                 for(int t = 0; t < block_dim; t++)
                 {
-                    int idx_A
-                        = (dir == HIPSPARSE_DIRECTION_ROW)
-                              ? block_dim * block_dim * s + block_dim * local_row + t
-                              : block_dim * block_dim * s + block_dim * t + local_row;
-                    int idx_B
-                        = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE)
-                              ? j * ldb + block_dim * (bsr_col_ind_A[s] - base) + t
-                              : (block_dim * (bsr_col_ind_A[s] - base) + t) * ldb + j;
+                    int idx_A = (dir == HIPSPARSE_DIRECTION_ROW)
+                                    ? block_dim * block_dim * s + block_dim * local_row + t
+                                    : block_dim * block_dim * s + block_dim * t + local_row;
+                    int idx_B = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE)
+                                    ? j * ldb + block_dim * (bsr_col_ind_A[s] - base) + t
+                                    : (block_dim * (bsr_col_ind_A[s] - base) + t) * ldb + j;
 
                     sum = sum + alpha * bsr_val_A[idx_A] * B[idx_B];
                 }
@@ -1807,7 +1807,7 @@ inline void host_bsrmm(int                     Mb,
             }
             else
             {
-                C[idx_C] = sum + beta * C[idx_C]; 
+                C[idx_C] = sum + beta * C[idx_C];
             }
         }
     }
@@ -1900,14 +1900,14 @@ int csrilu0(int m, const int* ptr, const int* col, T* val, hipsparseIndexBase_t 
 
 template <typename T>
 inline void host_bsric02(hipsparseDirection_t    direction,
-                        int                     Mb,
-                        int                     block_dim,
-                        const std::vector<int>& bsr_row_ptr,
-                        const std::vector<int>& bsr_col_ind,
-                        std::vector<T>&         bsr_val,
-                        hipsparseIndexBase_t    base,
-                        int*                    struct_pivot,
-                        int*                    numeric_pivot)
+                         int                     Mb,
+                         int                     block_dim,
+                         const std::vector<int>& bsr_row_ptr,
+                         const std::vector<int>& bsr_col_ind,
+                         std::vector<T>&         bsr_val,
+                         hipsparseIndexBase_t    base,
+                         int*                    struct_pivot,
+                         int*                    numeric_pivot)
 
 {
     int M = Mb * block_dim;
@@ -1970,7 +1970,7 @@ inline void host_bsric02(hipsparseDirection_t    direction,
             }
         }
 
-        T             sum  = make_DataType<T>(0);
+        T   sum            = make_DataType<T>(0);
         int diag_val_index = -1;
 
         bool has_diag         = false;
@@ -2044,22 +2044,22 @@ inline void host_bsric02(hipsparseDirection_t    direction,
                     for(int m = 0; m < block_dim; m++)
                     {
                         int idx = nnz_entries[block_dim * block_col_l + m];
-                        
+
                         if(idx != -1 && block_dim * block_col_l + m < col_j)
                         {
                             if(direction == HIPSPARSE_DIRECTION_ROW)
                             {
                                 local_sum = testing_fma(bsr_val[block_dim * block_dim * l
-                                                             + block_dim * local_row_j + m],
-                                                     testing_conj(bsr_val[idx]),
-                                                     local_sum);
+                                                                + block_dim * local_row_j + m],
+                                                        testing_conj(bsr_val[idx]),
+                                                        local_sum);
                             }
                             else
                             {
                                 local_sum = testing_fma(bsr_val[block_dim * block_dim * l
-                                                             + block_dim * m + local_row_j],
-                                                     testing_conj(bsr_val[idx]),
-                                                     local_sum);
+                                                                + block_dim * m + local_row_j],
+                                                        testing_conj(bsr_val[idx]),
+                                                        local_sum);
                             }
                         }
                     }
@@ -2096,7 +2096,7 @@ inline void host_bsric02(hipsparseDirection_t    direction,
         // Process diagonal entry
         if(has_diag)
         {
-            T diag_entry            = make_DataType<T>(std::sqrt(testing_abs(bsr_val[diag_val_index] - sum)));
+            T diag_entry = make_DataType<T>(std::sqrt(testing_abs(bsr_val[diag_val_index] - sum)));
             bsr_val[diag_val_index] = diag_entry;
 
             if(diag_entry == make_DataType<T>(0))
