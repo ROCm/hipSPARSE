@@ -738,7 +738,7 @@ hipsparseStatus_t testing_prune_csr2csr(Arguments argus)
     auto d_csr_col_ind_A_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz_A), device_free};
     auto d_csr_val_A_managed
-        = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz_A), device_free};
+        = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz_A), device_free};
 
     int* d_nnz_total_dev_host_ptr = (int*)d_nnz_total_dev_host_ptr_managed.get();
     int* d_csr_row_ptr_C          = (int*)d_csr_row_ptr_C_managed.get();
@@ -895,23 +895,26 @@ hipsparseStatus_t testing_prune_csr2csr(Arguments argus)
                                       hipMemcpyDeviceToHost));
 
             // call host and check results
-            std::vector<int> h_nnz_cpu(1);
+            std::vector<int> h_nnz_C_cpu(1);
             std::vector<int> h_csr_row_ptr_cpu;
             std::vector<int> h_csr_col_ind_cpu;
             std::vector<T>   h_csr_val_cpu;
 
-            // host_prune_csr2csr(M,
-            //                     N,
-            //                     h_A,
-            //                     LDA,
-            //                     idx_base,
-            //                     threshold,
-            //                     h_nnz_cpu[0],
-            //                     h_csr_val_cpu,
-            //                     h_csr_row_ptr_cpu,
-            //                     h_csr_col_ind_cpu);
+            host_prune_csr_to_csr(M,
+                                  N,
+                                  nnz_A,
+                                  h_csr_row_ptr_A,
+                                  h_csr_col_ind_A,
+                                  h_csr_val_A,
+                                  h_nnz_C_cpu[0],
+                                  h_csr_row_ptr_cpu,
+                                  h_csr_col_ind_cpu,
+                                  h_csr_val_cpu,
+                                  csr_idx_base_A,
+                                  csr_idx_base_C,
+                                  threshold);
 
-            unit_check_general<int>(1, 1, 1, h_nnz_cpu.data(), h_nnz_total_dev_host_ptr.data());
+            unit_check_general<int>(1, 1, 1, h_nnz_C_cpu.data(), h_nnz_total_dev_host_ptr.data());
             unit_check_general<int>(
                 1, (M + 1), 1, h_csr_row_ptr_cpu.data(), h_csr_row_ptr_C.data());
             unit_check_general<int>(1,
