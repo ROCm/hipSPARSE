@@ -762,7 +762,7 @@ hipsparseStatus_t testing_prune_csr2csr(Arguments argus)
     CHECK_HIP_ERROR(
         hipMemcpy(d_csr_val_A, h_csr_val_A.data(), sizeof(T) * nnz_A, hipMemcpyHostToDevice));
 
-    size_t buffer_size = 512;
+    size_t buffer_size = 4;
     CHECK_HIPSPARSE_ERROR(hipsparseXpruneCsr2csr_bufferSize(handle,
                                                             M,
                                                             N,
