@@ -34,8 +34,8 @@ typedef std::tuple<int, int, double, hipsparseIndexBase_t, hipsparseIndexBase_t>
 typedef std::tuple<double, hipsparseIndexBase_t, hipsparseIndexBase_t, std::string>
     prune_csr2csr_bin_tuple;
 
-int    prune_csr2csr_M_range[]     = {-1, 0, 10, 500, 872, 465327};
-int    prune_csr2csr_N_range[]     = {-3, 0, 33, 242, 623, 592645};
+int    prune_csr2csr_M_range[]         = {-1, 0, 10, 500, 872, 465327};
+int    prune_csr2csr_N_range[]         = {-3, 0, 33, 242, 623, 592645};
 double prune_csr2csr_threshold_range[] = {-0.001, 0.0, 0.0012, 0.08736, 0.33333, 0.5, 1.0, 1.7};
 
 hipsparseIndexBase_t prune_csr2csr_base_A_range[]
