@@ -221,6 +221,22 @@ namespace hipsparse_test
         }
     };
 
+    struct prune_struct
+    {
+        pruneInfo_t info;
+        prune_struct()
+        {
+            hipsparseStatus_t status = hipsparseCreatePruneInfo(&info);
+            verify_hipsparse_status_success(status, "ERROR: prune_struct constructor");
+        }
+
+        ~prune_struct()
+        {
+            hipsparseStatus_t status = hipsparseDestroyPruneInfo(info);
+            verify_hipsparse_status_success(status, "ERROR: prune_struct destructor");
+        }
+    };
+
 } // namespace hipsparse_test
 
 using hipsparse_unique_ptr = std::unique_ptr<void, void (*)(void*)>;

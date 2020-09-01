@@ -1077,6 +1077,35 @@ void host_prune_dense2csr(int                   m,
     }
 }
 
+template <typename T>
+void host_prune_dense2csr_by_percentage(int                   m,
+                                        int                   n,
+                                        const std::vector<T>& A,
+                                        int                   lda,
+                                        hipsparseIndexBase_t  base,
+                                        T                     percentage,
+                                        int&                  nnz,
+                                        std::vector<T>&       csr_val,
+                                        std::vector<int>&     csr_row_ptr,
+                                        std::vector<int>&     csr_col_ind)
+{
+    int nnz_A = lda * n;
+    int pos   = std::ceil(nnz_A * (percentage / 100)) - 1;
+    pos                 = std::min(pos, nnz_A - 1);
+    pos                 = std::max(pos, 0);
+
+    std::vector<T> sorted_A(lda * n);
+    for(size_t i = 0; i < A.size(); i++)
+    {
+        sorted_A[i] = std::abs(A[i]);
+    }
+
+    std::sort(sorted_A.begin(), sorted_A.end());
+
+    T threshold = sorted_A[pos];
+    host_prune_dense2csr<T>(m, n, A, lda, base, threshold, nnz, csr_val, csr_row_ptr, csr_col_ind);
+}
+
 template <hipsparseDirection_t DIRA, typename T>
 void host_csx2dense(int                  m,
                     int                  n,
@@ -3771,10 +3800,11 @@ public:
     int ldb;
     int ldc;
 
-    double alpha  = 1.0;
-    double alphai = 0.0;
-    double beta   = 0.0;
-    double betai  = 0.0;
+    double alpha      = 1.0;
+    double alphai     = 0.0;
+    double beta       = 0.0;
+    double betai      = 0.0;
+    double percentage = 50.0;
 
     hipsparseOperation_t    transA    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
     hipsparseOperation_t    transB    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
@@ -3811,8 +3841,11 @@ public:
         this->ldb = rhs.ldb;
         this->ldc = rhs.ldc;
 
-        this->alpha = rhs.alpha;
-        this->beta  = rhs.beta;
+        this->alpha      = rhs.alpha;
+        this->alphai     = rhs.alphai;
+        this->beta       = rhs.beta;
+        this->betai      = rhs.betai;
+        this->percentage = rhs.percentage;
 
         this->transA    = rhs.transA;
         this->transB    = rhs.transB;

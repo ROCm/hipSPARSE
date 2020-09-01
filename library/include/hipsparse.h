@@ -53,6 +53,7 @@ typedef void* csrsm2Info_t;
 typedef void* csrilu02Info_t;
 typedef void* csric02Info_t;
 typedef void* csrgemm2Info_t;
+typedef void* pruneInfo_t;
 #elif defined(__HIP_PLATFORM_NVCC__)
 struct bsrsv2Info;
 typedef struct bsrsv2Info* bsrsv2Info_t;
@@ -68,6 +69,8 @@ struct csric02Info;
 typedef struct csric02Info* csric02Info_t;
 struct csrgemm2Info;
 typedef struct csrgemm2Info* csrgemm2Info_t;
+struct pruneInfo;
+typedef struct pruneInfo* pruneInfo_t;
 #endif
 
 // clang-format off
@@ -240,6 +243,11 @@ HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreateCsrgemm2Info(csrgemm2Info_t* info);
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroyCsrgemm2Info(csrgemm2Info_t info);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCreatePruneInfo(pruneInfo_t* info);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDestroyPruneInfo(pruneInfo_t info);
 
 /* --- Sparse Level 1 routines --- */
 
@@ -2847,6 +2855,9 @@ hipsparseStatus_t hipsparseZdense2csr(hipsparseHandle_t         handle,
                                       int*                      csr_row_ptr,
                                       int*                      csr_col_ind);
 
+/* Description: 
+These functions convert the matrix A in dense format into a sparse matrix in CSR format where entries 
+in A that are less than equal to a threshold are removed. */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpruneDense2csr_bufferSize(hipsparseHandle_t         handle,
                                                       int                       m,
@@ -2948,6 +2959,119 @@ hipsparseStatus_t hipsparseDpruneDense2csr(hipsparseHandle_t         handle,
                                            const int*                csrRowPtr,
                                            int*                      csrColInd,
                                            void*                     buffer);
+
+/* Description: 
+These functions convert the matrix A in dense format into a sparse matrix in CSR format where the bottom 
+percentage of absolute valued entries from A have been removed. */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpruneDense2csrByPercentage_bufferSize(hipsparseHandle_t         handle,
+                                                                  int                       m,
+                                                                  int                       n,
+                                                                  const float*              A,
+                                                                  int                       lda,
+                                                                  float                     percentage,
+                                                                  const hipsparseMatDescr_t descr,
+                                                                  const float*              csrVal,
+                                                                  const int*                csrRowPtr,
+                                                                  const int*                csrColInd,
+                                                                  pruneInfo_t               info,
+                                                                  size_t*                   bufferSize);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDpruneDense2csrByPercentage_bufferSize(hipsparseHandle_t         handle,
+                                                                  int                       m,
+                                                                  int                       n,
+                                                                  const double*             A,
+                                                                  int                       lda,
+                                                                  double                    percentage,
+                                                                  const hipsparseMatDescr_t descr,
+                                                                  const double*             csrVal,
+                                                                  const int*                csrRowPtr,
+                                                                  const int*                csrColInd,
+                                                                  pruneInfo_t               info,
+                                                                  size_t*                   bufferSize);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpruneDense2csrByPercentage_bufferSizeExt(hipsparseHandle_t         handle,
+                                                                     int                       m,
+                                                                     int                       n,
+                                                                     const float*              A,
+                                                                     int                       lda,
+                                                                     float                     percentage,
+                                                                     const hipsparseMatDescr_t descr,
+                                                                     const float*              csrVal,
+                                                                     const int*                csrRowPtr,
+                                                                     const int*                csrColInd,
+                                                                     pruneInfo_t               info,
+                                                                     size_t*                   bufferSize);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDpruneDense2csrByPercentage_bufferSizeExt(hipsparseHandle_t         handle,
+                                                                     int                       m,
+                                                                     int                       n,
+                                                                     const double*             A,
+                                                                     int                       lda,
+                                                                     double                    percentage,
+                                                                     const hipsparseMatDescr_t descr,
+                                                                     const double*             csrVal,
+                                                                     const int*                csrRowPtr,
+                                                                     const int*                csrColInd,
+                                                                     pruneInfo_t               info,
+                                                                     size_t*                   bufferSize);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpruneDense2csrNnzByPercentage(hipsparseHandle_t         handle,
+                                                          int                       m,
+                                                          int                       n,
+                                                          const float*              A,
+                                                          int                       lda,
+                                                          float                     percentage,
+                                                          const hipsparseMatDescr_t descr,
+                                                          int*                      csrRowPtr,
+                                                          int*                      nnzTotalDevHostPtr,
+                                                          pruneInfo_t               info,
+                                                          void*                     buffer);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDpruneDense2csrNnzByPercentage(hipsparseHandle_t         handle,
+                                                          int                       m,
+                                                          int                       n,
+                                                          const double*             A,
+                                                          int                       lda,
+                                                          double                    percentage,
+                                                          const hipsparseMatDescr_t descr,
+                                                          int*                      csrRowPtr,
+                                                          int*                      nnzTotalDevHostPtr,
+                                                          pruneInfo_t               info,
+                                                          void*                     buffer);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpruneDense2csrByPercentage(hipsparseHandle_t         handle,
+                                                       int                       m,
+                                                       int                       n,
+                                                       const float*              A,
+                                                       int                       lda,
+                                                       float                     percentage,
+                                                       const hipsparseMatDescr_t descr,
+                                                       float*                    csrVal,
+                                                       const int*                csrRowPtr,
+                                                       int*                      csrColInd,
+                                                       pruneInfo_t               info,
+                                                       void*                     buffer);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDpruneDense2csrByPercentage(hipsparseHandle_t         handle,
+                                                       int                       m,
+                                                       int                       n,
+                                                       const double*             A,
+                                                       int                       lda,
+                                                       double                    percentage,
+                                                       const hipsparseMatDescr_t descr,
+                                                       double*                   csrVal,
+                                                       const int*                csrRowPtr,
+                                                       int*                      csrColInd,
+                                                       pruneInfo_t               info,
+                                                       void*                     buffer);
 
 /* Description: 
 This function converts the matrix A in dense format into a sparse matrix in CSC format */

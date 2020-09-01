@@ -720,6 +720,61 @@ namespace hipsparse
                                                void*                     buffer);
 
     template <typename T>
+    hipsparseStatus_t hipsparseXpruneDense2csrByPercentage_bufferSize(hipsparseHandle_t         handle,
+                                                                      int                       m,
+                                                                      int                       n,
+                                                                      const T*                  A,
+                                                                      int                       lda,
+                                                                      T                         percentage,
+                                                                      const hipsparseMatDescr_t descr,
+                                                                      const T*                  csrVal,
+                                                                      const int*                csrRowPtr,
+                                                                      const int*                csrColInd,
+                                                                      pruneInfo_t               info,
+                                                                      size_t*                   bufferSize);
+
+    template <typename T>
+    hipsparseStatus_t hipsparseXpruneDense2csrByPercentage_bufferSizeExt(hipsparseHandle_t         handle,
+                                                                         int                       m,
+                                                                         int                       n,
+                                                                         const T*                  A,
+                                                                         int                       lda,
+                                                                         T                         percentage,
+                                                                         const hipsparseMatDescr_t descr,
+                                                                         const T*                  csrVal,
+                                                                         const int*                csrRowPtr,
+                                                                         const int*                csrColInd,
+                                                                         pruneInfo_t               info,
+                                                                         size_t*                   bufferSize);
+
+    template <typename T>
+    hipsparseStatus_t hipsparseXpruneDense2csrNnzByPercentage(hipsparseHandle_t         handle,
+                                                              int                       m,
+                                                              int                       n,
+                                                              const T*                  A,
+                                                              int                       lda,
+                                                              T                         percentage,
+                                                              const hipsparseMatDescr_t descr,
+                                                              int*                      csrRowPtr,
+                                                              int*                      nnzTotalDevHostPtr,
+                                                              pruneInfo_t               info,
+                                                              void*                     buffer);
+
+    template <typename T>
+    hipsparseStatus_t hipsparseXpruneDense2csrByPercentage(hipsparseHandle_t         handle,
+                                                           int                       m,
+                                                           int                       n,
+                                                           const T*                  A,
+                                                           int                       lda,
+                                                           T                         percentage,
+                                                           const hipsparseMatDescr_t descr,
+                                                           T*                        csrVal,
+                                                           const int*                csrRowPtr,
+                                                           int*                      csrColInd,
+                                                           pruneInfo_t               info,
+                                                           void*                     buffer);
+
+    template <typename T>
     hipsparseStatus_t hipsparseXdense2csc(hipsparseHandle_t         handle,
                                           int                       m,
                                           int                       n,
