@@ -382,7 +382,7 @@ hipsparseStatus_t testing_prune_dense2csr(Arguments argus)
     int         M         = argus.M;
     int         N         = argus.N;
     int         LDA       = argus.lda;
-    T           threshold = static_cast<T>(argus.alpha);  
+    T           threshold = static_cast<T>(argus.threshold);  
     hipsparseIndexBase_t idx_base  = argus.idx_base;
     hipsparseStatus_t    status;
 

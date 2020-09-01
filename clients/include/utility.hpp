@@ -3837,10 +3837,11 @@ public:
     int ldb;
     int ldc;
 
-    double alpha  = 1.0;
-    double alphai = 0.0;
-    double beta   = 0.0;
-    double betai  = 0.0;
+    double alpha     = 1.0;
+    double alphai    = 0.0;
+    double beta      = 0.0;
+    double betai     = 0.0;
+    double threshold = 0.0f;
 
     hipsparseOperation_t    transA    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
     hipsparseOperation_t    transB    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
@@ -3877,8 +3878,11 @@ public:
         this->ldb = rhs.ldb;
         this->ldc = rhs.ldc;
 
-        this->alpha = rhs.alpha;
-        this->beta  = rhs.beta;
+        this->alpha     = rhs.alpha;
+        this->alphai    = rhs.alphai;
+        this->beta      = rhs.beta;
+        this->betai     = rhs.betai;
+        this->threshold = rhs.threshold;
 
         this->transA    = rhs.transA;
         this->transB    = rhs.transB;
