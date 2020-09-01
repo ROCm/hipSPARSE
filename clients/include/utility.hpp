@@ -1091,8 +1091,8 @@ void host_prune_dense2csr_by_percentage(int                   m,
 {
     int nnz_A = lda * n;
     int pos   = std::ceil(nnz_A * (percentage / 100)) - 1;
-    pos                 = std::min(pos, nnz_A - 1);
-    pos                 = std::max(pos, 0);
+    pos       = std::min(pos, nnz_A - 1);
+    pos       = std::max(pos, 0);
 
     std::vector<T> sorted_A(lda * n);
     for(size_t i = 0; i < A.size(); i++)

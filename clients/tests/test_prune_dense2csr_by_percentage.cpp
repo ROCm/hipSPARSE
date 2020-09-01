@@ -29,15 +29,17 @@
 #include <string>
 #include <vector>
 
-typedef hipsparseIndexBase_t            base;
+typedef hipsparseIndexBase_t                    base;
 typedef std::tuple<int, int, int, double, base> prune_dense2csr_by_percentage_tuple;
-int                                     prune_dense2csr_by_percentage_M_range[]  = {-1, 0, 10, 500, 872, 1000};
-int                                     prune_dense2csr_by_percentage_N_range[]  = {-3, 0, 33, 242, 623, 1000};
-int                                     prune_dense2csr_by_percentage_LD_range[] = {50, 500, 1000};
-double                                  prune_dense2csr_by_percentage_range[] = {0.1, 0.55};
-base prune_dense2csr_by_percentage_idx_base_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+int    prune_dense2csr_by_percentage_M_range[]  = {-1, 0, 10, 500, 872, 1000};
+int    prune_dense2csr_by_percentage_N_range[]  = {-3, 0, 33, 242, 623, 1000};
+int    prune_dense2csr_by_percentage_LD_range[] = {50, 500, 1000};
+double prune_dense2csr_by_percentage_range[]    = {0.1, 0.55};
+base   prune_dense2csr_by_percentage_idx_base_range[]
+    = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
-class parameterized_prune_dense2csr_by_percentage : public testing::TestWithParam<prune_dense2csr_by_percentage_tuple>
+class parameterized_prune_dense2csr_by_percentage
+    : public testing::TestWithParam<prune_dense2csr_by_percentage_tuple>
 {
 protected:
     parameterized_prune_dense2csr_by_percentage() {}
@@ -78,10 +80,11 @@ TEST_P(parameterized_prune_dense2csr_by_percentage, prune_dense2csr_by_percentag
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-INSTANTIATE_TEST_CASE_P(prune_dense2csr_by_percentage,
-                        parameterized_prune_dense2csr_by_percentage,
-                        testing::Combine(testing::ValuesIn(prune_dense2csr_by_percentage_M_range),
-                                        testing::ValuesIn(prune_dense2csr_by_percentage_N_range),
-                                        testing::ValuesIn(prune_dense2csr_by_percentage_LD_range),
-                                        testing::ValuesIn(prune_dense2csr_by_percentage_range),
-                                        testing::ValuesIn(prune_dense2csr_by_percentage_idx_base_range)));
+INSTANTIATE_TEST_CASE_P(
+    prune_dense2csr_by_percentage,
+    parameterized_prune_dense2csr_by_percentage,
+    testing::Combine(testing::ValuesIn(prune_dense2csr_by_percentage_M_range),
+                     testing::ValuesIn(prune_dense2csr_by_percentage_N_range),
+                     testing::ValuesIn(prune_dense2csr_by_percentage_LD_range),
+                     testing::ValuesIn(prune_dense2csr_by_percentage_range),
+                     testing::ValuesIn(prune_dense2csr_by_percentage_idx_base_range)));
