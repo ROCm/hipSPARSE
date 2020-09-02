@@ -266,6 +266,28 @@ static inline double testing_abs(hipDoubleComplex x)
 }
 
 /* ============================================================================================ */
+/*! \brief conj */
+static inline float testing_conj(float x)
+{
+    return x;
+}
+
+static inline double testing_conj(double x)
+{
+    return x;
+}
+
+static inline hipComplex testing_conj(hipComplex x)
+{
+    return make_DataType<hipComplex>(x.x, -x.y);
+}
+
+static inline hipDoubleComplex testing_conj(hipDoubleComplex x)
+{
+    return make_DataType<hipDoubleComplex>(x.x, -x.y);
+}
+
+/* ============================================================================================ */
 /*! \brief real */
 static inline float testing_real(float x)
 {
@@ -995,6 +1017,66 @@ void host_dense2csx(int                  m,
     }
 }
 
+template <typename T>
+void host_prune_dense2csr(int                   m,
+                          int                   n,
+                          const std::vector<T>& A,
+                          int                   lda,
+                          hipsparseIndexBase_t  base,
+                          T                     threshold,
+                          int&                  nnz,
+                          std::vector<T>&       csr_val,
+                          std::vector<int>&     csr_row_ptr,
+                          std::vector<int>&     csr_col_ind)
+{
+    if(m < 0 || n < 0 || lda < m)
+    {
+        return;
+    }
+
+    std::vector<int> nnz_per_row(m, 0);
+
+    nnz = 0;
+
+    for(int i = 0; i < m; i++)
+    {
+        for(int j = 0; j < n; j++)
+        {
+            if(std::abs(A[lda * j + i]) > threshold)
+            {
+                nnz_per_row[i]++;
+                nnz++;
+            }
+        }
+    }
+
+    csr_row_ptr.resize(m + 1, 0);
+    csr_col_ind.resize(nnz);
+    csr_val.resize(nnz);
+
+    csr_row_ptr[0] = base;
+
+    for(int i = 0; i < m; i++)
+    {
+        csr_row_ptr[i + 1] = csr_row_ptr[i] + nnz_per_row[i];
+    }
+
+    int index = 0;
+    for(int i = 0; i < m; i++)
+    {
+        for(int j = 0; j < n; j++)
+        {
+            if(std::abs(A[lda * j + i]) > threshold)
+            {
+                csr_val[index]     = A[lda * j + i];
+                csr_col_ind[index] = j + base;
+
+                index++;
+            }
+        }
+    }
+}
+
 template <hipsparseDirection_t DIRA, typename T>
 void host_csx2dense(int                  m,
                     int                  n,
@@ -1655,19 +1737,19 @@ inline void host_bsrmm(int                     Mb,
                        int                     N,
                        int                     Kb,
                        int                     block_dim,
-                       hipsparseDirection_t               dir,
-                       hipsparseOperation_t               transA,
-                       hipsparseOperation_t               transB,
-                       T                                 alpha,
+                       hipsparseDirection_t    dir,
+                       hipsparseOperation_t    transA,
+                       hipsparseOperation_t    transB,
+                       T                       alpha,
                        const std::vector<int>& bsr_row_ptr_A,
                        const std::vector<int>& bsr_col_ind_A,
-                       const std::vector<T>&             bsr_val_A,
-                       const std::vector<T>&             B,
+                       const std::vector<T>&   bsr_val_A,
+                       const std::vector<T>&   B,
                        int                     ldb,
-                       T                                 beta,
-                       std::vector<T>&                   C,
+                       T                       beta,
+                       std::vector<T>&         C,
                        int                     ldc,
-                       hipsparseIndexBase_t              base)
+                       hipsparseIndexBase_t    base)
 {
     if(transA != HIPSPARSE_OPERATION_NON_TRANSPOSE)
     {
@@ -1702,14 +1784,12 @@ inline void host_bsrmm(int                     Mb,
             {
                 for(int t = 0; t < block_dim; t++)
                 {
-                    int idx_A
-                        = (dir == HIPSPARSE_DIRECTION_ROW)
-                              ? block_dim * block_dim * s + block_dim * local_row + t
-                              : block_dim * block_dim * s + block_dim * t + local_row;
-                    int idx_B
-                        = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE)
-                              ? j * ldb + block_dim * (bsr_col_ind_A[s] - base) + t
-                              : (block_dim * (bsr_col_ind_A[s] - base) + t) * ldb + j;
+                    int idx_A = (dir == HIPSPARSE_DIRECTION_ROW)
+                                    ? block_dim * block_dim * s + block_dim * local_row + t
+                                    : block_dim * block_dim * s + block_dim * t + local_row;
+                    int idx_B = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE)
+                                    ? j * ldb + block_dim * (bsr_col_ind_A[s] - base) + t
+                                    : (block_dim * (bsr_col_ind_A[s] - base) + t) * ldb + j;
 
                     sum = sum + alpha * bsr_val_A[idx_A] * B[idx_B];
                 }
@@ -1721,7 +1801,7 @@ inline void host_bsrmm(int                     Mb,
             }
             else
             {
-                C[idx_C] = sum + beta * C[idx_C]; 
+                C[idx_C] = sum + beta * C[idx_C];
             }
         }
     }
@@ -1813,6 +1893,241 @@ int csrilu0(int m, const int* ptr, const int* col, T* val, hipsparseIndexBase_t 
 }
 
 template <typename T>
+inline void host_bsric02(hipsparseDirection_t    direction,
+                         int                     Mb,
+                         int                     block_dim,
+                         const std::vector<int>& bsr_row_ptr,
+                         const std::vector<int>& bsr_col_ind,
+                         std::vector<T>&         bsr_val,
+                         hipsparseIndexBase_t    base,
+                         int*                    struct_pivot,
+                         int*                    numeric_pivot)
+
+{
+    int M = Mb * block_dim;
+
+    // Initialize pivot
+    *struct_pivot  = -1;
+    *numeric_pivot = -1;
+
+    if(bsr_col_ind.size() == 0 && bsr_val.size() == 0)
+    {
+        return;
+    }
+
+    // pointer of upper part of each row
+    std::vector<int> diag_block_offset(Mb);
+    std::vector<int> diag_offset(M, -1);
+    std::vector<int> nnz_entries(M, -1);
+
+#ifdef _OPENMP
+#pragma omp parallel for schedule(dynamic, 1024)
+#endif
+    for(int i = 0; i < Mb; i++)
+    {
+        int row_begin = bsr_row_ptr[i] - base;
+        int row_end   = bsr_row_ptr[i + 1] - base;
+
+        for(int j = row_begin; j < row_end; j++)
+        {
+            if(bsr_col_ind[j] - base == i)
+            {
+                diag_block_offset[i] = j;
+                break;
+            }
+        }
+    }
+
+    for(int i = 0; i < M; i++)
+    {
+        int local_row = i % block_dim;
+
+        int row_begin = bsr_row_ptr[i / block_dim] - base;
+        int row_end   = bsr_row_ptr[i / block_dim + 1] - base;
+
+        for(int j = row_begin; j < row_end; j++)
+        {
+            int block_col_j = bsr_col_ind[j] - base;
+
+            for(int k = 0; k < block_dim; k++)
+            {
+                if(direction == HIPSPARSE_DIRECTION_ROW)
+                {
+                    nnz_entries[block_dim * block_col_j + k]
+                        = block_dim * block_dim * j + block_dim * local_row + k;
+                }
+                else
+                {
+                    nnz_entries[block_dim * block_col_j + k]
+                        = block_dim * block_dim * j + block_dim * k + local_row;
+                }
+            }
+        }
+
+        T   sum            = make_DataType<T>(0);
+        int diag_val_index = -1;
+
+        bool has_diag         = false;
+        bool break_outer_loop = false;
+
+        for(int j = row_begin; j < row_end; j++)
+        {
+            int block_col_j = bsr_col_ind[j] - base;
+
+            for(int k = 0; k < block_dim; k++)
+            {
+                int col_j = block_dim * block_col_j + k;
+
+                // Mark diagonal and skip row
+                if(col_j == i)
+                {
+                    diag_val_index = block_dim * block_dim * j + block_dim * k + k;
+
+                    has_diag         = true;
+                    break_outer_loop = true;
+                    break;
+                }
+
+                // Skip upper triangular
+                if(col_j > i)
+                {
+                    break_outer_loop = true;
+                    break;
+                }
+
+                T val_j = make_DataType<T>(0);
+                if(direction == HIPSPARSE_DIRECTION_ROW)
+                {
+                    val_j = bsr_val[block_dim * block_dim * j + block_dim * local_row + k];
+                }
+                else
+                {
+                    val_j = bsr_val[block_dim * block_dim * j + block_dim * k + local_row];
+                }
+
+                int local_row_j = col_j % block_dim;
+
+                int row_begin_j = bsr_row_ptr[col_j / block_dim] - base;
+                int row_end_j   = diag_block_offset[col_j / block_dim];
+                int row_diag_j  = diag_offset[col_j];
+
+                T local_sum = make_DataType<T>(0);
+                T inv_diag  = row_diag_j != -1 ? bsr_val[row_diag_j] : make_DataType<T>(0);
+
+                // Check for numeric zero
+                if(inv_diag == make_DataType<T>(0))
+                {
+                    // Numerical non-invertible block diagonal
+                    if(*numeric_pivot == -1)
+                    {
+                        *numeric_pivot = block_col_j + base;
+                    }
+
+                    *numeric_pivot = std::min(*numeric_pivot, block_col_j + base);
+
+                    inv_diag = make_DataType<T>(1);
+                }
+
+                inv_diag = make_DataType<T>(1) / inv_diag;
+
+                // loop over upper offset pointer and do linear combination for nnz entry
+                for(int l = row_begin_j; l < row_end_j + 1; l++)
+                {
+                    int block_col_l = bsr_col_ind[l] - base;
+
+                    for(int m = 0; m < block_dim; m++)
+                    {
+                        int idx = nnz_entries[block_dim * block_col_l + m];
+
+                        if(idx != -1 && block_dim * block_col_l + m < col_j)
+                        {
+                            if(direction == HIPSPARSE_DIRECTION_ROW)
+                            {
+                                local_sum = testing_fma(bsr_val[block_dim * block_dim * l
+                                                                + block_dim * local_row_j + m],
+                                                        testing_conj(bsr_val[idx]),
+                                                        local_sum);
+                            }
+                            else
+                            {
+                                local_sum = testing_fma(bsr_val[block_dim * block_dim * l
+                                                                + block_dim * m + local_row_j],
+                                                        testing_conj(bsr_val[idx]),
+                                                        local_sum);
+                            }
+                        }
+                    }
+                }
+
+                val_j = (val_j - local_sum) * inv_diag;
+                sum   = testing_fma(val_j, testing_conj(val_j), sum);
+
+                if(direction == HIPSPARSE_DIRECTION_ROW)
+                {
+                    bsr_val[block_dim * block_dim * j + block_dim * local_row + k] = val_j;
+                }
+                else
+                {
+                    bsr_val[block_dim * block_dim * j + block_dim * k + local_row] = val_j;
+                }
+            }
+
+            if(break_outer_loop)
+            {
+                break;
+            }
+        }
+
+        if(!has_diag)
+        {
+            // Structural missing block diagonal
+            if(*struct_pivot == -1)
+            {
+                *struct_pivot = i / block_dim + base;
+            }
+        }
+
+        // Process diagonal entry
+        if(has_diag)
+        {
+            T diag_entry = make_DataType<T>(std::sqrt(testing_abs(bsr_val[diag_val_index] - sum)));
+            bsr_val[diag_val_index] = diag_entry;
+
+            if(diag_entry == make_DataType<T>(0))
+            {
+                // Numerical non-invertible block diagonal
+                if(*numeric_pivot == -1)
+                {
+                    *numeric_pivot = i / block_dim + base;
+                }
+
+                *numeric_pivot = std::min(*numeric_pivot, i / block_dim + base);
+            }
+
+            // Store diagonal offset
+            diag_offset[i] = diag_val_index;
+        }
+
+        for(int j = row_begin; j < row_end; j++)
+        {
+            int block_col_j = bsr_col_ind[j] - base;
+
+            for(int k = 0; k < block_dim; k++)
+            {
+                if(direction == HIPSPARSE_DIRECTION_ROW)
+                {
+                    nnz_entries[block_dim * block_col_j + k] = -1;
+                }
+                else
+                {
+                    nnz_entries[block_dim * block_col_j + k] = -1;
+                }
+            }
+        }
+    }
+}
+
+template <typename T>
 void csric0(int                  M,
             const int*           csr_row_ptr,
             const int*           csr_col_ind,
@@ -1891,12 +2206,12 @@ void csric0(int                  M,
                 if(nnz_entries[col_k] != 0)
                 {
                     int idx   = nnz_entries[col_k];
-                    local_sum = testing_fma(csr_val[k], csr_val[idx], local_sum);
+                    local_sum = testing_fma(csr_val[k], testing_conj(csr_val[idx]), local_sum);
                 }
             }
 
             val_j = (val_j - local_sum) * inv_diag;
-            sum   = testing_fma(val_j, val_j, sum);
+            sum   = testing_fma(val_j, testing_conj(val_j), sum);
 
             csr_val[j] = val_j;
         }
