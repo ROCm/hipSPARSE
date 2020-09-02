@@ -3437,6 +3437,134 @@ hipsparseStatus_t hipsparseZcsr2csr_compress(hipsparseHandle_t         handle,
                                              int*                      csrRowPtrC,
                                              hipDoubleComplex          tol);
 
+/* Description: These routines prune the input CSR matrix by removing elements that 
+   are less than or equal to the non-negative threshold */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpruneCsr2csr_bufferSize(hipsparseHandle_t         handle,
+                                                    int                       m,
+                                                    int                       n,
+                                                    int                       nnzA,
+                                                    const hipsparseMatDescr_t descrA,
+                                                    const float*              csrValA,
+                                                    const int*                csrRowPtrA,
+                                                    const int*                csrColIndA,
+                                                    const float*              threshold,
+                                                    const hipsparseMatDescr_t descrC,
+                                                    const float*              csrValC,
+                                                    const int*                csrRowPtrC,
+                                                    const int*                csrColIndC,
+                                                    size_t*                   bufferSize);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDpruneCsr2csr_bufferSize(hipsparseHandle_t         handle,
+                                                    int                       m,
+                                                    int                       n,
+                                                    int                       nnzA,
+                                                    const hipsparseMatDescr_t descrA,
+                                                    const double*             csrValA,
+                                                    const int*                csrRowPtrA,
+                                                    const int*                csrColIndA,
+                                                    const double*             threshold,
+                                                    const hipsparseMatDescr_t descrC,
+                                                    const double*             csrValC,
+                                                    const int*                csrRowPtrC,
+                                                    const int*                csrColIndC,
+                                                    size_t*                   bufferSize);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpruneCsr2csr_bufferSizeExt(hipsparseHandle_t         handle,
+                                                       int                       m,
+                                                       int                       n,
+                                                       int                       nnzA,
+                                                       const hipsparseMatDescr_t descrA,
+                                                       const float*              csrValA,
+                                                       const int*                csrRowPtrA,
+                                                       const int*                csrColIndA,
+                                                       const float*              threshold,
+                                                       const hipsparseMatDescr_t descrC,
+                                                       const float*              csrValC,
+                                                       const int*                csrRowPtrC,
+                                                       const int*                csrColIndC,
+                                                       size_t*                   bufferSize);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDpruneCsr2csr_bufferSizeExt(hipsparseHandle_t         handle,
+                                                       int                       m,
+                                                       int                       n,
+                                                       int                       nnzA,
+                                                       const hipsparseMatDescr_t descrA,
+                                                       const double*             csrValA,
+                                                       const int*                csrRowPtrA,
+                                                       const int*                csrColIndA,
+                                                       const double*             threshold,
+                                                       const hipsparseMatDescr_t descrC,
+                                                       const double*             csrValC,
+                                                       const int*                csrRowPtrC,
+                                                       const int*                csrColIndC,
+                                                       size_t*                   bufferSize);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpruneCsr2csrNnz(hipsparseHandle_t         handle,
+                                            int                       m,
+                                            int                       n,
+                                            int                       nnzA,
+                                            const hipsparseMatDescr_t descrA,
+                                            const float*              csrValA,
+                                            const int*                csrRowPtrA,
+                                            const int*                csrColIndA,
+                                            const float*              threshold,
+                                            const hipsparseMatDescr_t descrC,
+                                            int*                      csrRowPtrC,
+                                            int*                      nnzTotalDevHostPtr,
+                                            void*                     buffer);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDpruneCsr2csrNnz(hipsparseHandle_t         handle,
+                                            int                       m,
+                                            int                       n,
+                                            int                       nnzA,
+                                            const hipsparseMatDescr_t descrA,
+                                            const double*             csrValA,
+                                            const int*                csrRowPtrA,
+                                            const int*                csrColIndA,
+                                            const double*             threshold,
+                                            const hipsparseMatDescr_t descrC,
+                                            int*                      csrRowPtrC,
+                                            int*                      nnzTotalDevHostPtr,
+                                            void*                     buffer);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpruneCsr2csr(hipsparseHandle_t         handle,
+                                         int                       m,
+                                         int                       n,
+                                         int                       nnzA,
+                                         const hipsparseMatDescr_t descrA,
+                                         const float*              csrValA,
+                                         const int*                csrRowPtrA,
+                                         const int*                csrColIndA,
+                                         const float*              threshold,
+                                         const hipsparseMatDescr_t descrC,
+                                         float*                    csrValC,
+                                         const int*                csrRowPtrC,
+                                         int*                      csrColIndC,
+                                         void*                     buffer);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDpruneCsr2csr(hipsparseHandle_t         handle,
+                                         int                       m,
+                                         int                       n,
+                                         int                       nnzA,
+                                         const hipsparseMatDescr_t descrA,
+                                         const double*             csrValA,
+                                         const int*                csrRowPtrA,
+                                         const int*                csrColIndA,
+                                         const double*             threshold,
+                                         const hipsparseMatDescr_t descrC,
+                                         double*                   csrValC,
+                                         const int*                csrRowPtrC,
+                                         int*                      csrColIndC,
+                                         void*                     buffer);
+
 /* Description: This routine converts a sparse matrix in HYB storage format
 to a sparse matrix in CSR storage format. */
 HIPSPARSE_EXPORT
