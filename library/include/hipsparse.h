@@ -219,6 +219,7 @@ hipsparseStatus_t hipsparseCreateBsrilu02Info(bsrilu02Info_t* info);
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroyBsrilu02Info(bsrilu02Info_t info);
 
+HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreateBsric02Info(bsric02Info_t* info);
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroyBsric02Info(bsric02Info_t info);
@@ -2418,7 +2419,7 @@ hipsparseStatus_t hipsparseZbsrilu02(hipsparseHandle_t         handle,
                                      void*                  pBuffer);
 
 /* Description: Compute the incomplete-LU factorization with 0 fill-in (ILU0)
-   of the matrix A stored in CSR format. */
+of the matrix A stored in CSR format. */
 HIPSPARSE_EXPORT
 hipsparseStatus_t
     hipsparseXcsrilu02_zeroPivot(hipsparseHandle_t handle, csrilu02Info_t info, int* position);
