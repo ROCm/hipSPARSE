@@ -29,13 +29,13 @@
 #include <string>
 #include <vector>
 
-typedef hipsparseIndexBase_t            base;
+typedef hipsparseIndexBase_t                    base;
 typedef std::tuple<int, int, int, double, base> prune_dense2csr_tuple;
-int                                     prune_dense2csr_M_range[]  = {-1, 0, 10, 500, 872, 1000};
-int                                     prune_dense2csr_N_range[]  = {-3, 0, 33, 242, 623, 1000};
-int                                     prune_dense2csr_LD_range[] = {50, 500, 1000};
-double                                  prune_dense2csr_alpha_range[] = {0.1, 0.55};
-base prune_dense2csr_idx_base_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+int    prune_dense2csr_M_range[]         = {-1, 0, 10, 500, 872, 1000};
+int    prune_dense2csr_N_range[]         = {-3, 0, 33, 242, 623, 1000};
+int    prune_dense2csr_LD_range[]        = {50, 500, 1000};
+double prune_dense2csr_threshold_range[] = {0.1, 0.55};
+base   prune_dense2csr_idx_base_range[]  = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
 class parameterized_prune_dense2csr : public testing::TestWithParam<prune_dense2csr_tuple>
 {
@@ -49,11 +49,11 @@ protected:
 Arguments setup_prune_dense2csr_arguments(prune_dense2csr_tuple tup)
 {
     Arguments arg;
-    arg.M        = std::get<0>(tup);
-    arg.N        = std::get<1>(tup);
-    arg.lda      = std::get<2>(tup);
-    arg.alpha    = std::get<3>(tup);
-    arg.idx_base = std::get<4>(tup);
+    arg.M         = std::get<0>(tup);
+    arg.N         = std::get<1>(tup);
+    arg.lda       = std::get<2>(tup);
+    arg.threshold = std::get<3>(tup);
+    arg.idx_base  = std::get<4>(tup);
     return arg;
 }
 
@@ -81,7 +81,7 @@ TEST_P(parameterized_prune_dense2csr, prune_dense2csr_double)
 INSTANTIATE_TEST_CASE_P(prune_dense2csr,
                         parameterized_prune_dense2csr,
                         testing::Combine(testing::ValuesIn(prune_dense2csr_M_range),
-                                        testing::ValuesIn(prune_dense2csr_N_range),
-                                        testing::ValuesIn(prune_dense2csr_LD_range),
-                                        testing::ValuesIn(prune_dense2csr_alpha_range),
-                                        testing::ValuesIn(prune_dense2csr_idx_base_range)));
+                                         testing::ValuesIn(prune_dense2csr_N_range),
+                                         testing::ValuesIn(prune_dense2csr_LD_range),
+                                         testing::ValuesIn(prune_dense2csr_threshold_range),
+                                         testing::ValuesIn(prune_dense2csr_idx_base_range)));
