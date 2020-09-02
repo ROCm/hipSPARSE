@@ -4743,8 +4743,8 @@ hipsparseStatus_t
 }
 
 hipsparseStatus_t hipsparseScsrilu02_bufferSize(hipsparseHandle_t         handle,
-                                                int                       mb,
-                                                int                       nnzb,
+                                                int                       m,
+                                                int                       nnz,
                                                 const hipsparseMatDescr_t descrA,
                                                 float*                    csrSortedValA,
                                                 const int*                csrSortedRowPtrA,
@@ -4753,8 +4753,8 @@ hipsparseStatus_t hipsparseScsrilu02_bufferSize(hipsparseHandle_t         handle
                                                 int*                      pBufferSizeInBytes)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseScsrilu02_bufferSize((cusparseHandle_t)handle,
-                                                                     mb,
-                                                                     nnzb,
+                                                                     m,
+                                                                     nnz,
                                                                      (cusparseMatDescr_t)descrA,
                                                                      csrSortedValA,
                                                                      csrSortedRowPtrA,
@@ -4764,8 +4764,8 @@ hipsparseStatus_t hipsparseScsrilu02_bufferSize(hipsparseHandle_t         handle
 }
 
 hipsparseStatus_t hipsparseDcsrilu02_bufferSize(hipsparseHandle_t         handle,
-                                                int                       mb,
-                                                int                       nnzb,
+                                                int                       m,
+                                                int                       nnz,
                                                 const hipsparseMatDescr_t descrA,
                                                 double*                   csrSortedValA,
                                                 const int*                csrSortedRowPtrA,
@@ -4774,8 +4774,8 @@ hipsparseStatus_t hipsparseDcsrilu02_bufferSize(hipsparseHandle_t         handle
                                                 int*                      pBufferSizeInBytes)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseDcsrilu02_bufferSize((cusparseHandle_t)handle,
-                                                                     mb,
-                                                                     nnzb,
+                                                                     m,
+                                                                     nnz,
                                                                      (cusparseMatDescr_t)descrA,
                                                                      csrSortedValA,
                                                                      csrSortedRowPtrA,
@@ -4785,8 +4785,8 @@ hipsparseStatus_t hipsparseDcsrilu02_bufferSize(hipsparseHandle_t         handle
 }
 
 hipsparseStatus_t hipsparseCcsrilu02_bufferSize(hipsparseHandle_t         handle,
-                                                int                       mb,
-                                                int                       nnzb,
+                                                int                       m,
+                                                int                       nnz,
                                                 const hipsparseMatDescr_t descrA,
                                                 hipComplex*               csrSortedValA,
                                                 const int*                csrSortedRowPtrA,
