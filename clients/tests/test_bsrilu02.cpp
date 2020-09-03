@@ -28,7 +28,6 @@
 #include <hipsparse.h>
 #include <string>
 #include <unistd.h>
-#include <vector>
 
 typedef hipsparseIndexBase_t                    base;
 typedef hipsparseDirection_t                    dir;
