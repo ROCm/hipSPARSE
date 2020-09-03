@@ -332,6 +332,23 @@ module hipsparse
             type(c_ptr), value :: info
         end function hipsparseDestroyCsrsm2Info
 
+!       bsrilu02Info_t
+        function hipsparseCreateBsrilu02Info(info) &
+                result(c_int) &
+                bind(c, name = 'hipsparseCreateBsrilu02Info')
+            use iso_c_binding
+            implicit none
+            type(c_ptr) :: info
+        end function hipsparseCreateBsrilu02Info
+
+        function hipsparseDestroyBsrilu02Info(info) &
+                result(c_int) &
+                bind(c, name = 'hipsparseDestroyBsrilu02Info')
+            use iso_c_binding
+            implicit none
+            type(c_ptr), value :: info
+        end function hipsparseDestroyBsrilu02Info
+
 !       csrilu02Info_t
         function hipsparseCreateCsrilu02Info(info) &
                 result(c_int) &
@@ -2874,6 +2891,256 @@ module hipsparse
 ! ===========================================================================
 !   preconditioner SPARSE
 ! ===========================================================================
+
+!       hipsparseXbsrilu02_zeroPivot
+        function hipsparseXbsrilu02_zeroPivot(handle, info, position) &
+                result(c_int) &
+                bind(c, name = 'hipsparseXbsrilu02_zeroPivot')
+            use iso_c_binding
+            implicit none
+            type(c_ptr), value :: handle
+            type(c_ptr), value :: info
+            type(c_ptr), value :: position
+        end function hipsparseXbsrilu02_zeroPivot
+
+!       hipsparseXbsrilu02_bufferSize
+        function hipsparseSbsrilu02_bufferSize(handle, dir, mb, nnzb, descr, bsrVal, &
+                bsrRowPtr, bsrColInd, blockDim, info, bufferSize) &
+                result(c_int) &
+                bind(c, name = 'hipsparseSbsrilu02_bufferSize')
+            use iso_c_binding
+            implicit none
+            type(c_ptr), value :: handle
+            integer(c_int), value :: dir
+            integer(c_int), value :: mb
+            integer(c_int), value :: nnzb
+            type(c_ptr), intent(in), value :: descr
+            type(c_ptr), intent(in), value :: bsrVal
+            type(c_ptr), intent(in), value :: bsrRowPtr
+            type(c_ptr), intent(in), value :: bsrColInd
+            integer(c_int), value :: blockDim
+            type(c_ptr), value :: info
+            type(c_ptr), value :: bufferSize
+        end function hipsparseSbsrilu02_bufferSize
+
+        function hipsparseDbsrilu02_bufferSize(handle, dir, mb, nnzb, descr, bsrVal, &
+                bsrRowPtr, bsrColInd, blockDim, info, bufferSize) &
+                result(c_int) &
+                bind(c, name = 'hipsparseDbsrilu02_bufferSize')
+            use iso_c_binding
+            implicit none
+            type(c_ptr), value :: handle
+            integer(c_int), value :: dir
+            integer(c_int), value :: mb
+            integer(c_int), value :: nnzb
+            type(c_ptr), intent(in), value :: descr
+            type(c_ptr), intent(in), value :: bsrVal
+            type(c_ptr), intent(in), value :: bsrRowPtr
+            type(c_ptr), intent(in), value :: bsrColInd
+            integer(c_int), value :: blockDim
+            type(c_ptr), value :: info
+            type(c_ptr), value :: bufferSize
+        end function hipsparseDbsrilu02_bufferSize
+
+        function hipsparseCbsrilu02_bufferSize(handle, dir, mb, nnzb, descr, bsrVal, &
+                bsrRowPtr, bsrColInd, blockDim, info, bufferSize) &
+                result(c_int) &
+                bind(c, name = 'hipsparseCbsrilu02_bufferSize')
+            use iso_c_binding
+            implicit none
+            type(c_ptr), value :: handle
+            integer(c_int), value :: dir
+            integer(c_int), value :: mb
+            integer(c_int), value :: nnzb
+            type(c_ptr), intent(in), value :: descr
+            type(c_ptr), intent(in), value :: bsrVal
+            type(c_ptr), intent(in), value :: bsrRowPtr
+            type(c_ptr), intent(in), value :: bsrColInd
+            integer(c_int), value :: blockDim
+            type(c_ptr), value :: info
+            type(c_ptr), value :: bufferSize
+        end function hipsparseCbsrilu02_bufferSize
+
+        function hipsparseZbsrilu02_bufferSize(handle, dir, mb, nnzb, descr, bsrVal, &
+                bsrRowPtr, bsrColInd, blockDim, info, bufferSize) &
+                result(c_int) &
+                bind(c, name = 'hipsparseZbsrilu02_bufferSize')
+            use iso_c_binding
+            implicit none
+            type(c_ptr), value :: handle
+            integer(c_int), value :: dir
+            integer(c_int), value :: mb
+            integer(c_int), value :: nnzb
+            type(c_ptr), intent(in), value :: descr
+            type(c_ptr), intent(in), value :: bsrVal
+            type(c_ptr), intent(in), value :: bsrRowPtr
+            type(c_ptr), intent(in), value :: bsrColInd
+            integer(c_int), value :: blockDim
+            type(c_ptr), value :: info
+            type(c_ptr), value :: bufferSize
+        end function hipsparseZbsrilu02_bufferSize
+
+!       hipsparseXbsrilu02_analysis
+        function hipsparseSbsrilu02_analysis(handle, dir, mb, nnzb, descr, bsrVal, &
+                bsrRowPtr, bsrColInd, blockDim, info, policy, buffer) &
+                result(c_int) &
+                bind(c, name = 'hipsparseSbsrilu02_analysis')
+            use iso_c_binding
+            implicit none
+            type(c_ptr), value :: handle
+            integer(c_int), value :: dir
+            integer(c_int), value :: mb
+            integer(c_int), value :: nnzb
+            type(c_ptr), intent(in), value :: descr
+            type(c_ptr), intent(in), value :: bsrVal
+            type(c_ptr), intent(in), value :: bsrRowPtr
+            type(c_ptr), intent(in), value :: bsrColInd
+            integer(c_int), value :: blockDim
+            type(c_ptr), value :: info
+            integer(c_int), value :: policy
+            type(c_ptr), value :: buffer
+        end function hipsparseSbsrilu02_analysis
+
+        function hipsparseDbsrilu02_analysis(handle, dir, mb, nnzb, descr, bsrVal, &
+                bsrRowPtr, bsrColInd, blockDim, info, policy, buffer) &
+                result(c_int) &
+                bind(c, name = 'hipsparseDbsrilu02_analysis')
+            use iso_c_binding
+            implicit none
+            type(c_ptr), value :: handle
+            integer(c_int), value :: dir
+            integer(c_int), value :: mb
+            integer(c_int), value :: nnzb
+            type(c_ptr), intent(in), value :: descr
+            type(c_ptr), intent(in), value :: bsrVal
+            type(c_ptr), intent(in), value :: bsrRowPtr
+            type(c_ptr), intent(in), value :: bsrColInd
+            integer(c_int), value :: blockDim
+            type(c_ptr), value :: info
+            integer(c_int), value :: policy
+            type(c_ptr), value :: buffer
+        end function hipsparseDbsrilu02_analysis
+
+        function hipsparseCbsrilu02_analysis(handle, dir, mb, nnzb, descr, bsrVal, &
+                bsrRowPtr, bsrColInd, blockDim, info, policy, buffer) &
+                result(c_int) &
+                bind(c, name = 'hipsparseCbsrilu02_analysis')
+            use iso_c_binding
+            implicit none
+            type(c_ptr), value :: handle
+            integer(c_int), value :: dir
+            integer(c_int), value :: mb
+            integer(c_int), value :: nnzb
+            type(c_ptr), intent(in), value :: descr
+            type(c_ptr), intent(in), value :: bsrVal
+            type(c_ptr), intent(in), value :: bsrRowPtr
+            type(c_ptr), intent(in), value :: bsrColInd
+            integer(c_int), value :: blockDim
+            type(c_ptr), value :: info
+            integer(c_int), value :: policy
+            type(c_ptr), value :: buffer
+        end function hipsparseCbsrilu02_analysis
+
+        function hipsparseZbsrilu02_analysis(handle, dir, mb, nnzb, descr, bsrVal, &
+                bsrRowPtr, bsrColInd, blockDim, info, policy, buffer) &
+                result(c_int) &
+                bind(c, name = 'hipsparseZbsrilu02_analysis')
+            use iso_c_binding
+            implicit none
+            type(c_ptr), value :: handle
+            integer(c_int), value :: dir
+            integer(c_int), value :: mb
+            integer(c_int), value :: nnzb
+            type(c_ptr), intent(in), value :: descr
+            type(c_ptr), intent(in), value :: bsrVal
+            type(c_ptr), intent(in), value :: bsrRowPtr
+            type(c_ptr), intent(in), value :: bsrColInd
+            integer(c_int), value :: blockDim
+            type(c_ptr), value :: info
+            integer(c_int), value :: policy
+            type(c_ptr), value :: buffer
+        end function hipsparseZbsrilu02_analysis
+
+!       hipsparseXbsrilu02
+        function hipsparseSbsrilu02(handle, dir, mb, nnzb, descr, bsrVal, bsrRowPtr, &
+                bsrColInd, blockDim, info, policy, buffer) &
+                result(c_int) &
+                bind(c, name = 'hipsparseSbsrilu02')
+            use iso_c_binding
+            implicit none
+            type(c_ptr), value :: handle
+            integer(c_int), value :: dir
+            integer(c_int), value :: mb
+            integer(c_int), value :: nnzb
+            type(c_ptr), intent(in), value :: descr
+            type(c_ptr), value :: bsrVal
+            type(c_ptr), intent(in), value :: bsrRowPtr
+            type(c_ptr), intent(in), value :: bsrColInd
+            integer(c_int), value :: blockDim
+            type(c_ptr), value :: info
+            integer(c_int), value :: policy
+            type(c_ptr), value :: buffer
+        end function hipsparseSbsrilu02
+
+        function hipsparseDbsrilu02(handle, dir, mb, nnzb, descr, bsrVal, bsrRowPtr, &
+                bsrColInd, blockDim, info, policy, buffer) &
+                result(c_int) &
+                bind(c, name = 'hipsparseDbsrilu02')
+            use iso_c_binding
+            implicit none
+            type(c_ptr), value :: handle
+            integer(c_int), value :: dir
+            integer(c_int), value :: mb
+            integer(c_int), value :: nnzb
+            type(c_ptr), intent(in), value :: descr
+            type(c_ptr), value :: bsrVal
+            type(c_ptr), intent(in), value :: bsrRowPtr
+            type(c_ptr), intent(in), value :: bsrColInd
+            integer(c_int), value :: blockDim
+            type(c_ptr), value :: info
+            integer(c_int), value :: policy
+            type(c_ptr), value :: buffer
+        end function hipsparseDbsrilu02
+
+        function hipsparseCbsrilu02(handle, dir, mb, nnzb, descr, bsrVal, bsrRowPtr, &
+                bsrColInd, blockDim, info, policy, buffer) &
+                result(c_int) &
+                bind(c, name = 'hipsparseCbsrilu02')
+            use iso_c_binding
+            implicit none
+            type(c_ptr), value :: handle
+            integer(c_int), value :: dir
+            integer(c_int), value :: mb
+            integer(c_int), value :: nnzb
+            type(c_ptr), intent(in), value :: descr
+            type(c_ptr), value :: bsrVal
+            type(c_ptr), intent(in), value :: bsrRowPtr
+            type(c_ptr), intent(in), value :: bsrColInd
+            integer(c_int), value :: blockDim
+            type(c_ptr), value :: info
+            integer(c_int), value :: policy
+            type(c_ptr), value :: buffer
+        end function hipsparseCbsrilu02
+
+        function hipsparseZbsrilu02(handle, dir, mb, nnzb, descr, bsrVal, bsrRowPtr, &
+                bsrColInd, blockDim, info, policy, buffer) &
+                result(c_int) &
+                bind(c, name = 'hipsparseZbsrilu02')
+            use iso_c_binding
+            implicit none
+            type(c_ptr), value :: handle
+            integer(c_int), value :: dir
+            integer(c_int), value :: mb
+            integer(c_int), value :: nnzb
+            type(c_ptr), intent(in), value :: descr
+            type(c_ptr), value :: bsrVal
+            type(c_ptr), intent(in), value :: bsrRowPtr
+            type(c_ptr), intent(in), value :: bsrColInd
+            integer(c_int), value :: blockDim
+            type(c_ptr), value :: info
+            integer(c_int), value :: policy
+            type(c_ptr), value :: buffer
+        end function hipsparseZbsrilu02
 
 !       hipsparseXcsrilu02_zeroPivot
         function hipsparseXcsrilu02_zeroPivot(handle, info, position) &
