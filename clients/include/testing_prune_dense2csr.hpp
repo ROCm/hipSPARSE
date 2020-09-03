@@ -44,14 +44,14 @@ void testing_prune_dense2csr_bad_arg(void)
     // do not test for bad args
     return;
 #endif
-    size_t safe_size  = 100;
+    size_t safe_size = 100;
 
-    int M   = 10;
-    int N   = 10;
-    int LDA = M;
-    T threshold = static_cast<T>(1);
-    int nnz_total_dev_host_ptr = 100;
-    size_t buffer_size = 100;
+    int    M                      = 10;
+    int    N                      = 10;
+    int    LDA                    = M;
+    T      threshold              = static_cast<T>(1);
+    int    nnz_total_dev_host_ptr = 100;
+    size_t buffer_size            = 100;
 
     hipsparseStatus_t status;
 
@@ -66,16 +66,15 @@ void testing_prune_dense2csr_bad_arg(void)
     auto csr_col_ind_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
     auto csr_val_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-    auto A_managed
-        = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+    auto A_managed       = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
     auto temp_buffer_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
 
     int* csr_row_ptr = (int*)csr_row_ptr_managed.get();
     int* csr_col_ind = (int*)csr_col_ind_managed.get();
     T*   csr_val     = (T*)csr_val_managed.get();
-    T* A = (T*)A_managed.get();
-    T* temp_buffer = (T*)temp_buffer_managed.get();
+    T*   A           = (T*)A_managed.get();
+    T*   temp_buffer = (T*)temp_buffer_managed.get();
 
     if(!csr_row_ptr || !csr_col_ind || !csr_val || !A || !temp_buffer)
     {
@@ -84,305 +83,183 @@ void testing_prune_dense2csr_bad_arg(void)
     }
 
     // Test hipsparseXpruneDense2csr_bufferSize
-    status = hipsparseXpruneDense2csr_bufferSize(nullptr,
-                                M,
-                                N,
-                                A,
-                                LDA,
-                                &threshold,
-                                descr,
-                                csr_val,
-                                csr_row_ptr,
-                                csr_col_ind,
-                                &buffer_size);
-        verify_hipsparse_status_invalid_handle(status);
+    status = hipsparseXpruneDense2csr_bufferSize(
+        nullptr, M, N, A, LDA, &threshold, descr, csr_val, csr_row_ptr, csr_col_ind, &buffer_size);
+    verify_hipsparse_status_invalid_handle(status);
 
-    status = hipsparseXpruneDense2csr_bufferSize(handle,
-                                M,
-                                N,
-                                A,
-                                LDA,
-                                &threshold,
-                                descr,
-                                csr_val,
-                                csr_row_ptr,
-                                csr_col_ind,
-                                nullptr);
-        verify_hipsparse_status_invalid_pointer(status, "Error: buffer size is nullptr");
-    
+    status = hipsparseXpruneDense2csr_bufferSize(
+        handle, M, N, A, LDA, &threshold, descr, csr_val, csr_row_ptr, csr_col_ind, nullptr);
+    verify_hipsparse_status_invalid_pointer(status, "Error: buffer size is nullptr");
+
     // Test hipsparseXpruneDense2csrNnz
     status = hipsparseXpruneDense2csrNnz(nullptr,
-                                M,
-                                N,
-                                A,
-                                LDA,
-                                &threshold,
-                                descr,
-                                csr_row_ptr,
-                                &nnz_total_dev_host_ptr,
-                                temp_buffer);
-        verify_hipsparse_status_invalid_handle(status);
+                                         M,
+                                         N,
+                                         A,
+                                         LDA,
+                                         &threshold,
+                                         descr,
+                                         csr_row_ptr,
+                                         &nnz_total_dev_host_ptr,
+                                         temp_buffer);
+    verify_hipsparse_status_invalid_handle(status);
 
     status = hipsparseXpruneDense2csrNnz(handle,
-                                -1,
-                                N,
-                                A,
-                                LDA,
-                                &threshold,
-                                descr,
-                                csr_row_ptr,
-                                &nnz_total_dev_host_ptr,
-                                temp_buffer);
-        verify_hipsparse_status_invalid_size(status, "Error: M is invalid");
+                                         -1,
+                                         N,
+                                         A,
+                                         LDA,
+                                         &threshold,
+                                         descr,
+                                         csr_row_ptr,
+                                         &nnz_total_dev_host_ptr,
+                                         temp_buffer);
+    verify_hipsparse_status_invalid_size(status, "Error: M is invalid");
 
     status = hipsparseXpruneDense2csrNnz(handle,
-                                M,
-                                -1,
-                                A,
-                                LDA,
-                                &threshold,
-                                descr,
-                                csr_row_ptr,
-                                &nnz_total_dev_host_ptr,
-                                temp_buffer);
-        verify_hipsparse_status_invalid_size(status, "Error: N is invalid");
+                                         M,
+                                         -1,
+                                         A,
+                                         LDA,
+                                         &threshold,
+                                         descr,
+                                         csr_row_ptr,
+                                         &nnz_total_dev_host_ptr,
+                                         temp_buffer);
+    verify_hipsparse_status_invalid_size(status, "Error: N is invalid");
+
+    status = hipsparseXpruneDense2csrNnz(
+        handle, M, N, A, -1, &threshold, descr, csr_row_ptr, &nnz_total_dev_host_ptr, temp_buffer);
+    verify_hipsparse_status_invalid_size(status, "Error: LDA is invalid");
 
     status = hipsparseXpruneDense2csrNnz(handle,
-                                M,
-                                N,
-                                A,
-                                -1,
-                                &threshold,
-                                descr,
-                                csr_row_ptr,
-                                &nnz_total_dev_host_ptr,
-                                temp_buffer);
-        verify_hipsparse_status_invalid_size(status, "Error: LDA is invalid");
+                                         M,
+                                         N,
+                                         (const T*)nullptr,
+                                         LDA,
+                                         &threshold,
+                                         descr,
+                                         csr_row_ptr,
+                                         &nnz_total_dev_host_ptr,
+                                         temp_buffer);
+    verify_hipsparse_status_invalid_pointer(status, "Error: A is nullptr");
 
     status = hipsparseXpruneDense2csrNnz(handle,
-                                M,
-                                N,
-                                (const T*)nullptr,
-                                LDA,
-                                &threshold,
-                                descr,
-                                csr_row_ptr,
-                                &nnz_total_dev_host_ptr,
-                                temp_buffer);
-        verify_hipsparse_status_invalid_pointer(status, "Error: A is nullptr");
+                                         M,
+                                         N,
+                                         A,
+                                         LDA,
+                                         (const T*)nullptr,
+                                         descr,
+                                         csr_row_ptr,
+                                         &nnz_total_dev_host_ptr,
+                                         temp_buffer);
+    verify_hipsparse_status_invalid_pointer(status, "Error: threshold is nullptr");
 
     status = hipsparseXpruneDense2csrNnz(handle,
-                                M,
-                                N,
-                                A,
-                                LDA,
-                                (const T*)nullptr,
-                                descr,
-                                csr_row_ptr,
-                                &nnz_total_dev_host_ptr,
-                                temp_buffer);
-        verify_hipsparse_status_invalid_pointer(status, "Error: threshold is nullptr");
+                                         M,
+                                         N,
+                                         A,
+                                         LDA,
+                                         &threshold,
+                                         nullptr,
+                                         csr_row_ptr,
+                                         &nnz_total_dev_host_ptr,
+                                         temp_buffer);
+    verify_hipsparse_status_invalid_pointer(status, "Error: descr is nullptr");
 
-    status = hipsparseXpruneDense2csrNnz(handle,
-                                M,
-                                N,
-                                A,
-                                LDA,
-                                &threshold,
-                                nullptr,
-                                csr_row_ptr,
-                                &nnz_total_dev_host_ptr,
-                                temp_buffer);
-        verify_hipsparse_status_invalid_pointer(status, "Error: descr is nullptr");
+    status = hipsparseXpruneDense2csrNnz(
+        handle, M, N, A, LDA, &threshold, descr, nullptr, &nnz_total_dev_host_ptr, temp_buffer);
+    verify_hipsparse_status_invalid_pointer(status, "Error: csr_row_ptr is nullptr");
 
-    status = hipsparseXpruneDense2csrNnz(handle,
-                                M,
-                                N,
-                                A,
-                                LDA,
-                                &threshold,
-                                descr,
-                                nullptr,
-                                &nnz_total_dev_host_ptr,
-                                temp_buffer);
-        verify_hipsparse_status_invalid_pointer(status, "Error: csr_row_ptr is nullptr");
+    status = hipsparseXpruneDense2csrNnz(
+        handle, M, N, A, LDA, &threshold, descr, csr_row_ptr, nullptr, temp_buffer);
+    verify_hipsparse_status_invalid_pointer(status, "Error: nnz_total_dev_host_ptr is nullptr");
 
-    status = hipsparseXpruneDense2csrNnz(handle,
-                                M,
-                                N,
-                                A,
-                                LDA,
-                                &threshold,
-                                descr,
-                                csr_row_ptr,
-                                nullptr,
-                                temp_buffer);
-        verify_hipsparse_status_invalid_pointer(status, "Error: nnz_total_dev_host_ptr is nullptr");
-
-    status = hipsparseXpruneDense2csrNnz(handle,
-                                M,
-                                N,
-                                A,
-                                LDA,
-                                &threshold,
-                                descr,
-                                csr_row_ptr,
-                                &nnz_total_dev_host_ptr,
-                                nullptr);
-        verify_hipsparse_status_invalid_pointer(status, "Error: buffer size is nullptr");
+    status = hipsparseXpruneDense2csrNnz(
+        handle, M, N, A, LDA, &threshold, descr, csr_row_ptr, &nnz_total_dev_host_ptr, nullptr);
+    verify_hipsparse_status_invalid_pointer(status, "Error: buffer size is nullptr");
 
     // Test hipsparseXpruneDense2csr
-    status = hipsparseXpruneDense2csr(nullptr,
-                                    M,
-                                    N,
-                                    A,
-                                    LDA,
-                                    &threshold,
-                                    descr,
-                                    csr_val,
-                                    csr_row_ptr,
-                                    csr_col_ind,
-                                    temp_buffer);
-        verify_hipsparse_status_invalid_handle(status);
+    status = hipsparseXpruneDense2csr(
+        nullptr, M, N, A, LDA, &threshold, descr, csr_val, csr_row_ptr, csr_col_ind, temp_buffer);
+    verify_hipsparse_status_invalid_handle(status);
+
+    status = hipsparseXpruneDense2csr(
+        handle, -1, N, A, LDA, &threshold, descr, csr_val, csr_row_ptr, csr_col_ind, temp_buffer);
+    verify_hipsparse_status_invalid_size(status, "Error: M is invalid");
+
+    status = hipsparseXpruneDense2csr(
+        handle, M, -1, A, LDA, &threshold, descr, csr_val, csr_row_ptr, csr_col_ind, temp_buffer);
+    verify_hipsparse_status_invalid_size(status, "Error: N is invalid");
+
+    status = hipsparseXpruneDense2csr(
+        handle, M, N, A, -1, &threshold, descr, csr_val, csr_row_ptr, csr_col_ind, temp_buffer);
+    verify_hipsparse_status_invalid_size(status, "Error: LDA is invalid");
 
     status = hipsparseXpruneDense2csr(handle,
-                                    -1,
-                                    N,
-                                    A,
-                                    LDA,
-                                    &threshold,
-                                    descr,
-                                    csr_val,
-                                    csr_row_ptr,
-                                    csr_col_ind,
-                                    temp_buffer);
-        verify_hipsparse_status_invalid_size(status, "Error: M is invalid");
+                                      M,
+                                      N,
+                                      (const T*)nullptr,
+                                      LDA,
+                                      &threshold,
+                                      descr,
+                                      csr_val,
+                                      csr_row_ptr,
+                                      csr_col_ind,
+                                      temp_buffer);
+    verify_hipsparse_status_invalid_pointer(status, "Error: A is nullptr");
 
     status = hipsparseXpruneDense2csr(handle,
-                                    M,
-                                    -1,
-                                    A,
-                                    LDA,
-                                    &threshold,
-                                    descr,
-                                    csr_val,
-                                    csr_row_ptr,
-                                    csr_col_ind,
-                                    temp_buffer);
-        verify_hipsparse_status_invalid_size(status, "Error: N is invalid");
+                                      M,
+                                      N,
+                                      A,
+                                      LDA,
+                                      (const T*)nullptr,
+                                      descr,
+                                      csr_val,
+                                      csr_row_ptr,
+                                      csr_col_ind,
+                                      temp_buffer);
+    verify_hipsparse_status_invalid_pointer(status, "Error: threshold is nullptr");
 
-        status = hipsparseXpruneDense2csr(handle,
-                                    M,
-                                    N,
-                                    A,
-                                    -1,
-                                    &threshold,
-                                    descr,
-                                    csr_val,
-                                    csr_row_ptr,
-                                    csr_col_ind,
-                                    temp_buffer);
-        verify_hipsparse_status_invalid_size(status, "Error: LDA is invalid");
+    status = hipsparseXpruneDense2csr(
+        handle, M, N, A, LDA, &threshold, nullptr, csr_val, csr_row_ptr, csr_col_ind, temp_buffer);
+    verify_hipsparse_status_invalid_pointer(status, "Error: descr is nullptr");
 
     status = hipsparseXpruneDense2csr(handle,
-                                    M,
-                                    N,
-                                    (const T*)nullptr,
-                                    LDA,
-                                    &threshold,
-                                    descr,
-                                    csr_val,
-                                    csr_row_ptr,
-                                    csr_col_ind,
-                                    temp_buffer);
-        verify_hipsparse_status_invalid_pointer(status, "Error: A is nullptr");
+                                      M,
+                                      N,
+                                      A,
+                                      LDA,
+                                      &threshold,
+                                      descr,
+                                      (T*)nullptr,
+                                      csr_row_ptr,
+                                      csr_col_ind,
+                                      temp_buffer);
+    verify_hipsparse_status_invalid_pointer(status, "Error: csr_val is nullptr");
 
-    status = hipsparseXpruneDense2csr(handle,
-                                    M,
-                                    N,
-                                    A,
-                                    LDA,
-                                    (const T*)nullptr,
-                                    descr,
-                                    csr_val,
-                                    csr_row_ptr,
-                                    csr_col_ind,
-                                    temp_buffer);
-        verify_hipsparse_status_invalid_pointer(status, "Error: threshold is nullptr");
+    status = hipsparseXpruneDense2csr(
+        handle, M, N, A, LDA, &threshold, descr, csr_val, nullptr, csr_col_ind, temp_buffer);
+    verify_hipsparse_status_invalid_pointer(status, "Error: csr_row_ptr is nullptr");
 
-    status = hipsparseXpruneDense2csr(handle,
-                                    M,
-                                    N,
-                                    A,
-                                    LDA,
-                                    &threshold,
-                                    nullptr,
-                                    csr_val,
-                                    csr_row_ptr,
-                                    csr_col_ind,
-                                    temp_buffer);
-        verify_hipsparse_status_invalid_pointer(status, "Error: descr is nullptr");
+    status = hipsparseXpruneDense2csr(
+        handle, M, N, A, LDA, &threshold, descr, csr_val, csr_row_ptr, nullptr, temp_buffer);
+    verify_hipsparse_status_invalid_pointer(status, "Error: csr_col_ind is nullptr");
 
-    status = hipsparseXpruneDense2csr(handle,
-                                    M,
-                                    N,
-                                    A,
-                                    LDA,
-                                    &threshold,
-                                    descr,
-                                    (T*)nullptr,
-                                    csr_row_ptr,
-                                    csr_col_ind,
-                                    temp_buffer);
-        verify_hipsparse_status_invalid_pointer(status, "Error: csr_val is nullptr");
-                                        
-    status = hipsparseXpruneDense2csr(handle,
-                                    M,
-                                    N,
-                                    A,
-                                    LDA,
-                                    &threshold,
-                                    descr,
-                                    csr_val,
-                                    nullptr,
-                                    csr_col_ind,
-                                    temp_buffer);
-        verify_hipsparse_status_invalid_pointer(status, "Error: csr_row_ptr is nullptr");
-    
-    status = hipsparseXpruneDense2csr(handle,
-                                    M,
-                                    N,
-                                    A,
-                                    LDA,
-                                    &threshold,
-                                    descr,
-                                    csr_val,
-                                    csr_row_ptr,
-                                    nullptr,
-                                    temp_buffer);
-        verify_hipsparse_status_invalid_pointer(status, "Error: csr_col_ind is nullptr");
-
-    status = hipsparseXpruneDense2csr(handle,
-                                    M,
-                                    N,
-                                    A,
-                                    LDA,
-                                    &threshold,
-                                    descr,
-                                    csr_val,
-                                    csr_row_ptr,
-                                    csr_col_ind,
-                                    nullptr);
-        verify_hipsparse_status_invalid_pointer(status, "Error: buffer is nullptr");
+    status = hipsparseXpruneDense2csr(
+        handle, M, N, A, LDA, &threshold, descr, csr_val, csr_row_ptr, csr_col_ind, nullptr);
+    verify_hipsparse_status_invalid_pointer(status, "Error: buffer is nullptr");
 }
 
 template <typename T>
 hipsparseStatus_t testing_prune_dense2csr(Arguments argus)
 {
-    int         M         = argus.M;
-    int         N         = argus.N;
-    int         LDA       = argus.lda;
-    T           threshold = static_cast<T>(argus.alpha);  
+    int                  M         = argus.M;
+    int                  N         = argus.N;
+    int                  LDA       = argus.lda;
+    T                    threshold = static_cast<T>(argus.threshold);
     hipsparseIndexBase_t idx_base  = argus.idx_base;
     hipsparseStatus_t    status;
 
@@ -405,20 +282,20 @@ hipsparseStatus_t testing_prune_dense2csr(Arguments argus)
         size_t safe_size = 100;
 
         auto csr_row_ptr_managed
-        = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
         auto csr_col_ind_managed
             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto csr_val_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-        auto A_managed
+        auto csr_val_managed
             = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+        auto A_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
         auto temp_buffer_managed
             = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
 
         int* csr_row_ptr = (int*)csr_row_ptr_managed.get();
         int* csr_col_ind = (int*)csr_col_ind_managed.get();
         T*   csr_val     = (T*)csr_val_managed.get();
-        T* A = (T*)A_managed.get();
-        T* temp_buffer = (T*)temp_buffer_managed.get();
+        T*   A           = (T*)A_managed.get();
+        T*   temp_buffer = (T*)temp_buffer_managed.get();
 
         if(!csr_row_ptr || !csr_col_ind || !csr_val || !A || !temp_buffer)
         {
@@ -427,16 +304,16 @@ hipsparseStatus_t testing_prune_dense2csr(Arguments argus)
         }
 
         status = hipsparseXpruneDense2csr(handle,
-                                    M,
-                                    N,
-                                    A,
-                                    LDA,
-                                    &threshold,
-                                    descr,
-                                    csr_val,
-                                    csr_row_ptr,
-                                    csr_col_ind,
-                                    temp_buffer);
+                                          M,
+                                          N,
+                                          A,
+                                          LDA,
+                                          &threshold,
+                                          descr,
+                                          csr_val,
+                                          csr_row_ptr,
+                                          csr_col_ind,
+                                          temp_buffer);
 
         if(M < 0 || N < 0 || LDA < M)
         {
@@ -451,19 +328,19 @@ hipsparseStatus_t testing_prune_dense2csr(Arguments argus)
     }
 
     // Allocate host memory
-    std::vector<T>             h_A(LDA * N);
+    std::vector<T>   h_A(LDA * N);
     std::vector<int> h_nnz_total_dev_host_ptr(1);
 
     // Allocate device memory
-    auto d_A_managed
-        = hipsparse_unique_ptr{device_malloc(sizeof(T) * LDA * N), device_free};
-    auto d_nnz_total_dev_host_ptr_managed = hipsparse_unique_ptr{device_malloc(sizeof(int)), device_free};
+    auto d_A_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * LDA * N), device_free};
+    auto d_nnz_total_dev_host_ptr_managed
+        = hipsparse_unique_ptr{device_malloc(sizeof(int)), device_free};
     auto d_csr_row_ptr_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(int) * (M + 1)), device_free};
 
-    T* d_A = (T*)d_A_managed.get();
+    T*   d_A                      = (T*)d_A_managed.get();
     int* d_nnz_total_dev_host_ptr = (int*)d_nnz_total_dev_host_ptr_managed.get();
-    int* d_csr_row_ptr = (int*)d_csr_row_ptr_managed.get();
+    int* d_csr_row_ptr            = (int*)d_csr_row_ptr_managed.get();
 
     if(!d_A || !d_nnz_total_dev_host_ptr || !d_csr_row_ptr)
     {
@@ -490,38 +367,34 @@ hipsparseStatus_t testing_prune_dense2csr(Arguments argus)
 
     size_t buffer_size = 512;
     CHECK_HIPSPARSE_ERROR(hipsparseXpruneDense2csr_bufferSize(handle,
-                                                            M,
-                                                            N,
-                                                            d_A,
-                                                            LDA,
-                                                            &threshold,
-                                                            descr,
-                                                            (const T*)nullptr,
-                                                            d_csr_row_ptr,
-                                                            (const int*)nullptr,
-                                                            &buffer_size));
+                                                              M,
+                                                              N,
+                                                              d_A,
+                                                              LDA,
+                                                              &threshold,
+                                                              descr,
+                                                              (const T*)nullptr,
+                                                              d_csr_row_ptr,
+                                                              (const int*)nullptr,
+                                                              &buffer_size));
 
-    auto d_temp_buffer_managed
-        = hipsparse_unique_ptr{device_malloc(buffer_size), device_free};
+    auto d_temp_buffer_managed = hipsparse_unique_ptr{device_malloc(buffer_size), device_free};
 
     T* d_temp_buffer = (T*)d_temp_buffer_managed.get();
 
-    if(!d_temp_buffer )
+    if(!d_temp_buffer)
     {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!d_temp_buffer");
+        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!d_temp_buffer");
         return HIPSPARSE_STATUS_ALLOC_FAILED;
     }
 
-    auto d_threshold_managed
-        = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
+    auto d_threshold_managed = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
 
     T* d_threshold = (T*)d_threshold_managed.get();
 
-    if(!d_threshold )
+    if(!d_threshold)
     {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!d_threshold");
+        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!d_threshold");
         return HIPSPARSE_STATUS_ALLOC_FAILED;
     }
 
@@ -529,52 +402,52 @@ hipsparseStatus_t testing_prune_dense2csr(Arguments argus)
 
     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
     CHECK_HIPSPARSE_ERROR(hipsparseXpruneDense2csrNnz(handle,
-                                M,
-                                N,
-                                d_A,
-                                LDA,
-                                &threshold,
-                                descr,
-                                d_csr_row_ptr,
-                                &h_nnz_total_dev_host_ptr[0],
-                                d_temp_buffer));
+                                                      M,
+                                                      N,
+                                                      d_A,
+                                                      LDA,
+                                                      &threshold,
+                                                      descr,
+                                                      d_csr_row_ptr,
+                                                      &h_nnz_total_dev_host_ptr[0],
+                                                      d_temp_buffer));
 
     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
     CHECK_HIPSPARSE_ERROR(hipsparseXpruneDense2csrNnz(handle,
-                                M,
-                                N,
-                                d_A,
-                                LDA,
-                                d_threshold,
-                                descr,
-                                d_csr_row_ptr,
-                                d_nnz_total_dev_host_ptr,
-                                d_temp_buffer));
+                                                      M,
+                                                      N,
+                                                      d_A,
+                                                      LDA,
+                                                      d_threshold,
+                                                      descr,
+                                                      d_csr_row_ptr,
+                                                      d_nnz_total_dev_host_ptr,
+                                                      d_temp_buffer));
 
     if(argus.unit_check)
     {
         std::vector<int> h_nnz_total_copied_from_device(1);
         CHECK_HIP_ERROR(hipMemcpy(h_nnz_total_copied_from_device.data(),
-                                d_nnz_total_dev_host_ptr,
-                                sizeof(int),
-                                hipMemcpyDeviceToHost));
+                                  d_nnz_total_dev_host_ptr,
+                                  sizeof(int),
+                                  hipMemcpyDeviceToHost));
 
         unit_check_general<int>(
-        1, 1, 1, h_nnz_total_dev_host_ptr.data(), h_nnz_total_copied_from_device.data());
+            1, 1, 1, h_nnz_total_dev_host_ptr.data(), h_nnz_total_copied_from_device.data());
 
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
 
         if(h_nnz_total_dev_host_ptr[0] > 0)
         {
-            auto d_csr_col_ind_managed
-                = hipsparse_unique_ptr{device_malloc(sizeof(int) * h_nnz_total_dev_host_ptr[0]), device_free};
-            auto d_csr_val_managed
-                = hipsparse_unique_ptr{device_malloc(sizeof(T) * h_nnz_total_dev_host_ptr[0]), device_free};
+            auto d_csr_col_ind_managed = hipsparse_unique_ptr{
+                device_malloc(sizeof(int) * h_nnz_total_dev_host_ptr[0]), device_free};
+            auto d_csr_val_managed = hipsparse_unique_ptr{
+                device_malloc(sizeof(T) * h_nnz_total_dev_host_ptr[0]), device_free};
 
             int* d_csr_col_ind = (int*)d_csr_col_ind_managed.get();
-            T* d_csr_val = (T*)d_csr_val_managed.get();
+            T*   d_csr_val     = (T*)d_csr_val_managed.get();
 
-            if(!d_csr_col_ind || !d_csr_val )
+            if(!d_csr_col_ind || !d_csr_val)
             {
                 verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
                                                 "!d_csr_col_ind || !d_csr_val");
@@ -582,50 +455,56 @@ hipsparseStatus_t testing_prune_dense2csr(Arguments argus)
             }
 
             CHECK_HIPSPARSE_ERROR(hipsparseXpruneDense2csr(handle,
-                                                    M,
-                                                    N,
-                                                    d_A,
-                                                    LDA,
-                                                    &threshold,
-                                                    descr,
-                                                    d_csr_val,
-                                                    d_csr_row_ptr,
-                                                    d_csr_col_ind,
-                                                    d_temp_buffer));
+                                                           M,
+                                                           N,
+                                                           d_A,
+                                                           LDA,
+                                                           &threshold,
+                                                           descr,
+                                                           d_csr_val,
+                                                           d_csr_row_ptr,
+                                                           d_csr_col_ind,
+                                                           d_temp_buffer));
 
             std::vector<int> h_csr_row_ptr(M + 1);
             std::vector<int> h_csr_col_ind(h_nnz_total_dev_host_ptr[0]);
-            std::vector<T> h_csr_val(h_nnz_total_dev_host_ptr[0]);
+            std::vector<T>   h_csr_val(h_nnz_total_dev_host_ptr[0]);
 
             CHECK_HIP_ERROR(hipMemcpy(
-            h_csr_row_ptr.data(), d_csr_row_ptr, sizeof(int) * (M + 1), hipMemcpyDeviceToHost));
+                h_csr_row_ptr.data(), d_csr_row_ptr, sizeof(int) * (M + 1), hipMemcpyDeviceToHost));
 
-            CHECK_HIP_ERROR(hipMemcpy(
-                h_csr_col_ind.data(), d_csr_col_ind, sizeof(int) * h_nnz_total_dev_host_ptr[0], hipMemcpyDeviceToHost));
-            CHECK_HIP_ERROR(hipMemcpy(
-                h_csr_val.data(), d_csr_val, sizeof(T) * h_nnz_total_dev_host_ptr[0], hipMemcpyDeviceToHost));
+            CHECK_HIP_ERROR(hipMemcpy(h_csr_col_ind.data(),
+                                      d_csr_col_ind,
+                                      sizeof(int) * h_nnz_total_dev_host_ptr[0],
+                                      hipMemcpyDeviceToHost));
+            CHECK_HIP_ERROR(hipMemcpy(h_csr_val.data(),
+                                      d_csr_val,
+                                      sizeof(T) * h_nnz_total_dev_host_ptr[0],
+                                      hipMemcpyDeviceToHost));
 
             // call host and check results
             std::vector<int> h_nnz_cpu(1);
             std::vector<int> h_csr_row_ptr_cpu;
             std::vector<int> h_csr_col_ind_cpu;
-            std::vector<T> h_csr_val_cpu;
+            std::vector<T>   h_csr_val_cpu;
 
             host_prune_dense2csr(M,
-                                N,
-                                h_A,
-                                LDA,
-                                idx_base,
-                                threshold,
-                                h_nnz_cpu[0],
-                                h_csr_val_cpu,
-                                h_csr_row_ptr_cpu,
-                                h_csr_col_ind_cpu);
+                                 N,
+                                 h_A,
+                                 LDA,
+                                 idx_base,
+                                 threshold,
+                                 h_nnz_cpu[0],
+                                 h_csr_val_cpu,
+                                 h_csr_row_ptr_cpu,
+                                 h_csr_col_ind_cpu);
 
             unit_check_general<int>(1, 1, 1, h_nnz_cpu.data(), h_nnz_total_dev_host_ptr.data());
             unit_check_general<int>(1, (M + 1), 1, h_csr_row_ptr_cpu.data(), h_csr_row_ptr.data());
-            unit_check_general<int>(1, h_nnz_total_dev_host_ptr[0], 1, h_csr_col_ind_cpu.data(), h_csr_col_ind.data());
-            unit_check_general<T>(1, h_nnz_total_dev_host_ptr[0], 1, h_csr_val_cpu.data(), h_csr_val.data());
+            unit_check_general<int>(
+                1, h_nnz_total_dev_host_ptr[0], 1, h_csr_col_ind_cpu.data(), h_csr_col_ind.data());
+            unit_check_general<T>(
+                1, h_nnz_total_dev_host_ptr[0], 1, h_csr_val_cpu.data(), h_csr_val.data());
         }
     }
 

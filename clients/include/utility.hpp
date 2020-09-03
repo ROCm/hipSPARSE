@@ -1220,6 +1220,72 @@ inline void host_csr_to_csr_compress(int                     M,
 }
 
 template <typename T>
+inline void host_prune_csr_to_csr(int                     M,
+                                  int                     N,
+                                  int                     nnz_A,
+                                  const std::vector<int>& csr_row_ptr_A,
+                                  const std::vector<int>& csr_col_ind_A,
+                                  const std::vector<T>&   csr_val_A,
+                                  int&                    nnz_C,
+                                  std::vector<int>&       csr_row_ptr_C,
+                                  std::vector<int>&       csr_col_ind_C,
+                                  std::vector<T>&         csr_val_C,
+                                  hipsparseIndexBase_t    csr_base_A,
+                                  hipsparseIndexBase_t    csr_base_C,
+                                  T                       threshold)
+{
+    if(M < 0 || N < 0)
+    {
+        return;
+    }
+
+    std::vector<int> nnz_per_row(M, 0);
+
+    csr_row_ptr_C.resize(M + 1);
+
+    nnz_C = 0;
+
+    for(int i = 0; i < M; i++)
+    {
+        for(int j = csr_row_ptr_A[i] - csr_base_A; j < csr_row_ptr_A[i + 1] - csr_base_A; j++)
+        {
+            if(testing_abs(csr_val_A[j]) > threshold
+               && testing_abs(csr_val_A[j]) > std::numeric_limits<float>::min())
+            {
+                nnz_per_row[i]++;
+                nnz_C++;
+            }
+        }
+    }
+
+    csr_col_ind_C.resize(nnz_C);
+    csr_val_C.resize(nnz_C);
+
+    csr_row_ptr_C[0] = csr_base_C;
+
+    for(int i = 0; i < M; i++)
+    {
+        csr_row_ptr_C[i + 1] = csr_row_ptr_C[i] + nnz_per_row[i];
+    }
+
+    int index = 0;
+    for(int i = 0; i < M; i++)
+    {
+        for(int j = csr_row_ptr_A[i] - csr_base_A; j < csr_row_ptr_A[i + 1] - csr_base_A; j++)
+        {
+            if(testing_abs(csr_val_A[j]) > threshold
+               && testing_abs(csr_val_A[j]) > std::numeric_limits<float>::min())
+            {
+                csr_col_ind_C[index] = (csr_col_ind_A[j] - csr_base_A) + csr_base_C;
+                csr_val_C[index]     = csr_val_A[j];
+
+                index++;
+            }
+        }
+    }
+}
+
+template <typename T>
 inline void host_csr_to_csc(int                     M,
                             int                     N,
                             int                     nnz,
@@ -3979,10 +4045,11 @@ public:
     int ldb;
     int ldc;
 
-    double alpha  = 1.0;
-    double alphai = 0.0;
-    double beta   = 0.0;
-    double betai  = 0.0;
+    double alpha     = 1.0;
+    double alphai    = 0.0;
+    double beta      = 0.0;
+    double betai     = 0.0;
+    double threshold = 0.0f;
 
     hipsparseOperation_t    transA    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
     hipsparseOperation_t    transB    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
@@ -4019,8 +4086,11 @@ public:
         this->ldb = rhs.ldb;
         this->ldc = rhs.ldc;
 
-        this->alpha = rhs.alpha;
-        this->beta  = rhs.beta;
+        this->alpha     = rhs.alpha;
+        this->alphai    = rhs.alphai;
+        this->beta      = rhs.beta;
+        this->betai     = rhs.betai;
+        this->threshold = rhs.threshold;
 
         this->transA    = rhs.transA;
         this->transB    = rhs.transB;
