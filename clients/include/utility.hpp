@@ -45,6 +45,12 @@
  * \brief provide data initialization and timing utilities.
  */
 
+// BSR indexing macros
+#define BSR_IND(j, bi, bj, dir) \
+    ((dir == HIPSPARSE_DIRECTION_ROW) ? BSR_IND_R(j, bi, bj) : BSR_IND_C(j, bi, bj))
+#define BSR_IND_R(j, bi, bj) (bsr_dim * bsr_dim * (j) + (bi)*bsr_dim + (bj))
+#define BSR_IND_C(j, bi, bj) (bsr_dim * bsr_dim * (j) + (bi) + (bj)*bsr_dim)
+
 #define CHECK_HIP_ERROR(error)                \
     if(error != hipSuccess)                   \
     {                                         \
@@ -1246,6 +1252,72 @@ inline void host_csr_to_csr_compress(int                     M,
 }
 
 template <typename T>
+inline void host_prune_csr_to_csr(int                     M,
+                                  int                     N,
+                                  int                     nnz_A,
+                                  const std::vector<int>& csr_row_ptr_A,
+                                  const std::vector<int>& csr_col_ind_A,
+                                  const std::vector<T>&   csr_val_A,
+                                  int&                    nnz_C,
+                                  std::vector<int>&       csr_row_ptr_C,
+                                  std::vector<int>&       csr_col_ind_C,
+                                  std::vector<T>&         csr_val_C,
+                                  hipsparseIndexBase_t    csr_base_A,
+                                  hipsparseIndexBase_t    csr_base_C,
+                                  T                       threshold)
+{
+    if(M < 0 || N < 0)
+    {
+        return;
+    }
+
+    std::vector<int> nnz_per_row(M, 0);
+
+    csr_row_ptr_C.resize(M + 1);
+
+    nnz_C = 0;
+
+    for(int i = 0; i < M; i++)
+    {
+        for(int j = csr_row_ptr_A[i] - csr_base_A; j < csr_row_ptr_A[i + 1] - csr_base_A; j++)
+        {
+            if(testing_abs(csr_val_A[j]) > threshold
+               && testing_abs(csr_val_A[j]) > std::numeric_limits<float>::min())
+            {
+                nnz_per_row[i]++;
+                nnz_C++;
+            }
+        }
+    }
+
+    csr_col_ind_C.resize(nnz_C);
+    csr_val_C.resize(nnz_C);
+
+    csr_row_ptr_C[0] = csr_base_C;
+
+    for(int i = 0; i < M; i++)
+    {
+        csr_row_ptr_C[i + 1] = csr_row_ptr_C[i] + nnz_per_row[i];
+    }
+
+    int index = 0;
+    for(int i = 0; i < M; i++)
+    {
+        for(int j = csr_row_ptr_A[i] - csr_base_A; j < csr_row_ptr_A[i + 1] - csr_base_A; j++)
+        {
+            if(testing_abs(csr_val_A[j]) > threshold
+               && testing_abs(csr_val_A[j]) > std::numeric_limits<float>::min())
+            {
+                csr_col_ind_C[index] = (csr_col_ind_A[j] - csr_base_A) + csr_base_C;
+                csr_val_C[index]     = csr_val_A[j];
+
+                index++;
+            }
+        }
+    }
+}
+
+template <typename T>
 inline void host_csr_to_csc(int                     M,
                             int                     N,
                             int                     nnz,
@@ -1925,6 +1997,209 @@ int csrilu0(int m, const int* ptr, const int* col, T* val, hipsparseIndexBase_t 
 }
 
 template <typename T>
+inline void host_bsrilu02(hipsparseDirection_t    dir,
+                          int                     mb,
+                          int                     bsr_dim,
+                          const std::vector<int>& bsr_row_ptr,
+                          const std::vector<int>& bsr_col_ind,
+                          std::vector<T>&         bsr_val,
+                          hipsparseIndexBase_t    base,
+                          int*                    struct_pivot,
+                          int*                    numeric_pivot)
+{
+    // Initialize pivots
+    *struct_pivot  = mb + 1;
+    *numeric_pivot = mb + 1;
+
+    // Temporary vector to hold diagonal offset to access diagonal BSR block
+    std::vector<int> diag_offset(mb);
+    std::vector<int> nnz_entries(mb, -1);
+
+    // First diagonal block is index 0
+    diag_offset[0] = 0;
+
+    // Loop over all BSR rows
+    for(int i = 0; i < mb; ++i)
+    {
+        // Flag whether we have a diagonal block or not
+        bool has_diag = false;
+
+        // BSR column entry and exit point
+        int row_begin = bsr_row_ptr[i] - base;
+        int row_end   = bsr_row_ptr[i + 1] - base;
+
+        int j;
+
+        // Set up entry points for linear combination
+        for(j = row_begin; j < row_end; ++j)
+        {
+            int col_j          = bsr_col_ind[j] - base;
+            nnz_entries[col_j] = j;
+        }
+
+        // Process lower diagonal BSR blocks (diagonal BSR block is excluded)
+        for(j = row_begin; j < row_end; ++j)
+        {
+            // Column index of current BSR block
+            int bsr_col = bsr_col_ind[j] - base;
+
+            // If this is a diagonal block, set diagonal flag to true and skip
+            // all upcoming blocks as we exceed the lower matrix part
+            if(bsr_col == i)
+            {
+                has_diag = true;
+                break;
+            }
+
+            // Skip all upper matrix blocks
+            if(bsr_col > i)
+            {
+                break;
+            }
+
+            // Process all lower matrix BSR blocks
+
+            // Obtain corresponding row entry and exit point that corresponds with the
+            // current BSR column. Actually, we skip all lower matrix column indices,
+            // therefore starting with the diagonal entry.
+            int diag_j    = diag_offset[bsr_col];
+            int row_end_j = bsr_row_ptr[bsr_col + 1] - base;
+
+            // Loop through all rows within the BSR block
+            for(int bi = 0; bi < bsr_dim; ++bi)
+            {
+                T diag = bsr_val[BSR_IND(diag_j, bi, bi, dir)];
+
+                // Process all rows within the BSR block
+                for(int bk = 0; bk < bsr_dim; ++bk)
+                {
+                    T val = bsr_val[BSR_IND(j, bk, bi, dir)];
+
+                    // Multiplication factor
+                    bsr_val[BSR_IND(j, bk, bi, dir)] = val = val / diag;
+
+                    // Loop through columns of bk-th row and do linear combination
+                    for(int bj = bi + 1; bj < bsr_dim; ++bj)
+                    {
+                        bsr_val[BSR_IND(j, bk, bj, dir)]
+                            = testing_fma(-val,
+                                          bsr_val[BSR_IND(diag_j, bi, bj, dir)],
+                                          bsr_val[BSR_IND(j, bk, bj, dir)]);
+                    }
+                }
+            }
+
+            // Loop over upper offset pointer and do linear combination for nnz entry
+            for(int k = diag_j + 1; k < row_end_j; ++k)
+            {
+                int bsr_col_k = bsr_col_ind[k] - base;
+
+                if(nnz_entries[bsr_col_k] != -1)
+                {
+                    int m = nnz_entries[bsr_col_k];
+
+                    // Loop through all rows within the BSR block
+                    for(int bi = 0; bi < bsr_dim; ++bi)
+                    {
+                        // Loop through columns of bi-th row and do linear combination
+                        for(int bj = 0; bj < bsr_dim; ++bj)
+                        {
+                            T sum = make_DataType<T>(0);
+
+                            for(int bk = 0; bk < bsr_dim; ++bk)
+                            {
+                                sum = testing_fma(bsr_val[BSR_IND(j, bi, bk, dir)],
+                                                  bsr_val[BSR_IND(k, bk, bj, dir)],
+                                                  sum);
+                            }
+
+                            bsr_val[BSR_IND(m, bi, bj, dir)]
+                                = bsr_val[BSR_IND(m, bi, bj, dir)] - sum;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Check for structural pivot
+        if(!has_diag)
+        {
+            *struct_pivot = std::min(*struct_pivot, i + base);
+            break;
+        }
+
+        // Process diagonal
+        if(bsr_col_ind[j] - base == i)
+        {
+            // Loop through all rows within the BSR block
+            for(int bi = 0; bi < bsr_dim; ++bi)
+            {
+                T diag = bsr_val[BSR_IND(j, bi, bi, dir)];
+
+                // Check for numeric pivot
+                if(diag == make_DataType<T>(0))
+                {
+                    *numeric_pivot = std::min(*numeric_pivot, bsr_col_ind[j]);
+                    continue;
+                }
+
+                // Process all rows within the BSR block after bi-th row
+                for(int bk = bi + 1; bk < bsr_dim; ++bk)
+                {
+                    T val = bsr_val[BSR_IND(j, bk, bi, dir)];
+
+                    // Multiplication factor
+                    bsr_val[BSR_IND(j, bk, bi, dir)] = val = val / diag;
+
+                    // Loop through remaining columns of bk-th row and do linear combination
+                    for(int bj = bi + 1; bj < bsr_dim; ++bj)
+                    {
+                        bsr_val[BSR_IND(j, bk, bj, dir)]
+                            = testing_fma(-val,
+                                          bsr_val[BSR_IND(j, bi, bj, dir)],
+                                          bsr_val[BSR_IND(j, bk, bj, dir)]);
+                    }
+                }
+            }
+        }
+
+        // Store diagonal BSR block entry point
+        int row_diag = diag_offset[i] = j;
+
+        // Process upper diagonal BSR blocks
+        for(j = row_diag + 1; j < row_end; ++j)
+        {
+            // Loop through all rows within the BSR block
+            for(int bi = 0; bi < bsr_dim; ++bi)
+            {
+                // Process all rows within the BSR block after bi-th row
+                for(int bk = bi + 1; bk < bsr_dim; ++bk)
+                {
+                    // Loop through columns of bk-th row and do linear combination
+                    for(int bj = 0; bj < bsr_dim; ++bj)
+                    {
+                        bsr_val[BSR_IND(j, bk, bj, dir)]
+                            = testing_fma(-bsr_val[BSR_IND(row_diag, bk, bi, dir)],
+                                          bsr_val[BSR_IND(j, bi, bj, dir)],
+                                          bsr_val[BSR_IND(j, bk, bj, dir)]);
+                    }
+                }
+            }
+        }
+
+        // Reset entry points
+        for(j = row_begin; j < row_end; ++j)
+        {
+            int col_j          = bsr_col_ind[j] - base;
+            nnz_entries[col_j] = -1;
+        }
+    }
+
+    *struct_pivot  = (*struct_pivot == mb + 1) ? -1 : *struct_pivot;
+    *numeric_pivot = (*numeric_pivot == mb + 1) ? -1 : *numeric_pivot;
+}
+
+template <typename T>
 inline void host_bsric02(hipsparseDirection_t    direction,
                          int                     Mb,
                          int                     block_dim,
@@ -1934,7 +2209,6 @@ inline void host_bsric02(hipsparseDirection_t    direction,
                          hipsparseIndexBase_t    base,
                          int*                    struct_pivot,
                          int*                    numeric_pivot)
-
 {
     int M = Mb * block_dim;
 
@@ -3803,11 +4077,12 @@ public:
     int ldb;
     int ldc;
 
-    double alpha      = 1.0;
-    double alphai     = 0.0;
-    double beta       = 0.0;
-    double betai      = 0.0;
-    double percentage = 50.0;
+    double alpha     = 1.0;
+    double alphai    = 0.0;
+    double beta      = 0.0;
+    double betai     = 0.0;
+    double threshold = 0.0;
+    double percentage = 0.0;
 
     hipsparseOperation_t    transA    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
     hipsparseOperation_t    transB    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
@@ -3844,11 +4119,12 @@ public:
         this->ldb = rhs.ldb;
         this->ldc = rhs.ldc;
 
-        this->alpha      = rhs.alpha;
-        this->alphai     = rhs.alphai;
-        this->beta       = rhs.beta;
-        this->betai      = rhs.betai;
-        this->percentage = rhs.percentage;
+        this->alpha     = rhs.alpha;
+        this->alphai    = rhs.alphai;
+        this->beta      = rhs.beta;
+        this->betai     = rhs.betai;
+        this->threshold = rhs.threshold;
+	this->percentage = rhs.percentage;
 
         this->transA    = rhs.transA;
         this->transB    = rhs.transB;
