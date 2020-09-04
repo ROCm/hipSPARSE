@@ -758,9 +758,9 @@ namespace hipsparse
                                                               T                         percentage,
                                                               const hipsparseMatDescr_t descr,
                                                               int*                      csrRowPtr,
-                                                              int*        nnzTotalDevHostPtr,
-                                                              pruneInfo_t info,
-                                                              void*       buffer);
+                                                              int*                      nnzTotalDevHostPtr,
+                                                              pruneInfo_t               info,
+                                                              void*                     buffer);
 
     template <typename T>
     hipsparseStatus_t hipsparseXpruneDense2csrByPercentage(hipsparseHandle_t         handle,

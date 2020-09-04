@@ -1089,15 +1089,18 @@ void host_prune_dense2csr_by_percentage(int                   m,
                                         std::vector<int>&     csr_row_ptr,
                                         std::vector<int>&     csr_col_ind)
 {
-    int nnz_A = lda * n;
+    int nnz_A = m * n;
     int pos   = std::ceil(nnz_A * (percentage / 100)) - 1;
     pos       = std::min(pos, nnz_A - 1);
     pos       = std::max(pos, 0);
 
-    std::vector<T> sorted_A(lda * n);
-    for(size_t i = 0; i < A.size(); i++)
+    std::vector<T> sorted_A(m * n);
+    for(int i = 0; i < n; i++)
     {
-        sorted_A[i] = std::abs(A[i]);
+        for(int j = 0; j < m; j++)
+        {
+            sorted_A[m * i + j] = std::abs(A[lda * i + j]);
+        }
     }
 
     std::sort(sorted_A.begin(), sorted_A.end());

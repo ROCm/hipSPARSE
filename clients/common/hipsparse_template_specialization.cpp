@@ -4957,9 +4957,9 @@ namespace hipsparse
                                                               float                     percentage,
                                                               const hipsparseMatDescr_t descr,
                                                               int*                      csrRowPtr,
-                                                              int*        nnzTotalDevHostPtr,
-                                                              pruneInfo_t info,
-                                                              void*       buffer)
+                                                              int*                      nnzTotalDevHostPtr,
+                                                              pruneInfo_t               info,
+                                                              void*                     buffer)
     {
         return hipsparseSpruneDense2csrNnzByPercentage(
             handle, m, n, A, lda, percentage, descr, csrRowPtr, nnzTotalDevHostPtr, info, buffer);
@@ -4974,9 +4974,9 @@ namespace hipsparse
                                                               double                    percentage,
                                                               const hipsparseMatDescr_t descr,
                                                               int*                      csrRowPtr,
-                                                              int*        nnzTotalDevHostPtr,
-                                                              pruneInfo_t info,
-                                                              void*       buffer)
+                                                              int*                      nnzTotalDevHostPtr,
+                                                              pruneInfo_t               info,
+                                                              void*                     buffer)
     {
         return hipsparseDpruneDense2csrNnzByPercentage(
             handle, m, n, A, lda, percentage, descr, csrRowPtr, nnzTotalDevHostPtr, info, buffer);
