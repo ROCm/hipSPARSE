@@ -34,8 +34,6 @@
 #include <hipsparse.h>
 #include <string>
 
-#include <iostream>
-
 using namespace hipsparse;
 using namespace hipsparse_test;
 
@@ -377,7 +375,7 @@ hipsparseStatus_t testing_prune_dense2csr_by_percentage(Arguments argus)
     int                  M          = argus.M;
     int                  N          = argus.N;
     int                  LDA        = argus.lda;
-    T                    percentage = static_cast<T>(argus.alpha);
+    T                    percentage = static_cast<T>(argus.percentage);
     hipsparseIndexBase_t idx_base   = argus.idx_base;
     hipsparseStatus_t    status;
 
