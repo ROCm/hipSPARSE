@@ -157,6 +157,22 @@ namespace hipsparse_test
         }
     };
 
+    struct bsrilu02_struct
+    {
+        bsrilu02Info_t info;
+        bsrilu02_struct()
+        {
+            hipsparseStatus_t status = hipsparseCreateBsrilu02Info(&info);
+            verify_hipsparse_status_success(status, "ERROR: bsrilu02_struct constructor");
+        }
+
+        ~bsrilu02_struct()
+        {
+            hipsparseStatus_t status = hipsparseDestroyBsrilu02Info(info);
+            verify_hipsparse_status_success(status, "ERROR: bsrilu02_struct destructor");
+        }
+    };
+
     struct csrilu02_struct
     {
         csrilu02Info_t info;
