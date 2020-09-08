@@ -1237,8 +1237,7 @@ inline void host_prune_csr_to_csr(int                     M,
 #endif
     for(int i = 0; i < M; i++)
     {
-        for(int j = csr_row_ptr_A[i] - csr_base_A; j < csr_row_ptr_A[i + 1] - csr_base_A;
-            j++)
+        for(int j = csr_row_ptr_A[i] - csr_base_A; j < csr_row_ptr_A[i + 1] - csr_base_A; j++)
         {
             if(testing_abs(csr_val_A[j]) > threshold
                && testing_abs(csr_val_A[j]) > std::numeric_limits<float>::min())
@@ -1261,8 +1260,7 @@ inline void host_prune_csr_to_csr(int                     M,
     int index = 0;
     for(int i = 0; i < M; i++)
     {
-        for(int j = csr_row_ptr_A[i] - csr_base_A; j < csr_row_ptr_A[i + 1] - csr_base_A;
-            j++)
+        for(int j = csr_row_ptr_A[i] - csr_base_A; j < csr_row_ptr_A[i + 1] - csr_base_A; j++)
         {
             if(testing_abs(csr_val_A[j]) > threshold
                && testing_abs(csr_val_A[j]) > std::numeric_limits<float>::min())
@@ -1292,8 +1290,8 @@ void host_prune_csr_to_csr_by_percentage(int                     M,
                                          T                       percentage)
 {
     int pos = std::ceil(nnz_A * (percentage / 100)) - 1;
-    pos               = std::min(pos, nnz_A - 1);
-    pos               = std::max(pos, 0);
+    pos     = std::min(pos, nnz_A - 1);
+    pos     = std::max(pos, 0);
 
     std::vector<T> sorted_A(nnz_A);
 
@@ -4084,11 +4082,11 @@ public:
     int ldb;
     int ldc;
 
-    double alpha     = 1.0;
-    double alphai    = 0.0;
-    double beta      = 0.0;
-    double betai     = 0.0;
-    double threshold = 0.0f;
+    double alpha      = 1.0;
+    double alphai     = 0.0;
+    double beta       = 0.0;
+    double betai      = 0.0;
+    double threshold  = 0.0f;
     double percentage = 0.0;
 
     hipsparseOperation_t    transA    = HIPSPARSE_OPERATION_NON_TRANSPOSE;

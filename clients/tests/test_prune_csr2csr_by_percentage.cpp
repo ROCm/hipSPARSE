@@ -34,9 +34,9 @@ typedef std::tuple<int, int, double, hipsparseIndexBase_t, hipsparseIndexBase_t>
 typedef std::tuple<double, hipsparseIndexBase_t, hipsparseIndexBase_t, std::string>
     prune_csr2csr_by_percentage_bin_tuple;
 
-int    prune_csr2csr_by_percentage_M_range[]         = {-1, 0, 10, 500, 872, 465327};
-int    prune_csr2csr_by_percentage_N_range[]         = {-3, 0, 33, 242, 623, 592645};
-double prune_csr2csr_by_percentage_range[] = {0.0, 10.0, 22.0, 75.0, 90.0, 101.0};
+int    prune_csr2csr_by_percentage_M_range[] = {-1, 0, 10, 500, 872, 465327};
+int    prune_csr2csr_by_percentage_N_range[] = {-3, 0, 33, 242, 623, 592645};
+double prune_csr2csr_by_percentage_range[]   = {0.0, 10.0, 22.0, 75.0, 90.0, 101.0};
 
 hipsparseIndexBase_t prune_csr2csr_by_percentage_base_A_range[]
     = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
@@ -45,26 +45,27 @@ hipsparseIndexBase_t prune_csr2csr_by_percentage_base_C_range[]
     = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
 std::string prune_csr2csr_by_percentage_bin[] = {"rma10.bin",
-                                   "mac_econ_fwd500.bin",
-                                   "bibd_22_8.bin",
-                                   "mc2depi.bin",
-                                   "scircuit.bin",
-                                   "ASIC_320k.bin",
-                                   "bmwcra_1.bin",
-                                   "nos1.bin",
-                                   "nos2.bin",
-                                   "nos3.bin",
-                                   "nos4.bin",
-                                   "nos5.bin",
-                                   "nos6.bin",
-                                   "nos7.bin",
-                                   "amazon0312.bin",
-                                   "Chebyshev4.bin",
-                                   "sme3Dc.bin",
-                                   "webbase-1M.bin",
-                                   "shipsec1.bin"};
+                                                 "mac_econ_fwd500.bin",
+                                                 "bibd_22_8.bin",
+                                                 "mc2depi.bin",
+                                                 "scircuit.bin",
+                                                 "ASIC_320k.bin",
+                                                 "bmwcra_1.bin",
+                                                 "nos1.bin",
+                                                 "nos2.bin",
+                                                 "nos3.bin",
+                                                 "nos4.bin",
+                                                 "nos5.bin",
+                                                 "nos6.bin",
+                                                 "nos7.bin",
+                                                 "amazon0312.bin",
+                                                 "Chebyshev4.bin",
+                                                 "sme3Dc.bin",
+                                                 "webbase-1M.bin",
+                                                 "shipsec1.bin"};
 
-class parameterized_prune_csr2csr_by_percentage : public testing::TestWithParam<prune_csr2csr_by_percentage_tuple>
+class parameterized_prune_csr2csr_by_percentage
+    : public testing::TestWithParam<prune_csr2csr_by_percentage_tuple>
 {
 protected:
     parameterized_prune_csr2csr_by_percentage() {}
@@ -73,7 +74,8 @@ protected:
     virtual void TearDown() {}
 };
 
-class parameterized_prune_csr2csr_by_percentage_bin : public testing::TestWithParam<prune_csr2csr_by_percentage_bin_tuple>
+class parameterized_prune_csr2csr_by_percentage_bin
+    : public testing::TestWithParam<prune_csr2csr_by_percentage_bin_tuple>
 {
 protected:
     parameterized_prune_csr2csr_by_percentage_bin() {}
@@ -162,17 +164,19 @@ TEST_P(parameterized_prune_csr2csr_by_percentage_bin, prune_csr2csr_percentage_b
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-INSTANTIATE_TEST_CASE_P(prune_csr2csr_by_percentage,
-                        parameterized_prune_csr2csr_by_percentage,
-                        testing::Combine(testing::ValuesIn(prune_csr2csr_by_percentage_M_range),
-                                         testing::ValuesIn(prune_csr2csr_by_percentage_N_range),
-                                         testing::ValuesIn(prune_csr2csr_by_percentage_range),
-                                         testing::ValuesIn(prune_csr2csr_by_percentage_base_A_range),
-                                         testing::ValuesIn(prune_csr2csr_by_percentage_base_C_range)));
+INSTANTIATE_TEST_CASE_P(
+    prune_csr2csr_by_percentage,
+    parameterized_prune_csr2csr_by_percentage,
+    testing::Combine(testing::ValuesIn(prune_csr2csr_by_percentage_M_range),
+                     testing::ValuesIn(prune_csr2csr_by_percentage_N_range),
+                     testing::ValuesIn(prune_csr2csr_by_percentage_range),
+                     testing::ValuesIn(prune_csr2csr_by_percentage_base_A_range),
+                     testing::ValuesIn(prune_csr2csr_by_percentage_base_C_range)));
 
-INSTANTIATE_TEST_CASE_P(prune_csr2csr_by_percentage_bin,
-                        parameterized_prune_csr2csr_by_percentage_bin,
-                        testing::Combine(testing::ValuesIn(prune_csr2csr_by_percentage_range),
-                                         testing::ValuesIn(prune_csr2csr_by_percentage_base_A_range),
-                                         testing::ValuesIn(prune_csr2csr_by_percentage_base_C_range),
-                                         testing::ValuesIn(prune_csr2csr_by_percentage_bin)));
+INSTANTIATE_TEST_CASE_P(
+    prune_csr2csr_by_percentage_bin,
+    parameterized_prune_csr2csr_by_percentage_bin,
+    testing::Combine(testing::ValuesIn(prune_csr2csr_by_percentage_range),
+                     testing::ValuesIn(prune_csr2csr_by_percentage_base_A_range),
+                     testing::ValuesIn(prune_csr2csr_by_percentage_base_C_range),
+                     testing::ValuesIn(prune_csr2csr_by_percentage_bin)));

@@ -3784,15 +3784,15 @@ hipsparseStatus_t hipsparseSpruneCsr2csrByPercentage_bufferSize(hipsparseHandle_
                                                                 int                       nnzA,
                                                                 const hipsparseMatDescr_t descrA,
                                                                 const float*              csrValA,
-                                                                const int*                csrRowPtrA,
-                                                                const int*                csrColIndA,
-                                                                float                     percentage,
+                                                                const int* csrRowPtrA,
+                                                                const int* csrColIndA,
+                                                                float      percentage,
                                                                 const hipsparseMatDescr_t descrC,
                                                                 const float*              csrValC,
-                                                                const int*                csrRowPtrC,
-                                                                const int*                csrColIndC,
-                                                                pruneInfo_t               info,
-                                                                size_t*                   bufferSize);
+                                                                const int*  csrRowPtrC,
+                                                                const int*  csrColIndC,
+                                                                pruneInfo_t info,
+                                                                size_t*     bufferSize);
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDpruneCsr2csrByPercentage_bufferSize(hipsparseHandle_t         handle,
@@ -3801,15 +3801,15 @@ hipsparseStatus_t hipsparseDpruneCsr2csrByPercentage_bufferSize(hipsparseHandle_
                                                                 int                       nnzA,
                                                                 const hipsparseMatDescr_t descrA,
                                                                 const double*             csrValA,
-                                                                const int*                csrRowPtrA,
-                                                                const int*                csrColIndA,
-                                                                double                    percentage,
+                                                                const int* csrRowPtrA,
+                                                                const int* csrColIndA,
+                                                                double     percentage,
                                                                 const hipsparseMatDescr_t descrC,
                                                                 const double*             csrValC,
-                                                                const int*                csrRowPtrC,
-                                                                const int*                csrColIndC,
-                                                                pruneInfo_t               info,
-                                                                size_t*                   bufferSize);
+                                                                const int*  csrRowPtrC,
+                                                                const int*  csrColIndC,
+                                                                pruneInfo_t info,
+                                                                size_t*     bufferSize);
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpruneCsr2csrByPercentage_bufferSizeExt(hipsparseHandle_t         handle,
@@ -3817,16 +3817,16 @@ hipsparseStatus_t hipsparseSpruneCsr2csrByPercentage_bufferSizeExt(hipsparseHand
                                                                    int                       n,
                                                                    int                       nnzA,
                                                                    const hipsparseMatDescr_t descrA,
-                                                                   const float*              csrValA,
-                                                                   const int*                csrRowPtrA,
-                                                                   const int*                csrColIndA,
-                                                                   float                     percentage,
+                                                                   const float* csrValA,
+                                                                   const int*   csrRowPtrA,
+                                                                   const int*   csrColIndA,
+                                                                   float        percentage,
                                                                    const hipsparseMatDescr_t descrC,
-                                                                   const float*              csrValC,
-                                                                   const int*                csrRowPtrC,
-                                                                   const int*                csrColIndC,
-                                                                   pruneInfo_t               info,
-                                                                   size_t*                   bufferSize);
+                                                                   const float* csrValC,
+                                                                   const int*   csrRowPtrC,
+                                                                   const int*   csrColIndC,
+                                                                   pruneInfo_t  info,
+                                                                   size_t*      bufferSize);
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDpruneCsr2csrByPercentage_bufferSizeExt(hipsparseHandle_t         handle,
@@ -3834,16 +3834,16 @@ hipsparseStatus_t hipsparseDpruneCsr2csrByPercentage_bufferSizeExt(hipsparseHand
                                                                    int                       n,
                                                                    int                       nnzA,
                                                                    const hipsparseMatDescr_t descrA,
-                                                                   const double*             csrValA,
-                                                                   const int*                csrRowPtrA,
-                                                                   const int*                csrColIndA,
-                                                                   double                    percentage,
+                                                                   const double* csrValA,
+                                                                   const int*    csrRowPtrA,
+                                                                   const int*    csrColIndA,
+                                                                   double        percentage,
                                                                    const hipsparseMatDescr_t descrC,
-                                                                   const double*             csrValC,
-                                                                   const int*                csrRowPtrC,
-                                                                   const int*                csrColIndC,
-                                                                   pruneInfo_t               info,
-                                                                   size_t*                   bufferSize);
+                                                                   const double* csrValC,
+                                                                   const int*    csrRowPtrC,
+                                                                   const int*    csrColIndC,
+                                                                   pruneInfo_t   info,
+                                                                   size_t*       bufferSize);
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpruneCsr2csrNnzByPercentage(hipsparseHandle_t         handle,
@@ -3857,9 +3857,9 @@ hipsparseStatus_t hipsparseSpruneCsr2csrNnzByPercentage(hipsparseHandle_t       
                                                         float                     percentage,
                                                         const hipsparseMatDescr_t descrC,
                                                         int*                      csrRowPtrC,
-                                                        int*                      nnzTotalDevHostPtr,
-                                                        pruneInfo_t               info,
-                                                        void*                     buffer);
+                                                        int*        nnzTotalDevHostPtr,
+                                                        pruneInfo_t info,
+                                                        void*       buffer);
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDpruneCsr2csrNnzByPercentage(hipsparseHandle_t         handle,
@@ -3873,9 +3873,9 @@ hipsparseStatus_t hipsparseDpruneCsr2csrNnzByPercentage(hipsparseHandle_t       
                                                         double                    percentage,
                                                         const hipsparseMatDescr_t descrC,
                                                         int*                      csrRowPtrC,
-                                                        int*                      nnzTotalDevHostPtr,
-                                                        pruneInfo_t               info,
-                                                        void*                     buffer);
+                                                        int*        nnzTotalDevHostPtr,
+                                                        pruneInfo_t info,
+                                                        void*       buffer);
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpruneCsr2csrByPercentage(hipsparseHandle_t         handle,
