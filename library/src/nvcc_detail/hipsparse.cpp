@@ -575,6 +575,16 @@ hipsparseStatus_t hipsparseDestroyCsrgemm2Info(csrgemm2Info_t info)
     return hipCUSPARSEStatusToHIPStatus(cusparseDestroyCsrgemm2Info((csrgemm2Info_t)info));
 }
 
+hipsparseStatus_t hipsparseCreatePruneInfo(pruneInfo_t* info)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseCreatePruneInfo((pruneInfo_t*)info));
+}
+
+hipsparseStatus_t hipsparseDestroyPruneInfo(pruneInfo_t info)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseDestroyPruneInfo((pruneInfo_t)info));
+}
+
 hipsparseStatus_t hipsparseSaxpyi(hipsparseHandle_t    handle,
                                   int                  nnz,
                                   const float*         alpha,
@@ -7234,6 +7244,240 @@ hipsparseStatus_t hipsparseDpruneCsr2csr(hipsparseHandle_t         handle,
                                                               csrValC,
                                                               csrRowPtrC,
                                                               csrColIndC,
+                                                              buffer));
+}
+
+hipsparseStatus_t hipsparseSpruneCsr2csrByPercentage_bufferSize(hipsparseHandle_t         handle,
+                                                                int                       m,
+                                                                int                       n,
+                                                                int                       nnzA,
+                                                                const hipsparseMatDescr_t descrA,
+                                                                const float*              csrValA,
+                                                                const int*                csrRowPtrA,
+                                                                const int*                csrColIndA,
+                                                                float                     percentage,
+                                                                const hipsparseMatDescr_t descrC,
+                                                                const float*              csrValC,
+                                                                const int*                csrRowPtrC,
+                                                                const int*                csrColIndC,
+                                                                pruneInfo_t               info,
+                                                                size_t*                   bufferSize)
+{
+    return HIPSPARSE_STATUS_INTERNAL_ERROR;
+}
+
+hipsparseStatus_t hipsparseDpruneCsr2csrByPercentage_bufferSize(hipsparseHandle_t         handle,
+                                                                int                       m,
+                                                                int                       n,
+                                                                int                       nnzA,
+                                                                const hipsparseMatDescr_t descrA,
+                                                                const double*             csrValA,
+                                                                const int*                csrRowPtrA,
+                                                                const int*                csrColIndA,
+                                                                double                    percentage,
+                                                                const hipsparseMatDescr_t descrC,
+                                                                const double*             csrValC,
+                                                                const int*                csrRowPtrC,
+                                                                const int*                csrColIndC,
+                                                                pruneInfo_t               info,
+                                                                size_t*                   bufferSize)
+{
+    return HIPSPARSE_STATUS_INTERNAL_ERROR;
+}
+
+hipsparseStatus_t hipsparseSpruneCsr2csrByPercentage_bufferSizeExt(hipsparseHandle_t         handle,
+                                                                   int                       m,
+                                                                   int                       n,
+                                                                   int                       nnzA,
+                                                                   const hipsparseMatDescr_t descrA,
+                                                                   const float*              csrValA,
+                                                                   const int*                csrRowPtrA,
+                                                                   const int*                csrColIndA,
+                                                                   float                     percentage,
+                                                                   const hipsparseMatDescr_t descrC,
+                                                                   const float*              csrValC,
+                                                                   const int*                csrRowPtrC,
+                                                                   const int*                csrColIndC,
+                                                                   pruneInfo_t               info,
+                                                                   size_t*                   bufferSize)
+{
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseSpruneCsr2csrByPercentage_bufferSizeExt((cusparseHandle_t)handle,
+                                            m,
+                                            n,
+                                            nnzA,
+                                            (const cusparseMatDescr_t)descrA,
+                                            csrValA,
+                                            csrRowPtrA,
+                                            csrColIndA,
+                                            percentage,
+                                            (const cusparseMatDescr_t)descrC,
+                                            csrValC,
+                                            csrRowPtrC,
+                                            csrColIndC,
+                                            (pruneInfo_t)info,
+                                            bufferSize));
+}
+
+hipsparseStatus_t hipsparseDpruneCsr2csrByPercentage_bufferSizeExt(hipsparseHandle_t         handle,
+                                                                   int                       m,
+                                                                   int                       n,
+                                                                   int                       nnzA,
+                                                                   const hipsparseMatDescr_t descrA,
+                                                                   const double*             csrValA,
+                                                                   const int*                csrRowPtrA,
+                                                                   const int*                csrColIndA,
+                                                                   double                    percentage,
+                                                                   const hipsparseMatDescr_t descrC,
+                                                                   const double*             csrValC,
+                                                                   const int*                csrRowPtrC,
+                                                                   const int*                csrColIndC,
+                                                                   pruneInfo_t               info,
+                                                                   size_t*                   bufferSize)
+{
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseDpruneCsr2csrByPercentage_bufferSizeExt((cusparseHandle_t)handle,
+                                            m,
+                                            n,
+                                            nnzA,
+                                            (const cusparseMatDescr_t)descrA,
+                                            csrValA,
+                                            csrRowPtrA,
+                                            csrColIndA,
+                                            percentage,
+                                            (const cusparseMatDescr_t)descrC,
+                                            csrValC,
+                                            csrRowPtrC,
+                                            csrColIndC,
+                                            (pruneInfo_t)info,
+                                            bufferSize));
+}
+
+hipsparseStatus_t hipsparseSpruneCsr2csrNnzByPercentage(hipsparseHandle_t         handle,
+                                                        int                       m,
+                                                        int                       n,
+                                                        int                       nnzA,
+                                                        const hipsparseMatDescr_t descrA,
+                                                        const float*              csrValA,
+                                                        const int*                csrRowPtrA,
+                                                        const int*                csrColIndA,
+                                                        float                     percentage,
+                                                        const hipsparseMatDescr_t descrC,
+                                                        int*                      csrRowPtrC,
+                                                        int*                      nnzTotalDevHostPtr,
+                                                        pruneInfo_t               info,
+                                                        void*                     buffer)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseSpruneCsr2csrNnzByPercentage((cusparseHandle_t)handle,
+                                                                 m,
+                                                                 n,
+                                                                 nnzA,
+                                                                 (const cusparseMatDescr_t)descrA,
+                                                                 csrValA,
+                                                                 csrRowPtrA,
+                                                                 csrColIndA,
+                                                                 percentage,
+                                                                 (const cusparseMatDescr_t)descrC,
+                                                                 csrRowPtrC,
+                                                                 nnzTotalDevHostPtr,
+                                                                 (pruneInfo_t)info,
+                                                                 buffer));
+}
+
+hipsparseStatus_t hipsparseDpruneCsr2csrNnzByPercentage(hipsparseHandle_t         handle,
+                                                        int                       m,
+                                                        int                       n,
+                                                        int                       nnzA,
+                                                        const hipsparseMatDescr_t descrA,
+                                                        const double*             csrValA,
+                                                        const int*                csrRowPtrA,
+                                                        const int*                csrColIndA,
+                                                        double                    percentage,
+                                                        const hipsparseMatDescr_t descrC,
+                                                        int*                      csrRowPtrC,
+                                                        int*                      nnzTotalDevHostPtr,
+                                                        pruneInfo_t               info,
+                                                        void*                     buffer)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseDpruneCsr2csrNnzByPercentage((cusparseHandle_t)handle,
+                                                                 m,
+                                                                 n,
+                                                                 nnzA,
+                                                                 (const cusparseMatDescr_t)descrA,
+                                                                 csrValA,
+                                                                 csrRowPtrA,
+                                                                 csrColIndA,
+                                                                 percentage,
+                                                                 (const cusparseMatDescr_t)descrC,
+                                                                 csrRowPtrC,
+                                                                 nnzTotalDevHostPtr,
+                                                                 (pruneInfo_t)info,
+                                                                 buffer));
+}
+
+hipsparseStatus_t hipsparseSpruneCsr2csrByPercentage(hipsparseHandle_t         handle,
+                                                     int                       m,
+                                                     int                       n,
+                                                     int                       nnzA,
+                                                     const hipsparseMatDescr_t descrA,
+                                                     const float*              csrValA,
+                                                     const int*                csrRowPtrA,
+                                                     const int*                csrColIndA,
+                                                     float                     percentage,
+                                                     const hipsparseMatDescr_t descrC,
+                                                     float*                    csrValC,
+                                                     const int*                csrRowPtrC,
+                                                     int*                      csrColIndC,
+                                                     pruneInfo_t               info,
+                                                     void*                     buffer)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseSpruneCsr2csrByPercentage((cusparseHandle_t)handle,
+                                                              m,
+                                                              n,
+                                                              nnzA,
+                                                              (const cusparseMatDescr_t)descrA,
+                                                              csrValA,
+                                                              csrRowPtrA,
+                                                              csrColIndA,
+                                                              percentage,
+                                                              (const cusparseMatDescr_t)descrC,
+                                                              csrValC,
+                                                              csrRowPtrC,
+                                                              csrColIndC,
+                                                              (pruneInfo_t)info,
+                                                              buffer));
+}
+
+hipsparseStatus_t hipsparseDpruneCsr2csrByPercentage(hipsparseHandle_t         handle,
+                                                     int                       m,
+                                                     int                       n,
+                                                     int                       nnzA,
+                                                     const hipsparseMatDescr_t descrA,
+                                                     const double*             csrValA,
+                                                     const int*                csrRowPtrA,
+                                                     const int*                csrColIndA,
+                                                     double                    percentage,
+                                                     const hipsparseMatDescr_t descrC,
+                                                     double*                   csrValC,
+                                                     const int*                csrRowPtrC,
+                                                     int*                      csrColIndC,
+                                                     pruneInfo_t               info,
+                                                     void*                     buffer)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseDpruneCsr2csrByPercentage((cusparseHandle_t)handle,
+                                                              m,
+                                                              n,
+                                                              nnzA,
+                                                              (const cusparseMatDescr_t)descrA,
+                                                              csrValA,
+                                                              csrRowPtrA,
+                                                              csrColIndA,
+                                                              percentage,
+                                                              (const cusparseMatDescr_t)descrC,
+                                                              csrValC,
+                                                              csrRowPtrC,
+                                                              csrColIndC,
+                                                              (pruneInfo_t)info,
                                                               buffer));
 }
 
