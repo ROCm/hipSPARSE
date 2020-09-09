@@ -34,7 +34,7 @@ typedef std::tuple<int, int, int, double, base> prune_dense2csr_by_percentage_tu
 int    prune_dense2csr_by_percentage_M_range[]  = {-1, 0, 10, 500, 872, 1000};
 int    prune_dense2csr_by_percentage_N_range[]  = {-3, 0, 33, 242, 623, 1000};
 int    prune_dense2csr_by_percentage_LD_range[] = {50, 500, 1000};
-double prune_dense2csr_by_percentage_range[]    = {0.1, 0.55};
+double prune_dense2csr_by_percentage_range[]    = {-0.001, 0.1, 55.0, 67.0};
 base   prune_dense2csr_by_percentage_idx_base_range[]
     = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 

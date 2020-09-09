@@ -1035,44 +1035,39 @@ void host_prune_dense2csr(int                   m,
                           std::vector<int>&     csr_row_ptr,
                           std::vector<int>&     csr_col_ind)
 {
-    if(m < 0 || n < 0 || lda < m)
-    {
-        return;
-    }
+    csr_row_ptr.resize(m + 1, 0);
+    csr_row_ptr[0] = base;
 
-    std::vector<int> nnz_per_row(m, 0);
-
-    nnz = 0;
-
+#ifdef _OPENMP
+#pragma omp parallel for schedule(dynamic, 1024)
+#endif
     for(int i = 0; i < m; i++)
     {
         for(int j = 0; j < n; j++)
         {
-            if(std::abs(A[lda * j + i]) > threshold)
+            if(testing_abs(A[lda * j + i]) > threshold)
             {
-                nnz_per_row[i]++;
-                nnz++;
+                csr_row_ptr[i + 1]++;
             }
         }
     }
 
-    csr_row_ptr.resize(m + 1, 0);
+    for(int i = 1; i <= m; i++)
+    {
+        csr_row_ptr[i] += csr_row_ptr[i - 1];
+    }
+
+    nnz = csr_row_ptr[m] - csr_row_ptr[0];
+
     csr_col_ind.resize(nnz);
     csr_val.resize(nnz);
-
-    csr_row_ptr[0] = base;
-
-    for(int i = 0; i < m; i++)
-    {
-        csr_row_ptr[i + 1] = csr_row_ptr[i] + nnz_per_row[i];
-    }
 
     int index = 0;
     for(int i = 0; i < m; i++)
     {
         for(int j = 0; j < n; j++)
         {
-            if(std::abs(A[lda * j + i]) > threshold)
+            if(testing_abs(A[lda * j + i]) > threshold)
             {
                 csr_val[index]     = A[lda * j + i];
                 csr_col_ind[index] = j + base;
@@ -1266,17 +1261,12 @@ inline void host_prune_csr_to_csr(int                     M,
                                   hipsparseIndexBase_t    csr_base_C,
                                   T                       threshold)
 {
-    if(M < 0 || N < 0)
-    {
-        return;
-    }
+    csr_row_ptr_C.resize(M + 1, 0);
+    csr_row_ptr_C[0] = csr_base_C;
 
-    std::vector<int> nnz_per_row(M, 0);
-
-    csr_row_ptr_C.resize(M + 1);
-
-    nnz_C = 0;
-
+#ifdef _OPENMP
+#pragma omp parallel for schedule(dynamic, 1024)
+#endif
     for(int i = 0; i < M; i++)
     {
         for(int j = csr_row_ptr_A[i] - csr_base_A; j < csr_row_ptr_A[i + 1] - csr_base_A; j++)
@@ -1284,21 +1274,20 @@ inline void host_prune_csr_to_csr(int                     M,
             if(testing_abs(csr_val_A[j]) > threshold
                && testing_abs(csr_val_A[j]) > std::numeric_limits<float>::min())
             {
-                nnz_per_row[i]++;
-                nnz_C++;
+                csr_row_ptr_C[i + 1]++;
             }
         }
     }
 
+    for(int i = 1; i <= M; i++)
+    {
+        csr_row_ptr_C[i] += csr_row_ptr_C[i - 1];
+    }
+
+    nnz_C = csr_row_ptr_C[M] - csr_row_ptr_C[0];
+
     csr_col_ind_C.resize(nnz_C);
     csr_val_C.resize(nnz_C);
-
-    csr_row_ptr_C[0] = csr_base_C;
-
-    for(int i = 0; i < M; i++)
-    {
-        csr_row_ptr_C[i + 1] = csr_row_ptr_C[i] + nnz_per_row[i];
-    }
 
     int index = 0;
     for(int i = 0; i < M; i++)
@@ -1315,6 +1304,54 @@ inline void host_prune_csr_to_csr(int                     M,
             }
         }
     }
+}
+
+template <typename T>
+void host_prune_csr_to_csr_by_percentage(int                     M,
+                                         int                     N,
+                                         int                     nnz_A,
+                                         const std::vector<int>& csr_row_ptr_A,
+                                         const std::vector<int>& csr_col_ind_A,
+                                         const std::vector<T>&   csr_val_A,
+                                         int&                    nnz_C,
+                                         std::vector<int>&       csr_row_ptr_C,
+                                         std::vector<int>&       csr_col_ind_C,
+                                         std::vector<T>&         csr_val_C,
+                                         hipsparseIndexBase_t    csr_base_A,
+                                         hipsparseIndexBase_t    csr_base_C,
+                                         T                       percentage)
+{
+    int pos = std::ceil(nnz_A * (percentage / 100)) - 1;
+    pos     = std::min(pos, nnz_A - 1);
+    pos     = std::max(pos, 0);
+
+    std::vector<T> sorted_A(nnz_A);
+
+#ifdef _OPENMP
+#pragma omp parallel for schedule(dynamic, 1024)
+#endif
+    for(int i = 0; i < nnz_A; i++)
+    {
+        sorted_A[i] = testing_abs(csr_val_A[i]);
+    }
+
+    std::sort(sorted_A.begin(), sorted_A.end());
+
+    T threshold = sorted_A[pos];
+
+    host_prune_csr_to_csr<T>(M,
+                             N,
+                             nnz_A,
+                             csr_row_ptr_A,
+                             csr_col_ind_A,
+                             csr_val_A,
+                             nnz_C,
+                             csr_row_ptr_C,
+                             csr_col_ind_C,
+                             csr_val_C,
+                             csr_base_A,
+                             csr_base_C,
+                             threshold);
 }
 
 template <typename T>
@@ -4077,11 +4114,11 @@ public:
     int ldb;
     int ldc;
 
-    double alpha     = 1.0;
-    double alphai    = 0.0;
-    double beta      = 0.0;
-    double betai     = 0.0;
-    double threshold = 0.0;
+    double alpha      = 1.0;
+    double alphai     = 0.0;
+    double beta       = 0.0;
+    double betai      = 0.0;
+    double threshold  = 0.0;
     double percentage = 0.0;
 
     hipsparseOperation_t    transA    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
@@ -4119,12 +4156,12 @@ public:
         this->ldb = rhs.ldb;
         this->ldc = rhs.ldc;
 
-        this->alpha     = rhs.alpha;
-        this->alphai    = rhs.alphai;
-        this->beta      = rhs.beta;
-        this->betai     = rhs.betai;
-        this->threshold = rhs.threshold;
-	this->percentage = rhs.percentage;
+        this->alpha      = rhs.alpha;
+        this->alphai     = rhs.alphai;
+        this->beta       = rhs.beta;
+        this->betai      = rhs.betai;
+        this->threshold  = rhs.threshold;
+        this->percentage = rhs.percentage;
 
         this->transA    = rhs.transA;
         this->transB    = rhs.transB;
