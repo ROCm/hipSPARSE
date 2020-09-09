@@ -392,7 +392,7 @@ hipsparseStatus_t testing_prune_dense2csr_by_percentage(Arguments argus)
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatIndexBase(descr, idx_base));
 
     // Argument sanity check before allocating invalid memory
-    if(M <= 0 || N <= 0 || LDA < M)
+    if(M <= 0 || N <= 0 || LDA < M || percentage < 0.0 || percentage > 100.0)
     {
 #ifdef __HIP_PLATFORM_NVCC__
         // Do not test args in cusparse
@@ -435,13 +435,13 @@ hipsparseStatus_t testing_prune_dense2csr_by_percentage(Arguments argus)
                                                       info,
                                                       temp_buffer);
 
-        if(M < 0 || N < 0 || LDA < M)
+        if(M < 0 || N < 0 || LDA < M || percentage < 0.0 || percentage > 100.0)
         {
-            verify_hipsparse_status_invalid_size(status, "Error: m < 0 || n < 0 || lda < m");
+            verify_hipsparse_status_invalid_size(status, "Error: m < 0 || n < 0 || lda < m || percentage < 0.0 || percentage > 100.0");
         }
         else
         {
-            verify_hipsparse_status_success(status, "m >= 0 && n >= 0 && lda >= m");
+            verify_hipsparse_status_success(status, "m >= 0 && n >= 0 && lda >= m && percentage >= 0.0 && percentage <= 100.0");
         }
 
         return HIPSPARSE_STATUS_SUCCESS;

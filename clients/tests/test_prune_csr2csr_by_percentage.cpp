@@ -36,7 +36,7 @@ typedef std::tuple<double, hipsparseIndexBase_t, hipsparseIndexBase_t, std::stri
 
 int    prune_csr2csr_by_percentage_M_range[] = {-1, 0, 10, 500, 872, 465327};
 int    prune_csr2csr_by_percentage_N_range[] = {-3, 0, 33, 242, 623, 592645};
-double prune_csr2csr_by_percentage_range[]   = {0.0, 10.0, 22.0, 75.0, 90.0, 101.0};
+double prune_csr2csr_by_percentage_range[]   = {5.7, 75.0, 90.0, 101.0};
 
 hipsparseIndexBase_t prune_csr2csr_by_percentage_base_A_range[]
     = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
