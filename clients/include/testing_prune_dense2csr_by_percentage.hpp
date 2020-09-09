@@ -437,11 +437,14 @@ hipsparseStatus_t testing_prune_dense2csr_by_percentage(Arguments argus)
 
         if(M < 0 || N < 0 || LDA < M || percentage < 0.0 || percentage > 100.0)
         {
-            verify_hipsparse_status_invalid_size(status, "Error: m < 0 || n < 0 || lda < m || percentage < 0.0 || percentage > 100.0");
+            verify_hipsparse_status_invalid_size(
+                status,
+                "Error: m < 0 || n < 0 || lda < m || percentage < 0.0 || percentage > 100.0");
         }
         else
         {
-            verify_hipsparse_status_success(status, "m >= 0 && n >= 0 && lda >= m && percentage >= 0.0 && percentage <= 100.0");
+            verify_hipsparse_status_success(
+                status, "m >= 0 && n >= 0 && lda >= m && percentage >= 0.0 && percentage <= 100.0");
         }
 
         return HIPSPARSE_STATUS_SUCCESS;
