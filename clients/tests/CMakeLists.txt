@@ -161,6 +161,7 @@ set(HIPSPARSE_TEST_SOURCES
   test_csc2dense.cpp
   test_dense2csr.cpp
   test_prune_dense2csr.cpp
+  test_prune_dense2csr_by_percentage.cpp
   test_dense2csc.cpp
   test_csr2coo.cpp
   test_csr2csc.cpp
