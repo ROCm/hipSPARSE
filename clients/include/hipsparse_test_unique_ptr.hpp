@@ -93,6 +93,7 @@ namespace hipsparse_test
         }
     };
 
+#if defined(__HIP_PLATFORM_HCC__) || (defined(CUDART_VERSION) && CUDART_VERSION < 11000)
     struct hyb_struct
     {
         hipsparseHybMat_t hyb;
@@ -108,6 +109,7 @@ namespace hipsparse_test
             verify_hipsparse_status_success(status, "ERROR: hyb_struct destructor");
         }
     };
+#endif
 
     struct bsrsv2_struct
     {

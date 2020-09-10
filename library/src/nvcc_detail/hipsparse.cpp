@@ -293,7 +293,6 @@ hipsparseDirection_t CudaDirectionToHIPDirection(cusparseDirection_t op)
     }
 }
 
-
 #if CUDART_VERSION < 11000
 cusparseHybPartition_t hipHybPartitionToCudaHybPartition(hipsparseHybPartition_t part)
 {
