@@ -205,11 +205,13 @@ hipsparseStatus_t hipsparseSetMatIndexBase(hipsparseMatDescr_t descrA, hipsparse
 HIPSPARSE_EXPORT
 hipsparseIndexBase_t hipsparseGetMatIndexBase(const hipsparseMatDescr_t descrA);
 
+#if defined(__HIP_PLATFORM_HCC__) || (defined(CUDART_VERSION) && CUDART_VERSION < 11000)
 /* Hybrid (HYB) format */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreateHybMat(hipsparseHybMat_t* hybA);
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroyHybMat(hipsparseHybMat_t hybA);
+#endif
 
 /* Info structures */
 HIPSPARSE_EXPORT
@@ -294,6 +296,7 @@ hipsparseStatus_t hipsparseZaxpyi(hipsparseHandle_t       handle,
                                   hipDoubleComplex*       y,
                                   hipsparseIndexBase_t    idxBase);
 
+#if defined(__HIP_PLATFORM_HCC__) || (defined(CUDART_VERSION) && CUDART_VERSION < 11000)
 /* Description: Compute the dot product of a sparse vector x
 with a dense vector y. */
 HIPSPARSE_EXPORT
@@ -328,7 +331,9 @@ hipsparseStatus_t hipsparseZdoti(hipsparseHandle_t       handle,
                                  const hipDoubleComplex* y,
                                  hipDoubleComplex*       result,
                                  hipsparseIndexBase_t    idxBase);
+#endif
 
+#if defined(__HIP_PLATFORM_HCC__) || (defined(CUDART_VERSION) && CUDART_VERSION < 11000)
 /* Description: Compute the conjugated dot product of a sparse
 vector x with a dense vector y. */
 HIPSPARSE_EXPORT
@@ -347,6 +352,7 @@ hipsparseStatus_t hipsparseZdotci(hipsparseHandle_t       handle,
                                   const hipDoubleComplex* y,
                                   hipDoubleComplex*       result,
                                   hipsparseIndexBase_t    idxBase);
+#endif
 
 /* Description: Gathers the elements that are listed in xInd from
 a dense vector y and stores them in a sparse vector x. */
@@ -465,6 +471,7 @@ hipsparseStatus_t hipsparseZsctr(hipsparseHandle_t       handle,
 
 /* --- Sparse Level 2 routines --- */
 
+#if defined(__HIP_PLATFORM_HCC__) || (defined(CUDART_VERSION) && CUDART_VERSION < 11000)
 /* Description: Matrix-vector multiplication  y = alpha * op(A) * x  + beta * y,
 where A is a sparse matrix in CSR storage format, x and y are dense vectors. */
 HIPSPARSE_EXPORT
@@ -523,6 +530,7 @@ hipsparseStatus_t hipsparseZcsrmv(hipsparseHandle_t         handle,
                                   const hipDoubleComplex*   x,
                                   const hipDoubleComplex*   beta,
                                   hipDoubleComplex*         y);
+#endif
 
 /* Description: Solution of triangular linear system op(A) * x = alpha * f,
 where A is a sparse matrix in CSR storage format, x and f are dense vectors. */
@@ -730,6 +738,7 @@ hipsparseStatus_t hipsparseZcsrsv2_solve(hipsparseHandle_t         handle,
                                          hipsparseSolvePolicy_t    policy,
                                          void*                     pBuffer);
 
+#if defined(__HIP_PLATFORM_HCC__) || (defined(CUDART_VERSION) && CUDART_VERSION < 11000)
 /* Description: Matrix-vector multiplication  y = alpha * op(A) * x  + beta * y,
 where A is a sparse matrix in HYB storage format, x and y are dense vectors. */
 HIPSPARSE_EXPORT
@@ -768,6 +777,7 @@ hipsparseStatus_t hipsparseZhybmv(hipsparseHandle_t         handle,
                                   const hipDoubleComplex*   x,
                                   const hipDoubleComplex*   beta,
                                   hipDoubleComplex*         y);
+#endif
 
 /* Description: Matrix-vector multiplication  y = alpha * op(A) * x  + beta * y,
 where A is a sparse matrix in BSR storage format, x and y are dense vectors. */
@@ -1158,6 +1168,7 @@ hipsparseStatus_t hipsparseZbsrmm(hipsparseHandle_t         handle,
                                   hipDoubleComplex*         C,
                                   int                       ldc);
 
+#if defined(__HIP_PLATFORM_HCC__) || (defined(CUDART_VERSION) && CUDART_VERSION < 11000)
 /* Description: Matrix-matrix multiplication C = alpha * op(A) * B + beta * C,
 where A is a sparse matrix in CSR storage format, B and C are dense matrices. */
 HIPSPARSE_EXPORT
@@ -1228,7 +1239,9 @@ hipsparseStatus_t hipsparseZcsrmm(hipsparseHandle_t         handle,
                                   const hipDoubleComplex*   beta,
                                   hipDoubleComplex*         C,
                                   int                       ldc);
+#endif
 
+#if defined(__HIP_PLATFORM_HCC__) || (defined(CUDART_VERSION) && CUDART_VERSION < 11000)
 /* Description: Matrix-matrix multiplication C = alpha * op(A) * op(B) + beta * C,
 where A is a sparse matrix in CSR storage format, B and C are dense matrices. */
 HIPSPARSE_EXPORT
@@ -1303,6 +1316,7 @@ hipsparseStatus_t hipsparseZcsrmm2(hipsparseHandle_t         handle,
                                    const hipDoubleComplex*   beta,
                                    hipDoubleComplex*         C,
                                    int                       ldc);
+#endif
 
 /* Description: Solution of triangular linear system op(A) * op(X) = alpha * op(B),
 where A is a sparse matrix in CSR storage format, X and B are dense matrices. */
@@ -1606,6 +1620,7 @@ hipsparseStatus_t hipsparseZgemmi(hipsparseHandle_t       handle,
 
 /* --- Sparse Extra routines --- */
 
+#if defined(__HIP_PLATFORM_HCC__) || (defined(CUDART_VERSION) && CUDART_VERSION < 11000)
 /* Description: Sparse matrix sparse matrix addition C = alpha * A + beta * B, where A, B
 and C are sparse matrices in CSR storage format. */
 HIPSPARSE_EXPORT
@@ -1707,6 +1722,7 @@ hipsparseStatus_t hipsparseZcsrgeam(hipsparseHandle_t         handle,
                                     hipDoubleComplex*         csrValC,
                                     int*                      csrRowPtrC,
                                     int*                      csrColIndC);
+#endif
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseScsrgeam2_bufferSizeExt(hipsparseHandle_t         handle,
@@ -1901,6 +1917,7 @@ hipsparseStatus_t hipsparseZcsrgeam2(hipsparseHandle_t         handle,
                                      int*                      csrSortedColIndC,
                                      void*                     pBuffer);
 
+#if defined(__HIP_PLATFORM_HCC__) || (defined(CUDART_VERSION) && CUDART_VERSION < 11000)
 /* Description: Sparse matrix sparse matrix multiplication C = op(A) * op(B), where A, B
 and C are sparse matrices in CSR storage format. */
 HIPSPARSE_EXPORT
@@ -2006,6 +2023,7 @@ hipsparseStatus_t hipsparseZcsrgemm(hipsparseHandle_t         handle,
                                     hipDoubleComplex*         csrValC,
                                     const int*                csrRowPtrC,
                                     int*                      csrColIndC);
+#endif
 
 /* Description: Sparse matrix sparse matrix multiplication C = alpha * A * B + beta * D,
 where A, B and D are sparse matrices in CSR storage format. */
@@ -3486,6 +3504,7 @@ hipsparseStatus_t hipsparseXcsr2coo(hipsparseHandle_t    handle,
                                     int*                 cooRowInd,
                                     hipsparseIndexBase_t idxBase);
 
+#if defined(__HIP_PLATFORM_HCC__) || (defined(CUDART_VERSION) && CUDART_VERSION < 11000)
 /* Description: This routine converts a sparse matrix in CSR storage format
 to a sparse matrix in CSC storage format. */
 HIPSPARSE_EXPORT
@@ -3540,7 +3559,9 @@ hipsparseStatus_t hipsparseZcsr2csc(hipsparseHandle_t       handle,
                                     int*                    cscSortedColPtr,
                                     hipsparseAction_t       copyValues,
                                     hipsparseIndexBase_t    idxBase);
+#endif
 
+#if defined(__HIP_PLATFORM_HCC__) || (defined(CUDART_VERSION) && CUDART_VERSION < 11000)
 /* Description: This routine converts a sparse matrix in CSR storage format
 to a sparse matrix in HYB storage format. */
 HIPSPARSE_EXPORT
@@ -3587,6 +3608,7 @@ hipsparseStatus_t hipsparseZcsr2hyb(hipsparseHandle_t         handle,
                                     hipsparseHybMat_t         hybA,
                                     int                       userEllWidth,
                                     hipsparseHybPartition_t   partitionType);
+#endif
 
 /* Description: This routine converts a sparse matrix in CSR storage format
 to a sparse matrix in BSR storage format. */
@@ -4029,6 +4051,7 @@ hipsparseStatus_t hipsparseDpruneCsr2csrByPercentage(hipsparseHandle_t         h
                                                      pruneInfo_t               info,
                                                      void*                     buffer);
 
+#if defined(__HIP_PLATFORM_HCC__) || (defined(CUDART_VERSION) && CUDART_VERSION < 11000)
 /* Description: This routine converts a sparse matrix in HYB storage format
 to a sparse matrix in CSR storage format. */
 HIPSPARSE_EXPORT
@@ -4062,6 +4085,7 @@ hipsparseStatus_t hipsparseZhyb2csr(hipsparseHandle_t         handle,
                                     hipDoubleComplex*         csrSortedValA,
                                     int*                      csrSortedRowPtrA,
                                     int*                      csrSortedColIndA);
+#endif
 
 /* Description: This routine converts a sparse matrix in COO storage format
 to a sparse matrix in CSR storage format. */
