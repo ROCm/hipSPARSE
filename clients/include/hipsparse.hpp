@@ -95,6 +95,7 @@ namespace hipsparse
                                      T*                   y,
                                      hipsparseIndexBase_t idx_base);
 
+#if defined(__HIP_PLATFORM_HCC__) || (defined(CUDART_VERSION) && CUDART_VERSION < 11000)
     template <typename T>
     hipsparseStatus_t hipsparseXcsrmv(hipsparseHandle_t         handle,
                                       hipsparseOperation_t      trans,
@@ -109,6 +110,7 @@ namespace hipsparse
                                       const T*                  x,
                                       const T*                  beta,
                                       T*                        y);
+#endif
 
     template <typename T>
     hipsparseStatus_t hipsparseXcsrsv2_bufferSize(hipsparseHandle_t         handle,
@@ -272,6 +274,7 @@ namespace hipsparse
                                       T*                        C,
                                       int                       ldc);
 
+#if defined(__HIP_PLATFORM_HCC__) || (defined(CUDART_VERSION) && CUDART_VERSION < 11000)
     template <typename T>
     hipsparseStatus_t hipsparseXcsrmm2(hipsparseHandle_t         handle,
                                        hipsparseOperation_t      transA,
@@ -290,6 +293,7 @@ namespace hipsparse
                                        const T*                  beta,
                                        T*                        C,
                                        int                       ldc);
+#endif
 
     template <typename T>
     hipsparseStatus_t hipsparseXcsrsm2_bufferSizeExt(hipsparseHandle_t         handle,

@@ -139,10 +139,8 @@ set(HIPSPARSE_TEST_SOURCES
   test_sctr.cpp
   test_bsrmv.cpp
   test_bsrsv2.cpp
-  test_csrmv.cpp
   test_csrsv2.cpp
   test_bsrmm.cpp
-  test_csrmm.cpp
   test_csrsm2.cpp
   test_gemmi.cpp
   test_csrgeam2.cpp
@@ -180,6 +178,8 @@ if(NOT BUILD_CUDA)
         test_dotci.cpp
         test_csrgemm.cpp
         test_csrgeam.cpp
+        test_csrmv.cpp
+        test_csrmm.cpp
         test_hybmv.cpp
         test_csr2hyb.cpp
         test_hyb2csr.cpp
