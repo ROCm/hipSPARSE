@@ -569,6 +569,7 @@ hipsparseStatus_t hipsparseDestroyCsric02Info(csric02Info_t info)
     return hipCUSPARSEStatusToHIPStatus(cusparseDestroyCsric02Info((csric02Info_t)info));
 }
 
+#if CUDART_VERSION < 12000
 hipsparseStatus_t hipsparseCreateCsrgemm2Info(csrgemm2Info_t* info)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseCreateCsrgemm2Info((csrgemm2Info_t*)info));
@@ -578,6 +579,7 @@ hipsparseStatus_t hipsparseDestroyCsrgemm2Info(csrgemm2Info_t info)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseDestroyCsrgemm2Info((csrgemm2Info_t)info));
 }
+#endif
 
 hipsparseStatus_t hipsparseCreatePruneInfo(pruneInfo_t* info)
 {
@@ -589,6 +591,7 @@ hipsparseStatus_t hipsparseDestroyPruneInfo(pruneInfo_t info)
     return hipCUSPARSEStatusToHIPStatus(cusparseDestroyPruneInfo((pruneInfo_t)info));
 }
 
+#if CUDART_VERSION < 12000
 hipsparseStatus_t hipsparseSaxpyi(hipsparseHandle_t    handle,
                                   int                  nnz,
                                   const float*         alpha,
@@ -646,6 +649,7 @@ hipsparseStatus_t hipsparseZaxpyi(hipsparseHandle_t       handle,
                                                        (cuDoubleComplex*)y,
                                                        hipIndexBaseToCudaIndexBase(idxBase)));
 }
+#endif
 
 #if CUDART_VERSION < 11000
 hipsparseStatus_t hipsparseSdoti(hipsparseHandle_t    handle,
@@ -753,6 +757,7 @@ hipsparseStatus_t hipsparseZdotci(hipsparseHandle_t       handle,
 }
 #endif
 
+#if CUDART_VERSION < 12000
 hipsparseStatus_t hipsparseSgthr(hipsparseHandle_t    handle,
                                  int                  nnz,
                                  const float*         y,
@@ -804,7 +809,9 @@ hipsparseStatus_t hipsparseZgthr(hipsparseHandle_t       handle,
                                                       xInd,
                                                       hipIndexBaseToCudaIndexBase(idxBase)));
 }
+#endif
 
+#if CUDART_VERSION < 12000
 hipsparseStatus_t hipsparseSgthrz(hipsparseHandle_t    handle,
                                   int                  nnz,
                                   float*               y,
@@ -856,7 +863,9 @@ hipsparseStatus_t hipsparseZgthrz(hipsparseHandle_t    handle,
                                                        xInd,
                                                        hipIndexBaseToCudaIndexBase(idxBase)));
 }
+#endif
 
+#if CUDART_VERSION < 12000
 hipsparseStatus_t hipsparseSroti(hipsparseHandle_t    handle,
                                  int                  nnz,
                                  float*               xVal,
@@ -882,7 +891,9 @@ hipsparseStatus_t hipsparseDroti(hipsparseHandle_t    handle,
     return hipCUSPARSEStatusToHIPStatus(cusparseDroti(
         (cusparseHandle_t)handle, nnz, xVal, xInd, y, c, s, hipIndexBaseToCudaIndexBase(idxBase)));
 }
+#endif
 
+#if CUDART_VERSION < 12000
 hipsparseStatus_t hipsparseSsctr(hipsparseHandle_t    handle,
                                  int                  nnz,
                                  const float*         xVal,
@@ -934,6 +945,7 @@ hipsparseStatus_t hipsparseZsctr(hipsparseHandle_t       handle,
                                                       (cuDoubleComplex*)y,
                                                       hipIndexBaseToCudaIndexBase(idxBase)));
 }
+#endif
 
 #if CUDART_VERSION < 11000
 hipsparseStatus_t hipsparseScsrmv(hipsparseHandle_t         handle,
@@ -3008,6 +3020,7 @@ hipsparseStatus_t hipsparseZcsrsm2_solve(hipsparseHandle_t         handle,
                                                               pBuffer));
 }
 
+#if CUDART_VERSION < 12000
 hipsparseStatus_t hipsparseSgemmi(hipsparseHandle_t handle,
                                   int               m,
                                   int               n,
@@ -3131,6 +3144,7 @@ hipsparseStatus_t hipsparseZgemmi(hipsparseHandle_t       handle,
                                                        (cuDoubleComplex*)C,
                                                        ldc));
 }
+#endif
 
 #if CUDART_VERSION < 11000
 hipsparseStatus_t hipsparseXcsrgeamNnz(hipsparseHandle_t         handle,
@@ -3921,6 +3935,7 @@ hipsparseStatus_t hipsparseZcsrgemm(hipsparseHandle_t         handle,
 }
 #endif
 
+#if CUDART_VERSION < 12000
 hipsparseStatus_t hipsparseScsrgemm2_bufferSizeExt(hipsparseHandle_t         handle,
                                                    int                       m,
                                                    int                       n,
@@ -4369,6 +4384,7 @@ hipsparseStatus_t hipsparseZcsrgemm2(hipsparseHandle_t         handle,
                                                           (const csrgemm2Info_t)info,
                                                           pBuffer));
 }
+#endif
 
 hipsparseStatus_t
     hipsparseXbsrilu02_zeroPivot(hipsparseHandle_t handle, bsrilu02Info_t info, int* position)

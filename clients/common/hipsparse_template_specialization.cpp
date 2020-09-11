@@ -27,7 +27,7 @@
 
 namespace hipsparse
 {
-
+#if (!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     template <>
     hipsparseStatus_t hipsparseXaxpyi(hipsparseHandle_t    handle,
                                       int                  nnz,
@@ -75,8 +75,9 @@ namespace hipsparse
     {
         return hipsparseZaxpyi(handle, nnz, alpha, x_val, x_ind, y, idx_base);
     }
+#endif
 
-#if defined(__HIP_PLATFORM_HCC__) || (defined(CUDART_VERSION) && CUDART_VERSION < 11000)
+#if (!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
     template <>
     hipsparseStatus_t hipsparseXdoti(hipsparseHandle_t    handle,
                                      int                  nnz,
@@ -126,7 +127,7 @@ namespace hipsparse
     }
 #endif
 
-#if defined(__HIP_PLATFORM_HCC__) || (defined(CUDART_VERSION) && CUDART_VERSION < 11000)
+#if (!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
     template <>
     hipsparseStatus_t hipsparseXdotci(hipsparseHandle_t    handle,
                                       int                  nnz,
@@ -152,6 +153,7 @@ namespace hipsparse
     }
 #endif
 
+#if (!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     template <>
     hipsparseStatus_t hipsparseXgthr(hipsparseHandle_t    handle,
                                      int                  nnz,
@@ -195,7 +197,9 @@ namespace hipsparse
     {
         return hipsparseZgthr(handle, nnz, y, x_val, x_ind, idx_base);
     }
+#endif
 
+#if (!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     template <>
     hipsparseStatus_t hipsparseXgthrz(hipsparseHandle_t    handle,
                                       int                  nnz,
@@ -239,7 +243,9 @@ namespace hipsparse
     {
         return hipsparseZgthrz(handle, nnz, y, x_val, x_ind, idx_base);
     }
+#endif
 
+#if (!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     template <>
     hipsparseStatus_t hipsparseXroti(hipsparseHandle_t    handle,
                                      int                  nnz,
@@ -265,7 +271,9 @@ namespace hipsparse
     {
         return hipsparseDroti(handle, nnz, x_val, x_ind, y, c, s, idx_base);
     }
+#endif
 
+#if (!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     template <>
     hipsparseStatus_t hipsparseXsctr(hipsparseHandle_t    handle,
                                      int                  nnz,
@@ -309,8 +317,9 @@ namespace hipsparse
     {
         return hipsparseZsctr(handle, nnz, x_val, x_ind, y, idx_base);
     }
+#endif
 
-#if defined(__HIP_PLATFORM_HCC__) || (defined(CUDART_VERSION) && CUDART_VERSION < 11000)
+#if (!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
     template <>
     hipsparseStatus_t hipsparseXcsrmv(hipsparseHandle_t         handle,
                                       hipsparseOperation_t      trans,
@@ -812,7 +821,7 @@ namespace hipsparse
                                       pBuffer);
     }
 
-#if defined(__HIP_PLATFORM_HCC__) || (defined(CUDART_VERSION) && CUDART_VERSION < 11000)
+#if (!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
     template <>
     hipsparseStatus_t hipsparseXhybmv(hipsparseHandle_t         handle,
                                       hipsparseOperation_t      trans,
@@ -1658,7 +1667,7 @@ namespace hipsparse
                                ldc);
     }
 
-#if defined(__HIP_PLATFORM_HCC__) || (defined(CUDART_VERSION) && CUDART_VERSION < 11000)
+#if (!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
     template <>
     hipsparseStatus_t hipsparseXcsrmm2(hipsparseHandle_t         handle,
                                        hipsparseOperation_t      trans_A,
@@ -2268,6 +2277,7 @@ namespace hipsparse
                                       pBuffer);
     }
 
+#if (!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     template <>
     hipsparseStatus_t hipsparseXgemmi(hipsparseHandle_t handle,
                                       int               m,
@@ -2347,8 +2357,9 @@ namespace hipsparse
         return hipsparseZgemmi(
             handle, m, n, k, nnz, alpha, A, lda, cscValB, cscColPtrB, cscRowIndB, beta, C, ldc);
     }
+#endif
 
-#if defined(__HIP_PLATFORM_HCC__) || (defined(CUDART_VERSION) && CUDART_VERSION < 11000)
+#if (!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
     template <>
     hipsparseStatus_t hipsparseXcsrgeam(hipsparseHandle_t         handle,
                                         int                       m,
@@ -2870,7 +2881,7 @@ namespace hipsparse
                                   pBuffer);
     }
 
-#if defined(__HIP_PLATFORM_HCC__) || (defined(CUDART_VERSION) && CUDART_VERSION < 11000)
+#if (!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
     template <>
     hipsparseStatus_t hipsparseXcsrgemm(hipsparseHandle_t         handle,
                                         hipsparseOperation_t      transA,
@@ -3048,6 +3059,7 @@ namespace hipsparse
     }
 #endif
 
+#if (!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     template <>
     hipsparseStatus_t hipsparseXcsrgemm2_bufferSizeExt(hipsparseHandle_t         handle,
                                                        int                       m,
@@ -3455,6 +3467,7 @@ namespace hipsparse
                                   info,
                                   pBuffer);
     }
+#endif
 
     template <>
     hipsparseStatus_t hipsparseXbsrilu02_bufferSize(hipsparseHandle_t         handle,
@@ -5527,7 +5540,7 @@ namespace hipsparse
         return hipsparseZcsc2dense(handle, m, n, descr, cscVal, cscRowInd, cscColPtr, A, ld);
     }
 
-#if defined(__HIP_PLATFORM_HCC__) || (defined(CUDART_VERSION) && CUDART_VERSION < 11000)
+#if (!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
     template <>
     hipsparseStatus_t hipsparseXcsr2csc(hipsparseHandle_t    handle,
                                         int                  m,
@@ -5641,7 +5654,7 @@ namespace hipsparse
     }
 #endif
 
-#if defined(__HIP_PLATFORM_HCC__) || (defined(CUDART_VERSION) && CUDART_VERSION < 11000)
+#if (!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
     template <>
     hipsparseStatus_t hipsparseXcsr2hyb(hipsparseHandle_t         handle,
                                         int                       m,
@@ -5979,7 +5992,7 @@ namespace hipsparse
                                  csrColIndC);
     }
 
-#if defined(__HIP_PLATFORM_HCC__) || (defined(CUDART_VERSION) && CUDART_VERSION < 11000)
+#if (!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
     template <>
     hipsparseStatus_t hipsparseXhyb2csr(hipsparseHandle_t         handle,
                                         const hipsparseMatDescr_t descrA,

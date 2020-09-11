@@ -158,7 +158,6 @@ set(HIPSPARSE_TEST_SOURCES
   test_prune_dense2csr_by_percentage.cpp
   test_dense2csc.cpp
   test_csr2coo.cpp
-  test_csr2csc.cpp
   test_csr2bsr.cpp
   test_bsr2csr.cpp
   test_csr2csr_compress.cpp
@@ -176,6 +175,7 @@ if(NOT BUILD_CUDA)
     list(APPEND HIPSPARSE_TEST_SOURCES
         test_doti.cpp
         test_dotci.cpp
+        test_csr2csc.cpp
         test_csrgemm.cpp
         test_csrgeam.cpp
         test_csrmv.cpp

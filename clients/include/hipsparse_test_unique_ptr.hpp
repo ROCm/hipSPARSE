@@ -93,7 +93,7 @@ namespace hipsparse_test
         }
     };
 
-#if defined(__HIP_PLATFORM_HCC__) || (defined(CUDART_VERSION) && CUDART_VERSION < 11000)
+#if (!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
     struct hyb_struct
     {
         hipsparseHybMat_t hyb;
@@ -223,6 +223,7 @@ namespace hipsparse_test
         }
     };
 
+#if (!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     struct csrgemm2_struct
     {
         csrgemm2Info_t info;
@@ -238,6 +239,7 @@ namespace hipsparse_test
             verify_hipsparse_status_success(status, "ERROR: csrgemm2_struct destructor");
         }
     };
+#endif
 
     struct prune_struct
     {
