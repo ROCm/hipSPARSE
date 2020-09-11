@@ -93,7 +93,7 @@ namespace hipsparse_test
         }
     };
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
     struct hyb_struct
     {
         hipsparseHybMat_t hyb;
@@ -223,7 +223,7 @@ namespace hipsparse_test
         }
     };
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     struct csrgemm2_struct
     {
         csrgemm2Info_t info;

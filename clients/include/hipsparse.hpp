@@ -29,7 +29,7 @@
 
 namespace hipsparse
 {
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     template <typename T>
     hipsparseStatus_t hipsparseXaxpyi(hipsparseHandle_t    handle,
                                       int                  nnz,
@@ -40,7 +40,7 @@ namespace hipsparse
                                       hipsparseIndexBase_t idx_base);
 #endif
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
     template <typename T>
     hipsparseStatus_t hipsparseXdoti(hipsparseHandle_t    handle,
                                      int                  nnz,
@@ -51,7 +51,7 @@ namespace hipsparse
                                      hipsparseIndexBase_t idx_base);
 #endif
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
     template <typename T>
     hipsparseStatus_t hipsparseXdotci(hipsparseHandle_t    handle,
                                       int                  nnz,
@@ -62,7 +62,7 @@ namespace hipsparse
                                       hipsparseIndexBase_t idx_base);
 #endif
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     template <typename T>
     hipsparseStatus_t hipsparseXgthr(hipsparseHandle_t    handle,
                                      int                  nnz,
@@ -72,7 +72,7 @@ namespace hipsparse
                                      hipsparseIndexBase_t idx_base);
 #endif
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     template <typename T>
     hipsparseStatus_t hipsparseXgthrz(hipsparseHandle_t    handle,
                                       int                  nnz,
@@ -82,7 +82,7 @@ namespace hipsparse
                                       hipsparseIndexBase_t idx_base);
 #endif
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     template <typename T>
     hipsparseStatus_t hipsparseXroti(hipsparseHandle_t    handle,
                                      int                  nnz,
@@ -94,7 +94,7 @@ namespace hipsparse
                                      hipsparseIndexBase_t idx_base);
 #endif
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     template <typename T>
     hipsparseStatus_t hipsparseXsctr(hipsparseHandle_t    handle,
                                      int                  nnz,
@@ -104,7 +104,7 @@ namespace hipsparse
                                      hipsparseIndexBase_t idx_base);
 #endif
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
     template <typename T>
     hipsparseStatus_t hipsparseXcsrmv(hipsparseHandle_t         handle,
                                       hipsparseOperation_t      trans,
@@ -283,7 +283,7 @@ namespace hipsparse
                                       T*                        C,
                                       int                       ldc);
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
     template <typename T>
     hipsparseStatus_t hipsparseXcsrmm2(hipsparseHandle_t         handle,
                                        hipsparseOperation_t      transA,
@@ -361,7 +361,7 @@ namespace hipsparse
                                              hipsparseSolvePolicy_t    policy,
                                              void*                     pBuffer);
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     template <typename T>
     hipsparseStatus_t hipsparseXgemmi(hipsparseHandle_t handle,
                                       int               m,
@@ -379,7 +379,7 @@ namespace hipsparse
                                       int               ldc);
 #endif
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
     template <typename T>
     hipsparseStatus_t hipsparseXcsrgeam(hipsparseHandle_t         handle,
                                         int                       m,
@@ -446,7 +446,7 @@ namespace hipsparse
                                          int*                      csrColIndC,
                                          void*                     pBuffer);
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
     template <typename T>
     hipsparseStatus_t hipsparseXcsrgemm(hipsparseHandle_t         handle,
                                         hipsparseOperation_t      transA,
@@ -470,7 +470,7 @@ namespace hipsparse
                                         int*                      csrColIndC);
 #endif
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     template <typename T>
     hipsparseStatus_t hipsparseXcsrgemm2_bufferSizeExt(hipsparseHandle_t         handle,
                                                        int                       m,
@@ -876,7 +876,7 @@ namespace hipsparse
                                           T*                        A,
                                           int                       ld);
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
     template <typename T>
     hipsparseStatus_t hipsparseXcsr2csc(hipsparseHandle_t    handle,
                                         int                  m,
@@ -892,7 +892,7 @@ namespace hipsparse
                                         hipsparseIndexBase_t idx_base);
 #endif
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
     template <typename T>
     hipsparseStatus_t hipsparseXcsr2hyb(hipsparseHandle_t         handle,
                                         int                       m,
@@ -936,7 +936,7 @@ namespace hipsparse
                                         int*                      csrRowPtrC,
                                         int*                      csrColIndC);
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
     template <typename T>
     hipsparseStatus_t hipsparseXhyb2csr(hipsparseHandle_t         handle,
                                         const hipsparseMatDescr_t descrA,

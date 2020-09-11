@@ -222,7 +222,7 @@ hipsparseStatus_t hipsparseSetMatIndexBase(hipsparseMatDescr_t descrA, hipsparse
 HIPSPARSE_EXPORT
 hipsparseIndexBase_t hipsparseGetMatIndexBase(const hipsparseMatDescr_t descrA);
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
 /* Hybrid (HYB) format */
 DEPRECATED_CUDA_10000("The routine will be removed in CUDA 11")
 HIPSPARSE_EXPORT
@@ -268,7 +268,7 @@ hipsparseStatus_t hipsparseCreateCsric02Info(csric02Info_t* info);
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroyCsric02Info(csric02Info_t info);
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreateCsrgemm2Info(csrgemm2Info_t* info);
@@ -284,7 +284,7 @@ hipsparseStatus_t hipsparseDestroyPruneInfo(pruneInfo_t info);
 
 /* --- Sparse Level 1 routines --- */
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 /* Description: Addition of a scalar multiple of a sparse vector x
 and a dense vector y. */
 DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
@@ -325,7 +325,7 @@ hipsparseStatus_t hipsparseZaxpyi(hipsparseHandle_t       handle,
                                   hipsparseIndexBase_t    idxBase);
 #endif
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
 /* Description: Compute the dot product of a sparse vector x
 with a dense vector y. */
 DEPRECATED_CUDA_10000("The routine will be removed in CUDA 11")
@@ -366,7 +366,7 @@ hipsparseStatus_t hipsparseZdoti(hipsparseHandle_t       handle,
                                  hipsparseIndexBase_t    idxBase);
 #endif
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
 /* Description: Compute the conjugated dot product of a sparse
 vector x with a dense vector y. */
 DEPRECATED_CUDA_10000("The routine will be removed in CUDA 11")
@@ -389,7 +389,7 @@ hipsparseStatus_t hipsparseZdotci(hipsparseHandle_t       handle,
                                   hipsparseIndexBase_t    idxBase);
 #endif
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 /* Description: Gathers the elements that are listed in xInd from
 a dense vector y and stores them in a sparse vector x. */
 DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
@@ -426,7 +426,7 @@ hipsparseStatus_t hipsparseZgthr(hipsparseHandle_t       handle,
                                  hipsparseIndexBase_t    idxBase);
 #endif
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 /* Description: Gathers the elements that are listed in xInd from
 a dense vector y and stores them in a sparse vector x. Gathered
 elements are replaced by zero in y. */
@@ -464,7 +464,7 @@ hipsparseStatus_t hipsparseZgthrz(hipsparseHandle_t    handle,
                                   hipsparseIndexBase_t idxBase);
 #endif
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 /* Description: Applies the Givens rotation matrix to a sparse vector
 x and a dense vector y. */
 DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
@@ -489,7 +489,7 @@ hipsparseStatus_t hipsparseDroti(hipsparseHandle_t    handle,
                                  hipsparseIndexBase_t idxBase);
 #endif
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 /* Description: Scatters elements listed in xInd from a sparse vector x
 into a dense vector y. */
 DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
@@ -528,7 +528,7 @@ hipsparseStatus_t hipsparseZsctr(hipsparseHandle_t       handle,
 
 /* --- Sparse Level 2 routines --- */
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
 /* Description: Matrix-vector multiplication  y = alpha * op(A) * x  + beta * y,
 where A is a sparse matrix in CSR storage format, x and y are dense vectors. */
 DEPRECATED_CUDA_10000("The routine will be removed in CUDA 11")
@@ -799,7 +799,7 @@ hipsparseStatus_t hipsparseZcsrsv2_solve(hipsparseHandle_t         handle,
                                          hipsparseSolvePolicy_t    policy,
                                          void*                     pBuffer);
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
 /* Description: Matrix-vector multiplication  y = alpha * op(A) * x  + beta * y,
 where A is a sparse matrix in HYB storage format, x and y are dense vectors. */
 DEPRECATED_CUDA_10000("The routine will be removed in CUDA 11")
@@ -1233,7 +1233,7 @@ hipsparseStatus_t hipsparseZbsrmm(hipsparseHandle_t         handle,
                                   hipDoubleComplex*         C,
                                   int                       ldc);
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
 /* Description: Matrix-matrix multiplication C = alpha * op(A) * B + beta * C,
 where A is a sparse matrix in CSR storage format, B and C are dense matrices. */
 DEPRECATED_CUDA_10000("The routine will be removed in CUDA 11")
@@ -1310,7 +1310,7 @@ hipsparseStatus_t hipsparseZcsrmm(hipsparseHandle_t         handle,
                                   int                       ldc);
 #endif
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
 /* Description: Matrix-matrix multiplication C = alpha * op(A) * op(B) + beta * C,
 where A is a sparse matrix in CSR storage format, B and C are dense matrices. */
 DEPRECATED_CUDA_10000("The routine will be removed in CUDA 11")
@@ -1625,7 +1625,7 @@ hipsparseStatus_t hipsparseZcsrsm2_solve(hipsparseHandle_t         handle,
                                          hipsparseSolvePolicy_t    policy,
                                          void*                     pBuffer);
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 /* Description: Matrix-matrix multiplication C = alpha * A * B + beta * C,
 where B is a sparse matrix in CSC storage format, A and C are dense matrices. */
 DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
@@ -1696,7 +1696,7 @@ hipsparseStatus_t hipsparseZgemmi(hipsparseHandle_t       handle,
 
 /* --- Sparse Extra routines --- */
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
 /* Description: Sparse matrix sparse matrix addition C = alpha * A + beta * B, where A, B
 and C are sparse matrices in CSR storage format. */
 DEPRECATED_CUDA_10000("The routine will be removed in CUDA 11")
@@ -1994,7 +1994,7 @@ hipsparseStatus_t hipsparseZcsrgeam2(hipsparseHandle_t         handle,
                                      int*                      csrSortedColIndC,
                                      void*                     pBuffer);
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
 /* Description: Sparse matrix sparse matrix multiplication C = op(A) * op(B), where A, B
 and C are sparse matrices in CSR storage format. */
 DEPRECATED_CUDA_10000("The routine will be removed in CUDA 11")
@@ -2106,7 +2106,7 @@ hipsparseStatus_t hipsparseZcsrgemm(hipsparseHandle_t         handle,
                                     int*                      csrColIndC);
 #endif
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 /* Description: Sparse matrix sparse matrix multiplication C = alpha * A * B + beta * D,
 where A, B and D are sparse matrices in CSR storage format. */
 DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
@@ -3594,7 +3594,7 @@ hipsparseStatus_t hipsparseXcsr2coo(hipsparseHandle_t    handle,
                                     int*                 cooRowInd,
                                     hipsparseIndexBase_t idxBase);
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
 /* Description: This routine converts a sparse matrix in CSR storage format
 to a sparse matrix in CSC storage format. */
 DEPRECATED_CUDA_10000("The routine will be removed in CUDA 11")
@@ -3655,7 +3655,7 @@ hipsparseStatus_t hipsparseZcsr2csc(hipsparseHandle_t       handle,
                                     hipsparseIndexBase_t    idxBase);
 #endif
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
 /* Description: This routine converts a sparse matrix in CSR storage format
 to a sparse matrix in HYB storage format. */
 DEPRECATED_CUDA_10000("The routine will be removed in CUDA 11")
@@ -4149,7 +4149,7 @@ hipsparseStatus_t hipsparseDpruneCsr2csrByPercentage(hipsparseHandle_t         h
                                                      pruneInfo_t               info,
                                                      void*                     buffer);
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
 /* Description: This routine converts a sparse matrix in HYB storage format
 to a sparse matrix in CSR storage format. */
 DEPRECATED_CUDA_10000("The routine will be removed in CUDA 11")
