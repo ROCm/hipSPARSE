@@ -47,8 +47,11 @@ endfunction()
 
 # Examples
 add_hipsparse_example(example_handle.cpp)
+
+if(NOT BUILD_CUDA OR (BUILD_CUDA AND CUDA_VERSION LESS 11))
 add_hipsparse_example(example_csrmv.cpp)
 add_hipsparse_example(example_hybmv.cpp)
+endif()
 
 # Fortran examples
 if(TARGET hipsparse AND NOT BUILD_CUDA)

@@ -93,6 +93,7 @@ namespace hipsparse_test
         }
     };
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
     struct hyb_struct
     {
         hipsparseHybMat_t hyb;
@@ -108,6 +109,7 @@ namespace hipsparse_test
             verify_hipsparse_status_success(status, "ERROR: hyb_struct destructor");
         }
     };
+#endif
 
     struct bsrsv2_struct
     {
@@ -221,6 +223,7 @@ namespace hipsparse_test
         }
     };
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     struct csrgemm2_struct
     {
         csrgemm2Info_t info;
@@ -236,6 +239,7 @@ namespace hipsparse_test
             verify_hipsparse_status_success(status, "ERROR: csrgemm2_struct destructor");
         }
     };
+#endif
 
     struct prune_struct
     {

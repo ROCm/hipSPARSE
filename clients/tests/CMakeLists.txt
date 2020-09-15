@@ -133,23 +133,17 @@ endforeach()
 set(HIPSPARSE_TEST_SOURCES
   hipsparse_gtest_main.cpp
   test_axpyi.cpp
-  test_doti.cpp
-  test_dotci.cpp
   test_gthr.cpp
   test_gthrz.cpp
   test_roti.cpp
   test_sctr.cpp
   test_bsrmv.cpp
   test_bsrsv2.cpp
-  test_csrmv.cpp
   test_csrsv2.cpp
   test_bsrmm.cpp
-  test_csrmm.cpp
   test_csrsm2.cpp
   test_gemmi.cpp
-  test_csrgeam.cpp
   test_csrgeam2.cpp
-  test_csrgemm.cpp
   test_csrgemm2_a.cpp
   test_csrgemm2_b.cpp
   test_bsrilu02.cpp
@@ -164,7 +158,6 @@ set(HIPSPARSE_TEST_SOURCES
   test_prune_dense2csr_by_percentage.cpp
   test_dense2csc.cpp
   test_csr2coo.cpp
-  test_csr2csc.cpp
   test_csr2bsr.cpp
   test_bsr2csr.cpp
   test_csr2csr_compress.cpp
@@ -180,6 +173,13 @@ set(HIPSPARSE_TEST_SOURCES
 
 if(NOT BUILD_CUDA)
     list(APPEND HIPSPARSE_TEST_SOURCES
+        test_doti.cpp
+        test_dotci.cpp
+        test_csr2csc.cpp
+        test_csrgemm.cpp
+        test_csrgeam.cpp
+        test_csrmv.cpp
+        test_csrmm.cpp
         test_hybmv.cpp
         test_csr2hyb.cpp
         test_hyb2csr.cpp
