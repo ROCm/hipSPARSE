@@ -1919,7 +1919,7 @@ inline void host_bsrmm(int                     Mb,
         {
             int idx_C = i + j * ldc;
 
-            T sum = static_cast<T>(0);
+            T sum = make_DataType<T>(0.0);
 
             for(int s = row_begin; s < row_end; s++)
             {
@@ -1936,7 +1936,7 @@ inline void host_bsrmm(int                     Mb,
                 }
             }
 
-            if(beta == static_cast<T>(0))
+            if(beta == make_DataType<T>(0.0))
             {
                 C[idx_C] = sum;
             }
