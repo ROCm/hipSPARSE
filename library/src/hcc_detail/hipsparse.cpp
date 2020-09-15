@@ -5062,6 +5062,51 @@ hipsparseStatus_t
     return HIPSPARSE_STATUS_SUCCESS;
 }
 
+hipsparseStatus_t hipsparseSbsrilu02_numericBoost(
+    hipsparseHandle_t handle, bsrilu02Info_t info, int enable_boost, double* tol, float* boost_val)
+{
+    return rocSPARSEStatusToHIPStatus(rocsparse_sbsrilu0_numeric_boost((rocsparse_handle)handle,
+                                                                       (rocsparse_mat_info)info,
+                                                                       enable_boost,
+                                                                       (const float*)tol,
+                                                                       boost_val));
+}
+
+hipsparseStatus_t hipsparseDbsrilu02_numericBoost(
+    hipsparseHandle_t handle, bsrilu02Info_t info, int enable_boost, double* tol, double* boost_val)
+{
+    return rocSPARSEStatusToHIPStatus(rocsparse_dbsrilu0_numeric_boost(
+        (rocsparse_handle)handle, (rocsparse_mat_info)info, enable_boost, tol, boost_val));
+}
+
+hipsparseStatus_t hipsparseCbsrilu02_numericBoost(hipsparseHandle_t handle,
+                                                  bsrilu02Info_t    info,
+                                                  int               enable_boost,
+                                                  double*           tol,
+                                                  hipComplex*       boost_val)
+{
+    return rocSPARSEStatusToHIPStatus(
+        rocsparse_cbsrilu0_numeric_boost((rocsparse_handle)handle,
+                                         (rocsparse_mat_info)info,
+                                         enable_boost,
+                                         (const float*)tol,
+                                         (rocsparse_float_complex*)boost_val));
+}
+
+hipsparseStatus_t hipsparseZbsrilu02_numericBoost(hipsparseHandle_t handle,
+                                                  bsrilu02Info_t    info,
+                                                  int               enable_boost,
+                                                  double*           tol,
+                                                  hipDoubleComplex* boost_val)
+{
+    return rocSPARSEStatusToHIPStatus(
+        rocsparse_zbsrilu0_numeric_boost((rocsparse_handle)handle,
+                                         (rocsparse_mat_info)info,
+                                         enable_boost,
+                                         tol,
+                                         (rocsparse_double_complex*)boost_val));
+}
+
 hipsparseStatus_t hipsparseSbsrilu02_bufferSize(hipsparseHandle_t         handle,
                                                 hipsparseDirection_t      dirA,
                                                 int                       mb,
