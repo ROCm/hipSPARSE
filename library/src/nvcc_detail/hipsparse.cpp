@@ -4734,6 +4734,44 @@ hipsparseStatus_t
         cusparseXcsrilu02_zeroPivot((cusparseHandle_t)handle, (csrilu02Info_t)info, position));
 }
 
+hipsparseStatus_t hipsparseScsrilu02_numericBoost(
+    hipsparseHandle_t handle, csrilu02Info_t info, int enable_boost, double* tol, float* boost_val)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseScsrilu02_numericBoost(
+        (cusparseHandle_t)handle, (csrilu02Info_t)info, enable_boost, tol, boost_val));
+}
+
+hipsparseStatus_t hipsparseDcsrilu02_numericBoost(
+    hipsparseHandle_t handle, csrilu02Info_t info, int enable_boost, double* tol, double* boost_val)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseDcsrilu02_numericBoost(
+        (cusparseHandle_t)handle, (csrilu02Info_t)info, enable_boost, tol, boost_val));
+}
+
+hipsparseStatus_t hipsparseCcsrilu02_numericBoost(hipsparseHandle_t handle,
+                                                  csrilu02Info_t    info,
+                                                  int               enable_boost,
+                                                  double*           tol,
+                                                  hipComplex*       boost_val)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseCcsrilu02_numericBoost(
+        (cusparseHandle_t)handle, (csrilu02Info_t)info, enable_boost, tol, (cuComplex*)boost_val));
+}
+
+hipsparseStatus_t hipsparseZcsrilu02_numericBoost(hipsparseHandle_t handle,
+                                                  csrilu02Info_t    info,
+                                                  int               enable_boost,
+                                                  double*           tol,
+                                                  hipDoubleComplex* boost_val)
+{
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseZcsrilu02_numericBoost((cusparseHandle_t)handle,
+                                       (csrilu02Info_t)info,
+                                       enable_boost,
+                                       tol,
+                                       (cuDoubleComplex*)boost_val));
+}
+
 hipsparseStatus_t hipsparseScsrilu02_bufferSize(hipsparseHandle_t         handle,
                                                 int                       m,
                                                 int                       nnz,

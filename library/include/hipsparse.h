@@ -2433,6 +2433,31 @@ hipsparseStatus_t
     hipsparseXcsrilu02_zeroPivot(hipsparseHandle_t handle, csrilu02Info_t info, int* position);
 
 HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseScsrilu02_numericBoost(
+    hipsparseHandle_t handle, csrilu02Info_t info, int enable_boost, double* tol, float* boost_val);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDcsrilu02_numericBoost(hipsparseHandle_t handle,
+                                                  csrilu02Info_t    info,
+                                                  int               enable_boost,
+                                                  double*           tol,
+                                                  double*           boost_val);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCcsrilu02_numericBoost(hipsparseHandle_t handle,
+                                                  csrilu02Info_t    info,
+                                                  int               enable_boost,
+                                                  double*           tol,
+                                                  hipComplex*       boost_val);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseZcsrilu02_numericBoost(hipsparseHandle_t handle,
+                                                  csrilu02Info_t    info,
+                                                  int               enable_boost,
+                                                  double*           tol,
+                                                  hipDoubleComplex* boost_val);
+
+HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseScsrilu02_bufferSize(hipsparseHandle_t         handle,
                                                 int                       m,
                                                 int                       nnz,
