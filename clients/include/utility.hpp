@@ -1949,7 +1949,14 @@ inline void host_bsrmm(int                     Mb,
 }
 
 template <typename T>
-int csrilu0(int m, const int* ptr, const int* col, T* val, hipsparseIndexBase_t idx_base)
+int csrilu0(int m, 
+            const int* ptr, 
+            const int* col, 
+            T* val, 
+            hipsparseIndexBase_t idx_base, 
+            bool boost,
+            double boost_tol,
+            T boost_val)
 {
     // pointer of upper part of each row
     std::vector<int> diag_offset(m);
@@ -1981,27 +1988,65 @@ int csrilu0(int m, const int* ptr, const int* col, T* val, hipsparseIndexBase_t 
                 int col_j  = col[j] - idx_base;
                 int diag_j = diag_offset[col_j];
 
-                if(val[diag_j] != make_DataType<T>(0.0))
-                {
-                    // multiplication factor
-                    val[j] = val[j] / val[diag_j];
 
-                    // loop over upper offset pointer and do linear combination for nnz entry
-                    for(int k = diag_j + 1; k < ptr[col_j + 1] - idx_base; ++k)
-                    {
-                        // if nnz at this position do linear combination
-                        if(nnz_entries[col[k] - idx_base] != 0)
-                        {
-                            int idx  = nnz_entries[col[k] - idx_base];
-                            val[idx] = testing_fma(testing_neg(val[j]), val[k], val[idx]);
-                        }
-                    }
+
+
+
+                T diag_val = val[diag_j];
+
+                if(boost)
+                {
+                    diag_val        = (boost_tol >= testing_abs(diag_val)) ? boost_val : diag_val;
+                    val[diag_j] = diag_val;
                 }
                 else
                 {
-                    // Numerical zero diagonal
-                    return col_j + idx_base;
+                    // Check for numeric pivot
+                    if(diag_val == make_DataType<T>(0.0))
+                    {
+                        // Numerical zero diagonal
+                        return col_j + idx_base;
+                    }
                 }
+
+                // multiplication factor
+                val[j] = val[j] / diag_val;
+
+                // loop over upper offset pointer and do linear combination for nnz entry
+                for(int k = diag_j + 1; k < ptr[col_j + 1] - idx_base; ++k)
+                {
+                    // if nnz at this position do linear combination
+                    if(nnz_entries[col[k] - idx_base] != 0)
+                    {
+                        int idx  = nnz_entries[col[k] - idx_base];
+                        val[idx] = testing_fma(testing_neg(val[j]), val[k], val[idx]);
+                    }
+                }
+
+
+
+
+                // if(val[diag_j] != make_DataType<T>(0.0))
+                // {
+                //     // multiplication factor
+                //     val[j] = val[j] / val[diag_j];
+
+                //     // loop over upper offset pointer and do linear combination for nnz entry
+                //     for(int k = diag_j + 1; k < ptr[col_j + 1] - idx_base; ++k)
+                //     {
+                //         // if nnz at this position do linear combination
+                //         if(nnz_entries[col[k] - idx_base] != 0)
+                //         {
+                //             int idx  = nnz_entries[col[k] - idx_base];
+                //             val[idx] = testing_fma(testing_neg(val[j]), val[k], val[idx]);
+                //         }
+                //     }
+                // }
+                // else
+                // {
+                //     // Numerical zero diagonal
+                //     return col_j + idx_base;
+                // }
             }
             else if(col[j] - idx_base == ai)
             {
@@ -4142,6 +4187,11 @@ public:
     int ell_width = 0;
     int temp      = 0;
 
+    int    numericboost;
+    double boosttol;
+    double boostval;
+    double boostvali;
+
     std::string filename = "";
 
     Arguments& operator=(const Arguments& rhs)
@@ -4183,6 +4233,11 @@ public:
         this->laplacian = rhs.laplacian;
         this->ell_width = rhs.ell_width;
         this->temp      = rhs.temp;
+
+        this->numericboost = rhs.numericboost;
+        this->boosttol = rhs.boosttol;
+        this->boostval = rhs.boostval;
+        this->boostvali = rhs.boostvali;
 
         this->filename = rhs.filename;
 

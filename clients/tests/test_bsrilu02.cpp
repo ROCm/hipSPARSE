@@ -31,11 +31,16 @@
 
 typedef hipsparseIndexBase_t                    base;
 typedef hipsparseDirection_t                    dir;
-typedef std::tuple<int, int, dir, base>         bsrilu02_tuple;
-typedef std::tuple<int, dir, base, std::string> bsrilu02_bin_tuple;
+typedef std::tuple<int, int, int, double, double, double, dir, base>         bsrilu02_tuple;
+typedef std::tuple<int, int, double, double, double, dir, base, std::string> bsrilu02_bin_tuple;
 
 int bsrilu02_M_range[]   = {-1, 0, 50, 426};
 int bsrilu02_dim_range[] = {-1, 0, 1, 3, 5, 9};
+
+int bsrilu02_boost_range[] = {0, 1};
+double bsrilu02_boost_tol_range[] = {0.1, 0.5, 1.1};
+double bsrilu02_boost_val_range[] = {0.3, 2.0};
+double bsrilu02_boost_vali_range[] = {0.2, 1.0};
 
 base bsrilu02_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 dir  bsrilu02_dir_range[]     = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COLUMN};
@@ -74,8 +79,12 @@ Arguments setup_bsrilu02_arguments(bsrilu02_tuple tup)
     Arguments arg;
     arg.M         = std::get<0>(tup);
     arg.block_dim = std::get<1>(tup);
-    arg.dirA      = std::get<2>(tup);
-    arg.idx_base  = std::get<3>(tup);
+    arg.numericboost = std::get<2>(tup);
+    arg.boosttol = std::get<3>(tup);
+    arg.boostval = std::get<4>(tup);
+    arg.boostvali = std::get<5>(tup);
+    arg.dirA      = std::get<6>(tup);
+    arg.idx_base  = std::get<7>(tup);
     arg.timing    = 0;
     return arg;
 }
@@ -85,12 +94,16 @@ Arguments setup_bsrilu02_arguments(bsrilu02_bin_tuple tup)
     Arguments arg;
     arg.M         = -99;
     arg.block_dim = std::get<0>(tup);
-    arg.dirA      = std::get<1>(tup);
-    arg.idx_base  = std::get<2>(tup);
+    arg.numericboost = std::get<1>(tup);
+    arg.boosttol = std::get<2>(tup);
+    arg.boostval = std::get<3>(tup);
+    arg.boostvali = std::get<4>(tup);
+    arg.dirA      = std::get<5>(tup);
+    arg.idx_base  = std::get<6>(tup);
     arg.timing    = 0;
 
     // Determine absolute path of test matrix
-    std::string bin_file = std::get<3>(tup);
+    std::string bin_file = std::get<7>(tup);
 
     // Get current executables absolute path
     char    path_exe[PATH_MAX];
@@ -167,12 +180,20 @@ INSTANTIATE_TEST_CASE_P(bsrilu02,
                         parameterized_bsrilu02,
                         testing::Combine(testing::ValuesIn(bsrilu02_M_range),
                                          testing::ValuesIn(bsrilu02_dim_range),
+                                         testing::ValuesIn(bsrilu02_boost_range),
+                                         testing::ValuesIn(bsrilu02_boost_tol_range),
+                                         testing::ValuesIn(bsrilu02_boost_val_range),
+                                         testing::ValuesIn(bsrilu02_boost_vali_range),
                                          testing::ValuesIn(bsrilu02_dir_range),
                                          testing::ValuesIn(bsrilu02_idxbase_range)));
 
 INSTANTIATE_TEST_CASE_P(bsrilu02_bin,
                         parameterized_bsrilu02_bin,
                         testing::Combine(testing::ValuesIn(bsrilu02_dim_range),
+                                         testing::ValuesIn(bsrilu02_boost_range),
+                                         testing::ValuesIn(bsrilu02_boost_tol_range),
+                                         testing::ValuesIn(bsrilu02_boost_val_range),
+                                         testing::ValuesIn(bsrilu02_boost_vali_range),
                                          testing::ValuesIn(bsrilu02_dir_range),
                                          testing::ValuesIn(bsrilu02_idxbase_range),
                                          testing::ValuesIn(bsrilu02_bin)));

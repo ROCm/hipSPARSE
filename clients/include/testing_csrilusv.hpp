@@ -157,7 +157,7 @@ hipsparseStatus_t testing_csrilusv(Arguments argus)
 
     // Compute host reference csrilu0
     int position_gold
-        = csrilu0(m, hcsr_row_ptr.data(), hcsr_col_ind.data(), hcsr_val.data(), idx_base);
+        = csrilu0(m, hcsr_row_ptr.data(), hcsr_col_ind.data(), hcsr_val.data(), idx_base, false, 0.0, make_DataType<T>(0.0, 0.0));
 
     // Check zero pivot results
     unit_check_general(1, 1, 1, &position_gold, &hposition_1);
