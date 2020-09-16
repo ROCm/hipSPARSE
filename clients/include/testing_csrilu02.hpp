@@ -66,17 +66,15 @@ void testing_csrilu02_bad_arg(void)
     auto dval_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
     auto dbuffer_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(char) * safe_size), device_free};
-    auto dboost_tol_managed
-        = hipsparse_unique_ptr{device_malloc(sizeof(double)), device_free};
-    auto dboost_val_managed
-        = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
+    auto dboost_tol_managed = hipsparse_unique_ptr{device_malloc(sizeof(double)), device_free};
+    auto dboost_val_managed = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
 
-    int*  dptr    = (int*)dptr_managed.get();
-    int*  dcol    = (int*)dcol_managed.get();
-    T*    dval    = (T*)dval_managed.get();
-    void* dbuffer = (void*)dbuffer_managed.get();
+    int*    dptr       = (int*)dptr_managed.get();
+    int*    dcol       = (int*)dcol_managed.get();
+    T*      dval       = (T*)dval_managed.get();
+    void*   dbuffer    = (void*)dbuffer_managed.get();
     double* dboost_tol = (double*)dboost_tol_managed.get();
-    T* dboost_val = (T*)dboost_val_managed.get();
+    T*      dboost_val = (T*)dboost_val_managed.get();
 
     if(!dval || !dptr || !dcol || !dbuffer || !dboost_tol || !dboost_val)
     {
@@ -151,7 +149,7 @@ void testing_csrilu02_bad_arg(void)
         hipsparseHandle_t handle_null = nullptr;
 
         status = hipsparseXcsrilu02_numericBoost(handle_null, info, 1, dboost_tol, dboost_val);
-            verify_hipsparse_status_invalid_handle(status);
+        verify_hipsparse_status_invalid_handle(status);
     }
 
     // testing for(nullptr == info)
@@ -159,7 +157,7 @@ void testing_csrilu02_bad_arg(void)
         csrilu02Info_t info_null = nullptr;
 
         status = hipsparseXcsrilu02_numericBoost(handle, info_null, 1, dboost_tol, dboost_val);
-            verify_hipsparse_status_invalid_handle(status);
+        verify_hipsparse_status_invalid_handle(status);
     }
 
     // testing for(nullptr == dboost_tol)
@@ -167,7 +165,7 @@ void testing_csrilu02_bad_arg(void)
         double* boost_tol_null = nullptr;
 
         status = hipsparseXcsrilu02_numericBoost(handle, info, 1, boost_tol_null, dboost_val);
-            verify_hipsparse_status_invalid_handle(status);
+        verify_hipsparse_status_invalid_handle(status);
     }
 
     // testing for(nullptr == dboost_val)
@@ -175,7 +173,7 @@ void testing_csrilu02_bad_arg(void)
         T* boost_val_null = nullptr;
 
         status = hipsparseXcsrilu02_numericBoost(handle, info, 1, dboost_tol, boost_val_null);
-            verify_hipsparse_status_invalid_handle(status);
+        verify_hipsparse_status_invalid_handle(status);
     }
 
     // testing hipsparseXcsrilu02_analysis
@@ -506,22 +504,21 @@ hipsparseStatus_t testing_csrilu02(Arguments argus)
     auto dcol_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
     auto dval_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
     auto d_position_managed = hipsparse_unique_ptr{device_malloc(sizeof(int)), device_free};
-    auto boost_tol_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(double)), device_free};
-    auto boost_val_managed
-        = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
+    auto boost_tol_managed  = hipsparse_unique_ptr{device_malloc(sizeof(double)), device_free};
+    auto boost_val_managed  = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
 
-    int* dptr       = (int*)dptr_managed.get();
-    int* dcol       = (int*)dcol_managed.get();
-    T*   dval       = (T*)dval_managed.get();
-    int* d_position = (int*)d_position_managed.get();
+    int*    dptr       = (int*)dptr_managed.get();
+    int*    dcol       = (int*)dcol_managed.get();
+    T*      dval       = (T*)dval_managed.get();
+    int*    d_position = (int*)d_position_managed.get();
     double* dboost_tol = (double*)boost_tol_managed.get();
-    T* dboost_val = (T*)boost_val_managed.get();
+    T*      dboost_val = (T*)boost_val_managed.get();
 
     if(!dval || !dptr || !dcol || !d_position || !dboost_tol || !dboost_val)
     {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!dval || !dptr || !dcol || !d_position || !dboost_tol || !dboost_val");
+        verify_hipsparse_status_success(
+            HIPSPARSE_STATUS_ALLOC_FAILED,
+            "!dval || !dptr || !dcol || !d_position || !dboost_tol || !dboost_val");
         return HIPSPARSE_STATUS_ALLOC_FAILED;
     }
 
@@ -550,7 +547,8 @@ hipsparseStatus_t testing_csrilu02(Arguments argus)
     CHECK_HIPSPARSE_ERROR(hipsparseXcsrilu02_analysis(
         handle, m, nnz, descr, dval, dptr, dcol, info, policy, dbuffer));
 
-    std::cout << "boost enabled: " << boost << " boost_tol: " << boost_tol << " boost_val: " << argus.boostval << " " << argus.boostvali << std::endl;
+    std::cout << "boost enabled: " << boost << " boost_tol: " << boost_tol
+              << " boost_val: " << argus.boostval << " " << argus.boostvali << std::endl;
 
     if(argus.unit_check)
     {
@@ -559,7 +557,8 @@ hipsparseStatus_t testing_csrilu02(Arguments argus)
 
         // Pointer mode host
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
-        CHECK_HIPSPARSE_ERROR(hipsparseXcsrilu02_numericBoost(handle, info, boost, &boost_tol, &boost_val));
+        CHECK_HIPSPARSE_ERROR(
+            hipsparseXcsrilu02_numericBoost(handle, info, boost, &boost_tol, &boost_val));
         CHECK_HIPSPARSE_ERROR(
             hipsparseXcsrilu02(handle, m, nnz, descr, dval, dptr, dcol, info, policy, dbuffer));
         int               hposition_1;
@@ -573,7 +572,6 @@ hipsparseStatus_t testing_csrilu02(Arguments argus)
         //     hipsparseXcsrilu02(handle, m, nnz, descr, dval, dptr, dcol, info, policy, dbuffer));
         // hipsparseStatus_t pivot_status_2;
         // pivot_status_2 = hipsparseXcsrilu02_zeroPivot(handle, info, d_position);
-
 
         // CHECK_HIPSPARSE_ERROR(
         //    hipsparseXcsrilu02(handle, m, nnz, descr, dval, dptr, dcol, info, policy, dbuffer));
@@ -602,8 +600,14 @@ hipsparseStatus_t testing_csrilu02(Arguments argus)
         // Host csrilu02
         double cpu_time_used = get_time_us();
 
-        int position_gold
-            = csrilu0(m, hcsr_row_ptr.data(), hcsr_col_ind.data(), hcsr_val.data(), idx_base, false, boost_tol, boost_val);
+        int position_gold = csrilu0(m,
+                                    hcsr_row_ptr.data(),
+                                    hcsr_col_ind.data(),
+                                    hcsr_val.data(),
+                                    idx_base,
+                                    false,
+                                    boost_tol,
+                                    boost_val);
 
         cpu_time_used = get_time_us() - cpu_time_used;
 

@@ -1949,14 +1949,14 @@ inline void host_bsrmm(int                     Mb,
 }
 
 template <typename T>
-int csrilu0(int m, 
-            const int* ptr, 
-            const int* col, 
-            T* val, 
-            hipsparseIndexBase_t idx_base, 
-            bool boost,
-            double boost_tol,
-            T boost_val)
+int csrilu0(int                  m,
+            const int*           ptr,
+            const int*           col,
+            T*                   val,
+            hipsparseIndexBase_t idx_base,
+            bool                 boost,
+            double               boost_tol,
+            T                    boost_val)
 {
     // pointer of upper part of each row
     std::vector<int> diag_offset(m);
@@ -1988,15 +1988,11 @@ int csrilu0(int m,
                 int col_j  = col[j] - idx_base;
                 int diag_j = diag_offset[col_j];
 
-
-
-
-
                 T diag_val = val[diag_j];
 
                 if(boost)
                 {
-                    diag_val        = (boost_tol >= testing_abs(diag_val)) ? boost_val : diag_val;
+                    diag_val    = (boost_tol >= testing_abs(diag_val)) ? boost_val : diag_val;
                     val[diag_j] = diag_val;
                 }
                 else
@@ -2022,9 +2018,6 @@ int csrilu0(int m,
                         val[idx] = testing_fma(testing_neg(val[j]), val[k], val[idx]);
                     }
                 }
-
-
-
 
                 // if(val[diag_j] != make_DataType<T>(0.0))
                 // {
@@ -4235,9 +4228,9 @@ public:
         this->temp      = rhs.temp;
 
         this->numericboost = rhs.numericboost;
-        this->boosttol = rhs.boosttol;
-        this->boostval = rhs.boostval;
-        this->boostvali = rhs.boostvali;
+        this->boosttol     = rhs.boosttol;
+        this->boostval     = rhs.boostval;
+        this->boostvali    = rhs.boostvali;
 
         this->filename = rhs.filename;
 

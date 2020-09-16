@@ -67,18 +67,15 @@ void testing_bsrilu02_bad_arg(void)
     auto dval_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
     auto dbuffer_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(char) * safe_size), device_free};
-    auto dboost_tol_managed
-        = hipsparse_unique_ptr{device_malloc(sizeof(double)), device_free};
-    auto dboost_val_managed
-        = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
+    auto dboost_tol_managed = hipsparse_unique_ptr{device_malloc(sizeof(double)), device_free};
+    auto dboost_val_managed = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
 
-    int*  dptr    = (int*)dptr_managed.get();
-    int*  dcol    = (int*)dcol_managed.get();
-    T*    dval    = (T*)dval_managed.get();
-    void* dbuffer = (void*)dbuffer_managed.get();
+    int*    dptr       = (int*)dptr_managed.get();
+    int*    dcol       = (int*)dcol_managed.get();
+    T*      dval       = (T*)dval_managed.get();
+    void*   dbuffer    = (void*)dbuffer_managed.get();
     double* dboost_tol = (double*)dboost_tol_managed.get();
-    T* dboost_val = (T*)dboost_val_managed.get();
-
+    T*      dboost_val = (T*)dboost_val_managed.get();
 
     if(!dval || !dptr || !dcol || !dbuffer || !dboost_tol || !dboost_val)
     {
@@ -153,7 +150,7 @@ void testing_bsrilu02_bad_arg(void)
         hipsparseHandle_t handle_null = nullptr;
 
         status = hipsparseXbsrilu02_numericBoost(handle_null, info, 1, dboost_tol, dboost_val);
-            verify_hipsparse_status_invalid_handle(status);
+        verify_hipsparse_status_invalid_handle(status);
     }
 
     // testing for(nullptr == info)
@@ -161,7 +158,7 @@ void testing_bsrilu02_bad_arg(void)
         bsrilu02Info_t info_null = nullptr;
 
         status = hipsparseXbsrilu02_numericBoost(handle, info_null, 1, dboost_tol, dboost_val);
-            verify_hipsparse_status_invalid_handle(status);
+        verify_hipsparse_status_invalid_handle(status);
     }
 
     // testing for(nullptr == dboost_tol)
@@ -169,7 +166,7 @@ void testing_bsrilu02_bad_arg(void)
         double* boost_tol_null = nullptr;
 
         status = hipsparseXbsrilu02_numericBoost(handle, info, 1, boost_tol_null, dboost_val);
-            verify_hipsparse_status_invalid_handle(status);
+        verify_hipsparse_status_invalid_handle(status);
     }
 
     // testing for(nullptr == dboost_val)
@@ -177,7 +174,7 @@ void testing_bsrilu02_bad_arg(void)
         T* boost_val_null = nullptr;
 
         status = hipsparseXbsrilu02_numericBoost(handle, info, 1, dboost_tol, boost_val_null);
-            verify_hipsparse_status_invalid_handle(status);
+        verify_hipsparse_status_invalid_handle(status);
     }
 
     // testing hipsparseXbsrilu02_analysis
@@ -330,7 +327,7 @@ hipsparseStatus_t testing_bsrilu02(Arguments argus)
     int                    safe_size = 100;
     int                    m         = argus.M;
     int                    block_dim = argus.block_dim;
-    int                    boost       = argus.numericboost;
+    int                    boost     = argus.numericboost;
     double                 boost_tol = argus.boosttol;
     T                      boost_val = make_DataType<T>(argus.boostval, argus.boostvali);
     hipsparseDirection_t   dir       = argus.dirA;
@@ -520,23 +517,21 @@ hipsparseStatus_t testing_bsrilu02(Arguments argus)
     auto dcsr_val_managed     = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
     auto dbsr_row_ptr_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(int) * (mb + 1)), device_free};
-    auto boost_tol_managed
-        = hipsparse_unique_ptr{device_malloc(sizeof(double)), device_free};
-    auto boost_val_managed
-        = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
+    auto boost_tol_managed = hipsparse_unique_ptr{device_malloc(sizeof(double)), device_free};
+    auto boost_val_managed = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
 
-    int* dcsr_row_ptr = (int*)dcsr_row_ptr_managed.get();
-    int* dcsr_col_ind = (int*)dcsr_col_ind_managed.get();
-    T*   dcsr_val     = (T*)dcsr_val_managed.get();
-    int* dbsr_row_ptr = (int*)dbsr_row_ptr_managed.get();
-    double* dboost_tol = (double*)boost_tol_managed.get();
-    T* dboost_val = (T*)boost_val_managed.get();
+    int*    dcsr_row_ptr = (int*)dcsr_row_ptr_managed.get();
+    int*    dcsr_col_ind = (int*)dcsr_col_ind_managed.get();
+    T*      dcsr_val     = (T*)dcsr_val_managed.get();
+    int*    dbsr_row_ptr = (int*)dbsr_row_ptr_managed.get();
+    double* dboost_tol   = (double*)boost_tol_managed.get();
+    T*      dboost_val   = (T*)boost_val_managed.get();
 
     if(!dcsr_val || !dcsr_row_ptr || !dcsr_col_ind || !dbsr_row_ptr || !dboost_tol || !dboost_val)
     {
-        verify_hipsparse_status_success(
-            HIPSPARSE_STATUS_ALLOC_FAILED,
-            "!dcsr_val || !dcsr_row_ptr || !dcsr_col_ind || !dbsr_row_ptr || !dboost_tol || !dboost_val");
+        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
+                                        "!dcsr_val || !dcsr_row_ptr || !dcsr_col_ind || "
+                                        "!dbsr_row_ptr || !dboost_tol || !dboost_val");
         return HIPSPARSE_STATUS_ALLOC_FAILED;
     }
 
