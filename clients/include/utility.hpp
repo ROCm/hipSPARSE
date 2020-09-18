@@ -2017,28 +2017,6 @@ int csrilu0(int                  m,
                         val[idx] = testing_fma(testing_neg(val[j]), val[k], val[idx]);
                     }
                 }
-
-                // if(val[diag_j] != make_DataType<T>(0.0))
-                // {
-                //     // multiplication factor
-                //     val[j] = val[j] / val[diag_j];
-
-                //     // loop over upper offset pointer and do linear combination for nnz entry
-                //     for(int k = diag_j + 1; k < ptr[col_j + 1] - idx_base; ++k)
-                //     {
-                //         // if nnz at this position do linear combination
-                //         if(nnz_entries[col[k] - idx_base] != 0)
-                //         {
-                //             int idx  = nnz_entries[col[k] - idx_base];
-                //             val[idx] = testing_fma(testing_neg(val[j]), val[k], val[idx]);
-                //         }
-                //     }
-                // }
-                // else
-                // {
-                //     // Numerical zero diagonal
-                //     return col_j + idx_base;
-                // }
             }
             else if(col[j] - idx_base == ai)
             {
@@ -2227,13 +2205,6 @@ inline void host_bsrilu02(hipsparseDirection_t    dir,
                         continue;
                     }
                 }
-
-                // // Check for numeric pivot
-                // if(diag == make_DataType<T>(0))
-                // {
-                //     *numeric_pivot = std::min(*numeric_pivot, bsr_col_ind[j]);
-                //     continue;
-                // }
 
                 // Process all rows within the BSR block after bi-th row
                 for(int bk = bi + 1; bk < bsr_dim; ++bk)

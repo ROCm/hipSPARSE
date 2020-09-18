@@ -34,8 +34,6 @@
 #include <hipsparse.h>
 #include <string>
 
-#include <iostream>
-
 using namespace hipsparse;
 using namespace hipsparse_test;
 
@@ -546,9 +544,6 @@ hipsparseStatus_t testing_csrilu02(Arguments argus)
         return HIPSPARSE_STATUS_ALLOC_FAILED;
     }
 
-    std::cout << "boost enabled: " << boost << " boost_tol: " << boost_tol
-              << " boost_val: " << argus.boostval << " " << argus.boostvali << std::endl;
-
     if(argus.unit_check)
     {
         CHECK_HIP_ERROR(hipMemcpy(dboost_tol, &boost_tol, sizeof(double), hipMemcpyHostToDevice));
@@ -579,29 +574,11 @@ hipsparseStatus_t testing_csrilu02(Arguments argus)
         pivot_status_2 = hipsparseXcsrilu02_zeroPivot(handle, info, d_position);
         CHECK_HIP_ERROR(hipMemcpy(&hposition_2, d_position, sizeof(int), hipMemcpyDeviceToHost));
 
-        // CHECK_HIPSPARSE_ERROR(
-        //    hipsparseXcsrilu02(handle, m, nnz, descr, dval, dptr, dcol, info, policy, dbuffer));
-
-        // // Pointer mode host
-        // CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
-
-        // int               hposition_1;
-        // hipsparseStatus_t pivot_status_1;
-        // pivot_status_1 = hipsparseXcsrilu02_zeroPivot(handle, info, &hposition_1);
-
-        // // Pointer mode device
-        // CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
-
-        // hipsparseStatus_t pivot_status_2;
-        // pivot_status_2 = hipsparseXcsrilu02_zeroPivot(handle, info, d_position);
-
         // Copy output from device to CPU
         std::vector<T> result1(nnz);
         std::vector<T> result2(nnz);
         CHECK_HIP_ERROR(hipMemcpy(result1.data(), dval1, sizeof(T) * nnz, hipMemcpyDeviceToHost));
         CHECK_HIP_ERROR(hipMemcpy(result2.data(), dval2, sizeof(T) * nnz, hipMemcpyDeviceToHost));
-
-        std::cout << "hposition_1: " << hposition_1 << " hposition_2: " << hposition_2 << std::endl;
 
         // Host csrilu02
         double cpu_time_used = get_time_us();
@@ -635,9 +612,7 @@ hipsparseStatus_t testing_csrilu02(Arguments argus)
         }
 
 #if defined(__HIP_PLATFORM_HCC__)
-        std::cout << "result1" << std::endl;
         unit_check_general(1, nnz, 1, hcsr_val.data(), result1.data());
-        std::cout << "result2" << std::endl;
         unit_check_general(1, nnz, 1, hcsr_val.data(), result2.data());
 #elif defined(__HIP_PLATFORM_NVCC__)
         // do weaker check for cusparse
