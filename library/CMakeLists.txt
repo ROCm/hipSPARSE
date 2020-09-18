@@ -54,7 +54,10 @@ include(src/CMakeLists.txt)
 set(CMAKE_Fortran_MODULE_DIRECTORY ${PROJECT_BINARY_DIR}/include)
 
 # Create hipSPARSE Fortran module
-add_library(hipsparse_fortran OBJECT ${hipsparse_f90_source})
+add_library(hipsparse_fortran OBJECT ${hipsparse_fortran_source})
+
+# Target compile options
+target_compile_options(hipsparse_fortran PRIVATE -std=f2003 -ffree-form -cpp)
 
 # Create hipSPARSE library
 add_library(hipsparse ${hipsparse_source} ${hipsparse_headers_public})
