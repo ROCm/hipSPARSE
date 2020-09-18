@@ -36,7 +36,7 @@ typedef std::tuple<int, double, double, double, base, std::string> csrilu02_bin_
 
 int    csrilu02_M_range[]          = {-1, 0, 50, 647};
 int    csrilu02_boost_range[]      = {0, 1};
-double csrilu02_boost_tol_range[]  = {0.1, 0.5, 1.1};
+double csrilu02_boost_tol_range[]  = {0.5};
 double csrilu02_boost_val_range[]  = {0.3, 2.0};
 double csrilu02_boost_vali_range[] = {0.2, 1.0};
 

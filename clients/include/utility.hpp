@@ -1984,7 +1984,6 @@ int csrilu0(int                  m,
             // if nnz entry is in lower matrix
             if(col[j] - idx_base < ai)
             {
-
                 int col_j  = col[j] - idx_base;
                 int diag_j = diag_offset[col_j];
 
@@ -2080,7 +2079,10 @@ inline void host_bsrilu02(hipsparseDirection_t    dir,
                           std::vector<T>&         bsr_val,
                           hipsparseIndexBase_t    base,
                           int*                    struct_pivot,
-                          int*                    numeric_pivot)
+                          int*                    numeric_pivot,
+                          bool                    boost,
+                          double                  boost_tol,
+                          T                       boost_val)
 {
     // Initialize pivots
     *struct_pivot  = mb + 1;
@@ -2211,12 +2213,27 @@ inline void host_bsrilu02(hipsparseDirection_t    dir,
             {
                 T diag = bsr_val[BSR_IND(j, bi, bi, dir)];
 
-                // Check for numeric pivot
-                if(diag == make_DataType<T>(0))
+                if(boost)
                 {
-                    *numeric_pivot = std::min(*numeric_pivot, bsr_col_ind[j]);
-                    continue;
+                    diag    = (boost_tol >= testing_abs(diag)) ? boost_val : diag;
+                    bsr_val[BSR_IND(j, bi, bi, dir)] = diag;
                 }
+                else
+                {
+                    // Check for numeric pivot
+                    if(diag == make_DataType<T>(0))
+                    {
+                        *numeric_pivot = std::min(*numeric_pivot, bsr_col_ind[j]);
+                        continue;
+                    }
+                }
+
+                // // Check for numeric pivot
+                // if(diag == make_DataType<T>(0))
+                // {
+                //     *numeric_pivot = std::min(*numeric_pivot, bsr_col_ind[j]);
+                //     continue;
+                // }
 
                 // Process all rows within the BSR block after bi-th row
                 for(int bk = bi + 1; bk < bsr_dim; ++bk)

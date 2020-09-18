@@ -37,10 +37,10 @@ typedef std::tuple<int, int, double, double, double, dir, base, std::string> bsr
 int bsrilu02_M_range[]   = {-1, 0, 50, 426};
 int bsrilu02_dim_range[] = {-1, 0, 1, 3, 5, 9};
 
-int    bsrilu02_boost_range[]      = {0, 1};
-double bsrilu02_boost_tol_range[]  = {0.1, 0.5, 1.1};
-double bsrilu02_boost_val_range[]  = {0.3, 2.0};
-double bsrilu02_boost_vali_range[] = {0.2, 1.0};
+int    bsrilu02_boost_range[]      = {0};
+double bsrilu02_boost_tol_range[]  = {1.1};
+double bsrilu02_boost_val_range[]  = {0.3};
+double bsrilu02_boost_vali_range[] = {0.2};
 
 base bsrilu02_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 dir  bsrilu02_dir_range[]     = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COLUMN};

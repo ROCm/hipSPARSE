@@ -32,7 +32,6 @@
 
 #include <cmath>
 #include <hipsparse.h>
-#include <iostream>
 #include <string>
 
 using namespace hipsparse;
@@ -158,7 +157,7 @@ void testing_bsrilu02_bad_arg(void)
         bsrilu02Info_t info_null = nullptr;
 
         status = hipsparseXbsrilu02_numericBoost(handle, info_null, 1, dboost_tol, dboost_val);
-        verify_hipsparse_status_invalid_handle(status);
+        verify_hipsparse_status_invalid_pointer(status, "Error: info is nullptr");
     }
 
     // testing for(nullptr == dboost_tol)
@@ -166,7 +165,7 @@ void testing_bsrilu02_bad_arg(void)
         double* boost_tol_null = nullptr;
 
         status = hipsparseXbsrilu02_numericBoost(handle, info, 1, boost_tol_null, dboost_val);
-        verify_hipsparse_status_invalid_handle(status);
+        verify_hipsparse_status_invalid_pointer(status, "Error: boost_tol is nullptr");
     }
 
     // testing for(nullptr == dboost_val)
@@ -174,7 +173,7 @@ void testing_bsrilu02_bad_arg(void)
         T* boost_val_null = nullptr;
 
         status = hipsparseXbsrilu02_numericBoost(handle, info, 1, dboost_tol, boost_val_null);
-        verify_hipsparse_status_invalid_handle(status);
+        verify_hipsparse_status_invalid_pointer(status, "Error: boost_val is nullptr");
     }
 
     // testing hipsparseXbsrilu02_analysis
@@ -700,6 +699,8 @@ hipsparseStatus_t testing_bsrilu02(Arguments argus)
 
         // bsrilu02 solve - host mode
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
+        CHECK_HIPSPARSE_ERROR(
+            hipsparseXbsrilu02_numericBoost(handle, info, boost, &boost_tol, &boost_val));
         CHECK_HIPSPARSE_ERROR(hipsparseXbsrilu02(handle,
                                                  dir,
                                                  mb,
@@ -723,6 +724,7 @@ hipsparseStatus_t testing_bsrilu02(Arguments argus)
 
         // bsrilu02 solve - device mode
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
+        CHECK_HIPSPARSE_ERROR(hipsparseXbsrilu02_numericBoost(handle, info, boost, dboost_tol, dboost_val));
         CHECK_HIPSPARSE_ERROR(hipsparseXbsrilu02(handle,
                                                  dir,
                                                  mb,
@@ -761,7 +763,7 @@ hipsparseStatus_t testing_bsrilu02(Arguments argus)
         CHECK_HIP_ERROR(
             hipMemcpy(&h_solve_pivot_2, d_solve_pivot_2, sizeof(int), hipMemcpyDeviceToHost));
 
-        // Host csrilu02
+        // Host bsrilu02
         double cpu_time_used = get_time_us();
 
         int numerical_pivot;
@@ -774,7 +776,10 @@ hipsparseStatus_t testing_bsrilu02(Arguments argus)
                          hbsr_val,
                          idx_base,
                          &structural_pivot,
-                         &numerical_pivot);
+                         &numerical_pivot,
+                         boost,
+                         boost_tol,
+                         boost_val);
 
         cpu_time_used = get_time_us() - cpu_time_used;
 
