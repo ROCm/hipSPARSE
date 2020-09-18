@@ -500,8 +500,8 @@ hipsparseStatus_t testing_csrilu02(Arguments argus)
     }
 
     // Allocate memory on device
-    auto dptr_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * (m + 1)), device_free};
-    auto dcol_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
+    auto dptr_managed  = hipsparse_unique_ptr{device_malloc(sizeof(int) * (m + 1)), device_free};
+    auto dcol_managed  = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
     auto dval1_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
     auto dval2_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
     auto d_position_managed = hipsparse_unique_ptr{device_malloc(sizeof(int)), device_free};
@@ -510,8 +510,8 @@ hipsparseStatus_t testing_csrilu02(Arguments argus)
 
     int*    dptr       = (int*)dptr_managed.get();
     int*    dcol       = (int*)dcol_managed.get();
-    T*      dval1       = (T*)dval1_managed.get();
-    T*      dval2       = (T*)dval2_managed.get();
+    T*      dval1      = (T*)dval1_managed.get();
+    T*      dval2      = (T*)dval2_managed.get();
     int*    d_position = (int*)d_position_managed.get();
     double* dboost_tol = (double*)boost_tol_managed.get();
     T*      dboost_val = (T*)boost_val_managed.get();
@@ -546,7 +546,8 @@ hipsparseStatus_t testing_csrilu02(Arguments argus)
         return HIPSPARSE_STATUS_ALLOC_FAILED;
     }
 
-    std::cout << "boost enabled: " << boost << " boost_tol: " << boost_tol << " boost_val: " << argus.boostval << " " << argus.boostvali << std::endl;
+    std::cout << "boost enabled: " << boost << " boost_tol: " << boost_tol
+              << " boost_val: " << argus.boostval << " " << argus.boostvali << std::endl;
 
     if(argus.unit_check)
     {
@@ -569,16 +570,14 @@ hipsparseStatus_t testing_csrilu02(Arguments argus)
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
         CHECK_HIPSPARSE_ERROR(hipsparseXcsrilu02_analysis(
             handle, m, nnz, descr, dval2, dptr, dcol, info, policy, dbuffer));
-        CHECK_HIPSPARSE_ERROR(hipsparseXcsrilu02_numericBoost(handle, info, boost, dboost_tol, dboost_val));
+        CHECK_HIPSPARSE_ERROR(
+            hipsparseXcsrilu02_numericBoost(handle, info, boost, dboost_tol, dboost_val));
         CHECK_HIPSPARSE_ERROR(
             hipsparseXcsrilu02(handle, m, nnz, descr, dval2, dptr, dcol, info, policy, dbuffer));
-        int            hposition_2;
+        int               hposition_2;
         hipsparseStatus_t pivot_status_2;
         pivot_status_2 = hipsparseXcsrilu02_zeroPivot(handle, info, d_position);
         CHECK_HIP_ERROR(hipMemcpy(&hposition_2, d_position, sizeof(int), hipMemcpyDeviceToHost));
-
-
-
 
         // CHECK_HIPSPARSE_ERROR(
         //    hipsparseXcsrilu02(handle, m, nnz, descr, dval, dptr, dcol, info, policy, dbuffer));

@@ -2215,7 +2215,7 @@ inline void host_bsrilu02(hipsparseDirection_t    dir,
 
                 if(boost)
                 {
-                    diag    = (boost_tol >= testing_abs(diag)) ? boost_val : diag;
+                    diag = (boost_tol >= testing_abs(diag)) ? boost_val : diag;
                     bsr_val[BSR_IND(j, bi, bi, dir)] = diag;
                 }
                 else

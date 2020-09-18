@@ -5090,11 +5090,8 @@ hipsparseStatus_t
 hipsparseStatus_t hipsparseSbsrilu02_numericBoost(
     hipsparseHandle_t handle, bsrilu02Info_t info, int enable_boost, double* tol, float* boost_val)
 {
-    return rocSPARSEStatusToHIPStatus(rocsparse_dsbsrilu0_numeric_boost((rocsparse_handle)handle,
-                                                                       (rocsparse_mat_info)info,
-                                                                       enable_boost,
-                                                                       tol,
-                                                                       boost_val));
+    return rocSPARSEStatusToHIPStatus(rocsparse_dsbsrilu0_numeric_boost(
+        (rocsparse_handle)handle, (rocsparse_mat_info)info, enable_boost, tol, boost_val));
 }
 
 hipsparseStatus_t hipsparseDbsrilu02_numericBoost(
@@ -5112,10 +5109,10 @@ hipsparseStatus_t hipsparseCbsrilu02_numericBoost(hipsparseHandle_t handle,
 {
     return rocSPARSEStatusToHIPStatus(
         rocsparse_dcbsrilu0_numeric_boost((rocsparse_handle)handle,
-                                         (rocsparse_mat_info)info,
-                                         enable_boost,
-                                         tol,
-                                         (rocsparse_float_complex*)boost_val));
+                                          (rocsparse_mat_info)info,
+                                          enable_boost,
+                                          tol,
+                                          (rocsparse_float_complex*)boost_val));
 }
 
 hipsparseStatus_t hipsparseZbsrilu02_numericBoost(hipsparseHandle_t handle,
@@ -5560,11 +5557,8 @@ hipsparseStatus_t
 hipsparseStatus_t hipsparseScsrilu02_numericBoost(
     hipsparseHandle_t handle, csrilu02Info_t info, int enable_boost, double* tol, float* boost_val)
 {
-    return rocSPARSEStatusToHIPStatus(rocsparse_dscsrilu0_numeric_boost((rocsparse_handle)handle,
-                                                                       (rocsparse_mat_info)info,
-                                                                       enable_boost,
-                                                                       tol,
-                                                                       boost_val));
+    return rocSPARSEStatusToHIPStatus(rocsparse_dscsrilu0_numeric_boost(
+        (rocsparse_handle)handle, (rocsparse_mat_info)info, enable_boost, tol, boost_val));
 }
 
 hipsparseStatus_t hipsparseDcsrilu02_numericBoost(
@@ -5582,10 +5576,10 @@ hipsparseStatus_t hipsparseCcsrilu02_numericBoost(hipsparseHandle_t handle,
 {
     return rocSPARSEStatusToHIPStatus(
         rocsparse_dccsrilu0_numeric_boost((rocsparse_handle)handle,
-                                         (rocsparse_mat_info)info,
-                                         enable_boost,
-                                         tol,
-                                         (rocsparse_float_complex*)boost_val));
+                                          (rocsparse_mat_info)info,
+                                          enable_boost,
+                                          tol,
+                                          (rocsparse_float_complex*)boost_val));
 }
 
 hipsparseStatus_t hipsparseZcsrilu02_numericBoost(hipsparseHandle_t handle,

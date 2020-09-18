@@ -724,7 +724,8 @@ hipsparseStatus_t testing_bsrilu02(Arguments argus)
 
         // bsrilu02 solve - device mode
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
-        CHECK_HIPSPARSE_ERROR(hipsparseXbsrilu02_numericBoost(handle, info, boost, dboost_tol, dboost_val));
+        CHECK_HIPSPARSE_ERROR(
+            hipsparseXbsrilu02_numericBoost(handle, info, boost, dboost_tol, dboost_val));
         CHECK_HIPSPARSE_ERROR(hipsparseXbsrilu02(handle,
                                                  dir,
                                                  mb,
