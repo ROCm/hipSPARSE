@@ -524,6 +524,10 @@ namespace hipsparse
 #endif
 
     template <typename T>
+    hipsparseStatus_t hipsparseXbsrilu02_numericBoost(
+        hipsparseHandle_t handle, bsrilu02Info_t info, int enable_boost, double* tol, T* boost_val);
+
+    template <typename T>
     hipsparseStatus_t hipsparseXbsrilu02_bufferSize(hipsparseHandle_t         handle,
                                                     hipsparseDirection_t      dirA,
                                                     int                       mb,
@@ -563,6 +567,10 @@ namespace hipsparse
                                          bsrilu02Info_t            info,
                                          hipsparseSolvePolicy_t    policy,
                                          void*                     pBuffer);
+
+    template <typename T>
+    hipsparseStatus_t hipsparseXcsrilu02_numericBoost(
+        hipsparseHandle_t handle, csrilu02Info_t info, int enable_boost, double* tol, T* boost_val);
 
     template <typename T>
     hipsparseStatus_t hipsparseXcsrilu02_bufferSize(hipsparseHandle_t         handle,
