@@ -3470,6 +3470,46 @@ namespace hipsparse
 #endif
 
     template <>
+    hipsparseStatus_t hipsparseXbsrilu02_numericBoost(hipsparseHandle_t handle,
+                                                      bsrilu02Info_t    info,
+                                                      int               enable_boost,
+                                                      double*           tol,
+                                                      float*            boost_val)
+    {
+        return hipsparseSbsrilu02_numericBoost(handle, info, enable_boost, tol, boost_val);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXbsrilu02_numericBoost(hipsparseHandle_t handle,
+                                                      bsrilu02Info_t    info,
+                                                      int               enable_boost,
+                                                      double*           tol,
+                                                      double*           boost_val)
+    {
+        return hipsparseDbsrilu02_numericBoost(handle, info, enable_boost, tol, boost_val);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXbsrilu02_numericBoost(hipsparseHandle_t handle,
+                                                      bsrilu02Info_t    info,
+                                                      int               enable_boost,
+                                                      double*           tol,
+                                                      hipComplex*       boost_val)
+    {
+        return hipsparseCbsrilu02_numericBoost(handle, info, enable_boost, tol, boost_val);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXbsrilu02_numericBoost(hipsparseHandle_t handle,
+                                                      bsrilu02Info_t    info,
+                                                      int               enable_boost,
+                                                      double*           tol,
+                                                      hipDoubleComplex* boost_val)
+    {
+        return hipsparseZbsrilu02_numericBoost(handle, info, enable_boost, tol, boost_val);
+    }
+
+    template <>
     hipsparseStatus_t hipsparseXbsrilu02_bufferSize(hipsparseHandle_t         handle,
                                                     hipsparseDirection_t      dirA,
                                                     int                       mb,
@@ -3795,6 +3835,46 @@ namespace hipsparse
                                   info,
                                   policy,
                                   pBuffer);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXcsrilu02_numericBoost(hipsparseHandle_t handle,
+                                                      csrilu02Info_t    info,
+                                                      int               enable_boost,
+                                                      double*           tol,
+                                                      float*            boost_val)
+    {
+        return hipsparseScsrilu02_numericBoost(handle, info, enable_boost, tol, boost_val);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXcsrilu02_numericBoost(hipsparseHandle_t handle,
+                                                      csrilu02Info_t    info,
+                                                      int               enable_boost,
+                                                      double*           tol,
+                                                      double*           boost_val)
+    {
+        return hipsparseDcsrilu02_numericBoost(handle, info, enable_boost, tol, boost_val);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXcsrilu02_numericBoost(hipsparseHandle_t handle,
+                                                      csrilu02Info_t    info,
+                                                      int               enable_boost,
+                                                      double*           tol,
+                                                      hipComplex*       boost_val)
+    {
+        return hipsparseCcsrilu02_numericBoost(handle, info, enable_boost, tol, boost_val);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXcsrilu02_numericBoost(hipsparseHandle_t handle,
+                                                      csrilu02Info_t    info,
+                                                      int               enable_boost,
+                                                      double*           tol,
+                                                      hipDoubleComplex* boost_val)
+    {
+        return hipsparseZcsrilu02_numericBoost(handle, info, enable_boost, tol, boost_val);
     }
 
     template <>

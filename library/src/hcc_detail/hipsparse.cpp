@@ -65,6 +65,31 @@ extern "C" {
         }                                                               \
     }
 
+// Functions needed for hipsparse to match cuda API but which not part of rocsparse backend API
+extern rocsparse_status rocsparse_dsbsrilu0_numeric_boost(rocsparse_handle   handle,
+                                                          rocsparse_mat_info info,
+                                                          int                enable_boost,
+                                                          const double*      boost_tol,
+                                                          const float*       boost_val);
+
+extern rocsparse_status rocsparse_dcbsrilu0_numeric_boost(rocsparse_handle   handle,
+                                                          rocsparse_mat_info info,
+                                                          int                enable_boost,
+                                                          const double*      boost_tol,
+                                                          const rocsparse_float_complex* boost_val);
+
+extern rocsparse_status rocsparse_dscsrilu0_numeric_boost(rocsparse_handle   handle,
+                                                          rocsparse_mat_info info,
+                                                          int                enable_boost,
+                                                          const double*      boost_tol,
+                                                          const float*       boost_val);
+
+extern rocsparse_status rocsparse_dccsrilu0_numeric_boost(rocsparse_handle   handle,
+                                                          rocsparse_mat_info info,
+                                                          int                enable_boost,
+                                                          const double*      boost_tol,
+                                                          const rocsparse_float_complex* boost_val);
+
 hipsparseStatus_t hipErrorToHIPSPARSEStatus(hipError_t status)
 {
     switch(status)
@@ -5062,6 +5087,48 @@ hipsparseStatus_t
     return HIPSPARSE_STATUS_SUCCESS;
 }
 
+hipsparseStatus_t hipsparseSbsrilu02_numericBoost(
+    hipsparseHandle_t handle, bsrilu02Info_t info, int enable_boost, double* tol, float* boost_val)
+{
+    return rocSPARSEStatusToHIPStatus(rocsparse_dsbsrilu0_numeric_boost(
+        (rocsparse_handle)handle, (rocsparse_mat_info)info, enable_boost, tol, boost_val));
+}
+
+hipsparseStatus_t hipsparseDbsrilu02_numericBoost(
+    hipsparseHandle_t handle, bsrilu02Info_t info, int enable_boost, double* tol, double* boost_val)
+{
+    return rocSPARSEStatusToHIPStatus(rocsparse_dbsrilu0_numeric_boost(
+        (rocsparse_handle)handle, (rocsparse_mat_info)info, enable_boost, tol, boost_val));
+}
+
+hipsparseStatus_t hipsparseCbsrilu02_numericBoost(hipsparseHandle_t handle,
+                                                  bsrilu02Info_t    info,
+                                                  int               enable_boost,
+                                                  double*           tol,
+                                                  hipComplex*       boost_val)
+{
+    return rocSPARSEStatusToHIPStatus(
+        rocsparse_dcbsrilu0_numeric_boost((rocsparse_handle)handle,
+                                          (rocsparse_mat_info)info,
+                                          enable_boost,
+                                          tol,
+                                          (rocsparse_float_complex*)boost_val));
+}
+
+hipsparseStatus_t hipsparseZbsrilu02_numericBoost(hipsparseHandle_t handle,
+                                                  bsrilu02Info_t    info,
+                                                  int               enable_boost,
+                                                  double*           tol,
+                                                  hipDoubleComplex* boost_val)
+{
+    return rocSPARSEStatusToHIPStatus(
+        rocsparse_zbsrilu0_numeric_boost((rocsparse_handle)handle,
+                                         (rocsparse_mat_info)info,
+                                         enable_boost,
+                                         tol,
+                                         (rocsparse_double_complex*)boost_val));
+}
+
 hipsparseStatus_t hipsparseSbsrilu02_bufferSize(hipsparseHandle_t         handle,
                                                 hipsparseDirection_t      dirA,
                                                 int                       mb,
@@ -5485,6 +5552,48 @@ hipsparseStatus_t
     RETURN_IF_HIP_ERROR(hipStreamSynchronize(stream));
 
     return HIPSPARSE_STATUS_SUCCESS;
+}
+
+hipsparseStatus_t hipsparseScsrilu02_numericBoost(
+    hipsparseHandle_t handle, csrilu02Info_t info, int enable_boost, double* tol, float* boost_val)
+{
+    return rocSPARSEStatusToHIPStatus(rocsparse_dscsrilu0_numeric_boost(
+        (rocsparse_handle)handle, (rocsparse_mat_info)info, enable_boost, tol, boost_val));
+}
+
+hipsparseStatus_t hipsparseDcsrilu02_numericBoost(
+    hipsparseHandle_t handle, csrilu02Info_t info, int enable_boost, double* tol, double* boost_val)
+{
+    return rocSPARSEStatusToHIPStatus(rocsparse_dcsrilu0_numeric_boost(
+        (rocsparse_handle)handle, (rocsparse_mat_info)info, enable_boost, tol, boost_val));
+}
+
+hipsparseStatus_t hipsparseCcsrilu02_numericBoost(hipsparseHandle_t handle,
+                                                  csrilu02Info_t    info,
+                                                  int               enable_boost,
+                                                  double*           tol,
+                                                  hipComplex*       boost_val)
+{
+    return rocSPARSEStatusToHIPStatus(
+        rocsparse_dccsrilu0_numeric_boost((rocsparse_handle)handle,
+                                          (rocsparse_mat_info)info,
+                                          enable_boost,
+                                          tol,
+                                          (rocsparse_float_complex*)boost_val));
+}
+
+hipsparseStatus_t hipsparseZcsrilu02_numericBoost(hipsparseHandle_t handle,
+                                                  csrilu02Info_t    info,
+                                                  int               enable_boost,
+                                                  double*           tol,
+                                                  hipDoubleComplex* boost_val)
+{
+    return rocSPARSEStatusToHIPStatus(
+        rocsparse_zcsrilu0_numeric_boost((rocsparse_handle)handle,
+                                         (rocsparse_mat_info)info,
+                                         enable_boost,
+                                         tol,
+                                         (rocsparse_double_complex*)boost_val));
 }
 
 hipsparseStatus_t hipsparseScsrilu02_bufferSize(hipsparseHandle_t         handle,
