@@ -944,6 +944,22 @@ namespace hipsparse
                                         int*                      csrRowPtrC,
                                         int*                      csrColIndC);
 
+    template <typename T>
+    hipsparseStatus_t hipsparseXgebsr2csr(hipsparseHandle_t         handle,
+                                          hipsparseDirection_t      dirA,
+                                          int                       mb,
+                                          int                       nb,
+                                          const hipsparseMatDescr_t descrA,
+                                          const T*                  bsrValA,
+                                          const int*                bsrRowPtrA,
+                                          const int*                bsrColIndA,
+                                          int                       rowBlockDim,
+                                          int                       colBlockDim,
+                                          const hipsparseMatDescr_t descrC,
+                                          T*                        csrValC,
+                                          int*                      csrRowPtrC,
+                                          int*                      csrColIndC);
+
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
     template <typename T>
     hipsparseStatus_t hipsparseXhyb2csr(hipsparseHandle_t         handle,
