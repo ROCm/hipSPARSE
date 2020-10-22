@@ -4104,11 +4104,15 @@ double get_time_us_sync(hipStream_t stream);
 class Arguments
 {
 public:
-    int M         = 128;
-    int N         = 128;
-    int K         = 128;
-    int nnz       = 32;
-    int block_dim = 1;
+    int M              = 128;
+    int N              = 128;
+    int K              = 128;
+    int nnz            = 32;
+    int block_dim      = 1;
+    int row_block_dimA = 1;
+    int row_block_dimB = 1;
+    int col_block_dimA = 1;
+    int col_block_dimB = 1;
 
     int lda;
     int ldb;
@@ -4151,6 +4155,10 @@ public:
         this->K         = rhs.K;
         this->nnz       = rhs.nnz;
         this->block_dim = rhs.block_dim;
+        this->row_block_dimA = rhs.row_block_dimA;
+        this->row_block_dimB = rhs.row_block_dimB;
+        this->col_block_dimA = rhs.col_block_dimA;
+        this->col_block_dimB = rhs.col_block_dimB;
 
         this->lda = rhs.lda;
         this->ldb = rhs.ldb;

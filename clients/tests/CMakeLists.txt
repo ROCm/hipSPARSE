@@ -169,6 +169,7 @@ set(HIPSPARSE_TEST_SOURCES
   test_cscsort.cpp
   test_coosort.cpp
   test_csrilusv.cpp
+  test_gebsr2gebsr.cpp
 )
 
 if(NOT BUILD_CUDA)
