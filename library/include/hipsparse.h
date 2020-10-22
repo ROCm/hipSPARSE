@@ -4276,107 +4276,72 @@ hipsparseStatus_t hipsparseXcoosortByColumn(hipsparseHandle_t handle,
                                             int*              P,
                                             void*             pBuffer);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* Description:
 This function computes the temporary buffer size needed when converting from a general BSR matrix to another 
 general BSR matrix */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSgebsr2gebsr_bufferSize(hipsparseHandle_t         handle,
-                                                    hipsparseDirection_t      dirA,
-                                                    int                       mb,
-                                                    int                       nb,
-                                                    int                       nnzb,
-                                                    const hipsparseMatDescr_t descrA,
-                                                    const float*              bsrValA,
-                                                    const int*                bsrRowPtrA,
-                                                    const int*                bsrColIndA,
-                                                    int                       rowBlockDimA,
-                                                    int                       colBlockDimA,
-                                                    int                       rowBlockDimC,
-                                                    int                       colBlockDimC,
-                                                    int*                      bufferSize);
+                                                   hipsparseDirection_t      dirA,
+                                                   int                       mb,
+                                                   int                       nb,
+                                                   int                       nnzb,
+                                                   const hipsparseMatDescr_t descrA,
+                                                   const float*              bsrValA,
+                                                   const int*                bsrRowPtrA,
+                                                   const int*                bsrColIndA,
+                                                   int                       rowBlockDimA,
+                                                   int                       colBlockDimA,
+                                                   int                       rowBlockDimC,
+                                                   int                       colBlockDimC,
+                                                   int*                      bufferSize);
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDgebsr2gebsr_bufferSize(hipsparseHandle_t         handle,
-                                                    hipsparseDirection_t      dirA,
-                                                    int                       mb,
-                                                    int                       nb,
-                                                    int                       nnzb,
-                                                    const hipsparseMatDescr_t descrA,
-                                                    const double*              bsrValA,
-                                                    const int*                bsrRowPtrA,
-                                                    const int*                bsrColIndA,
-                                                    int                       rowBlockDimA,
-                                                    int                       colBlockDimA,
-                                                    int                       rowBlockDimC,
-                                                    int                       colBlockDimC,
-                                                    int*                      bufferSize);
+                                                   hipsparseDirection_t      dirA,
+                                                   int                       mb,
+                                                   int                       nb,
+                                                   int                       nnzb,
+                                                   const hipsparseMatDescr_t descrA,
+                                                   const double*             bsrValA,
+                                                   const int*                bsrRowPtrA,
+                                                   const int*                bsrColIndA,
+                                                   int                       rowBlockDimA,
+                                                   int                       colBlockDimA,
+                                                   int                       rowBlockDimC,
+                                                   int                       colBlockDimC,
+                                                   int*                      bufferSize);
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCgebsr2gebsr_bufferSize(hipsparseHandle_t         handle,
-                                                    hipsparseDirection_t      dirA,
-                                                    int                       mb,
-                                                    int                       nb,
-                                                    int                       nnzb,
-                                                    const hipsparseMatDescr_t descrA,
-                                                    const hipComplex*         bsrValA,
-                                                    const int*                bsrRowPtrA,
-                                                    const int*                bsrColIndA,
-                                                    int                       rowBlockDimA,
-                                                    int                       colBlockDimA,
-                                                    int                       rowBlockDimC,
-                                                    int                       colBlockDimC,
-                                                    int*                      bufferSize);
+                                                   hipsparseDirection_t      dirA,
+                                                   int                       mb,
+                                                   int                       nb,
+                                                   int                       nnzb,
+                                                   const hipsparseMatDescr_t descrA,
+                                                   const hipComplex*         bsrValA,
+                                                   const int*                bsrRowPtrA,
+                                                   const int*                bsrColIndA,
+                                                   int                       rowBlockDimA,
+                                                   int                       colBlockDimA,
+                                                   int                       rowBlockDimC,
+                                                   int                       colBlockDimC,
+                                                   int*                      bufferSize);
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseZgebsr2gebsr_bufferSize(hipsparseHandle_t         handle,
-                                                    hipsparseDirection_t      dirA,
-                                                    int                       mb,
-                                                    int                       nb,
-                                                    int                       nnzb,
-                                                    const hipsparseMatDescr_t descrA,
-                                                    const hipDoubleComplex*   bsrValA,
-                                                    const int*                bsrRowPtrA,
-                                                    const int*                bsrColIndA,
-                                                    int                       rowBlockDimA,
-                                                    int                       colBlockDimA,
-                                                    int                       rowBlockDimC,
-                                                    int                       colBlockDimC,
-                                                    int*                      bufferSize);
-
-
-
-
-
-
-
+                                                   hipsparseDirection_t      dirA,
+                                                   int                       mb,
+                                                   int                       nb,
+                                                   int                       nnzb,
+                                                   const hipsparseMatDescr_t descrA,
+                                                   const hipDoubleComplex*   bsrValA,
+                                                   const int*                bsrRowPtrA,
+                                                   const int*                bsrColIndA,
+                                                   int                       rowBlockDimA,
+                                                   int                       colBlockDimA,
+                                                   int                       rowBlockDimC,
+                                                   int                       colBlockDimC,
+                                                   int*                      bufferSize);
 
 /* Description:
 This function computes the number of nonzero block columns per block row and the total number of blocks in the general BSR 

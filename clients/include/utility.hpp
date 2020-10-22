@@ -4150,11 +4150,11 @@ public:
 
     Arguments& operator=(const Arguments& rhs)
     {
-        this->M         = rhs.M;
-        this->N         = rhs.N;
-        this->K         = rhs.K;
-        this->nnz       = rhs.nnz;
-        this->block_dim = rhs.block_dim;
+        this->M              = rhs.M;
+        this->N              = rhs.N;
+        this->K              = rhs.K;
+        this->nnz            = rhs.nnz;
+        this->block_dim      = rhs.block_dim;
         this->row_block_dimA = rhs.row_block_dimA;
         this->row_block_dimB = rhs.row_block_dimB;
         this->col_block_dimA = rhs.col_block_dimA;

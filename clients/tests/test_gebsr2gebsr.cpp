@@ -29,15 +29,29 @@
 #include <string>
 #include <vector>
 
-typedef std::tuple<int, int, int, int, int, int, hipsparseIndexBase_t, hipsparseIndexBase_t, hipsparseDirection_t>
+typedef std::tuple<int,
+                   int,
+                   int,
+                   int,
+                   int,
+                   int,
+                   hipsparseIndexBase_t,
+                   hipsparseIndexBase_t,
+                   hipsparseDirection_t>
     gebsr2gebsr_tuple;
-typedef std::
-    tuple<int, int, int, int, hipsparseIndexBase_t, hipsparseIndexBase_t, hipsparseDirection_t, std::string>
-        gebsr2gebsr_bin_tuple;
+typedef std::tuple<int,
+                   int,
+                   int,
+                   int,
+                   hipsparseIndexBase_t,
+                   hipsparseIndexBase_t,
+                   hipsparseDirection_t,
+                   std::string>
+    gebsr2gebsr_bin_tuple;
 
 // Random matrices
-int gebsr2gebsr_M_range[]         = {-1, 0, 872, 13095, 21453};
-int gebsr2gebsr_N_range[]         = {-3, 0, 623, 12766, 29285};
+int gebsr2gebsr_M_range[]               = {-1, 0, 872, 13095, 21453};
+int gebsr2gebsr_N_range[]               = {-3, 0, 623, 12766, 29285};
 int gebsr2gebsr_row_block_dim_A_range[] = {-1, 0, 2};
 int gebsr2gebsr_col_block_dim_A_range[] = {-1, 0, 5};
 int gebsr2gebsr_row_block_dim_C_range[] = {-1, 0, 3};
@@ -45,7 +59,8 @@ int gebsr2gebsr_col_block_dim_C_range[] = {-1, 0, 4};
 
 hipsparseIndexBase_t gebsr2gebsr_A_base_range[] = {HIPSPARSE_INDEX_BASE_ZERO};
 hipsparseIndexBase_t gebsr2gebsr_C_base_range[] = {HIPSPARSE_INDEX_BASE_ONE};
-hipsparseDirection_t gebsr2gebsr_dir_range[] = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COLUMN};
+hipsparseDirection_t gebsr2gebsr_dir_range[]
+    = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COLUMN};
 
 // Matrices from files (float and double)
 int gebsr2gebsr_row_block_dim_A_range_bin[] = {5};
@@ -60,22 +75,22 @@ hipsparseDirection_t gebsr2gebsr_dir_range_bin[]
     = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COLUMN};
 
 std::string gebsr2gebsr_bin[] = {"rma10.bin",
-                             "mac_econ_fwd500.bin",
-                             "mc2depi.bin",
-                             "scircuit.bin",
-                             "ASIC_320k.bin",
-                             "bmwcra_1.bin",
-                             "nos1.bin",
-                             "nos2.bin",
-                             "nos3.bin",
-                             "nos4.bin",
-                             "nos5.bin",
-                             "nos6.bin",
-                             "nos7.bin",
-                             "amazon0312.bin",
-                             "Chebyshev4.bin",
-                             "sme3Dc.bin",
-                             "shipsec1.bin"};
+                                 "mac_econ_fwd500.bin",
+                                 "mc2depi.bin",
+                                 "scircuit.bin",
+                                 "ASIC_320k.bin",
+                                 "bmwcra_1.bin",
+                                 "nos1.bin",
+                                 "nos2.bin",
+                                 "nos3.bin",
+                                 "nos4.bin",
+                                 "nos5.bin",
+                                 "nos6.bin",
+                                 "nos7.bin",
+                                 "amazon0312.bin",
+                                 "Chebyshev4.bin",
+                                 "sme3Dc.bin",
+                                 "shipsec1.bin"};
 
 class parameterized_gebsr2gebsr : public testing::TestWithParam<gebsr2gebsr_tuple>
 {
@@ -107,7 +122,7 @@ Arguments setup_gebsr2gebsr_arguments(gebsr2gebsr_tuple tup)
     arg.idx_base       = std::get<6>(tup);
     arg.idx_base2      = std::get<7>(tup);
     arg.dirA           = std::get<8>(tup);
-    arg.timing    = 0;
+    arg.timing         = 0;
     return arg;
 }
 
