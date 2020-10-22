@@ -1447,8 +1447,11 @@ hipsparseStatus_t testing_gebsr2gebsr(Arguments argus)
         unit_check_general(1, 1, 1, &nnzb_C_gold, &hnnzb_C);
         unit_check_general(1, mb_C + 1, 1, hbsr_row_ptr_C_gold.data(), hbsr_row_ptr_C.data());
         unit_check_general(1, hnnzb_C, 1, hbsr_col_ind_C_gold.data(), hbsr_col_ind_C.data());
-        unit_check_general(
-            1, hnnzb_C * row_block_dim_C * col_block_dim_C, 1, hbsr_val_C_gold.data(), hbsr_val_C.data());
+        unit_check_general(1,
+                           hnnzb_C * row_block_dim_C * col_block_dim_C,
+                           1,
+                           hbsr_val_C_gold.data(),
+                           hbsr_val_C.data());
     }
 
     return HIPSPARSE_STATUS_SUCCESS;

@@ -1625,26 +1625,21 @@ inline void host_gebsr_to_csr(hipsparseDirection_t    direction,
     }
 }
 
-
-
-
-
-
 template <typename T>
-inline void host_csr_to_gebsr(hipsparseDirection_t               direction,
+inline void host_csr_to_gebsr(hipsparseDirection_t    direction,
                               int                     m,
                               int                     n,
                               int                     nnz,
-                              const std::vector<T>&             csr_val,
+                              const std::vector<T>&   csr_val,
                               const std::vector<int>& csr_row_ptr,
                               const std::vector<int>& csr_col_ind,
                               int                     row_block_dim,
                               int                     col_block_dim,
-                              hipsparseIndexBase_t              csr_base,
-                              std::vector<T>&                   bsr_val,
+                              hipsparseIndexBase_t    csr_base,
+                              std::vector<T>&         bsr_val,
                               std::vector<int>&       bsr_row_ptr,
                               std::vector<int>&       bsr_col_ind,
-                              hipsparseIndexBase_t              bsr_base)
+                              hipsparseIndexBase_t    bsr_base)
 {
     int mb = (m + row_block_dim - 1) / row_block_dim;
     int nb = (n + col_block_dim - 1) / col_block_dim;
@@ -1786,22 +1781,22 @@ inline void host_csr_to_gebsr(hipsparseDirection_t               direction,
 }
 
 template <typename T>
-inline void host_gebsr_to_gebsr(hipsparseDirection_t               direction,
+inline void host_gebsr_to_gebsr(hipsparseDirection_t    direction,
                                 int                     mb,
                                 int                     nb,
                                 int                     nnzb,
-                                const std::vector<T>&             bsr_val_A,
+                                const std::vector<T>&   bsr_val_A,
                                 const std::vector<int>& bsr_row_ptr_A,
                                 const std::vector<int>& bsr_col_ind_A,
                                 int                     row_block_dim_A,
                                 int                     col_block_dim_A,
-                                hipsparseIndexBase_t              base_A,
-                                std::vector<T>&                   bsr_val_C,
+                                hipsparseIndexBase_t    base_A,
+                                std::vector<T>&         bsr_val_C,
                                 std::vector<int>&       bsr_row_ptr_C,
                                 std::vector<int>&       bsr_col_ind_C,
                                 int                     row_block_dim_C,
                                 int                     col_block_dim_C,
-                                hipsparseIndexBase_t              base_C)
+                                hipsparseIndexBase_t    base_C)
 {
     int m = mb * row_block_dim_A;
     int n = nb * col_block_dim_A;
@@ -1812,7 +1807,7 @@ inline void host_gebsr_to_gebsr(hipsparseDirection_t               direction,
     // convert GEBSR to CSR format
     std::vector<int> csr_row_ptr;
     std::vector<int> csr_col_ind;
-    std::vector<T>             csr_val;
+    std::vector<T>   csr_val;
 
     host_gebsr_to_csr(direction,
                       mb,
@@ -1847,14 +1842,6 @@ inline void host_gebsr_to_gebsr(hipsparseDirection_t               direction,
                       bsr_col_ind_C,
                       base_C);
 }
-
-
-
-
-
-
-
-
 
 template <typename T>
 inline void host_bsr_to_csr(hipsparseDirection_t    direction,
