@@ -983,9 +983,6 @@ hipsparseStatus_t testing_gebsr2gebsr(Arguments argus)
         nb_C = (n + col_block_dim_C - 1) / col_block_dim_C;
     }
 
-    std::cout << "mb: " << mb << " nb: " << nb << " mb_C: " << mb_C << " nb_C: " << nb_C
-              << std::endl;
-
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
     std::unique_ptr<descr_struct>  unique_ptr_descr_A(new descr_struct);
@@ -1261,9 +1258,6 @@ hipsparseStatus_t testing_gebsr2gebsr(Arguments argus)
     }
     }
 
-    std::cout << "mb: " << mb << " nb: " << nb << " mb_C: " << mb_C << " nb_C: " << nb_C
-              << " nnz: " << nnz << std::endl;
-
     // Allocate memory on the device
     auto dbsr_row_ptr_A_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(int) * (mb + 1)), device_free};
@@ -1310,8 +1304,6 @@ hipsparseStatus_t testing_gebsr2gebsr(Arguments argus)
                                                            col_block_dim_C,
                                                            &buffer_size));
 
-    std::cout << "buffer_size: " << buffer_size << std::endl;
-
     // Allocate buffer on the device
     auto dbuffer_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(char) * buffer_size), device_free};
@@ -1347,8 +1339,6 @@ hipsparseStatus_t testing_gebsr2gebsr(Arguments argus)
                                                        &hnnzb_C,
                                                        dbuffer));
 
-        std::cout << "AAAA" << std::endl;
-
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
 
         auto dnnzb_C_managed = hipsparse_unique_ptr{device_malloc(sizeof(int)), device_free};
@@ -1373,9 +1363,6 @@ hipsparseStatus_t testing_gebsr2gebsr(Arguments argus)
         int hnnzb_C_copied_from_device;
         CHECK_HIP_ERROR(
             hipMemcpy(&hnnzb_C_copied_from_device, dnnzb_C, sizeof(int), hipMemcpyDeviceToHost));
-
-        std::cout << "hnnzb_C: " << hnnzb_C
-                  << " hnnzb_C_copied_from_device: " << hnnzb_C_copied_from_device << std::endl;
 
         // Check that using host and device pointer mode gives the same result
         unit_check_general(1, 1, 1, &hnnzb_C_copied_from_device, &hnnzb_C);
@@ -1432,32 +1419,36 @@ hipsparseStatus_t testing_gebsr2gebsr(Arguments argus)
                                   hipMemcpyDeviceToHost));
 
         // Host csr2bsr conversion
-        std::vector<int> hbsr_row_ptr_gold(mb_C + 1);
-        std::vector<int> hbsr_col_ind_gold(hnnzb_C, 0);
-        std::vector<T>   hbsr_val_gold(hnnzb_C * row_block_dim_C * col_block_dim_C);
+        std::vector<int> hbsr_row_ptr_C_gold;
+        std::vector<int> hbsr_col_ind_C_gold;
+        std::vector<T>   hbsr_val_C_gold;
 
-        // call host csr2bsr here
-        // int nnzb_C_gold;
-        // host_csr_to_bsr<T>(dir,
-        //                    m,
-        //                    n,
-        //                    block_dim,
-        //                    bsr_nnzb_gold,
-        //                    csr_idx_base,
-        //                    hcsr_row_ptr,
-        //                    hcsr_col_ind,
-        //                    hcsr_val,
-        //                    bsr_idx_base,
-        //                    hbsr_row_ptr_gold,
-        //                    hbsr_col_ind_gold,
-        //                    hbsr_val_gold);
+        // call host gebsr2gebsr here
+        host_gebsr_to_gebsr(dir,
+                            mb,
+                            nb,
+                            nnzb,
+                            hbsr_val_A,
+                            hbsr_row_ptr_A,
+                            hbsr_col_ind_A,
+                            row_block_dim_A,
+                            col_block_dim_A,
+                            idx_base_A,
+                            hbsr_val_C_gold,
+                            hbsr_row_ptr_C_gold,
+                            hbsr_col_ind_C_gold,
+                            row_block_dim_C,
+                            col_block_dim_C,
+                            idx_base_C);
 
-        // // Unit check
-        // unit_check_general(1, 1, 1, &bsr_nnzb_gold, &hbsr_nnzb);
-        // unit_check_general(1, mb + 1, 1, hbsr_row_ptr_gold.data(), hbsr_row_ptr.data());
-        // unit_check_general(1, hbsr_nnzb, 1, hbsr_col_ind_gold.data(), hbsr_col_ind.data());
-        // unit_check_general(
-        //     1, hbsr_nnzb * block_dim * block_dim, 1, hbsr_val_gold.data(), hbsr_val.data());
+        int nnzb_C_gold = hbsr_row_ptr_C_gold[mb_C] - hbsr_row_ptr_C_gold[0];
+
+        // Unit check
+        unit_check_general(1, 1, 1, &nnzb_C_gold, &hnnzb_C);
+        unit_check_general(1, mb_C + 1, 1, hbsr_row_ptr_C_gold.data(), hbsr_row_ptr_C.data());
+        unit_check_general(1, hnnzb_C, 1, hbsr_col_ind_C_gold.data(), hbsr_col_ind_C.data());
+        unit_check_general(
+            1, hnnzb_C * row_block_dim_C * col_block_dim_C, 1, hbsr_val_C_gold.data(), hbsr_val_C.data());
     }
 
     return HIPSPARSE_STATUS_SUCCESS;
