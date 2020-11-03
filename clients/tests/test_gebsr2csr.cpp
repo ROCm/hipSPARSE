@@ -49,8 +49,8 @@ hipsparseIndexBase_t gebsr2csr_bsr_base_range[] = {HIPSPARSE_INDEX_BASE_ONE};
 hipsparseDirection_t gebsr2csr_dir_range[] = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COLUMN};
 
 // Matrices from files (float and double)
-int gebsr2csr_row_block_dim_range_bin[] = {2,3};
-int gebsr2csr_col_block_dim_range_bin[] = {3,4};
+int gebsr2csr_row_block_dim_range_bin[] = {2, 3};
+int gebsr2csr_col_block_dim_range_bin[] = {3, 4};
 
 hipsparseIndexBase_t gebsr2csr_csr_base_range_bin[] = {HIPSPARSE_INDEX_BASE_ONE};
 
