@@ -161,7 +161,7 @@ void unit_check_near(int M, int N, int lda, float* hCPU, float* hGPU)
         for(int i = 0; i < M; i++)
         {
             float compare_val = std::max(std::abs(hCPU[i + j * lda] * 1e-3f),
-                                         10 * std::numeric_limits<float>::epsilon());
+                                         100 * std::numeric_limits<float>::epsilon());
 #ifdef GOOGLE_TEST
             ASSERT_NEAR(hCPU[i + j * lda], hGPU[i + j * lda], compare_val);
 #else
@@ -179,7 +179,7 @@ void unit_check_near(int M, int N, int lda, double* hCPU, double* hGPU)
         for(int i = 0; i < M; i++)
         {
             double compare_val = std::max(std::abs(hCPU[i + j * lda] * 1e-10),
-                                          10 * std::numeric_limits<double>::epsilon());
+                                          100 * std::numeric_limits<double>::epsilon());
 #ifdef GOOGLE_TEST
             ASSERT_NEAR(hCPU[i + j * lda], hGPU[i + j * lda], compare_val);
 #else
@@ -198,9 +198,9 @@ void unit_check_near(int M, int N, int lda, hipComplex* hCPU, hipComplex* hGPU)
         {
             hipComplex compare_val
                 = make_hipFloatComplex(std::max(std::abs(hCPU[i + j * lda].x * 1e-3f),
-                                                10 * std::numeric_limits<float>::epsilon()),
+                                                100 * std::numeric_limits<float>::epsilon()),
                                        std::max(std::abs(hCPU[i + j * lda].y * 1e-3f),
-                                                10 * std::numeric_limits<float>::epsilon()));
+                                                100 * std::numeric_limits<float>::epsilon()));
 
 #ifdef GOOGLE_TEST
             ASSERT_NEAR(hCPU[i + j * lda].x, hGPU[i + j * lda].x, compare_val.x);
@@ -222,9 +222,9 @@ void unit_check_near(int M, int N, int lda, hipDoubleComplex* hCPU, hipDoubleCom
         {
             hipDoubleComplex compare_val
                 = make_hipDoubleComplex(std::max(std::abs(hCPU[i + j * lda].x * 1e-10),
-                                                 10 * std::numeric_limits<double>::epsilon()),
+                                                 100 * std::numeric_limits<double>::epsilon()),
                                         std::max(std::abs(hCPU[i + j * lda].y * 1e-10),
-                                                 10 * std::numeric_limits<double>::epsilon()));
+                                                 100 * std::numeric_limits<double>::epsilon()));
 #ifdef GOOGLE_TEST
             ASSERT_NEAR(hCPU[i + j * lda].x, hGPU[i + j * lda].x, compare_val.x);
             ASSERT_NEAR(hCPU[i + j * lda].y, hGPU[i + j * lda].y, compare_val.y);
