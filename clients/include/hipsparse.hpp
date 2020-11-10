@@ -914,98 +914,95 @@ namespace hipsparse
                                         hipsparseHybPartition_t   partition_type);
 #endif
 
+    template <typename T>
+    hipsparseStatus_t hipsparseXgebsr2gebsc_bufferSize(hipsparseHandle_t handle,
+                                                       int               mb,
+                                                       int               nb,
+                                                       int               nnzb,
+                                                       const T*          bsr_val,
+                                                       const int*        bsr_row_ptr,
+                                                       const int*        bsr_col_ind,
+                                                       int               row_block_dim,
+                                                       int               col_block_dim,
+                                                       size_t*           p_buffer_size);
 
-  template<typename T>
-  hipsparseStatus_t hipsparseXgebsr2gebsc_bufferSize(hipsparseHandle_t                handle,
-						     int                   mb,
-						     int                   nb,
-						     int                   nnzb,
-						     const T* bsr_val,
-						     const int*            bsr_row_ptr,
-						     const int*            bsr_col_ind,
-						     int                   row_block_dim,
-						     int                   col_block_dim,
-						     size_t*                         p_buffer_size);
-  
-  template<typename T>
-  hipsparseStatus_t hipsparseXgebsr2gebsc(hipsparseHandle_t                handle,
-					  int                   mb,
-					  int                   nb,
-					  int                   nnzb,
-					  const T* bsr_val,
-					  const int*            bsr_row_ptr,
-					  const int*            bsr_col_ind,
-					  int                   row_block_dim,
-					  int                   col_block_dim,
-					  T*     bsc_val,
-					  int*                  bsc_row_ind,
-					  int*                  bsc_col_ptr,
-					  hipsparseAction_t     copy_values,
-					  hipsparseIndexBase_t  idx_base,
-					  void*                 temp_buffer);
-  
-  
-  template<typename T>
-hipsparseStatus_t hipsparseXcsr2gebsr_bufferSize(hipsparseHandle_t             handle,
-                                                  hipsparseDirection_t          dir,
-                                                  int                           m,
-                                                  int                   	n,
-                                                  const hipsparseMatDescr_t     csr_descr,
-                                                  const T* csr_val,
-                                                  const int*            csr_row_ptr,
-                                                  const int*            csr_col_ind,
-                                                  int                   row_block_dim,
-                                                  int                   col_block_dim,
-                                                  size_t*                         p_buffer_size);
+    template <typename T>
+    hipsparseStatus_t hipsparseXgebsr2gebsc(hipsparseHandle_t    handle,
+                                            int                  mb,
+                                            int                  nb,
+                                            int                  nnzb,
+                                            const T*             bsr_val,
+                                            const int*           bsr_row_ptr,
+                                            const int*           bsr_col_ind,
+                                            int                  row_block_dim,
+                                            int                  col_block_dim,
+                                            T*                   bsc_val,
+                                            int*                 bsc_row_ind,
+                                            int*                 bsc_col_ptr,
+                                            hipsparseAction_t    copy_values,
+                                            hipsparseIndexBase_t idx_base,
+                                            void*                temp_buffer);
 
-  
-  template<typename T>
-  hipsparseStatus_t hipsparseXcsr2gebsr(hipsparseHandle_t                	handle,
-					hipsparseDirection_t             	dir,
-					int                   		m,
-					int                   		n,
-					const hipsparseMatDescr_t       	csr_descr,
-					const T* 	csr_val,
-					const int*            		csr_row_ptr,
-					const int*            		csr_col_ind,
-					const hipsparseMatDescr_t 	bsr_descr,
-					T*   	bsr_val,
-					int*                  		bsr_row_ptr,
-					int*                  		bsr_col_ind,
-					int                   		row_block_dim,
-					int                   		col_block_dim,
-					void*                     	p_buffer);
-  
-  template <typename T>
-  hipsparseStatus_t hipsparseXcsr2bsr(hipsparseHandle_t         handle,
-				      hipsparseDirection_t      dirA,
-				      int                       m,
-				      int                       n,
-				      const hipsparseMatDescr_t descrA,
-				      const T*                  csrValA,
-				      const int*                csrRowPtrA,
-				      const int*                csrColIndA,
-				      int                       blockDim,
-				      const hipsparseMatDescr_t descrC,
-				      T*                        bsrValC,
-				      int*                      bsrRowPtrC,
-				      int*                      bsrColIndC);
+    template <typename T>
+    hipsparseStatus_t hipsparseXcsr2gebsr_bufferSize(hipsparseHandle_t         handle,
+                                                     hipsparseDirection_t      dir,
+                                                     int                       m,
+                                                     int                       n,
+                                                     const hipsparseMatDescr_t csr_descr,
+                                                     const T*                  csr_val,
+                                                     const int*                csr_row_ptr,
+                                                     const int*                csr_col_ind,
+                                                     int                       row_block_dim,
+                                                     int                       col_block_dim,
+                                                     size_t*                   p_buffer_size);
 
-  template <typename T>
-  hipsparseStatus_t hipsparseXbsr2csr(hipsparseHandle_t         handle,
-				      hipsparseDirection_t      dirA,
-				      int                       mb,
-				      int                       nb,
-				      const hipsparseMatDescr_t descrA,
-				      const T*                  bsrValA,
-				      const int*                bsrRowPtrA,
-				      const int*                bsrColIndA,
-				      int                       blockDim,
-				      const hipsparseMatDescr_t descrC,
-				      T*                        csrValC,
-				      int*                      csrRowPtrC,
-				      int*                      csrColIndC);
-  
+    template <typename T>
+    hipsparseStatus_t hipsparseXcsr2gebsr(hipsparseHandle_t         handle,
+                                          hipsparseDirection_t      dir,
+                                          int                       m,
+                                          int                       n,
+                                          const hipsparseMatDescr_t csr_descr,
+                                          const T*                  csr_val,
+                                          const int*                csr_row_ptr,
+                                          const int*                csr_col_ind,
+                                          const hipsparseMatDescr_t bsr_descr,
+                                          T*                        bsr_val,
+                                          int*                      bsr_row_ptr,
+                                          int*                      bsr_col_ind,
+                                          int                       row_block_dim,
+                                          int                       col_block_dim,
+                                          void*                     p_buffer);
+
+    template <typename T>
+    hipsparseStatus_t hipsparseXcsr2bsr(hipsparseHandle_t         handle,
+                                        hipsparseDirection_t      dirA,
+                                        int                       m,
+                                        int                       n,
+                                        const hipsparseMatDescr_t descrA,
+                                        const T*                  csrValA,
+                                        const int*                csrRowPtrA,
+                                        const int*                csrColIndA,
+                                        int                       blockDim,
+                                        const hipsparseMatDescr_t descrC,
+                                        T*                        bsrValC,
+                                        int*                      bsrRowPtrC,
+                                        int*                      bsrColIndC);
+
+    template <typename T>
+    hipsparseStatus_t hipsparseXbsr2csr(hipsparseHandle_t         handle,
+                                        hipsparseDirection_t      dirA,
+                                        int                       mb,
+                                        int                       nb,
+                                        const hipsparseMatDescr_t descrA,
+                                        const T*                  bsrValA,
+                                        const int*                bsrRowPtrA,
+                                        const int*                bsrColIndA,
+                                        int                       blockDim,
+                                        const hipsparseMatDescr_t descrC,
+                                        T*                        csrValC,
+                                        int*                      csrRowPtrC,
+                                        int*                      csrColIndC);
+
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
     template <typename T>
     hipsparseStatus_t hipsparseXhyb2csr(hipsparseHandle_t         handle,
