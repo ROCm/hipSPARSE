@@ -58,7 +58,7 @@
 #endif
 #endif
 
-/* Opaque structures holding information */
+/* Opaque structures holding information. */
 typedef void* hipsparseHandle_t;
 typedef void* hipsparseMatDescr_t;
 typedef void* hipsparseHybMat_t;
