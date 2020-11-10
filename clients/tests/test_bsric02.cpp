@@ -43,7 +43,6 @@ dir  bsric02_dir_range[]     = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COL
 
 std::string bsric02_bin[] = {"mac_econ_fwd500.bin",
                              "nos4.bin",
-                             "nos5.bin",
                              "nos6.bin",
                              "nos7.bin",
                              "scircuit.bin",
