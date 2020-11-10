@@ -29,8 +29,12 @@
 #include <string>
 #include <vector>
 
-typedef std::tuple<int, int, int, int, hipsparseAction_t, hipsparseIndexBase_t, hipsparseDirection_t>    gebsr2gebsc_tuple;
-typedef std::tuple<int, int, hipsparseAction_t, hipsparseIndexBase_t, hipsparseDirection_t, std::string> gebsr2gebsc_bin_tuple;
+typedef std::
+    tuple<int, int, int, int, hipsparseAction_t, hipsparseIndexBase_t, hipsparseDirection_t>
+        gebsr2gebsc_tuple;
+typedef std::
+    tuple<int, int, hipsparseAction_t, hipsparseIndexBase_t, hipsparseDirection_t, std::string>
+        gebsr2gebsc_bin_tuple;
 
 int gebsr2gebsc_M_range[] = {-1, 0, 10, 872};
 int gebsr2gebsc_N_range[] = {-3, 0, 33, 623};
@@ -38,9 +42,11 @@ int gebsr2gebsc_N_range[] = {-3, 0, 33, 623};
 int gebsr2gebsc_row_block_dim_range[] = {-1, 0, 1, 7, 16};
 int gebsr2gebsc_col_block_dim_range[] = {-1, 0, 1, 4, 16};
 
-hipsparseDirection_t gebsr2gebsc_dir_range[] = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COLUMN};
+hipsparseDirection_t gebsr2gebsc_dir_range[]
+    = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COLUMN};
 
-hipsparseAction_t gebsr2gebsc_action_range[] = {HIPSPARSE_ACTION_NUMERIC, HIPSPARSE_ACTION_SYMBOLIC};
+hipsparseAction_t gebsr2gebsc_action_range[]
+    = {HIPSPARSE_ACTION_NUMERIC, HIPSPARSE_ACTION_SYMBOLIC};
 
 hipsparseIndexBase_t gebsr2gebsc_csr_base_range[]
     = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
@@ -49,16 +55,16 @@ hipsparseDirection_t gebsr2gebsc_dir_range_bin[]
     = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COLUMN};
 
 std::string gebsr2gebsc_bin[] = {"rma10.bin",
-                             "mac_econ_fwd500.bin",
-                             "bibd_22_8.bin",
-                             "scircuit.bin",
-                             "nos1.bin",
-                             "nos2.bin",
-                             "nos3.bin",
-                             "nos4.bin",
-                             "nos5.bin",
-                             "nos6.bin",
-                             "nos7.bin"};
+                                 "mac_econ_fwd500.bin",
+                                 "bibd_22_8.bin",
+                                 "scircuit.bin",
+                                 "nos1.bin",
+                                 "nos2.bin",
+                                 "nos3.bin",
+                                 "nos4.bin",
+                                 "nos5.bin",
+                                 "nos6.bin",
+                                 "nos7.bin"};
 
 class parameterized_gebsr2gebsc : public testing::TestWithParam<gebsr2gebsc_tuple>
 {
@@ -81,28 +87,28 @@ protected:
 Arguments setup_gebsr2gebsc_arguments(gebsr2gebsc_tuple tup)
 {
     Arguments arg;
-    arg.M        = std::get<0>(tup);
-    arg.N        = std::get<1>(tup);
-    arg.row_block_dim        = std::get<2>(tup);
-    arg.col_block_dim        = std::get<3>(tup);
-    arg.action   = std::get<4>(tup);
-    arg.idx_base = std::get<5>(tup);
-    arg.dirA = std::get<6>(tup);
-    arg.timing   = 0;
+    arg.M             = std::get<0>(tup);
+    arg.N             = std::get<1>(tup);
+    arg.row_block_dim = std::get<2>(tup);
+    arg.col_block_dim = std::get<3>(tup);
+    arg.action        = std::get<4>(tup);
+    arg.idx_base      = std::get<5>(tup);
+    arg.dirA          = std::get<6>(tup);
+    arg.timing        = 0;
     return arg;
 }
 
 Arguments setup_gebsr2gebsc_arguments(gebsr2gebsc_bin_tuple tup)
 {
     Arguments arg;
-    arg.M        = -99;
-    arg.N        = -99;
-    arg.row_block_dim        = std::get<0>(tup);
-    arg.col_block_dim        = std::get<1>(tup);
-    arg.action   = std::get<2>(tup);
-    arg.idx_base = std::get<3>(tup);
-    arg.dirA      = std::get<4>(tup);
-    arg.timing   = 0;
+    arg.M             = -99;
+    arg.N             = -99;
+    arg.row_block_dim = std::get<0>(tup);
+    arg.col_block_dim = std::get<1>(tup);
+    arg.action        = std::get<2>(tup);
+    arg.idx_base      = std::get<3>(tup);
+    arg.dirA          = std::get<4>(tup);
+    arg.timing        = 0;
 
     // Determine absolute path of test matrix
     std::string bin_file = std::get<5>(tup);
@@ -182,17 +188,17 @@ INSTANTIATE_TEST_CASE_P(gebsr2gebsc,
                         parameterized_gebsr2gebsc,
                         testing::Combine(testing::ValuesIn(gebsr2gebsc_M_range),
                                          testing::ValuesIn(gebsr2gebsc_N_range),
-					 testing::ValuesIn(gebsr2gebsc_row_block_dim_range),
+                                         testing::ValuesIn(gebsr2gebsc_row_block_dim_range),
                                          testing::ValuesIn(gebsr2gebsc_col_block_dim_range),
                                          testing::ValuesIn(gebsr2gebsc_action_range),
                                          testing::ValuesIn(gebsr2gebsc_csr_base_range),
-					 testing::ValuesIn(gebsr2gebsc_dir_range)));
+                                         testing::ValuesIn(gebsr2gebsc_dir_range)));
 
 INSTANTIATE_TEST_CASE_P(gebsr2gebsc_bin,
                         parameterized_gebsr2gebsc_bin,
                         testing::Combine(testing::ValuesIn(gebsr2gebsc_row_block_dim_range),
                                          testing::ValuesIn(gebsr2gebsc_col_block_dim_range),
-					 testing::ValuesIn(gebsr2gebsc_action_range),
+                                         testing::ValuesIn(gebsr2gebsc_action_range),
                                          testing::ValuesIn(gebsr2gebsc_csr_base_range),
-					 testing::ValuesIn(gebsr2gebsc_dir_range_bin),
+                                         testing::ValuesIn(gebsr2gebsc_dir_range_bin),
                                          testing::ValuesIn(gebsr2gebsc_bin)));

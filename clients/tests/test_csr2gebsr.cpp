@@ -29,15 +29,16 @@
 #include <string>
 #include <vector>
 
-typedef std::tuple<int, int, int, int, hipsparseIndexBase_t, hipsparseIndexBase_t, hipsparseDirection_t>
-    csr2gebsr_tuple;
 typedef std::
-tuple<int, int, hipsparseIndexBase_t, hipsparseIndexBase_t, hipsparseDirection_t, std::string>
+    tuple<int, int, int, int, hipsparseIndexBase_t, hipsparseIndexBase_t, hipsparseDirection_t>
+        csr2gebsr_tuple;
+typedef std::
+    tuple<int, int, hipsparseIndexBase_t, hipsparseIndexBase_t, hipsparseDirection_t, std::string>
         csr2gebsr_bin_tuple;
 
 // Random matrices
-int csr2gebsr_M_range[]         = {-1, 0, 2, 13095};
-int csr2gebsr_N_range[]         = {-3, 0, 2, 12766};
+int csr2gebsr_M_range[]             = {-1, 0, 2, 13095};
+int csr2gebsr_N_range[]             = {-3, 0, 2, 12766};
 int csr2gebsr_row_block_dim_range[] = {-1, 0, 1, 2, 7, 16};
 int csr2gebsr_col_block_dim_range[] = {-1, 0, 1, 2};
 
@@ -59,16 +60,16 @@ hipsparseDirection_t csr2gebsr_dir_range_bin[]
     = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COLUMN};
 
 std::string csr2gebsr_bin[] = {"rma10.bin",
-			       "mac_econ_fwd500.bin",
-			       "scircuit.bin",
-			       "bmwcra_1.bin",
-			       "nos1.bin",
-			       "nos2.bin",
-			       "nos3.bin",
-			       "nos4.bin",
-			       "nos5.bin",
-			       "nos6.bin",
-			       "nos7.bin"};
+                               "mac_econ_fwd500.bin",
+                               "scircuit.bin",
+                               "bmwcra_1.bin",
+                               "nos1.bin",
+                               "nos2.bin",
+                               "nos3.bin",
+                               "nos4.bin",
+                               "nos5.bin",
+                               "nos6.bin",
+                               "nos7.bin"};
 
 class parameterized_csr2gebsr : public testing::TestWithParam<csr2gebsr_tuple>
 {
@@ -91,28 +92,28 @@ protected:
 Arguments setup_csr2gebsr_arguments(csr2gebsr_tuple tup)
 {
     Arguments arg;
-    arg.M         = std::get<0>(tup);
-    arg.N         = std::get<1>(tup);
+    arg.M             = std::get<0>(tup);
+    arg.N             = std::get<1>(tup);
     arg.row_block_dim = std::get<2>(tup);
     arg.col_block_dim = std::get<3>(tup);
-    arg.idx_base  = std::get<4>(tup);
-    arg.idx_base2 = std::get<5>(tup);
-    arg.dirA      = std::get<6>(tup);
-    arg.timing    = 0;
+    arg.idx_base      = std::get<4>(tup);
+    arg.idx_base2     = std::get<5>(tup);
+    arg.dirA          = std::get<6>(tup);
+    arg.timing        = 0;
     return arg;
 }
 
 Arguments setup_csr2gebsr_arguments(csr2gebsr_bin_tuple tup)
 {
     Arguments arg;
-    arg.M         = -99;
-    arg.N         = -99;
+    arg.M             = -99;
+    arg.N             = -99;
     arg.row_block_dim = std::get<0>(tup);
     arg.col_block_dim = std::get<1>(tup);
-    arg.idx_base  = std::get<2>(tup);
-    arg.idx_base2 = std::get<3>(tup);
-    arg.dirA      = std::get<4>(tup);
-    arg.timing    = 0;
+    arg.idx_base      = std::get<2>(tup);
+    arg.idx_base2     = std::get<3>(tup);
+    arg.dirA          = std::get<4>(tup);
+    arg.timing        = 0;
 
     // Determine absolute path of test matrix
     std::string bin_file = std::get<5>(tup);
