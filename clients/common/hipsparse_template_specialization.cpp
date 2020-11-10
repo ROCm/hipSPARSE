@@ -5832,6 +5832,489 @@ namespace hipsparse
     }
 #endif
 
+
+
+  template<>
+  hipsparseStatus_t hipsparseXgebsr2gebsc_bufferSize(hipsparseHandle_t                handle,
+						     int                   mb,
+						     int                   nb,
+						     int                   nnzb,
+						     const float* bsr_val,
+						     const int*            bsr_row_ptr,
+						     const int*            bsr_col_ind,
+						     int                   row_block_dim,
+						     int                   col_block_dim,
+						     size_t*                         p_buffer_size)
+  {
+    return hipsparseSgebsr2gebsc_bufferSize(handle,
+					    mb,
+					    nb,
+					    nnzb,
+					    bsr_val,
+					    bsr_row_ptr,
+					    bsr_col_ind,
+					    row_block_dim,
+					    col_block_dim,
+					    p_buffer_size);
+  }
+
+  
+  template<>
+  hipsparseStatus_t hipsparseXgebsr2gebsc_bufferSize(hipsparseHandle_t                handle,
+						     int                   mb,
+						     int                   nb,
+						     int                   nnzb,
+						     const double* bsr_val,
+						     const int*            bsr_row_ptr,
+						     const int*            bsr_col_ind,
+						     int                   row_block_dim,
+						     int                   col_block_dim,
+						     size_t*                         p_buffer_size)
+  {
+    return hipsparseDgebsr2gebsc_bufferSize(handle,
+					    mb,
+					    nb,
+					    nnzb,
+					    bsr_val,
+					    bsr_row_ptr,
+					    bsr_col_ind,
+					    row_block_dim,
+					    col_block_dim,
+					    p_buffer_size);
+  }
+
+  template<>
+  hipsparseStatus_t hipsparseXgebsr2gebsc_bufferSize(hipsparseHandle_t                handle,
+						     int                   mb,
+						     int                   nb,
+						     int                   nnzb,
+						     const hipComplex* bsr_val,
+						     const int*            bsr_row_ptr,
+						     const int*            bsr_col_ind,
+						     int                   row_block_dim,
+						     int                   col_block_dim,
+						     size_t*                         p_buffer_size)
+  {
+    return hipsparseCgebsr2gebsc_bufferSize(handle,
+					    mb,
+					    nb,
+					    nnzb,
+					    bsr_val,
+					    bsr_row_ptr,
+					    bsr_col_ind,
+					    row_block_dim,
+					    col_block_dim,
+					    p_buffer_size);
+  }
+
+  template<>
+  hipsparseStatus_t hipsparseXgebsr2gebsc_bufferSize(hipsparseHandle_t                handle,
+						     int                   mb,
+						     int                   nb,
+						     int                   nnzb,
+						     const hipDoubleComplex* bsr_val,
+						     const int*            bsr_row_ptr,
+						     const int*            bsr_col_ind,
+						     int                   row_block_dim,
+						     int                   col_block_dim,
+						     size_t*                         p_buffer_size)
+  {
+    return hipsparseZgebsr2gebsc_bufferSize(handle,
+					    mb,
+					    nb,
+					    nnzb,
+					    bsr_val,
+					    bsr_row_ptr,
+					    bsr_col_ind,
+					    row_block_dim,
+					    col_block_dim,
+					    p_buffer_size);
+  }
+  
+  template<>
+  hipsparseStatus_t hipsparseXgebsr2gebsc(hipsparseHandle_t                handle,
+					  int                   mb,
+					  int                   nb,
+					  int                   nnzb,
+					  const float* bsr_val,
+					  const int*            bsr_row_ptr,
+					  const int*            bsr_col_ind,
+					  int                   row_block_dim,
+					  int                   col_block_dim,
+					  float*     bsc_val,
+					  int*                  bsc_row_ind,
+					  int*                  bsc_col_ptr,
+					  hipsparseAction_t     copy_values,
+					  hipsparseIndexBase_t  idx_base,
+					  void*                 temp_buffer)
+  {
+    return hipsparseSgebsr2gebsc(handle,
+				 mb,
+				 nb,
+				 nnzb,
+				 bsr_val,
+				 bsr_row_ptr,
+				 bsr_col_ind,
+				 row_block_dim,
+				 col_block_dim,
+				 bsc_val,
+				 bsc_row_ind,
+				 bsc_col_ptr,
+				 copy_values,
+				 idx_base,
+				 temp_buffer);
+  }
+  
+  template<>
+  hipsparseStatus_t hipsparseXgebsr2gebsc(hipsparseHandle_t                handle,
+					  int                   mb,
+					  int                   nb,
+					  int                   nnzb,
+					  const double* 	bsr_val,
+					  const int*            bsr_row_ptr,
+					  const int*            bsr_col_ind,
+					  int                   row_block_dim,
+					  int                   col_block_dim,
+					  double*     		bsc_val,
+					  int*                  bsc_row_ind,
+					  int*                  bsc_col_ptr,
+					  hipsparseAction_t     copy_values,
+					  hipsparseIndexBase_t  idx_base,
+					  void*                 temp_buffer)
+  {
+    return hipsparseDgebsr2gebsc(handle,
+				 mb,
+				 nb,
+				 nnzb,
+				 bsr_val,
+				 bsr_row_ptr,
+				 bsr_col_ind,
+				 row_block_dim,
+				 col_block_dim,
+				 bsc_val,
+				 bsc_row_ind,
+				 bsc_col_ptr,
+				 copy_values,
+				 idx_base,
+				 temp_buffer);
+  }
+  
+  template<>
+  hipsparseStatus_t hipsparseXgebsr2gebsc(hipsparseHandle_t     handle,
+					  int                   mb,
+					  int                   nb,
+					  int                   nnzb,
+					  const hipComplex* 	bsr_val,
+					  const int*            bsr_row_ptr,
+					  const int*            bsr_col_ind,
+					  int                   row_block_dim,
+					  int                   col_block_dim,
+					  hipComplex*     	bsc_val,
+					  int*                  bsc_row_ind,
+					  int*                  bsc_col_ptr,
+					  hipsparseAction_t     copy_values,
+					  hipsparseIndexBase_t  idx_base,
+					  void*                 temp_buffer)
+  {
+    return hipsparseCgebsr2gebsc(handle,
+				 mb,
+				 nb,
+				 nnzb,
+				 bsr_val,
+				 bsr_row_ptr,
+				 bsr_col_ind,
+				 row_block_dim,
+				 col_block_dim,
+				 bsc_val,
+				 bsc_row_ind,
+				 bsc_col_ptr,
+				 copy_values,
+				 idx_base,
+				 temp_buffer);
+  }
+
+  template<>
+  hipsparseStatus_t hipsparseXgebsr2gebsc(hipsparseHandle_t                handle,
+					  int                   mb,
+					  int                   nb,
+					  int                   nnzb,
+					  const hipDoubleComplex* bsr_val,
+					  const int*            bsr_row_ptr,
+					  const int*            bsr_col_ind,
+					  int                   row_block_dim,
+					  int                   col_block_dim,
+					  hipDoubleComplex*     bsc_val,
+					  int*                  bsc_row_ind,
+					  int*                  bsc_col_ptr,
+					  hipsparseAction_t     copy_values,
+					  hipsparseIndexBase_t  idx_base,
+					  void*                 temp_buffer)
+  {
+    return hipsparseZgebsr2gebsc(handle,
+				 mb,
+				 nb,
+				 nnzb,
+				 bsr_val,
+				 bsr_row_ptr,
+				 bsr_col_ind,
+				 row_block_dim,
+				 col_block_dim,
+				 bsc_val,
+				 bsc_row_ind,
+				 bsc_col_ptr,
+				 copy_values,
+				 idx_base,
+				 temp_buffer);
+  }
+  
+
+
+  
+  template<>
+  hipsparseStatus_t hipsparseXcsr2gebsr_bufferSize(hipsparseHandle_t             handle,
+						   hipsparseDirection_t          dir,
+						   int                           m,
+						   int                   	n,
+						   const hipsparseMatDescr_t     csr_descr,
+						   const hipDoubleComplex* csr_val,
+						   const int*            csr_row_ptr,
+						   const int*            csr_col_ind,
+						   int                   row_block_dim,
+						   int                   col_block_dim,
+						   size_t*                         p_buffer_size)
+  {
+    return hipsparseZcsr2gebsr_bufferSize(handle,
+					  dir,
+					  m,
+					  n,
+					  csr_descr,
+					  csr_val,
+					  csr_row_ptr,
+					  csr_col_ind,
+					  row_block_dim,
+					  col_block_dim,
+					  p_buffer_size);
+  }
+
+  template<>
+  hipsparseStatus_t hipsparseXcsr2gebsr_bufferSize(hipsparseHandle_t             handle,
+						   hipsparseDirection_t          dir,
+						   int                           m,
+						   int                   	n,
+						   const hipsparseMatDescr_t     csr_descr,
+						   const float* csr_val,
+						   const int*            csr_row_ptr,
+						   const int*            csr_col_ind,
+						   int                   row_block_dim,
+						   int                   col_block_dim,
+						   size_t*                         p_buffer_size)
+  {
+    return hipsparseScsr2gebsr_bufferSize(handle,
+					  dir,
+					  m,
+					  n,
+					  csr_descr,
+					  csr_val,
+					  csr_row_ptr,
+					  csr_col_ind,
+					  row_block_dim,
+					  col_block_dim,
+					  p_buffer_size);
+  }
+
+  template<>
+  hipsparseStatus_t hipsparseXcsr2gebsr_bufferSize(hipsparseHandle_t             handle,
+						   hipsparseDirection_t          dir,
+						   int                           m,
+						   int                   	n,
+						   const hipsparseMatDescr_t     csr_descr,
+						   const double* csr_val,
+						   const int*            csr_row_ptr,
+						   const int*            csr_col_ind,
+						   int                   row_block_dim,
+						   int                   col_block_dim,
+						   size_t*                         p_buffer_size)
+  {
+    return hipsparseDcsr2gebsr_bufferSize(handle,
+					  dir,
+					  m,
+					  n,
+					  csr_descr,
+					  csr_val,
+					  csr_row_ptr,
+					  csr_col_ind,
+					  row_block_dim,
+					  col_block_dim,
+					  p_buffer_size);
+  }
+
+  template<>
+  hipsparseStatus_t hipsparseXcsr2gebsr_bufferSize(hipsparseHandle_t             handle,
+						   hipsparseDirection_t          dir,
+						   int                           m,
+						   int                   	n,
+						   const hipsparseMatDescr_t     csr_descr,
+						   const hipComplex* csr_val,
+						   const int*            csr_row_ptr,
+						   const int*            csr_col_ind,
+						   int                   row_block_dim,
+						   int                   col_block_dim,
+						   size_t*                         p_buffer_size)
+  {
+    return hipsparseCcsr2gebsr_bufferSize(handle,
+					  dir,
+					  m,
+					  n,
+					  csr_descr,
+					  csr_val,
+					  csr_row_ptr,
+					  csr_col_ind,
+					  row_block_dim,
+					  col_block_dim,
+					  p_buffer_size);
+  }
+
+
+
+  
+  template<>
+  hipsparseStatus_t hipsparseXcsr2gebsr(hipsparseHandle_t                	handle,
+					hipsparseDirection_t             	dir,
+					int                   		m,
+					int                   		n,
+					const hipsparseMatDescr_t       	csr_descr,
+					const float* 	csr_val,
+					const int*            		csr_row_ptr,
+					const int*            		csr_col_ind,
+					const hipsparseMatDescr_t 	bsr_descr,
+					float*   	bsr_val,
+					int*                  		bsr_row_ptr,
+					int*                  		bsr_col_ind,
+					int                   		row_block_dim,
+					int                   		col_block_dim,
+					void*                     	p_buffer)
+  {
+    return hipsparseScsr2gebsr(handle,
+			       dir,
+			       m,
+			       n,
+			       csr_descr,
+			       csr_val,
+			       csr_row_ptr,
+			       csr_col_ind,
+			       bsr_descr,
+			       bsr_val,
+			       bsr_row_ptr,
+			       bsr_col_ind,
+			       row_block_dim,
+			       col_block_dim,
+			       p_buffer);
+  }
+
+    
+  template<>
+  hipsparseStatus_t hipsparseXcsr2gebsr(hipsparseHandle_t                	handle,
+					hipsparseDirection_t             	dir,
+					int                   		m,
+					int                   		n,
+					const hipsparseMatDescr_t       	csr_descr,
+					const double* 	csr_val,
+					const int*            		csr_row_ptr,
+					const int*            		csr_col_ind,
+					const hipsparseMatDescr_t 	bsr_descr,
+					double*   	bsr_val,
+					int*                  		bsr_row_ptr,
+					int*                  		bsr_col_ind,
+					int                   		row_block_dim,
+					int                   		col_block_dim,
+					void*                     	p_buffer)
+  {
+    return hipsparseDcsr2gebsr(handle,
+			       dir,
+			       m,
+			       n,
+			       csr_descr,
+			       csr_val,
+			       csr_row_ptr,
+			       csr_col_ind,
+			       bsr_descr,
+			       bsr_val,
+			       bsr_row_ptr,
+			       bsr_col_ind,
+			       row_block_dim,
+			       col_block_dim,
+			       p_buffer);
+  }
+
+  template<>
+  hipsparseStatus_t hipsparseXcsr2gebsr(hipsparseHandle_t                	handle,
+					hipsparseDirection_t             	dir,
+					int                   		m,
+					int                   		n,
+					const hipsparseMatDescr_t       	csr_descr,
+					const hipComplex* 	csr_val,
+					const int*            		csr_row_ptr,
+					const int*            		csr_col_ind,
+					const hipsparseMatDescr_t 	bsr_descr,
+					hipComplex*   	bsr_val,
+					int*                  		bsr_row_ptr,
+					int*                  		bsr_col_ind,
+					int                   		row_block_dim,
+					int                   		col_block_dim,
+					void*                     	p_buffer)
+  {
+    return hipsparseCcsr2gebsr(handle,
+			       dir,
+			       m,
+			       n,
+			       csr_descr,
+			       csr_val,
+			       csr_row_ptr,
+			       csr_col_ind,
+			       bsr_descr,
+			       bsr_val,
+			       bsr_row_ptr,
+			       bsr_col_ind,
+			       row_block_dim,
+			       col_block_dim,
+			       p_buffer);
+  }
+
+  template<>
+  hipsparseStatus_t hipsparseXcsr2gebsr(hipsparseHandle_t                	handle,
+					hipsparseDirection_t             	dir,
+					int                   		m,
+					int                   		n,
+					const hipsparseMatDescr_t       	csr_descr,
+					const hipDoubleComplex* 	csr_val,
+					const int*            		csr_row_ptr,
+					const int*            		csr_col_ind,
+					const hipsparseMatDescr_t 	bsr_descr,
+					hipDoubleComplex*   	bsr_val,
+					int*                  		bsr_row_ptr,
+					int*                  		bsr_col_ind,
+					int                   		row_block_dim,
+					int                   		col_block_dim,
+					void*                     	p_buffer)
+  {
+    return hipsparseZcsr2gebsr(handle,
+			       dir,
+			       m,
+			       n,
+			       csr_descr,
+			       csr_val,
+			       csr_row_ptr,
+			       csr_col_ind,
+			       bsr_descr,
+			       bsr_val,
+			       bsr_row_ptr,
+			       bsr_col_ind,
+			       row_block_dim,
+			       col_block_dim,
+			       p_buffer);
+  }
+
+  
     template <>
     hipsparseStatus_t hipsparseXcsr2bsr(hipsparseHandle_t         handle,
                                         hipsparseDirection_t      dirA,
