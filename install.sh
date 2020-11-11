@@ -432,7 +432,7 @@ pushd .
 
     case "${ID}" in
       ubuntu)
-        elevate_if_not_root dpkg -i hipsparse-*.deb
+        elevate_if_not_root dpkg -i hipsparse[-\_]*.deb
       ;;
       centos|rhel)
         elevate_if_not_root yum -y localinstall hipsparse-*.rpm
