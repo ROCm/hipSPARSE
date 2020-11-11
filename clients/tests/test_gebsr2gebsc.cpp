@@ -87,28 +87,28 @@ protected:
 Arguments setup_gebsr2gebsc_arguments(gebsr2gebsc_tuple tup)
 {
     Arguments arg;
-    arg.M             = std::get<0>(tup);
-    arg.N             = std::get<1>(tup);
-    arg.row_block_dim = std::get<2>(tup);
-    arg.col_block_dim = std::get<3>(tup);
-    arg.action        = std::get<4>(tup);
-    arg.idx_base      = std::get<5>(tup);
-    arg.dirA          = std::get<6>(tup);
-    arg.timing        = 0;
+    arg.M              = std::get<0>(tup);
+    arg.N              = std::get<1>(tup);
+    arg.row_block_dimA = std::get<2>(tup);
+    arg.col_block_dimA = std::get<3>(tup);
+    arg.action         = std::get<4>(tup);
+    arg.idx_base       = std::get<5>(tup);
+    arg.dirA           = std::get<6>(tup);
+    arg.timing         = 0;
     return arg;
 }
 
 Arguments setup_gebsr2gebsc_arguments(gebsr2gebsc_bin_tuple tup)
 {
     Arguments arg;
-    arg.M             = -99;
-    arg.N             = -99;
-    arg.row_block_dim = std::get<0>(tup);
-    arg.col_block_dim = std::get<1>(tup);
-    arg.action        = std::get<2>(tup);
-    arg.idx_base      = std::get<3>(tup);
-    arg.dirA          = std::get<4>(tup);
-    arg.timing        = 0;
+    arg.M              = -99;
+    arg.N              = -99;
+    arg.row_block_dimA = std::get<0>(tup);
+    arg.col_block_dimA = std::get<1>(tup);
+    arg.action         = std::get<2>(tup);
+    arg.idx_base       = std::get<3>(tup);
+    arg.dirA           = std::get<4>(tup);
+    arg.timing         = 0;
 
     // Determine absolute path of test matrix
     std::string bin_file = std::get<5>(tup);

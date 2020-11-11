@@ -441,12 +441,12 @@ hipsparseStatus_t testing_gebsr2gebsc(Arguments argus)
     hipsparseIndexBase_t base   = argus.idx_base;
 
     // Argument sanity check before allocating invalid memory
-    if(argus.M <= 0 || argus.N <= 0 || argus.row_block_dim <= 0 || argus.col_block_dim <= 0)
+    if(argus.M <= 0 || argus.N <= 0 || argus.row_block_dimA <= 0 || argus.col_block_dimA <= 0)
     {
         int M             = argus.M;
         int N             = argus.N;
-        int row_block_dim = argus.row_block_dim;
-        int col_block_dim = argus.col_block_dim;
+        int row_block_dim = argus.row_block_dimA;
+        int col_block_dim = argus.col_block_dimA;
 
         static const size_t safe_size = 100;
 
@@ -529,8 +529,8 @@ hipsparseStatus_t testing_gebsr2gebsc(Arguments argus)
         bsr_dirb          = argus.dirA;
         int m             = argus.M;
         int n             = argus.N;
-        bsr_row_block_dim = argus.row_block_dim;
-        bsr_col_block_dim = argus.col_block_dim;
+        bsr_row_block_dim = argus.row_block_dimA;
+        bsr_col_block_dim = argus.col_block_dimA;
 
         std::string binfile  = "";
         std::string filename = "";
