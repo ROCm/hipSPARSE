@@ -1625,6 +1625,7 @@ inline void host_gebsr_to_csr(hipsparseDirection_t    direction,
     }
 }
 
+template<typename T>
 inline void host_csr_to_gebsr(hipsparseDirection_t    direction,
                               int                     M,
                               int                     N,
@@ -1850,7 +1851,6 @@ void host_gebsr_to_gebsc(int                     Mb,
     }
 
     bsc_col_ptr[0] = base;
-
 }
 
 template <typename T>
