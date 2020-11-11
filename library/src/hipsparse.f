@@ -5547,6 +5547,104 @@ module hipsparse
             type(c_ptr), value :: csrColIndC
         end function hipsparseZbsr2csr
 
+
+
+!       hipsparseXgebsr2csr
+        function hipsparseSgebsr2csr(handle, dirA, mb, nb, descrA, bsrValA, bsrRowPtrA, &
+                bsrColIndA, rowBlockDim, colBlockDim,descrC, csrValC, csrRowPtrC, csrColIndC) &
+                bind(c, name = 'hipsparseSgebsr2csr')
+            use hipsparse_enums
+            use iso_c_binding
+            implicit none
+            integer(kind(HIPSPARSE_STATUS_SUCCESS)) :: hipsparseSgebsr2csr
+            type(c_ptr), value :: handle
+            integer(c_int), value :: dirA
+            integer(c_int), value :: mb
+            integer(c_int), value :: nb
+            type(c_ptr), intent(in), value :: descrA
+            type(c_ptr), intent(in), value :: bsrValA
+            type(c_ptr), intent(in), value :: bsrRowPtrA
+            type(c_ptr), intent(in), value :: bsrColIndA
+            integer(c_int), value :: rowBlockDim
+            integer(c_int), value :: colBlockDim
+            type(c_ptr), intent(in), value :: descrC
+            type(c_ptr), value :: csrValC
+            type(c_ptr), value :: csrRowPtrC
+            type(c_ptr), value :: csrColIndC
+        end function hipsparseSgebsr2csr
+
+        function hipsparseDgebsr2csr(handle, dirA, mb, nb, descrA, bsrValA, bsrRowPtrA, &
+                bsrColIndA, rowBlockDim, colBlockDim,descrC, csrValC, csrRowPtrC, csrColIndC) &
+                bind(c, name = 'hipsparseDgebsr2csr')
+            use hipsparse_enums
+            use iso_c_binding
+            implicit none
+            integer(kind(HIPSPARSE_STATUS_SUCCESS)) :: hipsparseDgebsr2csr
+            type(c_ptr), value :: handle
+            integer(c_int), value :: dirA
+            integer(c_int), value :: mb
+            integer(c_int), value :: nb
+            type(c_ptr), intent(in), value :: descrA
+            type(c_ptr), intent(in), value :: bsrValA
+            type(c_ptr), intent(in), value :: bsrRowPtrA
+            type(c_ptr), intent(in), value :: bsrColIndA
+            integer(c_int), value :: rowBlockDim
+            integer(c_int), value :: colBlockDim
+            type(c_ptr), intent(in), value :: descrC
+            type(c_ptr), value :: csrValC
+            type(c_ptr), value :: csrRowPtrC
+            type(c_ptr), value :: csrColIndC
+        end function hipsparseDgebsr2csr
+
+        function hipsparseCgebsr2csr(handle, dirA, mb, nb, descrA, bsrValA, bsrRowPtrA, &
+                bsrColIndA, rowBlockDim, colBlockDim,descrC, csrValC, csrRowPtrC, csrColIndC) &
+                bind(c, name = 'hipsparseCgebsr2csr')
+            use hipsparse_enums
+            use iso_c_binding
+            implicit none
+            integer(kind(HIPSPARSE_STATUS_SUCCESS)) :: hipsparseCgebsr2csr
+            type(c_ptr), value :: handle
+            integer(c_int), value :: dirA
+            integer(c_int), value :: mb
+            integer(c_int), value :: nb
+            type(c_ptr), intent(in), value :: descrA
+            type(c_ptr), intent(in), value :: bsrValA
+            type(c_ptr), intent(in), value :: bsrRowPtrA
+            type(c_ptr), intent(in), value :: bsrColIndA
+            integer(c_int), value :: rowBlockDim
+            integer(c_int), value :: colBlockDim
+            type(c_ptr), intent(in), value :: descrC
+            type(c_ptr), value :: csrValC
+            type(c_ptr), value :: csrRowPtrC
+            type(c_ptr), value :: csrColIndC
+        end function hipsparseCgebsr2csr
+
+        function hipsparseZgebsr2csr(handle, dirA, mb, nb, descrA, bsrValA, bsrRowPtrA, &
+                bsrColIndA, rowBlockDim, colBlockDim,descrC, csrValC, csrRowPtrC, csrColIndC) &
+                bind(c, name = 'hipsparseZgebsr2csr')
+            use hipsparse_enums
+            use iso_c_binding
+            implicit none
+            integer(kind(HIPSPARSE_STATUS_SUCCESS)) :: hipsparseZgebsr2csr
+            type(c_ptr), value :: handle
+            integer(c_int), value :: dirA
+            integer(c_int), value :: mb
+            integer(c_int), value :: nb
+            type(c_ptr), intent(in), value :: descrA
+            type(c_ptr), intent(in), value :: bsrValA
+            type(c_ptr), intent(in), value :: bsrRowPtrA
+            type(c_ptr), intent(in), value :: bsrColIndA
+            integer(c_int), value :: rowBlockDim
+            integer(c_int), value :: colBlockDim
+            type(c_ptr), intent(in), value :: descrC
+            type(c_ptr), value :: csrValC
+            type(c_ptr), value :: csrRowPtrC
+            type(c_ptr), value :: csrColIndC
+        end function hipsparseZgebsr2csr
+
+      
+
+      
 !       hipsparseXcsr2csr_compress
         function hipsparseScsr2csr_compress(handle, m, n, descrA, csrValA, csrColIndA, &
                 csrRowPtrA, nnzA, nnzPerRow, csrValC, csrColIndC, csrRowPtrC, tol) &
