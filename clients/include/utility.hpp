@@ -1572,6 +1572,60 @@ inline void host_csr_to_bsr(hipsparseDirection_t    direction,
 }
 
 template <typename T>
+inline void host_gebsr_to_csr(hipsparseDirection_t    direction,
+                              int                     mb,
+                              int                     nb,
+                              int                     nnzb,
+                              const std::vector<T>&   bsr_val,
+                              const std::vector<int>& bsr_row_ptr,
+                              const std::vector<int>& bsr_col_ind,
+                              int                     row_block_dim,
+                              int                     col_block_dim,
+                              hipsparseIndexBase_t    bsr_base,
+                              std::vector<T>&         csr_val,
+                              std::vector<int>&       csr_row_ptr,
+                              std::vector<int>&       csr_col_ind,
+                              hipsparseIndexBase_t    csr_base)
+{
+
+    csr_col_ind.resize(nnzb * row_block_dim * col_block_dim);
+    csr_row_ptr.resize(mb * row_block_dim + 1);
+    csr_val.resize(nnzb * row_block_dim * col_block_dim);
+    int at         = 0;
+    csr_row_ptr[0] = csr_base;
+    for(int i = 0; i < mb; ++i)
+    {
+        for(int r = 0; r < row_block_dim; ++r)
+        {
+            int row = i * row_block_dim + r;
+            for(int k = bsr_row_ptr[i] - bsr_base; k < bsr_row_ptr[i + 1] - bsr_base; ++k)
+            {
+                int j = bsr_col_ind[k] - bsr_base;
+                for(int c = 0; c < col_block_dim; ++c)
+                {
+                    int col         = col_block_dim * j + c;
+                    csr_col_ind[at] = col + csr_base;
+                    if(direction == HIPSPARSE_DIRECTION_ROW)
+                    {
+                        csr_val[at]
+                            = bsr_val[k * row_block_dim * col_block_dim + col_block_dim * r + c];
+                    }
+                    else
+                    {
+                        csr_val[at]
+                            = bsr_val[k * row_block_dim * col_block_dim + row_block_dim * c + r];
+                    }
+                    ++at;
+                }
+            }
+
+            csr_row_ptr[row + 1]
+                = csr_row_ptr[row] + (bsr_row_ptr[i + 1] - bsr_row_ptr[i]) * col_block_dim;
+        }
+    }
+}
+
+template<typename T>
 inline void host_csr_to_gebsr(hipsparseDirection_t    direction,
                               int                     M,
                               int                     N,

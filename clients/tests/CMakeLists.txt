@@ -160,6 +160,7 @@ set(HIPSPARSE_TEST_SOURCES
   test_csr2coo.cpp
   test_csr2bsr.cpp
   test_bsr2csr.cpp
+  test_gebsr2csr.cpp
   test_csr2csr_compress.cpp
   test_prune_csr2csr.cpp
   test_prune_csr2csr_by_percentage.cpp
