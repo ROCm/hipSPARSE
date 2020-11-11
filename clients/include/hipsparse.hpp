@@ -1176,6 +1176,42 @@ namespace hipsparse
                                                          pruneInfo_t               info,
                                                          void*                     buffer);
 
+    template <typename T>
+    hipsparseStatus_t hipsparseXgebsr2gebsr_bufferSize(hipsparseHandle_t         handle,
+                                                       hipsparseDirection_t      dirA,
+                                                       int                       mb,
+                                                       int                       nb,
+                                                       int                       nnzb,
+                                                       const hipsparseMatDescr_t descrA,
+                                                       const T*                  bsrValA,
+                                                       const int*                bsrRowPtrA,
+                                                       const int*                bsrColIndA,
+                                                       int                       rowBlockDimA,
+                                                       int                       colBlockDimA,
+                                                       int                       rowBlockDimC,
+                                                       int                       colBlockDimC,
+                                                       int*                      bufferSize);
+
+    template <typename T>
+    hipsparseStatus_t hipsparseXgebsr2gebsr(hipsparseHandle_t         handle,
+                                            hipsparseDirection_t      dirA,
+                                            int                       mb,
+                                            int                       nb,
+                                            int                       nnzb,
+                                            const hipsparseMatDescr_t descrA,
+                                            const T*                  bsrValA,
+                                            const int*                bsrRowPtrA,
+                                            const int*                bsrColIndA,
+                                            int                       rowBlockDimA,
+                                            int                       colBlockDimA,
+                                            const hipsparseMatDescr_t descrC,
+                                            T*                        bsrValC,
+                                            int*                      bsrRowPtrC,
+                                            int*                      bsrColIndC,
+                                            int                       rowBlockDimC,
+                                            int                       colBlockDimC,
+                                            void*                     buffer);
+
 } // namespace hipsparse
 
 #endif // _HIPSPARSE_HPP_

@@ -432,8 +432,8 @@ hipsparseStatus_t testing_csr2gebsr(Arguments argus)
     hipsparseIndexBase_t csr_idx_base  = argus.idx_base;
     hipsparseIndexBase_t bsr_idx_base  = argus.idx_base2;
     hipsparseDirection_t dir           = argus.dirA;
-    int                  row_block_dim = argus.row_block_dim;
-    int                  col_block_dim = argus.col_block_dim;
+    int                  row_block_dim = argus.row_block_dimA;
+    int                  col_block_dim = argus.col_block_dimA;
     std::string          binfile       = "";
     std::string          filename      = "";
     hipsparseStatus_t    status;

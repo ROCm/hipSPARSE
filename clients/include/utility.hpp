@@ -1625,7 +1625,7 @@ inline void host_gebsr_to_csr(hipsparseDirection_t    direction,
     }
 }
 
-template<typename T>
+template <typename T>
 inline void host_csr_to_gebsr(hipsparseDirection_t    direction,
                               int                     M,
                               int                     N,
@@ -1786,6 +1786,70 @@ inline void host_csr_to_gebsr(hipsparseDirection_t    direction,
             bsr_val[index] = csr_val[j];
         }
     }
+}
+
+template <typename T>
+inline void host_gebsr_to_gebsr(hipsparseDirection_t    direction,
+                                int                     mb,
+                                int                     nb,
+                                int                     nnzb,
+                                const std::vector<T>&   bsr_val_A,
+                                const std::vector<int>& bsr_row_ptr_A,
+                                const std::vector<int>& bsr_col_ind_A,
+                                int                     row_block_dim_A,
+                                int                     col_block_dim_A,
+                                hipsparseIndexBase_t    base_A,
+                                std::vector<T>&         bsr_val_C,
+                                std::vector<int>&       bsr_row_ptr_C,
+                                std::vector<int>&       bsr_col_ind_C,
+                                int                     row_block_dim_C,
+                                int                     col_block_dim_C,
+                                hipsparseIndexBase_t    base_C)
+{
+    int m = mb * row_block_dim_A;
+    int n = nb * col_block_dim_A;
+
+    int mb_C = (m + row_block_dim_C - 1) / row_block_dim_C;
+    int nb_C = (n + col_block_dim_C - 1) / col_block_dim_C;
+
+    // convert GEBSR to CSR format
+    std::vector<int> csr_row_ptr;
+    std::vector<int> csr_col_ind;
+    std::vector<T>   csr_val;
+
+    host_gebsr_to_csr(direction,
+                      mb,
+                      nb,
+                      nnzb,
+                      bsr_val_A,
+                      bsr_row_ptr_A,
+                      bsr_col_ind_A,
+                      row_block_dim_A,
+                      col_block_dim_A,
+                      base_A,
+                      csr_val,
+                      csr_row_ptr,
+                      csr_col_ind,
+                      HIPSPARSE_INDEX_BASE_ZERO);
+
+    int nnz = csr_row_ptr[m] - csr_row_ptr[0];
+
+    // convert CSR to GEBSR format
+    int nnzb_C;
+    host_csr_to_gebsr(direction,
+                      m,
+                      n,
+                      row_block_dim_C,
+                      col_block_dim_C,
+                      nnzb_C,
+                      HIPSPARSE_INDEX_BASE_ZERO,
+                      csr_row_ptr,
+                      csr_col_ind,
+                      csr_val,
+                      base_C,
+                      bsr_row_ptr_C,
+                      bsr_col_ind_C,
+                      bsr_val_C);
 }
 
 template <typename T>
@@ -2983,8 +3047,8 @@ static inline void host_lssolve(int                     M,
                     // Lower triangular part
                     int idx = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? i * ldb + local_col
                                                                             : local_col * ldb + i;
-                    T neg_val = make_DataType<T>(-1.0) * local_val;
-                    temp[k]   = testing_fma(neg_val, B[idx], temp[k]);
+                    T   neg_val = make_DataType<T>(-1.0) * local_val;
+                    temp[k]     = testing_fma(neg_val, B[idx], temp[k]);
                 }
             }
 
@@ -3100,8 +3164,8 @@ static inline void host_ussolve(int                     M,
                     // Upper triangular part
                     int idx = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? i * ldb + local_col
                                                                             : local_col * ldb + i;
-                    T neg_val = make_DataType<T>(-1.0) * local_val;
-                    temp[k]   = testing_fma(neg_val, B[idx], temp[k]);
+                    T   neg_val = make_DataType<T>(-1.0) * local_val;
+                    temp[k]     = testing_fma(neg_val, B[idx], temp[k]);
                 }
             }
 
@@ -3322,8 +3386,8 @@ int bsr_lsolve(hipsparseDirection_t dir,
                 {
                     int local_col = bsr_col * bsr_dim + bj;
                     T   local_val = dir == HIPSPARSE_DIRECTION_ROW
-                                      ? bsr_val[bsr_dim * bsr_dim * j + bi * bsr_dim + bj]
-                                      : bsr_val[bsr_dim * bsr_dim * j + bi + bj * bsr_dim];
+                                        ? bsr_val[bsr_dim * bsr_dim * j + bi * bsr_dim + bj]
+                                        : bsr_val[bsr_dim * bsr_dim * j + bi + bj * bsr_dim];
 
                     // Ignore all entries that are above the diagonal
                     if(local_col > local_row)
@@ -3455,8 +3519,8 @@ int bsr_usolve(hipsparseDirection_t dir,
                 {
                     int local_col = bsr_col * bsr_dim + bj;
                     T   local_val = dir == HIPSPARSE_DIRECTION_ROW
-                                      ? bsr_val[bsr_dim * bsr_dim * j + bi * bsr_dim + bj]
-                                      : bsr_val[bsr_dim * bsr_dim * j + bi + bj * bsr_dim];
+                                        ? bsr_val[bsr_dim * bsr_dim * j + bi * bsr_dim + bj]
+                                        : bsr_val[bsr_dim * bsr_dim * j + bi + bj * bsr_dim];
 
                     // Ignore all entries that are below the diagonal
                     if(local_col < local_row)
@@ -4412,13 +4476,15 @@ double get_time_us_sync(hipStream_t stream);
 class Arguments
 {
 public:
-    int M             = 128;
-    int N             = 128;
-    int K             = 128;
-    int nnz           = 32;
-    int block_dim     = 1;
-    int row_block_dim = 1;
-    int col_block_dim = 1;
+    int M              = 128;
+    int N              = 128;
+    int K              = 128;
+    int nnz            = 32;
+    int block_dim      = 1;
+    int row_block_dimA = 1;
+    int row_block_dimB = 1;
+    int col_block_dimA = 1;
+    int col_block_dimB = 1;
 
     int lda;
     int ldb;
@@ -4461,13 +4527,15 @@ public:
 
     Arguments& operator=(const Arguments& rhs)
     {
-        this->M             = rhs.M;
-        this->N             = rhs.N;
-        this->K             = rhs.K;
-        this->nnz           = rhs.nnz;
-        this->block_dim     = rhs.block_dim;
-        this->row_block_dim = rhs.row_block_dim;
-        this->col_block_dim = rhs.col_block_dim;
+        this->M              = rhs.M;
+        this->N              = rhs.N;
+        this->K              = rhs.K;
+        this->nnz            = rhs.nnz;
+        this->block_dim      = rhs.block_dim;
+        this->row_block_dimA = rhs.row_block_dimA;
+        this->row_block_dimB = rhs.row_block_dimB;
+        this->col_block_dimA = rhs.col_block_dimA;
+        this->col_block_dimB = rhs.col_block_dimB;
 
         this->lda = rhs.lda;
         this->ldb = rhs.ldb;
