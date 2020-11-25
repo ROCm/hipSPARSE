@@ -173,6 +173,12 @@ set(HIPSPARSE_TEST_SOURCES
   test_gebsr2gebsr.cpp
   test_csr2gebsr.cpp
   test_gebsr2gebsc.cpp
+  test_spmat_descr.cpp
+  test_spvec_descr.cpp
+  test_dnvec_descr.cpp
+  test_spmv_coo.cpp
+  test_spmv_csr.cpp
+  test_gather.cpp
 )
 
 if(NOT BUILD_CUDA)

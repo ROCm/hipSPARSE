@@ -396,33 +396,33 @@ void hipsparseInitCSR(
 
 /* ============================================================================================ */
 /*! \brief  Generate 2D laplacian on unit square in CSR format */
-template <typename T>
-int gen_2d_laplacian(int                  ndim,
-                     std::vector<int>&    rowptr,
-                     std::vector<int>&    col,
-                     std::vector<T>&      val,
-                     hipsparseIndexBase_t idx_base)
+template <typename I, typename J, typename T>
+J gen_2d_laplacian(int                  ndim,
+                   std::vector<I>&      rowptr,
+                   std::vector<J>&      col,
+                   std::vector<T>&      val,
+                   hipsparseIndexBase_t idx_base)
 {
     if(ndim == 0)
     {
         return 0;
     }
 
-    int n       = ndim * ndim;
-    int nnz_mat = n * 5 - ndim * 4;
+    J n       = ndim * ndim;
+    I nnz_mat = n * 5 - ndim * 4;
 
     rowptr.resize(n + 1);
     col.resize(nnz_mat);
     val.resize(nnz_mat);
 
-    int nnz = 0;
+    I nnz = 0;
 
     // Fill local arrays
     for(int i = 0; i < ndim; ++i)
     {
         for(int j = 0; j < ndim; ++j)
         {
-            int idx     = i * ndim + j;
+            J idx       = i * ndim + j;
             rowptr[idx] = nnz + idx_base;
             // if no upper boundary element, connect with upper neighbor
             if(i != 0)
@@ -482,30 +482,30 @@ void gen_dense_random_sparsity_pattern(int m, int n, T* A, int lda, float sparsi
 
 /* ============================================================================================ */
 /*! \brief  Generate a random sparse matrix in COO format */
-template <typename T>
-void gen_matrix_coo(int                  m,
-                    int                  n,
-                    int                  nnz,
-                    std::vector<int>&    row_ind,
-                    std::vector<int>&    col_ind,
+template <typename I, typename T>
+void gen_matrix_coo(I                    m,
+                    I                    n,
+                    I                    nnz,
+                    std::vector<I>&      row_ind,
+                    std::vector<I>&      col_ind,
                     std::vector<T>&      val,
                     hipsparseIndexBase_t idx_base)
 {
-    if((int)row_ind.size() != nnz)
+    if((I)row_ind.size() != nnz)
     {
         row_ind.resize(nnz);
     }
-    if((int)col_ind.size() != nnz)
+    if((I)col_ind.size() != nnz)
     {
         col_ind.resize(nnz);
     }
-    if((int)val.size() != nnz)
+    if((I)val.size() != nnz)
     {
         val.resize(nnz);
     }
 
     // Uniform distributed row indices
-    for(int i = 0; i < nnz; ++i)
+    for(I i = 0; i < nnz; ++i)
     {
         row_ind[i] = rand() % m;
     }
@@ -516,10 +516,10 @@ void gen_matrix_coo(int                  m,
     // Sample column indices
     std::vector<bool> check(nnz, false);
 
-    int i = 0;
+    I i = 0;
     while(i < nnz)
     {
-        int begin = i;
+        I begin = i;
         while(row_ind[i] == row_ind[begin])
         {
             ++i;
@@ -530,12 +530,12 @@ void gen_matrix_coo(int                  m,
         }
 
         // Sample i disjunct column indices
-        int idx = begin;
+        I idx = begin;
         while(idx < i)
         {
             // Normal distribution around the diagonal
-            int rng = (i - begin) * sqrt(-2.0 * log((double)rand() / RAND_MAX))
-                      * cos(2.0 * M_PI * (double)rand() / RAND_MAX);
+            I rng = (i - begin) * sqrt(-2.0 * log((double)rand() / RAND_MAX))
+                    * cos(2.0 * M_PI * (double)rand() / RAND_MAX);
 
             if(m <= n)
             {
@@ -558,7 +558,7 @@ void gen_matrix_coo(int                  m,
         }
 
         // Reset disjunct check array
-        for(int j = begin; j < i; ++j)
+        for(I j = begin; j < i; ++j)
         {
             check[col_ind[j]] = false;
         }
@@ -570,7 +570,7 @@ void gen_matrix_coo(int                  m,
     // Correct index base accordingly
     if(idx_base == HIPSPARSE_INDEX_BASE_ONE)
     {
-        for(int i = 0; i < nnz; ++i)
+        for(I i = 0; i < nnz; ++i)
         {
             ++row_ind[i];
             ++col_ind[i];
@@ -578,7 +578,7 @@ void gen_matrix_coo(int                  m,
     }
 
     // Sample random values
-    for(int i = 0; i < nnz; ++i)
+    for(I i = 0; i < nnz; ++i)
     {
         val[i] = random_generator<T>(); //(double) rand() / RAND_MAX;
     }
@@ -817,13 +817,13 @@ int read_mtx_matrix(const char*          filename,
 
 /* ============================================================================================ */
 /*! \brief  Read matrix from binary file in CSR format */
-template <typename T>
+template <typename I, typename J, typename T>
 int read_bin_matrix(const char*          filename,
-                    int&                 nrow,
-                    int&                 ncol,
-                    int&                 nnz,
-                    std::vector<int>&    ptr,
-                    std::vector<int>&    col,
+                    J&                   nrow,
+                    J&                   ncol,
+                    I&                   nnz,
+                    std::vector<I>&      ptr,
+                    std::vector<J>&      col,
                     std::vector<T>&      val,
                     hipsparseIndexBase_t idx_base)
 {
@@ -842,35 +842,49 @@ int read_bin_matrix(const char*          filename,
 
     int err;
 
-    err = fread(&nrow, sizeof(int), 1, f);
-    err |= fread(&ncol, sizeof(int), 1, f);
-    err |= fread(&nnz, sizeof(int), 1, f);
+    int nrowf, ncolf, nnzf;
+
+    err = fread(&nrowf, sizeof(int), 1, f);
+    err |= fread(&ncolf, sizeof(int), 1, f);
+    err |= fread(&nnzf, sizeof(int), 1, f);
+
+    nrow = (J)nrowf;
+    ncol = (J)ncolf;
+    nnz  = (I)nnzf;
 
     // Allocate memory
+    std::vector<int>    ptrf(nrow + 1);
+    std::vector<int>    colf(nnz);
+    std::vector<double> valf(nnz);
     ptr.resize(nrow + 1);
     col.resize(nnz);
     val.resize(nnz);
-    std::vector<double> tmp(nnz);
 
-    err |= fread(ptr.data(), sizeof(int), nrow + 1, f);
-    err |= fread(col.data(), sizeof(int), nnz, f);
-    err |= fread(tmp.data(), sizeof(double), nnz, f);
+    err |= fread(ptrf.data(), sizeof(int), nrow + 1, f);
+    err |= fread(colf.data(), sizeof(int), nnz, f);
+    err |= fread(valf.data(), sizeof(double), nnz, f);
 
     fclose(f);
 
-    for(int i = 0; i < nnz; ++i)
+    for(J i = 0; i < nrow + 1; ++i)
     {
-        val[i] = make_DataType<T>(tmp[i]);
+        ptr[i] = (I)ptrf[i];
+    }
+
+    for(I i = 0; i < nnz; ++i)
+    {
+        col[i] = (J)colf[i];
+        val[i] = make_DataType<T>(valf[i]);
     }
 
     if(idx_base == HIPSPARSE_INDEX_BASE_ONE)
     {
-        for(int i = 0; i < nrow + 1; ++i)
+        for(J i = 0; i < nrow + 1; ++i)
         {
             ++ptr[i];
         }
 
-        for(int i = 0; i < nnz; ++i)
+        for(I i = 0; i < nnz; ++i)
         {
             ++col[i];
         }
@@ -4508,6 +4522,7 @@ public:
     hipsparseDiagType_t     diag_type = HIPSPARSE_DIAG_TYPE_NON_UNIT;
     hipsparseFillMode_t     fill_mode = HIPSPARSE_FILL_MODE_LOWER;
     hipsparseDirection_t    dirA      = HIPSPARSE_DIRECTION_ROW;
+    hipsparseSpMVAlg_t      spmv_alg  = HIPSPARSE_MV_ALG_DEFAULT;
 
     int norm_check = 0;
     int unit_check = 1;
@@ -4559,6 +4574,7 @@ public:
         this->diag_type = rhs.diag_type;
         this->fill_mode = rhs.fill_mode;
         this->dirA      = rhs.dirA;
+        this->spmv_alg  = rhs.spmv_alg;
 
         this->norm_check = rhs.norm_check;
         this->unit_check = rhs.unit_check;
