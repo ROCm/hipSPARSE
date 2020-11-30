@@ -2220,21 +2220,21 @@ inline void host_bsrmv(hipsparseDirection_t dir,
 }
 
 template <typename T>
-inline void host_gebsrmv(hipsparseDirection_t  dir,
-                  hipsparseOperation_t  trans,
-                  int        mb,
-                  int        nb,
-                  int        nnzb,
-                  T                    alpha,
-                  const int* bsr_row_ptr,
-                  const int* bsr_col_ind,
-                  const T*             bsr_val,
-                  int        row_block_dim,
-                  int        col_block_dim,
-                  const T*             x,
-                  T                    beta,
-                  T*                   y,
-                  hipsparseIndexBase_t base)
+inline void host_gebsrmv(hipsparseDirection_t dir,
+                         hipsparseOperation_t trans,
+                         int                  mb,
+                         int                  nb,
+                         int                  nnzb,
+                         T                    alpha,
+                         const int*           bsr_row_ptr,
+                         const int*           bsr_col_ind,
+                         const T*             bsr_val,
+                         int                  row_block_dim,
+                         int                  col_block_dim,
+                         const T*             x,
+                         T                    beta,
+                         T*                   y,
+                         hipsparseIndexBase_t base)
 {
     // Quick return
     if(alpha == make_DataType<T>(0))
@@ -2335,25 +2335,28 @@ inline void host_gebsrmv(hipsparseDirection_t  dir,
                         {
                             if(dir == HIPSPARSE_DIRECTION_COLUMN)
                             {
-                                sum0[k] = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
-                                                           + row_block_dim * l],
-                                                   x[col * col_block_dim + l],
-                                                   sum0[k]);
-                                sum1[k] = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
-                                                           + row_block_dim * l + 1],
-                                                   x[col * col_block_dim + l],
-                                                   sum1[k]);
+                                sum0[k]
+                                    = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
+                                                          + row_block_dim * l],
+                                                  x[col * col_block_dim + l],
+                                                  sum0[k]);
+                                sum1[k]
+                                    = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
+                                                          + row_block_dim * l + 1],
+                                                  x[col * col_block_dim + l],
+                                                  sum1[k]);
                             }
                             else
                             {
-                                sum0[k]
-                                    = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k) + l],
-                                               x[col * col_block_dim + l],
-                                               sum0[k]);
-                                sum1[k] = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
-                                                           + col_block_dim + l],
-                                                   x[col * col_block_dim + l],
-                                                   sum1[k]);
+                                sum0[k] = testing_fma(
+                                    bsr_val[row_block_dim * col_block_dim * (j + k) + l],
+                                    x[col * col_block_dim + l],
+                                    sum0[k]);
+                                sum1[k]
+                                    = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
+                                                          + col_block_dim + l],
+                                                  x[col * col_block_dim + l],
+                                                  sum1[k]);
                             }
                         }
                     }
@@ -2400,33 +2403,38 @@ inline void host_gebsrmv(hipsparseDirection_t  dir,
                         {
                             if(dir == HIPSPARSE_DIRECTION_COLUMN)
                             {
-                                sum0[k] = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
-                                                           + row_block_dim * l],
-                                                   x[col * col_block_dim + l],
-                                                   sum0[k]);
-                                sum1[k] = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
-                                                           + row_block_dim * l + 1],
-                                                   x[col * col_block_dim + l],
-                                                   sum1[k]);
-                                sum2[k] = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
-                                                           + row_block_dim * l + 2],
-                                                   x[col * col_block_dim + l],
-                                                   sum2[k]);
+                                sum0[k]
+                                    = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
+                                                          + row_block_dim * l],
+                                                  x[col * col_block_dim + l],
+                                                  sum0[k]);
+                                sum1[k]
+                                    = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
+                                                          + row_block_dim * l + 1],
+                                                  x[col * col_block_dim + l],
+                                                  sum1[k]);
+                                sum2[k]
+                                    = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
+                                                          + row_block_dim * l + 2],
+                                                  x[col * col_block_dim + l],
+                                                  sum2[k]);
                             }
                             else
                             {
-                                sum0[k]
-                                    = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k) + l],
-                                               x[col * col_block_dim + l],
-                                               sum0[k]);
-                                sum1[k] = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
-                                                           + col_block_dim + l],
-                                                   x[col * col_block_dim + l],
-                                                   sum1[k]);
-                                sum2[k] = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
-                                                           + 2 * col_block_dim + l],
-                                                   x[col * col_block_dim + l],
-                                                   sum2[k]);
+                                sum0[k] = testing_fma(
+                                    bsr_val[row_block_dim * col_block_dim * (j + k) + l],
+                                    x[col * col_block_dim + l],
+                                    sum0[k]);
+                                sum1[k]
+                                    = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
+                                                          + col_block_dim + l],
+                                                  x[col * col_block_dim + l],
+                                                  sum1[k]);
+                                sum2[k]
+                                    = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
+                                                          + 2 * col_block_dim + l],
+                                                  x[col * col_block_dim + l],
+                                                  sum2[k]);
                             }
                         }
                     }
@@ -2478,41 +2486,48 @@ inline void host_gebsrmv(hipsparseDirection_t  dir,
                         {
                             if(dir == HIPSPARSE_DIRECTION_COLUMN)
                             {
-                                sum0[k] = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
-                                                           + row_block_dim * l],
-                                                   x[col * col_block_dim + l],
-                                                   sum0[k]);
-                                sum1[k] = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
-                                                           + row_block_dim * l + 1],
-                                                   x[col * col_block_dim + l],
-                                                   sum1[k]);
-                                sum2[k] = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
-                                                           + row_block_dim * l + 2],
-                                                   x[col * col_block_dim + l],
-                                                   sum2[k]);
-                                sum3[k] = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
-                                                           + row_block_dim * l + 3],
-                                                   x[col * col_block_dim + l],
-                                                   sum3[k]);
+                                sum0[k]
+                                    = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
+                                                          + row_block_dim * l],
+                                                  x[col * col_block_dim + l],
+                                                  sum0[k]);
+                                sum1[k]
+                                    = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
+                                                          + row_block_dim * l + 1],
+                                                  x[col * col_block_dim + l],
+                                                  sum1[k]);
+                                sum2[k]
+                                    = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
+                                                          + row_block_dim * l + 2],
+                                                  x[col * col_block_dim + l],
+                                                  sum2[k]);
+                                sum3[k]
+                                    = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
+                                                          + row_block_dim * l + 3],
+                                                  x[col * col_block_dim + l],
+                                                  sum3[k]);
                             }
                             else
                             {
-                                sum0[k]
-                                    = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k) + l],
-                                               x[col * col_block_dim + l],
-                                               sum0[k]);
-                                sum1[k] = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
-                                                           + col_block_dim + l],
-                                                   x[col * col_block_dim + l],
-                                                   sum1[k]);
-                                sum2[k] = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
-                                                           + 2 * col_block_dim + l],
-                                                   x[col * col_block_dim + l],
-                                                   sum2[k]);
-                                sum3[k] = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
-                                                           + 3 * col_block_dim + l],
-                                                   x[col * col_block_dim + l],
-                                                   sum3[k]);
+                                sum0[k] = testing_fma(
+                                    bsr_val[row_block_dim * col_block_dim * (j + k) + l],
+                                    x[col * col_block_dim + l],
+                                    sum0[k]);
+                                sum1[k]
+                                    = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
+                                                          + col_block_dim + l],
+                                                  x[col * col_block_dim + l],
+                                                  sum1[k]);
+                                sum2[k]
+                                    = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
+                                                          + 2 * col_block_dim + l],
+                                                  x[col * col_block_dim + l],
+                                                  sum2[k]);
+                                sum3[k]
+                                    = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
+                                                          + 3 * col_block_dim + l],
+                                                  x[col * col_block_dim + l],
+                                                  sum3[k]);
                             }
                         }
                     }
@@ -2568,16 +2583,16 @@ inline void host_gebsrmv(hipsparseDirection_t  dir,
                                 if(dir == HIPSPARSE_DIRECTION_COLUMN)
                                 {
                                     sum[k] = testing_fma(bsr_val[row_block_dim * col_block_dim * j
-                                                              + row_block_dim * (bj + k) + bi],
-                                                      x[col_block_dim * col + (bj + k)],
-                                                      sum[k]);
+                                                                 + row_block_dim * (bj + k) + bi],
+                                                         x[col_block_dim * col + (bj + k)],
+                                                         sum[k]);
                                 }
                                 else
                                 {
                                     sum[k] = testing_fma(bsr_val[row_block_dim * col_block_dim * j
-                                                              + col_block_dim * bi + (bj + k)],
-                                                      x[col_block_dim * col + (bj + k)],
-                                                      sum[k]);
+                                                                 + col_block_dim * bi + (bj + k)],
+                                                         x[col_block_dim * col + (bj + k)],
+                                                         sum[k]);
                                 }
                             }
                         }

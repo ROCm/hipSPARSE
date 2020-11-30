@@ -78,9 +78,161 @@ void testing_gebsrmv_bad_arg(void)
 
     // Test hipsparseXbsrmv
     verify_hipsparse_status_invalid_handle(hipsparseXgebsrmv(nullptr,
+                                                             dirA,
+                                                             transA,
+                                                             safe_size,
+                                                             safe_size,
+                                                             safe_size,
+                                                             &alpha,
+                                                             descr,
+                                                             dval,
+                                                             dptr,
+                                                             dcol,
+                                                             safe_dim,
+                                                             safe_dim,
+                                                             dx,
+                                                             &beta,
+                                                             dy));
+    verify_hipsparse_status_invalid_pointer(hipsparseXgebsrmv(handle,
+                                                              dirA,
+                                                              transA,
+                                                              safe_size,
+                                                              safe_size,
+                                                              safe_size,
+                                                              (T*)nullptr,
+                                                              descr,
+                                                              dval,
+                                                              dptr,
+                                                              dcol,
+                                                              safe_dim,
+                                                              safe_dim,
+                                                              dx,
+                                                              &beta,
+                                                              dy),
+                                            "Error: alpha is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXgebsrmv(handle,
+                                                              dirA,
+                                                              transA,
+                                                              safe_size,
+                                                              safe_size,
+                                                              safe_size,
+                                                              &alpha,
+                                                              nullptr,
+                                                              dval,
+                                                              dptr,
+                                                              dcol,
+                                                              safe_dim,
+                                                              safe_dim,
+                                                              dx,
+                                                              &beta,
+                                                              dy),
+                                            "Error: descr is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXgebsrmv(handle,
+                                                              dirA,
+                                                              transA,
+                                                              safe_size,
+                                                              safe_size,
+                                                              safe_size,
+                                                              &alpha,
+                                                              descr,
+                                                              (T*)nullptr,
+                                                              dptr,
+                                                              dcol,
+                                                              safe_dim,
+                                                              safe_dim,
+                                                              dx,
+                                                              &beta,
+                                                              dy),
+                                            "Error: bsr_val is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXgebsrmv(handle,
+                                                              dirA,
+                                                              transA,
+                                                              safe_size,
+                                                              safe_size,
+                                                              safe_size,
+                                                              &alpha,
+                                                              descr,
+                                                              dval,
+                                                              nullptr,
+                                                              dcol,
+                                                              safe_dim,
+                                                              safe_dim,
+                                                              dx,
+                                                              &beta,
+                                                              dy),
+                                            "Error: bsr_row_ptr is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXgebsrmv(handle,
+                                                              dirA,
+                                                              transA,
+                                                              safe_size,
+                                                              safe_size,
+                                                              safe_size,
+                                                              &alpha,
+                                                              descr,
+                                                              dval,
+                                                              dptr,
+                                                              nullptr,
+                                                              safe_dim,
+                                                              safe_dim,
+                                                              dx,
+                                                              &beta,
+                                                              dy),
+                                            "Error: bsr_col_ind is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXgebsrmv(handle,
+                                                              dirA,
+                                                              transA,
+                                                              safe_size,
+                                                              safe_size,
+                                                              safe_size,
+                                                              &alpha,
+                                                              descr,
+                                                              dval,
+                                                              dptr,
+                                                              dcol,
+                                                              safe_dim,
+                                                              safe_dim,
+                                                              (T*)nullptr,
+                                                              &beta,
+                                                              dy),
+                                            "Error: xy is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXgebsrmv(handle,
+                                                              dirA,
+                                                              transA,
+                                                              safe_size,
+                                                              safe_size,
+                                                              safe_size,
+                                                              &alpha,
+                                                              descr,
+                                                              dval,
+                                                              dptr,
+                                                              dcol,
+                                                              safe_dim,
+                                                              safe_dim,
+                                                              dx,
+                                                              (T*)nullptr,
+                                                              dy),
+                                            "Error: beta is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXgebsrmv(handle,
+                                                              dirA,
+                                                              transA,
+                                                              safe_size,
+                                                              safe_size,
+                                                              safe_size,
+                                                              &alpha,
+                                                              descr,
+                                                              dval,
+                                                              dptr,
+                                                              dcol,
+                                                              safe_dim,
+                                                              safe_dim,
+                                                              dx,
+                                                              &beta,
+                                                              (T*)nullptr),
+                                            "Error: y is nullptr");
+    verify_hipsparse_status_invalid_size(hipsparseXgebsrmv(handle,
                                                            dirA,
                                                            transA,
-                                                           safe_size,
+                                                           -1,
                                                            safe_size,
                                                            safe_size,
                                                            &alpha,
@@ -92,246 +244,94 @@ void testing_gebsrmv_bad_arg(void)
                                                            safe_dim,
                                                            dx,
                                                            &beta,
-                                                           dy));
-    verify_hipsparse_status_invalid_pointer(hipsparseXgebsrmv(handle,
-                                                            dirA,
-                                                            transA,
-                                                            safe_size,
-                                                            safe_size,
-                                                            safe_size,
-                                                            (T*)nullptr,
-                                                            descr,
-                                                            dval,
-                                                            dptr,
-                                                            dcol,
-                                                            safe_dim,
-                                                            safe_dim,
-                                                            dx,
-                                                            &beta,
-                                                            dy),
-                                            "Error: alpha is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXgebsrmv(handle,
-                                                            dirA,
-                                                            transA,
-                                                            safe_size,
-                                                            safe_size,
-                                                            safe_size,
-                                                            &alpha,
-                                                            nullptr,
-                                                            dval,
-                                                            dptr,
-                                                            dcol,
-                                                            safe_dim,
-                                                            safe_dim,
-                                                            dx,
-                                                            &beta,
-                                                            dy),
-                                            "Error: descr is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXgebsrmv(handle,
-                                                            dirA,
-                                                            transA,
-                                                            safe_size,
-                                                            safe_size,
-                                                            safe_size,
-                                                            &alpha,
-                                                            descr,
-                                                            (T*)nullptr,
-                                                            dptr,
-                                                            dcol,
-                                                            safe_dim,
-                                                            safe_dim,
-                                                            dx,
-                                                            &beta,
-                                                            dy),
-                                            "Error: bsr_val is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXgebsrmv(handle,
-                                                            dirA,
-                                                            transA,
-                                                            safe_size,
-                                                            safe_size,
-                                                            safe_size,
-                                                            &alpha,
-                                                            descr,
-                                                            dval,
-                                                            nullptr,
-                                                            dcol,
-                                                            safe_dim,
-                                                            safe_dim,
-                                                            dx,
-                                                            &beta,
-                                                            dy),
-                                            "Error: bsr_row_ptr is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXgebsrmv(handle,
-                                                            dirA,
-                                                            transA,
-                                                            safe_size,
-                                                            safe_size,
-                                                            safe_size,
-                                                            &alpha,
-                                                            descr,
-                                                            dval,
-                                                            dptr,
-                                                            nullptr,
-                                                            safe_dim,
-                                                            safe_dim,
-                                                            dx,
-                                                            &beta,
-                                                            dy),
-                                            "Error: bsr_col_ind is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXgebsrmv(handle,
-                                                            dirA,
-                                                            transA,
-                                                            safe_size,
-                                                            safe_size,
-                                                            safe_size,
-                                                            &alpha,
-                                                            descr,
-                                                            dval,
-                                                            dptr,
-                                                            dcol,
-                                                            safe_dim,
-                                                            safe_dim,
-                                                            (T*)nullptr,
-                                                            &beta,
-                                                            dy),
-                                            "Error: xy is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXgebsrmv(handle,
-                                                            dirA,
-                                                            transA,
-                                                            safe_size,
-                                                            safe_size,
-                                                            safe_size,
-                                                            &alpha,
-                                                            descr,
-                                                            dval,
-                                                            dptr,
-                                                            dcol,
-                                                            safe_dim,
-                                                            safe_dim,
-                                                            dx,
-                                                            (T*)nullptr,
-                                                            dy),
-                                            "Error: beta is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXgebsrmv(handle,
-                                                            dirA,
-                                                            transA,
-                                                            safe_size,
-                                                            safe_size,
-                                                            safe_size,
-                                                            &alpha,
-                                                            descr,
-                                                            dval,
-                                                            dptr,
-                                                            dcol,
-                                                            safe_dim,
-                                                            safe_dim,
-                                                            dx,
-                                                            &beta,
-                                                            (T*)nullptr),
-                                            "Error: y is nullptr");
-    verify_hipsparse_status_invalid_size(hipsparseXgebsrmv(handle,
-                                                         dirA,
-                                                         transA,
-                                                         -1,
-                                                         safe_size,
-                                                         safe_size,
-                                                         &alpha,
-                                                         descr,
-                                                         dval,
-                                                         dptr,
-                                                         dcol,
-                                                         safe_dim,
-                                                         safe_dim,
-                                                         dx,
-                                                         &beta,
-                                                         dy),
+                                                           dy),
                                          "Error: mb is invalid");
     verify_hipsparse_status_invalid_size(hipsparseXgebsrmv(handle,
-                                                         dirA,
-                                                         transA,
-                                                         safe_size,
-                                                         -1,
-                                                         safe_size,
-                                                         &alpha,
-                                                         descr,
-                                                         dval,
-                                                         dptr,
-                                                         dcol,
-                                                         safe_dim,
-                                                         safe_dim,
-                                                         dx,
-                                                         &beta,
-                                                         dy),
+                                                           dirA,
+                                                           transA,
+                                                           safe_size,
+                                                           -1,
+                                                           safe_size,
+                                                           &alpha,
+                                                           descr,
+                                                           dval,
+                                                           dptr,
+                                                           dcol,
+                                                           safe_dim,
+                                                           safe_dim,
+                                                           dx,
+                                                           &beta,
+                                                           dy),
                                          "Error: nb is invalid");
     verify_hipsparse_status_invalid_size(hipsparseXgebsrmv(handle,
-                                                         dirA,
-                                                         transA,
-                                                         safe_size,
-                                                         safe_size,
-                                                         -1,
-                                                         &alpha,
-                                                         descr,
-                                                         dval,
-                                                         dptr,
-                                                         dcol,
-                                                         safe_dim,
-                                                         safe_dim,
-                                                         dx,
-                                                         &beta,
-                                                         dy),
+                                                           dirA,
+                                                           transA,
+                                                           safe_size,
+                                                           safe_size,
+                                                           -1,
+                                                           &alpha,
+                                                           descr,
+                                                           dval,
+                                                           dptr,
+                                                           dcol,
+                                                           safe_dim,
+                                                           safe_dim,
+                                                           dx,
+                                                           &beta,
+                                                           dy),
                                          "Error: nnzb is invalid");
     verify_hipsparse_status_invalid_size(hipsparseXgebsrmv(handle,
-                                                         dirA,
-                                                         transA,
-                                                         safe_size,
-                                                         safe_size,
-                                                         safe_size,
-                                                         &alpha,
-                                                         descr,
-                                                         dval,
-                                                         dptr,
-                                                         dcol,
-                                                         -1,
-                                                         safe_dim,
-                                                         dx,
-                                                         &beta,
-                                                         dy),
+                                                           dirA,
+                                                           transA,
+                                                           safe_size,
+                                                           safe_size,
+                                                           safe_size,
+                                                           &alpha,
+                                                           descr,
+                                                           dval,
+                                                           dptr,
+                                                           dcol,
+                                                           -1,
+                                                           safe_dim,
+                                                           dx,
+                                                           &beta,
+                                                           dy),
                                          "Error: row_block_dim is invalid");
 
     verify_hipsparse_status_invalid_size(hipsparseXgebsrmv(handle,
-                                                         dirA,
-                                                         transA,
-                                                         safe_size,
-                                                         safe_size,
-                                                         safe_size,
-                                                         &alpha,
-                                                         descr,
-                                                         dval,
-                                                         dptr,
-                                                         dcol,
-                                                         safe_dim,
-                                                         -1,
-                                                         dx,
-                                                         &beta,
-                                                         dy),
+                                                           dirA,
+                                                           transA,
+                                                           safe_size,
+                                                           safe_size,
+                                                           safe_size,
+                                                           &alpha,
+                                                           descr,
+                                                           dval,
+                                                           dptr,
+                                                           dcol,
+                                                           safe_dim,
+                                                           -1,
+                                                           dx,
+                                                           &beta,
+                                                           dy),
                                          "Error: col_block_dim is invalid");
 }
 
 template <typename T>
 hipsparseStatus_t testing_gebsrmv(Arguments argus)
 {
-    int                  safe_size = 100;
-    int                  m         = argus.M;
-    int                  n         = argus.N;
+    int                  safe_size     = 100;
+    int                  m             = argus.M;
+    int                  n             = argus.N;
     int                  row_block_dim = argus.row_block_dimA;
     int                  col_block_dim = argus.col_block_dimA;
-    T                    h_alpha   = make_DataType<T>(argus.alpha);
-    T                    h_beta    = make_DataType<T>(argus.beta);
-    hipsparseOperation_t transA    = argus.transA;
-    hipsparseIndexBase_t idx_base  = argus.idx_base;
-    hipsparseDirection_t dir       = argus.dirA;
-    std::string          binfile   = "";
-    std::string          filename  = "";
+    T                    h_alpha       = make_DataType<T>(argus.alpha);
+    T                    h_beta        = make_DataType<T>(argus.beta);
+    hipsparseOperation_t transA        = argus.transA;
+    hipsparseIndexBase_t idx_base      = argus.idx_base;
+    hipsparseDirection_t dir           = argus.dirA;
+    std::string          binfile       = "";
+    std::string          filename      = "";
     hipsparseStatus_t    status;
 
     // When in testing mode, M == N == -99 indicates that we are testing with a real
@@ -390,30 +390,31 @@ hipsparseStatus_t testing_gebsrmv(Arguments argus)
 
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
         status = hipsparseXgebsrmv(handle,
-                                 dir,
-                                 transA,
-                                 mb,
-                                 nb,
-                                 safe_size,
-                                 &h_alpha,
-                                 descr,
-                                 dval,
-                                 dptr,
-                                 dcol,
-                                 row_block_dim,
-                                 col_block_dim,
-                                 dx,
-                                 &h_beta,
-                                 dy);
+                                   dir,
+                                   transA,
+                                   mb,
+                                   nb,
+                                   safe_size,
+                                   &h_alpha,
+                                   descr,
+                                   dval,
+                                   dptr,
+                                   dcol,
+                                   row_block_dim,
+                                   col_block_dim,
+                                   dx,
+                                   &h_beta,
+                                   dy);
 
         if(mb < 0 || nb < 0 || row_block_dim <= 0 || col_block_dim <= 0)
         {
-            verify_hipsparse_status_invalid_size(status,
-                                                 "Error: mb < 0 || nb < 0 || row_block_dim < 0 || col_block_dim < 0");
+            verify_hipsparse_status_invalid_size(
+                status, "Error: mb < 0 || nb < 0 || row_block_dim < 0 || col_block_dim < 0");
         }
         else
         {
-            verify_hipsparse_status_success(status, "mb >= 0 && nb >= 0 && row_block_dim >= 0 && col_block_dim >= 0");
+            verify_hipsparse_status_success(
+                status, "mb >= 0 && nb >= 0 && row_block_dim >= 0 && col_block_dim >= 0");
         }
 
         return HIPSPARSE_STATUS_SUCCESS;
@@ -503,7 +504,8 @@ hipsparseStatus_t testing_gebsrmv(Arguments argus)
     auto dcsr_val_managed     = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
     auto dbsr_row_ptr_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(int) * (mb + 1)), device_free};
-    auto dx_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * nb * col_block_dim), device_free};
+    auto dx_managed
+        = hipsparse_unique_ptr{device_malloc(sizeof(T) * nb * col_block_dim), device_free};
     auto dy_1_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(T) * mb * row_block_dim), device_free};
     auto dy_2_managed
@@ -542,16 +544,6 @@ hipsparseStatus_t testing_gebsrmv(Arguments argus)
     CHECK_HIP_ERROR(hipMemcpy(d_alpha, &h_alpha, sizeof(T), hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(d_beta, &h_beta, sizeof(T), hipMemcpyHostToDevice));
 
-
-
-
-
-
-
-
-
-
-
     size_t buffer_size;
     CHECK_HIPSPARSE_ERROR(hipsparseXcsr2gebsr_bufferSize(handle,
                                                          dir,
@@ -570,8 +562,7 @@ hipsparseStatus_t testing_gebsrmv(Arguments argus)
 
     if(!dbuffer)
     {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!dbuffer");
+        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!dbuffer");
         return HIPSPARSE_STATUS_ALLOC_FAILED;
     }
 
@@ -580,18 +571,18 @@ hipsparseStatus_t testing_gebsrmv(Arguments argus)
 
     int nnzb;
     CHECK_HIPSPARSE_ERROR(hipsparseXcsr2gebsrNnz(handle,
-                                                    dir,
-                                                    m,
-                                                    n,
-                                                    descr,
-                                                    dcsr_row_ptr,
-                                                    dcsr_col_ind,
-                                                    descr,
-                                                    dbsr_row_ptr,
-                                                    row_block_dim,
-                                                    col_block_dim,
-                                                    &nnzb,
-                                                    dbuffer));
+                                                 dir,
+                                                 m,
+                                                 n,
+                                                 descr,
+                                                 dcsr_row_ptr,
+                                                 dcsr_col_ind,
+                                                 descr,
+                                                 dbsr_row_ptr,
+                                                 row_block_dim,
+                                                 col_block_dim,
+                                                 &nnzb,
+                                                 dbuffer));
 
     // Allocate memory on the device
     auto dbsr_col_ind_managed
@@ -604,26 +595,25 @@ hipsparseStatus_t testing_gebsrmv(Arguments argus)
 
     if(!dbsr_col_ind || !dbsr_val)
     {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!bsr_col_ind || !bsr_val");
+        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!bsr_col_ind || !bsr_val");
         return HIPSPARSE_STATUS_ALLOC_FAILED;
     }
 
     CHECK_HIPSPARSE_ERROR(hipsparseXcsr2gebsr(handle,
-                                                dir,
-                                                m,
-                                                n,
-                                                descr,
-                                                dcsr_val,
-                                                dcsr_row_ptr,
-                                                dcsr_col_ind,
-                                                descr,
-                                                dbsr_val,
-                                                dbsr_row_ptr,
-                                                dbsr_col_ind,
-                                                row_block_dim,
-                                                col_block_dim,
-                                                dbuffer));
+                                              dir,
+                                              m,
+                                              n,
+                                              descr,
+                                              dcsr_val,
+                                              dcsr_row_ptr,
+                                              dcsr_col_ind,
+                                              descr,
+                                              dbsr_val,
+                                              dbsr_row_ptr,
+                                              dbsr_col_ind,
+                                              row_block_dim,
+                                              col_block_dim,
+                                              dbuffer));
 
     // Copy output from device to host
     std::vector<int> hbsr_row_ptr(mb + 1);
@@ -632,56 +622,52 @@ hipsparseStatus_t testing_gebsrmv(Arguments argus)
 
     CHECK_HIP_ERROR(hipMemcpy(
         hbsr_row_ptr.data(), dbsr_row_ptr, sizeof(int) * (mb + 1), hipMemcpyDeviceToHost));
-    CHECK_HIP_ERROR(hipMemcpy(
-        hbsr_col_ind.data(), dbsr_col_ind, sizeof(int) * nnzb, hipMemcpyDeviceToHost));
+    CHECK_HIP_ERROR(
+        hipMemcpy(hbsr_col_ind.data(), dbsr_col_ind, sizeof(int) * nnzb, hipMemcpyDeviceToHost));
     CHECK_HIP_ERROR(hipMemcpy(hbsr_val.data(),
-                                dbsr_val,
-                                sizeof(T) * nnzb * row_block_dim * col_block_dim,
-                                hipMemcpyDeviceToHost));
-
-
-
-
+                              dbsr_val,
+                              sizeof(T) * nnzb * row_block_dim * col_block_dim,
+                              hipMemcpyDeviceToHost));
 
     if(argus.unit_check)
     {
         // ROCSPARSE pointer mode host
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
         CHECK_HIPSPARSE_ERROR(hipsparseXgebsrmv(handle,
-                                              dir,
-                                              transA,
-                                              mb,
-                                              nb,
-                                              nnzb,
-                                              &h_alpha,
-                                              descr,
-                                              dbsr_val,
-                                              dbsr_row_ptr,
-                                              dbsr_col_ind,
-                                              row_block_dim,
-                                              col_block_dim,
-                                              dx,
-                                              &h_beta,
-                                              dy_1));
+                                                dir,
+                                                transA,
+                                                mb,
+                                                nb,
+                                                nnzb,
+                                                &h_alpha,
+                                                descr,
+                                                dbsr_val,
+                                                dbsr_row_ptr,
+                                                dbsr_col_ind,
+                                                row_block_dim,
+                                                col_block_dim,
+                                                dx,
+                                                &h_beta,
+                                                dy_1));
 
         // ROCSPARSE pointer mode device
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
         CHECK_HIPSPARSE_ERROR(hipsparseXgebsrmv(handle,
-                                              dir,
-                                              transA,
-                                              mb,
-                                              nb,
-                                              nnzb,
-                                              d_alpha,
-                                              descr,
-                                              dbsr_val,
-                                              dbsr_row_ptr,
-                                              dbsr_col_ind,
-                                              row_block_dim,
-                                              col_block_dim,
-                                              dx,
-                                              d_beta,
-                                              dy_2));
+                                                dir,
+                                                transA,
+                                                mb,
+                                                nb,
+                                                nnzb,
+                                                d_alpha,
+                                                descr,
+                                                dbsr_val,
+                                                dbsr_row_ptr,
+                                                dbsr_col_ind,
+                                                row_block_dim,
+                                                col_block_dim,
+                                                dx,
+                                                d_beta,
+                                                dy_2));
 
         // copy output from device to CPU
         CHECK_HIP_ERROR(hipMemcpy(hy_1.data(), dy_1, sizeof(T) * m, hipMemcpyDeviceToHost));
@@ -702,20 +688,20 @@ hipsparseStatus_t testing_gebsrmv(Arguments argus)
                                   hipMemcpyDeviceToHost));
 
         host_gebsrmv(dir,
-                   transA,
-                   mb,
-                   nb,
-                   nnzb,
-                   h_alpha,
-                   hbsr_row_ptr.data(),
-                   hbsr_col_ind.data(),
-                   hbsr_val.data(),
-                   row_block_dim,
-                   col_block_dim,
-                   hx.data(),
-                   h_beta,
-                   hy_gold.data(),
-                   idx_base);
+                     transA,
+                     mb,
+                     nb,
+                     nnzb,
+                     h_alpha,
+                     hbsr_row_ptr.data(),
+                     hbsr_col_ind.data(),
+                     hbsr_val.data(),
+                     row_block_dim,
+                     col_block_dim,
+                     hx.data(),
+                     h_beta,
+                     hy_gold.data(),
+                     idx_base);
 
         unit_check_near(1, m, 1, hy_gold.data(), hy_1.data());
         unit_check_near(1, m, 1, hy_gold.data(), hy_2.data());

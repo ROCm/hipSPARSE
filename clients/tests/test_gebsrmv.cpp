@@ -30,13 +30,13 @@
 #include <unistd.h>
 #include <vector>
 
-typedef hipsparseIndexBase_t                                    base;
-typedef hipsparseDirection_t                                    dir;
+typedef hipsparseIndexBase_t                                         base;
+typedef hipsparseDirection_t                                         dir;
 typedef std::tuple<int, int, double, double, int, int, dir, base>    gebsrmv_tuple;
 typedef std::tuple<double, double, int, int, dir, base, std::string> gebsrmv_bin_tuple;
 
-int gebsr_M_range[]   = {-1, 0, 500, 7111};
-int gebsr_N_range[]   = {-3, 0, 842, 4441};
+int gebsr_M_range[]       = {-1, 0, 500, 7111};
+int gebsr_N_range[]       = {-3, 0, 842, 4441};
 int gebsr_row_dim_range[] = {5, 9};
 int gebsr_col_dim_range[] = {7};
 
@@ -47,24 +47,24 @@ base gebsr_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ON
 dir  gebsr_dir_range[]     = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COLUMN};
 
 std::string gebsr_bin[] = {"rma10.bin",
-                         "mac_econ_fwd500.bin",
-                         "bibd_22_8.bin",
-                         "mc2depi.bin",
-                         "scircuit.bin",
-                         "ASIC_320k.bin",
-                         "bmwcra_1.bin",
-                         "nos1.bin",
-                         "nos2.bin",
-                         "nos3.bin",
-                         "nos4.bin",
-                         "nos5.bin",
-                         "nos6.bin",
-                         "nos7.bin",
-                         "amazon0312.bin",
-                         "Chebyshev4.bin",
-                         "sme3Dc.bin",
-                         "webbase-1M.bin",
-                         "shipsec1.bin"};
+                           "mac_econ_fwd500.bin",
+                           "bibd_22_8.bin",
+                           "mc2depi.bin",
+                           "scircuit.bin",
+                           "ASIC_320k.bin",
+                           "bmwcra_1.bin",
+                           "nos1.bin",
+                           "nos2.bin",
+                           "nos3.bin",
+                           "nos4.bin",
+                           "nos5.bin",
+                           "nos6.bin",
+                           "nos7.bin",
+                           "amazon0312.bin",
+                           "Chebyshev4.bin",
+                           "sme3Dc.bin",
+                           "webbase-1M.bin",
+                           "shipsec1.bin"};
 
 class parameterized_gebsrmv : public testing::TestWithParam<gebsrmv_tuple>
 {
@@ -102,15 +102,15 @@ Arguments setup_gebsrmv_arguments(gebsrmv_tuple tup)
 Arguments setup_gebsrmv_arguments(gebsrmv_bin_tuple tup)
 {
     Arguments arg;
-    arg.M         = -99;
-    arg.N         = -99;
-    arg.alpha     = std::get<0>(tup);
-    arg.beta      = std::get<1>(tup);
+    arg.M              = -99;
+    arg.N              = -99;
+    arg.alpha          = std::get<0>(tup);
+    arg.beta           = std::get<1>(tup);
     arg.row_block_dimA = std::get<2>(tup);
     arg.col_block_dimA = std::get<3>(tup);
-    arg.dirA      = std::get<4>(tup);
-    arg.idx_base  = std::get<5>(tup);
-    arg.timing    = 0;
+    arg.dirA           = std::get<4>(tup);
+    arg.idx_base       = std::get<5>(tup);
+    arg.timing         = 0;
 
     // Determine absolute path of test matrix
     std::string bin_file = std::get<6>(tup);

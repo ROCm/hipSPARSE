@@ -203,21 +203,21 @@ namespace hipsparse
 
     template <typename T>
     hipsparseStatus_t hipsparseXgebsrmv(hipsparseHandle_t         handle,
-                                      hipsparseDirection_t      dirA,
-                                      hipsparseOperation_t      transA,
-                                      int                       mb,
-                                      int                       nb,
-                                      int                       nnzb,
-                                      const T*                  alpha,
-                                      const hipsparseMatDescr_t descrA,
-                                      const T*                  bsrSortedValA,
-                                      const int*                bsrSortedRowPtrA,
-                                      const int*                bsrSortedColIndA,
-                                      int                       rowBlockDim,
-                                      int                       colBlockDim,
-                                      const T*                  x,
-                                      const T*                  beta,
-                                      T*                        y);
+                                        hipsparseDirection_t      dirA,
+                                        hipsparseOperation_t      transA,
+                                        int                       mb,
+                                        int                       nb,
+                                        int                       nnzb,
+                                        const T*                  alpha,
+                                        const hipsparseMatDescr_t descrA,
+                                        const T*                  bsrSortedValA,
+                                        const int*                bsrSortedRowPtrA,
+                                        const int*                bsrSortedColIndA,
+                                        int                       rowBlockDim,
+                                        int                       colBlockDim,
+                                        const T*                  x,
+                                        const T*                  beta,
+                                        T*                        y);
 
     template <typename T>
     hipsparseStatus_t hipsparseXbsrsv2_bufferSize(hipsparseHandle_t         handle,
