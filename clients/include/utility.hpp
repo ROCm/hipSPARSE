@@ -2220,6 +2220,393 @@ inline void host_bsrmv(hipsparseDirection_t dir,
 }
 
 template <typename T>
+inline void host_gebsrmv(hipsparseDirection_t  dir,
+                  hipsparseOperation_t  trans,
+                  int        mb,
+                  int        nb,
+                  int        nnzb,
+                  T                    alpha,
+                  const int* bsr_row_ptr,
+                  const int* bsr_col_ind,
+                  const T*             bsr_val,
+                  int        row_block_dim,
+                  int        col_block_dim,
+                  const T*             x,
+                  T                    beta,
+                  T*                   y,
+                  hipsparseIndexBase_t base)
+{
+    // Quick return
+    if(alpha == make_DataType<T>(0))
+    {
+        if(beta != make_DataType<T>(1))
+        {
+            for(int i = 0; i < mb * row_block_dim; ++i)
+            {
+                y[i] = beta * y[i];
+            }
+        }
+
+        return;
+    }
+
+    if(row_block_dim == col_block_dim)
+    {
+        host_bsrmv(dir,
+                   trans,
+                   mb,
+                   nb,
+                   nnzb,
+                   alpha,
+                   bsr_row_ptr,
+                   bsr_col_ind,
+                   bsr_val,
+                   row_block_dim,
+                   x,
+                   beta,
+                   y,
+                   base);
+
+        return;
+    }
+
+    int WFSIZE;
+
+    if(row_block_dim == 2 || row_block_dim == 3 || row_block_dim == 4)
+    {
+        int blocks_per_row = nnzb / mb;
+
+        if(blocks_per_row < 8)
+        {
+            WFSIZE = 4;
+        }
+        else if(blocks_per_row < 16)
+        {
+            WFSIZE = 8;
+        }
+        else if(blocks_per_row < 32)
+        {
+            WFSIZE = 16;
+        }
+        else if(blocks_per_row < 64)
+        {
+            WFSIZE = 32;
+        }
+        else
+        {
+            WFSIZE = 64;
+        }
+    }
+    else if(row_block_dim <= 8)
+    {
+        WFSIZE = 8;
+    }
+    else if(row_block_dim <= 16)
+    {
+        WFSIZE = 16;
+    }
+    else
+    {
+        WFSIZE = 32;
+    }
+
+#ifdef _OPENMP
+#pragma omp parallel for schedule(dynamic, 1024)
+#endif
+    for(int row = 0; row < mb; ++row)
+    {
+        int row_begin = bsr_row_ptr[row] - base;
+        int row_end   = bsr_row_ptr[row + 1] - base;
+
+        if(row_block_dim == 2)
+        {
+            std::vector<T> sum0(WFSIZE, make_DataType<T>(0));
+            std::vector<T> sum1(WFSIZE, make_DataType<T>(0));
+
+            for(int j = row_begin; j < row_end; j += WFSIZE)
+            {
+                for(int k = 0; k < WFSIZE; ++k)
+                {
+                    if(j + k < row_end)
+                    {
+                        int col = bsr_col_ind[j + k] - base;
+
+                        for(int l = 0; l < col_block_dim; l++)
+                        {
+                            if(dir == HIPSPARSE_DIRECTION_COLUMN)
+                            {
+                                sum0[k] = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
+                                                           + row_block_dim * l],
+                                                   x[col * col_block_dim + l],
+                                                   sum0[k]);
+                                sum1[k] = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
+                                                           + row_block_dim * l + 1],
+                                                   x[col * col_block_dim + l],
+                                                   sum1[k]);
+                            }
+                            else
+                            {
+                                sum0[k]
+                                    = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k) + l],
+                                               x[col * col_block_dim + l],
+                                               sum0[k]);
+                                sum1[k] = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
+                                                           + col_block_dim + l],
+                                                   x[col * col_block_dim + l],
+                                                   sum1[k]);
+                            }
+                        }
+                    }
+                }
+            }
+
+            for(unsigned int j = 1; j < WFSIZE; j <<= 1)
+            {
+                for(unsigned int k = 0; k < WFSIZE - j; ++k)
+                {
+                    sum0[k] = sum0[k] + sum0[k + j];
+                    sum1[k] = sum1[k] + sum1[k + j];
+                }
+            }
+
+            if(beta != make_DataType<T>(0))
+            {
+                y[row * row_block_dim + 0]
+                    = testing_fma(beta, y[row * row_block_dim + 0], alpha * sum0[0]);
+                y[row * row_block_dim + 1]
+                    = testing_fma(beta, y[row * row_block_dim + 1], alpha * sum1[0]);
+            }
+            else
+            {
+                y[row * row_block_dim + 0] = alpha * sum0[0];
+                y[row * row_block_dim + 1] = alpha * sum1[0];
+            }
+        }
+        else if(row_block_dim == 3)
+        {
+            std::vector<T> sum0(WFSIZE, make_DataType<T>(0));
+            std::vector<T> sum1(WFSIZE, make_DataType<T>(0));
+            std::vector<T> sum2(WFSIZE, make_DataType<T>(0));
+
+            for(int j = row_begin; j < row_end; j += WFSIZE)
+            {
+                for(int k = 0; k < WFSIZE; ++k)
+                {
+                    if(j + k < row_end)
+                    {
+                        int col = bsr_col_ind[j + k] - base;
+
+                        for(int l = 0; l < col_block_dim; l++)
+                        {
+                            if(dir == HIPSPARSE_DIRECTION_COLUMN)
+                            {
+                                sum0[k] = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
+                                                           + row_block_dim * l],
+                                                   x[col * col_block_dim + l],
+                                                   sum0[k]);
+                                sum1[k] = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
+                                                           + row_block_dim * l + 1],
+                                                   x[col * col_block_dim + l],
+                                                   sum1[k]);
+                                sum2[k] = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
+                                                           + row_block_dim * l + 2],
+                                                   x[col * col_block_dim + l],
+                                                   sum2[k]);
+                            }
+                            else
+                            {
+                                sum0[k]
+                                    = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k) + l],
+                                               x[col * col_block_dim + l],
+                                               sum0[k]);
+                                sum1[k] = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
+                                                           + col_block_dim + l],
+                                                   x[col * col_block_dim + l],
+                                                   sum1[k]);
+                                sum2[k] = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
+                                                           + 2 * col_block_dim + l],
+                                                   x[col * col_block_dim + l],
+                                                   sum2[k]);
+                            }
+                        }
+                    }
+                }
+            }
+
+            for(unsigned int j = 1; j < WFSIZE; j <<= 1)
+            {
+                for(unsigned int k = 0; k < WFSIZE - j; ++k)
+                {
+                    sum0[k] = sum0[k] + sum0[k + j];
+                    sum1[k] = sum1[k] + sum1[k + j];
+                    sum2[k] = sum2[k] + sum2[k + j];
+                }
+            }
+
+            if(beta != make_DataType<T>(0))
+            {
+                y[row * row_block_dim + 0]
+                    = testing_fma(beta, y[row * row_block_dim + 0], alpha * sum0[0]);
+                y[row * row_block_dim + 1]
+                    = testing_fma(beta, y[row * row_block_dim + 1], alpha * sum1[0]);
+                y[row * row_block_dim + 2]
+                    = testing_fma(beta, y[row * row_block_dim + 2], alpha * sum2[0]);
+            }
+            else
+            {
+                y[row * row_block_dim + 0] = alpha * sum0[0];
+                y[row * row_block_dim + 1] = alpha * sum1[0];
+                y[row * row_block_dim + 2] = alpha * sum2[0];
+            }
+        }
+        else if(row_block_dim == 4)
+        {
+            std::vector<T> sum0(WFSIZE, make_DataType<T>(0));
+            std::vector<T> sum1(WFSIZE, make_DataType<T>(0));
+            std::vector<T> sum2(WFSIZE, make_DataType<T>(0));
+            std::vector<T> sum3(WFSIZE, make_DataType<T>(0));
+
+            for(int j = row_begin; j < row_end; j += WFSIZE)
+            {
+                for(int k = 0; k < WFSIZE; ++k)
+                {
+                    if(j + k < row_end)
+                    {
+                        int col = bsr_col_ind[j + k] - base;
+
+                        for(int l = 0; l < col_block_dim; l++)
+                        {
+                            if(dir == HIPSPARSE_DIRECTION_COLUMN)
+                            {
+                                sum0[k] = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
+                                                           + row_block_dim * l],
+                                                   x[col * col_block_dim + l],
+                                                   sum0[k]);
+                                sum1[k] = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
+                                                           + row_block_dim * l + 1],
+                                                   x[col * col_block_dim + l],
+                                                   sum1[k]);
+                                sum2[k] = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
+                                                           + row_block_dim * l + 2],
+                                                   x[col * col_block_dim + l],
+                                                   sum2[k]);
+                                sum3[k] = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
+                                                           + row_block_dim * l + 3],
+                                                   x[col * col_block_dim + l],
+                                                   sum3[k]);
+                            }
+                            else
+                            {
+                                sum0[k]
+                                    = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k) + l],
+                                               x[col * col_block_dim + l],
+                                               sum0[k]);
+                                sum1[k] = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
+                                                           + col_block_dim + l],
+                                                   x[col * col_block_dim + l],
+                                                   sum1[k]);
+                                sum2[k] = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
+                                                           + 2 * col_block_dim + l],
+                                                   x[col * col_block_dim + l],
+                                                   sum2[k]);
+                                sum3[k] = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
+                                                           + 3 * col_block_dim + l],
+                                                   x[col * col_block_dim + l],
+                                                   sum3[k]);
+                            }
+                        }
+                    }
+                }
+            }
+
+            for(unsigned int j = 1; j < WFSIZE; j <<= 1)
+            {
+                for(unsigned int k = 0; k < WFSIZE - j; ++k)
+                {
+                    sum0[k] = sum0[k] + sum0[k + j];
+                    sum1[k] = sum1[k] + sum1[k + j];
+                    sum2[k] = sum2[k] + sum2[k + j];
+                    sum3[k] = sum3[k] + sum3[k + j];
+                }
+            }
+
+            if(beta != make_DataType<T>(0))
+            {
+                y[row * row_block_dim + 0]
+                    = testing_fma(beta, y[row * row_block_dim + 0], alpha * sum0[0]);
+                y[row * row_block_dim + 1]
+                    = testing_fma(beta, y[row * row_block_dim + 1], alpha * sum1[0]);
+                y[row * row_block_dim + 2]
+                    = testing_fma(beta, y[row * row_block_dim + 2], alpha * sum2[0]);
+                y[row * row_block_dim + 3]
+                    = testing_fma(beta, y[row * row_block_dim + 3], alpha * sum3[0]);
+            }
+            else
+            {
+                y[row * row_block_dim + 0] = alpha * sum0[0];
+                y[row * row_block_dim + 1] = alpha * sum1[0];
+                y[row * row_block_dim + 2] = alpha * sum2[0];
+                y[row * row_block_dim + 3] = alpha * sum3[0];
+            }
+        }
+        else
+        {
+            for(int bi = 0; bi < row_block_dim; ++bi)
+            {
+                std::vector<T> sum(WFSIZE, make_DataType<T>(0));
+
+                for(int j = row_begin; j < row_end; ++j)
+                {
+                    int col = bsr_col_ind[j] - base;
+
+                    for(int bj = 0; bj < col_block_dim; bj += WFSIZE)
+                    {
+                        for(unsigned int k = 0; k < WFSIZE; ++k)
+                        {
+                            if(bj + k < col_block_dim)
+                            {
+                                if(dir == HIPSPARSE_DIRECTION_COLUMN)
+                                {
+                                    sum[k] = testing_fma(bsr_val[row_block_dim * col_block_dim * j
+                                                              + row_block_dim * (bj + k) + bi],
+                                                      x[col_block_dim * col + (bj + k)],
+                                                      sum[k]);
+                                }
+                                else
+                                {
+                                    sum[k] = testing_fma(bsr_val[row_block_dim * col_block_dim * j
+                                                              + col_block_dim * bi + (bj + k)],
+                                                      x[col_block_dim * col + (bj + k)],
+                                                      sum[k]);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                for(unsigned int j = 1; j < WFSIZE; j <<= 1)
+                {
+                    for(unsigned int k = 0; k < WFSIZE - j; ++k)
+                    {
+                        sum[k] = sum[k] + sum[k + j];
+                    }
+                }
+
+                if(beta != make_DataType<T>(0))
+                {
+                    y[row * row_block_dim + bi]
+                        = testing_fma(beta, y[row * row_block_dim + bi], alpha * sum[0]);
+                }
+                else
+                {
+                    y[row * row_block_dim + bi] = alpha * sum[0];
+                }
+            }
+        }
+    }
+}
+
+template <typename T>
 inline void host_bsrmm(int                     Mb,
                        int                     N,
                        int                     Kb,
