@@ -93,11 +93,13 @@ void testing_gebsr2gebsr_bad_arg(void)
     T*   temp_buffer   = (T*)temp_buffer_managed.get();
 
     if(!bsr_row_ptr_A || !bsr_col_ind_A || !bsr_val_A || !bsr_row_ptr_C || !bsr_col_ind_C
-       || !bsr_val_C)
+       || !bsr_val_C || !temp_buffer)
     {
         PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
         return;
     }
+
+    std::cout << "1111" << std::endl;
 
     // Testing hipsparseXgebsr2gebsr_bufferSize()
 
@@ -313,6 +315,8 @@ void testing_gebsr2gebsr_bad_arg(void)
                                               -1,
                                               &buffer_size);
     verify_hipsparse_status_invalid_size(status, "Error: col_block_dim_C is invalid");
+
+    std::cout << "2222" << std::endl;
 
     // Testing hipsparseXgebsr2gebsrNnz()
 
@@ -590,6 +594,8 @@ void testing_gebsr2gebsr_bad_arg(void)
                                       &nnz_total_dev_host_ptr,
                                       temp_buffer);
     verify_hipsparse_status_invalid_size(status, "Error: col_block_dim_C is invalid");
+
+    std::cout << "3333" << std::endl;
 
     // Test hipsparseXgebsr2gebsr()
 
@@ -935,6 +941,8 @@ void testing_gebsr2gebsr_bad_arg(void)
                                    -1,
                                    temp_buffer);
     verify_hipsparse_status_invalid_size(status, "Error: col_block_dim_C is invalid");
+
+    std::cout << "4444" << std::endl;
 }
 
 template <typename T>
@@ -982,6 +990,8 @@ hipsparseStatus_t testing_gebsr2gebsr(Arguments argus)
         mb_C = (m + row_block_dim_C - 1) / row_block_dim_C;
         nb_C = (n + col_block_dim_C - 1) / col_block_dim_C;
     }
+
+    std::cout << "mb_C " << mb_C << " nb_C: " << nb_C << " row_block_dim_C " << row_block_dim_C << " col_block_dim_C " << col_block_dim_C << std::endl;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -1211,6 +1221,8 @@ hipsparseStatus_t testing_gebsr2gebsr(Arguments argus)
 
     hbsr_val_A.resize(nnzb * row_block_dim_A * col_block_dim_A);
 
+    std::cout << "m: " << m << " n: " << n << " mb_C: " << mb_C << " nb_C: " << nb_C << std::endl;
+
     int idx = 0;
     switch(dir)
     {
@@ -1305,6 +1317,8 @@ hipsparseStatus_t testing_gebsr2gebsr(Arguments argus)
                                                            row_block_dim_C,
                                                            col_block_dim_C,
                                                            &buffer_size));
+                                                        
+    std::cout << "buffer_size: " << buffer_size << std::endl; 
 
     // Allocate buffer on the device
     auto dbuffer_managed
@@ -1365,6 +1379,8 @@ hipsparseStatus_t testing_gebsr2gebsr(Arguments argus)
         int hnnzb_C_copied_from_device;
         CHECK_HIP_ERROR(
             hipMemcpy(&hnnzb_C_copied_from_device, dnnzb_C, sizeof(int), hipMemcpyDeviceToHost));
+
+        std::cout << "hnnzb_C_copied_from_device: " << hnnzb_C_copied_from_device << " hnnzb_C: " << hnnzb_C << std::endl;
 
         // Check that using host and device pointer mode gives the same result
         unit_check_general(1, 1, 1, &hnnzb_C_copied_from_device, &hnnzb_C);
@@ -1442,8 +1458,12 @@ hipsparseStatus_t testing_gebsr2gebsr(Arguments argus)
                             row_block_dim_C,
                             col_block_dim_C,
                             idx_base_C);
+        
+        std::cout << "hbsr_row_ptr_C_gold.size(): " << hbsr_row_ptr_C_gold.size() << std::endl; 
 
         int nnzb_C_gold = hbsr_row_ptr_C_gold[mb_C] - hbsr_row_ptr_C_gold[0];
+
+        std::cout << "nnzb_C_gold: " << nnzb_C_gold << " hnnzb_C: " << hnnzb_C << std::endl;
 
         // Unit check
         unit_check_general(1, 1, 1, &nnzb_C_gold, &hnnzb_C);

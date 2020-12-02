@@ -37,7 +37,7 @@
 #include <string>
 #include <vector>
 
-#include<iostream>
+#include <iostream>
 
 #ifdef _OPENMP
 #include <omp.h>
@@ -1627,6 +1627,169 @@ inline void host_gebsr_to_csr(hipsparseDirection_t    direction,
     }
 }
 
+// template <typename T>
+// inline void host_csr_to_gebsr(hipsparseDirection_t    direction,
+//                               int                     M,
+//                               int                     N,
+//                               int                     row_block_dim,
+//                               int                     col_block_dim,
+//                               int&                    nnzb,
+//                               hipsparseIndexBase_t    csr_base,
+//                               const std::vector<int>& csr_row_ptr,
+//                               const std::vector<int>& csr_col_ind,
+//                               const std::vector<T>&   csr_val,
+//                               hipsparseIndexBase_t    bsr_base,
+//                               std::vector<int>&       bsr_row_ptr,
+//                               std::vector<int>&       bsr_col_ind,
+//                               std::vector<T>&         bsr_val)
+// {
+//     int mb = (M + row_block_dim - 1) / row_block_dim;
+//     int nb = (N + col_block_dim - 1) / col_block_dim;
+
+//     // quick return if row_block_dim == 1 && col_block_dim == 1
+//     if(row_block_dim == 1 && col_block_dim == 1)
+//     {
+//         bsr_row_ptr.resize(mb + 1, 0);
+// #ifdef _OPENMP
+// #pragma omp parallel for schedule(dynamic, 1024)
+// #endif
+//         for(size_t i = 0; i < csr_row_ptr.size(); i++)
+//         {
+//             bsr_row_ptr[i] = (csr_row_ptr[i] - csr_base) + bsr_base;
+//         }
+
+//         nnzb = bsr_row_ptr[mb] - bsr_row_ptr[0];
+
+//         bsr_col_ind.resize(nnzb, 0);
+//         bsr_val.resize(nnzb * row_block_dim * col_block_dim, make_DataType<T>(0));
+// #ifdef _OPENMP
+// #pragma omp parallel for schedule(dynamic, 1024)
+// #endif
+//         for(size_t i = 0; i < csr_col_ind.size(); i++)
+//         {
+//             bsr_col_ind[i] = (csr_col_ind[i] - csr_base) + bsr_base;
+//         }
+// #ifdef _OPENMP
+// #pragma omp parallel for schedule(dynamic, 1024)
+// #endif
+//         for(size_t i = 0; i < csr_val.size(); i++)
+//         {
+//             bsr_val[i] = csr_val[i];
+//         }
+
+//         return;
+//     }
+
+//     // determine number of non-zero block columns for each block row of the bsr matrix
+//     bsr_row_ptr.resize(mb + 1, 0);
+
+//     bsr_row_ptr[0] = bsr_base;
+
+// #ifdef _OPENMP
+// #pragma omp parallel for schedule(dynamic, 1024)
+// #endif
+//     for(int i = 0; i < mb; i++)
+//     {
+//         int start = csr_row_ptr[i * row_block_dim] - csr_base;
+//         int end   = csr_row_ptr[std::min(M, row_block_dim * i + row_block_dim)] - csr_base;
+
+//         std::vector<int> temp(nb, 0);
+//         for(int j = start; j < end; j++)
+//         {
+//             int blockCol   = (csr_col_ind[j] - csr_base) / col_block_dim;
+//             temp[blockCol] = 1;
+//         }
+
+//         int sum = 0;
+//         for(int j = 0; j < temp.size(); j++)
+//         {
+//             sum += temp[j];
+//         }
+
+//         bsr_row_ptr[i + 1] = sum;
+//     }
+
+//     for(int i = 0; i < mb; i++)
+//     {
+//         bsr_row_ptr[i + 1] += bsr_row_ptr[i];
+//     }
+
+//     nnzb = bsr_row_ptr[mb] - bsr_row_ptr[0];
+
+//     // find bsr col indices array
+//     bsr_col_ind.resize(nnzb, 0);
+//     bsr_val.resize(nnzb * row_block_dim * col_block_dim, make_DataType<T>(0));
+
+//     int colIndex = 0;
+
+//     for(int i = 0; i < mb; i++)
+//     {
+//         int start = csr_row_ptr[i * row_block_dim] - csr_base;
+//         int end   = csr_row_ptr[std::min(M, row_block_dim * i + row_block_dim)] - csr_base;
+
+//         std::vector<int> temp(nb, 0);
+
+//         for(int j = start; j < end; j++)
+//         {
+//             int blockCol   = (csr_col_ind[j] - csr_base) / col_block_dim;
+//             temp[blockCol] = 1;
+//         }
+
+//         for(int j = 0; j < nb; j++)
+//         {
+//             if(temp[j] == 1)
+//             {
+//                 bsr_col_ind[colIndex] = j + bsr_base;
+//                 colIndex++;
+//             }
+//         }
+//     }
+
+//     // find bsr values array
+//     for(int i = 0; i < M; i++)
+//     {
+//         int blockRow = i / row_block_dim;
+
+//         int start = csr_row_ptr[i] - csr_base;
+//         int end   = csr_row_ptr[i + 1] - csr_base;
+
+//         for(int j = start; j < end; j++)
+//         {
+//             int blockCol = (csr_col_ind[j] - csr_base) / col_block_dim;
+
+//             colIndex = -1;
+//             for(int k = bsr_row_ptr[blockRow] - bsr_base; k < bsr_row_ptr[blockRow + 1] - bsr_base;
+//                 k++)
+//             {
+//                 if(bsr_col_ind[k] - bsr_base == blockCol)
+//                 {
+//                     colIndex = k - (bsr_row_ptr[blockRow] - bsr_base);
+//                     break;
+//                 }
+//             }
+
+//             assert(colIndex != -1);
+
+//             int blockIndex = 0;
+//             if(direction == HIPSPARSE_DIRECTION_ROW)
+//             {
+//                 blockIndex = (csr_col_ind[j] - csr_base) % col_block_dim
+//                              + (i % row_block_dim) * col_block_dim;
+//             }
+//             else
+//             {
+//                 blockIndex = ((csr_col_ind[j] - csr_base) % col_block_dim) * row_block_dim
+//                              + (i % row_block_dim);
+//             }
+
+//             int index = (bsr_row_ptr[blockRow] - bsr_base) * row_block_dim * col_block_dim
+//                         + colIndex * row_block_dim * col_block_dim + blockIndex;
+
+//             bsr_val[index] = csr_val[j];
+//         }
+//     }
+// }
+
 template <typename T>
 inline void host_csr_to_gebsr(hipsparseDirection_t    direction,
                               int                     m,
@@ -1643,7 +1806,7 @@ inline void host_csr_to_gebsr(hipsparseDirection_t    direction,
                               std::vector<int>&       bsr_col_ind,
                               std::vector<T>&         bsr_val)
 {
-    int mb = (m + row_block_dim - 1) / row_block_dim;
+    int mb  = (m + row_block_dim - 1) / row_block_dim;
     int nnz = csr_col_ind.size();
 
     bsr_row_ptr.resize(mb + 1, 0);

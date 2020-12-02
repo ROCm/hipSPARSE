@@ -82,6 +82,23 @@ std::string gebsr2gebsr_bin[] = {"rma10.bin",
                                  "nos5.bin",
                                  "nos6.bin",
                                  "nos7.bin"};
+// std::string gebsr2gebsr_bin[] = {"rma10.bin",
+//                                "mac_econ_fwd500.bin",
+//                                "mc2depi.bin",
+//                                "scircuit.bin",
+//                                "ASIC_320k.bin",
+//                                "bmwcra_1.bin",
+//                                "nos1.bin",
+//                                "nos2.bin",
+//                                "nos3.bin",
+//                                "nos4.bin",
+//                                "nos5.bin",
+//                                "nos6.bin",
+//                                "nos7.bin",
+//                                "amazon0312.bin",
+//                                "Chebyshev4.bin",
+//                                "sme3Dc.bin",
+//                                "shipsec1.bin"};
 
 class parameterized_gebsr2gebsr : public testing::TestWithParam<gebsr2gebsr_tuple>
 {
