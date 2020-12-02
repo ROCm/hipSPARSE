@@ -1199,10 +1199,10 @@ hipsparseStatus_t testing_gebsr2gebsr(Arguments argus)
     }
 
     // mb and nb can be modified if reading from a file
-    m       = mb * row_block_dim_A;
-    n       = nb * col_block_dim_A;
-    mb_C    = (m + row_block_dim_C - 1) / row_block_dim_C;
-    nb_C    = (n + col_block_dim_C - 1) / col_block_dim_C;
+    m    = mb * row_block_dim_A;
+    n    = nb * col_block_dim_A;
+    mb_C = (m + row_block_dim_C - 1) / row_block_dim_C;
+    nb_C = (n + col_block_dim_C - 1) / col_block_dim_C;
 
     // Now use the csr matrix as the symbolic for the gebsr matrix.
     std::vector<int> hbsr_row_ptr_A = csr_row_ptr;
@@ -1262,7 +1262,8 @@ hipsparseStatus_t testing_gebsr2gebsr(Arguments argus)
         = hipsparse_unique_ptr{device_malloc(sizeof(int) * (mb + 1)), device_free};
     auto dbsr_col_ind_A_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnzb), device_free};
-    auto dbsr_val_A_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnzb * row_block_dim_A * col_block_dim_A), device_free};
+    auto dbsr_val_A_managed = hipsparse_unique_ptr{
+        device_malloc(sizeof(T) * nnzb * row_block_dim_A * col_block_dim_A), device_free};
     auto dbsr_row_ptr_C_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(int) * (mb_C + 1)), device_free};
 
@@ -1282,10 +1283,12 @@ hipsparseStatus_t testing_gebsr2gebsr(Arguments argus)
     // Copy data from host to device
     CHECK_HIP_ERROR(hipMemcpy(
         dbsr_row_ptr_A, hbsr_row_ptr_A.data(), sizeof(int) * (mb + 1), hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(
-        hipMemcpy(dbsr_col_ind_A, hbsr_col_ind_A.data(), sizeof(int) * nnzb, hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(
-        hipMemcpy(dbsr_val_A, hbsr_val_A.data(), sizeof(T) * nnzb * row_block_dim_A * col_block_dim_A, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(
+        dbsr_col_ind_A, hbsr_col_ind_A.data(), sizeof(int) * nnzb, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(dbsr_val_A,
+                              hbsr_val_A.data(),
+                              sizeof(T) * nnzb * row_block_dim_A * col_block_dim_A,
+                              hipMemcpyHostToDevice));
 
     int buffer_size = 0;
     CHECK_HIPSPARSE_ERROR(hipsparseXgebsr2gebsr_bufferSize(handle,

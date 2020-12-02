@@ -194,7 +194,7 @@ void testing_gebsrmv_bad_arg(void)
                                                               (T*)nullptr,
                                                               &beta,
                                                               dy),
-                                            "Error: xy is nullptr");
+                                            "Error: x is nullptr");
     verify_hipsparse_status_invalid_pointer(hipsparseXgebsrmv(handle,
                                                               dirA,
                                                               transA,
