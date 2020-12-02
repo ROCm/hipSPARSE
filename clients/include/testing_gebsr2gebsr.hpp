@@ -1201,8 +1201,8 @@ hipsparseStatus_t testing_gebsr2gebsr(Arguments argus)
     }
 
     // mb and nb can be modified if reading from a file
-    mb   = (m + row_block_dim_A - 1) / row_block_dim_A;
-    nb   = (n + col_block_dim_A - 1) / col_block_dim_A;
+    mb       = (m + row_block_dim_A - 1) / row_block_dim_A;
+    nb       = (n + col_block_dim_A - 1) / col_block_dim_A;
     int mb_C = (mb * row_block_dim_A + row_block_dim_C - 1) / row_block_dim_C;
     int nb_C = (nb * col_block_dim_A + col_block_dim_C - 1) / col_block_dim_C;
 
