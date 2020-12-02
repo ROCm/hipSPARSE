@@ -975,13 +975,13 @@ hipsparseStatus_t testing_gebsr2gebsr(Arguments argus)
         nb = (n + col_block_dim_A - 1) / col_block_dim_A;
     }
 
-    int mb_C = -1;
-    int nb_C = -1;
-    if(row_block_dim_C > 0 && col_block_dim_C > 0)
-    {
-        mb_C = (m + row_block_dim_C - 1) / row_block_dim_C;
-        nb_C = (n + col_block_dim_C - 1) / col_block_dim_C;
-    }
+    // int mb_C = -1;
+    // int nb_C = -1;
+    // if(row_block_dim_C > 0 && col_block_dim_C > 0)
+    // {
+    //     mb_C = (m + row_block_dim_C - 1) / row_block_dim_C;
+    //     nb_C = (n + col_block_dim_C - 1) / col_block_dim_C;
+    // }
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -1201,10 +1201,10 @@ hipsparseStatus_t testing_gebsr2gebsr(Arguments argus)
     }
 
     // mb and nb can be modified if reading from a file
-    mb = (m + row_block_dim_A - 1) / row_block_dim_A;
-    nb = (n + col_block_dim_A - 1) / col_block_dim_A;
-    mb_C = (mb*row_block_dim_A + row_block_dim_C - 1) / row_block_dim_C;
-    nb_C = (nb*col_block_dim_A + col_block_dim_C - 1) / col_block_dim_C;
+    mb   = (m + row_block_dim_A - 1) / row_block_dim_A;
+    nb   = (n + col_block_dim_A - 1) / col_block_dim_A;
+    mb_C = (mb * row_block_dim_A + row_block_dim_C - 1) / row_block_dim_C;
+    nb_C = (nb * col_block_dim_A + col_block_dim_C - 1) / col_block_dim_C;
 
     // allocate memory on device
     auto dcsr_row_ptr_managed
@@ -1214,9 +1214,9 @@ hipsparseStatus_t testing_gebsr2gebsr(Arguments argus)
     auto dbsr_row_ptr_A_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(int) * (mb + 1)), device_free};
 
-    int* dcsr_row_ptr = (int*)dcsr_row_ptr_managed.get();
-    int* dcsr_col_ind = (int*)dcsr_col_ind_managed.get();
-    T*   dcsr_val     = (T*)dcsr_val_managed.get();
+    int* dcsr_row_ptr   = (int*)dcsr_row_ptr_managed.get();
+    int* dcsr_col_ind   = (int*)dcsr_col_ind_managed.get();
+    T*   dcsr_val       = (T*)dcsr_val_managed.get();
     int* dbsr_row_ptr_A = (int*)dbsr_row_ptr_A_managed.get();
 
     if(!dcsr_val || !dcsr_row_ptr || !dcsr_col_ind || !dbsr_row_ptr_A)
@@ -1246,8 +1246,9 @@ hipsparseStatus_t testing_gebsr2gebsr(Arguments argus)
                                                          col_block_dim_A,
                                                          &buffer_size_conversion));
 
-    auto  dbuffer_conversion_managed = hipsparse_unique_ptr{device_malloc(buffer_size_conversion), device_free};
-    void* dbuffer_conversion         = dbuffer_conversion_managed.get();
+    auto dbuffer_conversion_managed
+        = hipsparse_unique_ptr{device_malloc(buffer_size_conversion), device_free};
+    void* dbuffer_conversion = dbuffer_conversion_managed.get();
 
     if(!dbuffer_conversion)
     {
@@ -1287,7 +1288,8 @@ hipsparseStatus_t testing_gebsr2gebsr(Arguments argus)
 
     if(!dbsr_col_ind_A || !dbsr_val_A || !dbsr_row_ptr_C)
     {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!dbsr_col_ind_A || !dbsr_val_A || !dbsr_row_ptr_C");
+        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
+                                        "!dbsr_col_ind_A || !dbsr_val_A || !dbsr_row_ptr_C");
         return HIPSPARSE_STATUS_ALLOC_FAILED;
     }
 
@@ -1314,8 +1316,8 @@ hipsparseStatus_t testing_gebsr2gebsr(Arguments argus)
 
     CHECK_HIP_ERROR(hipMemcpy(
         hbsr_row_ptr_A.data(), dbsr_row_ptr_A, sizeof(int) * (mb + 1), hipMemcpyDeviceToHost));
-    CHECK_HIP_ERROR(
-        hipMemcpy(hbsr_col_ind_A.data(), dbsr_col_ind_A, sizeof(int) * nnzb, hipMemcpyDeviceToHost));
+    CHECK_HIP_ERROR(hipMemcpy(
+        hbsr_col_ind_A.data(), dbsr_col_ind_A, sizeof(int) * nnzb, hipMemcpyDeviceToHost));
     CHECK_HIP_ERROR(hipMemcpy(hbsr_val_A.data(),
                               dbsr_val_A,
                               sizeof(T) * nnzb * row_block_dim_A * col_block_dim_A,
