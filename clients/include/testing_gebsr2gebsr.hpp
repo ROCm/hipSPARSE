@@ -30,12 +30,6 @@
 #include "unit.hpp"
 #include "utility.hpp"
 
-#include <algorithm>
-#include <hipsparse.h>
-#include <string>
-
-#include <iostream>
-
 using namespace hipsparse;
 using namespace hipsparse_test;
 

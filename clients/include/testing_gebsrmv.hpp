@@ -30,10 +30,6 @@
 #include "unit.hpp"
 #include "utility.hpp"
 
-#include <cmath>
-#include <hipsparse.h>
-#include <string>
-
 using namespace hipsparse;
 using namespace hipsparse_test;
 
