@@ -942,10 +942,10 @@ hipsparseStatus_t testing_gebsr2gebsr(Arguments argus)
 {
     int                  m               = argus.M;
     int                  n               = argus.N;
-    int                  row_block_dim_A = argus.block_dim;
-    int                  col_block_dim_A = argus.block_dim;
-    int                  row_block_dim_C = argus.block_dim;
-    int                  col_block_dim_C = argus.block_dim;
+    int                  row_block_dim_A = argus.row_block_dimA;
+    int                  col_block_dim_A = argus.col_block_dimA;
+    int                  row_block_dim_C = argus.row_block_dimB;
+    int                  col_block_dim_C = argus.col_block_dimB;
     hipsparseIndexBase_t idx_base_A      = argus.idx_base;
     hipsparseIndexBase_t idx_base_C      = argus.idx_base2;
     hipsparseDirection_t dir             = argus.dirA;
@@ -1050,13 +1050,13 @@ hipsparseStatus_t testing_gebsr2gebsr(Arguments argus)
                                                   col_block_dim_C,
                                                   &buffer_size);
 
-        if(mb < 0 || nb < 0 || row_block_dim_A < 0 || col_block_dim_A < 0 || row_block_dim_C < 0
-           || col_block_dim_C < 0)
+        if(mb < 0 || nb < 0 || row_block_dim_A <= 0 || col_block_dim_A <= 0 || row_block_dim_C <= 0
+           || col_block_dim_C <= 0)
         {
             verify_hipsparse_status_invalid_size(
                 status,
-                "Error: mb < 0 || nb < 0 || row_block_dim_A < 0 || col_block_dim_A < 0 || "
-                "row_block_dim_C < 0 || col_block_dim_C < 0");
+                "Error: mb < 0 || nb < 0 || row_block_dim_A <= 0 || col_block_dim_A <= 0 || "
+                "row_block_dim_C <= 0 || col_block_dim_C <= 0");
         }
         else
         {
@@ -1084,13 +1084,13 @@ hipsparseStatus_t testing_gebsr2gebsr(Arguments argus)
                                           &nnz_total_dev_host_ptr,
                                           dtemp_buffer);
 
-        if(mb < 0 || nb < 0 || row_block_dim_A < 0 || col_block_dim_A < 0 || row_block_dim_C < 0
-           || col_block_dim_C < 0)
+        if(mb < 0 || nb < 0 || row_block_dim_A <= 0 || col_block_dim_A <= 0 || row_block_dim_C <= 0
+           || col_block_dim_C <= 0)
         {
             verify_hipsparse_status_invalid_size(
                 status,
-                "Error: mb < 0 || nb < 0 || row_block_dim_A < 0 || col_block_dim_A < 0 || "
-                "row_block_dim_C < 0 || col_block_dim_C < 0");
+                "Error: mb < 0 || nb < 0 || row_block_dim_A <= 0 || col_block_dim_A <= 0 || "
+                "row_block_dim_C <= 0 || col_block_dim_C <= 0");
         }
         else
         {
@@ -1119,13 +1119,13 @@ hipsparseStatus_t testing_gebsr2gebsr(Arguments argus)
                                        col_block_dim_C,
                                        dtemp_buffer);
 
-        if(mb < 0 || nb < 0 || row_block_dim_A < 0 || col_block_dim_A < 0 || row_block_dim_C < 0
-           || col_block_dim_C < 0)
+        if(mb < 0 || nb < 0 || row_block_dim_A <= 0 || col_block_dim_A <= 0 || row_block_dim_C <= 0
+           || col_block_dim_C <= 0)
         {
             verify_hipsparse_status_invalid_size(
                 status,
-                "Error: mb < 0 || nb < 0 || row_block_dim_A < 0 || col_block_dim_A < 0 || "
-                "row_block_dim_C < 0 || col_block_dim_C < 0");
+                "Error: mb < 0 || nb < 0 || row_block_dim_A <= 0 || col_block_dim_A <= 0 || "
+                "row_block_dim_C <= 0 || col_block_dim_C <= 0");
         }
         else
         {
@@ -1203,14 +1203,13 @@ hipsparseStatus_t testing_gebsr2gebsr(Arguments argus)
     n       = nb * col_block_dim_A;
     mb_C    = (m + row_block_dim_C - 1) / row_block_dim_C;
     nb_C    = (n + col_block_dim_C - 1) / col_block_dim_C;
-    int nnz = nnzb * row_block_dim_A * col_block_dim_A;
 
     // Now use the csr matrix as the symbolic for the gebsr matrix.
     std::vector<int> hbsr_row_ptr_A = csr_row_ptr;
     std::vector<int> hbsr_col_ind_A = csr_col_ind;
     std::vector<T>   hbsr_val_A     = csr_val;
 
-    hbsr_val_A.resize(nnz);
+    hbsr_val_A.resize(nnzb * row_block_dim_A * col_block_dim_A);
 
     int idx = 0;
     switch(dir)
@@ -1262,8 +1261,8 @@ hipsparseStatus_t testing_gebsr2gebsr(Arguments argus)
     auto dbsr_row_ptr_A_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(int) * (mb + 1)), device_free};
     auto dbsr_col_ind_A_managed
-        = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
-    auto dbsr_val_A_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
+        = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnzb), device_free};
+    auto dbsr_val_A_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnzb * row_block_dim_A * col_block_dim_A), device_free};
     auto dbsr_row_ptr_C_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(int) * (mb_C + 1)), device_free};
 
@@ -1284,9 +1283,9 @@ hipsparseStatus_t testing_gebsr2gebsr(Arguments argus)
     CHECK_HIP_ERROR(hipMemcpy(
         dbsr_row_ptr_A, hbsr_row_ptr_A.data(), sizeof(int) * (mb + 1), hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(
-        hipMemcpy(dbsr_col_ind_A, hbsr_col_ind_A.data(), sizeof(int) * nnz, hipMemcpyHostToDevice));
+        hipMemcpy(dbsr_col_ind_A, hbsr_col_ind_A.data(), sizeof(int) * nnzb, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(
-        hipMemcpy(dbsr_val_A, hbsr_val_A.data(), sizeof(T) * nnz, hipMemcpyHostToDevice));
+        hipMemcpy(dbsr_val_A, hbsr_val_A.data(), sizeof(T) * nnzb * row_block_dim_A * col_block_dim_A, hipMemcpyHostToDevice));
 
     int buffer_size = 0;
     CHECK_HIPSPARSE_ERROR(hipsparseXgebsr2gebsr_bufferSize(handle,
