@@ -969,14 +969,6 @@ hipsparseStatus_t testing_gebsr2gebsr(Arguments argus)
         nb = (n + col_block_dim_A - 1) / col_block_dim_A;
     }
 
-    // int mb_C = -1;
-    // int nb_C = -1;
-    // if(row_block_dim_C > 0 && col_block_dim_C > 0)
-    // {
-    //     mb_C = (m + row_block_dim_C - 1) / row_block_dim_C;
-    //     nb_C = (n + col_block_dim_C - 1) / col_block_dim_C;
-    // }
-
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
     std::unique_ptr<descr_struct>  unique_ptr_descr_A(new descr_struct);
@@ -1043,40 +1035,6 @@ hipsparseStatus_t testing_gebsr2gebsr(Arguments argus)
                                                   row_block_dim_C,
                                                   col_block_dim_C,
                                                   &buffer_size);
-
-        if(mb < 0 || nb < 0 || row_block_dim_A <= 0 || col_block_dim_A <= 0 || row_block_dim_C <= 0
-           || col_block_dim_C <= 0)
-        {
-            verify_hipsparse_status_invalid_size(
-                status,
-                "Error: mb < 0 || nb < 0 || row_block_dim_A <= 0 || col_block_dim_A <= 0 || "
-                "row_block_dim_C <= 0 || col_block_dim_C <= 0");
-        }
-        else
-        {
-            verify_hipsparse_status_success(
-                status,
-                "mb >= 0 && nb >= 0 && row_block_dim_A > 0 && col_block_dim_A > 0 && "
-                "row_block_dim_C > 0 && col_block_dim_C > 0");
-        }
-
-        int nnz_total_dev_host_ptr;
-        status = hipsparseXgebsr2gebsrNnz(handle,
-                                          dir,
-                                          mb,
-                                          nb,
-                                          safe_size,
-                                          descr_A,
-                                          dbsr_row_ptr_A,
-                                          dbsr_col_ind_A,
-                                          row_block_dim_A,
-                                          col_block_dim_A,
-                                          descr_C,
-                                          dbsr_row_ptr_C,
-                                          row_block_dim_C,
-                                          col_block_dim_C,
-                                          &nnz_total_dev_host_ptr,
-                                          dtemp_buffer);
 
         if(mb < 0 || nb < 0 || row_block_dim_A <= 0 || col_block_dim_A <= 0 || row_block_dim_C <= 0
            || col_block_dim_C <= 0)
