@@ -47,13 +47,8 @@ hipsparseHybPartition_t hyb_partition[]
 
 int hyb_ELL_range[] = {0, 1, 2};
 
-std::string hyb_bin[] = {"nos1.bin",
-                         "nos2.bin",
-                         "nos3.bin",
-                         "nos4.bin",
-                         "nos5.bin",
-                         "nos6.bin",
-                         "nos7.bin"};
+std::string hyb_bin[]
+    = {"nos1.bin", "nos2.bin", "nos3.bin", "nos4.bin", "nos5.bin", "nos6.bin", "nos7.bin"};
 
 class parameterized_hybmv : public testing::TestWithParam<hybmv_tuple>
 {

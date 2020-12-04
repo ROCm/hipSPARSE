@@ -44,13 +44,8 @@ hipsparseIndexBase_t prune_csr2csr_base_A_range[]
 hipsparseIndexBase_t prune_csr2csr_base_C_range[]
     = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
-std::string prune_csr2csr_bin[] = {"nos1.bin",
-                                   "nos2.bin",
-                                   "nos3.bin",
-                                   "nos4.bin",
-                                   "nos5.bin",
-                                   "nos6.bin",
-                                   "nos7.bin"};
+std::string prune_csr2csr_bin[]
+    = {"nos1.bin", "nos2.bin", "nos3.bin", "nos4.bin", "nos5.bin", "nos6.bin", "nos7.bin"};
 
 class parameterized_prune_csr2csr : public testing::TestWithParam<prune_csr2csr_tuple>
 {

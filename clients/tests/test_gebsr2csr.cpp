@@ -59,13 +59,8 @@ hipsparseIndexBase_t gebsr2csr_bsr_base_range_bin[] = {HIPSPARSE_INDEX_BASE_ONE}
 hipsparseDirection_t gebsr2csr_dir_range_bin[]
     = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COLUMN};
 
-std::string gebsr2csr_bin[] = {"nos1.bin",
-                               "nos2.bin",
-                               "nos3.bin",
-                               "nos4.bin",
-                               "nos5.bin",
-                               "nos6.bin",
-                               "nos7.bin"};
+std::string gebsr2csr_bin[]
+    = {"nos1.bin", "nos2.bin", "nos3.bin", "nos4.bin", "nos5.bin", "nos6.bin", "nos7.bin"};
 
 class parameterized_gebsr2csr : public testing::TestWithParam<gebsr2csr_tuple>
 {

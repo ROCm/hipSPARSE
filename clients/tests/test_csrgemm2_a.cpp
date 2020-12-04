@@ -43,13 +43,8 @@ base csrgemm2_a_idxbaseA_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_B
 base csrgemm2_a_idxbaseB_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 base csrgemm2_a_idxbaseC_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
-std::string csrgemm2_a_bin[] = {"nos1.bin",
-                                "nos2.bin",
-                                "nos3.bin",
-                                "nos4.bin",
-                                "nos5.bin",
-                                "nos6.bin",
-                                "nos7.bin"};
+std::string csrgemm2_a_bin[]
+    = {"nos1.bin", "nos2.bin", "nos3.bin", "nos4.bin", "nos5.bin", "nos6.bin", "nos7.bin"};
 
 class parameterized_csrgemm2_a : public testing::TestWithParam<csrgemm2_a_tuple>
 {
