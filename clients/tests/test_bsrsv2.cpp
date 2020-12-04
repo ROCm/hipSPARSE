@@ -50,8 +50,7 @@ op   bsrsv2_op_range[]      = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPER
 diag bsrsv2_diag_range[]    = {HIPSPARSE_DIAG_TYPE_NON_UNIT};
 fill bsrsv2_fill_range[]    = {HIPSPARSE_FILL_MODE_LOWER, HIPSPARSE_FILL_MODE_UPPER};
 
-std::string bsrsv2_bin[]
-    = {"nos2.bin", "nos4.bin", "nos5.bin", "nos6.bin"};
+std::string bsrsv2_bin[] = {"nos2.bin", "nos4.bin", "nos5.bin", "nos6.bin"};
 
 class parameterized_bsrsv2 : public testing::TestWithParam<bsrsv2_tuple>
 {

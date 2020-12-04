@@ -59,14 +59,11 @@ trans bsrmm_transA_range_bin[]  = {HIPSPARSE_OPERATION_NON_TRANSPOSE};
 trans bsrmm_transB_range_bin[]  = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPERATION_TRANSPOSE};
 
 std::string bsrmm_bin[] = {"rma10.bin",
-                           "bibd_22_8.bin",
                            "mc2depi.bin",
-                           "scircuit.bin",
                            "nos1.bin",
                            "nos3.bin",
                            "nos5.bin",
                            "nos7.bin",
-                           "amazon0312.bin",
                            "shipsec1.bin"};
 
 class parameterized_bsrmm : public testing::TestWithParam<bsrmm_tuple>

@@ -44,25 +44,13 @@ hipsparseHybPartition_t csr2hyb_partition[]
 
 int csr2hyb_ELL_range[] = {-33, -1, 0, INT32_MAX};
 
-std::string csr2hyb_bin[] = {"rma10.bin",
-                             "mac_econ_fwd500.bin",
-                             "bibd_22_8.bin",
-                             "mc2depi.bin",
-                             "scircuit.bin",
-                             "ASIC_320k.bin",
-                             "bmwcra_1.bin",
-                             "nos1.bin",
+std::string csr2hyb_bin[] = {"nos1.bin",
                              "nos2.bin",
                              "nos3.bin",
                              "nos4.bin",
                              "nos5.bin",
                              "nos6.bin",
-                             "nos7.bin",
-                             "amazon0312.bin",
-                             "Chebyshev4.bin",
-                             "sme3Dc.bin",
-                             "webbase-1M.bin",
-                             "shipsec1.bin"};
+                             "nos7.bin"};
 
 class parameterized_csr2hyb : public testing::TestWithParam<csr2hyb_tuple>
 {

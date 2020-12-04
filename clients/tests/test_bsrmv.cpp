@@ -45,13 +45,8 @@ std::vector<double> bsr_beta_range  = {0.0, 1.0};
 base bsr_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 dir  bsr_dir_range[]     = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COLUMN};
 
-std::string bsr_bin[] = {"nos1.bin",
-                         "nos2.bin",
-                         "nos3.bin",
-                         "nos4.bin",
-                         "nos5.bin",
-                         "nos6.bin",
-                         "nos7.bin"};
+std::string bsr_bin[]
+    = {"nos1.bin", "nos2.bin", "nos3.bin", "nos4.bin", "nos5.bin", "nos6.bin", "nos7.bin"};
 
 class parameterized_bsrmv : public testing::TestWithParam<bsrmv_tuple>
 {
