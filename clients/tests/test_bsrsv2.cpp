@@ -42,7 +42,7 @@ typedef std::tuple<double, base, int, dir, op, diag, fill, std::string> bsrsv2_b
 int bsrsv2_M_range[]   = {-1, 0, 647};
 int bsrsv2_dim_range[] = {-1, 0, 1, 3, 9};
 
-double bsrsv2_alpha_range[] = {1.0, 2.3};
+double bsrsv2_alpha_range[] = {2.3};
 
 base bsrsv2_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 dir  bsrsv2_dir_range[]     = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COLUMN};
@@ -51,7 +51,7 @@ diag bsrsv2_diag_range[]    = {HIPSPARSE_DIAG_TYPE_NON_UNIT};
 fill bsrsv2_fill_range[]    = {HIPSPARSE_FILL_MODE_LOWER, HIPSPARSE_FILL_MODE_UPPER};
 
 std::string bsrsv2_bin[]
-    = {"mc2depi.bin", "scircuit.bin", "nos2.bin", "nos4.bin", "nos5.bin", "nos6.bin"};
+    = {"nos2.bin", "nos4.bin", "nos5.bin", "nos6.bin"};
 
 class parameterized_bsrsv2 : public testing::TestWithParam<bsrsv2_tuple>
 {
