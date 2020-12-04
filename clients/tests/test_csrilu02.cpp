@@ -43,9 +43,6 @@ double csrilu02_boost_vali_range[] = {0.2, 1.0};
 base csrilu02_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
 std::string csrilu02_bin[] = {"mac_econ_fwd500.bin",
-                              "mc2depi.bin",
-                              "scircuit.bin",
-                              "ASIC_320k.bin",
 #ifdef __HIP_PLATFORM_HCC__
                               // exclude some matrices from cusparse check,
                               // they use weaker division producing more rounding errors
@@ -58,9 +55,7 @@ std::string csrilu02_bin[] = {"mac_econ_fwd500.bin",
                               "nos4.bin",
                               "nos5.bin",
                               "nos6.bin",
-                              "nos7.bin",
-                              "amazon0312.bin",
-                              "sme3Dc.bin"};
+                              "nos7.bin"};
 
 class parameterized_csrilu02 : public testing::TestWithParam<csrilu02_tuple>
 {

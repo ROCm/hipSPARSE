@@ -34,17 +34,13 @@ typedef std::tuple<double, hipsparseIndexBase_t, std::string> csr2csr_compress_b
 
 int    csr2csr_compress_M_range[]     = {-1, 0, 10, 500, 872, 465327};
 int    csr2csr_compress_N_range[]     = {-3, 0, 33, 242, 623, 592645};
-double csr2csr_compress_alpha_range[] = {-0.001, 0.0, 0.0012, 0.08736, 0.33333, 0.5, 1.0, 1.7};
+double csr2csr_compress_alpha_range[] = {-0.001, 0.0, 0.0012, 0.08736, 0.33333, 1.0, 1.7};
 
 hipsparseIndexBase_t csr2csr_compress_base_range[]
     = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
 std::string csr2csr_compress_bin[] = {"rma10.bin",
                                       "mac_econ_fwd500.bin",
-                                      "bibd_22_8.bin",
-                                      "mc2depi.bin",
-                                      "scircuit.bin",
-                                      "ASIC_320k.bin",
                                       "bmwcra_1.bin",
                                       "nos1.bin",
                                       "nos2.bin",
@@ -53,7 +49,6 @@ std::string csr2csr_compress_bin[] = {"rma10.bin",
                                       "nos5.bin",
                                       "nos6.bin",
                                       "nos7.bin",
-                                      "amazon0312.bin",
                                       "Chebyshev4.bin",
                                       "sme3Dc.bin",
                                       "webbase-1M.bin",
