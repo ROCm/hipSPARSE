@@ -499,7 +499,7 @@ hipsparseStatus_t testing_gebsr2csr(Arguments argus)
                     for(int c = 0; c < col_block_dim; ++c)
                     {
                         bsr_val[k * row_block_dim * col_block_dim + c * row_block_dim + r]
-                            = static_cast<T>(++idx);
+                            = make_DataType<T>(++idx);
                     }
                 }
             }
@@ -520,7 +520,7 @@ hipsparseStatus_t testing_gebsr2csr(Arguments argus)
                     for(int c = 0; c < col_block_dim; ++c)
                     {
                         bsr_val[k * row_block_dim * col_block_dim + r * col_block_dim + c]
-                            = static_cast<T>(++idx);
+                            = make_DataType<T>(++idx);
                     }
                 }
             }
