@@ -1228,7 +1228,7 @@ hipsparseStatus_t testing_gebsr2gebsr(Arguments argus)
                     for(int c = 0; c < col_block_dim_A; ++c)
                     {
                         hbsr_val_A[k * row_block_dim_A * col_block_dim_A + c * row_block_dim_A + r]
-                            = static_cast<T>(++idx);
+                            = make_DataType<T>(++idx);
                     }
                 }
             }
@@ -1249,7 +1249,7 @@ hipsparseStatus_t testing_gebsr2gebsr(Arguments argus)
                     for(int c = 0; c < col_block_dim_A; ++c)
                     {
                         hbsr_val_A[k * row_block_dim_A * col_block_dim_A + r * col_block_dim_A + c]
-                            = static_cast<T>(++idx);
+                            = make_DataType<T>(++idx);
                     }
                 }
             }
