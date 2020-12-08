@@ -5057,6 +5057,14 @@ hipsparseStatus_t hipsparseDnVecSetValues(hipsparseDnVecDescr_t dnVecDescr, void
 
 /* Generic API functions */
 
+/* Description: Axpby computes the sum of a sparse vector and a dense vector */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseAxpby(hipsparseHandle_t     handle,
+                                 const void*           alpha,
+                                 hipsparseSpVecDescr_t vecX,
+                                 const void*           beta,
+                                 hipsparseDnVecDescr_t vecY);
+
 /* Description: Gather elements of a dense vector into a sparse vector */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseGather(hipsparseHandle_t     handle,

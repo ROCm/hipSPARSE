@@ -10867,6 +10867,19 @@ hipsparseStatus_t hipsparseDnVecSetValues(hipsparseDnVecDescr_t dnVecDescr, void
         rocsparse_dnvec_set_values((rocsparse_dnvec_descr)dnVecDescr, values));
 }
 
+hipsparseStatus_t hipsparseAxpby(hipsparseHandle_t     handle,
+                                 const void*           alpha,
+                                 hipsparseSpVecDescr_t vecX,
+                                 const void*           beta,
+                                 hipsparseDnVecDescr_t vecY)
+{
+    return rocSPARSEStatusToHIPStatus(rocsparse_axpby((rocsparse_handle)handle,
+                                                      alpha,
+                                                      (rocsparse_spvec_descr)vecX,
+                                                      beta,
+                                                      (rocsparse_dnvec_descr)vecY));
+}
+
 hipsparseStatus_t hipsparseGather(hipsparseHandle_t     handle,
                                   hipsparseDnVecDescr_t vecY,
                                   hipsparseSpVecDescr_t vecX)

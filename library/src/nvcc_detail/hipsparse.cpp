@@ -6802,15 +6802,15 @@ hipsparseStatus_t hipsparseSgebsr2gebsc_bufferSize(hipsparseHandle_t handle,
     int               cu_buffer_size;
     hipsparseStatus_t status
         = hipCUSPARSEStatusToHIPStatus(cusparseSgebsr2gebsc_bufferSize((cusparseHandle_t)handle,
-                                                                           mb,
-                                                                           nb,
-                                                                           nnzb,
-                                                                           bsr_val,
-                                                                           bsr_row_ptr,
-                                                                           bsr_col_ind,
-                                                                           row_block_dim,
-                                                                           col_block_dim,
-                                                                           &cu_buffer_size));
+                                                                       mb,
+                                                                       nb,
+                                                                       nnzb,
+                                                                       bsr_val,
+                                                                       bsr_row_ptr,
+                                                                       bsr_col_ind,
+                                                                       row_block_dim,
+                                                                       col_block_dim,
+                                                                       &cu_buffer_size));
     p_buffer_size[0] = cu_buffer_size;
     return status;
 }
@@ -6830,15 +6830,15 @@ hipsparseStatus_t hipsparseDgebsr2gebsc_bufferSize(hipsparseHandle_t handle,
     int               cu_buffer_size;
     hipsparseStatus_t status
         = hipCUSPARSEStatusToHIPStatus(cusparseDgebsr2gebsc_bufferSize((cusparseHandle_t)handle,
-                                                                           mb,
-                                                                           nb,
-                                                                           nnzb,
-                                                                           bsr_val,
-                                                                           bsr_row_ptr,
-                                                                           bsr_col_ind,
-                                                                           row_block_dim,
-                                                                           col_block_dim,
-                                                                           &cu_buffer_size));
+                                                                       mb,
+                                                                       nb,
+                                                                       nnzb,
+                                                                       bsr_val,
+                                                                       bsr_row_ptr,
+                                                                       bsr_col_ind,
+                                                                       row_block_dim,
+                                                                       col_block_dim,
+                                                                       &cu_buffer_size));
     p_buffer_size[0] = cu_buffer_size;
     return status;
 }
@@ -9317,6 +9317,19 @@ hipsparseStatus_t hipsparseDnVecSetValues(hipsparseDnVecDescr_t dnVecDescr, void
 {
     return hipCUSPARSEStatusToHIPStatus(
         cusparseDnVecSetValues((cusparseDnVecDescr_t)dnVecDescr, values));
+}
+
+hipsparseStatus_t hipsparseAxpby(hipsparseHandle_t     handle,
+                                 const void*           alpha,
+                                 hipsparseSpVecDescr_t vecX,
+                                 const void*           beta,
+                                 hipsparseDnVecDescr_t vecY)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseAxpby((cusparseHandle_t)handle,
+                                                      alpha,
+                                                      (cusparseSpVecDescr_t)vecX,
+                                                      beta,
+                                                      (cusparseDnVecDescr_t)vecY));
 }
 
 hipsparseStatus_t hipsparseGather(hipsparseHandle_t     handle,
