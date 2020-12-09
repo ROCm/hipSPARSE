@@ -43,12 +43,7 @@ base csrgeam2_idxbaseA_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BAS
 base csrgeam2_idxbaseB_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 base csrgeam2_idxbaseC_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
-std::string csrgeam2_bin[] = {"rma10.bin",
-                              "mac_econ_fwd500.bin",
-                              "mc2depi.bin",
-                              "scircuit.bin",
-                              "bmwcra_1.bin",
-                              "nos1.bin",
+std::string csrgeam2_bin[] = {"nos1.bin",
                               "nos2.bin",
                               "nos3.bin",
                               "nos4.bin",

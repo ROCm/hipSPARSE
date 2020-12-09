@@ -57,11 +57,7 @@ hipsparseDirection_t bsr2csr_dir_range_bin[]
     = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COLUMN};
 
 std::string bsr2csr_bin[] = {"rma10.bin",
-                             "mac_econ_fwd500.bin",
-                             "mc2depi.bin",
                              "scircuit.bin",
-                             "ASIC_320k.bin",
-                             "bmwcra_1.bin",
                              "nos1.bin",
                              "nos2.bin",
                              "nos3.bin",
@@ -69,9 +65,6 @@ std::string bsr2csr_bin[] = {"rma10.bin",
                              "nos5.bin",
                              "nos6.bin",
                              "nos7.bin",
-                             "amazon0312.bin",
-                             "Chebyshev4.bin",
-                             "sme3Dc.bin",
                              "shipsec1.bin"};
 
 class parameterized_bsr2csr : public testing::TestWithParam<bsr2csr_tuple>

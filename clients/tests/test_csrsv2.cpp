@@ -40,7 +40,7 @@ typedef std::tuple<double, base, op, diag, fill, std::string> csrsv2_bin_tuple;
 
 int csrsv2_M_range[] = {-1, 0, 647};
 
-double csrsv2_alpha_range[] = {1.0, 2.3};
+double csrsv2_alpha_range[] = {2.3};
 
 base csrsv2_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 op   csrsv2_op_range[]      = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPERATION_TRANSPOSE};
@@ -48,18 +48,13 @@ diag csrsv2_diag_range[]    = {HIPSPARSE_DIAG_TYPE_NON_UNIT};
 fill csrsv2_fill_range[]    = {HIPSPARSE_FILL_MODE_LOWER, HIPSPARSE_FILL_MODE_UPPER};
 
 std::string csrsv2_bin[] = {"rma10.bin",
-                            "mac_econ_fwd500.bin",
                             "mc2depi.bin",
-                            "scircuit.bin",
-                            "ASIC_320k.bin",
-                            "bmwcra_1.bin",
                             "nos1.bin",
                             "nos2.bin",
                             "nos3.bin",
                             "nos4.bin",
                             "nos5.bin",
                             "nos6.bin",
-                            "amazon0312.bin",
                             "sme3Dc.bin"};
 
 class parameterized_csrsv2 : public testing::TestWithParam<csrsv2_tuple>
