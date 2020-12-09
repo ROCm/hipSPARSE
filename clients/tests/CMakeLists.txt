@@ -180,6 +180,7 @@ set(HIPSPARSE_TEST_SOURCES
   test_spmv_coo.cpp
   test_spmv_csr.cpp
   test_gather.cpp
+  test_spvv.cpp
 )
 
 if(NOT BUILD_CUDA)

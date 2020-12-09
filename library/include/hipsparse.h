@@ -5063,6 +5063,25 @@ hipsparseStatus_t hipsparseGather(hipsparseHandle_t     handle,
                                   hipsparseDnVecDescr_t vecY,
                                   hipsparseSpVecDescr_t vecX);
 
+/* Description: Compute the inner dot product of a sparse vector with a dense vector */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpVV_bufferSize(hipsparseHandle_t     handle,
+                                           hipsparseOperation_t  opX,
+                                           hipsparseSpVecDescr_t vecX,
+                                           hipsparseDnVecDescr_t vecY,
+                                           void*                 result,
+                                           hipDataType           computeType,
+                                           size_t*               bufferSize);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpVV(hipsparseHandle_t     handle,
+                                hipsparseOperation_t  opX,
+                                hipsparseSpVecDescr_t vecX,
+                                hipsparseDnVecDescr_t vecY,
+                                void*                 result,
+                                hipDataType           computeType,
+                                void*                 externalBuffer);
+
 /* Description: Compute the sparse matrix multiplication with a dense vector */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpMV_bufferSize(hipsparseHandle_t           handle,
