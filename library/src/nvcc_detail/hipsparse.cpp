@@ -9123,7 +9123,7 @@ hipsparseStatus_t hipsparseSpVecGetIndexBase(const hipsparseSpVecDescr_t spVecDe
                                              hipsparseIndexBase_t*       idxBase)
 {
     return hipCUSPARSEStatusToHIPStatus(
-        cusparseSpVecGetIndexBase((const cusparseSpVecDescr_t)spVecDescr, idxBase));
+        cusparseSpVecGetIndexBase((const cusparseSpVecDescr_t)spVecDescr, (cusparseIndexBase_t*)idxBase));
 }
 
 hipsparseStatus_t hipsparseSpVecGetValues(const hipsparseSpVecDescr_t spVecDescr, void** values)
@@ -9135,7 +9135,7 @@ hipsparseStatus_t hipsparseSpVecGetValues(const hipsparseSpVecDescr_t spVecDescr
 hipsparseStatus_t hipsparseSpVecSetValues(hipsparseSpVecDescr_t spVecDescr, void* values)
 {
     return hipCUSPARSEStatusToHIPStatus(
-        cusparseSpVecGetValues((const cusparseSpVecDescr_t)spVecDescr, values));
+        cusparseSpVecSetValues((const cusparseSpVecDescr_t)spVecDescr, values));
 }
 
 hipsparseStatus_t hipsparseCreateCoo(hipsparseSpMatDescr_t* spMatDescr,
@@ -9319,6 +9319,19 @@ hipsparseStatus_t hipsparseDnVecSetValues(hipsparseDnVecDescr_t dnVecDescr, void
         cusparseDnVecSetValues((cusparseDnVecDescr_t)dnVecDescr, values));
 }
 
+hipsparseStatus_t hipsparseAxpby(hipsparseHandle_t     handle,
+                                 const void*           alpha,
+                                 hipsparseSpVecDescr_t vecX,
+                                 const void*           beta,
+                                 hipsparseDnVecDescr_t vecY)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseAxpby((cusparseHandle_t)handle,
+                                                      alpha,
+                                                      (cusparseSpVecDescr_t)vecX,
+                                                      beta,
+                                                      (cusparseDnVecDescr_t)vecY));
+}
+
 hipsparseStatus_t hipsparseGather(hipsparseHandle_t     handle,
                                   hipsparseDnVecDescr_t vecY,
                                   hipsparseSpVecDescr_t vecX)
@@ -9333,6 +9346,40 @@ hipsparseStatus_t hipsparseScatter(hipsparseHandle_t     handle,
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseScatter(
         (cusparseHandle_t)handle, (cusparseSpVecDescr_t)vecX, (cusparseDnVecDescr_t)vecY));
+}
+
+hipsparseStatus_t hipsparseSpVV_bufferSize(hipsparseHandle_t     handle,
+                                           hipsparseOperation_t  opX,
+                                           hipsparseSpVecDescr_t vecX,
+                                           hipsparseDnVecDescr_t vecY,
+                                           void*                 result,
+                                           hipDataType           computeType,
+                                           size_t*               bufferSize)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseSpVV_bufferSize((cusparseHandle_t)handle,
+                                                     hipOperationToCudaOperation(opX),
+                                                     (cusparseSpVecDescr_t)vecX,
+                                                     (cusparseDnVecDescr_t)vecY,
+                                                     result,
+                                                     computeType,
+                                                     bufferSize));
+}
+
+hipsparseStatus_t hipsparseSpVV(hipsparseHandle_t     handle,
+                                hipsparseOperation_t  opX,
+                                hipsparseSpVecDescr_t vecX,
+                                hipsparseDnVecDescr_t vecY,
+                                void*                 result,
+                                hipDataType           computeType,
+                                void*                 externalBuffer)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseSpVV((cusparseHandle_t)handle,
+                                                     hipOperationToCudaOperation(opX),
+                                                     (cusparseSpVecDescr_t)vecX,
+                                                     (cusparseDnVecDescr_t)vecY,
+                                                     result,
+                                                     computeType,
+                                                     externalBuffer));
 }
 
 hipsparseStatus_t hipsparseSpMV_bufferSize(hipsparseHandle_t           handle,
