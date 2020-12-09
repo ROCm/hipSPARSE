@@ -990,12 +990,11 @@ hipsparseStatus_t testing_gebsr2gebsr(Arguments argus)
         auto dtemp_buffer_managed
             = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
 
-        T*   dtemp_buffer   = (T*)dtemp_buffer_managed.get();
+        T* dtemp_buffer = (T*)dtemp_buffer_managed.get();
 
         if(!dtemp_buffer)
         {
-            verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                            "!dtemp_buffer");
+            verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!dtemp_buffer");
             return HIPSPARSE_STATUS_ALLOC_FAILED;
         }
 
