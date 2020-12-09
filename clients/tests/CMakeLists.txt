@@ -179,6 +179,7 @@ set(HIPSPARSE_TEST_SOURCES
   test_dnvec_descr.cpp
   test_spmv_coo.cpp
   test_spmv_csr.cpp
+  test_axpby.cpp
   test_gather.cpp
   test_spvv.cpp
 )
