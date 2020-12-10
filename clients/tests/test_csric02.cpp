@@ -44,9 +44,7 @@ std::string csric02_bin[] = {"mac_econ_fwd500.bin",
                              "nos5.bin",
                              "nos6.bin",
                              "nos7.bin",
-                             "scircuit.bin",
-                             "ASIC_320k.bin",
-                             "amazon0312.bin"};
+                             "scircuit.bin"};
 
 class parameterized_csric02 : public testing::TestWithParam<csric02_tuple>
 {

@@ -34,9 +34,9 @@ typedef std::tuple<int, int, double, hipsparseIndexBase_t, hipsparseIndexBase_t>
 typedef std::tuple<double, hipsparseIndexBase_t, hipsparseIndexBase_t, std::string>
     prune_csr2csr_bin_tuple;
 
-int    prune_csr2csr_M_range[]         = {-1, 0, 10, 500, 872, 465327};
-int    prune_csr2csr_N_range[]         = {-3, 0, 33, 242, 623, 592645};
-double prune_csr2csr_threshold_range[] = {-0.001, 0.0, 0.0012, 0.08736, 0.33333, 0.5, 1.0, 1.7};
+int    prune_csr2csr_M_range[]         = {-1, 10, 500, 872, 465327};
+int    prune_csr2csr_N_range[]         = {-3, 33, 242, 623, 592645};
+double prune_csr2csr_threshold_range[] = {-0.001, 0.0, 0.0012, 0.08736, 0.33333, 0.5, 1.7};
 
 hipsparseIndexBase_t prune_csr2csr_base_A_range[]
     = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
@@ -44,13 +44,7 @@ hipsparseIndexBase_t prune_csr2csr_base_A_range[]
 hipsparseIndexBase_t prune_csr2csr_base_C_range[]
     = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
-std::string prune_csr2csr_bin[] = {"rma10.bin",
-                                   "mac_econ_fwd500.bin",
-                                   "bibd_22_8.bin",
-                                   "mc2depi.bin",
-                                   "scircuit.bin",
-                                   "ASIC_320k.bin",
-                                   "bmwcra_1.bin",
+std::string prune_csr2csr_bin[] = {"scircuit.bin",
                                    "nos1.bin",
                                    "nos2.bin",
                                    "nos3.bin",
@@ -58,9 +52,6 @@ std::string prune_csr2csr_bin[] = {"rma10.bin",
                                    "nos5.bin",
                                    "nos6.bin",
                                    "nos7.bin",
-                                   "amazon0312.bin",
-                                   "Chebyshev4.bin",
-                                   "sme3Dc.bin",
                                    "webbase-1M.bin",
                                    "shipsec1.bin"};
 

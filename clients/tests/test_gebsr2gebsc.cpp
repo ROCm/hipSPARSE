@@ -55,8 +55,6 @@ hipsparseDirection_t gebsr2gebsc_dir_range_bin[]
     = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COLUMN};
 
 std::string gebsr2gebsc_bin[] = {"rma10.bin",
-                                 "mac_econ_fwd500.bin",
-                                 "bibd_22_8.bin",
                                  "scircuit.bin",
                                  "nos1.bin",
                                  "nos2.bin",
