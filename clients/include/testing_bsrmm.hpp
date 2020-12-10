@@ -31,8 +31,8 @@
 #include "utility.hpp"
 
 #include <hipsparse.h>
-#include <string>
 #include <iostream>
+#include <string>
 
 using namespace hipsparse;
 using namespace hipsparse_test;
@@ -66,17 +66,19 @@ void testing_bsrmm_bad_arg(void)
     std::unique_ptr<descr_struct> unique_ptr_descr(new descr_struct);
     hipsparseMatDescr_t           descr = unique_ptr_descr->descr;
 
-    auto dbsr_row_ptr_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-    auto dbsr_col_ind_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+    auto dbsr_row_ptr_managed
+        = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+    auto dbsr_col_ind_managed
+        = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
     auto dbsr_val_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-    auto dB_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-    auto dC_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+    auto dB_managed       = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+    auto dC_managed       = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
 
     int* dbsr_row_ptr = (int*)dbsr_row_ptr_managed.get();
     int* dbsr_col_ind = (int*)dbsr_col_ind_managed.get();
-    T*   dbsr_val = (T*)dbsr_val_managed.get();
-    T*   dB   = (T*)dB_managed.get();
-    T*   dC   = (T*)dC_managed.get();
+    T*   dbsr_val     = (T*)dbsr_val_managed.get();
+    T*   dB           = (T*)dB_managed.get();
+    T*   dC           = (T*)dC_managed.get();
 
     if(!dbsr_val || !dbsr_row_ptr || !dbsr_col_ind || !dB || !dC)
     {
@@ -173,258 +175,261 @@ void testing_bsrmm_bad_arg(void)
     verify_hipsparse_status_invalid_pointer(status, "Error: dbsr_val is nullptr");
 
     status = hipsparseXbsrmm(handle,
-                               dirA,
-                               transA,
-                               transB,
-                               mb,
-                               n,
-                               kb,
-                               nnzb,
-                               &alpha,
-                               descr,
-                               dbsr_val,
-                               nullptr,
-                               dbsr_col_ind,
-                               block_dim,
-                               dB,
-                               ldb,
-                               &beta,
-                               dC,
-                               ldc);
+                             dirA,
+                             transA,
+                             transB,
+                             mb,
+                             n,
+                             kb,
+                             nnzb,
+                             &alpha,
+                             descr,
+                             dbsr_val,
+                             nullptr,
+                             dbsr_col_ind,
+                             block_dim,
+                             dB,
+                             ldb,
+                             &beta,
+                             dC,
+                             ldc);
     verify_hipsparse_status_invalid_pointer(status, "Error: dbsr_row_ptr is nullptr");
 
     status = hipsparseXbsrmm(handle,
-                               dirA,
-                               transA,
-                               transB,
-                               mb,
-                               n,
-                               kb,
-                               nnzb,
-                               &alpha,
-                               descr,
-                               dbsr_val,
-                               dbsr_row_ptr,
-                               nullptr,
-                               block_dim,
-                               dB,
-                               ldb,
-                               &beta,
-                               dC,
-                               ldc);
+                             dirA,
+                             transA,
+                             transB,
+                             mb,
+                             n,
+                             kb,
+                             nnzb,
+                             &alpha,
+                             descr,
+                             dbsr_val,
+                             dbsr_row_ptr,
+                             nullptr,
+                             block_dim,
+                             dB,
+                             ldb,
+                             &beta,
+                             dC,
+                             ldc);
     verify_hipsparse_status_invalid_pointer(status, "Error: dbsr_col_ind is nullptr");
 
     status = hipsparseXbsrmm(handle,
-                               dirA,
-                               transA,
-                               transB,
-                               mb,
-                               n,
-                               kb,
-                               nnzb,
-                               &alpha,
-                               descr,
-                               dbsr_val,
-                               dbsr_row_ptr,
-                               dbsr_col_ind,
-                               block_dim,
-                               (T*)nullptr,
-                               ldb,
-                               &beta,
-                               dC,
-                               ldc);
+                             dirA,
+                             transA,
+                             transB,
+                             mb,
+                             n,
+                             kb,
+                             nnzb,
+                             &alpha,
+                             descr,
+                             dbsr_val,
+                             dbsr_row_ptr,
+                             dbsr_col_ind,
+                             block_dim,
+                             (T*)nullptr,
+                             ldb,
+                             &beta,
+                             dC,
+                             ldc);
     verify_hipsparse_status_invalid_pointer(status, "Error: dB is nullptr");
 
     status = hipsparseXbsrmm(handle,
-                               dirA,
-                               transA,
-                               transB,
-                               mb,
-                               n,
-                               kb,
-                               nnzb,
-                               &alpha,
-                               descr,
-                               dbsr_val,
-                               dbsr_row_ptr,
-                               dbsr_col_ind,
-                               block_dim,
-                               dB,
-                               ldb,
-                               (T*)nullptr,
-                               dC,
-                               ldc);
+                             dirA,
+                             transA,
+                             transB,
+                             mb,
+                             n,
+                             kb,
+                             nnzb,
+                             &alpha,
+                             descr,
+                             dbsr_val,
+                             dbsr_row_ptr,
+                             dbsr_col_ind,
+                             block_dim,
+                             dB,
+                             ldb,
+                             (T*)nullptr,
+                             dC,
+                             ldc);
     verify_hipsparse_status_invalid_pointer(status, "Error: beta is nullptr");
 
     status = hipsparseXbsrmm(handle,
-                               dirA,
-                               transA,
-                               transB,
-                               mb,
-                               n,
-                               kb,
-                               nnzb,
-                               &alpha,
-                               descr,
-                               dbsr_val,
-                               dbsr_row_ptr,
-                               dbsr_col_ind,
-                               block_dim,
-                               dB,
-                               ldb,
-                               &beta,
-                               (T*)nullptr,
-                               ldc);
+                             dirA,
+                             transA,
+                             transB,
+                             mb,
+                             n,
+                             kb,
+                             nnzb,
+                             &alpha,
+                             descr,
+                             dbsr_val,
+                             dbsr_row_ptr,
+                             dbsr_col_ind,
+                             block_dim,
+                             dB,
+                             ldb,
+                             &beta,
+                             (T*)nullptr,
+                             ldc);
     verify_hipsparse_status_invalid_pointer(status, "Error: dC is nullptr");
 
     // Test invalid sizes
     status = hipsparseXbsrmm(handle,
-                               dirA,
-                               transA,
-                               transB,
-                               -1,
-                               n,
-                               kb,
-                               nnzb,
-                               &alpha,
-                               descr,
-                               dbsr_val,
-                               dbsr_row_ptr,
-                               dbsr_col_ind,
-                               block_dim,
-                               dB,
-                               ldb,
-                               &beta,
-                               dC,
-                               ldc);
+                             dirA,
+                             transA,
+                             transB,
+                             -1,
+                             n,
+                             kb,
+                             nnzb,
+                             &alpha,
+                             descr,
+                             dbsr_val,
+                             dbsr_row_ptr,
+                             dbsr_col_ind,
+                             block_dim,
+                             dB,
+                             ldb,
+                             &beta,
+                             dC,
+                             ldc);
     verify_hipsparse_status_invalid_size(status, "Error: mb is invalid");
 
     status = hipsparseXbsrmm(handle,
-                               dirA,
-                               transA,
-                               transB,
-                               mb,
-                               -1,
-                               kb,
-                               nnzb,
-                               &alpha,
-                               descr,
-                               dbsr_val,
-                               dbsr_row_ptr,
-                               dbsr_col_ind,
-                               block_dim,
-                               dB,
-                               ldb,
-                               &beta,
-                               dC,
-                               ldc);
+                             dirA,
+                             transA,
+                             transB,
+                             mb,
+                             -1,
+                             kb,
+                             nnzb,
+                             &alpha,
+                             descr,
+                             dbsr_val,
+                             dbsr_row_ptr,
+                             dbsr_col_ind,
+                             block_dim,
+                             dB,
+                             ldb,
+                             &beta,
+                             dC,
+                             ldc);
     verify_hipsparse_status_invalid_size(status, "Error: n is invalid");
 
     status = hipsparseXbsrmm(handle,
-                               dirA,
-                               transA,
-                               transB,
-                               mb,
-                               n,
-                               -1,
-                               nnzb,
-                               &alpha,
-                               descr,
-                               dbsr_val,
-                               dbsr_row_ptr,
-                               dbsr_col_ind,
-                               block_dim,
-                               dB,
-                               ldb,
-                               &beta,
-                               dC,
-                               ldc);
+                             dirA,
+                             transA,
+                             transB,
+                             mb,
+                             n,
+                             -1,
+                             nnzb,
+                             &alpha,
+                             descr,
+                             dbsr_val,
+                             dbsr_row_ptr,
+                             dbsr_col_ind,
+                             block_dim,
+                             dB,
+                             ldb,
+                             &beta,
+                             dC,
+                             ldc);
     verify_hipsparse_status_invalid_size(status, "Error: kb is invalid");
 
     status = hipsparseXbsrmm(handle,
-                               dirA,
-                               transA,
-                               transB,
-                               mb,
-                               n,
-                               kb,
-                               nnzb,
-                               &alpha,
-                               descr,
-                               dbsr_val,
-                               dbsr_row_ptr,
-                               dbsr_col_ind,
-                               0,
-                               dB,
-                               ldb,
-                               &beta,
-                               dC,
-                               ldc);
+                             dirA,
+                             transA,
+                             transB,
+                             mb,
+                             n,
+                             kb,
+                             nnzb,
+                             &alpha,
+                             descr,
+                             dbsr_val,
+                             dbsr_row_ptr,
+                             dbsr_col_ind,
+                             0,
+                             dB,
+                             ldb,
+                             &beta,
+                             dC,
+                             ldc);
     verify_hipsparse_status_invalid_size(status, "Error: block_dim is invalid");
 
     // Test not implemented (mapped to hiparse internal error)
     status = hipsparseXbsrmm(handle,
-                               dirA,
-                               HIPSPARSE_OPERATION_TRANSPOSE,
-                               transB,
-                               mb,
-                               n,
-                               kb,
-                               nnzb,
-                               &alpha,
-                               descr,
-                               dbsr_val,
-                               dbsr_row_ptr,
-                               dbsr_col_ind,
-                               block_dim,
-                               dB,
-                               ldb,
-                               &beta,
-                               dC,
-                               ldc);
-    verify_hipsparse_status_internal_error(status, "Error: Passed value for transA is not supported");
+                             dirA,
+                             HIPSPARSE_OPERATION_TRANSPOSE,
+                             transB,
+                             mb,
+                             n,
+                             kb,
+                             nnzb,
+                             &alpha,
+                             descr,
+                             dbsr_val,
+                             dbsr_row_ptr,
+                             dbsr_col_ind,
+                             block_dim,
+                             dB,
+                             ldb,
+                             &beta,
+                             dC,
+                             ldc);
+    verify_hipsparse_status_internal_error(status,
+                                           "Error: Passed value for transA is not supported");
 
     status = hipsparseXbsrmm(handle,
-                               dirA,
-                               HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE,
-                               transB,
-                               mb,
-                               n,
-                               kb,
-                               nnzb,
-                               &alpha,
-                               descr,
-                               dbsr_val,
-                               dbsr_row_ptr,
-                               dbsr_col_ind,
-                               block_dim,
-                               dB,
-                               ldb,
-                               &beta,
-                               dC,
-                               ldc);
-    verify_hipsparse_status_internal_error(status, "Error: Passed value for transA is not supported");
+                             dirA,
+                             HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE,
+                             transB,
+                             mb,
+                             n,
+                             kb,
+                             nnzb,
+                             &alpha,
+                             descr,
+                             dbsr_val,
+                             dbsr_row_ptr,
+                             dbsr_col_ind,
+                             block_dim,
+                             dB,
+                             ldb,
+                             &beta,
+                             dC,
+                             ldc);
+    verify_hipsparse_status_internal_error(status,
+                                           "Error: Passed value for transA is not supported");
 
     status = hipsparseXbsrmm(handle,
-                               dirA,
-                               transA,
-                               HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE,
-                               mb,
-                               n,
-                               kb,
-                               nnzb,
-                               &alpha,
-                               descr,
-                               dbsr_val,
-                               dbsr_row_ptr,
-                               dbsr_col_ind,
-                               block_dim,
-                               dB,
-                               ldb,
-                               &beta,
-                               dC,
-                               ldc);
-    verify_hipsparse_status_internal_error(status, "Error: Passed value for transB is not supported");
+                             dirA,
+                             transA,
+                             HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE,
+                             mb,
+                             n,
+                             kb,
+                             nnzb,
+                             &alpha,
+                             descr,
+                             dbsr_val,
+                             dbsr_row_ptr,
+                             dbsr_col_ind,
+                             block_dim,
+                             dB,
+                             ldb,
+                             &beta,
+                             dC,
+                             ldc);
+    verify_hipsparse_status_internal_error(status,
+                                           "Error: Passed value for transB is not supported");
 }
 
 template <typename T>
@@ -488,20 +493,22 @@ hipsparseStatus_t testing_bsrmm(Arguments argus)
             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
         auto dbsr_col_ind_managed
             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto dbsr_val_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-        auto dB_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-        auto dC_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+        auto dbsr_val_managed
+            = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+        auto dB_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+        auto dC_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
 
         int* dbsr_row_ptr = (int*)dbsr_row_ptr_managed.get();
         int* dbsr_col_ind = (int*)dbsr_col_ind_managed.get();
-        T*   dbsr_val = (T*)dbsr_val_managed.get();
-        T*   dB   = (T*)dB_managed.get();
-        T*   dC   = (T*)dC_managed.get();
+        T*   dbsr_val     = (T*)dbsr_val_managed.get();
+        T*   dB           = (T*)dB_managed.get();
+        T*   dC           = (T*)dC_managed.get();
 
         if(!dbsr_val || !dbsr_row_ptr || !dbsr_col_ind || !dB || !dC)
         {
-            verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                            "!dbsr_row_ptr || !dbsr_col_ind || !dbsr_val || !dB || !dC");
+            verify_hipsparse_status_success(
+                HIPSPARSE_STATUS_ALLOC_FAILED,
+                "!dbsr_row_ptr || !dbsr_col_ind || !dbsr_val || !dB || !dC");
             return HIPSPARSE_STATUS_ALLOC_FAILED;
         }
 
@@ -528,12 +535,13 @@ hipsparseStatus_t testing_bsrmm(Arguments argus)
 
         if(mb < 0 || n < 0 || kb < 0 || block_dim <= 0)
         {
-            verify_hipsparse_status_invalid_size(status,
-                                                 "Error: mb < 0 || n < 0 || kb < 0 || block_dim <= 0");
+            verify_hipsparse_status_invalid_size(
+                status, "Error: mb < 0 || n < 0 || kb < 0 || block_dim <= 0");
         }
         else
         {
-            verify_hipsparse_status_success(status, "mb >= 0 && n >= 0 && kb >= 0 && block_dim > 0");
+            verify_hipsparse_status_success(status,
+                                            "mb >= 0 && n >= 0 && kb >= 0 && block_dim > 0");
         }
 
         return HIPSPARSE_STATUS_SUCCESS;
@@ -547,8 +555,7 @@ hipsparseStatus_t testing_bsrmm(Arguments argus)
     srand(12345ULL);
     if(binfile != "")
     {
-        if(read_bin_matrix(
-               binfile.c_str(), m, k, nnz, csr_row_ptr, csr_col_ind, csr_val, idx_base)
+        if(read_bin_matrix(binfile.c_str(), m, k, nnz, csr_row_ptr, csr_col_ind, csr_val, idx_base)
            != 0)
         {
             fprintf(stderr, "Cannot open [read] %s\n", binfile.c_str());
@@ -604,10 +611,13 @@ hipsparseStatus_t testing_bsrmm(Arguments argus)
     kb = (k + block_dim - 1) / block_dim;
 
     // Allocate memory on device for CSR matrix and BSR row pointer array
-    auto dcsr_row_ptrA_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * (m + 1)), device_free};
-    auto dcsr_col_indA_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
+    auto dcsr_row_ptrA_managed
+        = hipsparse_unique_ptr{device_malloc(sizeof(int) * (m + 1)), device_free};
+    auto dcsr_col_indA_managed
+        = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
     auto dcsr_valA_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
-    auto dbsr_row_ptrA_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * (mb + 1)), device_free};
+    auto dbsr_row_ptrA_managed
+        = hipsparse_unique_ptr{device_malloc(sizeof(int) * (mb + 1)), device_free};
 
     int* dcsr_row_ptrA = (int*)dcsr_row_ptrA_managed.get();
     int* dcsr_col_indA = (int*)dcsr_col_indA_managed.get();
@@ -616,14 +626,17 @@ hipsparseStatus_t testing_bsrmm(Arguments argus)
 
     if(!dcsr_row_ptrA || !dcsr_col_indA || !dcsr_valA || !dbsr_row_ptrA)
     {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!dcsr_row_ptrA || !dcsr_col_indA || !dcsr_valA || !dbsr_row_ptrA");
+        verify_hipsparse_status_success(
+            HIPSPARSE_STATUS_ALLOC_FAILED,
+            "!dcsr_row_ptrA || !dcsr_col_indA || !dcsr_valA || !dbsr_row_ptrA");
         return HIPSPARSE_STATUS_ALLOC_FAILED;
     }
 
     // Copy CSR from host to device
-    CHECK_HIP_ERROR(hipMemcpy(dcsr_row_ptrA, csr_row_ptr.data(), sizeof(int) * (m + 1), hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(hipMemcpy(dcsr_col_indA, csr_col_ind.data(), sizeof(int) * nnz, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(
+        hipMemcpy(dcsr_row_ptrA, csr_row_ptr.data(), sizeof(int) * (m + 1), hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(
+        hipMemcpy(dcsr_col_indA, csr_col_ind.data(), sizeof(int) * nnz, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dcsr_valA, csr_val.data(), sizeof(T) * nnz, hipMemcpyHostToDevice));
 
     // Convert CSR to BSR
@@ -641,8 +654,10 @@ hipsparseStatus_t testing_bsrmm(Arguments argus)
                                                dbsr_row_ptrA,
                                                &nnzb));
 
-    auto dbsr_col_indA_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnzb), device_free};
-    auto dbsr_valA_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnzb * block_dim * block_dim), device_free};
+    auto dbsr_col_indA_managed
+        = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnzb), device_free};
+    auto dbsr_valA_managed = hipsparse_unique_ptr{
+        device_malloc(sizeof(T) * nnzb * block_dim * block_dim), device_free};
 
     int* dbsr_col_indA = (int*)dbsr_col_indA_managed.get();
     T*   dbsr_valA     = (T*)dbsr_valA_managed.get();
@@ -709,17 +724,17 @@ hipsparseStatus_t testing_bsrmm(Arguments argus)
     hC_2    = hC_1;
 
     // allocate memory on device
-    auto dB_managed        = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz_B), device_free};
-    auto dC_1_managed      = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz_C), device_free};
-    auto dC_2_managed      = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz_C), device_free};
-    auto d_alpha_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
-    auto d_beta_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
+    auto dB_managed      = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz_B), device_free};
+    auto dC_1_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz_C), device_free};
+    auto dC_2_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz_C), device_free};
+    auto d_alpha_managed = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
+    auto d_beta_managed  = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
 
-    T*   dB            = (T*)dB_managed.get();
-    T*   dC_1          = (T*)dC_1_managed.get();
-    T*   dC_2          = (T*)dC_2_managed.get();
-    T*   d_alpha       = (T*)d_alpha_managed.get();
-    T*   d_beta        = (T*)d_beta_managed.get();
+    T* dB      = (T*)dB_managed.get();
+    T* dC_1    = (T*)dC_1_managed.get();
+    T* dC_2    = (T*)dC_2_managed.get();
+    T* d_alpha = (T*)d_alpha_managed.get();
+    T* d_beta  = (T*)d_beta_managed.get();
 
     if(!dB || !dC_1 || !dC_2 || !d_alpha || !d_beta)
     {
@@ -729,12 +744,9 @@ hipsparseStatus_t testing_bsrmm(Arguments argus)
     }
 
     // Copy data from host to device
-    CHECK_HIP_ERROR(hipMemcpy(
-        dB, hB.data(), sizeof(T) * nnz_B, hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(hipMemcpy(
-        dC_1, hC_1.data(), sizeof(T) * nnz_C, hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(hipMemcpy(
-        dC_2, hC_2.data(), sizeof(T) * nnz_C, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(dB, hB.data(), sizeof(T) * nnz_B, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(dC_1, hC_1.data(), sizeof(T) * nnz_C, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(dC_2, hC_2.data(), sizeof(T) * nnz_C, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(d_alpha, &h_alpha, sizeof(T), hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(d_beta, &h_beta, sizeof(T), hipMemcpyHostToDevice));
 
@@ -743,52 +755,50 @@ hipsparseStatus_t testing_bsrmm(Arguments argus)
         // Testing using host pointer mode
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
         CHECK_HIPSPARSE_ERROR(hipsparseXbsrmm(handle,
-                                                dirA,
-                                                transA,
-                                                transB,
-                                                mb,
-                                                n,
-                                                kb,
-                                                nnzb,
-                                                &h_alpha,
-                                                descr,
-                                                dbsr_valA,
-                                                dbsr_row_ptrA,
-                                                dbsr_col_indA,
-                                                block_dim,
-                                                dB,
-                                                ldb,
-                                                &h_beta,
-                                                dC_1,
-                                                ldc));
+                                              dirA,
+                                              transA,
+                                              transB,
+                                              mb,
+                                              n,
+                                              kb,
+                                              nnzb,
+                                              &h_alpha,
+                                              descr,
+                                              dbsr_valA,
+                                              dbsr_row_ptrA,
+                                              dbsr_col_indA,
+                                              block_dim,
+                                              dB,
+                                              ldb,
+                                              &h_beta,
+                                              dC_1,
+                                              ldc));
 
         // Testing using device pointer mode
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
         CHECK_HIPSPARSE_ERROR(hipsparseXbsrmm(handle,
-                                                dirA,
-                                                transA,
-                                                transB,
-                                                mb,
-                                                n,
-                                                kb,
-                                                nnzb,
-                                                d_alpha,
-                                                descr,
-                                                dbsr_valA,
-                                                dbsr_row_ptrA,
-                                                dbsr_col_indA,
-                                                block_dim,
-                                                dB,
-                                                ldb,
-                                                d_beta,
-                                                dC_2,
-                                                ldc));
+                                              dirA,
+                                              transA,
+                                              transB,
+                                              mb,
+                                              n,
+                                              kb,
+                                              nnzb,
+                                              d_alpha,
+                                              descr,
+                                              dbsr_valA,
+                                              dbsr_row_ptrA,
+                                              dbsr_col_indA,
+                                              block_dim,
+                                              dB,
+                                              ldb,
+                                              d_beta,
+                                              dC_2,
+                                              ldc));
 
         // Copy output from device to host
-        CHECK_HIP_ERROR(hipMemcpy(
-            hC_1.data(), dC_1, sizeof(T) * nnz_C, hipMemcpyDeviceToHost));
-        CHECK_HIP_ERROR(hipMemcpy(
-            hC_2.data(), dC_2, sizeof(T) * nnz_C, hipMemcpyDeviceToHost));
+        CHECK_HIP_ERROR(hipMemcpy(hC_1.data(), dC_1, sizeof(T) * nnz_C, hipMemcpyDeviceToHost));
+        CHECK_HIP_ERROR(hipMemcpy(hC_2.data(), dC_2, sizeof(T) * nnz_C, hipMemcpyDeviceToHost));
 
         // Host bsrmm
         host_bsrmm<T>(mb,

@@ -6628,15 +6628,15 @@ hipsparseStatus_t hipsparseSgebsr2gebsc_bufferSize(hipsparseHandle_t handle,
     int               cu_buffer_size;
     hipsparseStatus_t status
         = hipCUSPARSEStatusToHIPStatus(cusparseSgebsr2gebsc_bufferSize((cusparseHandle_t)handle,
-                                                                           mb,
-                                                                           nb,
-                                                                           nnzb,
-                                                                           bsr_val,
-                                                                           bsr_row_ptr,
-                                                                           bsr_col_ind,
-                                                                           row_block_dim,
-                                                                           col_block_dim,
-                                                                           &cu_buffer_size));
+                                                                       mb,
+                                                                       nb,
+                                                                       nnzb,
+                                                                       bsr_val,
+                                                                       bsr_row_ptr,
+                                                                       bsr_col_ind,
+                                                                       row_block_dim,
+                                                                       col_block_dim,
+                                                                       &cu_buffer_size));
     p_buffer_size[0] = cu_buffer_size;
     return status;
 }
@@ -6656,15 +6656,15 @@ hipsparseStatus_t hipsparseDgebsr2gebsc_bufferSize(hipsparseHandle_t handle,
     int               cu_buffer_size;
     hipsparseStatus_t status
         = hipCUSPARSEStatusToHIPStatus(cusparseDgebsr2gebsc_bufferSize((cusparseHandle_t)handle,
-                                                                           mb,
-                                                                           nb,
-                                                                           nnzb,
-                                                                           bsr_val,
-                                                                           bsr_row_ptr,
-                                                                           bsr_col_ind,
-                                                                           row_block_dim,
-                                                                           col_block_dim,
-                                                                           &cu_buffer_size));
+                                                                       mb,
+                                                                       nb,
+                                                                       nnzb,
+                                                                       bsr_val,
+                                                                       bsr_row_ptr,
+                                                                       bsr_col_ind,
+                                                                       row_block_dim,
+                                                                       col_block_dim,
+                                                                       &cu_buffer_size));
     p_buffer_size[0] = cu_buffer_size;
     return status;
 }
