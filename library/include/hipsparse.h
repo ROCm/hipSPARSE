@@ -39,7 +39,7 @@
 #include "hipsparse-version.h"
 
 #include <hip/hip_complex.h>
-#include <hip/hip_runtime_api.h>
+#include <hip/hip_runtime.h>
 
 #define DEPRECATED_CUDA_11000(warning)
 #define DEPRECATED_CUDA_10000(warning)
@@ -106,7 +106,9 @@ typedef enum {
     HIPSPARSE_STATUS_EXECUTION_FAILED          = 6, // GPU program failed to execute
     HIPSPARSE_STATUS_INTERNAL_ERROR            = 7, // An internal hipSPARSE operation failed
     HIPSPARSE_STATUS_MATRIX_TYPE_NOT_SUPPORTED = 8, // Matrix type not supported
-    HIPSPARSE_STATUS_ZERO_PIVOT                = 9  // Zero pivot was computed
+    HIPSPARSE_STATUS_ZERO_PIVOT                = 9, // Zero pivot was computed
+    HIPSPARSE_STATUS_NOT_SUPPORTED             = 10, // Operation is not supported
+    HIPSPARSE_STATUS_INSUFFICIENT_RESOURCES    = 11 // Resources are insufficient
 } hipsparseStatus_t;
 
 /* Types definitions */
@@ -166,8 +168,8 @@ typedef enum {
 
 
 typedef enum {
-HIPSPARSE_DIRECTION_ROW = 0,
-HIPSPARSE_DIRECTION_COLUMN = 1
+    HIPSPARSE_DIRECTION_ROW = 0,
+    HIPSPARSE_DIRECTION_COLUMN = 1
 } hipsparseDirection_t;
 
 // clang-format on
@@ -910,6 +912,77 @@ hipsparseStatus_t hipsparseZbsrmv(hipsparseHandle_t         handle,
                                   const hipDoubleComplex*   x,
                                   const hipDoubleComplex*   beta,
                                   hipDoubleComplex*         y);
+
+/* Description: Matrix-vector multiplication  y = alpha * op(A) * x  + beta * y,
+where A is a sparse matrix in GEBSR storage format, x and y are dense vectors. */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSgebsrmv(hipsparseHandle_t         handle,
+                                    hipsparseDirection_t      dirA,
+                                    hipsparseOperation_t      transA,
+                                    int                       mb,
+                                    int                       nb,
+                                    int                       nnzb,
+                                    const float*              alpha,
+                                    const hipsparseMatDescr_t descrA,
+                                    const float*              bsrSortedValA,
+                                    const int*                bsrSortedRowPtrA,
+                                    const int*                bsrSortedColIndA,
+                                    int                       rowBlockDim,
+                                    int                       colBlockDim,
+                                    const float*              x,
+                                    const float*              beta,
+                                    float*                    y);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDgebsrmv(hipsparseHandle_t         handle,
+                                    hipsparseDirection_t      dirA,
+                                    hipsparseOperation_t      transA,
+                                    int                       mb,
+                                    int                       nb,
+                                    int                       nnzb,
+                                    const double*             alpha,
+                                    const hipsparseMatDescr_t descrA,
+                                    const double*             bsrSortedValA,
+                                    const int*                bsrSortedRowPtrA,
+                                    const int*                bsrSortedColIndA,
+                                    int                       rowBlockDim,
+                                    int                       colBlockDim,
+                                    const double*             x,
+                                    const double*             beta,
+                                    double*                   y);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCgebsrmv(hipsparseHandle_t         handle,
+                                    hipsparseDirection_t      dirA,
+                                    hipsparseOperation_t      transA,
+                                    int                       mb,
+                                    int                       nb,
+                                    int                       nnzb,
+                                    const hipComplex*         alpha,
+                                    const hipsparseMatDescr_t descrA,
+                                    const hipComplex*         bsrSortedValA,
+                                    const int*                bsrSortedRowPtrA,
+                                    const int*                bsrSortedColIndA,
+                                    int                       rowBlockDim,
+                                    int                       colBlockDim,
+                                    const hipComplex*         x,
+                                    const hipComplex*         beta,
+                                    hipComplex*               y);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseZgebsrmv(hipsparseHandle_t         handle,
+                                    hipsparseDirection_t      dirA,
+                                    hipsparseOperation_t      transA,
+                                    int                       mb,
+                                    int                       nb,
+                                    int                       nnzb,
+                                    const hipDoubleComplex*   alpha,
+                                    const hipsparseMatDescr_t descrA,
+                                    const hipDoubleComplex*   bsrSortedValA,
+                                    const int*                bsrSortedRowPtrA,
+                                    const int*                bsrSortedColIndA,
+                                    int                       rowBlockDim,
+                                    int                       colBlockDim,
+                                    const hipDoubleComplex*   x,
+                                    const hipDoubleComplex*   beta,
+                                    hipDoubleComplex*         y);
 
 /* Description: Solution of triangular linear system op(A) * x = alpha * f,
 where A is a sparse matrix in BSR storage format, x and f are dense vectors. */
@@ -4789,6 +4862,264 @@ hipsparseStatus_t hipsparseZgebsr2gebsr(hipsparseHandle_t         handle,
                                         int                       rowBlockDimC,
                                         int                       colBlockDimC,
                                         void*                     buffer);
+
+/* Generic API */
+
+/* Generic API opaque structures holding information */
+typedef void* hipsparseSpVecDescr_t;
+typedef void* hipsparseSpMatDescr_t;
+typedef void* hipsparseDnVecDescr_t;
+
+/* Generic API types */
+typedef enum
+{
+    HIPSPARSE_FORMAT_CSR     = 1, /* Compressed Sparse Row */
+    HIPSPARSE_FORMAT_CSC     = 2, /* Compressed Sparse Column */
+    HIPSPARSE_FORMAT_COO     = 3, /* Coordinate - Structure of Arrays */
+    HIPSPARSE_FORMAT_COO_AOS = 4 /* Coordinate - Array of Structures */
+} hipsparseFormat_t;
+
+typedef enum
+{
+    HIPSPARSE_INDEX_16U = 1, /* 16 bit unsigned integer indices */
+    HIPSPARSE_INDEX_32I = 2, /* 32 bit signed integer indices */
+    HIPSPARSE_INDEX_64I = 3 /* 64 bit signed integer indices */
+} hipsparseIndexType_t;
+
+typedef enum
+{
+    HIPSPARSE_MV_ALG_DEFAULT = 0,
+    HIPSPARSE_COOMV_ALG      = 1,
+    HIPSPARSE_CSRMV_ALG1     = 2,
+    HIPSPARSE_CSRMV_ALG2     = 3
+} hipsparseSpMVAlg_t;
+
+/* Sparse vector API */
+
+/* Description: Create a sparse vector */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCreateSpVec(hipsparseSpVecDescr_t* spVecDescr,
+                                       int64_t                size,
+                                       int64_t                nnz,
+                                       void*                  indices,
+                                       void*                  values,
+                                       hipsparseIndexType_t   idxType,
+                                       hipsparseIndexBase_t   idxBase,
+                                       hipDataType            valueType);
+
+/* Description: Destroy a sparse vector */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDestroySpVec(hipsparseSpVecDescr_t spVecDescr);
+
+/* Description: Get pointers to a sparse vectors data and index array */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpVecGet(const hipsparseSpVecDescr_t spVecDescr,
+                                    int64_t*                    size,
+                                    int64_t*                    nnz,
+                                    void**                      indices,
+                                    void**                      values,
+                                    hipsparseIndexType_t*       idxType,
+                                    hipsparseIndexBase_t*       idxBase,
+                                    hipDataType*                valueType);
+
+/* Description: Get index base of a sparse vector */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpVecGetIndexBase(const hipsparseSpVecDescr_t spVecDescr,
+                                             hipsparseIndexBase_t*       idxBase);
+
+/* Description: Get pointer to a sparse vector data array */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpVecGetValues(const hipsparseSpVecDescr_t spVecDescr, void** values);
+
+/* Description: Set pointer of a sparse vector data array */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpVecSetValues(hipsparseSpVecDescr_t spVecDescr, void* values);
+
+/* Sparse matrix API */
+
+/* Description: Create a sparse COO matrix */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCreateCoo(hipsparseSpMatDescr_t* spMatDescr,
+                                     int64_t                rows,
+                                     int64_t                cols,
+                                     int64_t                nnz,
+                                     void*                  cooRowInd,
+                                     void*                  cooColInd,
+                                     void*                  cooValues,
+                                     hipsparseIndexType_t   cooIdxType,
+                                     hipsparseIndexBase_t   idxBase,
+                                     hipDataType            valueType);
+
+/* Description: Create a sparse CSR matrix */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCreateCsr(hipsparseSpMatDescr_t* spMatDescr,
+                                     int64_t                rows,
+                                     int64_t                cols,
+                                     int64_t                nnz,
+                                     void*                  csrRowOffsets,
+                                     void*                  csrColInd,
+                                     void*                  csrValues,
+                                     hipsparseIndexType_t   csrRowOffsetsType,
+                                     hipsparseIndexType_t   csrColIndType,
+                                     hipsparseIndexBase_t   idxBase,
+                                     hipDataType            valueType);
+
+/* Description: Destroy a sparse matrix */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDestroySpMat(hipsparseSpMatDescr_t spMatDescr);
+
+/* Description: Get pointers of a sparse COO matrix */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCooGet(const hipsparseSpMatDescr_t spMatDescr,
+                                  int64_t*                    rows,
+                                  int64_t*                    cols,
+                                  int64_t*                    nnz,
+                                  void**                      cooRowInd,
+                                  void**                      cooColInd,
+                                  void**                      cooValues,
+                                  hipsparseIndexType_t*       idxType,
+                                  hipsparseIndexBase_t*       idxBase,
+                                  hipDataType*                valueType);
+
+/* Description: Get pointers of a sparse CSR matrix */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCsrGet(const hipsparseSpMatDescr_t spMatDescr,
+                                  int64_t*                    rows,
+                                  int64_t*                    cols,
+                                  int64_t*                    nnz,
+                                  void**                      csrRowOffsets,
+                                  void**                      csrColInd,
+                                  void**                      csrValues,
+                                  hipsparseIndexType_t*       csrRowOffsetsType,
+                                  hipsparseIndexType_t*       csrColIndType,
+                                  hipsparseIndexBase_t*       idxBase,
+                                  hipDataType*                valueType);
+
+/* Description: Set pointers of a sparse CSR matrix */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCsrSetPointers(hipsparseSpMatDescr_t spMatDescr,
+                                          void*                 csrRowOffsets,
+                                          void*                 csrColInd,
+                                          void*                 csrValues);
+
+/* Description: Get the sizes of a sparse matrix */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpMatGetSize(hipsparseSpMatDescr_t spMatDescr,
+                                        int64_t*              rows,
+                                        int64_t*              cols,
+                                        int64_t*              nnz);
+
+/* Description: Get the format of a sparse matrix */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpMatGetFormat(const hipsparseSpMatDescr_t spMatDescr,
+                                          hipsparseFormat_t*          format);
+
+/* Description: Get the index base of a sparse matrix */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpMatGetIndexBase(const hipsparseSpMatDescr_t spMatDescr,
+                                             hipsparseIndexBase_t*       idxBase);
+
+/* Description: Get the pointer of the values array of a sparse matrix */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpMatGetValues(hipsparseSpMatDescr_t spMatDescr, void** values);
+
+/* Description: Set the pointer of the values array of a sparse matrix */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpMatSetValues(hipsparseSpMatDescr_t spMatDescr, void* values);
+
+/* Dense vector API */
+
+/* Description: Create dense vector */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCreateDnVec(hipsparseDnVecDescr_t* dnVecDescr,
+                                       int64_t                size,
+                                       void*                  values,
+                                       hipDataType            valueType);
+
+/* Description: Destroy dense vector */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDestroyDnVec(hipsparseDnVecDescr_t dnVecDescr);
+
+/* Description: Get value pointer from a dense vector */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDnVecGet(const hipsparseDnVecDescr_t dnVecDescr,
+                                    int64_t*                    size,
+                                    void**                      values,
+                                    hipDataType*                valueType);
+
+/* Description: Get value pointer from a dense vector */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDnVecGetValues(const hipsparseDnVecDescr_t dnVecDescr, void** values);
+
+/* Description: Set value pointer of a dense vector */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDnVecSetValues(hipsparseDnVecDescr_t dnVecDescr, void* values);
+
+/* Generic API functions */
+
+/* Description: Axpby computes the sum of a sparse vector and a dense vector */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseAxpby(hipsparseHandle_t     handle,
+                                 const void*           alpha,
+                                 hipsparseSpVecDescr_t vecX,
+                                 const void*           beta,
+                                 hipsparseDnVecDescr_t vecY);
+
+/* Description: Gather elements of a dense vector into a sparse vector */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseGather(hipsparseHandle_t     handle,
+                                  hipsparseDnVecDescr_t vecY,
+                                  hipsparseSpVecDescr_t vecX);
+
+/* Description: Scatter elements of a sparse vector into a dense vector */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseScatter(hipsparseHandle_t     handle,
+                                   hipsparseSpVecDescr_t vecX,
+                                   hipsparseDnVecDescr_t vecY);
+
+/* Description: Compute the inner dot product of a sparse vector with a dense vector */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpVV_bufferSize(hipsparseHandle_t     handle,
+                                           hipsparseOperation_t  opX,
+                                           hipsparseSpVecDescr_t vecX,
+                                           hipsparseDnVecDescr_t vecY,
+                                           void*                 result,
+                                           hipDataType           computeType,
+                                           size_t*               bufferSize);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpVV(hipsparseHandle_t     handle,
+                                hipsparseOperation_t  opX,
+                                hipsparseSpVecDescr_t vecX,
+                                hipsparseDnVecDescr_t vecY,
+                                void*                 result,
+                                hipDataType           computeType,
+                                void*                 externalBuffer);
+
+/* Description: Compute the sparse matrix multiplication with a dense vector */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpMV_bufferSize(hipsparseHandle_t           handle,
+                                           hipsparseOperation_t        opA,
+                                           const void*                 alpha,
+                                           const hipsparseSpMatDescr_t matA,
+                                           const hipsparseDnVecDescr_t vecX,
+                                           const void*                 beta,
+                                           const hipsparseDnVecDescr_t vecY,
+                                           hipDataType                 computeType,
+                                           hipsparseSpMVAlg_t          alg,
+                                           size_t*                     bufferSize);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpMV(hipsparseHandle_t           handle,
+                                hipsparseOperation_t        opA,
+                                const void*                 alpha,
+                                const hipsparseSpMatDescr_t matA,
+                                const hipsparseDnVecDescr_t vecX,
+                                const void*                 beta,
+                                const hipsparseDnVecDescr_t vecY,
+                                hipDataType                 computeType,
+                                hipsparseSpMVAlg_t          alg,
+                                void*                       externalBuffer);
 
 #ifdef __cplusplus
 }

@@ -1321,6 +1321,107 @@ module hipsparse
             type(c_ptr), value :: y
         end function hipsparseZbsrmv
 
+!       hipsparseXgebsrmv
+        function hipsparseSgebsrmv(handle, dir, trans, mb, nb, nnzb, alpha, descr, &
+                bsrVal, bsrRowPtr, bsrColInd, rowBlockDim, colBlockDim, x, beta, y) &
+                bind(c, name = 'hipsparseSgebsrmv')
+            use hipsparse_enums
+            use iso_c_binding
+            implicit none
+            integer(kind(HIPSPARSE_STATUS_SUCCESS)) :: hipsparseSgebsrmv
+            type(c_ptr), value :: handle
+            integer(c_int), value :: dir
+            integer(c_int), value :: trans
+            integer(c_int), value :: mb
+            integer(c_int), value :: nb
+            integer(c_int), value :: nnzb
+            type(c_ptr), intent(in), value :: alpha
+            type(c_ptr), intent(in), value :: descr
+            type(c_ptr), intent(in), value :: bsrVal
+            type(c_ptr), intent(in), value :: bsrRowPtr
+            type(c_ptr), intent(in), value :: bsrColInd
+            integer(c_int), value :: rowBlockDim
+            integer(c_int), value :: colBlockDim
+            type(c_ptr), intent(in), value :: x
+            type(c_ptr), intent(in), value :: beta
+            type(c_ptr), value :: y
+        end function hipsparseSgebsrmv
+
+        function hipsparseDgebsrmv(handle, dir, trans, mb, nb, nnzb, alpha, descr, &
+                bsrVal, bsrRowPtr, bsrColInd, rowBlockDim, colBlockDim, x, beta, y) &
+                bind(c, name = 'hipsparseDgebsrmv')
+            use hipsparse_enums
+            use iso_c_binding
+            implicit none
+            integer(kind(HIPSPARSE_STATUS_SUCCESS)) :: hipsparseDgebsrmv
+            type(c_ptr), value :: handle
+            integer(c_int), value :: dir
+            integer(c_int), value :: trans
+            integer(c_int), value :: mb
+            integer(c_int), value :: nb
+            integer(c_int), value :: nnzb
+            type(c_ptr), intent(in), value :: alpha
+            type(c_ptr), intent(in), value :: descr
+            type(c_ptr), intent(in), value :: bsrVal
+            type(c_ptr), intent(in), value :: bsrRowPtr
+            type(c_ptr), intent(in), value :: bsrColInd
+            integer(c_int), value :: rowBlockDim
+            integer(c_int), value :: colBlockDim
+            type(c_ptr), intent(in), value :: x
+            type(c_ptr), intent(in), value :: beta
+            type(c_ptr), value :: y
+        end function hipsparseDgebsrmv
+
+        function hipsparseCgebsrmv(handle, dir, trans, mb, nb, nnzb, alpha, descr, &
+                bsrVal, bsrRowPtr, bsrColInd, rowBlockDim, colBlockDim, x, beta, y) &
+                bind(c, name = 'hipsparseCgebsrmv')
+            use hipsparse_enums
+            use iso_c_binding
+            implicit none
+            integer(kind(HIPSPARSE_STATUS_SUCCESS)) :: hipsparseCgebsrmv
+            type(c_ptr), value :: handle
+            integer(c_int), value :: dir
+            integer(c_int), value :: trans
+            integer(c_int), value :: mb
+            integer(c_int), value :: nb
+            integer(c_int), value :: nnzb
+            type(c_ptr), intent(in), value :: alpha
+            type(c_ptr), intent(in), value :: descr
+            type(c_ptr), intent(in), value :: bsrVal
+            type(c_ptr), intent(in), value :: bsrRowPtr
+            type(c_ptr), intent(in), value :: bsrColInd
+            integer(c_int), value :: rowBlockDim
+            integer(c_int), value :: colBlockDim
+            type(c_ptr), intent(in), value :: x
+            type(c_ptr), intent(in), value :: beta
+            type(c_ptr), value :: y
+        end function hipsparseCgebsrmv
+
+        function hipsparseZgebsrmv(handle, dir, trans, mb, nb, nnzb, alpha, descr, &
+                bsrVal, bsrRowPtr, bsrColInd, rowBlockDim, colBlockDim, x, beta, y) &
+                bind(c, name = 'hipsparseZgebsrmv')
+            use hipsparse_enums
+            use iso_c_binding
+            implicit none
+            integer(kind(HIPSPARSE_STATUS_SUCCESS)) :: hipsparseZgebsrmv
+            type(c_ptr), value :: handle
+            integer(c_int), value :: dir
+            integer(c_int), value :: trans
+            integer(c_int), value :: mb
+            integer(c_int), value :: nb
+            integer(c_int), value :: nnzb
+            type(c_ptr), intent(in), value :: alpha
+            type(c_ptr), intent(in), value :: descr
+            type(c_ptr), intent(in), value :: bsrVal
+            type(c_ptr), intent(in), value :: bsrRowPtr
+            type(c_ptr), intent(in), value :: bsrColInd
+            integer(c_int), value :: rowBlockDim
+            integer(c_int), value :: colBlockDim
+            type(c_ptr), intent(in), value :: x
+            type(c_ptr), intent(in), value :: beta
+            type(c_ptr), value :: y
+        end function hipsparseZgebsrmv
+
 ! ===========================================================================
 !   level 3 SPARSE
 ! ===========================================================================

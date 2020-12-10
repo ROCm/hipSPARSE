@@ -1,5 +1,5 @@
 /* ************************************************************************
- * Copyright (c) 2018-2020 Advanced Micro Devices, Inc.
+ * Copyright (c) 2020 Advanced Micro Devices, Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,30 +21,24 @@
  *
  * ************************************************************************ */
 
-#pragma once
-#ifndef ARG_CHECK_HPP
-#define ARG_CHECK_HPP
+#include "testing_spmv_coo.hpp"
 
+#include <gtest/gtest.h>
 #include <hipsparse.h>
 
-void verify_hipsparse_status(hipsparseStatus_t status,
-                             hipsparseStatus_t expected_status,
-                             const char*       message);
+TEST(spmv_coo_bad_arg, spmv_coo_float)
+{
+    testing_spmv_coo_bad_arg();
+}
 
-void verify_hipsparse_status_invalid_pointer(hipsparseStatus_t status, const char* message);
+TEST(spmv_coo, spmv_coo_i32_float)
+{
+    hipsparseStatus_t status = testing_spmv_coo<int32_t, float>();
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
 
-void verify_hipsparse_status_invalid_size(hipsparseStatus_t status, const char* message);
-
-void verify_hipsparse_status_invalid_value(hipsparseStatus_t status, const char* message);
-
-void verify_hipsparse_status_zero_pivot(hipsparseStatus_t status, const char* message);
-
-void verify_hipsparse_status_invalid_handle(hipsparseStatus_t status);
-
-void verify_hipsparse_status_internal_error(hipsparseStatus_t status, const char* message);
-
-void verify_hipsparse_status_not_supported(hipsparseStatus_t status, const char* message);
-
-void verify_hipsparse_status_success(hipsparseStatus_t status, const char* message);
-
-#endif // ARG_CHECK_HPP
+TEST(spmv_coo, spmv_coo_i64_double)
+{
+    hipsparseStatus_t status = testing_spmv_coo<int64_t, double>();
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
