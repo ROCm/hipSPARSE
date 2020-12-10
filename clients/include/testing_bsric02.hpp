@@ -32,8 +32,8 @@
 
 #include <cmath>
 #include <hipsparse.h>
-#include <string>
 #include <iostream>
+#include <string>
 
 using namespace hipsparse;
 using namespace hipsparse_test;
@@ -45,11 +45,11 @@ void testing_bsric02_bad_arg(void)
     // do not test for bad args
     return;
 #endif
-    int                    mb         = 100;
-    int                    nnzb       = 100;
-    int                    block_dim  = 4;
+    int                    mb        = 100;
+    int                    nnzb      = 100;
+    int                    block_dim = 4;
     int                    safe_size = 100;
-    hipsparseDirection_t dirA      = HIPSPARSE_DIRECTION_COLUMN;
+    hipsparseDirection_t   dirA      = HIPSPARSE_DIRECTION_COLUMN;
     hipsparseSolvePolicy_t policy    = HIPSPARSE_SOLVE_POLICY_USE_LEVEL;
     hipsparseStatus_t      status;
 
@@ -302,7 +302,7 @@ hipsparseStatus_t testing_bsric02(Arguments argus)
     if(m == -99 && argus.timing == 0)
     {
         binfile = argus.filename;
-        m = safe_size;
+        m       = safe_size;
     }
 
     if(argus.timing == 1)
@@ -356,7 +356,8 @@ hipsparseStatus_t testing_bsric02(Arguments argus)
         }
 
         // Test hipsparseXbsric02_bufferSize
-        status = hipsparseXbsric02_bufferSize(handle, dir, mb, safe_size, descr, dval, dptr, dcol, block_dim, info, &size);
+        status = hipsparseXbsric02_bufferSize(
+            handle, dir, mb, safe_size, descr, dval, dptr, dcol, block_dim, info, &size);
 
         if(mb < 0)
         {
@@ -381,7 +382,8 @@ hipsparseStatus_t testing_bsric02(Arguments argus)
         }
 
         // Test hipsparseXbsric02
-        status = hipsparseXbsric02(handle, dir, mb, safe_size, descr, dval, dptr, dcol, block_dim, info, policy, buffer);
+        status = hipsparseXbsric02(
+            handle, dir, mb, safe_size, descr, dval, dptr, dcol, block_dim, info, policy, buffer);
 
         if(mb < 0)
         {
@@ -408,7 +410,7 @@ hipsparseStatus_t testing_bsric02(Arguments argus)
     std::vector<int> hcsr_col_ind;
     std::vector<T>   hcsr_val;
     int              nnz;
-    
+
     srand(12345ULL);
     if(binfile != "")
     {
@@ -480,10 +482,11 @@ hipsparseStatus_t testing_bsric02(Arguments argus)
     T*   dcsr_val     = (T*)dcsr_val_managed.get();
     int* dbsr_row_ptr = (int*)dbsr_row_ptr_managed.get();
 
-    if(!dcsr_val || !dcsr_row_ptr || !dcsr_col_ind || !dbsr_row_ptr )
+    if(!dcsr_val || !dcsr_row_ptr || !dcsr_col_ind || !dbsr_row_ptr)
     {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!dcsr_val || !dcsr_row_ptr || !dcsr_col_ind || !dbsr_row_ptr");
+        verify_hipsparse_status_success(
+            HIPSPARSE_STATUS_ALLOC_FAILED,
+            "!dcsr_val || !dcsr_row_ptr || !dcsr_col_ind || !dbsr_row_ptr");
         return HIPSPARSE_STATUS_ALLOC_FAILED;
     }
 
@@ -517,16 +520,17 @@ hipsparseStatus_t testing_bsric02(Arguments argus)
     auto d_analysis_pivot_2_managed = hipsparse_unique_ptr{device_malloc(sizeof(int)), device_free};
     auto d_solve_pivot_2_managed    = hipsparse_unique_ptr{device_malloc(sizeof(int)), device_free};
 
-    int* dbsr_col_ind = (int*)dbsr_col_ind_managed.get();
-    T*   dbsr_val_1   = (T*)dbsr_val_1_managed.get();
-    T*   dbsr_val_2   = (T*)dbsr_val_2_managed.get();
+    int* dbsr_col_ind       = (int*)dbsr_col_ind_managed.get();
+    T*   dbsr_val_1         = (T*)dbsr_val_1_managed.get();
+    T*   dbsr_val_2         = (T*)dbsr_val_2_managed.get();
     int* d_analysis_pivot_2 = (int*)d_analysis_pivot_2_managed.get();
     int* d_solve_pivot_2    = (int*)d_solve_pivot_2_managed.get();
 
     if(!dbsr_val_1 || !dbsr_val_2 || !dbsr_col_ind || !d_analysis_pivot_2 || !d_solve_pivot_2)
     {
         verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!dbsr_val_1 || !dbsr_val_2 || !dbsr_col_ind || !d_analysis_pivot_2 || !d_solve_pivot_2");
+                                        "!dbsr_val_1 || !dbsr_val_2 || !dbsr_col_ind || "
+                                        "!d_analysis_pivot_2 || !d_solve_pivot_2");
         return HIPSPARSE_STATUS_ALLOC_FAILED;
     }
 
@@ -544,21 +548,36 @@ hipsparseStatus_t testing_bsric02(Arguments argus)
                                             dbsr_row_ptr,
                                             dbsr_col_ind));
 
-    CHECK_HIP_ERROR(hipMemcpy(dbsr_val_2, dbsr_val_1, sizeof(T) * nnzb * block_dim * block_dim, hipMemcpyDeviceToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(
+        dbsr_val_2, dbsr_val_1, sizeof(T) * nnzb * block_dim * block_dim, hipMemcpyDeviceToDevice));
 
     // Host BSR matrix
     std::vector<int> hbsr_row_ptr(mb + 1);
     std::vector<int> hbsr_col_ind(nnzb);
-    std::vector<T> hbsr_val(nnzb * block_dim * block_dim);
+    std::vector<T>   hbsr_val(nnzb * block_dim * block_dim);
 
     // Copy device BSR matrix to host
-    CHECK_HIP_ERROR(hipMemcpy(hbsr_row_ptr.data(), dbsr_row_ptr, sizeof(int) * (mb + 1), hipMemcpyDeviceToHost));
-    CHECK_HIP_ERROR(hipMemcpy(hbsr_col_ind.data(), dbsr_col_ind, sizeof(int) * nnzb, hipMemcpyDeviceToHost));
-    CHECK_HIP_ERROR(hipMemcpy(hbsr_val.data(), dbsr_val_1, sizeof(T) * nnzb * block_dim * block_dim, hipMemcpyDeviceToHost));
+    CHECK_HIP_ERROR(hipMemcpy(
+        hbsr_row_ptr.data(), dbsr_row_ptr, sizeof(int) * (mb + 1), hipMemcpyDeviceToHost));
+    CHECK_HIP_ERROR(
+        hipMemcpy(hbsr_col_ind.data(), dbsr_col_ind, sizeof(int) * nnzb, hipMemcpyDeviceToHost));
+    CHECK_HIP_ERROR(hipMemcpy(hbsr_val.data(),
+                              dbsr_val_1,
+                              sizeof(T) * nnzb * block_dim * block_dim,
+                              hipMemcpyDeviceToHost));
 
     // Obtain bsric02 buffer size
-    CHECK_HIPSPARSE_ERROR(
-        hipsparseXbsric02_bufferSize(handle, dir, mb, nnzb, descr, dbsr_val_1, dbsr_row_ptr, dbsr_col_ind, block_dim, info, &size));
+    CHECK_HIPSPARSE_ERROR(hipsparseXbsric02_bufferSize(handle,
+                                                       dir,
+                                                       mb,
+                                                       nnzb,
+                                                       descr,
+                                                       dbsr_val_1,
+                                                       dbsr_row_ptr,
+                                                       dbsr_col_ind,
+                                                       block_dim,
+                                                       info,
+                                                       &size));
 
     // Allocate buffer on the device
     auto dbuffer_managed = hipsparse_unique_ptr{device_malloc(sizeof(char) * size), device_free};
@@ -587,8 +606,18 @@ hipsparseStatus_t testing_bsric02(Arguments argus)
 
         // bsric02 analysis - host mode
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
-        CHECK_HIPSPARSE_ERROR(hipsparseXbsric02_analysis(
-            handle, dir, mb, nnzb, descr, dbsr_val_1, dbsr_row_ptr, dbsr_col_ind, block_dim, info, policy, dbuffer));
+        CHECK_HIPSPARSE_ERROR(hipsparseXbsric02_analysis(handle,
+                                                         dir,
+                                                         mb,
+                                                         nnzb,
+                                                         descr,
+                                                         dbsr_val_1,
+                                                         dbsr_row_ptr,
+                                                         dbsr_col_ind,
+                                                         block_dim,
+                                                         info,
+                                                         policy,
+                                                         dbuffer));
 
         // Get pivot
         status_analysis_1 = hipsparseXbsric02_zeroPivot(handle, info, &h_analysis_pivot_1);
@@ -600,8 +629,18 @@ hipsparseStatus_t testing_bsric02(Arguments argus)
 
         // bsric02 analysis - device mode
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
-        CHECK_HIPSPARSE_ERROR(hipsparseXbsric02_analysis(
-            handle, dir, mb, nnzb, descr, dbsr_val_2, dbsr_row_ptr, dbsr_col_ind, block_dim, info, policy, dbuffer));
+        CHECK_HIPSPARSE_ERROR(hipsparseXbsric02_analysis(handle,
+                                                         dir,
+                                                         mb,
+                                                         nnzb,
+                                                         descr,
+                                                         dbsr_val_2,
+                                                         dbsr_row_ptr,
+                                                         dbsr_col_ind,
+                                                         block_dim,
+                                                         info,
+                                                         policy,
+                                                         dbuffer));
 
         // Get pivot
         status_analysis_2 = hipsparseXbsric02_zeroPivot(handle, info, d_analysis_pivot_2);
@@ -613,8 +652,18 @@ hipsparseStatus_t testing_bsric02(Arguments argus)
 
         // bsric02 solve - host mode
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
-        CHECK_HIPSPARSE_ERROR(
-            hipsparseXbsric02(handle, dir, mb, nnzb, descr, dbsr_val_1, dbsr_row_ptr, dbsr_col_ind, block_dim, info, policy, dbuffer));
+        CHECK_HIPSPARSE_ERROR(hipsparseXbsric02(handle,
+                                                dir,
+                                                mb,
+                                                nnzb,
+                                                descr,
+                                                dbsr_val_1,
+                                                dbsr_row_ptr,
+                                                dbsr_col_ind,
+                                                block_dim,
+                                                info,
+                                                policy,
+                                                dbuffer));
 
         // Get pivot
         status_solve_1 = hipsparseXbsric02_zeroPivot(handle, info, &h_solve_pivot_1);
@@ -626,8 +675,18 @@ hipsparseStatus_t testing_bsric02(Arguments argus)
 
         // bsric02 solve - device mode
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
-        CHECK_HIPSPARSE_ERROR(
-            hipsparseXbsric02(handle, dir, mb, nnzb, descr, dbsr_val_2, dbsr_row_ptr, dbsr_col_ind, block_dim, info, policy, dbuffer));
+        CHECK_HIPSPARSE_ERROR(hipsparseXbsric02(handle,
+                                                dir,
+                                                mb,
+                                                nnzb,
+                                                descr,
+                                                dbsr_val_2,
+                                                dbsr_row_ptr,
+                                                dbsr_col_ind,
+                                                block_dim,
+                                                info,
+                                                policy,
+                                                dbuffer));
 
         // Get pivot
         status_solve_2 = hipsparseXbsric02_zeroPivot(handle, info, d_solve_pivot_2);
@@ -641,8 +700,14 @@ hipsparseStatus_t testing_bsric02(Arguments argus)
         std::vector<T> result_1(block_dim * block_dim * nnzb);
         std::vector<T> result_2(block_dim * block_dim * nnzb);
 
-        CHECK_HIP_ERROR(hipMemcpy(result_1.data(), dbsr_val_1, sizeof(T) * block_dim * block_dim * nnzb, hipMemcpyDeviceToHost));
-        CHECK_HIP_ERROR(hipMemcpy(result_2.data(), dbsr_val_2, sizeof(T) * block_dim * block_dim * nnzb, hipMemcpyDeviceToHost));
+        CHECK_HIP_ERROR(hipMemcpy(result_1.data(),
+                                  dbsr_val_1,
+                                  sizeof(T) * block_dim * block_dim * nnzb,
+                                  hipMemcpyDeviceToHost));
+        CHECK_HIP_ERROR(hipMemcpy(result_2.data(),
+                                  dbsr_val_2,
+                                  sizeof(T) * block_dim * block_dim * nnzb,
+                                  hipMemcpyDeviceToHost));
         CHECK_HIP_ERROR(
             hipMemcpy(&h_analysis_pivot_2, d_analysis_pivot_2, sizeof(int), hipMemcpyDeviceToHost));
         CHECK_HIP_ERROR(
@@ -654,14 +719,14 @@ hipsparseStatus_t testing_bsric02(Arguments argus)
         int numerical_pivot;
         int structural_pivot;
         host_bsric02<T>(dir,
-                       mb,
-                       block_dim,
-                       hbsr_row_ptr,
-                       hbsr_col_ind,
-                       hbsr_val,
-                       idx_base,
-                       &structural_pivot,
-                       &numerical_pivot);
+                        mb,
+                        block_dim,
+                        hbsr_row_ptr,
+                        hbsr_col_ind,
+                        hbsr_val,
+                        idx_base,
+                        &structural_pivot,
+                        &numerical_pivot);
 
         cpu_time_used = get_time_us() - cpu_time_used;
 
