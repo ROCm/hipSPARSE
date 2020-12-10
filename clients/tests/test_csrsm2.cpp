@@ -49,14 +49,7 @@ op   csrsm2_opB_range[]     = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPER
 diag csrsm2_diag_range[]    = {HIPSPARSE_DIAG_TYPE_NON_UNIT};
 fill csrsm2_fill_range[]    = {HIPSPARSE_FILL_MODE_LOWER, HIPSPARSE_FILL_MODE_UPPER};
 
-std::string csrsm2_bin[] = {"rma10.bin",
-                            "nos1.bin",
-                            "nos2.bin",
-                            "nos3.bin",
-                            "nos4.bin",
-                            "nos5.bin",
-                            "nos6.bin",
-                            "sme3Dc.bin"};
+std::string csrsm2_bin[] = {"nos1.bin", "nos2.bin", "nos3.bin", "nos4.bin", "nos5.bin", "nos6.bin"};
 
 class parameterized_csrsm2 : public testing::TestWithParam<csrsm2_tuple>
 {

@@ -38,13 +38,7 @@ int csric02_M_range[] = {-1, 0, 50, 426};
 
 base csric02_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
-std::string csric02_bin[] = {"mac_econ_fwd500.bin",
-                             "nos3.bin",
-                             "nos4.bin",
-                             "nos5.bin",
-                             "nos6.bin",
-                             "nos7.bin",
-                             "scircuit.bin"};
+std::string csric02_bin[] = {"nos3.bin", "nos4.bin", "nos5.bin", "nos6.bin", "nos7.bin"};
 
 class parameterized_csric02 : public testing::TestWithParam<csric02_tuple>
 {

@@ -138,6 +138,7 @@ set(HIPSPARSE_TEST_SOURCES
   test_roti.cpp
   test_sctr.cpp
   test_bsrmv.cpp
+  test_gebsrmv.cpp
   test_bsrsv2.cpp
   test_csrsv2.cpp
   test_bsrmm.cpp
@@ -173,6 +174,15 @@ set(HIPSPARSE_TEST_SOURCES
   test_gebsr2gebsr.cpp
   test_csr2gebsr.cpp
   test_gebsr2gebsc.cpp
+  test_spmat_descr.cpp
+  test_spvec_descr.cpp
+  test_dnvec_descr.cpp
+  test_spmv_coo.cpp
+  test_spmv_csr.cpp
+  test_axpby.cpp
+  test_gather.cpp
+  test_scatter.cpp
+  test_spvv.cpp
 )
 
 if(NOT BUILD_CUDA)

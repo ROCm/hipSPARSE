@@ -53,7 +53,7 @@ void verify_hipsparse_status(hipsparseStatus_t status,
 #else
     if(status != expected_status)
     {
-        std::cerr << "rocSPARSE TEST ERROR: status(=" << status
+        std::cerr << "hipSPARSE TEST ERROR: status(=" << status
                   << ") != expected_status(= " << expected_status << "), ";
         std::cerr << message << std::endl;
     }
@@ -67,7 +67,7 @@ void verify_hipsparse_status_invalid_pointer(hipsparseStatus_t status, const cha
 #else
     if(status != HIPSPARSE_STATUS_INVALID_VALUE)
     {
-        std::cerr << "rocSPARSE TEST ERROR: status != HIPSPARSE_STATUS_INVALID_VALUE, ";
+        std::cerr << "hipSPARSE TEST ERROR: status != HIPSPARSE_STATUS_INVALID_VALUE, ";
         std::cerr << message << std::endl;
     }
 #endif
@@ -80,7 +80,7 @@ void verify_hipsparse_status_invalid_size(hipsparseStatus_t status, const char* 
 #else
     if(status != HIPSPARSE_STATUS_INVALID_VALUE)
     {
-        std::cerr << "rocSPARSE TEST ERROR: status != HIPSPARSE_STATUS_INVALID_VALUE, ";
+        std::cerr << "hipSPARSE TEST ERROR: status != HIPSPARSE_STATUS_INVALID_VALUE, ";
         std::cerr << message << std::endl;
     }
 #endif
@@ -93,7 +93,7 @@ void verify_hipsparse_status_invalid_value(hipsparseStatus_t status, const char*
 #else
     if(status != HIPSPARSE_STATUS_INVALID_VALUE)
     {
-        std::cerr << "rocSPARSE TEST ERROR: status != HIPSPARSE_STATUS_INVALID_VALUE, ";
+        std::cerr << "hipSPARSE TEST ERROR: status != HIPSPARSE_STATUS_INVALID_VALUE, ";
         std::cerr << message << std::endl;
     }
 #endif
@@ -106,7 +106,7 @@ void verify_hipsparse_status_zero_pivot(hipsparseStatus_t status, const char* me
 #else
     if(status != HIPSPARSE_STATUS_ZERO_PIVOT)
     {
-        std::cerr << "rocSPARSE TEST ERROR: status != HIPSPARSE_STATUS_ZERO_PIVOT, ";
+        std::cerr << "hipSPARSE TEST ERROR: status != HIPSPARSE_STATUS_ZERO_PIVOT, ";
         std::cerr << message << std::endl;
     }
 #endif
@@ -119,7 +119,7 @@ void verify_hipsparse_status_invalid_handle(hipsparseStatus_t status)
 #else
     if(status != HIPSPARSE_STATUS_NOT_INITIALIZED)
     {
-        std::cerr << "rocSPARSE TEST ERROR: status != HIPSPARSE_STATUS_NOT_INITIALIZED"
+        std::cerr << "hipSPARSE TEST ERROR: status != HIPSPARSE_STATUS_NOT_INITIALIZED"
                   << std::endl;
     }
 #endif
@@ -132,7 +132,20 @@ void verify_hipsparse_status_internal_error(hipsparseStatus_t status, const char
 #else
     if(status != HIPSPARSE_STATUS_INTERNAL_ERROR)
     {
-        std::cerr << "rocSPARSE TEST ERROR: status != HIPSPARSE_STATUS_INTERNAL_ERROR, ";
+        std::cerr << "hipSPARSE TEST ERROR: status != HIPSPARSE_STATUS_INTERNAL_ERROR, ";
+        std::cerr << message << std::endl;
+    }
+#endif
+}
+
+void verify_hipsparse_status_not_supported(hipsparseStatus_t status, const char* message)
+{
+#ifdef GOOGLE_TEST
+    ASSERT_EQ(status, HIPSPARSE_STATUS_NOT_SUPPORTED);
+#else
+    if(status != HIPSPARSE_STATUS_NOT_SUPPORTED)
+    {
+        std::cerr << "hipSPARSE TEST ERROR: status != HIPSPARSE_STATUS_NOT_SUPPORTED, ";
         std::cerr << message << std::endl;
     }
 #endif
@@ -145,7 +158,7 @@ void verify_hipsparse_status_success(hipsparseStatus_t status, const char* messa
 #else
     if(status != HIPSPARSE_STATUS_SUCCESS)
     {
-        std::cerr << "rocSPARSE TEST ERROR: status != HIPSPARSE_STATUS_SUCCESS, ";
+        std::cerr << "hipSPARSE TEST ERROR: status != HIPSPARSE_STATUS_SUCCESS, ";
         std::cerr << message << std::endl;
     }
 #endif
