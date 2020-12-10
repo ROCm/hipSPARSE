@@ -46,7 +46,6 @@ trans csrgemm_transA_range[] = {HIPSPARSE_OPERATION_NON_TRANSPOSE};
 trans csrgemm_transB_range[] = {HIPSPARSE_OPERATION_NON_TRANSPOSE};
 
 std::string csrgemm_bin[] = {/*"rma10.bin",*/
-                             "mac_econ_fwd500.bin",
                              /*"bibd_22_8.bin",*/
                              "mc2depi.bin",
                              "scircuit.bin",

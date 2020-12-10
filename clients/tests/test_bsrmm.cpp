@@ -35,13 +35,13 @@ typedef std::tuple<int, int, int, int, double, double, direction, base, trans, t
 typedef std::tuple<int, int, double, double, direction, base, trans, trans, std::string>
     bsrmm_bin_tuple;
 
-int bsrmm_M_range[]         = {-1, 0, 42, 275, 2059};
-int bsrmm_N_range[]         = {-1, 0, 7, 19, 64, 78};
-int bsrmm_K_range[]         = {-1, 0, 50, 173, 1375};
-int bsrmm_block_dim_range[] = {-1, 0, 1, 2, 4, 7, 16};
+int bsrmm_M_range[]         = {-1, 42, 2059};
+int bsrmm_N_range[]         = {-1, 7, 78};
+int bsrmm_K_range[]         = {-1, 50, 173, 1375};
+int bsrmm_block_dim_range[] = {4, 7, 16};
 
-double bsrmm_alpha_range[] = {-0.5, 2.0};
-double bsrmm_beta_range[]  = {0.5, 0.0};
+double bsrmm_alpha_range[] = {-0.5};
+double bsrmm_beta_range[]  = {0.5};
 
 direction bsrmm_dir_range[]     = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COLUMN};
 base      bsrmm_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
@@ -59,16 +59,8 @@ base      bsrmm_idxbase_range_bin[] = {HIPSPARSE_INDEX_BASE_ONE};
 trans     bsrmm_transA_range_bin[]  = {HIPSPARSE_OPERATION_NON_TRANSPOSE};
 trans bsrmm_transB_range_bin[] = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPERATION_TRANSPOSE};
 
-std::string bsrmm_bin[] = {"rma10.bin",
-                           "bibd_22_8.bin",
-                           "mc2depi.bin",
-                           "scircuit.bin",
-                           "nos1.bin",
-                           "nos3.bin",
-                           "nos5.bin",
-                           "nos7.bin",
-                           "amazon0312.bin",
-                           "shipsec1.bin"};
+std::string bsrmm_bin[]
+    = {"rma10.bin", "scircuit.bin", "nos1.bin", "nos3.bin", "nos5.bin", "nos7.bin"};
 
 class parameterized_bsrmm : public testing::TestWithParam<bsrmm_tuple>
 {

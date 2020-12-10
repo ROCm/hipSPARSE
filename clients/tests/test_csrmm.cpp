@@ -37,23 +37,14 @@ int csrmm_M_range[] = {-1, 0, 42, 275, 2059};
 int csrmm_N_range[] = {-1, 0, 7, 19, 64, 78};
 int csrmm_K_range[] = {-1, 0, 50, 173, 1375};
 
-double csrmm_alpha_range[] = {-0.5, 2.0};
-double csrmm_beta_range[]  = {0.5, 0.0};
+double csrmm_alpha_range[] = {-0.5};
+double csrmm_beta_range[]  = {0.5};
 
 base  csrmm_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 trans csrmm_transA_range[]  = {HIPSPARSE_OPERATION_NON_TRANSPOSE};
 trans csrmm_transB_range[]  = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPERATION_TRANSPOSE};
 
-std::string csrmm_bin[] = {"rma10.bin",
-                           "bibd_22_8.bin",
-                           "mc2depi.bin",
-                           "scircuit.bin",
-                           "nos1.bin",
-                           "nos3.bin",
-                           "nos5.bin",
-                           "nos7.bin",
-                           "amazon0312.bin",
-                           "shipsec1.bin"};
+std::string csrmm_bin[] = {"rma10.bin", "nos1.bin", "nos3.bin", "nos5.bin", "nos7.bin"};
 
 class parameterized_csrmm : public testing::TestWithParam<csrmm_tuple>
 {
