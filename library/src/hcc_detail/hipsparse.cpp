@@ -10888,6 +10888,14 @@ hipsparseStatus_t hipsparseGather(hipsparseHandle_t     handle,
         (rocsparse_handle)handle, (rocsparse_dnvec_descr)vecY, (rocsparse_spvec_descr)vecX));
 }
 
+hipsparseStatus_t hipsparseScatter(hipsparseHandle_t     handle,
+                                   hipsparseSpVecDescr_t vecX,
+                                   hipsparseDnVecDescr_t vecY)
+{
+    return rocSPARSEStatusToHIPStatus(rocsparse_scatter(
+        (rocsparse_handle)handle, (rocsparse_spvec_descr)vecX, (rocsparse_dnvec_descr)vecY));
+}
+
 hipsparseStatus_t hipsparseSpVV_bufferSize(hipsparseHandle_t     handle,
                                            hipsparseOperation_t  opX,
                                            hipsparseSpVecDescr_t vecX,

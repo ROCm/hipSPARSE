@@ -9340,6 +9340,14 @@ hipsparseStatus_t hipsparseGather(hipsparseHandle_t     handle,
         (cusparseHandle_t)handle, (cusparseDnVecDescr_t)vecY, (cusparseSpVecDescr_t)vecX));
 }
 
+hipsparseStatus_t hipsparseScatter(hipsparseHandle_t     handle,
+                                   hipsparseSpVecDescr_t vecX,
+                                   hipsparseDnVecDescr_t vecY)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseScatter(
+        (cusparseHandle_t)handle, (cusparseSpVecDescr_t)vecX, (cusparseDnVecDescr_t)vecY));
+}
+
 hipsparseStatus_t hipsparseSpVV_bufferSize(hipsparseHandle_t     handle,
                                            hipsparseOperation_t  opX,
                                            hipsparseSpVecDescr_t vecX,

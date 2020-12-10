@@ -5071,6 +5071,12 @@ hipsparseStatus_t hipsparseGather(hipsparseHandle_t     handle,
                                   hipsparseDnVecDescr_t vecY,
                                   hipsparseSpVecDescr_t vecX);
 
+/* Description: Scatter elements of a sparse vector into a dense vector */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseScatter(hipsparseHandle_t     handle,
+                                   hipsparseSpVecDescr_t vecX,
+                                   hipsparseDnVecDescr_t vecY);
+
 /* Description: Compute the inner dot product of a sparse vector with a dense vector */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpVV_bufferSize(hipsparseHandle_t     handle,
