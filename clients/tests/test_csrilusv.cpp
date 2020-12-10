@@ -36,9 +36,7 @@ typedef std::tuple<base, std::string> csrilusv_bin_tuple;
 
 base csrilusv_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
-std::string csrilusv_bin[] = {"mac_econ_fwd500.bin",
-                              "mc2depi.bin",
-                              "scircuit.bin",
+std::string csrilusv_bin[] = {"scircuit.bin",
 #if defined(__HIP_PLATFORM_HCC__)
                               //                              "bmwcra_1.bin",
                               "nos1.bin",

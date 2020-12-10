@@ -33,21 +33,17 @@ typedef hipsparseIndexBase_t base;
 typedef std::tuple<int, int, int, double, base, base, base> csrgemm2_a_tuple;
 typedef std::tuple<double, base, base, base, std::string>   csrgemm2_a_bin_tuple;
 
-double csrgemm2_a_alpha_range[] = {0.0, 2.0};
+double csrgemm2_a_alpha_range[] = {2.0};
 
-int csrgemm2_a_M_range[] = {-1, 0, 50, 647, 1799};
-int csrgemm2_a_N_range[] = {-1, 0, 13, 523, 3712};
-int csrgemm2_a_K_range[] = {-1, 0, 50, 254, 1942};
+int csrgemm2_a_M_range[] = {0, 50, 647, 1799};
+int csrgemm2_a_N_range[] = {-1, 13, 523, 3712};
+int csrgemm2_a_K_range[] = {0, 50, 254, 1942};
 
 base csrgemm2_a_idxbaseA_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 base csrgemm2_a_idxbaseB_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 base csrgemm2_a_idxbaseC_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
-std::string csrgemm2_a_bin[] = {"rma10.bin",
-                                "mac_econ_fwd500.bin",
-                                "mc2depi.bin",
-                                "scircuit.bin",
-                                "bmwcra_1.bin",
+std::string csrgemm2_a_bin[] = {"scircuit.bin",
                                 "nos1.bin",
                                 "nos2.bin",
                                 "nos3.bin",

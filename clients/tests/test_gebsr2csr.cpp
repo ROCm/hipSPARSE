@@ -37,10 +37,10 @@ typedef std::
         gebsr2csr_bin_tuple;
 
 // Random matrices
-int gebsr2csr_M_range[]             = {-1, 0, 872, 21453};
-int gebsr2csr_N_range[]             = {-3, 0, 623, 29285};
-int gebsr2csr_row_block_dim_range[] = {-1, 0, 1, 2, 4, 8};
-int gebsr2csr_col_block_dim_range[] = {-1, 0, 1, 2, 4, 8};
+int gebsr2csr_M_range[]             = {-1, 872, 21453};
+int gebsr2csr_N_range[]             = {-3, 623, 29285};
+int gebsr2csr_row_block_dim_range[] = {0, 2, 4, 8};
+int gebsr2csr_col_block_dim_range[] = {-1, 2, 4, 8};
 
 hipsparseIndexBase_t gebsr2csr_csr_base_range[] = {HIPSPARSE_INDEX_BASE_ZERO};
 
@@ -60,22 +60,13 @@ hipsparseDirection_t gebsr2csr_dir_range_bin[]
     = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COLUMN};
 
 std::string gebsr2csr_bin[] = {"rma10.bin",
-                               "mac_econ_fwd500.bin",
-                               "mc2depi.bin",
-                               "scircuit.bin",
-                               "ASIC_320k.bin",
-                               "bmwcra_1.bin",
                                "nos1.bin",
                                "nos2.bin",
                                "nos3.bin",
                                "nos4.bin",
                                "nos5.bin",
                                "nos6.bin",
-                               "nos7.bin",
-                               "amazon0312.bin",
-                               "Chebyshev4.bin",
-                               "sme3Dc.bin",
-                               "shipsec1.bin"};
+                               "nos7.bin"};
 
 class parameterized_gebsr2csr : public testing::TestWithParam<gebsr2csr_tuple>
 {

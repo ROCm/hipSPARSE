@@ -42,7 +42,7 @@ typedef std::tuple<double, base, int, dir, op, diag, fill, std::string> bsrsv2_b
 int bsrsv2_M_range[]   = {-1, 0, 647};
 int bsrsv2_dim_range[] = {-1, 0, 1, 3, 9};
 
-double bsrsv2_alpha_range[] = {1.0, 2.3};
+double bsrsv2_alpha_range[] = {2.3};
 
 base bsrsv2_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 dir  bsrsv2_dir_range[]     = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COLUMN};

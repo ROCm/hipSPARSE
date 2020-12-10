@@ -45,16 +45,14 @@ double bsrilu02_boost_vali_range[] = {0.2};
 base bsrilu02_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 dir  bsrilu02_dir_range[]     = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COLUMN};
 
-std::string bsrilu02_bin[] = {"mac_econ_fwd500.bin",
-                              "nos1.bin",
+std::string bsrilu02_bin[] = {"nos1.bin",
                               "nos2.bin",
                               "nos3.bin",
                               "nos4.bin",
                               "nos5.bin",
                               "nos6.bin",
                               "nos7.bin",
-                              "scircuit.bin",
-                              "mc2depi.bin"};
+                              "scircuit.bin"};
 
 class parameterized_bsrilu02 : public testing::TestWithParam<bsrilu02_tuple>
 {
