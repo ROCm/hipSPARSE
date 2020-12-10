@@ -46,10 +46,8 @@ int coosort_perm[] = {1};
 
 hipsparseIndexBase_t coosort_base[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
-std::string coosort_bin[] = {"rma10.bin",
-                             "mac_econ_fwd500.bin",
-                             "bibd_22_8.bin",
-                             "mc2depi.bin",
+std::string coosort_bin[] = {"mc2depi.bin",
+                             "scircuit.bin",
                              "nos1.bin",
                              "nos2.bin",
                              "nos3.bin",
@@ -57,8 +55,6 @@ std::string coosort_bin[] = {"rma10.bin",
                              "nos5.bin",
                              "nos6.bin",
                              "nos7.bin",
-                             "sme3Dc.bin",
-                             "webbase-1M.bin",
                              "shipsec1.bin"};
 
 class parameterized_coosort : public testing::TestWithParam<coosort_tuple>

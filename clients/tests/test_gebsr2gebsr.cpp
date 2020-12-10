@@ -74,15 +74,8 @@ hipsparseIndexBase_t gebsr2gebsr_C_base_range_bin[] = {HIPSPARSE_INDEX_BASE_ONE}
 hipsparseDirection_t gebsr2gebsr_dir_range_bin[]
     = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COLUMN};
 
-std::string gebsr2gebsr_bin[] = {"rma10.bin",
-                                 "mac_econ_fwd500.bin",
-                                 "nos1.bin",
-                                 "nos2.bin",
-                                 "nos3.bin",
-                                 "nos4.bin",
-                                 "nos5.bin",
-                                 "nos6.bin",
-                                 "nos7.bin"};
+std::string gebsr2gebsr_bin[]
+    = {"nos1.bin", "nos2.bin", "nos3.bin", "nos4.bin", "nos5.bin", "nos6.bin", "nos7.bin"};
 
 class parameterized_gebsr2gebsr : public testing::TestWithParam<gebsr2gebsr_tuple>
 {

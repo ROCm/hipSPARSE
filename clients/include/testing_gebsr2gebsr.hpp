@@ -987,69 +987,15 @@ hipsparseStatus_t testing_gebsr2gebsr(Arguments argus)
         // Do not test args in cusparse
         return HIPSPARSE_STATUS_SUCCESS;
 #endif
-        auto dbsr_row_ptr_A_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto dbsr_col_ind_A_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto dbsr_val_A_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-        auto dbsr_row_ptr_C_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto dbsr_col_ind_C_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto dbsr_val_C_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
         auto dtemp_buffer_managed
             = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
 
-        int* dbsr_row_ptr_A = (int*)dbsr_row_ptr_A_managed.get();
-        int* dbsr_col_ind_A = (int*)dbsr_col_ind_A_managed.get();
-        T*   dbsr_val_A     = (T*)dbsr_val_A_managed.get();
-        int* dbsr_row_ptr_C = (int*)dbsr_row_ptr_C_managed.get();
-        int* dbsr_col_ind_C = (int*)dbsr_col_ind_C_managed.get();
-        T*   dbsr_val_C     = (T*)dbsr_val_C_managed.get();
-        T*   dtemp_buffer   = (T*)dtemp_buffer_managed.get();
+        T* dtemp_buffer = (T*)dtemp_buffer_managed.get();
 
-        if(!dbsr_row_ptr_A || !dbsr_col_ind_A || !dbsr_val_A || !dbsr_row_ptr_C || !dbsr_col_ind_C
-           || !dbsr_val_C || !dtemp_buffer)
+        if(!dtemp_buffer)
         {
-            verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                            "!dbsr_row_ptr_A || !dbsr_col_ind_A || !dbsr_val_A || "
-                                            "!dbsr_row_ptr_C || !dbsr_col_ind_C || !dbsr_val_C || "
-                                            "!dtemp_buffer");
+            verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!dtemp_buffer");
             return HIPSPARSE_STATUS_ALLOC_FAILED;
-        }
-
-        int buffer_size;
-        status = hipsparseXgebsr2gebsr_bufferSize(handle,
-                                                  dir,
-                                                  mb,
-                                                  nb,
-                                                  safe_size,
-                                                  descr_A,
-                                                  dbsr_val_A,
-                                                  dbsr_row_ptr_A,
-                                                  dbsr_col_ind_A,
-                                                  row_block_dim_A,
-                                                  col_block_dim_A,
-                                                  row_block_dim_C,
-                                                  col_block_dim_C,
-                                                  &buffer_size);
-
-        if(mb < 0 || nb < 0 || row_block_dim_A <= 0 || col_block_dim_A <= 0 || row_block_dim_C <= 0
-           || col_block_dim_C <= 0)
-        {
-            verify_hipsparse_status_invalid_size(
-                status,
-                "Error: mb < 0 || nb < 0 || row_block_dim_A <= 0 || col_block_dim_A <= 0 || "
-                "row_block_dim_C <= 0 || col_block_dim_C <= 0");
-        }
-        else
-        {
-            verify_hipsparse_status_success(
-                status,
-                "mb >= 0 && nb >= 0 && row_block_dim_A > 0 && col_block_dim_A > 0 && "
-                "row_block_dim_C > 0 && col_block_dim_C > 0");
         }
 
         status = hipsparseXgebsr2gebsr(handle,
@@ -1058,15 +1004,15 @@ hipsparseStatus_t testing_gebsr2gebsr(Arguments argus)
                                        nb,
                                        safe_size,
                                        descr_A,
-                                       dbsr_val_A,
-                                       dbsr_row_ptr_A,
-                                       dbsr_col_ind_A,
+                                       (const T*)nullptr,
+                                       nullptr,
+                                       nullptr,
                                        row_block_dim_A,
                                        col_block_dim_A,
                                        descr_C,
-                                       dbsr_val_C,
-                                       dbsr_row_ptr_C,
-                                       dbsr_col_ind_C,
+                                       (T*)nullptr,
+                                       nullptr,
+                                       nullptr,
                                        row_block_dim_C,
                                        col_block_dim_C,
                                        dtemp_buffer);

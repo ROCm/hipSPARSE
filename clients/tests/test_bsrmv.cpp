@@ -39,8 +39,8 @@ int bsr_M_range[]   = {-1, 0, 500, 7111};
 int bsr_N_range[]   = {-3, 0, 842, 4441};
 int bsr_dim_range[] = {-1, 0, 1, 3, 5, 9};
 
-std::vector<double> bsr_alpha_range = {2.0, 3.0};
-std::vector<double> bsr_beta_range  = {0.0, 1.0};
+std::vector<double> bsr_alpha_range = {3.0};
+std::vector<double> bsr_beta_range  = {1.0};
 
 base bsr_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 dir  bsr_dir_range[]     = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COLUMN};

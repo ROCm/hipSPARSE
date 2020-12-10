@@ -37,8 +37,8 @@ typedef std::tuple<int, double, double, double, base, std::string> csrilu02_bin_
 int    csrilu02_M_range[]          = {-1, 0, 50, 647};
 int    csrilu02_boost_range[]      = {0, 1};
 double csrilu02_boost_tol_range[]  = {0.5};
-double csrilu02_boost_val_range[]  = {0.3, 2.0};
-double csrilu02_boost_vali_range[] = {0.2, 1.0};
+double csrilu02_boost_val_range[]  = {0.3};
+double csrilu02_boost_vali_range[] = {0.2};
 
 base csrilu02_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
@@ -47,7 +47,6 @@ std::string csrilu02_bin[] = {"mac_econ_fwd500.bin",
                               // exclude some matrices from cusparse check,
                               // they use weaker division producing more rounding errors
                               "rma10.bin",
-                              "bmwcra_1.bin",
                               "nos1.bin",
                               "nos2.bin",
 #endif
