@@ -9122,8 +9122,8 @@ hipsparseStatus_t hipsparseSpVecGet(const hipsparseSpVecDescr_t spVecDescr,
 hipsparseStatus_t hipsparseSpVecGetIndexBase(const hipsparseSpVecDescr_t spVecDescr,
                                              hipsparseIndexBase_t*       idxBase)
 {
-    return hipCUSPARSEStatusToHIPStatus(
-        cusparseSpVecGetIndexBase((const cusparseSpVecDescr_t)spVecDescr, (cusparseIndexBase_t*)idxBase));
+    return hipCUSPARSEStatusToHIPStatus(cusparseSpVecGetIndexBase(
+        (const cusparseSpVecDescr_t)spVecDescr, (cusparseIndexBase_t*)idxBase));
 }
 
 hipsparseStatus_t hipsparseSpVecGetValues(const hipsparseSpVecDescr_t spVecDescr, void** values)
@@ -9357,12 +9357,12 @@ hipsparseStatus_t hipsparseSpVV_bufferSize(hipsparseHandle_t     handle,
                                            size_t*               bufferSize)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseSpVV_bufferSize((cusparseHandle_t)handle,
-                                                     hipOperationToCudaOperation(opX),
-                                                     (cusparseSpVecDescr_t)vecX,
-                                                     (cusparseDnVecDescr_t)vecY,
-                                                     result,
-                                                     computeType,
-                                                     bufferSize));
+                                                                hipOperationToCudaOperation(opX),
+                                                                (cusparseSpVecDescr_t)vecX,
+                                                                (cusparseDnVecDescr_t)vecY,
+                                                                result,
+                                                                computeType,
+                                                                bufferSize));
 }
 
 hipsparseStatus_t hipsparseSpVV(hipsparseHandle_t     handle,

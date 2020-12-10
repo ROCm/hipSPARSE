@@ -75,21 +75,38 @@ void testing_spvv_bad_arg(void)
 
     // SpVV bufferSize
     size_t bufferSize;
-    verify_hipsparse_status_invalid_handle(hipsparseSpVV_bufferSize(nullptr, opType, x, y, &result, dataType, &bufferSize));
-    verify_hipsparse_status_invalid_pointer(hipsparseSpVV_bufferSize(handle, opType, nullptr, y, &result, dataType, &bufferSize), "Error: x is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseSpVV_bufferSize(handle, opType, x, nullptr, &result, dataType, &bufferSize), "Error: y is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseSpVV_bufferSize(handle, opType, x, y, nullptr, dataType, &bufferSize), "Error: result is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseSpVV_bufferSize(handle, opType, x, y, &result, dataType, nullptr), "Error: bufferSize is nullptr");
+    verify_hipsparse_status_invalid_handle(
+        hipsparseSpVV_bufferSize(nullptr, opType, x, y, &result, dataType, &bufferSize));
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseSpVV_bufferSize(handle, opType, nullptr, y, &result, dataType, &bufferSize),
+        "Error: x is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseSpVV_bufferSize(handle, opType, x, nullptr, &result, dataType, &bufferSize),
+        "Error: y is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseSpVV_bufferSize(handle, opType, x, y, nullptr, dataType, &bufferSize),
+        "Error: result is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseSpVV_bufferSize(handle, opType, x, y, &result, dataType, nullptr),
+        "Error: bufferSize is nullptr");
 
     // SpVV
     void* buffer;
     CHECK_HIP_ERROR(hipMalloc(&buffer, 100));
 
-    verify_hipsparse_status_invalid_handle(hipsparseSpVV(nullptr, opType, x, y, &result, dataType, buffer));
-    verify_hipsparse_status_invalid_pointer(hipsparseSpVV(handle, opType, nullptr, y, &result, dataType, buffer), "Error: x is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseSpVV(handle, opType, x, nullptr, &result, dataType, buffer), "Error: y is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseSpVV(handle, opType, x, y, nullptr, dataType, buffer), "Error: result is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseSpVV(handle, opType, x, y, &result, dataType, nullptr), "Error: buffer is nullptr");
+    verify_hipsparse_status_invalid_handle(
+        hipsparseSpVV(nullptr, opType, x, y, &result, dataType, buffer));
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseSpVV(handle, opType, nullptr, y, &result, dataType, buffer),
+        "Error: x is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseSpVV(handle, opType, x, nullptr, &result, dataType, buffer),
+        "Error: y is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseSpVV(handle, opType, x, y, nullptr, dataType, buffer), "Error: result is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseSpVV(handle, opType, x, y, &result, dataType, nullptr),
+        "Error: buffer is nullptr");
 
     // Destruct
     verify_hipsparse_status_success(hipsparseDestroySpVec(x), "Success");
@@ -151,7 +168,8 @@ hipsparseStatus_t testing_spvv(void)
 
     if(!dx_ind || !dx_val || !dy || !dresult_C)
     {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!dx_ind || !dx_val || !dy || !dresult_2");
+        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
+                                        "!dx_ind || !dx_val || !dy || !dresult_2");
         return HIPSPARSE_STATUS_ALLOC_FAILED;
     }
 
@@ -164,41 +182,27 @@ hipsparseStatus_t testing_spvv(void)
     hipsparseSpVecDescr_t x;
     hipsparseDnVecDescr_t y;
 
-    CHECK_HIPSPARSE_ERROR(hipsparseCreateSpVec(&x, size, nnz, dx_ind, dx_val, idxType, idxBase, dataType));
+    CHECK_HIPSPARSE_ERROR(
+        hipsparseCreateSpVec(&x, size, nnz, dx_ind, dx_val, idxType, idxBase, dataType));
     CHECK_HIPSPARSE_ERROR(hipsparseCreateDnVec(&y, size, dy, dataType));
 
     // SpVV_bufferSize
     size_t bufferSize;
-    void* externalBuffer;
+    void*  externalBuffer;
 
     // SpVV non-transpose pointer-mode host
     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
-    CHECK_HIPSPARSE_ERROR(hipsparseSpVV_bufferSize(handle,
-                                                   HIPSPARSE_OPERATION_NON_TRANSPOSE,
-                                                   x,
-                                                   y,
-                                                   &hresult_N,
-                                                   dataType,
-                                                   &bufferSize));
+    CHECK_HIPSPARSE_ERROR(hipsparseSpVV_bufferSize(
+        handle, HIPSPARSE_OPERATION_NON_TRANSPOSE, x, y, &hresult_N, dataType, &bufferSize));
     CHECK_HIP_ERROR(hipMalloc(&externalBuffer, bufferSize));
-    CHECK_HIPSPARSE_ERROR(hipsparseSpVV(handle,
-                                        HIPSPARSE_OPERATION_NON_TRANSPOSE,
-                                        x,
-                                        y,
-                                        &hresult_N,
-                                        dataType,
-                                        externalBuffer));
+    CHECK_HIPSPARSE_ERROR(hipsparseSpVV(
+        handle, HIPSPARSE_OPERATION_NON_TRANSPOSE, x, y, &hresult_N, dataType, externalBuffer));
     CHECK_HIP_ERROR(hipFree(externalBuffer));
 
     // SpVV conjugate-transpose pointer-mode device
     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
-    CHECK_HIPSPARSE_ERROR(hipsparseSpVV_bufferSize(handle,
-                                                   HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE,
-                                                   x,
-                                                   y,
-                                                   dresult_C,
-                                                   dataType,
-                                                   &bufferSize));
+    CHECK_HIPSPARSE_ERROR(hipsparseSpVV_bufferSize(
+        handle, HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE, x, y, dresult_C, dataType, &bufferSize));
     CHECK_HIP_ERROR(hipMalloc(&externalBuffer, bufferSize));
     CHECK_HIPSPARSE_ERROR(hipsparseSpVV(handle,
                                         HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE,
