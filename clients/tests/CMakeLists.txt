@@ -182,6 +182,7 @@ set(HIPSPARSE_TEST_SOURCES
   test_axpby.cpp
   test_gather.cpp
   test_scatter.cpp
+  test_rot.cpp
   test_spvv.cpp
 )
 

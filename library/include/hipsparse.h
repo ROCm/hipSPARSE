@@ -5077,6 +5077,14 @@ hipsparseStatus_t hipsparseScatter(hipsparseHandle_t     handle,
                                    hipsparseSpVecDescr_t vecX,
                                    hipsparseDnVecDescr_t vecY);
 
+/* Description: Compute the Givens rotation matrix to a sparse and a dense vector */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseRot(hipsparseHandle_t     handle,
+                               const void*           c_coeff,
+                               const void*           s_coeff,
+                               hipsparseSpVecDescr_t vecX,
+                               hipsparseDnVecDescr_t vecY);
+
 /* Description: Compute the inner dot product of a sparse vector with a dense vector */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpVV_bufferSize(hipsparseHandle_t     handle,
