@@ -415,13 +415,13 @@ rocsparse_spmv_alg_ hipSpMVAlgToHCCSpMVAlg(hipsparseSpMVAlg_t alg)
     switch(alg)
     {
     case HIPSPARSE_MV_ALG_DEFAULT:
-        return rocsparse_spmv_default;
+        return rocsparse_spmv_alg_default;
     case HIPSPARSE_COOMV_ALG:
-        return rocsparse_spmv_coo_alg;
+        return rocsparse_spmv_alg_coo;
     case HIPSPARSE_CSRMV_ALG1:
-        return rocsparse_spmv_csr_alg1;
+        return rocsparse_spmv_alg_csr_adaptive;
     case HIPSPARSE_CSRMV_ALG2:
-        return rocsparse_spmv_csr_alg2;
+        return rocsparse_spmv_alg_csr_stream;
     default:
         throw "Non existent hipSpMVAlg_t";
     }
