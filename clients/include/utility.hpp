@@ -3848,43 +3848,43 @@ int csr_usolve(hipsparseOperation_t trans,
 
 /* ============================================================================================ */
 /*! \brief  Transpose sparse matrix using CSR storage format. */
-template <typename T>
-void transpose_csr(int                  m,
-                   int                  n,
-                   int                  nnz,
-                   const int*           csr_row_ptr_A,
-                   const int*           csr_col_ind_A,
+template <typename I, typename J, typename T>
+void transpose_csr(J                  m,
+                   J                  n,
+                   I                  nnz,
+                   const I*           csr_row_ptr_A,
+                   const J*           csr_col_ind_A,
                    const T*             csr_val_A,
-                   int*                 csr_row_ptr_B,
-                   int*                 csr_col_ind_B,
+                   I*                 csr_row_ptr_B,
+                   J*                 csr_col_ind_B,
                    T*                   csr_val_B,
                    hipsparseIndexBase_t idx_base_A,
                    hipsparseIndexBase_t idx_base_B)
 {
-    memset(csr_row_ptr_B, 0, sizeof(int) * (n + 1));
+    memset(csr_row_ptr_B, 0, sizeof(I) * (n + 1));
 
     // Determine nnz per column
-    for(int i = 0; i < nnz; ++i)
+    for(I i = 0; i < nnz; ++i)
     {
         ++csr_row_ptr_B[csr_col_ind_A[i] + 1 - idx_base_A];
     }
 
     // Scan
-    for(int i = 0; i < n; ++i)
+    for(J i = 0; i < n; ++i)
     {
         csr_row_ptr_B[i + 1] += csr_row_ptr_B[i];
     }
 
     // Fill row indices and values
-    for(int i = 0; i < m; ++i)
+    for(J i = 0; i < m; ++i)
     {
-        int row_begin = csr_row_ptr_A[i] - idx_base_A;
-        int row_end   = csr_row_ptr_A[i + 1] - idx_base_A;
+        I row_begin = csr_row_ptr_A[i] - idx_base_A;
+        I row_end   = csr_row_ptr_A[i + 1] - idx_base_A;
 
-        for(int j = row_begin; j < row_end; ++j)
+        for(I j = row_begin; j < row_end; ++j)
         {
-            int col = csr_col_ind_A[j] - idx_base_A;
-            int idx = csr_row_ptr_B[col];
+            J col = csr_col_ind_A[j] - idx_base_A;
+            I idx = csr_row_ptr_B[col];
 
             csr_col_ind_B[idx] = i + idx_base_B;
             csr_val_B[idx]     = csr_val_A[j];
@@ -3894,7 +3894,7 @@ void transpose_csr(int                  m,
     }
 
     // Shift column pointer array
-    for(int i = n; i > 0; --i)
+    for(J i = n; i > 0; --i)
     {
         csr_row_ptr_B[i] = csr_row_ptr_B[i - 1] + idx_base_B;
     }
