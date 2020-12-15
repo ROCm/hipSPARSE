@@ -7328,7 +7328,6 @@ hipsparseStatus_t hipsparseZcsr2hyb(hipsparseHandle_t         handle,
                            hipHybPartToHCCHybPart(partitionType)));
 }
 
-HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSgebsr2gebsc_bufferSize(hipsparseHandle_t handle,
                                                    int               mb,
                                                    int               nb,
@@ -7353,7 +7352,6 @@ hipsparseStatus_t hipsparseSgebsr2gebsc_bufferSize(hipsparseHandle_t handle,
     return HIPSPARSE_STATUS_SUCCESS;
 }
 
-HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDgebsr2gebsc_bufferSize(hipsparseHandle_t handle,
                                                    int               mb,
                                                    int               nb,
@@ -7379,7 +7377,6 @@ hipsparseStatus_t hipsparseDgebsr2gebsc_bufferSize(hipsparseHandle_t handle,
     return HIPSPARSE_STATUS_SUCCESS;
 }
 
-HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCgebsr2gebsc_bufferSize(hipsparseHandle_t handle,
                                                    int               mb,
                                                    int               nb,
@@ -7406,7 +7403,6 @@ hipsparseStatus_t hipsparseCgebsr2gebsc_bufferSize(hipsparseHandle_t handle,
     return HIPSPARSE_STATUS_SUCCESS;
 }
 
-HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseZgebsr2gebsc_bufferSize(hipsparseHandle_t       handle,
                                                    int                     mb,
                                                    int                     nb,
@@ -7433,7 +7429,6 @@ hipsparseStatus_t hipsparseZgebsr2gebsc_bufferSize(hipsparseHandle_t       handl
     return HIPSPARSE_STATUS_SUCCESS;
 }
 
-HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSgebsr2gebsc(hipsparseHandle_t    handle,
                                         int                  mb,
                                         int                  nb,
@@ -7468,7 +7463,6 @@ hipsparseStatus_t hipsparseSgebsr2gebsc(hipsparseHandle_t    handle,
     return HIPSPARSE_STATUS_SUCCESS;
 }
 
-HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDgebsr2gebsc(hipsparseHandle_t    handle,
                                         int                  mb,
                                         int                  nb,
@@ -7504,7 +7498,6 @@ hipsparseStatus_t hipsparseDgebsr2gebsc(hipsparseHandle_t    handle,
     return HIPSPARSE_STATUS_SUCCESS;
 }
 
-HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCgebsr2gebsc(hipsparseHandle_t    handle,
                                         int                  mb,
                                         int                  nb,
@@ -7540,7 +7533,6 @@ hipsparseStatus_t hipsparseCgebsr2gebsc(hipsparseHandle_t    handle,
     return HIPSPARSE_STATUS_SUCCESS;
 }
 
-HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseZgebsr2gebsc(hipsparseHandle_t       handle,
                                         int                     mb,
                                         int                     nb,
