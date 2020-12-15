@@ -95,8 +95,8 @@ hipsparseStatus_t testing_rot(void)
     int64_t size = 15332;
     int64_t nnz  = 500;
 
-    T hc_coeff = (T)1.5;
-    T hs_coeff = (T)2.0;
+    T hc_coeff = make_DataType<T>(1.5);
+    T hs_coeff = make_DataType<T>(2.0);
 
     hipsparseIndexBase_t idxBase = HIPSPARSE_INDEX_BASE_ZERO;
 

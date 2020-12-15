@@ -2228,408 +2228,6 @@ inline void host_bsrmv(hipsparseDirection_t dir,
 }
 
 template <typename T>
-inline void host_gebsrmv(hipsparseDirection_t dir,
-                         hipsparseOperation_t trans,
-                         int                  mb,
-                         int                  nb,
-                         int                  nnzb,
-                         T                    alpha,
-                         const int*           bsr_row_ptr,
-                         const int*           bsr_col_ind,
-                         const T*             bsr_val,
-                         int                  row_block_dim,
-                         int                  col_block_dim,
-                         const T*             x,
-                         T                    beta,
-                         T*                   y,
-                         hipsparseIndexBase_t base)
-{
-    // Quick return
-    if(alpha == make_DataType<T>(0))
-    {
-        if(beta != make_DataType<T>(1))
-        {
-            for(int i = 0; i < mb * row_block_dim; ++i)
-            {
-                y[i] = beta * y[i];
-            }
-        }
-
-        return;
-    }
-
-    if(row_block_dim == col_block_dim)
-    {
-        host_bsrmv(dir,
-                   trans,
-                   mb,
-                   nb,
-                   nnzb,
-                   alpha,
-                   bsr_row_ptr,
-                   bsr_col_ind,
-                   bsr_val,
-                   row_block_dim,
-                   x,
-                   beta,
-                   y,
-                   base);
-
-        return;
-    }
-
-    int WFSIZE;
-
-    if(row_block_dim == 2 || row_block_dim == 3 || row_block_dim == 4)
-    {
-        int blocks_per_row = nnzb / mb;
-
-        if(blocks_per_row < 8)
-        {
-            WFSIZE = 4;
-        }
-        else if(blocks_per_row < 16)
-        {
-            WFSIZE = 8;
-        }
-        else if(blocks_per_row < 32)
-        {
-            WFSIZE = 16;
-        }
-        else if(blocks_per_row < 64)
-        {
-            WFSIZE = 32;
-        }
-        else
-        {
-            WFSIZE = 64;
-        }
-    }
-    else if(row_block_dim <= 8)
-    {
-        WFSIZE = 8;
-    }
-    else if(row_block_dim <= 16)
-    {
-        WFSIZE = 16;
-    }
-    else
-    {
-        WFSIZE = 32;
-    }
-
-#ifdef _OPENMP
-#pragma omp parallel for schedule(dynamic, 1024)
-#endif
-    for(int row = 0; row < mb; ++row)
-    {
-        int row_begin = bsr_row_ptr[row] - base;
-        int row_end   = bsr_row_ptr[row + 1] - base;
-
-        if(row_block_dim == 2)
-        {
-            std::vector<T> sum0(WFSIZE, make_DataType<T>(0));
-            std::vector<T> sum1(WFSIZE, make_DataType<T>(0));
-
-            for(int j = row_begin; j < row_end; j += WFSIZE)
-            {
-                for(int k = 0; k < WFSIZE; ++k)
-                {
-                    if(j + k < row_end)
-                    {
-                        int col = bsr_col_ind[j + k] - base;
-
-                        for(int l = 0; l < col_block_dim; l++)
-                        {
-                            if(dir == HIPSPARSE_DIRECTION_COLUMN)
-                            {
-                                sum0[k]
-                                    = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
-                                                          + row_block_dim * l],
-                                                  x[col * col_block_dim + l],
-                                                  sum0[k]);
-                                sum1[k]
-                                    = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
-                                                          + row_block_dim * l + 1],
-                                                  x[col * col_block_dim + l],
-                                                  sum1[k]);
-                            }
-                            else
-                            {
-                                sum0[k] = testing_fma(
-                                    bsr_val[row_block_dim * col_block_dim * (j + k) + l],
-                                    x[col * col_block_dim + l],
-                                    sum0[k]);
-                                sum1[k]
-                                    = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
-                                                          + col_block_dim + l],
-                                                  x[col * col_block_dim + l],
-                                                  sum1[k]);
-                            }
-                        }
-                    }
-                }
-            }
-
-            for(unsigned int j = 1; j < WFSIZE; j <<= 1)
-            {
-                for(unsigned int k = 0; k < WFSIZE - j; ++k)
-                {
-                    sum0[k] = sum0[k] + sum0[k + j];
-                    sum1[k] = sum1[k] + sum1[k + j];
-                }
-            }
-
-            if(beta != make_DataType<T>(0))
-            {
-                y[row * row_block_dim + 0]
-                    = testing_fma(beta, y[row * row_block_dim + 0], alpha * sum0[0]);
-                y[row * row_block_dim + 1]
-                    = testing_fma(beta, y[row * row_block_dim + 1], alpha * sum1[0]);
-            }
-            else
-            {
-                y[row * row_block_dim + 0] = alpha * sum0[0];
-                y[row * row_block_dim + 1] = alpha * sum1[0];
-            }
-        }
-        else if(row_block_dim == 3)
-        {
-            std::vector<T> sum0(WFSIZE, make_DataType<T>(0));
-            std::vector<T> sum1(WFSIZE, make_DataType<T>(0));
-            std::vector<T> sum2(WFSIZE, make_DataType<T>(0));
-
-            for(int j = row_begin; j < row_end; j += WFSIZE)
-            {
-                for(int k = 0; k < WFSIZE; ++k)
-                {
-                    if(j + k < row_end)
-                    {
-                        int col = bsr_col_ind[j + k] - base;
-
-                        for(int l = 0; l < col_block_dim; l++)
-                        {
-                            if(dir == HIPSPARSE_DIRECTION_COLUMN)
-                            {
-                                sum0[k]
-                                    = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
-                                                          + row_block_dim * l],
-                                                  x[col * col_block_dim + l],
-                                                  sum0[k]);
-                                sum1[k]
-                                    = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
-                                                          + row_block_dim * l + 1],
-                                                  x[col * col_block_dim + l],
-                                                  sum1[k]);
-                                sum2[k]
-                                    = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
-                                                          + row_block_dim * l + 2],
-                                                  x[col * col_block_dim + l],
-                                                  sum2[k]);
-                            }
-                            else
-                            {
-                                sum0[k] = testing_fma(
-                                    bsr_val[row_block_dim * col_block_dim * (j + k) + l],
-                                    x[col * col_block_dim + l],
-                                    sum0[k]);
-                                sum1[k]
-                                    = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
-                                                          + col_block_dim + l],
-                                                  x[col * col_block_dim + l],
-                                                  sum1[k]);
-                                sum2[k]
-                                    = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
-                                                          + 2 * col_block_dim + l],
-                                                  x[col * col_block_dim + l],
-                                                  sum2[k]);
-                            }
-                        }
-                    }
-                }
-            }
-
-            for(unsigned int j = 1; j < WFSIZE; j <<= 1)
-            {
-                for(unsigned int k = 0; k < WFSIZE - j; ++k)
-                {
-                    sum0[k] = sum0[k] + sum0[k + j];
-                    sum1[k] = sum1[k] + sum1[k + j];
-                    sum2[k] = sum2[k] + sum2[k + j];
-                }
-            }
-
-            if(beta != make_DataType<T>(0))
-            {
-                y[row * row_block_dim + 0]
-                    = testing_fma(beta, y[row * row_block_dim + 0], alpha * sum0[0]);
-                y[row * row_block_dim + 1]
-                    = testing_fma(beta, y[row * row_block_dim + 1], alpha * sum1[0]);
-                y[row * row_block_dim + 2]
-                    = testing_fma(beta, y[row * row_block_dim + 2], alpha * sum2[0]);
-            }
-            else
-            {
-                y[row * row_block_dim + 0] = alpha * sum0[0];
-                y[row * row_block_dim + 1] = alpha * sum1[0];
-                y[row * row_block_dim + 2] = alpha * sum2[0];
-            }
-        }
-        else if(row_block_dim == 4)
-        {
-            std::vector<T> sum0(WFSIZE, make_DataType<T>(0));
-            std::vector<T> sum1(WFSIZE, make_DataType<T>(0));
-            std::vector<T> sum2(WFSIZE, make_DataType<T>(0));
-            std::vector<T> sum3(WFSIZE, make_DataType<T>(0));
-
-            for(int j = row_begin; j < row_end; j += WFSIZE)
-            {
-                for(int k = 0; k < WFSIZE; ++k)
-                {
-                    if(j + k < row_end)
-                    {
-                        int col = bsr_col_ind[j + k] - base;
-
-                        for(int l = 0; l < col_block_dim; l++)
-                        {
-                            if(dir == HIPSPARSE_DIRECTION_COLUMN)
-                            {
-                                sum0[k]
-                                    = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
-                                                          + row_block_dim * l],
-                                                  x[col * col_block_dim + l],
-                                                  sum0[k]);
-                                sum1[k]
-                                    = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
-                                                          + row_block_dim * l + 1],
-                                                  x[col * col_block_dim + l],
-                                                  sum1[k]);
-                                sum2[k]
-                                    = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
-                                                          + row_block_dim * l + 2],
-                                                  x[col * col_block_dim + l],
-                                                  sum2[k]);
-                                sum3[k]
-                                    = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
-                                                          + row_block_dim * l + 3],
-                                                  x[col * col_block_dim + l],
-                                                  sum3[k]);
-                            }
-                            else
-                            {
-                                sum0[k] = testing_fma(
-                                    bsr_val[row_block_dim * col_block_dim * (j + k) + l],
-                                    x[col * col_block_dim + l],
-                                    sum0[k]);
-                                sum1[k]
-                                    = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
-                                                          + col_block_dim + l],
-                                                  x[col * col_block_dim + l],
-                                                  sum1[k]);
-                                sum2[k]
-                                    = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
-                                                          + 2 * col_block_dim + l],
-                                                  x[col * col_block_dim + l],
-                                                  sum2[k]);
-                                sum3[k]
-                                    = testing_fma(bsr_val[row_block_dim * col_block_dim * (j + k)
-                                                          + 3 * col_block_dim + l],
-                                                  x[col * col_block_dim + l],
-                                                  sum3[k]);
-                            }
-                        }
-                    }
-                }
-            }
-
-            for(unsigned int j = 1; j < WFSIZE; j <<= 1)
-            {
-                for(unsigned int k = 0; k < WFSIZE - j; ++k)
-                {
-                    sum0[k] = sum0[k] + sum0[k + j];
-                    sum1[k] = sum1[k] + sum1[k + j];
-                    sum2[k] = sum2[k] + sum2[k + j];
-                    sum3[k] = sum3[k] + sum3[k + j];
-                }
-            }
-
-            if(beta != make_DataType<T>(0))
-            {
-                y[row * row_block_dim + 0]
-                    = testing_fma(beta, y[row * row_block_dim + 0], alpha * sum0[0]);
-                y[row * row_block_dim + 1]
-                    = testing_fma(beta, y[row * row_block_dim + 1], alpha * sum1[0]);
-                y[row * row_block_dim + 2]
-                    = testing_fma(beta, y[row * row_block_dim + 2], alpha * sum2[0]);
-                y[row * row_block_dim + 3]
-                    = testing_fma(beta, y[row * row_block_dim + 3], alpha * sum3[0]);
-            }
-            else
-            {
-                y[row * row_block_dim + 0] = alpha * sum0[0];
-                y[row * row_block_dim + 1] = alpha * sum1[0];
-                y[row * row_block_dim + 2] = alpha * sum2[0];
-                y[row * row_block_dim + 3] = alpha * sum3[0];
-            }
-        }
-        else
-        {
-            for(int bi = 0; bi < row_block_dim; ++bi)
-            {
-                std::vector<T> sum(WFSIZE, make_DataType<T>(0));
-
-                for(int j = row_begin; j < row_end; ++j)
-                {
-                    int col = bsr_col_ind[j] - base;
-
-                    for(int bj = 0; bj < col_block_dim; bj += WFSIZE)
-                    {
-                        for(unsigned int k = 0; k < WFSIZE; ++k)
-                        {
-                            if(bj + k < col_block_dim)
-                            {
-                                if(dir == HIPSPARSE_DIRECTION_COLUMN)
-                                {
-                                    sum[k] = testing_fma(bsr_val[row_block_dim * col_block_dim * j
-                                                                 + row_block_dim * (bj + k) + bi],
-                                                         x[col_block_dim * col + (bj + k)],
-                                                         sum[k]);
-                                }
-                                else
-                                {
-                                    sum[k] = testing_fma(bsr_val[row_block_dim * col_block_dim * j
-                                                                 + col_block_dim * bi + (bj + k)],
-                                                         x[col_block_dim * col + (bj + k)],
-                                                         sum[k]);
-                                }
-                            }
-                        }
-                    }
-                }
-
-                for(unsigned int j = 1; j < WFSIZE; j <<= 1)
-                {
-                    for(unsigned int k = 0; k < WFSIZE - j; ++k)
-                    {
-                        sum[k] = sum[k] + sum[k + j];
-                    }
-                }
-
-                if(beta != make_DataType<T>(0))
-                {
-                    y[row * row_block_dim + bi]
-                        = testing_fma(beta, y[row * row_block_dim + bi], alpha * sum[0]);
-                }
-                else
-                {
-                    y[row * row_block_dim + bi] = alpha * sum[0];
-                }
-            }
-        }
-    }
-}
-
-template <typename T>
 inline void host_bsrmm(int                     Mb,
                        int                     N,
                        int                     Kb,
@@ -4584,19 +4182,19 @@ static void host_csrgeam(int                  M,
 
 /* ============================================================================================ */
 /*! \brief  Compute sparse matrix sparse matrix multiplication. */
-template <typename T>
-static int csrgemm2_nnz(int                  m,
-                        int                  n,
-                        int                  k,
+template <typename I, typename J, typename T>
+static int csrgemm2_nnz(J                    m,
+                        J                    n,
+                        J                    k,
                         const T*             alpha,
-                        const int*           csr_row_ptr_A,
-                        const int*           csr_col_ind_A,
-                        const int*           csr_row_ptr_B,
-                        const int*           csr_col_ind_B,
+                        const I*             csr_row_ptr_A,
+                        const J*             csr_col_ind_A,
+                        const I*             csr_row_ptr_B,
+                        const J*             csr_col_ind_B,
                         const T*             beta,
-                        const int*           csr_row_ptr_D,
-                        const int*           csr_col_ind_D,
-                        int*                 csr_row_ptr_C,
+                        const I*             csr_row_ptr_D,
+                        const J*             csr_col_ind_D,
+                        I*                   csr_row_ptr_C,
                         hipsparseIndexBase_t idx_base_A,
                         hipsparseIndexBase_t idx_base_B,
                         hipsparseIndexBase_t idx_base_C,
@@ -4606,7 +4204,7 @@ static int csrgemm2_nnz(int                  m,
 #pragma omp parallel
 #endif
     {
-        std::vector<int> nnz(n, -1);
+        std::vector<J> nnz(n, -1);
 
 #ifdef _OPENMP
         int nthreads = omp_get_num_threads();
@@ -4616,38 +4214,38 @@ static int csrgemm2_nnz(int                  m,
         int tid      = 0;
 #endif
 
-        int rows_per_thread = (m + nthreads - 1) / nthreads;
-        int chunk_begin     = rows_per_thread * tid;
-        int chunk_end       = std::min(chunk_begin + rows_per_thread, m);
+        J rows_per_thread = (m + nthreads - 1) / nthreads;
+        J chunk_begin     = rows_per_thread * tid;
+        J chunk_end       = std::min(chunk_begin + rows_per_thread, m);
 
         // Index base
         csr_row_ptr_C[0] = idx_base_C;
 
         // Loop over rows of A
-        for(int i = chunk_begin; i < chunk_end; ++i)
+        for(J i = chunk_begin; i < chunk_end; ++i)
         {
             // Initialize csr row pointer with previous row offset
             csr_row_ptr_C[i + 1] = 0;
 
             if(alpha)
             {
-                int row_begin_A = csr_row_ptr_A[i] - idx_base_A;
-                int row_end_A   = csr_row_ptr_A[i + 1] - idx_base_A;
+                I row_begin_A = csr_row_ptr_A[i] - idx_base_A;
+                I row_end_A   = csr_row_ptr_A[i + 1] - idx_base_A;
 
                 // Loop over columns of A
-                for(int j = row_begin_A; j < row_end_A; ++j)
+                for(I j = row_begin_A; j < row_end_A; ++j)
                 {
                     // Current column of A
-                    int col_A = csr_col_ind_A[j] - idx_base_A;
+                    J col_A = csr_col_ind_A[j] - idx_base_A;
 
-                    int row_begin_B = csr_row_ptr_B[col_A] - idx_base_B;
-                    int row_end_B   = csr_row_ptr_B[col_A + 1] - idx_base_B;
+                    I row_begin_B = csr_row_ptr_B[col_A] - idx_base_B;
+                    I row_end_B   = csr_row_ptr_B[col_A + 1] - idx_base_B;
 
                     // Loop over columns of B in row col_A
-                    for(int k = row_begin_B; k < row_end_B; ++k)
+                    for(I k = row_begin_B; k < row_end_B; ++k)
                     {
                         // Current column of B
-                        int col_B = csr_col_ind_B[k] - idx_base_B;
+                        J col_B = csr_col_ind_B[k] - idx_base_B;
 
                         // Check if a new nnz is generated
                         if(nnz[col_B] != i)
@@ -4662,13 +4260,13 @@ static int csrgemm2_nnz(int                  m,
             // Add nnz of D if beta != 0
             if(beta)
             {
-                int row_begin_D = csr_row_ptr_D[i] - idx_base_D;
-                int row_end_D   = csr_row_ptr_D[i + 1] - idx_base_D;
+                I row_begin_D = csr_row_ptr_D[i] - idx_base_D;
+                I row_end_D   = csr_row_ptr_D[i + 1] - idx_base_D;
 
                 // Loop over columns of D
-                for(int j = row_begin_D; j < row_end_D; ++j)
+                for(I j = row_begin_D; j < row_end_D; ++j)
                 {
-                    int col_D = csr_col_ind_D[j] - idx_base_D;
+                    J col_D = csr_col_ind_D[j] - idx_base_D;
 
                     // Check if a new nnz is generated
                     if(nnz[col_D] != i)
@@ -4682,7 +4280,7 @@ static int csrgemm2_nnz(int                  m,
     }
 
     // Scan to obtain row offsets
-    for(int i = 0; i < m; ++i)
+    for(J i = 0; i < m; ++i)
     {
         csr_row_ptr_C[i + 1] += csr_row_ptr_C[i];
     }
@@ -4690,23 +4288,23 @@ static int csrgemm2_nnz(int                  m,
     return csr_row_ptr_C[m] - idx_base_C;
 }
 
-template <typename T>
-static void csrgemm2(int                  m,
-                     int                  n,
-                     int                  k,
+template <typename I, typename J, typename T>
+static void csrgemm2(J                    m,
+                     J                    n,
+                     J                    k,
                      const T*             alpha,
-                     const int*           csr_row_ptr_A,
-                     const int*           csr_col_ind_A,
+                     const I*             csr_row_ptr_A,
+                     const J*             csr_col_ind_A,
                      const T*             csr_val_A,
-                     const int*           csr_row_ptr_B,
-                     const int*           csr_col_ind_B,
+                     const I*             csr_row_ptr_B,
+                     const J*             csr_col_ind_B,
                      const T*             csr_val_B,
                      const T*             beta,
-                     const int*           csr_row_ptr_D,
-                     const int*           csr_col_ind_D,
+                     const I*             csr_row_ptr_D,
+                     const J*             csr_col_ind_D,
                      const T*             csr_val_D,
-                     const int*           csr_row_ptr_C,
-                     int*                 csr_col_ind_C,
+                     const I*             csr_row_ptr_C,
+                     J*                   csr_col_ind_C,
                      T*                   csr_val_C,
                      hipsparseIndexBase_t idx_base_A,
                      hipsparseIndexBase_t idx_base_B,
@@ -4717,7 +4315,7 @@ static void csrgemm2(int                  m,
 #pragma omp parallel
 #endif
     {
-        std::vector<int> nnz(n, -1);
+        std::vector<I> nnz(n, -1);
 
 #ifdef _OPENMP
         int nthreads = omp_get_num_threads();
@@ -4727,37 +4325,37 @@ static void csrgemm2(int                  m,
         int tid      = 0;
 #endif
 
-        int rows_per_thread = (m + nthreads - 1) / nthreads;
-        int chunk_begin     = rows_per_thread * tid;
-        int chunk_end       = std::min(chunk_begin + rows_per_thread, m);
+        J rows_per_thread = (m + nthreads - 1) / nthreads;
+        J chunk_begin     = rows_per_thread * tid;
+        J chunk_end       = std::min(chunk_begin + rows_per_thread, m);
 
         // Loop over rows of A
-        for(int i = chunk_begin; i < chunk_end; ++i)
+        for(J i = chunk_begin; i < chunk_end; ++i)
         {
-            int row_begin_C = csr_row_ptr_C[i] - idx_base_C;
-            int row_end_C   = row_begin_C;
+            I row_begin_C = csr_row_ptr_C[i] - idx_base_C;
+            I row_end_C   = row_begin_C;
 
             if(alpha)
             {
-                int row_begin_A = csr_row_ptr_A[i] - idx_base_A;
-                int row_end_A   = csr_row_ptr_A[i + 1] - idx_base_A;
+                I row_begin_A = csr_row_ptr_A[i] - idx_base_A;
+                I row_end_A   = csr_row_ptr_A[i + 1] - idx_base_A;
 
                 // Loop over columns of A
-                for(int j = row_begin_A; j < row_end_A; ++j)
+                for(I j = row_begin_A; j < row_end_A; ++j)
                 {
                     // Current column of A
-                    int col_A = csr_col_ind_A[j] - idx_base_A;
+                    J col_A = csr_col_ind_A[j] - idx_base_A;
                     // Current value of A
                     T val_A = *alpha * csr_val_A[j];
 
-                    int row_begin_B = csr_row_ptr_B[col_A] - idx_base_B;
-                    int row_end_B   = csr_row_ptr_B[col_A + 1] - idx_base_B;
+                    I row_begin_B = csr_row_ptr_B[col_A] - idx_base_B;
+                    I row_end_B   = csr_row_ptr_B[col_A + 1] - idx_base_B;
 
                     // Loop over columns of B in row col_A
-                    for(int k = row_begin_B; k < row_end_B; ++k)
+                    for(I k = row_begin_B; k < row_end_B; ++k)
                     {
                         // Current column of B
-                        int col_B = csr_col_ind_B[k] - idx_base_B;
+                        J col_B = csr_col_ind_B[k] - idx_base_B;
                         // Current value of B
                         T val_B = csr_val_B[k];
 
@@ -4780,14 +4378,14 @@ static void csrgemm2(int                  m,
             // Add nnz of D if beta != 0
             if(beta)
             {
-                int row_begin_D = csr_row_ptr_D[i] - idx_base_D;
-                int row_end_D   = csr_row_ptr_D[i + 1] - idx_base_D;
+                I row_begin_D = csr_row_ptr_D[i] - idx_base_D;
+                I row_end_D   = csr_row_ptr_D[i + 1] - idx_base_D;
 
                 // Loop over columns of D
-                for(int j = row_begin_D; j < row_end_D; ++j)
+                for(I j = row_begin_D; j < row_end_D; ++j)
                 {
                     // Current column of D
-                    int col_D = csr_col_ind_D[j] - idx_base_D;
+                    J col_D = csr_col_ind_D[j] - idx_base_D;
                     // Current value of D
                     T val_D = *beta * csr_val_D[j];
 
@@ -4809,37 +4407,37 @@ static void csrgemm2(int                  m,
         }
     }
 
-    int nnz = csr_row_ptr_C[m] - idx_base_C;
+    I nnz_C = csr_row_ptr_C[m] - idx_base_C;
 
-    std::vector<int> col(nnz);
-    std::vector<T>   val(nnz);
+    std::vector<J> col(nnz_C);
+    std::vector<T> val(nnz_C);
 
-    memcpy(col.data(), csr_col_ind_C, sizeof(int) * nnz);
-    memcpy(val.data(), csr_val_C, sizeof(T) * nnz);
+    memcpy(col.data(), csr_col_ind_C, sizeof(J) * nnz_C);
+    memcpy(val.data(), csr_val_C, sizeof(T) * nnz_C);
 
 #ifdef _OPENMP
 #pragma omp parallel for
 #endif
-    for(int i = 0; i < m; ++i)
+    for(J i = 0; i < m; ++i)
     {
-        int row_begin = csr_row_ptr_C[i] - idx_base_C;
-        int row_end   = csr_row_ptr_C[i + 1] - idx_base_C;
-        int row_nnz   = row_end - row_begin;
+        I row_begin = csr_row_ptr_C[i] - idx_base_C;
+        I row_end   = csr_row_ptr_C[i + 1] - idx_base_C;
+        J row_nnz   = row_end - row_begin;
 
-        std::vector<int> perm(row_nnz);
-        for(int j = 0; j < row_nnz; ++j)
+        std::vector<J> perm(row_nnz);
+        for(J j = 0; j < row_nnz; ++j)
         {
             perm[j] = j;
         }
 
-        int* col_entry = &col[row_begin];
-        T*   val_entry = &val[row_begin];
+        J* col_entry = &col[row_begin];
+        T* val_entry = &val[row_begin];
 
-        std::sort(perm.begin(), perm.end(), [&](const int& a, const int& b) {
+        std::sort(perm.begin(), perm.end(), [&](const I& a, const I& b) {
             return col_entry[a] <= col_entry[b];
         });
 
-        for(int j = 0; j < row_nnz; ++j)
+        for(J j = 0; j < row_nnz; ++j)
         {
             csr_col_ind_C[row_begin + j] = col_entry[perm[j]];
             csr_val_C[row_begin + j]     = val_entry[perm[j]];
