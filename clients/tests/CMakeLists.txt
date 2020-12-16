@@ -183,6 +183,7 @@ set(HIPSPARSE_TEST_SOURCES
   test_scatter.cpp
   test_rot.cpp
   test_spvv.cpp
+  test_spgemm_csr.cpp
 )
 
 if(NOT BUILD_CUDA)
