@@ -95,8 +95,8 @@ hipsparseStatus_t testing_axpby(void)
     int64_t size = 15332;
     int64_t nnz  = 500;
 
-    T alpha = (T)1.5;
-    T beta  = (T)0.5;
+    T alpha = make_DataType<T>(1.5);
+    T beta  = make_DataType<T>(0.5);
 
     hipsparseIndexBase_t idxBase = HIPSPARSE_INDEX_BASE_ZERO;
 
@@ -165,10 +165,14 @@ hipsparseStatus_t testing_axpby(void)
     CHECK_HIP_ERROR(hipMemcpy(hy.data(), dy, sizeof(T) * size, hipMemcpyDeviceToHost));
 
     // CPU
+    for(int64_t i = 0; i < size; ++i)
+    {
+        hy_gold[i] = beta * hy_gold[i];
+    }
+
     for(int64_t i = 0; i < nnz; ++i)
     {
-        hy_gold[hx_ind[i] - idxBase]
-            = testing_fma(alpha, hx_val[i], beta * hy_gold[hx_ind[i] - idxBase]);
+        hy_gold[hx_ind[i] - idxBase] = testing_fma(alpha, hx_val[i], hy_gold[hx_ind[i] - idxBase]);
     }
 
     // Verify results against host
