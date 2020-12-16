@@ -115,12 +115,11 @@ void verify_hipsparse_status_zero_pivot(hipsparseStatus_t status, const char* me
 void verify_hipsparse_status_invalid_handle(hipsparseStatus_t status)
 {
 #ifdef GOOGLE_TEST
-    ASSERT_EQ(status, HIPSPARSE_STATUS_NOT_INITIALIZED);
+    ASSERT_EQ(status, HIPSPARSE_STATUS_INVALID_VALUE);
 #else
-    if(status != HIPSPARSE_STATUS_NOT_INITIALIZED)
+    if(status != HIPSPARSE_STATUS_INVALID_VALUE)
     {
-        std::cerr << "hipSPARSE TEST ERROR: status != HIPSPARSE_STATUS_NOT_INITIALIZED"
-                  << std::endl;
+        std::cerr << "hipSPARSE TEST ERROR: status != HIPSPARSE_STATUS_INVALID_VALUE" << std::endl;
     }
 #endif
 }
