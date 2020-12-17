@@ -9042,19 +9042,19 @@ hipsparseStatus_t hipsparseSpVecGet(const hipsparseSpVecDescr_t spVecDescr,
 {
     cusparseIndexType_t cuda_index_type;
     cusparseIndexBase_t cuda_index_base;
-    cudaDataType cuda_data_type;
+    cudaDataType        cuda_data_type;
 
     RETURN_IF_CUSPARSE_ERROR(cusparseSpVecGet((const cusparseSpVecDescr_t)spVecDescr,
-                                                         size,
-                                                         nnz,
-                                                         indices,
-                                                         values,
-                                                         idxType != nullptr ? &cuda_index_type : nullptr,
-                                                         idxBase != nullptr ? &cuda_index_base : nullptr,
-                                                         valueType != nullptr ? &cuda_data_type : nullptr));
+                                              size,
+                                              nnz,
+                                              indices,
+                                              values,
+                                              idxType != nullptr ? &cuda_index_type : nullptr,
+                                              idxBase != nullptr ? &cuda_index_base : nullptr,
+                                              valueType != nullptr ? &cuda_data_type : nullptr));
 
-    *idxType = CudaIndexTypeToHIPIndexType(cuda_index_type);
-    *idxBase = CudaIndexBaseToHIPIndexBase(cuda_index_base);
+    *idxType   = CudaIndexTypeToHIPIndexType(cuda_index_type);
+    *idxBase   = CudaIndexBaseToHIPIndexBase(cuda_index_base);
     *valueType = CudaDataTypeToHIPDataType(cuda_data_type);
 
     return HIPSPARSE_STATUS_SUCCESS;
@@ -9103,24 +9103,25 @@ hipsparseStatus_t hipsparseCreateCoo(hipsparseSpMatDescr_t* spMatDescr,
 }
 
 hipsparseStatus_t hipsparseCreateCooAoS(hipsparseSpMatDescr_t* spMatDescr,
-                                     int64_t                rows,
-                                     int64_t                cols,
-                                     int64_t                nnz,
-                                     void*                  cooInd,
-                                     void*                  cooValues,
-                                     hipsparseIndexType_t   cooIdxType,
-                                     hipsparseIndexBase_t   idxBase,
-                                     hipDataType            valueType)
+                                        int64_t                rows,
+                                        int64_t                cols,
+                                        int64_t                nnz,
+                                        void*                  cooInd,
+                                        void*                  cooValues,
+                                        hipsparseIndexType_t   cooIdxType,
+                                        hipsparseIndexBase_t   idxBase,
+                                        hipDataType            valueType)
 {
-    return hipCUSPARSEStatusToHIPStatus(cusparseCreateCooAoS((cusparseSpMatDescr_t*)spMatDescr,
-                                                          rows,
-                                                          cols,
-                                                          nnz,
-                                                          cooInd,
-                                                          cooValues,
-                                                          hipIndexTypeToCudaIndexType(cooIdxType),
-                                                          hipIndexBaseToCudaIndexBase(idxBase),
-                                                          hipDataTypeToCudaDataType(valueType)));
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseCreateCooAoS((cusparseSpMatDescr_t*)spMatDescr,
+                             rows,
+                             cols,
+                             nnz,
+                             cooInd,
+                             cooValues,
+                             hipIndexTypeToCudaIndexType(cooIdxType),
+                             hipIndexBaseToCudaIndexBase(idxBase),
+                             hipDataTypeToCudaDataType(valueType)));
 }
 
 hipsparseStatus_t hipsparseCreateCsr(hipsparseSpMatDescr_t* spMatDescr,
@@ -9167,59 +9168,56 @@ hipsparseStatus_t hipsparseCooGet(const hipsparseSpMatDescr_t spMatDescr,
 {
     cusparseIndexType_t cuda_index_type;
     cusparseIndexBase_t cuda_index_base;
-    cudaDataType cuda_data_type;
+    cudaDataType        cuda_data_type;
 
     RETURN_IF_CUSPARSE_ERROR(cusparseCooGet((const cusparseSpMatDescr_t)spMatDescr,
-                                                       rows,
-                                                       cols,
-                                                       nnz,
-                                                       cooRowInd,
-                                                       cooColInd,
-                                                       cooValues,
-                                                       idxType != nullptr ? &cuda_index_type : nullptr,
-                                                       idxBase != nullptr ? &cuda_index_base : nullptr,
-                                                       valueType != nullptr ? &cuda_data_type : nullptr));
+                                            rows,
+                                            cols,
+                                            nnz,
+                                            cooRowInd,
+                                            cooColInd,
+                                            cooValues,
+                                            idxType != nullptr ? &cuda_index_type : nullptr,
+                                            idxBase != nullptr ? &cuda_index_base : nullptr,
+                                            valueType != nullptr ? &cuda_data_type : nullptr));
 
-    *idxType = CudaIndexTypeToHIPIndexType(cuda_index_type);
-    *idxBase = CudaIndexBaseToHIPIndexBase(cuda_index_base);
+    *idxType   = CudaIndexTypeToHIPIndexType(cuda_index_type);
+    *idxBase   = CudaIndexBaseToHIPIndexBase(cuda_index_base);
     *valueType = CudaDataTypeToHIPDataType(cuda_data_type);
 
     return HIPSPARSE_STATUS_SUCCESS;
 }
 
-
 hipsparseStatus_t hipsparseCooAoSGet(const hipsparseSpMatDescr_t spMatDescr,
-                                  int64_t*                    rows,
-                                  int64_t*                    cols,
-                                  int64_t*                    nnz,
-                                  void**                      cooInd,
-                                  void**                      cooValues,
-                                  hipsparseIndexType_t*       idxType,
-                                  hipsparseIndexBase_t*       idxBase,
-                                  hipDataType*                valueType)
+                                     int64_t*                    rows,
+                                     int64_t*                    cols,
+                                     int64_t*                    nnz,
+                                     void**                      cooInd,
+                                     void**                      cooValues,
+                                     hipsparseIndexType_t*       idxType,
+                                     hipsparseIndexBase_t*       idxBase,
+                                     hipDataType*                valueType)
 {
     cusparseIndexType_t cuda_index_type;
     cusparseIndexBase_t cuda_index_base;
-    cudaDataType cuda_data_type;
+    cudaDataType        cuda_data_type;
 
     RETURN_IF_CUSPARSE_ERROR(cusparseCooAoSGet((const cusparseSpMatDescr_t)spMatDescr,
-                                                       rows,
-                                                       cols,
-                                                       nnz,
-                                                       cooInd,
-                                                       cooValues,
-                                                       idxType != nullptr ? &cuda_index_type : nullptr,
-                                                       idxBase != nullptr ? &cuda_index_base : nullptr,
-                                                       valueType != nullptr ? &cuda_data_type : nullptr));
+                                               rows,
+                                               cols,
+                                               nnz,
+                                               cooInd,
+                                               cooValues,
+                                               idxType != nullptr ? &cuda_index_type : nullptr,
+                                               idxBase != nullptr ? &cuda_index_base : nullptr,
+                                               valueType != nullptr ? &cuda_data_type : nullptr));
 
-    *idxType = CudaIndexTypeToHIPIndexType(cuda_index_type);
-    *idxBase = CudaIndexBaseToHIPIndexBase(cuda_index_base);
+    *idxType   = CudaIndexTypeToHIPIndexType(cuda_index_type);
+    *idxBase   = CudaIndexBaseToHIPIndexBase(cuda_index_base);
     *valueType = CudaDataTypeToHIPDataType(cuda_data_type);
 
     return HIPSPARSE_STATUS_SUCCESS;
 }
-
-
 
 hipsparseStatus_t hipsparseCsrGet(const hipsparseSpMatDescr_t spMatDescr,
                                   int64_t*                    rows,
@@ -9236,24 +9234,25 @@ hipsparseStatus_t hipsparseCsrGet(const hipsparseSpMatDescr_t spMatDescr,
     cusparseIndexType_t cuda_row_index_type;
     cusparseIndexType_t cuda_col_index_type;
     cusparseIndexBase_t cuda_index_base;
-    cudaDataType cuda_data_type;
+    cudaDataType        cuda_data_type;
 
-    RETURN_IF_CUSPARSE_ERROR(cusparseCsrGet((const cusparseSpMatDescr_t)spMatDescr,
-                                                       rows,
-                                                       cols,
-                                                       nnz,
-                                                       csrRowOffsets,
-                                                       csrColInd,
-                                                       csrValues,
-                                                       csrRowOffsetsType != nullptr ? &cuda_row_index_type : nullptr,
-                                                       csrColIndType != nullptr ? &cuda_col_index_type : nullptr,
-                                                       idxBase != nullptr ? &cuda_index_base : nullptr,
-                                                       valueType != nullptr ? &cuda_data_type : nullptr));
+    RETURN_IF_CUSPARSE_ERROR(
+        cusparseCsrGet((const cusparseSpMatDescr_t)spMatDescr,
+                       rows,
+                       cols,
+                       nnz,
+                       csrRowOffsets,
+                       csrColInd,
+                       csrValues,
+                       csrRowOffsetsType != nullptr ? &cuda_row_index_type : nullptr,
+                       csrColIndType != nullptr ? &cuda_col_index_type : nullptr,
+                       idxBase != nullptr ? &cuda_index_base : nullptr,
+                       valueType != nullptr ? &cuda_data_type : nullptr));
 
     *csrRowOffsetsType = CudaIndexTypeToHIPIndexType(cuda_row_index_type);
-    *csrColIndType = CudaIndexTypeToHIPIndexType(cuda_col_index_type);
-    *idxBase = CudaIndexBaseToHIPIndexBase(cuda_index_base);
-    *valueType = CudaDataTypeToHIPDataType(cuda_data_type);
+    *csrColIndType     = CudaIndexTypeToHIPIndexType(cuda_col_index_type);
+    *idxBase           = CudaIndexBaseToHIPIndexBase(cuda_index_base);
+    *valueType         = CudaDataTypeToHIPDataType(cuda_data_type);
 
     return HIPSPARSE_STATUS_SUCCESS;
 }
@@ -9281,7 +9280,8 @@ hipsparseStatus_t hipsparseSpMatGetFormat(const hipsparseSpMatDescr_t spMatDescr
 {
     cusparseFormat_t cuda_format;
 
-    RETURN_IF_CUSPARSE_ERROR(cusparseSpMatGetFormat((const cusparseSpMatDescr_t)spMatDescr, format != nullptr ? &cuda_format : nullptr));
+    RETURN_IF_CUSPARSE_ERROR(cusparseSpMatGetFormat((const cusparseSpMatDescr_t)spMatDescr,
+                                                    format != nullptr ? &cuda_format : nullptr));
 
     *format = CudaFormatToHIPFormat(cuda_format);
 
@@ -9293,7 +9293,8 @@ hipsparseStatus_t hipsparseSpMatGetIndexBase(const hipsparseSpMatDescr_t spMatDe
 {
     cusparseIndexBase_t cuda_index_base;
 
-    RETURN_IF_CUSPARSE_ERROR(cusparseSpMatGetIndexBase((const cusparseSpMatDescr_t)spMatDescr, idxBase != nullptr ? &cuda_index_base : nullptr));
+    RETURN_IF_CUSPARSE_ERROR(cusparseSpMatGetIndexBase(
+        (const cusparseSpMatDescr_t)spMatDescr, idxBase != nullptr ? &cuda_index_base : nullptr));
 
     *idxBase = CudaIndexBaseToHIPIndexBase(cuda_index_base);
 
@@ -9317,8 +9318,8 @@ hipsparseStatus_t hipsparseCreateDnVec(hipsparseDnVecDescr_t* dnVecDescr,
                                        void*                  values,
                                        hipDataType            valueType)
 {
-    return hipCUSPARSEStatusToHIPStatus(
-        cusparseCreateDnVec((cusparseDnVecDescr_t*)dnVecDescr, size, values, hipDataTypeToCudaDataType(valueType)));
+    return hipCUSPARSEStatusToHIPStatus(cusparseCreateDnVec(
+        (cusparseDnVecDescr_t*)dnVecDescr, size, values, hipDataTypeToCudaDataType(valueType)));
 }
 
 hipsparseStatus_t hipsparseDestroyDnVec(hipsparseDnVecDescr_t dnVecDescr)
@@ -9333,7 +9334,10 @@ hipsparseStatus_t hipsparseDnVecGet(const hipsparseDnVecDescr_t dnVecDescr,
 {
     cudaDataType cuda_data_type;
 
-    RETURN_IF_CUSPARSE_ERROR(cusparseDnVecGet((const cusparseDnVecDescr_t)dnVecDescr, size, values, valueType != nullptr ? &cuda_data_type : nullptr));
+    RETURN_IF_CUSPARSE_ERROR(cusparseDnVecGet((const cusparseDnVecDescr_t)dnVecDescr,
+                                              size,
+                                              values,
+                                              valueType != nullptr ? &cuda_data_type : nullptr));
 
     *valueType = CudaDataTypeToHIPDataType(cuda_data_type);
 
@@ -9402,13 +9406,14 @@ hipsparseStatus_t hipsparseSpVV_bufferSize(hipsparseHandle_t     handle,
                                            hipDataType           computeType,
                                            size_t*               bufferSize)
 {
-    return hipCUSPARSEStatusToHIPStatus(cusparseSpVV_bufferSize((cusparseHandle_t)handle,
-                                                                hipOperationToCudaOperation(opX),
-                                                                (cusparseSpVecDescr_t)vecX,
-                                                                (cusparseDnVecDescr_t)vecY,
-                                                                result,
-                                                                hipDataTypeToCudaDataType(computeType),
-                                                                bufferSize));
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseSpVV_bufferSize((cusparseHandle_t)handle,
+                                hipOperationToCudaOperation(opX),
+                                (cusparseSpVecDescr_t)vecX,
+                                (cusparseDnVecDescr_t)vecY,
+                                result,
+                                hipDataTypeToCudaDataType(computeType),
+                                bufferSize));
 }
 
 hipsparseStatus_t hipsparseSpVV(hipsparseHandle_t     handle,
@@ -9439,16 +9444,17 @@ hipsparseStatus_t hipsparseSpMV_bufferSize(hipsparseHandle_t           handle,
                                            hipsparseSpMVAlg_t          alg,
                                            size_t*                     bufferSize)
 {
-    return hipCUSPARSEStatusToHIPStatus(cusparseSpMV_bufferSize((cusparseHandle_t)handle,
-                                                                hipOperationToCudaOperation(opA),
-                                                                alpha,
-                                                                (const cusparseSpMatDescr_t)matA,
-                                                                (const cusparseDnVecDescr_t)vecX,
-                                                                beta,
-                                                                (const cusparseDnVecDescr_t)vecY,
-                                                                hipDataTypeToCudaDataType(computeType),
-                                                                hipSpMVAlgToCudaSpMVAlg(alg),
-                                                                bufferSize));
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseSpMV_bufferSize((cusparseHandle_t)handle,
+                                hipOperationToCudaOperation(opA),
+                                alpha,
+                                (const cusparseSpMatDescr_t)matA,
+                                (const cusparseDnVecDescr_t)vecX,
+                                beta,
+                                (const cusparseDnVecDescr_t)vecY,
+                                hipDataTypeToCudaDataType(computeType),
+                                hipSpMVAlgToCudaSpMVAlg(alg),
+                                bufferSize));
 }
 
 hipsparseStatus_t hipsparseSpMV(hipsparseHandle_t           handle,

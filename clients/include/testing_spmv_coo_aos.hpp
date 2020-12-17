@@ -252,8 +252,7 @@ hipsparseStatus_t testing_spmv_coo_aos(void)
 
     // Create matrices
     hipsparseSpMatDescr_t A;
-    CHECK_HIPSPARSE_ERROR(
-        hipsparseCreateCooAoS(&A, m, n, nnz, dind, dval, typeI, idx_base, typeT));
+    CHECK_HIPSPARSE_ERROR(hipsparseCreateCooAoS(&A, m, n, nnz, dind, dval, typeI, idx_base, typeT));
 
     // Create dense vectors
     hipsparseDnVecDescr_t x, y1, y2;

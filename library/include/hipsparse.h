@@ -4881,14 +4881,14 @@ hipsparseStatus_t hipsparseCreateCoo(hipsparseSpMatDescr_t* spMatDescr,
 /* Description: Create a sparse COO (AoS) matrix */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreateCooAoS(hipsparseSpMatDescr_t* spMatDescr,
-                                     int64_t                rows,
-                                     int64_t                cols,
-                                     int64_t                nnz,
-                                     void*                  cooInd,
-                                     void*                  cooValues,
-                                     hipsparseIndexType_t   cooIdxType,
-                                     hipsparseIndexBase_t   idxBase,
-                                     hipDataType            valueType);
+                                        int64_t                rows,
+                                        int64_t                cols,
+                                        int64_t                nnz,
+                                        void*                  cooInd,
+                                        void*                  cooValues,
+                                        hipsparseIndexType_t   cooIdxType,
+                                        hipsparseIndexBase_t   idxBase,
+                                        hipDataType            valueType);
 
 /* Description: Create a sparse CSR matrix */
 HIPSPARSE_EXPORT
@@ -4924,14 +4924,14 @@ hipsparseStatus_t hipsparseCooGet(const hipsparseSpMatDescr_t spMatDescr,
 /* Description: Get pointers of a sparse COO (AoS) matrix */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCooAoSGet(const hipsparseSpMatDescr_t spMatDescr,
-                                  int64_t*                    rows,
-                                  int64_t*                    cols,
-                                  int64_t*                    nnz,
-                                  void**                      cooInd,
-                                  void**                      cooValues,
-                                  hipsparseIndexType_t*       idxType,
-                                  hipsparseIndexBase_t*       idxBase,
-                                  hipDataType*                valueType);
+                                     int64_t*                    rows,
+                                     int64_t*                    cols,
+                                     int64_t*                    nnz,
+                                     void**                      cooInd,
+                                     void**                      cooValues,
+                                     hipsparseIndexType_t*       idxType,
+                                     hipsparseIndexBase_t*       idxBase,
+                                     hipDataType*                valueType);
 
 /* Description: Get pointers of a sparse CSR matrix */
 HIPSPARSE_EXPORT

@@ -99,24 +99,19 @@ void testing_spmat_descr_bad_arg(void)
             nullptr, rows, cols, nnz, ind_data, val_data, cooType, idxBase, dataType),
         "Error: A is nullptr");
     verify_hipsparse_status_invalid_size(
-        hipsparseCreateCooAoS(
-            &A, -1, cols, nnz, ind_data, val_data, cooType, idxBase, dataType),
+        hipsparseCreateCooAoS(&A, -1, cols, nnz, ind_data, val_data, cooType, idxBase, dataType),
         "Error: rows is < 0");
     verify_hipsparse_status_invalid_size(
-        hipsparseCreateCooAoS(
-            &A, rows, -1, nnz, ind_data, val_data, cooType, idxBase, dataType),
+        hipsparseCreateCooAoS(&A, rows, -1, nnz, ind_data, val_data, cooType, idxBase, dataType),
         "Error: cols is < 0");
     verify_hipsparse_status_invalid_size(
-        hipsparseCreateCooAoS(
-            &A, rows, cols, -1, ind_data, val_data, cooType, idxBase, dataType),
+        hipsparseCreateCooAoS(&A, rows, cols, -1, ind_data, val_data, cooType, idxBase, dataType),
         "Error: nnz is < 0");
     verify_hipsparse_status_invalid_pointer(
-        hipsparseCreateCooAoS(
-            &A, rows, cols, nnz, nullptr, val_data, cooType, idxBase, dataType),
+        hipsparseCreateCooAoS(&A, rows, cols, nnz, nullptr, val_data, cooType, idxBase, dataType),
         "Error: ind_data is nullptr");
     verify_hipsparse_status_invalid_pointer(
-        hipsparseCreateCooAoS(
-            &A, rows, cols, nnz, ind_data, nullptr, cooType, idxBase, dataType),
+        hipsparseCreateCooAoS(&A, rows, cols, nnz, ind_data, nullptr, cooType, idxBase, dataType),
         "Error: val_data is nullptr");
 
     // hipsparseCreateCsr
@@ -248,16 +243,10 @@ void testing_spmat_descr_bad_arg(void)
         "Error: dataType is nullptr");
 
     // hipsparseCooAoSGet
-    verify_hipsparse_status_invalid_pointer(hipsparseCooAoSGet(nullptr,
-                                                            &rows,
-                                                            &cols,
-                                                            &nnz,
-                                                            &ind_ptr,
-                                                            &val_ptr,
-                                                            &cooType,
-                                                            &idxBase,
-                                                            &dataType),
-                                            "Error: A is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseCooAoSGet(
+            nullptr, &rows, &cols, &nnz, &ind_ptr, &val_ptr, &cooType, &idxBase, &dataType),
+        "Error: A is nullptr");
     verify_hipsparse_status_invalid_pointer(
         hipsparseCooAoSGet(
             coo, nullptr, &cols, &nnz, &ind_ptr, &val_ptr, &cooType, &idxBase, &dataType),
@@ -266,16 +255,10 @@ void testing_spmat_descr_bad_arg(void)
         hipsparseCooAoSGet(
             coo, &rows, nullptr, &nnz, &ind_ptr, &val_ptr, &cooType, &idxBase, &dataType),
         "Error: cols is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseCooAoSGet(coo,
-                                                            &rows,
-                                                            &cols,
-                                                            nullptr,
-                                                            &ind_ptr,
-                                                            &val_ptr,
-                                                            &cooType,
-                                                            &idxBase,
-                                                            &dataType),
-                                            "Error: nnz is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseCooAoSGet(
+            coo, &rows, &cols, nullptr, &ind_ptr, &val_ptr, &cooType, &idxBase, &dataType),
+        "Error: nnz is nullptr");
     verify_hipsparse_status_invalid_pointer(
         hipsparseCooAoSGet(
             coo, &rows, &cols, &nnz, nullptr, &val_ptr, &cooType, &idxBase, &dataType),
