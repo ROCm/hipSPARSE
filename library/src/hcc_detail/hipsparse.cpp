@@ -10938,7 +10938,7 @@ hipsparseStatus_t hipsparseSpGEMM_compute(hipsparseHandle_t      handle,
                                           size_t*                bufferSize2,
                                           void*                  externalBuffer2)
 {
-    if(spgemmDescr == nullptr || bufferSize2 == nullptr || alpha == nullptr || beta == nullptr)
+    if(handle == nullptr || spgemmDescr == nullptr || bufferSize2 == nullptr || alpha == nullptr || beta == nullptr)
     {
         return HIPSPARSE_STATUS_INVALID_VALUE;
     }
