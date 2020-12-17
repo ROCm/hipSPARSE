@@ -39,6 +39,7 @@ void testing_spmat_descr_bad_arg(void)
 
     hipsparseIndexType_t rowType  = HIPSPARSE_INDEX_32I;
     hipsparseIndexType_t colType  = HIPSPARSE_INDEX_32I;
+    hipsparseIndexType_t cooType  = HIPSPARSE_INDEX_32I;
     hipsparseIndexBase_t idxBase  = HIPSPARSE_INDEX_BASE_ZERO;
     hipDataType          dataType = HIP_R_32F;
     hipsparseFormat_t    format   = HIPSPARSE_FORMAT_CSR;
@@ -46,13 +47,15 @@ void testing_spmat_descr_bad_arg(void)
     // Allocate memory on device
     auto row_data_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
     auto col_data_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
+    auto ind_data_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * 2 * nnz), device_free};
     auto val_data_managed = hipsparse_unique_ptr{device_malloc(sizeof(float) * nnz), device_free};
 
     int*   row_data = (int*)row_data_managed.get();
     int*   col_data = (int*)col_data_managed.get();
+    int*   ind_data = (int*)ind_data_managed.get();
     float* val_data = (float*)val_data_managed.get();
 
-    if(!row_data || !col_data || !val_data)
+    if(!row_data || !col_data || !ind_data || !val_data)
     {
         PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
         return;
@@ -88,6 +91,32 @@ void testing_spmat_descr_bad_arg(void)
     verify_hipsparse_status_invalid_pointer(
         hipsparseCreateCoo(
             &A, rows, cols, nnz, row_data, col_data, nullptr, rowType, idxBase, dataType),
+        "Error: val_data is nullptr");
+
+    // hipsparseCreateCooAoS
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseCreateCooAoS(
+            nullptr, rows, cols, nnz, ind_data, val_data, cooType, idxBase, dataType),
+        "Error: A is nullptr");
+    verify_hipsparse_status_invalid_size(
+        hipsparseCreateCooAoS(
+            &A, -1, cols, nnz, ind_data, val_data, cooType, idxBase, dataType),
+        "Error: rows is < 0");
+    verify_hipsparse_status_invalid_size(
+        hipsparseCreateCooAoS(
+            &A, rows, -1, nnz, ind_data, val_data, cooType, idxBase, dataType),
+        "Error: cols is < 0");
+    verify_hipsparse_status_invalid_size(
+        hipsparseCreateCooAoS(
+            &A, rows, cols, -1, ind_data, val_data, cooType, idxBase, dataType),
+        "Error: nnz is < 0");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseCreateCooAoS(
+            &A, rows, cols, nnz, nullptr, val_data, cooType, idxBase, dataType),
+        "Error: ind_data is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseCreateCooAoS(
+            &A, rows, cols, nnz, ind_data, nullptr, cooType, idxBase, dataType),
         "Error: val_data is nullptr");
 
     // hipsparseCreateCsr
@@ -133,11 +162,16 @@ void testing_spmat_descr_bad_arg(void)
 
     // Create valid descriptors
     hipsparseSpMatDescr_t coo;
+    hipsparseSpMatDescr_t coo_aos;
     hipsparseSpMatDescr_t csr;
 
     verify_hipsparse_status_success(
         hipsparseCreateCoo(
             &coo, rows, cols, nnz, row_data, col_data, val_data, rowType, idxBase, dataType),
+        "Success");
+    verify_hipsparse_status_success(
+        hipsparseCreateCooAoS(
+            &coo_aos, rows, cols, nnz, ind_data, val_data, cooType, idxBase, dataType),
         "Success");
     verify_hipsparse_status_success(hipsparseCreateCsr(&csr,
                                                        rows,
@@ -154,6 +188,7 @@ void testing_spmat_descr_bad_arg(void)
 
     void* row_ptr;
     void* col_ptr;
+    void* ind_ptr;
     void* val_ptr;
 
     // hipsparseCooGet
@@ -210,6 +245,56 @@ void testing_spmat_descr_bad_arg(void)
     verify_hipsparse_status_invalid_pointer(
         hipsparseCooGet(
             coo, &rows, &cols, &nnz, &row_ptr, &col_ptr, &val_ptr, &rowType, &idxBase, nullptr),
+        "Error: dataType is nullptr");
+
+    // hipsparseCooAoSGet
+    verify_hipsparse_status_invalid_pointer(hipsparseCooAoSGet(nullptr,
+                                                            &rows,
+                                                            &cols,
+                                                            &nnz,
+                                                            &ind_ptr,
+                                                            &val_ptr,
+                                                            &cooType,
+                                                            &idxBase,
+                                                            &dataType),
+                                            "Error: A is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseCooAoSGet(
+            coo, nullptr, &cols, &nnz, &ind_ptr, &val_ptr, &cooType, &idxBase, &dataType),
+        "Error: rows is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseCooAoSGet(
+            coo, &rows, nullptr, &nnz, &ind_ptr, &val_ptr, &cooType, &idxBase, &dataType),
+        "Error: cols is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseCooAoSGet(coo,
+                                                            &rows,
+                                                            &cols,
+                                                            nullptr,
+                                                            &ind_ptr,
+                                                            &val_ptr,
+                                                            &cooType,
+                                                            &idxBase,
+                                                            &dataType),
+                                            "Error: nnz is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseCooAoSGet(
+            coo, &rows, &cols, &nnz, nullptr, &val_ptr, &cooType, &idxBase, &dataType),
+        "Error: ind_ptr is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseCooAoSGet(
+            coo, &rows, &cols, &nnz, &ind_ptr, nullptr, &cooType, &idxBase, &dataType),
+        "Error: val_ptr is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseCooAoSGet(
+            coo, &rows, &cols, &nnz, &ind_ptr, &val_ptr, nullptr, &idxBase, &dataType),
+        "Error: cooType is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseCooAoSGet(
+            coo, &rows, &cols, &nnz, &ind_ptr, &val_ptr, &cooType, nullptr, &dataType),
+        "Error: idxBase is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseCooAoSGet(
+            coo, &rows, &cols, &nnz, &ind_ptr, &val_ptr, &cooType, &idxBase, nullptr),
         "Error: dataType is nullptr");
 
     // hipsparseCsrGet
@@ -392,6 +477,7 @@ void testing_spmat_descr_bad_arg(void)
 
     // Destroy valid descriptors
     verify_hipsparse_status_success(hipsparseDestroySpMat(coo), "Success");
+    verify_hipsparse_status_success(hipsparseDestroySpMat(coo_aos), "Success");
     verify_hipsparse_status_success(hipsparseDestroySpMat(csr), "Success");
 }
 
