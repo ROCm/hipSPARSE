@@ -4802,9 +4802,10 @@ typedef void* hipsparseDnVecDescr_t;
 /* Generic API types */
 typedef enum
 {
-    HIPSPARSE_FORMAT_COO     = 0, /* Coordinate - Structure of Arrays */
-    HIPSPARSE_FORMAT_COO_AOS = 1, /* Coordinate - Array of Structures */
-    HIPSPARSE_FORMAT_CSR     = 2 /* Compressed Sparse Row */
+    HIPSPARSE_FORMAT_CSR     = 1, /* Compressed Sparse Row */
+    HIPSPARSE_FORMAT_CSC     = 2, /* Compressed Sparse Column */
+    HIPSPARSE_FORMAT_COO     = 3, /* Coordinate - Structure of Arrays */
+    HIPSPARSE_FORMAT_COO_AOS = 4 /* Coordinate - Array of Structures */
 } hipsparseFormat_t;
 
 typedef enum
