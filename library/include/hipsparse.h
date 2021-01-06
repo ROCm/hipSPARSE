@@ -172,6 +172,11 @@ typedef enum {
     HIPSPARSE_DIRECTION_COLUMN = 1
 } hipsparseDirection_t;
 
+typedef enum {
+    HIPSPARSE_ORDER_ROW = 0,
+    HIPSPARSE_ORDER_COLUMN = 1
+} hipsparseOrder_t;
+
 // clang-format on
 
 #ifdef __cplusplus
@@ -4798,6 +4803,7 @@ hipsparseStatus_t hipsparseZgebsr2gebsr(hipsparseHandle_t         handle,
 typedef void* hipsparseSpVecDescr_t;
 typedef void* hipsparseSpMatDescr_t;
 typedef void* hipsparseDnVecDescr_t;
+typedef void* hipsparseDnMatDescr_t;
 
 /* Generic API types */
 typedef enum
@@ -4822,6 +4828,16 @@ typedef enum
     HIPSPARSE_CSRMV_ALG1     = 2,
     HIPSPARSE_CSRMV_ALG2     = 3
 } hipsparseSpMVAlg_t;
+
+typedef enum
+{
+    HIPSPARSE_SPARSETODENSE_ALG_DEFAULT = 0,
+} hipsparseSparseToDenseAlg_t;
+
+typedef enum
+{
+    HIPSPARSE_DENSETOSPARSE_ALG_DEFAULT = 0,
+} hipsparseDenseToSparseAlg_t;
 
 /* Sparse vector API */
 
@@ -5008,6 +5024,67 @@ hipsparseStatus_t hipsparseDnVecGetValues(const hipsparseDnVecDescr_t dnVecDescr
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDnVecSetValues(hipsparseDnVecDescr_t dnVecDescr, void* values);
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Dense matrix API */
+
+/* Description: Create dense matrix */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCreateDnMat(hipsparseDnVecDescr_t* dnMatDescr,
+                                       int64_t                rows,
+                                       int64_t                cols,
+                                       int64_t                ld,
+                                       void*                  values,
+                                       hipDataType            valueType,
+                                       hipsparseOrder_t       order);
+
+/* Description: Destroy dense matrix */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDestroyDnMat(hipsparseDnVecDescr_t dnMatDescr);
+
+/* Description: Get value pointer from a dense matrix */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDnMatGet(const hipsparseDnMatDescr_t dnMatDescr,
+                                    int64_t*                    rows,
+                                    int64_t*                    cols,
+                                    int64_t*                    ld,
+                                    void**                      values,
+                                    hipDataType*                valueType,
+                                    hipsparseOrder_t*            order);
+
+
+/* Description: Get value pointer from a dense matrix */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDnMatGetValues(const hipsparseDnMatDescr_t dnMatDescr, void** values);
+
+/* Description: Set value pointer of a dense matrix */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDnMatSetValues(hipsparseDnVecDescr_t dnMatDescr, void* values);
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* Generic API functions */
 
 /* Description: Axpby computes the sum of a sparse vector and a dense vector */
@@ -5037,6 +5114,43 @@ hipsparseStatus_t hipsparseRot(hipsparseHandle_t     handle,
                                const void*           s_coeff,
                                hipsparseSpVecDescr_t vecX,
                                hipsparseDnVecDescr_t vecY);
+
+/* Description: Convert a sparse matrix in CSR, CSC, or COO format to dense matrix */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSparseToDense_bufferSize(hipsparseHandle_t     handle,
+                                                    hipsparseSpMatDescr_t  matA,
+                                                    hipsparseDnMatDescr_t matB,
+                                                    hipsparseSparseToDenseAlg_t alg,
+                                                    size_t*               bufferSize);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSparseToDense(hipsparseHandle_t     handle,
+                                        hipsparseSpMatDescr_t  matA,
+                                        hipsparseDnMatDescr_t matB,
+                                        hipsparseSparseToDenseAlg_t alg,
+                                        void*               externalBuffer);
+
+/* Description: Convert a dense matrix to a sparse matrix in CSR, CSC, or COO format */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDenseToSparse_bufferSize(hipsparseHandle_t     handle,
+                                                    hipsparseDnMatDescr_t  matA,
+                                                    hipsparseSpMatDescr_t matB,
+                                                    hipsparseDenseToSparseAlg_t alg,
+                                                    size_t*               bufferSize);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDenseToSparse_analysis(hipsparseHandle_t     handle,
+                                        hipsparseDnMatDescr_t  matA,
+                                        hipsparseSpMatDescr_t matB,
+                                        hipsparseDenseToSparseAlg_t alg,
+                                        void*               externalBuffer);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDenseToSparse(hipsparseHandle_t     handle,
+                                        hipsparseDnMatDescr_t  matA,
+                                        hipsparseSpMatDescr_t matB,
+                                        hipsparseDenseToSparseAlg_t alg,
+                                        void*               externalBuffer);
 
 /* Description: Compute the inner dot product of a sparse vector with a dense vector */
 HIPSPARSE_EXPORT
