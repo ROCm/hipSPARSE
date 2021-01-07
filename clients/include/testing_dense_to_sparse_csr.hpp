@@ -39,35 +39,39 @@ using namespace hipsparse_test;
 void testing_dense_to_sparse_csr_bad_arg(void)
 {
     int64_t safe_size = 100;
-    int32_t      m         = 10;
-    int32_t      n         = 10;
-    int64_t      nnz       = 10;
-    int64_t      ld        = m;
+    int32_t m         = 10;
+    int32_t n         = 10;
+    int64_t nnz       = 10;
+    int64_t ld        = m;
 
-    hipsparseIndexBase_t idxBase    = HIPSPARSE_INDEX_BASE_ZERO;
-    hipsparseDenseToSparseAlg_t alg = HIPSPARSE_DENSETOSPARSE_ALG_DEFAULT;
-    hipsparseOrder_t order          = HIPSPARSE_ORDER_COLUMN;
+    hipsparseIndexBase_t        idxBase = HIPSPARSE_INDEX_BASE_ZERO;
+    hipsparseDenseToSparseAlg_t alg     = HIPSPARSE_DENSETOSPARSE_ALG_DEFAULT;
+    hipsparseOrder_t            order   = HIPSPARSE_ORDER_COLUMN;
 
     // Index and data type
-    hipsparseIndexType_t iType   = HIPSPARSE_INDEX_64I;
-    hipsparseIndexType_t jType   = HIPSPARSE_INDEX_32I;
-    hipDataType          dataType  = HIP_R_32F;
+    hipsparseIndexType_t iType    = HIPSPARSE_INDEX_64I;
+    hipsparseIndexType_t jType    = HIPSPARSE_INDEX_32I;
+    hipDataType          dataType = HIP_R_32F;
 
     // Create handle
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
-    auto ddense_val_managed = hipsparse_unique_ptr{device_malloc(sizeof(float) * safe_size), device_free};
-    auto dcsr_row_ptr_managed = hipsparse_unique_ptr{device_malloc(sizeof(int64_t) * safe_size), device_free};
-    auto dcsr_col_ind_managed = hipsparse_unique_ptr{device_malloc(sizeof(int32_t) * safe_size), device_free};
-    auto dcsr_val_managed = hipsparse_unique_ptr{device_malloc(sizeof(float) * safe_size), device_free};
+    auto ddense_val_managed
+        = hipsparse_unique_ptr{device_malloc(sizeof(float) * safe_size), device_free};
+    auto dcsr_row_ptr_managed
+        = hipsparse_unique_ptr{device_malloc(sizeof(int64_t) * safe_size), device_free};
+    auto dcsr_col_ind_managed
+        = hipsparse_unique_ptr{device_malloc(sizeof(int32_t) * safe_size), device_free};
+    auto dcsr_val_managed
+        = hipsparse_unique_ptr{device_malloc(sizeof(float) * safe_size), device_free};
     auto dbuf_managed = hipsparse_unique_ptr{device_malloc(sizeof(char) * safe_size), device_free};
 
-    float*   ddense_val = (float*)ddense_val_managed.get();
-    int64_t*   dcsr_row_ptr = (int64_t*)dcsr_row_ptr_managed.get();
+    float*   ddense_val   = (float*)ddense_val_managed.get();
+    int64_t* dcsr_row_ptr = (int64_t*)dcsr_row_ptr_managed.get();
     int32_t* dcsr_col_ind = (int32_t*)dcsr_col_ind_managed.get();
-    float* dcsr_val   = (float*)dcsr_val_managed.get();
-    void*  dbuf = (void*)dbuf_managed.get();
+    float*   dcsr_val     = (float*)dcsr_val_managed.get();
+    void*    dbuf         = (void*)dbuf_managed.get();
 
     if(!ddense_val || !dcsr_row_ptr || !dcsr_col_ind || !dcsr_val || !dbuf)
     {
@@ -83,11 +87,19 @@ void testing_dense_to_sparse_csr_bad_arg(void)
 
     // Create matrix structures
     verify_hipsparse_status_success(
-        hipsparseCreateDnMat(&matA, m, n, ld, ddense_val, dataType, order),
-        "success");
-    verify_hipsparse_status_success(
-        hipsparseCreateCsr(&matB, m, n, nnz, dcsr_row_ptr, dcsr_col_ind, dcsr_val, iType, jType, idxBase, dataType),
-        "success");
+        hipsparseCreateDnMat(&matA, m, n, ld, ddense_val, dataType, order), "success");
+    verify_hipsparse_status_success(hipsparseCreateCsr(&matB,
+                                                       m,
+                                                       n,
+                                                       nnz,
+                                                       dcsr_row_ptr,
+                                                       dcsr_col_ind,
+                                                       dcsr_val,
+                                                       iType,
+                                                       jType,
+                                                       idxBase,
+                                                       dataType),
+                                    "success");
 
     // denseToSparse buffer size
     verify_hipsparse_status_invalid_handle(
@@ -119,14 +131,11 @@ void testing_dense_to_sparse_csr_bad_arg(void)
     verify_hipsparse_status_invalid_handle(
         hipsparseDenseToSparse_convert(nullptr, matA, matB, alg, dbuf));
     verify_hipsparse_status_invalid_pointer(
-        hipsparseDenseToSparse_convert(handle, nullptr, matB, alg, dbuf),
-        "Error: matA is nullptr");
+        hipsparseDenseToSparse_convert(handle, nullptr, matB, alg, dbuf), "Error: matA is nullptr");
     verify_hipsparse_status_invalid_pointer(
-        hipsparseDenseToSparse_convert(handle, matA, nullptr, alg, dbuf),
-        "Error: matB is nullptr");
+        hipsparseDenseToSparse_convert(handle, matA, nullptr, alg, dbuf), "Error: matB is nullptr");
     verify_hipsparse_status_invalid_pointer(
-        hipsparseDenseToSparse_convert(handle, matA, matB, alg, nullptr),
-        "Error: dbuf is nullptr");
+        hipsparseDenseToSparse_convert(handle, matA, matB, alg, nullptr), "Error: dbuf is nullptr");
 
     // Destruct
     verify_hipsparse_status_success(hipsparseDestroyDnMat(matA), "success");
@@ -136,9 +145,9 @@ void testing_dense_to_sparse_csr_bad_arg(void)
 template <typename I, typename J, typename T>
 hipsparseStatus_t testing_dense_to_sparse_csr(void)
 {
-    hipsparseIndexBase_t idx_base   = HIPSPARSE_INDEX_BASE_ZERO;
-    hipsparseDenseToSparseAlg_t alg = HIPSPARSE_DENSETOSPARSE_ALG_DEFAULT;
-    hipsparseOrder_t          order = HIPSPARSE_ORDER_COLUMN;
+    hipsparseIndexBase_t        idx_base = HIPSPARSE_INDEX_BASE_ZERO;
+    hipsparseDenseToSparseAlg_t alg      = HIPSPARSE_DENSETOSPARSE_ALG_DEFAULT;
+    hipsparseOrder_t            order    = HIPSPARSE_ORDER_COLUMN;
 
     // Index and data type
     hipsparseIndexType_t typeI
@@ -155,8 +164,8 @@ hipsparseStatus_t testing_dense_to_sparse_csr(void)
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
     hipsparseHandle_t              handle = test_handle->handle;
 
-    J m = 100;
-    J n = 100;
+    J m  = 100;
+    J n  = 100;
     I ld = m;
 
     // Host structures
@@ -174,26 +183,25 @@ hipsparseStatus_t testing_dense_to_sparse_csr(void)
     gen_dense_random_sparsity_pattern(m, n, hdense_val.data(), ld, 0.2);
 
     // allocate memory on device
-    auto dptr_managed    = hipsparse_unique_ptr{device_malloc(sizeof(I) * (m + 1)), device_free};
-    auto ddense_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * ld * n), device_free};
+    auto dptr_managed   = hipsparse_unique_ptr{device_malloc(sizeof(I) * (m + 1)), device_free};
+    auto ddense_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * ld * n), device_free};
 
-    I* dptr      = (I*)dptr_managed.get();
-    T* ddense    = (T*)ddense_managed.get();
+    I* dptr   = (I*)dptr_managed.get();
+    T* ddense = (T*)ddense_managed.get();
 
     if(!dptr || !ddense)
     {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!dptr || !ddense");
+        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!dptr || !ddense");
         return HIPSPARSE_STATUS_ALLOC_FAILED;
     }
 
     // Copy host dense matrix to device
-    CHECK_HIP_ERROR(hipMemcpy(ddense, hdense_val.data(), sizeof(T) * ld * n, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(
+        hipMemcpy(ddense, hdense_val.data(), sizeof(T) * ld * n, hipMemcpyHostToDevice));
 
     // Create dense matrix
     hipsparseDnMatDescr_t matA;
-    CHECK_HIPSPARSE_ERROR(
-        hipsparseCreateDnMat(&matA, m, n, ld, ddense, typeT, order));
+    CHECK_HIPSPARSE_ERROR(hipsparseCreateDnMat(&matA, m, n, ld, ddense, typeT, order));
 
     // Create matrices
     hipsparseSpMatDescr_t matB;
@@ -202,43 +210,39 @@ hipsparseStatus_t testing_dense_to_sparse_csr(void)
 
     // Query DenseToSparse buffer
     size_t bufferSize;
-    CHECK_HIPSPARSE_ERROR(hipsparseDenseToSparse_bufferSize(
-        handle, matA, matB, alg, &bufferSize));
+    CHECK_HIPSPARSE_ERROR(hipsparseDenseToSparse_bufferSize(handle, matA, matB, alg, &bufferSize));
 
     void* buffer;
     CHECK_HIP_ERROR(hipMalloc(&buffer, bufferSize));
 
-    CHECK_HIPSPARSE_ERROR(
-        hipsparseDenseToSparse_analysis(handle, matA, matB, alg, buffer));
+    CHECK_HIPSPARSE_ERROR(hipsparseDenseToSparse_analysis(handle, matA, matB, alg, buffer));
 
     int64_t rows, cols, nnz;
     CHECK_HIPSPARSE_ERROR(hipsparseSpMatGetSize(matB, &rows, &cols, &nnz));
 
-    auto dcol_managed    = hipsparse_unique_ptr{device_malloc(sizeof(J) * nnz), device_free};
-    auto dval_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
+    auto dcol_managed = hipsparse_unique_ptr{device_malloc(sizeof(J) * nnz), device_free};
+    auto dval_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
 
-    J* dcol    = (J*)dcol_managed.get();
-    T* dval    = (T*)dval_managed.get();
+    J* dcol = (J*)dcol_managed.get();
+    T* dval = (T*)dval_managed.get();
 
     if(!dcol || !dval)
     {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!dcol || !dval");
+        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!dcol || !dval");
         return HIPSPARSE_STATUS_ALLOC_FAILED;
     }
 
     CHECK_HIPSPARSE_ERROR(hipsparseCsrSetPointers(matB, dptr, dcol, dval));
 
-    CHECK_HIPSPARSE_ERROR(
-        hipsparseDenseToSparse_convert(handle, matA, matB, alg, buffer));
-
+    CHECK_HIPSPARSE_ERROR(hipsparseDenseToSparse_convert(handle, matA, matB, alg, buffer));
 
     // copy output from device to CPU
     std::vector<I> hcsr_row_ptr(m + 1);
     std::vector<J> hcsr_col_ind(nnz);
     std::vector<T> hcsr_val(nnz);
 
-    CHECK_HIP_ERROR(hipMemcpy(hcsr_row_ptr.data(), dptr, sizeof(I) * (m + 1), hipMemcpyDeviceToHost));
+    CHECK_HIP_ERROR(
+        hipMemcpy(hcsr_row_ptr.data(), dptr, sizeof(I) * (m + 1), hipMemcpyDeviceToHost));
     CHECK_HIP_ERROR(hipMemcpy(hcsr_col_ind.data(), dcol, sizeof(J) * nnz, hipMemcpyDeviceToHost));
     CHECK_HIP_ERROR(hipMemcpy(hcsr_val.data(), dval, sizeof(T) * nnz, hipMemcpyDeviceToHost));
 
@@ -275,7 +279,7 @@ hipsparseStatus_t testing_dense_to_sparse_csr(void)
         {
             if(hdense_val[j * ld + i] != make_DataType<T>(0.0))
             {
-                hcsr_val_cpu[index] = hdense_val[j * ld + i];
+                hcsr_val_cpu[index]     = hdense_val[j * ld + i];
                 hcsr_col_ind_cpu[index] = j + idx_base;
                 index++;
             }

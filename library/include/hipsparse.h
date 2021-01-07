@@ -4809,8 +4809,9 @@ typedef enum
     HIPSPARSE_FORMAT_COO_AOS = 4 /* Coordinate - Array of Structures */
 } hipsparseFormat_t;
 
-typedef enum {
-    HIPSPARSE_ORDER_ROW = 0,
+typedef enum
+{
+    HIPSPARSE_ORDER_ROW    = 0,
     HIPSPARSE_ORDER_COLUMN = 1
 } hipsparseOrder_t;
 
@@ -4921,21 +4922,6 @@ hipsparseStatus_t hipsparseCreateCsr(hipsparseSpMatDescr_t* spMatDescr,
                                      hipsparseIndexBase_t   idxBase,
                                      hipDataType            valueType);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* Description: Create a sparse CSC matrix */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreateCsc(hipsparseSpMatDescr_t* spMatDescr,
@@ -4949,22 +4935,6 @@ hipsparseStatus_t hipsparseCreateCsc(hipsparseSpMatDescr_t* spMatDescr,
                                      hipsparseIndexType_t   cscRowIndType,
                                      hipsparseIndexBase_t   idxBase,
                                      hipDataType            valueType);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /* Description: Destroy a sparse matrix */
 HIPSPARSE_EXPORT
@@ -5016,10 +4986,6 @@ hipsparseStatus_t hipsparseCsrSetPointers(hipsparseSpMatDescr_t spMatDescr,
                                           void*                 csrColInd,
                                           void*                 csrValues);
 
-
-
-
-
 /* Description: Set pointers of a sparse CSC matrix */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCscSetPointers(hipsparseSpMatDescr_t spMatDescr,
@@ -5033,13 +4999,6 @@ hipsparseStatus_t hipsparseCooSetPointers(hipsparseSpMatDescr_t spMatDescr,
                                           void*                 cooRowInd,
                                           void*                 cooColInd,
                                           void*                 cooValues);
-
-
-
-
-
-
-
 
 /* Description: Get the sizes of a sparse matrix */
 HIPSPARSE_EXPORT
@@ -5190,10 +5149,10 @@ hipsparseStatus_t hipsparseDenseToSparse_analysis(hipsparseHandle_t           ha
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDenseToSparse_convert(hipsparseHandle_t           handle,
-                                                hipsparseDnMatDescr_t       matA,
-                                                hipsparseSpMatDescr_t       matB,
-                                                hipsparseDenseToSparseAlg_t alg,
-                                                void*                       externalBuffer);
+                                                 hipsparseDnMatDescr_t       matA,
+                                                 hipsparseSpMatDescr_t       matB,
+                                                 hipsparseDenseToSparseAlg_t alg,
+                                                 void*                       externalBuffer);
 
 /* Description: Compute the inner dot product of a sparse vector with a dense vector */
 HIPSPARSE_EXPORT
