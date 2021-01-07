@@ -184,6 +184,12 @@ set(HIPSPARSE_TEST_SOURCES
   test_scatter.cpp
   test_rot.cpp
   test_spvv.cpp
+  test_dense_to_sparse_csr.cpp
+  test_dense_to_sparse_csc.cpp
+  test_dense_to_sparse_coo.cpp
+  test_sparse_to_dense_csr.cpp
+  test_sparse_to_dense_csc.cpp
+  test_sparse_to_dense_coo.cpp
 )
 
 if(NOT BUILD_CUDA)

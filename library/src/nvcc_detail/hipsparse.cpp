@@ -410,6 +410,32 @@ hipsparseFormat_t CudaFormatToHIPFormat(cusparseFormat_t format)
     }
 }
 
+cusparseOrder_t hipOrderToCudaOrder(hipsparseOrder_t op)
+{
+    switch(op)
+    {
+    case HIPSPARSE_ORDER_ROW:
+        return CUSPARSE_ORDER_ROW;
+    case HIPSPARSE_ORDER_COLUMN:
+        return CUSPARSE_ORDER_COLUMN;
+    default:
+        throw "Non existent hipsparseOrder_t";
+    }
+}
+
+hipsparseOrder_t CudaOrderToHIPOrder(cusparseOrder_t op)
+{
+    switch(op)
+    {
+    case CUSPARSE_ORDER_ROW:
+        return HIPSPARSE_ORDER_ROW;
+    case CUSPARSE_ORDER_COLUMN:
+        return HIPSPARSE_ORDER_COLUMN;
+    default:
+        throw "Non existent cusparseOrder_t";
+    }
+}
+
 cudaDataType hipDataTypeToCudaDataType(hipDataType datatype)
 {
     switch(datatype)
@@ -443,6 +469,83 @@ hipDataType CudaDataTypeToHIPDataType(cudaDataType datatype)
         throw "Non existent cudaDataType";
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+cusparseSparseToDenseAlg_t hipSpToDnAlgToCudaSpToDnAlg(hipsparseSparseToDenseAlg_t alg)
+{
+    switch(alg)
+    {
+    case HIPSPARSE_SPARSETODENSE_ALG_DEFAULT:
+        return CUSPARSE_SPARSETODENSE_ALG_DEFAULT;
+    default:
+        throw "Non existent hipsparseSparseToDenseAlg_t";
+    }
+}
+
+hipsparseSparseToDenseAlg_t CudaSpToDnAlgToHipSpToDnAlg(cusparseSparseToDenseAlg_t alg)
+{
+    switch(alg)
+    {
+    case CUSPARSE_SPARSETODENSE_ALG_DEFAULT:
+        return HIPSPARSE_SPARSETODENSE_ALG_DEFAULT;
+    default:
+        throw "Non existent cusparseSparseToDenseAlg_t";
+    }
+}
+
+cusparseDenseToSparseAlg_t hipDnToSpAlgToCudaDnToSpAlg(hipsparseDenseToSparseAlg_t alg)
+{
+    switch(alg)
+    {
+    case HIPSPARSE_DENSETOSPARSE_ALG_DEFAULT:
+        return CUSPARSE_DENSETOSPARSE_ALG_DEFAULT;
+    default:
+        throw "Non existent hipsparseDenseToSparseAlg_t";
+    }
+}
+
+hipsparseDenseToSparseAlg_t CudaDnToSpAlgToHipDnToSpAlg(cusparseDenseToSparseAlg_t alg)
+{
+    switch(alg)
+    {
+    case CUSPARSE_DENSETOSPARSE_ALG_DEFAULT:
+        return HIPSPARSE_DENSETOSPARSE_ALG_DEFAULT;
+    default:
+        throw "Non existent cusparseDenseToSparseAlg_t";
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 cusparseSpMVAlg_t hipSpMVAlgToCudaSpMVAlg(hipsparseSpMVAlg_t alg)
 {
@@ -9150,6 +9253,32 @@ hipsparseStatus_t hipsparseCreateCsr(hipsparseSpMatDescr_t* spMatDescr,
                           hipDataTypeToCudaDataType(valueType)));
 }
 
+hipsparseStatus_t hipsparseCreateCsc(hipsparseSpMatDescr_t* spMatDescr,
+                                     int64_t                rows,
+                                     int64_t                cols,
+                                     int64_t                nnz,
+                                     void*                  cscColOffsets,
+                                     void*                  cscRowInd,
+                                     void*                  cscValues,
+                                     hipsparseIndexType_t   cscColOffsetsType,
+                                     hipsparseIndexType_t   cscRowIndType,
+                                     hipsparseIndexBase_t   idxBase,
+                                     hipDataType            valueType)
+{
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseCreateCsc((cusparseSpMatDescr_t*)spMatDescr,
+                          rows,
+                          cols,
+                          nnz,
+                          cscColOffsets,
+                          cscRowInd,
+                          cscValues,
+                          hipIndexTypeToCudaIndexType(cscColOffsetsType),
+                          hipIndexTypeToCudaIndexType(cscRowIndType),
+                          hipIndexBaseToCudaIndexBase(idxBase),
+                          hipDataTypeToCudaDataType(valueType)));
+}
+
 hipsparseStatus_t hipsparseDestroySpMat(hipsparseSpMatDescr_t spMatDescr)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseDestroySpMat((cusparseSpMatDescr_t)spMatDescr));
@@ -9266,6 +9395,43 @@ hipsparseStatus_t hipsparseCsrSetPointers(hipsparseSpMatDescr_t spMatDescr,
         (cusparseSpMatDescr_t)spMatDescr, csrRowOffsets, csrColInd, csrValues));
 }
 
+
+
+
+
+
+
+
+
+
+
+hipsparseStatus_t hipsparseCscSetPointers(hipsparseSpMatDescr_t spMatDescr,
+                                          void*                 cscColOffsets,
+                                          void*                 cscRowInd,
+                                          void*                 cscValues)
+{
+    return hipCUSPARSEStatusToHIPStatus(CUSPARSE_STATUS_MATRIX_TYPE_NOT_SUPPORTED);
+}
+
+hipsparseStatus_t hipsparseCooSetPointers(hipsparseSpMatDescr_t spMatDescr,
+                                          void*                 cooRowInd,
+                                          void*                 cooColInd,
+                                          void*                 cooValues)
+{
+    return hipCUSPARSEStatusToHIPStatus(CUSPARSE_STATUS_MATRIX_TYPE_NOT_SUPPORTED);
+}
+
+
+
+
+
+
+
+
+
+
+
+
 hipsparseStatus_t hipsparseSpMatGetSize(hipsparseSpMatDescr_t spMatDescr,
                                         int64_t*              rows,
                                         int64_t*              cols,
@@ -9356,6 +9522,114 @@ hipsparseStatus_t hipsparseDnVecSetValues(hipsparseDnVecDescr_t dnVecDescr, void
         cusparseDnVecSetValues((cusparseDnVecDescr_t)dnVecDescr, values));
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+hipsparseStatus_t hipsparseCreateDnMat(hipsparseDnMatDescr_t* dnMatDescr,
+                                       int64_t                rows,
+                                       int64_t                cols,
+                                       int64_t                ld,
+                                       void*                  values,
+                                       hipDataType            valueType,
+                                       hipsparseOrder_t       order)
+{
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseCreateDnMat((cusparseDnMatDescr_t*)dnMatDescr,
+                                     rows,
+                                     cols,
+                                     ld,
+                                     values,
+                                     hipDataTypeToCudaDataType(valueType),
+                                     hipOrderToCudaOrder(order)));
+}
+
+hipsparseStatus_t hipsparseDestroyDnMat(hipsparseDnMatDescr_t dnMatDescr)
+{
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseDestroyDnMat((cusparseDnMatDescr_t)dnMatDescr));
+}
+
+hipsparseStatus_t hipsparseDnMatGet(const hipsparseDnMatDescr_t dnMatDescr,
+                                    int64_t*                    rows,
+                                    int64_t*                    cols,
+                                    int64_t*                    ld,
+                                    void**                      values,
+                                    hipDataType*                valueType,
+                                    hipsparseOrder_t*           order)
+{
+    cudaDataType cuda_data_type;
+    cusparseOrder_t    cusparse_order;
+    hipCUSPARSEStatusToHIPStatus(cusparseDnMatGet((const cusparseDnMatDescr_t)dnMatDescr,
+                                                  rows,
+                                                  cols,
+                                                  ld,
+                                                  values,
+                                                  valueType != nullptr ? &cuda_data_type : nullptr,
+                                                  order != nullptr ? &cusparse_order : nullptr));
+
+    *valueType = CudaDataTypeToHIPDataType(cuda_data_type);
+    *order     = CudaOrderToHIPOrder(cusparse_order);
+
+    return HIPSPARSE_STATUS_SUCCESS;
+}
+
+hipsparseStatus_t hipsparseDnMatGetValues(const hipsparseDnMatDescr_t dnMatDescr, void** values)
+{
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseDnMatGetValues((const cusparseDnMatDescr_t)dnMatDescr, values));
+}
+
+hipsparseStatus_t hipsparseDnMatSetValues(hipsparseDnMatDescr_t dnMatDescr, void* values)
+{
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseDnMatSetValues((cusparseDnMatDescr_t)dnMatDescr, values));
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 hipsparseStatus_t hipsparseAxpby(hipsparseHandle_t     handle,
                                  const void*           alpha,
                                  hipsparseSpVecDescr_t vecX,
@@ -9397,6 +9671,130 @@ hipsparseStatus_t hipsparseRot(hipsparseHandle_t     handle,
                                                     (cusparseSpVecDescr_t)vecX,
                                                     (cusparseDnVecDescr_t)vecY));
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+hipsparseStatus_t hipsparseSparseToDense_bufferSize(hipsparseHandle_t           handle,
+                                                    hipsparseSpMatDescr_t       matA,
+                                                    hipsparseDnMatDescr_t       matB,
+                                                    hipsparseSparseToDenseAlg_t alg,
+                                                    size_t*                     bufferSize)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseSparseToDense_bufferSize((cusparseHandle_t)handle,
+                                                                (cusparseSpMatDescr_t)matA,
+                                                                (cusparseDnMatDescr_t)matB,
+                                                                hipSpToDnAlgToCudaSpToDnAlg(alg),
+                                                                bufferSize));
+}
+
+hipsparseStatus_t hipsparseSparseToDense(hipsparseHandle_t           handle,
+                                         hipsparseSpMatDescr_t       matA,
+                                         hipsparseDnMatDescr_t       matB,
+                                         hipsparseSparseToDenseAlg_t alg,
+                                         void*                       externalBuffer)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseSparseToDense((cusparseHandle_t)handle,
+                                                                (cusparseSpMatDescr_t)matA,
+                                                                (cusparseDnMatDescr_t)matB,
+                                                                hipSpToDnAlgToCudaSpToDnAlg(alg),
+                                                                externalBuffer));
+}
+
+hipsparseStatus_t hipsparseDenseToSparse_bufferSize(hipsparseHandle_t           handle,
+                                                    hipsparseDnMatDescr_t       matA,
+                                                    hipsparseSpMatDescr_t       matB,
+                                                    hipsparseDenseToSparseAlg_t alg,
+                                                    size_t*                     bufferSize)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseDenseToSparse_bufferSize((cusparseHandle_t)handle,
+                                                                (cusparseDnMatDescr_t)matA,
+                                                                (cusparseSpMatDescr_t)matB,
+                                                                hipDnToSpAlgToCudaDnToSpAlg(alg),
+                                                                bufferSize));
+}
+
+hipsparseStatus_t hipsparseDenseToSparse_analysis(hipsparseHandle_t           handle,
+                                                  hipsparseDnMatDescr_t       matA,
+                                                  hipsparseSpMatDescr_t       matB,
+                                                  hipsparseDenseToSparseAlg_t alg,
+                                                  void*                       externalBuffer)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseDenseToSparse_analysis((cusparseHandle_t)handle,
+                                                                (cusparseDnMatDescr_t)matA,
+                                                                (cusparseSpMatDescr_t)matB,
+                                                                hipDnToSpAlgToCudaDnToSpAlg(alg),
+                                                                externalBuffer));
+}
+
+hipsparseStatus_t hipsparseDenseToSparse_convert(hipsparseHandle_t           handle,
+                                         hipsparseDnMatDescr_t       matA,
+                                         hipsparseSpMatDescr_t       matB,
+                                         hipsparseDenseToSparseAlg_t alg,
+                                         void*                       externalBuffer)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseDenseToSparse_convert((cusparseHandle_t)handle,
+                                                                (rocsparse_dnmat_descr)matA,
+                                                                (cusparseSpMatDescr_t)matB,
+                                                                hipDnToSpAlgToCudaDnToSpAlg(alg),
+                                                                externalBuffer));
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 hipsparseStatus_t hipsparseSpVV_bufferSize(hipsparseHandle_t     handle,
                                            hipsparseOperation_t  opX,

@@ -10750,6 +10750,48 @@ hipsparseStatus_t hipsparseCreateCsr(hipsparseSpMatDescr_t* spMatDescr,
                                    hipDataTypeToHCCDataType(valueType)));
 }
 
+hipsparseStatus_t hipsparseCreateCsc(hipsparseSpMatDescr_t* spMatDescr,
+                                     int64_t                rows,
+                                     int64_t                cols,
+                                     int64_t                nnz,
+                                     void*                  cscColOffsets,
+                                     void*                  cscRowInd,
+                                     void*                  cscValues,
+                                     hipsparseIndexType_t   cscColOffsetsType,
+                                     hipsparseIndexType_t   cscRowIndType,
+                                     hipsparseIndexBase_t   idxBase,
+                                     hipDataType            valueType)
+{
+    return rocSPARSEStatusToHIPStatus(
+        rocsparse_create_csc_descr((rocsparse_spmat_descr*)spMatDescr,
+                                   rows,
+                                   cols,
+                                   nnz,
+                                   cscColOffsets,
+                                   cscRowInd,
+                                   cscValues,
+                                   hipIndexTypeToHCCIndexType(cscColOffsetsType),
+                                   hipIndexTypeToHCCIndexType(cscRowIndType),
+                                   hipBaseToHCCBase(idxBase),
+                                   hipDataTypeToHCCDataType(valueType)));
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 hipsparseStatus_t hipsparseDestroySpMat(hipsparseSpMatDescr_t spMatDescr)
 {
     return rocSPARSEStatusToHIPStatus(
@@ -10868,6 +10910,46 @@ hipsparseStatus_t hipsparseCsrSetPointers(hipsparseSpMatDescr_t spMatDescr,
         (rocsparse_spmat_descr)spMatDescr, csrRowOffsets, csrColInd, csrValues));
 }
 
+
+
+
+
+
+
+
+
+
+
+hipsparseStatus_t hipsparseCscSetPointers(hipsparseSpMatDescr_t spMatDescr,
+                                          void*                 cscColOffsets,
+                                          void*                 cscRowInd,
+                                          void*                 cscValues)
+{
+    return rocSPARSEStatusToHIPStatus(rocsparse_csc_set_pointers(
+        (rocsparse_spmat_descr)spMatDescr, cscColOffsets, cscRowInd, cscValues));
+}
+
+hipsparseStatus_t hipsparseCooSetPointers(hipsparseSpMatDescr_t spMatDescr,
+                                          void*                 cooRowInd,
+                                          void*                 cooColInd,
+                                          void*                 cooValues)
+{
+    return rocSPARSEStatusToHIPStatus(rocsparse_coo_set_pointers(
+        (rocsparse_spmat_descr)spMatDescr, cooRowInd, cooColInd, cooValues));
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 hipsparseStatus_t hipsparseSpMatGetSize(hipsparseSpMatDescr_t spMatDescr,
                                         int64_t*              rows,
                                         int64_t*              cols,
@@ -10956,7 +11038,7 @@ hipsparseStatus_t hipsparseDnVecSetValues(hipsparseDnVecDescr_t dnVecDescr, void
         rocsparse_dnvec_set_values((rocsparse_dnvec_descr)dnVecDescr, values));
 }
 
-hipsparseStatus_t hipsparseCreateDnMat(hipsparseDnVecDescr_t* dnMatDescr,
+hipsparseStatus_t hipsparseCreateDnMat(hipsparseDnMatDescr_t* dnMatDescr,
                                        int64_t                rows,
                                        int64_t                cols,
                                        int64_t                ld,
@@ -10974,7 +11056,7 @@ hipsparseStatus_t hipsparseCreateDnMat(hipsparseDnVecDescr_t* dnMatDescr,
                                      hipOrderToHCCOrder(order)));
 }
 
-hipsparseStatus_t hipsparseDestroyDnMat(hipsparseDnVecDescr_t dnMatDescr)
+hipsparseStatus_t hipsparseDestroyDnMat(hipsparseDnMatDescr_t dnMatDescr)
 {
     return rocSPARSEStatusToHIPStatus(
         rocsparse_destroy_dnmat_descr((rocsparse_dnmat_descr)dnMatDescr));
@@ -11010,7 +11092,7 @@ hipsparseStatus_t hipsparseDnMatGetValues(const hipsparseDnMatDescr_t dnMatDescr
         rocsparse_dnmat_get_values((const rocsparse_dnmat_descr)dnMatDescr, values));
 }
 
-hipsparseStatus_t hipsparseDnMatSetValues(hipsparseDnVecDescr_t dnMatDescr, void* values)
+hipsparseStatus_t hipsparseDnMatSetValues(hipsparseDnMatDescr_t dnMatDescr, void* values)
 {
     return rocSPARSEStatusToHIPStatus(
         rocsparse_dnmat_set_values((rocsparse_dnmat_descr)dnMatDescr, values));
@@ -11078,12 +11160,11 @@ hipsparseStatus_t hipsparseSparseToDense(hipsparseHandle_t           handle,
                                          hipsparseSparseToDenseAlg_t alg,
                                          void*                       externalBuffer)
 {
-    size_t bufferSize = 4;
     return rocSPARSEStatusToHIPStatus(rocsparse_sparse_to_dense((rocsparse_handle)handle,
                                                                 (rocsparse_spmat_descr)matA,
                                                                 (rocsparse_dnmat_descr)matB,
                                                                 hipSpToDnAlgToHCCSpToDnAlg(alg),
-                                                                bufferSize,
+                                                                nullptr,
                                                                 externalBuffer));
 }
 
@@ -11115,18 +11196,18 @@ hipsparseStatus_t hipsparseDenseToSparse_analysis(hipsparseHandle_t           ha
                                                                 externalBuffer));
 }
 
-hipsparseStatus_t hipsparseDenseToSparse(hipsparseHandle_t           handle,
-                                         hipsparseDnMatDescr_t       matA,
-                                         hipsparseSpMatDescr_t       matB,
-                                         hipsparseDenseToSparseAlg_t alg,
-                                         void*                       externalBuffer)
+hipsparseStatus_t hipsparseDenseToSparse_convert(hipsparseHandle_t           handle,
+                                                hipsparseDnMatDescr_t       matA,
+                                                hipsparseSpMatDescr_t       matB,
+                                                hipsparseDenseToSparseAlg_t alg,
+                                                void*                       externalBuffer)
 {
     size_t bufferSize = 4;
     return rocSPARSEStatusToHIPStatus(rocsparse_dense_to_sparse((rocsparse_handle)handle,
                                                                 (rocsparse_dnmat_descr)matA,
                                                                 (rocsparse_spmat_descr)matB,
                                                                 hipDnToSpAlgToHCCDnToSpAlg(alg),
-                                                                bufferSize,
+                                                                externalBuffer != nullptr ? &bufferSize : nullptr,
                                                                 externalBuffer));
 }
 
