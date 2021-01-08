@@ -8929,38 +8929,6 @@ hipsparseStatus_t hipsparseZgebsr2gebsr(hipsparseHandle_t         handle,
                                                              buffer));
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* Generic API */
 #if(CUDART_VERSION >= 10100)
 cusparseFormat_t hipFormatToCudaFormat(hipsparseFormat_t format)
@@ -8994,7 +8962,7 @@ hipsparseFormat_t CudaFormatToHIPFormat(cusparseFormat_t format)
 }
 #endif
 
-#if (CUDART_VERSION >= 11000)
+#if(CUDART_VERSION >= 11000)
 cusparseOrder_t hipOrderToCudaOrder(hipsparseOrder_t op)
 {
     switch(op)
@@ -9020,7 +8988,7 @@ hipsparseOrder_t CudaOrderToHIPOrder(cusparseOrder_t op)
         throw "Non existent cusparseOrder_t";
     }
 }
-#elif (CUDART_VERSION >= 10100)
+#elif(CUDART_VERSION >= 10100)
 cusparseOrder_t hipOrderToCudaOrder(hipsparseOrder_t op)
 {
     switch(op)
