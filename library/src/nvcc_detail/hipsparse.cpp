@@ -417,7 +417,7 @@ cusparseOrder_t hipOrderToCudaOrder(hipsparseOrder_t op)
     case HIPSPARSE_ORDER_ROW:
         return CUSPARSE_ORDER_ROW;
     case HIPSPARSE_ORDER_COLUMN:
-        return CUSPARSE_ORDER_COLUMN;
+        return CUSPARSE_ORDER_COL;
     default:
         throw "Non existent hipsparseOrder_t";
     }
@@ -429,7 +429,7 @@ hipsparseOrder_t CudaOrderToHIPOrder(cusparseOrder_t op)
     {
     case CUSPARSE_ORDER_ROW:
         return HIPSPARSE_ORDER_ROW;
-    case CUSPARSE_ORDER_COLUMN:
+    case CUSPARSE_ORDER_COL:
         return HIPSPARSE_ORDER_COLUMN;
     default:
         throw "Non existent cusparseOrder_t";
@@ -440,13 +440,13 @@ cudaDataType hipDataTypeToCudaDataType(hipDataType datatype)
 {
     switch(datatype)
     {
-    case rocsparse_datatype_f32_r:
+    case HIP_R_32F:
         return CUDA_R_32F;
-    case rocsparse_datatype_f64_r:
+    case HIP_R_64F:
         return CUDA_R_64F;
-    case rocsparse_datatype_f32_c:
+    case HIP_C_32F:
         return CUDA_C_32F;
-    case rocsparse_datatype_f64_c:
+    case HIP_C_64F:
         return CUDA_C_64F;
     default:
         throw "Non existent hipDataType";
@@ -9631,7 +9631,7 @@ hipsparseStatus_t hipsparseDenseToSparse_convert(hipsparseHandle_t           han
 {
     return hipCUSPARSEStatusToHIPStatus(
         cusparseDenseToSparse_convert((cusparseHandle_t)handle,
-                                      (rocsparse_dnmat_descr)matA,
+                                      (cusparseDnMatDescr_t)matA,
                                       (cusparseSpMatDescr_t)matB,
                                       hipDnToSpAlgToCudaDnToSpAlg(alg),
                                       externalBuffer));
