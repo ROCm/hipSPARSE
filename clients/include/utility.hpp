@@ -3849,14 +3849,14 @@ int csr_usolve(hipsparseOperation_t trans,
 /* ============================================================================================ */
 /*! \brief  Transpose sparse matrix using CSR storage format. */
 template <typename I, typename J, typename T>
-void transpose_csr(J                  m,
-                   J                  n,
-                   I                  nnz,
-                   const I*           csr_row_ptr_A,
-                   const J*           csr_col_ind_A,
+void transpose_csr(J                    m,
+                   J                    n,
+                   I                    nnz,
+                   const I*             csr_row_ptr_A,
+                   const J*             csr_col_ind_A,
                    const T*             csr_val_A,
-                   I*                 csr_row_ptr_B,
-                   J*                 csr_col_ind_B,
+                   I*                   csr_row_ptr_B,
+                   J*                   csr_col_ind_B,
                    T*                   csr_val_B,
                    hipsparseIndexBase_t idx_base_A,
                    hipsparseIndexBase_t idx_base_B)
