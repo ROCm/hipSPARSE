@@ -350,92 +350,6 @@ hipsparseSideMode_t CudaSideToHIPSide(cusparseSideMode_t side)
 }
 
 #if CUDART_VERSION > 10000
-cusparseIndexType_t hipIndexTypeToCudaIndexType(hipsparseIndexType_t type)
-{
-    switch(type)
-    {
-    case HIPSPARSE_INDEX_16U:
-        return CUSPARSE_INDEX_16U;
-    case HIPSPARSE_INDEX_32I:
-        return CUSPARSE_INDEX_32I;
-    case HIPSPARSE_INDEX_64I:
-        return CUSPARSE_INDEX_64I;
-    default:
-        throw "Non existant hipsparseIndexType_t";
-    }
-}
-
-hipsparseIndexType_t CudaIndexTypeToHIPIndexType(cusparseIndexType_t type)
-{
-    switch(type)
-    {
-    case CUSPARSE_INDEX_16U:
-        return HIPSPARSE_INDEX_16U;
-    case CUSPARSE_INDEX_32I:
-        return HIPSPARSE_INDEX_32I;
-    case CUSPARSE_INDEX_64I:
-        return HIPSPARSE_INDEX_64I;
-    default:
-        throw "Non existant cusparseIndexType_t";
-    }
-}
-
-cusparseFormat_t hipFormatToCudaFormat(hipsparseFormat_t format)
-{
-    switch(format)
-    {
-    case HIPSPARSE_FORMAT_COO:
-        return CUSPARSE_FORMAT_COO;
-    case HIPSPARSE_FORMAT_COO_AOS:
-        return CUSPARSE_FORMAT_COO_AOS;
-    case HIPSPARSE_FORMAT_CSR:
-        return CUSPARSE_FORMAT_CSR;
-    default:
-        throw "Non existent hipsparseFormat_t";
-    }
-}
-
-hipsparseFormat_t CudaFormatToHIPFormat(cusparseFormat_t format)
-{
-    switch(format)
-    {
-    case CUSPARSE_FORMAT_COO:
-        return HIPSPARSE_FORMAT_COO;
-    case CUSPARSE_FORMAT_COO_AOS:
-        return HIPSPARSE_FORMAT_COO_AOS;
-    case CUSPARSE_FORMAT_CSR:
-        return HIPSPARSE_FORMAT_CSR;
-    default:
-        throw "Non existent cusparseFormat_t";
-    }
-}
-
-cusparseOrder_t hipOrderToCudaOrder(hipsparseOrder_t op)
-{
-    switch(op)
-    {
-    case HIPSPARSE_ORDER_ROW:
-        return CUSPARSE_ORDER_ROW;
-    case HIPSPARSE_ORDER_COLUMN:
-        return CUSPARSE_ORDER_COL;
-    default:
-        throw "Non existent hipsparseOrder_t";
-    }
-}
-
-hipsparseOrder_t CudaOrderToHIPOrder(cusparseOrder_t op)
-{
-    switch(op)
-    {
-    case CUSPARSE_ORDER_ROW:
-        return HIPSPARSE_ORDER_ROW;
-    case CUSPARSE_ORDER_COL:
-        return HIPSPARSE_ORDER_COLUMN;
-    default:
-        throw "Non existent cusparseOrder_t";
-    }
-}
-
 cudaDataType hipDataTypeToCudaDataType(hipDataType datatype)
 {
     switch(datatype)
@@ -467,67 +381,6 @@ hipDataType CudaDataTypeToHIPDataType(cudaDataType datatype)
         return HIP_C_64F;
     default:
         throw "Non existent cudaDataType";
-    }
-}
-
-cusparseSparseToDenseAlg_t hipSpToDnAlgToCudaSpToDnAlg(hipsparseSparseToDenseAlg_t alg)
-{
-    switch(alg)
-    {
-    case HIPSPARSE_SPARSETODENSE_ALG_DEFAULT:
-        return CUSPARSE_SPARSETODENSE_ALG_DEFAULT;
-    default:
-        throw "Non existent hipsparseSparseToDenseAlg_t";
-    }
-}
-
-hipsparseSparseToDenseAlg_t CudaSpToDnAlgToHipSpToDnAlg(cusparseSparseToDenseAlg_t alg)
-{
-    switch(alg)
-    {
-    case CUSPARSE_SPARSETODENSE_ALG_DEFAULT:
-        return HIPSPARSE_SPARSETODENSE_ALG_DEFAULT;
-    default:
-        throw "Non existent cusparseSparseToDenseAlg_t";
-    }
-}
-
-cusparseDenseToSparseAlg_t hipDnToSpAlgToCudaDnToSpAlg(hipsparseDenseToSparseAlg_t alg)
-{
-    switch(alg)
-    {
-    case HIPSPARSE_DENSETOSPARSE_ALG_DEFAULT:
-        return CUSPARSE_DENSETOSPARSE_ALG_DEFAULT;
-    default:
-        throw "Non existent hipsparseDenseToSparseAlg_t";
-    }
-}
-
-hipsparseDenseToSparseAlg_t CudaDnToSpAlgToHipDnToSpAlg(cusparseDenseToSparseAlg_t alg)
-{
-    switch(alg)
-    {
-    case CUSPARSE_DENSETOSPARSE_ALG_DEFAULT:
-        return HIPSPARSE_DENSETOSPARSE_ALG_DEFAULT;
-    default:
-        throw "Non existent cusparseDenseToSparseAlg_t";
-    }
-}
-
-cusparseSpMVAlg_t hipSpMVAlgToCudaSpMVAlg(hipsparseSpMVAlg_t alg)
-{
-    switch(alg)
-    {
-    case HIPSPARSE_MV_ALG_DEFAULT:
-        return CUSPARSE_MV_ALG_DEFAULT;
-    case HIPSPARSE_COOMV_ALG:
-        return CUSPARSE_COOMV_ALG;
-    case HIPSPARSE_CSRMV_ALG1:
-        return CUSPARSE_CSRMV_ALG1;
-    case HIPSPARSE_CSRMV_ALG2:
-        return CUSPARSE_CSRMV_ALG2;
-    default:
-        throw "Non existant hipsparseSpMVAlg_t";
     }
 }
 #endif
@@ -9076,7 +8929,221 @@ hipsparseStatus_t hipsparseZgebsr2gebsr(hipsparseHandle_t         handle,
                                                              buffer));
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* Generic API */
+#if(CUDART_VERSION >= 10100)
+cusparseFormat_t hipFormatToCudaFormat(hipsparseFormat_t format)
+{
+    switch(format)
+    {
+    case HIPSPARSE_FORMAT_COO:
+        return CUSPARSE_FORMAT_COO;
+    case HIPSPARSE_FORMAT_COO_AOS:
+        return CUSPARSE_FORMAT_COO_AOS;
+    case HIPSPARSE_FORMAT_CSR:
+        return CUSPARSE_FORMAT_CSR;
+    default:
+        throw "Non existent hipsparseFormat_t";
+    }
+}
+
+hipsparseFormat_t CudaFormatToHIPFormat(cusparseFormat_t format)
+{
+    switch(format)
+    {
+    case CUSPARSE_FORMAT_COO:
+        return HIPSPARSE_FORMAT_COO;
+    case CUSPARSE_FORMAT_COO_AOS:
+        return HIPSPARSE_FORMAT_COO_AOS;
+    case CUSPARSE_FORMAT_CSR:
+        return HIPSPARSE_FORMAT_CSR;
+    default:
+        throw "Non existent cusparseFormat_t";
+    }
+}
+#endif
+
+#if (CUDART_VERSION >= 11000)
+cusparseOrder_t hipOrderToCudaOrder(hipsparseOrder_t op)
+{
+    switch(op)
+    {
+    case HIPSPARSE_ORDER_ROW:
+        return CUSPARSE_ORDER_ROW;
+    case HIPSPARSE_ORDER_COLUMN:
+        return CUSPARSE_ORDER_COL;
+    default:
+        throw "Non existent hipsparseOrder_t";
+    }
+}
+
+hipsparseOrder_t CudaOrderToHIPOrder(cusparseOrder_t op)
+{
+    switch(op)
+    {
+    case CUSPARSE_ORDER_ROW:
+        return HIPSPARSE_ORDER_ROW;
+    case CUSPARSE_ORDER_COL:
+        return HIPSPARSE_ORDER_COLUMN;
+    default:
+        throw "Non existent cusparseOrder_t";
+    }
+}
+#elif (CUDART_VERSION >= 10100)
+cusparseOrder_t hipOrderToCudaOrder(hipsparseOrder_t op)
+{
+    switch(op)
+    {
+    case HIPSPARSE_ORDER_COLUMN:
+        return CUSPARSE_ORDER_COL;
+    default:
+        throw "Non existent hipsparseOrder_t";
+    }
+}
+
+hipsparseOrder_t CudaOrderToHIPOrder(cusparseOrder_t op)
+{
+    switch(op)
+    {
+    case CUSPARSE_ORDER_COL:
+        return HIPSPARSE_ORDER_COLUMN;
+    default:
+        throw "Non existent cusparseOrder_t";
+    }
+}
+#endif
+
+#if(CUDART_VERSION >= 10100)
+cusparseIndexType_t hipIndexTypeToCudaIndexType(hipsparseIndexType_t type)
+{
+    switch(type)
+    {
+    case HIPSPARSE_INDEX_16U:
+        return CUSPARSE_INDEX_16U;
+    case HIPSPARSE_INDEX_32I:
+        return CUSPARSE_INDEX_32I;
+    case HIPSPARSE_INDEX_64I:
+        return CUSPARSE_INDEX_64I;
+    default:
+        throw "Non existant hipsparseIndexType_t";
+    }
+}
+
+hipsparseIndexType_t CudaIndexTypeToHIPIndexType(cusparseIndexType_t type)
+{
+    switch(type)
+    {
+    case CUSPARSE_INDEX_16U:
+        return HIPSPARSE_INDEX_16U;
+    case CUSPARSE_INDEX_32I:
+        return HIPSPARSE_INDEX_32I;
+    case CUSPARSE_INDEX_64I:
+        return HIPSPARSE_INDEX_64I;
+    default:
+        throw "Non existant cusparseIndexType_t";
+    }
+}
+#endif
+
+#if(CUDART_VERSION >= 10100)
+cusparseSpMVAlg_t hipSpMVAlgToCudaSpMVAlg(hipsparseSpMVAlg_t alg)
+{
+    switch(alg)
+    {
+    case HIPSPARSE_MV_ALG_DEFAULT:
+        return CUSPARSE_MV_ALG_DEFAULT;
+    case HIPSPARSE_COOMV_ALG:
+        return CUSPARSE_COOMV_ALG;
+    case HIPSPARSE_CSRMV_ALG1:
+        return CUSPARSE_CSRMV_ALG1;
+    case HIPSPARSE_CSRMV_ALG2:
+        return CUSPARSE_CSRMV_ALG2;
+    default:
+        throw "Non existant hipsparseSpMVAlg_t";
+    }
+}
+#endif
+
+#if(CUDART_VERSION >= 11200)
+cusparseSparseToDenseAlg_t hipSpToDnAlgToCudaSpToDnAlg(hipsparseSparseToDenseAlg_t alg)
+{
+    switch(alg)
+    {
+    case HIPSPARSE_SPARSETODENSE_ALG_DEFAULT:
+        return CUSPARSE_SPARSETODENSE_ALG_DEFAULT;
+    default:
+        throw "Non existent hipsparseSparseToDenseAlg_t";
+    }
+}
+
+hipsparseSparseToDenseAlg_t CudaSpToDnAlgToHipSpToDnAlg(cusparseSparseToDenseAlg_t alg)
+{
+    switch(alg)
+    {
+    case CUSPARSE_SPARSETODENSE_ALG_DEFAULT:
+        return HIPSPARSE_SPARSETODENSE_ALG_DEFAULT;
+    default:
+        throw "Non existent cusparseSparseToDenseAlg_t";
+    }
+}
+#endif
+
+#if(CUDART_VERSION >= 11200)
+cusparseDenseToSparseAlg_t hipDnToSpAlgToCudaDnToSpAlg(hipsparseDenseToSparseAlg_t alg)
+{
+    switch(alg)
+    {
+    case HIPSPARSE_DENSETOSPARSE_ALG_DEFAULT:
+        return CUSPARSE_DENSETOSPARSE_ALG_DEFAULT;
+    default:
+        throw "Non existent hipsparseDenseToSparseAlg_t";
+    }
+}
+
+hipsparseDenseToSparseAlg_t CudaDnToSpAlgToHipDnToSpAlg(cusparseDenseToSparseAlg_t alg)
+{
+    switch(alg)
+    {
+    case CUSPARSE_DENSETOSPARSE_ALG_DEFAULT:
+        return HIPSPARSE_DENSETOSPARSE_ALG_DEFAULT;
+    default:
+        throw "Non existent cusparseDenseToSparseAlg_t";
+    }
+}
+#endif
+
+#if(CUDART_VERSION >= 10100)
 hipsparseStatus_t hipsparseCreateSpVec(hipsparseSpVecDescr_t* spVecDescr,
                                        int64_t                size,
                                        int64_t                nnz,
@@ -9095,12 +9162,16 @@ hipsparseStatus_t hipsparseCreateSpVec(hipsparseSpVecDescr_t* spVecDescr,
                                                             hipIndexBaseToCudaIndexBase(idxBase),
                                                             hipDataTypeToCudaDataType(valueType)));
 }
+#endif
 
+#if(CUDART_VERSION >= 10100)
 hipsparseStatus_t hipsparseDestroySpVec(hipsparseSpVecDescr_t spVecDescr)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseDestroySpVec((cusparseSpVecDescr_t)spVecDescr));
 }
+#endif
 
+#if(CUDART_VERSION >= 10100)
 hipsparseStatus_t hipsparseSpVecGet(const hipsparseSpVecDescr_t spVecDescr,
                                     int64_t*                    size,
                                     int64_t*                    nnz,
@@ -9129,26 +9200,34 @@ hipsparseStatus_t hipsparseSpVecGet(const hipsparseSpVecDescr_t spVecDescr,
 
     return HIPSPARSE_STATUS_SUCCESS;
 }
+#endif
 
+#if(CUDART_VERSION >= 10100)
 hipsparseStatus_t hipsparseSpVecGetIndexBase(const hipsparseSpVecDescr_t spVecDescr,
                                              hipsparseIndexBase_t*       idxBase)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseSpVecGetIndexBase(
         (const cusparseSpVecDescr_t)spVecDescr, (cusparseIndexBase_t*)idxBase));
 }
+#endif
 
+#if(CUDART_VERSION >= 10100)
 hipsparseStatus_t hipsparseSpVecGetValues(const hipsparseSpVecDescr_t spVecDescr, void** values)
 {
     return hipCUSPARSEStatusToHIPStatus(
         cusparseSpVecGetValues((const cusparseSpVecDescr_t)spVecDescr, values));
 }
+#endif
 
+#if(CUDART_VERSION >= 10100)
 hipsparseStatus_t hipsparseSpVecSetValues(hipsparseSpVecDescr_t spVecDescr, void* values)
 {
     return hipCUSPARSEStatusToHIPStatus(
         cusparseSpVecSetValues((const cusparseSpVecDescr_t)spVecDescr, values));
 }
+#endif
 
+#if(CUDART_VERSION >= 10100)
 hipsparseStatus_t hipsparseCreateCoo(hipsparseSpMatDescr_t* spMatDescr,
                                      int64_t                rows,
                                      int64_t                cols,
@@ -9171,7 +9250,9 @@ hipsparseStatus_t hipsparseCreateCoo(hipsparseSpMatDescr_t* spMatDescr,
                                                           hipIndexBaseToCudaIndexBase(idxBase),
                                                           hipDataTypeToCudaDataType(valueType)));
 }
+#endif
 
+#if(CUDART_VERSION >= 10100)
 hipsparseStatus_t hipsparseCreateCooAoS(hipsparseSpMatDescr_t* spMatDescr,
                                         int64_t                rows,
                                         int64_t                cols,
@@ -9193,7 +9274,9 @@ hipsparseStatus_t hipsparseCreateCooAoS(hipsparseSpMatDescr_t* spMatDescr,
                              hipIndexBaseToCudaIndexBase(idxBase),
                              hipDataTypeToCudaDataType(valueType)));
 }
+#endif
 
+#if(CUDART_VERSION >= 10100)
 hipsparseStatus_t hipsparseCreateCsr(hipsparseSpMatDescr_t* spMatDescr,
                                      int64_t                rows,
                                      int64_t                cols,
@@ -9219,7 +9302,9 @@ hipsparseStatus_t hipsparseCreateCsr(hipsparseSpMatDescr_t* spMatDescr,
                           hipIndexBaseToCudaIndexBase(idxBase),
                           hipDataTypeToCudaDataType(valueType)));
 }
+#endif
 
+#if(CUDART_VERSION >= 11200)
 hipsparseStatus_t hipsparseCreateCsc(hipsparseSpMatDescr_t* spMatDescr,
                                      int64_t                rows,
                                      int64_t                cols,
@@ -9245,12 +9330,16 @@ hipsparseStatus_t hipsparseCreateCsc(hipsparseSpMatDescr_t* spMatDescr,
                           hipIndexBaseToCudaIndexBase(idxBase),
                           hipDataTypeToCudaDataType(valueType)));
 }
+#endif
 
+#if(CUDART_VERSION >= 10100)
 hipsparseStatus_t hipsparseDestroySpMat(hipsparseSpMatDescr_t spMatDescr)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseDestroySpMat((cusparseSpMatDescr_t)spMatDescr));
 }
+#endif
 
+#if(CUDART_VERSION >= 10100)
 hipsparseStatus_t hipsparseCooGet(const hipsparseSpMatDescr_t spMatDescr,
                                   int64_t*                    rows,
                                   int64_t*                    cols,
@@ -9283,7 +9372,9 @@ hipsparseStatus_t hipsparseCooGet(const hipsparseSpMatDescr_t spMatDescr,
 
     return HIPSPARSE_STATUS_SUCCESS;
 }
+#endif
 
+#if(CUDART_VERSION >= 10100)
 hipsparseStatus_t hipsparseCooAoSGet(const hipsparseSpMatDescr_t spMatDescr,
                                      int64_t*                    rows,
                                      int64_t*                    cols,
@@ -9314,7 +9405,9 @@ hipsparseStatus_t hipsparseCooAoSGet(const hipsparseSpMatDescr_t spMatDescr,
 
     return HIPSPARSE_STATUS_SUCCESS;
 }
+#endif
 
+#if(CUDART_VERSION >= 10100)
 hipsparseStatus_t hipsparseCsrGet(const hipsparseSpMatDescr_t spMatDescr,
                                   int64_t*                    rows,
                                   int64_t*                    cols,
@@ -9352,7 +9445,9 @@ hipsparseStatus_t hipsparseCsrGet(const hipsparseSpMatDescr_t spMatDescr,
 
     return HIPSPARSE_STATUS_SUCCESS;
 }
+#endif
 
+#if(CUDART_VERSION >= 11000)
 hipsparseStatus_t hipsparseCsrSetPointers(hipsparseSpMatDescr_t spMatDescr,
                                           void*                 csrRowOffsets,
                                           void*                 csrColInd,
@@ -9361,23 +9456,9 @@ hipsparseStatus_t hipsparseCsrSetPointers(hipsparseSpMatDescr_t spMatDescr,
     return hipCUSPARSEStatusToHIPStatus(cusparseCsrSetPointers(
         (cusparseSpMatDescr_t)spMatDescr, csrRowOffsets, csrColInd, csrValues));
 }
+#endif
 
-hipsparseStatus_t hipsparseCscSetPointers(hipsparseSpMatDescr_t spMatDescr,
-                                          void*                 cscColOffsets,
-                                          void*                 cscRowInd,
-                                          void*                 cscValues)
-{
-    return hipCUSPARSEStatusToHIPStatus(CUSPARSE_STATUS_MATRIX_TYPE_NOT_SUPPORTED);
-}
-
-hipsparseStatus_t hipsparseCooSetPointers(hipsparseSpMatDescr_t spMatDescr,
-                                          void*                 cooRowInd,
-                                          void*                 cooColInd,
-                                          void*                 cooValues)
-{
-    return hipCUSPARSEStatusToHIPStatus(CUSPARSE_STATUS_MATRIX_TYPE_NOT_SUPPORTED);
-}
-
+#if(CUDART_VERSION >= 11000)
 hipsparseStatus_t hipsparseSpMatGetSize(hipsparseSpMatDescr_t spMatDescr,
                                         int64_t*              rows,
                                         int64_t*              cols,
@@ -9386,7 +9467,9 @@ hipsparseStatus_t hipsparseSpMatGetSize(hipsparseSpMatDescr_t spMatDescr,
     return hipCUSPARSEStatusToHIPStatus(
         cusparseSpMatGetSize((cusparseSpMatDescr_t)spMatDescr, rows, cols, nnz));
 }
+#endif
 
+#if(CUDART_VERSION >= 10100)
 hipsparseStatus_t hipsparseSpMatGetFormat(const hipsparseSpMatDescr_t spMatDescr,
                                           hipsparseFormat_t*          format)
 {
@@ -9399,7 +9482,9 @@ hipsparseStatus_t hipsparseSpMatGetFormat(const hipsparseSpMatDescr_t spMatDescr
 
     return HIPSPARSE_STATUS_SUCCESS;
 }
+#endif
 
+#if(CUDART_VERSION >= 10100)
 hipsparseStatus_t hipsparseSpMatGetIndexBase(const hipsparseSpMatDescr_t spMatDescr,
                                              hipsparseIndexBase_t*       idxBase)
 {
@@ -9412,19 +9497,25 @@ hipsparseStatus_t hipsparseSpMatGetIndexBase(const hipsparseSpMatDescr_t spMatDe
 
     return HIPSPARSE_STATUS_SUCCESS;
 }
+#endif
 
+#if(CUDART_VERSION >= 10100)
 hipsparseStatus_t hipsparseSpMatGetValues(hipsparseSpMatDescr_t spMatDescr, void** values)
 {
     return hipCUSPARSEStatusToHIPStatus(
         cusparseSpMatGetValues((cusparseSpMatDescr_t)spMatDescr, values));
 }
+#endif
 
+#if(CUDART_VERSION >= 10100)
 hipsparseStatus_t hipsparseSpMatSetValues(hipsparseSpMatDescr_t spMatDescr, void* values)
 {
     return hipCUSPARSEStatusToHIPStatus(
         cusparseSpMatSetValues((cusparseSpMatDescr_t)spMatDescr, values));
 }
+#endif
 
+#if(CUDART_VERSION >= 10100)
 hipsparseStatus_t hipsparseCreateDnVec(hipsparseDnVecDescr_t* dnVecDescr,
                                        int64_t                size,
                                        void*                  values,
@@ -9433,12 +9524,16 @@ hipsparseStatus_t hipsparseCreateDnVec(hipsparseDnVecDescr_t* dnVecDescr,
     return hipCUSPARSEStatusToHIPStatus(cusparseCreateDnVec(
         (cusparseDnVecDescr_t*)dnVecDescr, size, values, hipDataTypeToCudaDataType(valueType)));
 }
+#endif
 
+#if(CUDART_VERSION >= 10100)
 hipsparseStatus_t hipsparseDestroyDnVec(hipsparseDnVecDescr_t dnVecDescr)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseDestroyDnVec((cusparseDnVecDescr_t)dnVecDescr));
 }
+#endif
 
+#if(CUDART_VERSION >= 10100)
 hipsparseStatus_t hipsparseDnVecGet(const hipsparseDnVecDescr_t dnVecDescr,
                                     int64_t*                    size,
                                     void**                      values,
@@ -9455,19 +9550,25 @@ hipsparseStatus_t hipsparseDnVecGet(const hipsparseDnVecDescr_t dnVecDescr,
 
     return HIPSPARSE_STATUS_SUCCESS;
 }
+#endif
 
+#if(CUDART_VERSION >= 10100)
 hipsparseStatus_t hipsparseDnVecGetValues(const hipsparseDnVecDescr_t dnVecDescr, void** values)
 {
     return hipCUSPARSEStatusToHIPStatus(
         cusparseDnVecGetValues((const cusparseDnVecDescr_t)dnVecDescr, values));
 }
+#endif
 
+#if(CUDART_VERSION >= 10100)
 hipsparseStatus_t hipsparseDnVecSetValues(hipsparseDnVecDescr_t dnVecDescr, void* values)
 {
     return hipCUSPARSEStatusToHIPStatus(
         cusparseDnVecSetValues((cusparseDnVecDescr_t)dnVecDescr, values));
 }
+#endif
 
+#if(CUDART_VERSION >= 10100)
 hipsparseStatus_t hipsparseCreateDnMat(hipsparseDnMatDescr_t* dnMatDescr,
                                        int64_t                rows,
                                        int64_t                cols,
@@ -9484,12 +9585,16 @@ hipsparseStatus_t hipsparseCreateDnMat(hipsparseDnMatDescr_t* dnMatDescr,
                                                             hipDataTypeToCudaDataType(valueType),
                                                             hipOrderToCudaOrder(order)));
 }
+#endif
 
+#if(CUDART_VERSION >= 10100)
 hipsparseStatus_t hipsparseDestroyDnMat(hipsparseDnMatDescr_t dnMatDescr)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseDestroyDnMat((cusparseDnMatDescr_t)dnMatDescr));
 }
+#endif
 
+#if(CUDART_VERSION >= 10100)
 hipsparseStatus_t hipsparseDnMatGet(const hipsparseDnMatDescr_t dnMatDescr,
                                     int64_t*                    rows,
                                     int64_t*                    cols,
@@ -9513,19 +9618,25 @@ hipsparseStatus_t hipsparseDnMatGet(const hipsparseDnMatDescr_t dnMatDescr,
 
     return HIPSPARSE_STATUS_SUCCESS;
 }
+#endif
 
+#if(CUDART_VERSION >= 10100)
 hipsparseStatus_t hipsparseDnMatGetValues(const hipsparseDnMatDescr_t dnMatDescr, void** values)
 {
     return hipCUSPARSEStatusToHIPStatus(
         cusparseDnMatGetValues((const cusparseDnMatDescr_t)dnMatDescr, values));
 }
+#endif
 
+#if(CUDART_VERSION >= 10100)
 hipsparseStatus_t hipsparseDnMatSetValues(hipsparseDnMatDescr_t dnMatDescr, void* values)
 {
     return hipCUSPARSEStatusToHIPStatus(
         cusparseDnMatSetValues((cusparseDnMatDescr_t)dnMatDescr, values));
 }
+#endif
 
+#if(CUDART_VERSION >= 11000)
 hipsparseStatus_t hipsparseAxpby(hipsparseHandle_t     handle,
                                  const void*           alpha,
                                  hipsparseSpVecDescr_t vecX,
@@ -9538,7 +9649,9 @@ hipsparseStatus_t hipsparseAxpby(hipsparseHandle_t     handle,
                                                       beta,
                                                       (cusparseDnVecDescr_t)vecY));
 }
+#endif
 
+#if(CUDART_VERSION >= 11000)
 hipsparseStatus_t hipsparseGather(hipsparseHandle_t     handle,
                                   hipsparseDnVecDescr_t vecY,
                                   hipsparseSpVecDescr_t vecX)
@@ -9546,7 +9659,9 @@ hipsparseStatus_t hipsparseGather(hipsparseHandle_t     handle,
     return hipCUSPARSEStatusToHIPStatus(cusparseGather(
         (cusparseHandle_t)handle, (cusparseDnVecDescr_t)vecY, (cusparseSpVecDescr_t)vecX));
 }
+#endif
 
+#if(CUDART_VERSION >= 11000)
 hipsparseStatus_t hipsparseScatter(hipsparseHandle_t     handle,
                                    hipsparseSpVecDescr_t vecX,
                                    hipsparseDnVecDescr_t vecY)
@@ -9554,7 +9669,9 @@ hipsparseStatus_t hipsparseScatter(hipsparseHandle_t     handle,
     return hipCUSPARSEStatusToHIPStatus(cusparseScatter(
         (cusparseHandle_t)handle, (cusparseSpVecDescr_t)vecX, (cusparseDnVecDescr_t)vecY));
 }
+#endif
 
+#if(CUDART_VERSION >= 11000)
 hipsparseStatus_t hipsparseRot(hipsparseHandle_t     handle,
                                const void*           c_coeff,
                                const void*           s_coeff,
@@ -9567,7 +9684,9 @@ hipsparseStatus_t hipsparseRot(hipsparseHandle_t     handle,
                                                     (cusparseSpVecDescr_t)vecX,
                                                     (cusparseDnVecDescr_t)vecY));
 }
+#endif
 
+#if(CUDART_VERSION >= 11200)
 hipsparseStatus_t hipsparseSparseToDense_bufferSize(hipsparseHandle_t           handle,
                                                     hipsparseSpMatDescr_t       matA,
                                                     hipsparseDnMatDescr_t       matB,
@@ -9581,7 +9700,9 @@ hipsparseStatus_t hipsparseSparseToDense_bufferSize(hipsparseHandle_t           
                                          hipSpToDnAlgToCudaSpToDnAlg(alg),
                                          bufferSize));
 }
+#endif
 
+#if(CUDART_VERSION >= 11200)
 hipsparseStatus_t hipsparseSparseToDense(hipsparseHandle_t           handle,
                                          hipsparseSpMatDescr_t       matA,
                                          hipsparseDnMatDescr_t       matB,
@@ -9594,7 +9715,9 @@ hipsparseStatus_t hipsparseSparseToDense(hipsparseHandle_t           handle,
                                                               hipSpToDnAlgToCudaSpToDnAlg(alg),
                                                               externalBuffer));
 }
+#endif
 
+#if(CUDART_VERSION >= 11200)
 hipsparseStatus_t hipsparseDenseToSparse_bufferSize(hipsparseHandle_t           handle,
                                                     hipsparseDnMatDescr_t       matA,
                                                     hipsparseSpMatDescr_t       matB,
@@ -9608,7 +9731,9 @@ hipsparseStatus_t hipsparseDenseToSparse_bufferSize(hipsparseHandle_t           
                                          hipDnToSpAlgToCudaDnToSpAlg(alg),
                                          bufferSize));
 }
+#endif
 
+#if(CUDART_VERSION >= 11200)
 hipsparseStatus_t hipsparseDenseToSparse_analysis(hipsparseHandle_t           handle,
                                                   hipsparseDnMatDescr_t       matA,
                                                   hipsparseSpMatDescr_t       matB,
@@ -9622,7 +9747,9 @@ hipsparseStatus_t hipsparseDenseToSparse_analysis(hipsparseHandle_t           ha
                                        hipDnToSpAlgToCudaDnToSpAlg(alg),
                                        externalBuffer));
 }
+#endif
 
+#if(CUDART_VERSION >= 11200)
 hipsparseStatus_t hipsparseDenseToSparse_convert(hipsparseHandle_t           handle,
                                                  hipsparseDnMatDescr_t       matA,
                                                  hipsparseSpMatDescr_t       matB,
@@ -9636,7 +9763,9 @@ hipsparseStatus_t hipsparseDenseToSparse_convert(hipsparseHandle_t           han
                                       hipDnToSpAlgToCudaDnToSpAlg(alg),
                                       externalBuffer));
 }
+#endif
 
+#if(CUDART_VERSION >= 10100)
 hipsparseStatus_t hipsparseSpVV_bufferSize(hipsparseHandle_t     handle,
                                            hipsparseOperation_t  opX,
                                            hipsparseSpVecDescr_t vecX,
@@ -9654,7 +9783,9 @@ hipsparseStatus_t hipsparseSpVV_bufferSize(hipsparseHandle_t     handle,
                                 hipDataTypeToCudaDataType(computeType),
                                 bufferSize));
 }
+#endif
 
+#if(CUDART_VERSION >= 10100)
 hipsparseStatus_t hipsparseSpVV(hipsparseHandle_t     handle,
                                 hipsparseOperation_t  opX,
                                 hipsparseSpVecDescr_t vecX,
@@ -9671,7 +9802,9 @@ hipsparseStatus_t hipsparseSpVV(hipsparseHandle_t     handle,
                                                      hipDataTypeToCudaDataType(computeType),
                                                      externalBuffer));
 }
+#endif
 
+#if(CUDART_VERSION >= 10100)
 hipsparseStatus_t hipsparseSpMV_bufferSize(hipsparseHandle_t           handle,
                                            hipsparseOperation_t        opA,
                                            const void*                 alpha,
@@ -9695,7 +9828,9 @@ hipsparseStatus_t hipsparseSpMV_bufferSize(hipsparseHandle_t           handle,
                                 hipSpMVAlgToCudaSpMVAlg(alg),
                                 bufferSize));
 }
+#endif
 
+#if(CUDART_VERSION >= 10100)
 hipsparseStatus_t hipsparseSpMV(hipsparseHandle_t           handle,
                                 hipsparseOperation_t        opA,
                                 const void*                 alpha,
@@ -9718,6 +9853,7 @@ hipsparseStatus_t hipsparseSpMV(hipsparseHandle_t           handle,
                                                      hipSpMVAlgToCudaSpMVAlg(alg),
                                                      externalBuffer));
 }
+#endif
 
 #ifdef __cplusplus
 }

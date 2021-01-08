@@ -4795,12 +4795,15 @@ hipsparseStatus_t hipsparseZgebsr2gebsr(hipsparseHandle_t         handle,
 /* Generic API */
 
 /* Generic API opaque structures holding information */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10100)
 typedef void* hipsparseSpVecDescr_t;
 typedef void* hipsparseSpMatDescr_t;
 typedef void* hipsparseDnVecDescr_t;
 typedef void* hipsparseDnMatDescr_t;
+#endif
 
 /* Generic API types */
+#if(!defined(CUDART_VERSION))
 typedef enum
 {
     HIPSPARSE_FORMAT_CSR     = 1, /* Compressed Sparse Row */
@@ -4808,20 +4811,48 @@ typedef enum
     HIPSPARSE_FORMAT_COO     = 3, /* Coordinate - Structure of Arrays */
     HIPSPARSE_FORMAT_COO_AOS = 4 /* Coordinate - Array of Structures */
 } hipsparseFormat_t;
+#else
+    #if (CUDART_VERSION >= 10100)
+    typedef enum
+    {
+        HIPSPARSE_FORMAT_CSR     = 1, /* Compressed Sparse Row */
+        HIPSPARSE_FORMAT_COO     = 3, /* Coordinate - Structure of Arrays */
+        HIPSPARSE_FORMAT_COO_AOS = 4 /* Coordinate - Array of Structures */
+    } hipsparseFormat_t;
+    #endif
+#endif
 
+#if(!defined(CUDART_VERSION))
 typedef enum
 {
     HIPSPARSE_ORDER_ROW    = 0,
     HIPSPARSE_ORDER_COLUMN = 1
 } hipsparseOrder_t;
+#else
+    #if (CUDART_VERSION >= 11000)
+    typedef enum
+    {
+        HIPSPARSE_ORDER_ROW    = 0,
+        HIPSPARSE_ORDER_COLUMN = 1
+    } hipsparseOrder_t;
+    #elif (CUDART_VERSION >= 10100)
+    typedef enum
+    {
+        HIPSPARSE_ORDER_COLUMN = 1
+    } hipsparseOrder_t;
+    #endif
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10100)
 typedef enum
 {
     HIPSPARSE_INDEX_16U = 1, /* 16 bit unsigned integer indices */
     HIPSPARSE_INDEX_32I = 2, /* 32 bit signed integer indices */
     HIPSPARSE_INDEX_64I = 3 /* 64 bit signed integer indices */
 } hipsparseIndexType_t;
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10100)
 typedef enum
 {
     HIPSPARSE_MV_ALG_DEFAULT = 0,
@@ -4829,20 +4860,26 @@ typedef enum
     HIPSPARSE_CSRMV_ALG1     = 2,
     HIPSPARSE_CSRMV_ALG2     = 3
 } hipsparseSpMVAlg_t;
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11200)
 typedef enum
 {
     HIPSPARSE_SPARSETODENSE_ALG_DEFAULT = 0,
 } hipsparseSparseToDenseAlg_t;
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11200)
 typedef enum
 {
     HIPSPARSE_DENSETOSPARSE_ALG_DEFAULT = 0,
 } hipsparseDenseToSparseAlg_t;
+#endif
 
 /* Sparse vector API */
 
 /* Description: Create a sparse vector */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10100)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreateSpVec(hipsparseSpVecDescr_t* spVecDescr,
                                        int64_t                size,
@@ -4852,12 +4889,16 @@ hipsparseStatus_t hipsparseCreateSpVec(hipsparseSpVecDescr_t* spVecDescr,
                                        hipsparseIndexType_t   idxType,
                                        hipsparseIndexBase_t   idxBase,
                                        hipDataType            valueType);
+#endif
 
 /* Description: Destroy a sparse vector */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10100)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroySpVec(hipsparseSpVecDescr_t spVecDescr);
+#endif
 
 /* Description: Get pointers to a sparse vectors data and index array */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10100)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpVecGet(const hipsparseSpVecDescr_t spVecDescr,
                                     int64_t*                    size,
@@ -4867,23 +4908,31 @@ hipsparseStatus_t hipsparseSpVecGet(const hipsparseSpVecDescr_t spVecDescr,
                                     hipsparseIndexType_t*       idxType,
                                     hipsparseIndexBase_t*       idxBase,
                                     hipDataType*                valueType);
+#endif
 
 /* Description: Get index base of a sparse vector */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10100)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpVecGetIndexBase(const hipsparseSpVecDescr_t spVecDescr,
                                              hipsparseIndexBase_t*       idxBase);
+#endif
 
 /* Description: Get pointer to a sparse vector data array */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10100)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpVecGetValues(const hipsparseSpVecDescr_t spVecDescr, void** values);
+#endif
 
 /* Description: Set pointer of a sparse vector data array */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10100)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpVecSetValues(hipsparseSpVecDescr_t spVecDescr, void* values);
+#endif
 
 /* Sparse matrix API */
 
 /* Description: Create a sparse COO matrix */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10100)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreateCoo(hipsparseSpMatDescr_t* spMatDescr,
                                      int64_t                rows,
@@ -4895,8 +4944,10 @@ hipsparseStatus_t hipsparseCreateCoo(hipsparseSpMatDescr_t* spMatDescr,
                                      hipsparseIndexType_t   cooIdxType,
                                      hipsparseIndexBase_t   idxBase,
                                      hipDataType            valueType);
+#endif
 
 /* Description: Create a sparse COO (AoS) matrix */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10100)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreateCooAoS(hipsparseSpMatDescr_t* spMatDescr,
                                         int64_t                rows,
@@ -4907,8 +4958,10 @@ hipsparseStatus_t hipsparseCreateCooAoS(hipsparseSpMatDescr_t* spMatDescr,
                                         hipsparseIndexType_t   cooIdxType,
                                         hipsparseIndexBase_t   idxBase,
                                         hipDataType            valueType);
+#endif
 
 /* Description: Create a sparse CSR matrix */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10100)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreateCsr(hipsparseSpMatDescr_t* spMatDescr,
                                      int64_t                rows,
@@ -4921,8 +4974,10 @@ hipsparseStatus_t hipsparseCreateCsr(hipsparseSpMatDescr_t* spMatDescr,
                                      hipsparseIndexType_t   csrColIndType,
                                      hipsparseIndexBase_t   idxBase,
                                      hipDataType            valueType);
+#endif
 
 /* Description: Create a sparse CSC matrix */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11200)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreateCsc(hipsparseSpMatDescr_t* spMatDescr,
                                      int64_t                rows,
@@ -4935,12 +4990,16 @@ hipsparseStatus_t hipsparseCreateCsc(hipsparseSpMatDescr_t* spMatDescr,
                                      hipsparseIndexType_t   cscRowIndType,
                                      hipsparseIndexBase_t   idxBase,
                                      hipDataType            valueType);
+#endif
 
 /* Description: Destroy a sparse matrix */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10100)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroySpMat(hipsparseSpMatDescr_t spMatDescr);
+#endif
 
 /* Description: Get pointers of a sparse COO matrix */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10100)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCooGet(const hipsparseSpMatDescr_t spMatDescr,
                                   int64_t*                    rows,
@@ -4952,8 +5011,10 @@ hipsparseStatus_t hipsparseCooGet(const hipsparseSpMatDescr_t spMatDescr,
                                   hipsparseIndexType_t*       idxType,
                                   hipsparseIndexBase_t*       idxBase,
                                   hipDataType*                valueType);
+#endif
 
 /* Description: Get pointers of a sparse COO (AoS) matrix */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10100)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCooAoSGet(const hipsparseSpMatDescr_t spMatDescr,
                                      int64_t*                    rows,
@@ -4964,8 +5025,10 @@ hipsparseStatus_t hipsparseCooAoSGet(const hipsparseSpMatDescr_t spMatDescr,
                                      hipsparseIndexType_t*       idxType,
                                      hipsparseIndexBase_t*       idxBase,
                                      hipDataType*                valueType);
+#endif
 
 /* Description: Get pointers of a sparse CSR matrix */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10100)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCsrGet(const hipsparseSpMatDescr_t spMatDescr,
                                   int64_t*                    rows,
@@ -4978,84 +5041,112 @@ hipsparseStatus_t hipsparseCsrGet(const hipsparseSpMatDescr_t spMatDescr,
                                   hipsparseIndexType_t*       csrColIndType,
                                   hipsparseIndexBase_t*       idxBase,
                                   hipDataType*                valueType);
+#endif
 
 /* Description: Set pointers of a sparse CSR matrix */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCsrSetPointers(hipsparseSpMatDescr_t spMatDescr,
                                           void*                 csrRowOffsets,
                                           void*                 csrColInd,
                                           void*                 csrValues);
+#endif
 
 /* Description: Set pointers of a sparse CSC matrix */
+#if(!defined(CUDART_VERSION))
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCscSetPointers(hipsparseSpMatDescr_t spMatDescr,
                                           void*                 cscColOffsets,
                                           void*                 cscRowInd,
                                           void*                 cscValues);
+#endif
 
 /* Description: Set pointers of a sparse COO matrix */
+#if(!defined(CUDART_VERSION))
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCooSetPointers(hipsparseSpMatDescr_t spMatDescr,
                                           void*                 cooRowInd,
                                           void*                 cooColInd,
                                           void*                 cooValues);
+#endif
 
 /* Description: Get the sizes of a sparse matrix */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpMatGetSize(hipsparseSpMatDescr_t spMatDescr,
                                         int64_t*              rows,
                                         int64_t*              cols,
                                         int64_t*              nnz);
+#endif
 
 /* Description: Get the format of a sparse matrix */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10100)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpMatGetFormat(const hipsparseSpMatDescr_t spMatDescr,
                                           hipsparseFormat_t*          format);
+#endif
 
 /* Description: Get the index base of a sparse matrix */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10100)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpMatGetIndexBase(const hipsparseSpMatDescr_t spMatDescr,
                                              hipsparseIndexBase_t*       idxBase);
+#endif
 
 /* Description: Get the pointer of the values array of a sparse matrix */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10100)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpMatGetValues(hipsparseSpMatDescr_t spMatDescr, void** values);
+#endif
 
 /* Description: Set the pointer of the values array of a sparse matrix */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10100)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpMatSetValues(hipsparseSpMatDescr_t spMatDescr, void* values);
+#endif
 
 /* Dense vector API */
 
 /* Description: Create dense vector */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10100)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreateDnVec(hipsparseDnVecDescr_t* dnVecDescr,
                                        int64_t                size,
                                        void*                  values,
                                        hipDataType            valueType);
+#endif
 
 /* Description: Destroy dense vector */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10100)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroyDnVec(hipsparseDnVecDescr_t dnVecDescr);
+#endif
 
 /* Description: Get value pointer from a dense vector */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10100)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDnVecGet(const hipsparseDnVecDescr_t dnVecDescr,
                                     int64_t*                    size,
                                     void**                      values,
                                     hipDataType*                valueType);
+#endif
 
 /* Description: Get value pointer from a dense vector */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10100)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDnVecGetValues(const hipsparseDnVecDescr_t dnVecDescr, void** values);
+#endif
 
 /* Description: Set value pointer of a dense vector */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10100)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDnVecSetValues(hipsparseDnVecDescr_t dnVecDescr, void* values);
+#endif
 
 /* Dense matrix API */
 
 /* Description: Create dense matrix */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10100)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreateDnMat(hipsparseDnMatDescr_t* dnMatDescr,
                                        int64_t                rows,
@@ -5064,12 +5155,16 @@ hipsparseStatus_t hipsparseCreateDnMat(hipsparseDnMatDescr_t* dnMatDescr,
                                        void*                  values,
                                        hipDataType            valueType,
                                        hipsparseOrder_t       order);
+#endif
 
 /* Description: Destroy dense matrix */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10100)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroyDnMat(hipsparseDnMatDescr_t dnMatDescr);
+#endif
 
 /* Description: Get value pointer from a dense matrix */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10100)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDnMatGet(const hipsparseDnMatDescr_t dnMatDescr,
                                     int64_t*                    rows,
@@ -5078,83 +5173,107 @@ hipsparseStatus_t hipsparseDnMatGet(const hipsparseDnMatDescr_t dnMatDescr,
                                     void**                      values,
                                     hipDataType*                valueType,
                                     hipsparseOrder_t*           order);
+#endif
 
 /* Description: Get value pointer from a dense matrix */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10100)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDnMatGetValues(const hipsparseDnMatDescr_t dnMatDescr, void** values);
+#endif
 
 /* Description: Set value pointer of a dense matrix */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10100)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDnMatSetValues(hipsparseDnMatDescr_t dnMatDescr, void* values);
+#endif
 
 /* Generic API functions */
 
 /* Description: Axpby computes the sum of a sparse vector and a dense vector */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseAxpby(hipsparseHandle_t     handle,
                                  const void*           alpha,
                                  hipsparseSpVecDescr_t vecX,
                                  const void*           beta,
                                  hipsparseDnVecDescr_t vecY);
+#endif
 
 /* Description: Gather elements of a dense vector into a sparse vector */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseGather(hipsparseHandle_t     handle,
                                   hipsparseDnVecDescr_t vecY,
                                   hipsparseSpVecDescr_t vecX);
+#endif
 
 /* Description: Scatter elements of a sparse vector into a dense vector */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseScatter(hipsparseHandle_t     handle,
                                    hipsparseSpVecDescr_t vecX,
                                    hipsparseDnVecDescr_t vecY);
+#endif
 
 /* Description: Compute the Givens rotation matrix to a sparse and a dense vector */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseRot(hipsparseHandle_t     handle,
                                const void*           c_coeff,
                                const void*           s_coeff,
                                hipsparseSpVecDescr_t vecX,
                                hipsparseDnVecDescr_t vecY);
+#endif
 
 /* Description: Convert a sparse matrix in CSR, CSC, or COO format to dense matrix */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11200)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSparseToDense_bufferSize(hipsparseHandle_t           handle,
                                                     hipsparseSpMatDescr_t       matA,
                                                     hipsparseDnMatDescr_t       matB,
                                                     hipsparseSparseToDenseAlg_t alg,
                                                     size_t*                     bufferSize);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11200)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSparseToDense(hipsparseHandle_t           handle,
                                          hipsparseSpMatDescr_t       matA,
                                          hipsparseDnMatDescr_t       matB,
                                          hipsparseSparseToDenseAlg_t alg,
                                          void*                       externalBuffer);
+#endif
 
 /* Description: Convert a dense matrix to a sparse matrix in CSR, CSC, or COO format */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11200)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDenseToSparse_bufferSize(hipsparseHandle_t           handle,
                                                     hipsparseDnMatDescr_t       matA,
                                                     hipsparseSpMatDescr_t       matB,
                                                     hipsparseDenseToSparseAlg_t alg,
                                                     size_t*                     bufferSize);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11200)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDenseToSparse_analysis(hipsparseHandle_t           handle,
                                                   hipsparseDnMatDescr_t       matA,
                                                   hipsparseSpMatDescr_t       matB,
                                                   hipsparseDenseToSparseAlg_t alg,
                                                   void*                       externalBuffer);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11200)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDenseToSparse_convert(hipsparseHandle_t           handle,
                                                  hipsparseDnMatDescr_t       matA,
                                                  hipsparseSpMatDescr_t       matB,
                                                  hipsparseDenseToSparseAlg_t alg,
                                                  void*                       externalBuffer);
+#endif
 
 /* Description: Compute the inner dot product of a sparse vector with a dense vector */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10100)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpVV_bufferSize(hipsparseHandle_t     handle,
                                            hipsparseOperation_t  opX,
@@ -5163,7 +5282,9 @@ hipsparseStatus_t hipsparseSpVV_bufferSize(hipsparseHandle_t     handle,
                                            void*                 result,
                                            hipDataType           computeType,
                                            size_t*               bufferSize);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10100)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpVV(hipsparseHandle_t     handle,
                                 hipsparseOperation_t  opX,
@@ -5172,8 +5293,10 @@ hipsparseStatus_t hipsparseSpVV(hipsparseHandle_t     handle,
                                 void*                 result,
                                 hipDataType           computeType,
                                 void*                 externalBuffer);
+#endif
 
 /* Description: Compute the sparse matrix multiplication with a dense vector */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10100)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpMV_bufferSize(hipsparseHandle_t           handle,
                                            hipsparseOperation_t        opA,
@@ -5185,7 +5308,9 @@ hipsparseStatus_t hipsparseSpMV_bufferSize(hipsparseHandle_t           handle,
                                            hipDataType                 computeType,
                                            hipsparseSpMVAlg_t          alg,
                                            size_t*                     bufferSize);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10100)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpMV(hipsparseHandle_t           handle,
                                 hipsparseOperation_t        opA,
@@ -5197,6 +5322,7 @@ hipsparseStatus_t hipsparseSpMV(hipsparseHandle_t           handle,
                                 hipDataType                 computeType,
                                 hipsparseSpMVAlg_t          alg,
                                 void*                       externalBuffer);
+#endif
 
 #ifdef __cplusplus
 }
