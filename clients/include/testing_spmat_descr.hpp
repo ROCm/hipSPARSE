@@ -425,7 +425,7 @@ void testing_spmat_descr_bad_arg(void)
 #endif
 
     // hipsparseCsrSetPointers
-#if (!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
     verify_hipsparse_status_invalid_pointer(
         hipsparseCsrSetPointers(nullptr, row_data, col_data, val_data), "Error: A is nullptr");
     verify_hipsparse_status_invalid_pointer(
