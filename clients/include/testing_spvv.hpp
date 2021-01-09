@@ -36,6 +36,7 @@ using namespace hipsparse_test;
 
 void testing_spvv_bad_arg(void)
 {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
     int64_t size = 100;
     int64_t nnz  = 100;
 
@@ -113,11 +114,13 @@ void testing_spvv_bad_arg(void)
     verify_hipsparse_status_success(hipsparseDestroyDnVec(y), "Success");
 
     CHECK_HIP_ERROR(hipFree(buffer));
+#endif
 }
 
 template <typename I, typename T>
 hipsparseStatus_t testing_spvv(void)
 {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
     int64_t size = 15332;
     int64_t nnz  = 500;
 
@@ -236,6 +239,7 @@ hipsparseStatus_t testing_spvv(void)
 
     CHECK_HIPSPARSE_ERROR(hipsparseDestroySpVec(x));
     CHECK_HIPSPARSE_ERROR(hipsparseDestroyDnVec(y));
+#endif
 
     return HIPSPARSE_STATUS_SUCCESS;
 }

@@ -38,6 +38,7 @@ using namespace hipsparse_test;
 
 void testing_sparse_to_dense_coo_bad_arg(void)
 {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11020)
     int64_t safe_size = 100;
     int32_t m         = 10;
     int32_t n         = 10;
@@ -117,11 +118,13 @@ void testing_sparse_to_dense_coo_bad_arg(void)
     // Destruct
     verify_hipsparse_status_success(hipsparseDestroySpMat(matA), "success");
     verify_hipsparse_status_success(hipsparseDestroyDnMat(matB), "success");
+#endif
 }
 
 template <typename I, typename T>
 hipsparseStatus_t testing_sparse_to_dense_coo(void)
 {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11020)
     hipsparseIndexBase_t        idx_base = HIPSPARSE_INDEX_BASE_ZERO;
     hipsparseSparseToDenseAlg_t alg      = HIPSPARSE_SPARSETODENSE_ALG_DEFAULT;
     hipsparseOrder_t            order    = HIPSPARSE_ORDER_COLUMN;
@@ -265,6 +268,7 @@ hipsparseStatus_t testing_sparse_to_dense_coo(void)
     CHECK_HIP_ERROR(hipFree(buffer));
     CHECK_HIPSPARSE_ERROR(hipsparseDestroySpMat(matA));
     CHECK_HIPSPARSE_ERROR(hipsparseDestroyDnMat(matB));
+#endif
 
     return HIPSPARSE_STATUS_SUCCESS;
 }

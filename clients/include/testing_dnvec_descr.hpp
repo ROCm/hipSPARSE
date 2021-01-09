@@ -33,6 +33,7 @@ using namespace hipsparse_test;
 
 void testing_dnvec_descr_bad_arg(void)
 {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
     int64_t size = 100;
 
     hipDataType dataType = HIP_R_32F;
@@ -90,6 +91,7 @@ void testing_dnvec_descr_bad_arg(void)
 
     // Destroy valid descriptor
     verify_hipsparse_status_success(hipsparseDestroyDnVec(x), "Success");
+#endif
 }
 
 #endif // TESTING_DNVEC_DESCR_HPP
