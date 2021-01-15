@@ -9836,16 +9836,21 @@ hipsparseStatus_t hipsparseSpMV(hipsparseHandle_t           handle,
 }
 #endif
 
+#if(CUDART_VERSION >= 11000)
 hipsparseStatus_t hipsparseSpGEMM_createDescr(hipsparseSpGEMMDescr_t* descr)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseSpGEMM_createDescr((cusparseSpGEMMDescr_t*)descr));
 }
+#endif
 
+#if(CUDART_VERSION >= 11000)
 hipsparseStatus_t hipsparseSpGEMM_destroyDescr(hipsparseSpGEMMDescr_t descr)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseSpGEMM_destroyDescr((cusparseSpGEMMDescr_t)descr));
 }
+#endif
 
+#if(CUDART_VERSION >= 11000)
 hipsparseStatus_t hipsparseSpGEMM_workEstimation(hipsparseHandle_t      handle,
                                                  hipsparseOperation_t   opA,
                                                  hipsparseOperation_t   opB,
@@ -9875,7 +9880,9 @@ hipsparseStatus_t hipsparseSpGEMM_workEstimation(hipsparseHandle_t      handle,
                                       bufferSize1,
                                       externalBuffer1));
 }
+#endif
 
+#if(CUDART_VERSION >= 11000)
 hipsparseStatus_t hipsparseSpGEMM_compute(hipsparseHandle_t      handle,
                                           hipsparseOperation_t   opA,
                                           hipsparseOperation_t   opB,
@@ -9904,7 +9911,9 @@ hipsparseStatus_t hipsparseSpGEMM_compute(hipsparseHandle_t      handle,
                                                                bufferSize2,
                                                                externalBuffer2));
 }
+#endif
 
+#if(CUDART_VERSION >= 11000)
 hipsparseStatus_t hipsparseSpGEMM_copy(hipsparseHandle_t      handle,
                                        hipsparseOperation_t   opA,
                                        hipsparseOperation_t   opB,
@@ -9929,6 +9938,7 @@ hipsparseStatus_t hipsparseSpGEMM_copy(hipsparseHandle_t      handle,
                                                             hipSpGEMMAlgToCudaSpGEMMAlg(alg),
                                                             (cusparseSpGEMMDescr_t)spgemmDescr));
 }
+#endif
 
 #ifdef __cplusplus
 }

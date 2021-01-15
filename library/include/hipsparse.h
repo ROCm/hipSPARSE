@@ -5335,12 +5335,17 @@ hipsparseStatus_t hipsparseSpMV(hipsparseHandle_t           handle,
 #endif
 
 /* Description: Compute the sparse matrix sparse matrix product */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpGEMM_createDescr(hipsparseSpGEMMDescr_t* descr);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpGEMM_destroyDescr(hipsparseSpGEMMDescr_t descr);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpGEMM_workEstimation(hipsparseHandle_t      handle,
                                                  hipsparseOperation_t   opA,
@@ -5355,7 +5360,9 @@ hipsparseStatus_t hipsparseSpGEMM_workEstimation(hipsparseHandle_t      handle,
                                                  hipsparseSpGEMMDescr_t spgemmDescr,
                                                  size_t*                bufferSize1,
                                                  void*                  externalBuffer1);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpGEMM_compute(hipsparseHandle_t      handle,
                                           hipsparseOperation_t   opA,
@@ -5370,7 +5377,9 @@ hipsparseStatus_t hipsparseSpGEMM_compute(hipsparseHandle_t      handle,
                                           hipsparseSpGEMMDescr_t spgemmDescr,
                                           size_t*                bufferSize2,
                                           void*                  externalBuffer2);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpGEMM_copy(hipsparseHandle_t      handle,
                                        hipsparseOperation_t   opA,
@@ -5383,6 +5392,7 @@ hipsparseStatus_t hipsparseSpGEMM_copy(hipsparseHandle_t      handle,
                                        hipDataType            computeType,
                                        hipsparseSpGEMMAlg_t   alg,
                                        hipsparseSpGEMMDescr_t spgemmDescr);
+#endif
 
 #ifdef __cplusplus
 }

@@ -38,6 +38,7 @@ using namespace hipsparse_test;
 
 void testing_spgemm_csr_bad_arg(void)
 {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
     int64_t              m         = 100;
     int64_t              n         = 100;
     int64_t              k         = 100;
@@ -338,11 +339,13 @@ void testing_spgemm_csr_bad_arg(void)
     verify_hipsparse_status_success(hipsparseDestroySpMat(A), "success");
     verify_hipsparse_status_success(hipsparseDestroySpMat(B), "success");
     verify_hipsparse_status_success(hipsparseDestroySpMat(C), "success");
+#endif
 }
 
 template <typename I, typename J, typename T>
 hipsparseStatus_t testing_spgemm_csr(void)
 {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
     I                    safe_size = 100;
     T                    h_alpha   = make_DataType<T>(2.0);
     T                    h_beta    = make_DataType<T>(0.0);
@@ -775,6 +778,7 @@ hipsparseStatus_t testing_spgemm_csr(void)
     CHECK_HIPSPARSE_ERROR(hipsparseDestroySpMat(C2));
 
     return HIPSPARSE_STATUS_SUCCESS;
+#endif
 }
 
 #endif // TESTING_SPGEMM_CSR_HPP
