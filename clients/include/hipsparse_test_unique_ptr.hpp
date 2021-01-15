@@ -257,6 +257,22 @@ namespace hipsparse_test
         }
     };
 
+    struct spgemm_struct
+    {
+        hipsparseSpGEMMDescr_t descr;
+        spgemm_struct()
+        {
+            hipsparseStatus_t status = hipsparseSpGEMM_createDescr(&descr);
+            verify_hipsparse_status_success(status, "ERROR: spgemm_struct constructor");
+        }
+
+        ~spgemm_struct()
+        {
+            hipsparseStatus_t status = hipsparseSpGEMM_destroyDescr(descr);
+            verify_hipsparse_status_success(status, "ERROR: spgemm_struct destructor");
+        }
+    };
+
 } // namespace hipsparse_test
 
 using hipsparse_unique_ptr = std::unique_ptr<void, void (*)(void*)>;
