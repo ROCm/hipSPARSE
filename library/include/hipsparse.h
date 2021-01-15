@@ -4802,6 +4802,11 @@ typedef void* hipsparseDnVecDescr_t;
 typedef void* hipsparseDnMatDescr_t;
 #endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
+struct hipsparseSpGEMMDescr;
+typedef struct hipsparseSpGEMMDescr* hipsparseSpGEMMDescr_t;
+#endif
+
 /* Generic API types */
 #if(!defined(CUDART_VERSION))
 typedef enum
@@ -4875,6 +4880,11 @@ typedef enum
     HIPSPARSE_DENSETOSPARSE_ALG_DEFAULT = 0,
 } hipsparseDenseToSparseAlg_t;
 #endif
+
+typedef enum
+{
+    HIPSPARSE_SPGEMM_DEFAULT = 0
+} hipsparseSpGEMMAlg_t;
 
 /* Sparse vector API */
 
@@ -5323,6 +5333,56 @@ hipsparseStatus_t hipsparseSpMV(hipsparseHandle_t           handle,
                                 hipsparseSpMVAlg_t          alg,
                                 void*                       externalBuffer);
 #endif
+
+/* Description: Compute the sparse matrix sparse matrix product */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpGEMM_createDescr(hipsparseSpGEMMDescr_t* descr);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpGEMM_destroyDescr(hipsparseSpGEMMDescr_t descr);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpGEMM_workEstimation(hipsparseHandle_t      handle,
+                                                 hipsparseOperation_t   opA,
+                                                 hipsparseOperation_t   opB,
+                                                 const void*            alpha,
+                                                 hipsparseSpMatDescr_t  matA,
+                                                 hipsparseSpMatDescr_t  matB,
+                                                 const void*            beta,
+                                                 hipsparseSpMatDescr_t  matC,
+                                                 hipDataType            computeType,
+                                                 hipsparseSpGEMMAlg_t   alg,
+                                                 hipsparseSpGEMMDescr_t spgemmDescr,
+                                                 size_t*                bufferSize1,
+                                                 void*                  externalBuffer1);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpGEMM_compute(hipsparseHandle_t      handle,
+                                          hipsparseOperation_t   opA,
+                                          hipsparseOperation_t   opB,
+                                          const void*            alpha,
+                                          hipsparseSpMatDescr_t  matA,
+                                          hipsparseSpMatDescr_t  matB,
+                                          const void*            beta,
+                                          hipsparseSpMatDescr_t  matC,
+                                          hipDataType            computeType,
+                                          hipsparseSpGEMMAlg_t   alg,
+                                          hipsparseSpGEMMDescr_t spgemmDescr,
+                                          size_t*                bufferSize2,
+                                          void*                  externalBuffer2);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpGEMM_copy(hipsparseHandle_t      handle,
+                                       hipsparseOperation_t   opA,
+                                       hipsparseOperation_t   opB,
+                                       const void*            alpha,
+                                       hipsparseSpMatDescr_t  matA,
+                                       hipsparseSpMatDescr_t  matB,
+                                       const void*            beta,
+                                       hipsparseSpMatDescr_t  matC,
+                                       hipDataType            computeType,
+                                       hipsparseSpGEMMAlg_t   alg,
+                                       hipsparseSpGEMMDescr_t spgemmDescr);
 
 #ifdef __cplusplus
 }

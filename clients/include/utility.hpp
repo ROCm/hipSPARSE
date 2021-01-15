@@ -4183,22 +4183,22 @@ static void host_csrgeam(int                  M,
 /* ============================================================================================ */
 /*! \brief  Compute sparse matrix sparse matrix multiplication. */
 template <typename I, typename J, typename T>
-static int csrgemm2_nnz(J                    m,
-                        J                    n,
-                        J                    k,
-                        const T*             alpha,
-                        const I*             csr_row_ptr_A,
-                        const J*             csr_col_ind_A,
-                        const I*             csr_row_ptr_B,
-                        const J*             csr_col_ind_B,
-                        const T*             beta,
-                        const I*             csr_row_ptr_D,
-                        const J*             csr_col_ind_D,
-                        I*                   csr_row_ptr_C,
-                        hipsparseIndexBase_t idx_base_A,
-                        hipsparseIndexBase_t idx_base_B,
-                        hipsparseIndexBase_t idx_base_C,
-                        hipsparseIndexBase_t idx_base_D)
+static I csrgemm2_nnz(J                    m,
+                      J                    n,
+                      J                    k,
+                      const T*             alpha,
+                      const I*             csr_row_ptr_A,
+                      const J*             csr_col_ind_A,
+                      const I*             csr_row_ptr_B,
+                      const J*             csr_col_ind_B,
+                      const T*             beta,
+                      const I*             csr_row_ptr_D,
+                      const J*             csr_col_ind_D,
+                      I*                   csr_row_ptr_C,
+                      hipsparseIndexBase_t idx_base_A,
+                      hipsparseIndexBase_t idx_base_B,
+                      hipsparseIndexBase_t idx_base_C,
+                      hipsparseIndexBase_t idx_base_D)
 {
 #ifdef _OPENMP
 #pragma omp parallel
