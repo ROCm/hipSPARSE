@@ -38,6 +38,7 @@ using namespace hipsparse_test;
 
 void testing_spmv_coo_bad_arg(void)
 {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
     int64_t              m         = 100;
     int64_t              n         = 100;
     int64_t              nnz       = 100;
@@ -137,11 +138,13 @@ void testing_spmv_coo_bad_arg(void)
     verify_hipsparse_status_success(hipsparseDestroySpMat(A), "success");
     verify_hipsparse_status_success(hipsparseDestroyDnVec(x), "success");
     verify_hipsparse_status_success(hipsparseDestroyDnVec(y), "success");
+#endif
 }
 
 template <typename I, typename T>
 hipsparseStatus_t testing_spmv_coo(void)
 {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
     I                    safe_size = 100;
     T                    h_alpha   = make_DataType<T>(2.0);
     T                    h_beta    = make_DataType<T>(1.0);
@@ -310,6 +313,7 @@ hipsparseStatus_t testing_spmv_coo(void)
     CHECK_HIPSPARSE_ERROR(hipsparseDestroyDnVec(x));
     CHECK_HIPSPARSE_ERROR(hipsparseDestroyDnVec(y1));
     CHECK_HIPSPARSE_ERROR(hipsparseDestroyDnVec(y2));
+#endif
 
     return HIPSPARSE_STATUS_SUCCESS;
 }

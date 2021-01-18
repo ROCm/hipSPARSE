@@ -257,6 +257,7 @@ namespace hipsparse_test
         }
     };
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
     struct spgemm_struct
     {
         hipsparseSpGEMMDescr_t descr;
@@ -272,6 +273,7 @@ namespace hipsparse_test
             verify_hipsparse_status_success(status, "ERROR: spgemm_struct destructor");
         }
     };
+#endif
 
 } // namespace hipsparse_test
 

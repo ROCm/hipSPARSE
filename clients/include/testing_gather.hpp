@@ -36,6 +36,7 @@ using namespace hipsparse_test;
 
 void testing_gather_bad_arg(void)
 {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
     int64_t size = 100;
     int64_t nnz  = 100;
 
@@ -80,11 +81,13 @@ void testing_gather_bad_arg(void)
     // Destruct
     verify_hipsparse_status_success(hipsparseDestroySpVec(x), "Success");
     verify_hipsparse_status_success(hipsparseDestroyDnVec(y), "Success");
+#endif
 }
 
 template <typename I, typename T>
 hipsparseStatus_t testing_gather(void)
 {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
     int64_t size = 15332;
     int64_t nnz  = 500;
 
@@ -158,6 +161,7 @@ hipsparseStatus_t testing_gather(void)
 
     // Verify results against host
     unit_check_general(1, nnz, 1, hx_val_gold.data(), hx_val.data());
+#endif
 
     return HIPSPARSE_STATUS_SUCCESS;
 }
