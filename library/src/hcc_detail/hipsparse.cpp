@@ -290,7 +290,7 @@ hipsparseIndexBase_t HCCBaseToHIPBase(rocsparse_index_base_ base)
     case rocsparse_index_base_one:
         return HIPSPARSE_INDEX_BASE_ONE;
     default:
-        throw "Non existent rocsparse_index_base_";
+        throw "Non existent rocsparse_index_base";
     }
 }
 
@@ -320,7 +320,7 @@ hipsparseOperation_t HCCOperationToHIPOperation(rocsparse_operation_ op)
     case rocsparse_operation_conjugate_transpose:
         return HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE;
     default:
-        throw "Non existent rocsparse_operation_";
+        throw "Non existent rocsparse_operation";
     }
 }
 
@@ -350,7 +350,7 @@ hipsparseHybPartition_t HCCHybPartToHIPHybPart(rocsparse_hyb_partition_ partitio
     case rocsparse_hyb_partition_max:
         return HIPSPARSE_HYB_PARTITION_MAX;
     default:
-        throw "Non existent rocsparse_hyb_partition_";
+        throw "Non existent rocsparse_hyb_partition";
     }
 }
 
@@ -376,7 +376,33 @@ hipsparseDirection_t HCCDirectionToHIPDirection(rocsparse_direction_ op)
     case rocsparse_direction_column:
         return HIPSPARSE_DIRECTION_COLUMN;
     default:
-        throw "Non existent rocsparse_direction_";
+        throw "Non existent rocsparse_direction";
+    }
+}
+
+rocsparse_order_ hipOrderToHCCOrder(hipsparseOrder_t op)
+{
+    switch(op)
+    {
+    case HIPSPARSE_ORDER_ROW:
+        return rocsparse_order_row;
+    case HIPSPARSE_ORDER_COLUMN:
+        return rocsparse_order_column;
+    default:
+        throw "Non existent hipsparseOrder_t";
+    }
+}
+
+hipsparseOrder_t HCCOrderToHIPOrder(rocsparse_order_ op)
+{
+    switch(op)
+    {
+    case rocsparse_order_row:
+        return HIPSPARSE_ORDER_ROW;
+    case rocsparse_order_column:
+        return HIPSPARSE_ORDER_COLUMN;
+    default:
+        throw "Non existent rocsparse_order";
     }
 }
 
@@ -402,7 +428,7 @@ hipsparseIndexType_t HCCIndexTypeToHIPIndexType(rocsparse_indextype_ indextype)
     case rocsparse_indextype_i64:
         return HIPSPARSE_INDEX_64I;
     default:
-        throw "Non existent rocsparse_indextype_";
+        throw "Non existent rocsparse_indextype";
     }
 }
 
@@ -436,7 +462,7 @@ hipDataType HCCDataTypeToHIPDataType(rocsparse_datatype_ datatype)
     case rocsparse_datatype_f64_c:
         return HIP_C_64F;
     default:
-        throw "Non existent rocsparse_format_";
+        throw "Non existent rocsparse_datatype";
     }
 }
 
@@ -453,7 +479,51 @@ rocsparse_spmv_alg_ hipSpMVAlgToHCCSpMVAlg(hipsparseSpMVAlg_t alg)
     case HIPSPARSE_CSRMV_ALG2:
         return rocsparse_spmv_alg_csr_stream;
     default:
-        throw "Non existent hipSpMVAlg_t";
+        throw "Non existent hipsparseSpMVAlg_t";
+    }
+}
+
+rocsparse_sparse_to_dense_alg_ hipSpToDnAlgToHCCSpToDnAlg(hipsparseSparseToDenseAlg_t alg)
+{
+    switch(alg)
+    {
+    case HIPSPARSE_SPARSETODENSE_ALG_DEFAULT:
+        return rocsparse_sparse_to_dense_alg_default;
+    default:
+        throw "Non existent hipsparseSparseToDenseAlg_t";
+    }
+}
+
+hipsparseSparseToDenseAlg_t HCCSpToDnAlgToHipSpToDnAlg(rocsparse_sparse_to_dense_alg_ alg)
+{
+    switch(alg)
+    {
+    case rocsparse_sparse_to_dense_alg_default:
+        return HIPSPARSE_SPARSETODENSE_ALG_DEFAULT;
+    default:
+        throw "Non existent rocsparse_sparse_to_dense_alg";
+    }
+}
+
+rocsparse_dense_to_sparse_alg_ hipDnToSpAlgToHCCDnToSpAlg(hipsparseDenseToSparseAlg_t alg)
+{
+    switch(alg)
+    {
+    case HIPSPARSE_DENSETOSPARSE_ALG_DEFAULT:
+        return rocsparse_dense_to_sparse_alg_default;
+    default:
+        throw "Non existent hipsparseDenseToSparseAlg_t";
+    }
+}
+
+hipsparseDenseToSparseAlg_t HCCDnToSpAlgToHipDnToSpAlg(rocsparse_dense_to_sparse_alg_ alg)
+{
+    switch(alg)
+    {
+    case rocsparse_dense_to_sparse_alg_default:
+        return HIPSPARSE_DENSETOSPARSE_ALG_DEFAULT;
+    default:
+        throw "Non existent rocsparse_dense_to_sparse_alg";
     }
 }
 
@@ -494,7 +564,7 @@ hipsparseFormat_t HCCFormatToHIPFormat(rocsparse_format_ format)
     case rocsparse_format_csr:
         return HIPSPARSE_FORMAT_CSR;
     default:
-        throw "Non existent rocsparse_format_";
+        throw "Non existent rocsparse_format";
     }
 }
 
@@ -10691,6 +10761,32 @@ hipsparseStatus_t hipsparseCreateCsr(hipsparseSpMatDescr_t* spMatDescr,
                                    hipDataTypeToHCCDataType(valueType)));
 }
 
+hipsparseStatus_t hipsparseCreateCsc(hipsparseSpMatDescr_t* spMatDescr,
+                                     int64_t                rows,
+                                     int64_t                cols,
+                                     int64_t                nnz,
+                                     void*                  cscColOffsets,
+                                     void*                  cscRowInd,
+                                     void*                  cscValues,
+                                     hipsparseIndexType_t   cscColOffsetsType,
+                                     hipsparseIndexType_t   cscRowIndType,
+                                     hipsparseIndexBase_t   idxBase,
+                                     hipDataType            valueType)
+{
+    return rocSPARSEStatusToHIPStatus(
+        rocsparse_create_csc_descr((rocsparse_spmat_descr*)spMatDescr,
+                                   rows,
+                                   cols,
+                                   nnz,
+                                   cscColOffsets,
+                                   cscRowInd,
+                                   cscValues,
+                                   hipIndexTypeToHCCIndexType(cscColOffsetsType),
+                                   hipIndexTypeToHCCIndexType(cscRowIndType),
+                                   hipBaseToHCCBase(idxBase),
+                                   hipDataTypeToHCCDataType(valueType)));
+}
+
 hipsparseStatus_t hipsparseDestroySpMat(hipsparseSpMatDescr_t spMatDescr)
 {
     return rocSPARSEStatusToHIPStatus(
@@ -10809,6 +10905,24 @@ hipsparseStatus_t hipsparseCsrSetPointers(hipsparseSpMatDescr_t spMatDescr,
         (rocsparse_spmat_descr)spMatDescr, csrRowOffsets, csrColInd, csrValues));
 }
 
+hipsparseStatus_t hipsparseCscSetPointers(hipsparseSpMatDescr_t spMatDescr,
+                                          void*                 cscColOffsets,
+                                          void*                 cscRowInd,
+                                          void*                 cscValues)
+{
+    return rocSPARSEStatusToHIPStatus(rocsparse_csc_set_pointers(
+        (rocsparse_spmat_descr)spMatDescr, cscColOffsets, cscRowInd, cscValues));
+}
+
+hipsparseStatus_t hipsparseCooSetPointers(hipsparseSpMatDescr_t spMatDescr,
+                                          void*                 cooRowInd,
+                                          void*                 cooColInd,
+                                          void*                 cooValues)
+{
+    return rocSPARSEStatusToHIPStatus(rocsparse_coo_set_pointers(
+        (rocsparse_spmat_descr)spMatDescr, cooRowInd, cooColInd, cooValues));
+}
+
 hipsparseStatus_t hipsparseSpMatGetSize(hipsparseSpMatDescr_t spMatDescr,
                                         int64_t*              rows,
                                         int64_t*              cols,
@@ -10897,6 +11011,66 @@ hipsparseStatus_t hipsparseDnVecSetValues(hipsparseDnVecDescr_t dnVecDescr, void
         rocsparse_dnvec_set_values((rocsparse_dnvec_descr)dnVecDescr, values));
 }
 
+hipsparseStatus_t hipsparseCreateDnMat(hipsparseDnMatDescr_t* dnMatDescr,
+                                       int64_t                rows,
+                                       int64_t                cols,
+                                       int64_t                ld,
+                                       void*                  values,
+                                       hipDataType            valueType,
+                                       hipsparseOrder_t       order)
+{
+    return rocSPARSEStatusToHIPStatus(
+        rocsparse_create_dnmat_descr((rocsparse_dnmat_descr*)dnMatDescr,
+                                     rows,
+                                     cols,
+                                     ld,
+                                     values,
+                                     hipDataTypeToHCCDataType(valueType),
+                                     hipOrderToHCCOrder(order)));
+}
+
+hipsparseStatus_t hipsparseDestroyDnMat(hipsparseDnMatDescr_t dnMatDescr)
+{
+    return rocSPARSEStatusToHIPStatus(
+        rocsparse_destroy_dnmat_descr((rocsparse_dnmat_descr)dnMatDescr));
+}
+
+hipsparseStatus_t hipsparseDnMatGet(const hipsparseDnMatDescr_t dnMatDescr,
+                                    int64_t*                    rows,
+                                    int64_t*                    cols,
+                                    int64_t*                    ld,
+                                    void**                      values,
+                                    hipDataType*                valueType,
+                                    hipsparseOrder_t*           order)
+{
+    rocsparse_datatype hcc_data_type;
+    rocsparse_order    hcc_order;
+    RETURN_IF_ROCSPARSE_ERROR(rocsparse_dnmat_get((const rocsparse_dnmat_descr)dnMatDescr,
+                                                  rows,
+                                                  cols,
+                                                  ld,
+                                                  values,
+                                                  valueType != nullptr ? &hcc_data_type : nullptr,
+                                                  order != nullptr ? &hcc_order : nullptr));
+
+    *valueType = HCCDataTypeToHIPDataType(hcc_data_type);
+    *order     = HCCOrderToHIPOrder(hcc_order);
+
+    return HIPSPARSE_STATUS_SUCCESS;
+}
+
+hipsparseStatus_t hipsparseDnMatGetValues(const hipsparseDnMatDescr_t dnMatDescr, void** values)
+{
+    return rocSPARSEStatusToHIPStatus(
+        rocsparse_dnmat_get_values((const rocsparse_dnmat_descr)dnMatDescr, values));
+}
+
+hipsparseStatus_t hipsparseDnMatSetValues(hipsparseDnMatDescr_t dnMatDescr, void* values)
+{
+    return rocSPARSEStatusToHIPStatus(
+        rocsparse_dnmat_set_values((rocsparse_dnmat_descr)dnMatDescr, values));
+}
+
 hipsparseStatus_t hipsparseAxpby(hipsparseHandle_t     handle,
                                  const void*           alpha,
                                  hipsparseSpVecDescr_t vecX,
@@ -10937,6 +11111,78 @@ hipsparseStatus_t hipsparseRot(hipsparseHandle_t     handle,
                                                     s_coeff,
                                                     (rocsparse_spvec_descr)vecX,
                                                     (rocsparse_dnvec_descr)vecY));
+}
+
+hipsparseStatus_t hipsparseSparseToDense_bufferSize(hipsparseHandle_t           handle,
+                                                    hipsparseSpMatDescr_t       matA,
+                                                    hipsparseDnMatDescr_t       matB,
+                                                    hipsparseSparseToDenseAlg_t alg,
+                                                    size_t*                     bufferSize)
+{
+    return rocSPARSEStatusToHIPStatus(rocsparse_sparse_to_dense((rocsparse_handle)handle,
+                                                                (rocsparse_spmat_descr)matA,
+                                                                (rocsparse_dnmat_descr)matB,
+                                                                hipSpToDnAlgToHCCSpToDnAlg(alg),
+                                                                bufferSize,
+                                                                nullptr));
+}
+
+hipsparseStatus_t hipsparseSparseToDense(hipsparseHandle_t           handle,
+                                         hipsparseSpMatDescr_t       matA,
+                                         hipsparseDnMatDescr_t       matB,
+                                         hipsparseSparseToDenseAlg_t alg,
+                                         void*                       externalBuffer)
+{
+    return rocSPARSEStatusToHIPStatus(rocsparse_sparse_to_dense((rocsparse_handle)handle,
+                                                                (rocsparse_spmat_descr)matA,
+                                                                (rocsparse_dnmat_descr)matB,
+                                                                hipSpToDnAlgToHCCSpToDnAlg(alg),
+                                                                nullptr,
+                                                                externalBuffer));
+}
+
+hipsparseStatus_t hipsparseDenseToSparse_bufferSize(hipsparseHandle_t           handle,
+                                                    hipsparseDnMatDescr_t       matA,
+                                                    hipsparseSpMatDescr_t       matB,
+                                                    hipsparseDenseToSparseAlg_t alg,
+                                                    size_t*                     bufferSize)
+{
+    return rocSPARSEStatusToHIPStatus(rocsparse_dense_to_sparse((rocsparse_handle)handle,
+                                                                (rocsparse_dnmat_descr)matA,
+                                                                (rocsparse_spmat_descr)matB,
+                                                                hipDnToSpAlgToHCCDnToSpAlg(alg),
+                                                                bufferSize,
+                                                                nullptr));
+}
+
+hipsparseStatus_t hipsparseDenseToSparse_analysis(hipsparseHandle_t           handle,
+                                                  hipsparseDnMatDescr_t       matA,
+                                                  hipsparseSpMatDescr_t       matB,
+                                                  hipsparseDenseToSparseAlg_t alg,
+                                                  void*                       externalBuffer)
+{
+    return rocSPARSEStatusToHIPStatus(rocsparse_dense_to_sparse((rocsparse_handle)handle,
+                                                                (rocsparse_dnmat_descr)matA,
+                                                                (rocsparse_spmat_descr)matB,
+                                                                hipDnToSpAlgToHCCDnToSpAlg(alg),
+                                                                nullptr,
+                                                                externalBuffer));
+}
+
+hipsparseStatus_t hipsparseDenseToSparse_convert(hipsparseHandle_t           handle,
+                                                 hipsparseDnMatDescr_t       matA,
+                                                 hipsparseSpMatDescr_t       matB,
+                                                 hipsparseDenseToSparseAlg_t alg,
+                                                 void*                       externalBuffer)
+{
+    size_t bufferSize = 4;
+    return rocSPARSEStatusToHIPStatus(
+        rocsparse_dense_to_sparse((rocsparse_handle)handle,
+                                  (rocsparse_dnmat_descr)matA,
+                                  (rocsparse_spmat_descr)matB,
+                                  hipDnToSpAlgToHCCDnToSpAlg(alg),
+                                  externalBuffer != nullptr ? &bufferSize : nullptr,
+                                  externalBuffer));
 }
 
 hipsparseStatus_t hipsparseSpVV_bufferSize(hipsparseHandle_t     handle,

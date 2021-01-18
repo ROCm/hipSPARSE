@@ -4516,7 +4516,6 @@ public:
     hipsparseDiagType_t     diag_type = HIPSPARSE_DIAG_TYPE_NON_UNIT;
     hipsparseFillMode_t     fill_mode = HIPSPARSE_FILL_MODE_LOWER;
     hipsparseDirection_t    dirA      = HIPSPARSE_DIRECTION_ROW;
-    hipsparseSpMVAlg_t      spmv_alg  = HIPSPARSE_MV_ALG_DEFAULT;
 
     int norm_check = 0;
     int unit_check = 1;
@@ -4568,7 +4567,6 @@ public:
         this->diag_type = rhs.diag_type;
         this->fill_mode = rhs.fill_mode;
         this->dirA      = rhs.dirA;
-        this->spmv_alg  = rhs.spmv_alg;
 
         this->norm_check = rhs.norm_check;
         this->unit_check = rhs.unit_check;
