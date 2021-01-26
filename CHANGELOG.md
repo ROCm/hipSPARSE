@@ -1,6 +1,6 @@
 # Change Log for hipSPARSE
 
-## [(Unreleased) hipSPARSE 1.10.4 for ROCm 4.1.0]
+## [hipSPARSE 1.10.4 for ROCm 4.1.0]
 ### Added
 - Generic API support, including Axpby, Gather, Scatter, Rot, SpVV, SpMV and SpGEMM
 
