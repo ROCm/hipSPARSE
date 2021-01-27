@@ -1,5 +1,5 @@
 /* ************************************************************************
-* Copyright (c) 2018-2020 Advanced Micro Devices, Inc.
+* Copyright (c) 2018-2021 Advanced Micro Devices, Inc.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -1211,6 +1211,41 @@ namespace hipsparse
                                             int                       rowBlockDimC,
                                             int                       colBlockDimC,
                                             void*                     buffer);
+
+    template <typename T>
+    hipsparseStatus_t hipsparseXcsru2csr_bufferSizeExt(hipsparseHandle_t handle,
+                                                       int               m,
+                                                       int               n,
+                                                       int               nnz,
+                                                       T*                csrVal,
+                                                       const int*        csrRowPtr,
+                                                       int*              csrColInd,
+                                                       csru2csrInfo_t    info,
+                                                       size_t*           pBufferSizeInBytes);
+
+    template <typename T>
+    hipsparseStatus_t hipsparseXcsru2csr(hipsparseHandle_t         handle,
+                                         int                       m,
+                                         int                       n,
+                                         int                       nnz,
+                                         const hipsparseMatDescr_t descrA,
+                                         T*                        csrVal,
+                                         const int*                csrRowPtr,
+                                         int*                      csrColInd,
+                                         csru2csrInfo_t            info,
+                                         void*                     pBuffer);
+
+    template <typename T>
+    hipsparseStatus_t hipsparseXcsr2csru(hipsparseHandle_t         handle,
+                                         int                       m,
+                                         int                       n,
+                                         int                       nnz,
+                                         const hipsparseMatDescr_t descrA,
+                                         T*                        csrVal,
+                                         const int*                csrRowPtr,
+                                         int*                      csrColInd,
+                                         csru2csrInfo_t            info,
+                                         void*                     pBuffer);
 
 } // namespace hipsparse
 

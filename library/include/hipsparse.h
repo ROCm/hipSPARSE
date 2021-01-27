@@ -1,5 +1,5 @@
 /* ************************************************************************
-* Copyright (c) 2018-2020 Advanced Micro Devices, Inc.
+* Copyright (c) 2018-2021 Advanced Micro Devices, Inc.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -72,6 +72,8 @@ typedef void* csrilu02Info_t;
 typedef void* csric02Info_t;
 typedef void* csrgemm2Info_t;
 typedef void* pruneInfo_t;
+struct csru2csrInfo;
+typedef struct csru2csrInfo* csru2csrInfo_t;
 #elif defined(__HIP_PLATFORM_NVCC__)
 struct bsrsv2Info;
 typedef struct bsrsv2Info* bsrsv2Info_t;
@@ -91,6 +93,8 @@ struct csrgemm2Info;
 typedef struct csrgemm2Info* csrgemm2Info_t;
 struct pruneInfo;
 typedef struct pruneInfo* pruneInfo_t;
+struct csru2csrInfo;
+typedef struct csru2csrInfo* csru2csrInfo_t;
 #endif
 
 // clang-format off
@@ -269,6 +273,11 @@ HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreateCsric02Info(csric02Info_t* info);
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroyCsric02Info(csric02Info_t info);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCreateCsru2csrInfo(csru2csrInfo_t* info);
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDestroyCsru2csrInfo(csru2csrInfo_t info);
 
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
@@ -4791,6 +4800,146 @@ hipsparseStatus_t hipsparseZgebsr2gebsr(hipsparseHandle_t         handle,
                                         int                       rowBlockDimC,
                                         int                       colBlockDimC,
                                         void*                     buffer);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseScsru2csr_bufferSizeExt(hipsparseHandle_t handle,
+                                                   int               m,
+                                                   int               n,
+                                                   int               nnz,
+                                                   float*            csrVal,
+                                                   const int*        csrRowPtr,
+                                                   int*              csrColInd,
+                                                   csru2csrInfo_t    info,
+                                                   size_t*           pBufferSizeInBytes);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDcsru2csr_bufferSizeExt(hipsparseHandle_t handle,
+                                                   int               m,
+                                                   int               n,
+                                                   int               nnz,
+                                                   double*           csrVal,
+                                                   const int*        csrRowPtr,
+                                                   int*              csrColInd,
+                                                   csru2csrInfo_t    info,
+                                                   size_t*           pBufferSizeInBytes);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCcsru2csr_bufferSizeExt(hipsparseHandle_t handle,
+                                                   int               m,
+                                                   int               n,
+                                                   int               nnz,
+                                                   hipComplex*       csrVal,
+                                                   const int*        csrRowPtr,
+                                                   int*              csrColInd,
+                                                   csru2csrInfo_t    info,
+                                                   size_t*           pBufferSizeInBytes);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseZcsru2csr_bufferSizeExt(hipsparseHandle_t handle,
+                                                   int               m,
+                                                   int               n,
+                                                   int               nnz,
+                                                   hipDoubleComplex* csrVal,
+                                                   const int*        csrRowPtr,
+                                                   int*              csrColInd,
+                                                   csru2csrInfo_t    info,
+                                                   size_t*           pBufferSizeInBytes);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseScsru2csr(hipsparseHandle_t         handle,
+                                     int                       m,
+                                     int                       n,
+                                     int                       nnz,
+                                     const hipsparseMatDescr_t descrA,
+                                     float*                    csrVal,
+                                     const int*                csrRowPtr,
+                                     int*                      csrColInd,
+                                     csru2csrInfo_t            info,
+                                     void*                     pBuffer);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDcsru2csr(hipsparseHandle_t         handle,
+                                     int                       m,
+                                     int                       n,
+                                     int                       nnz,
+                                     const hipsparseMatDescr_t descrA,
+                                     double*                   csrVal,
+                                     const int*                csrRowPtr,
+                                     int*                      csrColInd,
+                                     csru2csrInfo_t            info,
+                                     void*                     pBuffer);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCcsru2csr(hipsparseHandle_t         handle,
+                                     int                       m,
+                                     int                       n,
+                                     int                       nnz,
+                                     const hipsparseMatDescr_t descrA,
+                                     hipComplex*               csrVal,
+                                     const int*                csrRowPtr,
+                                     int*                      csrColInd,
+                                     csru2csrInfo_t            info,
+                                     void*                     pBuffer);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseZcsru2csr(hipsparseHandle_t         handle,
+                                     int                       m,
+                                     int                       n,
+                                     int                       nnz,
+                                     const hipsparseMatDescr_t descrA,
+                                     hipDoubleComplex*         csrVal,
+                                     const int*                csrRowPtr,
+                                     int*                      csrColInd,
+                                     csru2csrInfo_t            info,
+                                     void*                     pBuffer);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseScsr2csru(hipsparseHandle_t         handle,
+                                     int                       m,
+                                     int                       n,
+                                     int                       nnz,
+                                     const hipsparseMatDescr_t descrA,
+                                     float*                    csrVal,
+                                     const int*                csrRowPtr,
+                                     int*                      csrColInd,
+                                     csru2csrInfo_t            info,
+                                     void*                     pBuffer);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDcsr2csru(hipsparseHandle_t         handle,
+                                     int                       m,
+                                     int                       n,
+                                     int                       nnz,
+                                     const hipsparseMatDescr_t descrA,
+                                     double*                   csrVal,
+                                     const int*                csrRowPtr,
+                                     int*                      csrColInd,
+                                     csru2csrInfo_t            info,
+                                     void*                     pBuffer);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCcsr2csru(hipsparseHandle_t         handle,
+                                     int                       m,
+                                     int                       n,
+                                     int                       nnz,
+                                     const hipsparseMatDescr_t descrA,
+                                     hipComplex*               csrVal,
+                                     const int*                csrRowPtr,
+                                     int*                      csrColInd,
+                                     csru2csrInfo_t            info,
+                                     void*                     pBuffer);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseZcsr2csru(hipsparseHandle_t         handle,
+                                     int                       m,
+                                     int                       n,
+                                     int                       nnz,
+                                     const hipsparseMatDescr_t descrA,
+                                     hipDoubleComplex*         csrVal,
+                                     const int*                csrRowPtr,
+                                     int*                      csrColInd,
+                                     csru2csrInfo_t            info,
+                                     void*                     pBuffer);
 
 /* Generic API */
 
