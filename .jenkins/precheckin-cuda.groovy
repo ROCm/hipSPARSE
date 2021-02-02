@@ -54,7 +54,7 @@ ci: {
     if(!jobNameList.keySet().contains(urlJobName))
     {
         properties(auxiliary.addCommonProperties([pipelineTriggers([cron('0 1 * * 6')])]))
-        runCI(['ubuntu20-cuda11':['anycuda']], urlJobName, buildCommand, label)
+        runCI(['ubuntu20-cuda11':['anycuda']], urlJobName)
     }
 }
 
