@@ -16,8 +16,8 @@ def runCI =
     def prj = new rocProject('hipSPARSE', 'PreCheckin-Cuda')
 
     prj.paths.build_command = './install.sh -c --cuda'
-    prj.compiler.compiler_name = 'nvcc'
-    prj.compiler.compiler_path = 'nvcc'
+    prj.compiler.compiler_name = 'c++'
+    prj.compiler.compiler_path = 'c++'
 
     // Define test architectures, optional rocm version argument is available
     def nodes = new dockerNodes(nodeDetails, jobName, prj)
