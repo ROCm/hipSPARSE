@@ -13,12 +13,11 @@ def runCI =
 {
     nodeDetails, jobName->
 
-    def prj = new rocProject('hipSPARSE', 'PreCheckin')
+    def prj = new rocProject('hipSPARSE', 'PreCheckin-Cuda')
 
-    prj.paths.build_command = './install.sh -c'
-    prj.compiler.compiler_name = 'c++'
-    prj.compiler.compiler_path = 'c++'
-    prj.libraryDependencies = ['rocSPARSE', 'rocPRIM']
+    prj.paths.build_command = './install.sh -c --cuda'
+    prj.compiler.compiler_name = 'nvcc'
+    prj.compiler.compiler_path = 'nvcc'
 
     // Define test architectures, optional rocm version argument is available
     def nodes = new dockerNodes(nodeDetails, jobName, prj)
@@ -32,17 +31,10 @@ def runCI =
         platform, project->
 
         commonGroovy = load "${project.paths.project_src_prefix}/.jenkins/common.groovy"
-        commonGroovy.runCompileCommand(platform, project, false, true)
+        commonGroovy.runCompileCommand(platform, project)
     }
 
-    def testCommand =
-    {
-        platform, project->
-
-        def gfilter = "*checkin*"
-
-        commonGroovy.runTestCommand(platform, project, gfilter)
-    }
+    //Temporarily disable testing
 
     def packageCommand =
     {
@@ -51,7 +43,7 @@ def runCI =
         commonGroovy.runPackageCommand(platform, project)
     }
 
-    buildProject(prj, formatCheck, nodes.dockerArray, compileCommand, testCommand, packageCommand)
+    buildProject(prj, formatCheck, nodes.dockerArray, compileCommand, null, packageCommand)
 }
 
 ci: { 
