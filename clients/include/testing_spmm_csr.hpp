@@ -184,7 +184,7 @@ hipsparseStatus_t testing_spmm_csr()
         path_exe[len - 14] = '\0';
 
     // Matrices are stored at the same path in matrices directory
-    std::string filename = std::string(path_exe) + "../matrices/nos2.bin";
+    std::string filename = std::string(path_exe) + "../matrices/nos3.bin";
 
     // Index and data type
     hipsparseIndexType_t typeI
@@ -210,17 +210,17 @@ hipsparseStatus_t testing_spmm_csr()
     srand(12345ULL);
 
     J m;
-    J n;
+    J k;
     I nnz;
 
-    if(read_bin_matrix(filename.c_str(), m, n, nnz, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base)
+    if(read_bin_matrix(filename.c_str(), m, k, nnz, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base)
        != 0)
     {
         fprintf(stderr, "Cannot open [read] %s\n", filename.c_str());
         return HIPSPARSE_STATUS_INTERNAL_ERROR;
     }
 
-    J k   = 5;
+    J n   = 5;
     J ldb = k;
     J ldc = m;
 
@@ -231,28 +231,6 @@ hipsparseStatus_t testing_spmm_csr()
 
     hipsparseInit<T>(hB, k, n);
     hipsparseInit<T>(hC_1, m, n);
-
-    // std::cout << "hB" << std::endl;
-    // for(int i = 0; i < k; i++)
-    // {
-    //     for(int j = 0; j < n; j++)
-    //     {
-    //         std::cout << hB[j * k + i] << " ";
-    //     }
-    //     std::cout << "" << std::endl;
-    // }
-    // std::cout << "" << std::endl;
-
-    // std::cout << "hC" << std::endl;
-    // for(int i = 0; i < m; i++)
-    // {
-    //     for(int j = 0; j < n; j++)
-    //     {
-    //         std::cout << hC_1[j * m + i] << " ";
-    //     }
-    //     std::cout << "" << std::endl;
-    // }
-    // std::cout << "" << std::endl;
 
     // copy vector is easy in STL; hC_gold = hB: save a copy in hy_gold which will be output of CPU
     hC_2    = hC_1;
@@ -295,9 +273,6 @@ hipsparseStatus_t testing_spmm_csr()
     CHECK_HIP_ERROR(hipMemcpy(dC_2, hC_2.data(), sizeof(T) * m * n, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(d_alpha, &h_alpha, sizeof(T), hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(d_beta, &h_beta, sizeof(T), hipMemcpyHostToDevice));
-
-    std::cout << "m: " << m << " n: " << n << " k: " << k << " ldb: " << ldb << " ldc: " << ldc
-              << " nnz: " << nnz << std::endl;
 
     // Create matrices
     hipsparseSpMatDescr_t A;
@@ -358,7 +333,7 @@ hipsparseStatus_t testing_spmm_csr()
                     idx_B = (j + (hcsr_col_ind[k] - idx_base) * ldb);
                 }
 
-                sum = std::fma(hcsr_val[k], hB[idx_B], sum);
+                sum = testing_fma(hcsr_val[k], hB[idx_B], sum);
             }
 
             if(h_beta == static_cast<T>(0))
@@ -367,7 +342,7 @@ hipsparseStatus_t testing_spmm_csr()
             }
             else
             {
-                hC_gold[idx_C] = std::fma(h_beta, hC_gold[idx_C], h_alpha * sum);
+                hC_gold[idx_C] = testing_fma(h_beta, hC_gold[idx_C], h_alpha * sum);
             }
         }
     }

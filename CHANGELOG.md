@@ -2,7 +2,7 @@
 
 ## [(Unreleased) hipSPARSE 1.10.4 for ROCm 4.1.0]
 ### Added
-- Generic API support, including Axpby, Gather, Scatter, Rot, SpVV, SpMV, SparseToDense, DenseToSparse and SpGEMM
+- Generic API support, including Axpby, Gather, Scatter, Rot, SpVV, SpMV, SpMM, SparseToDense, DenseToSparse and SpGEMM
 
 ## [hipSPARSE 1.9.6 for ROCm 4.0.0]
 ### Added
