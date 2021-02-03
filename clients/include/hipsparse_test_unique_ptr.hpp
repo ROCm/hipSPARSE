@@ -1,5 +1,5 @@
 /* ************************************************************************
- * Copyright (c) 2018-2020 Advanced Micro Devices, Inc.
+ * Copyright (c) 2018-2021 Advanced Micro Devices, Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -254,6 +254,22 @@ namespace hipsparse_test
         {
             hipsparseStatus_t status = hipsparseDestroyPruneInfo(info);
             verify_hipsparse_status_success(status, "ERROR: prune_struct destructor");
+        }
+    };
+
+    struct csru2csr_struct
+    {
+        csru2csrInfo_t info;
+        csru2csr_struct()
+        {
+            hipsparseStatus_t status = hipsparseCreateCsru2csrInfo(&info);
+            verify_hipsparse_status_success(status, "ERROR: csru2csr_struct constructor");
+        }
+
+        ~csru2csr_struct()
+        {
+            hipsparseStatus_t status = hipsparseDestroyCsru2csrInfo(info);
+            verify_hipsparse_status_success(status, "ERROR: csru2csr_struct destructor");
         }
     };
 
