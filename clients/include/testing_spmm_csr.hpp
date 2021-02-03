@@ -44,6 +44,8 @@ void testing_spmm_csr_bad_arg(void)
     // do not test for bad args
     return;
 #endif
+
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
     int32_t              n         = 100;
     int32_t              m         = 100;
     int32_t              k         = 100;
@@ -159,11 +161,13 @@ void testing_spmm_csr_bad_arg(void)
     verify_hipsparse_status_success(hipsparseDestroySpMat(A), "success");
     verify_hipsparse_status_success(hipsparseDestroyDnMat(B), "success");
     verify_hipsparse_status_success(hipsparseDestroyDnMat(C), "success");
+#endif
 }
 
 template <typename I, typename J, typename T>
 hipsparseStatus_t testing_spmm_csr()
 {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
     T                    h_alpha  = make_DataType<T>(2.0);
     T                    h_beta   = make_DataType<T>(1.0);
     hipsparseOperation_t transA   = HIPSPARSE_OPERATION_NON_TRANSPOSE;
@@ -357,6 +361,8 @@ hipsparseStatus_t testing_spmm_csr()
     CHECK_HIPSPARSE_ERROR(hipsparseDestroyDnMat(B));
     CHECK_HIPSPARSE_ERROR(hipsparseDestroyDnMat(C1));
     CHECK_HIPSPARSE_ERROR(hipsparseDestroyDnMat(C2));
+
+#endif
 
     return HIPSPARSE_STATUS_SUCCESS;
 }
