@@ -318,7 +318,7 @@ hipsparseStatus_t testing_spmm_csr()
             I row_end   = hcsr_row_ptr[i + 1] - idx_base;
             J idx_C     = order == HIPSPARSE_ORDER_COLUMN ? i + j * ldc : i * ldc + j;
 
-            T sum = static_cast<T>(0);
+            T sum = make_DataType<T>(0);
 
             for(I k = row_begin; k < row_end; ++k)
             {
@@ -336,7 +336,7 @@ hipsparseStatus_t testing_spmm_csr()
                 sum = testing_fma(hcsr_val[k], hB[idx_B], sum);
             }
 
-            if(h_beta == static_cast<T>(0))
+            if(h_beta == make_DataType<T>(0))
             {
                 hC_gold[idx_C] = h_alpha * sum;
             }
