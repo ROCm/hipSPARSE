@@ -296,7 +296,8 @@ hipsparseStatus_t testing_spmm_csr()
     CHECK_HIP_ERROR(hipMemcpy(d_alpha, &h_alpha, sizeof(T), hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(d_beta, &h_beta, sizeof(T), hipMemcpyHostToDevice));
 
-    std::cout << "m: " << m << " n: " << n << " k: " << k << " ldb: " << ldb << " ldc: " << ldc << " nnz: " << nnz << std::endl;
+    std::cout << "m: " << m << " n: " << n << " k: " << k << " ldb: " << ldb << " ldc: " << ldc
+              << " nnz: " << nnz << std::endl;
 
     // Create matrices
     hipsparseSpMatDescr_t A;
@@ -348,7 +349,7 @@ hipsparseStatus_t testing_spmm_csr()
             {
                 J idx_B = 0;
                 if((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE && order == HIPSPARSE_ORDER_COLUMN)
-                    || (transB == HIPSPARSE_OPERATION_TRANSPOSE && order == HIPSPARSE_ORDER_ROW))
+                   || (transB == HIPSPARSE_OPERATION_TRANSPOSE && order == HIPSPARSE_ORDER_ROW))
                 {
                     idx_B = (hcsr_col_ind[k] - idx_base + j * ldb);
                 }
