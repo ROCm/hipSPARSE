@@ -12224,7 +12224,6 @@ hipsparseStatus_t hipsparseSpMM(hipsparseHandle_t           handle,
                                 void*                       externalBuffer)
 {
     size_t bufferSize;
-    std::cout << "alg: " << hipSpMMAlgToHCCSpMMAlg(alg) << std::endl;
     return rocSPARSEStatusToHIPStatus(rocsparse_spmm((rocsparse_handle)handle,
                                                      hipOperationToHCCOperation(opA),
                                                      hipOperationToHCCOperation(opB),

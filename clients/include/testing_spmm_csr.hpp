@@ -173,8 +173,6 @@ hipsparseStatus_t testing_spmm_csr()
     hipsparseSpMMAlg_t   alg      = HIPSPARSE_SPMM_CSR_ALG1;
     hipsparseStatus_t    status;
 
-    //std::cout << "alg: " << static_cast<int>(HIPSPARSE_SPMM_CSR_ALG1) << std::endl;
-
     // Determine absolute path of test matrix
 
     // Get current executables absolute path
@@ -186,7 +184,7 @@ hipsparseStatus_t testing_spmm_csr()
         path_exe[len - 14] = '\0';
 
     // Matrices are stored at the same path in matrices directory
-    std::string filename = std::string(path_exe) + "../matrices/nos3.bin";
+    std::string filename = std::string(path_exe) + "../matrices/nos2.bin";
 
     // Index and data type
     hipsparseIndexType_t typeI
@@ -215,16 +213,16 @@ hipsparseStatus_t testing_spmm_csr()
     J n;
     I nnz;
 
-    J k   = 20;
-    J ldb = k;
-    J ldc = m;
-
     if(read_bin_matrix(filename.c_str(), m, n, nnz, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base)
        != 0)
     {
         fprintf(stderr, "Cannot open [read] %s\n", filename.c_str());
         return HIPSPARSE_STATUS_INTERNAL_ERROR;
     }
+
+    J k   = 5;
+    J ldb = k;
+    J ldc = m;
 
     std::vector<T> hB(k * n);
     std::vector<T> hC_1(m * n);
@@ -298,14 +296,12 @@ hipsparseStatus_t testing_spmm_csr()
     CHECK_HIP_ERROR(hipMemcpy(d_alpha, &h_alpha, sizeof(T), hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(d_beta, &h_beta, sizeof(T), hipMemcpyHostToDevice));
 
-    std::cout << "m: " << m << " n: " << n << " k: " << k << " nnz: " << nnz << std::endl;
+    std::cout << "m: " << m << " n: " << n << " k: " << k << " ldb: " << ldb << " ldc: " << ldc << " nnz: " << nnz << std::endl;
 
     // Create matrices
     hipsparseSpMatDescr_t A;
     CHECK_HIPSPARSE_ERROR(
         hipsparseCreateCsr(&A, m, k, nnz, dptr, dcol, dval, typeI, typeJ, idx_base, typeT));
-
-    std::cout << "AAAA" << std::endl;
 
     // Create dense matrices
     hipsparseDnMatDescr_t B, C1, C2;
@@ -313,14 +309,10 @@ hipsparseStatus_t testing_spmm_csr()
     CHECK_HIPSPARSE_ERROR(hipsparseCreateDnMat(&C1, m, n, ldc, dC_1, typeT, order));
     CHECK_HIPSPARSE_ERROR(hipsparseCreateDnMat(&C2, m, n, ldc, dC_2, typeT, order));
 
-    std::cout << "BBBB" << std::endl;
-
     // Query SpMM buffer
     size_t bufferSize;
     CHECK_HIPSPARSE_ERROR(hipsparseSpMM_bufferSize(
         handle, transA, transB, &h_alpha, A, B, &h_beta, C1, typeT, alg, &bufferSize));
-
-    std::cout << "bufferSize: " << bufferSize << std::endl;
 
     void* buffer;
     CHECK_HIP_ERROR(hipMalloc(&buffer, bufferSize));
@@ -330,110 +322,65 @@ hipsparseStatus_t testing_spmm_csr()
     CHECK_HIPSPARSE_ERROR(
         hipsparseSpMM(handle, transA, transB, &h_alpha, A, B, &h_beta, C1, typeT, alg, buffer));
 
-    std::cout << "CCCC" << std::endl;
-
     // ROCSPARSE pointer mode device
-    //CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
-    //CHECK_HIPSPARSE_ERROR(
-    //    hipsparseSpMM(handle, transA, transB, d_alpha, A, B, d_beta, C2, typeT, alg, buffer));
-
-    std::cout << "DDDD" << std::endl;
+    CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
+    CHECK_HIPSPARSE_ERROR(
+        hipsparseSpMM(handle, transA, transB, d_alpha, A, B, d_beta, C2, typeT, alg, buffer));
 
     // copy output from device to CPU
-    //CHECK_HIP_ERROR(hipMemcpy(hC_1.data(), dC_1, sizeof(T) * m * n, hipMemcpyDeviceToHost));
-    //CHECK_HIP_ERROR(hipMemcpy(hC_2.data(), dC_2, sizeof(T) * m * n, hipMemcpyDeviceToHost));
+    CHECK_HIP_ERROR(hipMemcpy(hC_1.data(), dC_1, sizeof(T) * m * n, hipMemcpyDeviceToHost));
+    CHECK_HIP_ERROR(hipMemcpy(hC_2.data(), dC_2, sizeof(T) * m * n, hipMemcpyDeviceToHost));
 
-    std::cout << "EEEE" << std::endl;
+    // CPU
+    double cpu_time_used = get_time_us();
 
-    // // CPU
-    // double cpu_time_used = get_time_us();
+    for(J i = 0; i < m; ++i)
+    {
+        for(J j = 0; j < n; ++j)
+        {
+            I row_begin = hcsr_row_ptr[i] - idx_base;
+            I row_end   = hcsr_row_ptr[i + 1] - idx_base;
+            J idx_C     = order == HIPSPARSE_ORDER_COLUMN ? i + j * ldc : i * ldc + j;
 
-    // for(int i = 0; i < m; ++i)
-    // {
-    //     for(int j = 0; j < n; ++j)
-    //     {
-    //         int Cidx = i + j * ldc;
-    //         T   sum  = hC_gold[Cidx] * h_beta;
+            T sum = static_cast<T>(0);
 
-    //         for(int k = hcsr_row_ptr[i] - idx_base; k < hcsr_row_ptr[i + 1] - idx_base; ++k)
-    //         {
-    //             int Bidx = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE)
-    //                             ? (hcsr_col_ind[k] - idx_base + j * ldb)
-    //                             : (j + (hcsr_col_ind[k] - idx_base) * ldb);
-    //             sum      = sum + h_alpha * hcsr_val[k] * hB[Bidx];
-    //         }
+            for(I k = row_begin; k < row_end; ++k)
+            {
+                J idx_B = 0;
+                if((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE && order == HIPSPARSE_ORDER_COLUMN)
+                    || (transB == HIPSPARSE_OPERATION_TRANSPOSE && order == HIPSPARSE_ORDER_ROW))
+                {
+                    idx_B = (hcsr_col_ind[k] - idx_base + j * ldb);
+                }
+                else
+                {
+                    idx_B = (j + (hcsr_col_ind[k] - idx_base) * ldb);
+                }
 
-    //         hC_gold[Cidx] = sum;
-    //     }
-    // }
+                sum = std::fma(hcsr_val[k], hB[idx_B], sum);
+            }
 
-    // cpu_time_used = get_time_us() - cpu_time_used;
+            if(h_beta == static_cast<T>(0))
+            {
+                hC_gold[idx_C] = h_alpha * sum;
+            }
+            else
+            {
+                hC_gold[idx_C] = std::fma(h_beta, hC_gold[idx_C], h_alpha * sum);
+            }
+        }
+    }
 
-    //     template <typename I, typename J, typename T>
-    // void host_csrmm(J                     M,
-    //                 J                     N,
-    //                 rocsparse_operation   transB,
-    //                 T                     alpha,
-    //                 const std::vector<I>& csr_row_ptr_A,
-    //                 const std::vector<J>& csr_col_ind_A,
-    //                 const std::vector<T>& csr_val_A,
-    //                 const std::vector<T>& B,
-    //                 J                     ldb,
-    //                 T                     beta,
-    //                 std::vector<T>&       C,
-    //                 J                     ldc,
-    //                 rocsparse_order       order,
-    //                 rocsparse_index_base  base)
-    // {
-    // #ifdef _OPENMP
-    // #pragma omp parallel for schedule(dynamic, 1024)
-    // #endif
-    //     for(J i = 0; i < M; ++i)
-    //     {
-    //         for(J j = 0; j < N; ++j)
-    //         {
-    //             I row_begin = csr_row_ptr_A[i] - base;
-    //             I row_end   = csr_row_ptr_A[i + 1] - base;
-    //             J idx_C     = order == rocsparse_order_column ? i + j * ldc : i * ldc + j;
+    cpu_time_used = get_time_us() - cpu_time_used;
 
-    //             T sum = static_cast<T>(0);
+    unit_check_near(1, m * n, 1, hC_gold.data(), hC_1.data());
+    unit_check_near(1, m * n, 1, hC_gold.data(), hC_2.data());
 
-    //             for(I k = row_begin; k < row_end; ++k)
-    //             {
-    //                 J idx_B = 0;
-    //                 if((transB == rocsparse_operation_none && order == rocsparse_order_column)
-    //                    || (transB == rocsparse_operation_transpose && order == rocsparse_order_row))
-    //                 {
-    //                     idx_B = (csr_col_ind_A[k] - base + j * ldb);
-    //                 }
-    //                 else
-    //                 {
-    //                     idx_B = (j + (csr_col_ind_A[k] - base) * ldb);
-    //                 }
-
-    //                 sum = std::fma(csr_val_A[k], B[idx_B], sum);
-    //             }
-
-    //             if(beta == static_cast<T>(0))
-    //             {
-    //                 C[idx_C] = alpha * sum;
-    //             }
-    //             else
-    //             {
-    //                 C[idx_C] = std::fma(beta, C[idx_C], alpha * sum);
-    //             }
-    //         }
-    //     }
-    // }
-
-    // unit_check_near(1, m * n, 1, hC_gold.data(), hC_1.data());
-    // unit_check_near(1, m * n, 1, hC_gold.data(), hC_2.data());
-
-    // CHECK_HIP_ERROR(hipFree(buffer));
-    // CHECK_HIPSPARSE_ERROR(hipsparseDestroySpMat(A));
-    // CHECK_HIPSPARSE_ERROR(hipsparseDestroyDnMat(B));
-    // CHECK_HIPSPARSE_ERROR(hipsparseDestroyDnMat(C1));
-    // CHECK_HIPSPARSE_ERROR(hipsparseDestroyDnMat(C2));
+    CHECK_HIP_ERROR(hipFree(buffer));
+    CHECK_HIPSPARSE_ERROR(hipsparseDestroySpMat(A));
+    CHECK_HIPSPARSE_ERROR(hipsparseDestroyDnMat(B));
+    CHECK_HIPSPARSE_ERROR(hipsparseDestroyDnMat(C1));
+    CHECK_HIPSPARSE_ERROR(hipsparseDestroyDnMat(C2));
 
     return HIPSPARSE_STATUS_SUCCESS;
 }
