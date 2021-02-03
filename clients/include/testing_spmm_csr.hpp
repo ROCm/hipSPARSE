@@ -369,63 +369,62 @@ hipsparseStatus_t testing_spmm_csr()
 
     // cpu_time_used = get_time_us() - cpu_time_used;
 
+    //     template <typename I, typename J, typename T>
+    // void host_csrmm(J                     M,
+    //                 J                     N,
+    //                 rocsparse_operation   transB,
+    //                 T                     alpha,
+    //                 const std::vector<I>& csr_row_ptr_A,
+    //                 const std::vector<J>& csr_col_ind_A,
+    //                 const std::vector<T>& csr_val_A,
+    //                 const std::vector<T>& B,
+    //                 J                     ldb,
+    //                 T                     beta,
+    //                 std::vector<T>&       C,
+    //                 J                     ldc,
+    //                 rocsparse_order       order,
+    //                 rocsparse_index_base  base)
+    // {
+    // #ifdef _OPENMP
+    // #pragma omp parallel for schedule(dynamic, 1024)
+    // #endif
+    //     for(J i = 0; i < M; ++i)
+    //     {
+    //         for(J j = 0; j < N; ++j)
+    //         {
+    //             I row_begin = csr_row_ptr_A[i] - base;
+    //             I row_end   = csr_row_ptr_A[i + 1] - base;
+    //             J idx_C     = order == rocsparse_order_column ? i + j * ldc : i * ldc + j;
 
-//     template <typename I, typename J, typename T>
-// void host_csrmm(J                     M,
-//                 J                     N,
-//                 rocsparse_operation   transB,
-//                 T                     alpha,
-//                 const std::vector<I>& csr_row_ptr_A,
-//                 const std::vector<J>& csr_col_ind_A,
-//                 const std::vector<T>& csr_val_A,
-//                 const std::vector<T>& B,
-//                 J                     ldb,
-//                 T                     beta,
-//                 std::vector<T>&       C,
-//                 J                     ldc,
-//                 rocsparse_order       order,
-//                 rocsparse_index_base  base)
-// {
-// #ifdef _OPENMP
-// #pragma omp parallel for schedule(dynamic, 1024)
-// #endif
-//     for(J i = 0; i < M; ++i)
-//     {
-//         for(J j = 0; j < N; ++j)
-//         {
-//             I row_begin = csr_row_ptr_A[i] - base;
-//             I row_end   = csr_row_ptr_A[i + 1] - base;
-//             J idx_C     = order == rocsparse_order_column ? i + j * ldc : i * ldc + j;
+    //             T sum = static_cast<T>(0);
 
-//             T sum = static_cast<T>(0);
+    //             for(I k = row_begin; k < row_end; ++k)
+    //             {
+    //                 J idx_B = 0;
+    //                 if((transB == rocsparse_operation_none && order == rocsparse_order_column)
+    //                    || (transB == rocsparse_operation_transpose && order == rocsparse_order_row))
+    //                 {
+    //                     idx_B = (csr_col_ind_A[k] - base + j * ldb);
+    //                 }
+    //                 else
+    //                 {
+    //                     idx_B = (j + (csr_col_ind_A[k] - base) * ldb);
+    //                 }
 
-//             for(I k = row_begin; k < row_end; ++k)
-//             {
-//                 J idx_B = 0;
-//                 if((transB == rocsparse_operation_none && order == rocsparse_order_column)
-//                    || (transB == rocsparse_operation_transpose && order == rocsparse_order_row))
-//                 {
-//                     idx_B = (csr_col_ind_A[k] - base + j * ldb);
-//                 }
-//                 else
-//                 {
-//                     idx_B = (j + (csr_col_ind_A[k] - base) * ldb);
-//                 }
+    //                 sum = std::fma(csr_val_A[k], B[idx_B], sum);
+    //             }
 
-//                 sum = std::fma(csr_val_A[k], B[idx_B], sum);
-//             }
-
-//             if(beta == static_cast<T>(0))
-//             {
-//                 C[idx_C] = alpha * sum;
-//             }
-//             else
-//             {
-//                 C[idx_C] = std::fma(beta, C[idx_C], alpha * sum);
-//             }
-//         }
-//     }
-// }
+    //             if(beta == static_cast<T>(0))
+    //             {
+    //                 C[idx_C] = alpha * sum;
+    //             }
+    //             else
+    //             {
+    //                 C[idx_C] = std::fma(beta, C[idx_C], alpha * sum);
+    //             }
+    //         }
+    //     }
+    // }
 
     // unit_check_near(1, m * n, 1, hC_gold.data(), hC_1.data());
     // unit_check_near(1, m * n, 1, hC_gold.data(), hC_2.data());
