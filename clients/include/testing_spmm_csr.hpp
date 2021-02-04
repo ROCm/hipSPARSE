@@ -121,7 +121,7 @@ void testing_spmm_csr_bad_arg(void)
     verify_hipsparse_status_invalid_pointer(
         hipsparseSpMM_bufferSize(
             handle, transA, transB, &alpha, A, nullptr, &beta, C, dataType, alg, &bsize),
-        "Error: x is nullptr");
+        "Error: B is nullptr");
     verify_hipsparse_status_invalid_pointer(
         hipsparseSpMM_bufferSize(
             handle, transA, transB, &alpha, A, B, nullptr, C, dataType, alg, &bsize),
@@ -129,7 +129,7 @@ void testing_spmm_csr_bad_arg(void)
     verify_hipsparse_status_invalid_pointer(
         hipsparseSpMM_bufferSize(
             handle, transA, transB, &alpha, A, B, &beta, nullptr, dataType, alg, &bsize),
-        "Error: y is nullptr");
+        "Error: C is nullptr");
     verify_hipsparse_status_invalid_pointer(
         hipsparseSpMM_bufferSize(
             handle, transA, transB, &alpha, A, B, &beta, C, dataType, alg, nullptr),
@@ -146,13 +146,13 @@ void testing_spmm_csr_bad_arg(void)
         "Error: A is nullptr");
     verify_hipsparse_status_invalid_pointer(
         hipsparseSpMM(handle, transA, transB, &alpha, A, nullptr, &beta, C, dataType, alg, dbuf),
-        "Error: x is nullptr");
+        "Error: B is nullptr");
     verify_hipsparse_status_invalid_pointer(
         hipsparseSpMM(handle, transA, transB, &alpha, A, B, nullptr, C, dataType, alg, dbuf),
         "Error: beta is nullptr");
     verify_hipsparse_status_invalid_pointer(
         hipsparseSpMM(handle, transA, transB, &alpha, A, B, &beta, nullptr, dataType, alg, dbuf),
-        "Error: y is nullptr");
+        "Error: C is nullptr");
     verify_hipsparse_status_invalid_pointer(
         hipsparseSpMM(handle, transA, transB, &alpha, A, B, &beta, nullptr, dataType, alg, nullptr),
         "Error: dbuf is nullptr");
