@@ -15,23 +15,14 @@ def runCompileCommand(platform, project, boolean sameOrg=false)
         }
     }
 
-    if(platform.jenkinsLabel.contains('centos'))
+    if(platform.jenkinsLabel.contains('centos7'))
     {
         command = """#!/usr/bin/env bash
                 set -x
                 cd ${project.paths.project_build_prefix}
                 ${getDependenciesCommand}
                 export PATH=/opt/rocm/hsa/include:$PATH
-                LD_LIBRARY_PATH=/opt/rocm/hcc/lib CXX=/opt/rh/devtoolset-7/root/usr/bin/c++ ${project.paths.build_command}
-            """
-    }
-    else if(platform.jenkinsLabel.contains('sles'))
-    {
-        command = """#!/usr/bin/env bash
-                set -x
-                cd ${project.paths.project_build_prefix}
-                ${getDependenciesCommand}
-                LD_LIBRARY_PATH=/opt/rocm/hcc/lib CXX=${project.compiler.compiler_path} ${project.paths.build_command}
+                CXX=/opt/rh/devtoolset-7/root/usr/bin/c++ ${project.paths.build_command}
             """
     }
     else
@@ -40,7 +31,7 @@ def runCompileCommand(platform, project, boolean sameOrg=false)
                 set -x
                 cd ${project.paths.project_build_prefix}
                 ${getDependenciesCommand}
-                LD_LIBRARY_PATH=/opt/rocm/hcc/lib CXX=${project.compiler.compiler_path} ${project.paths.build_command}
+                CXX=${project.compiler.compiler_path} ${project.paths.build_command}
             """
     }
     platform.runCommand(this, command)
@@ -52,7 +43,7 @@ def runTestCommand (platform, project, gfilter)
     def command = """#!/usr/bin/env bash
                     set -x
                     cd ${project.paths.project_build_prefix}/build/release/clients/staging
-                    ${sudo} LD_LIBRARY_PATH=/opt/rocm/hcc/lib GTEST_LISTENER=NO_PASS_LINE_IN_LOG ./hipsparse-test --gtest_also_run_disabled_tests --gtest_output=xml --gtest_color=yes #--gtest_filter=${gfilter}-*known_bug*
+                    ${sudo} GTEST_LISTENER=NO_PASS_LINE_IN_LOG ./hipsparse-test --gtest_also_run_disabled_tests --gtest_output=xml --gtest_color=yes #--gtest_filter=${gfilter}-*known_bug*
                 """
 
     platform.runCommand(this, command)
