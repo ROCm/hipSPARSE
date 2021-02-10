@@ -151,7 +151,7 @@ hipsparseStatus_t testing_spmv_csr(void)
     T                    h_beta    = make_DataType<T>(1.0);
     hipsparseOperation_t transA    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
     hipsparseIndexBase_t idx_base  = HIPSPARSE_INDEX_BASE_ZERO;
-    hipsparseSpMVAlg_t   alg       = HIPSPARSE_COOMV_ALG;
+    hipsparseSpMVAlg_t   alg       = HIPSPARSE_CSRMV_ALG2;
     hipsparseStatus_t    status;
 
     // Determine absolute path of test matrix
