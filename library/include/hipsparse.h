@@ -5016,6 +5016,40 @@ typedef enum
 } hipsparseSpMVAlg_t;
 #endif
 
+#if(!defined(CUDART_VERSION))
+typedef enum
+{
+    HIPSPARSE_SPMM_CSR_ALG1 = 0
+} hipsparseSpMMAlg_t;
+#else
+#if(CUDART_VERSION >= 11000)
+typedef enum
+{
+    HIPSPARSE_MM_ALG_DEFAULT   = 0,
+    HIPSPARSE_COOMM_ALG1       = 1,
+    HIPSPARSE_COOMM_ALG2       = 2,
+    HIPSPARSE_COOMM_ALG3       = 3,
+    HIPSPARSE_CSRMM_ALG1       = 4,
+    HIPSPARSE_SPMM_ALG_DEFAULT = 5,
+    HIPSPARSE_SPMM_COO_ALG1    = 6,
+    HIPSPARSE_SPMM_COO_ALG2    = 7,
+    HIPSPARSE_SPMM_COO_ALG3    = 8,
+    HIPSPARSE_SPMM_COO_ALG4    = 9,
+    HIPSPARSE_SPMM_CSR_ALG1    = 10,
+    HIPSPARSE_SPMM_CSR_ALG2    = 11
+} hipsparseSpMMAlg_t;
+#elif(CUDART_VERSION >= 10010)
+typedef enum
+{
+    HIPSPARSE_MM_ALG_DEFAULT = 0,
+    HIPSPARSE_COOMM_ALG1     = 1,
+    HIPSPARSE_COOMM_ALG2     = 2,
+    HIPSPARSE_COOMM_ALG3     = 3,
+    HIPSPARSE_CSRMM_ALG1     = 4
+} hipsparseSpMMAlg_t;
+#endif
+#endif
+
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11020)
 typedef enum
 {
@@ -5480,6 +5514,37 @@ hipsparseStatus_t hipsparseSpMV(hipsparseHandle_t           handle,
                                 const hipsparseDnVecDescr_t vecY,
                                 hipDataType                 computeType,
                                 hipsparseSpMVAlg_t          alg,
+                                void*                       externalBuffer);
+#endif
+
+/* Description: Compute the sparse matrix multiplication with a dense matrix */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpMM_bufferSize(hipsparseHandle_t           handle,
+                                           hipsparseOperation_t        opA,
+                                           hipsparseOperation_t        opB,
+                                           const void*                 alpha,
+                                           const hipsparseSpMatDescr_t matA,
+                                           const hipsparseDnMatDescr_t matB,
+                                           const void*                 beta,
+                                           const hipsparseDnMatDescr_t matC,
+                                           hipDataType                 computeType,
+                                           hipsparseSpMMAlg_t          alg,
+                                           size_t*                     bufferSize);
+#endif
+
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpMM(hipsparseHandle_t           handle,
+                                hipsparseOperation_t        opA,
+                                hipsparseOperation_t        opB,
+                                const void*                 alpha,
+                                const hipsparseSpMatDescr_t matA,
+                                const hipsparseDnMatDescr_t matB,
+                                const void*                 beta,
+                                const hipsparseDnMatDescr_t matC,
+                                hipDataType                 computeType,
+                                hipsparseSpMMAlg_t          alg,
                                 void*                       externalBuffer);
 #endif
 

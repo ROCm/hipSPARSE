@@ -191,6 +191,7 @@ set(HIPSPARSE_TEST_SOURCES
   test_sparse_to_dense_csr.cpp
   test_sparse_to_dense_csc.cpp
   test_sparse_to_dense_coo.cpp
+  test_spmm_csr.cpp
   test_spgemm_csr.cpp
 )
 
