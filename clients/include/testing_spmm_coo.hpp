@@ -100,8 +100,7 @@ void testing_spmm_coo_bad_arg(void)
 
     // Create SpMM structures
     verify_hipsparse_status_success(
-        hipsparseCreateCoo(&A, m, k, nnz, drow, dcol, dval, idxType, idxBase, dataType),
-        "success");
+        hipsparseCreateCoo(&A, m, k, nnz, drow, dcol, dval, idxType, idxBase, dataType), "success");
     verify_hipsparse_status_success(hipsparseCreateDnMat(&B, k, n, k, dB, dataType, order),
                                     "success");
     verify_hipsparse_status_success(hipsparseCreateDnMat(&C, m, n, m, dC, dataType, order),
@@ -203,7 +202,6 @@ hipsparseStatus_t testing_spmm_coo()
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
     hipsparseHandle_t              handle = test_handle->handle;
 
-
     // Host structures
     std::vector<I> hrow_ptr;
     std::vector<I> hcol_ind;
@@ -277,8 +275,7 @@ hipsparseStatus_t testing_spmm_coo()
     }
 
     // copy data from CPU to device
-    CHECK_HIP_ERROR(
-        hipMemcpy(drow, hrow_ind.data(), sizeof(I) * nnz, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(drow, hrow_ind.data(), sizeof(I) * nnz, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dcol, hcol_ind.data(), sizeof(I) * nnz, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dval, hval.data(), sizeof(T) * nnz, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dB, hB.data(), sizeof(T) * k * n, hipMemcpyHostToDevice));
@@ -327,7 +324,7 @@ hipsparseStatus_t testing_spmm_coo()
     {
         for(I i = 0; i < m; ++i)
         {
-            I idx_C = order == HIPSPARSE_ORDER_COLUMN ? i + j * ldc : i * ldc + j;
+            I idx_C        = order == HIPSPARSE_ORDER_COLUMN ? i + j * ldc : i * ldc + j;
             hC_gold[idx_C] = h_beta * hC_gold[idx_C];
         }
     }
