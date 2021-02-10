@@ -22,8 +22,8 @@
  * ************************************************************************ */
 
 #pragma once
-#ifndef TESTING_SPMM_CSR_HPP
-#define TESTING_SPMM_CSR_HPP
+#ifndef TESTING_SPMM_COO_HPP
+#define TESTING_SPMM_COO_HPP
 
 #include "hipsparse.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
@@ -38,7 +38,7 @@
 using namespace hipsparse;
 using namespace hipsparse_test;
 
-void testing_spmm_csr_bad_arg(void)
+void testing_spmm_coo_bad_arg(void)
 {
 #ifdef __HIP_PLATFORM_NVCC__
     // do not test for bad args
@@ -51,7 +51,7 @@ void testing_spmm_csr_bad_arg(void)
     int32_t              k         = 100;
     int32_t              ldb       = 100;
     int32_t              ldc       = 100;
-    int64_t              nnz       = 100;
+    int32_t              nnz       = 100;
     int32_t              safe_size = 100;
     float                alpha     = 0.6;
     float                beta      = 0.2;
@@ -61,7 +61,7 @@ void testing_spmm_csr_bad_arg(void)
     hipsparseIndexBase_t idxBase   = HIPSPARSE_INDEX_BASE_ZERO;
     hipsparseIndexType_t idxType   = HIPSPARSE_INDEX_32I;
     hipDataType          dataType  = HIP_R_32F;
-    hipsparseSpMMAlg_t   alg       = HIPSPARSE_SPMM_CSR_ALG1;
+    hipsparseSpMMAlg_t   alg       = HIPSPARSE_SPMM_COO_ALG1;
     hipsparseStatus_t    status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
@@ -70,8 +70,8 @@ void testing_spmm_csr_bad_arg(void)
     std::unique_ptr<descr_struct> unique_ptr_descr(new descr_struct);
     hipsparseMatDescr_t           descr = unique_ptr_descr->descr;
 
-    auto dptr_managed
-        = hipsparse_unique_ptr{device_malloc(sizeof(int64_t) * safe_size), device_free};
+    auto drow_managed
+        = hipsparse_unique_ptr{device_malloc(sizeof(int32_t) * safe_size), device_free};
     auto dcol_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(int32_t) * safe_size), device_free};
     auto dval_managed = hipsparse_unique_ptr{device_malloc(sizeof(float) * safe_size), device_free};
@@ -79,14 +79,14 @@ void testing_spmm_csr_bad_arg(void)
     auto dC_managed   = hipsparse_unique_ptr{device_malloc(sizeof(float) * safe_size), device_free};
     auto dbuf_managed = hipsparse_unique_ptr{device_malloc(sizeof(char) * safe_size), device_free};
 
-    int64_t* dptr = (int64_t*)dptr_managed.get();
+    int32_t* drow = (int32_t*)drow_managed.get();
     int32_t* dcol = (int32_t*)dcol_managed.get();
     float*   dval = (float*)dval_managed.get();
     float*   dB   = (float*)dB_managed.get();
     float*   dC   = (float*)dC_managed.get();
     void*    dbuf = (void*)dbuf_managed.get();
 
-    if(!dval || !dptr || !dcol || !dB || !dC || !dbuf)
+    if(!dval || !drow || !dcol || !dB || !dC || !dbuf)
     {
         PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
         return;
@@ -100,7 +100,7 @@ void testing_spmm_csr_bad_arg(void)
 
     // Create SpMM structures
     verify_hipsparse_status_success(
-        hipsparseCreateCsr(&A, m, k, nnz, dptr, dcol, dval, idxType, idxType, idxBase, dataType),
+        hipsparseCreateCoo(&A, m, k, nnz, drow, dcol, dval, idxType, idxBase, dataType),
         "success");
     verify_hipsparse_status_success(hipsparseCreateDnMat(&B, k, n, k, dB, dataType, order),
                                     "success");
@@ -164,8 +164,8 @@ void testing_spmm_csr_bad_arg(void)
 #endif
 }
 
-template <typename I, typename J, typename T>
-hipsparseStatus_t testing_spmm_csr()
+template <typename I, typename T>
+hipsparseStatus_t testing_spmm_coo()
 {
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
     T                    h_alpha  = make_DataType<T>(2.0);
@@ -174,7 +174,7 @@ hipsparseStatus_t testing_spmm_csr()
     hipsparseOperation_t transB   = HIPSPARSE_OPERATION_NON_TRANSPOSE;
     hipsparseOrder_t     order    = HIPSPARSE_ORDER_COLUMN;
     hipsparseIndexBase_t idx_base = HIPSPARSE_INDEX_BASE_ZERO;
-    hipsparseSpMMAlg_t   alg      = HIPSPARSE_SPMM_CSR_ALG1;
+    hipsparseSpMMAlg_t   alg      = HIPSPARSE_SPMM_COO_ALG1;
     hipsparseStatus_t    status;
 
     // Determine absolute path of test matrix
@@ -193,8 +193,6 @@ hipsparseStatus_t testing_spmm_csr()
     // Index and data type
     hipsparseIndexType_t typeI
         = (typeid(I) == typeid(int32_t)) ? HIPSPARSE_INDEX_32I : HIPSPARSE_INDEX_64I;
-    hipsparseIndexType_t typeJ
-        = (typeid(J) == typeid(int32_t)) ? HIPSPARSE_INDEX_32I : HIPSPARSE_INDEX_64I;
     hipDataType typeT = (typeid(T) == typeid(float))
                             ? HIP_R_32F
                             : ((typeid(T) == typeid(double))
@@ -205,28 +203,39 @@ hipsparseStatus_t testing_spmm_csr()
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
     hipsparseHandle_t              handle = test_handle->handle;
 
+
     // Host structures
-    std::vector<I> hcsr_row_ptr;
-    std::vector<J> hcsr_col_ind;
-    std::vector<T> hcsr_val;
+    std::vector<I> hrow_ptr;
+    std::vector<I> hcol_ind;
+    std::vector<T> hval;
 
     // Initial Data on CPU
     srand(12345ULL);
 
-    J m;
-    J k;
+    I m;
+    I k;
     I nnz;
 
-    if(read_bin_matrix(filename.c_str(), m, k, nnz, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base)
-       != 0)
+    if(read_bin_matrix(filename.c_str(), m, k, nnz, hrow_ptr, hcol_ind, hval, idx_base) != 0)
     {
         fprintf(stderr, "Cannot open [read] %s\n", filename.c_str());
         return HIPSPARSE_STATUS_INTERNAL_ERROR;
     }
 
-    J n   = 5;
-    J ldb = k;
-    J ldc = m;
+    std::vector<I> hrow_ind(nnz);
+
+    // Convert to COO
+    for(I i = 0; i < m; ++i)
+    {
+        for(I j = hrow_ptr[i]; j < hrow_ptr[i + 1]; ++j)
+        {
+            hrow_ind[j - idx_base] = i + idx_base;
+        }
+    }
+
+    I n   = 5;
+    I ldb = k;
+    I ldc = m;
 
     std::vector<T> hB(k * n);
     std::vector<T> hC_1(m * n);
@@ -241,8 +250,8 @@ hipsparseStatus_t testing_spmm_csr()
     hC_gold = hC_1;
 
     // allocate memory on device
-    auto dptr_managed    = hipsparse_unique_ptr{device_malloc(sizeof(I) * (m + 1)), device_free};
-    auto dcol_managed    = hipsparse_unique_ptr{device_malloc(sizeof(J) * nnz), device_free};
+    auto drow_managed    = hipsparse_unique_ptr{device_malloc(sizeof(I) * nnz), device_free};
+    auto dcol_managed    = hipsparse_unique_ptr{device_malloc(sizeof(I) * nnz), device_free};
     auto dval_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
     auto dB_managed      = hipsparse_unique_ptr{device_malloc(sizeof(T) * k * n), device_free};
     auto dC_1_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * m * n), device_free};
@@ -250,8 +259,8 @@ hipsparseStatus_t testing_spmm_csr()
     auto d_alpha_managed = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
     auto d_beta_managed  = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
 
-    I* dptr    = (I*)dptr_managed.get();
-    J* dcol    = (J*)dcol_managed.get();
+    I* drow    = (I*)drow_managed.get();
+    I* dcol    = (I*)dcol_managed.get();
     T* dval    = (T*)dval_managed.get();
     T* dB      = (T*)dB_managed.get();
     T* dC_1    = (T*)dC_1_managed.get();
@@ -259,19 +268,19 @@ hipsparseStatus_t testing_spmm_csr()
     T* d_alpha = (T*)d_alpha_managed.get();
     T* d_beta  = (T*)d_beta_managed.get();
 
-    if(!dval || !dptr || !dcol || !dB || !dC_1 || !dC_2 || !d_alpha || !d_beta)
+    if(!dval || !drow || !dcol || !dB || !dC_1 || !dC_2 || !d_alpha || !d_beta)
     {
         verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!dval || !dptr || !dcol || !dB || "
+                                        "!dval || !drow || !dcol || !dB || "
                                         "!dC_1 || !dC_2 || !d_alpha || !d_beta");
         return HIPSPARSE_STATUS_ALLOC_FAILED;
     }
 
     // copy data from CPU to device
     CHECK_HIP_ERROR(
-        hipMemcpy(dptr, hcsr_row_ptr.data(), sizeof(I) * (m + 1), hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(hipMemcpy(dcol, hcsr_col_ind.data(), sizeof(J) * nnz, hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(hipMemcpy(dval, hcsr_val.data(), sizeof(T) * nnz, hipMemcpyHostToDevice));
+        hipMemcpy(drow, hrow_ind.data(), sizeof(I) * nnz, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(dcol, hcol_ind.data(), sizeof(I) * nnz, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(dval, hval.data(), sizeof(T) * nnz, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dB, hB.data(), sizeof(T) * k * n, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dC_1, hC_1.data(), sizeof(T) * m * n, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dC_2, hC_2.data(), sizeof(T) * m * n, hipMemcpyHostToDevice));
@@ -281,7 +290,7 @@ hipsparseStatus_t testing_spmm_csr()
     // Create matrices
     hipsparseSpMatDescr_t A;
     CHECK_HIPSPARSE_ERROR(
-        hipsparseCreateCsr(&A, m, k, nnz, dptr, dcol, dval, typeI, typeJ, idx_base, typeT));
+        hipsparseCreateCoo(&A, m, k, nnz, drow, dcol, dval, typeI, idx_base, typeT));
 
     // Create dense matrices
     hipsparseDnMatDescr_t B, C1, C2;
@@ -314,40 +323,37 @@ hipsparseStatus_t testing_spmm_csr()
     // CPU
     double cpu_time_used = get_time_us();
 
-    for(J i = 0; i < m; ++i)
+    for(I j = 0; j < n; j++)
     {
-        for(J j = 0; j < n; ++j)
+        for(I i = 0; i < m; ++i)
         {
-            I row_begin = hcsr_row_ptr[i] - idx_base;
-            I row_end   = hcsr_row_ptr[i + 1] - idx_base;
-            J idx_C     = order == HIPSPARSE_ORDER_COLUMN ? i + j * ldc : i * ldc + j;
+            I idx_C = order == HIPSPARSE_ORDER_COLUMN ? i + j * ldc : i * ldc + j;
+            hC_gold[idx_C] = h_beta * hC_gold[idx_C];
+        }
+    }
 
-            T sum = make_DataType<T>(0);
+    for(I j = 0; j < n; j++)
+    {
+        for(I i = 0; i < nnz; ++i)
+        {
+            I row = hrow_ind[i] - idx_base;
+            I col = hcol_ind[i] - idx_base;
+            T val = h_alpha * hval[i];
 
-            for(I k = row_begin; k < row_end; ++k)
+            I idx_C = order == HIPSPARSE_ORDER_COLUMN ? row + j * ldc : row * ldc + j;
+
+            I idx_B = 0;
+            if((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE && order == HIPSPARSE_ORDER_COLUMN)
+               || (transB == HIPSPARSE_OPERATION_TRANSPOSE && order == HIPSPARSE_ORDER_ROW))
             {
-                J idx_B = 0;
-                if((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE && order == HIPSPARSE_ORDER_COLUMN)
-                   || (transB == HIPSPARSE_OPERATION_TRANSPOSE && order == HIPSPARSE_ORDER_ROW))
-                {
-                    idx_B = (hcsr_col_ind[k] - idx_base + j * ldb);
-                }
-                else
-                {
-                    idx_B = (j + (hcsr_col_ind[k] - idx_base) * ldb);
-                }
-
-                sum = testing_fma(hcsr_val[k], hB[idx_B], sum);
-            }
-
-            if(h_beta == make_DataType<T>(0))
-            {
-                hC_gold[idx_C] = h_alpha * sum;
+                idx_B = (col + j * ldb);
             }
             else
             {
-                hC_gold[idx_C] = testing_fma(h_beta, hC_gold[idx_C], h_alpha * sum);
+                idx_B = (j + col * ldb);
             }
+
+            hC_gold[idx_C] = hC_gold[idx_C] + val * hB[idx_B];
         }
     }
 
@@ -367,4 +373,4 @@ hipsparseStatus_t testing_spmm_csr()
     return HIPSPARSE_STATUS_SUCCESS;
 }
 
-#endif // TESTING_SPMM_CSR_HPP
+#endif // TESTING_SPMM_COO_HPP

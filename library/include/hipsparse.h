@@ -5019,7 +5019,9 @@ typedef enum
 #if(!defined(CUDART_VERSION))
 typedef enum
 {
-    HIPSPARSE_SPMM_CSR_ALG1 = 0
+    HIPSPARSE_SPMM_COO_ALG1 = 0,
+    HIPSPARSE_SPMM_COO_ALG2 = 1,
+    HIPSPARSE_SPMM_CSR_ALG1 = 2
 } hipsparseSpMMAlg_t;
 #else
 #if(CUDART_VERSION >= 11000)
