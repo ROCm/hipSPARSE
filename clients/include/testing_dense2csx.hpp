@@ -209,7 +209,6 @@ hipsparseStatus_t testing_dense2csx(const Arguments& argus, FUNC& dense2csx)
     int                  M        = argus.M;
     int                  N        = argus.N;
     int                  LD       = argus.lda;
-    hipsparseDirection_t dirA     = argus.dirA;
     hipsparseIndexBase_t idx_base = argus.idx_base;
 
     hipsparseStatus_t status;
@@ -252,7 +251,7 @@ hipsparseStatus_t testing_dense2csx(const Arguments& argus, FUNC& dense2csx)
     //
     // Create the dense matrix.
     //
-    int  MN          = (dirA == HIPSPARSE_DIRECTION_ROW) ? M : N;
+    int  MN          = DIMDIR;
     auto m_dense_val = hipsparse_unique_ptr{device_malloc(sizeof(T) * LD * N), device_free};
     auto nnzPerRowColumn_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(int) * MN), device_free};

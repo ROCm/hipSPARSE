@@ -111,6 +111,8 @@ Arguments setup_csrgeam2_arguments(csrgeam2_bin_tuple tup)
     return arg;
 }
 
+
+#if(!defined(CUDART_VERSION))
 TEST(csrgeam2_bad_arg, csrgeam2_float)
 {
     testing_csrgeam2_bad_arg<float>();
@@ -163,6 +165,7 @@ TEST_P(parameterized_csrgeam2_bin, csrgeam2_bin_double)
     hipsparseStatus_t status = testing_csrgeam2<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+#endif
 
 INSTANTIATE_TEST_CASE_P(csrgeam2,
                         parameterized_csrgeam2,
