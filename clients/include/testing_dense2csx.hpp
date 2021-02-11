@@ -50,7 +50,6 @@ void testing_dense2csx_bad_arg(FUNC& dense2csx)
     static constexpr int                  M         = 10;
     static constexpr int                  N         = 10;
     static constexpr int                  LD        = M;
-    static constexpr hipsparseDirection_t dirA      = DIRA;
     hipsparseStatus_t                     status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
