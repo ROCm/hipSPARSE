@@ -462,6 +462,14 @@ hipsparseStatus_t testing_csr2gebsr(Arguments argus)
     hipsparseSetMatIndexBase(csr_descr, csr_idx_base);
     hipsparseSetMatIndexBase(bsr_descr, bsr_idx_base);
 
+    if(row_block_dim == 1)
+    {
+#ifdef __HIP_PLATFORM_NVCC__
+        // Do not test cusparse with block dim 1
+        return HIPSPARSE_STATUS_SUCCESS;
+#endif
+    }
+
     // Argument sanity check before allocating invalid memory
     if(m <= 0 || n <= 0 || row_block_dim <= 0 || col_block_dim <= 0)
     {

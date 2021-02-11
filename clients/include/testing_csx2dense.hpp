@@ -175,9 +175,6 @@ hipsparseStatus_t testing_csx2dense(const Arguments& argus, FUNC1& csx2dense, FU
     std::vector<T>   h_dense_val_ref(LD * N);
     std::vector<T>   h_dense_val(LD * N);
     std::vector<int> h_nnzPerRowColumn(DIMDIR);
-    std::vector<int> hd_nnzPerRowColumn(DIMDIR);
-    std::vector<int> h_nnzTotalDevHostPtr(1);
-    std::vector<int> hd_nnzTotalDevHostPtr(1);
 
     //
     // Create the dense matrix.
@@ -191,11 +188,10 @@ hipsparseStatus_t testing_csx2dense(const Arguments& argus, FUNC1& csx2dense, FU
 
     T*   d_dense_val          = (T*)m_dense_val.get();
     int* d_nnzPerRowColumn    = (int*)nnzPerRowColumn_managed.get();
-    int* d_nnzTotalDevHostPtr = (int*)nnzTotalDevHostPtr_managed.get();
-    if(!d_nnzPerRowColumn || !d_nnzTotalDevHostPtr || !d_dense_val)
+    if(!d_nnzPerRowColumn || !d_dense_val)
     {
         verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!h_nnzPerRowColumn || !d_nnzPerRowColumn || !d_dense_val");
+                                        "!d_nnzPerRowColumn || !d_dense_val");
         return HIPSPARSE_STATUS_ALLOC_FAILED;
     }
 

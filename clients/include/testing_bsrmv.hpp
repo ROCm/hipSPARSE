@@ -327,6 +327,14 @@ hipsparseStatus_t testing_bsrmv(Arguments argus)
     int mb = (block_dim == 0) ? -1 : (m + block_dim - 1) / block_dim;
     int nb = (block_dim == 0) ? -1 : (n + block_dim - 1) / block_dim;
 
+    if(block_dim == 1)
+    {
+#ifdef __HIP_PLATFORM_NVCC__
+        // cusparse only accepts block_dim > 1
+        return HIPSPARSE_STATUS_SUCCESS;
+#endif
+    }
+
     // Argument sanity check before allocating invalid memory
     if(mb <= 0 || nb <= 0 || m <= 0 || n <= 0 || block_dim <= 0)
     {

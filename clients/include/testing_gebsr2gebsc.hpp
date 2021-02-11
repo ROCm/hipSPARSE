@@ -426,7 +426,7 @@ void testing_gebsr2gebsc_bad_arg(void)
 }
 
 #define DEVICE_ALLOC(TYPE, NAME, SIZE)                                                         \
-    auto  NAME##_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * SIZE), device_free}; \
+    auto  NAME##_managed = hipsparse_unique_ptr{device_malloc(sizeof(TYPE) * SIZE), device_free}; \
     TYPE* NAME           = (TYPE*)NAME##_managed.get()
 
 template <typename T>
@@ -443,6 +443,11 @@ hipsparseStatus_t testing_gebsr2gebsc(Arguments argus)
     // Argument sanity check before allocating invalid memory
     if(argus.M <= 0 || argus.N <= 0 || argus.row_block_dimA <= 0 || argus.col_block_dimA <= 0)
     {
+#ifdef __HIP_PLATFORM_NVCC__
+    	// do not test for bad args
+    	return HIPSPARSE_STATUS_SUCCESS;
+#endif
+
         int M             = argus.M;
         int N             = argus.N;
         int row_block_dim = argus.row_block_dimA;
@@ -630,9 +635,9 @@ hipsparseStatus_t testing_gebsr2gebsc(Arguments argus)
         hbsr_col_ind = hcsr_col_ind;
     }
 
-    DEVICE_ALLOC(int, dbsr_row_ptr, bsr_mb + 1);
+    DEVICE_ALLOC(int, dbsr_row_ptr, (bsr_mb + 1));
     DEVICE_ALLOC(int, dbsr_col_ind, bsr_nnzb);
-    DEVICE_ALLOC(T, dbsr_val, bsr_nnzb * bsr_row_block_dim * bsr_col_block_dim);
+    DEVICE_ALLOC(T, dbsr_val, (bsr_nnzb * bsr_row_block_dim * bsr_col_block_dim));
 
     // Copy data from host to device
     CHECK_HIP_ERROR(hipMemcpy(
@@ -666,8 +671,8 @@ hipsparseStatus_t testing_gebsr2gebsc(Arguments argus)
     void* dbuffer         = dbuffer_managed.get();
 
     DEVICE_ALLOC(int, dbsc_row_ind, bsr_nnzb);
-    DEVICE_ALLOC(int, dbsc_col_ptr, bsr_nb + 1);
-    DEVICE_ALLOC(T, dbsc_val, bsr_nnzb * bsr_row_block_dim * bsr_col_block_dim);
+    DEVICE_ALLOC(int, dbsc_col_ptr, (bsr_nb + 1));
+    DEVICE_ALLOC(T, dbsc_val, (bsr_nnzb * bsr_row_block_dim * bsr_col_block_dim));
 
     if(argus.unit_check)
     {

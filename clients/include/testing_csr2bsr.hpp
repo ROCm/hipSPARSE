@@ -448,6 +448,14 @@ hipsparseStatus_t testing_csr2bsr(Arguments argus)
     hipsparseSetMatIndexBase(csr_descr, csr_idx_base);
     hipsparseSetMatIndexBase(bsr_descr, bsr_idx_base);
 
+    if(block_dim == 1)
+    {
+#ifdef __HIP_PLATFORM_NVCC__
+        // cusparse does not support asynchronous execution for block_dim == 1
+        return HIPSPARSE_STATUS_SUCCESS;
+#endif
+    }
+
     // Argument sanity check before allocating invalid memory
     if(m <= 0 || n <= 0 || block_dim <= 0)
     {

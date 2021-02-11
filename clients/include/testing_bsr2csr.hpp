@@ -280,8 +280,8 @@ hipsparseStatus_t testing_bsr2csr(Arguments argus)
     int                  m            = argus.M;
     int                  n            = argus.N;
     int                  block_dim    = argus.block_dim;
-    hipsparseIndexBase_t csr_idx_base = argus.idx_base;
-    hipsparseIndexBase_t bsr_idx_base = argus.idx_base2;
+    hipsparseIndexBase_t bsr_idx_base = argus.idx_base;
+    hipsparseIndexBase_t csr_idx_base = argus.idx_base2;
     hipsparseDirection_t dir          = argus.dirA;
     std::string          binfile      = "";
     std::string          filename     = "";
@@ -318,6 +318,14 @@ hipsparseStatus_t testing_bsr2csr(Arguments argus)
 
     hipsparseSetMatIndexBase(csr_descr, csr_idx_base);
     hipsparseSetMatIndexBase(bsr_descr, bsr_idx_base);
+
+    if(block_dim == 1)
+    {
+#ifdef __HIP_PLATFORM_NVCC__
+        // cusparse does not support asynchronous execution if block_dim == 1
+        return HIPSPARSE_STATUS_SUCCESS;
+#endif
+    }
 
     // Argument sanity check before allocating invalid memory
     if(mb <= 0 || nb <= 0 || block_dim <= 0)
