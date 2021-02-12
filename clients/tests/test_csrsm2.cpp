@@ -123,6 +123,7 @@ TEST(csrsm2_bad_arg, csrsm2_float)
     testing_csrsm2_bad_arg<float>();
 }
 
+#if(!defined(CUDART_VERSION))
 TEST_P(parameterized_csrsm2, csrsm2_float)
 {
     Arguments arg = setup_csrsm2_arguments(GetParam());
@@ -170,6 +171,7 @@ TEST_P(parameterized_csrsm2_bin, csrsm2_bin_double)
     hipsparseStatus_t status = testing_csrsm2<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+#endif
 
 INSTANTIATE_TEST_CASE_P(csrsm2,
                         parameterized_csrsm2,
