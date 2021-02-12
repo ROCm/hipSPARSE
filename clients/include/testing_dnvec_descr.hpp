@@ -29,8 +29,6 @@
 
 #include <hipsparse.h>
 
-#include <iostream>
-
 using namespace hipsparse_test;
 
 void testing_dnvec_descr_bad_arg(void)
