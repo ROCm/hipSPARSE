@@ -46,11 +46,11 @@ void testing_csx2dense_bad_arg(FUNC& csx2dense)
     // do not test for bad args
     return;
 #endif
-    static constexpr size_t               safe_size = 100;
-    static constexpr int                  M         = 10;
-    static constexpr int                  N         = 10;
-    static constexpr int                  LD        = M;
-    hipsparseStatus_t                     status;
+    static constexpr size_t safe_size = 100;
+    static constexpr int    M         = 10;
+    static constexpr int    N         = 10;
+    static constexpr int    LD        = M;
+    hipsparseStatus_t       status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -184,8 +184,8 @@ hipsparseStatus_t testing_csx2dense(const Arguments& argus, FUNC1& csx2dense, FU
     auto nnzTotalDevHostPtr_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(int) * 1), device_free};
 
-    T*   d_dense_val          = (T*)m_dense_val.get();
-    int* d_nnzPerRowColumn    = (int*)nnzPerRowColumn_managed.get();
+    T*   d_dense_val       = (T*)m_dense_val.get();
+    int* d_nnzPerRowColumn = (int*)nnzPerRowColumn_managed.get();
     if(!d_nnzPerRowColumn || !d_dense_val)
     {
         verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,

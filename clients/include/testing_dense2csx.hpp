@@ -46,11 +46,11 @@ void testing_dense2csx_bad_arg(FUNC& dense2csx)
     // do not test for bad args
     return;
 #endif
-    static constexpr size_t               safe_size = 100;
-    static constexpr int                  M         = 10;
-    static constexpr int                  N         = 10;
-    static constexpr int                  LD        = M;
-    hipsparseStatus_t                     status;
+    static constexpr size_t safe_size = 100;
+    static constexpr int    M         = 10;
+    static constexpr int    N         = 10;
+    static constexpr int    LD        = M;
+    hipsparseStatus_t       status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
