@@ -26,6 +26,8 @@
 #include <gtest/gtest.h>
 #include <hipsparse.h>
 
+// Only run tests for CUDA 11.1 or greater
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(dense_to_sparse_coo_bad_arg, dense_to_sparse_coo_float)
 {
     testing_dense_to_sparse_coo_bad_arg();
@@ -48,3 +50,4 @@ TEST(dense_to_sparse_coo, dense_to_sparse_coo_i64_i64_hipComplex)
     hipsparseStatus_t status = testing_dense_to_sparse_coo<int64_t, hipComplex>();
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+#endif

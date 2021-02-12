@@ -54,6 +54,8 @@ Arguments setup_dense2csc_arguments(dense2csc_tuple tup)
     return arg;
 }
 
+// Only run tests for CUDA 11.1 or greater
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(dense2csc_bad_arg, dense2csc)
 {
     testing_dense2csc_bad_arg<float>();
@@ -90,6 +92,7 @@ TEST_P(parameterized_dense2csc, dense2csc_double_complex)
     hipsparseStatus_t status = testing_dense2csc<hipDoubleComplex>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+#endif
 
 INSTANTIATE_TEST_CASE_P(dense2csc,
                         parameterized_dense2csc,

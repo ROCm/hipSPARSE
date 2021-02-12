@@ -123,6 +123,8 @@ Arguments setup_csrsort_arguments(csrsort_bin_tuple tup)
     return arg;
 }
 
+// Only run tests for CUDA 11.1 or greater
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(csrsort_bad_arg, csrsort)
 {
     testing_csrsort_bad_arg();
@@ -143,6 +145,7 @@ TEST_P(parameterized_csrsort_bin, csrsort_bin)
     hipsparseStatus_t status = testing_csrsort(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+#endif
 
 INSTANTIATE_TEST_CASE_P(csrsort,
                         parameterized_csrsort,

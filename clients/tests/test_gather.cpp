@@ -26,6 +26,8 @@
 #include <gtest/gtest.h>
 #include <hipsparse.h>
 
+// Only run tests for CUDA 11.1 or greater
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(gather_bad_arg, gather_float)
 {
     testing_gather_bad_arg();
@@ -42,3 +44,4 @@ TEST(gather, gather_i64_double)
     hipsparseStatus_t status = testing_gather<int64_t, double>();
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+#endif

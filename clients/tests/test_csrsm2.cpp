@@ -118,12 +118,12 @@ Arguments setup_csrsm2_arguments(csrsm2_bin_tuple tup)
     return arg;
 }
 
+#if(!defined(CUDART_VERSION))
 TEST(csrsm2_bad_arg, csrsm2_float)
 {
     testing_csrsm2_bad_arg<float>();
 }
 
-#if(!defined(CUDART_VERSION))
 TEST_P(parameterized_csrsm2, csrsm2_float)
 {
     Arguments arg = setup_csrsm2_arguments(GetParam());

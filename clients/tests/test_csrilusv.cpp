@@ -86,6 +86,8 @@ Arguments setup_csrilusv_arguments(csrilusv_bin_tuple tup)
     return arg;
 }
 
+// Only run tests for CUDA 11.1 or greater
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST_P(parameterized_csrilusv_bin, csrilusv_bin_float)
 {
     Arguments arg = setup_csrilusv_arguments(GetParam());
@@ -101,6 +103,7 @@ TEST_P(parameterized_csrilusv_bin, csrilusv_bin_double)
     hipsparseStatus_t status = testing_csrilusv<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+#endif
 
 INSTANTIATE_TEST_CASE_P(csrilusv_bin,
                         parameterized_csrilusv_bin,

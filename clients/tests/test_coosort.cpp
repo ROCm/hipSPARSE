@@ -118,6 +118,8 @@ Arguments setup_coosort_arguments(coosort_bin_tuple tup)
     return arg;
 }
 
+// Only run tests for CUDA 11.1 or greater
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(coosort_bad_arg, coosort)
 {
     testing_coosort_bad_arg();
@@ -138,6 +140,7 @@ TEST_P(parameterized_coosort_bin, coosort_bin)
     hipsparseStatus_t status = testing_coosort(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+#endif
 
 INSTANTIATE_TEST_CASE_P(coosort,
                         parameterized_coosort,

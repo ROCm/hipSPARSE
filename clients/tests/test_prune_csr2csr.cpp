@@ -108,6 +108,8 @@ Arguments setup_prune_csr2csr_arguments(prune_csr2csr_bin_tuple tup)
     return arg;
 }
 
+// Only run tests for CUDA 11.1 or greater
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(prune_csr2csr_bad_arg, prune_csr2csr)
 {
     testing_prune_csr2csr_bad_arg<float>();
@@ -144,6 +146,7 @@ TEST_P(parameterized_prune_csr2csr_bin, prune_csr2csr_bin_double)
     hipsparseStatus_t status = testing_prune_csr2csr<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+#endif
 
 INSTANTIATE_TEST_CASE_P(prune_csr2csr,
                         parameterized_prune_csr2csr,
