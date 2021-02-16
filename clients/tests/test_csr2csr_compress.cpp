@@ -32,23 +32,20 @@
 typedef std::tuple<int, int, double, hipsparseIndexBase_t>    csr2csr_compress_tuple;
 typedef std::tuple<double, hipsparseIndexBase_t, std::string> csr2csr_compress_bin_tuple;
 
-int    csr2csr_compress_M_range[]     = {-1, 10, 500, 872, 465327};
-int    csr2csr_compress_N_range[]     = {-3, 33, 242, 623, 592645};
+int    csr2csr_compress_M_range[]     = {-1, 10, 500, 872, 9375, 30327};
+int    csr2csr_compress_N_range[]     = {-3, 33, 242, 623, 9184, 30645};
 double csr2csr_compress_alpha_range[] = {-0.001, 0.0, 0.08736, 0.33333, 1.7};
 
 hipsparseIndexBase_t csr2csr_compress_base_range[]
     = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
-std::string csr2csr_compress_bin[] = {"rma10.bin",
-                                      "mac_econ_fwd500.bin",
-                                      "nos1.bin",
+std::string csr2csr_compress_bin[] = {"nos1.bin",
                                       "nos2.bin",
                                       "nos3.bin",
                                       "nos4.bin",
                                       "nos5.bin",
                                       "nos6.bin",
-                                      "nos7.bin",
-                                      "shipsec1.bin"};
+                                      "nos7.bin"};
 
 class parameterized_csr2csr_compress : public testing::TestWithParam<csr2csr_compress_tuple>
 {
