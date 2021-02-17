@@ -443,9 +443,11 @@ hipsparseStatus_t testing_gebsr2gebsc(Arguments argus)
     // Argument sanity check before allocating invalid memory
     if(argus.M <= 0 || argus.N <= 0 || argus.row_block_dimA <= 0 || argus.col_block_dimA <= 0)
     {
-#ifdef __HIP_PLATFORM_NVCC__
-    	// do not test for bad args
-    	return HIPSPARSE_STATUS_SUCCESS;
+#if(defined(CUDART_VERSION))
+	if(argus.row_block_dimA == 0 || argus.col_block_dimA == 0)
+	{
+	    return HIPSPARSE_STATUS_SUCCESS;
+	}
 #endif
 
         int M             = argus.M;

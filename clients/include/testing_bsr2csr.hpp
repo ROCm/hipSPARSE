@@ -330,10 +330,6 @@ hipsparseStatus_t testing_bsr2csr(Arguments argus)
     // Argument sanity check before allocating invalid memory
     if(mb <= 0 || nb <= 0 || block_dim <= 0)
     {
-#ifdef __HIP_PLATFORM_NVCC__
-        // Do not test args in cusparse
-        return HIPSPARSE_STATUS_SUCCESS;
-#endif
         auto dbsr_row_ptr_managed
             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
         auto dbsr_col_ind_managed

@@ -221,10 +221,6 @@ hipsparseStatus_t testing_dense2csx(const Arguments& argus, FUNC& dense2csx)
 
     if(M <= 0 || N <= 0 || LD < M)
     {
-#ifdef __HIP_PLATFORM_NVCC__
-        // Do not test args in cusparse
-        return HIPSPARSE_STATUS_SUCCESS;
-#endif
         hipsparseStatus_t expected_status
             = (((M == 0 && N >= 0) || (M >= 0 && N == 0)) && (LD >= M))
                   ? HIPSPARSE_STATUS_SUCCESS
