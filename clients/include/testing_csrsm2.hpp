@@ -1150,7 +1150,7 @@ hipsparseStatus_t testing_csrsm2(Arguments argus)
 
         // Get pivot
         status_solve_1 = hipsparseXcsrsm2_zeroPivot(handle, info, &h_solve_pivot_1);
-	    if(h_solve_pivot_1 != -1)
+        if(h_solve_pivot_1 != -1)
         {
             verify_hipsparse_status_zero_pivot(status_solve_1,
                                                "expected HIPSPARSE_STATUS_ZERO_PIVOT");
@@ -1176,9 +1176,9 @@ hipsparseStatus_t testing_csrsm2(Arguments argus)
                                                      policy,
                                                      dbuffer));
 
-	    // Get pivot
+        // Get pivot
         status_solve_2 = hipsparseXcsrsm2_zeroPivot(handle, info, d_solve_pivot_2);
-	    if(h_solve_pivot_1 != -1)
+        if(h_solve_pivot_1 != -1)
         {
             verify_hipsparse_status_zero_pivot(status_solve_2,
                                                "expected HIPSPARSE_STATUS_ZERO_PIVOT");
