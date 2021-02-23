@@ -501,6 +501,10 @@ rocsparse_spmm_alg_ hipSpMMAlgToHCCSpMMAlg(hipsparseSpMMAlg_t alg)
 {
     switch(alg)
     {
+    case HIPSPARSE_SPMM_COO_ALG1:
+        return rocsparse_spmm_alg_coo_atomic;
+    case HIPSPARSE_SPMM_COO_ALG2:
+        return rocsparse_spmm_alg_coo_segmented;
     case HIPSPARSE_SPMM_CSR_ALG1:
         return rocsparse_spmm_alg_csr;
     default:

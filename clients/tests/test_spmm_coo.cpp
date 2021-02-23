@@ -21,30 +21,30 @@
  *
  * ************************************************************************ */
 
-#include "testing_spmm_csr.hpp"
+#include "testing_spmm_coo.hpp"
 
 #include <gtest/gtest.h>
 #include <hipsparse.h>
 
-TEST(spmm_csr_bad_arg, spmm_csr_float)
+TEST(spmm_coo_bad_arg, spmm_coo_float)
 {
-    testing_spmm_csr_bad_arg();
+    testing_spmm_coo_bad_arg();
 }
 
-TEST(spmm_csr, spmm_csr_i32_i32_float)
+TEST(spmm_coo, spmm_coo_i32_float)
 {
-    hipsparseStatus_t status = testing_spmm_csr<int32_t, int32_t, float>();
+    hipsparseStatus_t status = testing_spmm_coo<int32_t, float>();
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-TEST(spmm_csr, spmm_csr_i64_i32_double)
+TEST(spmm_coo, spmm_coo_i64_double)
 {
-    hipsparseStatus_t status = testing_spmm_csr<int64_t, int32_t, double>();
+    hipsparseStatus_t status = testing_spmm_coo<int64_t, double>();
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-TEST(spmm_csr, spmm_csr_i64_i64_hipComplex)
+TEST(spmm_coo, spmm_coo_i64_hipComplex)
 {
-    hipsparseStatus_t status = testing_spmm_csr<int64_t, int64_t, hipComplex>();
+    hipsparseStatus_t status = testing_spmm_coo<int64_t, hipComplex>();
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
