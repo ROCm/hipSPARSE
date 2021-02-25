@@ -39,12 +39,12 @@ TEST(spmm_coo, spmm_coo_i32_float)
 
 TEST(spmm_coo, spmm_coo_i64_double)
 {
-    hipsparseStatus_t status = testing_spmm_coo<int64_t, double>();
+    hipsparseStatus_t status = testing_spmm_coo<int32_t, double>();
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
 TEST(spmm_coo, spmm_coo_i64_hipComplex)
 {
-    hipsparseStatus_t status = testing_spmm_coo<int64_t, hipComplex>();
+    hipsparseStatus_t status = testing_spmm_coo<int32_t, hipComplex>();
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }

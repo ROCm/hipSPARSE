@@ -114,6 +114,8 @@ void testing_csru2csr_bad_arg(void)
         hipsparseXcsru2csr_bufferSizeExt(
             handle, m, n, -1, csr_val, csr_row_ptr, csr_col_ind, info, &bufferSize),
         "Error: nnz is invalid");
+#ifndef __HIP_PLATFORM_NVCC__
+    // cusparse seem to not have any error checking for some parts
     verify_hipsparse_status_success(
         hipsparseXcsru2csr_bufferSizeExt(
             handle, 0, n, 0, (float*)nullptr, nullptr, nullptr, nullptr, &bufferSize),
@@ -130,6 +132,7 @@ void testing_csru2csr_bad_arg(void)
         hipsparseXcsru2csr_bufferSizeExt(
             handle, 0, n, 0, (float*)nullptr, nullptr, nullptr, nullptr, nullptr),
         "Error: bufferSize is invalid");
+#endif
 
     // Testing csru2csr for bad args
 #ifndef __HIP_PLATFORM_NVCC__
@@ -171,6 +174,8 @@ void testing_csru2csr_bad_arg(void)
         hipsparseXcsru2csr(
             handle, m, n, -1, descr, csr_val, csr_row_ptr, csr_col_ind, info, buffer),
         "Error: nnz is invalid");
+#ifndef __HIP_PLATFORM_NVCC__
+    // cusparse seem to not have any error checking for some parts
     verify_hipsparse_status_success(
         hipsparseXcsru2csr(
             handle, 0, n, 0, nullptr, (float*)nullptr, nullptr, nullptr, nullptr, &bufferSize),
@@ -183,6 +188,7 @@ void testing_csru2csr_bad_arg(void)
         hipsparseXcsru2csr(
             handle, 0, n, nnz, nullptr, (float*)nullptr, nullptr, nullptr, nullptr, &bufferSize),
         "Error: nnz is invalid");
+#endif
 
     // Testing csr2csru for bad args
 #ifndef __HIP_PLATFORM_NVCC__
@@ -224,6 +230,8 @@ void testing_csru2csr_bad_arg(void)
         hipsparseXcsr2csru(
             handle, m, n, -1, descr, csr_val, csr_row_ptr, csr_col_ind, info, buffer),
         "Error: nnz is invalid");
+#ifndef __HIP_PLATFORM_NVCC__
+    // cusparse seem to not have any error checking for some parts
     verify_hipsparse_status_success(
         hipsparseXcsr2csru(
             handle, 0, n, 0, nullptr, (float*)nullptr, nullptr, nullptr, nullptr, &bufferSize),
@@ -236,6 +244,7 @@ void testing_csru2csr_bad_arg(void)
         hipsparseXcsr2csru(
             handle, 0, n, nnz, nullptr, (float*)nullptr, nullptr, nullptr, nullptr, &bufferSize),
         "Error: nnz is invalid");
+#endif
 }
 
 template <typename T>

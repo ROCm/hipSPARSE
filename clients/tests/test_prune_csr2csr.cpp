@@ -34,9 +34,9 @@ typedef std::tuple<int, int, double, hipsparseIndexBase_t, hipsparseIndexBase_t>
 typedef std::tuple<double, hipsparseIndexBase_t, hipsparseIndexBase_t, std::string>
     prune_csr2csr_bin_tuple;
 
-int    prune_csr2csr_M_range[]         = {-1, 10, 500, 872, 465327};
-int    prune_csr2csr_N_range[]         = {-3, 33, 242, 623, 592645};
-double prune_csr2csr_threshold_range[] = {-0.001, 0.0, 0.0012, 0.08736, 0.33333, 0.5, 1.7};
+int    prune_csr2csr_M_range[]         = {-1, 10, 500, 872, 27463, 35327};
+int    prune_csr2csr_N_range[]         = {-3, 33, 242, 623, 29837, 22645};
+double prune_csr2csr_threshold_range[] = {0.0, 0.0012, 0.08736, 0.33333, 0.5, 1.7};
 
 hipsparseIndexBase_t prune_csr2csr_base_A_range[]
     = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
@@ -108,6 +108,8 @@ Arguments setup_prune_csr2csr_arguments(prune_csr2csr_bin_tuple tup)
     return arg;
 }
 
+// Only run tests for CUDA 11.1 or greater
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(prune_csr2csr_bad_arg, prune_csr2csr)
 {
     testing_prune_csr2csr_bad_arg<float>();
@@ -144,6 +146,7 @@ TEST_P(parameterized_prune_csr2csr_bin, prune_csr2csr_bin_double)
     hipsparseStatus_t status = testing_prune_csr2csr<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+#endif
 
 INSTANTIATE_TEST_CASE_P(prune_csr2csr,
                         parameterized_prune_csr2csr,

@@ -38,10 +38,6 @@ using namespace hipsparse_test;
 template <typename T>
 void testing_gthrz_bad_arg(void)
 {
-#ifdef __HIP_PLATFORM_NVCC__
-    // do not test for bad args
-    return;
-#endif
     int nnz       = 100;
     int safe_size = 100;
 
@@ -65,6 +61,7 @@ void testing_gthrz_bad_arg(void)
         return;
     }
 
+#if(!defined(CUDART_VERSION))
     // testing for(nullptr == dx_ind)
     {
         int* dx_ind_null = nullptr;
@@ -93,6 +90,7 @@ void testing_gthrz_bad_arg(void)
         status = hipsparseXgthrz(handle_null, nnz, dy, dx_val, dx_ind, idx_base);
         verify_hipsparse_status_invalid_handle(status);
     }
+#endif
 }
 
 template <typename T>
@@ -110,10 +108,6 @@ hipsparseStatus_t testing_gthrz(Arguments argus)
     // Argument sanity check before allocating invalid memory
     if(nnz <= 0)
     {
-#ifdef __HIP_PLATFORM_NVCC__
-        // Do not test args in cusparse
-        return HIPSPARSE_STATUS_SUCCESS;
-#endif
         auto dx_ind_managed
             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
         auto dx_val_managed

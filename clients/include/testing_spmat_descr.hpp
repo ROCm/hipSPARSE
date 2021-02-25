@@ -156,7 +156,11 @@ void testing_spmat_descr_bad_arg(void)
         "Error: val_data is nullptr");
 
     // hipsparseDestroySpMat
+#if(!defined(CUDART_VERSION))
     verify_hipsparse_status_invalid_pointer(hipsparseDestroySpMat(nullptr), "Error: A is nullptr");
+#else
+    verify_hipsparse_status_success(hipsparseDestroySpMat(nullptr), "Success");
+#endif
 
     // Create valid descriptors
     hipsparseSpMatDescr_t coo;
@@ -398,6 +402,7 @@ void testing_spmat_descr_bad_arg(void)
                                                             &idxBase,
                                                             &dataType),
                                             "Error: colType is nullptr");
+#if(!defined(CUDART_VERSION))
     verify_hipsparse_status_invalid_pointer(hipsparseCsrGet(csr,
                                                             &rows,
                                                             &cols,
@@ -410,6 +415,7 @@ void testing_spmat_descr_bad_arg(void)
                                                             nullptr,
                                                             &dataType),
                                             "Error: idxBase is nullptr");
+#endif
     verify_hipsparse_status_invalid_pointer(hipsparseCsrGet(csr,
                                                             &rows,
                                                             &cols,

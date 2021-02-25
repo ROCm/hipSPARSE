@@ -55,6 +55,8 @@ Arguments setup_csr2dense_arguments(csr2dense_tuple tup)
     return arg;
 }
 
+// Only run tests for CUDA 11.1 or greater
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(csr2dense_bad_arg, csr2dense)
 {
     testing_csr2dense_bad_arg<float>();
@@ -91,6 +93,7 @@ TEST_P(parameterized_csr2dense, csr2dense_double_complex)
     hipsparseStatus_t status = testing_csr2dense<hipDoubleComplex>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+#endif
 
 INSTANTIATE_TEST_CASE_P(csr2dense,
                         parameterized_csr2dense,

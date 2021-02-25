@@ -129,6 +129,8 @@ Arguments setup_csr2bsr_arguments(csr2bsr_bin_tuple tup)
     return arg;
 }
 
+// Only run tests for CUDA 11.1 or greater
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(csr2bsr_bad_arg, csr2bsr)
 {
     testing_csr2bsr_bad_arg<float>();
@@ -181,20 +183,21 @@ TEST_P(parameterized_csr2bsr_bin, csr2bsr_bin_double)
     hipsparseStatus_t status = testing_csr2bsr<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+#endif
 
 INSTANTIATE_TEST_CASE_P(csr2bsr,
                         parameterized_csr2bsr,
                         testing::Combine(testing::ValuesIn(csr2bsr_M_range),
                                          testing::ValuesIn(csr2bsr_N_range),
                                          testing::ValuesIn(csr2bsr_block_dim_range),
-                                         testing::ValuesIn(csr2bsr_bsr_base_range),
                                          testing::ValuesIn(csr2bsr_csr_base_range),
+                                         testing::ValuesIn(csr2bsr_bsr_base_range),
                                          testing::ValuesIn(csr2bsr_dir_range)));
 
 INSTANTIATE_TEST_CASE_P(csr2bsr_bin,
                         parameterized_csr2bsr_bin,
                         testing::Combine(testing::ValuesIn(csr2bsr_block_dim_range_bin),
-                                         testing::ValuesIn(csr2bsr_bsr_base_range_bin),
                                          testing::ValuesIn(csr2bsr_csr_base_range_bin),
+                                         testing::ValuesIn(csr2bsr_bsr_base_range_bin),
                                          testing::ValuesIn(csr2bsr_dir_range_bin),
                                          testing::ValuesIn(csr2bsr_bin)));

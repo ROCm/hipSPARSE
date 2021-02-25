@@ -59,6 +59,8 @@ Arguments setup_prune_dense2csr_by_percentage_arguments(prune_dense2csr_by_perce
     return arg;
 }
 
+// Only run tests for CUDA 11.1 or greater
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(prune_dense2csr_by_percentage_bad_arg, prune_dense2csr_by_percentage)
 {
     testing_prune_dense2csr_by_percentage_bad_arg<float>();
@@ -79,6 +81,7 @@ TEST_P(parameterized_prune_dense2csr_by_percentage, prune_dense2csr_by_percentag
     hipsparseStatus_t status = testing_prune_dense2csr_by_percentage<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+#endif
 
 INSTANTIATE_TEST_CASE_P(
     prune_dense2csr_by_percentage,

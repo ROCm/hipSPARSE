@@ -136,6 +136,8 @@ Arguments setup_csr2gebsr_arguments(csr2gebsr_bin_tuple tup)
     return arg;
 }
 
+// Only run tests for CUDA 11.1 or greater
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(csr2gebsr_bad_arg, csr2gebsr)
 {
     testing_csr2gebsr_bad_arg<float>();
@@ -188,6 +190,7 @@ TEST_P(parameterized_csr2gebsr_bin, csr2gebsr_bin_double)
     hipsparseStatus_t status = testing_csr2gebsr<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+#endif
 
 INSTANTIATE_TEST_CASE_P(csr2gebsr,
                         parameterized_csr2gebsr,

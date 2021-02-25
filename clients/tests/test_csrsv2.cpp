@@ -120,6 +120,8 @@ Arguments setup_csrsv2_arguments(csrsv2_bin_tuple tup)
     return arg;
 }
 
+// Only run tests for CUDA 11.1 or greater
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(csrsv2_bad_arg, csrsv2_float)
 {
     testing_csrsv2_bad_arg<float>();
@@ -172,6 +174,7 @@ TEST_P(parameterized_csrsv2_bin, csrsv2_bin_double)
     hipsparseStatus_t status = testing_csrsv2<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+#endif
 
 INSTANTIATE_TEST_CASE_P(csrsv2,
                         parameterized_csrsv2,

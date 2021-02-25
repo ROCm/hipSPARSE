@@ -58,10 +58,14 @@ void testing_dnvec_descr_bad_arg(void)
                                          "Error: size is < 0");
     verify_hipsparse_status_invalid_pointer(hipsparseCreateDnVec(&x, size, nullptr, dataType),
                                             "Error: val_data is nullptr");
-
+ 
     // hipsparseDestroyDnVec
+#if(!defined(CUDART_VERSION))
     verify_hipsparse_status_invalid_pointer(hipsparseDestroyDnVec(nullptr), "Error: x is nullptr");
-
+#else
+    verify_hipsparse_status_success(hipsparseDestroyDnVec(nullptr), "Success");
+#endif
+   
     // Create valid descriptor
     verify_hipsparse_status_success(hipsparseCreateDnVec(&x, size, val_data, dataType), "Success");
 
