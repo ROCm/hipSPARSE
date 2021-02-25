@@ -26,6 +26,8 @@
 #include <gtest/gtest.h>
 #include <hipsparse.h>
 
+// Only run tests for CUDA 11.1 or greater
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(rot_bad_arg, rot_float)
 {
     testing_rot_bad_arg();
@@ -54,3 +56,4 @@ TEST(rot, rot_i64_hipDoubleComplex)
     hipsparseStatus_t status = testing_rot<int64_t, hipDoubleComplex>();
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+#endif

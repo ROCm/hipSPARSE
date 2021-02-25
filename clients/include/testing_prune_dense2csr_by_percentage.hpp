@@ -40,10 +40,6 @@ using namespace hipsparse_test;
 template <typename T>
 void testing_prune_dense2csr_by_percentage_bad_arg(void)
 {
-#ifdef __HIP_PLATFORM_NVCC__
-    // do not test for bad args
-    return;
-#endif
     size_t safe_size = 100;
 
     int    M                      = 10;
@@ -85,6 +81,7 @@ void testing_prune_dense2csr_by_percentage_bad_arg(void)
         return;
     }
 
+#if(!defined(CUDART_VERSION))
     // Test hipsparseXpruneDense2csrByPercentage_bufferSize
     status = hipsparseXpruneDense2csrByPercentage_bufferSize(nullptr,
                                                              M,
@@ -367,6 +364,7 @@ void testing_prune_dense2csr_by_percentage_bad_arg(void)
     status = hipsparseXpruneDense2csrByPercentage(
         handle, M, N, A, LDA, percentage, descr, csr_val, csr_row_ptr, csr_col_ind, info, nullptr);
     verify_hipsparse_status_invalid_pointer(status, "Error: buffer is nullptr");
+#endif
 }
 
 template <typename T>
@@ -394,9 +392,12 @@ hipsparseStatus_t testing_prune_dense2csr_by_percentage(Arguments argus)
     // Argument sanity check before allocating invalid memory
     if(M <= 0 || N <= 0 || LDA < M || percentage < 0.0 || percentage > 100.0)
     {
-#ifdef __HIP_PLATFORM_NVCC__
-        // Do not test args in cusparse
-        return HIPSPARSE_STATUS_SUCCESS;
+	// cusparse does not seem to check LDA < M
+#if(defined(CUDART_VERSION))
+	if(LDA < M)
+	{
+	    return HIPSPARSE_STATUS_SUCCESS;
+	}
 #endif
         size_t safe_size = 100;
 

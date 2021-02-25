@@ -55,6 +55,8 @@ Arguments setup_dotci_arguments(dotci_tuple tup)
     return arg;
 }
 
+// Only run tests for CUDA 11.1 or greater
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(dotci_bad_arg, dotci_float)
 {
     testing_dotci_bad_arg<hipComplex>();
@@ -75,6 +77,7 @@ TEST_P(parameterized_dotci, dotci_double_complex)
     hipsparseStatus_t status = testing_dotci<hipDoubleComplex>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+#endif
 
 INSTANTIATE_TEST_CASE_P(dotci,
                         parameterized_dotci,

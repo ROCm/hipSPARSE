@@ -26,6 +26,8 @@
 #include <gtest/gtest.h>
 #include <hipsparse.h>
 
+// Only run tests for CUDA 11.1 or greater
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(spvv_bad_arg, spvv_float)
 {
     testing_spvv_bad_arg();
@@ -54,3 +56,4 @@ TEST(spvv, spvv_i64_hipDoubleComplex)
     hipsparseStatus_t status = testing_spvv<int64_t, hipDoubleComplex>();
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+#endif

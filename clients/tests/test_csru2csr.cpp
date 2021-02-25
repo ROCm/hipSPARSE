@@ -26,6 +26,8 @@
 #include <gtest/gtest.h>
 #include <hipsparse.h>
 
+// Only run tests for CUDA 11.1 or greater
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(csru2csr_bad_arg, csru2csr_float)
 {
     testing_csru2csr_bad_arg();
@@ -52,3 +54,4 @@ TEST(csru2csr, csru2csr_hipDoubleComplex)
 {
     hipsparseStatus_t status = testing_csru2csr<hipDoubleComplex>();
 }
+#endif

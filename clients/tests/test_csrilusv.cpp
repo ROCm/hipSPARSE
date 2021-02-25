@@ -46,8 +46,7 @@ std::string csrilusv_bin[] = {"scircuit.bin",
                               "nos5.bin",
                               "nos6.bin",
                               "nos7.bin",
-                              "amazon0312.bin",
-                              "sme3Dc.bin"};
+                              "amazon0312.bin"};
 
 class parameterized_csrilusv_bin : public testing::TestWithParam<csrilusv_bin_tuple>
 {
@@ -86,6 +85,8 @@ Arguments setup_csrilusv_arguments(csrilusv_bin_tuple tup)
     return arg;
 }
 
+// Only run tests for CUDA 11.1 or greater
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST_P(parameterized_csrilusv_bin, csrilusv_bin_float)
 {
     Arguments arg = setup_csrilusv_arguments(GetParam());
@@ -101,6 +102,7 @@ TEST_P(parameterized_csrilusv_bin, csrilusv_bin_double)
     hipsparseStatus_t status = testing_csrilusv<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+#endif
 
 INSTANTIATE_TEST_CASE_P(csrilusv_bin,
                         parameterized_csrilusv_bin,

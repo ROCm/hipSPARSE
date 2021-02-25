@@ -26,6 +26,7 @@
 #include <gtest/gtest.h>
 #include <hipsparse.h>
 
+#if(!defined(CUDART_VERSION))
 TEST(spgemm_csr_bad_arg, spgemm_csr_float)
 {
     testing_spgemm_csr_bad_arg();
@@ -54,3 +55,4 @@ TEST(spgemm_csr, spgemm_csr_i64_i64_hipDoubleComplex)
     hipsparseStatus_t status = testing_spgemm_csr<int64_t, int64_t, hipDoubleComplex>();
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+#endif

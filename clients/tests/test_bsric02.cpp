@@ -102,6 +102,8 @@ Arguments setup_bsric02_arguments(bsric02_bin_tuple tup)
     return arg;
 }
 
+// Only run tests for CUDA 11.1 or greater
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(bsric02_bad_arg, bsric02_float)
 {
     testing_bsric02_bad_arg<float>();
@@ -154,6 +156,7 @@ TEST_P(parameterized_bsric02_bin, bsric02_bin_double)
     hipsparseStatus_t status = testing_bsric02<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+#endif
 
 INSTANTIATE_TEST_CASE_P(bsric02,
                         parameterized_bsric02,

@@ -59,7 +59,8 @@ void testing_spmm_csr_bad_arg(void)
     hipsparseOperation_t transB    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
     hipsparseOrder_t     order     = HIPSPARSE_ORDER_COLUMN;
     hipsparseIndexBase_t idxBase   = HIPSPARSE_INDEX_BASE_ZERO;
-    hipsparseIndexType_t idxType   = HIPSPARSE_INDEX_32I;
+    hipsparseIndexType_t idxTypeI  = HIPSPARSE_INDEX_64I;
+    hipsparseIndexType_t idxTypeJ  = HIPSPARSE_INDEX_32I;
     hipDataType          dataType  = HIP_R_32F;
     hipsparseSpMMAlg_t   alg       = HIPSPARSE_SPMM_CSR_ALG1;
     hipsparseStatus_t    status;
@@ -100,7 +101,7 @@ void testing_spmm_csr_bad_arg(void)
 
     // Create SpMM structures
     verify_hipsparse_status_success(
-        hipsparseCreateCsr(&A, m, k, nnz, dptr, dcol, dval, idxType, idxType, idxBase, dataType),
+        hipsparseCreateCsr(&A, m, n, nnz, dptr, dcol, dval, idxTypeI, idxTypeJ, idxBase, dataType),
         "success");
     verify_hipsparse_status_success(hipsparseCreateDnMat(&B, k, n, k, dB, dataType, order),
                                     "success");

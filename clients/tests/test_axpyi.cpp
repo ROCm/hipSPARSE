@@ -58,6 +58,8 @@ Arguments setup_axpyi_arguments(axpyi_tuple tup)
     return arg;
 }
 
+// Only run tests for CUDA 11.1 or greater
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(axpyi_bad_arg, axpyi_float)
 {
     testing_axpyi_bad_arg<float>();
@@ -94,6 +96,7 @@ TEST_P(parameterized_axpyi, axpyi_double_complex)
     hipsparseStatus_t status = testing_axpyi<hipDoubleComplex>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+#endif
 
 INSTANTIATE_TEST_CASE_P(axpyi,
                         parameterized_axpyi,

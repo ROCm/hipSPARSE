@@ -26,6 +26,8 @@
 #include <gtest/gtest.h>
 #include <hipsparse.h>
 
+// Only run tests for CUDA 11.1 or greater
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(spmv_coo_aos_bad_arg, spmv_coo_aos_float)
 {
     testing_spmv_coo_aos_bad_arg();
@@ -42,3 +44,4 @@ TEST(spmv_coo_aos, spmv_coo_aos_i64_double)
     hipsparseStatus_t status = testing_spmv_coo_aos<int64_t, double>();
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+#endif

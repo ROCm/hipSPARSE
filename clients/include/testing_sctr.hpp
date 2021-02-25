@@ -38,10 +38,6 @@ using namespace hipsparse_test;
 template <typename T>
 void testing_sctr_bad_arg(void)
 {
-#ifdef __HIP_PLATFORM_NVCC__
-    // do not test for bad args
-    return;
-#endif
     int nnz       = 100;
     int safe_size = 100;
 
@@ -65,34 +61,15 @@ void testing_sctr_bad_arg(void)
         return;
     }
 
-    // testing for(nullptr == dx_ind)
-    {
-        int* dx_ind_null = nullptr;
+    verify_hipsparse_status_invalid_value(hipsparseXsctr(handle, -1, dx_val, dx_ind, dy, idx_base), "Error: nnz is invalid");
 
-        status = hipsparseXsctr(handle, nnz, dx_val, dx_ind_null, dy, idx_base);
-        verify_hipsparse_status_invalid_pointer(status, "Error: x_ind is nullptr");
-    }
-    // testing for(nullptr == dx_val)
-    {
-        T* dx_val_null = nullptr;
-
-        status = hipsparseXsctr(handle, nnz, dx_val_null, dx_ind, dy, idx_base);
-        verify_hipsparse_status_invalid_pointer(status, "Error: x_val is nullptr");
-    }
-    // testing for(nullptr == dy)
-    {
-        T* dy_null = nullptr;
-
-        status = hipsparseXsctr(handle, nnz, dx_val, dx_ind, dy_null, idx_base);
-        verify_hipsparse_status_invalid_pointer(status, "Error: y is nullptr");
-    }
-    // testing for(nullptr == handle)
-    {
-        hipsparseHandle_t handle_null = nullptr;
-
-        status = hipsparseXsctr(handle_null, nnz, dx_val, dx_ind, dy, idx_base);
-        verify_hipsparse_status_invalid_handle(status);
-    }
+    // cusparse returns success for these
+#if(!defined(CUDART_VERSION))
+    verify_hipsparse_status_invalid_pointer(hipsparseXsctr(handle, nnz, dx_val, (int*)nullptr, dy, idx_base), "Error: x_ind is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXsctr(handle, nnz, (T*)nullptr, dx_ind, dy, idx_base), "Error: x_val is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXsctr(handle, nnz, dx_val, dx_ind, (T*)nullptr, idx_base), "Error: y is nullptr");
+    verify_hipsparse_status_invalid_handle(hipsparseXsctr(nullptr, nnz, dx_val, dx_ind, dy, idx_base));
+#endif
 }
 
 template <typename T>
@@ -110,10 +87,6 @@ hipsparseStatus_t testing_sctr(Arguments argus)
     // Argument sanity check before allocating invalid memory
     if(nnz <= 0)
     {
-#ifdef __HIP_PLATFORM_NVCC__
-        // Do not test args in cusparse
-        return HIPSPARSE_STATUS_SUCCESS;
-#endif
         auto dx_ind_managed
             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
         auto dx_val_managed

@@ -591,10 +591,13 @@ hipsparseStatus_t testing_csric02(Arguments argus)
 
         cpu_time_used = get_time_us() - cpu_time_used;
 
+#ifndef __HIP_PLATFORM_NVCC__
+        // Do not check pivots in cusparse
         unit_check_general(1, 1, 1, &h_analysis_pivot_gold, &h_analysis_pivot_1);
         unit_check_general(1, 1, 1, &h_analysis_pivot_gold, &h_analysis_pivot_2);
         unit_check_general(1, 1, 1, &h_solve_pivot_gold, &h_solve_pivot_1);
         unit_check_general(1, 1, 1, &h_solve_pivot_gold, &h_solve_pivot_2);
+#endif
 
         if(h_analysis_pivot_gold == -1 && h_solve_pivot_gold == -1)
         {

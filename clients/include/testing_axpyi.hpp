@@ -119,10 +119,6 @@ hipsparseStatus_t testing_axpyi(Arguments argus)
     // Argument sanity check before allocating invalid memory
     if(nnz <= 0)
     {
-#ifdef __HIP_PLATFORM_NVCC__
-        // Do not test args in cusparse
-        return HIPSPARSE_STATUS_SUCCESS;
-#endif
         auto dxInd_managed
             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
         auto dxVal_managed

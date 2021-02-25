@@ -40,11 +40,6 @@ using namespace hipsparse_test;
 template <typename T>
 void testing_nnz_bad_arg(void)
 {
-#ifdef __HIP_PLATFORM_NVCC__
-    // do not test for bad args
-    return;
-#endif
-
     static constexpr size_t               safe_size = 100;
     static constexpr int                  M         = 10;
     static constexpr int                  N         = 10;
@@ -74,6 +69,7 @@ void testing_nnz_bad_arg(void)
         return;
     }
 
+#if(!defined(CUDART_VERSION))
     //
     // Testing invalid handle.
     //
@@ -111,6 +107,7 @@ void testing_nnz_bad_arg(void)
         = hipsparseXnnz(handle, dirA, M, N, descrA, (const T*)d_A, lda, d_nnzPerRowColumn, nullptr);
     verify_hipsparse_status_invalid_pointer(
         status, "Error: nnzTotalDevHostPtr as invalid pointer must be detected.");
+#endif
 
     //
     // Testing invalid direction
@@ -177,14 +174,17 @@ hipsparseStatus_t testing_nnz(Arguments argus)
 
     if(M <= 0 || N <= 0 || lda < M)
     {
-#ifdef __HIP_PLATFORM_NVCC__
-        // Do not test args in cusparse
-        return HIPSPARSE_STATUS_SUCCESS;
+	// cusparse returns internal error for this case
+#if(defined(CUDART_VERSION))
+	if((M == 0 || N == 0) && lda >= M)
+	{
+	    return HIPSPARSE_STATUS_SUCCESS;
+	}
 #endif
 
         status
             = hipsparseXnnz(handle, dirA, M, N, descrA, (const T*)nullptr, lda, nullptr, nullptr);
-        if(((M == 0 && N >= 0) || (M >= 0 && N == 0)) && (lda >= M))
+	if(((M == 0 && N >= 0) || (M >= 0 && N == 0)) && (lda >= M))
         {
             verify_hipsparse_status_success(status, "Error: M or N = 0 must be successful.");
         }

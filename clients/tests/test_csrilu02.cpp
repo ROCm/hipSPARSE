@@ -51,10 +51,8 @@ std::string csrilu02_bin[] = {"mac_econ_fwd500.bin",
                               "nos2.bin",
 #endif
                               "nos3.bin",
-                              "nos4.bin",
                               "nos5.bin",
-                              "nos6.bin",
-                              "nos7.bin"};
+                              "nos6.bin"};
 
 class parameterized_csrilu02 : public testing::TestWithParam<csrilu02_tuple>
 {
@@ -119,6 +117,8 @@ Arguments setup_csrilu02_arguments(csrilu02_bin_tuple tup)
     return arg;
 }
 
+// Only run tests for CUDA 11.1 or greater
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(csrilu02_bad_arg, csrilu02_float)
 {
     testing_csrilu02_bad_arg<float>();
@@ -171,6 +171,7 @@ TEST_P(parameterized_csrilu02_bin, csrilu02_bin_double)
     hipsparseStatus_t status = testing_csrilu02<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+#endif
 
 INSTANTIATE_TEST_CASE_P(csrilu02,
                         parameterized_csrilu02,

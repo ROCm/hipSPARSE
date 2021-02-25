@@ -6035,7 +6035,18 @@ hipsparseStatus_t hipsparseSpruneDense2csr_bufferSize(hipsparseHandle_t         
                                                       const int*                csrColInd,
                                                       size_t*                   bufferSize)
 {
-    return HIPSPARSE_STATUS_INTERNAL_ERROR;
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseSpruneDense2csr_bufferSizeExt((cusparseHandle_t)handle,
+                                              m,
+                                              n,
+                                              A,
+                                              lda,
+                                              threshold,
+                                              (const cusparseMatDescr_t)descr,
+                                              csrVal,
+                                              csrRowPtr,
+                                              csrColInd,
+                                              bufferSize));
 }
 
 hipsparseStatus_t hipsparseDpruneDense2csr_bufferSize(hipsparseHandle_t         handle,
@@ -6050,7 +6061,18 @@ hipsparseStatus_t hipsparseDpruneDense2csr_bufferSize(hipsparseHandle_t         
                                                       const int*                csrColInd,
                                                       size_t*                   bufferSize)
 {
-    return HIPSPARSE_STATUS_INTERNAL_ERROR;
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseDpruneDense2csr_bufferSizeExt((cusparseHandle_t)handle,
+                                              m,
+                                              n,
+                                              A,
+                                              lda,
+                                              threshold,
+                                              (const cusparseMatDescr_t)descr,
+                                              csrVal,
+                                              csrRowPtr,
+                                              csrColInd,
+                                              bufferSize));
 }
 
 hipsparseStatus_t hipsparseSpruneDense2csr_bufferSizeExt(hipsparseHandle_t         handle,
@@ -6214,7 +6236,19 @@ hipsparseStatus_t hipsparseSpruneDense2csrByPercentage_bufferSize(hipsparseHandl
                                                                   pruneInfo_t info,
                                                                   size_t*     bufferSize)
 {
-    return HIPSPARSE_STATUS_INTERNAL_ERROR;
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseSpruneDense2csrByPercentage_bufferSizeExt((cusparseHandle_t)handle,
+                                                          m,
+                                                          n,
+                                                          A,
+                                                          lda,
+                                                          percentage,
+                                                          (const cusparseMatDescr_t)descr,
+                                                          csrVal,
+                                                          csrRowPtr,
+                                                          csrColInd,
+                                                          (pruneInfo_t)info,
+                                                          bufferSize));
 }
 
 hipsparseStatus_t hipsparseDpruneDense2csrByPercentage_bufferSize(hipsparseHandle_t handle,
@@ -6230,7 +6264,19 @@ hipsparseStatus_t hipsparseDpruneDense2csrByPercentage_bufferSize(hipsparseHandl
                                                                   pruneInfo_t info,
                                                                   size_t*     bufferSize)
 {
-    return HIPSPARSE_STATUS_INTERNAL_ERROR;
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseDpruneDense2csrByPercentage_bufferSizeExt((cusparseHandle_t)handle,
+                                                          m,
+                                                          n,
+                                                          A,
+                                                          lda,
+                                                          percentage,
+                                                          (const cusparseMatDescr_t)descr,
+                                                          csrVal,
+                                                          csrRowPtr,
+                                                          csrColInd,
+                                                          (pruneInfo_t)info,
+                                                          bufferSize));
 }
 
 hipsparseStatus_t
@@ -7990,7 +8036,21 @@ hipsparseStatus_t hipsparseSpruneCsr2csr_bufferSize(hipsparseHandle_t         ha
                                                     const int*                csrColIndC,
                                                     size_t*                   bufferSize)
 {
-    return HIPSPARSE_STATUS_INTERNAL_ERROR;
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseSpruneCsr2csr_bufferSizeExt((cusparseHandle_t)handle,
+                                            m,
+                                            n,
+                                            nnzA,
+                                            (const cusparseMatDescr_t)descrA,
+                                            csrValA,
+                                            csrRowPtrA,
+                                            csrColIndA,
+                                            threshold,
+                                            (const cusparseMatDescr_t)descrC,
+                                            csrValC,
+                                            csrRowPtrC,
+                                            csrColIndC,
+                                            bufferSize));
 }
 
 hipsparseStatus_t hipsparseDpruneCsr2csr_bufferSize(hipsparseHandle_t         handle,
@@ -8008,7 +8068,21 @@ hipsparseStatus_t hipsparseDpruneCsr2csr_bufferSize(hipsparseHandle_t         ha
                                                     const int*                csrColIndC,
                                                     size_t*                   bufferSize)
 {
-    return HIPSPARSE_STATUS_INTERNAL_ERROR;
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseDpruneCsr2csr_bufferSizeExt((cusparseHandle_t)handle,
+                                            m,
+                                            n,
+                                            nnzA,
+                                            (const cusparseMatDescr_t)descrA,
+                                            csrValA,
+                                            csrRowPtrA,
+                                            csrColIndA,
+                                            threshold,
+                                            (const cusparseMatDescr_t)descrC,
+                                            csrValC,
+                                            csrRowPtrC,
+                                            csrColIndC,
+                                            bufferSize));
 }
 
 hipsparseStatus_t hipsparseSpruneCsr2csr_bufferSizeExt(hipsparseHandle_t         handle,
@@ -8211,7 +8285,22 @@ hipsparseStatus_t hipsparseSpruneCsr2csrByPercentage_bufferSize(hipsparseHandle_
                                                                 pruneInfo_t info,
                                                                 size_t*     bufferSize)
 {
-    return HIPSPARSE_STATUS_INTERNAL_ERROR;
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseSpruneCsr2csrByPercentage_bufferSizeExt((cusparseHandle_t)handle,
+                                                        m,
+                                                        n,
+                                                        nnzA,
+                                                        (const cusparseMatDescr_t)descrA,
+                                                        csrValA,
+                                                        csrRowPtrA,
+                                                        csrColIndA,
+                                                        percentage,
+                                                        (const cusparseMatDescr_t)descrC,
+                                                        csrValC,
+                                                        csrRowPtrC,
+                                                        csrColIndC,
+                                                        (pruneInfo_t)info,
+                                                        bufferSize));
 }
 
 hipsparseStatus_t hipsparseDpruneCsr2csrByPercentage_bufferSize(hipsparseHandle_t         handle,
@@ -8230,7 +8319,22 @@ hipsparseStatus_t hipsparseDpruneCsr2csrByPercentage_bufferSize(hipsparseHandle_
                                                                 pruneInfo_t info,
                                                                 size_t*     bufferSize)
 {
-    return HIPSPARSE_STATUS_INTERNAL_ERROR;
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseDpruneCsr2csrByPercentage_bufferSizeExt((cusparseHandle_t)handle,
+                                                        m,
+                                                        n,
+                                                        nnzA,
+                                                        (const cusparseMatDescr_t)descrA,
+                                                        csrValA,
+                                                        csrRowPtrA,
+                                                        csrColIndA,
+                                                        percentage,
+                                                        (const cusparseMatDescr_t)descrC,
+                                                        csrValC,
+                                                        csrRowPtrC,
+                                                        csrColIndC,
+                                                        (pruneInfo_t)info,
+                                                        bufferSize));
 }
 
 hipsparseStatus_t hipsparseSpruneCsr2csrByPercentage_bufferSizeExt(hipsparseHandle_t         handle,

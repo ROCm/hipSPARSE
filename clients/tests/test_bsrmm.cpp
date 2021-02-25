@@ -133,6 +133,8 @@ Arguments setup_bsrmm_arguments(bsrmm_bin_tuple tup)
     return arg;
 }
 
+// Only run tests for CUDA 11.1 or greater
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(bsrmm_bad_arg, bsrmm_float)
 {
     testing_bsrmm_bad_arg<float>();
@@ -185,6 +187,7 @@ TEST_P(parameterized_bsrmm_bin, bsrmm_bin_double)
     hipsparseStatus_t status = testing_bsrmm<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+#endif
 
 INSTANTIATE_TEST_CASE_P(bsrmm,
                         parameterized_bsrmm,

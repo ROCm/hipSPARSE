@@ -111,6 +111,8 @@ Arguments setup_csrgemm2_a_arguments(csrgemm2_a_bin_tuple tup)
     return arg;
 }
 
+// Only run tests for CUDA 11.1 or greater
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(csrgemm2_a_bad_arg, csrgemm2_a_float)
 {
     testing_csrgemm2_a_bad_arg<float>();
@@ -163,6 +165,7 @@ TEST_P(parameterized_csrgemm2_a_bin, csrgemm2_a_bin_double)
     hipsparseStatus_t status = testing_csrgemm2_a<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+#endif
 
 INSTANTIATE_TEST_CASE_P(csrgemm2_a,
                         parameterized_csrgemm2_a,

@@ -26,6 +26,8 @@
 #include <gtest/gtest.h>
 #include <hipsparse.h>
 
+// Only run tests for CUDA 11.1 or greater
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(spmm_csr_bad_arg, spmm_csr_float)
 {
     testing_spmm_csr_bad_arg();
@@ -37,14 +39,15 @@ TEST(spmm_csr, spmm_csr_i32_i32_float)
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-TEST(spmm_csr, spmm_csr_i64_i32_double)
+TEST(spmm_csr, spmm_csr_i32_i32_double)
 {
-    hipsparseStatus_t status = testing_spmm_csr<int64_t, int32_t, double>();
+    hipsparseStatus_t status = testing_spmm_csr<int32_t, int32_t, double>();
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-TEST(spmm_csr, spmm_csr_i64_i64_hipComplex)
+TEST(spmm_csr, spmm_csr_i32_i32_hipComplex)
 {
-    hipsparseStatus_t status = testing_spmm_csr<int64_t, int64_t, hipComplex>();
+    hipsparseStatus_t status = testing_spmm_csr<int32_t, int32_t, hipComplex>();
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+#endif

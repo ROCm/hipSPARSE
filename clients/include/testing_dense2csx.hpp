@@ -46,12 +46,11 @@ void testing_dense2csx_bad_arg(FUNC& dense2csx)
     // do not test for bad args
     return;
 #endif
-    static constexpr size_t               safe_size = 100;
-    static constexpr int                  M         = 10;
-    static constexpr int                  N         = 10;
-    static constexpr int                  LD        = M;
-    static constexpr hipsparseDirection_t dirA      = DIRA;
-    hipsparseStatus_t                     status;
+    static constexpr size_t safe_size = 100;
+    static constexpr int    M         = 10;
+    static constexpr int    N         = 10;
+    static constexpr int    LD        = M;
+    hipsparseStatus_t       status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -209,7 +208,6 @@ hipsparseStatus_t testing_dense2csx(const Arguments& argus, FUNC& dense2csx)
     int                  M        = argus.M;
     int                  N        = argus.N;
     int                  LD       = argus.lda;
-    hipsparseDirection_t dirA     = argus.dirA;
     hipsparseIndexBase_t idx_base = argus.idx_base;
 
     hipsparseStatus_t status;
@@ -223,10 +221,6 @@ hipsparseStatus_t testing_dense2csx(const Arguments& argus, FUNC& dense2csx)
 
     if(M <= 0 || N <= 0 || LD < M)
     {
-#ifdef __HIP_PLATFORM_NVCC__
-        // Do not test args in cusparse
-        return HIPSPARSE_STATUS_SUCCESS;
-#endif
         hipsparseStatus_t expected_status
             = (((M == 0 && N >= 0) || (M >= 0 && N == 0)) && (LD >= M))
                   ? HIPSPARSE_STATUS_SUCCESS
@@ -252,7 +246,7 @@ hipsparseStatus_t testing_dense2csx(const Arguments& argus, FUNC& dense2csx)
     //
     // Create the dense matrix.
     //
-    int  MN          = (dirA == HIPSPARSE_DIRECTION_ROW) ? M : N;
+    int  MN          = DIMDIR;
     auto m_dense_val = hipsparse_unique_ptr{device_malloc(sizeof(T) * LD * N), device_free};
     auto nnzPerRowColumn_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(int) * MN), device_free};
