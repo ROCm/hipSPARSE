@@ -50,7 +50,7 @@ void testing_sparse_to_dense_coo_bad_arg(void)
     hipsparseOrder_t            order   = HIPSPARSE_ORDER_COLUMN;
 
     // Index and data type
-    hipsparseIndexType_t iType    = HIPSPARSE_INDEX_64I;
+    hipsparseIndexType_t iType    = HIPSPARSE_INDEX_32I;
     hipDataType          dataType = HIP_R_32F;
 
     // Create handle
@@ -112,8 +112,11 @@ void testing_sparse_to_dense_coo_bad_arg(void)
         hipsparseSparseToDense(handle, nullptr, matB, alg, dbuf), "Error: matA is nullptr");
     verify_hipsparse_status_invalid_pointer(
         hipsparseSparseToDense(handle, matA, nullptr, alg, dbuf), "Error: matB is nullptr");
+    // cuda returns success here
+#if(!defined(CUDART_VERSION))
     verify_hipsparse_status_invalid_pointer(
         hipsparseSparseToDense(handle, matA, matB, alg, nullptr), "Error: dbuf is nullptr");
+#endif
 
     // Destruct
     verify_hipsparse_status_success(hipsparseDestroySpMat(matA), "success");
