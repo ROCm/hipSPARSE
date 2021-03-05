@@ -53,7 +53,6 @@ TEST(sparse_to_dense_csc, sparse_to_dense_csc_i64_i64_double)
 }
 #endif
 
-
 TEST(sparse_to_dense_csc, sparse_to_dense_csc_i64_i64_hipComplex)
 {
     hipsparseStatus_t status = testing_sparse_to_dense_csc<int64_t, int64_t, hipComplex>();
