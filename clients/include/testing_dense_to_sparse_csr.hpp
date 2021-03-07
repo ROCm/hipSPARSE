@@ -147,7 +147,7 @@ void testing_dense_to_sparse_csr_bad_arg(void)
 template <typename I, typename J, typename T>
 hipsparseStatus_t testing_dense_to_sparse_csr(void)
 {
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11020)
+#if(!defined(CUDART_VERSION))
     hipsparseIndexBase_t        idx_base = HIPSPARSE_INDEX_BASE_ZERO;
     hipsparseDenseToSparseAlg_t alg      = HIPSPARSE_DENSETOSPARSE_ALG_DEFAULT;
     hipsparseOrder_t            order    = HIPSPARSE_ORDER_COLUMN;
