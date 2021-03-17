@@ -148,13 +148,13 @@ hipsparseStatus_t testing_gtsv2_nopivot(void)
     int ldb = 2 * m;
 
     // Host structures
-    std::vector<T> hdl(m, static_cast<T>(1));
-    std::vector<T> hd(m, static_cast<T>(2));
-    std::vector<T> hdu(m, static_cast<T>(1));
-    std::vector<T> hB(ldb * n, static_cast<T>(3));
+    std::vector<T> hdl(m, make_DataType<T>(1));
+    std::vector<T> hd(m, make_DataType<T>(2));
+    std::vector<T> hdu(m, make_DataType<T>(1));
+    std::vector<T> hB(ldb * n, make_DataType<T>(3));
 
-    hdl[0]     = static_cast<T>(0);
-    hdu[m - 1] = static_cast<T>(0);
+    hdl[0]     = make_DataType<T>(0);
+    hdu[m - 1] = make_DataType<T>(0);
 
     std::vector<T> hB_cpu = hB;
 

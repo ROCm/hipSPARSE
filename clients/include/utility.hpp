@@ -4472,16 +4472,16 @@ void host_gtsv_no_pivot(int                   m,
         int iter   = static_cast<int>(log2(BLOCKSIZE / 2));
         int stride = 1;
 
-        std::vector<T> sa(BLOCKSIZE, static_cast<T>(0));
-        std::vector<T> sb(BLOCKSIZE, static_cast<T>(0));
-        std::vector<T> sc(BLOCKSIZE, static_cast<T>(0));
-        std::vector<T> srhs(BLOCKSIZE, static_cast<T>(0));
+        std::vector<T> sa(BLOCKSIZE, make_DataType<T>(0));
+        std::vector<T> sb(BLOCKSIZE, make_DataType<T>(0));
+        std::vector<T> sc(BLOCKSIZE, make_DataType<T>(0));
+        std::vector<T> srhs(BLOCKSIZE, make_DataType<T>(0));
 
-        std::vector<T> a(BLOCKSIZE, static_cast<T>(0));
-        std::vector<T> b(BLOCKSIZE, static_cast<T>(0));
-        std::vector<T> c(BLOCKSIZE, static_cast<T>(0));
-        std::vector<T> rhs(BLOCKSIZE, static_cast<T>(0));
-        std::vector<T> x(BLOCKSIZE, static_cast<T>(0));
+        std::vector<T> a(BLOCKSIZE, make_DataType<T>(0));
+        std::vector<T> b(BLOCKSIZE, make_DataType<T>(0));
+        std::vector<T> c(BLOCKSIZE, make_DataType<T>(0));
+        std::vector<T> rhs(BLOCKSIZE, make_DataType<T>(0));
+        std::vector<T> x(BLOCKSIZE, make_DataType<T>(0));
 
         for(int i = 0; i < m; i++)
         {

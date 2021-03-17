@@ -10469,15 +10469,16 @@ hipsparseStatus_t hipsparseCgtsv2_nopivot_bufferSizeExt(hipsparseHandle_t handle
                                                         int               ldb,
                                                         size_t*           pBufferSizeInBytes)
 {
-    return hipCUSPARSEStatusToHIPStatus(cusparseCgtsv2_nopivot_bufferSizeExt((cusparseHandle_t)handle,
-                                                                           m,
-                                                                           n,
-                                                                           (const cuComplex*)dl,
-                                                                           (const cuComplex*)d,
-                                                                           (const cuComplex*)du,
-                                                                           (const cuComplex*)B,
-                                                                           ldb,
-                                                                           pBufferSizeInBytes));
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseCgtsv2_nopivot_bufferSizeExt((cusparseHandle_t)handle,
+                                             m,
+                                             n,
+                                             (const cuComplex*)dl,
+                                             (const cuComplex*)d,
+                                             (const cuComplex*)du,
+                                             (const cuComplex*)B,
+                                             ldb,
+                                             pBufferSizeInBytes));
 }
 
 hipsparseStatus_t hipsparseZgtsv2_nopivot_bufferSizeExt(hipsparseHandle_t       handle,
@@ -10544,14 +10545,14 @@ hipsparseStatus_t hipsparseCgtsv2_nopivot(hipsparseHandle_t handle,
 
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseCgtsv2_nopivot((cusparseHandle_t)handle,
-                                                             m,
-                                                             n,
-                                                             (const cuComplex*)dl,
-                                                             (const cuComplex*)d,
-                                                             (const cuComplex*)du,
-                                                             (cuComplex*)B,
-                                                             ldb,
-                                                             pBuffer));
+                                                               m,
+                                                               n,
+                                                               (const cuComplex*)dl,
+                                                               (const cuComplex*)d,
+                                                               (const cuComplex*)du,
+                                                               (cuComplex*)B,
+                                                               ldb,
+                                                               pBuffer));
 }
 
 hipsparseStatus_t hipsparseZgtsv2_nopivot(hipsparseHandle_t       handle,
@@ -10566,14 +10567,14 @@ hipsparseStatus_t hipsparseZgtsv2_nopivot(hipsparseHandle_t       handle,
 
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseZgtsv2_nopivot((cusparseHandle_t)handle,
-                                                             m,
-                                                             n,
-                                                             (const cuDoubleComplex*)dl,
-                                                             (const cuDoubleComplex*)d,
-                                                             (const cuDoubleComplex*)du,
-                                                             (cuDoubleComplex*)B,
-                                                             ldb,
-                                                             pBuffer));
+                                                               m,
+                                                               n,
+                                                               (const cuDoubleComplex*)dl,
+                                                               (const cuDoubleComplex*)d,
+                                                               (const cuDoubleComplex*)du,
+                                                               (cuDoubleComplex*)B,
+                                                               ldb,
+                                                               pBuffer));
 }
 
 #ifdef __cplusplus
