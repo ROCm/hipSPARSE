@@ -194,6 +194,7 @@ set(HIPSPARSE_TEST_SOURCES
   test_spmm_csr.cpp
   test_spmm_coo.cpp
   test_spgemm_csr.cpp
+  test_gtsv2_nopivot.cpp
 )
 
 if(NOT BUILD_CUDA)
