@@ -45,27 +45,23 @@ void testing_gtsv2_nopivot_bad_arg(void)
     int safe_size = 100;
     int m         = 10;
     int n         = 10;
-    int ldb        = m;
+    int ldb       = m;
 
     // Create handle
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
-    auto ddl_managed
-        = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-    auto dd_managed
-        = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-    auto ddu_managed
-        = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-    auto dB_managed
-        = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+    auto ddl_managed  = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+    auto dd_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+    auto ddu_managed  = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+    auto dB_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
     auto dbuf_managed = hipsparse_unique_ptr{device_malloc(sizeof(char) * safe_size), device_free};
 
-    T* ddl  = (T*)ddl_managed.get();
-    T* dd   = (T*)dd_managed.get();
-    T* ddu  = (T*)ddu_managed.get();
-    T* dB   = (T*)dB_managed.get();
-    void*  dbuf = (void*)dbuf_managed.get();
+    T*    ddl  = (T*)ddl_managed.get();
+    T*    dd   = (T*)dd_managed.get();
+    T*    ddu  = (T*)ddu_managed.get();
+    T*    dB   = (T*)dB_managed.get();
+    void* dbuf = (void*)dbuf_managed.get();
 
     if(!ddl || !dd || !ddu || !dB || !dbuf)
     {
@@ -88,16 +84,20 @@ void testing_gtsv2_nopivot_bad_arg(void)
         hipsparseXgtsv2_nopivot_bufferSizeExt(handle, m, n, ddl, dd, ddu, dB, -1, &bsize),
         "Error: ldb is invalid");
     verify_hipsparse_status_invalid_pointer(
-        hipsparseXgtsv2_nopivot_bufferSizeExt(handle, m, n, (const T*)nullptr, dd, ddu, dB, ldb, &bsize),
+        hipsparseXgtsv2_nopivot_bufferSizeExt(
+            handle, m, n, (const T*)nullptr, dd, ddu, dB, ldb, &bsize),
         "Error: ddl is nullptr");
     verify_hipsparse_status_invalid_pointer(
-        hipsparseXgtsv2_nopivot_bufferSizeExt(handle, m, n, ddl, (const T*)nullptr, ddu, dB, ldb, &bsize),
+        hipsparseXgtsv2_nopivot_bufferSizeExt(
+            handle, m, n, ddl, (const T*)nullptr, ddu, dB, ldb, &bsize),
         "Error: dd is nullptr");
     verify_hipsparse_status_invalid_pointer(
-        hipsparseXgtsv2_nopivot_bufferSizeExt(handle, m, n, ddl, dd, (const T*)nullptr, dB, ldb, &bsize),
+        hipsparseXgtsv2_nopivot_bufferSizeExt(
+            handle, m, n, ddl, dd, (const T*)nullptr, dB, ldb, &bsize),
         "Error: ddu is nullptr");
     verify_hipsparse_status_invalid_pointer(
-        hipsparseXgtsv2_nopivot_bufferSizeExt(handle, m, n, ddl, dd, ddu, (const T*)nullptr, ldb, &bsize),
+        hipsparseXgtsv2_nopivot_bufferSizeExt(
+            handle, m, n, ddl, dd, ddu, (const T*)nullptr, ldb, &bsize),
         "Error: dB is nullptr");
     verify_hipsparse_status_invalid_pointer(
         hipsparseXgtsv2_nopivot_bufferSizeExt(handle, m, n, ddl, dd, ddu, dB, ldb, nullptr),
@@ -143,8 +143,8 @@ hipsparseStatus_t testing_gtsv2_nopivot(void)
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
     hipsparseHandle_t              handle = test_handle->handle;
 
-    int m = 512;
-    int n = 512;
+    int m   = 512;
+    int n   = 512;
     int ldb = 2 * m;
 
     // Host structures
@@ -153,16 +153,16 @@ hipsparseStatus_t testing_gtsv2_nopivot(void)
     std::vector<T> hdu(m, static_cast<T>(1));
     std::vector<T> hB(ldb * n, static_cast<T>(3));
 
-    hdl[0] = static_cast<T>(0);
+    hdl[0]     = static_cast<T>(0);
     hdu[m - 1] = static_cast<T>(0);
 
     std::vector<T> hB_cpu = hB;
 
     // allocate memory on device
-    auto ddl_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * m), device_free};
-    auto dd_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * m), device_free};
-    auto ddu_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * m), device_free};
-    auto dB_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * ldb * n), device_free};
+    auto ddl_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * m), device_free};
+    auto dd_managed  = hipsparse_unique_ptr{device_malloc(sizeof(T) * m), device_free};
+    auto ddu_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * m), device_free};
+    auto dB_managed  = hipsparse_unique_ptr{device_malloc(sizeof(T) * ldb * n), device_free};
 
     T* ddl = (T*)ddl_managed.get();
     T* dd  = (T*)dd_managed.get();
@@ -184,7 +184,8 @@ hipsparseStatus_t testing_gtsv2_nopivot(void)
 
     // Query SparseToDense buffer
     size_t bufferSize;
-    CHECK_HIPSPARSE_ERROR(hipsparseXgtsv2_nopivot_bufferSizeExt(handle, m, n, ddl, dd, ddu, dB, ldb, &bufferSize));
+    CHECK_HIPSPARSE_ERROR(
+        hipsparseXgtsv2_nopivot_bufferSizeExt(handle, m, n, ddl, dd, ddu, dB, ldb, &bufferSize));
 
     void* buffer;
     CHECK_HIP_ERROR(hipMalloc(&buffer, bufferSize));
@@ -195,13 +196,7 @@ hipsparseStatus_t testing_gtsv2_nopivot(void)
     CHECK_HIP_ERROR(hipMemcpy(hB.data(), dB, sizeof(T) * ldb * n, hipMemcpyDeviceToHost));
 
     // Host solution
-    host_gtsv_no_pivot(m,
-                        n,
-                        hdl,
-                        hd,
-                        hdu,
-                        hB_cpu,
-                        ldb);
+    host_gtsv_no_pivot(m, n, hdl, hd, hdu, hB_cpu, ldb);
 
     unit_check_near(m, n, ldb, hB_cpu.data(), hB.data());
 

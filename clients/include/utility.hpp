@@ -4445,31 +4445,17 @@ static void csrgemm2(J                    m,
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* ============================================================================================ */
 /*! \brief  Solve tridiangonal system using parallel Cyclic reduction based on paper 
 "Fast Tridiagonal Solvers on the GPU" by Yao Zhang. */
 template <typename T>
-void host_gtsv_no_pivot(int         m,
-                        int         n,
+void host_gtsv_no_pivot(int                   m,
+                        int                   n,
                         const std::vector<T>& dl,
                         const std::vector<T>& d,
                         const std::vector<T>& du,
                         std::vector<T>&       B,
-                        int         ldb)
+                        int                   ldb)
 {
     int BLOCKSIZE = 0;
     if((m & (m - 1)) == 0)
@@ -4570,42 +4556,6 @@ void host_gtsv_no_pivot(int         m,
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #ifdef __cplusplus
 extern "C" {

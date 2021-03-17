@@ -3103,118 +3103,93 @@ hipsparseStatus_t hipsparseZcsric02(hipsparseHandle_t         handle,
                                     hipsparseSolvePolicy_t policy,
                                     void*                  pBuffer);
 
-
-
-
-
-
-
-
-
-
-
-
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSgtsv2_nopivot_bufferSizeExt(hipsparseHandle_t handle,
+                                                        int               m,
+                                                        int               n,
+                                                        const float*      dl,
+                                                        const float*      d,
+                                                        const float*      du,
+                                                        const float*      B,
+                                                        int               ldb,
+                                                        size_t*           pBufferSizeInBytes);
 
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseSgtsv2_nopivot_bufferSizeExt(hipsparseHandle_t         handle,
-                                                            int                       m,
-                                                            int                       n,
-                                                            const float*              dl,
-                                                            const float*              d,
-                                                            const float*              du,
-                                                            const float*              B,
-                                                            int                       ldb,
-                                                            size_t*                   pBufferSizeInBytes);
+hipsparseStatus_t hipsparseDgtsv2_nopivot_bufferSizeExt(hipsparseHandle_t handle,
+                                                        int               m,
+                                                        int               n,
+                                                        const double*     dl,
+                                                        const double*     d,
+                                                        const double*     du,
+                                                        const double*     B,
+                                                        int               db,
+                                                        size_t*           pBufferSizeInBytes);
 
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseDgtsv2_nopivot_bufferSizeExt(hipsparseHandle_t         handle,
-                                                            int                       m,
-                                                            int                       n,
-                                                            const double*              dl,
-                                                            const double*              d,
-                                                            const double*              du,
-                                                            const double*              B,
-                                                            int                       db,
-                                                            size_t*                   pBufferSizeInBytes);
+hipsparseStatus_t hipsparseCgtsv2_nopivot_bufferSizeExt(hipsparseHandle_t handle,
+                                                        int               m,
+                                                        int               n,
+                                                        const hipComplex* dl,
+                                                        const hipComplex* d,
+                                                        const hipComplex* du,
+                                                        const hipComplex* B,
+                                                        int               ldb,
+                                                        size_t*           pBufferSizeInBytes);
 
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseCgtsv2_nopivot_bufferSizeExt(hipsparseHandle_t         handle,
-                                                            int                       m,
-                                                            int                       n,
-                                                            const hipComplex*              dl,
-                                                            const hipComplex*              d,
-                                                            const hipComplex*              du,
-                                                            const hipComplex*              B,
-                                                            int                       ldb,
-                                                            size_t*                   pBufferSizeInBytes);
+hipsparseStatus_t hipsparseZgtsv2_nopivot_bufferSizeExt(hipsparseHandle_t       handle,
+                                                        int                     m,
+                                                        int                     n,
+                                                        const hipDoubleComplex* dl,
+                                                        const hipDoubleComplex* d,
+                                                        const hipDoubleComplex* du,
+                                                        const hipDoubleComplex* B,
+                                                        int                     ldb,
+                                                        size_t*                 pBufferSizeInBytes);
 
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseZgtsv2_nopivot_bufferSizeExt(hipsparseHandle_t         handle,
-                                                            int                       m,
-                                                            int                       n,
-                                                            const hipDoubleComplex*              dl,
-                                                            const hipDoubleComplex*              d,
-                                                            const hipDoubleComplex*              du,
-                                                            const hipDoubleComplex*              B,
-                                                            int                       ldb,
-                                                            size_t*                   pBufferSizeInBytes);
+hipsparseStatus_t hipsparseSgtsv2_nopivot(hipsparseHandle_t handle,
+                                          int               m,
+                                          int               n,
+                                          const float*      dl,
+                                          const float*      d,
+                                          const float*      du,
+                                          float*            B,
+                                          int               ldb,
+                                          void*             pBuffer);
 
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseSgtsv2_nopivot(hipsparseHandle_t  handle,
-                                              int                m,
-                                              int                n,
-                                              const float*       dl,
-                                              const float*       d,
-                                              const float*       du,
-                                              float*             B,
-                                              int                ldb,
-                                              void*              pBuffer);
+hipsparseStatus_t hipsparseDgtsv2_nopivot(hipsparseHandle_t handle,
+                                          int               m,
+                                          int               n,
+                                          const double*     dl,
+                                          const double*     d,
+                                          const double*     du,
+                                          double*           B,
+                                          int               ldb,
+                                          void*             pBuffer);
 
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseDgtsv2_nopivot(hipsparseHandle_t  handle,
-                                              int                m,
-                                              int                n,
-                                              const double*       dl,
-                                              const double*       d,
-                                              const double*       du,
-                                              double*             B,
-                                              int                ldb,
-                                              void*              pBuffer);
+hipsparseStatus_t hipsparseCgtsv2_nopivot(hipsparseHandle_t handle,
+                                          int               m,
+                                          int               n,
+                                          const hipComplex* dl,
+                                          const hipComplex* d,
+                                          const hipComplex* du,
+                                          hipComplex*       B,
+                                          int               ldb,
+                                          void*             pBuffer);
 
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseCgtsv2_nopivot(hipsparseHandle_t  handle,
-                                              int                m,
-                                              int                n,
-                                              const hipComplex*       dl,
-                                              const hipComplex*       d,
-                                              const hipComplex*       du,
-                                              hipComplex*             B,
-                                              int                ldb,
-                                              void*              pBuffer);
-
-                                              HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseZgtsv2_nopivot(hipsparseHandle_t  handle,
-                                              int                m,
-                                              int                n,
-                                              const hipDoubleComplex*       dl,
-                                              const hipDoubleComplex*       d,
-                                              const hipDoubleComplex*       du,
-                                              hipDoubleComplex*             B,
-                                              int                ldb,
-                                              void*              pBuffer);
-
-
-
-
-
-
-
-
-
-
-
-
-
+hipsparseStatus_t hipsparseZgtsv2_nopivot(hipsparseHandle_t       handle,
+                                          int                     m,
+                                          int                     n,
+                                          const hipDoubleComplex* dl,
+                                          const hipDoubleComplex* d,
+                                          const hipDoubleComplex* du,
+                                          hipDoubleComplex*       B,
+                                          int                     ldb,
+                                          void*                   pBuffer);
 
 /* --- Sparse Format Conversion --- */
 

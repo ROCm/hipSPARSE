@@ -39,7 +39,6 @@ TEST(gtsv2_nopivot, gtsv2_nopivot_float)
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-
 TEST(gtsv2_nopivot, gtsv2_nopivot_double)
 {
     hipsparseStatus_t status = testing_gtsv2_nopivot<double>();
