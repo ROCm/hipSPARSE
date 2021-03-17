@@ -10441,7 +10441,7 @@ hipsparseStatus_t hipsparseSgtsv2_nopivot_bufferSizeExt(hipsparseHandle_t handle
                                                         int               ldb,
                                                         size_t*           pBufferSizeInBytes)
 {
-    return rocSPARSEStatusToHIPStatus(cusparseSgtsv2_nopivot_bufferSizeExt(
+    return hipCUSPARSEStatusToHIPStatus(cusparseSgtsv2_nopivot_bufferSizeExt(
         (cusparseHandle_t)handle, m, n, dl, d, du, B, ldb, pBufferSizeInBytes));
 }
 
@@ -10455,7 +10455,7 @@ hipsparseStatus_t hipsparseDgtsv2_nopivot_bufferSizeExt(hipsparseHandle_t handle
                                                         int               ldb,
                                                         size_t*           pBufferSizeInBytes)
 {
-    return rocSPARSEStatusToHIPStatus(cusparseDgtsv2_nopivot_bufferSizeExt(
+    return hipCUSPARSEStatusToHIPStatus(cusparseDgtsv2_nopivot_bufferSizeExt(
         (cusparseHandle_t)handle, m, n, dl, d, du, B, ldb, pBufferSizeInBytes));
 }
 
@@ -10469,7 +10469,7 @@ hipsparseStatus_t hipsparseCgtsv2_nopivot_bufferSizeExt(hipsparseHandle_t handle
                                                         int               ldb,
                                                         size_t*           pBufferSizeInBytes)
 {
-    return rocSPARSEStatusToHIPStatus(cusparseCgtsv2_nopivot_bufferSizeExt((cusparseHandle_t)handle,
+    return hipCUSPARSEStatusToHIPStatus(cusparseCgtsv2_nopivot_bufferSizeExt((cusparseHandle_t)handle,
                                                                            m,
                                                                            n,
                                                                            (const cuComplex*)dl,
@@ -10490,7 +10490,7 @@ hipsparseStatus_t hipsparseZgtsv2_nopivot_bufferSizeExt(hipsparseHandle_t       
                                                         int                     ldb,
                                                         size_t*                 pBufferSizeInBytes)
 {
-    return rocSPARSEStatusToHIPStatus(
+    return hipCUSPARSEStatusToHIPStatus(
         cusparseZgtsv2_nopivot_bufferSizeExt((cusparseHandle_t)handle,
                                              m,
                                              n,
@@ -10513,7 +10513,7 @@ hipsparseStatus_t hipsparseSgtsv2_nopivot(hipsparseHandle_t handle,
                                           void*             pBuffer)
 
 {
-    return rocSPARSEStatusToHIPStatus(
+    return hipCUSPARSEStatusToHIPStatus(
         cusparseSgtsv2_nopivot((cusparseHandle_t)handle, m, n, dl, d, du, B, ldb, pBuffer));
 }
 
@@ -10528,7 +10528,7 @@ hipsparseStatus_t hipsparseDgtsv2_nopivot(hipsparseHandle_t handle,
                                           void*             pBuffer)
 
 {
-    return rocSPARSEStatusToHIPStatus(
+    return hipCUSPARSEStatusToHIPStatus(
         cusparseDgtsv2_nopivot((cusparseHandle_t)handle, m, n, dl, d, du, B, ldb, pBuffer));
 }
 
@@ -10543,7 +10543,7 @@ hipsparseStatus_t hipsparseCgtsv2_nopivot(hipsparseHandle_t handle,
                                           void*             pBuffer)
 
 {
-    return rocSPARSEStatusToHIPStatus(cusparseCgtsv2_nopivot((cusparseHandle_t)handle,
+    return hipCUSPARSEStatusToHIPStatus(cusparseCgtsv2_nopivot((cusparseHandle_t)handle,
                                                              m,
                                                              n,
                                                              (const cuComplex*)dl,
@@ -10565,7 +10565,7 @@ hipsparseStatus_t hipsparseZgtsv2_nopivot(hipsparseHandle_t       handle,
                                           void*                   pBuffer)
 
 {
-    return rocSPARSEStatusToHIPStatus(cusparseZgtsv2_nopivot((cusparseHandle_t)handle,
+    return hipCUSPARSEStatusToHIPStatus(cusparseZgtsv2_nopivot((cusparseHandle_t)handle,
                                                              m,
                                                              n,
                                                              (const cuDoubleComplex*)dl,
