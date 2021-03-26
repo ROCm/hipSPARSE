@@ -1,10 +1,11 @@
 # Change Log for hipSPARSE
 
-## [(Unreleased) hipSPARSE 1.10.4 for ROCm 4.2.0]
+## [hipSPARSE 1.10.6 for ROCm 4.2.0]
 ### Added
-- Generic API support, including SpMM
+- Generic API support, including SpMM (CSR, COO)
+- csru2csr, csr2csru
 
-## [(Unreleased) hipSPARSE 1.10.4 for ROCm 4.1.0]
+## [hipSPARSE 1.10.4 for ROCm 4.1.0]
 ### Added
 - Generic API support, including Axpby, Gather, Scatter, Rot, SpVV, SpMV, SparseToDense, DenseToSparse and SpGEMM
 
