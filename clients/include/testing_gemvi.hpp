@@ -71,7 +71,7 @@ void testing_gemvi_bad_arg(void)
 
     // cusparse has error checks for this function at all
 #if(!defined(CUDART_VERSION))
-    // gemvi bufferSize
+    // gemvi bufferSize - buffer size is currently not doing anything
     //    int bufferSize;
     //    verify_hipsparse_status_invalid_handle(
     //        hipsparseSpVV_bufferSize(nullptr, opType, x, y, &result, dataType, &bufferSize));
