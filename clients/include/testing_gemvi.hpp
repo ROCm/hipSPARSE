@@ -69,6 +69,8 @@ void testing_gemvi_bad_arg(void)
         return;
     }
 
+    // cusparse has error checks for this function at all
+#if(!defined(CUDART_VERSION))
     // gemvi bufferSize
     //    int bufferSize;
     //    verify_hipsparse_status_invalid_handle(
@@ -143,6 +145,7 @@ void testing_gemvi_bad_arg(void)
         "Error: nnz is invalid");
 
     CHECK_HIP_ERROR(hipFree(buffer));
+#endif
 }
 
 template <typename T>
