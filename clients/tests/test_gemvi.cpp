@@ -37,20 +37,20 @@ TEST(gemvi, gemvi_float)
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-//TEST(gemvi, gemvi_double)
-//{
-//    hipsparseStatus_t status = testing_gemvi<double>();
-//    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
-//}
-//
-//TEST(gemvi, gemvi_hipFloatComplex)
-//{
-//    hipsparseStatus_t status = testing_gemvi<hipComplex>();
-//    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
-//}
-//
-//TEST(gemvi, gemvi_hipDoubleComplex)
-//{
-//    hipsparseStatus_t status = testing_gemvi<hipDoubleComplex>();
-//    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
-//}
+TEST(gemvi, gemvi_double)
+{
+    hipsparseStatus_t status = testing_gemvi<double>();
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+
+TEST(gemvi, gemvi_hipFloatComplex)
+{
+    hipsparseStatus_t status = testing_gemvi<hipComplex>();
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+
+TEST(gemvi, gemvi_hipDoubleComplex)
+{
+    hipsparseStatus_t status = testing_gemvi<hipDoubleComplex>();
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
