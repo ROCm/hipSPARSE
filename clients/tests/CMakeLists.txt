@@ -194,7 +194,14 @@ set(HIPSPARSE_TEST_SOURCES
   test_spmm_csr.cpp
   test_spmm_coo.cpp
   test_spgemm_csr.cpp
+  test_sddmm_csr.cpp
+  test_sddmm_csc.cpp
+  test_sddmm_coo.cpp
+  test_sddmm_coo_aos.cpp
 )
+
+#  test_sddmm_coo.cpp
+
 
 if(NOT BUILD_CUDA)
     list(APPEND HIPSPARSE_TEST_SOURCES
