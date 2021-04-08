@@ -9560,6 +9560,19 @@ hipsparseDenseToSparseAlg_t CudaDnToSpAlgToHipDnToSpAlg(cusparseDenseToSparseAlg
 }
 #endif
 
+#if(CUDART_VERSION >= 11020)
+cusparseSDDMMAlg_t hipSDDMMAlgToCudaSDDMMAlg(hipsparseSDDMMAlg_t alg)
+{
+    switch(alg)
+    {
+    case HIPSPARSE_SDDMM_ALG_DEFAULT:
+      return CUSPARSE_SDDMM_ALG_DEFAULT;
+    default:
+        throw "Non existant cusparseSDDMMAlg_t";
+    }
+}
+#endif
+
 #if(CUDART_VERSION >= 10010)
 hipsparseStatus_t hipsparseCreateSpVec(hipsparseSpVecDescr_t* spVecDescr,
                                        int64_t                size,
@@ -10431,6 +10444,94 @@ hipsparseStatus_t hipsparseSpGEMM_copy(hipsparseHandle_t      handle,
 }
 #endif
 
+
+
+#if(CUDART_VERSION >= 11020)
+hipsparseStatus_t hipsparseSDDMM(hipsparseHandle_t            handle,
+                                 hipsparseOperation_t         opA,
+                                 hipsparseOperation_t         opB,
+                                 const void*                  alpha,
+                                 const hipsparseDnMatDescr_t  matA,
+                                 const hipsparseDnMatDescr_t  matB,
+                                 const void*                  beta,
+                                 hipsparseSpMatDescr_t        matC,
+                                 hipDataType                  computeType,
+                                 hipsparseSDDMMAlg_t          alg,
+                                 void*                        tempBuffer)
+{
+  return hipCUSPARSEStatusToHIPStatus(cusparseSDDMM((cusparseHandle_t)handle,
+						    hipOperationToCudaOperation(opA),
+						    hipOperationToCudaOperation(opB),
+						    alpha,
+						    (const cusparseDnMatDescr_t)matA,
+						    (const cusparseDnMatDescr_t)matB,
+						    beta,
+						    (cusparseSpMatDescr_t)matC,
+						    hipDataTypeToCudaDataType(computeType),
+						    hipSDDMMAlgToCudaSDDMMAlg(alg),
+						    tempBuffer));
+}
+#endif
+
+
+#if(CUDART_VERSION >= 11020)
+hipsparseStatus_t hipsparseSDDMM_bufferSize(hipsparseHandle_t            handle,
+					    hipsparseOperation_t         opA,
+					    hipsparseOperation_t         opB,
+					    const void*                  alpha,
+					    const hipsparseDnMatDescr_t  matA,
+					    const hipsparseDnMatDescr_t  matB,
+					    const void*                  beta,
+					    hipsparseSpMatDescr_t        matC,
+					    hipDataType                  computeType,
+					    hipsparseSDDMMAlg_t          alg,
+					    size_t*                      bufferSize)
+{
+  return rocSPARSEStatusToHIPStatus(cusparseSDDMM_bufferSize((cusparseHandle_t)handle,
+							     hipOperationToCudaOperation(opA),
+							     hipOperationToCudaOperation(opB),
+							     alpha,
+							     (const cusparseDnMatDescr_t)matA,
+							     (const cusparseDnMatDescr_t)matB,
+							     beta,
+							     (cusparseSpMatDescr_t)matC,
+							     hipDataTypeToCudaDataType(computeType),
+							     hipSDDMMAlgToCudaSDDMMAlg(alg),
+							     bufferSize));
+}
+#endif
+
+#if(CUDART_VERSION >= 11020)
+hipsparseStatus_t hipsparseSDDMM_preprocess(hipsparseHandle_t            handle,
+					    hipsparseOperation_t         opA,
+					    hipsparseOperation_t         opB,
+					    const void*                  alpha,
+					    const hipsparseDnMatDescr_t  matA,
+					    const hipsparseDnMatDescr_t  matB,
+					    const void*                  beta,
+					    hipsparseSpMatDescr_t        matC,
+					    hipDataType                  computeType,
+					    hipsparseSDDMMAlg_t          alg,
+					    void*                        tempBuffer)
+{
+  return rocSPARSEStatusToHIPStatus(cusparseSDDMM_preprocess((cusparseHandle_t)handle,
+							      hipOperationToCudaOperation(opA),
+							      hipOperationToCudaOperation(opB),
+							      alpha,
+							      (const cusparseDnMatDescr_t)matA,
+							      (const cusparseDnMatDescr_t)matB,
+							      beta,
+							      (cusparseSpMatDescr_t)matC,
+							      hipDataTypeToCudaDataType(computeType),
+							      hipSDDMMAlgToCudaSDDMMAlg(alg),
+							      tempBuffer));
+}
+#endif
+
+
+
+
+  
 #ifdef __cplusplus
 }
 #endif
