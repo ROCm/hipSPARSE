@@ -50,4 +50,4 @@ TEST(gtsv2, gtsv2_hipComplex)
     hipsparseStatus_t status = testing_gtsv2<hipComplex>();
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-#endif 
+#endif

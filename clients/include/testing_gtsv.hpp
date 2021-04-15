@@ -85,20 +85,16 @@ void testing_gtsv2_bad_arg(void)
         hipsparseXgtsv2_bufferSizeExt(handle, m, n, ddl, dd, ddu, dB, -1, &bsize),
         "Error: ldb is invalid");
     verify_hipsparse_status_invalid_pointer(
-        hipsparseXgtsv2_bufferSizeExt(
-            handle, m, n, (const T*)nullptr, dd, ddu, dB, ldb, &bsize),
+        hipsparseXgtsv2_bufferSizeExt(handle, m, n, (const T*)nullptr, dd, ddu, dB, ldb, &bsize),
         "Error: ddl is nullptr");
     verify_hipsparse_status_invalid_pointer(
-        hipsparseXgtsv2_bufferSizeExt(
-            handle, m, n, ddl, (const T*)nullptr, ddu, dB, ldb, &bsize),
+        hipsparseXgtsv2_bufferSizeExt(handle, m, n, ddl, (const T*)nullptr, ddu, dB, ldb, &bsize),
         "Error: dd is nullptr");
     verify_hipsparse_status_invalid_pointer(
-        hipsparseXgtsv2_bufferSizeExt(
-            handle, m, n, ddl, dd, (const T*)nullptr, dB, ldb, &bsize),
+        hipsparseXgtsv2_bufferSizeExt(handle, m, n, ddl, dd, (const T*)nullptr, dB, ldb, &bsize),
         "Error: ddu is nullptr");
     verify_hipsparse_status_invalid_pointer(
-        hipsparseXgtsv2_bufferSizeExt(
-            handle, m, n, ddl, dd, ddu, (const T*)nullptr, ldb, &bsize),
+        hipsparseXgtsv2_bufferSizeExt(handle, m, n, ddl, dd, ddu, (const T*)nullptr, ldb, &bsize),
         "Error: dB is nullptr");
     verify_hipsparse_status_invalid_pointer(
         hipsparseXgtsv2_bufferSizeExt(handle, m, n, ddl, dd, ddu, dB, ldb, nullptr),
@@ -108,14 +104,11 @@ void testing_gtsv2_bad_arg(void)
     verify_hipsparse_status_invalid_handle(
         hipsparseXgtsv2(nullptr, m, n, ddl, dd, ddu, dB, ldb, &bsize));
     verify_hipsparse_status_invalid_value(
-        hipsparseXgtsv2(handle, -1, n, ddl, dd, ddu, dB, ldb, &bsize),
-        "Error: m is invalid");
+        hipsparseXgtsv2(handle, -1, n, ddl, dd, ddu, dB, ldb, &bsize), "Error: m is invalid");
     verify_hipsparse_status_invalid_value(
-        hipsparseXgtsv2(handle, m, -1, ddl, dd, ddu, dB, ldb, &bsize),
-        "Error: n is invalid");
+        hipsparseXgtsv2(handle, m, -1, ddl, dd, ddu, dB, ldb, &bsize), "Error: n is invalid");
     verify_hipsparse_status_invalid_value(
-        hipsparseXgtsv2(handle, m, n, ddl, dd, ddu, dB, -1, &bsize),
-        "Error: ldb is invalid");
+        hipsparseXgtsv2(handle, m, n, ddl, dd, ddu, dB, -1, &bsize), "Error: ldb is invalid");
     verify_hipsparse_status_invalid_pointer(
         hipsparseXgtsv2(handle, m, n, (const T*)nullptr, dd, ddu, dB, ldb, &bsize),
         "Error: ddl is nullptr");
@@ -129,8 +122,7 @@ void testing_gtsv2_bad_arg(void)
         hipsparseXgtsv2(handle, m, n, ddl, dd, ddu, (T*)nullptr, ldb, &bsize),
         "Error: dB is nullptr");
     verify_hipsparse_status_invalid_pointer(
-        hipsparseXgtsv2(handle, m, n, ddl, dd, ddu, dB, ldb, nullptr),
-        "Error: bsize is nullptr");
+        hipsparseXgtsv2(handle, m, n, ddl, dd, ddu, dB, ldb, nullptr), "Error: bsize is nullptr");
 #endif
 }
 
@@ -196,7 +188,6 @@ hipsparseStatus_t testing_gtsv2(void)
     // copy output from device to CPU
     CHECK_HIP_ERROR(hipMemcpy(hB.data(), dB, sizeof(T) * ldb * n, hipMemcpyDeviceToHost));
 
-
     // Check
     std::vector<T> hresult = hB_original;
     for(int j = 0; j < n; j++)
@@ -207,7 +198,7 @@ hipsparseStatus_t testing_gtsv2(void)
         for(int i = 1; i < m - 1; i++)
         {
             hresult[ldb * j + i] = hdl[i] * hB[ldb * j + i - 1] + hd[i] * hB[ldb * j + i]
-                                    + hdu[i] * hB[ldb * j + i + 1];
+                                   + hdu[i] * hB[ldb * j + i + 1];
         }
     }
 

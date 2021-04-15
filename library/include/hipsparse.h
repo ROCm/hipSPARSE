@@ -3105,91 +3105,91 @@ hipsparseStatus_t hipsparseZcsric02(hipsparseHandle_t         handle,
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSgtsv2_bufferSizeExt(hipsparseHandle_t handle,
-                                                        int               m,
-                                                        int               n,
-                                                        const float*      dl,
-                                                        const float*      d,
-                                                        const float*      du,
-                                                        const float*      B,
-                                                        int               ldb,
-                                                        size_t*           pBufferSizeInBytes);
+                                                int               m,
+                                                int               n,
+                                                const float*      dl,
+                                                const float*      d,
+                                                const float*      du,
+                                                const float*      B,
+                                                int               ldb,
+                                                size_t*           pBufferSizeInBytes);
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDgtsv2_bufferSizeExt(hipsparseHandle_t handle,
-                                                        int               m,
-                                                        int               n,
-                                                        const double*     dl,
-                                                        const double*     d,
-                                                        const double*     du,
-                                                        const double*     B,
-                                                        int               db,
-                                                        size_t*           pBufferSizeInBytes);
+                                                int               m,
+                                                int               n,
+                                                const double*     dl,
+                                                const double*     d,
+                                                const double*     du,
+                                                const double*     B,
+                                                int               db,
+                                                size_t*           pBufferSizeInBytes);
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCgtsv2_bufferSizeExt(hipsparseHandle_t handle,
-                                                        int               m,
-                                                        int               n,
-                                                        const hipComplex* dl,
-                                                        const hipComplex* d,
-                                                        const hipComplex* du,
-                                                        const hipComplex* B,
-                                                        int               ldb,
-                                                        size_t*           pBufferSizeInBytes);
+                                                int               m,
+                                                int               n,
+                                                const hipComplex* dl,
+                                                const hipComplex* d,
+                                                const hipComplex* du,
+                                                const hipComplex* B,
+                                                int               ldb,
+                                                size_t*           pBufferSizeInBytes);
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseZgtsv2_bufferSizeExt(hipsparseHandle_t       handle,
-                                                        int                     m,
-                                                        int                     n,
-                                                        const hipDoubleComplex* dl,
-                                                        const hipDoubleComplex* d,
-                                                        const hipDoubleComplex* du,
-                                                        const hipDoubleComplex* B,
-                                                        int                     ldb,
-                                                        size_t*                 pBufferSizeInBytes);
+                                                int                     m,
+                                                int                     n,
+                                                const hipDoubleComplex* dl,
+                                                const hipDoubleComplex* d,
+                                                const hipDoubleComplex* du,
+                                                const hipDoubleComplex* B,
+                                                int                     ldb,
+                                                size_t*                 pBufferSizeInBytes);
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSgtsv2(hipsparseHandle_t handle,
-                                          int               m,
-                                          int               n,
-                                          const float*      dl,
-                                          const float*      d,
-                                          const float*      du,
-                                          float*            B,
-                                          int               ldb,
-                                          void*             pBuffer);
+                                  int               m,
+                                  int               n,
+                                  const float*      dl,
+                                  const float*      d,
+                                  const float*      du,
+                                  float*            B,
+                                  int               ldb,
+                                  void*             pBuffer);
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDgtsv2(hipsparseHandle_t handle,
-                                          int               m,
-                                          int               n,
-                                          const double*     dl,
-                                          const double*     d,
-                                          const double*     du,
-                                          double*           B,
-                                          int               ldb,
-                                          void*             pBuffer);
+                                  int               m,
+                                  int               n,
+                                  const double*     dl,
+                                  const double*     d,
+                                  const double*     du,
+                                  double*           B,
+                                  int               ldb,
+                                  void*             pBuffer);
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCgtsv2(hipsparseHandle_t handle,
-                                          int               m,
-                                          int               n,
-                                          const hipComplex* dl,
-                                          const hipComplex* d,
-                                          const hipComplex* du,
-                                          hipComplex*       B,
-                                          int               ldb,
-                                          void*             pBuffer);
+                                  int               m,
+                                  int               n,
+                                  const hipComplex* dl,
+                                  const hipComplex* d,
+                                  const hipComplex* du,
+                                  hipComplex*       B,
+                                  int               ldb,
+                                  void*             pBuffer);
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseZgtsv2(hipsparseHandle_t       handle,
-                                          int                     m,
-                                          int                     n,
-                                          const hipDoubleComplex* dl,
-                                          const hipDoubleComplex* d,
-                                          const hipDoubleComplex* du,
-                                          hipDoubleComplex*       B,
-                                          int                     ldb,
-                                          void*                   pBuffer);
+                                  int                     m,
+                                  int                     n,
+                                  const hipDoubleComplex* dl,
+                                  const hipDoubleComplex* d,
+                                  const hipDoubleComplex* du,
+                                  hipDoubleComplex*       B,
+                                  int                     ldb,
+                                  void*                   pBuffer);
 
 /* --- Sparse Format Conversion --- */
 
@@ -5707,44 +5707,43 @@ hipsparseStatus_t hipsparseSpGEMM_copy(hipsparseHandle_t      handle,
 
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11020)
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseSDDMM(hipsparseHandle_t            handle,
-                                 hipsparseOperation_t         opA,
-                                 hipsparseOperation_t         opB,
-                                 const void*                  alpha,
-                                 const hipsparseDnMatDescr_t  A,
-                                 const hipsparseDnMatDescr_t  B,
-                                 const void*                  beta,
-                                 hipsparseSpMatDescr_t        C,
-                                 hipDataType                  computeType,
-                                 hipsparseSDDMMAlg_t          alg,
-                                 void*                        tempBuffer);
+hipsparseStatus_t hipsparseSDDMM(hipsparseHandle_t           handle,
+                                 hipsparseOperation_t        opA,
+                                 hipsparseOperation_t        opB,
+                                 const void*                 alpha,
+                                 const hipsparseDnMatDescr_t A,
+                                 const hipsparseDnMatDescr_t B,
+                                 const void*                 beta,
+                                 hipsparseSpMatDescr_t       C,
+                                 hipDataType                 computeType,
+                                 hipsparseSDDMMAlg_t         alg,
+                                 void*                       tempBuffer);
 
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseSDDMM_bufferSize(hipsparseHandle_t            handle,
-					    hipsparseOperation_t         opA,
-					    hipsparseOperation_t         opB,
-					    const void*                  alpha,
-					    const hipsparseDnMatDescr_t  A,
-					    const hipsparseDnMatDescr_t  B,
-					    const void*                  beta,
-					    hipsparseSpMatDescr_t        C,
-					    hipDataType                  computeType,
-					    hipsparseSDDMMAlg_t          alg,
-					    size_t*                      bufferSize);
-
+hipsparseStatus_t hipsparseSDDMM_bufferSize(hipsparseHandle_t           handle,
+                                            hipsparseOperation_t        opA,
+                                            hipsparseOperation_t        opB,
+                                            const void*                 alpha,
+                                            const hipsparseDnMatDescr_t A,
+                                            const hipsparseDnMatDescr_t B,
+                                            const void*                 beta,
+                                            hipsparseSpMatDescr_t       C,
+                                            hipDataType                 computeType,
+                                            hipsparseSDDMMAlg_t         alg,
+                                            size_t*                     bufferSize);
 
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseSDDMM_preprocess(hipsparseHandle_t            handle,
-					    hipsparseOperation_t         opA,
-					    hipsparseOperation_t         opB,
-					    const void*                  alpha,
-					    const hipsparseDnMatDescr_t  A,
-					    const hipsparseDnMatDescr_t  B,
-					    const void*                  beta,
-					    hipsparseSpMatDescr_t        C,
-					    hipDataType                  computeType,
-					    hipsparseSDDMMAlg_t          alg,
-					    void*                        tempBuffer);
+hipsparseStatus_t hipsparseSDDMM_preprocess(hipsparseHandle_t           handle,
+                                            hipsparseOperation_t        opA,
+                                            hipsparseOperation_t        opB,
+                                            const void*                 alpha,
+                                            const hipsparseDnMatDescr_t A,
+                                            const hipsparseDnMatDescr_t B,
+                                            const void*                 beta,
+                                            hipsparseSpMatDescr_t       C,
+                                            hipDataType                 computeType,
+                                            hipsparseSDDMMAlg_t         alg,
+                                            void*                       tempBuffer);
 #endif
 
 #ifdef __cplusplus
