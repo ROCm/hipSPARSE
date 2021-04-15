@@ -5707,44 +5707,43 @@ hipsparseStatus_t hipsparseSpGEMM_copy(hipsparseHandle_t      handle,
 
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11020)
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseSDDMM(hipsparseHandle_t            handle,
-                                 hipsparseOperation_t         opA,
-                                 hipsparseOperation_t         opB,
-                                 const void*                  alpha,
-                                 const hipsparseDnMatDescr_t  A,
-                                 const hipsparseDnMatDescr_t  B,
-                                 const void*                  beta,
-                                 hipsparseSpMatDescr_t        C,
-                                 hipDataType                  computeType,
-                                 hipsparseSDDMMAlg_t          alg,
-                                 void*                        tempBuffer);
+hipsparseStatus_t hipsparseSDDMM(hipsparseHandle_t           handle,
+                                 hipsparseOperation_t        opA,
+                                 hipsparseOperation_t        opB,
+                                 const void*                 alpha,
+                                 const hipsparseDnMatDescr_t A,
+                                 const hipsparseDnMatDescr_t B,
+                                 const void*                 beta,
+                                 hipsparseSpMatDescr_t       C,
+                                 hipDataType                 computeType,
+                                 hipsparseSDDMMAlg_t         alg,
+                                 void*                       tempBuffer);
 
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseSDDMM_bufferSize(hipsparseHandle_t            handle,
-					    hipsparseOperation_t         opA,
-					    hipsparseOperation_t         opB,
-					    const void*                  alpha,
-					    const hipsparseDnMatDescr_t  A,
-					    const hipsparseDnMatDescr_t  B,
-					    const void*                  beta,
-					    hipsparseSpMatDescr_t        C,
-					    hipDataType                  computeType,
-					    hipsparseSDDMMAlg_t          alg,
-					    size_t*                      bufferSize);
-
+hipsparseStatus_t hipsparseSDDMM_bufferSize(hipsparseHandle_t           handle,
+                                            hipsparseOperation_t        opA,
+                                            hipsparseOperation_t        opB,
+                                            const void*                 alpha,
+                                            const hipsparseDnMatDescr_t A,
+                                            const hipsparseDnMatDescr_t B,
+                                            const void*                 beta,
+                                            hipsparseSpMatDescr_t       C,
+                                            hipDataType                 computeType,
+                                            hipsparseSDDMMAlg_t         alg,
+                                            size_t*                     bufferSize);
 
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseSDDMM_preprocess(hipsparseHandle_t            handle,
-					    hipsparseOperation_t         opA,
-					    hipsparseOperation_t         opB,
-					    const void*                  alpha,
-					    const hipsparseDnMatDescr_t  A,
-					    const hipsparseDnMatDescr_t  B,
-					    const void*                  beta,
-					    hipsparseSpMatDescr_t        C,
-					    hipDataType                  computeType,
-					    hipsparseSDDMMAlg_t          alg,
-					    void*                        tempBuffer);
+hipsparseStatus_t hipsparseSDDMM_preprocess(hipsparseHandle_t           handle,
+                                            hipsparseOperation_t        opA,
+                                            hipsparseOperation_t        opB,
+                                            const void*                 alpha,
+                                            const hipsparseDnMatDescr_t A,
+                                            const hipsparseDnMatDescr_t B,
+                                            const void*                 beta,
+                                            hipsparseSpMatDescr_t       C,
+                                            hipDataType                 computeType,
+                                            hipsparseSDDMMAlg_t         alg,
+                                            void*                       tempBuffer);
 #endif
 
 #ifdef __cplusplus
