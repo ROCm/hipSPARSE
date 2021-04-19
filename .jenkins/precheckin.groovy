@@ -18,7 +18,7 @@ def runCI =
     prj.paths.build_command = './install.sh -c'
     prj.compiler.compiler_name = 'c++'
     prj.compiler.compiler_path = 'c++'
-    prj.libraryDependencies = ['rocSPARSE', 'rocPRIM']
+    prj.libraryDependencies = ['rocSPARSE-internal', 'rocPRIM']
 
     // Define test architectures, optional rocm version argument is available
     def nodes = new dockerNodes(nodeDetails, jobName, prj)
