@@ -1500,6 +1500,130 @@ namespace hipsparse
     }
 
     template <>
+    hipsparseStatus_t hipsparseXgemvi_bufferSize<float>(hipsparseHandle_t    handle,
+                                                        hipsparseOperation_t transA,
+                                                        int                  m,
+                                                        int                  n,
+                                                        int                  nnz,
+                                                        int*                 pBufferSize)
+    {
+        return hipsparseSgemvi_bufferSize(handle, transA, m, n, nnz, pBufferSize);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXgemvi_bufferSize<double>(hipsparseHandle_t    handle,
+                                                         hipsparseOperation_t transA,
+                                                         int                  m,
+                                                         int                  n,
+                                                         int                  nnz,
+                                                         int*                 pBufferSize)
+    {
+        return hipsparseDgemvi_bufferSize(handle, transA, m, n, nnz, pBufferSize);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXgemvi_bufferSize<hipComplex>(hipsparseHandle_t    handle,
+                                                             hipsparseOperation_t transA,
+                                                             int                  m,
+                                                             int                  n,
+                                                             int                  nnz,
+                                                             int*                 pBufferSize)
+    {
+        return hipsparseCgemvi_bufferSize(handle, transA, m, n, nnz, pBufferSize);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXgemvi_bufferSize<hipDoubleComplex>(hipsparseHandle_t    handle,
+                                                                   hipsparseOperation_t transA,
+                                                                   int                  m,
+                                                                   int                  n,
+                                                                   int                  nnz,
+                                                                   int*                 pBufferSize)
+    {
+        return hipsparseZgemvi_bufferSize(handle, transA, m, n, nnz, pBufferSize);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXgemvi(hipsparseHandle_t    handle,
+                                      hipsparseOperation_t transA,
+                                      int                  m,
+                                      int                  n,
+                                      const float*         alpha,
+                                      const float*         A,
+                                      int                  lda,
+                                      int                  nnz,
+                                      const float*         x,
+                                      const int*           xInd,
+                                      const float*         beta,
+                                      float*               y,
+                                      hipsparseIndexBase_t idxBase,
+                                      void*                pBuffer)
+    {
+        return hipsparseSgemvi(
+            handle, transA, m, n, alpha, A, lda, nnz, x, xInd, beta, y, idxBase, pBuffer);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXgemvi(hipsparseHandle_t    handle,
+                                      hipsparseOperation_t transA,
+                                      int                  m,
+                                      int                  n,
+                                      const double*        alpha,
+                                      const double*        A,
+                                      int                  lda,
+                                      int                  nnz,
+                                      const double*        x,
+                                      const int*           xInd,
+                                      const double*        beta,
+                                      double*              y,
+                                      hipsparseIndexBase_t idxBase,
+                                      void*                pBuffer)
+    {
+        return hipsparseDgemvi(
+            handle, transA, m, n, alpha, A, lda, nnz, x, xInd, beta, y, idxBase, pBuffer);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXgemvi(hipsparseHandle_t    handle,
+                                      hipsparseOperation_t transA,
+                                      int                  m,
+                                      int                  n,
+                                      const hipComplex*    alpha,
+                                      const hipComplex*    A,
+                                      int                  lda,
+                                      int                  nnz,
+                                      const hipComplex*    x,
+                                      const int*           xInd,
+                                      const hipComplex*    beta,
+                                      hipComplex*          y,
+                                      hipsparseIndexBase_t idxBase,
+                                      void*                pBuffer)
+    {
+        return hipsparseCgemvi(
+            handle, transA, m, n, alpha, A, lda, nnz, x, xInd, beta, y, idxBase, pBuffer);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXgemvi(hipsparseHandle_t       handle,
+                                      hipsparseOperation_t    transA,
+                                      int                     m,
+                                      int                     n,
+                                      const hipDoubleComplex* alpha,
+                                      const hipDoubleComplex* A,
+                                      int                     lda,
+                                      int                     nnz,
+                                      const hipDoubleComplex* x,
+                                      const int*              xInd,
+                                      const hipDoubleComplex* beta,
+                                      hipDoubleComplex*       y,
+                                      hipsparseIndexBase_t    idxBase,
+                                      void*                   pBuffer)
+    {
+        return hipsparseZgemvi(
+            handle, transA, m, n, alpha, A, lda, nnz, x, xInd, beta, y, idxBase, pBuffer);
+    }
+
+    template <>
     hipsparseStatus_t hipsparseXbsrmm(hipsparseHandle_t         handle,
                                       hipsparseDirection_t      dirA,
                                       hipsparseOperation_t      transA,
