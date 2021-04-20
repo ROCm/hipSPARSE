@@ -73,17 +73,19 @@ void testing_gtsv2_strided_batch_bad_arg(void)
     size_t bsize;
 
     // gtsv2StridedBatch_bufferSize
-    verify_hipsparse_status_invalid_handle(
-        hipsparseXgtsv2StridedBatch_bufferSizeExt(nullptr, m, ddl, dd, ddu, dx, batch_count, batch_stride, &bsize));
+    verify_hipsparse_status_invalid_handle(hipsparseXgtsv2StridedBatch_bufferSizeExt(
+        nullptr, m, ddl, dd, ddu, dx, batch_count, batch_stride, &bsize));
     verify_hipsparse_status_invalid_value(
-        hipsparseXgtsv2StridedBatch_bufferSizeExt(handle, -1, ddl, dd, ddu, dx, batch_count, batch_stride, &bsize),
+        hipsparseXgtsv2StridedBatch_bufferSizeExt(
+            handle, -1, ddl, dd, ddu, dx, batch_count, batch_stride, &bsize),
         "Error: m is invalid");
     verify_hipsparse_status_invalid_value(
-        hipsparseXgtsv2StridedBatch_bufferSizeExt(handle, m, ddl, dd, ddu, dx, -1, batch_stride, &bsize),
+        hipsparseXgtsv2StridedBatch_bufferSizeExt(
+            handle, m, ddl, dd, ddu, dx, -1, batch_stride, &bsize),
         "Error: batch_count is invalid");
-    verify_hipsparse_status_invalid_value(
-        hipsparseXgtsv2StridedBatch_bufferSizeExt(handle, m, ddl, dd, ddu, dx, batch_count, -1, &bsize),
-        "Error: batch_stride is invalid");
+    verify_hipsparse_status_invalid_value(hipsparseXgtsv2StridedBatch_bufferSizeExt(
+                                              handle, m, ddl, dd, ddu, dx, batch_count, -1, &bsize),
+                                          "Error: batch_stride is invalid");
     verify_hipsparse_status_invalid_pointer(
         hipsparseXgtsv2StridedBatch_bufferSizeExt(
             handle, m, (const T*)nullptr, dd, ddu, dx, batch_count, batch_stride, &bsize),
@@ -101,7 +103,8 @@ void testing_gtsv2_strided_batch_bad_arg(void)
             handle, m, ddl, dd, ddu, (const T*)nullptr, batch_count, batch_stride, &bsize),
         "Error: dx is nullptr");
     verify_hipsparse_status_invalid_pointer(
-        hipsparseXgtsv2StridedBatch_bufferSizeExt(handle, m, ddl, dd, ddu, dx, batch_count, batch_stride, nullptr),
+        hipsparseXgtsv2StridedBatch_bufferSizeExt(
+            handle, m, ddl, dd, ddu, dx, batch_count, batch_stride, nullptr),
         "Error: bsize is nullptr");
 
     // gtsv2StridedBatch
@@ -117,19 +120,24 @@ void testing_gtsv2_strided_batch_bad_arg(void)
         hipsparseXgtsv2StridedBatch(handle, m, ddl, dd, ddu, dx, batch_count, -1, dbuf),
         "Error: batch_stride is invalid");
     verify_hipsparse_status_invalid_pointer(
-        hipsparseXgtsv2StridedBatch(handle, m, (const T*)nullptr, dd, ddu, dx, batch_count, batch_stride, dbuf),
+        hipsparseXgtsv2StridedBatch(
+            handle, m, (const T*)nullptr, dd, ddu, dx, batch_count, batch_stride, dbuf),
         "Error: ddl is nullptr");
     verify_hipsparse_status_invalid_pointer(
-        hipsparseXgtsv2StridedBatch(handle, m, ddl, (const T*)nullptr, ddu, dx, batch_count, batch_stride, dbuf),
+        hipsparseXgtsv2StridedBatch(
+            handle, m, ddl, (const T*)nullptr, ddu, dx, batch_count, batch_stride, dbuf),
         "Error: dd is nullptr");
     verify_hipsparse_status_invalid_pointer(
-        hipsparseXgtsv2StridedBatch(handle, m, ddl, dd, (const T*)nullptr, dx, batch_count, batch_stride, dbuf),
+        hipsparseXgtsv2StridedBatch(
+            handle, m, ddl, dd, (const T*)nullptr, dx, batch_count, batch_stride, dbuf),
         "Error: ddu is nullptr");
     verify_hipsparse_status_invalid_pointer(
-        hipsparseXgtsv2StridedBatch(handle, m, ddl, dd, ddu, (T*)nullptr, batch_count, batch_stride, dbuf),
+        hipsparseXgtsv2StridedBatch(
+            handle, m, ddl, dd, ddu, (T*)nullptr, batch_count, batch_stride, dbuf),
         "Error: dx is nullptr");
     verify_hipsparse_status_invalid_pointer(
-        hipsparseXgtsv2StridedBatch(handle, m, ddl, dd, ddu, dx, batch_count, batch_stride, nullptr),
+        hipsparseXgtsv2StridedBatch(
+            handle, m, ddl, dd, ddu, dx, batch_count, batch_stride, nullptr),
         "Error: bsize is nullptr");
 #endif
 }
@@ -144,8 +152,8 @@ hipsparseStatus_t testing_gtsv2_strided_batch(void)
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
     hipsparseHandle_t              handle = test_handle->handle;
 
-    int m   = 512;
-    int batch_count = 512;
+    int m            = 512;
+    int batch_count  = 512;
     int batch_stride = 2 * m;
 
     // Host structures
@@ -163,10 +171,14 @@ hipsparseStatus_t testing_gtsv2_strided_batch(void)
     std::vector<T> hx_original = hx;
 
     // allocate memory on device
-    auto ddl_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * batch_stride * batch_count), device_free};
-    auto dd_managed  = hipsparse_unique_ptr{device_malloc(sizeof(T) * batch_stride * batch_count), device_free};
-    auto ddu_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * batch_stride * batch_count), device_free};
-    auto dx_managed  = hipsparse_unique_ptr{device_malloc(sizeof(T) * batch_stride * batch_count), device_free};
+    auto ddl_managed
+        = hipsparse_unique_ptr{device_malloc(sizeof(T) * batch_stride * batch_count), device_free};
+    auto dd_managed
+        = hipsparse_unique_ptr{device_malloc(sizeof(T) * batch_stride * batch_count), device_free};
+    auto ddu_managed
+        = hipsparse_unique_ptr{device_malloc(sizeof(T) * batch_stride * batch_count), device_free};
+    auto dx_managed
+        = hipsparse_unique_ptr{device_malloc(sizeof(T) * batch_stride * batch_count), device_free};
 
     T* ddl = (T*)ddl_managed.get();
     T* dd  = (T*)dd_managed.get();
@@ -181,35 +193,45 @@ hipsparseStatus_t testing_gtsv2_strided_batch(void)
     }
 
     // copy data from CPU to device
-    CHECK_HIP_ERROR(hipMemcpy(ddl, hdl.data(), sizeof(T) * batch_stride * batch_count, hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(hipMemcpy(dd, hd.data(), sizeof(T) * batch_stride * batch_count, hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(hipMemcpy(ddu, hdu.data(), sizeof(T) * batch_stride * batch_count, hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(hipMemcpy(dx, hx.data(), sizeof(T) * batch_stride * batch_count, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(
+        hipMemcpy(ddl, hdl.data(), sizeof(T) * batch_stride * batch_count, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(
+        hipMemcpy(dd, hd.data(), sizeof(T) * batch_stride * batch_count, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(
+        hipMemcpy(ddu, hdu.data(), sizeof(T) * batch_stride * batch_count, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(
+        hipMemcpy(dx, hx.data(), sizeof(T) * batch_stride * batch_count, hipMemcpyHostToDevice));
 
     // Query SparseToDense buffer
     size_t bufferSize;
-    CHECK_HIPSPARSE_ERROR(
-        hipsparseXgtsv2StridedBatch_bufferSizeExt(handle, m, ddl, dd, ddu, dx, batch_count, batch_stride, &bufferSize));
+    CHECK_HIPSPARSE_ERROR(hipsparseXgtsv2StridedBatch_bufferSizeExt(
+        handle, m, ddl, dd, ddu, dx, batch_count, batch_stride, &bufferSize));
 
     void* buffer;
     CHECK_HIP_ERROR(hipMalloc(&buffer, bufferSize));
 
-    CHECK_HIPSPARSE_ERROR(hipsparseXgtsv2StridedBatch(handle, m, ddl, dd, ddu, dx, batch_count, batch_stride, buffer));
+    CHECK_HIPSPARSE_ERROR(hipsparseXgtsv2StridedBatch(
+        handle, m, ddl, dd, ddu, dx, batch_count, batch_stride, buffer));
 
     // copy output from device to CPU
-    CHECK_HIP_ERROR(hipMemcpy(hx.data(), dx, sizeof(T) * batch_stride * batch_count, hipMemcpyDeviceToHost));
+    CHECK_HIP_ERROR(
+        hipMemcpy(hx.data(), dx, sizeof(T) * batch_stride * batch_count, hipMemcpyDeviceToHost));
 
     // Check
     std::vector<T> hresult(batch_stride * batch_count, make_DataType<T>(3));
     for(int j = 0; j < batch_count; j++)
     {
-        hresult[batch_stride * j] = hd[batch_stride * j + 0] * hx[batch_stride * j] + hdu[batch_stride * j + 0] * hx[batch_stride * j + 1];
+        hresult[batch_stride * j] = hd[batch_stride * j + 0] * hx[batch_stride * j]
+                                    + hdu[batch_stride * j + 0] * hx[batch_stride * j + 1];
         hresult[batch_stride * j + m - 1]
-            = hdl[batch_stride * j + m - 1] * hx[batch_stride * j + m - 2] + hd[batch_stride * j + m - 1] * hx[batch_stride * j + m - 1];
+            = hdl[batch_stride * j + m - 1] * hx[batch_stride * j + m - 2]
+              + hd[batch_stride * j + m - 1] * hx[batch_stride * j + m - 1];
         for(int i = 1; i < m - 1; i++)
         {
-            hresult[batch_stride * j + i] = hdl[batch_stride * j + i] * hx[batch_stride * j + i - 1] + hd[batch_stride * j + i] * hx[batch_stride * j + i]
-                                    + hdu[batch_stride * j + i] * hx[batch_stride * j + i + 1];
+            hresult[batch_stride * j + i]
+                = hdl[batch_stride * j + i] * hx[batch_stride * j + i - 1]
+                  + hd[batch_stride * j + i] * hx[batch_stride * j + i]
+                  + hdu[batch_stride * j + i] * hx[batch_stride * j + i + 1];
         }
     }
 
