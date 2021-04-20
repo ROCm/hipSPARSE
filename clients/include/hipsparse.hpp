@@ -1261,7 +1261,6 @@ namespace hipsparse
     template <typename T>
     hipsparseStatus_t hipsparseXgtsv2StridedBatch(hipsparseHandle_t handle,
                                                   int               m,
-                                                  int               n,
                                                   const T*          dl,
                                                   const T*          d,
                                                   const T*          du,

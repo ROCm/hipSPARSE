@@ -21,33 +21,33 @@
  *
  * ************************************************************************ */
 
-#include "testing_gtsv2_nopivot.hpp"
+#include "testing_gtsv2_strided_batch.hpp"
 
 #include <gtest/gtest.h>
 #include <hipsparse.h>
 
 // Only run tests for CUDA 11.1 or greater
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
-TEST(gtsv2_nopivot_bad_arg, gtsv2_nopivot_float)
+TEST(gtsv2_strided_batch_bad_arg, gtsv2_strided_batch_float)
 {
-    testing_gtsv2_nopivot_bad_arg<float>();
+    testing_gtsv2_strided_batch_bad_arg<float>();
 }
 
-TEST(gtsv2_nopivot, gtsv2_nopivot_float)
+TEST(gtsv2_strided_batch, gtsv2_strided_batch_float)
 {
-    hipsparseStatus_t status = testing_gtsv2_nopivot<float>();
+    hipsparseStatus_t status = testing_gtsv2_strided_batch<float>();
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-TEST(gtsv2_nopivot, gtsv2_nopivot_double)
+TEST(gtsv2_strided_batch, gtsv2_strided_batch_double)
 {
-    hipsparseStatus_t status = testing_gtsv2_nopivot<double>();
+    hipsparseStatus_t status = testing_gtsv2_strided_batch<double>();
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-TEST(gtsv2_nopivot, gtsv2_nopivot_hipComplex)
+TEST(gtsv2_strided_batch, gtsv2_strided_batch_hipComplex)
 {
-    hipsparseStatus_t status = testing_gtsv2_nopivot<hipComplex>();
+    hipsparseStatus_t status = testing_gtsv2_strided_batch<hipComplex>();
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 #endif
