@@ -5020,9 +5020,9 @@ typedef enum
 typedef enum
 {
     HIPSPARSE_SPMM_ALG_DEFAULT = 0,
-    HIPSPARSE_SPMM_COO_ALG1 = 1,
-    HIPSPARSE_SPMM_COO_ALG2 = 2,
-    HIPSPARSE_SPMM_CSR_ALG1 = 3
+    HIPSPARSE_SPMM_COO_ALG1    = 1,
+    HIPSPARSE_SPMM_COO_ALG2    = 2,
+    HIPSPARSE_SPMM_CSR_ALG1    = 3
 } hipsparseSpMMAlg_t;
 #else
 #if(CUDART_VERSION >= 11000)
@@ -5620,137 +5620,132 @@ hipsparseStatus_t hipsparseSpGEMM_copy(hipsparseHandle_t      handle,
 
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11020)
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseSDDMM(hipsparseHandle_t            handle,
-                                 hipsparseOperation_t         opA,
-                                 hipsparseOperation_t         opB,
-                                 const void*                  alpha,
-                                 const hipsparseDnMatDescr_t  A,
-                                 const hipsparseDnMatDescr_t  B,
-                                 const void*                  beta,
-                                 hipsparseSpMatDescr_t        C,
-                                 hipDataType                  computeType,
-                                 hipsparseSDDMMAlg_t          alg,
-                                 void*                        tempBuffer);
+hipsparseStatus_t hipsparseSDDMM(hipsparseHandle_t           handle,
+                                 hipsparseOperation_t        opA,
+                                 hipsparseOperation_t        opB,
+                                 const void*                 alpha,
+                                 const hipsparseDnMatDescr_t A,
+                                 const hipsparseDnMatDescr_t B,
+                                 const void*                 beta,
+                                 hipsparseSpMatDescr_t       C,
+                                 hipDataType                 computeType,
+                                 hipsparseSDDMMAlg_t         alg,
+                                 void*                       tempBuffer);
 
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseSDDMM_bufferSize(hipsparseHandle_t            handle,
-					    hipsparseOperation_t         opA,
-					    hipsparseOperation_t         opB,
-					    const void*                  alpha,
-					    const hipsparseDnMatDescr_t  A,
-					    const hipsparseDnMatDescr_t  B,
-					    const void*                  beta,
-					    hipsparseSpMatDescr_t        C,
-					    hipDataType                  computeType,
-					    hipsparseSDDMMAlg_t          alg,
-					    size_t*                      bufferSize);
-
+hipsparseStatus_t hipsparseSDDMM_bufferSize(hipsparseHandle_t           handle,
+                                            hipsparseOperation_t        opA,
+                                            hipsparseOperation_t        opB,
+                                            const void*                 alpha,
+                                            const hipsparseDnMatDescr_t A,
+                                            const hipsparseDnMatDescr_t B,
+                                            const void*                 beta,
+                                            hipsparseSpMatDescr_t       C,
+                                            hipDataType                 computeType,
+                                            hipsparseSDDMMAlg_t         alg,
+                                            size_t*                     bufferSize);
 
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseSDDMM_preprocess(hipsparseHandle_t            handle,
-					    hipsparseOperation_t         opA,
-					    hipsparseOperation_t         opB,
-					    const void*                  alpha,
-					    const hipsparseDnMatDescr_t  A,
-					    const hipsparseDnMatDescr_t  B,
-					    const void*                  beta,
-					    hipsparseSpMatDescr_t        C,
-					    hipDataType                  computeType,
-					    hipsparseSDDMMAlg_t          alg,
-					    void*                        tempBuffer);
+hipsparseStatus_t hipsparseSDDMM_preprocess(hipsparseHandle_t           handle,
+                                            hipsparseOperation_t        opA,
+                                            hipsparseOperation_t        opB,
+                                            const void*                 alpha,
+                                            const hipsparseDnMatDescr_t A,
+                                            const hipsparseDnMatDescr_t B,
+                                            const void*                 beta,
+                                            hipsparseSpMatDescr_t       C,
+                                            hipDataType                 computeType,
+                                            hipsparseSDDMMAlg_t         alg,
+                                            void*                       tempBuffer);
 #endif
-
-
-
-
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSgtsv2StridedBatch_bufferSizeExt(hipsparseHandle_t handle,
-                                                        int               m,
-                                                        const float*      dl,
-                                                        const float*      d,
-                                                        const float*      du,
-                                                        const float*      x,
-                                                        int               batchCount,
-                                                        int               batchStride,
-                                                        size_t*           pBufferSizeInBytes);
+                                                            int               m,
+                                                            const float*      dl,
+                                                            const float*      d,
+                                                            const float*      du,
+                                                            const float*      x,
+                                                            int               batchCount,
+                                                            int               batchStride,
+                                                            size_t*           pBufferSizeInBytes);
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDgtsv2StridedBatch_bufferSizeExt(hipsparseHandle_t handle,
-                                                        int               m,
-                                                        const double*     dl,
-                                                        const double*     d,
-                                                        const double*     du,
-                                                        const double*     x,
-                                                        int               batchCount,
-                                                        int               batchStride,
-                                                        size_t*           pBufferSizeInBytes);
+                                                            int               m,
+                                                            const double*     dl,
+                                                            const double*     d,
+                                                            const double*     du,
+                                                            const double*     x,
+                                                            int               batchCount,
+                                                            int               batchStride,
+                                                            size_t*           pBufferSizeInBytes);
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCgtsv2StridedBatch_bufferSizeExt(hipsparseHandle_t handle,
-                                                        int               m,
-                                                        const hipComplex* dl,
-                                                        const hipComplex* d,
-                                                        const hipComplex* du,
-                                                        const hipComplex* x,
-                                                        int               batchCount,
-                                                        int               batchStride,
-                                                        size_t*           pBufferSizeInBytes);
+                                                            int               m,
+                                                            const hipComplex* dl,
+                                                            const hipComplex* d,
+                                                            const hipComplex* du,
+                                                            const hipComplex* x,
+                                                            int               batchCount,
+                                                            int               batchStride,
+                                                            size_t*           pBufferSizeInBytes);
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseZgtsv2StridedBatch_bufferSizeExt(hipsparseHandle_t       handle,
-                                                        int                     m,
-                                                        const hipDoubleComplex* dl,
-                                                        const hipDoubleComplex* d,
-                                                        const hipDoubleComplex* du,
-                                                        const hipDoubleComplex* x,
-                                                        int               batchCount,
-                                                        int               batchStride,
-                                                        size_t*                 pBufferSizeInBytes);
+                                                            int                     m,
+                                                            const hipDoubleComplex* dl,
+                                                            const hipDoubleComplex* d,
+                                                            const hipDoubleComplex* du,
+                                                            const hipDoubleComplex* x,
+                                                            int                     batchCount,
+                                                            int                     batchStride,
+                                                            size_t* pBufferSizeInBytes);
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSgtsv2StridedBatch(hipsparseHandle_t handle,
-                                          int               m,
-                                          const float*      dl,
-                                          const float*      d,
-                                          const float*      du,
-                                          float*            x,
-                                          int               batchCount,
-                                          int               batchStride,
-                                          void*             pBuffer);
+                                              int               m,
+                                              const float*      dl,
+                                              const float*      d,
+                                              const float*      du,
+                                              float*            x,
+                                              int               batchCount,
+                                              int               batchStride,
+                                              void*             pBuffer);
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDgtsv2StridedBatch(hipsparseHandle_t handle,
-                                          int               m,
-                                          const double*     dl,
-                                          const double*     d,
-                                          const double*     du,
-                                          double*           x,
-                                          int               batchCount,
-                                          int               batchStride,
-                                          void*             pBuffer);
+                                              int               m,
+                                              const double*     dl,
+                                              const double*     d,
+                                              const double*     du,
+                                              double*           x,
+                                              int               batchCount,
+                                              int               batchStride,
+                                              void*             pBuffer);
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCgtsv2StridedBatch(hipsparseHandle_t handle,
-                                          int               m,
-                                          const hipComplex* dl,
-                                          const hipComplex* d,
-                                          const hipComplex* du,
-                                          hipComplex*       x,
-                                          int               batchCount,
-                                          int               batchStride,
-                                          void*             pBuffer);
+                                              int               m,
+                                              const hipComplex* dl,
+                                              const hipComplex* d,
+                                              const hipComplex* du,
+                                              hipComplex*       x,
+                                              int               batchCount,
+                                              int               batchStride,
+                                              void*             pBuffer);
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseZgtsv2StridedBatch(hipsparseHandle_t       handle,
-                                          int                     m,
-                                          const hipDoubleComplex* dl,
-                                          const hipDoubleComplex* d,
-                                          const hipDoubleComplex* du,
-                                          hipDoubleComplex*       x,
-                                          int               batchCount,
-                                          int               batchStride,
-                                          void*                   pBuffer);
+                                              int                     m,
+                                              const hipDoubleComplex* dl,
+                                              const hipDoubleComplex* d,
+                                              const hipDoubleComplex* du,
+                                              hipDoubleComplex*       x,
+                                              int                     batchCount,
+                                              int                     batchStride,
+                                              void*                   pBuffer);
 
 #ifdef __cplusplus
 }

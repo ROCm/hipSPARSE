@@ -50,4 +50,4 @@ TEST(gtsv2_nopivot, gtsv2_nopivot_hipComplex)
     hipsparseStatus_t status = testing_gtsv2_nopivot<hipComplex>();
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-#endif 
+#endif
