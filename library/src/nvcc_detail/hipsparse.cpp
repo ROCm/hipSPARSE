@@ -10639,17 +10639,17 @@ hipsparseStatus_t hipsparseSDDMM_bufferSize(hipsparseHandle_t            handle,
 					    hipsparseSDDMMAlg_t          alg,
 					    size_t*                      bufferSize)
 {
-  return rocSPARSEStatusToHIPStatus(cusparseSDDMM_bufferSize((cusparseHandle_t)handle,
-							     hipOperationToCudaOperation(opA),
-							     hipOperationToCudaOperation(opB),
-							     alpha,
-							     (const cusparseDnMatDescr_t)matA,
-							     (const cusparseDnMatDescr_t)matB,
-							     beta,
-							     (cusparseSpMatDescr_t)matC,
-							     hipDataTypeToCudaDataType(computeType),
-							     hipSDDMMAlgToCudaSDDMMAlg(alg),
-							     bufferSize));
+  return hipCUSPARSEStatusToHIPStatus(cusparseSDDMM_bufferSize((cusparseHandle_t)handle,
+							       hipOperationToCudaOperation(opA),
+							       hipOperationToCudaOperation(opB),
+							       alpha,
+							       (const cusparseDnMatDescr_t)matA,
+							       (const cusparseDnMatDescr_t)matB,
+							       beta,
+							       (cusparseSpMatDescr_t)matC,
+							       hipDataTypeToCudaDataType(computeType),
+							       hipSDDMMAlgToCudaSDDMMAlg(alg),
+							       bufferSize));
 }
 #endif
 
@@ -10666,17 +10666,17 @@ hipsparseStatus_t hipsparseSDDMM_preprocess(hipsparseHandle_t            handle,
 					    hipsparseSDDMMAlg_t          alg,
 					    void*                        tempBuffer)
 {
-  return rocSPARSEStatusToHIPStatus(cusparseSDDMM_preprocess((cusparseHandle_t)handle,
-							      hipOperationToCudaOperation(opA),
-							      hipOperationToCudaOperation(opB),
-							      alpha,
-							      (const cusparseDnMatDescr_t)matA,
-							      (const cusparseDnMatDescr_t)matB,
-							      beta,
-							      (cusparseSpMatDescr_t)matC,
-							      hipDataTypeToCudaDataType(computeType),
-							      hipSDDMMAlgToCudaSDDMMAlg(alg),
-							      tempBuffer));
+  return hipCUSPARSEStatusToHIPStatus(cusparseSDDMM_preprocess((cusparseHandle_t)handle,
+							       hipOperationToCudaOperation(opA),
+							       hipOperationToCudaOperation(opB),
+							       alpha,
+							       (const cusparseDnMatDescr_t)matA,
+							       (const cusparseDnMatDescr_t)matB,
+							       beta,
+							       (cusparseSpMatDescr_t)matC,
+							       hipDataTypeToCudaDataType(computeType),
+							       hipSDDMMAlgToCudaSDDMMAlg(alg),
+							       tempBuffer));
 }
 #endif
 
