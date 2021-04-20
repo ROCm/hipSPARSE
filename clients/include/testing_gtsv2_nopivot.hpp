@@ -108,14 +108,11 @@ void testing_gtsv2_nopivot_bad_arg(void)
     verify_hipsparse_status_invalid_handle(
         hipsparseXgtsv2_nopivot(nullptr, m, n, ddl, dd, ddu, dB, ldb, dbuf));
     verify_hipsparse_status_invalid_value(
-        hipsparseXgtsv2_nopivot(handle, -1, n, ddl, dd, ddu, dB, ldb, dbuf),
-        "Error: m is invalid");
+        hipsparseXgtsv2_nopivot(handle, -1, n, ddl, dd, ddu, dB, ldb, dbuf), "Error: m is invalid");
     verify_hipsparse_status_invalid_value(
-        hipsparseXgtsv2_nopivot(handle, m, -1, ddl, dd, ddu, dB, ldb, dbuf),
-        "Error: n is invalid");
+        hipsparseXgtsv2_nopivot(handle, m, -1, ddl, dd, ddu, dB, ldb, dbuf), "Error: n is invalid");
     verify_hipsparse_status_invalid_value(
-        hipsparseXgtsv2_nopivot(handle, m, n, ddl, dd, ddu, dB, -1, dbuf),
-        "Error: ldb is invalid");
+        hipsparseXgtsv2_nopivot(handle, m, n, ddl, dd, ddu, dB, -1, dbuf), "Error: ldb is invalid");
     verify_hipsparse_status_invalid_pointer(
         hipsparseXgtsv2_nopivot(handle, m, n, (const T*)nullptr, dd, ddu, dB, ldb, dbuf),
         "Error: ddl is nullptr");
@@ -201,11 +198,12 @@ hipsparseStatus_t testing_gtsv2_nopivot(void)
     for(int j = 0; j < n; j++)
     {
         hresult[ldb * j] = hd[0] * hB[ldb * j] + hdu[0] * hB[ldb * j + 1];
-        hresult[ldb * j + m - 1] = hdl[m - 1] * hB[ldb * j + m - 2] + hd[m - 1] * hB[ldb * j + m - 1];
+        hresult[ldb * j + m - 1]
+            = hdl[m - 1] * hB[ldb * j + m - 2] + hd[m - 1] * hB[ldb * j + m - 1];
         for(int i = 1; i < m - 1; i++)
         {
-            hresult[ldb * j + i]
-                = hdl[i] * hB[ldb * j + i - 1] + hd[i] * hB[ldb * j + i] + hdu[i] * hB[ldb * j + i + 1];
+            hresult[ldb * j + i] = hdl[i] * hB[ldb * j + i - 1] + hd[i] * hB[ldb * j + i]
+                                   + hdu[i] * hB[ldb * j + i + 1];
         }
     }
 
