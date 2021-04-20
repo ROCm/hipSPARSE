@@ -1321,6 +1321,154 @@ module hipsparse
             type(c_ptr), value :: y
         end function hipsparseZbsrmv
 
+        function hipsparseSgemvi_bufferSize(handle, transA, m, n, nnz, pBufferSize) &
+                bind(c, name = 'hipsparseSgemvi_bufferSize')
+            use hipsparse_enums
+            use iso_c_binding
+            implicit none
+            integer(kind(HIPSPARSE_STATUS_SUCCESS)) :: hipsparseSgemvi_bufferSize
+            type(c_ptr), value :: handle
+            integer(c_int), value :: transA
+            integer(c_int), value :: m
+            integer(c_int), value :: n
+            integer(c_int), value :: nnz
+            type(c_ptr), value :: pBufferSize
+        end function hipsparseSgemvi_bufferSize
+
+        function hipsparseDgemvi_bufferSize(handle, transA, m, n, nnz, pBufferSize) &
+                bind(c, name = 'hipsparseDgemvi_bufferSize')
+            use hipsparse_enums
+            use iso_c_binding
+            implicit none
+            integer(kind(HIPSPARSE_STATUS_SUCCESS)) :: hipsparseDgemvi_bufferSize
+            type(c_ptr), value :: handle
+            integer(c_int), value :: transA
+            integer(c_int), value :: m
+            integer(c_int), value :: n
+            integer(c_int), value :: nnz
+            type(c_ptr), value :: pBufferSize
+        end function hipsparseDgemvi_bufferSize
+
+        function hipsparseCgemvi_bufferSize(handle, transA, m, n, nnz, pBufferSize) &
+                bind(c, name = 'hipsparseCgemvi_bufferSize')
+            use hipsparse_enums
+            use iso_c_binding
+            implicit none
+            integer(kind(HIPSPARSE_STATUS_SUCCESS)) :: hipsparseCgemvi_bufferSize
+            type(c_ptr), value :: handle
+            integer(c_int), value :: transA
+            integer(c_int), value :: m
+            integer(c_int), value :: n
+            integer(c_int), value :: nnz
+            type(c_ptr), value :: pBufferSize
+        end function hipsparseCgemvi_bufferSize
+
+        function hipsparseZgemvi_bufferSize(handle, transA, m, n, nnz, pBufferSize) &
+                bind(c, name = 'hipsparseZgemvi_bufferSize')
+            use hipsparse_enums
+            use iso_c_binding
+            implicit none
+            integer(kind(HIPSPARSE_STATUS_SUCCESS)) :: hipsparseZgemvi_bufferSize
+            type(c_ptr), value :: handle
+            integer(c_int), value :: transA
+            integer(c_int), value :: m
+            integer(c_int), value :: n
+            integer(c_int), value :: nnz
+            type(c_ptr), value :: pBufferSize
+        end function hipsparseZgemvi_bufferSize
+
+        function hipsparseSgemvi(handle, transA, m, n, alpha, A, lda, nnz, x, xInd, &
+                beta, y, idxBase, pBuffer) &
+                bind(c, name = 'hipsparseSgemvi')
+            use hipsparse_enums
+            use iso_c_binding
+            implicit none
+            integer(kind(HIPSPARSE_STATUS_SUCCESS)) :: hipsparseSgemvi
+            type(c_ptr), value :: handle
+            integer(c_int), value :: transA
+            integer(c_int), value :: m
+            integer(c_int), value :: n
+            type(c_ptr), intent(in), value :: alpha
+            type(c_ptr), intent(in), value :: A
+            integer(c_int), value :: lda
+            integer(c_int), value :: nnz
+            type(c_ptr), intent(in), value :: x
+            type(c_ptr), intent(in), value :: xInd
+            type(c_ptr), intent(in), value :: beta
+            type(c_ptr), value :: y
+            integer(c_int), value :: idxBase
+            type(c_ptr), value :: pBuffer
+        end function hipsparseSgemvi
+
+        function hipsparseDgemvi(handle, transA, m, n, alpha, A, lda, nnz, x, xInd, &
+                beta, y, idxBase, pBuffer) &
+                bind(c, name = 'hipsparseDgemvi')
+            use hipsparse_enums
+            use iso_c_binding
+            implicit none
+            integer(kind(HIPSPARSE_STATUS_SUCCESS)) :: hipsparseDgemvi
+            type(c_ptr), value :: handle
+            integer(c_int), value :: transA
+            integer(c_int), value :: m
+            integer(c_int), value :: n
+            type(c_ptr), intent(in), value :: alpha
+            type(c_ptr), intent(in), value :: A
+            integer(c_int), value :: lda
+            integer(c_int), value :: nnz
+            type(c_ptr), intent(in), value :: x
+            type(c_ptr), intent(in), value :: xInd
+            type(c_ptr), intent(in), value :: beta
+            type(c_ptr), value :: y
+            integer(c_int), value :: idxBase
+            type(c_ptr), value :: pBuffer
+        end function hipsparseDgemvi
+
+        function hipsparseCgemvi(handle, transA, m, n, alpha, A, lda, nnz, x, xInd, &
+                beta, y, idxBase, pBuffer) &
+                bind(c, name = 'hipsparseCgemvi')
+            use hipsparse_enums
+            use iso_c_binding
+            implicit none
+            integer(kind(HIPSPARSE_STATUS_SUCCESS)) :: hipsparseCgemvi
+            type(c_ptr), value :: handle
+            integer(c_int), value :: transA
+            integer(c_int), value :: m
+            integer(c_int), value :: n
+            type(c_ptr), intent(in), value :: alpha
+            type(c_ptr), intent(in), value :: A
+            integer(c_int), value :: lda
+            integer(c_int), value :: nnz
+            type(c_ptr), intent(in), value :: x
+            type(c_ptr), intent(in), value :: xInd
+            type(c_ptr), intent(in), value :: beta
+            type(c_ptr), value :: y
+            integer(c_int), value :: idxBase
+            type(c_ptr), value :: pBuffer
+        end function hipsparseCgemvi
+
+        function hipsparseZgemvi(handle, transA, m, n, alpha, A, lda, nnz, x, xInd, &
+                beta, y, idxBase, pBuffer) &
+                bind(c, name = 'hipsparseZgemvi')
+            use hipsparse_enums
+            use iso_c_binding
+            implicit none
+            integer(kind(HIPSPARSE_STATUS_SUCCESS)) :: hipsparseZgemvi
+            type(c_ptr), value :: handle
+            integer(c_int), value :: transA
+            integer(c_int), value :: m
+            integer(c_int), value :: n
+            type(c_ptr), intent(in), value :: alpha
+            type(c_ptr), intent(in), value :: A
+            integer(c_int), value :: lda
+            integer(c_int), value :: nnz
+            type(c_ptr), intent(in), value :: x
+            type(c_ptr), intent(in), value :: xInd
+            type(c_ptr), intent(in), value :: beta
+            type(c_ptr), value :: y
+            integer(c_int), value :: idxBase
+            type(c_ptr), value :: pBuffer
+        end function hipsparseZgemvi
+
 ! ===========================================================================
 !   level 3 SPARSE
 ! ===========================================================================
