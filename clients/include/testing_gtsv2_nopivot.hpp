@@ -106,27 +106,27 @@ void testing_gtsv2_nopivot_bad_arg(void)
 
     // gtsv_nopivot
     verify_hipsparse_status_invalid_handle(
-        hipsparseXgtsv2_nopivot(nullptr, m, n, ddl, dd, ddu, dB, ldb, &bsize));
+        hipsparseXgtsv2_nopivot(nullptr, m, n, ddl, dd, ddu, dB, ldb, dbuf));
     verify_hipsparse_status_invalid_value(
-        hipsparseXgtsv2_nopivot(handle, -1, n, ddl, dd, ddu, dB, ldb, &bsize),
+        hipsparseXgtsv2_nopivot(handle, -1, n, ddl, dd, ddu, dB, ldb, dbuf),
         "Error: m is invalid");
     verify_hipsparse_status_invalid_value(
-        hipsparseXgtsv2_nopivot(handle, m, -1, ddl, dd, ddu, dB, ldb, &bsize),
+        hipsparseXgtsv2_nopivot(handle, m, -1, ddl, dd, ddu, dB, ldb, dbuf),
         "Error: n is invalid");
     verify_hipsparse_status_invalid_value(
-        hipsparseXgtsv2_nopivot(handle, m, n, ddl, dd, ddu, dB, -1, &bsize),
+        hipsparseXgtsv2_nopivot(handle, m, n, ddl, dd, ddu, dB, -1, dbuf),
         "Error: ldb is invalid");
     verify_hipsparse_status_invalid_pointer(
-        hipsparseXgtsv2_nopivot(handle, m, n, (const T*)nullptr, dd, ddu, dB, ldb, &bsize),
+        hipsparseXgtsv2_nopivot(handle, m, n, (const T*)nullptr, dd, ddu, dB, ldb, dbuf),
         "Error: ddl is nullptr");
     verify_hipsparse_status_invalid_pointer(
-        hipsparseXgtsv2_nopivot(handle, m, n, ddl, (const T*)nullptr, ddu, dB, ldb, &bsize),
+        hipsparseXgtsv2_nopivot(handle, m, n, ddl, (const T*)nullptr, ddu, dB, ldb, dbuf),
         "Error: dd is nullptr");
     verify_hipsparse_status_invalid_pointer(
-        hipsparseXgtsv2_nopivot(handle, m, n, ddl, dd, (const T*)nullptr, dB, ldb, &bsize),
+        hipsparseXgtsv2_nopivot(handle, m, n, ddl, dd, (const T*)nullptr, dB, ldb, dbuf),
         "Error: ddu is nullptr");
     verify_hipsparse_status_invalid_pointer(
-        hipsparseXgtsv2_nopivot(handle, m, n, ddl, dd, ddu, (T*)nullptr, ldb, &bsize),
+        hipsparseXgtsv2_nopivot(handle, m, n, ddl, dd, ddu, (T*)nullptr, ldb, dbuf),
         "Error: dB is nullptr");
     verify_hipsparse_status_invalid_pointer(
         hipsparseXgtsv2_nopivot(handle, m, n, ddl, dd, ddu, dB, ldb, nullptr),
@@ -157,7 +157,7 @@ hipsparseStatus_t testing_gtsv2_nopivot(void)
     hdl[0]     = make_DataType<T>(0);
     hdu[m - 1] = make_DataType<T>(0);
 
-    std::vector<T> hB_cpu = hB;
+    std::vector<T> hB_original = hB;
 
     // allocate memory on device
     auto ddl_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * m), device_free};
@@ -196,10 +196,20 @@ hipsparseStatus_t testing_gtsv2_nopivot(void)
     // copy output from device to CPU
     CHECK_HIP_ERROR(hipMemcpy(hB.data(), dB, sizeof(T) * ldb * n, hipMemcpyDeviceToHost));
 
-    // Host solution
-    host_gtsv_no_pivot(m, n, hdl, hd, hdu, hB_cpu, ldb);
+    // Check
+    std::vector<T> hresult(ldb * n, make_DataType<T>(3));
+    for(int j = 0; j < n; j++)
+    {
+        hresult[ldb * j] = hd[0] * hB[ldb * j] + hdu[0] * hB[ldb * j + 1];
+        hresult[ldb * j + m - 1] = hdl[m - 1] * hB[ldb * j + m - 2] + hd[m - 1] * hB[ldb * j + m - 1];
+        for(int i = 1; i < m - 1; i++)
+        {
+            hresult[ldb * j + i]
+                = hdl[i] * hB[ldb * j + i - 1] + hd[i] * hB[ldb * j + i] + hdu[i] * hB[ldb * j + i + 1];
+        }
+    }
 
-    unit_check_near(m, n, ldb, hB_cpu.data(), hB.data());
+    unit_check_near(m, n, ldb, hB_original.data(), hresult.data());
 
     CHECK_HIP_ERROR(hipFree(buffer));
 #endif
