@@ -10531,6 +10531,155 @@ hipsparseStatus_t hipsparseSDDMM_preprocess(hipsparseHandle_t            handle,
 
 
 
+
+
+
+
+hipsparseStatus_t hipsparseSgtsv2StridedBatch_bufferSizeExt(hipsparseHandle_t handle,
+                                                        int               m,
+                                                        const float*      dl,
+                                                        const float*      d,
+                                                        const float*      du,
+                                                        const float*      x,
+                                                        int               batchCount,
+                                                        int               batchStride,
+                                                        size_t*           pBufferSizeInBytes)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseSgtsv2StridedBatch_bufferSizeExt(
+        (cusparseHandle_t)handle, m, dl, d, du, x, batchCount, batchStride, pBufferSizeInBytes));
+}
+
+hipsparseStatus_t hipsparseDgtsv2StridedBatch_bufferSizeExt(hipsparseHandle_t handle,
+                                                        int               m,
+                                                        const double*     dl,
+                                                        const double*     d,
+                                                        const double*     du,
+                                                        const double*     x,
+                                                        int               batchCount,
+                                                        int               batchStride,
+                                                        size_t*           pBufferSizeInBytes)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseDgtsv2StridedBatch_bufferSizeExt(
+        (cusparseHandle_t)handle, m, dl, d, du, x, batchCount, batchStride, pBufferSizeInBytes));
+}
+
+hipsparseStatus_t hipsparseCgtsv2StridedBatch_bufferSizeExt(hipsparseHandle_t handle,
+                                                        int               m,
+                                                        const hipComplex* dl,
+                                                        const hipComplex* d,
+                                                        const hipComplex* du,
+                                                        const hipComplex* x,
+                                                        int               batchCount,
+                                                        int               batchStride,
+                                                        size_t*           pBufferSizeInBytes)
+{
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseCgtsv2StridedBatch_bufferSizeExt((cusparseHandle_t)handle,
+                                             m,
+                                             (const cuComplex*)dl,
+                                             (const cuComplex*)d,
+                                             (const cuComplex*)du,
+                                             (const cuComplex*)x,
+                                             batchCount, 
+                                             batchStride,
+                                             pBufferSizeInBytes));
+}
+
+hipsparseStatus_t hipsparseZgtsv2StridedBatch_bufferSizeExt(hipsparseHandle_t       handle,
+                                                        int                     m,
+                                                        const hipDoubleComplex* dl,
+                                                        const hipDoubleComplex* d,
+                                                        const hipDoubleComplex* du,
+                                                        const hipDoubleComplex* x,
+                                                        int               batchCount,
+                                                        int               batchStride,
+                                                        size_t*                 pBufferSizeInBytes)
+{
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseZgtsv2StridedBatch_bufferSizeExt((cusparseHandle_t)handle,
+                                             m,
+                                             (const cuDoubleComplex*)dl,
+                                             (const cuDoubleComplex*)d,
+                                             (const cuDoubleComplex*)du,
+                                             (const cuDoubleComplex*)x,
+                                             batchCount, 
+                                             batchStride,
+                                             pBufferSizeInBytes));
+}
+
+hipsparseStatus_t hipsparseSgtsv2StridedBatch(hipsparseHandle_t handle,
+                                          int               m,
+                                          const float*      dl,
+                                          const float*      d,
+                                          const float*      du,
+                                          float*            x,
+                                          int               batchCount,
+                                          int               batchStride,
+                                          void*             pBuffer)
+{
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseSgtsv2StridedBatch((cusparseHandle_t)handle, m, dl, d, du, x, batchCount, batchStride, pBuffer));
+}
+
+hipsparseStatus_t hipsparseDgtsv2StridedBatch(hipsparseHandle_t handle,
+                                          int               m,
+                                          const double*     dl,
+                                          const double*     d,
+                                          const double*     du,
+                                          double*           x,
+                                          int               batchCount,
+                                          int               batchStride,
+                                          void*             pBuffer)
+
+{
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseDgtsv2StridedBatch((cusparseHandle_t)handle, m, dl, d, du, x, batchCount, batchStride, pBuffer));
+}
+
+hipsparseStatus_t hipsparseCgtsv2StridedBatch(hipsparseHandle_t handle,
+                                          int               m,
+                                          const hipComplex* dl,
+                                          const hipComplex* d,
+                                          const hipComplex* du,
+                                          hipComplex*       x,
+                                          int               batchCount,
+                                          int               batchStride,
+                                          void*             pBuffer)
+
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseCgtsv2StridedBatch((cusparseHandle_t)handle,
+                                                               m,
+                                                               (const cuComplex*)dl,
+                                                               (const cuComplex*)d,
+                                                               (const cuComplex*)du,
+                                                               (cuComplex*)x,
+                                                               batchCount, 
+                                                               batchStride,
+                                                               pBuffer));
+}
+
+hipsparseStatus_t hipsparseZgtsv2StridedBatch(hipsparseHandle_t       handle,
+                                          int                     m,
+                                          const hipDoubleComplex* dl,
+                                          const hipDoubleComplex* d,
+                                          const hipDoubleComplex* du,
+                                          hipDoubleComplex*       x,
+                                          int               batchCount,
+                                          int               batchStride,
+                                          void*                   pBuffer)
+
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseZgtsv2StridedBatch((cusparseHandle_t)handle,
+                                                               m,
+                                                               (const cuDoubleComplex*)dl,
+                                                               (const cuDoubleComplex*)d,
+                                                               (const cuDoubleComplex*)du,
+                                                               (cuDoubleComplex*)x,
+                                                               batchCount, 
+                                                               batchStride,
+                                                               pBuffer));
+}
+
   
 #ifdef __cplusplus
 }

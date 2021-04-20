@@ -7837,5 +7837,121 @@ namespace hipsparse
         return hipsparseZcsr2csru(
             handle, m, n, nnz, descrA, csrVal, csrRowPtr, csrColInd, info, pBuffer);
     }
+    
+    template <>
+    hipsparseStatus_t hipsparseXgtsv2StridedBatch_bufferSizeExt(hipsparseHandle_t handle,
+                                                            int               m,
+                                                            const float*      dl,
+                                                            const float*      d,
+                                                            const float*      du,
+                                                            const float*      x,
+                                                            int               batchCount,
+                                                            int               batchStride,
+                                                            size_t*           pBufferSizeInBytes)
+    {
+        return hipsparseSgtsv2StridedBatch_bufferSizeExt(
+            handle, m, dl, d, du, x, batchCount, batchStride, pBufferSizeInBytes);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXgtsv2StridedBatch_bufferSizeExt(hipsparseHandle_t handle,
+                                                            int               m,
+                                                            const double*     dl,
+                                                            const double*     d,
+                                                            const double*     du,
+                                                            const double*     x,
+                                                            int               batchCount,
+                                                            int               batchStride,
+                                                            size_t*           pBufferSizeInBytes)
+    {
+        return hipsparseDgtsv2StridedBatch_bufferSizeExt(
+            handle, m, dl, d, du, x, batchCount, batchStride, pBufferSizeInBytes);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXgtsv2StridedBatch_bufferSizeExt(hipsparseHandle_t handle,
+                                                            int               m,
+                                                            const hipComplex* dl,
+                                                            const hipComplex* d,
+                                                            const hipComplex* du,
+                                                            const hipComplex* x,
+                                                            int               batchCount,
+                                                            int               batchStride,
+                                                            size_t*           pBufferSizeInBytes)
+    {
+        return hipsparseCgtsv2StridedBatch_bufferSizeExt(
+            handle, m, dl, d, du, x, batchCount, batchStride, pBufferSizeInBytes);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXgtsv2StridedBatch_bufferSizeExt(hipsparseHandle_t       handle,
+                                                            int                     m,
+                                                            const hipDoubleComplex* dl,
+                                                            const hipDoubleComplex* d,
+                                                            const hipDoubleComplex* du,
+                                                            const hipDoubleComplex* x,
+                                                            int               batchCount,
+                                                            int               batchStride,
+                                                            size_t* pBufferSizeInBytes)
+    {
+        return hipsparseZgtsv2StridedBatch_bufferSizeExt(
+            handle, m, dl, d, du, x, batchCount, batchStride, pBufferSizeInBytes);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXgtsv2StridedBatch(hipsparseHandle_t handle,
+                                              int               m,
+                                              const float*      dl,
+                                              const float*      d,
+                                              const float*      du,
+                                              float*            x,
+                                              int               batchCount,
+                                              int               batchStride,
+                                              void*             pBuffer)
+    {
+        return hipsparseSgtsv2StridedBatch(handle, m, dl, d, du, x, batchCount, batchStride, pBuffer);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXgtsv2StridedBatch(hipsparseHandle_t handle,
+                                              int               m,
+                                              const double*     dl,
+                                              const double*     d,
+                                              const double*     du,
+                                              double*           x,
+                                              int               batchCount,
+                                              int               batchStride,
+                                              void*             pBuffer)
+    {
+        return hipsparseDgtsv2StridedBatch(handle, m, dl, d, du, x, batchCount, batchStride, pBuffer);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXgtsv2StridedBatch(hipsparseHandle_t handle,
+                                              int               m,
+                                              const hipComplex* dl,
+                                              const hipComplex* d,
+                                              const hipComplex* du,
+                                              hipComplex*       x,
+                                              int               batchCount,
+                                              int               batchStride,
+                                              void*             pBuffer)
+    {
+        return hipsparseCgtsv2StridedBatch(handle, m, dl, d, du, x, batchCount, batchStride, pBuffer);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXgtsv2StridedBatch(hipsparseHandle_t       handle,
+                                              int                     m,
+                                              const hipDoubleComplex* dl,
+                                              const hipDoubleComplex* d,
+                                              const hipDoubleComplex* du,
+                                              hipDoubleComplex*       x,
+                                              int               batchCount,
+                                              int               batchStride,
+                                              void*                   pBuffer)
+    {
+        return hipsparseZgtsv2StridedBatch(handle, m, dl, d, du, x, batchCount, batchStride, pBuffer);
+    }
 
 } // namespace hipsparse

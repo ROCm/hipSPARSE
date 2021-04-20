@@ -1247,6 +1247,37 @@ namespace hipsparse
                                          csru2csrInfo_t            info,
                                          void*                     pBuffer);
 
+
+
+
+
+
+
+
+
+    template <typename T>
+    hipsparseStatus_t hipsparseXgtsv2StridedBatch_bufferSizeExt(hipsparseHandle_t handle,
+                                                            int               m,
+                                                            const T*          dl,
+                                                            const T*          d,
+                                                            const T*          du,
+                                                            const T*          x,
+                                                            int              batchCount,
+                                                            int              batchStride,
+                                                            size_t*           pBufferSizeInBytes);
+
+    template <typename T>
+    hipsparseStatus_t hipsparseXgtsv2StridedBatch(hipsparseHandle_t handle,
+                                              int               m,
+                                              int               n,
+                                              const T*          dl,
+                                              const T*          d,
+                                              const T*          du,
+                                              T*                x,
+                                              int              batchCount,
+                                              int              batchStride,
+                                              void*             pBuffer);
+
 } // namespace hipsparse
 
 #endif // _HIPSPARSE_HPP_
