@@ -107,8 +107,8 @@ void testing_gtsv2_bad_arg(void)
         hipsparseXgtsv2(handle, -1, n, ddl, dd, ddu, dB, ldb, dbuf), "Error: m is invalid");
     verify_hipsparse_status_invalid_value(
         hipsparseXgtsv2(handle, m, -1, ddl, dd, ddu, dB, ldb, dbuf), "Error: n is invalid");
-    verify_hipsparse_status_invalid_value(
-        hipsparseXgtsv2(handle, m, n, ddl, dd, ddu, dB, -1, dbuf), "Error: ldb is invalid");
+    verify_hipsparse_status_invalid_value(hipsparseXgtsv2(handle, m, n, ddl, dd, ddu, dB, -1, dbuf),
+                                          "Error: ldb is invalid");
     verify_hipsparse_status_invalid_pointer(
         hipsparseXgtsv2(handle, m, n, (const T*)nullptr, dd, ddu, dB, ldb, dbuf),
         "Error: ddl is nullptr");
