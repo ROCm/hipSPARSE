@@ -158,8 +158,8 @@ hipsparseStatus_t testing_gemvi(void)
     hipsparseOperation_t opType  = HIPSPARSE_OPERATION_NON_TRANSPOSE;
     hipsparseIndexBase_t idxBase = HIPSPARSE_INDEX_BASE_ZERO;
 
-    T alpha = static_cast<T>(0.6);
-    T beta  = static_cast<T>(3.2);
+    T alpha = make_DataType<T>(0.6);
+    T beta  = make_DataType<T>(3.2);
 
     int lda = (opType == HIPSPARSE_OPERATION_NON_TRANSPOSE ? m : n);
 
