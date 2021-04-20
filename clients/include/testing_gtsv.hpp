@@ -102,24 +102,24 @@ void testing_gtsv2_bad_arg(void)
 
     // gtsv
     verify_hipsparse_status_invalid_handle(
-        hipsparseXgtsv2(nullptr, m, n, ddl, dd, ddu, dB, ldb, &bsize));
+        hipsparseXgtsv2(nullptr, m, n, ddl, dd, ddu, dB, ldb, dbuf));
     verify_hipsparse_status_invalid_value(
-        hipsparseXgtsv2(handle, -1, n, ddl, dd, ddu, dB, ldb, &bsize), "Error: m is invalid");
+        hipsparseXgtsv2(handle, -1, n, ddl, dd, ddu, dB, ldb, dbuf), "Error: m is invalid");
     verify_hipsparse_status_invalid_value(
-        hipsparseXgtsv2(handle, m, -1, ddl, dd, ddu, dB, ldb, &bsize), "Error: n is invalid");
+        hipsparseXgtsv2(handle, m, -1, ddl, dd, ddu, dB, ldb, dbuf), "Error: n is invalid");
     verify_hipsparse_status_invalid_value(
-        hipsparseXgtsv2(handle, m, n, ddl, dd, ddu, dB, -1, &bsize), "Error: ldb is invalid");
+        hipsparseXgtsv2(handle, m, n, ddl, dd, ddu, dB, -1, dbuf), "Error: ldb is invalid");
     verify_hipsparse_status_invalid_pointer(
-        hipsparseXgtsv2(handle, m, n, (const T*)nullptr, dd, ddu, dB, ldb, &bsize),
+        hipsparseXgtsv2(handle, m, n, (const T*)nullptr, dd, ddu, dB, ldb, dbuf),
         "Error: ddl is nullptr");
     verify_hipsparse_status_invalid_pointer(
-        hipsparseXgtsv2(handle, m, n, ddl, (const T*)nullptr, ddu, dB, ldb, &bsize),
+        hipsparseXgtsv2(handle, m, n, ddl, (const T*)nullptr, ddu, dB, ldb, dbuf),
         "Error: dd is nullptr");
     verify_hipsparse_status_invalid_pointer(
-        hipsparseXgtsv2(handle, m, n, ddl, dd, (const T*)nullptr, dB, ldb, &bsize),
+        hipsparseXgtsv2(handle, m, n, ddl, dd, (const T*)nullptr, dB, ldb, dbuf),
         "Error: ddu is nullptr");
     verify_hipsparse_status_invalid_pointer(
-        hipsparseXgtsv2(handle, m, n, ddl, dd, ddu, (T*)nullptr, ldb, &bsize),
+        hipsparseXgtsv2(handle, m, n, ddl, dd, ddu, (T*)nullptr, ldb, dbuf),
         "Error: dB is nullptr");
     verify_hipsparse_status_invalid_pointer(
         hipsparseXgtsv2(handle, m, n, ddl, dd, ddu, dB, ldb, nullptr), "Error: bsize is nullptr");
