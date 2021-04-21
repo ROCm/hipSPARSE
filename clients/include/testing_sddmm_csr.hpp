@@ -63,7 +63,7 @@ void testing_sddmm_csr_bad_arg(void)
     hipsparseIndexType_t idxTypeI  = HIPSPARSE_INDEX_64I;
     hipsparseIndexType_t idxTypeJ  = HIPSPARSE_INDEX_32I;
     hipDataType          dataType  = HIP_R_32F;
-    hipsparseSDDMMAlg_t   alg      = HIPSPARSE_SDDMM_ALG_DEFAULT;
+    hipsparseSDDMMAlg_t  alg       = HIPSPARSE_SDDMM_ALG_DEFAULT;
     hipsparseStatus_t    status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
@@ -138,25 +138,31 @@ void testing_sddmm_csr_bad_arg(void)
         "Error: bsize is nullptr");
 
     // SDDMM
-    verify_hipsparse_status_invalid_handle(
-        hipsparseSDDMM_preprocess(nullptr, transA, transB, &alpha, A, B, &beta, C, dataType, alg, dbuf));
+    verify_hipsparse_status_invalid_handle(hipsparseSDDMM_preprocess(
+        nullptr, transA, transB, &alpha, A, B, &beta, C, dataType, alg, dbuf));
     verify_hipsparse_status_invalid_pointer(
-        hipsparseSDDMM_preprocess(handle, transA, transB, nullptr, A, B, &beta, C, dataType, alg, dbuf),
+        hipsparseSDDMM_preprocess(
+            handle, transA, transB, nullptr, A, B, &beta, C, dataType, alg, dbuf),
         "Error: alpha is nullptr");
     verify_hipsparse_status_invalid_pointer(
-        hipsparseSDDMM_preprocess(handle, transA, transB, &alpha, nullptr, B, &beta, C, dataType, alg, dbuf),
+        hipsparseSDDMM_preprocess(
+            handle, transA, transB, &alpha, nullptr, B, &beta, C, dataType, alg, dbuf),
         "Error: A is nullptr");
     verify_hipsparse_status_invalid_pointer(
-        hipsparseSDDMM_preprocess(handle, transA, transB, &alpha, A, nullptr, &beta, C, dataType, alg, dbuf),
+        hipsparseSDDMM_preprocess(
+            handle, transA, transB, &alpha, A, nullptr, &beta, C, dataType, alg, dbuf),
         "Error: B is nullptr");
     verify_hipsparse_status_invalid_pointer(
-        hipsparseSDDMM_preprocess(handle, transA, transB, &alpha, A, B, nullptr, C, dataType, alg, dbuf),
+        hipsparseSDDMM_preprocess(
+            handle, transA, transB, &alpha, A, B, nullptr, C, dataType, alg, dbuf),
         "Error: beta is nullptr");
     verify_hipsparse_status_invalid_pointer(
-        hipsparseSDDMM_preprocess(handle, transA, transB, &alpha, A, B, &beta, nullptr, dataType, alg, dbuf),
+        hipsparseSDDMM_preprocess(
+            handle, transA, transB, &alpha, A, B, &beta, nullptr, dataType, alg, dbuf),
         "Error: C is nullptr");
     verify_hipsparse_status_invalid_pointer(
-        hipsparseSDDMM_preprocess(handle, transA, transB, &alpha, A, B, &beta, nullptr, dataType, alg, nullptr),
+        hipsparseSDDMM_preprocess(
+            handle, transA, transB, &alpha, A, B, &beta, nullptr, dataType, alg, nullptr),
         "Error: dbuf is nullptr");
 
     // SDDMM
@@ -178,14 +184,15 @@ void testing_sddmm_csr_bad_arg(void)
         hipsparseSDDMM(handle, transA, transB, &alpha, A, B, &beta, nullptr, dataType, alg, dbuf),
         "Error: C is nullptr");
     verify_hipsparse_status_invalid_pointer(
-        hipsparseSDDMM(handle, transA, transB, &alpha, A, B, &beta, nullptr, dataType, alg, nullptr),
+        hipsparseSDDMM(
+            handle, transA, transB, &alpha, A, B, &beta, nullptr, dataType, alg, nullptr),
         "Error: dbuf is nullptr");
 
     // Destruct
     verify_hipsparse_status_success(hipsparseDestroyDnMat(A), "success");
     verify_hipsparse_status_success(hipsparseDestroyDnMat(B), "success");
     verify_hipsparse_status_success(hipsparseDestroySpMat(C), "success");
-    
+
 #endif
 }
 
@@ -194,106 +201,105 @@ hipsparseStatus_t testing_sddmm_csr()
 {
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11020)
 
-  T                    h_alpha  = make_DataType<T>(2.0);
-  T                    h_beta   = make_DataType<T>(1.0);
-  hipsparseOperation_t transA   = HIPSPARSE_OPERATION_NON_TRANSPOSE;
-  hipsparseOperation_t transB   = HIPSPARSE_OPERATION_NON_TRANSPOSE;
-  hipsparseOrder_t     order    = HIPSPARSE_ORDER_COLUMN;
-  hipsparseIndexBase_t idx_base = HIPSPARSE_INDEX_BASE_ZERO;
-  hipsparseSDDMMAlg_t   alg      = HIPSPARSE_SDDMM_ALG_DEFAULT;
-  hipsparseStatus_t    status;
-  
-  // Determine absolute path of test matrix
-  
-  // Get current executables absolute path
-  char    path_exe[PATH_MAX];
-  ssize_t len = readlink("/proc/self/exe", path_exe, sizeof(path_exe) - 1);
-  if(len < 14)
-    path_exe[0] = '\0';
-  else
-    path_exe[len - 14] = '\0';
-  
-  // Matrices are stored at the same path in matrices directory
-  std::string filename = std::string(path_exe) + "../matrices/nos3.bin";
+    T                    h_alpha  = make_DataType<T>(2.0);
+    T                    h_beta   = make_DataType<T>(1.0);
+    hipsparseOperation_t transA   = HIPSPARSE_OPERATION_NON_TRANSPOSE;
+    hipsparseOperation_t transB   = HIPSPARSE_OPERATION_NON_TRANSPOSE;
+    hipsparseOrder_t     order    = HIPSPARSE_ORDER_COLUMN;
+    hipsparseIndexBase_t idx_base = HIPSPARSE_INDEX_BASE_ZERO;
+    hipsparseSDDMMAlg_t  alg      = HIPSPARSE_SDDMM_ALG_DEFAULT;
+    hipsparseStatus_t    status;
 
+    // Determine absolute path of test matrix
 
-  // Index and data type
-  hipsparseIndexType_t typeI
-    = (typeid(I) == typeid(int32_t)) ? HIPSPARSE_INDEX_32I : HIPSPARSE_INDEX_64I;
-  hipsparseIndexType_t typeJ
-    = (typeid(J) == typeid(int32_t)) ? HIPSPARSE_INDEX_32I : HIPSPARSE_INDEX_64I;
-  hipDataType typeT = (typeid(T) == typeid(float))
-    ? HIP_R_32F
-    : ((typeid(T) == typeid(double))
-       ? HIP_R_64F
-       : ((typeid(T) == typeid(hipComplex) ? HIP_C_32F : HIP_C_64F)));
-  
-  // hipSPARSE handle
-  std::unique_ptr<handle_struct> test_handle(new handle_struct);
-  hipsparseHandle_t              handle = test_handle->handle;
-  
-  // Host structures
-  std::vector<I> hcsr_row_ptr;
-  std::vector<J> hcsr_col_ind;
-  std::vector<T> hcsr_val;
-  
-  // Initial Data on CPU
-  srand(12345ULL);
-  
-  J m;
-  J n;
-  I nnz;
+    // Get current executables absolute path
+    char    path_exe[PATH_MAX];
+    ssize_t len = readlink("/proc/self/exe", path_exe, sizeof(path_exe) - 1);
+    if(len < 14)
+        path_exe[0] = '\0';
+    else
+        path_exe[len - 14] = '\0';
 
-  if(read_bin_matrix(filename.c_str(), m, n, nnz, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base)
+    // Matrices are stored at the same path in matrices directory
+    std::string filename = std::string(path_exe) + "../matrices/nos3.bin";
+
+    // Index and data type
+    hipsparseIndexType_t typeI
+        = (typeid(I) == typeid(int32_t)) ? HIPSPARSE_INDEX_32I : HIPSPARSE_INDEX_64I;
+    hipsparseIndexType_t typeJ
+        = (typeid(J) == typeid(int32_t)) ? HIPSPARSE_INDEX_32I : HIPSPARSE_INDEX_64I;
+    hipDataType typeT = (typeid(T) == typeid(float))
+                            ? HIP_R_32F
+                            : ((typeid(T) == typeid(double))
+                                   ? HIP_R_64F
+                                   : ((typeid(T) == typeid(hipComplex) ? HIP_C_32F : HIP_C_64F)));
+
+    // hipSPARSE handle
+    std::unique_ptr<handle_struct> test_handle(new handle_struct);
+    hipsparseHandle_t              handle = test_handle->handle;
+
+    // Host structures
+    std::vector<I> hcsr_row_ptr;
+    std::vector<J> hcsr_col_ind;
+    std::vector<T> hcsr_val;
+
+    // Initial Data on CPU
+    srand(12345ULL);
+
+    J m;
+    J n;
+    I nnz;
+
+    if(read_bin_matrix(filename.c_str(), m, n, nnz, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base)
        != 0)
     {
-      fprintf(stderr, "Cannot open [read] %s\n", filename.c_str());
-      return HIPSPARSE_STATUS_INTERNAL_ERROR;
+        fprintf(stderr, "Cannot open [read] %s\n", filename.c_str());
+        return HIPSPARSE_STATUS_INTERNAL_ERROR;
     }
 
-  J k   = 5;
-  J lda = m;
-  J ldb = k;
+    J k   = 5;
+    J lda = m;
+    J ldb = k;
 
-  std::vector<T> hA(m * k);
-  std::vector<T> hB(k * n);
-  std::vector<T> hval1(nnz);
-  std::vector<T> hval2(nnz);
+    std::vector<T> hA(m * k);
+    std::vector<T> hB(k * n);
+    std::vector<T> hval1(nnz);
+    std::vector<T> hval2(nnz);
 
-  hipsparseInit<T>(hA, m, k);
-  hipsparseInit<T>(hB, k, n);
+    hipsparseInit<T>(hA, m, k);
+    hipsparseInit<T>(hB, k, n);
 
-  // allocate memory on device
-  auto dptr_managed    = hipsparse_unique_ptr{device_malloc(sizeof(I) * (m + 1)), device_free};
-  auto dcol_managed    = hipsparse_unique_ptr{device_malloc(sizeof(J) * nnz), device_free};
-  auto dval1_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
-  auto dval2_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
-  
-  auto dA_managed      = hipsparse_unique_ptr{device_malloc(sizeof(T) * m * k), device_free};
-  auto dB_managed      = hipsparse_unique_ptr{device_malloc(sizeof(T) * k * n), device_free};
+    // allocate memory on device
+    auto dptr_managed  = hipsparse_unique_ptr{device_malloc(sizeof(I) * (m + 1)), device_free};
+    auto dcol_managed  = hipsparse_unique_ptr{device_malloc(sizeof(J) * nnz), device_free};
+    auto dval1_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
+    auto dval2_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
 
-  auto d_alpha_managed = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
-  auto d_beta_managed  = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
-  
-  I* dptr    = (I*)dptr_managed.get();
-  J* dcol    = (J*)dcol_managed.get();
-  T* dval1   = (T*)dval1_managed.get();
-  T* dval2   = (T*)dval2_managed.get();
-  
-  T* dA      = (T*)dA_managed.get();
-  T* dB      = (T*)dB_managed.get();
-  T* d_alpha = (T*)d_alpha_managed.get();
-  T* d_beta  = (T*)d_beta_managed.get();
-  
-  if(!dval1 || !dval2 || !dptr || !dcol || !dB || !dA || !d_alpha || !d_beta)
+    auto dA_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * m * k), device_free};
+    auto dB_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * k * n), device_free};
+
+    auto d_alpha_managed = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
+    auto d_beta_managed  = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
+
+    I* dptr  = (I*)dptr_managed.get();
+    J* dcol  = (J*)dcol_managed.get();
+    T* dval1 = (T*)dval1_managed.get();
+    T* dval2 = (T*)dval2_managed.get();
+
+    T* dA      = (T*)dA_managed.get();
+    T* dB      = (T*)dB_managed.get();
+    T* d_alpha = (T*)d_alpha_managed.get();
+    T* d_beta  = (T*)d_beta_managed.get();
+
+    if(!dval1 || !dval2 || !dptr || !dcol || !dB || !dA || !d_alpha || !d_beta)
     {
-      verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-				      "!dval1 || !dval2 || !dptr || !dcol || !dA || "
-				      "!dB || !d_alpha || !d_beta");
-      return HIPSPARSE_STATUS_ALLOC_FAILED;
+        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
+                                        "!dval1 || !dval2 || !dptr || !dcol || !dA || "
+                                        "!dB || !d_alpha || !d_beta");
+        return HIPSPARSE_STATUS_ALLOC_FAILED;
     }
-  
-  // copy data from CPU to device
+
+    // copy data from CPU to device
     CHECK_HIP_ERROR(
         hipMemcpy(dptr, hcsr_row_ptr.data(), sizeof(I) * (m + 1), hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dcol, hcsr_col_ind.data(), sizeof(J) * nnz, hipMemcpyHostToDevice));
@@ -303,14 +309,14 @@ hipsparseStatus_t testing_sddmm_csr()
     CHECK_HIP_ERROR(hipMemcpy(dB, hB.data(), sizeof(T) * k * n, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(d_alpha, &h_alpha, sizeof(T), hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(d_beta, &h_beta, sizeof(T), hipMemcpyHostToDevice));
-  
+
     // Create matrices
     hipsparseSpMatDescr_t C1, C2;
     CHECK_HIPSPARSE_ERROR(
         hipsparseCreateCsr(&C1, m, n, nnz, dptr, dcol, dval1, typeI, typeJ, idx_base, typeT));
     CHECK_HIPSPARSE_ERROR(
         hipsparseCreateCsr(&C2, m, n, nnz, dptr, dcol, dval2, typeI, typeJ, idx_base, typeT));
-  
+
     // Create dense matrices
     hipsparseDnMatDescr_t A, B;
     CHECK_HIPSPARSE_ERROR(hipsparseCreateDnMat(&A, m, k, lda, dA, typeT, order));
@@ -326,15 +332,15 @@ hipsparseStatus_t testing_sddmm_csr()
 
     // ROCSPARSE pointer mode host
     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
-    CHECK_HIPSPARSE_ERROR(
-        hipsparseSDDMM_preprocess(handle, transA, transB, &h_alpha, A, B, &h_beta, C1, typeT, alg, buffer));
+    CHECK_HIPSPARSE_ERROR(hipsparseSDDMM_preprocess(
+        handle, transA, transB, &h_alpha, A, B, &h_beta, C1, typeT, alg, buffer));
     CHECK_HIPSPARSE_ERROR(
         hipsparseSDDMM(handle, transA, transB, &h_alpha, A, B, &h_beta, C1, typeT, alg, buffer));
 
     // ROCSPARSE pointer mode device
     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
-    CHECK_HIPSPARSE_ERROR(
-        hipsparseSDDMM_preprocess(handle, transA, transB, d_alpha, A, B, d_beta, C2, typeT, alg, buffer));
+    CHECK_HIPSPARSE_ERROR(hipsparseSDDMM_preprocess(
+        handle, transA, transB, d_alpha, A, B, d_beta, C2, typeT, alg, buffer));
     CHECK_HIPSPARSE_ERROR(
         hipsparseSDDMM(handle, transA, transB, d_alpha, A, B, d_beta, C2, typeT, alg, buffer));
 
@@ -342,8 +348,7 @@ hipsparseStatus_t testing_sddmm_csr()
     CHECK_HIP_ERROR(hipMemcpy(hval1.data(), dval1, sizeof(T) * nnz, hipMemcpyDeviceToHost));
     CHECK_HIP_ERROR(hipMemcpy(hval2.data(), dval2, sizeof(T) * nnz, hipMemcpyDeviceToHost));
 
-
-    // CPU 
+    // CPU
     const J incx = lda;
     const J incy = 1;
 
@@ -351,23 +356,21 @@ hipsparseStatus_t testing_sddmm_csr()
     {
         for(I at = hcsr_row_ptr[i] - idx_base; at < hcsr_row_ptr[i + 1] - idx_base; ++at)
         {
-            J j = hcsr_col_ind[at] - idx_base;
-	    const T* x = &hA[i];                         
-	    const T* y = &hB[ldb * j];
-            T sum = static_cast<T>(0);
+            J        j   = hcsr_col_ind[at] - idx_base;
+            const T* x   = &hA[i];
+            const T* y   = &hB[ldb * j];
+            T        sum = static_cast<T>(0);
             for(J k_ = 0; k_ < k; ++k_)
             {
-	      sum = testing_fma(x[incx * k_], y[incy * k_], sum);
+                sum = testing_fma(x[incx * k_], y[incy * k_], sum);
             }
             hcsr_val[at] = hcsr_val[at] * h_beta + h_alpha * sum;
         }
     }
 
-    
     unit_check_near(1, nnz, 1, hval1.data(), hcsr_val.data());
     unit_check_near(1, nnz, 1, hval2.data(), hcsr_val.data());
 
-    
     // free.
     CHECK_HIP_ERROR(hipFree(buffer));
     CHECK_HIPSPARSE_ERROR(hipsparseDestroySpMat(C1));
