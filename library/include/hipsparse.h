@@ -3270,8 +3270,8 @@ hipsparseStatus_t hipsparseZgtsv2(hipsparseHandle_t       handle,
                                   hipDoubleComplex*       B,
                                   int                     ldb,
                                   void*                   pBuffer);
-    
-HIPSPARSE_EXPORT                             
+
+HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSgtsv2_nopivot_bufferSizeExt(hipsparseHandle_t handle,
                                                         int               m,
                                                         int               n,
