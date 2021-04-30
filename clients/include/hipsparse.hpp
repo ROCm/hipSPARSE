@@ -1272,6 +1272,28 @@ namespace hipsparse
                                          void*                     pBuffer);
 
     template <typename T>
+    hipsparseStatus_t hipsparseXgtsv2_bufferSizeExt(hipsparseHandle_t handle,
+                                                    int               m,
+                                                    int               n,
+                                                    const T*          dl,
+                                                    const T*          d,
+                                                    const T*          du,
+                                                    const T*          B,
+                                                    int               ldb,
+                                                    size_t*           pBufferSizeInBytes);
+
+    template <typename T>
+    hipsparseStatus_t hipsparseXgtsv2(hipsparseHandle_t handle,
+                                      int               m,
+                                      int               n,
+                                      const T*          dl,
+                                      const T*          d,
+                                      const T*          du,
+                                      T*                B,
+                                      int               ldb,
+                                      void*             pBuffer);
+
+    template <typename T>
     hipsparseStatus_t hipsparseXgtsv2_nopivot_bufferSizeExt(hipsparseHandle_t handle,
                                                             int               m,
                                                             int               n,
