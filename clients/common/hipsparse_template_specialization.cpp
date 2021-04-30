@@ -7963,6 +7963,118 @@ namespace hipsparse
     }
 
     template <>
+    hipsparseStatus_t hipsparseXgtsv2_bufferSizeExt(hipsparseHandle_t handle,
+                                                    int               m,
+                                                    int               n,
+                                                    const float*      dl,
+                                                    const float*      d,
+                                                    const float*      du,
+                                                    const float*      B,
+                                                    int               ldb,
+                                                    size_t*           pBufferSizeInBytes)
+    {
+        return hipsparseSgtsv2_bufferSizeExt(handle, m, n, dl, d, du, B, ldb, pBufferSizeInBytes);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXgtsv2_bufferSizeExt(hipsparseHandle_t handle,
+                                                    int               m,
+                                                    int               n,
+                                                    const double*     dl,
+                                                    const double*     d,
+                                                    const double*     du,
+                                                    const double*     B,
+                                                    int               ldb,
+                                                    size_t*           pBufferSizeInBytes)
+    {
+        return hipsparseDgtsv2_bufferSizeExt(handle, m, n, dl, d, du, B, ldb, pBufferSizeInBytes);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXgtsv2_bufferSizeExt(hipsparseHandle_t handle,
+                                                    int               m,
+                                                    int               n,
+                                                    const hipComplex* dl,
+                                                    const hipComplex* d,
+                                                    const hipComplex* du,
+                                                    const hipComplex* B,
+                                                    int               ldb,
+                                                    size_t*           pBufferSizeInBytes)
+    {
+        return hipsparseCgtsv2_bufferSizeExt(handle, m, n, dl, d, du, B, ldb, pBufferSizeInBytes);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXgtsv2_bufferSizeExt(hipsparseHandle_t       handle,
+                                                    int                     m,
+                                                    int                     n,
+                                                    const hipDoubleComplex* dl,
+                                                    const hipDoubleComplex* d,
+                                                    const hipDoubleComplex* du,
+                                                    const hipDoubleComplex* B,
+                                                    int                     ldb,
+                                                    size_t*                 pBufferSizeInBytes)
+    {
+        return hipsparseZgtsv2_bufferSizeExt(handle, m, n, dl, d, du, B, ldb, pBufferSizeInBytes);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXgtsv2(hipsparseHandle_t handle,
+                                      int               m,
+                                      int               n,
+                                      const float*      dl,
+                                      const float*      d,
+                                      const float*      du,
+                                      float*            B,
+                                      int               ldb,
+                                      void*             pBuffer)
+    {
+        return hipsparseSgtsv2(handle, m, n, dl, d, du, B, ldb, pBuffer);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXgtsv2(hipsparseHandle_t handle,
+                                      int               m,
+                                      int               n,
+                                      const double*     dl,
+                                      const double*     d,
+                                      const double*     du,
+                                      double*           B,
+                                      int               ldb,
+                                      void*             pBuffer)
+    {
+        return hipsparseDgtsv2(handle, m, n, dl, d, du, B, ldb, pBuffer);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXgtsv2(hipsparseHandle_t handle,
+                                      int               m,
+                                      int               n,
+                                      const hipComplex* dl,
+                                      const hipComplex* d,
+                                      const hipComplex* du,
+                                      hipComplex*       B,
+                                      int               ldb,
+                                      void*             pBuffer)
+    {
+        return hipsparseCgtsv2(handle, m, n, dl, d, du, B, ldb, pBuffer);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXgtsv2(hipsparseHandle_t       handle,
+                                      int                     m,
+                                      int                     n,
+                                      const hipDoubleComplex* dl,
+                                      const hipDoubleComplex* d,
+                                      const hipDoubleComplex* du,
+                                      hipDoubleComplex*       B,
+                                      int                     ldb,
+                                      void*                   pBuffer)
+    {
+        return hipsparseZgtsv2(handle, m, n, dl, d, du, B, ldb, pBuffer);
+    }
+
+    template <>
     hipsparseStatus_t hipsparseXgtsv2_nopivot_bufferSizeExt(hipsparseHandle_t handle,
                                                             int               m,
                                                             int               n,
