@@ -2151,6 +2151,158 @@ hipsparseStatus_t hipsparseZbsrsv2_solve(hipsparseHandle_t         handle,
                                                               pBuffer));
 }
 
+hipsparseStatus_t hipsparseSgemvi_bufferSize(
+    hipsparseHandle_t handle, hipsparseOperation_t transA, int m, int n, int nnz, int* pBufferSize)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseSgemvi_bufferSize(
+        (cusparseHandle_t)handle, hipOperationToCudaOperation(transA), m, n, nnz, pBufferSize));
+}
+
+hipsparseStatus_t hipsparseDgemvi_bufferSize(
+    hipsparseHandle_t handle, hipsparseOperation_t transA, int m, int n, int nnz, int* pBufferSize)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseDgemvi_bufferSize(
+        (cusparseHandle_t)handle, hipOperationToCudaOperation(transA), m, n, nnz, pBufferSize));
+}
+
+hipsparseStatus_t hipsparseCgemvi_bufferSize(
+    hipsparseHandle_t handle, hipsparseOperation_t transA, int m, int n, int nnz, int* pBufferSize)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseCgemvi_bufferSize(
+        (cusparseHandle_t)handle, hipOperationToCudaOperation(transA), m, n, nnz, pBufferSize));
+}
+
+hipsparseStatus_t hipsparseZgemvi_bufferSize(
+    hipsparseHandle_t handle, hipsparseOperation_t transA, int m, int n, int nnz, int* pBufferSize)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseZgemvi_bufferSize(
+        (cusparseHandle_t)handle, hipOperationToCudaOperation(transA), m, n, nnz, pBufferSize));
+}
+
+hipsparseStatus_t hipsparseSgemvi(hipsparseHandle_t    handle,
+                                  hipsparseOperation_t transA,
+                                  int                  m,
+                                  int                  n,
+                                  const float*         alpha,
+                                  const float*         A,
+                                  int                  lda,
+                                  int                  nnz,
+                                  const float*         x,
+                                  const int*           xInd,
+                                  const float*         beta,
+                                  float*               y,
+                                  hipsparseIndexBase_t idxBase,
+                                  void*                pBuffer)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseSgemvi((cusparseHandle_t)handle,
+                                                       hipOperationToCudaOperation(transA),
+                                                       m,
+                                                       n,
+                                                       alpha,
+                                                       A,
+                                                       lda,
+                                                       nnz,
+                                                       x,
+                                                       xInd,
+                                                       beta,
+                                                       y,
+                                                       hipIndexBaseToCudaIndexBase(idxBase),
+                                                       pBuffer));
+}
+
+hipsparseStatus_t hipsparseDgemvi(hipsparseHandle_t    handle,
+                                  hipsparseOperation_t transA,
+                                  int                  m,
+                                  int                  n,
+                                  const double*        alpha,
+                                  const double*        A,
+                                  int                  lda,
+                                  int                  nnz,
+                                  const double*        x,
+                                  const int*           xInd,
+                                  const double*        beta,
+                                  double*              y,
+                                  hipsparseIndexBase_t idxBase,
+                                  void*                pBuffer)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseDgemvi((cusparseHandle_t)handle,
+                                                       hipOperationToCudaOperation(transA),
+                                                       m,
+                                                       n,
+                                                       alpha,
+                                                       A,
+                                                       lda,
+                                                       nnz,
+                                                       x,
+                                                       xInd,
+                                                       beta,
+                                                       y,
+                                                       hipIndexBaseToCudaIndexBase(idxBase),
+                                                       pBuffer));
+}
+
+hipsparseStatus_t hipsparseCgemvi(hipsparseHandle_t    handle,
+                                  hipsparseOperation_t transA,
+                                  int                  m,
+                                  int                  n,
+                                  const hipComplex*    alpha,
+                                  const hipComplex*    A,
+                                  int                  lda,
+                                  int                  nnz,
+                                  const hipComplex*    x,
+                                  const int*           xInd,
+                                  const hipComplex*    beta,
+                                  hipComplex*          y,
+                                  hipsparseIndexBase_t idxBase,
+                                  void*                pBuffer)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseCgemvi((cusparseHandle_t)handle,
+                                                       hipOperationToCudaOperation(transA),
+                                                       m,
+                                                       n,
+                                                       (const cuComplex*)alpha,
+                                                       (const cuComplex*)A,
+                                                       lda,
+                                                       nnz,
+                                                       (const cuComplex*)x,
+                                                       xInd,
+                                                       (const cuComplex*)beta,
+                                                       (cuComplex*)y,
+                                                       hipIndexBaseToCudaIndexBase(idxBase),
+                                                       pBuffer));
+}
+
+hipsparseStatus_t hipsparseZgemvi(hipsparseHandle_t       handle,
+                                  hipsparseOperation_t    transA,
+                                  int                     m,
+                                  int                     n,
+                                  const hipDoubleComplex* alpha,
+                                  const hipDoubleComplex* A,
+                                  int                     lda,
+                                  int                     nnz,
+                                  const hipDoubleComplex* x,
+                                  const int*              xInd,
+                                  const hipDoubleComplex* beta,
+                                  hipDoubleComplex*       y,
+                                  hipsparseIndexBase_t    idxBase,
+                                  void*                   pBuffer)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseZgemvi((cusparseHandle_t)handle,
+                                                       hipOperationToCudaOperation(transA),
+                                                       m,
+                                                       n,
+                                                       (const cuDoubleComplex*)alpha,
+                                                       (const cuDoubleComplex*)A,
+                                                       lda,
+                                                       nnz,
+                                                       (const cuDoubleComplex*)x,
+                                                       xInd,
+                                                       (const cuDoubleComplex*)beta,
+                                                       (cuDoubleComplex*)y,
+                                                       hipIndexBaseToCudaIndexBase(idxBase),
+                                                       pBuffer));
+}
+
 hipsparseStatus_t hipsparseSbsrmm(hipsparseHandle_t         handle,
                                   hipsparseDirection_t      dirA,
                                   hipsparseOperation_t      transA,
@@ -10484,7 +10636,7 @@ hipsparseStatus_t hipsparseSDDMM_bufferSize(hipsparseHandle_t           handle,
                                             hipsparseSDDMMAlg_t         alg,
                                             size_t*                     bufferSize)
 {
-    return rocSPARSEStatusToHIPStatus(
+    return hipCUSPARSEStatusToHIPStatus(
         cusparseSDDMM_bufferSize((cusparseHandle_t)handle,
                                  hipOperationToCudaOperation(opA),
                                  hipOperationToCudaOperation(opB),
@@ -10512,7 +10664,7 @@ hipsparseStatus_t hipsparseSDDMM_preprocess(hipsparseHandle_t           handle,
                                             hipsparseSDDMMAlg_t         alg,
                                             void*                       tempBuffer)
 {
-    return rocSPARSEStatusToHIPStatus(
+    return hipCUSPARSEStatusToHIPStatus(
         cusparseSDDMM_preprocess((cusparseHandle_t)handle,
                                  hipOperationToCudaOperation(opA),
                                  hipOperationToCudaOperation(opB),
@@ -10670,6 +10822,295 @@ hipsparseStatus_t hipsparseZgtsv2StridedBatch(hipsparseHandle_t       handle,
                                                                    batchCount,
                                                                    batchStride,
                                                                    pBuffer));
+}
+
+hipsparseStatus_t hipsparseSgtsv2_bufferSizeExt(hipsparseHandle_t handle,
+                                                int               m,
+                                                int               n,
+                                                const float*      dl,
+                                                const float*      d,
+                                                const float*      du,
+                                                const float*      B,
+                                                int               ldb,
+                                                size_t*           pBufferSizeInBytes)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseSgtsv2_bufferSizeExt(
+        (cusparseHandle_t)handle, m, n, dl, d, du, B, ldb, pBufferSizeInBytes));
+}
+
+hipsparseStatus_t hipsparseDgtsv2_bufferSizeExt(hipsparseHandle_t handle,
+                                                int               m,
+                                                int               n,
+                                                const double*     dl,
+                                                const double*     d,
+                                                const double*     du,
+                                                const double*     B,
+                                                int               ldb,
+                                                size_t*           pBufferSizeInBytes)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseDgtsv2_bufferSizeExt(
+        (cusparseHandle_t)handle, m, n, dl, d, du, B, ldb, pBufferSizeInBytes));
+}
+
+hipsparseStatus_t hipsparseCgtsv2_bufferSizeExt(hipsparseHandle_t handle,
+                                                int               m,
+                                                int               n,
+                                                const hipComplex* dl,
+                                                const hipComplex* d,
+                                                const hipComplex* du,
+                                                const hipComplex* B,
+                                                int               ldb,
+                                                size_t*           pBufferSizeInBytes)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseCgtsv2_bufferSizeExt((cusparseHandle_t)handle,
+                                                                     m,
+                                                                     n,
+                                                                     (const cuComplex*)dl,
+                                                                     (const cuComplex*)d,
+                                                                     (const cuComplex*)du,
+                                                                     (const cuComplex*)B,
+                                                                     ldb,
+                                                                     pBufferSizeInBytes));
+}
+
+hipsparseStatus_t hipsparseZgtsv2_bufferSizeExt(hipsparseHandle_t       handle,
+                                                int                     m,
+                                                int                     n,
+                                                const hipDoubleComplex* dl,
+                                                const hipDoubleComplex* d,
+                                                const hipDoubleComplex* du,
+                                                const hipDoubleComplex* B,
+                                                int                     ldb,
+                                                size_t*                 pBufferSizeInBytes)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseZgtsv2_bufferSizeExt((cusparseHandle_t)handle,
+                                                                     m,
+                                                                     n,
+                                                                     (const cuDoubleComplex*)dl,
+                                                                     (const cuDoubleComplex*)d,
+                                                                     (const cuDoubleComplex*)du,
+                                                                     (const cuDoubleComplex*)B,
+                                                                     ldb,
+                                                                     pBufferSizeInBytes));
+}
+
+hipsparseStatus_t hipsparseSgtsv2(hipsparseHandle_t handle,
+                                  int               m,
+                                  int               n,
+                                  const float*      dl,
+                                  const float*      d,
+                                  const float*      du,
+                                  float*            B,
+                                  int               ldb,
+                                  void*             pBuffer)
+{
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseSgtsv2((cusparseHandle_t)handle, m, n, dl, d, du, B, ldb, pBuffer));
+}
+
+hipsparseStatus_t hipsparseDgtsv2(hipsparseHandle_t handle,
+                                  int               m,
+                                  int               n,
+                                  const double*     dl,
+                                  const double*     d,
+                                  const double*     du,
+                                  double*           B,
+                                  int               ldb,
+                                  void*             pBuffer)
+
+{
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseDgtsv2((cusparseHandle_t)handle, m, n, dl, d, du, B, ldb, pBuffer));
+}
+
+hipsparseStatus_t hipsparseCgtsv2(hipsparseHandle_t handle,
+                                  int               m,
+                                  int               n,
+                                  const hipComplex* dl,
+                                  const hipComplex* d,
+                                  const hipComplex* du,
+                                  hipComplex*       B,
+                                  int               ldb,
+                                  void*             pBuffer)
+
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseCgtsv2((cusparseHandle_t)handle,
+                                                       m,
+                                                       n,
+                                                       (const cuComplex*)dl,
+                                                       (const cuComplex*)d,
+                                                       (const cuComplex*)du,
+                                                       (cuComplex*)B,
+                                                       ldb,
+                                                       pBuffer));
+}
+
+hipsparseStatus_t hipsparseZgtsv2(hipsparseHandle_t       handle,
+                                  int                     m,
+                                  int                     n,
+                                  const hipDoubleComplex* dl,
+                                  const hipDoubleComplex* d,
+                                  const hipDoubleComplex* du,
+                                  hipDoubleComplex*       B,
+                                  int                     ldb,
+                                  void*                   pBuffer)
+
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseZgtsv2((cusparseHandle_t)handle,
+                                                       m,
+                                                       n,
+                                                       (const cuDoubleComplex*)dl,
+                                                       (const cuDoubleComplex*)d,
+                                                       (const cuDoubleComplex*)du,
+                                                       (cuDoubleComplex*)B,
+                                                       ldb,
+                                                       pBuffer));
+}
+
+hipsparseStatus_t hipsparseSgtsv2_nopivot_bufferSizeExt(hipsparseHandle_t handle,
+                                                        int               m,
+                                                        int               n,
+                                                        const float*      dl,
+                                                        const float*      d,
+                                                        const float*      du,
+                                                        const float*      B,
+                                                        int               ldb,
+                                                        size_t*           pBufferSizeInBytes)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseSgtsv2_nopivot_bufferSizeExt(
+        (cusparseHandle_t)handle, m, n, dl, d, du, B, ldb, pBufferSizeInBytes));
+}
+
+hipsparseStatus_t hipsparseDgtsv2_nopivot_bufferSizeExt(hipsparseHandle_t handle,
+                                                        int               m,
+                                                        int               n,
+                                                        const double*     dl,
+                                                        const double*     d,
+                                                        const double*     du,
+                                                        const double*     B,
+                                                        int               ldb,
+                                                        size_t*           pBufferSizeInBytes)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseDgtsv2_nopivot_bufferSizeExt(
+        (cusparseHandle_t)handle, m, n, dl, d, du, B, ldb, pBufferSizeInBytes));
+}
+
+hipsparseStatus_t hipsparseCgtsv2_nopivot_bufferSizeExt(hipsparseHandle_t handle,
+                                                        int               m,
+                                                        int               n,
+                                                        const hipComplex* dl,
+                                                        const hipComplex* d,
+                                                        const hipComplex* du,
+                                                        const hipComplex* B,
+                                                        int               ldb,
+                                                        size_t*           pBufferSizeInBytes)
+{
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseCgtsv2_nopivot_bufferSizeExt((cusparseHandle_t)handle,
+                                             m,
+                                             n,
+                                             (const cuComplex*)dl,
+                                             (const cuComplex*)d,
+                                             (const cuComplex*)du,
+                                             (const cuComplex*)B,
+                                             ldb,
+                                             pBufferSizeInBytes));
+}
+
+hipsparseStatus_t hipsparseZgtsv2_nopivot_bufferSizeExt(hipsparseHandle_t       handle,
+                                                        int                     m,
+                                                        int                     n,
+                                                        const hipDoubleComplex* dl,
+                                                        const hipDoubleComplex* d,
+                                                        const hipDoubleComplex* du,
+                                                        const hipDoubleComplex* B,
+                                                        int                     ldb,
+                                                        size_t*                 pBufferSizeInBytes)
+{
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseZgtsv2_nopivot_bufferSizeExt((cusparseHandle_t)handle,
+                                             m,
+                                             n,
+                                             (const cuDoubleComplex*)dl,
+                                             (const cuDoubleComplex*)d,
+                                             (const cuDoubleComplex*)du,
+                                             (const cuDoubleComplex*)B,
+                                             ldb,
+                                             pBufferSizeInBytes));
+}
+
+hipsparseStatus_t hipsparseSgtsv2_nopivot(hipsparseHandle_t handle,
+                                          int               m,
+                                          int               n,
+                                          const float*      dl,
+                                          const float*      d,
+                                          const float*      du,
+                                          float*            B,
+                                          int               ldb,
+                                          void*             pBuffer)
+
+{
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseSgtsv2_nopivot((cusparseHandle_t)handle, m, n, dl, d, du, B, ldb, pBuffer));
+}
+
+hipsparseStatus_t hipsparseDgtsv2_nopivot(hipsparseHandle_t handle,
+                                          int               m,
+                                          int               n,
+                                          const double*     dl,
+                                          const double*     d,
+                                          const double*     du,
+                                          double*           B,
+                                          int               ldb,
+                                          void*             pBuffer)
+
+{
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseDgtsv2_nopivot((cusparseHandle_t)handle, m, n, dl, d, du, B, ldb, pBuffer));
+}
+
+hipsparseStatus_t hipsparseCgtsv2_nopivot(hipsparseHandle_t handle,
+                                          int               m,
+                                          int               n,
+                                          const hipComplex* dl,
+                                          const hipComplex* d,
+                                          const hipComplex* du,
+                                          hipComplex*       B,
+                                          int               ldb,
+                                          void*             pBuffer)
+
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseCgtsv2_nopivot((cusparseHandle_t)handle,
+                                                               m,
+                                                               n,
+                                                               (const cuComplex*)dl,
+                                                               (const cuComplex*)d,
+                                                               (const cuComplex*)du,
+                                                               (cuComplex*)B,
+                                                               ldb,
+                                                               pBuffer));
+}
+
+hipsparseStatus_t hipsparseZgtsv2_nopivot(hipsparseHandle_t       handle,
+                                          int                     m,
+                                          int                     n,
+                                          const hipDoubleComplex* dl,
+                                          const hipDoubleComplex* d,
+                                          const hipDoubleComplex* du,
+                                          hipDoubleComplex*       B,
+                                          int                     ldb,
+                                          void*                   pBuffer)
+
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseZgtsv2_nopivot((cusparseHandle_t)handle,
+                                                               m,
+                                                               n,
+                                                               (const cuDoubleComplex*)dl,
+                                                               (const cuDoubleComplex*)d,
+                                                               (const cuDoubleComplex*)du,
+                                                               (cuDoubleComplex*)B,
+                                                               ldb,
+                                                               pBuffer));
 }
 
 #ifdef __cplusplus

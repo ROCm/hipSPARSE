@@ -143,6 +143,7 @@ set(HIPSPARSE_TEST_SOURCES
   test_bsrmm.cpp
   test_csrsm2.cpp
   test_gemmi.cpp
+  test_gemvi.cpp
   test_csrgeam2.cpp
   test_csrgemm2_a.cpp
   test_csrgemm2_b.cpp
@@ -199,7 +200,10 @@ set(HIPSPARSE_TEST_SOURCES
   test_sddmm_coo.cpp
   test_sddmm_coo_aos.cpp
   test_gtsv2_strided_batch.cpp
+  test_gtsv.cpp
+  test_gtsv2_nopivot.cpp
 )
+
 
 if(NOT BUILD_CUDA)
     list(APPEND HIPSPARSE_TEST_SOURCES

@@ -263,6 +263,30 @@ namespace hipsparse
                                              void*                     pBuffer);
 
     template <typename T>
+    hipsparseStatus_t hipsparseXgemvi_bufferSize(hipsparseHandle_t    handle,
+                                                 hipsparseOperation_t transA,
+                                                 int                  m,
+                                                 int                  n,
+                                                 int                  nnz,
+                                                 int*                 pBufferSize);
+
+    template <typename T>
+    hipsparseStatus_t hipsparseXgemvi(hipsparseHandle_t    handle,
+                                      hipsparseOperation_t transA,
+                                      int                  m,
+                                      int                  n,
+                                      const T*             alpha,
+                                      const T*             A,
+                                      int                  lda,
+                                      int                  nnz,
+                                      const T*             x,
+                                      const int*           xInd,
+                                      const T*             beta,
+                                      T*                   y,
+                                      hipsparseIndexBase_t idxBase,
+                                      void*                pBuffer);
+
+    template <typename T>
     hipsparseStatus_t hipsparseXbsrmm(hipsparseHandle_t         handle,
                                       hipsparseDirection_t      dirA,
                                       hipsparseOperation_t      transA,
@@ -1268,6 +1292,50 @@ namespace hipsparse
                                                   int               batchCount,
                                                   int               batchStride,
                                                   void*             pBuffer);
+
+    template <typename T>
+    hipsparseStatus_t hipsparseXgtsv2_bufferSizeExt(hipsparseHandle_t handle,
+                                                    int               m,
+                                                    int               n,
+                                                    const T*          dl,
+                                                    const T*          d,
+                                                    const T*          du,
+                                                    const T*          B,
+                                                    int               ldb,
+                                                    size_t*           pBufferSizeInBytes);
+
+    template <typename T>
+    hipsparseStatus_t hipsparseXgtsv2(hipsparseHandle_t handle,
+                                      int               m,
+                                      int               n,
+                                      const T*          dl,
+                                      const T*          d,
+                                      const T*          du,
+                                      T*                B,
+                                      int               ldb,
+                                      void*             pBuffer);
+
+    template <typename T>
+    hipsparseStatus_t hipsparseXgtsv2_nopivot_bufferSizeExt(hipsparseHandle_t handle,
+                                                            int               m,
+                                                            int               n,
+                                                            const T*          dl,
+                                                            const T*          d,
+                                                            const T*          du,
+                                                            const T*          B,
+                                                            int               ldb,
+                                                            size_t*           pBufferSizeInBytes);
+
+    template <typename T>
+    hipsparseStatus_t hipsparseXgtsv2_nopivot(hipsparseHandle_t handle,
+                                              int               m,
+                                              int               n,
+                                              const T*          dl,
+                                              const T*          d,
+                                              const T*          du,
+                                              T*                B,
+                                              int               ldb,
+                                              void*             pBuffer);
 
 } // namespace hipsparse
 
