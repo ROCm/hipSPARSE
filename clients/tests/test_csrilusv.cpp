@@ -43,11 +43,7 @@ std::string csrilusv_bin[] = {"mac_econ_fwd500.bin",
                               //                              "bmwcra_1.bin",
                               "nos1.bin",
 #endif
-                              "nos3.bin",
-                              "nos4.bin",
-                              "nos5.bin",
                               "nos6.bin",
-                              "nos7.bin",
                               "amazon0312.bin",
                               "sme3Dc.bin"};
 
