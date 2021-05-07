@@ -38,15 +38,7 @@ int csric02_M_range[] = {-1, 0, 50, 426};
 
 base csric02_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
-std::string csric02_bin[] = {"mac_econ_fwd500.bin",
-                             "nos3.bin",
-                             "nos4.bin",
-                             "nos5.bin",
-                             "nos6.bin",
-                             "nos7.bin",
-                             "scircuit.bin",
-                             "ASIC_320k.bin",
-                             "amazon0312.bin"};
+std::string csric02_bin[] = {"nos3.bin", "nos4.bin", "nos5.bin", "nos6.bin", "nos7.bin"};
 
 class parameterized_csric02 : public testing::TestWithParam<csric02_tuple>
 {
@@ -103,6 +95,8 @@ Arguments setup_csric02_arguments(csric02_bin_tuple tup)
     return arg;
 }
 
+// Only run tests for CUDA 11.1 or greater
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(csric02_bad_arg, csric02_float)
 {
     testing_csric02_bad_arg<float>();
@@ -155,6 +149,7 @@ TEST_P(parameterized_csric02_bin, csric02_bin_double)
     hipsparseStatus_t status = testing_csric02<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+#endif
 
 INSTANTIATE_TEST_CASE_P(csric02,
                         parameterized_csric02,

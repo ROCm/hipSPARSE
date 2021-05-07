@@ -32,32 +32,20 @@
 typedef std::tuple<int, int, double, hipsparseIndexBase_t>    csr2csr_compress_tuple;
 typedef std::tuple<double, hipsparseIndexBase_t, std::string> csr2csr_compress_bin_tuple;
 
-int    csr2csr_compress_M_range[]     = {-1, 0, 10, 500, 872, 465327};
-int    csr2csr_compress_N_range[]     = {-3, 0, 33, 242, 623, 592645};
-double csr2csr_compress_alpha_range[] = {-0.001, 0.0, 0.0012, 0.08736, 0.33333, 0.5, 1.0, 1.7};
+int    csr2csr_compress_M_range[]     = {-1, 10, 500, 872, 9375, 30327};
+int    csr2csr_compress_N_range[]     = {-3, 33, 242, 623, 9184, 30645};
+double csr2csr_compress_alpha_range[] = {-0.001, 0.0, 0.08736, 0.33333, 1.7};
 
 hipsparseIndexBase_t csr2csr_compress_base_range[]
     = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
-std::string csr2csr_compress_bin[] = {"rma10.bin",
-                                      "mac_econ_fwd500.bin",
-                                      "bibd_22_8.bin",
-                                      "mc2depi.bin",
-                                      "scircuit.bin",
-                                      "ASIC_320k.bin",
-                                      "bmwcra_1.bin",
-                                      "nos1.bin",
+std::string csr2csr_compress_bin[] = {"nos1.bin",
                                       "nos2.bin",
                                       "nos3.bin",
                                       "nos4.bin",
                                       "nos5.bin",
                                       "nos6.bin",
-                                      "nos7.bin",
-                                      "amazon0312.bin",
-                                      "Chebyshev4.bin",
-                                      "sme3Dc.bin",
-                                      "webbase-1M.bin",
-                                      "shipsec1.bin"};
+                                      "nos7.bin"};
 
 class parameterized_csr2csr_compress : public testing::TestWithParam<csr2csr_compress_tuple>
 {
@@ -118,6 +106,8 @@ Arguments setup_csr2csr_compress_arguments(csr2csr_compress_bin_tuple tup)
     return arg;
 }
 
+// Only run tests for CUDA 11.1 or greater
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(csr2csr_compress_bad_arg, csr2csr_compress)
 {
     testing_csr2csr_compress_bad_arg<float>();
@@ -170,6 +160,7 @@ TEST_P(parameterized_csr2csr_compress_bin, csr2csr_compress_bin_double)
     hipsparseStatus_t status = testing_csr2csr_compress<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+#endif
 
 INSTANTIATE_TEST_CASE_P(csr2csr_compress,
                         parameterized_csr2csr_compress,

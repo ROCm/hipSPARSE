@@ -46,13 +46,8 @@ int coosort_perm[] = {1};
 
 hipsparseIndexBase_t coosort_base[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
-std::string coosort_bin[] = {"rma10.bin",
-                             "mac_econ_fwd500.bin",
-                             "bibd_22_8.bin",
-                             "mc2depi.bin",
+std::string coosort_bin[] = {"mc2depi.bin",
                              "scircuit.bin",
-                             "ASIC_320k.bin",
-                             "bmwcra_1.bin",
                              "nos1.bin",
                              "nos2.bin",
                              "nos3.bin",
@@ -60,10 +55,6 @@ std::string coosort_bin[] = {"rma10.bin",
                              "nos5.bin",
                              "nos6.bin",
                              "nos7.bin",
-                             "amazon0312.bin",
-                             "Chebyshev4.bin",
-                             "sme3Dc.bin",
-                             "webbase-1M.bin",
                              "shipsec1.bin"};
 
 class parameterized_coosort : public testing::TestWithParam<coosort_tuple>
@@ -127,6 +118,8 @@ Arguments setup_coosort_arguments(coosort_bin_tuple tup)
     return arg;
 }
 
+// Only run tests for CUDA 11.1 or greater
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(coosort_bad_arg, coosort)
 {
     testing_coosort_bad_arg();
@@ -147,6 +140,7 @@ TEST_P(parameterized_coosort_bin, coosort_bin)
     hipsparseStatus_t status = testing_coosort(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+#endif
 
 INSTANTIATE_TEST_CASE_P(coosort,
                         parameterized_coosort,

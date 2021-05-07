@@ -33,26 +33,16 @@ typedef hipsparseIndexBase_t base;
 typedef std::tuple<int, int, double, base, base>    csrgemm2_b_tuple;
 typedef std::tuple<double, base, base, std::string> csrgemm2_b_bin_tuple;
 
-double csrgemm2_b_beta_range[] = {0.0, 1.3};
+double csrgemm2_b_beta_range[] = {1.3};
 
-int csrgemm2_b_M_range[] = {-1, 0, 50, 647, 1799};
-int csrgemm2_b_N_range[] = {-1, 0, 13, 523, 3712};
+int csrgemm2_b_M_range[] = {-1, 50, 647, 1799};
+int csrgemm2_b_N_range[] = {0, 13, 523, 3712};
 
 base csrgemm2_b_idxbaseC_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 base csrgemm2_b_idxbaseD_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
-std::string csrgemm2_b_bin[] = {"rma10.bin",
-                                "mac_econ_fwd500.bin",
-                                "mc2depi.bin",
-                                "scircuit.bin",
-                                "bmwcra_1.bin",
-                                "nos1.bin",
-                                "nos2.bin",
-                                "nos3.bin",
-                                "nos4.bin",
-                                "nos5.bin",
-                                "nos6.bin",
-                                "nos7.bin"};
+std::string csrgemm2_b_bin[]
+    = {"nos1.bin", "nos2.bin", "nos3.bin", "nos4.bin", "nos5.bin", "nos6.bin", "nos7.bin"};
 
 class parameterized_csrgemm2_b : public testing::TestWithParam<csrgemm2_b_tuple>
 {
@@ -115,6 +105,8 @@ Arguments setup_csrgemm2_b_arguments(csrgemm2_b_bin_tuple tup)
     return arg;
 }
 
+// Only run tests for CUDA 11.1 or greater
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(csrgemm2_b_bad_arg, csrgemm2_b_float)
 {
     testing_csrgemm2_b_bad_arg<float>();
@@ -167,6 +159,7 @@ TEST_P(parameterized_csrgemm2_b_bin, csrgemm2_b_bin_double)
     hipsparseStatus_t status = testing_csrgemm2_b<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+#endif
 
 INSTANTIATE_TEST_CASE_P(csrgemm2_b,
                         parameterized_csrgemm2_b,

@@ -1,5 +1,5 @@
 /* ************************************************************************
- * Copyright (c) 2018-2020 Advanced Micro Devices, Inc.
+ * Copyright (c) 2018-2021 Advanced Micro Devices, Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -93,6 +93,7 @@ namespace hipsparse_test
         }
     };
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
     struct hyb_struct
     {
         hipsparseHybMat_t hyb;
@@ -108,6 +109,7 @@ namespace hipsparse_test
             verify_hipsparse_status_success(status, "ERROR: hyb_struct destructor");
         }
     };
+#endif
 
     struct bsrsv2_struct
     {
@@ -157,6 +159,22 @@ namespace hipsparse_test
         }
     };
 
+    struct bsrilu02_struct
+    {
+        bsrilu02Info_t info;
+        bsrilu02_struct()
+        {
+            hipsparseStatus_t status = hipsparseCreateBsrilu02Info(&info);
+            verify_hipsparse_status_success(status, "ERROR: bsrilu02_struct constructor");
+        }
+
+        ~bsrilu02_struct()
+        {
+            hipsparseStatus_t status = hipsparseDestroyBsrilu02Info(info);
+            verify_hipsparse_status_success(status, "ERROR: bsrilu02_struct destructor");
+        }
+    };
+
     struct csrilu02_struct
     {
         csrilu02Info_t info;
@@ -170,6 +188,22 @@ namespace hipsparse_test
         {
             hipsparseStatus_t status = hipsparseDestroyCsrilu02Info(info);
             verify_hipsparse_status_success(status, "ERROR: csrilu02_struct destructor");
+        }
+    };
+
+    struct bsric02_struct
+    {
+        bsric02Info_t info;
+        bsric02_struct()
+        {
+            hipsparseStatus_t status = hipsparseCreateBsric02Info(&info);
+            verify_hipsparse_status_success(status, "ERROR: bsric02_struct constructor");
+        }
+
+        ~bsric02_struct()
+        {
+            hipsparseStatus_t status = hipsparseDestroyBsric02Info(info);
+            verify_hipsparse_status_success(status, "ERROR: bsric02_struct destructor");
         }
     };
 
@@ -189,6 +223,7 @@ namespace hipsparse_test
         }
     };
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     struct csrgemm2_struct
     {
         csrgemm2Info_t info;
@@ -204,6 +239,57 @@ namespace hipsparse_test
             verify_hipsparse_status_success(status, "ERROR: csrgemm2_struct destructor");
         }
     };
+#endif
+
+    struct prune_struct
+    {
+        pruneInfo_t info;
+        prune_struct()
+        {
+            hipsparseStatus_t status = hipsparseCreatePruneInfo(&info);
+            verify_hipsparse_status_success(status, "ERROR: prune_struct constructor");
+        }
+
+        ~prune_struct()
+        {
+            hipsparseStatus_t status = hipsparseDestroyPruneInfo(info);
+            verify_hipsparse_status_success(status, "ERROR: prune_struct destructor");
+        }
+    };
+
+    struct csru2csr_struct
+    {
+        csru2csrInfo_t info;
+        csru2csr_struct()
+        {
+            hipsparseStatus_t status = hipsparseCreateCsru2csrInfo(&info);
+            verify_hipsparse_status_success(status, "ERROR: csru2csr_struct constructor");
+        }
+
+        ~csru2csr_struct()
+        {
+            hipsparseStatus_t status = hipsparseDestroyCsru2csrInfo(info);
+            verify_hipsparse_status_success(status, "ERROR: csru2csr_struct destructor");
+        }
+    };
+
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
+    struct spgemm_struct
+    {
+        hipsparseSpGEMMDescr_t descr;
+        spgemm_struct()
+        {
+            hipsparseStatus_t status = hipsparseSpGEMM_createDescr(&descr);
+            verify_hipsparse_status_success(status, "ERROR: spgemm_struct constructor");
+        }
+
+        ~spgemm_struct()
+        {
+            hipsparseStatus_t status = hipsparseSpGEMM_destroyDescr(descr);
+            verify_hipsparse_status_success(status, "ERROR: spgemm_struct destructor");
+        }
+    };
+#endif
 
 } // namespace hipsparse_test
 

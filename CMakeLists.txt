@@ -31,7 +31,8 @@ else()
   set(CMAKE_INSTALL_PREFIX "/opt/rocm" CACHE PATH "Install path prefix, prepended onto install directories")
 endif()
 
-list( APPEND CMAKE_PREFIX_PATH /opt/rocm/hcc /opt/rocm/hip )
+# Pick up static and dynamic shared object files
+list( APPEND CMAKE_PREFIX_PATH /opt/rocm/llvm /opt/rocm/hip )
 
 # CMake modules
 list(APPEND CMAKE_MODULE_PATH
@@ -57,6 +58,11 @@ project(hipsparse LANGUAGES CXX Fortran)
 # Force library install path to lib (CentOS 7 defaults to lib64)
 set(CMAKE_INSTALL_LIBDIR "lib" CACHE INTERNAL "Installation directory for libraries" FORCE)
 
+# Build flags
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
 # Build options
 option(BUILD_SHARED_LIBS "Build hipSPARSE as a shared library" ON)
 option(BUILD_CLIENTS_TESTS "Build tests (requires googletest)" OFF)
@@ -68,15 +74,8 @@ option(BUILD_CUDA "Build hipSPARSE for CUDA" OFF)
 include(cmake/Dependencies.cmake)
 
 # Setup version
-rocm_setup_version(VERSION 1.7.1)
+rocm_setup_version(VERSION 1.10.6)
 set(hipsparse_SOVERSION 0.1)
-
-# Look for libamdhip64
-find_library(
-  LIBAMDHIP64_LIBRARY
-  NAMES libamdhip64.so
-  HINTS "${CMAKE_PREFIX_PATH}/lib" )
-message("amdhip64: ${LIBAMDHIP64_LIBRARY}")
 
 # hipSPARSE library
 add_subdirectory(library)

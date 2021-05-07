@@ -56,23 +56,8 @@ hipsparseIndexBase_t bsr2csr_bsr_base_range_bin[] = {HIPSPARSE_INDEX_BASE_ONE};
 hipsparseDirection_t bsr2csr_dir_range_bin[]
     = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COLUMN};
 
-std::string bsr2csr_bin[] = {"rma10.bin",
-                             "mac_econ_fwd500.bin",
-                             "mc2depi.bin",
-                             "scircuit.bin",
-                             "ASIC_320k.bin",
-                             "bmwcra_1.bin",
-                             "nos1.bin",
-                             "nos2.bin",
-                             "nos3.bin",
-                             "nos4.bin",
-                             "nos5.bin",
-                             "nos6.bin",
-                             "nos7.bin",
-                             "amazon0312.bin",
-                             "Chebyshev4.bin",
-                             "sme3Dc.bin",
-                             "shipsec1.bin"};
+std::string bsr2csr_bin[]
+    = {"nos1.bin", "nos2.bin", "nos3.bin", "nos4.bin", "nos5.bin", "nos6.bin", "nos7.bin"};
 
 class parameterized_bsr2csr : public testing::TestWithParam<bsr2csr_tuple>
 {
@@ -137,6 +122,8 @@ Arguments setup_bsr2csr_arguments(bsr2csr_bin_tuple tup)
     return arg;
 }
 
+// Only run tests for CUDA 11.1 or greater
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(bsr2csr_bad_arg, bsr2csr)
 {
     testing_bsr2csr_bad_arg<float>();
@@ -189,6 +176,7 @@ TEST_P(parameterized_bsr2csr_bin, bsr2csr_bin_double)
     hipsparseStatus_t status = testing_bsr2csr<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+#endif
 
 INSTANTIATE_TEST_CASE_P(bsr2csr,
                         parameterized_bsr2csr,

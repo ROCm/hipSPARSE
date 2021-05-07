@@ -46,7 +46,6 @@ trans csrgemm_transA_range[] = {HIPSPARSE_OPERATION_NON_TRANSPOSE};
 trans csrgemm_transB_range[] = {HIPSPARSE_OPERATION_NON_TRANSPOSE};
 
 std::string csrgemm_bin[] = {/*"rma10.bin",*/
-                             "mac_econ_fwd500.bin",
                              /*"bibd_22_8.bin",*/
                              "mc2depi.bin",
                              "scircuit.bin",
@@ -126,6 +125,8 @@ Arguments setup_csrgemm_arguments(csrgemm_bin_tuple tup)
     return arg;
 }
 
+// Only run tests for CUDA 11.1 or greater
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(csrgemm_bad_arg, csrgemm_float)
 {
     testing_csrgemm_bad_arg<float>();
@@ -178,6 +179,7 @@ TEST_P(parameterized_csrgemm_bin, csrgemm_bin_double)
     hipsparseStatus_t status = testing_csrgemm<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+#endif
 
 INSTANTIATE_TEST_CASE_P(csrgemm,
                         parameterized_csrgemm,

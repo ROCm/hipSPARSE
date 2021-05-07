@@ -45,9 +45,9 @@
 // case
 // a wrapper will cause the loop keep going
 template <typename T>
-void unit_check_general(int M, int N, int lda, T* hCPU, T* hGPU);
+void unit_check_general(int64_t M, int64_t N, int64_t lda, T* hCPU, T* hGPU);
 
 template <typename T>
-void unit_check_near(int M, int N, int lda, T* hCPU, T* hGPU);
+void unit_check_near(int64_t M, int64_t N, int64_t lda, T* hCPU, T* hGPU);
 
 #endif // UNIT_HPP

@@ -39,31 +39,14 @@ int bsr_M_range[]   = {-1, 0, 500, 7111};
 int bsr_N_range[]   = {-3, 0, 842, 4441};
 int bsr_dim_range[] = {-1, 0, 1, 3, 5, 9};
 
-std::vector<double> bsr_alpha_range = {2.0, 3.0};
-std::vector<double> bsr_beta_range  = {0.0, 1.0};
+std::vector<double> bsr_alpha_range = {3.0};
+std::vector<double> bsr_beta_range  = {1.0};
 
 base bsr_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 dir  bsr_dir_range[]     = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COLUMN};
 
-std::string bsr_bin[] = {"rma10.bin",
-                         "mac_econ_fwd500.bin",
-                         "bibd_22_8.bin",
-                         "mc2depi.bin",
-                         "scircuit.bin",
-                         "ASIC_320k.bin",
-                         "bmwcra_1.bin",
-                         "nos1.bin",
-                         "nos2.bin",
-                         "nos3.bin",
-                         "nos4.bin",
-                         "nos5.bin",
-                         "nos6.bin",
-                         "nos7.bin",
-                         "amazon0312.bin",
-                         "Chebyshev4.bin",
-                         "sme3Dc.bin",
-                         "webbase-1M.bin",
-                         "shipsec1.bin"};
+std::string bsr_bin[]
+    = {"nos1.bin", "nos2.bin", "nos3.bin", "nos4.bin", "nos5.bin", "nos6.bin", "nos7.bin"};
 
 class parameterized_bsrmv : public testing::TestWithParam<bsrmv_tuple>
 {
@@ -130,6 +113,8 @@ Arguments setup_bsrmv_arguments(bsrmv_bin_tuple tup)
     return arg;
 }
 
+// Only run tests for CUDA 11.1 or greater
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(bsrmv_bad_arg, bsrmv_float)
 {
     testing_bsrmv_bad_arg<float>();
@@ -182,6 +167,7 @@ TEST_P(parameterized_bsrmv_bin, bsrmv_bin_double)
     hipsparseStatus_t status = testing_bsrmv<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+#endif
 
 INSTANTIATE_TEST_CASE_P(bsrmv,
                         parameterized_bsrmv,

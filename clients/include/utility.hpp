@@ -37,6 +37,8 @@
 #include <string>
 #include <vector>
 
+#include <iostream>
+
 #ifdef _OPENMP
 #include <omp.h>
 #endif
@@ -44,6 +46,12 @@
 /*!\file
  * \brief provide data initialization and timing utilities.
  */
+
+// BSR indexing macros
+#define BSR_IND(j, bi, bj, dir) \
+    ((dir == HIPSPARSE_DIRECTION_ROW) ? BSR_IND_R(j, bi, bj) : BSR_IND_C(j, bi, bj))
+#define BSR_IND_R(j, bi, bj) (bsr_dim * bsr_dim * (j) + (bi)*bsr_dim + (bj))
+#define BSR_IND_C(j, bi, bj) (bsr_dim * bsr_dim * (j) + (bi) + (bj)*bsr_dim)
 
 #define CHECK_HIP_ERROR(error)                \
     if(error != hipSuccess)                   \
@@ -266,6 +274,28 @@ static inline double testing_abs(hipDoubleComplex x)
 }
 
 /* ============================================================================================ */
+/*! \brief conj */
+static inline float testing_conj(float x)
+{
+    return x;
+}
+
+static inline double testing_conj(double x)
+{
+    return x;
+}
+
+static inline hipComplex testing_conj(hipComplex x)
+{
+    return make_DataType<hipComplex>(x.x, -x.y);
+}
+
+static inline hipDoubleComplex testing_conj(hipDoubleComplex x)
+{
+    return make_DataType<hipDoubleComplex>(x.x, -x.y);
+}
+
+/* ============================================================================================ */
 /*! \brief real */
 static inline float testing_real(float x)
 {
@@ -368,33 +398,33 @@ void hipsparseInitCSR(
 
 /* ============================================================================================ */
 /*! \brief  Generate 2D laplacian on unit square in CSR format */
-template <typename T>
-int gen_2d_laplacian(int                  ndim,
-                     std::vector<int>&    rowptr,
-                     std::vector<int>&    col,
-                     std::vector<T>&      val,
-                     hipsparseIndexBase_t idx_base)
+template <typename I, typename J, typename T>
+J gen_2d_laplacian(int                  ndim,
+                   std::vector<I>&      rowptr,
+                   std::vector<J>&      col,
+                   std::vector<T>&      val,
+                   hipsparseIndexBase_t idx_base)
 {
     if(ndim == 0)
     {
         return 0;
     }
 
-    int n       = ndim * ndim;
-    int nnz_mat = n * 5 - ndim * 4;
+    J n       = ndim * ndim;
+    I nnz_mat = n * 5 - ndim * 4;
 
     rowptr.resize(n + 1);
     col.resize(nnz_mat);
     val.resize(nnz_mat);
 
-    int nnz = 0;
+    I nnz = 0;
 
     // Fill local arrays
     for(int i = 0; i < ndim; ++i)
     {
         for(int j = 0; j < ndim; ++j)
         {
-            int idx     = i * ndim + j;
+            J idx       = i * ndim + j;
             rowptr[idx] = nnz + idx_base;
             // if no upper boundary element, connect with upper neighbor
             if(i != 0)
@@ -454,30 +484,30 @@ void gen_dense_random_sparsity_pattern(int m, int n, T* A, int lda, float sparsi
 
 /* ============================================================================================ */
 /*! \brief  Generate a random sparse matrix in COO format */
-template <typename T>
-void gen_matrix_coo(int                  m,
-                    int                  n,
-                    int                  nnz,
-                    std::vector<int>&    row_ind,
-                    std::vector<int>&    col_ind,
+template <typename I, typename T>
+void gen_matrix_coo(I                    m,
+                    I                    n,
+                    I                    nnz,
+                    std::vector<I>&      row_ind,
+                    std::vector<I>&      col_ind,
                     std::vector<T>&      val,
                     hipsparseIndexBase_t idx_base)
 {
-    if((int)row_ind.size() != nnz)
+    if((I)row_ind.size() != nnz)
     {
         row_ind.resize(nnz);
     }
-    if((int)col_ind.size() != nnz)
+    if((I)col_ind.size() != nnz)
     {
         col_ind.resize(nnz);
     }
-    if((int)val.size() != nnz)
+    if((I)val.size() != nnz)
     {
         val.resize(nnz);
     }
 
     // Uniform distributed row indices
-    for(int i = 0; i < nnz; ++i)
+    for(I i = 0; i < nnz; ++i)
     {
         row_ind[i] = rand() % m;
     }
@@ -488,10 +518,10 @@ void gen_matrix_coo(int                  m,
     // Sample column indices
     std::vector<bool> check(nnz, false);
 
-    int i = 0;
+    I i = 0;
     while(i < nnz)
     {
-        int begin = i;
+        I begin = i;
         while(row_ind[i] == row_ind[begin])
         {
             ++i;
@@ -502,12 +532,12 @@ void gen_matrix_coo(int                  m,
         }
 
         // Sample i disjunct column indices
-        int idx = begin;
+        I idx = begin;
         while(idx < i)
         {
             // Normal distribution around the diagonal
-            int rng = (i - begin) * sqrt(-2.0 * log((double)rand() / RAND_MAX))
-                      * cos(2.0 * M_PI * (double)rand() / RAND_MAX);
+            I rng = (i - begin) * sqrt(-2.0 * log((double)rand() / RAND_MAX))
+                    * cos(2.0 * M_PI * (double)rand() / RAND_MAX);
 
             if(m <= n)
             {
@@ -530,7 +560,7 @@ void gen_matrix_coo(int                  m,
         }
 
         // Reset disjunct check array
-        for(int j = begin; j < i; ++j)
+        for(I j = begin; j < i; ++j)
         {
             check[col_ind[j]] = false;
         }
@@ -542,7 +572,7 @@ void gen_matrix_coo(int                  m,
     // Correct index base accordingly
     if(idx_base == HIPSPARSE_INDEX_BASE_ONE)
     {
-        for(int i = 0; i < nnz; ++i)
+        for(I i = 0; i < nnz; ++i)
         {
             ++row_ind[i];
             ++col_ind[i];
@@ -550,7 +580,7 @@ void gen_matrix_coo(int                  m,
     }
 
     // Sample random values
-    for(int i = 0; i < nnz; ++i)
+    for(I i = 0; i < nnz; ++i)
     {
         val[i] = random_generator<T>(); //(double) rand() / RAND_MAX;
     }
@@ -789,13 +819,13 @@ int read_mtx_matrix(const char*          filename,
 
 /* ============================================================================================ */
 /*! \brief  Read matrix from binary file in CSR format */
-template <typename T>
+template <typename I, typename J, typename T>
 int read_bin_matrix(const char*          filename,
-                    int&                 nrow,
-                    int&                 ncol,
-                    int&                 nnz,
-                    std::vector<int>&    ptr,
-                    std::vector<int>&    col,
+                    J&                   nrow,
+                    J&                   ncol,
+                    I&                   nnz,
+                    std::vector<I>&      ptr,
+                    std::vector<J>&      col,
                     std::vector<T>&      val,
                     hipsparseIndexBase_t idx_base)
 {
@@ -814,35 +844,49 @@ int read_bin_matrix(const char*          filename,
 
     int err;
 
-    err = fread(&nrow, sizeof(int), 1, f);
-    err |= fread(&ncol, sizeof(int), 1, f);
-    err |= fread(&nnz, sizeof(int), 1, f);
+    int nrowf, ncolf, nnzf;
+
+    err = fread(&nrowf, sizeof(int), 1, f);
+    err |= fread(&ncolf, sizeof(int), 1, f);
+    err |= fread(&nnzf, sizeof(int), 1, f);
+
+    nrow = (J)nrowf;
+    ncol = (J)ncolf;
+    nnz  = (I)nnzf;
 
     // Allocate memory
+    std::vector<int>    ptrf(nrow + 1);
+    std::vector<int>    colf(nnz);
+    std::vector<double> valf(nnz);
     ptr.resize(nrow + 1);
     col.resize(nnz);
     val.resize(nnz);
-    std::vector<double> tmp(nnz);
 
-    err |= fread(ptr.data(), sizeof(int), nrow + 1, f);
-    err |= fread(col.data(), sizeof(int), nnz, f);
-    err |= fread(tmp.data(), sizeof(double), nnz, f);
+    err |= fread(ptrf.data(), sizeof(int), nrow + 1, f);
+    err |= fread(colf.data(), sizeof(int), nnz, f);
+    err |= fread(valf.data(), sizeof(double), nnz, f);
 
     fclose(f);
 
-    for(int i = 0; i < nnz; ++i)
+    for(J i = 0; i < nrow + 1; ++i)
     {
-        val[i] = make_DataType<T>(tmp[i]);
+        ptr[i] = (I)ptrf[i];
+    }
+
+    for(I i = 0; i < nnz; ++i)
+    {
+        col[i] = (J)colf[i];
+        val[i] = make_DataType<T>(valf[i]);
     }
 
     if(idx_base == HIPSPARSE_INDEX_BASE_ONE)
     {
-        for(int i = 0; i < nrow + 1; ++i)
+        for(J i = 0; i < nrow + 1; ++i)
         {
             ++ptr[i];
         }
 
-        for(int i = 0; i < nnz; ++i)
+        for(I i = 0; i < nnz; ++i)
         {
             ++col[i];
         }
@@ -995,6 +1039,93 @@ void host_dense2csx(int                  m,
     }
 }
 
+template <typename T>
+void host_prune_dense2csr(int                   m,
+                          int                   n,
+                          const std::vector<T>& A,
+                          int                   lda,
+                          hipsparseIndexBase_t  base,
+                          T                     threshold,
+                          int&                  nnz,
+                          std::vector<T>&       csr_val,
+                          std::vector<int>&     csr_row_ptr,
+                          std::vector<int>&     csr_col_ind)
+{
+    csr_row_ptr.resize(m + 1, 0);
+    csr_row_ptr[0] = base;
+
+#ifdef _OPENMP
+#pragma omp parallel for schedule(dynamic, 1024)
+#endif
+    for(int i = 0; i < m; i++)
+    {
+        for(int j = 0; j < n; j++)
+        {
+            if(testing_abs(A[lda * j + i]) > threshold)
+            {
+                csr_row_ptr[i + 1]++;
+            }
+        }
+    }
+
+    for(int i = 1; i <= m; i++)
+    {
+        csr_row_ptr[i] += csr_row_ptr[i - 1];
+    }
+
+    nnz = csr_row_ptr[m] - csr_row_ptr[0];
+
+    csr_col_ind.resize(nnz);
+    csr_val.resize(nnz);
+
+    int index = 0;
+    for(int i = 0; i < m; i++)
+    {
+        for(int j = 0; j < n; j++)
+        {
+            if(testing_abs(A[lda * j + i]) > threshold)
+            {
+                csr_val[index]     = A[lda * j + i];
+                csr_col_ind[index] = j + base;
+
+                index++;
+            }
+        }
+    }
+}
+
+template <typename T>
+void host_prune_dense2csr_by_percentage(int                   m,
+                                        int                   n,
+                                        const std::vector<T>& A,
+                                        int                   lda,
+                                        hipsparseIndexBase_t  base,
+                                        T                     percentage,
+                                        int&                  nnz,
+                                        std::vector<T>&       csr_val,
+                                        std::vector<int>&     csr_row_ptr,
+                                        std::vector<int>&     csr_col_ind)
+{
+    int nnz_A = m * n;
+    int pos   = std::ceil(nnz_A * (percentage / 100)) - 1;
+    pos       = std::min(pos, nnz_A - 1);
+    pos       = std::max(pos, 0);
+
+    std::vector<T> sorted_A(m * n);
+    for(int i = 0; i < n; i++)
+    {
+        for(int j = 0; j < m; j++)
+        {
+            sorted_A[m * i + j] = std::abs(A[lda * i + j]);
+        }
+    }
+
+    std::sort(sorted_A.begin(), sorted_A.end());
+
+    T threshold = sorted_A[pos];
+    host_prune_dense2csr<T>(m, n, A, lda, base, threshold, nnz, csr_val, csr_row_ptr, csr_col_ind);
+}
+
 template <hipsparseDirection_t DIRA, typename T>
 void host_csx2dense(int                  m,
                     int                  n,
@@ -1129,6 +1260,114 @@ inline void host_csr_to_csr_compress(int                     M,
             }
         }
     }
+}
+
+template <typename T>
+inline void host_prune_csr_to_csr(int                     M,
+                                  int                     N,
+                                  int                     nnz_A,
+                                  const std::vector<int>& csr_row_ptr_A,
+                                  const std::vector<int>& csr_col_ind_A,
+                                  const std::vector<T>&   csr_val_A,
+                                  int&                    nnz_C,
+                                  std::vector<int>&       csr_row_ptr_C,
+                                  std::vector<int>&       csr_col_ind_C,
+                                  std::vector<T>&         csr_val_C,
+                                  hipsparseIndexBase_t    csr_base_A,
+                                  hipsparseIndexBase_t    csr_base_C,
+                                  T                       threshold)
+{
+    csr_row_ptr_C.resize(M + 1, 0);
+    csr_row_ptr_C[0] = csr_base_C;
+
+#ifdef _OPENMP
+#pragma omp parallel for schedule(dynamic, 1024)
+#endif
+    for(int i = 0; i < M; i++)
+    {
+        for(int j = csr_row_ptr_A[i] - csr_base_A; j < csr_row_ptr_A[i + 1] - csr_base_A; j++)
+        {
+            if(testing_abs(csr_val_A[j]) > threshold
+               && testing_abs(csr_val_A[j]) > std::numeric_limits<float>::min())
+            {
+                csr_row_ptr_C[i + 1]++;
+            }
+        }
+    }
+
+    for(int i = 1; i <= M; i++)
+    {
+        csr_row_ptr_C[i] += csr_row_ptr_C[i - 1];
+    }
+
+    nnz_C = csr_row_ptr_C[M] - csr_row_ptr_C[0];
+
+    csr_col_ind_C.resize(nnz_C);
+    csr_val_C.resize(nnz_C);
+
+    int index = 0;
+    for(int i = 0; i < M; i++)
+    {
+        for(int j = csr_row_ptr_A[i] - csr_base_A; j < csr_row_ptr_A[i + 1] - csr_base_A; j++)
+        {
+            if(testing_abs(csr_val_A[j]) > threshold
+               && testing_abs(csr_val_A[j]) > std::numeric_limits<float>::min())
+            {
+                csr_col_ind_C[index] = (csr_col_ind_A[j] - csr_base_A) + csr_base_C;
+                csr_val_C[index]     = csr_val_A[j];
+
+                index++;
+            }
+        }
+    }
+}
+
+template <typename T>
+void host_prune_csr_to_csr_by_percentage(int                     M,
+                                         int                     N,
+                                         int                     nnz_A,
+                                         const std::vector<int>& csr_row_ptr_A,
+                                         const std::vector<int>& csr_col_ind_A,
+                                         const std::vector<T>&   csr_val_A,
+                                         int&                    nnz_C,
+                                         std::vector<int>&       csr_row_ptr_C,
+                                         std::vector<int>&       csr_col_ind_C,
+                                         std::vector<T>&         csr_val_C,
+                                         hipsparseIndexBase_t    csr_base_A,
+                                         hipsparseIndexBase_t    csr_base_C,
+                                         T                       percentage)
+{
+    int pos = std::ceil(nnz_A * (percentage / 100)) - 1;
+    pos     = std::min(pos, nnz_A - 1);
+    pos     = std::max(pos, 0);
+
+    std::vector<T> sorted_A(nnz_A);
+
+#ifdef _OPENMP
+#pragma omp parallel for schedule(dynamic, 1024)
+#endif
+    for(int i = 0; i < nnz_A; i++)
+    {
+        sorted_A[i] = testing_abs(csr_val_A[i]);
+    }
+
+    std::sort(sorted_A.begin(), sorted_A.end());
+
+    T threshold = sorted_A[pos];
+
+    host_prune_csr_to_csr<T>(M,
+                             N,
+                             nnz_A,
+                             csr_row_ptr_A,
+                             csr_col_ind_A,
+                             csr_val_A,
+                             nnz_C,
+                             csr_row_ptr_C,
+                             csr_col_ind_C,
+                             csr_val_C,
+                             csr_base_A,
+                             csr_base_C,
+                             threshold);
 }
 
 template <typename T>
@@ -1346,6 +1585,344 @@ inline void host_csr_to_bsr(hipsparseDirection_t    direction,
             bsr_val[index] = csr_val[j];
         }
     }
+}
+
+template <typename T>
+inline void host_gebsr_to_csr(hipsparseDirection_t    direction,
+                              int                     mb,
+                              int                     nb,
+                              int                     nnzb,
+                              const std::vector<T>&   bsr_val,
+                              const std::vector<int>& bsr_row_ptr,
+                              const std::vector<int>& bsr_col_ind,
+                              int                     row_block_dim,
+                              int                     col_block_dim,
+                              hipsparseIndexBase_t    bsr_base,
+                              std::vector<T>&         csr_val,
+                              std::vector<int>&       csr_row_ptr,
+                              std::vector<int>&       csr_col_ind,
+                              hipsparseIndexBase_t    csr_base)
+{
+
+    csr_col_ind.resize(nnzb * row_block_dim * col_block_dim);
+    csr_row_ptr.resize(mb * row_block_dim + 1);
+    csr_val.resize(nnzb * row_block_dim * col_block_dim);
+    int at         = 0;
+    csr_row_ptr[0] = csr_base;
+    for(int i = 0; i < mb; ++i)
+    {
+        for(int r = 0; r < row_block_dim; ++r)
+        {
+            int row = i * row_block_dim + r;
+            for(int k = bsr_row_ptr[i] - bsr_base; k < bsr_row_ptr[i + 1] - bsr_base; ++k)
+            {
+                int j = bsr_col_ind[k] - bsr_base;
+                for(int c = 0; c < col_block_dim; ++c)
+                {
+                    int col         = col_block_dim * j + c;
+                    csr_col_ind[at] = col + csr_base;
+                    if(direction == HIPSPARSE_DIRECTION_ROW)
+                    {
+                        csr_val[at]
+                            = bsr_val[k * row_block_dim * col_block_dim + col_block_dim * r + c];
+                    }
+                    else
+                    {
+                        csr_val[at]
+                            = bsr_val[k * row_block_dim * col_block_dim + row_block_dim * c + r];
+                    }
+                    ++at;
+                }
+            }
+
+            csr_row_ptr[row + 1]
+                = csr_row_ptr[row] + (bsr_row_ptr[i + 1] - bsr_row_ptr[i]) * col_block_dim;
+        }
+    }
+}
+
+template <typename T>
+inline void host_csr_to_gebsr(hipsparseDirection_t    direction,
+                              int                     m,
+                              int                     n,
+                              int                     row_block_dim,
+                              int                     col_block_dim,
+                              int&                    nnzb,
+                              hipsparseIndexBase_t    csr_base,
+                              const std::vector<int>& csr_row_ptr,
+                              const std::vector<int>& csr_col_ind,
+                              const std::vector<T>&   csr_val,
+                              hipsparseIndexBase_t    bsr_base,
+                              std::vector<int>&       bsr_row_ptr,
+                              std::vector<int>&       bsr_col_ind,
+                              std::vector<T>&         bsr_val)
+{
+    int mb  = (m + row_block_dim - 1) / row_block_dim;
+    int nnz = csr_col_ind.size();
+
+    bsr_row_ptr.resize(mb + 1, 0);
+
+    std::vector<int> temp(nnz);
+
+#ifdef _OPENMP
+#pragma omp parallel for schedule(dynamic, 1024)
+#endif
+    for(int i = 0; i < nnz; i++)
+    {
+        temp[i] = (csr_col_ind[i] - csr_base) / col_block_dim;
+    }
+
+#ifdef _OPENMP
+#pragma omp parallel for schedule(dynamic, 1024)
+#endif
+    for(int i = 0; i < mb; i++)
+    {
+        int frow = row_block_dim * i;
+        int lrow = row_block_dim * (i + 1);
+
+        if(lrow > m)
+        {
+            lrow = m;
+        }
+
+        int start = csr_row_ptr[frow] - csr_base;
+        int end   = csr_row_ptr[lrow] - csr_base;
+
+        std::sort(temp.begin() + start, temp.begin() + end);
+    }
+
+#ifdef _OPENMP
+#pragma omp parallel for schedule(dynamic, 1024)
+#endif
+    for(int i = 0; i < mb; i++)
+    {
+        int frow = row_block_dim * i;
+        int lrow = row_block_dim * (i + 1);
+
+        if(lrow > m)
+        {
+            lrow = m;
+        }
+
+        int start = csr_row_ptr[frow] - csr_base;
+        int end   = csr_row_ptr[lrow] - csr_base;
+
+        int col   = -1;
+        int count = 0;
+        for(int j = start; j < end; j++)
+        {
+            if(temp[j] > col)
+            {
+                col                 = temp[j];
+                temp[j]             = -1;
+                temp[start + count] = col;
+                count++;
+            }
+            else
+            {
+                temp[j] = -1;
+            }
+        }
+
+        bsr_row_ptr[i + 1] = count;
+    }
+
+    // fill GEBSR row pointer array
+    bsr_row_ptr[0] = bsr_base;
+    for(int i = 0; i < mb; i++)
+    {
+        bsr_row_ptr[i + 1] += bsr_row_ptr[i];
+    }
+
+    nnzb = bsr_row_ptr[mb] - bsr_row_ptr[0];
+    bsr_col_ind.resize(nnzb);
+    bsr_val.resize(nnzb * row_block_dim * col_block_dim, make_DataType<T>(0));
+
+    // fill GEBSR col indices array
+    int index = 0;
+    for(int i = 0; i < nnz; i++)
+    {
+        if(temp[i] != -1)
+        {
+            bsr_col_ind[index] = temp[i] + bsr_base;
+            index++;
+        }
+    }
+
+    // fill GEBSR values array
+#ifdef _OPENMP
+#pragma omp parallel for schedule(dynamic, 1024)
+#endif
+    for(int i = 0; i < m; i++)
+    {
+        int start = csr_row_ptr[i] - csr_base;
+        int end   = csr_row_ptr[i + 1] - csr_base;
+
+        int bstart = bsr_row_ptr[i / row_block_dim] - bsr_base;
+        int bend   = bsr_row_ptr[i / row_block_dim + 1] - bsr_base;
+
+        int local_row = i % row_block_dim;
+
+        for(int j = start; j < end; j++)
+        {
+            int col = csr_col_ind[j] - csr_base;
+
+            int local_col = col % col_block_dim;
+
+            int index = 0;
+            for(int k = bstart; k < bend; k++)
+            {
+                if(bsr_col_ind[k] - bsr_base == col / col_block_dim)
+                {
+                    index  = k;
+                    bstart = k;
+                    break;
+                }
+            }
+
+            if(direction == HIPSPARSE_DIRECTION_ROW)
+            {
+                bsr_val[row_block_dim * col_block_dim * index + col_block_dim * local_row
+                        + local_col]
+                    = csr_val[j];
+            }
+            else
+            {
+                bsr_val[row_block_dim * col_block_dim * index + row_block_dim * local_col
+                        + local_row]
+                    = csr_val[j];
+            }
+        }
+    }
+}
+
+template <typename T>
+inline void host_gebsr_to_gebsr(hipsparseDirection_t    direction,
+                                int                     mb,
+                                int                     nb,
+                                int                     nnzb,
+                                const std::vector<T>&   bsr_val_A,
+                                const std::vector<int>& bsr_row_ptr_A,
+                                const std::vector<int>& bsr_col_ind_A,
+                                int                     row_block_dim_A,
+                                int                     col_block_dim_A,
+                                hipsparseIndexBase_t    base_A,
+                                std::vector<T>&         bsr_val_C,
+                                std::vector<int>&       bsr_row_ptr_C,
+                                std::vector<int>&       bsr_col_ind_C,
+                                int                     row_block_dim_C,
+                                int                     col_block_dim_C,
+                                hipsparseIndexBase_t    base_C)
+{
+    int m = mb * row_block_dim_A;
+    int n = nb * col_block_dim_A;
+
+    int mb_C = (m + row_block_dim_C - 1) / row_block_dim_C;
+    int nb_C = (n + col_block_dim_C - 1) / col_block_dim_C;
+
+    // convert GEBSR to CSR format
+    std::vector<int> csr_row_ptr;
+    std::vector<int> csr_col_ind;
+    std::vector<T>   csr_val;
+
+    host_gebsr_to_csr(direction,
+                      mb,
+                      nb,
+                      nnzb,
+                      bsr_val_A,
+                      bsr_row_ptr_A,
+                      bsr_col_ind_A,
+                      row_block_dim_A,
+                      col_block_dim_A,
+                      base_A,
+                      csr_val,
+                      csr_row_ptr,
+                      csr_col_ind,
+                      HIPSPARSE_INDEX_BASE_ZERO);
+
+    int nnz = csr_row_ptr[m] - csr_row_ptr[0];
+
+    // convert CSR to GEBSR format
+    int nnzb_C;
+    host_csr_to_gebsr(direction,
+                      m,
+                      n,
+                      row_block_dim_C,
+                      col_block_dim_C,
+                      nnzb_C,
+                      HIPSPARSE_INDEX_BASE_ZERO,
+                      csr_row_ptr,
+                      csr_col_ind,
+                      csr_val,
+                      base_C,
+                      bsr_row_ptr_C,
+                      bsr_col_ind_C,
+                      bsr_val_C);
+}
+
+template <typename T>
+void host_gebsr_to_gebsc(int                     Mb,
+                         int                     Nb,
+                         int                     nnzb,
+                         const std::vector<int>& bsr_row_ptr,
+                         const std::vector<int>& bsr_col_ind,
+                         const std::vector<T>&   bsr_val,
+                         int                     row_block_dim,
+                         int                     col_block_dim,
+                         std::vector<int>&       bsc_row_ind,
+                         std::vector<int>&       bsc_col_ptr,
+                         std::vector<T>&         bsc_val,
+                         hipsparseAction_t       action,
+                         hipsparseIndexBase_t    base)
+{
+    bsc_row_ind.resize(nnzb);
+    bsc_col_ptr.resize(Nb + 1, 0);
+    bsc_val.resize(nnzb);
+
+    const int block_shift = row_block_dim * col_block_dim;
+
+    //
+    // Determine nnz per column
+    //
+    for(int i = 0; i < nnzb; ++i)
+    {
+        ++bsc_col_ptr[bsr_col_ind[i] + 1 - base];
+    }
+
+    // Scan
+    for(int i = 0; i < Nb; ++i)
+    {
+        bsc_col_ptr[i + 1] += bsc_col_ptr[i];
+    }
+
+    // Fill row indices and values
+    for(int i = 0; i < Mb; ++i)
+    {
+        const int row_begin = bsr_row_ptr[i] - base;
+        const int row_end   = bsr_row_ptr[i + 1] - base;
+
+        for(int j = row_begin; j < row_end; ++j)
+        {
+            const int col = bsr_col_ind[j] - base;
+            const int idx = bsc_col_ptr[col];
+
+            bsc_row_ind[idx] = i + base;
+            for(int k = 0; k < block_shift; ++k)
+            {
+                bsc_val[idx * block_shift + k] = bsr_val[j * block_shift + k];
+            }
+
+            ++bsc_col_ptr[col];
+        }
+    }
+
+    // Shift column pointer array
+    for(int i = Nb; i > 0; --i)
+    {
+        bsc_col_ptr[i] = bsc_col_ptr[i - 1] + base;
+    }
+
+    bsc_col_ptr[0] = base;
 }
 
 template <typename T>
@@ -1651,7 +2228,89 @@ inline void host_bsrmv(hipsparseDirection_t dir,
 }
 
 template <typename T>
-int csrilu0(int m, const int* ptr, const int* col, T* val, hipsparseIndexBase_t idx_base)
+inline void host_bsrmm(int                     Mb,
+                       int                     N,
+                       int                     Kb,
+                       int                     block_dim,
+                       hipsparseDirection_t    dir,
+                       hipsparseOperation_t    transA,
+                       hipsparseOperation_t    transB,
+                       T                       alpha,
+                       const std::vector<int>& bsr_row_ptr_A,
+                       const std::vector<int>& bsr_col_ind_A,
+                       const std::vector<T>&   bsr_val_A,
+                       const std::vector<T>&   B,
+                       int                     ldb,
+                       T                       beta,
+                       std::vector<T>&         C,
+                       int                     ldc,
+                       hipsparseIndexBase_t    base)
+{
+    if(transA != HIPSPARSE_OPERATION_NON_TRANSPOSE)
+    {
+        return;
+    }
+
+    if(transB != HIPSPARSE_OPERATION_NON_TRANSPOSE && transB != HIPSPARSE_OPERATION_TRANSPOSE)
+    {
+        return;
+    }
+
+    int M = Mb * block_dim;
+    int K = Kb * block_dim;
+
+#ifdef _OPENMP
+#pragma omp parallel for schedule(dynamic, 1024)
+#endif
+    for(int i = 0; i < M; i++)
+    {
+        int local_row = i % block_dim;
+
+        int row_begin = bsr_row_ptr_A[i / block_dim] - base;
+        int row_end   = bsr_row_ptr_A[i / block_dim + 1] - base;
+
+        for(int j = 0; j < N; j++)
+        {
+            int idx_C = i + j * ldc;
+
+            T sum = make_DataType<T>(0.0);
+
+            for(int s = row_begin; s < row_end; s++)
+            {
+                for(int t = 0; t < block_dim; t++)
+                {
+                    int idx_A = (dir == HIPSPARSE_DIRECTION_ROW)
+                                    ? block_dim * block_dim * s + block_dim * local_row + t
+                                    : block_dim * block_dim * s + block_dim * t + local_row;
+                    int idx_B = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE)
+                                    ? j * ldb + block_dim * (bsr_col_ind_A[s] - base) + t
+                                    : (block_dim * (bsr_col_ind_A[s] - base) + t) * ldb + j;
+
+                    sum = sum + alpha * bsr_val_A[idx_A] * B[idx_B];
+                }
+            }
+
+            if(beta == make_DataType<T>(0.0))
+            {
+                C[idx_C] = sum;
+            }
+            else
+            {
+                C[idx_C] = sum + beta * C[idx_C];
+            }
+        }
+    }
+}
+
+template <typename T>
+int csrilu0(int                  m,
+            const int*           ptr,
+            const int*           col,
+            T*                   val,
+            hipsparseIndexBase_t idx_base,
+            bool                 boost,
+            double               boost_tol,
+            T                    boost_val)
 {
     // pointer of upper part of each row
     std::vector<int> diag_offset(m);
@@ -1679,30 +2338,38 @@ int csrilu0(int m, const int* ptr, const int* col, T* val, hipsparseIndexBase_t 
             // if nnz entry is in lower matrix
             if(col[j] - idx_base < ai)
             {
-
                 int col_j  = col[j] - idx_base;
                 int diag_j = diag_offset[col_j];
 
-                if(val[diag_j] != make_DataType<T>(0.0))
-                {
-                    // multiplication factor
-                    val[j] = val[j] / val[diag_j];
+                T diag_val = val[diag_j];
 
-                    // loop over upper offset pointer and do linear combination for nnz entry
-                    for(int k = diag_j + 1; k < ptr[col_j + 1] - idx_base; ++k)
-                    {
-                        // if nnz at this position do linear combination
-                        if(nnz_entries[col[k] - idx_base] != 0)
-                        {
-                            int idx  = nnz_entries[col[k] - idx_base];
-                            val[idx] = testing_fma(testing_neg(val[j]), val[k], val[idx]);
-                        }
-                    }
+                if(boost)
+                {
+                    diag_val    = (boost_tol >= testing_abs(diag_val)) ? boost_val : diag_val;
+                    val[diag_j] = diag_val;
                 }
                 else
                 {
-                    // Numerical zero diagonal
-                    return col_j + idx_base;
+                    // Check for numeric pivot
+                    if(diag_val == make_DataType<T>(0.0))
+                    {
+                        // Numerical zero diagonal
+                        return col_j + idx_base;
+                    }
+                }
+
+                // multiplication factor
+                val[j] = val[j] / diag_val;
+
+                // loop over upper offset pointer and do linear combination for nnz entry
+                for(int k = diag_j + 1; k < ptr[col_j + 1] - idx_base; ++k)
+                {
+                    // if nnz at this position do linear combination
+                    if(nnz_entries[col[k] - idx_base] != 0)
+                    {
+                        int idx  = nnz_entries[col[k] - idx_base];
+                        val[idx] = testing_fma(testing_neg(val[j]), val[k], val[idx]);
+                    }
                 }
             }
             else if(col[j] - idx_base == ai)
@@ -1733,6 +2400,454 @@ int csrilu0(int m, const int* ptr, const int* col, T* val, hipsparseIndexBase_t 
     }
 
     return -1;
+}
+
+template <typename T>
+inline void host_bsrilu02(hipsparseDirection_t    dir,
+                          int                     mb,
+                          int                     bsr_dim,
+                          const std::vector<int>& bsr_row_ptr,
+                          const std::vector<int>& bsr_col_ind,
+                          std::vector<T>&         bsr_val,
+                          hipsparseIndexBase_t    base,
+                          int*                    struct_pivot,
+                          int*                    numeric_pivot,
+                          bool                    boost,
+                          double                  boost_tol,
+                          T                       boost_val)
+{
+    // Initialize pivots
+    *struct_pivot  = mb + 1;
+    *numeric_pivot = mb + 1;
+
+    // Temporary vector to hold diagonal offset to access diagonal BSR block
+    std::vector<int> diag_offset(mb);
+    std::vector<int> nnz_entries(mb, -1);
+
+    // First diagonal block is index 0
+    diag_offset[0] = 0;
+
+    // Loop over all BSR rows
+    for(int i = 0; i < mb; ++i)
+    {
+        // Flag whether we have a diagonal block or not
+        bool has_diag = false;
+
+        // BSR column entry and exit point
+        int row_begin = bsr_row_ptr[i] - base;
+        int row_end   = bsr_row_ptr[i + 1] - base;
+
+        int j;
+
+        // Set up entry points for linear combination
+        for(j = row_begin; j < row_end; ++j)
+        {
+            int col_j          = bsr_col_ind[j] - base;
+            nnz_entries[col_j] = j;
+        }
+
+        // Process lower diagonal BSR blocks (diagonal BSR block is excluded)
+        for(j = row_begin; j < row_end; ++j)
+        {
+            // Column index of current BSR block
+            int bsr_col = bsr_col_ind[j] - base;
+
+            // If this is a diagonal block, set diagonal flag to true and skip
+            // all upcoming blocks as we exceed the lower matrix part
+            if(bsr_col == i)
+            {
+                has_diag = true;
+                break;
+            }
+
+            // Skip all upper matrix blocks
+            if(bsr_col > i)
+            {
+                break;
+            }
+
+            // Process all lower matrix BSR blocks
+
+            // Obtain corresponding row entry and exit point that corresponds with the
+            // current BSR column. Actually, we skip all lower matrix column indices,
+            // therefore starting with the diagonal entry.
+            int diag_j    = diag_offset[bsr_col];
+            int row_end_j = bsr_row_ptr[bsr_col + 1] - base;
+
+            // Loop through all rows within the BSR block
+            for(int bi = 0; bi < bsr_dim; ++bi)
+            {
+                T diag = bsr_val[BSR_IND(diag_j, bi, bi, dir)];
+
+                // Process all rows within the BSR block
+                for(int bk = 0; bk < bsr_dim; ++bk)
+                {
+                    T val = bsr_val[BSR_IND(j, bk, bi, dir)];
+
+                    // Multiplication factor
+                    bsr_val[BSR_IND(j, bk, bi, dir)] = val = val / diag;
+
+                    // Loop through columns of bk-th row and do linear combination
+                    for(int bj = bi + 1; bj < bsr_dim; ++bj)
+                    {
+                        bsr_val[BSR_IND(j, bk, bj, dir)]
+                            = testing_fma(-val,
+                                          bsr_val[BSR_IND(diag_j, bi, bj, dir)],
+                                          bsr_val[BSR_IND(j, bk, bj, dir)]);
+                    }
+                }
+            }
+
+            // Loop over upper offset pointer and do linear combination for nnz entry
+            for(int k = diag_j + 1; k < row_end_j; ++k)
+            {
+                int bsr_col_k = bsr_col_ind[k] - base;
+
+                if(nnz_entries[bsr_col_k] != -1)
+                {
+                    int m = nnz_entries[bsr_col_k];
+
+                    // Loop through all rows within the BSR block
+                    for(int bi = 0; bi < bsr_dim; ++bi)
+                    {
+                        // Loop through columns of bi-th row and do linear combination
+                        for(int bj = 0; bj < bsr_dim; ++bj)
+                        {
+                            T sum = make_DataType<T>(0);
+
+                            for(int bk = 0; bk < bsr_dim; ++bk)
+                            {
+                                sum = testing_fma(bsr_val[BSR_IND(j, bi, bk, dir)],
+                                                  bsr_val[BSR_IND(k, bk, bj, dir)],
+                                                  sum);
+                            }
+
+                            bsr_val[BSR_IND(m, bi, bj, dir)]
+                                = bsr_val[BSR_IND(m, bi, bj, dir)] - sum;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Check for structural pivot
+        if(!has_diag)
+        {
+            *struct_pivot = std::min(*struct_pivot, i + base);
+            break;
+        }
+
+        // Process diagonal
+        if(bsr_col_ind[j] - base == i)
+        {
+            // Loop through all rows within the BSR block
+            for(int bi = 0; bi < bsr_dim; ++bi)
+            {
+                T diag = bsr_val[BSR_IND(j, bi, bi, dir)];
+
+                if(boost)
+                {
+                    diag = (boost_tol >= testing_abs(diag)) ? boost_val : diag;
+                    bsr_val[BSR_IND(j, bi, bi, dir)] = diag;
+                }
+                else
+                {
+                    // Check for numeric pivot
+                    if(diag == make_DataType<T>(0))
+                    {
+                        *numeric_pivot = std::min(*numeric_pivot, bsr_col_ind[j]);
+                        continue;
+                    }
+                }
+
+                // Process all rows within the BSR block after bi-th row
+                for(int bk = bi + 1; bk < bsr_dim; ++bk)
+                {
+                    T val = bsr_val[BSR_IND(j, bk, bi, dir)];
+
+                    // Multiplication factor
+                    bsr_val[BSR_IND(j, bk, bi, dir)] = val = val / diag;
+
+                    // Loop through remaining columns of bk-th row and do linear combination
+                    for(int bj = bi + 1; bj < bsr_dim; ++bj)
+                    {
+                        bsr_val[BSR_IND(j, bk, bj, dir)]
+                            = testing_fma(-val,
+                                          bsr_val[BSR_IND(j, bi, bj, dir)],
+                                          bsr_val[BSR_IND(j, bk, bj, dir)]);
+                    }
+                }
+            }
+        }
+
+        // Store diagonal BSR block entry point
+        int row_diag = diag_offset[i] = j;
+
+        // Process upper diagonal BSR blocks
+        for(j = row_diag + 1; j < row_end; ++j)
+        {
+            // Loop through all rows within the BSR block
+            for(int bi = 0; bi < bsr_dim; ++bi)
+            {
+                // Process all rows within the BSR block after bi-th row
+                for(int bk = bi + 1; bk < bsr_dim; ++bk)
+                {
+                    // Loop through columns of bk-th row and do linear combination
+                    for(int bj = 0; bj < bsr_dim; ++bj)
+                    {
+                        bsr_val[BSR_IND(j, bk, bj, dir)]
+                            = testing_fma(-bsr_val[BSR_IND(row_diag, bk, bi, dir)],
+                                          bsr_val[BSR_IND(j, bi, bj, dir)],
+                                          bsr_val[BSR_IND(j, bk, bj, dir)]);
+                    }
+                }
+            }
+        }
+
+        // Reset entry points
+        for(j = row_begin; j < row_end; ++j)
+        {
+            int col_j          = bsr_col_ind[j] - base;
+            nnz_entries[col_j] = -1;
+        }
+    }
+
+    *struct_pivot  = (*struct_pivot == mb + 1) ? -1 : *struct_pivot;
+    *numeric_pivot = (*numeric_pivot == mb + 1) ? -1 : *numeric_pivot;
+}
+
+template <typename T>
+inline void host_bsric02(hipsparseDirection_t    direction,
+                         int                     Mb,
+                         int                     block_dim,
+                         const std::vector<int>& bsr_row_ptr,
+                         const std::vector<int>& bsr_col_ind,
+                         std::vector<T>&         bsr_val,
+                         hipsparseIndexBase_t    base,
+                         int*                    struct_pivot,
+                         int*                    numeric_pivot)
+{
+    int M = Mb * block_dim;
+
+    // Initialize pivot
+    *struct_pivot  = -1;
+    *numeric_pivot = -1;
+
+    if(bsr_col_ind.size() == 0 && bsr_val.size() == 0)
+    {
+        return;
+    }
+
+    // pointer of upper part of each row
+    std::vector<int> diag_block_offset(Mb);
+    std::vector<int> diag_offset(M, -1);
+    std::vector<int> nnz_entries(M, -1);
+
+#ifdef _OPENMP
+#pragma omp parallel for schedule(dynamic, 1024)
+#endif
+    for(int i = 0; i < Mb; i++)
+    {
+        int row_begin = bsr_row_ptr[i] - base;
+        int row_end   = bsr_row_ptr[i + 1] - base;
+
+        for(int j = row_begin; j < row_end; j++)
+        {
+            if(bsr_col_ind[j] - base == i)
+            {
+                diag_block_offset[i] = j;
+                break;
+            }
+        }
+    }
+
+    for(int i = 0; i < M; i++)
+    {
+        int local_row = i % block_dim;
+
+        int row_begin = bsr_row_ptr[i / block_dim] - base;
+        int row_end   = bsr_row_ptr[i / block_dim + 1] - base;
+
+        for(int j = row_begin; j < row_end; j++)
+        {
+            int block_col_j = bsr_col_ind[j] - base;
+
+            for(int k = 0; k < block_dim; k++)
+            {
+                if(direction == HIPSPARSE_DIRECTION_ROW)
+                {
+                    nnz_entries[block_dim * block_col_j + k]
+                        = block_dim * block_dim * j + block_dim * local_row + k;
+                }
+                else
+                {
+                    nnz_entries[block_dim * block_col_j + k]
+                        = block_dim * block_dim * j + block_dim * k + local_row;
+                }
+            }
+        }
+
+        T   sum            = make_DataType<T>(0);
+        int diag_val_index = -1;
+
+        bool has_diag         = false;
+        bool break_outer_loop = false;
+
+        for(int j = row_begin; j < row_end; j++)
+        {
+            int block_col_j = bsr_col_ind[j] - base;
+
+            for(int k = 0; k < block_dim; k++)
+            {
+                int col_j = block_dim * block_col_j + k;
+
+                // Mark diagonal and skip row
+                if(col_j == i)
+                {
+                    diag_val_index = block_dim * block_dim * j + block_dim * k + k;
+
+                    has_diag         = true;
+                    break_outer_loop = true;
+                    break;
+                }
+
+                // Skip upper triangular
+                if(col_j > i)
+                {
+                    break_outer_loop = true;
+                    break;
+                }
+
+                T val_j = make_DataType<T>(0);
+                if(direction == HIPSPARSE_DIRECTION_ROW)
+                {
+                    val_j = bsr_val[block_dim * block_dim * j + block_dim * local_row + k];
+                }
+                else
+                {
+                    val_j = bsr_val[block_dim * block_dim * j + block_dim * k + local_row];
+                }
+
+                int local_row_j = col_j % block_dim;
+
+                int row_begin_j = bsr_row_ptr[col_j / block_dim] - base;
+                int row_end_j   = diag_block_offset[col_j / block_dim];
+                int row_diag_j  = diag_offset[col_j];
+
+                T local_sum = make_DataType<T>(0);
+                T inv_diag  = row_diag_j != -1 ? bsr_val[row_diag_j] : make_DataType<T>(0);
+
+                // Check for numeric zero
+                if(inv_diag == make_DataType<T>(0))
+                {
+                    // Numerical non-invertible block diagonal
+                    if(*numeric_pivot == -1)
+                    {
+                        *numeric_pivot = block_col_j + base;
+                    }
+
+                    *numeric_pivot = std::min(*numeric_pivot, block_col_j + base);
+
+                    inv_diag = make_DataType<T>(1);
+                }
+
+                inv_diag = make_DataType<T>(1) / inv_diag;
+
+                // loop over upper offset pointer and do linear combination for nnz entry
+                for(int l = row_begin_j; l < row_end_j + 1; l++)
+                {
+                    int block_col_l = bsr_col_ind[l] - base;
+
+                    for(int m = 0; m < block_dim; m++)
+                    {
+                        int idx = nnz_entries[block_dim * block_col_l + m];
+
+                        if(idx != -1 && block_dim * block_col_l + m < col_j)
+                        {
+                            if(direction == HIPSPARSE_DIRECTION_ROW)
+                            {
+                                local_sum = testing_fma(bsr_val[block_dim * block_dim * l
+                                                                + block_dim * local_row_j + m],
+                                                        testing_conj(bsr_val[idx]),
+                                                        local_sum);
+                            }
+                            else
+                            {
+                                local_sum = testing_fma(bsr_val[block_dim * block_dim * l
+                                                                + block_dim * m + local_row_j],
+                                                        testing_conj(bsr_val[idx]),
+                                                        local_sum);
+                            }
+                        }
+                    }
+                }
+
+                val_j = (val_j - local_sum) * inv_diag;
+                sum   = testing_fma(val_j, testing_conj(val_j), sum);
+
+                if(direction == HIPSPARSE_DIRECTION_ROW)
+                {
+                    bsr_val[block_dim * block_dim * j + block_dim * local_row + k] = val_j;
+                }
+                else
+                {
+                    bsr_val[block_dim * block_dim * j + block_dim * k + local_row] = val_j;
+                }
+            }
+
+            if(break_outer_loop)
+            {
+                break;
+            }
+        }
+
+        if(!has_diag)
+        {
+            // Structural missing block diagonal
+            if(*struct_pivot == -1)
+            {
+                *struct_pivot = i / block_dim + base;
+            }
+        }
+
+        // Process diagonal entry
+        if(has_diag)
+        {
+            T diag_entry = make_DataType<T>(std::sqrt(testing_abs(bsr_val[diag_val_index] - sum)));
+            bsr_val[diag_val_index] = diag_entry;
+
+            if(diag_entry == make_DataType<T>(0))
+            {
+                // Numerical non-invertible block diagonal
+                if(*numeric_pivot == -1)
+                {
+                    *numeric_pivot = i / block_dim + base;
+                }
+
+                *numeric_pivot = std::min(*numeric_pivot, i / block_dim + base);
+            }
+
+            // Store diagonal offset
+            diag_offset[i] = diag_val_index;
+        }
+
+        for(int j = row_begin; j < row_end; j++)
+        {
+            int block_col_j = bsr_col_ind[j] - base;
+
+            for(int k = 0; k < block_dim; k++)
+            {
+                if(direction == HIPSPARSE_DIRECTION_ROW)
+                {
+                    nnz_entries[block_dim * block_col_j + k] = -1;
+                }
+                else
+                {
+                    nnz_entries[block_dim * block_col_j + k] = -1;
+                }
+            }
+        }
+    }
 }
 
 template <typename T>
@@ -1814,12 +2929,12 @@ void csric0(int                  M,
                 if(nnz_entries[col_k] != 0)
                 {
                     int idx   = nnz_entries[col_k];
-                    local_sum = testing_fma(csr_val[k], csr_val[idx], local_sum);
+                    local_sum = testing_fma(csr_val[k], testing_conj(csr_val[idx]), local_sum);
                 }
             }
 
             val_j = (val_j - local_sum) * inv_diag;
-            sum   = testing_fma(val_j, val_j, sum);
+            sum   = testing_fma(val_j, testing_conj(val_j), sum);
 
             csr_val[j] = val_j;
         }
@@ -1940,8 +3055,8 @@ static inline void host_lssolve(int                     M,
                     // Lower triangular part
                     int idx = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? i * ldb + local_col
                                                                             : local_col * ldb + i;
-                    T neg_val = make_DataType<T>(-1.0) * local_val;
-                    temp[k]   = testing_fma(neg_val, B[idx], temp[k]);
+                    T   neg_val = make_DataType<T>(-1.0) * local_val;
+                    temp[k]     = testing_fma(neg_val, B[idx], temp[k]);
                 }
             }
 
@@ -2057,8 +3172,8 @@ static inline void host_ussolve(int                     M,
                     // Upper triangular part
                     int idx = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? i * ldb + local_col
                                                                             : local_col * ldb + i;
-                    T neg_val = make_DataType<T>(-1.0) * local_val;
-                    temp[k]   = testing_fma(neg_val, B[idx], temp[k]);
+                    T   neg_val = make_DataType<T>(-1.0) * local_val;
+                    temp[k]     = testing_fma(neg_val, B[idx], temp[k]);
                 }
             }
 
@@ -2279,8 +3394,8 @@ int bsr_lsolve(hipsparseDirection_t dir,
                 {
                     int local_col = bsr_col * bsr_dim + bj;
                     T   local_val = dir == HIPSPARSE_DIRECTION_ROW
-                                      ? bsr_val[bsr_dim * bsr_dim * j + bi * bsr_dim + bj]
-                                      : bsr_val[bsr_dim * bsr_dim * j + bi + bj * bsr_dim];
+                                        ? bsr_val[bsr_dim * bsr_dim * j + bi * bsr_dim + bj]
+                                        : bsr_val[bsr_dim * bsr_dim * j + bi + bj * bsr_dim];
 
                     // Ignore all entries that are above the diagonal
                     if(local_col > local_row)
@@ -2412,8 +3527,8 @@ int bsr_usolve(hipsparseDirection_t dir,
                 {
                     int local_col = bsr_col * bsr_dim + bj;
                     T   local_val = dir == HIPSPARSE_DIRECTION_ROW
-                                      ? bsr_val[bsr_dim * bsr_dim * j + bi * bsr_dim + bj]
-                                      : bsr_val[bsr_dim * bsr_dim * j + bi + bj * bsr_dim];
+                                        ? bsr_val[bsr_dim * bsr_dim * j + bi * bsr_dim + bj]
+                                        : bsr_val[bsr_dim * bsr_dim * j + bi + bj * bsr_dim];
 
                     // Ignore all entries that are below the diagonal
                     if(local_col < local_row)
@@ -2733,43 +3848,43 @@ int csr_usolve(hipsparseOperation_t trans,
 
 /* ============================================================================================ */
 /*! \brief  Transpose sparse matrix using CSR storage format. */
-template <typename T>
-void transpose_csr(int                  m,
-                   int                  n,
-                   int                  nnz,
-                   const int*           csr_row_ptr_A,
-                   const int*           csr_col_ind_A,
+template <typename I, typename J, typename T>
+void transpose_csr(J                    m,
+                   J                    n,
+                   I                    nnz,
+                   const I*             csr_row_ptr_A,
+                   const J*             csr_col_ind_A,
                    const T*             csr_val_A,
-                   int*                 csr_row_ptr_B,
-                   int*                 csr_col_ind_B,
+                   I*                   csr_row_ptr_B,
+                   J*                   csr_col_ind_B,
                    T*                   csr_val_B,
                    hipsparseIndexBase_t idx_base_A,
                    hipsparseIndexBase_t idx_base_B)
 {
-    memset(csr_row_ptr_B, 0, sizeof(int) * (n + 1));
+    memset(csr_row_ptr_B, 0, sizeof(I) * (n + 1));
 
     // Determine nnz per column
-    for(int i = 0; i < nnz; ++i)
+    for(I i = 0; i < nnz; ++i)
     {
         ++csr_row_ptr_B[csr_col_ind_A[i] + 1 - idx_base_A];
     }
 
     // Scan
-    for(int i = 0; i < n; ++i)
+    for(J i = 0; i < n; ++i)
     {
         csr_row_ptr_B[i + 1] += csr_row_ptr_B[i];
     }
 
     // Fill row indices and values
-    for(int i = 0; i < m; ++i)
+    for(J i = 0; i < m; ++i)
     {
-        int row_begin = csr_row_ptr_A[i] - idx_base_A;
-        int row_end   = csr_row_ptr_A[i + 1] - idx_base_A;
+        I row_begin = csr_row_ptr_A[i] - idx_base_A;
+        I row_end   = csr_row_ptr_A[i + 1] - idx_base_A;
 
-        for(int j = row_begin; j < row_end; ++j)
+        for(I j = row_begin; j < row_end; ++j)
         {
-            int col = csr_col_ind_A[j] - idx_base_A;
-            int idx = csr_row_ptr_B[col];
+            J col = csr_col_ind_A[j] - idx_base_A;
+            I idx = csr_row_ptr_B[col];
 
             csr_col_ind_B[idx] = i + idx_base_B;
             csr_val_B[idx]     = csr_val_A[j];
@@ -2779,7 +3894,7 @@ void transpose_csr(int                  m,
     }
 
     // Shift column pointer array
-    for(int i = n; i > 0; --i)
+    for(J i = n; i > 0; --i)
     {
         csr_row_ptr_B[i] = csr_row_ptr_B[i - 1] + idx_base_B;
     }
@@ -3067,29 +4182,29 @@ static void host_csrgeam(int                  M,
 
 /* ============================================================================================ */
 /*! \brief  Compute sparse matrix sparse matrix multiplication. */
-template <typename T>
-static int csrgemm2_nnz(int                  m,
-                        int                  n,
-                        int                  k,
-                        const T*             alpha,
-                        const int*           csr_row_ptr_A,
-                        const int*           csr_col_ind_A,
-                        const int*           csr_row_ptr_B,
-                        const int*           csr_col_ind_B,
-                        const T*             beta,
-                        const int*           csr_row_ptr_D,
-                        const int*           csr_col_ind_D,
-                        int*                 csr_row_ptr_C,
-                        hipsparseIndexBase_t idx_base_A,
-                        hipsparseIndexBase_t idx_base_B,
-                        hipsparseIndexBase_t idx_base_C,
-                        hipsparseIndexBase_t idx_base_D)
+template <typename I, typename J, typename T>
+static I csrgemm2_nnz(J                    m,
+                      J                    n,
+                      J                    k,
+                      const T*             alpha,
+                      const I*             csr_row_ptr_A,
+                      const J*             csr_col_ind_A,
+                      const I*             csr_row_ptr_B,
+                      const J*             csr_col_ind_B,
+                      const T*             beta,
+                      const I*             csr_row_ptr_D,
+                      const J*             csr_col_ind_D,
+                      I*                   csr_row_ptr_C,
+                      hipsparseIndexBase_t idx_base_A,
+                      hipsparseIndexBase_t idx_base_B,
+                      hipsparseIndexBase_t idx_base_C,
+                      hipsparseIndexBase_t idx_base_D)
 {
 #ifdef _OPENMP
 #pragma omp parallel
 #endif
     {
-        std::vector<int> nnz(n, -1);
+        std::vector<J> nnz(n, -1);
 
 #ifdef _OPENMP
         int nthreads = omp_get_num_threads();
@@ -3099,38 +4214,38 @@ static int csrgemm2_nnz(int                  m,
         int tid      = 0;
 #endif
 
-        int rows_per_thread = (m + nthreads - 1) / nthreads;
-        int chunk_begin     = rows_per_thread * tid;
-        int chunk_end       = std::min(chunk_begin + rows_per_thread, m);
+        J rows_per_thread = (m + nthreads - 1) / nthreads;
+        J chunk_begin     = rows_per_thread * tid;
+        J chunk_end       = std::min(chunk_begin + rows_per_thread, m);
 
         // Index base
         csr_row_ptr_C[0] = idx_base_C;
 
         // Loop over rows of A
-        for(int i = chunk_begin; i < chunk_end; ++i)
+        for(J i = chunk_begin; i < chunk_end; ++i)
         {
             // Initialize csr row pointer with previous row offset
             csr_row_ptr_C[i + 1] = 0;
 
             if(alpha)
             {
-                int row_begin_A = csr_row_ptr_A[i] - idx_base_A;
-                int row_end_A   = csr_row_ptr_A[i + 1] - idx_base_A;
+                I row_begin_A = csr_row_ptr_A[i] - idx_base_A;
+                I row_end_A   = csr_row_ptr_A[i + 1] - idx_base_A;
 
                 // Loop over columns of A
-                for(int j = row_begin_A; j < row_end_A; ++j)
+                for(I j = row_begin_A; j < row_end_A; ++j)
                 {
                     // Current column of A
-                    int col_A = csr_col_ind_A[j] - idx_base_A;
+                    J col_A = csr_col_ind_A[j] - idx_base_A;
 
-                    int row_begin_B = csr_row_ptr_B[col_A] - idx_base_B;
-                    int row_end_B   = csr_row_ptr_B[col_A + 1] - idx_base_B;
+                    I row_begin_B = csr_row_ptr_B[col_A] - idx_base_B;
+                    I row_end_B   = csr_row_ptr_B[col_A + 1] - idx_base_B;
 
                     // Loop over columns of B in row col_A
-                    for(int k = row_begin_B; k < row_end_B; ++k)
+                    for(I k = row_begin_B; k < row_end_B; ++k)
                     {
                         // Current column of B
-                        int col_B = csr_col_ind_B[k] - idx_base_B;
+                        J col_B = csr_col_ind_B[k] - idx_base_B;
 
                         // Check if a new nnz is generated
                         if(nnz[col_B] != i)
@@ -3145,13 +4260,13 @@ static int csrgemm2_nnz(int                  m,
             // Add nnz of D if beta != 0
             if(beta)
             {
-                int row_begin_D = csr_row_ptr_D[i] - idx_base_D;
-                int row_end_D   = csr_row_ptr_D[i + 1] - idx_base_D;
+                I row_begin_D = csr_row_ptr_D[i] - idx_base_D;
+                I row_end_D   = csr_row_ptr_D[i + 1] - idx_base_D;
 
                 // Loop over columns of D
-                for(int j = row_begin_D; j < row_end_D; ++j)
+                for(I j = row_begin_D; j < row_end_D; ++j)
                 {
-                    int col_D = csr_col_ind_D[j] - idx_base_D;
+                    J col_D = csr_col_ind_D[j] - idx_base_D;
 
                     // Check if a new nnz is generated
                     if(nnz[col_D] != i)
@@ -3165,7 +4280,7 @@ static int csrgemm2_nnz(int                  m,
     }
 
     // Scan to obtain row offsets
-    for(int i = 0; i < m; ++i)
+    for(J i = 0; i < m; ++i)
     {
         csr_row_ptr_C[i + 1] += csr_row_ptr_C[i];
     }
@@ -3173,23 +4288,23 @@ static int csrgemm2_nnz(int                  m,
     return csr_row_ptr_C[m] - idx_base_C;
 }
 
-template <typename T>
-static void csrgemm2(int                  m,
-                     int                  n,
-                     int                  k,
+template <typename I, typename J, typename T>
+static void csrgemm2(J                    m,
+                     J                    n,
+                     J                    k,
                      const T*             alpha,
-                     const int*           csr_row_ptr_A,
-                     const int*           csr_col_ind_A,
+                     const I*             csr_row_ptr_A,
+                     const J*             csr_col_ind_A,
                      const T*             csr_val_A,
-                     const int*           csr_row_ptr_B,
-                     const int*           csr_col_ind_B,
+                     const I*             csr_row_ptr_B,
+                     const J*             csr_col_ind_B,
                      const T*             csr_val_B,
                      const T*             beta,
-                     const int*           csr_row_ptr_D,
-                     const int*           csr_col_ind_D,
+                     const I*             csr_row_ptr_D,
+                     const J*             csr_col_ind_D,
                      const T*             csr_val_D,
-                     const int*           csr_row_ptr_C,
-                     int*                 csr_col_ind_C,
+                     const I*             csr_row_ptr_C,
+                     J*                   csr_col_ind_C,
                      T*                   csr_val_C,
                      hipsparseIndexBase_t idx_base_A,
                      hipsparseIndexBase_t idx_base_B,
@@ -3200,7 +4315,7 @@ static void csrgemm2(int                  m,
 #pragma omp parallel
 #endif
     {
-        std::vector<int> nnz(n, -1);
+        std::vector<I> nnz(n, -1);
 
 #ifdef _OPENMP
         int nthreads = omp_get_num_threads();
@@ -3210,37 +4325,37 @@ static void csrgemm2(int                  m,
         int tid      = 0;
 #endif
 
-        int rows_per_thread = (m + nthreads - 1) / nthreads;
-        int chunk_begin     = rows_per_thread * tid;
-        int chunk_end       = std::min(chunk_begin + rows_per_thread, m);
+        J rows_per_thread = (m + nthreads - 1) / nthreads;
+        J chunk_begin     = rows_per_thread * tid;
+        J chunk_end       = std::min(chunk_begin + rows_per_thread, m);
 
         // Loop over rows of A
-        for(int i = chunk_begin; i < chunk_end; ++i)
+        for(J i = chunk_begin; i < chunk_end; ++i)
         {
-            int row_begin_C = csr_row_ptr_C[i] - idx_base_C;
-            int row_end_C   = row_begin_C;
+            I row_begin_C = csr_row_ptr_C[i] - idx_base_C;
+            I row_end_C   = row_begin_C;
 
             if(alpha)
             {
-                int row_begin_A = csr_row_ptr_A[i] - idx_base_A;
-                int row_end_A   = csr_row_ptr_A[i + 1] - idx_base_A;
+                I row_begin_A = csr_row_ptr_A[i] - idx_base_A;
+                I row_end_A   = csr_row_ptr_A[i + 1] - idx_base_A;
 
                 // Loop over columns of A
-                for(int j = row_begin_A; j < row_end_A; ++j)
+                for(I j = row_begin_A; j < row_end_A; ++j)
                 {
                     // Current column of A
-                    int col_A = csr_col_ind_A[j] - idx_base_A;
+                    J col_A = csr_col_ind_A[j] - idx_base_A;
                     // Current value of A
                     T val_A = *alpha * csr_val_A[j];
 
-                    int row_begin_B = csr_row_ptr_B[col_A] - idx_base_B;
-                    int row_end_B   = csr_row_ptr_B[col_A + 1] - idx_base_B;
+                    I row_begin_B = csr_row_ptr_B[col_A] - idx_base_B;
+                    I row_end_B   = csr_row_ptr_B[col_A + 1] - idx_base_B;
 
                     // Loop over columns of B in row col_A
-                    for(int k = row_begin_B; k < row_end_B; ++k)
+                    for(I k = row_begin_B; k < row_end_B; ++k)
                     {
                         // Current column of B
-                        int col_B = csr_col_ind_B[k] - idx_base_B;
+                        J col_B = csr_col_ind_B[k] - idx_base_B;
                         // Current value of B
                         T val_B = csr_val_B[k];
 
@@ -3263,14 +4378,14 @@ static void csrgemm2(int                  m,
             // Add nnz of D if beta != 0
             if(beta)
             {
-                int row_begin_D = csr_row_ptr_D[i] - idx_base_D;
-                int row_end_D   = csr_row_ptr_D[i + 1] - idx_base_D;
+                I row_begin_D = csr_row_ptr_D[i] - idx_base_D;
+                I row_end_D   = csr_row_ptr_D[i + 1] - idx_base_D;
 
                 // Loop over columns of D
-                for(int j = row_begin_D; j < row_end_D; ++j)
+                for(I j = row_begin_D; j < row_end_D; ++j)
                 {
                     // Current column of D
-                    int col_D = csr_col_ind_D[j] - idx_base_D;
+                    J col_D = csr_col_ind_D[j] - idx_base_D;
                     // Current value of D
                     T val_D = *beta * csr_val_D[j];
 
@@ -3292,37 +4407,37 @@ static void csrgemm2(int                  m,
         }
     }
 
-    int nnz = csr_row_ptr_C[m] - idx_base_C;
+    I nnz_C = csr_row_ptr_C[m] - idx_base_C;
 
-    std::vector<int> col(nnz);
-    std::vector<T>   val(nnz);
+    std::vector<J> col(nnz_C);
+    std::vector<T> val(nnz_C);
 
-    memcpy(col.data(), csr_col_ind_C, sizeof(int) * nnz);
-    memcpy(val.data(), csr_val_C, sizeof(T) * nnz);
+    memcpy(col.data(), csr_col_ind_C, sizeof(J) * nnz_C);
+    memcpy(val.data(), csr_val_C, sizeof(T) * nnz_C);
 
 #ifdef _OPENMP
 #pragma omp parallel for
 #endif
-    for(int i = 0; i < m; ++i)
+    for(J i = 0; i < m; ++i)
     {
-        int row_begin = csr_row_ptr_C[i] - idx_base_C;
-        int row_end   = csr_row_ptr_C[i + 1] - idx_base_C;
-        int row_nnz   = row_end - row_begin;
+        I row_begin = csr_row_ptr_C[i] - idx_base_C;
+        I row_end   = csr_row_ptr_C[i + 1] - idx_base_C;
+        J row_nnz   = row_end - row_begin;
 
-        std::vector<int> perm(row_nnz);
-        for(int j = 0; j < row_nnz; ++j)
+        std::vector<J> perm(row_nnz);
+        for(J j = 0; j < row_nnz; ++j)
         {
             perm[j] = j;
         }
 
-        int* col_entry = &col[row_begin];
-        T*   val_entry = &val[row_begin];
+        J* col_entry = &col[row_begin];
+        T* val_entry = &val[row_begin];
 
-        std::sort(perm.begin(), perm.end(), [&](const int& a, const int& b) {
+        std::sort(perm.begin(), perm.end(), [&](const I& a, const I& b) {
             return col_entry[a] <= col_entry[b];
         });
 
-        for(int j = 0; j < row_nnz; ++j)
+        for(J j = 0; j < row_nnz; ++j)
         {
             csr_col_ind_C[row_begin + j] = col_entry[perm[j]];
             csr_val_C[row_begin + j]     = val_entry[perm[j]];
@@ -3369,20 +4484,26 @@ double get_time_us_sync(hipStream_t stream);
 class Arguments
 {
 public:
-    int M         = 128;
-    int N         = 128;
-    int K         = 128;
-    int nnz       = 32;
-    int block_dim = 1;
+    int M              = 128;
+    int N              = 128;
+    int K              = 128;
+    int nnz            = 32;
+    int block_dim      = 1;
+    int row_block_dimA = 1;
+    int row_block_dimB = 1;
+    int col_block_dimA = 1;
+    int col_block_dimB = 1;
 
     int lda;
     int ldb;
     int ldc;
 
-    double alpha  = 1.0;
-    double alphai = 0.0;
-    double beta   = 0.0;
-    double betai  = 0.0;
+    double alpha      = 1.0;
+    double alphai     = 0.0;
+    double beta       = 0.0;
+    double betai      = 0.0;
+    double threshold  = 0.0;
+    double percentage = 0.0;
 
     hipsparseOperation_t    transA    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
     hipsparseOperation_t    transB    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
@@ -3405,22 +4526,35 @@ public:
     int ell_width = 0;
     int temp      = 0;
 
+    int    numericboost;
+    double boosttol;
+    double boostval;
+    double boostvali;
+
     std::string filename = "";
 
     Arguments& operator=(const Arguments& rhs)
     {
-        this->M         = rhs.M;
-        this->N         = rhs.N;
-        this->K         = rhs.K;
-        this->nnz       = rhs.nnz;
-        this->block_dim = rhs.block_dim;
+        this->M              = rhs.M;
+        this->N              = rhs.N;
+        this->K              = rhs.K;
+        this->nnz            = rhs.nnz;
+        this->block_dim      = rhs.block_dim;
+        this->row_block_dimA = rhs.row_block_dimA;
+        this->row_block_dimB = rhs.row_block_dimB;
+        this->col_block_dimA = rhs.col_block_dimA;
+        this->col_block_dimB = rhs.col_block_dimB;
 
         this->lda = rhs.lda;
         this->ldb = rhs.ldb;
         this->ldc = rhs.ldc;
 
-        this->alpha = rhs.alpha;
-        this->beta  = rhs.beta;
+        this->alpha      = rhs.alpha;
+        this->alphai     = rhs.alphai;
+        this->beta       = rhs.beta;
+        this->betai      = rhs.betai;
+        this->threshold  = rhs.threshold;
+        this->percentage = rhs.percentage;
 
         this->transA    = rhs.transA;
         this->transB    = rhs.transB;
@@ -3442,6 +4576,11 @@ public:
         this->laplacian = rhs.laplacian;
         this->ell_width = rhs.ell_width;
         this->temp      = rhs.temp;
+
+        this->numericboost = rhs.numericboost;
+        this->boosttol     = rhs.boosttol;
+        this->boostval     = rhs.boostval;
+        this->boostvali    = rhs.boostvali;
 
         this->filename = rhs.filename;
 

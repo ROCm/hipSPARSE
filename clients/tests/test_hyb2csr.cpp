@@ -40,11 +40,6 @@ hipsparseIndexBase_t hyb2csr_idx_base_range[]
 
 std::string hyb2csr_bin[] = {"rma10.bin",
                              "mac_econ_fwd500.bin",
-                             "bibd_22_8.bin",
-                             "mc2depi.bin",
-                             "scircuit.bin",
-                             "ASIC_320k.bin",
-                             "bmwcra_1.bin",
                              "nos1.bin",
                              "nos2.bin",
                              "nos3.bin",
@@ -52,11 +47,7 @@ std::string hyb2csr_bin[] = {"rma10.bin",
                              "nos5.bin",
                              "nos6.bin",
                              "nos7.bin",
-                             "amazon0312.bin",
-                             "Chebyshev4.bin",
-                             "sme3Dc.bin",
-                             "webbase-1M.bin",
-                             "shipsec1.bin"};
+                             "sme3Dc.bin"};
 
 class parameterized_hyb2csr : public testing::TestWithParam<hyb2csr_tuple>
 {
@@ -115,6 +106,8 @@ Arguments setup_hyb2csr_arguments(hyb2csr_bin_tuple tup)
     return arg;
 }
 
+// Only run tests for CUDA 11.1 or greater
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(hyb2csr_bad_arg, hyb2csr)
 {
     testing_hyb2csr_bad_arg<float>();
@@ -167,6 +160,7 @@ TEST_P(parameterized_hyb2csr_bin, hyb2csr_bin_double)
     hipsparseStatus_t status = testing_hyb2csr<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+#endif
 
 INSTANTIATE_TEST_CASE_P(hyb2csr,
                         parameterized_hyb2csr,

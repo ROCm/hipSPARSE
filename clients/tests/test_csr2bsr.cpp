@@ -56,12 +56,7 @@ hipsparseIndexBase_t csr2bsr_bsr_base_range_bin[] = {HIPSPARSE_INDEX_BASE_ONE};
 hipsparseDirection_t csr2bsr_dir_range_bin[]
     = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COLUMN};
 
-std::string csr2bsr_bin[] = {"rma10.bin",
-                             "mac_econ_fwd500.bin",
-                             "mc2depi.bin",
-                             "scircuit.bin",
-                             "ASIC_320k.bin",
-                             "bmwcra_1.bin",
+std::string csr2bsr_bin[] = {"scircuit.bin",
                              "nos1.bin",
                              "nos2.bin",
                              "nos3.bin",
@@ -69,10 +64,7 @@ std::string csr2bsr_bin[] = {"rma10.bin",
                              "nos5.bin",
                              "nos6.bin",
                              "nos7.bin",
-                             "amazon0312.bin",
-                             "Chebyshev4.bin",
-                             "sme3Dc.bin",
-                             "shipsec1.bin"};
+                             "sme3Dc.bin"};
 
 class parameterized_csr2bsr : public testing::TestWithParam<csr2bsr_tuple>
 {
@@ -137,6 +129,8 @@ Arguments setup_csr2bsr_arguments(csr2bsr_bin_tuple tup)
     return arg;
 }
 
+// Only run tests for CUDA 11.1 or greater
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(csr2bsr_bad_arg, csr2bsr)
 {
     testing_csr2bsr_bad_arg<float>();
@@ -189,20 +183,21 @@ TEST_P(parameterized_csr2bsr_bin, csr2bsr_bin_double)
     hipsparseStatus_t status = testing_csr2bsr<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+#endif
 
 INSTANTIATE_TEST_CASE_P(csr2bsr,
                         parameterized_csr2bsr,
                         testing::Combine(testing::ValuesIn(csr2bsr_M_range),
                                          testing::ValuesIn(csr2bsr_N_range),
                                          testing::ValuesIn(csr2bsr_block_dim_range),
-                                         testing::ValuesIn(csr2bsr_bsr_base_range),
                                          testing::ValuesIn(csr2bsr_csr_base_range),
+                                         testing::ValuesIn(csr2bsr_bsr_base_range),
                                          testing::ValuesIn(csr2bsr_dir_range)));
 
 INSTANTIATE_TEST_CASE_P(csr2bsr_bin,
                         parameterized_csr2bsr_bin,
                         testing::Combine(testing::ValuesIn(csr2bsr_block_dim_range_bin),
-                                         testing::ValuesIn(csr2bsr_bsr_base_range_bin),
                                          testing::ValuesIn(csr2bsr_csr_base_range_bin),
+                                         testing::ValuesIn(csr2bsr_bsr_base_range_bin),
                                          testing::ValuesIn(csr2bsr_dir_range_bin),
                                          testing::ValuesIn(csr2bsr_bin)));

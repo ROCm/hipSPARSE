@@ -1,5 +1,5 @@
 # ########################################################################
-# Copyright (c) 2018-2020 Advanced Micro Devices, Inc.
+# Copyright (c) 2018-2021 Advanced Micro Devices, Inc.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -20,6 +20,8 @@
 # THE SOFTWARE.
 #
 # ########################################################################
+
+find_package(GTest REQUIRED)
 
 # Download some test matrices
 set(TEST_MATRICES
@@ -88,8 +90,8 @@ foreach(i RANGE 0 ${len1})
   if(NOT EXISTS "${CMAKE_MATRICES_DIR}/${mat}.bin")
     message("-- Downloading and extracting test matrix ${m}.tar.gz")
     file(DOWNLOAD https://sparse.tamu.edu/MM/${m}.tar.gz ${CMAKE_MATRICES_DIR}/${mat}.tar.gz
-         INACTIVITY_TIMEOUT 3
-         STATUS DL)
+        INACTIVITY_TIMEOUT 3
+        STATUS DL)
 
     list(GET DL 0 stat)
     list(GET DL 1 msg)
@@ -98,8 +100,8 @@ foreach(i RANGE 0 ${len1})
       message("-- Timeout has been reached, trying mirror ...")
       # Try again using ufl links
       file(DOWNLOAD https://www.cise.ufl.edu/research/sparse/MM/${m}.tar.gz ${CMAKE_MATRICES_DIR}/${mat}.tar.gz
-           INACTIVITY_TIMEOUT 3
-           STATUS DL)
+          INACTIVITY_TIMEOUT 3
+          STATUS DL)
 
       list(GET DL 0 stat)
       list(GET DL 1 msg)
@@ -128,51 +130,89 @@ foreach(i RANGE 0 ${len1})
   endif()
 endforeach()
 
-
-find_package(GTest REQUIRED)
-
 set(HIPSPARSE_TEST_SOURCES
   hipsparse_gtest_main.cpp
   test_axpyi.cpp
-  test_doti.cpp
-  test_dotci.cpp
   test_gthr.cpp
   test_gthrz.cpp
   test_roti.cpp
   test_sctr.cpp
   test_bsrmv.cpp
   test_bsrsv2.cpp
-  test_csrmv.cpp
   test_csrsv2.cpp
-  test_csrmm.cpp
+  test_bsrmm.cpp
   test_csrsm2.cpp
-  test_csrgeam.cpp
+  test_gemmi.cpp
+  test_gemvi.cpp
   test_csrgeam2.cpp
-  test_csrgemm.cpp
   test_csrgemm2_a.cpp
   test_csrgemm2_b.cpp
+  test_bsrilu02.cpp
   test_csrilu02.cpp
+  test_bsric02.cpp
   test_csric02.cpp
   test_nnz.cpp
   test_csr2dense.cpp
   test_csc2dense.cpp
   test_dense2csr.cpp
+  test_prune_dense2csr.cpp
+  test_prune_dense2csr_by_percentage.cpp
   test_dense2csc.cpp
   test_csr2coo.cpp
-  test_csr2csc.cpp
   test_csr2bsr.cpp
   test_bsr2csr.cpp
+  test_gebsr2csr.cpp
   test_csr2csr_compress.cpp
+  test_prune_csr2csr.cpp
+  test_prune_csr2csr_by_percentage.cpp
   test_coo2csr.cpp
   test_identity.cpp
   test_csrsort.cpp
   test_cscsort.cpp
   test_coosort.cpp
+  test_csru2csr.cpp
   test_csrilusv.cpp
+  test_gebsr2gebsr.cpp
+  test_csr2gebsr.cpp
+  test_gebsr2gebsc.cpp
+  test_spmat_descr.cpp
+  test_spvec_descr.cpp
+  test_dnvec_descr.cpp
+  test_spmv_coo.cpp
+  test_spmv_coo_aos.cpp
+  test_spmv_csr.cpp
+  test_axpby.cpp
+  test_gather.cpp
+  test_scatter.cpp
+  test_rot.cpp
+  test_spvv.cpp
+  test_dense_to_sparse_csr.cpp
+  test_dense_to_sparse_csc.cpp
+  test_dense_to_sparse_coo.cpp
+  test_sparse_to_dense_csr.cpp
+  test_sparse_to_dense_csc.cpp
+  test_sparse_to_dense_coo.cpp
+  test_spmm_csr.cpp
+  test_spmm_coo.cpp
+  test_spgemm_csr.cpp
+  test_gtsv2_nopivot.cpp
+  test_sddmm_csr.cpp
+  test_sddmm_csc.cpp
+  test_sddmm_coo.cpp
+  test_sddmm_coo_aos.cpp
+  test_gtsv.cpp
 )
+
 
 if(NOT BUILD_CUDA)
     list(APPEND HIPSPARSE_TEST_SOURCES
+        test_doti.cpp
+        test_dotci.cpp
+        test_csr2csc.cpp
+        test_csrgemm.cpp
+        test_csrgeam.cpp
+        test_csrmv.cpp
+        test_csrmm.cpp
         test_hybmv.cpp
         test_csr2hyb.cpp
         test_hyb2csr.cpp
@@ -188,50 +228,25 @@ set(HIPSPARSE_CLIENTS_COMMON
 
 add_executable(hipsparse-test ${HIPSPARSE_TEST_SOURCES} ${HIPSPARSE_CLIENTS_COMMON})
 
+# Set GOOGLE_TEST definition
 target_compile_definitions(hipsparse-test PRIVATE GOOGLE_TEST)
 
-if(OPENMP_FOUND)
-  target_compile_options(hipsparse-test PRIVATE ${OpenMP_CXX_FLAGS})
-endif()
+# Internal common header
+target_include_directories(hipsparse-test PRIVATE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>)
 
-target_include_directories(hipsparse-test
-  PRIVATE
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
-)
+# Target link libraries
+target_link_libraries(hipsparse-test PRIVATE GTest::GTest roc::hipsparse)
 
-target_include_directories(hipsparse-test
-  SYSTEM
-    PRIVATE
-      $<BUILD_INTERFACE:${GTEST_INCLUDE_DIRS}>
-      $<BUILD_INTERFACE:${HIP_INCLUDE_DIRS}>
-)
-
-if(NOT TARGET hipsparse)
-  target_link_libraries(hipsparse-test PRIVATE ${HIPSPARSE_LIBRARIES})
-else()
-  target_link_libraries(hipsparse-test PRIVATE roc::hipsparse)
-endif()
-
-set(THREADS_PREFER_PTHREAD_FLAG ON)
-find_package(Threads REQUIRED)
-target_link_libraries(hipsparse-test PRIVATE ${GTEST_BOTH_LIBRARIES} Threads::Threads)
-
-if(OPENMP_FOUND)
-  target_link_libraries(hipsparse-test PRIVATE ${OpenMP_CXX_FLAGS})
+# Add OpenMP if available
+if(OPENMP_FOUND AND THREADS_FOUND)
+  target_link_libraries(hipsparse-test PRIVATE OpenMP::OpenMP_CXX)
 endif()
 
 if(NOT BUILD_CUDA)
-  target_compile_definitions(hipsparse-test PRIVATE __HIP_PLATFORM_HCC__)
-  if ( LIBAMDHIP64_LIBRARY )
-    target_include_directories(hipsparse-test PRIVATE ${ROCM_PATH}/hip/include)
-    target_link_libraries( hipsparse-test PRIVATE hip::amdhip64 )
-  else ( )
-    target_include_directories(hipsparse-test PRIVATE ${ROCM_PATH}/hsa/include)
-    get_target_property( HIP_HCC_LOCATION hip::hip_hcc IMPORTED_LOCATION_RELEASE )
-    target_link_libraries( hipsparse-test PRIVATE ${HIP_HCC_LOCATION} )
-  endif( )
+  target_link_libraries(hipsparse-test PRIVATE hip::host)
 else()
   target_compile_definitions(hipsparse-test PRIVATE __HIP_PLATFORM_NVCC__)
+  target_include_directories(hipsparse-test PRIVATE ${HIP_INCLUDE_DIRS})
   target_link_libraries(hipsparse-test PRIVATE ${CUDA_LIBRARIES})
 endif()
 

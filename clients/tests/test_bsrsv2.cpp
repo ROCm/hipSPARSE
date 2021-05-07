@@ -42,7 +42,7 @@ typedef std::tuple<double, base, int, dir, op, diag, fill, std::string> bsrsv2_b
 int bsrsv2_M_range[]   = {-1, 0, 647};
 int bsrsv2_dim_range[] = {-1, 0, 1, 3, 9};
 
-double bsrsv2_alpha_range[] = {1.0, 2.3};
+double bsrsv2_alpha_range[] = {2.3};
 
 base bsrsv2_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 dir  bsrsv2_dir_range[]     = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COLUMN};
@@ -50,8 +50,7 @@ op   bsrsv2_op_range[]      = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPER
 diag bsrsv2_diag_range[]    = {HIPSPARSE_DIAG_TYPE_NON_UNIT};
 fill bsrsv2_fill_range[]    = {HIPSPARSE_FILL_MODE_LOWER, HIPSPARSE_FILL_MODE_UPPER};
 
-std::string bsrsv2_bin[]
-    = {"mc2depi.bin", "scircuit.bin", "nos2.bin", "nos4.bin", "nos5.bin", "nos6.bin"};
+std::string bsrsv2_bin[] = {"nos2.bin", "nos4.bin", "nos5.bin", "nos6.bin"};
 
 class parameterized_bsrsv2 : public testing::TestWithParam<bsrsv2_tuple>
 {
@@ -120,6 +119,8 @@ Arguments setup_bsrsv2_arguments(bsrsv2_bin_tuple tup)
     return arg;
 }
 
+// Only run tests for CUDA 11.1 or greater
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(bsrsv2_bad_arg, bsrsv2_float)
 {
     testing_bsrsv2_bad_arg<float>();
@@ -172,6 +173,7 @@ TEST_P(parameterized_bsrsv2_bin, bsrsv2_bin_double)
     hipsparseStatus_t status = testing_bsrsv2<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+#endif
 
 INSTANTIATE_TEST_CASE_P(bsrsv2,
                         parameterized_bsrsv2,

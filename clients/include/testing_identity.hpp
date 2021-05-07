@@ -38,10 +38,6 @@ using namespace hipsparse_test;
 
 void testing_identity_bad_arg(void)
 {
-#ifdef __HIP_PLATFORM_NVCC__
-    // do not test for bad args
-    return;
-#endif
     int               n         = 100;
     int               safe_size = 100;
     hipsparseStatus_t status;
@@ -59,21 +55,10 @@ void testing_identity_bad_arg(void)
         return;
     }
 
-    // Testing for (p == nullptr)
-    {
-        int* p_null = nullptr;
-
-        status = hipsparseCreateIdentityPermutation(handle, n, p_null);
-        verify_hipsparse_status_invalid_pointer(status, "Error: p is nullptr");
-    }
-
-    // Testing for(handle == nullptr)
-    {
-        hipsparseHandle_t handle_null = nullptr;
-
-        status = hipsparseCreateIdentityPermutation(handle_null, n, p);
-        verify_hipsparse_status_invalid_handle(status);
-    }
+#if(!defined(CUDART_VERSION))
+    verify_hipsparse_status_invalid_pointer(hipsparseCreateIdentityPermutation(handle, n, (int*)nullptr), "Error: p is nullptr");
+    verify_hipsparse_status_invalid_handle(hipsparseCreateIdentityPermutation(nullptr, n, p));
+#endif
 }
 
 hipsparseStatus_t testing_identity(Arguments argus)
@@ -88,10 +73,6 @@ hipsparseStatus_t testing_identity(Arguments argus)
     // Argument sanity check before allocating invalid memory
     if(n <= 0)
     {
-#ifdef __HIP_PLATFORM_NVCC__
-        // Do not test args in cusparse
-        return HIPSPARSE_STATUS_SUCCESS;
-#endif
         auto p_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
 
         int* p = (int*)p_managed.get();

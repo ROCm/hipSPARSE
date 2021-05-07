@@ -41,12 +41,8 @@ hipsparseIndexBase_t csr2csc_csr_base_range[]
     = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
 std::string csr2csc_bin[] = {"rma10.bin",
-                             "mac_econ_fwd500.bin",
-                             "bibd_22_8.bin",
                              "mc2depi.bin",
                              "scircuit.bin",
-                             "ASIC_320k.bin",
-                             "bmwcra_1.bin",
                              "nos1.bin",
                              "nos2.bin",
                              "nos3.bin",
@@ -54,9 +50,6 @@ std::string csr2csc_bin[] = {"rma10.bin",
                              "nos5.bin",
                              "nos6.bin",
                              "nos7.bin",
-                             "amazon0312.bin",
-                             "Chebyshev4.bin",
-                             "sme3Dc.bin",
                              "webbase-1M.bin",
                              "shipsec1.bin"};
 
@@ -119,6 +112,8 @@ Arguments setup_csr2csc_arguments(csr2csc_bin_tuple tup)
     return arg;
 }
 
+// Only run tests for CUDA 11.1 or greater
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(csr2csc_bad_arg, csr2csc)
 {
     testing_csr2csc_bad_arg<float>();
@@ -171,6 +166,7 @@ TEST_P(parameterized_csr2csc_bin, csr2csc_bin_double)
     hipsparseStatus_t status = testing_csr2csc<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+#endif
 
 INSTANTIATE_TEST_CASE_P(csr2csc,
                         parameterized_csr2csc,

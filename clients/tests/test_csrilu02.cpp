@@ -30,33 +30,29 @@
 #include <unistd.h>
 #include <vector>
 
-typedef hipsparseIndexBase_t          base;
-typedef std::tuple<int, base>         csrilu02_tuple;
-typedef std::tuple<base, std::string> csrilu02_bin_tuple;
+typedef hipsparseIndexBase_t                                       base;
+typedef std::tuple<int, int, double, double, double, base>         csrilu02_tuple;
+typedef std::tuple<int, double, double, double, base, std::string> csrilu02_bin_tuple;
 
-int csrilu02_M_range[] = {-1, 0, 50, 647};
+int    csrilu02_M_range[]          = {-1, 0, 50, 647};
+int    csrilu02_boost_range[]      = {0, 1};
+double csrilu02_boost_tol_range[]  = {0.5};
+double csrilu02_boost_val_range[]  = {0.3};
+double csrilu02_boost_vali_range[] = {0.2};
 
 base csrilu02_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
 std::string csrilu02_bin[] = {"mac_econ_fwd500.bin",
-                              "mc2depi.bin",
-                              "scircuit.bin",
-                              "ASIC_320k.bin",
 #ifdef __HIP_PLATFORM_HCC__
                               // exclude some matrices from cusparse check,
                               // they use weaker division producing more rounding errors
                               "rma10.bin",
-                              "bmwcra_1.bin",
                               "nos1.bin",
                               "nos2.bin",
 #endif
                               "nos3.bin",
-                              "nos4.bin",
                               "nos5.bin",
-                              "nos6.bin",
-                              "nos7.bin",
-                              "amazon0312.bin",
-                              "sme3Dc.bin"};
+                              "nos6.bin"};
 
 class parameterized_csrilu02 : public testing::TestWithParam<csrilu02_tuple>
 {
@@ -79,21 +75,29 @@ protected:
 Arguments setup_csrilu02_arguments(csrilu02_tuple tup)
 {
     Arguments arg;
-    arg.M        = std::get<0>(tup);
-    arg.idx_base = std::get<1>(tup);
-    arg.timing   = 0;
+    arg.M            = std::get<0>(tup);
+    arg.numericboost = std::get<1>(tup);
+    arg.boosttol     = std::get<2>(tup);
+    arg.boostval     = std::get<3>(tup);
+    arg.boostvali    = std::get<4>(tup);
+    arg.idx_base     = std::get<5>(tup);
+    arg.timing       = 0;
     return arg;
 }
 
 Arguments setup_csrilu02_arguments(csrilu02_bin_tuple tup)
 {
     Arguments arg;
-    arg.M        = -99;
-    arg.idx_base = std::get<0>(tup);
-    arg.timing   = 0;
+    arg.M            = -99;
+    arg.numericboost = std::get<0>(tup);
+    arg.boosttol     = std::get<1>(tup);
+    arg.boostval     = std::get<2>(tup);
+    arg.boostvali    = std::get<3>(tup);
+    arg.idx_base     = std::get<4>(tup);
+    arg.timing       = 0;
 
     // Determine absolute path of test matrix
-    std::string bin_file = std::get<1>(tup);
+    std::string bin_file = std::get<5>(tup);
 
     // Get current executables absolute path
     char    path_exe[PATH_MAX];
@@ -113,6 +117,8 @@ Arguments setup_csrilu02_arguments(csrilu02_bin_tuple tup)
     return arg;
 }
 
+// Only run tests for CUDA 11.1 or greater
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(csrilu02_bad_arg, csrilu02_float)
 {
     testing_csrilu02_bad_arg<float>();
@@ -165,13 +171,22 @@ TEST_P(parameterized_csrilu02_bin, csrilu02_bin_double)
     hipsparseStatus_t status = testing_csrilu02<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+#endif
 
 INSTANTIATE_TEST_CASE_P(csrilu02,
                         parameterized_csrilu02,
                         testing::Combine(testing::ValuesIn(csrilu02_M_range),
+                                         testing::ValuesIn(csrilu02_boost_range),
+                                         testing::ValuesIn(csrilu02_boost_tol_range),
+                                         testing::ValuesIn(csrilu02_boost_val_range),
+                                         testing::ValuesIn(csrilu02_boost_vali_range),
                                          testing::ValuesIn(csrilu02_idxbase_range)));
 
 INSTANTIATE_TEST_CASE_P(csrilu02_bin,
                         parameterized_csrilu02_bin,
-                        testing::Combine(testing::ValuesIn(csrilu02_idxbase_range),
+                        testing::Combine(testing::ValuesIn(csrilu02_boost_range),
+                                         testing::ValuesIn(csrilu02_boost_tol_range),
+                                         testing::ValuesIn(csrilu02_boost_val_range),
+                                         testing::ValuesIn(csrilu02_boost_vali_range),
+                                         testing::ValuesIn(csrilu02_idxbase_range),
                                          testing::ValuesIn(csrilu02_bin)));

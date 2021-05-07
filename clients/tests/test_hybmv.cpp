@@ -37,35 +37,18 @@ typedef std::tuple<double, double, hipsparseIndexBase_t, hipsparseHybPartition_t
 int hyb_M_range[] = {-1, 0, 10, 500, 7111, 10000};
 int hyb_N_range[] = {-3, 0, 33, 842, 4441, 10000};
 
-std::vector<double> hyb_alpha_range = {2.0, 3.0};
-std::vector<double> hyb_beta_range  = {0.0, 0.67, 1.0};
+std::vector<double> hyb_alpha_range = {3.0};
+std::vector<double> hyb_beta_range  = {0.67};
 
 hipsparseIndexBase_t hyb_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
 hipsparseHybPartition_t hyb_partition[]
     = {HIPSPARSE_HYB_PARTITION_AUTO, HIPSPARSE_HYB_PARTITION_MAX, HIPSPARSE_HYB_PARTITION_USER};
 
-int hyb_ELL_range[] = {0, 1, 2};
+int hyb_ELL_range[] = {0, 2};
 
-std::string hyb_bin[] = {"rma10.bin",
-                         "mac_econ_fwd500.bin",
-                         "bibd_22_8.bin",
-                         "mc2depi.bin",
-                         "scircuit.bin",
-                         "ASIC_320k.bin",
-                         "bmwcra_1.bin",
-                         "nos1.bin",
-                         "nos2.bin",
-                         "nos3.bin",
-                         "nos4.bin",
-                         "nos5.bin",
-                         "nos6.bin",
-                         "nos7.bin",
-                         "amazon0312.bin",
-                         "Chebyshev4.bin",
-                         "sme3Dc.bin",
-                         "webbase-1M.bin",
-                         "shipsec1.bin"};
+std::string hyb_bin[]
+    = {"nos1.bin", "nos2.bin", "nos3.bin", "nos4.bin", "nos5.bin", "nos6.bin", "nos7.bin"};
 
 class parameterized_hybmv : public testing::TestWithParam<hybmv_tuple>
 {
@@ -132,6 +115,8 @@ Arguments setup_hybmv_arguments(hybmv_bin_tuple tup)
     return arg;
 }
 
+// Only run tests for CUDA 11.1 or greater
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(hybmv_bad_arg, hybmv_float)
 {
     testing_hybmv_bad_arg<float>();
@@ -184,6 +169,7 @@ TEST_P(parameterized_hybmv_bin, hybmv_bin_double)
     hipsparseStatus_t status = testing_hybmv<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+#endif
 
 INSTANTIATE_TEST_CASE_P(hybmv,
                         parameterized_hybmv,

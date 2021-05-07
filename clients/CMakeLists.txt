@@ -49,10 +49,10 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 if(NOT TARGET hipsparse)
   find_package(hipsparse REQUIRED CONFIG PATHS /opt/rocm/hipsparse)
-endif()
 
-# Hip headers required of all clients; clients use hip to allocate device memory
-find_package(HIP REQUIRED)
+  option(BUILD_CLIENTS_TESTS "Build tests (requires googletest)" OFF)
+  option(BUILD_CLIENTS_SAMPLES "Build examples" ON)
+endif()
 
 # Build flags
 set(CMAKE_CXX_STANDARD 11)
@@ -61,6 +61,16 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 # If OpenMP is available, we can use it to speed up some tests
 find_package(OpenMP QUIET)
+find_package(Threads QUIET)
+
+if(OPENMP_FOUND AND THREADS_FOUND)
+  if(NOT TARGET OpenMP::OpenMP_CXX)
+    # OpenMP cmake fix for cmake <= 3.9
+    add_library(OpenMP::OpenMP_CXX IMPORTED INTERFACE)
+    set_property(TARGET OpenMP::OpenMP_CXX PROPERTY INTERFACE_COMPILE_OPTIONS ${OpenMP_CXX_FLAGS})
+    set_property(TARGET OpenMP::OpenMP_CXX PROPERTY INTERFACE_LINK_LIBRARIES ${OpenMP_CXX_FLAGS} Threads::Threads)
+  endif()
+endif()
 
 if(BUILD_CLIENTS_SAMPLES)
   add_subdirectory(samples)

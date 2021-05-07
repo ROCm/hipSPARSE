@@ -108,16 +108,6 @@ void testing_dotci_bad_arg(void)
     }
 }
 
-static inline hipComplex testing_conj(hipComplex x)
-{
-    return make_DataType<hipComplex>(x.x, -x.y);
-}
-
-static inline hipDoubleComplex testing_conj(hipDoubleComplex x)
-{
-    return make_DataType<hipDoubleComplex>(x.x, -x.y);
-}
-
 template <typename T>
 hipsparseStatus_t testing_dotci(Arguments argus)
 {

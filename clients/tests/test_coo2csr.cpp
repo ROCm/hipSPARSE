@@ -115,6 +115,8 @@ Arguments setup_coo2csr_arguments(coo2csr_bin_tuple tup)
     return arg;
 }
 
+// Only run tests for CUDA 11.1 or greater
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(coo2csr_bad_arg, coo2csr)
 {
     testing_coo2csr_bad_arg();
@@ -135,6 +137,7 @@ TEST_P(parameterized_coo2csr_bin, coo2csr_bin)
     hipsparseStatus_t status = testing_coo2csr(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+#endif
 
 INSTANTIATE_TEST_CASE_P(coo2csr,
                         parameterized_coo2csr,

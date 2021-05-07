@@ -44,9 +44,9 @@ supported_distro( )
 # This function is helpful for dockerfiles that do not have sudo installed, but the default user is root
 check_exit_code( )
 {
-  if (( $? != 0 )); then
-    exit $?
-  fi
+    if (( $1 != 0 )); then
+	exit $1
+    fi
 }
 
 # This function is helpful for dockerfiles that do not have sudo installed, but the default user is root
@@ -56,10 +56,10 @@ elevate_if_not_root( )
 
   if (( ${uid} )); then
     sudo $@
-    check_exit_code
+    check_exit_code "$?"
   else
     $@
-    check_exit_code
+    check_exit_code "$?"
   fi
 }
 
@@ -134,12 +134,11 @@ install_packages( )
   local library_dependencies_fedora=( "make" "cmake" "gcc-c++" "libcxx-devel" "rpm-build" "numactl-libs" )
   local library_dependencies_sles=( "make" "cmake" "gcc-c++" "libcxxtools9" "rpm-build" "pkg-config" "dpkg" )
 
-  local client_dependencies_ubuntu=( "libboost-program-options-dev" )
-  local client_dependencies_centos_6=( "gcc-gfortran" "boost-devel" )
-  local client_dependencies_centos_7=( "devtoolset-7-gcc-gfortran" "boost-devel" )
-  local client_dependencies_centos_8=( "gcc-gfortran" "boost-devel" )
-  local client_dependencies_fedora=( "gcc-gfortran" "boost-devel" )
-  local client_dependencies_sles=( "gcc-fortran" "libboost_program_options1_66_0-devel" )
+  local client_dependencies_centos_6=( "gcc-gfortran" )
+  local client_dependencies_centos_7=( "devtoolset-7-gcc-gfortran" )
+  local client_dependencies_centos_8=( "gcc-gfortran" )
+  local client_dependencies_fedora=( "gcc-gfortran" )
+  local client_dependencies_sles=( "gcc-fortran" )
 
   if [[ ( "${ID}" == "centos" ) || ( "${ID}" == "rhel" ) ]]; then
     if [[ "${VERSION_ID}" == "6" ]]; then
@@ -154,10 +153,6 @@ install_packages( )
     ubuntu)
       elevate_if_not_root apt update
       install_apt_packages "${library_dependencies_ubuntu[@]}"
-
-      if [[ "${build_clients}" == true ]]; then
-        install_apt_packages "${client_dependencies_ubuntu[@]}"
-      fi
       ;;
 
     centos|rhel)
@@ -372,6 +367,8 @@ pushd .
   cmake_common_options=""
   cmake_client_options=""
 
+  cmake_build_static_options=""
+
   # build type
   if [[ "${build_release}" == true ]]; then
     mkdir -p ${build_dir}/release/clients && cd ${build_dir}/release
@@ -384,6 +381,7 @@ pushd .
   # library type
   if [[ "${build_static}" == true ]]; then
     cmake_common_options="${cmake_common_options} -DBUILD_SHARED_LIBS=OFF"
+    cmake_build_static_options=" -no-pie"
   fi
 
   # clients
@@ -412,17 +410,17 @@ pushd .
       -DCMAKE_SHARED_LINKER_FLAGS="${rocm_rpath}" \
       -DCMAKE_PREFIX_PATH="${rocm_path} ${rocm_path}/hcc ${rocm_path}/hip" \
       -DCMAKE_MODULE_PATH="${rocm_path}/hip/cmake" \
-      -DCMAKE_EXE_LINKER_FLAGS=" -Wl,--enable-new-dtags -Wl,--rpath,${rocm_path}/lib:${rocm_path}/lib64" \
+      -DCMAKE_EXE_LINKER_FLAGS=" -Wl,--enable-new-dtags -Wl,--rpath,${rocm_path}/lib:${rocm_path}/lib64 ${cmake_build_static_options}" \
       -DROCM_DISABLE_LDCONFIG=ON \
       -DROCM_PATH="${rocm_path}" ../..
   else
-    ${cmake_executable} ${cmake_common_options} ${cmake_client_options} -DCMAKE_INSTALL_PREFIX=hipsparse-install -DROCM_PATH=${rocm_path} ../..
+    ${cmake_executable} -DCMAKE_EXE_LINKER_FLAGS=" ${cmake_build_static_options}" ${cmake_common_options} ${cmake_client_options} -DCMAKE_INSTALL_PREFIX=hipsparse-install -DROCM_PATH=${rocm_path} ../..
   fi
 
-  check_exit_code
+  check_exit_code "$?"
 
   make -j$(nproc) install
-  check_exit_code
+  check_exit_code "$?"
 
   # #################################################
   # install
@@ -430,11 +428,11 @@ pushd .
   # installing through package manager, which makes uninstalling easy
   if [[ "${install_package}" == true ]]; then
     make package
-    check_exit_code
+    check_exit_code "$?"
 
     case "${ID}" in
       ubuntu)
-        elevate_if_not_root dpkg -i hipsparse-*.deb
+        elevate_if_not_root dpkg -i hipsparse[-\_]*.deb
       ;;
       centos|rhel)
         elevate_if_not_root yum -y localinstall hipsparse-*.rpm

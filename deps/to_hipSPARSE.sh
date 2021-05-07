@@ -154,6 +154,9 @@ sed -i 's/rocsparse_dhybmv/hipsparseDhybmv/g' $1
 sed -i 's/rocsparse_hybmv/hipsparseXhybmv/g' $1
 
 # Level 3
+sed -i 's/rocsparse_sbsrmm/hipsparseSbsrmm/g' $1
+sed -i 's/rocsparse_dbsrmm/hipsparseDbsrmm/g' $1
+sed -i 's/rocsparse_bsrmm/hipsparseXbsrmm/g' $1
 sed -i 's/rocsparse_scsrmm/hipsparseScsrmm2/g' $1
 sed -i 's/rocsparse_dcsrmm/hipsparseDcsrmm2/g' $1
 sed -i 's/rocsparse_csrmm/hipsparseXcsrmm2/g' $1

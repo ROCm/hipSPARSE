@@ -37,29 +37,19 @@ typedef std::tuple<double, double, base, std::string> csrmv_bin_tuple;
 int csr_M_range[] = {-1, 0, 500, 7111};
 int csr_N_range[] = {-3, 0, 842, 4441};
 
-std::vector<double> csr_alpha_range = {2.0, 3.0};
-std::vector<double> csr_beta_range  = {0.0, 1.0};
+std::vector<double> csr_alpha_range = {3.0};
+std::vector<double> csr_beta_range  = {1.0};
 
 base csr_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
-std::string csr_bin[] = {"rma10.bin",
-                         "mac_econ_fwd500.bin",
-                         "bibd_22_8.bin",
-                         "mc2depi.bin",
-                         "scircuit.bin",
-                         "ASIC_320k.bin",
-                         "bmwcra_1.bin",
-                         "nos1.bin",
+std::string csr_bin[] = {"nos1.bin",
                          "nos2.bin",
                          "nos3.bin",
                          "nos4.bin",
                          "nos5.bin",
                          "nos6.bin",
                          "nos7.bin",
-                         "amazon0312.bin",
                          "Chebyshev4.bin",
-                         "sme3Dc.bin",
-                         "webbase-1M.bin",
                          "shipsec1.bin"};
 
 class parameterized_csrmv : public testing::TestWithParam<csrmv_tuple>
@@ -123,6 +113,8 @@ Arguments setup_csrmv_arguments(csrmv_bin_tuple tup)
     return arg;
 }
 
+// Only run tests for CUDA 11.1 or greater
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(csrmv_bad_arg, csrmv_float)
 {
     testing_csrmv_bad_arg<float>();
@@ -175,6 +167,7 @@ TEST_P(parameterized_csrmv_bin, csrmv_bin_double)
     hipsparseStatus_t status = testing_csrmv<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+#endif
 
 INSTANTIATE_TEST_CASE_P(csrmv,
                         parameterized_csrmv,

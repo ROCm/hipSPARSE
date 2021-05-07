@@ -49,20 +49,7 @@ op   csrsm2_opB_range[]     = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPER
 diag csrsm2_diag_range[]    = {HIPSPARSE_DIAG_TYPE_NON_UNIT};
 fill csrsm2_fill_range[]    = {HIPSPARSE_FILL_MODE_LOWER, HIPSPARSE_FILL_MODE_UPPER};
 
-std::string csrsm2_bin[] = {"rma10.bin",
-                            "mac_econ_fwd500.bin",
-                            "mc2depi.bin",
-                            "scircuit.bin",
-                            "ASIC_320k.bin",
-                            "bmwcra_1.bin",
-                            "nos1.bin",
-                            "nos2.bin",
-                            "nos3.bin",
-                            "nos4.bin",
-                            "nos5.bin",
-                            "nos6.bin",
-                            "amazon0312.bin",
-                            "sme3Dc.bin"};
+std::string csrsm2_bin[] = {"nos1.bin", "nos2.bin", "nos3.bin", "nos4.bin", "nos5.bin", "nos6.bin"};
 
 class parameterized_csrsm2 : public testing::TestWithParam<csrsm2_tuple>
 {
@@ -131,6 +118,7 @@ Arguments setup_csrsm2_arguments(csrsm2_bin_tuple tup)
     return arg;
 }
 
+#if(!defined(CUDART_VERSION))
 TEST(csrsm2_bad_arg, csrsm2_float)
 {
     testing_csrsm2_bad_arg<float>();
@@ -183,6 +171,7 @@ TEST_P(parameterized_csrsm2_bin, csrsm2_bin_double)
     hipsparseStatus_t status = testing_csrsm2<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+#endif
 
 INSTANTIATE_TEST_CASE_P(csrsm2,
                         parameterized_csrsm2,

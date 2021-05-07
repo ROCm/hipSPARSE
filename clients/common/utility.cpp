@@ -58,7 +58,7 @@ int query_device_property()
     hipsparseStatus_t status = (hipsparseStatus_t)hipGetDeviceCount(&device_count);
     if(status != HIPSPARSE_STATUS_SUCCESS)
     {
-        printf("Query device error: cannot get device count\n");
+        printf("Query device error: cannot get device count.\n");
         return -1;
     }
     else

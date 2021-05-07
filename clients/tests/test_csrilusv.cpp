@@ -36,9 +36,7 @@ typedef std::tuple<base, std::string> csrilusv_bin_tuple;
 
 base csrilusv_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
-std::string csrilusv_bin[] = {"mac_econ_fwd500.bin",
-                              "mc2depi.bin",
-                              "scircuit.bin",
+std::string csrilusv_bin[] = {"scircuit.bin",
 #if defined(__HIP_PLATFORM_HCC__)
                               //                              "bmwcra_1.bin",
                               "nos1.bin",
@@ -84,6 +82,8 @@ Arguments setup_csrilusv_arguments(csrilusv_bin_tuple tup)
     return arg;
 }
 
+// Only run tests for CUDA 11.1 or greater
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST_P(parameterized_csrilusv_bin, csrilusv_bin_float)
 {
     Arguments arg = setup_csrilusv_arguments(GetParam());
@@ -99,6 +99,7 @@ TEST_P(parameterized_csrilusv_bin, csrilusv_bin_double)
     hipsparseStatus_t status = testing_csrilusv<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+#endif
 
 INSTANTIATE_TEST_CASE_P(csrilusv_bin,
                         parameterized_csrilusv_bin,

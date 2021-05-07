@@ -60,6 +60,8 @@ Arguments setup_roti_arguments(roti_tuple tup)
     return arg;
 }
 
+// Only run tests for CUDA 11.1 or greater
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(roti_bad_arg, roti_float)
 {
     testing_roti_bad_arg<float>();
@@ -80,6 +82,7 @@ TEST_P(parameterized_roti, roti_double)
     hipsparseStatus_t status = testing_roti<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+#endif
 
 INSTANTIATE_TEST_CASE_P(roti,
                         parameterized_roti,
