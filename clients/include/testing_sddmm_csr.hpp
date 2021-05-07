@@ -359,7 +359,7 @@ hipsparseStatus_t testing_sddmm_csr()
             J        j   = hcsr_col_ind[at] - idx_base;
             const T* x   = &hA[i];
             const T* y   = &hB[ldb * j];
-            T        sum = static_cast<T>(0);
+            T        sum = make_DataType<T>(0.0);
             for(J k_ = 0; k_ < k; ++k_)
             {
                 sum = testing_fma(x[incx * k_], y[incy * k_], sum);
