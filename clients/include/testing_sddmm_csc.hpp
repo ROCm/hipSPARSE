@@ -199,7 +199,8 @@ void testing_sddmm_csc_bad_arg(void)
 template <typename I, typename J, typename T>
 hipsparseStatus_t testing_sddmm_csc()
 {
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11020)
+// only csr format supported when using cusparse backend
+#if(!defined(CUDART_VERSION))
 
     T                    h_alpha  = make_DataType<T>(2.0);
     T                    h_beta   = make_DataType<T>(1.0);
