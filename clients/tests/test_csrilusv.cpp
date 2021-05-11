@@ -41,11 +41,7 @@ std::string csrilusv_bin[] = {"scircuit.bin",
                               //                              "bmwcra_1.bin",
                               "nos1.bin",
 #endif
-                              "nos3.bin",
-                              "nos4.bin",
-                              "nos5.bin",
                               "nos6.bin",
-                              "nos7.bin",
                               "amazon0312.bin"};
 
 class parameterized_csrilusv_bin : public testing::TestWithParam<csrilusv_bin_tuple>
