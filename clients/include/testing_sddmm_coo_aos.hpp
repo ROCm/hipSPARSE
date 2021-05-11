@@ -195,7 +195,8 @@ void testing_sddmm_coo_aos_bad_arg(void)
 template <typename I, typename T>
 hipsparseStatus_t testing_sddmm_coo_aos()
 {
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11020)
+// only csr format supported when using cusparse backend
+#if(!defined(CUDART_VERSION))
 
     T                    h_alpha  = make_DataType<T>(2.0);
     T                    h_beta   = make_DataType<T>(1.0);
