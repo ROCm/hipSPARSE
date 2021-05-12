@@ -201,6 +201,7 @@ set(HIPSPARSE_TEST_SOURCES
   test_sddmm_coo.cpp
   test_sddmm_coo_aos.cpp
   test_gtsv.cpp
+  test_csrcolor.cpp
 )
 
 
