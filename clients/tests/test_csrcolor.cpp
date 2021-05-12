@@ -21,7 +21,6 @@
  *
  * ************************************************************************ */
 
-
 #include "testing_csrcolor.hpp"
 
 #include <gtest/gtest.h>
@@ -29,7 +28,7 @@
 
 TEST(csrcolor_bad_arg, csrcolor_bad_arg_float)
 {
-  testing_csrcolor_bad_arg<float>();
+    testing_csrcolor_bad_arg<float>();
 }
 
 TEST(csrcolor, csrcolor_float)

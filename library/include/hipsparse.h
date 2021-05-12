@@ -284,7 +284,7 @@ HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreateColorInfo(hipsparseColorInfo_t* info);
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroyColorInfo(hipsparseColorInfo_t info);
-  
+
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
@@ -5209,61 +5209,60 @@ hipsparseStatus_t hipsparseZcsr2csru(hipsparseHandle_t         handle,
 This function computes a pseudo-coloring reordering of a sparse matrix stored with a CSR format. */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseScsrcolor(hipsparseHandle_t         handle,
-				     int                       m,
-				     int                       nnz,
-				     const hipsparseMatDescr_t descrA,
-				     const float*              csrValA,
-				     const int*                csrRowPtrA,
-				     const int*                csrColIndA,
-				     const float*              fractionToColor,
-				     int*                      ncolors,
-				     int*                      coloring,
-				     int*                      reordering,
-				     hipsparseColorInfo_t      info);
+                                     int                       m,
+                                     int                       nnz,
+                                     const hipsparseMatDescr_t descrA,
+                                     const float*              csrValA,
+                                     const int*                csrRowPtrA,
+                                     const int*                csrColIndA,
+                                     const float*              fractionToColor,
+                                     int*                      ncolors,
+                                     int*                      coloring,
+                                     int*                      reordering,
+                                     hipsparseColorInfo_t      info);
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDcsrcolor(hipsparseHandle_t         handle,
-				     int                      m,
-				     int                      nnz,
-				     const hipsparseMatDescr_t descrA,
-				     const double*             csrValA,
-				     const int*               csrRowPtrA,
-				     const int*               csrColIndA,
-				     const double*             fractionToColor,
-				     int*                     ncolors,
-				     int*                     coloring,
-				     int*                     reordering,
-				     hipsparseColorInfo_t      info);
+                                     int                       m,
+                                     int                       nnz,
+                                     const hipsparseMatDescr_t descrA,
+                                     const double*             csrValA,
+                                     const int*                csrRowPtrA,
+                                     const int*                csrColIndA,
+                                     const double*             fractionToColor,
+                                     int*                      ncolors,
+                                     int*                      coloring,
+                                     int*                      reordering,
+                                     hipsparseColorInfo_t      info);
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCcsrcolor(hipsparseHandle_t         handle,
-				     int                      m,
-				     int                      nnz,
-				     const hipsparseMatDescr_t descrA,
-				     const hipComplex*             csrValA,
-				     const int*               csrRowPtrA,
-				     const int*               csrColIndA,
-				     const hipComplex*             fractionToColor,
-				     int*                     ncolors,
-				     int*                     coloring,
-				     int*                     reordering,
-				     hipsparseColorInfo_t      info);
+                                     int                       m,
+                                     int                       nnz,
+                                     const hipsparseMatDescr_t descrA,
+                                     const hipComplex*         csrValA,
+                                     const int*                csrRowPtrA,
+                                     const int*                csrColIndA,
+                                     const hipComplex*         fractionToColor,
+                                     int*                      ncolors,
+                                     int*                      coloring,
+                                     int*                      reordering,
+                                     hipsparseColorInfo_t      info);
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseZcsrcolor(hipsparseHandle_t         handle,
-				     int                       m,
-				     int                       nnz,
-				     const hipsparseMatDescr_t descrA,
-				     const hipDoubleComplex*   csrValA,
-				     const int*                csrRowPtrA,
-				     const int*                csrColIndA,
-				     const hipDoubleComplex*   fractionToColor,
-				     int*                      ncolors,
-				     int*                      coloring,
-				     int*                      reordering,
-				     hipsparseColorInfo_t      info);
-  
-  
+                                     int                       m,
+                                     int                       nnz,
+                                     const hipsparseMatDescr_t descrA,
+                                     const hipDoubleComplex*   csrValA,
+                                     const int*                csrRowPtrA,
+                                     const int*                csrColIndA,
+                                     const hipDoubleComplex*   fractionToColor,
+                                     int*                      ncolors,
+                                     int*                      coloring,
+                                     int*                      reordering,
+                                     hipsparseColorInfo_t      info);
+
 /* Generic API */
 
 /* Generic API opaque structures holding information */

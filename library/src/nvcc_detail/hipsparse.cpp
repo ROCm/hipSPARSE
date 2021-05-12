@@ -567,12 +567,12 @@ hipsparseStatus_t hipsparseDestroyCsrsv2Info(csrsv2Info_t info)
 
 hipsparseStatus_t hipsparseCreateColorInfo(hipsparseColorInfo_t* info)
 {
-  return hipCUSPARSEStatusToHIPStatus(cusparseCreateColorInfo((cusparseColorInfo_t*)info));
+    return hipCUSPARSEStatusToHIPStatus(cusparseCreateColorInfo((cusparseColorInfo_t*)info));
 }
 
 hipsparseStatus_t hipsparseDestroyColorInfo(hipsparseColorInfo_t info)
 {
-  return hipCUSPARSEStatusToHIPStatus(cusparseDestroyColorInfo((cusparseColorInfo_t)info));
+    return hipCUSPARSEStatusToHIPStatus(cusparseDestroyColorInfo((cusparseColorInfo_t)info));
 }
 
 hipsparseStatus_t hipsparseCreateCsrsm2Info(csrsm2Info_t* info)
@@ -10978,121 +10978,117 @@ hipsparseStatus_t hipsparseZgtsv2_nopivot(hipsparseHandle_t       handle,
                                                                pBuffer));
 }
 
-
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseScsrcolor(hipsparseHandle_t         handle,
-				     int                       m,
-				     int                       nnz,
-				     const hipsparseMatDescr_t descrA,
-				     const float*              csrValA,
-				     const int*                csrRowPtrA,
-				     const int*                csrColIndA,
-				     const float*              fractionToColor,
-				     int*                      ncolors,
-				     int*                      coloring,
-				     int*                      reordering,
-				     hipsparseColorInfo_t      info)
+                                     int                       m,
+                                     int                       nnz,
+                                     const hipsparseMatDescr_t descrA,
+                                     const float*              csrValA,
+                                     const int*                csrRowPtrA,
+                                     const int*                csrColIndA,
+                                     const float*              fractionToColor,
+                                     int*                      ncolors,
+                                     int*                      coloring,
+                                     int*                      reordering,
+                                     hipsparseColorInfo_t      info)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseScsrcolor((cusparseHandle_t)handle,
-							  m,
-							  nnz,
-							  (const cusparseMatDescr_t)descrA,
-							  csrValA,
-							  csrRowPtrA,
-							  csrColIndA,
-							  fractionToColor,
-							  ncolors,
-							  coloring,
-							  reordering,
-							  (cusparseColorInfo_t)info));
+                                                          m,
+                                                          nnz,
+                                                          (const cusparseMatDescr_t)descrA,
+                                                          csrValA,
+                                                          csrRowPtrA,
+                                                          csrColIndA,
+                                                          fractionToColor,
+                                                          ncolors,
+                                                          coloring,
+                                                          reordering,
+                                                          (cusparseColorInfo_t)info));
 }
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDcsrcolor(hipsparseHandle_t         handle,
-				     int                      m,
-				     int                      nnz,
-				     const hipsparseMatDescr_t descrA,
-				     const double*             csrValA,
-				     const int*               csrRowPtrA,
-				     const int*               csrColIndA,
-				     const double*             fractionToColor,
-				     int*                     ncolors,
-				     int*                     coloring,
-				     int*                     reordering,
-				     hipsparseColorInfo_t      info)
+                                     int                       m,
+                                     int                       nnz,
+                                     const hipsparseMatDescr_t descrA,
+                                     const double*             csrValA,
+                                     const int*                csrRowPtrA,
+                                     const int*                csrColIndA,
+                                     const double*             fractionToColor,
+                                     int*                      ncolors,
+                                     int*                      coloring,
+                                     int*                      reordering,
+                                     hipsparseColorInfo_t      info)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseDcsrcolor((cusparseHandle_t)handle,
-							  m,
-							  nnz,
-							  (const cusparseMatDescr_t)descrA,
-							  csrValA,
-							  csrRowPtrA,
-							  csrColIndA,
-							  fractionToColor,
-							  ncolors,
-							  coloring,
-							  reordering,
-							  (cusparseColorInfo_t)info));
-
+                                                          m,
+                                                          nnz,
+                                                          (const cusparseMatDescr_t)descrA,
+                                                          csrValA,
+                                                          csrRowPtrA,
+                                                          csrColIndA,
+                                                          fractionToColor,
+                                                          ncolors,
+                                                          coloring,
+                                                          reordering,
+                                                          (cusparseColorInfo_t)info));
 }
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCcsrcolor(hipsparseHandle_t         handle,
-				     int                      m,
-				     int                      nnz,
-				     const hipsparseMatDescr_t descrA,
-				     const hipComplex*             csrValA,
-				     const int*               csrRowPtrA,
-				     const int*               csrColIndA,
-				     const hipComplex*             fractionToColor,
-				     int*                     ncolors,
-				     int*                     coloring,
-				     int*                     reordering,
-				     hipsparseColorInfo_t      info)
+                                     int                       m,
+                                     int                       nnz,
+                                     const hipsparseMatDescr_t descrA,
+                                     const hipComplex*         csrValA,
+                                     const int*                csrRowPtrA,
+                                     const int*                csrColIndA,
+                                     const hipComplex*         fractionToColor,
+                                     int*                      ncolors,
+                                     int*                      coloring,
+                                     int*                      reordering,
+                                     hipsparseColorInfo_t      info)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseCcsrcolor((cusparseHandle_t)handle,
-							  m,
-							  nnz,
-							  (const cusparseMatDescr_t)descrA,
-							  (const cuComplex*)csrValA,
-							  csrRowPtrA,
-							  csrColIndA,
-							  (const cuComplex*)fractionToColor,
-							  ncolors,
-							  coloring,
-							  reordering,
-							  (cusparseColorInfo_t)info));
+                                                          m,
+                                                          nnz,
+                                                          (const cusparseMatDescr_t)descrA,
+                                                          (const cuComplex*)csrValA,
+                                                          csrRowPtrA,
+                                                          csrColIndA,
+                                                          (const cuComplex*)fractionToColor,
+                                                          ncolors,
+                                                          coloring,
+                                                          reordering,
+                                                          (cusparseColorInfo_t)info));
 }
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseZcsrcolor(hipsparseHandle_t         handle,
-				     int                       m,
-				     int                       nnz,
-				     const hipsparseMatDescr_t descrA,
-				     const hipDoubleComplex*   csrValA,
-				     const int*                csrRowPtrA,
-				     const int*                csrColIndA,
-				     const hipDoubleComplex*   fractionToColor,
-				     int*                      ncolors,
-				     int*                      coloring,
-				     int*                      reordering,
-				     hipsparseColorInfo_t      info)
+                                     int                       m,
+                                     int                       nnz,
+                                     const hipsparseMatDescr_t descrA,
+                                     const hipDoubleComplex*   csrValA,
+                                     const int*                csrRowPtrA,
+                                     const int*                csrColIndA,
+                                     const hipDoubleComplex*   fractionToColor,
+                                     int*                      ncolors,
+                                     int*                      coloring,
+                                     int*                      reordering,
+                                     hipsparseColorInfo_t      info)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseZcsrcolor((cusparseHandle_t)handle,
-							  m,
-							  nnz,
-							  (const cusparseMatDescr_t)descrA,
-							  (const cuDoubleComplex*)csrValA,
-							  csrRowPtrA,
-							  csrColIndA,
-							  (const cuDoubleComplex*)fractionToColor,
-							  ncolors,
-							  coloring,
-							  reordering,
-							  (cusparseColorInfo_t)info));
+                                                          m,
+                                                          nnz,
+                                                          (const cusparseMatDescr_t)descrA,
+                                                          (const cuDoubleComplex*)csrValA,
+                                                          csrRowPtrA,
+                                                          csrColIndA,
+                                                          (const cuDoubleComplex*)fractionToColor,
+                                                          ncolors,
+                                                          coloring,
+                                                          reordering,
+                                                          (cusparseColorInfo_t)info));
 }
-
-
 
 #ifdef __cplusplus
 }

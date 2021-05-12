@@ -38,103 +38,146 @@
 using namespace hipsparse;
 using namespace hipsparse_test;
 
-template<typename T>
+template <typename T>
 hipsparseStatus_t hipsparseXcsrcolor(hipsparseHandle_t         handle,
-				     int                       m,
-				     int                       nnz,
-				     const hipsparseMatDescr_t descrA,
-				     const T*              csrValA,
-				     const int*                csrRowPtrA,
-				     const int*                csrColIndA,
-				     const T*              fractionToColor,
-				     int*                      ncolors,
-				     int*                      coloring,
-				     int*                      reordering,
-				     hipsparseColorInfo_t      info);
+                                     int                       m,
+                                     int                       nnz,
+                                     const hipsparseMatDescr_t descrA,
+                                     const T*                  csrValA,
+                                     const int*                csrRowPtrA,
+                                     const int*                csrColIndA,
+                                     const T*                  fractionToColor,
+                                     int*                      ncolors,
+                                     int*                      coloring,
+                                     int*                      reordering,
+                                     hipsparseColorInfo_t      info);
 
-template<>
+template <>
 hipsparseStatus_t hipsparseXcsrcolor<float>(hipsparseHandle_t         handle,
-				     int                       m,
-				     int                       nnz,
-				     const hipsparseMatDescr_t descrA,
-				     const float*              csrValA,
-				     const int*                csrRowPtrA,
-				     const int*                csrColIndA,
-				     const float*              fractionToColor,
-				     int*                      ncolors,
-				     int*                      coloring,
-				     int*                      reordering,
-				     hipsparseColorInfo_t      info)
+                                            int                       m,
+                                            int                       nnz,
+                                            const hipsparseMatDescr_t descrA,
+                                            const float*              csrValA,
+                                            const int*                csrRowPtrA,
+                                            const int*                csrColIndA,
+                                            const float*              fractionToColor,
+                                            int*                      ncolors,
+                                            int*                      coloring,
+                                            int*                      reordering,
+                                            hipsparseColorInfo_t      info)
 {
-  return hipsparseScsrcolor(handle,m,nnz,descrA,csrValA,csrRowPtrA,csrColIndA,fractionToColor,ncolors,coloring,reordering,info);
+    return hipsparseScsrcolor(handle,
+                              m,
+                              nnz,
+                              descrA,
+                              csrValA,
+                              csrRowPtrA,
+                              csrColIndA,
+                              fractionToColor,
+                              ncolors,
+                              coloring,
+                              reordering,
+                              info);
 }
 
-template<>
+template <>
 hipsparseStatus_t hipsparseXcsrcolor<double>(hipsparseHandle_t         handle,
-				     int                       m,
-				     int                       nnz,
-				     const hipsparseMatDescr_t descrA,
-				     const double*              csrValA,
-				     const int*                csrRowPtrA,
-				     const int*                csrColIndA,
-				     const double*              fractionToColor,
-				     int*                      ncolors,
-				     int*                      coloring,
-				     int*                      reordering,
-				     hipsparseColorInfo_t      info)
+                                             int                       m,
+                                             int                       nnz,
+                                             const hipsparseMatDescr_t descrA,
+                                             const double*             csrValA,
+                                             const int*                csrRowPtrA,
+                                             const int*                csrColIndA,
+                                             const double*             fractionToColor,
+                                             int*                      ncolors,
+                                             int*                      coloring,
+                                             int*                      reordering,
+                                             hipsparseColorInfo_t      info)
 {
-  return hipsparseDcsrcolor(handle,m,nnz,descrA,csrValA,csrRowPtrA,csrColIndA,fractionToColor,ncolors,coloring,reordering,info);
+    return hipsparseDcsrcolor(handle,
+                              m,
+                              nnz,
+                              descrA,
+                              csrValA,
+                              csrRowPtrA,
+                              csrColIndA,
+                              fractionToColor,
+                              ncolors,
+                              coloring,
+                              reordering,
+                              info);
 }
 
-template<>
+template <>
 hipsparseStatus_t hipsparseXcsrcolor<hipComplex>(hipsparseHandle_t         handle,
-				     int                       m,
-				     int                       nnz,
-				     const hipsparseMatDescr_t descrA,
-				     const hipComplex*              csrValA,
-				     const int*                csrRowPtrA,
-				     const int*                csrColIndA,
-				     const hipComplex*              fractionToColor,
-				     int*                      ncolors,
-				     int*                      coloring,
-				     int*                      reordering,
-				     hipsparseColorInfo_t      info)
+                                                 int                       m,
+                                                 int                       nnz,
+                                                 const hipsparseMatDescr_t descrA,
+                                                 const hipComplex*         csrValA,
+                                                 const int*                csrRowPtrA,
+                                                 const int*                csrColIndA,
+                                                 const hipComplex*         fractionToColor,
+                                                 int*                      ncolors,
+                                                 int*                      coloring,
+                                                 int*                      reordering,
+                                                 hipsparseColorInfo_t      info)
 {
-  return hipsparseCcsrcolor(handle,m,nnz,descrA,csrValA,csrRowPtrA,csrColIndA,fractionToColor,ncolors,coloring,reordering,info);
+    return hipsparseCcsrcolor(handle,
+                              m,
+                              nnz,
+                              descrA,
+                              csrValA,
+                              csrRowPtrA,
+                              csrColIndA,
+                              fractionToColor,
+                              ncolors,
+                              coloring,
+                              reordering,
+                              info);
 }
 
-template<>
+template <>
 hipsparseStatus_t hipsparseXcsrcolor<hipDoubleComplex>(hipsparseHandle_t         handle,
-				     int                       m,
-				     int                       nnz,
-				     const hipsparseMatDescr_t descrA,
-				     const hipDoubleComplex*              csrValA,
-				     const int*                csrRowPtrA,
-				     const int*                csrColIndA,
-				     const hipDoubleComplex*              fractionToColor,
-				     int*                      ncolors,
-				     int*                      coloring,
-				     int*                      reordering,
-				     hipsparseColorInfo_t      info)
+                                                       int                       m,
+                                                       int                       nnz,
+                                                       const hipsparseMatDescr_t descrA,
+                                                       const hipDoubleComplex*   csrValA,
+                                                       const int*                csrRowPtrA,
+                                                       const int*                csrColIndA,
+                                                       const hipDoubleComplex*   fractionToColor,
+                                                       int*                      ncolors,
+                                                       int*                      coloring,
+                                                       int*                      reordering,
+                                                       hipsparseColorInfo_t      info)
 {
-  return hipsparseZcsrcolor(handle,m,nnz,descrA,csrValA,csrRowPtrA,csrColIndA,fractionToColor,ncolors,coloring,reordering,info);
+    return hipsparseZcsrcolor(handle,
+                              m,
+                              nnz,
+                              descrA,
+                              csrValA,
+                              csrRowPtrA,
+                              csrColIndA,
+                              fractionToColor,
+                              ncolors,
+                              coloring,
+                              reordering,
+                              info);
 }
 
-
-template<typename T>
+template <typename T>
 void testing_csrcolor_bad_arg(void)
 {
 #ifdef __HIP_PLATFORM_NVCC__
     // do not test for bad args
     return;
 #endif
-    
-    static constexpr size_t safe_size = 100;
-    static constexpr int    M         = 10;
-    static constexpr int    NNZ       = 10;
-    T                    fractionToColor = make_DataType<T>(1.0);
 
-    hipsparseStatus_t       status;
+    static constexpr size_t safe_size       = 100;
+    static constexpr int    M               = 10;
+    static constexpr int    NNZ             = 10;
+    T                       fractionToColor = make_DataType<T>(1.0);
+
+    hipsparseStatus_t status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -143,16 +186,16 @@ void testing_csrcolor_bad_arg(void)
     hipsparseMatDescr_t           descr = unique_ptr_descr->descr;
 
     auto m_coloring    = hipsparse_unique_ptr{device_malloc(sizeof(int) * 1), device_free};
-    auto m_reordering    = hipsparse_unique_ptr{device_malloc(sizeof(int) * 1), device_free};
+    auto m_reordering  = hipsparse_unique_ptr{device_malloc(sizeof(int) * 1), device_free};
     auto m_csr_val     = hipsparse_unique_ptr{device_malloc(sizeof(T) * 1), device_free};
     auto m_csr_row_ptr = hipsparse_unique_ptr{device_malloc(sizeof(int) * 1), device_free};
     auto m_csr_col_ind = hipsparse_unique_ptr{device_malloc(sizeof(int) * 1), device_free};
-    T*   d_csr_val         = (T*)m_csr_val.get();
-    int*   d_coloring         = (int*)m_coloring.get();
-    int*   d_reordering   = (int*)m_reordering.get();
+    T*   d_csr_val     = (T*)m_csr_val.get();
+    int* d_coloring    = (int*)m_coloring.get();
+    int* d_reordering  = (int*)m_reordering.get();
     int* d_csr_row_ptr = (int*)m_csr_row_ptr.get();
     int* d_csr_col_ind = (int*)m_csr_col_ind.get();
-    int ncolors;
+    int  ncolors;
     if(!d_csr_row_ptr || !d_csr_col_ind || !d_csr_val)
     {
         PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
@@ -160,46 +203,166 @@ void testing_csrcolor_bad_arg(void)
     }
     hipsparseColorInfo_t colorInfo = (hipsparseColorInfo_t)0x4;
 
-    status = hipsparseXcsrcolor<T>(handle, M, NNZ, descr,  d_csr_val, d_csr_row_ptr, d_csr_col_ind, &fractionToColor, &ncolors, d_coloring, d_reordering, nullptr);
+    status = hipsparseXcsrcolor<T>(handle,
+                                   M,
+                                   NNZ,
+                                   descr,
+                                   d_csr_val,
+                                   d_csr_row_ptr,
+                                   d_csr_col_ind,
+                                   &fractionToColor,
+                                   &ncolors,
+                                   d_coloring,
+                                   d_reordering,
+                                   nullptr);
     verify_hipsparse_status_invalid_pointer(status, "Error: an invalid pointer must be detected.u");
 
-    status = hipsparseXcsrcolor<T>(handle, M, NNZ, descr,  d_csr_val, d_csr_row_ptr, d_csr_col_ind, &fractionToColor, &ncolors, nullptr, d_reordering, colorInfo);
+    status = hipsparseXcsrcolor<T>(handle,
+                                   M,
+                                   NNZ,
+                                   descr,
+                                   d_csr_val,
+                                   d_csr_row_ptr,
+                                   d_csr_col_ind,
+                                   &fractionToColor,
+                                   &ncolors,
+                                   nullptr,
+                                   d_reordering,
+                                   colorInfo);
     verify_hipsparse_status_invalid_pointer(status, "Error: an invalid pointer must be detected.u");
 
-    status = hipsparseXcsrcolor<T>(handle, M, NNZ, descr,  d_csr_val, d_csr_row_ptr, d_csr_col_ind, &fractionToColor, nullptr, d_coloring, d_reordering, colorInfo);
-    verify_hipsparse_status_invalid_pointer(status, "Error: an invalid pointer must be detected.u");
-    
-    status = hipsparseXcsrcolor<T>(handle, M, NNZ, descr,  d_csr_val, d_csr_row_ptr, d_csr_col_ind, nullptr, &ncolors, d_coloring, d_reordering, colorInfo);
+    status = hipsparseXcsrcolor<T>(handle,
+                                   M,
+                                   NNZ,
+                                   descr,
+                                   d_csr_val,
+                                   d_csr_row_ptr,
+                                   d_csr_col_ind,
+                                   &fractionToColor,
+                                   nullptr,
+                                   d_coloring,
+                                   d_reordering,
+                                   colorInfo);
     verify_hipsparse_status_invalid_pointer(status, "Error: an invalid pointer must be detected.u");
 
-    status = hipsparseXcsrcolor<T>(handle, M, NNZ, descr,  d_csr_val, d_csr_row_ptr, nullptr, &fractionToColor, &ncolors, d_coloring, d_reordering, colorInfo);
-    verify_hipsparse_status_invalid_pointer(status, "Error: an invalid pointer must be detected.u");
-    
-    status = hipsparseXcsrcolor<T>(handle, M, NNZ, descr,  d_csr_val, nullptr, d_csr_col_ind, &fractionToColor, &ncolors, d_coloring, d_reordering, colorInfo);
+    status = hipsparseXcsrcolor<T>(handle,
+                                   M,
+                                   NNZ,
+                                   descr,
+                                   d_csr_val,
+                                   d_csr_row_ptr,
+                                   d_csr_col_ind,
+                                   nullptr,
+                                   &ncolors,
+                                   d_coloring,
+                                   d_reordering,
+                                   colorInfo);
     verify_hipsparse_status_invalid_pointer(status, "Error: an invalid pointer must be detected.u");
 
-    status = hipsparseXcsrcolor<T>(handle, M, NNZ, descr,  nullptr, d_csr_row_ptr, d_csr_col_ind, &fractionToColor, &ncolors, d_coloring, d_reordering, colorInfo);
+    status = hipsparseXcsrcolor<T>(handle,
+                                   M,
+                                   NNZ,
+                                   descr,
+                                   d_csr_val,
+                                   d_csr_row_ptr,
+                                   nullptr,
+                                   &fractionToColor,
+                                   &ncolors,
+                                   d_coloring,
+                                   d_reordering,
+                                   colorInfo);
     verify_hipsparse_status_invalid_pointer(status, "Error: an invalid pointer must be detected.u");
-    
-    status = hipsparseXcsrcolor<T>(handle, M, NNZ, nullptr,  d_csr_val, d_csr_row_ptr, d_csr_col_ind, &fractionToColor, &ncolors, d_coloring, d_reordering, colorInfo);
+
+    status = hipsparseXcsrcolor<T>(handle,
+                                   M,
+                                   NNZ,
+                                   descr,
+                                   d_csr_val,
+                                   nullptr,
+                                   d_csr_col_ind,
+                                   &fractionToColor,
+                                   &ncolors,
+                                   d_coloring,
+                                   d_reordering,
+                                   colorInfo);
     verify_hipsparse_status_invalid_pointer(status, "Error: an invalid pointer must be detected.u");
-    
-    status = hipsparseXcsrcolor<T>(nullptr, M, NNZ, descr,  d_csr_val, d_csr_row_ptr, d_csr_col_ind, &fractionToColor, &ncolors, d_coloring, d_reordering, colorInfo);
+
+    status = hipsparseXcsrcolor<T>(handle,
+                                   M,
+                                   NNZ,
+                                   descr,
+                                   nullptr,
+                                   d_csr_row_ptr,
+                                   d_csr_col_ind,
+                                   &fractionToColor,
+                                   &ncolors,
+                                   d_coloring,
+                                   d_reordering,
+                                   colorInfo);
+    verify_hipsparse_status_invalid_pointer(status, "Error: an invalid pointer must be detected.u");
+
+    status = hipsparseXcsrcolor<T>(handle,
+                                   M,
+                                   NNZ,
+                                   nullptr,
+                                   d_csr_val,
+                                   d_csr_row_ptr,
+                                   d_csr_col_ind,
+                                   &fractionToColor,
+                                   &ncolors,
+                                   d_coloring,
+                                   d_reordering,
+                                   colorInfo);
+    verify_hipsparse_status_invalid_pointer(status, "Error: an invalid pointer must be detected.u");
+
+    status = hipsparseXcsrcolor<T>(nullptr,
+                                   M,
+                                   NNZ,
+                                   descr,
+                                   d_csr_val,
+                                   d_csr_row_ptr,
+                                   d_csr_col_ind,
+                                   &fractionToColor,
+                                   &ncolors,
+                                   d_coloring,
+                                   d_reordering,
+                                   colorInfo);
     verify_hipsparse_status_invalid_handle(status);
-    
-    status = hipsparseXcsrcolor<T>(handle, -1, NNZ, descr,  d_csr_val, d_csr_row_ptr, d_csr_col_ind, &fractionToColor, &ncolors, d_coloring, d_reordering, colorInfo);
-    verify_hipsparse_status_invalid_value(status, "Error: an invalid value must be detected.u");
-    
-    status = hipsparseXcsrcolor<T>(handle, M, -1, descr,  d_csr_val, d_csr_row_ptr, d_csr_col_ind, &fractionToColor, &ncolors, d_coloring, d_reordering, colorInfo);
-    verify_hipsparse_status_invalid_pointer(status, "Error: an invalid value must be detected.u");
 
+    status = hipsparseXcsrcolor<T>(handle,
+                                   -1,
+                                   NNZ,
+                                   descr,
+                                   d_csr_val,
+                                   d_csr_row_ptr,
+                                   d_csr_col_ind,
+                                   &fractionToColor,
+                                   &ncolors,
+                                   d_coloring,
+                                   d_reordering,
+                                   colorInfo);
+    verify_hipsparse_status_invalid_value(status, "Error: an invalid value must be detected.u");
+
+    status = hipsparseXcsrcolor<T>(handle,
+                                   M,
+                                   -1,
+                                   descr,
+                                   d_csr_val,
+                                   d_csr_row_ptr,
+                                   d_csr_col_ind,
+                                   &fractionToColor,
+                                   &ncolors,
+                                   d_coloring,
+                                   d_reordering,
+                                   colorInfo);
+    verify_hipsparse_status_invalid_pointer(status, "Error: an invalid value must be detected.u");
 }
 
 template <typename T>
 hipsparseStatus_t testing_csrcolor()
 {
-    T                    h_alpha  = make_DataType<T>(1.0);
-    hipsparseStatus_t    status;
+    T                 h_alpha = make_DataType<T>(1.0);
+    hipsparseStatus_t status;
     // Determine absolute path of test matrix
 
     // Get current executables absolute path
@@ -221,14 +384,14 @@ hipsparseStatus_t testing_csrcolor()
     hipsparseMatDescr_t           descr = unique_ptr_descr->descr;
 
     // Host structures
-    std::vector<int> hrow_ptr;
-    std::vector<int> hcol_ind;
-    std::vector<T> hval;
+    std::vector<int>     hrow_ptr;
+    std::vector<int>     hcol_ind;
+    std::vector<T>       hval;
     hipsparseIndexBase_t idx_base = HIPSPARSE_INDEX_BASE_ZERO;
 
     // Initial Data on CPU
     srand(12345ULL);
-    T                    fractionToColor = make_DataType<T>(1.0);
+    T fractionToColor = make_DataType<T>(1.0);
 
     int m;
     int k;
@@ -244,17 +407,17 @@ hipsparseStatus_t testing_csrcolor()
     hipsparseCreateColorInfo(&colorInfo);
 
     // allocate memory on device
-    auto drow_ptr_managed      = hipsparse_unique_ptr{device_malloc(sizeof(int) * (m+1)), device_free};
-    auto dcol_ind_managed      = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
-    auto dval_managed          = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
-    auto dcoloring_managed     = hipsparse_unique_ptr{device_malloc(sizeof(int) * m), device_free};
-    auto dreordering_managed   = hipsparse_unique_ptr{device_malloc(sizeof(int) * m), device_free};
+    auto drow_ptr_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * (m + 1)), device_free};
+    auto dcol_ind_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
+    auto dval_managed     = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
+    auto dcoloring_managed   = hipsparse_unique_ptr{device_malloc(sizeof(int) * m), device_free};
+    auto dreordering_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * m), device_free};
 
     int* drow_ptr    = (int*)drow_ptr_managed.get();
     int* dcol_ind    = (int*)dcol_ind_managed.get();
-    T* dval    = (T*)dval_managed.get();
-    int* dcoloring      = (int*)dcoloring_managed.get();
-    int* dreordering    = (int*)dreordering_managed.get();
+    T*   dval        = (T*)dval_managed.get();
+    int* dcoloring   = (int*)dcoloring_managed.get();
+    int* dreordering = (int*)dreordering_managed.get();
 
     if(!dval || !drow_ptr || !dcol_ind || !dcoloring || !dreordering)
     {
@@ -265,13 +428,25 @@ hipsparseStatus_t testing_csrcolor()
     }
 
     // copy data from CPU to device
-    CHECK_HIP_ERROR(hipMemcpy(drow_ptr, hrow_ptr.data(), sizeof(int) * (m+1), hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(
+        hipMemcpy(drow_ptr, hrow_ptr.data(), sizeof(int) * (m + 1), hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dcol_ind, hcol_ind.data(), sizeof(int) * nnz, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dval, hval.data(), sizeof(T) * nnz, hipMemcpyHostToDevice));
 
     int ncolors;
 
-    CHECK_HIPSPARSE_ERROR(hipsparseXcsrcolor(handle,m,nnz,descr,dval,drow_ptr,dcol_ind,&fractionToColor,&ncolors,dcoloring,dreordering,colorInfo));
+    CHECK_HIPSPARSE_ERROR(hipsparseXcsrcolor(handle,
+                                             m,
+                                             nnz,
+                                             descr,
+                                             dval,
+                                             drow_ptr,
+                                             dcol_ind,
+                                             &fractionToColor,
+                                             &ncolors,
+                                             dcoloring,
+                                             dreordering,
+                                             colorInfo));
 
     hipsparseDestroyColorInfo(colorInfo);
     return HIPSPARSE_STATUS_SUCCESS;
