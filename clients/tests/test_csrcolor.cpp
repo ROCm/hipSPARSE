@@ -26,6 +26,8 @@
 #include <gtest/gtest.h>
 #include <hipsparse.h>
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
+
 TEST(csrcolor_bad_arg, csrcolor_bad_arg_float)
 {
     testing_csrcolor_bad_arg<float>();
@@ -54,3 +56,5 @@ TEST(csrcolor, csrcolor_hipDoubleComplex)
     hipsparseStatus_t status = testing_csrcolor<hipDoubleComplex>();
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+
+#endif

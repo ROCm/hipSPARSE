@@ -38,6 +38,30 @@
 using namespace hipsparse;
 using namespace hipsparse_test;
 
+
+template <typename T>
+struct floating_traits
+{
+    using data_t = T;
+};
+
+template <>
+struct floating_traits<hipComplex>
+{
+    using data_t = float;
+};
+
+template <>
+struct floating_traits<hipDoubleComplex>
+{
+    using data_t = double;
+};
+
+template <typename T>
+using floating_data_t = typename floating_traits<T>::data_t;
+
+
+
 template <typename T>
 hipsparseStatus_t hipsparseXcsrcolor(hipsparseHandle_t         handle,
                                      int                       m,
@@ -46,7 +70,7 @@ hipsparseStatus_t hipsparseXcsrcolor(hipsparseHandle_t         handle,
                                      const T*                  csrValA,
                                      const int*                csrRowPtrA,
                                      const int*                csrColIndA,
-                                     const T*                  fractionToColor,
+                                     const floating_data_t<T>*                  fractionToColor,
                                      int*                      ncolors,
                                      int*                      coloring,
                                      int*                      reordering,
@@ -116,7 +140,7 @@ hipsparseStatus_t hipsparseXcsrcolor<hipComplex>(hipsparseHandle_t         handl
                                                  const hipComplex*         csrValA,
                                                  const int*                csrRowPtrA,
                                                  const int*                csrColIndA,
-                                                 const hipComplex*         fractionToColor,
+                                                 const float*         fractionToColor,
                                                  int*                      ncolors,
                                                  int*                      coloring,
                                                  int*                      reordering,
@@ -144,7 +168,7 @@ hipsparseStatus_t hipsparseXcsrcolor<hipDoubleComplex>(hipsparseHandle_t        
                                                        const hipDoubleComplex*   csrValA,
                                                        const int*                csrRowPtrA,
                                                        const int*                csrColIndA,
-                                                       const hipDoubleComplex*   fractionToColor,
+                                                       const double*   fractionToColor,
                                                        int*                      ncolors,
                                                        int*                      coloring,
                                                        int*                      reordering,
@@ -175,7 +199,7 @@ void testing_csrcolor_bad_arg(void)
     static constexpr size_t safe_size       = 100;
     static constexpr int    M               = 10;
     static constexpr int    NNZ             = 10;
-    T                       fractionToColor = make_DataType<T>(1.0);
+    floating_data_t<T>                       fractionToColor = make_DataType<floating_data_t<T>>(1.0);
 
     hipsparseStatus_t status;
 
@@ -391,7 +415,7 @@ hipsparseStatus_t testing_csrcolor()
 
     // Initial Data on CPU
     srand(12345ULL);
-    T fractionToColor = make_DataType<T>(1.0);
+    floating_data_t<T>                       fractionToColor = make_DataType<floating_data_t<T>>(1.0);
 
     int m;
     int k;
