@@ -12425,89 +12425,90 @@ hipsparseStatus_t hipsparseSpMM_bufferSize(hipsparseHandle_t           handle,
 }
 
 hipsparseStatus_t hipsparseSpMM_preprocess(hipsparseHandle_t           handle,
-					   hipsparseOperation_t        opA,
-					   hipsparseOperation_t        opB,
-					   const void*                 alpha,
-					   const hipsparseSpMatDescr_t matA,
-					   const hipsparseDnMatDescr_t matB,
-					   const void*                 beta,
-					   const hipsparseDnMatDescr_t matC,
-					   hipDataType                 computeType,
-					   hipsparseSpMMAlg_t          alg,
-					   void*                       externalBuffer)
+                                           hipsparseOperation_t        opA,
+                                           hipsparseOperation_t        opB,
+                                           const void*                 alpha,
+                                           const hipsparseSpMatDescr_t matA,
+                                           const hipsparseDnMatDescr_t matB,
+                                           const void*                 beta,
+                                           const hipsparseDnMatDescr_t matC,
+                                           hipDataType                 computeType,
+                                           hipsparseSpMMAlg_t          alg,
+                                           void*                       externalBuffer)
 {
-  //
-  // Test for bad args
-  //
-  if(handle == nullptr || alpha == nullptr || matA == nullptr || matB == nullptr || beta == nullptr || matC == nullptr || externalBuffer == nullptr)
+    //
+    // Test for bad args
+    //
+    if(handle == nullptr || alpha == nullptr || matA == nullptr || matB == nullptr
+       || beta == nullptr || matC == nullptr || externalBuffer == nullptr)
     {
         return HIPSPARSE_STATUS_INVALID_VALUE;
     }
 
-  bool valid = false;
-  
-  switch (opA)
+    bool valid = false;
+
+    switch(opA)
     {
     case HIPSPARSE_OPERATION_NON_TRANSPOSE:
     case HIPSPARSE_OPERATION_TRANSPOSE:
     case HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE:
-      {
-	valid = true;
-	break;
-      }
-    }
-  if (!valid)
     {
-      return HIPSPARSE_STATUS_INVALID_VALUE;
+        valid = true;
+        break;
+    }
+    }
+    if(!valid)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
     }
 
-  valid = false;
-  switch (opB)
+    valid = false;
+    switch(opB)
     {
     case HIPSPARSE_OPERATION_NON_TRANSPOSE:
     case HIPSPARSE_OPERATION_TRANSPOSE:
     case HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE:
-      {
-	valid = true;
-	break;
-      }
-    }
-  if (!valid)
     {
-      return HIPSPARSE_STATUS_INVALID_VALUE;
+        valid = true;
+        break;
+    }
+    }
+    if(!valid)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
     }
 
-  valid = false;
-  switch(computeType)
+    valid = false;
+    switch(computeType)
     {
     case HIP_R_32F:
     case HIP_R_64F:
     case HIP_C_32F:
     case HIP_C_64F:
-      {
-	valid = true;
-	break;
-      }
-    }
-  if (!valid)
     {
-      return HIPSPARSE_STATUS_INVALID_VALUE;
+        valid = true;
+        break;
+    }
+    }
+    if(!valid)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
     }
 
-  valid = false;
-  switch(alg)
+    valid = false;
+    switch(alg)
     {
     case HIPSPARSE_SPMM_ALG_DEFAULT:
     case HIPSPARSE_SPMM_COO_ALG1:
     case HIPSPARSE_SPMM_COO_ALG2:
     case HIPSPARSE_SPMM_CSR_ALG1:
-      {
-	valid = true;
-	break;
-      }
+    {
+        valid = true;
+        break;
     }
-  
-  return HIPSPARSE_STATUS_SUCCESS;
+    }
+
+    return HIPSPARSE_STATUS_SUCCESS;
 }
 
 hipsparseStatus_t hipsparseSpMM(hipsparseHandle_t           handle,
