@@ -12750,6 +12750,153 @@ hipsparseStatus_t hipsparseSDDMM_preprocess(hipsparseHandle_t           handle,
                                    tempBuffer));
 }
 
+hipsparseStatus_t hipsparseSgtsv2StridedBatch_bufferSizeExt(hipsparseHandle_t handle,
+                                                            int               m,
+                                                            const float*      dl,
+                                                            const float*      d,
+                                                            const float*      du,
+                                                            const float*      x,
+                                                            int               batchCount,
+                                                            int               batchStride,
+                                                            size_t*           pBufferSizeInBytes)
+{
+    return rocSPARSEStatusToHIPStatus(rocsparse_sgtsv_no_pivot_strided_batch_buffer_size(
+        (rocsparse_handle)handle, m, dl, d, du, x, batchCount, batchStride, pBufferSizeInBytes));
+}
+
+hipsparseStatus_t hipsparseDgtsv2StridedBatch_bufferSizeExt(hipsparseHandle_t handle,
+                                                            int               m,
+                                                            const double*     dl,
+                                                            const double*     d,
+                                                            const double*     du,
+                                                            const double*     x,
+                                                            int               batchCount,
+                                                            int               batchStride,
+                                                            size_t*           pBufferSizeInBytes)
+{
+    return rocSPARSEStatusToHIPStatus(rocsparse_dgtsv_no_pivot_strided_batch_buffer_size(
+        (rocsparse_handle)handle, m, dl, d, du, x, batchCount, batchStride, pBufferSizeInBytes));
+}
+
+hipsparseStatus_t hipsparseCgtsv2StridedBatch_bufferSizeExt(hipsparseHandle_t handle,
+                                                            int               m,
+                                                            const hipComplex* dl,
+                                                            const hipComplex* d,
+                                                            const hipComplex* du,
+                                                            const hipComplex* x,
+                                                            int               batchCount,
+                                                            int               batchStride,
+                                                            size_t*           pBufferSizeInBytes)
+{
+    return rocSPARSEStatusToHIPStatus(
+        rocsparse_cgtsv_no_pivot_strided_batch_buffer_size((rocsparse_handle)handle,
+                                                           m,
+                                                           (const rocsparse_float_complex*)dl,
+                                                           (const rocsparse_float_complex*)d,
+                                                           (const rocsparse_float_complex*)du,
+                                                           (const rocsparse_float_complex*)x,
+                                                           batchCount,
+                                                           batchStride,
+                                                           pBufferSizeInBytes));
+}
+
+hipsparseStatus_t hipsparseZgtsv2StridedBatch_bufferSizeExt(hipsparseHandle_t       handle,
+                                                            int                     m,
+                                                            const hipDoubleComplex* dl,
+                                                            const hipDoubleComplex* d,
+                                                            const hipDoubleComplex* du,
+                                                            const hipDoubleComplex* x,
+                                                            int                     batchCount,
+                                                            int                     batchStride,
+                                                            size_t* pBufferSizeInBytes)
+{
+    return rocSPARSEStatusToHIPStatus(
+        rocsparse_zgtsv_no_pivot_strided_batch_buffer_size((rocsparse_handle)handle,
+                                                           m,
+                                                           (const rocsparse_double_complex*)dl,
+                                                           (const rocsparse_double_complex*)d,
+                                                           (const rocsparse_double_complex*)du,
+                                                           (const rocsparse_double_complex*)x,
+                                                           batchCount,
+                                                           batchStride,
+                                                           pBufferSizeInBytes));
+}
+
+hipsparseStatus_t hipsparseSgtsv2StridedBatch(hipsparseHandle_t handle,
+                                              int               m,
+                                              const float*      dl,
+                                              const float*      d,
+                                              const float*      du,
+                                              float*            x,
+                                              int               batchCount,
+                                              int               batchStride,
+                                              void*             pBuffer)
+
+{
+    return rocSPARSEStatusToHIPStatus(rocsparse_sgtsv_no_pivot_strided_batch(
+        (rocsparse_handle)handle, m, dl, d, du, x, batchCount, batchStride, pBuffer));
+}
+
+hipsparseStatus_t hipsparseDgtsv2StridedBatch(hipsparseHandle_t handle,
+                                              int               m,
+                                              const double*     dl,
+                                              const double*     d,
+                                              const double*     du,
+                                              double*           x,
+                                              int               batchCount,
+                                              int               batchStride,
+                                              void*             pBuffer)
+
+{
+    return rocSPARSEStatusToHIPStatus(rocsparse_dgtsv_no_pivot_strided_batch(
+        (rocsparse_handle)handle, m, dl, d, du, x, batchCount, batchStride, pBuffer));
+}
+
+hipsparseStatus_t hipsparseCgtsv2StridedBatch(hipsparseHandle_t handle,
+                                              int               m,
+                                              const hipComplex* dl,
+                                              const hipComplex* d,
+                                              const hipComplex* du,
+                                              hipComplex*       x,
+                                              int               batchCount,
+                                              int               batchStride,
+                                              void*             pBuffer)
+{
+    return rocSPARSEStatusToHIPStatus(
+        rocsparse_cgtsv_no_pivot_strided_batch((rocsparse_handle)handle,
+                                               m,
+                                               (const rocsparse_float_complex*)dl,
+                                               (const rocsparse_float_complex*)d,
+                                               (const rocsparse_float_complex*)du,
+                                               (rocsparse_float_complex*)x,
+                                               batchCount,
+                                               batchStride,
+                                               pBuffer));
+}
+
+hipsparseStatus_t hipsparseZgtsv2StridedBatch(hipsparseHandle_t       handle,
+                                              int                     m,
+                                              const hipDoubleComplex* dl,
+                                              const hipDoubleComplex* d,
+                                              const hipDoubleComplex* du,
+                                              hipDoubleComplex*       x,
+                                              int                     batchCount,
+                                              int                     batchStride,
+                                              void*                   pBuffer)
+
+{
+    return rocSPARSEStatusToHIPStatus(
+        rocsparse_zgtsv_no_pivot_strided_batch((rocsparse_handle)handle,
+                                               m,
+                                               (const rocsparse_double_complex*)dl,
+                                               (const rocsparse_double_complex*)d,
+                                               (const rocsparse_double_complex*)du,
+                                               (rocsparse_double_complex*)x,
+                                               batchCount,
+                                               batchStride,
+                                               pBuffer));
+}
+
 hipsparseStatus_t hipsparseSgtsv2_bufferSizeExt(hipsparseHandle_t handle,
                                                 int               m,
                                                 int               n,
