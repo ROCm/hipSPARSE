@@ -40,155 +40,6 @@ using namespace hipsparse_test;
 
 
 template <typename T>
-struct floating_traits
-{
-    using data_t = T;
-};
-
-template <>
-struct floating_traits<hipComplex>
-{
-    using data_t = float;
-};
-
-template <>
-struct floating_traits<hipDoubleComplex>
-{
-    using data_t = double;
-};
-
-template <typename T>
-using floating_data_t = typename floating_traits<T>::data_t;
-
-
-
-template <typename T>
-hipsparseStatus_t hipsparseXcsrcolor(hipsparseHandle_t         handle,
-                                     int                       m,
-                                     int                       nnz,
-                                     const hipsparseMatDescr_t descrA,
-                                     const T*                  csrValA,
-                                     const int*                csrRowPtrA,
-                                     const int*                csrColIndA,
-                                     const floating_data_t<T>*                  fractionToColor,
-                                     int*                      ncolors,
-                                     int*                      coloring,
-                                     int*                      reordering,
-                                     hipsparseColorInfo_t      info);
-
-template <>
-hipsparseStatus_t hipsparseXcsrcolor<float>(hipsparseHandle_t         handle,
-                                            int                       m,
-                                            int                       nnz,
-                                            const hipsparseMatDescr_t descrA,
-                                            const float*              csrValA,
-                                            const int*                csrRowPtrA,
-                                            const int*                csrColIndA,
-                                            const float*              fractionToColor,
-                                            int*                      ncolors,
-                                            int*                      coloring,
-                                            int*                      reordering,
-                                            hipsparseColorInfo_t      info)
-{
-    return hipsparseScsrcolor(handle,
-                              m,
-                              nnz,
-                              descrA,
-                              csrValA,
-                              csrRowPtrA,
-                              csrColIndA,
-                              fractionToColor,
-                              ncolors,
-                              coloring,
-                              reordering,
-                              info);
-}
-
-template <>
-hipsparseStatus_t hipsparseXcsrcolor<double>(hipsparseHandle_t         handle,
-                                             int                       m,
-                                             int                       nnz,
-                                             const hipsparseMatDescr_t descrA,
-                                             const double*             csrValA,
-                                             const int*                csrRowPtrA,
-                                             const int*                csrColIndA,
-                                             const double*             fractionToColor,
-                                             int*                      ncolors,
-                                             int*                      coloring,
-                                             int*                      reordering,
-                                             hipsparseColorInfo_t      info)
-{
-    return hipsparseDcsrcolor(handle,
-                              m,
-                              nnz,
-                              descrA,
-                              csrValA,
-                              csrRowPtrA,
-                              csrColIndA,
-                              fractionToColor,
-                              ncolors,
-                              coloring,
-                              reordering,
-                              info);
-}
-
-template <>
-hipsparseStatus_t hipsparseXcsrcolor<hipComplex>(hipsparseHandle_t         handle,
-                                                 int                       m,
-                                                 int                       nnz,
-                                                 const hipsparseMatDescr_t descrA,
-                                                 const hipComplex*         csrValA,
-                                                 const int*                csrRowPtrA,
-                                                 const int*                csrColIndA,
-                                                 const float*         fractionToColor,
-                                                 int*                      ncolors,
-                                                 int*                      coloring,
-                                                 int*                      reordering,
-                                                 hipsparseColorInfo_t      info)
-{
-    return hipsparseCcsrcolor(handle,
-                              m,
-                              nnz,
-                              descrA,
-                              csrValA,
-                              csrRowPtrA,
-                              csrColIndA,
-                              fractionToColor,
-                              ncolors,
-                              coloring,
-                              reordering,
-                              info);
-}
-
-template <>
-hipsparseStatus_t hipsparseXcsrcolor<hipDoubleComplex>(hipsparseHandle_t         handle,
-                                                       int                       m,
-                                                       int                       nnz,
-                                                       const hipsparseMatDescr_t descrA,
-                                                       const hipDoubleComplex*   csrValA,
-                                                       const int*                csrRowPtrA,
-                                                       const int*                csrColIndA,
-                                                       const double*   fractionToColor,
-                                                       int*                      ncolors,
-                                                       int*                      coloring,
-                                                       int*                      reordering,
-                                                       hipsparseColorInfo_t      info)
-{
-    return hipsparseZcsrcolor(handle,
-                              m,
-                              nnz,
-                              descrA,
-                              csrValA,
-                              csrRowPtrA,
-                              csrColIndA,
-                              fractionToColor,
-                              ncolors,
-                              coloring,
-                              reordering,
-                              info);
-}
-
-template <typename T>
 void testing_csrcolor_bad_arg(void)
 {
 #ifdef __HIP_PLATFORM_NVCC__
@@ -199,7 +50,7 @@ void testing_csrcolor_bad_arg(void)
     static constexpr size_t safe_size       = 100;
     static constexpr int    M               = 10;
     static constexpr int    NNZ             = 10;
-    floating_data_t<T>                       fractionToColor = make_DataType<floating_data_t<T>>(1.0);
+    floating_data_t<T>      fractionToColor = make_DataType<floating_data_t<T>>(1.0);
 
     hipsparseStatus_t status;
 
@@ -415,7 +266,7 @@ hipsparseStatus_t testing_csrcolor()
 
     // Initial Data on CPU
     srand(12345ULL);
-    floating_data_t<T>                       fractionToColor = make_DataType<floating_data_t<T>>(1.0);
+    floating_data_t<T> fractionToColor = make_DataType<floating_data_t<T>>(1.0);
 
     int m;
     int k;

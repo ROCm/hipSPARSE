@@ -8310,4 +8310,118 @@ namespace hipsparse
         return hipsparseZgtsv2_nopivot(handle, m, n, dl, d, du, B, ldb, pBuffer);
     }
 
+
+template <>
+hipsparseStatus_t hipsparseXcsrcolor(hipsparseHandle_t         handle,
+				     int                       m,
+				     int                       nnz,
+				     const hipsparseMatDescr_t descrA,
+				     const float*              csrValA,
+				     const int*                csrRowPtrA,
+				     const int*                csrColIndA,
+				     const float*              fractionToColor,
+				     int*                      ncolors,
+				     int*                      coloring,
+				     int*                      reordering,
+				     hipsparseColorInfo_t      info)
+{
+  return hipsparseScsrcolor(handle,
+			    m,
+			    nnz,
+			    descrA,
+			    csrValA,
+			    csrRowPtrA,
+			    csrColIndA,
+			    fractionToColor,
+			    ncolors,
+			    coloring,
+			    reordering,
+			    info);
+}
+
+template <>
+hipsparseStatus_t hipsparseXcsrcolor(hipsparseHandle_t         handle,
+                                             int                       m,
+                                             int                       nnz,
+                                             const hipsparseMatDescr_t descrA,
+                                             const double*             csrValA,
+                                             const int*                csrRowPtrA,
+                                             const int*                csrColIndA,
+                                             const double*             fractionToColor,
+                                             int*                      ncolors,
+                                             int*                      coloring,
+                                             int*                      reordering,
+                                             hipsparseColorInfo_t      info)
+{
+    return hipsparseDcsrcolor(handle,
+                              m,
+                              nnz,
+                              descrA,
+                              csrValA,
+                              csrRowPtrA,
+                              csrColIndA,
+                              fractionToColor,
+                              ncolors,
+                              coloring,
+                              reordering,
+                              info);
+}
+
+template <>
+hipsparseStatus_t hipsparseXcsrcolor(hipsparseHandle_t         handle,
+				     int                       m,
+				     int                       nnz,
+				     const hipsparseMatDescr_t descrA,
+				     const hipComplex*         csrValA,
+				     const int*                csrRowPtrA,
+				     const int*                csrColIndA,
+				     const float*              fractionToColor,
+				     int*                      ncolors,
+				     int*                      coloring,
+				     int*                      reordering,
+				     hipsparseColorInfo_t      info)
+{
+  return hipsparseCcsrcolor(handle,
+			    m,
+			    nnz,
+			    descrA,
+			    csrValA,
+			    csrRowPtrA,
+			    csrColIndA,
+			    fractionToColor,
+			    ncolors,
+			    coloring,
+			    reordering,
+			    info);
+}
+
+template <>
+hipsparseStatus_t hipsparseXcsrcolor(hipsparseHandle_t         handle,
+				     int                       m,
+				     int                       nnz,
+				     const hipsparseMatDescr_t descrA,
+				     const hipDoubleComplex*   csrValA,
+				     const int*                csrRowPtrA,
+				     const int*                csrColIndA,
+				     const double*             fractionToColor,
+				     int*                      ncolors,
+				     int*                      coloring,
+				     int*                      reordering,
+				     hipsparseColorInfo_t      info)
+{
+  return hipsparseZcsrcolor(handle,
+			    m,
+			    nnz,
+			    descrA,
+			    csrValA,
+			    csrRowPtrA,
+			    csrColIndA,
+			    fractionToColor,
+			    ncolors,
+			    coloring,
+			    reordering,
+			    info);
+}
+
+  
 } // namespace hipsparse

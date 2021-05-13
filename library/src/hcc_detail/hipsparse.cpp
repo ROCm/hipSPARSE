@@ -13258,19 +13258,18 @@ hipsparseStatus_t hipsparseCcsrcolor(hipsparseHandle_t         handle,
                                      int*                      reordering,
                                      hipsparseColorInfo_t      info)
 {
-    return rocSPARSEStatusToHIPStatus(
-        rocsparse_ccsrcolor((rocsparse_handle)handle,
-                            m,
-                            nnz,
-                            (const rocsparse_mat_descr)descrA,
-                            (const rocsparse_float_complex*)csrValA,
-                            csrRowPtrA,
-                            csrColIndA,
-                            fractionToColor,
-                            ncolors,
-                            coloring,
-                            reordering,
-                            (rocsparse_mat_info)info));
+    return rocSPARSEStatusToHIPStatus(rocsparse_ccsrcolor((rocsparse_handle)handle,
+                                                          m,
+                                                          nnz,
+                                                          (const rocsparse_mat_descr)descrA,
+                                                          (const rocsparse_float_complex*)csrValA,
+                                                          csrRowPtrA,
+                                                          csrColIndA,
+                                                          fractionToColor,
+                                                          ncolors,
+                                                          coloring,
+                                                          reordering,
+                                                          (rocsparse_mat_info)info));
 }
 
 HIPSPARSE_EXPORT
@@ -13287,19 +13286,18 @@ hipsparseStatus_t hipsparseZcsrcolor(hipsparseHandle_t         handle,
                                      int*                      reordering,
                                      hipsparseColorInfo_t      info)
 {
-    return rocSPARSEStatusToHIPStatus(
-        rocsparse_zcsrcolor((rocsparse_handle)handle,
-                            m,
-                            nnz,
-                            (const rocsparse_mat_descr)descrA,
-                            (const rocsparse_double_complex*)csrValA,
-                            csrRowPtrA,
-                            csrColIndA,
-			    fractionToColor,
-                            ncolors,
-                            coloring,
-                            reordering,
-                            (rocsparse_mat_info)info));
+    return rocSPARSEStatusToHIPStatus(rocsparse_zcsrcolor((rocsparse_handle)handle,
+                                                          m,
+                                                          nnz,
+                                                          (const rocsparse_mat_descr)descrA,
+                                                          (const rocsparse_double_complex*)csrValA,
+                                                          csrRowPtrA,
+                                                          csrColIndA,
+                                                          fractionToColor,
+                                                          ncolors,
+                                                          coloring,
+                                                          reordering,
+                                                          (rocsparse_mat_info)info));
 }
 
 #ifdef __cplusplus

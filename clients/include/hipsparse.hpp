@@ -29,6 +29,28 @@
 
 namespace hipsparse
 {
+
+template <typename T>
+struct floating_traits
+{
+    using data_t = T;
+};
+
+template <>
+struct floating_traits<hipComplex>
+{
+    using data_t = float;
+};
+
+template <>
+struct floating_traits<hipDoubleComplex>
+{
+    using data_t = double;
+};
+
+template <typename T>
+using floating_data_t = typename floating_traits<T>::data_t;
+
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     template <typename T>
     hipsparseStatus_t hipsparseXaxpyi(hipsparseHandle_t    handle,
@@ -1336,6 +1358,22 @@ namespace hipsparse
                                               T*                B,
                                               int               ldb,
                                               void*             pBuffer);
+
+
+template <typename T>
+hipsparseStatus_t hipsparseXcsrcolor(hipsparseHandle_t         handle,
+                                     int                       m,
+                                     int                       nnz,
+                                     const hipsparseMatDescr_t descrA,
+                                     const T*                  csrValA,
+                                     const int*                csrRowPtrA,
+                                     const int*                csrColIndA,
+                                     const floating_data_t<T>* fractionToColor,
+                                     int*                      ncolors,
+                                     int*                      coloring,
+                                     int*                      reordering,
+                                     hipsparseColorInfo_t      info);
+
 
 } // namespace hipsparse
 
