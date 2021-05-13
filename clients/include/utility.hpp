@@ -2302,6 +2302,134 @@ inline void host_bsrmm(int                     Mb,
     }
 }
 
+template <typename I, typename J, typename T>
+void host_csrmm(J                     M,
+                J                     N,
+                J                     K,
+                hipsparseOperation_t   transA,
+                hipsparseOperation_t   transB,
+                T                     alpha,
+                const std::vector<I>& csr_row_ptr_A,
+                const std::vector<J>& csr_col_ind_A,
+                const std::vector<T>& csr_val_A,
+                const std::vector<T>& B,
+                J                     ldb,
+                T                     beta,
+                std::vector<T>&       C,
+                J                     ldc,
+                hipsparseOrder_t       order,
+                hipsparseIndexBase_t  base)
+{
+    if(transA == HIPSPARSE_OPERATION_NON_TRANSPOSE)
+    {
+#ifdef _OPENMP
+#pragma omp parallel for schedule(dynamic, 1024)
+#endif
+        for(size_t i = 0; i < M; i++)
+        {
+            for(J j = 0; j < N; ++j)
+            {
+                I row_begin = csr_row_ptr_A[i] - base;
+                I row_end   = csr_row_ptr_A[i + 1] - base;
+                J idx_C     = order == HIPSPARSE_ORDER_COLUMN ? i + j * ldc : i * ldc + j;
+
+                T sum = make_DataType<T>(0);
+
+                for(I k = row_begin; k < row_end; ++k)
+                {
+                    J idx_B = 0;
+                    if((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE && order == HIPSPARSE_ORDER_COLUMN)
+                       || (transB == HIPSPARSE_OPERATION_TRANSPOSE && order == HIPSPARSE_ORDER_ROW)
+                       || (transB == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE
+                           && order == HIPSPARSE_ORDER_ROW))
+                    {
+                        idx_B = (csr_col_ind_A[k] - base + j * ldb);
+                    }
+                    else
+                    {
+                        idx_B = (j + (csr_col_ind_A[k] - base) * ldb);
+                    }
+
+                    if(transB == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE)
+                    {
+                        sum = testing_fma(csr_val_A[k], testing_conj(B[idx_B]), sum);
+                    }
+                    else
+                    {
+                        sum = testing_fma(csr_val_A[k], B[idx_B], sum);
+                    }
+                }
+
+                if(beta == make_DataType<T>(0))
+                {
+                    C[idx_C] = alpha * sum;
+                }
+                else
+                {
+                    C[idx_C] = testing_fma(beta, C[idx_C], alpha * sum);
+                }
+            }
+        }
+    }
+    else
+    {
+        // scale C by beta
+        for(size_t i = 0; i < M; i++)
+        {
+            for(J j = 0; j < N; ++j)
+            {
+                J idx_C  = (order == HIPSPARSE_ORDER_COLUMN) ? i + j * ldc : i * ldc + j;
+                C[idx_C] = beta * C[idx_C];
+            }
+        }
+
+        for(size_t i = 0; i < K; i++)
+        {
+            for(J j = 0; j < N; ++j)
+            {
+                I row_begin = csr_row_ptr_A[i] - base;
+                I row_end   = csr_row_ptr_A[i + 1] - base;
+
+                for(I k = row_begin; k < row_end; ++k)
+                {
+                    J col = csr_col_ind_A[k] - base;
+                    T val = csr_val_A[k];
+
+                    if(transA == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE)
+                    {
+                        val = testing_conj(val);
+                    }
+
+                    J idx_B = 0;
+
+                    if((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE && order == HIPSPARSE_ORDER_COLUMN)
+                       || (transB == HIPSPARSE_OPERATION_TRANSPOSE && order == HIPSPARSE_ORDER_ROW)
+                       || (transB == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE
+                           && order == HIPSPARSE_ORDER_ROW))
+                    {
+                        idx_B = (i + j * ldb);
+                    }
+                    else
+                    {
+                        idx_B = (j + i * ldb);
+                    }
+
+                    J idx_C = (order == HIPSPARSE_ORDER_COLUMN) ? col + j * ldc : col * ldc + j;
+
+                    if(transB == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE)
+                    {
+                        C[idx_C] = C[idx_C] + alpha * val * testing_conj(B[idx_B]);
+                    }
+                    else
+                    {
+                        C[idx_C] = C[idx_C] + alpha * val * B[idx_B];
+                    }
+                }
+            }
+        }
+    }
+}
+
 template <typename T>
 int csrilu0(int                  m,
             const int*           ptr,
