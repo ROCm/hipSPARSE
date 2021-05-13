@@ -136,6 +136,36 @@ void testing_spmm_csr_bad_arg(void)
             handle, transA, transB, &alpha, A, B, &beta, C, dataType, alg, nullptr),
         "Error: bsize is nullptr");
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11021)
+    // SpMM_preprocess
+    verify_hipsparse_status_invalid_handle(hipsparseSpMM_preprocess(
+        nullptr, transA, transB, &alpha, A, B, &beta, C, dataType, alg, dbuf));
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseSpMM_preprocess(
+            handle, transA, transB, nullptr, A, B, &beta, C, dataType, alg, dbuf),
+        "Error: alpha is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseSpMM_preprocess(
+            handle, transA, transB, &alpha, nullptr, B, &beta, C, dataType, alg, dbuf),
+        "Error: A is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseSpMM_preprocess(
+            handle, transA, transB, &alpha, A, nullptr, &beta, C, dataType, alg, dbuf),
+        "Error: B is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseSpMM_preprocess(
+            handle, transA, transB, &alpha, A, B, nullptr, C, dataType, alg, dbuf),
+        "Error: beta is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseSpMM_preprocess(
+            handle, transA, transB, &alpha, A, B, &beta, nullptr, dataType, alg, dbuf),
+        "Error: C is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseSpMM_preprocess(
+            handle, transA, transB, &alpha, A, B, &beta, nullptr, dataType, alg, nullptr),
+        "Error: dbuf is nullptr");
+#endif
+
     // SpMM
     verify_hipsparse_status_invalid_handle(
         hipsparseSpMM(nullptr, transA, transB, &alpha, A, B, &beta, C, dataType, alg, dbuf));
@@ -300,11 +330,19 @@ hipsparseStatus_t testing_spmm_csr()
 
     // ROCSPARSE pointer mode host
     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11021)
+    CHECK_HIPSPARSE_ERROR(hipsparseSpMM_preprocess(
+        handle, transA, transB, &h_alpha, A, B, &h_beta, C1, typeT, alg, buffer));
+#endif
     CHECK_HIPSPARSE_ERROR(
         hipsparseSpMM(handle, transA, transB, &h_alpha, A, B, &h_beta, C1, typeT, alg, buffer));
 
     // ROCSPARSE pointer mode device
     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11021)
+    CHECK_HIPSPARSE_ERROR(hipsparseSpMM_preprocess(
+        handle, transA, transB, d_alpha, A, B, d_beta, C2, typeT, alg, buffer));
+#endif
     CHECK_HIPSPARSE_ERROR(
         hipsparseSpMM(handle, transA, transB, d_alpha, A, B, d_beta, C2, typeT, alg, buffer));
 
