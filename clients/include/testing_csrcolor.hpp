@@ -38,7 +38,6 @@
 using namespace hipsparse;
 using namespace hipsparse_test;
 
-
 template <typename T>
 void testing_csrcolor_bad_arg(void)
 {
