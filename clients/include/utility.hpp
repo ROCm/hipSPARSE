@@ -2306,8 +2306,8 @@ template <typename I, typename J, typename T>
 void host_csrmm(J                     M,
                 J                     N,
                 J                     K,
-                hipsparseOperation_t   transA,
-                hipsparseOperation_t   transB,
+                hipsparseOperation_t  transA,
+                hipsparseOperation_t  transB,
                 T                     alpha,
                 const std::vector<I>& csr_row_ptr_A,
                 const std::vector<J>& csr_col_ind_A,
@@ -2317,7 +2317,7 @@ void host_csrmm(J                     M,
                 T                     beta,
                 std::vector<T>&       C,
                 J                     ldc,
-                hipsparseOrder_t       order,
+                hipsparseOrder_t      order,
                 hipsparseIndexBase_t  base)
 {
     if(transA == HIPSPARSE_OPERATION_NON_TRANSPOSE)
@@ -2338,7 +2338,8 @@ void host_csrmm(J                     M,
                 for(I k = row_begin; k < row_end; ++k)
                 {
                     J idx_B = 0;
-                    if((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE && order == HIPSPARSE_ORDER_COLUMN)
+                    if((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE
+                        && order == HIPSPARSE_ORDER_COLUMN)
                        || (transB == HIPSPARSE_OPERATION_TRANSPOSE && order == HIPSPARSE_ORDER_ROW)
                        || (transB == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE
                            && order == HIPSPARSE_ORDER_ROW))
@@ -2402,7 +2403,8 @@ void host_csrmm(J                     M,
 
                     J idx_B = 0;
 
-                    if((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE && order == HIPSPARSE_ORDER_COLUMN)
+                    if((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE
+                        && order == HIPSPARSE_ORDER_COLUMN)
                        || (transB == HIPSPARSE_OPERATION_TRANSPOSE && order == HIPSPARSE_ORDER_ROW)
                        || (transB == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE
                            && order == HIPSPARSE_ORDER_ROW))
