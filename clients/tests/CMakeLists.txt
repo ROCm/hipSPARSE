@@ -202,6 +202,7 @@ set(HIPSPARSE_TEST_SOURCES
   test_gtsv2_strided_batch.cpp
   test_gtsv.cpp
   test_gtsv2_nopivot.cpp
+  test_csrcolor.cpp
 )
 
 
