@@ -41,8 +41,12 @@ double csrmm_alpha_range[] = {-0.5};
 double csrmm_beta_range[]  = {0.5};
 
 base  csrmm_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
-trans csrmm_transA_range[]  = {HIPSPARSE_OPERATION_NON_TRANSPOSE};
-trans csrmm_transB_range[]  = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPERATION_TRANSPOSE};
+trans csrmm_transA_range[]  = {HIPSPARSE_OPERATION_NON_TRANSPOSE,
+                              HIPSPARSE_OPERATION_TRANSPOSE,
+                              HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE};
+trans csrmm_transB_range[]  = {HIPSPARSE_OPERATION_NON_TRANSPOSE,
+                              HIPSPARSE_OPERATION_TRANSPOSE,
+                              HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE};
 
 std::string csrmm_bin[] = {"rma10.bin", "nos1.bin", "nos3.bin", "nos5.bin", "nos7.bin"};
 

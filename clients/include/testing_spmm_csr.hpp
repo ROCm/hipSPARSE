@@ -353,42 +353,22 @@ hipsparseStatus_t testing_spmm_csr()
     // CPU
     double cpu_time_used = get_time_us();
 
-    for(J i = 0; i < m; ++i)
-    {
-        for(J j = 0; j < n; ++j)
-        {
-            I row_begin = hcsr_row_ptr[i] - idx_base;
-            I row_end   = hcsr_row_ptr[i + 1] - idx_base;
-            J idx_C     = order == HIPSPARSE_ORDER_COLUMN ? i + j * ldc : i * ldc + j;
-
-            T sum = make_DataType<T>(0);
-
-            for(I k = row_begin; k < row_end; ++k)
-            {
-                J idx_B = 0;
-                if((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE && order == HIPSPARSE_ORDER_COLUMN)
-                   || (transB == HIPSPARSE_OPERATION_TRANSPOSE && order == HIPSPARSE_ORDER_ROW))
-                {
-                    idx_B = (hcsr_col_ind[k] - idx_base + j * ldb);
-                }
-                else
-                {
-                    idx_B = (j + (hcsr_col_ind[k] - idx_base) * ldb);
-                }
-
-                sum = testing_fma(hcsr_val[k], hB[idx_B], sum);
-            }
-
-            if(h_beta == make_DataType<T>(0))
-            {
-                hC_gold[idx_C] = h_alpha * sum;
-            }
-            else
-            {
-                hC_gold[idx_C] = testing_fma(h_beta, hC_gold[idx_C], h_alpha * sum);
-            }
-        }
-    }
+    host_csrmm(m,
+               n,
+               k,
+               transA,
+               transB,
+               h_alpha,
+               hcsr_row_ptr,
+               hcsr_col_ind,
+               hcsr_val,
+               hB,
+               ldb,
+               h_beta,
+               hC_gold,
+               ldc,
+               order,
+               idx_base);
 
     cpu_time_used = get_time_us() - cpu_time_used;
 
