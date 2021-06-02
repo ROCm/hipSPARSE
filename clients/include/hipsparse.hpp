@@ -224,6 +224,26 @@ namespace hipsparse
                                       T*                        y);
 
     template <typename T>
+    hipsparseStatus_t hipsparseXbsrxmv(hipsparseHandle_t         handle,
+                                      hipsparseDirection_t      dir,
+                                      hipsparseOperation_t      trans,
+				      int                       sizeOfMask,
+                                      int                       mb,
+                                      int                       nb,
+                                      int                       nnzb,
+                                      const T*                  alpha,
+                                      const hipsparseMatDescr_t descr,
+                                      const T*                  bsrVal,
+				      const int*                bsrMaskPtr,
+                                      const int*                bsrRowPtr,
+                                      const int*                bsrEndPtr,
+                                      const int*                bsrColInd,
+                                      int                       blockDim,
+                                      const T*                  x,
+                                      const T*                  beta,
+                                      T*                        y);
+
+    template <typename T>
     hipsparseStatus_t hipsparseXbsrsv2_bufferSize(hipsparseHandle_t         handle,
                                                   hipsparseDirection_t      dir,
                                                   hipsparseOperation_t      transA,

@@ -1321,6 +1321,120 @@ module hipsparse
             type(c_ptr), value :: y
         end function hipsparseZbsrmv
 
+
+!       hipsparseXbsrxmv
+        function hipsparseSbsrxmv(handle, dir, trans, sizeOfMask, &
+                mb, nb, nnzb, alpha, descr, bsrVal, &
+                bsrMaskPtr, bsrRowPtr, bsrEndPtr, bsrColInd, blockDim, x, beta, y) &
+                bind(c, name = 'hipsparseSbsrxmv')
+            use hipsparse_enums
+            use iso_c_binding
+            implicit none
+            integer(kind(HIPSPARSE_STATUS_SUCCESS)) :: hipsparseSbsrxmv
+            type(c_ptr), value :: handle
+            integer(c_int), value :: dir
+            integer(c_int), value :: trans
+            integer(c_int), value :: sizeOfMask
+            integer(c_int), value :: mb
+            integer(c_int), value :: nb
+            integer(c_int), value :: nnzb
+            type(c_ptr), intent(in), value :: alpha
+            type(c_ptr), intent(in), value :: descr
+            type(c_ptr), intent(in), value :: bsrVal
+            type(c_ptr), intent(in), value :: bsrMaskPtr
+            type(c_ptr), intent(in), value :: bsrRowPtr
+            type(c_ptr), intent(in), value :: bsrEndPtr
+            type(c_ptr), intent(in), value :: bsrColInd
+            integer(c_int), value :: blockDim
+            type(c_ptr), intent(in), value :: x
+            type(c_ptr), intent(in), value :: beta
+            type(c_ptr), value :: y
+        end function hipsparseSbsrxmv
+
+        function hipsparseDbsrxmv(handle, dir, trans, sizeOfMask, &
+                mb, nb, nnzb, alpha, descr, bsrVal, &
+                bsrMaskPtr, bsrRowPtr, bsrEndPtr, bsrColInd, blockDim, x, beta, y) &
+                bind(c, name = 'hipsparseDbsrxmv')
+            use hipsparse_enums
+            use iso_c_binding
+            implicit none
+            integer(kind(HIPSPARSE_STATUS_SUCCESS)) :: hipsparseDbsrxmv
+            type(c_ptr), value :: handle
+            integer(c_int), value :: dir
+            integer(c_int), value :: trans
+            integer(c_int), value :: sizeOfMask
+            integer(c_int), value :: mb
+            integer(c_int), value :: nb
+            integer(c_int), value :: nnzb
+            type(c_ptr), intent(in), value :: alpha
+            type(c_ptr), intent(in), value :: descr
+            type(c_ptr), intent(in), value :: bsrVal
+            type(c_ptr), intent(in), value :: bsrMaskPtr
+            type(c_ptr), intent(in), value :: bsrRowPtr
+            type(c_ptr), intent(in), value :: bsrEndPtr
+            type(c_ptr), intent(in), value :: bsrColInd
+            integer(c_int), value :: blockDim
+            type(c_ptr), intent(in), value :: x
+            type(c_ptr), intent(in), value :: beta
+            type(c_ptr), value :: y
+        end function hipsparseDbsrxmv
+
+        function hipsparseCbsrxmv(handle, dir, trans, sizeOfMask, &
+                mb, nb, nnzb, alpha, descr, bsrVal, &
+                bsrMaskPtr, bsrRowPtr, bsrEndPtr, bsrColInd, blockDim, x, beta, y) &
+                bind(c, name = 'hipsparseCbsrxmv')
+            use hipsparse_enums
+            use iso_c_binding
+            implicit none
+            integer(kind(HIPSPARSE_STATUS_SUCCESS)) :: hipsparseCbsrxmv
+            type(c_ptr), value :: handle
+            integer(c_int), value :: dir
+            integer(c_int), value :: trans
+            integer(c_int), value :: sizeOfMask
+            integer(c_int), value :: mb
+            integer(c_int), value :: nb
+            integer(c_int), value :: nnzb
+            type(c_ptr), intent(in), value :: alpha
+            type(c_ptr), intent(in), value :: descr
+            type(c_ptr), intent(in), value :: bsrVal
+            type(c_ptr), intent(in), value :: bsrMaskPtr
+            type(c_ptr), intent(in), value :: bsrRowPtr
+            type(c_ptr), intent(in), value :: bsrEndPtr
+            type(c_ptr), intent(in), value :: bsrColInd
+            integer(c_int), value :: blockDim
+            type(c_ptr), intent(in), value :: x
+            type(c_ptr), intent(in), value :: beta
+            type(c_ptr), value :: y
+        end function hipsparseCbsrxmv
+      
+        function hipsparseZbsrxmv(handle, dir, trans, sizeOfMask, &
+                mb, nb, nnzb, alpha, descr, bsrVal, &
+                bsrMaskPtr, bsrRowPtr, bsrEndPtr, bsrColInd, blockDim, x, beta, y) &
+                bind(c, name = 'hipsparseZbsrxmv')
+            use hipsparse_enums
+            use iso_c_binding
+            implicit none
+            integer(kind(HIPSPARSE_STATUS_SUCCESS)) :: hipsparseZbsrxmv
+            type(c_ptr), value :: handle
+            integer(c_int), value :: dir
+            integer(c_int), value :: trans
+            integer(c_int), value :: sizeOfMask
+            integer(c_int), value :: mb
+            integer(c_int), value :: nb
+            integer(c_int), value :: nnzb
+            type(c_ptr), intent(in), value :: alpha
+            type(c_ptr), intent(in), value :: descr
+            type(c_ptr), intent(in), value :: bsrVal
+            type(c_ptr), intent(in), value :: bsrMaskPtr
+            type(c_ptr), intent(in), value :: bsrRowPtr
+            type(c_ptr), intent(in), value :: bsrEndPtr
+            type(c_ptr), intent(in), value :: bsrColInd
+            integer(c_int), value :: blockDim
+            type(c_ptr), intent(in), value :: x
+            type(c_ptr), intent(in), value :: beta
+            type(c_ptr), value :: y
+        end function hipsparseZbsrxmv
+      
         function hipsparseSgemvi_bufferSize(handle, transA, m, n, nnz, pBufferSize) &
                 bind(c, name = 'hipsparseSgemvi_bufferSize')
             use hipsparse_enums
