@@ -17,6 +17,8 @@ function display_help()
   echo "    [-r]--relocatable] create a package to support relocatable ROCm"
   echo "    [-c|--clients] build library clients too (combines with -i & -d)"
   echo "    [-g|--debug] -DCMAKE_BUILD_TYPE=Debug (default is =Release)"
+  echo "    [-k|--relwithdebinfo] -DCMAKE_BUILD_TYPE=RelWithDebInfo"
+  echo "    [--codecoverage] build with code coverage profiling enabled"
   echo "    [--cuda] build library for cuda backend"
   echo "    [--static] build static library"
 }
@@ -241,6 +243,8 @@ build_clients=false
 build_cuda=false
 build_static=false
 build_release=true
+build_release_debug=false
+build_codecoverage=false
 install_prefix=hipsparse-install
 rocm_path=/opt/rocm
 build_relocatable=false
@@ -252,7 +256,7 @@ build_relocatable=false
 # check if we have a modern version of getopt that can handle whitespace and long parameters
 getopt -T
 if [[ $? -eq 4 ]]; then
-  GETOPT_PARSE=$(getopt --name "${0}" --longoptions help,install,clients,dependencies,debug,cuda,static,relocatable --options hicdgr -- "$@")
+  GETOPT_PARSE=$(getopt --name "${0}" --longoptions help,install,clients,dependencies,debug,cuda,static,relocatable,codecoverage,relwithdebinfo --options hicdgrk -- "$@")
 else
   echo "Need a new version of getopt"
   exit 1
@@ -292,6 +296,13 @@ while true; do
     --static)
         build_static=true
         shift ;;
+    -k|--relwithdebinfo)
+        build_release=false
+        build_release_debug=true
+        shift ;;
+    --codecoverage)
+        build_codecoverage=true
+        shift ;;
     --prefix)
         install_prefix=${2}
         shift 2 ;;
@@ -322,6 +333,8 @@ printf "\033[32mCreating project build directory in: \033[33m${build_dir}\033[0m
 # ensure a clean build environment
 if [[ "${build_release}" == true ]]; then
   rm -rf ${build_dir}/release
+elif [[ "${build_release_debug}" == true ]]; then
+  rm -rf ${build_dir}/release-debug
 else
   rm -rf ${build_dir}/debug
 fi
@@ -373,9 +386,21 @@ pushd .
   if [[ "${build_release}" == true ]]; then
     mkdir -p ${build_dir}/release/clients && cd ${build_dir}/release
     cmake_common_options="${cmake_common_options} -DCMAKE_BUILD_TYPE=Release"
+  elif [[ "${build_release_debug}" == true ]]; then
+    mkdir -p ${build_dir}/release-debug/clients && cd ${build_dir}/release-debug
+    cmake_common_options="${cmake_common_options}  -DCMAKE_BUILD_TYPE=RelWithDebInfo"
   else
     mkdir -p ${build_dir}/debug/clients && cd ${build_dir}/debug
     cmake_common_options="${cmake_common_options} -DCMAKE_BUILD_TYPE=Debug"
+  fi
+
+  # code coverage
+  if [[ "${build_codecoverage}" == true ]]; then
+      if [[ "${build_release}" == true ]]; then
+          echo "Code coverage is chosen to be not disabled in Release mode, to enable code coverage select either Debug mode (-g | --debug) or RelWithDebInfo mode (-k | --relwithdebinfo); aborting";
+          exit 1
+      fi
+      cmake_common_options="${cmake_common_options} -DBUILD_CODE_COVERAGE=ON"
   fi
 
   # library type
