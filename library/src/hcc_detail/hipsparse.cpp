@@ -3463,7 +3463,7 @@ hipsparseStatus_t hipsparseDbsrsm2_bufferSize(hipsparseHandle_t         handle,
                                      bsrSortedColIndA,
                                      blockDim,
                                      (rocsparse_mat_info)info,
-                                     pBufferSizeInBytes));
+                                     &size));
 
     *pBufferSizeInBytes = (int)size;
 
@@ -3506,7 +3506,7 @@ hipsparseStatus_t hipsparseCbsrsm2_bufferSize(hipsparseHandle_t         handle,
                                      bsrSortedColIndA,
                                      blockDim,
                                      (rocsparse_mat_info)info,
-                                     pBufferSizeInBytes));
+                                     &size));
 
     *pBufferSizeInBytes = (int)size;
 
@@ -3549,7 +3549,7 @@ hipsparseStatus_t hipsparseZbsrsm2_bufferSize(hipsparseHandle_t         handle,
                                      bsrSortedColIndA,
                                      blockDim,
                                      (rocsparse_mat_info)info,
-                                     pBufferSizeInBytes));
+                                     &size));
 
     *pBufferSizeInBytes = (int)size;
 
