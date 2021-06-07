@@ -3385,19 +3385,19 @@ hipsparseStatus_t
 }
 
 hipsparseStatus_t hipsparseSbsrsm2_bufferSize(hipsparseHandle_t         handle,
-                                                 hipsparseDirection_t      dirA,
-                                                 hipsparseOperation_t      transA,
-                                                 hipsparseOperation_t      transX,
-                                                 int                       mb,
-                                                 int                       nrhs,
-                                                 int                       nnzb,
-                                                 const hipsparseMatDescr_t descrA,
-                                                 float*              bsrSortedValA,
-                                                 const int*                bsrSortedRowPtrA,
-                                                 const int*                bsrSortedColIndA,
-                                                 int                       blockDim,
-                                                 bsrsm2Info_t              info,
-                                                 int*                   pBufferSizeInBytes)
+                                              hipsparseDirection_t      dirA,
+                                              hipsparseOperation_t      transA,
+                                              hipsparseOperation_t      transX,
+                                              int                       mb,
+                                              int                       nrhs,
+                                              int                       nnzb,
+                                              const hipsparseMatDescr_t descrA,
+                                              float*                    bsrSortedValA,
+                                              const int*                bsrSortedRowPtrA,
+                                              const int*                bsrSortedColIndA,
+                                              int                       blockDim,
+                                              bsrsm2Info_t              info,
+                                              int*                      pBufferSizeInBytes)
 {
     if(pBufferSizeInBytes == nullptr)
     {
@@ -3428,19 +3428,19 @@ hipsparseStatus_t hipsparseSbsrsm2_bufferSize(hipsparseHandle_t         handle,
 }
 
 hipsparseStatus_t hipsparseDbsrsm2_bufferSize(hipsparseHandle_t         handle,
-                                                 hipsparseDirection_t      dirA,
-                                                 hipsparseOperation_t      transA,
-                                                 hipsparseOperation_t      transX,
-                                                 int                       mb,
-                                                 int                       nrhs,
-                                                 int                       nnzb,
-                                                 const hipsparseMatDescr_t descrA,
-                                                 double*             bsrSortedValA,
-                                                 const int*                bsrSortedRowPtrA,
-                                                 const int*                bsrSortedColIndA,
-                                                 int                       blockDim,
-                                                 bsrsm2Info_t              info,
-                                                 int*                   pBufferSizeInBytes)
+                                              hipsparseDirection_t      dirA,
+                                              hipsparseOperation_t      transA,
+                                              hipsparseOperation_t      transX,
+                                              int                       mb,
+                                              int                       nrhs,
+                                              int                       nnzb,
+                                              const hipsparseMatDescr_t descrA,
+                                              double*                   bsrSortedValA,
+                                              const int*                bsrSortedRowPtrA,
+                                              const int*                bsrSortedColIndA,
+                                              int                       blockDim,
+                                              bsrsm2Info_t              info,
+                                              int*                      pBufferSizeInBytes)
 {
     if(pBufferSizeInBytes == nullptr)
     {
@@ -3471,19 +3471,19 @@ hipsparseStatus_t hipsparseDbsrsm2_bufferSize(hipsparseHandle_t         handle,
 }
 
 hipsparseStatus_t hipsparseCbsrsm2_bufferSize(hipsparseHandle_t         handle,
-                                                 hipsparseDirection_t      dirA,
-                                                 hipsparseOperation_t      transA,
-                                                 hipsparseOperation_t      transX,
-                                                 int                       mb,
-                                                 int                       nrhs,
-                                                 int                       nnzb,
-                                                 const hipsparseMatDescr_t descrA,
-                                                 hipComplex*         bsrSortedValA,
-                                                 const int*                bsrSortedRowPtrA,
-                                                 const int*                bsrSortedColIndA,
-                                                 int                       blockDim,
-                                                 bsrsm2Info_t              info,
-                                                 int*                   pBufferSizeInBytes)
+                                              hipsparseDirection_t      dirA,
+                                              hipsparseOperation_t      transA,
+                                              hipsparseOperation_t      transX,
+                                              int                       mb,
+                                              int                       nrhs,
+                                              int                       nnzb,
+                                              const hipsparseMatDescr_t descrA,
+                                              hipComplex*               bsrSortedValA,
+                                              const int*                bsrSortedRowPtrA,
+                                              const int*                bsrSortedColIndA,
+                                              int                       blockDim,
+                                              bsrsm2Info_t              info,
+                                              int*                      pBufferSizeInBytes)
 {
     if(pBufferSizeInBytes == nullptr)
     {
@@ -3514,19 +3514,19 @@ hipsparseStatus_t hipsparseCbsrsm2_bufferSize(hipsparseHandle_t         handle,
 }
 
 hipsparseStatus_t hipsparseZbsrsm2_bufferSize(hipsparseHandle_t         handle,
-                                                 hipsparseDirection_t      dirA,
-                                                 hipsparseOperation_t      transA,
-                                                 hipsparseOperation_t      transX,
-                                                 int                       mb,
-                                                 int                       nrhs,
-                                                 int                       nnzb,
-                                                 const hipsparseMatDescr_t descrA,
-                                                 hipDoubleComplex*   bsrSortedValA,
-                                                 const int*                bsrSortedRowPtrA,
-                                                 const int*                bsrSortedColIndA,
-                                                 int                       blockDim,
-                                                 bsrsm2Info_t              info,
-                                                 int*                   pBufferSizeInBytes)
+                                              hipsparseDirection_t      dirA,
+                                              hipsparseOperation_t      transA,
+                                              hipsparseOperation_t      transX,
+                                              int                       mb,
+                                              int                       nrhs,
+                                              int                       nnzb,
+                                              const hipsparseMatDescr_t descrA,
+                                              hipDoubleComplex*         bsrSortedValA,
+                                              const int*                bsrSortedRowPtrA,
+                                              const int*                bsrSortedColIndA,
+                                              int                       blockDim,
+                                              bsrsm2Info_t              info,
+                                              int*                      pBufferSizeInBytes)
 {
     if(pBufferSizeInBytes == nullptr)
     {
