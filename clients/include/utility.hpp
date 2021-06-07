@@ -2405,9 +2405,9 @@ void host_csrmm(J                     M,
                     J idx_B = 0;
                     if((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE
                         && order == HIPSPARSE_ORDER_COLUMN)
-                       || (transB == HIPSPARSE_OPERATION_TRANSPOSE && order == HIPSPARSE_ORDER_ROW)
+                       || (transB == HIPSPARSE_OPERATION_TRANSPOSE && order != HIPSPARSE_ORDER_COLUMN)
                        || (transB == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE
-                           && order == HIPSPARSE_ORDER_ROW))
+                           && order != HIPSPARSE_ORDER_COLUMN))
                     {
                         idx_B = (csr_col_ind_A[k] - base + j * ldb);
                     }
@@ -2470,9 +2470,9 @@ void host_csrmm(J                     M,
 
                     if((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE
                         && order == HIPSPARSE_ORDER_COLUMN)
-                       || (transB == HIPSPARSE_OPERATION_TRANSPOSE && order == HIPSPARSE_ORDER_ROW)
+                       || (transB == HIPSPARSE_OPERATION_TRANSPOSE && order != HIPSPARSE_ORDER_COLUMN)
                        || (transB == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE
-                           && order == HIPSPARSE_ORDER_ROW))
+                           && order != HIPSPARSE_ORDER_COLUMN))
                     {
                         idx_B = (i + j * ldb);
                     }

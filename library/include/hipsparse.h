@@ -1503,7 +1503,7 @@ hipsparseStatus_t
     hipsparseXbsrsm2_zeroPivot(hipsparseHandle_t handle, bsrsm2Info_t info, int* position);
 
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseSbsrsm2_bufferSizeExt(hipsparseHandle_t         handle,
+hipsparseStatus_t hipsparseSbsrsm2_bufferSize(hipsparseHandle_t         handle,
                                                  hipsparseDirection_t      dirA,
                                                  hipsparseOperation_t      transA,
                                                  hipsparseOperation_t      transX,
@@ -1511,15 +1511,15 @@ hipsparseStatus_t hipsparseSbsrsm2_bufferSizeExt(hipsparseHandle_t         handl
                                                  int                       nrhs,
                                                  int                       nnzb,
                                                  const hipsparseMatDescr_t descrA,
-                                                 const float*              bsrSortedValA,
+                                                 float*              bsrSortedValA,
                                                  const int*                bsrSortedRowPtrA,
                                                  const int*                bsrSortedColIndA,
                                                  int                       blockDim,
                                                  bsrsm2Info_t              info,
-                                                 size_t*                   pBufferSizeInBytes);
+                                                 int*                   pBufferSizeInBytes);
 
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseDbsrsm2_bufferSizeExt(hipsparseHandle_t         handle,
+hipsparseStatus_t hipsparseDbsrsm2_bufferSize(hipsparseHandle_t         handle,
                                                  hipsparseDirection_t      dirA,
                                                  hipsparseOperation_t      transA,
                                                  hipsparseOperation_t      transX,
@@ -1527,15 +1527,15 @@ hipsparseStatus_t hipsparseDbsrsm2_bufferSizeExt(hipsparseHandle_t         handl
                                                  int                       nrhs,
                                                  int                       nnzb,
                                                  const hipsparseMatDescr_t descrA,
-                                                 const double*             bsrSortedValA,
+                                                 double*             bsrSortedValA,
                                                  const int*                bsrSortedRowPtrA,
                                                  const int*                bsrSortedColIndA,
                                                  int                       blockDim,
                                                  bsrsm2Info_t              info,
-                                                 size_t*                   pBufferSizeInBytes);
+                                                 int*                   pBufferSizeInBytes);
 
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseCbsrsm2_bufferSizeExt(hipsparseHandle_t         handle,
+hipsparseStatus_t hipsparseCbsrsm2_bufferSize(hipsparseHandle_t         handle,
                                                  hipsparseDirection_t      dirA,
                                                  hipsparseOperation_t      transA,
                                                  hipsparseOperation_t      transX,
@@ -1543,15 +1543,15 @@ hipsparseStatus_t hipsparseCbsrsm2_bufferSizeExt(hipsparseHandle_t         handl
                                                  int                       nrhs,
                                                  int                       nnzb,
                                                  const hipsparseMatDescr_t descrA,
-                                                 const hipComplex*         bsrSortedValA,
+                                                 hipComplex*         bsrSortedValA,
                                                  const int*                bsrSortedRowPtrA,
                                                  const int*                bsrSortedColIndA,
                                                  int                       blockDim,
                                                  bsrsm2Info_t              info,
-                                                 size_t*                   pBufferSizeInBytes);
+                                                 int*                   pBufferSizeInBytes);
 
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseZbsrsm2_bufferSizeExt(hipsparseHandle_t         handle,
+hipsparseStatus_t hipsparseZbsrsm2_bufferSize(hipsparseHandle_t         handle,
                                                  hipsparseDirection_t      dirA,
                                                  hipsparseOperation_t      transA,
                                                  hipsparseOperation_t      transX,
@@ -1559,12 +1559,12 @@ hipsparseStatus_t hipsparseZbsrsm2_bufferSizeExt(hipsparseHandle_t         handl
                                                  int                       nrhs,
                                                  int                       nnzb,
                                                  const hipsparseMatDescr_t descrA,
-                                                 const hipDoubleComplex*   bsrSortedValA,
+                                                 hipDoubleComplex*   bsrSortedValA,
                                                  const int*                bsrSortedRowPtrA,
                                                  const int*                bsrSortedColIndA,
                                                  int                       blockDim,
                                                  bsrsm2Info_t              info,
-                                                 size_t*                   pBufferSizeInBytes);
+                                                 int*                   pBufferSizeInBytes);
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSbsrsm2_analysis(hipsparseHandle_t         handle,

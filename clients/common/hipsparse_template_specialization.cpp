@@ -1946,7 +1946,7 @@ namespace hipsparse
 #endif
 
     template <>
-    hipsparseStatus_t hipsparseXbsrsm2_bufferSizeExt(hipsparseHandle_t         handle,
+    hipsparseStatus_t hipsparseXbsrsm2_bufferSize(hipsparseHandle_t         handle,
                                                      hipsparseDirection_t      dirA,
                                                      hipsparseOperation_t      transA,
                                                      hipsparseOperation_t      transX,
@@ -1954,14 +1954,14 @@ namespace hipsparse
                                                      int                       nrhs,
                                                      int                       nnzb,
                                                      const hipsparseMatDescr_t descrA,
-                                                     const float*              bsrSortedValA,
+                                                     float*              bsrSortedValA,
                                                      const int*                bsrSortedRowPtrA,
                                                      const int*                bsrSortedColIndA,
                                                      int                       blockDim,
                                                      bsrsm2Info_t              info,
-                                                     size_t*                   pBufferSizeInBytes)
+                                                     int*                   pBufferSizeInBytes)
     {
-        return hipsparseSbsrsm2_bufferSizeExt(handle,
+        return hipsparseSbsrsm2_bufferSize(handle,
                                               dirA,
                                               transA,
                                               transX,
@@ -1978,7 +1978,7 @@ namespace hipsparse
     }
 
     template <>
-    hipsparseStatus_t hipsparseXbsrsm2_bufferSizeExt(hipsparseHandle_t         handle,
+    hipsparseStatus_t hipsparseXbsrsm2_bufferSize(hipsparseHandle_t         handle,
                                                      hipsparseDirection_t      dirA,
                                                      hipsparseOperation_t      transA,
                                                      hipsparseOperation_t      transX,
@@ -1986,14 +1986,14 @@ namespace hipsparse
                                                      int                       nrhs,
                                                      int                       nnzb,
                                                      const hipsparseMatDescr_t descrA,
-                                                     const double*             bsrSortedValA,
+                                                     double*             bsrSortedValA,
                                                      const int*                bsrSortedRowPtrA,
                                                      const int*                bsrSortedColIndA,
                                                      int                       blockDim,
                                                      bsrsm2Info_t              info,
-                                                     size_t*                   pBufferSizeInBytes)
+                                                     int*                   pBufferSizeInBytes)
     {
-        return hipsparseDbsrsm2_bufferSizeExt(handle,
+        return hipsparseDbsrsm2_bufferSize(handle,
                                               dirA,
                                               transA,
                                               transX,
@@ -2010,7 +2010,7 @@ namespace hipsparse
     }
 
     template <>
-    hipsparseStatus_t hipsparseXbsrsm2_bufferSizeExt(hipsparseHandle_t         handle,
+    hipsparseStatus_t hipsparseXbsrsm2_bufferSize(hipsparseHandle_t         handle,
                                                      hipsparseDirection_t      dirA,
                                                      hipsparseOperation_t      transA,
                                                      hipsparseOperation_t      transX,
@@ -2018,14 +2018,14 @@ namespace hipsparse
                                                      int                       nrhs,
                                                      int                       nnzb,
                                                      const hipsparseMatDescr_t descrA,
-                                                     const hipComplex*         bsrSortedValA,
+                                                     hipComplex*         bsrSortedValA,
                                                      const int*                bsrSortedRowPtrA,
                                                      const int*                bsrSortedColIndA,
                                                      int                       blockDim,
                                                      bsrsm2Info_t              info,
-                                                     size_t*                   pBufferSizeInBytes)
+                                                     int*                   pBufferSizeInBytes)
     {
-        return hipsparseCbsrsm2_bufferSizeExt(handle,
+        return hipsparseCbsrsm2_bufferSize(handle,
                                               dirA,
                                               transA,
                                               transX,
@@ -2042,7 +2042,7 @@ namespace hipsparse
     }
 
     template <>
-    hipsparseStatus_t hipsparseXbsrsm2_bufferSizeExt(hipsparseHandle_t         handle,
+    hipsparseStatus_t hipsparseXbsrsm2_bufferSize(hipsparseHandle_t         handle,
                                                      hipsparseDirection_t      dirA,
                                                      hipsparseOperation_t      transA,
                                                      hipsparseOperation_t      transX,
@@ -2050,14 +2050,14 @@ namespace hipsparse
                                                      int                       nrhs,
                                                      int                       nnzb,
                                                      const hipsparseMatDescr_t descrA,
-                                                     const hipDoubleComplex*   bsrSortedValA,
+                                                     hipDoubleComplex*   bsrSortedValA,
                                                      const int*                bsrSortedRowPtrA,
                                                      const int*                bsrSortedColIndA,
                                                      int                       blockDim,
                                                      bsrsm2Info_t              info,
-                                                     size_t*                   pBufferSizeInBytes)
+                                                     int*                   pBufferSizeInBytes)
     {
-        return hipsparseZbsrsm2_bufferSizeExt(handle,
+        return hipsparseZbsrsm2_bufferSize(handle,
                                               dirA,
                                               transA,
                                               transX,

@@ -38,6 +38,7 @@ using namespace hipsparse_test;
 
 void testing_bsrsm2_bad_arg(void)
 {
+#ifdef __HIP_PLATFORM_AMD__
     int   mb        = 100;
     int   nrhs      = 100;
     int   nnzb      = 100;
@@ -81,10 +82,10 @@ void testing_bsrsm2_bad_arg(void)
         return;
     }
 
-    // testing hipsparseXbsrsm2_bufferSizeExt
-    size_t size;
+    // testing hipsparseXbsrsm2_bufferSize
+    int size;
 
-    verify_hipsparse_status_invalid_handle(hipsparseXbsrsm2_bufferSizeExt(nullptr,
+    verify_hipsparse_status_invalid_handle(hipsparseXbsrsm2_bufferSize(nullptr,
                                                                           dirA,
                                                                           transA,
                                                                           transX,
@@ -98,7 +99,7 @@ void testing_bsrsm2_bad_arg(void)
                                                                           block_dim,
                                                                           info,
                                                                           &size));
-    verify_hipsparse_status_invalid_pointer(hipsparseXbsrsm2_bufferSizeExt(handle,
+    verify_hipsparse_status_invalid_pointer(hipsparseXbsrsm2_bufferSize(handle,
                                                                            dirA,
                                                                            transA,
                                                                            transX,
@@ -113,7 +114,7 @@ void testing_bsrsm2_bad_arg(void)
                                                                            info,
                                                                            &size),
                                             "Error: descr is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXbsrsm2_bufferSizeExt(handle,
+    verify_hipsparse_status_invalid_pointer(hipsparseXbsrsm2_bufferSize(handle,
                                                                            dirA,
                                                                            transA,
                                                                            transX,
@@ -121,14 +122,14 @@ void testing_bsrsm2_bad_arg(void)
                                                                            nrhs,
                                                                            nnzb,
                                                                            descr,
-                                                                           (const float*)nullptr,
+                                                                           (float*)nullptr,
                                                                            dptr,
                                                                            dcol,
                                                                            block_dim,
                                                                            info,
                                                                            &size),
                                             "Error: dval is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXbsrsm2_bufferSizeExt(handle,
+    verify_hipsparse_status_invalid_pointer(hipsparseXbsrsm2_bufferSize(handle,
                                                                            dirA,
                                                                            transA,
                                                                            transX,
@@ -143,7 +144,7 @@ void testing_bsrsm2_bad_arg(void)
                                                                            info,
                                                                            &size),
                                             "Error: dptr is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXbsrsm2_bufferSizeExt(handle,
+    verify_hipsparse_status_invalid_pointer(hipsparseXbsrsm2_bufferSize(handle,
                                                                            dirA,
                                                                            transA,
                                                                            transX,
@@ -158,7 +159,7 @@ void testing_bsrsm2_bad_arg(void)
                                                                            info,
                                                                            &size),
                                             "Error: dcol is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXbsrsm2_bufferSizeExt(handle,
+    verify_hipsparse_status_invalid_pointer(hipsparseXbsrsm2_bufferSize(handle,
                                                                            dirA,
                                                                            transA,
                                                                            transX,
@@ -173,7 +174,7 @@ void testing_bsrsm2_bad_arg(void)
                                                                            nullptr,
                                                                            &size),
                                             "Error: info is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXbsrsm2_bufferSizeExt(handle,
+    verify_hipsparse_status_invalid_pointer(hipsparseXbsrsm2_bufferSize(handle,
                                                                            dirA,
                                                                            transA,
                                                                            transX,
@@ -512,6 +513,7 @@ void testing_bsrsm2_bad_arg(void)
                                                                    policy,
                                                                    nullptr),
                                             "Error: dbuf is nullptr");
+#endif
 }
 
 template <typename T>
@@ -541,7 +543,7 @@ hipsparseStatus_t testing_bsrsm2(void)
     hipsparseMatDescr_t           descr = test_descr->descr;
 
     std::unique_ptr<bsrsm2_struct> unique_ptr_bsrsm2_info(new bsrsm2_struct);
-    bsrsv2Info_t                   info = unique_ptr_bsrsm2_info->info;
+    bsrsm2Info_t                   info = unique_ptr_bsrsm2_info->info;
 
     // Host structures
     std::vector<int> hcsr_row_ptr;
@@ -671,9 +673,9 @@ hipsparseStatus_t testing_bsrsm2(void)
                                             dbsr_col_ind));
 
     // Obtain bsrsm2 buffer size
-    size_t size;
+    int size;
 
-    CHECK_HIPSPARSE_ERROR(hipsparseXbsrsm2_bufferSizeExt(handle,
+    CHECK_HIPSPARSE_ERROR(hipsparseXbsrsm2_bufferSize(handle,
                                                          HIPSPARSE_DIRECTION_ROW,
                                                          HIPSPARSE_OPERATION_NON_TRANSPOSE,
                                                          HIPSPARSE_OPERATION_NON_TRANSPOSE,
@@ -717,7 +719,7 @@ hipsparseStatus_t testing_bsrsm2(void)
                                                     dbuffer));
 
     int               pos_analysis;
-    hipsparseStatus_t pivot_analysis = hipsparseXbsrsv2_zeroPivot(handle, info, &pos_analysis);
+    hipsparseStatus_t pivot_analysis = hipsparseXbsrsm2_zeroPivot(handle, info, &pos_analysis);
 
     // ROCSPARSE pointer mode host
     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
@@ -743,7 +745,7 @@ hipsparseStatus_t testing_bsrsm2(void)
                                                  dbuffer));
 
     int               hposition_1;
-    hipsparseStatus_t pivot_status_1 = hipsparseXbsrsv2_zeroPivot(handle, info, &hposition_1);
+    hipsparseStatus_t pivot_status_1 = hipsparseXbsrsm2_zeroPivot(handle, info, &hposition_1);
 
     // ROCSPARSE pointer mode device
     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
@@ -768,7 +770,7 @@ hipsparseStatus_t testing_bsrsm2(void)
                                                  HIPSPARSE_SOLVE_POLICY_USE_LEVEL,
                                                  dbuffer));
 
-    hipsparseStatus_t pivot_status_2 = hipsparseXbsrsv2_zeroPivot(handle, info, dposition);
+    hipsparseStatus_t pivot_status_2 = hipsparseXbsrsm2_zeroPivot(handle, info, dposition);
 
     // Copy output from device to CPU
     int hposition_2;

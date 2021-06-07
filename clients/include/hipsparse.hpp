@@ -351,7 +351,7 @@ namespace hipsparse
 #endif
 
     template <typename T>
-    hipsparseStatus_t hipsparseXbsrsm2_bufferSizeExt(hipsparseHandle_t         handle,
+    hipsparseStatus_t hipsparseXbsrsm2_bufferSize(hipsparseHandle_t         handle,
                                                      hipsparseDirection_t      dirA,
                                                      hipsparseOperation_t      transA,
                                                      hipsparseOperation_t      transX,
@@ -359,12 +359,12 @@ namespace hipsparse
                                                      int                       nrhs,
                                                      int                       nnzb,
                                                      const hipsparseMatDescr_t descrA,
-                                                     const T*                  bsrSortedValA,
+                                                     T*                  bsrSortedValA,
                                                      const int*                bsrSortedRowPtrA,
                                                      const int*                bsrSortedColIndA,
                                                      int                       blockDim,
                                                      bsrsm2Info_t              info,
-                                                     size_t*                   pBufferSizeInBytes);
+                                                     int*                      pBufferSizeInBytes);
 
     template <typename T>
     hipsparseStatus_t hipsparseXbsrsm2_analysis(hipsparseHandle_t         handle,
