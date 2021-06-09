@@ -545,6 +545,16 @@ hipsparseStatus_t hipsparseDestroyBsrsv2Info(bsrsv2Info_t info)
     return hipCUSPARSEStatusToHIPStatus(cusparseDestroyBsrsv2Info((bsrsv2Info_t)info));
 }
 
+hipsparseStatus_t hipsparseCreateBsrsm2Info(bsrsm2Info_t* info)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseCreateBsrsm2Info((bsrsm2Info_t*)info));
+}
+
+hipsparseStatus_t hipsparseDestroyBsrsm2Info(bsrsm2Info_t info)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseDestroyBsrsm2Info((bsrsm2Info_t)info));
+}
+
 hipsparseStatus_t hipsparseCreateBsrilu02Info(bsrilu02Info_t* info)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseCreateBsrilu02Info((bsrilu02Info_t*)info));
@@ -2768,6 +2778,449 @@ hipsparseStatus_t hipsparseZcsrmm2(hipsparseHandle_t         handle,
                                                         ldc));
 }
 #endif
+
+hipsparseStatus_t
+    hipsparseXbsrsm2_zeroPivot(hipsparseHandle_t handle, bsrsm2Info_t info, int* position)
+{
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseXbsrsm2_zeroPivot((cusparseHandle_t)handle, (bsrsm2Info_t)info, position));
+}
+
+hipsparseStatus_t hipsparseSbsrsm2_bufferSize(hipsparseHandle_t         handle,
+                                              hipsparseDirection_t      dirA,
+                                              hipsparseOperation_t      transA,
+                                              hipsparseOperation_t      transX,
+                                              int                       mb,
+                                              int                       nrhs,
+                                              int                       nnzb,
+                                              const hipsparseMatDescr_t descrA,
+                                              float*                    bsrSortedValA,
+                                              const int*                bsrSortedRowPtrA,
+                                              const int*                bsrSortedColIndA,
+                                              int                       blockDim,
+                                              bsrsm2Info_t              info,
+                                              int*                      pBufferSizeInBytes)
+{
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseSbsrsm2_bufferSize((cusparseHandle_t)handle,
+                                   hipDirectionToCudaDirection(dirA),
+                                   hipOperationToCudaOperation(transA),
+                                   hipOperationToCudaOperation(transX),
+                                   mb,
+                                   nrhs,
+                                   nnzb,
+                                   (const cusparseMatDescr_t)descrA,
+                                   bsrSortedValA,
+                                   bsrSortedRowPtrA,
+                                   bsrSortedColIndA,
+                                   blockDim,
+                                   (bsrsm2Info_t)info,
+                                   pBufferSizeInBytes));
+}
+
+hipsparseStatus_t hipsparseDbsrsm2_bufferSize(hipsparseHandle_t         handle,
+                                              hipsparseDirection_t      dirA,
+                                              hipsparseOperation_t      transA,
+                                              hipsparseOperation_t      transX,
+                                              int                       mb,
+                                              int                       nrhs,
+                                              int                       nnzb,
+                                              const hipsparseMatDescr_t descrA,
+                                              double*                   bsrSortedValA,
+                                              const int*                bsrSortedRowPtrA,
+                                              const int*                bsrSortedColIndA,
+                                              int                       blockDim,
+                                              bsrsm2Info_t              info,
+                                              int*                      pBufferSizeInBytes)
+{
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseDbsrsm2_bufferSize((cusparseHandle_t)handle,
+                                   hipDirectionToCudaDirection(dirA),
+                                   hipOperationToCudaOperation(transA),
+                                   hipOperationToCudaOperation(transX),
+                                   mb,
+                                   nrhs,
+                                   nnzb,
+                                   (const cusparseMatDescr_t)descrA,
+                                   bsrSortedValA,
+                                   bsrSortedRowPtrA,
+                                   bsrSortedColIndA,
+                                   blockDim,
+                                   (bsrsm2Info_t)info,
+                                   pBufferSizeInBytes));
+}
+
+hipsparseStatus_t hipsparseCbsrsm2_bufferSize(hipsparseHandle_t         handle,
+                                              hipsparseDirection_t      dirA,
+                                              hipsparseOperation_t      transA,
+                                              hipsparseOperation_t      transX,
+                                              int                       mb,
+                                              int                       nrhs,
+                                              int                       nnzb,
+                                              const hipsparseMatDescr_t descrA,
+                                              hipComplex*               bsrSortedValA,
+                                              const int*                bsrSortedRowPtrA,
+                                              const int*                bsrSortedColIndA,
+                                              int                       blockDim,
+                                              bsrsm2Info_t              info,
+                                              int*                      pBufferSizeInBytes)
+{
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseCbsrsm2_bufferSize((cusparseHandle_t)handle,
+                                   hipDirectionToCudaDirection(dirA),
+                                   hipOperationToCudaOperation(transA),
+                                   hipOperationToCudaOperation(transX),
+                                   mb,
+                                   nrhs,
+                                   nnzb,
+                                   (const cusparseMatDescr_t)descrA,
+                                   (cuComplex*)bsrSortedValA,
+                                   bsrSortedRowPtrA,
+                                   bsrSortedColIndA,
+                                   blockDim,
+                                   (bsrsm2Info_t)info,
+                                   pBufferSizeInBytes));
+}
+
+hipsparseStatus_t hipsparseZbsrsm2_bufferSize(hipsparseHandle_t         handle,
+                                              hipsparseDirection_t      dirA,
+                                              hipsparseOperation_t      transA,
+                                              hipsparseOperation_t      transX,
+                                              int                       mb,
+                                              int                       nrhs,
+                                              int                       nnzb,
+                                              const hipsparseMatDescr_t descrA,
+                                              hipDoubleComplex*         bsrSortedValA,
+                                              const int*                bsrSortedRowPtrA,
+                                              const int*                bsrSortedColIndA,
+                                              int                       blockDim,
+                                              bsrsm2Info_t              info,
+                                              int*                      pBufferSizeInBytes)
+{
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseZbsrsm2_bufferSize((cusparseHandle_t)handle,
+                                   hipDirectionToCudaDirection(dirA),
+                                   hipOperationToCudaOperation(transA),
+                                   hipOperationToCudaOperation(transX),
+                                   mb,
+                                   nrhs,
+                                   nnzb,
+                                   (const cusparseMatDescr_t)descrA,
+                                   (cuDoubleComplex*)bsrSortedValA,
+                                   bsrSortedRowPtrA,
+                                   bsrSortedColIndA,
+                                   blockDim,
+                                   (bsrsm2Info_t)info,
+                                   pBufferSizeInBytes));
+}
+
+hipsparseStatus_t hipsparseSbsrsm2_analysis(hipsparseHandle_t         handle,
+                                            hipsparseDirection_t      dirA,
+                                            hipsparseOperation_t      transA,
+                                            hipsparseOperation_t      transX,
+                                            int                       mb,
+                                            int                       nrhs,
+                                            int                       nnzb,
+                                            const hipsparseMatDescr_t descrA,
+                                            const float*              bsrSortedValA,
+                                            const int*                bsrSortedRowPtrA,
+                                            const int*                bsrSortedColIndA,
+                                            int                       blockDim,
+                                            bsrsm2Info_t              info,
+                                            hipsparseSolvePolicy_t    policy,
+                                            void*                     pBuffer)
+{
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseSbsrsm2_analysis((cusparseHandle_t)handle,
+                                 hipDirectionToCudaDirection(dirA),
+                                 hipOperationToCudaOperation(transA),
+                                 hipOperationToCudaOperation(transX),
+                                 mb,
+                                 nrhs,
+                                 nnzb,
+                                 (const cusparseMatDescr_t)descrA,
+                                 bsrSortedValA,
+                                 bsrSortedRowPtrA,
+                                 bsrSortedColIndA,
+                                 blockDim,
+                                 (bsrsm2Info_t)info,
+                                 hipPolicyToCudaPolicy(policy),
+                                 pBuffer));
+}
+
+hipsparseStatus_t hipsparseDbsrsm2_analysis(hipsparseHandle_t         handle,
+                                            hipsparseDirection_t      dirA,
+                                            hipsparseOperation_t      transA,
+                                            hipsparseOperation_t      transX,
+                                            int                       mb,
+                                            int                       nrhs,
+                                            int                       nnzb,
+                                            const hipsparseMatDescr_t descrA,
+                                            const double*             bsrSortedValA,
+                                            const int*                bsrSortedRowPtrA,
+                                            const int*                bsrSortedColIndA,
+                                            int                       blockDim,
+                                            bsrsm2Info_t              info,
+                                            hipsparseSolvePolicy_t    policy,
+                                            void*                     pBuffer)
+{
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseDbsrsm2_analysis((cusparseHandle_t)handle,
+                                 hipDirectionToCudaDirection(dirA),
+                                 hipOperationToCudaOperation(transA),
+                                 hipOperationToCudaOperation(transX),
+                                 mb,
+                                 nrhs,
+                                 nnzb,
+                                 (const cusparseMatDescr_t)descrA,
+                                 bsrSortedValA,
+                                 bsrSortedRowPtrA,
+                                 bsrSortedColIndA,
+                                 blockDim,
+                                 (bsrsm2Info_t)info,
+                                 hipPolicyToCudaPolicy(policy),
+                                 pBuffer));
+}
+
+hipsparseStatus_t hipsparseCbsrsm2_analysis(hipsparseHandle_t         handle,
+                                            hipsparseDirection_t      dirA,
+                                            hipsparseOperation_t      transA,
+                                            hipsparseOperation_t      transX,
+                                            int                       mb,
+                                            int                       nrhs,
+                                            int                       nnzb,
+                                            const hipsparseMatDescr_t descrA,
+                                            const hipComplex*         bsrSortedValA,
+                                            const int*                bsrSortedRowPtrA,
+                                            const int*                bsrSortedColIndA,
+                                            int                       blockDim,
+                                            bsrsm2Info_t              info,
+                                            hipsparseSolvePolicy_t    policy,
+                                            void*                     pBuffer)
+{
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseCbsrsm2_analysis((cusparseHandle_t)handle,
+                                 hipDirectionToCudaDirection(dirA),
+                                 hipOperationToCudaOperation(transA),
+                                 hipOperationToCudaOperation(transX),
+                                 mb,
+                                 nrhs,
+                                 nnzb,
+                                 (const cusparseMatDescr_t)descrA,
+                                 (const cuComplex*)bsrSortedValA,
+                                 bsrSortedRowPtrA,
+                                 bsrSortedColIndA,
+                                 blockDim,
+                                 (bsrsm2Info_t)info,
+                                 hipPolicyToCudaPolicy(policy),
+                                 pBuffer));
+}
+
+hipsparseStatus_t hipsparseZbsrsm2_analysis(hipsparseHandle_t         handle,
+                                            hipsparseDirection_t      dirA,
+                                            hipsparseOperation_t      transA,
+                                            hipsparseOperation_t      transX,
+                                            int                       mb,
+                                            int                       nrhs,
+                                            int                       nnzb,
+                                            const hipsparseMatDescr_t descrA,
+                                            const hipDoubleComplex*   bsrSortedValA,
+                                            const int*                bsrSortedRowPtrA,
+                                            const int*                bsrSortedColIndA,
+                                            int                       blockDim,
+                                            bsrsm2Info_t              info,
+                                            hipsparseSolvePolicy_t    policy,
+                                            void*                     pBuffer)
+{
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseZbsrsm2_analysis((cusparseHandle_t)handle,
+                                 hipDirectionToCudaDirection(dirA),
+                                 hipOperationToCudaOperation(transA),
+                                 hipOperationToCudaOperation(transX),
+                                 mb,
+                                 nrhs,
+                                 nnzb,
+                                 (const cusparseMatDescr_t)descrA,
+                                 (const cuDoubleComplex*)bsrSortedValA,
+                                 bsrSortedRowPtrA,
+                                 bsrSortedColIndA,
+                                 blockDim,
+                                 (bsrsm2Info_t)info,
+                                 hipPolicyToCudaPolicy(policy),
+                                 pBuffer));
+}
+
+hipsparseStatus_t hipsparseSbsrsm2_solve(hipsparseHandle_t         handle,
+                                         hipsparseDirection_t      dirA,
+                                         hipsparseOperation_t      transA,
+                                         hipsparseOperation_t      transX,
+                                         int                       mb,
+                                         int                       nrhs,
+                                         int                       nnzb,
+                                         const float*              alpha,
+                                         const hipsparseMatDescr_t descrA,
+                                         const float*              bsrSortedValA,
+                                         const int*                bsrSortedRowPtrA,
+                                         const int*                bsrSortedColIndA,
+                                         int                       blockDim,
+                                         bsrsm2Info_t              info,
+                                         const float*              B,
+                                         int                       ldb,
+                                         float*                    X,
+                                         int                       ldx,
+                                         hipsparseSolvePolicy_t    policy,
+                                         void*                     pBuffer)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseSbsrsm2_solve((cusparseHandle_t)handle,
+                                                              hipDirectionToCudaDirection(dirA),
+                                                              hipOperationToCudaOperation(transA),
+                                                              hipOperationToCudaOperation(transX),
+                                                              mb,
+                                                              nrhs,
+                                                              nnzb,
+                                                              alpha,
+                                                              (const cusparseMatDescr_t)descrA,
+                                                              bsrSortedValA,
+                                                              bsrSortedRowPtrA,
+                                                              bsrSortedColIndA,
+                                                              blockDim,
+                                                              (bsrsm2Info_t)info,
+                                                              B,
+                                                              ldb,
+                                                              X,
+                                                              ldx,
+                                                              hipPolicyToCudaPolicy(policy),
+                                                              pBuffer));
+}
+
+hipsparseStatus_t hipsparseDbsrsm2_solve(hipsparseHandle_t         handle,
+                                         hipsparseDirection_t      dirA,
+                                         hipsparseOperation_t      transA,
+                                         hipsparseOperation_t      transX,
+                                         int                       mb,
+                                         int                       nrhs,
+                                         int                       nnzb,
+                                         const double*             alpha,
+                                         const hipsparseMatDescr_t descrA,
+                                         const double*             bsrSortedValA,
+                                         const int*                bsrSortedRowPtrA,
+                                         const int*                bsrSortedColIndA,
+                                         int                       blockDim,
+                                         bsrsm2Info_t              info,
+                                         const double*             B,
+                                         int                       ldb,
+                                         double*                   X,
+                                         int                       ldx,
+                                         hipsparseSolvePolicy_t    policy,
+                                         void*                     pBuffer)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseDbsrsm2_solve((cusparseHandle_t)handle,
+                                                              hipDirectionToCudaDirection(dirA),
+                                                              hipOperationToCudaOperation(transA),
+                                                              hipOperationToCudaOperation(transX),
+                                                              mb,
+                                                              nrhs,
+                                                              nnzb,
+                                                              alpha,
+                                                              (const cusparseMatDescr_t)descrA,
+                                                              bsrSortedValA,
+                                                              bsrSortedRowPtrA,
+                                                              bsrSortedColIndA,
+                                                              blockDim,
+                                                              (bsrsm2Info_t)info,
+                                                              B,
+                                                              ldb,
+                                                              X,
+                                                              ldx,
+                                                              hipPolicyToCudaPolicy(policy),
+                                                              pBuffer));
+}
+
+hipsparseStatus_t hipsparseCbsrsm2_solve(hipsparseHandle_t         handle,
+                                         hipsparseDirection_t      dirA,
+                                         hipsparseOperation_t      transA,
+                                         hipsparseOperation_t      transX,
+                                         int                       mb,
+                                         int                       nrhs,
+                                         int                       nnzb,
+                                         const hipComplex*         alpha,
+                                         const hipsparseMatDescr_t descrA,
+                                         const hipComplex*         bsrSortedValA,
+                                         const int*                bsrSortedRowPtrA,
+                                         const int*                bsrSortedColIndA,
+                                         int                       blockDim,
+                                         bsrsm2Info_t              info,
+                                         const hipComplex*         B,
+                                         int                       ldb,
+                                         hipComplex*               X,
+                                         int                       ldx,
+                                         hipsparseSolvePolicy_t    policy,
+                                         void*                     pBuffer)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseCbsrsm2_solve((cusparseHandle_t)handle,
+                                                              hipDirectionToCudaDirection(dirA),
+                                                              hipOperationToCudaOperation(transA),
+                                                              hipOperationToCudaOperation(transX),
+                                                              mb,
+                                                              nrhs,
+                                                              nnzb,
+                                                              (const cuComplex*)alpha,
+                                                              (const cusparseMatDescr_t)descrA,
+                                                              (const cuComplex*)bsrSortedValA,
+                                                              bsrSortedRowPtrA,
+                                                              bsrSortedColIndA,
+                                                              blockDim,
+                                                              (bsrsm2Info_t)info,
+                                                              (const cuComplex*)B,
+                                                              ldb,
+                                                              (cuComplex*)X,
+                                                              ldx,
+                                                              hipPolicyToCudaPolicy(policy),
+                                                              pBuffer));
+}
+
+hipsparseStatus_t hipsparseZbsrsm2_solve(hipsparseHandle_t         handle,
+                                         hipsparseDirection_t      dirA,
+                                         hipsparseOperation_t      transA,
+                                         hipsparseOperation_t      transX,
+                                         int                       mb,
+                                         int                       nrhs,
+                                         int                       nnzb,
+                                         const hipDoubleComplex*   alpha,
+                                         const hipsparseMatDescr_t descrA,
+                                         const hipDoubleComplex*   bsrSortedValA,
+                                         const int*                bsrSortedRowPtrA,
+                                         const int*                bsrSortedColIndA,
+                                         int                       blockDim,
+                                         bsrsm2Info_t              info,
+                                         const hipDoubleComplex*   B,
+                                         int                       ldb,
+                                         hipDoubleComplex*         X,
+                                         int                       ldx,
+                                         hipsparseSolvePolicy_t    policy,
+                                         void*                     pBuffer)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseZbsrsm2_solve((cusparseHandle_t)handle,
+                                                              hipDirectionToCudaDirection(dirA),
+                                                              hipOperationToCudaOperation(transA),
+                                                              hipOperationToCudaOperation(transX),
+                                                              mb,
+                                                              nrhs,
+                                                              nnzb,
+                                                              (const cuDoubleComplex*)alpha,
+                                                              (const cusparseMatDescr_t)descrA,
+                                                              (const cuDoubleComplex*)bsrSortedValA,
+                                                              bsrSortedRowPtrA,
+                                                              bsrSortedColIndA,
+                                                              blockDim,
+                                                              (bsrsm2Info_t)info,
+                                                              (const cuDoubleComplex*)B,
+                                                              ldb,
+                                                              (cuDoubleComplex*)X,
+                                                              ldx,
+                                                              hipPolicyToCudaPolicy(policy),
+                                                              pBuffer));
+}
 
 hipsparseStatus_t
     hipsparseXcsrsm2_zeroPivot(hipsparseHandle_t handle, csrsm2Info_t info, int* position)

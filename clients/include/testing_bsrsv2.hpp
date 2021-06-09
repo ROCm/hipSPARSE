@@ -869,38 +869,25 @@ hipsparseStatus_t testing_bsrsv2(Arguments argus)
                                   sizeof(T) * nnzb * block_dim * block_dim,
                                   hipMemcpyDeviceToHost));
 
+        int struct_position_gold;
         int position_gold;
-        if((fill_mode == HIPSPARSE_FILL_MODE_LOWER && trans == HIPSPARSE_OPERATION_NON_TRANSPOSE)
-           || fill_mode == HIPSPARSE_FILL_MODE_UPPER && trans == HIPSPARSE_OPERATION_TRANSPOSE)
-        {
-            position_gold = bsr_lsolve(dir,
-                                       trans,
-                                       mb,
-                                       hbsr_row_ptr.data(),
-                                       hbsr_col_ind.data(),
-                                       hbsr_val.data(),
-                                       block_dim,
-                                       h_alpha,
-                                       hx.data(),
-                                       hy_gold.data(),
-                                       idx_base,
-                                       diag_type);
-        }
-        else
-        {
-            position_gold = bsr_usolve(dir,
-                                       trans,
-                                       mb,
-                                       hbsr_row_ptr.data(),
-                                       hbsr_col_ind.data(),
-                                       hbsr_val.data(),
-                                       block_dim,
-                                       h_alpha,
-                                       hx.data(),
-                                       hy_gold.data(),
-                                       idx_base,
-                                       diag_type);
-        }
+
+        bsrsv(trans,
+              dir,
+              mb,
+              nnzb,
+              h_alpha,
+              hbsr_row_ptr.data(),
+              hbsr_col_ind.data(),
+              hbsr_val.data(),
+              block_dim,
+              hx.data(),
+              hy_gold.data(),
+              diag_type,
+              fill_mode,
+              idx_base,
+              &struct_position_gold,
+              &position_gold);
 
         unit_check_general(1, 1, 1, &position_gold, &hposition_1);
         unit_check_general(1, 1, 1, &position_gold, &hposition_2);

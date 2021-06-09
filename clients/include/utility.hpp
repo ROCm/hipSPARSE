@@ -1588,6 +1588,71 @@ inline void host_csr_to_bsr(hipsparseDirection_t    direction,
 }
 
 template <typename T>
+void host_bsr_to_bsc(int                  mb,
+                     int                  nb,
+                     int                  nnzb,
+                     int                  bsr_dim,
+                     const int*           bsr_row_ptr,
+                     const int*           bsr_col_ind,
+                     const T*             bsr_val,
+                     std::vector<int>&    bsc_row_ind,
+                     std::vector<int>&    bsc_col_ptr,
+                     std::vector<T>&      bsc_val,
+                     hipsparseIndexBase_t bsr_base,
+                     hipsparseIndexBase_t bsc_base)
+{
+    bsc_row_ind.resize(nnzb);
+    bsc_col_ptr.resize(nb + 1, 0);
+    bsc_val.resize(nnzb * bsr_dim * bsr_dim);
+
+    // Determine nnz per column
+    for(int i = 0; i < nnzb; ++i)
+    {
+        ++bsc_col_ptr[bsr_col_ind[i] + 1 - bsr_base];
+    }
+
+    // Scan
+    for(int i = 0; i < nb; ++i)
+    {
+        bsc_col_ptr[i + 1] += bsc_col_ptr[i];
+    }
+
+    // Fill row indices and values
+    for(int i = 0; i < mb; ++i)
+    {
+        int row_begin = bsr_row_ptr[i] - bsr_base;
+        int row_end   = bsr_row_ptr[i + 1] - bsr_base;
+
+        for(int j = row_begin; j < row_end; ++j)
+        {
+            int col = bsr_col_ind[j] - bsr_base;
+            int idx = bsc_col_ptr[col];
+
+            bsc_row_ind[idx] = i + bsc_base;
+
+            for(int bi = 0; bi < bsr_dim; ++bi)
+            {
+                for(int bj = 0; bj < bsr_dim; ++bj)
+                {
+                    bsc_val[bsr_dim * bsr_dim * idx + bi + bj * bsr_dim]
+                        = bsr_val[bsr_dim * bsr_dim * j + bi * bsr_dim + bj];
+                }
+            }
+
+            ++bsc_col_ptr[col];
+        }
+    }
+
+    // Shift column pointer array
+    for(int i = nb; i > 0; --i)
+    {
+        bsc_col_ptr[i] = bsc_col_ptr[i - 1] + bsc_base;
+    }
+
+    bsc_col_ptr[0] = bsc_base;
+}
+
+template <typename T>
 inline void host_gebsr_to_csr(hipsparseDirection_t    direction,
                               int                     mb,
                               int                     nb,
@@ -2340,9 +2405,10 @@ void host_csrmm(J                     M,
                     J idx_B = 0;
                     if((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE
                         && order == HIPSPARSE_ORDER_COLUMN)
-                       || (transB == HIPSPARSE_OPERATION_TRANSPOSE && order == HIPSPARSE_ORDER_ROW)
+                       || (transB == HIPSPARSE_OPERATION_TRANSPOSE
+                           && order != HIPSPARSE_ORDER_COLUMN)
                        || (transB == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE
-                           && order == HIPSPARSE_ORDER_ROW))
+                           && order != HIPSPARSE_ORDER_COLUMN))
                     {
                         idx_B = (csr_col_ind_A[k] - base + j * ldb);
                     }
@@ -2405,9 +2471,10 @@ void host_csrmm(J                     M,
 
                     if((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE
                         && order == HIPSPARSE_ORDER_COLUMN)
-                       || (transB == HIPSPARSE_OPERATION_TRANSPOSE && order == HIPSPARSE_ORDER_ROW)
+                       || (transB == HIPSPARSE_OPERATION_TRANSPOSE
+                           && order != HIPSPARSE_ORDER_COLUMN)
                        || (transB == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE
-                           && order == HIPSPARSE_ORDER_ROW))
+                           && order != HIPSPARSE_ORDER_COLUMN))
                     {
                         idx_B = (i + j * ldb);
                     }
@@ -3333,6 +3400,143 @@ static inline void host_ussolve(int                     M,
 }
 
 template <typename T>
+void bsrsm(int                  mb,
+           int                  nrhs,
+           int                  nnzb,
+           hipsparseDirection_t dir,
+           hipsparseOperation_t transA,
+           hipsparseOperation_t transX,
+           T                    alpha,
+           const int*           bsr_row_ptr,
+           const int*           bsr_col_ind,
+           const T*             bsr_val,
+           int                  bsr_dim,
+           const T*             B,
+           int                  ldb,
+           T*                   X,
+           int                  ldx,
+           hipsparseDiagType_t  diag_type,
+           hipsparseFillMode_t  fill_mode,
+           hipsparseIndexBase_t base,
+           int*                 struct_pivot,
+           int*                 numeric_pivot)
+{
+    // Initialize pivot
+    *struct_pivot  = mb + 1;
+    *numeric_pivot = mb + 1;
+
+    if(transA == HIPSPARSE_OPERATION_NON_TRANSPOSE)
+    {
+        if(fill_mode == HIPSPARSE_FILL_MODE_LOWER)
+        {
+            bsr_lsolve(dir,
+                       transX,
+                       mb,
+                       nrhs,
+                       alpha,
+                       bsr_row_ptr,
+                       bsr_col_ind,
+                       bsr_val,
+                       bsr_dim,
+                       B,
+                       ldb,
+                       X,
+                       ldx,
+                       diag_type,
+                       base,
+                       struct_pivot,
+                       numeric_pivot);
+        }
+        else
+        {
+            bsr_usolve(dir,
+                       transX,
+                       mb,
+                       nrhs,
+                       alpha,
+                       bsr_row_ptr,
+                       bsr_col_ind,
+                       bsr_val,
+                       bsr_dim,
+                       B,
+                       ldb,
+                       X,
+                       ldx,
+                       diag_type,
+                       base,
+                       struct_pivot,
+                       numeric_pivot);
+        }
+    }
+    else if(transA == HIPSPARSE_OPERATION_TRANSPOSE)
+    {
+        // Transpose matrix
+        std::vector<int> bsrt_row_ptr(mb + 1);
+        std::vector<int> bsrt_col_ind(nnzb);
+        std::vector<T>   bsrt_val(nnzb * bsr_dim * bsr_dim);
+
+        host_bsr_to_bsc(mb,
+                        mb,
+                        nnzb,
+                        bsr_dim,
+                        bsr_row_ptr,
+                        bsr_col_ind,
+                        bsr_val,
+                        bsrt_col_ind,
+                        bsrt_row_ptr,
+                        bsrt_val,
+                        base,
+                        base);
+
+        if(fill_mode == HIPSPARSE_FILL_MODE_LOWER)
+        {
+            bsr_usolve(dir,
+                       transX,
+                       mb,
+                       nrhs,
+                       alpha,
+                       bsrt_row_ptr.data(),
+                       bsrt_col_ind.data(),
+                       bsrt_val.data(),
+                       bsr_dim,
+                       B,
+                       ldb,
+                       X,
+                       ldx,
+                       diag_type,
+                       base,
+                       struct_pivot,
+                       numeric_pivot);
+        }
+        else
+        {
+            bsr_lsolve(dir,
+                       transX,
+                       mb,
+                       nrhs,
+                       alpha,
+                       bsrt_row_ptr.data(),
+                       bsrt_col_ind.data(),
+                       bsrt_val.data(),
+                       bsr_dim,
+                       B,
+                       ldb,
+                       X,
+                       ldx,
+                       diag_type,
+                       base,
+                       struct_pivot,
+                       numeric_pivot);
+        }
+    }
+
+    *numeric_pivot = std::min(*numeric_pivot, *struct_pivot);
+
+    *struct_pivot  = (*struct_pivot == mb + 1) ? -1 : *struct_pivot;
+    *numeric_pivot = (*numeric_pivot == mb + 1) ? -1 : *numeric_pivot;
+}
+
+template <typename T>
 void csrsm(int                     M,
            int                     nrhs,
            int                     nnz,
@@ -3451,267 +3655,355 @@ void csrsm(int                     M,
 /* ============================================================================================ */
 /*! \brief  Sparse triangular lower solve using BSR storage format. */
 template <typename T>
-int bsr_lsolve(hipsparseDirection_t dir,
-               hipsparseOperation_t trans,
-               int                  mb,
-               const int*           ptr,
-               const int*           col,
-               const T*             val,
-               int                  bsr_dim,
-               T                    alpha,
-               const T*             x,
-               T*                   y,
-               hipsparseIndexBase_t base,
-               hipsparseDiagType_t  diag_type)
+void bsr_lsolve(hipsparseDirection_t dir,
+                hipsparseOperation_t trans_X,
+                int                  mb,
+                int                  nrhs,
+                T                    alpha,
+                const int*           bsr_row_ptr,
+                const int*           bsr_col_ind,
+                const T*             bsr_val,
+                int                  bsr_dim,
+                const T*             B,
+                int                  ldb,
+                T*                   X,
+                int                  ldx,
+                hipsparseDiagType_t  diag_type,
+                hipsparseIndexBase_t base,
+                int*                 struct_pivot,
+                int*                 numeric_pivot)
 {
-    const int* bsr_row_ptr = ptr;
-    const int* bsr_col_ind = col;
-    const T*   bsr_val     = val;
-
-    std::vector<int> vptr;
-    std::vector<int> vcol;
-    std::vector<T>   vval;
-
-    if(trans == HIPSPARSE_OPERATION_TRANSPOSE)
+#ifdef _OPENMP
+#pragma omp parallel for
+#endif
+    for(int i = 0; i < nrhs; ++i)
     {
-        int nnzb = ptr[mb] - base;
-
-        vptr.resize(mb + 1);
-        vcol.resize(nnzb);
-        vval.resize(nnzb * bsr_dim * bsr_dim);
-
-        // Transpose
-        transpose_bsr(mb,
-                      mb,
-                      nnzb,
-                      bsr_dim,
-                      ptr,
-                      col,
-                      val,
-                      vptr.data(),
-                      vcol.data(),
-                      vval.data(),
-                      base,
-                      base);
-
-        bsr_row_ptr = vptr.data();
-        bsr_col_ind = vcol.data();
-        bsr_val     = vval.data();
-    }
-
-    int pivot = std::numeric_limits<int>::max();
-
-    // Process lower triangular part
-    for(int bsr_row = 0; bsr_row < mb; ++bsr_row)
-    {
-        int bsr_row_begin = bsr_row_ptr[bsr_row] - base;
-        int bsr_row_end   = bsr_row_ptr[bsr_row + 1] - base;
-
-        for(int bi = 0; bi < bsr_dim; ++bi)
+        // Process lower triangular part
+        for(int bsr_row = 0; bsr_row < mb; ++bsr_row)
         {
-            int local_row = bsr_row * bsr_dim + bi;
+            int bsr_row_begin = bsr_row_ptr[bsr_row] - base;
+            int bsr_row_end   = bsr_row_ptr[bsr_row + 1] - base;
 
-            T sum = alpha * x[local_row];
-
-            int diag     = -1;
-            T   diag_val = make_DataType<T>(0);
-
-            for(int j = bsr_row_begin; j < bsr_row_end; ++j)
+            // Loop over blocks rows
+            for(int bi = 0; bi < bsr_dim; ++bi)
             {
-                int bsr_col = bsr_col_ind[j] - base;
+                int diag      = -1;
+                int local_row = bsr_row * bsr_dim + bi;
 
-                for(int bj = 0; bj < bsr_dim; ++bj)
+                int idx_B = (trans_X == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? i * ldb + local_row
+                                                                           : local_row * ldb + i;
+                int idx_X = (trans_X == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? i * ldx + local_row
+                                                                           : local_row * ldx + i;
+
+                T sum      = alpha * B[idx_B];
+                T diag_val = make_DataType<T>(0);
+
+                // Loop over BSR columns
+                for(int j = bsr_row_begin; j < bsr_row_end; ++j)
                 {
-                    int local_col = bsr_col * bsr_dim + bj;
-                    T   local_val = dir == HIPSPARSE_DIRECTION_ROW
-                                        ? bsr_val[bsr_dim * bsr_dim * j + bi * bsr_dim + bj]
-                                        : bsr_val[bsr_dim * bsr_dim * j + bi + bj * bsr_dim];
+                    int bsr_col = bsr_col_ind[j] - base;
 
-                    // Ignore all entries that are above the diagonal
-                    if(local_col > local_row)
+                    // Loop over blocks columns
+                    for(int bj = 0; bj < bsr_dim; ++bj)
                     {
-                        break;
-                    }
+                        int local_col = bsr_col * bsr_dim + bj;
+                        T   local_val = (dir == HIPSPARSE_DIRECTION_ROW)
+                                            ? bsr_val[bsr_dim * bsr_dim * j + bi * bsr_dim + bj]
+                                            : bsr_val[bsr_dim * bsr_dim * j + bi + bj * bsr_dim];
 
-                    // Diagonal
-                    if(local_col == local_row)
-                    {
-                        if(diag_type == HIPSPARSE_DIAG_TYPE_NON_UNIT)
+                        if(local_val == make_DataType<T>(0) && local_col == local_row
+                           && diag_type == HIPSPARSE_DIAG_TYPE_NON_UNIT)
                         {
-                            // Check for numerical zero
-                            if(local_val == make_DataType<T>(0))
-                            {
-                                pivot     = std::min(pivot, bsr_row + base);
-                                local_val = make_DataType<T>(1);
-                            }
-
-                            diag     = j;
-                            diag_val = make_DataType<T>(1) / local_val;
+                            // Numerical zero pivot found, avoid division by 0
+                            // and store index for later use.
+                            *numeric_pivot = std::min(*numeric_pivot, bsr_row + base);
+                            local_val      = make_DataType<T>(1);
                         }
 
-                        break;
+                        // Ignore all entries that are above the diagonal
+                        if(local_col > local_row)
+                        {
+                            break;
+                        }
+
+                        // Diagonal
+                        if(local_col == local_row)
+                        {
+                            // If diagonal type is non unit, do division by diagonal entry
+                            // This is not required for unit diagonal for obvious reasons
+                            if(diag_type == HIPSPARSE_DIAG_TYPE_NON_UNIT)
+                            {
+                                diag     = j;
+                                diag_val = make_DataType<T>(1) / local_val;
+                            }
+
+                            break;
+                        }
+
+                        // Lower triangular part
+                        int idx = (trans_X == HIPSPARSE_OPERATION_NON_TRANSPOSE)
+                                      ? i * ldx + local_col
+                                      : local_col * ldx + i;
+                        sum     = testing_fma(-local_val, X[idx], sum);
+                    }
+                }
+
+                if(diag_type == HIPSPARSE_DIAG_TYPE_NON_UNIT)
+                {
+                    if(diag == -1)
+                    {
+                        *struct_pivot = std::min(*struct_pivot, bsr_row + base);
                     }
 
-                    // Lower triangular part
-                    sum = testing_fma(-local_val, y[local_col], sum);
+                    X[idx_X] = sum * diag_val;
                 }
-            }
-
-            if(diag_type == HIPSPARSE_DIAG_TYPE_NON_UNIT)
-            {
-                if(diag == -1)
+                else
                 {
-                    pivot = std::min(pivot, bsr_row + base);
+                    X[idx_X] = sum;
                 }
-
-                y[local_row] = sum * diag_val;
-            }
-            else
-            {
-                y[local_row] = sum;
             }
         }
     }
-
-    if(pivot != std::numeric_limits<int>::max())
-    {
-        return pivot;
-    }
-
-    return -1;
 }
 
 /* ============================================================================================ */
 /*! \brief  Sparse triangular upper solve using BSR storage format. */
 template <typename T>
-int bsr_usolve(hipsparseDirection_t dir,
-               hipsparseOperation_t trans,
-               int                  mb,
-               const int*           ptr,
-               const int*           col,
-               const T*             val,
-               int                  bsr_dim,
-               T                    alpha,
-               const T*             x,
-               T*                   y,
-               hipsparseIndexBase_t base,
-               hipsparseDiagType_t  diag_type)
+void bsr_usolve(hipsparseDirection_t dir,
+                hipsparseOperation_t trans_X,
+                int                  mb,
+                int                  nrhs,
+                T                    alpha,
+                const int*           bsr_row_ptr,
+                const int*           bsr_col_ind,
+                const T*             bsr_val,
+                int                  bsr_dim,
+                const T*             B,
+                int                  ldb,
+                T*                   X,
+                int                  ldx,
+                hipsparseDiagType_t  diag_type,
+                hipsparseIndexBase_t base,
+                int*                 struct_pivot,
+                int*                 numeric_pivot)
 {
-    const int* bsr_row_ptr = ptr;
-    const int* bsr_col_ind = col;
-    const T*   bsr_val     = val;
-
-    std::vector<int> vptr;
-    std::vector<int> vcol;
-    std::vector<T>   vval;
-
-    if(trans == HIPSPARSE_OPERATION_TRANSPOSE)
+#ifdef _OPENMP
+#pragma omp parallel for
+#endif
+    for(int i = 0; i < nrhs; ++i)
     {
-        int nnzb = ptr[mb] - base;
-
-        vptr.resize(mb + 1);
-        vcol.resize(nnzb);
-        vval.resize(nnzb * bsr_dim * bsr_dim);
-
-        // Transpose
-        transpose_bsr(mb,
-                      mb,
-                      nnzb,
-                      bsr_dim,
-                      ptr,
-                      col,
-                      val,
-                      vptr.data(),
-                      vcol.data(),
-                      vval.data(),
-                      base,
-                      base);
-
-        bsr_row_ptr = vptr.data();
-        bsr_col_ind = vcol.data();
-        bsr_val     = vval.data();
-    }
-
-    int pivot = std::numeric_limits<int>::max();
-
-    // Process upper triangular part
-    for(int bsr_row = mb - 1; bsr_row >= 0; --bsr_row)
-    {
-        int bsr_row_begin = bsr_row_ptr[bsr_row] - base;
-        int bsr_row_end   = bsr_row_ptr[bsr_row + 1] - base;
-
-        for(int bi = bsr_dim - 1; bi >= 0; --bi)
+        // Process upper triangular part
+        for(int bsr_row = mb - 1; bsr_row >= 0; --bsr_row)
         {
-            int local_row = bsr_row * bsr_dim + bi;
+            int bsr_row_begin = bsr_row_ptr[bsr_row] - base;
+            int bsr_row_end   = bsr_row_ptr[bsr_row + 1] - base;
 
-            T sum = alpha * x[local_row];
-
-            int diag     = -1;
-            T   diag_val = make_DataType<T>(0);
-
-            for(int j = bsr_row_end - 1; j >= bsr_row_begin; --j)
+            for(int bi = bsr_dim - 1; bi >= 0; --bi)
             {
-                int bsr_col = bsr_col_ind[j] - base;
+                int local_row = bsr_row * bsr_dim + bi;
 
-                for(int bj = bsr_dim - 1; bj >= 0; --bj)
+                int idx_B = (trans_X == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? i * ldb + local_row
+                                                                           : local_row * ldb + i;
+                int idx_X = (trans_X == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? i * ldx + local_row
+                                                                           : local_row * ldx + i;
+                T   sum   = alpha * B[idx_B];
+
+                int diag     = -1;
+                T   diag_val = make_DataType<T>(0);
+
+                for(int j = bsr_row_end - 1; j >= bsr_row_begin; --j)
                 {
-                    int local_col = bsr_col * bsr_dim + bj;
-                    T   local_val = dir == HIPSPARSE_DIRECTION_ROW
-                                        ? bsr_val[bsr_dim * bsr_dim * j + bi * bsr_dim + bj]
-                                        : bsr_val[bsr_dim * bsr_dim * j + bi + bj * bsr_dim];
+                    int bsr_col = bsr_col_ind[j] - base;
 
-                    // Ignore all entries that are below the diagonal
-                    if(local_col < local_row)
+                    for(int bj = bsr_dim - 1; bj >= 0; --bj)
                     {
-                        continue;
-                    }
+                        int local_col = bsr_col * bsr_dim + bj;
+                        T   local_val = dir == HIPSPARSE_DIRECTION_ROW
+                                            ? bsr_val[bsr_dim * bsr_dim * j + bi * bsr_dim + bj]
+                                            : bsr_val[bsr_dim * bsr_dim * j + bi + bj * bsr_dim];
 
-                    // Diagonal
-                    if(local_col == local_row)
-                    {
-                        if(diag_type == HIPSPARSE_DIAG_TYPE_NON_UNIT)
+                        // Ignore all entries that are below the diagonal
+                        if(local_col < local_row)
                         {
-                            // Check for numerical zero
-                            if(local_val == make_DataType<T>(0))
-                            {
-                                pivot     = std::min(pivot, bsr_row + base);
-                                local_val = make_DataType<T>(1);
-                            }
-
-                            diag     = j;
-                            diag_val = make_DataType<T>(1) / local_val;
+                            continue;
                         }
 
-                        continue;
+                        // Diagonal
+                        if(local_col == local_row)
+                        {
+                            if(diag_type == HIPSPARSE_DIAG_TYPE_NON_UNIT)
+                            {
+                                // Check for numerical zero
+                                if(local_val == make_DataType<T>(0))
+                                {
+                                    *numeric_pivot = std::min(*numeric_pivot, bsr_row + base);
+                                    local_val      = make_DataType<T>(1);
+                                }
+
+                                diag     = j;
+                                diag_val = make_DataType<T>(1) / local_val;
+                            }
+
+                            continue;
+                        }
+
+                        // Upper triangular part
+                        int idx = (trans_X == HIPSPARSE_OPERATION_NON_TRANSPOSE)
+                                      ? i * ldx + local_col
+                                      : local_col * ldx + i;
+                        sum     = testing_fma(-local_val, X[idx], sum);
+                    }
+                }
+
+                if(diag_type == HIPSPARSE_DIAG_TYPE_NON_UNIT)
+                {
+                    if(diag == -1)
+                    {
+                        *struct_pivot = std::min(*struct_pivot, bsr_row + base);
                     }
 
-                    // Upper triangular part
-                    sum = testing_fma(-local_val, y[local_col], sum);
+                    X[idx_X] = sum * diag_val;
                 }
-            }
-
-            if(diag_type == HIPSPARSE_DIAG_TYPE_NON_UNIT)
-            {
-                if(diag == -1)
+                else
                 {
-                    pivot = std::min(pivot, bsr_row + base);
+                    X[idx_X] = sum;
                 }
-
-                y[local_row] = sum * diag_val;
-            }
-            else
-            {
-                y[local_row] = sum;
             }
         }
     }
+}
 
-    if(pivot != std::numeric_limits<int>::max())
+template <typename T>
+void bsrsv(hipsparseOperation_t trans,
+           hipsparseDirection_t dir,
+           int                  mb,
+           int                  nnzb,
+           T                    alpha,
+           const int*           bsr_row_ptr,
+           const int*           bsr_col_ind,
+           const T*             bsr_val,
+           int                  bsr_dim,
+           const T*             x,
+           T*                   y,
+           hipsparseDiagType_t  diag_type,
+           hipsparseFillMode_t  fill_mode,
+           hipsparseIndexBase_t base,
+           int*                 struct_pivot,
+           int*                 numeric_pivot)
+{
+    // Initialize pivot
+    *struct_pivot  = mb + 1;
+    *numeric_pivot = mb + 1;
+
+    if(trans == HIPSPARSE_OPERATION_NON_TRANSPOSE)
     {
-        return pivot;
+        if(fill_mode == HIPSPARSE_FILL_MODE_LOWER)
+        {
+            bsr_lsolve(dir,
+                       HIPSPARSE_OPERATION_NON_TRANSPOSE,
+                       mb,
+                       1,
+                       alpha,
+                       bsr_row_ptr,
+                       bsr_col_ind,
+                       bsr_val,
+                       bsr_dim,
+                       x,
+                       mb * bsr_dim,
+                       y,
+                       mb * bsr_dim,
+                       diag_type,
+                       base,
+                       struct_pivot,
+                       numeric_pivot);
+        }
+        else
+        {
+            bsr_usolve(dir,
+                       HIPSPARSE_OPERATION_NON_TRANSPOSE,
+                       mb,
+                       1,
+                       alpha,
+                       bsr_row_ptr,
+                       bsr_col_ind,
+                       bsr_val,
+                       bsr_dim,
+                       x,
+                       mb * bsr_dim,
+                       y,
+                       mb * bsr_dim,
+                       diag_type,
+                       base,
+                       struct_pivot,
+                       numeric_pivot);
+        }
+    }
+    else if(trans == HIPSPARSE_OPERATION_TRANSPOSE)
+    {
+        // Transpose matrix
+        std::vector<int> bsrt_row_ptr;
+        std::vector<int> bsrt_col_ind;
+        std::vector<T>   bsrt_val;
+
+        host_bsr_to_bsc(mb,
+                        mb,
+                        nnzb,
+                        bsr_dim,
+                        bsr_row_ptr,
+                        bsr_col_ind,
+                        bsr_val,
+                        bsrt_col_ind,
+                        bsrt_row_ptr,
+                        bsrt_val,
+                        base,
+                        base);
+
+        if(fill_mode == HIPSPARSE_FILL_MODE_LOWER)
+        {
+            bsr_usolve(dir,
+                       HIPSPARSE_OPERATION_NON_TRANSPOSE,
+                       mb,
+                       1,
+                       alpha,
+                       bsrt_row_ptr.data(),
+                       bsrt_col_ind.data(),
+                       bsrt_val.data(),
+                       bsr_dim,
+                       x,
+                       mb * bsr_dim,
+                       y,
+                       mb * bsr_dim,
+                       diag_type,
+                       base,
+                       struct_pivot,
+                       numeric_pivot);
+        }
+        else
+        {
+            bsr_lsolve(dir,
+                       HIPSPARSE_OPERATION_NON_TRANSPOSE,
+                       mb,
+                       1,
+                       alpha,
+                       bsrt_row_ptr.data(),
+                       bsrt_col_ind.data(),
+                       bsrt_val.data(),
+                       bsr_dim,
+                       x,
+                       mb * bsr_dim,
+                       y,
+                       mb * bsr_dim,
+                       diag_type,
+                       base,
+                       struct_pivot,
+                       numeric_pivot);
+        }
     }
 
-    return -1;
+    *numeric_pivot = std::min(*numeric_pivot, *struct_pivot);
+
+    *struct_pivot  = (*struct_pivot == mb + 1) ? -1 : *struct_pivot;
+    *numeric_pivot = (*numeric_pivot == mb + 1) ? -1 : *numeric_pivot;
 }
 
 /* ============================================================================================ */
