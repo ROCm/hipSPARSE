@@ -45,13 +45,13 @@ void testing_bsrxmv_bad_arg(void)
     return;
 #endif
 
-    int                  safe_size = 100;
-    int                  safe_dim  = 2;
+    int safe_size = 100;
+    int safe_dim  = 2;
 
-    T                alpha     = make_DataType<T>(0.6);
-    T                beta      = make_DataType<T>(0.2);
-    hipsparseOperation_t transA    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
-    hipsparseDirection_t dirA      = HIPSPARSE_DIRECTION_COLUMN;
+    T                    alpha  = make_DataType<T>(0.6);
+    T                    beta   = make_DataType<T>(0.2);
+    hipsparseOperation_t transA = HIPSPARSE_OPERATION_NON_TRANSPOSE;
+    hipsparseDirection_t dirA   = HIPSPARSE_DIRECTION_COLUMN;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -69,13 +69,13 @@ void testing_bsrxmv_bad_arg(void)
     auto dx_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
     auto dy_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
 
-    int*   dptr      = (int*)dptr_managed.get();
-    int*   dend_ptr  = (int*)dend_ptr_managed.get();
-    int*   dmask_ptr = (int*)dmask_ptr_managed.get();
-    int*   dcol      = (int*)dcol_managed.get();
-    T* dval      = (T*)dval_managed.get();
-    T* dx        = (T*)dx_managed.get();
-    T* dy        = (T*)dy_managed.get();
+    int* dptr      = (int*)dptr_managed.get();
+    int* dend_ptr  = (int*)dend_ptr_managed.get();
+    int* dmask_ptr = (int*)dmask_ptr_managed.get();
+    int* dcol      = (int*)dcol_managed.get();
+    T*   dval      = (T*)dval_managed.get();
+    T*   dx        = (T*)dx_managed.get();
+    T*   dy        = (T*)dy_managed.get();
 
     if(!dval || !dptr || !dcol || !dx || !dy || !dend_ptr)
     {
@@ -404,39 +404,31 @@ hipsparseStatus_t testing_bsrxmv()
     T h_alpha = make_DataType<T>(2.0);
     T h_beta  = make_DataType<T>(1.0);
 
-    std::vector<T>   hbsr_val = {make_DataType<T>(1.0),
-				 make_DataType<T>(2.0),
-				 make_DataType<T>(3.0),
-				 make_DataType<T>(4.0),
-				 make_DataType<T>(5.0),
-				 make_DataType<T>(6.0),
-				 make_DataType<T>(7.0),
-				 make_DataType<T>(8.0),
-				 make_DataType<T>(9.0),
-				 make_DataType<T>(10.0),
-				 make_DataType<T>(11.0),
-				 make_DataType<T>(12.0),
-				 make_DataType<T>(13.0),
-				 make_DataType<T>(14.0),
-				 make_DataType<T>(15.0),
-				 make_DataType<T>(16.0),
-				 make_DataType<T>(17.0),
-				 make_DataType<T>(18.0),
-				 make_DataType<T>(19.0),
-				 make_DataType<T>(20.0)};
-				 
+    std::vector<T> hbsr_val
+        = {make_DataType<T>(1.0),  make_DataType<T>(2.0),  make_DataType<T>(3.0),
+           make_DataType<T>(4.0),  make_DataType<T>(5.0),  make_DataType<T>(6.0),
+           make_DataType<T>(7.0),  make_DataType<T>(8.0),  make_DataType<T>(9.0),
+           make_DataType<T>(10.0), make_DataType<T>(11.0), make_DataType<T>(12.0),
+           make_DataType<T>(13.0), make_DataType<T>(14.0), make_DataType<T>(15.0),
+           make_DataType<T>(16.0), make_DataType<T>(17.0), make_DataType<T>(18.0),
+           make_DataType<T>(19.0), make_DataType<T>(20.0)};
+
     std::vector<int> hbsr_mask_ptr = {2};
-    std::vector<int> hbsr_row_ptr = {1, 4};
-    std::vector<int> hbsr_end_ptr = {1, 5};
-    std::vector<int> hbsr_col_ind = {1, 2, 1, 2, 3};
-    std::vector<T>   hx = {make_DataType<T>(1.0),
-			   make_DataType<T>(1.0),
-			   make_DataType<T>(1.0),
-			   make_DataType<T>(1.0),
-			   make_DataType<T>(1.0),
-			   make_DataType<T>(1.0)};
-    std::vector<T>   hy = {make_DataType<T>(2.0),make_DataType<T>(2.0),make_DataType<T>(2.0),make_DataType<T>(2.0)};
-    std::vector<T>   hyref = {make_DataType<T>(2.0),make_DataType<T>(2.0),make_DataType<T>(58.0),make_DataType<T>(62.0)};
+    std::vector<int> hbsr_row_ptr  = {1, 4};
+    std::vector<int> hbsr_end_ptr  = {1, 5};
+    std::vector<int> hbsr_col_ind  = {1, 2, 1, 2, 3};
+    std::vector<T>   hx            = {make_DataType<T>(1.0),
+                         make_DataType<T>(1.0),
+                         make_DataType<T>(1.0),
+                         make_DataType<T>(1.0),
+                         make_DataType<T>(1.0),
+                         make_DataType<T>(1.0)};
+    std::vector<T>   hy            = {
+        make_DataType<T>(2.0), make_DataType<T>(2.0), make_DataType<T>(2.0), make_DataType<T>(2.0)};
+    std::vector<T> hyref = {make_DataType<T>(2.0),
+                            make_DataType<T>(2.0),
+                            make_DataType<T>(58.0),
+                            make_DataType<T>(62.0)};
 
     auto dbsr_val_managed = hipsparse_unique_ptr{
         device_malloc(sizeof(T) * block_dim * block_dim * nnzb), device_free};

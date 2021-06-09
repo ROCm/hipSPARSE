@@ -27,23 +27,22 @@
 
 TEST(bsrxmv_bad_arg, bsrxmv_bad_arg_float)
 {
-  testing_bsrxmv_bad_arg<float>();
+    testing_bsrxmv_bad_arg<float>();
 }
-
 
 TEST(bsrxmv_bad_arg, bsrxmv_bad_arg_double)
 {
-  testing_bsrxmv_bad_arg<double>();
+    testing_bsrxmv_bad_arg<double>();
 }
 
 TEST(bsrxmv_bad_arg, bsrxmv_bad_arg_float_complex)
 {
-  testing_bsrxmv_bad_arg<hipComplex>();
+    testing_bsrxmv_bad_arg<hipComplex>();
 }
 
 TEST(bsrxmv_bad_arg, bsrxmv_bad_arg_double_complex)
 {
-  testing_bsrxmv_bad_arg<hipDoubleComplex>();
+    testing_bsrxmv_bad_arg<hipDoubleComplex>();
 }
 
 TEST(bsrxmv, bsrxmv_float)
@@ -63,4 +62,3 @@ TEST(bsrxmv, bsrxmv_hipComplex)
     hipsparseStatus_t status = testing_bsrxmv<hipComplex>();
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-
