@@ -37,6 +37,7 @@
 using namespace hipsparse;
 using namespace hipsparse_test;
 
+template <typename T>
 void testing_bsrxmv_bad_arg(void)
 {
 #ifdef __HIP_PLATFORM_NVCC__
@@ -46,8 +47,9 @@ void testing_bsrxmv_bad_arg(void)
 
     int                  safe_size = 100;
     int                  safe_dim  = 2;
-    float                alpha     = 0.6;
-    float                beta      = 0.2;
+
+    T                alpha     = make_DataType<T>(0.6);
+    T                beta      = make_DataType<T>(0.2);
     hipsparseOperation_t transA    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
     hipsparseDirection_t dirA      = HIPSPARSE_DIRECTION_COLUMN;
 
@@ -63,17 +65,17 @@ void testing_bsrxmv_bad_arg(void)
     auto dmask_ptr_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
     auto dcol_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-    auto dval_managed = hipsparse_unique_ptr{device_malloc(sizeof(float) * safe_size), device_free};
-    auto dx_managed   = hipsparse_unique_ptr{device_malloc(sizeof(float) * safe_size), device_free};
-    auto dy_managed   = hipsparse_unique_ptr{device_malloc(sizeof(float) * safe_size), device_free};
+    auto dval_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+    auto dx_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+    auto dy_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
 
     int*   dptr      = (int*)dptr_managed.get();
     int*   dend_ptr  = (int*)dend_ptr_managed.get();
     int*   dmask_ptr = (int*)dmask_ptr_managed.get();
     int*   dcol      = (int*)dcol_managed.get();
-    float* dval      = (float*)dval_managed.get();
-    float* dx        = (float*)dx_managed.get();
-    float* dy        = (float*)dy_managed.get();
+    T* dval      = (T*)dval_managed.get();
+    T* dx        = (T*)dx_managed.get();
+    T* dy        = (T*)dy_managed.get();
 
     if(!dval || !dptr || !dcol || !dx || !dy || !dend_ptr)
     {
@@ -107,7 +109,7 @@ void testing_bsrxmv_bad_arg(void)
                                                              safe_size,
                                                              safe_size,
                                                              safe_size,
-                                                             (float*)nullptr,
+                                                             (T*)nullptr,
                                                              descr,
                                                              dval,
                                                              dmask_ptr,
@@ -147,7 +149,7 @@ void testing_bsrxmv_bad_arg(void)
                                                              safe_size,
                                                              &alpha,
                                                              descr,
-                                                             (float*)nullptr,
+                                                             (T*)nullptr,
                                                              dmask_ptr,
                                                              dptr,
                                                              dend_ptr,
@@ -249,7 +251,7 @@ void testing_bsrxmv_bad_arg(void)
                                                              dend_ptr,
                                                              dcol,
                                                              safe_dim,
-                                                             (float*)nullptr,
+                                                             (T*)nullptr,
                                                              &beta,
                                                              dy),
                                             "Error: xy is nullptr");
@@ -269,7 +271,7 @@ void testing_bsrxmv_bad_arg(void)
                                                              dcol,
                                                              safe_dim,
                                                              dx,
-                                                             (float*)nullptr,
+                                                             (T*)nullptr,
                                                              dy),
                                             "Error: beta is nullptr");
     verify_hipsparse_status_invalid_pointer(hipsparseXbsrxmv(handle,
@@ -289,7 +291,7 @@ void testing_bsrxmv_bad_arg(void)
                                                              safe_dim,
                                                              dx,
                                                              &beta,
-                                                             (float*)nullptr),
+                                                             (T*)nullptr),
                                             "Error: y is nullptr");
     verify_hipsparse_status_invalid_size(hipsparseXbsrxmv(handle,
                                                           dirA,
@@ -402,14 +404,39 @@ hipsparseStatus_t testing_bsrxmv()
     T h_alpha = make_DataType<T>(2.0);
     T h_beta  = make_DataType<T>(1.0);
 
-    std::vector<T>   hbsr_val(block_dim * block_dim * nnzb);
-    std::vector<int> hbsr_mask_ptr(size_of_mask);
-    std::vector<int> hbsr_row_ptr(mb);
-    std::vector<int> hbsr_end_ptr(mb);
-    std::vector<int> hbsr_col_ind(nnzb);
-    std::vector<T>   hx(nb * block_dim);
-    std::vector<T>   hy(mb * block_dim);
-    std::vector<T>   hyref(mb * block_dim);
+    std::vector<T>   hbsr_val = {make_DataType<T>(1.0),
+				 make_DataType<T>(2.0),
+				 make_DataType<T>(3.0),
+				 make_DataType<T>(4.0),
+				 make_DataType<T>(5.0),
+				 make_DataType<T>(6.0),
+				 make_DataType<T>(7.0),
+				 make_DataType<T>(8.0),
+				 make_DataType<T>(9.0),
+				 make_DataType<T>(10.0),
+				 make_DataType<T>(11.0),
+				 make_DataType<T>(12.0),
+				 make_DataType<T>(13.0),
+				 make_DataType<T>(14.0),
+				 make_DataType<T>(15.0),
+				 make_DataType<T>(16.0),
+				 make_DataType<T>(17.0),
+				 make_DataType<T>(18.0),
+				 make_DataType<T>(19.0),
+				 make_DataType<T>(20.0)};
+				 
+    std::vector<int> hbsr_mask_ptr = {2};
+    std::vector<int> hbsr_row_ptr = {1, 4};
+    std::vector<int> hbsr_end_ptr = {1, 5};
+    std::vector<int> hbsr_col_ind = {1, 2, 1, 2, 3};
+    std::vector<T>   hx = {make_DataType<T>(1.0),
+			   make_DataType<T>(1.0),
+			   make_DataType<T>(1.0),
+			   make_DataType<T>(1.0),
+			   make_DataType<T>(1.0),
+			   make_DataType<T>(1.0)};
+    std::vector<T>   hy = {make_DataType<T>(2.0),make_DataType<T>(2.0),make_DataType<T>(2.0),make_DataType<T>(2.0)};
+    std::vector<T>   hyref = {make_DataType<T>(2.0),make_DataType<T>(2.0),make_DataType<T>(58.0),make_DataType<T>(62.0)};
 
     auto dbsr_val_managed = hipsparse_unique_ptr{
         device_malloc(sizeof(T) * block_dim * block_dim * nnzb), device_free};
@@ -429,62 +456,6 @@ hipsparseStatus_t testing_bsrxmv()
     int* dbsr_col_ind  = (int*)dbsr_col_ind_managed.get();
     T*   dx            = (T*)dx_managed.get();
     T*   dy            = (T*)dy_managed.get();
-
-    hbsr_mask_ptr[0] = 2;
-
-    hbsr_row_ptr[0] = 1;
-    hbsr_row_ptr[1] = 4;
-
-    hbsr_end_ptr[0] = 1;
-    hbsr_end_ptr[1] = 5;
-
-    hbsr_col_ind[0] = 1;
-    hbsr_col_ind[1] = 2;
-    hbsr_col_ind[2] = 1;
-    hbsr_col_ind[3] = 2;
-    hbsr_col_ind[4] = 3;
-
-    hx[0] = make_DataType<T>(1.0);
-    hx[1] = make_DataType<T>(1.0);
-    hx[2] = make_DataType<T>(1.0);
-    hx[3] = make_DataType<T>(1.0);
-    hx[4] = make_DataType<T>(1.0);
-    hx[5] = make_DataType<T>(1.0);
-
-    hy[0] = make_DataType<T>(2.0);
-    hy[1] = make_DataType<T>(2.0);
-    hy[2] = make_DataType<T>(2.0);
-    hy[3] = make_DataType<T>(2.0);
-
-    hyref[0] = make_DataType<T>(2.0);
-    hyref[1] = make_DataType<T>(2.0);
-    hyref[2] = make_DataType<T>(58.0);
-    hyref[3] = make_DataType<T>(62.0);
-
-    hbsr_val[0] = make_DataType<T>(1.0);
-    hbsr_val[1] = make_DataType<T>(2.0);
-    hbsr_val[2] = make_DataType<T>(3.0);
-    hbsr_val[3] = make_DataType<T>(4.0);
-
-    hbsr_val[4] = make_DataType<T>(5.0);
-    hbsr_val[5] = make_DataType<T>(6.0);
-    hbsr_val[6] = make_DataType<T>(7.0);
-    hbsr_val[7] = make_DataType<T>(8.0);
-
-    hbsr_val[8]  = make_DataType<T>(9.0);
-    hbsr_val[9]  = make_DataType<T>(10.0);
-    hbsr_val[10] = make_DataType<T>(11.0);
-    hbsr_val[11] = make_DataType<T>(12.0);
-
-    hbsr_val[12] = make_DataType<T>(13.0);
-    hbsr_val[13] = make_DataType<T>(14.0);
-    hbsr_val[14] = make_DataType<T>(15.0);
-    hbsr_val[15] = make_DataType<T>(16.0);
-
-    hbsr_val[16] = make_DataType<T>(17.0);
-    hbsr_val[17] = make_DataType<T>(18.0);
-    hbsr_val[18] = make_DataType<T>(19.0);
-    hbsr_val[19] = make_DataType<T>(20.0);
 
     CHECK_HIP_ERROR(hipMemcpy(dbsr_val,
                               hbsr_val.data(),
