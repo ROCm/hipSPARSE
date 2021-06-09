@@ -27,7 +27,7 @@
 
 TEST(bsrxmv_bad_arg, bsrxmv_float)
 {
-  testing_bsrxmv_bad_arg();
+    testing_bsrxmv_bad_arg();
 }
 
 TEST(bsrxmv, bsrxmv_float)
@@ -49,7 +49,6 @@ TEST(bsrxmv, bsrxmv_hipComplex)
 }
 
 #if 0
-
 
 #include "testing_bsrxmv.hpp"
 #include "utility.hpp"
