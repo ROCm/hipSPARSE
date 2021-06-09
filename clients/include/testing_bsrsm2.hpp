@@ -721,7 +721,7 @@ hipsparseStatus_t testing_bsrsm2(void)
     int               pos_analysis;
     hipsparseStatus_t pivot_analysis = hipsparseXbsrsm2_zeroPivot(handle, info, &pos_analysis);
 
-    // ROCSPARSE pointer mode host
+    // HIPSPARSE pointer mode host
     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
     CHECK_HIPSPARSE_ERROR(hipsparseXbsrsm2_solve(handle,
                                                  HIPSPARSE_DIRECTION_ROW,
@@ -747,7 +747,7 @@ hipsparseStatus_t testing_bsrsm2(void)
     int               hposition_1;
     hipsparseStatus_t pivot_status_1 = hipsparseXbsrsm2_zeroPivot(handle, info, &hposition_1);
 
-    // ROCSPARSE pointer mode device
+    // HIPSPARSE pointer mode device
     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
     CHECK_HIPSPARSE_ERROR(hipsparseXbsrsm2_solve(handle,
                                                  HIPSPARSE_DIRECTION_ROW,
