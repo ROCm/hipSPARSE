@@ -70,10 +70,17 @@ option(BUILD_CLIENTS_SAMPLES "Build examples" ON)
 option(BUILD_VERBOSE "Output additional build information" OFF)
 option(BUILD_CUDA "Build hipSPARSE for CUDA" OFF)
 option(BUILD_CODE_COVERAGE "Build with code coverage enabled" OFF)
+option(BUILD_ADDRESS_SANITIZER "Build with address sanitizer enabled" OFF)
 
 if(BUILD_CODE_COVERAGE)
   add_compile_options(-fprofile-arcs -ftest-coverage)
   add_link_options(--coverage)
+endif()
+
+if(BUILD_ADDRESS_SANITIZER)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -shared-libasan")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fsanitize=address -shared-libasan")
+  add_link_options(-fuse-ld=lld)
 endif()
 
 # Dependencies
