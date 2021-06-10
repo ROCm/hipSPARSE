@@ -21,6 +21,7 @@ function display_help()
   echo "    [--codecoverage] build with code coverage profiling enabled"
   echo "    [--cuda] build library for cuda backend"
   echo "    [--static] build static library"
+  echo "    [--address-sanitizer] build with address sanitizer enabled. Uses hipcc to compile"
 }
 
 # This function is helpful for dockerfiles that do not have sudo installed, but the default user is root
@@ -248,6 +249,8 @@ build_codecoverage=false
 install_prefix=hipsparse-install
 rocm_path=/opt/rocm
 build_relocatable=false
+build_address_sanitizer=false
+compiler=
 
 # #################################################
 # Parameter parsing
@@ -256,7 +259,7 @@ build_relocatable=false
 # check if we have a modern version of getopt that can handle whitespace and long parameters
 getopt -T
 if [[ $? -eq 4 ]]; then
-  GETOPT_PARSE=$(getopt --name "${0}" --longoptions help,install,clients,dependencies,debug,cuda,static,relocatable,codecoverage,relwithdebinfo --options hicdgrk -- "$@")
+  GETOPT_PARSE=$(getopt --name "${0}" --longoptions help,install,clients,dependencies,debug,cuda,static,relocatable,codecoverage,relwithdebinfo,address-sanitizer --options hicdgrk -- "$@")
 else
   echo "Need a new version of getopt"
   exit 1
@@ -302,6 +305,10 @@ while true; do
         shift ;;
     --codecoverage)
         build_codecoverage=true
+        shift ;;
+    --address-sanitizer)
+        build_address_sanitizer=true
+        compiler=hipcc
         shift ;;
     --prefix)
         install_prefix=${2}
@@ -403,6 +410,11 @@ pushd .
       cmake_common_options="${cmake_common_options} -DBUILD_CODE_COVERAGE=ON"
   fi
 
+  # address sanitizer
+  if [[ "${build_address_sanitizer}" == true ]]; then
+    cmake_common_options="$cmake_common_options -DBUILD_ADDRESS_SANITIZER=ON"
+  fi
+
   # library type
   if [[ "${build_static}" == true ]]; then
     cmake_common_options="${cmake_common_options} -DBUILD_SHARED_LIBS=OFF"
@@ -430,7 +442,7 @@ pushd .
 
   # Build library
   if [[ "${build_relocatable}" == true ]]; then
-    ${cmake_executable} ${cmake_common_options} ${cmake_client_options} \
+    CXX=${compiler} ${cmake_executable} ${cmake_common_options} ${cmake_client_options} \
       -DCMAKE_INSTALL_PREFIX="${install_prefix}" \
       -DCMAKE_SHARED_LINKER_FLAGS="${rocm_rpath}" \
       -DCMAKE_PREFIX_PATH="${rocm_path} ${rocm_path}/hcc ${rocm_path}/hip" \
@@ -439,7 +451,7 @@ pushd .
       -DROCM_DISABLE_LDCONFIG=ON \
       -DROCM_PATH="${rocm_path}" ../..
   else
-    ${cmake_executable} -DCMAKE_EXE_LINKER_FLAGS=" ${cmake_build_static_options}" ${cmake_common_options} ${cmake_client_options} -DCMAKE_INSTALL_PREFIX=hipsparse-install -DROCM_PATH=${rocm_path} ../..
+    CXX=${compiler} ${cmake_executable} -DCMAKE_EXE_LINKER_FLAGS=" ${cmake_build_static_options}" ${cmake_common_options} ${cmake_client_options} -DCMAKE_INSTALL_PREFIX=hipsparse-install -DROCM_PATH=${rocm_path} ../..
   fi
 
   check_exit_code "$?"
