@@ -442,7 +442,7 @@ pushd .
 
   # Build library
   if [[ "${build_relocatable}" == true ]]; then
-    CXX=$compiler ${cmake_executable} ${cmake_common_options} ${cmake_client_options} \
+    CXX=${compiler} ${cmake_executable} ${cmake_common_options} ${cmake_client_options} \
       -DCMAKE_INSTALL_PREFIX="${install_prefix}" \
       -DCMAKE_SHARED_LINKER_FLAGS="${rocm_rpath}" \
       -DCMAKE_PREFIX_PATH="${rocm_path} ${rocm_path}/hcc ${rocm_path}/hip" \
@@ -451,7 +451,7 @@ pushd .
       -DROCM_DISABLE_LDCONFIG=ON \
       -DROCM_PATH="${rocm_path}" ../..
   else
-    CXX=$compiler ${cmake_executable} -DCMAKE_EXE_LINKER_FLAGS=" ${cmake_build_static_options}" ${cmake_common_options} ${cmake_client_options} -DCMAKE_INSTALL_PREFIX=hipsparse-install -DROCM_PATH=${rocm_path} ../..
+    CXX=${compiler} ${cmake_executable} -DCMAKE_EXE_LINKER_FLAGS=" ${cmake_build_static_options}" ${cmake_common_options} ${cmake_client_options} -DCMAKE_INSTALL_PREFIX=hipsparse-install -DROCM_PATH=${rocm_path} ../..
   fi
 
   check_exit_code "$?"
