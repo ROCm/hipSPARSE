@@ -1,6 +1,12 @@
 # Change Log for hipSPARSE
 
-## [(Unreleased) hipSPARSE 1.10.6 for ROCm 4.2.0]
+## [hipSPARSE 1.10.7 for ROCm 4.3.0]
+### Added
+- (batched) tridiagonal solve with and without pivoting
+- dense matrix sparse vector multiplication (gemvi)
+- sampled dense-dense matrix multiplication (sddmm)
+
+## [hipSPARSE 1.10.6 for ROCm 4.2.0]
 ### Added
 - Generic API support, including SpMM
 
