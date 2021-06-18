@@ -21,7 +21,7 @@ def runCompileCommand(platform, project, boolean sameOrg=false)
                 set -x
                 cd ${project.paths.project_build_prefix}
                 ${getDependenciesCommand}
-                export PATH=/opt/rocm/hsa/include:$PATH
+                export PATH=/opt/rocm/hsa/include:\$PATH
                 CXX=/opt/rh/devtoolset-7/root/usr/bin/c++ ${project.paths.build_command}
             """
     }
