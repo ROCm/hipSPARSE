@@ -250,7 +250,7 @@ install_prefix=hipsparse-install
 rocm_path=/opt/rocm
 build_relocatable=false
 build_address_sanitizer=false
-compiler=$CXX
+compiler=
 
 # #################################################
 # Parameter parsing
