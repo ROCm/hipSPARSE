@@ -19,6 +19,7 @@ def runCI =
     prj.compiler.compiler_name = 'hipcc'
     prj.compiler.compiler_path = '/opt/rocm/bin/hipcc'
     prj.libraryDependencies = ['rocSPARSE', 'rocPRIM']
+    prj.defaults.ccache = false
 
     // Define test architectures, optional rocm version argument is available
     def nodes = new dockerNodes(nodeDetails, jobName, prj)

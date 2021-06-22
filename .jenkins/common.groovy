@@ -14,26 +14,16 @@ def runCompileCommand(platform, project, boolean sameOrg=false)
             getDependenciesCommand += auxiliary.getLibrary(libraryName, platform.jenkinsLabel, 'develop', sameOrg)
         }
     }
-
-    if(platform.jenkinsLabel.contains('centos7'))
-    {
-        command = """#!/usr/bin/env bash
+    String centos7 = platform.jenkinsLabel.contains('centos7') ? 'source scl_source enable devtoolset-7' : ':'
+    
+    command = """#!/usr/bin/env bash
                 set -x
-                cd ${project.paths.project_build_prefix}
-                ${getDependenciesCommand}
-                export PATH=/opt/rocm/hsa/include:$PATH
-                CXX=/opt/rh/devtoolset-7/root/usr/bin/c++ ${project.paths.build_command}
-            """
-    }
-    else
-    {
-        command = """#!/usr/bin/env bash
-                set -x
+                ${centos7}
                 cd ${project.paths.project_build_prefix}
                 ${getDependenciesCommand}
                 CXX=${project.compiler.compiler_path} ${project.paths.build_command}
             """
-    }
+ 
     platform.runCommand(this, command)
 }
 
