@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE testset SYSTEM "/usr/local/share/rtest.dtd">
+<testset>
+    <fileversion>0.1</fileversion>
+    <var name="GTEST_FILTER"></var>
+    <test sets="osdb,psdb">
+        <always>
+            <env name="GTEST_LISTENER">NO_PASS_LINE_IN_LOG</env>
+            <run name="quick-pre-checkin">hipsparse-test --gtest_also_run_disabled_tests --gtest_output=xml:output.xml --gtest_color=yes {GTEST_FILTER}</run>
+        </always>
+    </test>
+</testset>

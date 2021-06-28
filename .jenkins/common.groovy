@@ -29,15 +29,14 @@ def runCompileCommand(platform, project, boolean sameOrg=false)
 
 def runTestCommand (platform, project, gfilter)
 {
-    String sudo = auxiliary.sudo(platform.jenkinsLabel)
     def command = """#!/usr/bin/env bash
                     set -x
-                    cd ${project.paths.project_build_prefix}/build/release/clients/staging
-                    ${sudo} GTEST_LISTENER=NO_PASS_LINE_IN_LOG ./hipsparse-test --gtest_also_run_disabled_tests --gtest_output=xml --gtest_color=yes #--gtest_filter=${gfilter}-*known_bug*
+                    cd ${project.paths.project_build_prefix}
+                    rtest.py -t psdb -a GTEST_FILTER "#--gtest_filter=${gfilter}-*known_bug*"
                 """
 
     platform.runCommand(this, command)
-    junit "${project.paths.project_build_prefix}/build/release/clients/staging/*.xml"
+    junit "${project.paths.project_build_prefix}/output.xml"
 }
 
 def runPackageCommand(platform, project)
