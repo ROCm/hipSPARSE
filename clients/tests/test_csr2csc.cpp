@@ -24,7 +24,6 @@
 #include "testing_csr2csc.hpp"
 #include "utility.hpp"
 
-
 #include <hipsparse.h>
 #include <string>
 #include <vector>
@@ -157,14 +156,14 @@ TEST_P(parameterized_csr2csc_bin, csr2csc_bin_double)
 #endif
 
 INSTANTIATE_TEST_SUITE_P(csr2csc,
-                        parameterized_csr2csc,
-                        testing::Combine(testing::ValuesIn(csr2csc_M_range),
-                                         testing::ValuesIn(csr2csc_N_range),
-                                         testing::ValuesIn(csr2csc_action_range),
-                                         testing::ValuesIn(csr2csc_csr_base_range)));
+                         parameterized_csr2csc,
+                         testing::Combine(testing::ValuesIn(csr2csc_M_range),
+                                          testing::ValuesIn(csr2csc_N_range),
+                                          testing::ValuesIn(csr2csc_action_range),
+                                          testing::ValuesIn(csr2csc_csr_base_range)));
 
 INSTANTIATE_TEST_SUITE_P(csr2csc_bin,
-                        parameterized_csr2csc_bin,
-                        testing::Combine(testing::ValuesIn(csr2csc_action_range),
-                                         testing::ValuesIn(csr2csc_csr_base_range),
-                                         testing::ValuesIn(csr2csc_bin)));
+                         parameterized_csr2csc_bin,
+                         testing::Combine(testing::ValuesIn(csr2csc_action_range),
+                                          testing::ValuesIn(csr2csc_csr_base_range),
+                                          testing::ValuesIn(csr2csc_bin)));

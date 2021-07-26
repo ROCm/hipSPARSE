@@ -24,7 +24,6 @@
 #include "testing_coosort.hpp"
 #include "utility.hpp"
 
-
 #include <hipsparse.h>
 #include <string>
 #include <vector>
@@ -100,7 +99,6 @@ Arguments setup_coosort_arguments(coosort_bin_tuple tup)
     // Determine absolute path of test matrix
     std::string bin_file = std::get<3>(tup);
 
-
     // Matrices are stored at the same path in matrices directory
     arg.filename = hipsparse_exepath() + "../matrices/" + bin_file;
 
@@ -132,16 +130,16 @@ TEST_P(parameterized_coosort_bin, coosort_bin)
 #endif
 
 INSTANTIATE_TEST_SUITE_P(coosort,
-                        parameterized_coosort,
-                        testing::Combine(testing::ValuesIn(coosort_M_range),
-                                         testing::ValuesIn(coosort_N_range),
-                                         testing::ValuesIn(coosort_trans),
-                                         testing::ValuesIn(coosort_perm),
-                                         testing::ValuesIn(coosort_base)));
+                         parameterized_coosort,
+                         testing::Combine(testing::ValuesIn(coosort_M_range),
+                                          testing::ValuesIn(coosort_N_range),
+                                          testing::ValuesIn(coosort_trans),
+                                          testing::ValuesIn(coosort_perm),
+                                          testing::ValuesIn(coosort_base)));
 
 INSTANTIATE_TEST_SUITE_P(coosort_bin,
-                        parameterized_coosort_bin,
-                        testing::Combine(testing::ValuesIn(coosort_trans),
-                                         testing::ValuesIn(coosort_perm),
-                                         testing::ValuesIn(coosort_base),
-                                         testing::ValuesIn(coosort_bin)));
+                         parameterized_coosort_bin,
+                         testing::Combine(testing::ValuesIn(coosort_trans),
+                                          testing::ValuesIn(coosort_perm),
+                                          testing::ValuesIn(coosort_base),
+                                          testing::ValuesIn(coosort_bin)));

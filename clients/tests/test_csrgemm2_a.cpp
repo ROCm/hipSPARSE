@@ -24,7 +24,6 @@
 #include "testing_csrgemm2_a.hpp"
 #include "utility.hpp"
 
-
 #include <hipsparse.h>
 #include <string>
 
@@ -94,7 +93,7 @@ Arguments setup_csrgemm2_a_arguments(csrgemm2_a_bin_tuple tup)
     std::string bin_file = std::get<4>(tup);
 
     // Matrices are stored at the same path in matrices directory
-    arg.filename =hipsparse_exepath() + "../matrices/" + bin_file;
+    arg.filename = hipsparse_exepath() + "../matrices/" + bin_file;
 
     return arg;
 }
@@ -156,19 +155,19 @@ TEST_P(parameterized_csrgemm2_a_bin, csrgemm2_a_bin_double)
 #endif
 
 INSTANTIATE_TEST_SUITE_P(csrgemm2_a,
-                        parameterized_csrgemm2_a,
-                        testing::Combine(testing::ValuesIn(csrgemm2_a_M_range),
-                                         testing::ValuesIn(csrgemm2_a_N_range),
-                                         testing::ValuesIn(csrgemm2_a_K_range),
-                                         testing::ValuesIn(csrgemm2_a_alpha_range),
-                                         testing::ValuesIn(csrgemm2_a_idxbaseA_range),
-                                         testing::ValuesIn(csrgemm2_a_idxbaseB_range),
-                                         testing::ValuesIn(csrgemm2_a_idxbaseC_range)));
+                         parameterized_csrgemm2_a,
+                         testing::Combine(testing::ValuesIn(csrgemm2_a_M_range),
+                                          testing::ValuesIn(csrgemm2_a_N_range),
+                                          testing::ValuesIn(csrgemm2_a_K_range),
+                                          testing::ValuesIn(csrgemm2_a_alpha_range),
+                                          testing::ValuesIn(csrgemm2_a_idxbaseA_range),
+                                          testing::ValuesIn(csrgemm2_a_idxbaseB_range),
+                                          testing::ValuesIn(csrgemm2_a_idxbaseC_range)));
 
 INSTANTIATE_TEST_SUITE_P(csrgemm2_a_bin,
-                        parameterized_csrgemm2_a_bin,
-                        testing::Combine(testing::ValuesIn(csrgemm2_a_alpha_range),
-                                         testing::ValuesIn(csrgemm2_a_idxbaseA_range),
-                                         testing::ValuesIn(csrgemm2_a_idxbaseB_range),
-                                         testing::ValuesIn(csrgemm2_a_idxbaseC_range),
-                                         testing::ValuesIn(csrgemm2_a_bin)));
+                         parameterized_csrgemm2_a_bin,
+                         testing::Combine(testing::ValuesIn(csrgemm2_a_alpha_range),
+                                          testing::ValuesIn(csrgemm2_a_idxbaseA_range),
+                                          testing::ValuesIn(csrgemm2_a_idxbaseB_range),
+                                          testing::ValuesIn(csrgemm2_a_idxbaseC_range),
+                                          testing::ValuesIn(csrgemm2_a_bin)));

@@ -24,7 +24,6 @@
 #include "testing_csrmm.hpp"
 #include "utility.hpp"
 
-
 #include <hipsparse.h>
 #include <string>
 
@@ -99,7 +98,6 @@ Arguments setup_csrmm_arguments(csrmm_bin_tuple tup)
     // Determine absolute path of test matrix
     std::string bin_file = std::get<6>(tup);
 
-    
     // Matrices are stored at the same path in matrices directory
     arg.filename = hipsparse_exepath() + "../matrices/" + bin_file;
 
@@ -163,22 +161,22 @@ TEST_P(parameterized_csrmm_bin, csrmm_bin_double)
 #endif
 
 INSTANTIATE_TEST_SUITE_P(csrmm,
-                        parameterized_csrmm,
-                        testing::Combine(testing::ValuesIn(csrmm_M_range),
-                                         testing::ValuesIn(csrmm_N_range),
-                                         testing::ValuesIn(csrmm_K_range),
-                                         testing::ValuesIn(csrmm_alpha_range),
-                                         testing::ValuesIn(csrmm_beta_range),
-                                         testing::ValuesIn(csrmm_idxbase_range),
-                                         testing::ValuesIn(csrmm_transA_range),
-                                         testing::ValuesIn(csrmm_transB_range)));
+                         parameterized_csrmm,
+                         testing::Combine(testing::ValuesIn(csrmm_M_range),
+                                          testing::ValuesIn(csrmm_N_range),
+                                          testing::ValuesIn(csrmm_K_range),
+                                          testing::ValuesIn(csrmm_alpha_range),
+                                          testing::ValuesIn(csrmm_beta_range),
+                                          testing::ValuesIn(csrmm_idxbase_range),
+                                          testing::ValuesIn(csrmm_transA_range),
+                                          testing::ValuesIn(csrmm_transB_range)));
 
 INSTANTIATE_TEST_SUITE_P(csrmm_bin,
-                        parameterized_csrmm_bin,
-                        testing::Combine(testing::ValuesIn(csrmm_N_range),
-                                         testing::ValuesIn(csrmm_alpha_range),
-                                         testing::ValuesIn(csrmm_beta_range),
-                                         testing::ValuesIn(csrmm_idxbase_range),
-                                         testing::ValuesIn(csrmm_transA_range),
-                                         testing::ValuesIn(csrmm_transB_range),
-                                         testing::ValuesIn(csrmm_bin)));
+                         parameterized_csrmm_bin,
+                         testing::Combine(testing::ValuesIn(csrmm_N_range),
+                                          testing::ValuesIn(csrmm_alpha_range),
+                                          testing::ValuesIn(csrmm_beta_range),
+                                          testing::ValuesIn(csrmm_idxbase_range),
+                                          testing::ValuesIn(csrmm_transA_range),
+                                          testing::ValuesIn(csrmm_transB_range),
+                                          testing::ValuesIn(csrmm_bin)));

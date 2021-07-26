@@ -24,7 +24,6 @@
 #include "testing_csrgeam.hpp"
 #include "utility.hpp"
 
-
 #include <hipsparse.h>
 #include <string>
 
@@ -179,20 +178,20 @@ TEST_P(parameterized_csrgeam_bin, csrgeam_bin_double)
 #endif
 
 INSTANTIATE_TEST_SUITE_P(csrgeam,
-                        parameterized_csrgeam,
-                        testing::Combine(testing::ValuesIn(csrgeam_M_range),
-                                         testing::ValuesIn(csrgeam_N_range),
-                                         testing::ValuesIn(csrgeam_alpha_range),
-                                         testing::ValuesIn(csrgeam_beta_range),
-                                         testing::ValuesIn(csrgeam_idxbaseA_range),
-                                         testing::ValuesIn(csrgeam_idxbaseB_range),
-                                         testing::ValuesIn(csrgeam_idxbaseC_range)));
+                         parameterized_csrgeam,
+                         testing::Combine(testing::ValuesIn(csrgeam_M_range),
+                                          testing::ValuesIn(csrgeam_N_range),
+                                          testing::ValuesIn(csrgeam_alpha_range),
+                                          testing::ValuesIn(csrgeam_beta_range),
+                                          testing::ValuesIn(csrgeam_idxbaseA_range),
+                                          testing::ValuesIn(csrgeam_idxbaseB_range),
+                                          testing::ValuesIn(csrgeam_idxbaseC_range)));
 
 INSTANTIATE_TEST_SUITE_P(csrgeam_bin,
-                        parameterized_csrgeam_bin,
-                        testing::Combine(testing::ValuesIn(csrgeam_alpha_range),
-                                         testing::ValuesIn(csrgeam_beta_range),
-                                         testing::ValuesIn(csrgeam_idxbaseA_range),
-                                         testing::ValuesIn(csrgeam_idxbaseB_range),
-                                         testing::ValuesIn(csrgeam_idxbaseC_range),
-                                         testing::ValuesIn(csrgeam_bin)));
+                         parameterized_csrgeam_bin,
+                         testing::Combine(testing::ValuesIn(csrgeam_alpha_range),
+                                          testing::ValuesIn(csrgeam_beta_range),
+                                          testing::ValuesIn(csrgeam_idxbaseA_range),
+                                          testing::ValuesIn(csrgeam_idxbaseB_range),
+                                          testing::ValuesIn(csrgeam_idxbaseC_range),
+                                          testing::ValuesIn(csrgeam_bin)));

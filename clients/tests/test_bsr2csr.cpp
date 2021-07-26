@@ -24,7 +24,6 @@
 #include "testing_bsr2csr.hpp"
 #include "utility.hpp"
 
-
 #include <hipsparse.h>
 #include <string>
 #include <vector>
@@ -167,18 +166,18 @@ TEST_P(parameterized_bsr2csr_bin, bsr2csr_bin_double)
 #endif
 
 INSTANTIATE_TEST_SUITE_P(bsr2csr,
-                        parameterized_bsr2csr,
-                        testing::Combine(testing::ValuesIn(bsr2csr_M_range),
-                                         testing::ValuesIn(bsr2csr_N_range),
-                                         testing::ValuesIn(bsr2csr_block_dim_range),
-                                         testing::ValuesIn(bsr2csr_bsr_base_range),
-                                         testing::ValuesIn(bsr2csr_csr_base_range),
-                                         testing::ValuesIn(bsr2csr_dir_range)));
+                         parameterized_bsr2csr,
+                         testing::Combine(testing::ValuesIn(bsr2csr_M_range),
+                                          testing::ValuesIn(bsr2csr_N_range),
+                                          testing::ValuesIn(bsr2csr_block_dim_range),
+                                          testing::ValuesIn(bsr2csr_bsr_base_range),
+                                          testing::ValuesIn(bsr2csr_csr_base_range),
+                                          testing::ValuesIn(bsr2csr_dir_range)));
 
 INSTANTIATE_TEST_SUITE_P(bsr2csr_bin,
-                        parameterized_bsr2csr_bin,
-                        testing::Combine(testing::ValuesIn(bsr2csr_block_dim_range_bin),
-                                         testing::ValuesIn(bsr2csr_bsr_base_range_bin),
-                                         testing::ValuesIn(bsr2csr_csr_base_range_bin),
-                                         testing::ValuesIn(bsr2csr_dir_range_bin),
-                                         testing::ValuesIn(bsr2csr_bin)));
+                         parameterized_bsr2csr_bin,
+                         testing::Combine(testing::ValuesIn(bsr2csr_block_dim_range_bin),
+                                          testing::ValuesIn(bsr2csr_bsr_base_range_bin),
+                                          testing::ValuesIn(bsr2csr_csr_base_range_bin),
+                                          testing::ValuesIn(bsr2csr_dir_range_bin),
+                                          testing::ValuesIn(bsr2csr_bin)));

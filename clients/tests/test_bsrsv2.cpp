@@ -24,7 +24,6 @@
 #include "testing_bsrsv2.hpp"
 #include "utility.hpp"
 
-
 #include <hipsparse.h>
 #include <string>
 #include <vector>
@@ -163,23 +162,23 @@ TEST_P(parameterized_bsrsv2_bin, bsrsv2_bin_double)
 #endif
 
 INSTANTIATE_TEST_SUITE_P(bsrsv2,
-                        parameterized_bsrsv2,
-                        testing::Combine(testing::ValuesIn(bsrsv2_M_range),
-                                         testing::ValuesIn(bsrsv2_alpha_range),
-                                         testing::ValuesIn(bsrsv2_idxbase_range),
-                                         testing::ValuesIn(bsrsv2_dim_range),
-                                         testing::ValuesIn(bsrsv2_dir_range),
-                                         testing::ValuesIn(bsrsv2_op_range),
-                                         testing::ValuesIn(bsrsv2_diag_range),
-                                         testing::ValuesIn(bsrsv2_fill_range)));
+                         parameterized_bsrsv2,
+                         testing::Combine(testing::ValuesIn(bsrsv2_M_range),
+                                          testing::ValuesIn(bsrsv2_alpha_range),
+                                          testing::ValuesIn(bsrsv2_idxbase_range),
+                                          testing::ValuesIn(bsrsv2_dim_range),
+                                          testing::ValuesIn(bsrsv2_dir_range),
+                                          testing::ValuesIn(bsrsv2_op_range),
+                                          testing::ValuesIn(bsrsv2_diag_range),
+                                          testing::ValuesIn(bsrsv2_fill_range)));
 
 INSTANTIATE_TEST_SUITE_P(bsrsv2_bin,
-                        parameterized_bsrsv2_bin,
-                        testing::Combine(testing::ValuesIn(bsrsv2_alpha_range),
-                                         testing::ValuesIn(bsrsv2_idxbase_range),
-                                         testing::ValuesIn(bsrsv2_dim_range),
-                                         testing::ValuesIn(bsrsv2_dir_range),
-                                         testing::ValuesIn(bsrsv2_op_range),
-                                         testing::ValuesIn(bsrsv2_diag_range),
-                                         testing::ValuesIn(bsrsv2_fill_range),
-                                         testing::ValuesIn(bsrsv2_bin)));
+                         parameterized_bsrsv2_bin,
+                         testing::Combine(testing::ValuesIn(bsrsv2_alpha_range),
+                                          testing::ValuesIn(bsrsv2_idxbase_range),
+                                          testing::ValuesIn(bsrsv2_dim_range),
+                                          testing::ValuesIn(bsrsv2_dir_range),
+                                          testing::ValuesIn(bsrsv2_op_range),
+                                          testing::ValuesIn(bsrsv2_diag_range),
+                                          testing::ValuesIn(bsrsv2_fill_range),
+                                          testing::ValuesIn(bsrsv2_bin)));

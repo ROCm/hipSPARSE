@@ -24,7 +24,6 @@
 #include "testing_csric02.hpp"
 #include "utility.hpp"
 
-
 #include <hipsparse.h>
 #include <string>
 #include <vector>
@@ -77,7 +76,6 @@ Arguments setup_csric02_arguments(csric02_bin_tuple tup)
     std::string bin_file = std::get<1>(tup);
 
     // Get current executables absolute path
-    
 
     // Matrices are stored at the same path in matrices directory
     arg.filename = hipsparse_exepath() + "../matrices/" + bin_file;
@@ -142,11 +140,11 @@ TEST_P(parameterized_csric02_bin, csric02_bin_double)
 #endif
 
 INSTANTIATE_TEST_SUITE_P(csric02,
-                        parameterized_csric02,
-                        testing::Combine(testing::ValuesIn(csric02_M_range),
-                                         testing::ValuesIn(csric02_idxbase_range)));
+                         parameterized_csric02,
+                         testing::Combine(testing::ValuesIn(csric02_M_range),
+                                          testing::ValuesIn(csric02_idxbase_range)));
 
 INSTANTIATE_TEST_SUITE_P(csric02_bin,
-                        parameterized_csric02_bin,
-                        testing::Combine(testing::ValuesIn(csric02_idxbase_range),
-                                         testing::ValuesIn(csric02_bin)));
+                         parameterized_csric02_bin,
+                         testing::Combine(testing::ValuesIn(csric02_idxbase_range),
+                                          testing::ValuesIn(csric02_bin)));

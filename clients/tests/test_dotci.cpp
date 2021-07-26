@@ -24,7 +24,6 @@
 #include "testing_dotci.hpp"
 #include "utility.hpp"
 
-
 #include <hipsparse.h>
 #include <vector>
 
@@ -80,7 +79,7 @@ TEST_P(parameterized_dotci, dotci_double_complex)
 #endif
 
 INSTANTIATE_TEST_SUITE_P(dotci,
-                        parameterized_dotci,
-                        testing::Combine(testing::ValuesIn(dotci_N_range),
-                                         testing::ValuesIn(dotci_nnz_range),
-                                         testing::ValuesIn(dotci_idx_base_range)));
+                         parameterized_dotci,
+                         testing::Combine(testing::ValuesIn(dotci_N_range),
+                                          testing::ValuesIn(dotci_nnz_range),
+                                          testing::ValuesIn(dotci_idx_base_range)));

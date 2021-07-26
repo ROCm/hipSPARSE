@@ -24,7 +24,6 @@
 #include "testing_csrsv2.hpp"
 #include "utility.hpp"
 
-
 #include <hipsparse.h>
 #include <string>
 #include <vector>
@@ -101,7 +100,6 @@ Arguments setup_csrsv2_arguments(csrsv2_bin_tuple tup)
     // Determine absolute path of test matrix
     std::string bin_file = std::get<5>(tup);
 
-   
     // Matrices are stored at the same path in matrices directory
     arg.filename = hipsparse_exepath() + "../matrices/" + bin_file;
 
@@ -165,19 +163,19 @@ TEST_P(parameterized_csrsv2_bin, csrsv2_bin_double)
 #endif
 
 INSTANTIATE_TEST_SUITE_P(csrsv2,
-                        parameterized_csrsv2,
-                        testing::Combine(testing::ValuesIn(csrsv2_M_range),
-                                         testing::ValuesIn(csrsv2_alpha_range),
-                                         testing::ValuesIn(csrsv2_idxbase_range),
-                                         testing::ValuesIn(csrsv2_op_range),
-                                         testing::ValuesIn(csrsv2_diag_range),
-                                         testing::ValuesIn(csrsv2_fill_range)));
+                         parameterized_csrsv2,
+                         testing::Combine(testing::ValuesIn(csrsv2_M_range),
+                                          testing::ValuesIn(csrsv2_alpha_range),
+                                          testing::ValuesIn(csrsv2_idxbase_range),
+                                          testing::ValuesIn(csrsv2_op_range),
+                                          testing::ValuesIn(csrsv2_diag_range),
+                                          testing::ValuesIn(csrsv2_fill_range)));
 
 INSTANTIATE_TEST_SUITE_P(csrsv2_bin,
-                        parameterized_csrsv2_bin,
-                        testing::Combine(testing::ValuesIn(csrsv2_alpha_range),
-                                         testing::ValuesIn(csrsv2_idxbase_range),
-                                         testing::ValuesIn(csrsv2_op_range),
-                                         testing::ValuesIn(csrsv2_diag_range),
-                                         testing::ValuesIn(csrsv2_fill_range),
-                                         testing::ValuesIn(csrsv2_bin)));
+                         parameterized_csrsv2_bin,
+                         testing::Combine(testing::ValuesIn(csrsv2_alpha_range),
+                                          testing::ValuesIn(csrsv2_idxbase_range),
+                                          testing::ValuesIn(csrsv2_op_range),
+                                          testing::ValuesIn(csrsv2_diag_range),
+                                          testing::ValuesIn(csrsv2_fill_range),
+                                          testing::ValuesIn(csrsv2_bin)));

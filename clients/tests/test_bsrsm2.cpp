@@ -23,7 +23,6 @@
 
 #include "testing_bsrsm2.hpp"
 
-
 #include <hipsparse.h>
 
 TEST(bsrsm2_bad_arg, bsrsm2_float)

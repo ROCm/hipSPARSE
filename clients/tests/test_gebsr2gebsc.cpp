@@ -24,7 +24,6 @@
 #include "testing_gebsr2gebsc.hpp"
 #include "utility.hpp"
 
-
 #include <hipsparse.h>
 #include <string>
 #include <vector>
@@ -174,20 +173,20 @@ TEST_P(parameterized_gebsr2gebsc_bin, gebsr2gebsc_bin_double)
 #endif
 
 INSTANTIATE_TEST_SUITE_P(gebsr2gebsc,
-                        parameterized_gebsr2gebsc,
-                        testing::Combine(testing::ValuesIn(gebsr2gebsc_M_range),
-                                         testing::ValuesIn(gebsr2gebsc_N_range),
-                                         testing::ValuesIn(gebsr2gebsc_row_block_dim_range),
-                                         testing::ValuesIn(gebsr2gebsc_col_block_dim_range),
-                                         testing::ValuesIn(gebsr2gebsc_action_range),
-                                         testing::ValuesIn(gebsr2gebsc_csr_base_range),
-                                         testing::ValuesIn(gebsr2gebsc_dir_range)));
+                         parameterized_gebsr2gebsc,
+                         testing::Combine(testing::ValuesIn(gebsr2gebsc_M_range),
+                                          testing::ValuesIn(gebsr2gebsc_N_range),
+                                          testing::ValuesIn(gebsr2gebsc_row_block_dim_range),
+                                          testing::ValuesIn(gebsr2gebsc_col_block_dim_range),
+                                          testing::ValuesIn(gebsr2gebsc_action_range),
+                                          testing::ValuesIn(gebsr2gebsc_csr_base_range),
+                                          testing::ValuesIn(gebsr2gebsc_dir_range)));
 
 INSTANTIATE_TEST_SUITE_P(gebsr2gebsc_bin,
-                        parameterized_gebsr2gebsc_bin,
-                        testing::Combine(testing::ValuesIn(gebsr2gebsc_row_block_dim_range),
-                                         testing::ValuesIn(gebsr2gebsc_col_block_dim_range),
-                                         testing::ValuesIn(gebsr2gebsc_action_range),
-                                         testing::ValuesIn(gebsr2gebsc_csr_base_range),
-                                         testing::ValuesIn(gebsr2gebsc_dir_range_bin),
-                                         testing::ValuesIn(gebsr2gebsc_bin)));
+                         parameterized_gebsr2gebsc_bin,
+                         testing::Combine(testing::ValuesIn(gebsr2gebsc_row_block_dim_range),
+                                          testing::ValuesIn(gebsr2gebsc_col_block_dim_range),
+                                          testing::ValuesIn(gebsr2gebsc_action_range),
+                                          testing::ValuesIn(gebsr2gebsc_csr_base_range),
+                                          testing::ValuesIn(gebsr2gebsc_dir_range_bin),
+                                          testing::ValuesIn(gebsr2gebsc_bin)));

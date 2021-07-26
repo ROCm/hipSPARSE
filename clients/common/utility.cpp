@@ -20,15 +20,15 @@
  * THE SOFTWARE.
  *
  * ************************************************************************ */
- 
+
 #include <limits>
 #ifdef WIN32
 #include <windows.h>
 #endif
 #include "utility.hpp"
 
-#include <cstdlib>
 #include <chrono>
+#include <cstdlib>
 
 #ifdef WIN32
 #define strSUITEcmp(A, B) _stricmp(A, B)
@@ -52,7 +52,6 @@ namespace std
 #include <windows.h>
 #endif
 
-
 #include "utility.hpp"
 
 #include <hip/hip_runtime_api.h>
@@ -61,7 +60,7 @@ namespace std
 // #include <sys/time.h>
 #include <chrono>
 //#define _USE_MATH_DEFINES
-#include <cmath> 
+#include <cmath>
 #include <cstdlib>
 
 //
@@ -204,16 +203,16 @@ void set_device(int device_id)
 /*! \brief  CPU Timer(in microsecond): synchronize with the default device and return wall time */
 double get_time_us(void)
 {
-	hipDeviceSynchronize();
+    hipDeviceSynchronize();
     auto now = std::chrono::steady_clock::now();
-   // struct timeval tv;
-   // gettimeofday(&tv, NULL);
-  //  return (tv.tv_sec * 1000 * 1000) + tv.tv_usec;
+    // struct timeval tv;
+    // gettimeofday(&tv, NULL);
+    //  return (tv.tv_sec * 1000 * 1000) + tv.tv_usec;
     auto duration
         = std::chrono::duration_cast<std::chrono::microseconds>(now.time_since_epoch()).count();
     return (static_cast<double>(duration));
-	
-   // hipDeviceSynchronize();
+
+    // hipDeviceSynchronize();
     //struct timeval tv;
     //gettimeofday(&tv, NULL);
     //return (tv.tv_sec * 1000 * 1000) + tv.tv_usec;
@@ -222,20 +221,19 @@ double get_time_us(void)
 /*! \brief  CPU Timer(in microsecond): synchronize with given queue/stream and return wall time */
 double get_time_us_sync(hipStream_t stream)
 {
-	 hipStreamSynchronize(stream);
+    hipStreamSynchronize(stream);
     auto now = std::chrono::steady_clock::now();
-    
-    
-   // struct timeval tv;
-   // gettimeofday(&tv, NULL);
-   // return (tv.tv_sec * 1000 * 1000) + tv.tv_usec;
+
+    // struct timeval tv;
+    // gettimeofday(&tv, NULL);
+    // return (tv.tv_sec * 1000 * 1000) + tv.tv_usec;
     auto duration
         = std::chrono::duration_cast<std::chrono::microseconds>(now.time_since_epoch()).count();
     return (static_cast<double>(duration));
-   // hipStreamSynchronize(stream);
-   // struct timeval tv;
-   // gettimeofday(&tv, NULL);
-   // return (tv.tv_sec * 1000 * 1000) + tv.tv_usec;
+    // hipStreamSynchronize(stream);
+    // struct timeval tv;
+    // gettimeofday(&tv, NULL);
+    // return (tv.tv_sec * 1000 * 1000) + tv.tv_usec;
 };
 
 #ifdef __cplusplus

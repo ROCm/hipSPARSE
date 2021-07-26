@@ -13126,11 +13126,11 @@ hipsparseStatus_t hipsparseSpMM_preprocess(hipsparseHandle_t           handle,
     valid = false;
     switch(computeType)
     {
-	case HIP_R_16F:
+    case HIP_R_16F:
     case HIP_R_32F:
     case HIP_R_64F:
     case HIP_C_16F:
-	case HIP_C_32F:
+    case HIP_C_32F:
     case HIP_C_64F:
     {
         valid = true;

@@ -24,7 +24,6 @@
 #include "testing_bsric02.hpp"
 #include "utility.hpp"
 
-
 #include <hipsparse.h>
 #include <string>
 #include <vector>
@@ -84,7 +83,7 @@ Arguments setup_bsric02_arguments(bsric02_bin_tuple tup)
     std::string bin_file = std::get<3>(tup);
 
     // Get current executables absolute path
-   
+
     // Matrices are stored at the same path in matrices directory
     arg.filename = hipsparse_exepath() + "../matrices/" + bin_file;
 
@@ -148,15 +147,15 @@ TEST_P(parameterized_bsric02_bin, bsric02_bin_double)
 #endif
 
 INSTANTIATE_TEST_SUITE_P(bsric02,
-                        parameterized_bsric02,
-                        testing::Combine(testing::ValuesIn(bsric02_M_range),
-                                         testing::ValuesIn(bsric02_dim_range),
-                                         testing::ValuesIn(bsric02_dir_range),
-                                         testing::ValuesIn(bsric02_idxbase_range)));
+                         parameterized_bsric02,
+                         testing::Combine(testing::ValuesIn(bsric02_M_range),
+                                          testing::ValuesIn(bsric02_dim_range),
+                                          testing::ValuesIn(bsric02_dir_range),
+                                          testing::ValuesIn(bsric02_idxbase_range)));
 
 INSTANTIATE_TEST_SUITE_P(bsric02_bin,
-                        parameterized_bsric02_bin,
-                        testing::Combine(testing::ValuesIn(bsric02_dim_range),
-                                         testing::ValuesIn(bsric02_dir_range),
-                                         testing::ValuesIn(bsric02_idxbase_range),
-                                         testing::ValuesIn(bsric02_bin)));
+                         parameterized_bsric02_bin,
+                         testing::Combine(testing::ValuesIn(bsric02_dim_range),
+                                          testing::ValuesIn(bsric02_dir_range),
+                                          testing::ValuesIn(bsric02_idxbase_range),
+                                          testing::ValuesIn(bsric02_bin)));

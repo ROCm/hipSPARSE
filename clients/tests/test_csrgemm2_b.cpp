@@ -24,7 +24,6 @@
 #include "testing_csrgemm2_b.hpp"
 #include "utility.hpp"
 
-
 #include <hipsparse.h>
 #include <string>
 
@@ -150,16 +149,16 @@ TEST_P(parameterized_csrgemm2_b_bin, csrgemm2_b_bin_double)
 #endif
 
 INSTANTIATE_TEST_SUITE_P(csrgemm2_b,
-                        parameterized_csrgemm2_b,
-                        testing::Combine(testing::ValuesIn(csrgemm2_b_M_range),
-                                         testing::ValuesIn(csrgemm2_b_N_range),
-                                         testing::ValuesIn(csrgemm2_b_beta_range),
-                                         testing::ValuesIn(csrgemm2_b_idxbaseC_range),
-                                         testing::ValuesIn(csrgemm2_b_idxbaseD_range)));
+                         parameterized_csrgemm2_b,
+                         testing::Combine(testing::ValuesIn(csrgemm2_b_M_range),
+                                          testing::ValuesIn(csrgemm2_b_N_range),
+                                          testing::ValuesIn(csrgemm2_b_beta_range),
+                                          testing::ValuesIn(csrgemm2_b_idxbaseC_range),
+                                          testing::ValuesIn(csrgemm2_b_idxbaseD_range)));
 
 INSTANTIATE_TEST_SUITE_P(csrgemm2_b_bin,
-                        parameterized_csrgemm2_b_bin,
-                        testing::Combine(testing::ValuesIn(csrgemm2_b_beta_range),
-                                         testing::ValuesIn(csrgemm2_b_idxbaseC_range),
-                                         testing::ValuesIn(csrgemm2_b_idxbaseD_range),
-                                         testing::ValuesIn(csrgemm2_b_bin)));
+                         parameterized_csrgemm2_b_bin,
+                         testing::Combine(testing::ValuesIn(csrgemm2_b_beta_range),
+                                          testing::ValuesIn(csrgemm2_b_idxbaseC_range),
+                                          testing::ValuesIn(csrgemm2_b_idxbaseD_range),
+                                          testing::ValuesIn(csrgemm2_b_bin)));

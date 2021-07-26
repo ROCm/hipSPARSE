@@ -24,7 +24,6 @@
 #include "testing_bsrmm.hpp"
 #include "utility.hpp"
 
-
 #include <hipsparse.h>
 #include <string>
 
@@ -178,26 +177,26 @@ TEST_P(parameterized_bsrmm_bin, bsrmm_bin_double)
 #endif
 
 INSTANTIATE_TEST_SUITE_P(bsrmm,
-                        parameterized_bsrmm,
-                        testing::Combine(testing::ValuesIn(bsrmm_M_range),
-                                         testing::ValuesIn(bsrmm_N_range),
-                                         testing::ValuesIn(bsrmm_K_range),
-                                         testing::ValuesIn(bsrmm_block_dim_range),
-                                         testing::ValuesIn(bsrmm_alpha_range),
-                                         testing::ValuesIn(bsrmm_beta_range),
-                                         testing::ValuesIn(bsrmm_dir_range),
-                                         testing::ValuesIn(bsrmm_idxbase_range),
-                                         testing::ValuesIn(bsrmm_transA_range),
-                                         testing::ValuesIn(bsrmm_transB_range)));
+                         parameterized_bsrmm,
+                         testing::Combine(testing::ValuesIn(bsrmm_M_range),
+                                          testing::ValuesIn(bsrmm_N_range),
+                                          testing::ValuesIn(bsrmm_K_range),
+                                          testing::ValuesIn(bsrmm_block_dim_range),
+                                          testing::ValuesIn(bsrmm_alpha_range),
+                                          testing::ValuesIn(bsrmm_beta_range),
+                                          testing::ValuesIn(bsrmm_dir_range),
+                                          testing::ValuesIn(bsrmm_idxbase_range),
+                                          testing::ValuesIn(bsrmm_transA_range),
+                                          testing::ValuesIn(bsrmm_transB_range)));
 
 INSTANTIATE_TEST_SUITE_P(bsrmm_bin,
-                        parameterized_bsrmm_bin,
-                        testing::Combine(testing::ValuesIn(bsrmm_N_range_bin),
-                                         testing::ValuesIn(bsrmm_block_dim_range_bin),
-                                         testing::ValuesIn(bsrmm_alpha_range_bin),
-                                         testing::ValuesIn(bsrmm_beta_range_bin),
-                                         testing::ValuesIn(bsrmm_dir_range_bin),
-                                         testing::ValuesIn(bsrmm_idxbase_range_bin),
-                                         testing::ValuesIn(bsrmm_transA_range_bin),
-                                         testing::ValuesIn(bsrmm_transB_range_bin),
-                                         testing::ValuesIn(bsrmm_bin)));
+                         parameterized_bsrmm_bin,
+                         testing::Combine(testing::ValuesIn(bsrmm_N_range_bin),
+                                          testing::ValuesIn(bsrmm_block_dim_range_bin),
+                                          testing::ValuesIn(bsrmm_alpha_range_bin),
+                                          testing::ValuesIn(bsrmm_beta_range_bin),
+                                          testing::ValuesIn(bsrmm_dir_range_bin),
+                                          testing::ValuesIn(bsrmm_idxbase_range_bin),
+                                          testing::ValuesIn(bsrmm_transA_range_bin),
+                                          testing::ValuesIn(bsrmm_transB_range_bin),
+                                          testing::ValuesIn(bsrmm_bin)));

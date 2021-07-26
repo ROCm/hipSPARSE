@@ -24,7 +24,6 @@
 #include "testing_csrilusv.hpp"
 #include "utility.hpp"
 
-
 #include <hipsparse.h>
 #include <string>
 #include <vector>
@@ -88,6 +87,6 @@ TEST_P(parameterized_csrilusv_bin, csrilusv_bin_double)
 #endif
 
 INSTANTIATE_TEST_SUITE_P(csrilusv_bin,
-                        parameterized_csrilusv_bin,
-                        testing::Combine(testing::ValuesIn(csrilusv_idxbase_range),
-                                         testing::ValuesIn(csrilusv_bin)));
+                         parameterized_csrilusv_bin,
+                         testing::Combine(testing::ValuesIn(csrilusv_idxbase_range),
+                                          testing::ValuesIn(csrilusv_bin)));

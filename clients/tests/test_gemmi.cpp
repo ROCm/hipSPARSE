@@ -24,7 +24,6 @@
 #include "testing_gemmi.hpp"
 #include "utility.hpp"
 
-
 #include <hipsparse.h>
 #include <string>
 
@@ -146,16 +145,16 @@ TEST_P(parameterized_gemmi_bin, gemmi_bin_double)
 #endif
 
 INSTANTIATE_TEST_SUITE_P(gemmi,
-                        parameterized_gemmi,
-                        testing::Combine(testing::ValuesIn(gemmi_M_range),
-                                         testing::ValuesIn(gemmi_N_range),
-                                         testing::ValuesIn(gemmi_K_range),
-                                         testing::ValuesIn(gemmi_alpha_range),
-                                         testing::ValuesIn(gemmi_beta_range)));
+                         parameterized_gemmi,
+                         testing::Combine(testing::ValuesIn(gemmi_M_range),
+                                          testing::ValuesIn(gemmi_N_range),
+                                          testing::ValuesIn(gemmi_K_range),
+                                          testing::ValuesIn(gemmi_alpha_range),
+                                          testing::ValuesIn(gemmi_beta_range)));
 
 INSTANTIATE_TEST_SUITE_P(gemmi_bin,
-                        parameterized_gemmi_bin,
-                        testing::Combine(testing::ValuesIn(gemmi_N_range),
-                                         testing::ValuesIn(gemmi_alpha_range),
-                                         testing::ValuesIn(gemmi_beta_range),
-                                         testing::ValuesIn(gemmi_bin)));
+                         parameterized_gemmi_bin,
+                         testing::Combine(testing::ValuesIn(gemmi_N_range),
+                                          testing::ValuesIn(gemmi_alpha_range),
+                                          testing::ValuesIn(gemmi_beta_range),
+                                          testing::ValuesIn(gemmi_bin)));

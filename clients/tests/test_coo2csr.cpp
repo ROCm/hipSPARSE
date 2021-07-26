@@ -24,7 +24,6 @@
 #include "testing_coo2csr.hpp"
 #include "utility.hpp"
 
-
 #include <hipsparse.h>
 #include <string>
 #include <vector>
@@ -88,12 +87,12 @@ Arguments setup_coo2csr_arguments(coo2csr_tuple tup)
 
 Arguments setup_coo2csr_arguments(coo2csr_bin_tuple tup)
 {
-	 Arguments arg;
-    arg.M        = -99;
-    arg.N        = -99;
-    arg.idx_base = std::get<0>(tup);
-    arg.timing   = 0;
- std::string bin_file = std::get<1>(tup);
+    Arguments arg;
+    arg.M                = -99;
+    arg.N                = -99;
+    arg.idx_base         = std::get<0>(tup);
+    arg.timing           = 0;
+    std::string bin_file = std::get<1>(tup);
 
     arg.filename = hipsparse_exepath() + "../matrices/" + bin_file;
 
@@ -125,12 +124,12 @@ TEST_P(parameterized_coo2csr_bin, coo2csr_bin)
 #endif
 
 INSTANTIATE_TEST_SUITE_P(coo2csr,
-                        parameterized_coo2csr,
-                        testing::Combine(testing::ValuesIn(coo2csr_M_range),
-                                         testing::ValuesIn(coo2csr_N_range),
-                                         testing::ValuesIn(coo2csr_idx_base_range)));
+                         parameterized_coo2csr,
+                         testing::Combine(testing::ValuesIn(coo2csr_M_range),
+                                          testing::ValuesIn(coo2csr_N_range),
+                                          testing::ValuesIn(coo2csr_idx_base_range)));
 
 INSTANTIATE_TEST_SUITE_P(coo2csr_bin,
-                        parameterized_coo2csr_bin,
-                        testing::Combine(testing::ValuesIn(coo2csr_idx_base_range),
-                                         testing::ValuesIn(coo2csr_bin)));
+                         parameterized_coo2csr_bin,
+                         testing::Combine(testing::ValuesIn(coo2csr_idx_base_range),
+                                          testing::ValuesIn(coo2csr_bin)));

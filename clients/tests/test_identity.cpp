@@ -24,7 +24,6 @@
 #include "testing_identity.hpp"
 #include "utility.hpp"
 
-
 #include <hipsparse.h>
 #include <vector>
 

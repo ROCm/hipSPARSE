@@ -24,7 +24,6 @@
 #include "testing_dense2csc.hpp"
 #include "utility.hpp"
 
-
 #include <hipsparse.h>
 #include <string>
 #include <vector>
@@ -95,8 +94,8 @@ TEST_P(parameterized_dense2csc, dense2csc_double_complex)
 #endif
 
 INSTANTIATE_TEST_SUITE_P(dense2csc,
-                        parameterized_dense2csc,
-                        testing::Combine(testing::ValuesIn(dense2csc_M_range),
-                                         testing::ValuesIn(dense2csc_N_range),
-                                         testing::ValuesIn(dense2csc_LD_range),
-                                         testing::ValuesIn(dense2csc_idx_base_range)));
+                         parameterized_dense2csc,
+                         testing::Combine(testing::ValuesIn(dense2csc_M_range),
+                                          testing::ValuesIn(dense2csc_N_range),
+                                          testing::ValuesIn(dense2csc_LD_range),
+                                          testing::ValuesIn(dense2csc_idx_base_range)));

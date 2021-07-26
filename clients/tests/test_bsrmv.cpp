@@ -24,7 +24,6 @@
 #include "testing_bsrmv.hpp"
 #include "utility.hpp"
 
-
 #include <hipsparse.h>
 #include <string>
 #include <vector>
@@ -157,20 +156,20 @@ TEST_P(parameterized_bsrmv_bin, bsrmv_bin_double)
 #endif
 
 INSTANTIATE_TEST_SUITE_P(bsrmv,
-                        parameterized_bsrmv,
-                        testing::Combine(testing::ValuesIn(bsr_M_range),
-                                         testing::ValuesIn(bsr_N_range),
-                                         testing::ValuesIn(bsr_alpha_range),
-                                         testing::ValuesIn(bsr_beta_range),
-                                         testing::ValuesIn(bsr_dim_range),
-                                         testing::ValuesIn(bsr_dir_range),
-                                         testing::ValuesIn(bsr_idxbase_range)));
+                         parameterized_bsrmv,
+                         testing::Combine(testing::ValuesIn(bsr_M_range),
+                                          testing::ValuesIn(bsr_N_range),
+                                          testing::ValuesIn(bsr_alpha_range),
+                                          testing::ValuesIn(bsr_beta_range),
+                                          testing::ValuesIn(bsr_dim_range),
+                                          testing::ValuesIn(bsr_dir_range),
+                                          testing::ValuesIn(bsr_idxbase_range)));
 
 INSTANTIATE_TEST_SUITE_P(bsrmv_bin,
-                        parameterized_bsrmv_bin,
-                        testing::Combine(testing::ValuesIn(bsr_alpha_range),
-                                         testing::ValuesIn(bsr_beta_range),
-                                         testing::ValuesIn(bsr_dim_range),
-                                         testing::ValuesIn(bsr_dir_range),
-                                         testing::ValuesIn(bsr_idxbase_range),
-                                         testing::ValuesIn(bsr_bin)));
+                         parameterized_bsrmv_bin,
+                         testing::Combine(testing::ValuesIn(bsr_alpha_range),
+                                          testing::ValuesIn(bsr_beta_range),
+                                          testing::ValuesIn(bsr_dim_range),
+                                          testing::ValuesIn(bsr_dir_range),
+                                          testing::ValuesIn(bsr_idxbase_range),
+                                          testing::ValuesIn(bsr_bin)));

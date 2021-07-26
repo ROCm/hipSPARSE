@@ -24,7 +24,6 @@
 #include "testing_cscsort.hpp"
 #include "utility.hpp"
 
-
 #include <hipsparse.h>
 #include <string>
 #include <vector>
@@ -129,14 +128,14 @@ TEST_P(parameterized_cscsort_bin, cscsort_bin)
 #endif
 
 INSTANTIATE_TEST_SUITE_P(cscsort,
-                        parameterized_cscsort,
-                        testing::Combine(testing::ValuesIn(cscsort_M_range),
-                                         testing::ValuesIn(cscsort_N_range),
-                                         testing::ValuesIn(cscsort_perm),
-                                         testing::ValuesIn(cscsort_base)));
+                         parameterized_cscsort,
+                         testing::Combine(testing::ValuesIn(cscsort_M_range),
+                                          testing::ValuesIn(cscsort_N_range),
+                                          testing::ValuesIn(cscsort_perm),
+                                          testing::ValuesIn(cscsort_base)));
 
 INSTANTIATE_TEST_SUITE_P(cscsort_bin,
-                        parameterized_cscsort_bin,
-                        testing::Combine(testing::ValuesIn(cscsort_perm),
-                                         testing::ValuesIn(cscsort_base),
-                                         testing::ValuesIn(cscsort_bin)));
+                         parameterized_cscsort_bin,
+                         testing::Combine(testing::ValuesIn(cscsort_perm),
+                                          testing::ValuesIn(cscsort_base),
+                                          testing::ValuesIn(cscsort_bin)));

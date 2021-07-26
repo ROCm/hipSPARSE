@@ -24,7 +24,6 @@
 #include "testing_hybmv.hpp"
 #include "utility.hpp"
 
-
 #include <hipsparse.h>
 #include <string>
 #include <vector>
@@ -160,20 +159,20 @@ TEST_P(parameterized_hybmv_bin, hybmv_bin_double)
 #endif
 
 INSTANTIATE_TEST_SUITE_P(hybmv,
-                        parameterized_hybmv,
-                        testing::Combine(testing::ValuesIn(hyb_M_range),
-                                         testing::ValuesIn(hyb_N_range),
-                                         testing::ValuesIn(hyb_alpha_range),
-                                         testing::ValuesIn(hyb_beta_range),
-                                         testing::ValuesIn(hyb_idxbase_range),
-                                         testing::ValuesIn(hyb_partition),
-                                         testing::ValuesIn(hyb_ELL_range)));
+                         parameterized_hybmv,
+                         testing::Combine(testing::ValuesIn(hyb_M_range),
+                                          testing::ValuesIn(hyb_N_range),
+                                          testing::ValuesIn(hyb_alpha_range),
+                                          testing::ValuesIn(hyb_beta_range),
+                                          testing::ValuesIn(hyb_idxbase_range),
+                                          testing::ValuesIn(hyb_partition),
+                                          testing::ValuesIn(hyb_ELL_range)));
 
 INSTANTIATE_TEST_SUITE_P(hybmv_bin,
-                        parameterized_hybmv_bin,
-                        testing::Combine(testing::ValuesIn(hyb_alpha_range),
-                                         testing::ValuesIn(hyb_beta_range),
-                                         testing::ValuesIn(hyb_idxbase_range),
-                                         testing::ValuesIn(hyb_partition),
-                                         testing::ValuesIn(hyb_ELL_range),
-                                         testing::ValuesIn(hyb_bin)));
+                         parameterized_hybmv_bin,
+                         testing::Combine(testing::ValuesIn(hyb_alpha_range),
+                                          testing::ValuesIn(hyb_beta_range),
+                                          testing::ValuesIn(hyb_idxbase_range),
+                                          testing::ValuesIn(hyb_partition),
+                                          testing::ValuesIn(hyb_ELL_range),
+                                          testing::ValuesIn(hyb_bin)));

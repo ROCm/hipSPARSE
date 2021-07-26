@@ -24,7 +24,6 @@
 #include "testing_csr2hyb.hpp"
 #include "utility.hpp"
 
-
 #include <hipsparse.h>
 #include <string>
 #include <vector>
@@ -153,16 +152,16 @@ TEST_P(parameterized_csr2hyb_bin, csr2hyb_bin_double)
 #endif
 
 INSTANTIATE_TEST_SUITE_P(csr2hyb,
-                        parameterized_csr2hyb,
-                        testing::Combine(testing::ValuesIn(csr2hyb_M_range),
-                                         testing::ValuesIn(csr2hyb_N_range),
-                                         testing::ValuesIn(csr2hyb_idx_base_range),
-                                         testing::ValuesIn(csr2hyb_partition),
-                                         testing::ValuesIn(csr2hyb_ELL_range)));
+                         parameterized_csr2hyb,
+                         testing::Combine(testing::ValuesIn(csr2hyb_M_range),
+                                          testing::ValuesIn(csr2hyb_N_range),
+                                          testing::ValuesIn(csr2hyb_idx_base_range),
+                                          testing::ValuesIn(csr2hyb_partition),
+                                          testing::ValuesIn(csr2hyb_ELL_range)));
 
 INSTANTIATE_TEST_SUITE_P(csr2hyb_bin,
-                        parameterized_csr2hyb_bin,
-                        testing::Combine(testing::ValuesIn(csr2hyb_idx_base_range),
-                                         testing::ValuesIn(csr2hyb_partition),
-                                         testing::ValuesIn(csr2hyb_ELL_range),
-                                         testing::ValuesIn(csr2hyb_bin)));
+                         parameterized_csr2hyb_bin,
+                         testing::Combine(testing::ValuesIn(csr2hyb_idx_base_range),
+                                          testing::ValuesIn(csr2hyb_partition),
+                                          testing::ValuesIn(csr2hyb_ELL_range),
+                                          testing::ValuesIn(csr2hyb_bin)));

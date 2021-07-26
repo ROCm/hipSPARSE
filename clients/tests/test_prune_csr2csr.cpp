@@ -24,7 +24,6 @@
 #include "testing_prune_csr2csr.hpp"
 #include "utility.hpp"
 
-
 #include <hipsparse.h>
 #include <string>
 #include <vector>
@@ -137,16 +136,16 @@ TEST_P(parameterized_prune_csr2csr_bin, prune_csr2csr_bin_double)
 #endif
 
 INSTANTIATE_TEST_SUITE_P(prune_csr2csr,
-                        parameterized_prune_csr2csr,
-                        testing::Combine(testing::ValuesIn(prune_csr2csr_M_range),
-                                         testing::ValuesIn(prune_csr2csr_N_range),
-                                         testing::ValuesIn(prune_csr2csr_threshold_range),
-                                         testing::ValuesIn(prune_csr2csr_base_A_range),
-                                         testing::ValuesIn(prune_csr2csr_base_C_range)));
+                         parameterized_prune_csr2csr,
+                         testing::Combine(testing::ValuesIn(prune_csr2csr_M_range),
+                                          testing::ValuesIn(prune_csr2csr_N_range),
+                                          testing::ValuesIn(prune_csr2csr_threshold_range),
+                                          testing::ValuesIn(prune_csr2csr_base_A_range),
+                                          testing::ValuesIn(prune_csr2csr_base_C_range)));
 
 INSTANTIATE_TEST_SUITE_P(prune_csr2csr_bin,
-                        parameterized_prune_csr2csr_bin,
-                        testing::Combine(testing::ValuesIn(prune_csr2csr_threshold_range),
-                                         testing::ValuesIn(prune_csr2csr_base_A_range),
-                                         testing::ValuesIn(prune_csr2csr_base_C_range),
-                                         testing::ValuesIn(prune_csr2csr_bin)));
+                         parameterized_prune_csr2csr_bin,
+                         testing::Combine(testing::ValuesIn(prune_csr2csr_threshold_range),
+                                          testing::ValuesIn(prune_csr2csr_base_A_range),
+                                          testing::ValuesIn(prune_csr2csr_base_C_range),
+                                          testing::ValuesIn(prune_csr2csr_bin)));

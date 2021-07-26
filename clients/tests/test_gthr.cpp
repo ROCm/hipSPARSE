@@ -24,7 +24,6 @@
 #include "testing_gthr.hpp"
 #include "utility.hpp"
 
-
 #include <hipsparse.h>
 #include <vector>
 
@@ -96,7 +95,7 @@ TEST_P(parameterized_gthr, gthr_double_complex)
 #endif
 
 INSTANTIATE_TEST_SUITE_P(gthr,
-                        parameterized_gthr,
-                        testing::Combine(testing::ValuesIn(gthr_N_range),
-                                         testing::ValuesIn(gthr_nnz_range),
-                                         testing::ValuesIn(gthr_idx_base_range)));
+                         parameterized_gthr,
+                         testing::Combine(testing::ValuesIn(gthr_N_range),
+                                          testing::ValuesIn(gthr_nnz_range),
+                                          testing::ValuesIn(gthr_idx_base_range)));

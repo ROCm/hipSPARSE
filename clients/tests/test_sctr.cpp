@@ -24,7 +24,6 @@
 #include "testing_sctr.hpp"
 #include "utility.hpp"
 
-
 #include <hipsparse.h>
 #include <vector>
 
@@ -96,7 +95,7 @@ TEST_P(parameterized_sctr, sctr_double_complex)
 #endif
 
 INSTANTIATE_TEST_SUITE_P(sctr,
-                        parameterized_sctr,
-                        testing::Combine(testing::ValuesIn(sctr_N_range),
-                                         testing::ValuesIn(sctr_nnz_range),
-                                         testing::ValuesIn(sctr_idx_base_range)));
+                         parameterized_sctr,
+                         testing::Combine(testing::ValuesIn(sctr_N_range),
+                                          testing::ValuesIn(sctr_nnz_range),
+                                          testing::ValuesIn(sctr_idx_base_range)));

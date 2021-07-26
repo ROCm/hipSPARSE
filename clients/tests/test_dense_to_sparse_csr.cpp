@@ -23,7 +23,6 @@
 
 #include "testing_dense_to_sparse_csr.hpp"
 
-
 #include <hipsparse.h>
 
 // Only run tests for CUDA 11.1 or greater

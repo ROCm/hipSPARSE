@@ -24,7 +24,6 @@
 #include "testing_csrmv.hpp"
 #include "utility.hpp"
 
-
 #include <hipsparse.h>
 #include <string>
 #include <vector>
@@ -157,16 +156,16 @@ TEST_P(parameterized_csrmv_bin, csrmv_bin_double)
 #endif
 
 INSTANTIATE_TEST_SUITE_P(csrmv,
-                        parameterized_csrmv,
-                        testing::Combine(testing::ValuesIn(csr_M_range),
-                                         testing::ValuesIn(csr_N_range),
-                                         testing::ValuesIn(csr_alpha_range),
-                                         testing::ValuesIn(csr_beta_range),
-                                         testing::ValuesIn(csr_idxbase_range)));
+                         parameterized_csrmv,
+                         testing::Combine(testing::ValuesIn(csr_M_range),
+                                          testing::ValuesIn(csr_N_range),
+                                          testing::ValuesIn(csr_alpha_range),
+                                          testing::ValuesIn(csr_beta_range),
+                                          testing::ValuesIn(csr_idxbase_range)));
 
 INSTANTIATE_TEST_SUITE_P(csrmv_bin,
-                        parameterized_csrmv_bin,
-                        testing::Combine(testing::ValuesIn(csr_alpha_range),
-                                         testing::ValuesIn(csr_beta_range),
-                                         testing::ValuesIn(csr_idxbase_range),
-                                         testing::ValuesIn(csr_bin)));
+                         parameterized_csrmv_bin,
+                         testing::Combine(testing::ValuesIn(csr_alpha_range),
+                                          testing::ValuesIn(csr_beta_range),
+                                          testing::ValuesIn(csr_idxbase_range),
+                                          testing::ValuesIn(csr_bin)));

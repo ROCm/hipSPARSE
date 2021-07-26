@@ -24,7 +24,6 @@
 #include "testing_bsrilu02.hpp"
 #include "utility.hpp"
 
-
 #include <hipsparse.h>
 #include <string>
 
@@ -159,23 +158,23 @@ TEST_P(parameterized_bsrilu02_bin, bsrilu02_bin_double)
 #endif
 
 INSTANTIATE_TEST_SUITE_P(bsrilu02,
-                        parameterized_bsrilu02,
-                        testing::Combine(testing::ValuesIn(bsrilu02_M_range),
-                                         testing::ValuesIn(bsrilu02_dim_range),
-                                         testing::ValuesIn(bsrilu02_boost_range),
-                                         testing::ValuesIn(bsrilu02_boost_tol_range),
-                                         testing::ValuesIn(bsrilu02_boost_val_range),
-                                         testing::ValuesIn(bsrilu02_boost_vali_range),
-                                         testing::ValuesIn(bsrilu02_dir_range),
-                                         testing::ValuesIn(bsrilu02_idxbase_range)));
+                         parameterized_bsrilu02,
+                         testing::Combine(testing::ValuesIn(bsrilu02_M_range),
+                                          testing::ValuesIn(bsrilu02_dim_range),
+                                          testing::ValuesIn(bsrilu02_boost_range),
+                                          testing::ValuesIn(bsrilu02_boost_tol_range),
+                                          testing::ValuesIn(bsrilu02_boost_val_range),
+                                          testing::ValuesIn(bsrilu02_boost_vali_range),
+                                          testing::ValuesIn(bsrilu02_dir_range),
+                                          testing::ValuesIn(bsrilu02_idxbase_range)));
 
 INSTANTIATE_TEST_SUITE_P(bsrilu02_bin,
-                        parameterized_bsrilu02_bin,
-                        testing::Combine(testing::ValuesIn(bsrilu02_dim_range),
-                                         testing::ValuesIn(bsrilu02_boost_range),
-                                         testing::ValuesIn(bsrilu02_boost_tol_range),
-                                         testing::ValuesIn(bsrilu02_boost_val_range),
-                                         testing::ValuesIn(bsrilu02_boost_vali_range),
-                                         testing::ValuesIn(bsrilu02_dir_range),
-                                         testing::ValuesIn(bsrilu02_idxbase_range),
-                                         testing::ValuesIn(bsrilu02_bin)));
+                         parameterized_bsrilu02_bin,
+                         testing::Combine(testing::ValuesIn(bsrilu02_dim_range),
+                                          testing::ValuesIn(bsrilu02_boost_range),
+                                          testing::ValuesIn(bsrilu02_boost_tol_range),
+                                          testing::ValuesIn(bsrilu02_boost_val_range),
+                                          testing::ValuesIn(bsrilu02_boost_vali_range),
+                                          testing::ValuesIn(bsrilu02_dir_range),
+                                          testing::ValuesIn(bsrilu02_idxbase_range),
+                                          testing::ValuesIn(bsrilu02_bin)));

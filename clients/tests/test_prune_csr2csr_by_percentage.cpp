@@ -24,7 +24,6 @@
 #include "testing_prune_csr2csr_by_percentage.hpp"
 #include "utility.hpp"
 
-
 #include <hipsparse.h>
 #include <string>
 #include <vector>

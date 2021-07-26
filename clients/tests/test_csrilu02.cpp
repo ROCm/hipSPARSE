@@ -24,7 +24,6 @@
 #include "testing_csrilu02.hpp"
 #include "utility.hpp"
 
-
 #include <hipsparse.h>
 #include <string>
 #include <vector>
@@ -161,19 +160,19 @@ TEST_P(parameterized_csrilu02_bin, csrilu02_bin_double)
 #endif
 
 INSTANTIATE_TEST_SUITE_P(csrilu02,
-                        parameterized_csrilu02,
-                        testing::Combine(testing::ValuesIn(csrilu02_M_range),
-                                         testing::ValuesIn(csrilu02_boost_range),
-                                         testing::ValuesIn(csrilu02_boost_tol_range),
-                                         testing::ValuesIn(csrilu02_boost_val_range),
-                                         testing::ValuesIn(csrilu02_boost_vali_range),
-                                         testing::ValuesIn(csrilu02_idxbase_range)));
+                         parameterized_csrilu02,
+                         testing::Combine(testing::ValuesIn(csrilu02_M_range),
+                                          testing::ValuesIn(csrilu02_boost_range),
+                                          testing::ValuesIn(csrilu02_boost_tol_range),
+                                          testing::ValuesIn(csrilu02_boost_val_range),
+                                          testing::ValuesIn(csrilu02_boost_vali_range),
+                                          testing::ValuesIn(csrilu02_idxbase_range)));
 
 INSTANTIATE_TEST_SUITE_P(csrilu02_bin,
-                        parameterized_csrilu02_bin,
-                        testing::Combine(testing::ValuesIn(csrilu02_boost_range),
-                                         testing::ValuesIn(csrilu02_boost_tol_range),
-                                         testing::ValuesIn(csrilu02_boost_val_range),
-                                         testing::ValuesIn(csrilu02_boost_vali_range),
-                                         testing::ValuesIn(csrilu02_idxbase_range),
-                                         testing::ValuesIn(csrilu02_bin)));
+                         parameterized_csrilu02_bin,
+                         testing::Combine(testing::ValuesIn(csrilu02_boost_range),
+                                          testing::ValuesIn(csrilu02_boost_tol_range),
+                                          testing::ValuesIn(csrilu02_boost_val_range),
+                                          testing::ValuesIn(csrilu02_boost_vali_range),
+                                          testing::ValuesIn(csrilu02_idxbase_range),
+                                          testing::ValuesIn(csrilu02_bin)));

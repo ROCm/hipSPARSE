@@ -23,7 +23,6 @@
 
 #include "testing_scatter.hpp"
 
-
 #include <hipsparse.h>
 
 // Only run tests for CUDA 11.1 or greater

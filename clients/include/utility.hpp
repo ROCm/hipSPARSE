@@ -539,7 +539,7 @@ void gen_matrix_coo(I                    m,
         I idx = begin;
         while(idx < i)
         {
-			#define MM_PI 3.1415
+#define MM_PI 3.1415
             // Normal distribution around the diagonal
             I rng = (i - begin) * sqrt(-2.0 * log((double)rand() / RAND_MAX))
                     * cos(2.0 * MM_PI * (double)rand() / RAND_MAX);
