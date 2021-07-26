@@ -54,4 +54,5 @@ TEST(axpby, axpby_i64_hipDoubleComplex)
     hipsparseStatus_t status = testing_axpby<int64_t, hipDoubleComplex>();
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+
 #endif
