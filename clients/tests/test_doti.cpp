@@ -24,7 +24,7 @@
 #include "testing_doti.hpp"
 #include "utility.hpp"
 
-#include <gtest/gtest.h>
+
 #include <hipsparse.h>
 #include <vector>
 
@@ -95,7 +95,7 @@ TEST_P(parameterized_doti, doti_double_complex)
 }
 #endif
 
-INSTANTIATE_TEST_CASE_P(doti,
+INSTANTIATE_TEST_SUITE_P(doti,
                         parameterized_doti,
                         testing::Combine(testing::ValuesIn(doti_N_range),
                                          testing::ValuesIn(doti_nnz_range),

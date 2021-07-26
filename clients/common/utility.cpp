@@ -20,13 +20,105 @@
  * THE SOFTWARE.
  *
  * ************************************************************************ */
+ 
+#include <limits>
+#ifdef WIN32
+#include <windows.h>
+#endif
+#include "utility.hpp"
+
+#include <cstdlib>
+#include <chrono>
+
+#ifdef WIN32
+#define strSUITEcmp(A, B) _stricmp(A, B)
+#endif
+
+//
+// https://en.cppreference.com/w/User:D41D8CD98F/feature_testing_macros
+//
+#ifdef __cpp_lib_filesystem
+#include <filesystem>
+#else
+#include <experimental/filesystem>
+
+namespace std
+{
+    namespace filesystem = experimental::filesystem;
+}
+#endif
+#if 0
+#ifdef WIN32
+#include <windows.h>
+#endif
+
 
 #include "utility.hpp"
 
 #include <hip/hip_runtime_api.h>
 #include <hipsparse.h>
 #include <stdio.h>
-#include <sys/time.h>
+// #include <sys/time.h>
+#include <chrono>
+//#define _USE_MATH_DEFINES
+#include <cmath> 
+#include <cstdlib>
+
+//
+// https://en.cppreference.com/w/User:D41D8CD98F/feature_testing_macros
+//
+#ifdef __cpp_lib_filesystem
+#include <filesystem>
+#else
+#include <experimental/filesystem>
+
+namespace std
+{
+    namespace filesystem = experimental::filesystem;
+}
+#endif
+#endif
+
+/* ============================================================================================ */
+// Return path of this executable
+std::string hipsparse_exepath()
+{
+#ifdef WIN32
+    std::vector<TCHAR> result(MAX_PATH + 1);
+    // Ensure result is large enough to accomodate the path
+    DWORD length = 0;
+    for(;;)
+    {
+        length = GetModuleFileNameA(nullptr, result.data(), result.size());
+        if(length < result.size() - 1)
+        {
+            result.resize(length + 1);
+            break;
+        }
+        result.resize(result.size() * 2);
+    }
+
+    std::filesystem::path exepath(result.begin(), result.end());
+    exepath = exepath.remove_filename();
+    exepath += exepath.empty() ? "" : "/";
+    return exepath.string();
+
+#else
+    std::string pathstr;
+    char*       path = realpath("/proc/self/exe", 0);
+    if(path)
+    {
+        char* p = strrchr(path, '/');
+        if(p)
+        {
+            p[1]    = 0;
+            pathstr = path;
+        }
+        free(path);
+    }
+    return pathstr;
+#endif
+}
 
 #ifdef __cplusplus
 extern "C" {
@@ -112,19 +204,38 @@ void set_device(int device_id)
 /*! \brief  CPU Timer(in microsecond): synchronize with the default device and return wall time */
 double get_time_us(void)
 {
-    hipDeviceSynchronize();
-    struct timeval tv;
-    gettimeofday(&tv, NULL);
-    return (tv.tv_sec * 1000 * 1000) + tv.tv_usec;
+	hipDeviceSynchronize();
+    auto now = std::chrono::steady_clock::now();
+   // struct timeval tv;
+   // gettimeofday(&tv, NULL);
+  //  return (tv.tv_sec * 1000 * 1000) + tv.tv_usec;
+    auto duration
+        = std::chrono::duration_cast<std::chrono::microseconds>(now.time_since_epoch()).count();
+    return (static_cast<double>(duration));
+	
+   // hipDeviceSynchronize();
+    //struct timeval tv;
+    //gettimeofday(&tv, NULL);
+    //return (tv.tv_sec * 1000 * 1000) + tv.tv_usec;
 };
 
 /*! \brief  CPU Timer(in microsecond): synchronize with given queue/stream and return wall time */
 double get_time_us_sync(hipStream_t stream)
 {
-    hipStreamSynchronize(stream);
-    struct timeval tv;
-    gettimeofday(&tv, NULL);
-    return (tv.tv_sec * 1000 * 1000) + tv.tv_usec;
+	 hipStreamSynchronize(stream);
+    auto now = std::chrono::steady_clock::now();
+    
+    
+   // struct timeval tv;
+   // gettimeofday(&tv, NULL);
+   // return (tv.tv_sec * 1000 * 1000) + tv.tv_usec;
+    auto duration
+        = std::chrono::duration_cast<std::chrono::microseconds>(now.time_since_epoch()).count();
+    return (static_cast<double>(duration));
+   // hipStreamSynchronize(stream);
+   // struct timeval tv;
+   // gettimeofday(&tv, NULL);
+   // return (tv.tv_sec * 1000 * 1000) + tv.tv_usec;
 };
 
 #ifdef __cplusplus

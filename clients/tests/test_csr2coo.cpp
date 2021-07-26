@@ -24,7 +24,7 @@
 #include "testing_csr2coo.hpp"
 #include "utility.hpp"
 
-#include <gtest/gtest.h>
+
 #include <hipsparse.h>
 #include <string>
 #include <vector>
@@ -97,20 +97,8 @@ Arguments setup_csr2coo_arguments(csr2coo_bin_tuple tup)
     // Determine absolute path of test matrix
     std::string bin_file = std::get<1>(tup);
 
-    // Get current executables absolute path
-    char    path_exe[PATH_MAX];
-    ssize_t len = readlink("/proc/self/exe", path_exe, sizeof(path_exe) - 1);
-    if(len < 14)
-    {
-        path_exe[0] = '\0';
-    }
-    else
-    {
-        path_exe[len - 14] = '\0';
-    }
-
     // Matrices are stored at the same path in matrices directory
-    arg.filename = std::string(path_exe) + "../matrices/" + bin_file;
+    arg.filename = hipsparse_exepath() + "../matrices/" + bin_file;
 
     return arg;
 }
@@ -139,13 +127,13 @@ TEST_P(parameterized_csr2coo_bin, csr2coo_bin)
 }
 #endif
 
-INSTANTIATE_TEST_CASE_P(csr2coo,
+INSTANTIATE_TEST_SUITE_P(csr2coo,
                         parameterized_csr2coo,
                         testing::Combine(testing::ValuesIn(csr2coo_M_range),
                                          testing::ValuesIn(csr2coo_N_range),
                                          testing::ValuesIn(csr2coo_idx_base_range)));
 
-INSTANTIATE_TEST_CASE_P(csr2coo_bin,
+INSTANTIATE_TEST_SUITE_P(csr2coo_bin,
                         parameterized_csr2coo_bin,
                         testing::Combine(testing::ValuesIn(csr2coo_idx_base_range),
                                          testing::ValuesIn(csr2coo_bin)));

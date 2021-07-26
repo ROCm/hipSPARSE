@@ -39,10 +39,14 @@
 
 #include <iostream>
 
+#ifdef GOOGLE_TEST
+#include "gtest/gtest.h"
+#endif
+
 #ifdef _OPENMP
 #include <omp.h>
 #endif
-
+std::string hipsparse_exepath();
 /*!\file
  * \brief provide data initialization and timing utilities.
  */
@@ -535,9 +539,10 @@ void gen_matrix_coo(I                    m,
         I idx = begin;
         while(idx < i)
         {
+			#define MM_PI 3.1415
             // Normal distribution around the diagonal
             I rng = (i - begin) * sqrt(-2.0 * log((double)rand() / RAND_MAX))
-                    * cos(2.0 * M_PI * (double)rand() / RAND_MAX);
+                    * cos(2.0 * MM_PI * (double)rand() / RAND_MAX);
 
             if(m <= n)
             {
@@ -1210,7 +1215,7 @@ inline void host_csr_to_csr_compress(int                     M,
         for(int j = start; j < end; j++)
         {
             if(testing_abs(csr_val_A[j]) > testing_real(tol)
-               && testing_abs(csr_val_A[j]) > std::numeric_limits<float>::min())
+               && testing_abs(csr_val_A[j]) > (std::numeric_limits<float>::min)())
             {
                 count++;
             }
@@ -1252,7 +1257,7 @@ inline void host_csr_to_csr_compress(int                     M,
         for(int j = start; j < end; j++)
         {
             if(testing_abs(csr_val_A[j]) > testing_real(tol)
-               && testing_abs(csr_val_A[j]) > std::numeric_limits<float>::min())
+               && testing_abs(csr_val_A[j]) > (std::numeric_limits<float>::min)())
             {
                 csr_col_ind_C[index] = csr_col_ind_A[j];
                 csr_val_C[index]     = csr_val_A[j];
@@ -1288,7 +1293,7 @@ inline void host_prune_csr_to_csr(int                     M,
         for(int j = csr_row_ptr_A[i] - csr_base_A; j < csr_row_ptr_A[i + 1] - csr_base_A; j++)
         {
             if(testing_abs(csr_val_A[j]) > threshold
-               && testing_abs(csr_val_A[j]) > std::numeric_limits<float>::min())
+               && testing_abs(csr_val_A[j]) > (std::numeric_limits<float>::min)())
             {
                 csr_row_ptr_C[i + 1]++;
             }
@@ -1311,7 +1316,7 @@ inline void host_prune_csr_to_csr(int                     M,
         for(int j = csr_row_ptr_A[i] - csr_base_A; j < csr_row_ptr_A[i + 1] - csr_base_A; j++)
         {
             if(testing_abs(csr_val_A[j]) > threshold
-               && testing_abs(csr_val_A[j]) > std::numeric_limits<float>::min())
+               && testing_abs(csr_val_A[j]) > (std::numeric_limits<float>::min)())
             {
                 csr_col_ind_C[index] = (csr_col_ind_A[j] - csr_base_A) + csr_base_C;
                 csr_val_C[index]     = csr_val_A[j];
@@ -4046,7 +4051,7 @@ int csr_lsolve(hipsparseOperation_t trans,
         csr_val     = vval.data();
     }
 
-    int            pivot = std::numeric_limits<int>::max();
+    int            pivot = (std::numeric_limits<int>::max)();
     std::vector<T> temp(wf_size);
 
     for(int i = 0; i < m; ++i)
@@ -4129,7 +4134,7 @@ int csr_lsolve(hipsparseOperation_t trans,
         }
     }
 
-    if(pivot != std::numeric_limits<int>::max())
+    if(pivot != (std::numeric_limits<int>::max)())
     {
         return pivot;
     }
@@ -4177,7 +4182,7 @@ int csr_usolve(hipsparseOperation_t trans,
         csr_val     = vval.data();
     }
 
-    int            pivot = std::numeric_limits<int>::max();
+    int            pivot = (std::numeric_limits<int>::max)();
     std::vector<T> temp(wf_size);
 
     for(int i = m - 1; i >= 0; --i)
@@ -4260,7 +4265,7 @@ int csr_usolve(hipsparseOperation_t trans,
         }
     }
 
-    if(pivot != std::numeric_limits<int>::max())
+    if(pivot != (std::numeric_limits<int>::max)())
     {
         return pivot;
     }

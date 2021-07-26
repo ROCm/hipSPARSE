@@ -24,7 +24,7 @@
 #include "testing_gthrz.hpp"
 #include "utility.hpp"
 
-#include <gtest/gtest.h>
+
 #include <hipsparse.h>
 #include <vector>
 
@@ -95,7 +95,7 @@ TEST_P(parameterized_gthrz, gthrz_double_complex)
 }
 #endif
 
-INSTANTIATE_TEST_CASE_P(gthrz,
+INSTANTIATE_TEST_SUITE_P(gthrz,
                         parameterized_gthrz,
                         testing::Combine(testing::ValuesIn(gthrz_N_range),
                                          testing::ValuesIn(gthrz_nnz_range),

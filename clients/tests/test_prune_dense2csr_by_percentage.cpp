@@ -24,7 +24,7 @@
 #include "testing_prune_dense2csr_by_percentage.hpp"
 #include "utility.hpp"
 
-#include <gtest/gtest.h>
+
 #include <hipsparse.h>
 #include <string>
 #include <vector>
@@ -83,7 +83,7 @@ TEST_P(parameterized_prune_dense2csr_by_percentage, prune_dense2csr_by_percentag
 }
 #endif
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
     prune_dense2csr_by_percentage,
     parameterized_prune_dense2csr_by_percentage,
     testing::Combine(testing::ValuesIn(prune_dense2csr_by_percentage_M_range),

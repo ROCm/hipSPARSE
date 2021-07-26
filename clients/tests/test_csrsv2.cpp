@@ -24,10 +24,9 @@
 #include "testing_csrsv2.hpp"
 #include "utility.hpp"
 
-#include <gtest/gtest.h>
+
 #include <hipsparse.h>
 #include <string>
-#include <unistd.h>
 #include <vector>
 
 typedef hipsparseIndexBase_t base;
@@ -102,20 +101,9 @@ Arguments setup_csrsv2_arguments(csrsv2_bin_tuple tup)
     // Determine absolute path of test matrix
     std::string bin_file = std::get<5>(tup);
 
-    // Get current executables absolute path
-    char    path_exe[PATH_MAX];
-    ssize_t len = readlink("/proc/self/exe", path_exe, sizeof(path_exe) - 1);
-    if(len < 14)
-    {
-        path_exe[0] = '\0';
-    }
-    else
-    {
-        path_exe[len - 14] = '\0';
-    }
-
+   
     // Matrices are stored at the same path in matrices directory
-    arg.filename = std::string(path_exe) + "../matrices/" + bin_file;
+    arg.filename = hipsparse_exepath() + "../matrices/" + bin_file;
 
     return arg;
 }
@@ -176,7 +164,7 @@ TEST_P(parameterized_csrsv2_bin, csrsv2_bin_double)
 }
 #endif
 
-INSTANTIATE_TEST_CASE_P(csrsv2,
+INSTANTIATE_TEST_SUITE_P(csrsv2,
                         parameterized_csrsv2,
                         testing::Combine(testing::ValuesIn(csrsv2_M_range),
                                          testing::ValuesIn(csrsv2_alpha_range),
@@ -185,7 +173,7 @@ INSTANTIATE_TEST_CASE_P(csrsv2,
                                          testing::ValuesIn(csrsv2_diag_range),
                                          testing::ValuesIn(csrsv2_fill_range)));
 
-INSTANTIATE_TEST_CASE_P(csrsv2_bin,
+INSTANTIATE_TEST_SUITE_P(csrsv2_bin,
                         parameterized_csrsv2_bin,
                         testing::Combine(testing::ValuesIn(csrsv2_alpha_range),
                                          testing::ValuesIn(csrsv2_idxbase_range),

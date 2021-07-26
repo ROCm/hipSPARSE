@@ -26,7 +26,9 @@
 #define TESTING_DNVEC_DESCR_HPP
 
 #include "hipsparse_test_unique_ptr.hpp"
-
+#ifdef GOOGLE_TEST
+#include <gtest/gtest.h>
+#endif
 #include <hipsparse.h>
 
 using namespace hipsparse_test;

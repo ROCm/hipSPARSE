@@ -24,7 +24,7 @@
 #include "testing_csr2hyb.hpp"
 #include "utility.hpp"
 
-#include <gtest/gtest.h>
+
 #include <hipsparse.h>
 #include <string>
 #include <vector>
@@ -90,20 +90,8 @@ Arguments setup_csr2hyb_arguments(csr2hyb_bin_tuple tup)
     // Determine absolute path of test matrix
     std::string bin_file = std::get<3>(tup);
 
-    // Get current executables absolute path
-    char    path_exe[PATH_MAX];
-    ssize_t len = readlink("/proc/self/exe", path_exe, sizeof(path_exe) - 1);
-    if(len < 14)
-    {
-        path_exe[0] = '\0';
-    }
-    else
-    {
-        path_exe[len - 14] = '\0';
-    }
-
     // Matrices are stored at the same path in matrices directory
-    arg.filename = std::string(path_exe) + "../matrices/" + bin_file;
+    arg.filename = hipsparse_exepath() + "../matrices/" + bin_file;
 
     return arg;
 }
@@ -164,7 +152,7 @@ TEST_P(parameterized_csr2hyb_bin, csr2hyb_bin_double)
 }
 #endif
 
-INSTANTIATE_TEST_CASE_P(csr2hyb,
+INSTANTIATE_TEST_SUITE_P(csr2hyb,
                         parameterized_csr2hyb,
                         testing::Combine(testing::ValuesIn(csr2hyb_M_range),
                                          testing::ValuesIn(csr2hyb_N_range),
@@ -172,7 +160,7 @@ INSTANTIATE_TEST_CASE_P(csr2hyb,
                                          testing::ValuesIn(csr2hyb_partition),
                                          testing::ValuesIn(csr2hyb_ELL_range)));
 
-INSTANTIATE_TEST_CASE_P(csr2hyb_bin,
+INSTANTIATE_TEST_SUITE_P(csr2hyb_bin,
                         parameterized_csr2hyb_bin,
                         testing::Combine(testing::ValuesIn(csr2hyb_idx_base_range),
                                          testing::ValuesIn(csr2hyb_partition),

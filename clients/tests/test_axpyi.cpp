@@ -24,7 +24,7 @@
 #include "testing_axpyi.hpp"
 #include "utility.hpp"
 
-#include <gtest/gtest.h>
+
 #include <hipsparse.h>
 #include <vector>
 
@@ -98,7 +98,7 @@ TEST_P(parameterized_axpyi, axpyi_double_complex)
 }
 #endif
 
-INSTANTIATE_TEST_CASE_P(axpyi,
+INSTANTIATE_TEST_SUITE_P(axpyi,
                         parameterized_axpyi,
                         testing::Combine(testing::ValuesIn(axpyi_N_range),
                                          testing::ValuesIn(axpyi_nnz_range),

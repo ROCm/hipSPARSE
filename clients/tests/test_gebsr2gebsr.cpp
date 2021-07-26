@@ -24,7 +24,7 @@
 #include "testing_gebsr2gebsr.hpp"
 #include "utility.hpp"
 
-#include <gtest/gtest.h>
+
 #include <hipsparse.h>
 #include <string>
 #include <vector>
@@ -128,20 +128,8 @@ Arguments setup_gebsr2gebsr_arguments(gebsr2gebsr_bin_tuple tup)
     // Determine absolute path of test matrix
     std::string bin_file = std::get<7>(tup);
 
-    // Get current executables absolute path
-    char    path_exe[PATH_MAX];
-    ssize_t len = readlink("/proc/self/exe", path_exe, sizeof(path_exe) - 1);
-    if(len < 14)
-    {
-        path_exe[0] = '\0';
-    }
-    else
-    {
-        path_exe[len - 14] = '\0';
-    }
-
     // Matrices are stored at the same path in matrices directory
-    arg.filename = std::string(path_exe) + "../matrices/" + bin_file;
+    arg.filename = hipsparse_exepath() + "../matrices/" + bin_file;
 
     return arg;
 }
@@ -202,7 +190,7 @@ TEST_P(parameterized_gebsr2gebsr_bin, gebsr2gebsr_bin_double)
 }
 #endif
 
-INSTANTIATE_TEST_CASE_P(gebsr2gebsr,
+INSTANTIATE_TEST_SUITE_P(gebsr2gebsr,
                         parameterized_gebsr2gebsr,
                         testing::Combine(testing::ValuesIn(gebsr2gebsr_M_range),
                                          testing::ValuesIn(gebsr2gebsr_N_range),
@@ -214,7 +202,7 @@ INSTANTIATE_TEST_CASE_P(gebsr2gebsr,
                                          testing::ValuesIn(gebsr2gebsr_C_base_range),
                                          testing::ValuesIn(gebsr2gebsr_dir_range)));
 
-INSTANTIATE_TEST_CASE_P(gebsr2gebsr_bin,
+INSTANTIATE_TEST_SUITE_P(gebsr2gebsr_bin,
                         parameterized_gebsr2gebsr_bin,
                         testing::Combine(testing::ValuesIn(gebsr2gebsr_row_block_dim_A_range_bin),
                                          testing::ValuesIn(gebsr2gebsr_col_block_dim_A_range_bin),

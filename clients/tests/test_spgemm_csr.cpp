@@ -23,7 +23,7 @@
 
 #include "testing_spgemm_csr.hpp"
 
-#include <gtest/gtest.h>
+
 #include <hipsparse.h>
 
 #if(!defined(CUDART_VERSION))

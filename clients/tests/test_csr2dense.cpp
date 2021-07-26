@@ -24,7 +24,7 @@
 #include "testing_csr2dense.hpp"
 #include "utility.hpp"
 
-#include <gtest/gtest.h>
+
 #include <hipsparse.h>
 #include <string>
 #include <vector>
@@ -95,7 +95,7 @@ TEST_P(parameterized_csr2dense, csr2dense_double_complex)
 }
 #endif
 
-INSTANTIATE_TEST_CASE_P(csr2dense,
+INSTANTIATE_TEST_SUITE_P(csr2dense,
                         parameterized_csr2dense,
                         testing::Combine(testing::ValuesIn(csr2dense_M_range),
                                          testing::ValuesIn(csr2dense_N_range),

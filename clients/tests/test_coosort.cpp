@@ -24,7 +24,7 @@
 #include "testing_coosort.hpp"
 #include "utility.hpp"
 
-#include <gtest/gtest.h>
+
 #include <hipsparse.h>
 #include <string>
 #include <vector>
@@ -100,20 +100,9 @@ Arguments setup_coosort_arguments(coosort_bin_tuple tup)
     // Determine absolute path of test matrix
     std::string bin_file = std::get<3>(tup);
 
-    // Get current executables absolute path
-    char    path_exe[PATH_MAX];
-    ssize_t len = readlink("/proc/self/exe", path_exe, sizeof(path_exe) - 1);
-    if(len < 14)
-    {
-        path_exe[0] = '\0';
-    }
-    else
-    {
-        path_exe[len - 14] = '\0';
-    }
 
     // Matrices are stored at the same path in matrices directory
-    arg.filename = std::string(path_exe) + "../matrices/" + bin_file;
+    arg.filename = hipsparse_exepath() + "../matrices/" + bin_file;
 
     return arg;
 }
@@ -142,7 +131,7 @@ TEST_P(parameterized_coosort_bin, coosort_bin)
 }
 #endif
 
-INSTANTIATE_TEST_CASE_P(coosort,
+INSTANTIATE_TEST_SUITE_P(coosort,
                         parameterized_coosort,
                         testing::Combine(testing::ValuesIn(coosort_M_range),
                                          testing::ValuesIn(coosort_N_range),
@@ -150,7 +139,7 @@ INSTANTIATE_TEST_CASE_P(coosort,
                                          testing::ValuesIn(coosort_perm),
                                          testing::ValuesIn(coosort_base)));
 
-INSTANTIATE_TEST_CASE_P(coosort_bin,
+INSTANTIATE_TEST_SUITE_P(coosort_bin,
                         parameterized_coosort_bin,
                         testing::Combine(testing::ValuesIn(coosort_trans),
                                          testing::ValuesIn(coosort_perm),

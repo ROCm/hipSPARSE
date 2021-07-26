@@ -24,7 +24,7 @@
 #include "testing_csrmm.hpp"
 #include "utility.hpp"
 
-#include <gtest/gtest.h>
+
 #include <hipsparse.h>
 #include <string>
 
@@ -99,20 +99,9 @@ Arguments setup_csrmm_arguments(csrmm_bin_tuple tup)
     // Determine absolute path of test matrix
     std::string bin_file = std::get<6>(tup);
 
-    // Get current executables absolute path
-    char    path_exe[PATH_MAX];
-    ssize_t len = readlink("/proc/self/exe", path_exe, sizeof(path_exe) - 1);
-    if(len < 14)
-    {
-        path_exe[0] = '\0';
-    }
-    else
-    {
-        path_exe[len - 14] = '\0';
-    }
-
+    
     // Matrices are stored at the same path in matrices directory
-    arg.filename = std::string(path_exe) + "../matrices/" + bin_file;
+    arg.filename = hipsparse_exepath() + "../matrices/" + bin_file;
 
     return arg;
 }
@@ -173,7 +162,7 @@ TEST_P(parameterized_csrmm_bin, csrmm_bin_double)
 }
 #endif
 
-INSTANTIATE_TEST_CASE_P(csrmm,
+INSTANTIATE_TEST_SUITE_P(csrmm,
                         parameterized_csrmm,
                         testing::Combine(testing::ValuesIn(csrmm_M_range),
                                          testing::ValuesIn(csrmm_N_range),
@@ -184,7 +173,7 @@ INSTANTIATE_TEST_CASE_P(csrmm,
                                          testing::ValuesIn(csrmm_transA_range),
                                          testing::ValuesIn(csrmm_transB_range)));
 
-INSTANTIATE_TEST_CASE_P(csrmm_bin,
+INSTANTIATE_TEST_SUITE_P(csrmm_bin,
                         parameterized_csrmm_bin,
                         testing::Combine(testing::ValuesIn(csrmm_N_range),
                                          testing::ValuesIn(csrmm_alpha_range),

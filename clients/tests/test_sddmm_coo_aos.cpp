@@ -23,7 +23,7 @@
 
 #include "testing_sddmm_coo_aos.hpp"
 
-#include <gtest/gtest.h>
+
 #include <hipsparse.h>
 
 // Only run tests for CUDA 11.2 or greater

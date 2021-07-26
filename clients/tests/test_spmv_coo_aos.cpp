@@ -23,7 +23,7 @@
 
 #include "testing_spmv_coo_aos.hpp"
 
-#include <gtest/gtest.h>
+
 #include <hipsparse.h>
 
 // Only run tests for CUDA 11.1 or greater

@@ -24,7 +24,7 @@
 #include "testing_nnz.hpp"
 #include "utility.hpp"
 
-#include <gtest/gtest.h>
+
 #include <hipsparse.h>
 #include <string>
 #include <vector>
@@ -93,7 +93,7 @@ TEST_P(parameterized_nnz, nnz_double_complex)
 }
 #endif
 
-INSTANTIATE_TEST_CASE_P(nnz,
+INSTANTIATE_TEST_SUITE_P(nnz,
                         parameterized_nnz,
                         testing::Combine(testing::ValuesIn(nnz_M_range),
                                          testing::ValuesIn(nnz_N_range),

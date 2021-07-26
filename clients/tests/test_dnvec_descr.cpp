@@ -23,7 +23,6 @@
 
 #include "testing_dnvec_descr.hpp"
 
-#include <gtest/gtest.h>
 
 // Only run tests for CUDA 11.1 or greater
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
