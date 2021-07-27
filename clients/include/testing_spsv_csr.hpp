@@ -38,7 +38,7 @@ using namespace hipsparse_test;
 
 void testing_spsv_csr_bad_arg(void)
 {
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10030)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11030)
     int64_t              m         = 100;
     int64_t              n         = 100;
     int64_t              nnz       = 100;
@@ -46,11 +46,11 @@ void testing_spsv_csr_bad_arg(void)
     float                alpha     = 0.6;
     hipsparseOperation_t transA    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
     hipsparseIndexBase_t idxBase   = HIPSPARSE_INDEX_BASE_ZERO;
-    hipsparseDiagType_t    diag    = HIPSPARSE_DIAG_TYPE_UNIT;
-    hipsparseFillMode_t    uplo    = HIPSPARSE_FILL_MODE_LOWER;
+    hipsparseDiagType_t  diag      = HIPSPARSE_DIAG_TYPE_UNIT;
+    hipsparseFillMode_t  uplo      = HIPSPARSE_FILL_MODE_LOWER;
     hipsparseIndexType_t idxType   = HIPSPARSE_INDEX_32I;
     hipDataType          dataType  = HIP_R_32F;
-    hipsparseSpMVAlg_t   alg       = HIPSPARSE_SPSV_ALG_DEFAULT;
+    hipsparseSpSVAlg_t   alg       = HIPSPARSE_SPSV_ALG_DEFAULT;
     hipsparseStatus_t    status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
@@ -76,7 +76,7 @@ void testing_spsv_csr_bad_arg(void)
         return;
     }
 
-    // SpMV structures
+    // SpSV structures
     hipsparseSpMatDescr_t A;
     hipsparseDnVecDescr_t x, y;
 
@@ -129,9 +129,9 @@ void testing_spsv_csr_bad_arg(void)
         hipsparseSpSV_analysis(handle, transA, &alpha, A, x, nullptr, dataType, alg, descr, dbuf),
         "Error: y is nullptr");
     verify_hipsparse_status_invalid_pointer(
-        hipsparseSpSV_analysis(handle, transA, &alpha, A, x, nullptr, dataType, alg, descr, nullptr),
+        hipsparseSpSV_analysis(
+            handle, transA, &alpha, A, x, y, dataType, alg, descr, nullptr),
         "Error: dbuf is nullptr");
-
 
     // SpSV solve
     verify_hipsparse_status_invalid_handle(
@@ -149,7 +149,7 @@ void testing_spsv_csr_bad_arg(void)
         hipsparseSpSV_solve(handle, transA, &alpha, A, x, nullptr, dataType, alg, descr, dbuf),
         "Error: y is nullptr");
     verify_hipsparse_status_invalid_pointer(
-        hipsparseSpSV_solve(handle, transA, &alpha, A, x, nullptr, dataType, alg, descr, nullptr),
+        hipsparseSpSV_solve(handle, transA, &alpha, A, x, y, dataType, alg, descr, nullptr),
         "Error: dbuf is nullptr");
 
     // Destruct
@@ -162,14 +162,14 @@ void testing_spsv_csr_bad_arg(void)
 template <typename I, typename J, typename T>
 hipsparseStatus_t testing_spsv_csr(void)
 {
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10030)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11030)
     I                    safe_size = 100;
     T                    h_alpha   = make_DataType<T>(2.0);
     hipsparseOperation_t transA    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
     hipsparseIndexBase_t idx_base  = HIPSPARSE_INDEX_BASE_ZERO;
-    hipsparseDiagType_t    diag    = HIPSPARSE_DIAG_TYPE_UNIT;
-    hipsparseFillMode_t    uplo    = HIPSPARSE_FILL_MODE_LOWER;
-    hipsparseSpMVAlg_t   alg       = HIPSPARSE_SPSV_ALG_DEFAULT;
+    hipsparseDiagType_t  diag      = HIPSPARSE_DIAG_TYPE_UNIT;
+    hipsparseFillMode_t  uplo      = HIPSPARSE_FILL_MODE_LOWER;
+    hipsparseSpSVAlg_t   alg       = HIPSPARSE_SPSV_ALG_DEFAULT;
     hipsparseStatus_t    status;
     hipsparseSpSVDescr_t descr;
 
@@ -277,10 +277,23 @@ hipsparseStatus_t testing_spsv_csr(void)
     CHECK_HIPSPARSE_ERROR(hipsparseCreateDnVec(&y1, m, dy_1, typeT));
     CHECK_HIPSPARSE_ERROR(hipsparseCreateDnVec(&y2, m, dy_2, typeT));
 
-    // Query SpMV buffer
+
+    CHECK_HIPSPARSE_ERROR(
+        hipsparseSpMatSetAttribute(A, HIPSPARSE_SPMAT_FILL_MODE, &uplo, sizeof(uplo)));
+
+    CHECK_HIPSPARSE_ERROR(
+        hipsparseSpMatSetAttribute(A, HIPSPARSE_SPMAT_DIAG_TYPE, &diag, sizeof(diag)));
+
+
+    std::cout << "m: " << m << " n: " << n << std::endl;
+
+
+    // Query SpSV buffer
     size_t bufferSize;
     CHECK_HIPSPARSE_ERROR(hipsparseSpSV_bufferSize(
         handle, transA, &h_alpha, A, x, y1, typeT, alg, descr, &bufferSize));
+
+    std::cout << "buffer size: " << bufferSize << std::endl;
 
     void* buffer;
     CHECK_HIP_ERROR(hipMalloc(&buffer, bufferSize));
@@ -295,7 +308,6 @@ hipsparseStatus_t testing_spsv_csr(void)
     CHECK_HIPSPARSE_ERROR(
         hipsparseSpSV_analysis(handle, transA, d_alpha, A, x, y2, typeT, alg, descr, buffer));
 
-
     // HIPSPARSE pointer mode host
     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
     CHECK_HIPSPARSE_ERROR(
@@ -306,87 +318,32 @@ hipsparseStatus_t testing_spsv_csr(void)
     CHECK_HIPSPARSE_ERROR(
         hipsparseSpSV_solve(handle, transA, d_alpha, A, x, y2, typeT, alg, descr, buffer));
 
-
     // copy output from device to CPU
     CHECK_HIP_ERROR(hipMemcpy(hy_1.data(), dy_1, sizeof(T) * m, hipMemcpyDeviceToHost));
     CHECK_HIP_ERROR(hipMemcpy(hy_2.data(), dy_2, sizeof(T) * m, hipMemcpyDeviceToHost));
 
-    // // Query for warpSize
-    // hipDeviceProp_t prop;
-    // hipGetDeviceProperties(&prop, 0);
+    J struct_pivot = -1;
+    J numeric_pivot = -1;
+    host_csrsv(transA,
+                m,
+                nnz,
+                h_alpha,
+                hcsr_row_ptr.data(),
+                hcol_ind.data(),
+                hval.data(),
+                hx.data(),
+                hy_gold.data(),
+                diag,
+                uplo,
+                idx_base,
+                &struct_pivot,
+                &numeric_pivot);
 
-    // int WF_SIZE;
-    // I   nnz_per_row = nnz / m;
-
-    // if(prop.warpSize == 32)
-    // {
-    //     if(nnz_per_row < 4)
-    //         WF_SIZE = 2;
-    //     else if(nnz_per_row < 8)
-    //         WF_SIZE = 4;
-    //     else if(nnz_per_row < 16)
-    //         WF_SIZE = 8;
-    //     else if(nnz_per_row < 32)
-    //         WF_SIZE = 16;
-    //     else
-    //         WF_SIZE = 32;
-    // }
-    // else if(prop.warpSize == 64)
-    // {
-    //     if(nnz_per_row < 4)
-    //         WF_SIZE = 2;
-    //     else if(nnz_per_row < 8)
-    //         WF_SIZE = 4;
-    //     else if(nnz_per_row < 16)
-    //         WF_SIZE = 8;
-    //     else if(nnz_per_row < 32)
-    //         WF_SIZE = 16;
-    //     else if(nnz_per_row < 64)
-    //         WF_SIZE = 32;
-    //     else
-    //         WF_SIZE = 64;
-    // }
-    // else
-    // {
-    //     return HIPSPARSE_STATUS_INTERNAL_ERROR;
-    // }
-
-    // for(J i = 0; i < m; ++i)
-    // {
-    //     std::vector<T> sum(WF_SIZE, make_DataType<T>(0.0));
-
-    //     for(I j = hcsr_row_ptr[i] - idx_base; j < hcsr_row_ptr[i + 1] - idx_base; j += WF_SIZE)
-    //     {
-    //         for(int k = 0; k < WF_SIZE; ++k)
-    //         {
-    //             if(j + k < hcsr_row_ptr[i + 1] - idx_base)
-    //             {
-    //                 sum[k] = testing_fma(
-    //                     h_alpha * hval[j + k], hx[hcol_ind[j + k] - idx_base], sum[k]);
-    //             }
-    //         }
-    //     }
-
-    //     for(int j = 1; j < WF_SIZE; j <<= 1)
-    //     {
-    //         for(int k = 0; k < WF_SIZE - j; ++k)
-    //         {
-    //             sum[k] = sum[k] + sum[k + j];
-    //         }
-    //     }
-
-    //     if(h_beta == make_DataType<T>(0.0))
-    //     {
-    //         hy_gold[i] = sum[0];
-    //     }
-    //     else
-    //     {
-    //         hy_gold[i] = testing_fma(h_beta, hy_gold[i], sum[0]);
-    //     }
-    // }
-
-    unit_check_near(1, m, 1, hy_gold.data(), hy_1.data());
-    unit_check_near(1, m, 1, hy_gold.data(), hy_2.data());
+    if(struct_pivot != -1 && numeric_pivot != -1)
+    {
+        unit_check_near(1, m, 1, hy_gold.data(), hy_1.data());
+        unit_check_near(1, m, 1, hy_gold.data(), hy_2.data());
+    }
 
     CHECK_HIP_ERROR(hipFree(buffer));
     CHECK_HIPSPARSE_ERROR(hipsparseDestroySpMat(A));

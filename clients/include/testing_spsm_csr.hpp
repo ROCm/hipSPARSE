@@ -38,7 +38,7 @@ using namespace hipsparse_test;
 
 void testing_spsm_csr_bad_arg(void)
 {
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10030)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
     int64_t              m         = 100;
     int64_t              n         = 100;
     int64_t              k         = 100;
@@ -46,12 +46,14 @@ void testing_spsm_csr_bad_arg(void)
     int64_t              safe_size = 100;
     float                alpha     = 0.6;
     hipsparseOperation_t transA    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
+    hipsparseOperation_t transB    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
     hipsparseIndexBase_t idxBase   = HIPSPARSE_INDEX_BASE_ZERO;
-    hipsparseDiagType_t    diag    = HIPSPARSE_DIAG_TYPE_UNIT;
-    hipsparseFillMode_t    uplo    = HIPSPARSE_FILL_MODE_LOWER;
+    hipsparseDiagType_t  diag      = HIPSPARSE_DIAG_TYPE_UNIT;
+    hipsparseFillMode_t  uplo      = HIPSPARSE_FILL_MODE_LOWER;
+    hipsparseOrder_t order         = HIPSPARSE_ORDER_COLUMN;
     hipsparseIndexType_t idxType   = HIPSPARSE_INDEX_32I;
     hipDataType          dataType  = HIP_R_32F;
-    hipsparseSpMVAlg_t   alg       = HIPSPARSE_SPSM_ALG_DEFAULT;
+    hipsparseSpSMAlg_t   alg       = HIPSPARSE_SPSM_ALG_DEFAULT;
     hipsparseStatus_t    status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
@@ -67,8 +69,8 @@ void testing_spsm_csr_bad_arg(void)
     int*   dptr = (int*)dptr_managed.get();
     int*   dcol = (int*)dcol_managed.get();
     float* dval = (float*)dval_managed.get();
-    float* dB   = (float*)dx_managed.get();
-    float* dC   = (float*)dy_managed.get();
+    float* dB   = (float*)dB_managed.get();
+    float* dC   = (float*)dC_managed.get();
     void*  dbuf = (void*)dbuf_managed.get();
 
     if(!dval || !dptr || !dcol || !dB || !dC || !dbuf)
@@ -77,7 +79,7 @@ void testing_spsm_csr_bad_arg(void)
         return;
     }
 
-    // SpMV structures
+    // SpSM structures
     hipsparseSpMatDescr_t A;
     hipsparseDnMatDescr_t B, C;
 
@@ -89,68 +91,68 @@ void testing_spsm_csr_bad_arg(void)
     verify_hipsparse_status_success(
         hipsparseCreateCsr(&A, m, n, nnz, dptr, dcol, dval, idxType, idxType, idxBase, dataType),
         "success");
-    verify_hipsparse_status_success(hipsparseCreateDnMat(&B, m, k, m, dB, dataType), "success");
-    verify_hipsparse_status_success(hipsparseCreateDnMat(&C, m, k, m, dC, dataType), "success");
+    verify_hipsparse_status_success(hipsparseCreateDnMat(&B, m, k, m, dB, dataType, order), "success");
+    verify_hipsparse_status_success(hipsparseCreateDnMat(&C, m, k, m, dC, dataType, order), "success");
 
     // SpSM buffer
     verify_hipsparse_status_invalid_handle(
-        hipsparseSpSM_bufferSize(nullptr, transA, &alpha, A, B, C, dataType, alg, descr, &bsize));
+        hipsparseSpSM_bufferSize(nullptr, transA, transB, &alpha, A, B, C, dataType, alg, descr, &bsize));
     verify_hipsparse_status_invalid_pointer(
-        hipsparseSpSM_bufferSize(handle, transA, nullptr, A, B, C, dataType, alg, descr, &bsize),
+        hipsparseSpSM_bufferSize(handle, transA, transB, nullptr, A, B, C, dataType, alg, descr, &bsize),
         "Error: alpha is nullptr");
     verify_hipsparse_status_invalid_pointer(
         hipsparseSpSM_bufferSize(
-            handle, transA, &alpha, nullptr, B, C, dataType, alg, descr, &bsize),
+            handle, transA, transB, &alpha, nullptr, B, C, dataType, alg, descr, &bsize),
         "Error: A is nullptr");
     verify_hipsparse_status_invalid_pointer(
         hipsparseSpSM_bufferSize(
-            handle, transA, &alpha, A, nullptr, C, dataType, alg, descr, &bsize),
-        "Error: x is nullptr");
+            handle, transA, transB, &alpha, A, nullptr, C, dataType, alg, descr, &bsize),
+        "Error: B is nullptr");
     verify_hipsparse_status_invalid_pointer(
         hipsparseSpSM_bufferSize(
-            handle, transA, &alpha, A, B, nullptr, dataType, alg, descr, &bsize),
-        "Error: y is nullptr");
+            handle, transA, transB, &alpha, A, B, nullptr, dataType, alg, descr, &bsize),
+        "Error: C is nullptr");
     verify_hipsparse_status_invalid_pointer(
-        hipsparseSpSM_bufferSize(handle, transA, &alpha, A, B, C, dataType, alg, descr, nullptr),
+        hipsparseSpSM_bufferSize(handle, transA, transB, &alpha, A, B, C, dataType, alg, descr, nullptr),
         "Error: bsize is nullptr");
 
     // SpSM analysis
     verify_hipsparse_status_invalid_handle(
-        hipsparseSpSM_analysis(nullptr, transA, &alpha, A, B, C, dataType, alg, descr, dbuf));
+        hipsparseSpSM_analysis(nullptr, transA, transB, &alpha, A, B, C, dataType, alg, descr, dbuf));
     verify_hipsparse_status_invalid_pointer(
-        hipsparseSpSM_analysis(handle, transA, nullptr, A, B, C, dataType, alg, descr, dbuf),
+        hipsparseSpSM_analysis(handle, transA, transB, nullptr, A, B, C, dataType, alg, descr, dbuf),
         "Error: alpha is nullptr");
     verify_hipsparse_status_invalid_pointer(
-        hipsparseSpSM_analysis(handle, transA, &alpha, nullptr, B, C, dataType, alg, descr, dbuf),
+        hipsparseSpSM_analysis(handle, transA, transB, &alpha, nullptr, B, C, dataType, alg, descr, dbuf),
         "Error: A is nullptr");
     verify_hipsparse_status_invalid_pointer(
-        hipsparseSpSM_analysis(handle, transA, &alpha, A, nullptr, C, dataType, alg, descr, dbuf),
-        "Error: x is nullptr");
+        hipsparseSpSM_analysis(handle, transA, transB, &alpha, A, nullptr, C, dataType, alg, descr, dbuf),
+        "Error: B is nullptr");
     verify_hipsparse_status_invalid_pointer(
-        hipsparseSpSM_analysis(handle, transA, &alpha, A, B, nullptr, dataType, alg, descr, dbuf),
-        "Error: y is nullptr");
+        hipsparseSpSM_analysis(handle, transA, transB, &alpha, A, B, nullptr, dataType, alg, descr, dbuf),
+        "Error: C is nullptr");
     verify_hipsparse_status_invalid_pointer(
-        hipsparseSpSM_analysis(handle, transA, &alpha, A, B, nullptr, dataType, alg, descr, nullptr),
+        hipsparseSpSM_analysis(
+            handle, transA, transB, &alpha, A, B, C, dataType, alg, descr, nullptr),
         "Error: dbuf is nullptr");
-
 
     // SpSM solve
     verify_hipsparse_status_invalid_handle(
-        hipsparseSpSM_solve(nullptr, transA, &alpha, A, B, C, dataType, alg, descr, dbuf));
+        hipsparseSpSM_solve(nullptr, transA, transB, &alpha, A, B, C, dataType, alg, descr, dbuf));
     verify_hipsparse_status_invalid_pointer(
-        hipsparseSpSM_solve(handle, transA, nullptr, A, B, C, dataType, alg, descr, dbuf),
+        hipsparseSpSM_solve(handle, transA, transB, nullptr, A, B, C, dataType, alg, descr, dbuf),
         "Error: alpha is nullptr");
     verify_hipsparse_status_invalid_pointer(
-        hipsparseSpSM_solve(handle, transA, &alpha, nullptr, B, C, dataType, alg, descr, dbuf),
+        hipsparseSpSM_solve(handle, transA, transB, &alpha, nullptr, B, C, dataType, alg, descr, dbuf),
         "Error: A is nullptr");
     verify_hipsparse_status_invalid_pointer(
-        hipsparseSpSM_solve(handle, transA, &alpha, A, nullptr, C, dataType, alg, descr, dbuf),
-        "Error: x is nullptr");
+        hipsparseSpSM_solve(handle, transA, transB, &alpha, A, nullptr, C, dataType, alg, descr, dbuf),
+        "Error: B is nullptr");
     verify_hipsparse_status_invalid_pointer(
-        hipsparseSpSM_solve(handle, transA, &alpha, A, B, nullptr, dataType, alg, descr, dbuf),
-        "Error: y is nullptr");
+        hipsparseSpSM_solve(handle, transA, transB, &alpha, A, B, nullptr, dataType, alg, descr, dbuf),
+        "Error: C is nullptr");
     verify_hipsparse_status_invalid_pointer(
-        hipsparseSpSM_solve(handle, transA, &alpha, A, B, nullptr, dataType, alg, descr, nullptr),
+        hipsparseSpSM_solve(handle, transA, transB, &alpha, A, B, C, dataType, alg, descr, nullptr),
         "Error: dbuf is nullptr");
 
     // Destruct
@@ -163,14 +165,16 @@ void testing_spsm_csr_bad_arg(void)
 template <typename I, typename J, typename T>
 hipsparseStatus_t testing_spsm_csr(void)
 {
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10030)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
     I                    safe_size = 100;
     T                    h_alpha   = make_DataType<T>(2.0);
     hipsparseOperation_t transA    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
+    hipsparseOperation_t transB    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
     hipsparseIndexBase_t idx_base  = HIPSPARSE_INDEX_BASE_ZERO;
-    hipsparseDiagType_t    diag    = HIPSPARSE_DIAG_TYPE_UNIT;
-    hipsparseFillMode_t    uplo    = HIPSPARSE_FILL_MODE_LOWER;
-    hipsparseSpMVAlg_t   alg       = HIPSPARSE_SPSM_ALG_DEFAULT;
+    hipsparseDiagType_t  diag      = HIPSPARSE_DIAG_TYPE_UNIT;
+    hipsparseFillMode_t  uplo      = HIPSPARSE_FILL_MODE_LOWER;
+    hipsparseOrder_t     order     = HIPSPARSE_ORDER_COLUMN;
+    hipsparseSpSMAlg_t   alg       = HIPSPARSE_SPSM_ALG_DEFAULT;
     hipsparseStatus_t    status;
     hipsparseSpSMDescr_t descr;
 
@@ -213,6 +217,7 @@ hipsparseStatus_t testing_spsm_csr(void)
     J m;
     J n;
     I nnz;
+    J k = 16;
 
     if(read_bin_matrix(filename.c_str(), m, n, nnz, hcsr_row_ptr, hcol_ind, hval, idx_base) != 0)
     {
@@ -226,9 +231,8 @@ hipsparseStatus_t testing_spsm_csr(void)
     std::vector<T> hC_gold(m * k);
 
     hipsparseInit<T>(hB, 1, m * k);
-    hipsparseInit<T>(hC_1, 1, m * k);
 
-    // copy vector is easy in STL; hC_gold = hB: save a copy in hB_gold which will be output of CPU
+    hC_1    = hB;
     hC_2    = hC_1;
     hC_gold = hC_1;
 
@@ -274,14 +278,20 @@ hipsparseStatus_t testing_spsm_csr(void)
 
     // Create dense matrices
     hipsparseDnMatDescr_t B, C1, C2;
-    CHECK_HIPSPARSE_ERROR(hipsparseCreateDnMat(&B, m, k, m, dB, typeT));
-    CHECK_HIPSPARSE_ERROR(hipsparseCreateDnMat(&y1, m, k, m, dC_1, typeT));
-    CHECK_HIPSPARSE_ERROR(hipsparseCreateDnMat(&y2, m, k, m, dC_2, typeT));
+    CHECK_HIPSPARSE_ERROR(hipsparseCreateDnMat(&B, m, k, m, dB, typeT, order));
+    CHECK_HIPSPARSE_ERROR(hipsparseCreateDnMat(&C1, m, k, m, dC_1, typeT, order));
+    CHECK_HIPSPARSE_ERROR(hipsparseCreateDnMat(&C2, m, k, m, dC_2, typeT, order));
 
-    // Query SpMV buffer
+    CHECK_HIPSPARSE_ERROR(
+        hipsparseSpMatSetAttribute(A, HIPSPARSE_SPMAT_FILL_MODE, &uplo, sizeof(uplo)));
+
+    CHECK_HIPSPARSE_ERROR(
+        hipsparseSpMatSetAttribute(A, HIPSPARSE_SPMAT_DIAG_TYPE, &diag, sizeof(diag)));
+
+    // Query SpSM buffer
     size_t bufferSize;
     CHECK_HIPSPARSE_ERROR(hipsparseSpSM_bufferSize(
-        handle, transA, &h_alpha, A, B, C1, typeT, alg, descr, &bufferSize));
+        handle, transA, transB, &h_alpha, A, B, C1, typeT, alg, descr, &bufferSize));
 
     void* buffer;
     CHECK_HIP_ERROR(hipMalloc(&buffer, bufferSize));
@@ -289,50 +299,51 @@ hipsparseStatus_t testing_spsm_csr(void)
     // HIPSPARSE pointer mode host
     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
     CHECK_HIPSPARSE_ERROR(
-        hipsparseSpSM_analysis(handle, transA, &h_alpha, A, B, C1, typeT, alg, descr, buffer));
+        hipsparseSpSM_analysis(handle, transA, transB, &h_alpha, A, B, C1, typeT, alg, descr, buffer));
 
     // HIPSPARSE pointer mode device
     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
     CHECK_HIPSPARSE_ERROR(
-        hipsparseSpSM_analysis(handle, transA, d_alpha, A, B, C2, typeT, alg, descr, buffer));
-
+        hipsparseSpSM_analysis(handle, transA, transB, d_alpha, A, B, C2, typeT, alg, descr, buffer));
 
     // HIPSPARSE pointer mode host
     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
     CHECK_HIPSPARSE_ERROR(
-        hipsparseSpSM_solve(handle, transA, &h_alpha, A, B, C1, typeT, alg, descr, buffer));
+        hipsparseSpSM_solve(handle, transA, transB, &h_alpha, A, B, C1, typeT, alg, descr, buffer));
 
     // HIPSPARSE pointer mode device
     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
     CHECK_HIPSPARSE_ERROR(
-        hipsparseSpSM_solve(handle, transA, d_alpha, A, B, C2, typeT, alg, descr, buffer));
-
+        hipsparseSpSM_solve(handle, transA, transB, d_alpha, A, B, C2, typeT, alg, descr, buffer));
 
     // copy output from device to CPU
     CHECK_HIP_ERROR(hipMemcpy(hC_1.data(), dC_1, sizeof(T) * m * k, hipMemcpyDeviceToHost));
     CHECK_HIP_ERROR(hipMemcpy(hC_2.data(), dC_2, sizeof(T) * m * k, hipMemcpyDeviceToHost));
 
-    int struct_pivot = -1;
-    int numeric_pivot = -1;
-    csrsm(m,
-        k,
-        nnz,
-        transA,
-        transB,
-        alpha,
-        csr_row_ptr,
-        csr_col_ind,
-        csr_val,
-        B,
-        ldb,
-        diag,
-        uplo,
-        base,
-        struct_pivot,
-        numeric_pivot);
+    J struct_pivot  = -1;
+    J numeric_pivot = -1;
+    host_csrsm(m,
+          k,
+          nnz,
+          transA,
+          transB,
+          h_alpha,
+          hcsr_row_ptr,
+          hcol_ind,
+          hval,
+          hC_gold,
+          m,
+          diag,
+          uplo,
+          idx_base,
+          &struct_pivot,
+          &numeric_pivot);
 
-    unit_check_near(1, m * k, 1, hC_gold.data(), hC_1.data());
-    unit_check_near(1, m * k, 1, hC_gold.data(), hC_2.data());
+    if(struct_pivot != -1 && numeric_pivot != -1)
+    {
+        unit_check_near(1, m * k, 1, hC_gold.data(), hC_1.data());
+        unit_check_near(1, m * k, 1, hC_gold.data(), hC_2.data());
+    }
 
     CHECK_HIP_ERROR(hipFree(buffer));
     CHECK_HIPSPARSE_ERROR(hipsparseDestroySpMat(A));
