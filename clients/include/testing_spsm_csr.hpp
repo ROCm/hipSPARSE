@@ -180,7 +180,6 @@ template <typename I, typename J, typename T>
 hipsparseStatus_t testing_spsm_csr(void)
 {
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
-    I                    safe_size = 100;
     T                    h_alpha   = make_DataType<T>(2.0);
     hipsparseOperation_t transA    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
     hipsparseOperation_t transB    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
@@ -190,7 +189,6 @@ hipsparseStatus_t testing_spsm_csr(void)
     hipsparseOrder_t     order     = HIPSPARSE_ORDER_COLUMN;
     hipsparseSpSMAlg_t   alg       = HIPSPARSE_SPSM_ALG_DEFAULT;
     hipsparseStatus_t    status;
-    hipsparseSpSMDescr_t descr;
 
     // Determine absolute path of test matrix
 
@@ -285,6 +283,9 @@ hipsparseStatus_t testing_spsm_csr(void)
     CHECK_HIP_ERROR(hipMemcpy(dC_2, hC_2.data(), sizeof(T) * m * k, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(d_alpha, &h_alpha, sizeof(T), hipMemcpyHostToDevice));
 
+    hipsparseSpSMDescr_t descr;
+    CHECK_HIPSPARSE_ERROR(hipsparseSpSM_createDescr(&descr));
+
     // Create matrices
     hipsparseSpMatDescr_t A;
     CHECK_HIPSPARSE_ERROR(
@@ -353,13 +354,15 @@ hipsparseStatus_t testing_spsm_csr(void)
                &struct_pivot,
                &numeric_pivot);
 
-    if(struct_pivot != -1 && numeric_pivot != -1)
+    if(struct_pivot == -1 && numeric_pivot == -1)
     {
         unit_check_near(1, m * k, 1, hC_gold.data(), hC_1.data());
         unit_check_near(1, m * k, 1, hC_gold.data(), hC_2.data());
     }
 
     CHECK_HIP_ERROR(hipFree(buffer));
+
+    CHECK_HIPSPARSE_ERROR(hipsparseSpSM_destroyDescr(descr));
     CHECK_HIPSPARSE_ERROR(hipsparseDestroySpMat(A));
     CHECK_HIPSPARSE_ERROR(hipsparseDestroyDnMat(B));
     CHECK_HIPSPARSE_ERROR(hipsparseDestroyDnMat(C1));

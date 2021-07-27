@@ -39,17 +39,17 @@ TEST(spsv_csr, spsv_csr_i32_i32_float)
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-#if(!defined(CUDART_VERSION))
-TEST(spsv_csr, spsv_csr_i64_i32_double)
-{
-    hipsparseStatus_t status = testing_spsv_csr<int64_t, int32_t, double>();
-    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
-}
-#endif
+// #if(!defined(CUDART_VERSION))
+// TEST(spsv_csr, spsv_csr_i64_i32_double)
+// {
+//     hipsparseStatus_t status = testing_spsv_csr<int64_t, int32_t, double>();
+//     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+// }
+// #endif
 
-TEST(spsv_csr, spsv_csr_i64_i64_hipComplex)
-{
-    hipsparseStatus_t status = testing_spsv_csr<int64_t, int64_t, hipComplex>();
-    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
-}
+// TEST(spsv_csr, spsv_csr_i64_i64_hipComplex)
+// {
+//     hipsparseStatus_t status = testing_spsv_csr<int64_t, int64_t, hipComplex>();
+//     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+// }
 #endif
