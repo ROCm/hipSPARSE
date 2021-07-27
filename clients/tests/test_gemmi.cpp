@@ -24,7 +24,6 @@
 #include "testing_gemmi.hpp"
 #include "utility.hpp"
 
-#include <gtest/gtest.h>
 #include <hipsparse.h>
 #include <string>
 
@@ -83,20 +82,8 @@ Arguments setup_gemmi_arguments(gemmi_bin_tuple tup)
     // Determine absolute path of test matrix
     std::string bin_file = std::get<3>(tup);
 
-    // Get current executables absolute path
-    char    path_exe[PATH_MAX];
-    ssize_t len = readlink("/proc/self/exe", path_exe, sizeof(path_exe) - 1);
-    if(len < 14)
-    {
-        path_exe[0] = '\0';
-    }
-    else
-    {
-        path_exe[len - 14] = '\0';
-    }
-
     // Matrices are stored at the same path in matrices directory
-    arg.filename = std::string(path_exe) + "../matrices/" + bin_file;
+    arg.filename = hipsparse_exepath() + "../matrices/" + bin_file;
 
     return arg;
 }
@@ -157,17 +144,17 @@ TEST_P(parameterized_gemmi_bin, gemmi_bin_double)
 }
 #endif
 
-INSTANTIATE_TEST_CASE_P(gemmi,
-                        parameterized_gemmi,
-                        testing::Combine(testing::ValuesIn(gemmi_M_range),
-                                         testing::ValuesIn(gemmi_N_range),
-                                         testing::ValuesIn(gemmi_K_range),
-                                         testing::ValuesIn(gemmi_alpha_range),
-                                         testing::ValuesIn(gemmi_beta_range)));
+INSTANTIATE_TEST_SUITE_P(gemmi,
+                         parameterized_gemmi,
+                         testing::Combine(testing::ValuesIn(gemmi_M_range),
+                                          testing::ValuesIn(gemmi_N_range),
+                                          testing::ValuesIn(gemmi_K_range),
+                                          testing::ValuesIn(gemmi_alpha_range),
+                                          testing::ValuesIn(gemmi_beta_range)));
 
-INSTANTIATE_TEST_CASE_P(gemmi_bin,
-                        parameterized_gemmi_bin,
-                        testing::Combine(testing::ValuesIn(gemmi_N_range),
-                                         testing::ValuesIn(gemmi_alpha_range),
-                                         testing::ValuesIn(gemmi_beta_range),
-                                         testing::ValuesIn(gemmi_bin)));
+INSTANTIATE_TEST_SUITE_P(gemmi_bin,
+                         parameterized_gemmi_bin,
+                         testing::Combine(testing::ValuesIn(gemmi_N_range),
+                                          testing::ValuesIn(gemmi_alpha_range),
+                                          testing::ValuesIn(gemmi_beta_range),
+                                          testing::ValuesIn(gemmi_bin)));

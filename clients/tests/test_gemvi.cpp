@@ -23,7 +23,6 @@
 
 #include "testing_gemvi.hpp"
 
-#include <gtest/gtest.h>
 #include <hipsparse.h>
 
 TEST(gemvi_bad_arg, gemvi_float)
