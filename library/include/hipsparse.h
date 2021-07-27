@@ -5591,6 +5591,26 @@ struct hipsparseSpGEMMDescr;
 typedef struct hipsparseSpGEMMDescr* hipsparseSpGEMMDescr_t;
 #endif
 
+
+
+
+
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11030)
+struct hipsparseSpSVDescr;
+typedef struct hipsparseSpSVDescr* hipsparseSpSVDescr_t;
+#endif
+
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
+struct hipsparseSpSMDescr;
+typedef struct hipsparseSpSMDescr* hipsparseSpSMDescr_t;
+#endif
+
+
+
+
+
+
+
 /* Generic API types */
 #if(!defined(CUDART_VERSION))
 typedef enum
@@ -5708,6 +5728,38 @@ typedef enum
     HIPSPARSE_SDDMM_ALG_DEFAULT = 0
 } hipsparseSDDMMAlg_t;
 #endif
+
+
+
+
+
+
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11030)
+typedef enum
+{
+    HIPSPARSE_SPSV_ALG_DEFAULT = 0
+} hipsparseSPSVAlg_t;
+#endif
+
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
+typedef enum
+{
+    HIPSPARSE_SPSM_ALG_DEFAULT = 0
+} hipsparseSPSMAlg_t;
+#endif
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 typedef enum
 {
@@ -6311,6 +6363,160 @@ hipsparseStatus_t hipsparseSDDMM_preprocess(hipsparseHandle_t           handle,
                                             hipsparseSDDMMAlg_t         alg,
                                             void*                       tempBuffer);
 #endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Description: Buffer size step of solution of triangular linear system op(A) * Y = alpha * X,
+where A is a sparse matrix in CSR storage format, x and Y are dense vectors. */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10030)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpSV_bufferSize(hipsparseHandle_t           handle,
+                                           hipsparseOperation_t        opA,
+                                           const void*                 alpha,
+                                           const hipsparseSpMatDescr_t matA,
+                                           const hipsparseDnVecDescr_t x,
+                                           const hipsparseDnVecDescr_t y,
+                                           hipDataType                 computeType,
+                                           hipsparseSpMMAlg_t          alg,
+                                           hipsparseSpSVDescr_t        spsvDescr,
+                                           size_t*                     bufferSize);
+#endif
+
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11030)
+/* Description: Analysis step of solution of triangular linear system op(A) * Y = alpha * X,
+where A is a sparse matrix in CSR storage format, x and Y are dense vectors. */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpSV_analysis(hipsparseHandle_t           handle,
+                                           hipsparseOperation_t        opA,
+                                           const void*                 alpha,
+                                           const hipsparseSpMatDescr_t matA,
+                                           const hipsparseDnVecDescr_t x,
+                                           const hipsparseDnVecDescr_t y,
+                                           hipDataType                 computeType,
+                                           hipsparseSpMMAlg_t          alg,
+                                           hipsparseSpSVDescr_t        spsvDescr,
+                                           void*                     externalBuffer);
+#endif
+
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10030)
+/* Description: Solve step of solution of triangular linear system op(A) * Y = alpha * X,
+where A is a sparse matrix in CSR storage format, x and Y are dense vectors. */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpSV_solve(hipsparseHandle_t           handle,
+                                           hipsparseOperation_t        opA,
+                                           const void*                 alpha,
+                                           const hipsparseSpMatDescr_t matA,
+                                           const hipsparseDnVecDescr_t x,
+                                           const hipsparseDnVecDescr_t y,
+                                           hipDataType                 computeType,
+                                           hipsparseSpMMAlg_t          alg,
+                                           hipsparseSpSVDescr_t        spsvDescr,
+                                           void*                     externalBuffer);
+#endif
+
+
+/* Description: Buffer size step of solution of triangular linear system op(A) * C = alpha * op(B),
+where A is a sparse matrix in CSR storage format, B and C are dense matrices. */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10031)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpSM_bufferSize(hipsparseHandle_t           handle,
+                                           hipsparseOperation_t        opA,
+                                           hipsparseOperation_t        opB,
+                                           const void*                 alpha,
+                                           const hipsparseSpMatDescr_t matA,
+                                           const hipsparseDnMatDescr_t matB,
+                                           const hipsparseDnMatDescr_t matC,
+                                           hipDataType                 computeType,
+                                           hipsparseSpMMAlg_t          alg,
+                                           hipsparseSpSMDescr_t        spsmDescr,
+                                           size_t*                     bufferSize);
+#endif
+
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
+/* Description: Analysis step of solution of triangular linear system op(A) * C = alpha * op(B),
+where A is a sparse matrix in CSR storage format, B and C are dense vectors. */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpSM_analysis(hipsparseHandle_t           handle,
+                                           hipsparseOperation_t        opA,
+                                           hipsparseOperation_t        opB,
+                                           const void*                 alpha,
+                                           const hipsparseSpMatDescr_t matA,
+                                           const hipsparseDnMatDescr_t matB,
+                                           const hipsparseDnMatDescr_t matC,
+                                           hipDataType                 computeType,
+                                           hipsparseSpMMAlg_t          alg,
+                                           hipsparseSpSMDescr_t        spsmDescr,
+                                           void*                     externalBuffer);
+#endif
+
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10031)
+/* Description: Solve step of solution of triangular linear system op(A) * C = alpha * op(B),
+where A is a sparse matrix in CSR storage format, B and C are dense vectors. */
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpSM_solve(hipsparseHandle_t           handle,
+                                           hipsparseOperation_t        opA,
+                                           hipsparseOperation_t        opB,
+                                           const void*                 alpha,
+                                           const hipsparseSpMatDescr_t matA,
+                                           const hipsparseDnMatDescr_t matB,
+                                           const hipsparseDnMatDescr_t matC,
+                                           hipDataType                 computeType,
+                                           hipsparseSpMMAlg_t          alg,
+                                           hipsparseSpSMDescr_t        spsmDescr,
+                                           void*                     externalBuffer);
+#endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSgtsv2StridedBatch_bufferSizeExt(hipsparseHandle_t handle,

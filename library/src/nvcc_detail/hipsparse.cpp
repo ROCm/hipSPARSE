@@ -10344,6 +10344,46 @@ cusparseSDDMMAlg_t hipSDDMMAlgToCudaSDDMMAlg(hipsparseSDDMMAlg_t alg)
 }
 #endif
 
+
+
+
+
+
+
+
+
+
+#if(CUDART_VERSION >= 11030)
+cusparseSpSVAlg_t hipSpSVAlgToCudaSpSVAlg(hipsparseSpSVAlg_t alg)
+{
+    switch(alg)
+    {
+    case HIPSPARSE_SPSV_ALG_DEFAULT:
+        return CUSPARSE_SPSV_ALG_DEFAULT;
+    default:
+        throw "Non existant cusparseSpSVAlg_t";
+    }
+}
+#endif
+
+#if(CUDART_VERSION >= 11031)
+cusparseSpSMAlg_t hipSpSMAlgToCudaSpSMAlg(hipsparseSpSMAlg_t alg)
+{
+    switch(alg)
+    {
+    case HIPSPARSE_SPSM_ALG_DEFAULT:
+        return CUSPARSE_SPSM_ALG_DEFAULT;
+    default:
+        throw "Non existant cusparseSpSMAlg_t";
+    }
+}
+#endif
+
+
+
+
+
+
 #if(CUDART_VERSION >= 10010)
 hipsparseStatus_t hipsparseCreateSpVec(hipsparseSpVecDescr_t* spVecDescr,
                                        int64_t                size,
@@ -11325,6 +11365,234 @@ hipsparseStatus_t hipsparseSDDMM_preprocess(hipsparseHandle_t           handle,
                                  tempBuffer));
 }
 #endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+hipsparseStatus_t hipsparseSpSV_bufferSize(hipsparseHandle_t           handle,
+                                           hipsparseOperation_t        opA,
+                                           const void*                 alpha,
+                                           const hipsparseSpMatDescr_t matA,
+                                           const hipsparseDnVecDescr_t x,
+                                           const hipsparseDnVecDescr_t y,
+                                           hipDataType                 computeType,
+                                           hipsparseSpMMAlg_t          alg,
+                                           hipsparseSpSVDescr_t        spsvDescr,
+                                           size_t*                     bufferSize)
+{
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseSpSV_bufferSize((cusparseHandle_t)handle,
+                                    hipOperationToCudaOperation(opA),
+                                    alpha,
+                                    (const cusparseSpMatDescr_t)matA,
+                                    (const cusparseDnVecDescr_t)x,
+                                    (const cusparseDnVecDescr_t)y,
+                                    hipDataTypeToCudaDataType(computeType),
+                                    hipSpSVAlgToCudaSpSVAlg(alg),
+                                    (cusparseSpSVDescr_t)spsvDescr,
+                                    bufferSize));
+}
+
+hipsparseStatus_t hipsparseSpSV_preprocess(hipsparseHandle_t           handle,
+                                           hipsparseOperation_t        opA,
+                                           const void*                 alpha,
+                                           const hipsparseSpMatDescr_t matA,
+                                           const hipsparseDnVecDescr_t x,
+                                           const hipsparseDnVecDescr_t y,
+                                           hipDataType                 computeType,
+                                           hipsparseSpMMAlg_t          alg,
+                                           hipsparseSpSVDescr_t        spsvDescr,
+                                           void*                     externalBuffer)
+{
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseSpSV_analysis((cusparseHandle_t)handle,
+                                    hipOperationToCudaOperation(opA),
+                                    alpha,
+                                    (const cusparseSpMatDescr_t)matA,
+                                    (const cusparseDnVecDescr_t)x,
+                                    (const cusparseDnVecDescr_t)y,
+                                    hipDataTypeToCudaDataType(computeType),
+                                    hipSpSVAlgToCudaSpSVAlg(alg),
+                                    (cusparseSpSVDescr_t)spsvDescr,
+                                    externalBuffer));
+}
+
+hipsparseStatus_t hipsparseSpSV_solve(hipsparseHandle_t           handle,
+                                           hipsparseOperation_t        opA,
+                                           const void*                 alpha,
+                                           const hipsparseSpMatDescr_t matA,
+                                           const hipsparseDnVecDescr_t x,
+                                           const hipsparseDnVecDescr_t y,
+                                           hipDataType                 computeType,
+                                           hipsparseSpMMAlg_t          alg,
+                                           hipsparseSpSVDescr_t        spsvDescr,
+                                           void*                     externalBuffer)
+{
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseSpSV_solve((cusparseHandle_t)handle,
+                                    hipOperationToCudaOperation(opA),
+                                    alpha,
+                                    (const cusparseSpMatDescr_t)matA,
+                                    (const cusparseDnVecDescr_t)x,
+                                    (const cusparseDnVecDescr_t)y,
+                                    hipDataTypeToCudaDataType(computeType),
+                                    hipSpSVAlgToCudaSpSVAlg(alg),
+                                    (cusparseSpSVDescr_t)spsvDescr,
+                                    externalBuffer));
+}
+
+hipsparseStatus_t hipsparseSpSM_bufferSize(hipsparseHandle_t           handle,
+                                           hipsparseOperation_t        opA,
+                                           hipsparseOperation_t        opB,
+                                           const void*                 alpha,
+                                           const hipsparseSpMatDescr_t matA,
+                                           const hipsparseDnMatDescr_t matB,
+                                           const hipsparseDnMatDescr_t matC,
+                                           hipDataType                 computeType,
+                                           hipsparseSpMMAlg_t          alg,
+                                           hipsparseSpSMDescr_t        spsmDescr,
+                                           size_t*                     bufferSize)
+{
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseSpSM_bufferSize((cusparseHandle_t)handle,
+                                    hipOperationToCudaOperation(opA),
+                                    hipOperationToCudaOperation(opB),
+                                    alpha,
+                                    (const cusparseSpMatDescr_t)matA,
+                                    (const cusparseDnMatDescr_t)matB,
+                                    (const cusparseDnMatDescr_t)matC,
+                                    hipDataTypeToCudaDataType(computeType),
+                                    hipSpSMAlgToCudaSpSMAlg(alg),
+                                    (cusparseSpSMDescr_t)spsmDescr,
+                                    bufferSize));
+}
+
+hipsparseStatus_t hipsparseSpSM_preprocess(hipsparseHandle_t           handle,
+                                           hipsparseOperation_t        opA,
+                                           hipsparseOperation_t        opB,
+                                           const void*                 alpha,
+                                           const hipsparseSpMatDescr_t matA,
+                                           const hipsparseDnMatDescr_t matB,
+                                           const hipsparseDnMatDescr_t matC,
+                                           hipDataType                 computeType,
+                                           hipsparseSpMMAlg_t          alg,
+                                           hipsparseSpSMDescr_t        spsmDescr,
+                                           void*                     externalBuffer)
+{
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseSpSM_analysis((cusparseHandle_t)handle,
+                                    hipOperationToCudaOperation(opA),
+                                    hipOperationToCudaOperation(opB),
+                                    alpha,
+                                    (const cusparseSpMatDescr_t)matA,
+                                    (const cusparseDnMatDescr_t)matB,
+                                    (const cusparseDnMatDescr_t)matC,
+                                    hipDataTypeToCudaDataType(computeType),
+                                    hipSpSMAlgToCudaSpSMAlg(alg),
+                                    (cusparseSpSMDescr_t)spsmDescr,
+                                    externalBuffer));
+}
+
+hipsparseStatus_t hipsparseSpSM_solve(hipsparseHandle_t           handle,
+                                           hipsparseOperation_t        opA,
+                                           hipsparseOperation_t        opB,
+                                           const void*                 alpha,
+                                           const hipsparseSpMatDescr_t matA,
+                                           const hipsparseDnMatDescr_t matB,
+                                           const hipsparseDnMatDescr_t matC,
+                                           hipDataType                 computeType,
+                                           hipsparseSpMMAlg_t          alg,
+                                           hipsparseSpSMDescr_t        spsmDescr,
+                                           void*                     externalBuffer)
+{
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseSpSM_solve((cusparseHandle_t)handle,
+                                    hipOperationToCudaOperation(opA),
+                                    hipOperationToCudaOperation(opB),
+                                    alpha,
+                                    (const cusparseSpMatDescr_t)matA,
+                                    (const cusparseDnMatDescr_t)matB,
+                                    (const cusparseDnMatDescr_t)matC,
+                                    hipDataTypeToCudaDataType(computeType),
+                                    hipSpSMAlgToCudaSpSMAlg(alg),
+                                    (cusparseSpSMDescr_t)spsmDescr,
+                                    externalBuffer));
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 hipsparseStatus_t hipsparseSgtsv2StridedBatch_bufferSizeExt(hipsparseHandle_t handle,
                                                             int               m,

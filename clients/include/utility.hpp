@@ -3652,6 +3652,83 @@ void csrsm(int                     M,
     numeric_pivot = (numeric_pivot == M + 1) ? -1 : numeric_pivot;
 }
 
+template <typename T>
+void host_coosm(int                     M,
+                int                     nrhs,
+                int                     nnz,
+                hipsparseOperation_t   transA,
+                hipsparseOperation_t   transB,
+                T                     alpha,
+                const std::vector<int>& coo_row_ind,
+                const std::vector<int>& coo_col_ind,
+                const std::vector<T>& coo_val,
+                std::vector<T>&       B,
+                int                     ldb,
+                hipsparseDiagType_t   diag_type,
+                hipsparseFillMode_t   fill_mode,
+                hipsparseIndexBase_t  base,
+                int*                    struct_pivot,
+                int*                    numeric_pivot)
+{
+    std::vector<int> csr_row_ptr(M + 1);
+
+    //host_coo_to_csr(M, coo_row_ind, csr_row_ptr, base);
+    // coo2csr on host
+    for(int i = 0; i < nnz; ++i)
+    {
+        ++csr_row_ptr[coo_row_ind[i] + 1 - base];
+    }
+
+    csr_row_ptr[0] = base;
+    for(int i = 0; i < M; ++i)
+    {
+        csr_row_ptr[i + 1] += csr_row_ptr[i];
+    }
+
+    host_csrsm(M,
+               nrhs,
+               nnz,
+               transA,
+               transB,
+               alpha,
+               csr_row_ptr,
+               coo_col_ind,
+               coo_val,
+               B,
+               ldb,
+               diag_type,
+               fill_mode,
+               base,
+               struct_pivot,
+               numeric_pivot);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* ============================================================================================ */
 /*! \brief  Sparse triangular lower solve using BSR storage format. */
 template <typename T>
