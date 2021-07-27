@@ -24,10 +24,8 @@
 #include "testing_bsrilu02.hpp"
 #include "utility.hpp"
 
-#include <gtest/gtest.h>
 #include <hipsparse.h>
 #include <string>
-#include <unistd.h>
 
 typedef hipsparseIndexBase_t                                                 base;
 typedef hipsparseDirection_t                                                 dir;
@@ -97,20 +95,8 @@ Arguments setup_bsrilu02_arguments(bsrilu02_bin_tuple tup)
     // Determine absolute path of test matrix
     std::string bin_file = std::get<7>(tup);
 
-    // Get current executables absolute path
-    char    path_exe[PATH_MAX];
-    ssize_t len = readlink("/proc/self/exe", path_exe, sizeof(path_exe) - 1);
-    if(len < 14)
-    {
-        path_exe[0] = '\0';
-    }
-    else
-    {
-        path_exe[len - 14] = '\0';
-    }
-
     // Matrices are stored at the same path in matrices directory
-    arg.filename = std::string(path_exe) + "../matrices/" + bin_file;
+    arg.filename = hipsparse_exepath() + "../matrices/" + bin_file;
 
     return arg;
 }
@@ -171,24 +157,24 @@ TEST_P(parameterized_bsrilu02_bin, bsrilu02_bin_double)
 }
 #endif
 
-INSTANTIATE_TEST_CASE_P(bsrilu02,
-                        parameterized_bsrilu02,
-                        testing::Combine(testing::ValuesIn(bsrilu02_M_range),
-                                         testing::ValuesIn(bsrilu02_dim_range),
-                                         testing::ValuesIn(bsrilu02_boost_range),
-                                         testing::ValuesIn(bsrilu02_boost_tol_range),
-                                         testing::ValuesIn(bsrilu02_boost_val_range),
-                                         testing::ValuesIn(bsrilu02_boost_vali_range),
-                                         testing::ValuesIn(bsrilu02_dir_range),
-                                         testing::ValuesIn(bsrilu02_idxbase_range)));
+INSTANTIATE_TEST_SUITE_P(bsrilu02,
+                         parameterized_bsrilu02,
+                         testing::Combine(testing::ValuesIn(bsrilu02_M_range),
+                                          testing::ValuesIn(bsrilu02_dim_range),
+                                          testing::ValuesIn(bsrilu02_boost_range),
+                                          testing::ValuesIn(bsrilu02_boost_tol_range),
+                                          testing::ValuesIn(bsrilu02_boost_val_range),
+                                          testing::ValuesIn(bsrilu02_boost_vali_range),
+                                          testing::ValuesIn(bsrilu02_dir_range),
+                                          testing::ValuesIn(bsrilu02_idxbase_range)));
 
-INSTANTIATE_TEST_CASE_P(bsrilu02_bin,
-                        parameterized_bsrilu02_bin,
-                        testing::Combine(testing::ValuesIn(bsrilu02_dim_range),
-                                         testing::ValuesIn(bsrilu02_boost_range),
-                                         testing::ValuesIn(bsrilu02_boost_tol_range),
-                                         testing::ValuesIn(bsrilu02_boost_val_range),
-                                         testing::ValuesIn(bsrilu02_boost_vali_range),
-                                         testing::ValuesIn(bsrilu02_dir_range),
-                                         testing::ValuesIn(bsrilu02_idxbase_range),
-                                         testing::ValuesIn(bsrilu02_bin)));
+INSTANTIATE_TEST_SUITE_P(bsrilu02_bin,
+                         parameterized_bsrilu02_bin,
+                         testing::Combine(testing::ValuesIn(bsrilu02_dim_range),
+                                          testing::ValuesIn(bsrilu02_boost_range),
+                                          testing::ValuesIn(bsrilu02_boost_tol_range),
+                                          testing::ValuesIn(bsrilu02_boost_val_range),
+                                          testing::ValuesIn(bsrilu02_boost_vali_range),
+                                          testing::ValuesIn(bsrilu02_dir_range),
+                                          testing::ValuesIn(bsrilu02_idxbase_range),
+                                          testing::ValuesIn(bsrilu02_bin)));

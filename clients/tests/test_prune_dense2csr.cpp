@@ -24,7 +24,6 @@
 #include "testing_prune_dense2csr.hpp"
 #include "utility.hpp"
 
-#include <gtest/gtest.h>
 #include <hipsparse.h>
 #include <string>
 #include <vector>
@@ -81,10 +80,10 @@ TEST_P(parameterized_prune_dense2csr, prune_dense2csr_double)
 }
 #endif
 
-INSTANTIATE_TEST_CASE_P(prune_dense2csr,
-                        parameterized_prune_dense2csr,
-                        testing::Combine(testing::ValuesIn(prune_dense2csr_M_range),
-                                         testing::ValuesIn(prune_dense2csr_N_range),
-                                         testing::ValuesIn(prune_dense2csr_LD_range),
-                                         testing::ValuesIn(prune_dense2csr_threshold_range),
-                                         testing::ValuesIn(prune_dense2csr_idx_base_range)));
+INSTANTIATE_TEST_SUITE_P(prune_dense2csr,
+                         parameterized_prune_dense2csr,
+                         testing::Combine(testing::ValuesIn(prune_dense2csr_M_range),
+                                          testing::ValuesIn(prune_dense2csr_N_range),
+                                          testing::ValuesIn(prune_dense2csr_LD_range),
+                                          testing::ValuesIn(prune_dense2csr_threshold_range),
+                                          testing::ValuesIn(prune_dense2csr_idx_base_range)));

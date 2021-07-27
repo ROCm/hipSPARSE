@@ -24,7 +24,6 @@
 #include "testing_prune_csr2csr_by_percentage.hpp"
 #include "utility.hpp"
 
-#include <gtest/gtest.h>
 #include <hipsparse.h>
 #include <string>
 #include <vector>
@@ -102,20 +101,8 @@ Arguments setup_prune_csr2csr_by_percentage_arguments(prune_csr2csr_by_percentag
     // Determine absolute path of test matrix
     std::string bin_file = std::get<3>(tup);
 
-    // Get current executables absolute path
-    char    path_exe[PATH_MAX];
-    ssize_t len = readlink("/proc/self/exe", path_exe, sizeof(path_exe) - 1);
-    if(len < 14)
-    {
-        path_exe[0] = '\0';
-    }
-    else
-    {
-        path_exe[len - 14] = '\0';
-    }
-
     // Matrices are stored at the same path in matrices directory
-    arg.filename = std::string(path_exe) + "../matrices/" + bin_file;
+    arg.filename = hipsparse_exepath() + "../matrices/" + bin_file;
 
     return arg;
 }
@@ -160,7 +147,7 @@ TEST_P(parameterized_prune_csr2csr_by_percentage_bin, prune_csr2csr_percentage_b
 }
 #endif
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
     prune_csr2csr_by_percentage,
     parameterized_prune_csr2csr_by_percentage,
     testing::Combine(testing::ValuesIn(prune_csr2csr_by_percentage_M_range),
@@ -169,7 +156,7 @@ INSTANTIATE_TEST_CASE_P(
                      testing::ValuesIn(prune_csr2csr_by_percentage_base_A_range),
                      testing::ValuesIn(prune_csr2csr_by_percentage_base_C_range)));
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
     prune_csr2csr_by_percentage_bin,
     parameterized_prune_csr2csr_by_percentage_bin,
     testing::Combine(testing::ValuesIn(prune_csr2csr_by_percentage_range),

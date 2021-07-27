@@ -32,14 +32,18 @@ find_package(HIP REQUIRED)
 # Either rocSPARSE or cuSPARSE is required
 if(NOT BUILD_CUDA)
   find_package(rocsparse REQUIRED)
-  find_package(rocprim REQUIRED)
+  if(WIN32)
+        find_package( rocsparse REQUIRED CONFIG PATHS ${ROCSPARSE_PATH} )
+  else()
+        find_package( rocsparse REQUIRED CONFIG PATHS /opt/rocm /opt/rocm/rocsparse /usr/local/rocsparse )
+  endif()
 else()
   set(HIP_INCLUDE_DIRS "${HIP_ROOT_DIR}/include")
   find_package(CUDA REQUIRED)
 endif()
 
 # ROCm cmake package
-find_package(ROCM QUIET CONFIG PATHS ${CMAKE_PREFIX_PATH})
+find_package(ROCM 0.6 QUIET CONFIG PATHS ${CMAKE_PREFIX_PATH})
 if(NOT ROCM_FOUND)
   set(PROJECT_EXTERN_DIR ${CMAKE_CURRENT_BINARY_DIR}/extern)
   set(rocm_cmake_tag "master" CACHE STRING "rocm-cmake tag to download")
@@ -60,8 +64,12 @@ if(NOT ROCM_FOUND)
 
   execute_process(COMMAND ${CMAKE_COMMAND} -E tar xzf ${PROJECT_EXTERN_DIR}/rocm-cmake-${rocm_cmake_tag}.zip
                   WORKING_DIRECTORY ${PROJECT_EXTERN_DIR})
+  execute_process( COMMAND ${CMAKE_COMMAND} -DCMAKE_INSTALL_PREFIX=${PROJECT_EXTERN_DIR}/rocm-cmake .
+                  WORKING_DIRECTORY ${PROJECT_EXTERN_DIR}/rocm-cmake-${rocm_cmake_tag} )
+  execute_process( COMMAND ${CMAKE_COMMAND} --build rocm-cmake-${rocm_cmake_tag} --target install
+                  WORKING_DIRECTORY ${PROJECT_EXTERN_DIR})
 
-  find_package(ROCM REQUIRED CONFIG PATHS ${PROJECT_EXTERN_DIR}/rocm-cmake-${rocm_cmake_tag})
+  find_package( ROCM 0.6 REQUIRED CONFIG PATHS ${PROJECT_EXTERN_DIR}/rocm-cmake )
 endif()
 
 include(ROCMSetupVersion)
