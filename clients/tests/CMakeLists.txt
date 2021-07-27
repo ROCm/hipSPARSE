@@ -69,10 +69,12 @@ set(TEST_MD5HASH
 )
 
 if(NOT TARGET hipsparse)
-  set(CONVERT ${CMAKE_SOURCE_DIR}/../deps/convert)
+  set(CONVERT_SOURCE ${CMAKE_SOURCE_DIR}/../deps/convert.cpp)
 else()
-  set(CONVERT ${CMAKE_SOURCE_DIR}/deps/convert)
+  set(CONVERT_SOURCE ${CMAKE_SOURCE_DIR}/deps/convert.cpp)
 endif()
+
+execute_process(COMMAND ${CMAKE_CXX_COMPILER} ${CONVERT_SOURCE} -O3 -o ${PROJECT_BINARY_DIR}/mtx2csr.exe)
 
 list(LENGTH TEST_MATRICES len)
 math(EXPR len1 "${len} - 1")
@@ -118,15 +120,13 @@ foreach(i RANGE 0 ${len1})
     if(NOT hash STREQUAL md5)
       message(FATAL_ERROR "${mat}.tar.gz is corrupted")
     endif()
-
-    execute_process(COMMAND tar xf ${mat}.tar.gz
-                    WORKING_DIRECTORY ${CMAKE_MATRICES_DIR})
-    execute_process(COMMAND mv ${mat}/${mat}.mtx .
-                    WORKING_DIRECTORY ${CMAKE_MATRICES_DIR})
-    execute_process(COMMAND ${CONVERT} ${mat}.mtx ${mat}.bin
-                    WORKING_DIRECTORY ${CMAKE_MATRICES_DIR})
-    execute_process(COMMAND rm ${mat}.tar.gz ${mat} ${mat}.mtx -rf
-                    WORKING_DIRECTORY ${CMAKE_MATRICES_DIR})
+    execute_process(COMMAND tar xf ${mat}.tar.gz WORKING_DIRECTORY ${CMAKE_MATRICES_DIR})
+    
+    file(RENAME ${CMAKE_MATRICES_DIR}/${mat}/${mat}.mtx ${CMAKE_MATRICES_DIR}/${mat}.mtx)
+    execute_process(COMMAND ${PROJECT_BINARY_DIR}/mtx2csr.exe ${mat}.mtx ${mat}.bin WORKING_DIRECTORY ${CMAKE_MATRICES_DIR})
+    # TODO: add 'COMMAND_ERROR_IS_FATAL ANY' once cmake supported version is 3.19
+    file(REMOVE_RECURSE ${CMAKE_MATRICES_DIR}/${mat}.tar.gz ${CMAKE_MATRICES_DIR}/${mat} ${CMAKE_MATRICES_DIR}/${mat}.mtx)
+	
   endif()
 endforeach()
 
@@ -247,7 +247,7 @@ target_link_libraries(hipsparse-test PRIVATE GTest::GTest roc::hipsparse)
 
 # Add OpenMP if available
 if(OPENMP_FOUND AND THREADS_FOUND)
-  target_link_libraries(hipsparse-test PRIVATE OpenMP::OpenMP_CXX)
+  target_link_libraries(hipsparse-test PRIVATE OpenMP::OpenMP_CXX ${OpenMP_CXX_FLAGS})
 endif()
 
 if(NOT BUILD_CUDA)
@@ -259,5 +259,22 @@ else()
 endif()
 
 set_target_properties(hipsparse-test PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/staging")
+
+if (WIN32)
+  # for now adding in all .dll as dependency chain is not cmake based on win32
+  file( GLOB third_party_dlls
+    LIST_DIRECTORIES OFF
+    CONFIGURE_DEPENDS
+    ${HIP_DIR}/bin/*.dll
+    ${HIP_DIR}/bin/hipinfo.exe
+    ${ROCSPARSE_PATH}/bin/librocsparse.dll
+    ${CMAKE_SOURCE_DIR}/rtest.*
+    C:/Windows/System32/libomp140*.dll
+  )
+  foreach( file_i ${third_party_dlls})
+    add_custom_command( TARGET hipsparse-test POST_BUILD COMMAND ${CMAKE_COMMAND} ARGS -E copy ${file_i} ${PROJECT_BINARY_DIR}/staging/ )
+  endforeach( file_i )
+
+endif()
 
 add_test(hipsparse-test hipsparse-test)

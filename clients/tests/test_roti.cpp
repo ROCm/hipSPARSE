@@ -24,7 +24,6 @@
 #include "testing_roti.hpp"
 #include "utility.hpp"
 
-#include <gtest/gtest.h>
 #include <hipsparse.h>
 #include <vector>
 
@@ -84,10 +83,10 @@ TEST_P(parameterized_roti, roti_double)
 }
 #endif
 
-INSTANTIATE_TEST_CASE_P(roti,
-                        parameterized_roti,
-                        testing::Combine(testing::ValuesIn(roti_N_range),
-                                         testing::ValuesIn(roti_nnz_range),
-                                         testing::ValuesIn(roti_c_range),
-                                         testing::ValuesIn(roti_s_range),
-                                         testing::ValuesIn(roti_idx_base_range)));
+INSTANTIATE_TEST_SUITE_P(roti,
+                         parameterized_roti,
+                         testing::Combine(testing::ValuesIn(roti_N_range),
+                                          testing::ValuesIn(roti_nnz_range),
+                                          testing::ValuesIn(roti_c_range),
+                                          testing::ValuesIn(roti_s_range),
+                                          testing::ValuesIn(roti_idx_base_range)));

@@ -53,10 +53,13 @@ add_hipsparse_example(example_csrmv.cpp)
 add_hipsparse_example(example_hybmv.cpp)
 endif()
 
+if (NOT WIN32)
 # Fortran examples
 if(TARGET hipsparse AND NOT BUILD_CUDA)
   # Compile Fortran examples only if built directly with package
   # else the Fortran module file is not generated
+  
+  
   add_hipsparse_example(example_fortran_auxiliary.f90)
   add_hipsparse_example(example_fortran_csrsv2.f90)
   add_hipsparse_example(example_fortran_bsric02.f90)
@@ -68,4 +71,6 @@ if(TARGET hipsparse AND NOT BUILD_CUDA)
   add_hipsparse_example(example_fortran_roti.f90)
   add_hipsparse_example(example_fortran_spmv.f90)
   add_hipsparse_example(example_fortran_bsrmm.f90)
+  
+endif()
 endif()
