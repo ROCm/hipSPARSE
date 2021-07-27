@@ -5733,8 +5733,6 @@ typedef enum
 } hipsparseSpSMAlg_t;
 #endif
 
-
-
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
 typedef enum
 {
@@ -5742,7 +5740,6 @@ typedef enum
     HIPSPARSE_SPMAT_DIAG_TYPE = 1
 } hipsparseSpMatAttribute_t;
 #endif
-
 
 typedef enum
 {
@@ -6060,51 +6057,23 @@ HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDnMatSetValues(hipsparseDnMatDescr_t dnMatDescr, void* values);
 #endif
 
-
-
-
-
-
-
-
-
-
-
 /* Description: Get attribute from sparse matrix descriptor */
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseSpMatGetAttribute(hipsparseSpMatDescr_t spMatDescr, 
+hipsparseStatus_t hipsparseSpMatGetAttribute(hipsparseSpMatDescr_t     spMatDescr,
                                              hipsparseSpMatAttribute_t attribute,
-                                             void*              data,
-                                             size_t                   dataSize);
+                                             void*                     data,
+                                             size_t                    dataSize);
 #endif
 
 /* Description: Set attribute in sparse matrix descriptor */
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseSpMatSetAttribute(hipsparseSpMatDescr_t spMatDescr, 
+hipsparseStatus_t hipsparseSpMatSetAttribute(hipsparseSpMatDescr_t     spMatDescr,
                                              hipsparseSpMatAttribute_t attribute,
-                                             const void*              data,
-                                             size_t                   dataSize);
+                                             const void*               data,
+                                             size_t                    dataSize);
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /* Generic API functions */
 
@@ -6392,34 +6361,6 @@ hipsparseStatus_t hipsparseSDDMM_preprocess(hipsparseHandle_t           handle,
                                             hipsparseSDDMMAlg_t         alg,
                                             void*                       tempBuffer);
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /* Description: Compute sparse matrix triangular solve */
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11030)

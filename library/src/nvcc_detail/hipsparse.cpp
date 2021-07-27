@@ -10863,49 +10863,29 @@ hipsparseStatus_t hipsparseDnMatSetValues(hipsparseDnMatDescr_t dnMatDescr, void
 }
 #endif
 
-
-
-
-
-
-
-
-
-
-
-
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseSpMatGetAttribute(hipsparseSpMatDescr_t spMatDescr, 
+hipsparseStatus_t hipsparseSpMatGetAttribute(hipsparseSpMatDescr_t     spMatDescr,
                                              hipsparseSpMatAttribute_t attribute,
-                                             void*              data,
-                                             size_t                   dataSize)
+                                             void*                     data,
+                                             size_t                    dataSize)
 {
-    return hipCUSPARSEStatusToHIPStatus(
-        cusparseSpMatGetAttribute((cusparseSpMatDescr_t)spMatDescr, (hipsparseSpMatAttribute_t)attribute, data, dataSize));
+    return hipCUSPARSEStatusToHIPStatus(cusparseSpMatGetAttribute(
+        (cusparseSpMatDescr_t)spMatDescr, (hipsparseSpMatAttribute_t)attribute, data, dataSize));
 }
 #endif
 
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseSpMatSetAttribute(hipsparseSpMatDescr_t spMatDescr, 
+hipsparseStatus_t hipsparseSpMatSetAttribute(hipsparseSpMatDescr_t     spMatDescr,
                                              hipsparseSpMatAttribute_t attribute,
-                                             const void*              data,
-                                             size_t                   dataSize)
+                                             const void*               data,
+                                             size_t                    dataSize)
 {
-    return hipCUSPARSEStatusToHIPStatus(
-        cusparseSpMatSetAttribute((cusparseSpMatDescr_t)spMatDescr, (hipsparseSpMatAttribute_t)attribute, data, dataSize));
+    return hipCUSPARSEStatusToHIPStatus(cusparseSpMatSetAttribute(
+        (cusparseSpMatDescr_t)spMatDescr, (hipsparseSpMatAttribute_t)attribute, data, dataSize));
 }
 #endif
-
-
-
-
-
-
-
-
-
 
 #if(CUDART_VERSION >= 11000)
 hipsparseStatus_t hipsparseAxpby(hipsparseHandle_t     handle,
@@ -11396,42 +11376,6 @@ hipsparseStatus_t hipsparseSDDMM_preprocess(hipsparseHandle_t           handle,
 }
 #endif
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #if(CUDART_VERSION >= 11030)
 hipsparseStatus_t hipsparseSpSV_createDescr(hipsparseSpSVDescr_t* descr)
 {
@@ -11474,15 +11418,15 @@ hipsparseStatus_t hipsparseSpSV_bufferSize(hipsparseHandle_t           handle,
 
 #if(CUDART_VERSION >= 11030)
 hipsparseStatus_t hipsparseSpSV_analysis(hipsparseHandle_t           handle,
-                                           hipsparseOperation_t        opA,
-                                           const void*                 alpha,
-                                           const hipsparseSpMatDescr_t matA,
-                                           const hipsparseDnVecDescr_t x,
-                                           const hipsparseDnVecDescr_t y,
-                                           hipDataType                 computeType,
-                                           hipsparseSpSVAlg_t          alg,
-                                           hipsparseSpSVDescr_t        spsvDescr,
-                                           void*                       externalBuffer)
+                                         hipsparseOperation_t        opA,
+                                         const void*                 alpha,
+                                         const hipsparseSpMatDescr_t matA,
+                                         const hipsparseDnVecDescr_t x,
+                                         const hipsparseDnVecDescr_t y,
+                                         hipDataType                 computeType,
+                                         hipsparseSpSVAlg_t          alg,
+                                         hipsparseSpSVDescr_t        spsvDescr,
+                                         void*                       externalBuffer)
 {
     return hipCUSPARSEStatusToHIPStatus(
         cusparseSpSV_analysis((cusparseHandle_t)handle,
@@ -11522,7 +11466,6 @@ hipsparseStatus_t hipsparseSpSV_solve(hipsparseHandle_t           handle,
                                                            externalBuffer));
 }
 #endif
-
 
 #if(CUDART_VERSION >= 11031)
 hipsparseStatus_t hipsparseSpSM_createDescr(hipsparseSpSMDescr_t* descr)
@@ -11568,16 +11511,16 @@ hipsparseStatus_t hipsparseSpSM_bufferSize(hipsparseHandle_t           handle,
 
 #if(CUDART_VERSION >= 11031)
 hipsparseStatus_t hipsparseSpSM_analysis(hipsparseHandle_t           handle,
-                                           hipsparseOperation_t        opA,
-                                           hipsparseOperation_t        opB,
-                                           const void*                 alpha,
-                                           const hipsparseSpMatDescr_t matA,
-                                           const hipsparseDnMatDescr_t matB,
-                                           const hipsparseDnMatDescr_t matC,
-                                           hipDataType                 computeType,
-                                           hipsparseSpSMAlg_t          alg,
-                                           hipsparseSpSMDescr_t        spsmDescr,
-                                           void*                       externalBuffer)
+                                         hipsparseOperation_t        opA,
+                                         hipsparseOperation_t        opB,
+                                         const void*                 alpha,
+                                         const hipsparseSpMatDescr_t matA,
+                                         const hipsparseDnMatDescr_t matB,
+                                         const hipsparseDnMatDescr_t matC,
+                                         hipDataType                 computeType,
+                                         hipsparseSpSMAlg_t          alg,
+                                         hipsparseSpSMDescr_t        spsmDescr,
+                                         void*                       externalBuffer)
 {
     return hipCUSPARSEStatusToHIPStatus(
         cusparseSpSM_analysis((cusparseHandle_t)handle,

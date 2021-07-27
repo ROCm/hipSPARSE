@@ -82,6 +82,8 @@ void testing_spsv_csr_bad_arg(void)
 
     hipsparseSpSVDescr_t descr;
 
+    verify_hipsparse_status_success(hipsparseSpSV_createDescr(&descr), "success");
+
     size_t bsize;
 
     // Create SpSV structures
@@ -129,8 +131,7 @@ void testing_spsv_csr_bad_arg(void)
         hipsparseSpSV_analysis(handle, transA, &alpha, A, x, nullptr, dataType, alg, descr, dbuf),
         "Error: y is nullptr");
     verify_hipsparse_status_invalid_pointer(
-        hipsparseSpSV_analysis(
-            handle, transA, &alpha, A, x, y, dataType, alg, descr, nullptr),
+        hipsparseSpSV_analysis(handle, transA, &alpha, A, x, y, dataType, alg, descr, nullptr),
         "Error: dbuf is nullptr");
 
     // SpSV solve
@@ -153,6 +154,7 @@ void testing_spsv_csr_bad_arg(void)
         "Error: dbuf is nullptr");
 
     // Destruct
+    verify_hipsparse_status_success(hipsparseSpSV_destroyDescr(descr), "success");
     verify_hipsparse_status_success(hipsparseDestroySpMat(A), "success");
     verify_hipsparse_status_success(hipsparseDestroyDnVec(x), "success");
     verify_hipsparse_status_success(hipsparseDestroyDnVec(y), "success");
@@ -277,16 +279,13 @@ hipsparseStatus_t testing_spsv_csr(void)
     CHECK_HIPSPARSE_ERROR(hipsparseCreateDnVec(&y1, m, dy_1, typeT));
     CHECK_HIPSPARSE_ERROR(hipsparseCreateDnVec(&y2, m, dy_2, typeT));
 
-
     CHECK_HIPSPARSE_ERROR(
         hipsparseSpMatSetAttribute(A, HIPSPARSE_SPMAT_FILL_MODE, &uplo, sizeof(uplo)));
 
     CHECK_HIPSPARSE_ERROR(
         hipsparseSpMatSetAttribute(A, HIPSPARSE_SPMAT_DIAG_TYPE, &diag, sizeof(diag)));
 
-
     std::cout << "m: " << m << " n: " << n << std::endl;
-
 
     // Query SpSV buffer
     size_t bufferSize;
@@ -322,22 +321,22 @@ hipsparseStatus_t testing_spsv_csr(void)
     CHECK_HIP_ERROR(hipMemcpy(hy_1.data(), dy_1, sizeof(T) * m, hipMemcpyDeviceToHost));
     CHECK_HIP_ERROR(hipMemcpy(hy_2.data(), dy_2, sizeof(T) * m, hipMemcpyDeviceToHost));
 
-    J struct_pivot = -1;
+    J struct_pivot  = -1;
     J numeric_pivot = -1;
     host_csrsv(transA,
-                m,
-                nnz,
-                h_alpha,
-                hcsr_row_ptr.data(),
-                hcol_ind.data(),
-                hval.data(),
-                hx.data(),
-                hy_gold.data(),
-                diag,
-                uplo,
-                idx_base,
-                &struct_pivot,
-                &numeric_pivot);
+               m,
+               nnz,
+               h_alpha,
+               hcsr_row_ptr.data(),
+               hcol_ind.data(),
+               hval.data(),
+               hx.data(),
+               hy_gold.data(),
+               diag,
+               uplo,
+               idx_base,
+               &struct_pivot,
+               &numeric_pivot);
 
     if(struct_pivot != -1 && numeric_pivot != -1)
     {
