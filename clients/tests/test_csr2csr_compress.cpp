@@ -24,7 +24,6 @@
 #include "testing_csr2csr_compress.hpp"
 #include "utility.hpp"
 
-#include <gtest/gtest.h>
 #include <hipsparse.h>
 #include <string>
 #include <vector>
@@ -39,13 +38,8 @@ double csr2csr_compress_alpha_range[] = {-0.001, 0.0, 0.08736, 0.33333, 1.7};
 hipsparseIndexBase_t csr2csr_compress_base_range[]
     = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
-std::string csr2csr_compress_bin[] = {"nos1.bin",
-                                      "nos2.bin",
-                                      "nos3.bin",
-                                      "nos4.bin",
-                                      "nos5.bin",
-                                      "nos6.bin",
-                                      "nos7.bin"};
+std::string csr2csr_compress_bin[]
+    = {"nos1.bin", "nos2.bin", "nos3.bin", "nos4.bin", "nos5.bin", "nos6.bin", "nos7.bin"};
 
 class parameterized_csr2csr_compress : public testing::TestWithParam<csr2csr_compress_tuple>
 {
@@ -88,20 +82,8 @@ Arguments setup_csr2csr_compress_arguments(csr2csr_compress_bin_tuple tup)
     // Determine absolute path of test matrix
     std::string bin_file = std::get<2>(tup);
 
-    // Get current executables absolute path
-    char    path_exe[PATH_MAX];
-    ssize_t len = readlink("/proc/self/exe", path_exe, sizeof(path_exe) - 1);
-    if(len < 14)
-    {
-        path_exe[0] = '\0';
-    }
-    else
-    {
-        path_exe[len - 14] = '\0';
-    }
-
     // Matrices are stored at the same path in matrices directory
-    arg.filename = std::string(path_exe) + "../matrices/" + bin_file;
+    arg.filename = hipsparse_exepath() + "../matrices/" + bin_file;
 
     return arg;
 }
@@ -162,15 +144,15 @@ TEST_P(parameterized_csr2csr_compress_bin, csr2csr_compress_bin_double)
 }
 #endif
 
-INSTANTIATE_TEST_CASE_P(csr2csr_compress,
-                        parameterized_csr2csr_compress,
-                        testing::Combine(testing::ValuesIn(csr2csr_compress_M_range),
-                                         testing::ValuesIn(csr2csr_compress_N_range),
-                                         testing::ValuesIn(csr2csr_compress_alpha_range),
-                                         testing::ValuesIn(csr2csr_compress_base_range)));
+INSTANTIATE_TEST_SUITE_P(csr2csr_compress,
+                         parameterized_csr2csr_compress,
+                         testing::Combine(testing::ValuesIn(csr2csr_compress_M_range),
+                                          testing::ValuesIn(csr2csr_compress_N_range),
+                                          testing::ValuesIn(csr2csr_compress_alpha_range),
+                                          testing::ValuesIn(csr2csr_compress_base_range)));
 
-INSTANTIATE_TEST_CASE_P(csr2csr_compress_bin,
-                        parameterized_csr2csr_compress_bin,
-                        testing::Combine(testing::ValuesIn(csr2csr_compress_alpha_range),
-                                         testing::ValuesIn(csr2csr_compress_base_range),
-                                         testing::ValuesIn(csr2csr_compress_bin)));
+INSTANTIATE_TEST_SUITE_P(csr2csr_compress_bin,
+                         parameterized_csr2csr_compress_bin,
+                         testing::Combine(testing::ValuesIn(csr2csr_compress_alpha_range),
+                                          testing::ValuesIn(csr2csr_compress_base_range),
+                                          testing::ValuesIn(csr2csr_compress_bin)));

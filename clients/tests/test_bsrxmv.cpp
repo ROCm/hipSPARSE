@@ -22,7 +22,7 @@
  * ************************************************************************ */
 
 #include "testing_bsrxmv.hpp"
-#include <gtest/gtest.h>
+
 #include <hipsparse.h>
 
 TEST(bsrxmv_bad_arg, bsrxmv_bad_arg_float)

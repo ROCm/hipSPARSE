@@ -33,7 +33,6 @@
 #include <hipsparse.h>
 #include <string>
 #include <typeinfo>
-#include <unistd.h>
 
 using namespace hipsparse;
 using namespace hipsparse_test;
@@ -210,18 +209,8 @@ hipsparseStatus_t testing_sddmm_csr()
     hipsparseSDDMMAlg_t  alg      = HIPSPARSE_SDDMM_ALG_DEFAULT;
     hipsparseStatus_t    status;
 
-    // Determine absolute path of test matrix
-
-    // Get current executables absolute path
-    char    path_exe[PATH_MAX];
-    ssize_t len = readlink("/proc/self/exe", path_exe, sizeof(path_exe) - 1);
-    if(len < 14)
-        path_exe[0] = '\0';
-    else
-        path_exe[len - 14] = '\0';
-
     // Matrices are stored at the same path in matrices directory
-    std::string filename = std::string(path_exe) + "../matrices/nos3.bin";
+    std::string filename = hipsparse_exepath() + "../matrices/nos3.bin";
 
     // Index and data type
     hipsparseIndexType_t typeI

@@ -24,10 +24,8 @@
 #include "testing_csrmv.hpp"
 #include "utility.hpp"
 
-#include <gtest/gtest.h>
 #include <hipsparse.h>
 #include <string>
-#include <unistd.h>
 #include <vector>
 
 typedef hipsparseIndexBase_t                          base;
@@ -95,20 +93,8 @@ Arguments setup_csrmv_arguments(csrmv_bin_tuple tup)
     // Determine absolute path of test matrix
     std::string bin_file = std::get<3>(tup);
 
-    // Get current executables absolute path
-    char    path_exe[PATH_MAX];
-    ssize_t len = readlink("/proc/self/exe", path_exe, sizeof(path_exe) - 1);
-    if(len < 14)
-    {
-        path_exe[0] = '\0';
-    }
-    else
-    {
-        path_exe[len - 14] = '\0';
-    }
-
     // Matrices are stored at the same path in matrices directory
-    arg.filename = std::string(path_exe) + "../matrices/" + bin_file;
+    arg.filename = hipsparse_exepath() + "../matrices/" + bin_file;
 
     return arg;
 }
@@ -169,17 +155,17 @@ TEST_P(parameterized_csrmv_bin, csrmv_bin_double)
 }
 #endif
 
-INSTANTIATE_TEST_CASE_P(csrmv,
-                        parameterized_csrmv,
-                        testing::Combine(testing::ValuesIn(csr_M_range),
-                                         testing::ValuesIn(csr_N_range),
-                                         testing::ValuesIn(csr_alpha_range),
-                                         testing::ValuesIn(csr_beta_range),
-                                         testing::ValuesIn(csr_idxbase_range)));
+INSTANTIATE_TEST_SUITE_P(csrmv,
+                         parameterized_csrmv,
+                         testing::Combine(testing::ValuesIn(csr_M_range),
+                                          testing::ValuesIn(csr_N_range),
+                                          testing::ValuesIn(csr_alpha_range),
+                                          testing::ValuesIn(csr_beta_range),
+                                          testing::ValuesIn(csr_idxbase_range)));
 
-INSTANTIATE_TEST_CASE_P(csrmv_bin,
-                        parameterized_csrmv_bin,
-                        testing::Combine(testing::ValuesIn(csr_alpha_range),
-                                         testing::ValuesIn(csr_beta_range),
-                                         testing::ValuesIn(csr_idxbase_range),
-                                         testing::ValuesIn(csr_bin)));
+INSTANTIATE_TEST_SUITE_P(csrmv_bin,
+                         parameterized_csrmv_bin,
+                         testing::Combine(testing::ValuesIn(csr_alpha_range),
+                                          testing::ValuesIn(csr_beta_range),
+                                          testing::ValuesIn(csr_idxbase_range),
+                                          testing::ValuesIn(csr_bin)));

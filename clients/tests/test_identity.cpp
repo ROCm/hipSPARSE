@@ -24,7 +24,6 @@
 #include "testing_identity.hpp"
 #include "utility.hpp"
 
-#include <gtest/gtest.h>
 #include <hipsparse.h>
 #include <vector>
 
@@ -63,4 +62,4 @@ TEST_P(parameterized_identity, identity)
 }
 #endif
 
-INSTANTIATE_TEST_CASE_P(identity, parameterized_identity, testing::ValuesIn(identity_N_range));
+INSTANTIATE_TEST_SUITE_P(identity, parameterized_identity, testing::ValuesIn(identity_N_range));

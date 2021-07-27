@@ -24,7 +24,6 @@
 #include "testing_bsrmm.hpp"
 #include "utility.hpp"
 
-#include <gtest/gtest.h>
 #include <hipsparse.h>
 #include <string>
 
@@ -115,20 +114,8 @@ Arguments setup_bsrmm_arguments(bsrmm_bin_tuple tup)
     // Determine absolute path of test matrix
     std::string bin_file = std::get<8>(tup);
 
-    // Get current executables absolute path
-    char    path_exe[PATH_MAX];
-    ssize_t len = readlink("/proc/self/exe", path_exe, sizeof(path_exe) - 1);
-    if(len < 14)
-    {
-        path_exe[0] = '\0';
-    }
-    else
-    {
-        path_exe[len - 14] = '\0';
-    }
-
     // Matrices are stored at the same path in matrices directory
-    arg.filename = std::string(path_exe) + "../matrices/" + bin_file;
+    arg.filename = hipsparse_exepath() + "../matrices/" + bin_file;
 
     return arg;
 }
@@ -189,27 +176,27 @@ TEST_P(parameterized_bsrmm_bin, bsrmm_bin_double)
 }
 #endif
 
-INSTANTIATE_TEST_CASE_P(bsrmm,
-                        parameterized_bsrmm,
-                        testing::Combine(testing::ValuesIn(bsrmm_M_range),
-                                         testing::ValuesIn(bsrmm_N_range),
-                                         testing::ValuesIn(bsrmm_K_range),
-                                         testing::ValuesIn(bsrmm_block_dim_range),
-                                         testing::ValuesIn(bsrmm_alpha_range),
-                                         testing::ValuesIn(bsrmm_beta_range),
-                                         testing::ValuesIn(bsrmm_dir_range),
-                                         testing::ValuesIn(bsrmm_idxbase_range),
-                                         testing::ValuesIn(bsrmm_transA_range),
-                                         testing::ValuesIn(bsrmm_transB_range)));
+INSTANTIATE_TEST_SUITE_P(bsrmm,
+                         parameterized_bsrmm,
+                         testing::Combine(testing::ValuesIn(bsrmm_M_range),
+                                          testing::ValuesIn(bsrmm_N_range),
+                                          testing::ValuesIn(bsrmm_K_range),
+                                          testing::ValuesIn(bsrmm_block_dim_range),
+                                          testing::ValuesIn(bsrmm_alpha_range),
+                                          testing::ValuesIn(bsrmm_beta_range),
+                                          testing::ValuesIn(bsrmm_dir_range),
+                                          testing::ValuesIn(bsrmm_idxbase_range),
+                                          testing::ValuesIn(bsrmm_transA_range),
+                                          testing::ValuesIn(bsrmm_transB_range)));
 
-INSTANTIATE_TEST_CASE_P(bsrmm_bin,
-                        parameterized_bsrmm_bin,
-                        testing::Combine(testing::ValuesIn(bsrmm_N_range_bin),
-                                         testing::ValuesIn(bsrmm_block_dim_range_bin),
-                                         testing::ValuesIn(bsrmm_alpha_range_bin),
-                                         testing::ValuesIn(bsrmm_beta_range_bin),
-                                         testing::ValuesIn(bsrmm_dir_range_bin),
-                                         testing::ValuesIn(bsrmm_idxbase_range_bin),
-                                         testing::ValuesIn(bsrmm_transA_range_bin),
-                                         testing::ValuesIn(bsrmm_transB_range_bin),
-                                         testing::ValuesIn(bsrmm_bin)));
+INSTANTIATE_TEST_SUITE_P(bsrmm_bin,
+                         parameterized_bsrmm_bin,
+                         testing::Combine(testing::ValuesIn(bsrmm_N_range_bin),
+                                          testing::ValuesIn(bsrmm_block_dim_range_bin),
+                                          testing::ValuesIn(bsrmm_alpha_range_bin),
+                                          testing::ValuesIn(bsrmm_beta_range_bin),
+                                          testing::ValuesIn(bsrmm_dir_range_bin),
+                                          testing::ValuesIn(bsrmm_idxbase_range_bin),
+                                          testing::ValuesIn(bsrmm_transA_range_bin),
+                                          testing::ValuesIn(bsrmm_transB_range_bin),
+                                          testing::ValuesIn(bsrmm_bin)));

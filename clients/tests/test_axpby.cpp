@@ -22,8 +22,6 @@
  * ************************************************************************ */
 
 #include "testing_axpby.hpp"
-
-#include <gtest/gtest.h>
 #include <hipsparse.h>
 
 // Only run tests for CUDA 11.1 or greater
@@ -56,4 +54,5 @@ TEST(axpby, axpby_i64_hipDoubleComplex)
     hipsparseStatus_t status = testing_axpby<int64_t, hipDoubleComplex>();
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+
 #endif

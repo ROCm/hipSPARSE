@@ -22,8 +22,9 @@
  * ************************************************************************ */
 
 #include "utility.hpp"
-
+#ifdef GOOGLE_TEST
 #include <gtest/gtest.h>
+#endif
 #include <hip/hip_runtime_api.h>
 #include <stdexcept>
 

@@ -50,6 +50,7 @@ set(INCLUDE_INSTALL_DIR ${CMAKE_INSTALL_INCLUDEDIR})
 # Include sources
 include(src/CMakeLists.txt)
 
+if (NOT WIN32)
 # Set Fortran module output directory
 set(CMAKE_Fortran_MODULE_DIRECTORY ${PROJECT_BINARY_DIR}/include)
 
@@ -58,6 +59,7 @@ add_library(hipsparse_fortran OBJECT ${hipsparse_fortran_source})
 
 # Target compile options
 target_compile_options(hipsparse_fortran PRIVATE -std=f2003 -ffree-form -cpp)
+endif()
 
 # Create hipSPARSE library
 add_library(hipsparse ${hipsparse_source} ${hipsparse_headers_public})
@@ -87,6 +89,13 @@ set_target_properties(hipsparse PROPERTIES CXX_EXTENSIONS NO)
 set_target_properties(hipsparse PROPERTIES CXX_VISIBILITY_PRESET "hidden" VISIBILITY_INLINES_HIDDEN ON)
 set_target_properties(hipsparse PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/staging")
 set_target_propertieS(hipsparse PROPERTIES DEBUG_POSTFIX "-d")
+
+if (WIN32)
+  add_custom_command( TARGET hipsparse POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_BINARY_DIR}/staging/$<TARGET_FILE_NAME:hipsparse> ${PROJECT_BINARY_DIR}/clients/staging/$<TARGET_FILE_NAME:hipsparse> )
+  if( ${CMAKE_BUILD_TYPE} MATCHES "Debug")
+    add_custom_command( TARGET hipsparse POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_BINARY_DIR}/staging/hipsparse.pdb ${PROJECT_BINARY_DIR}/clients/staging/hipsparse.pdb )
+  endif()
+endif()
 
 # Following boost conventions of prefixing 'lib' on static built libraries
 if(NOT BUILD_SHARED_LIBS)

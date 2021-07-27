@@ -23,6 +23,10 @@
 
 cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
 
+if (NOT python)
+    set(python "python3") # default for linux
+endif()
+
 # Consider removing this in the future
 # This should appear before the project command, because it does not use FORCE
 if(WIN32)
@@ -51,6 +55,13 @@ endif()
 if(POLICY CMP0066)
   cmake_policy(SET CMP0066 NEW)
 endif()
+
+if (NOT WIN32)
+    if ( NOT DEFINED CMAKE_Fortran_COMPILER AND NOT DEFINED ENV{FC} )
+      set( CMAKE_Fortran_COMPILER  "gfortran" )
+    endif()
+    set( fortran_language "Fortran" )
+endif( )
 
 # hipSPARSE project
 project(hipsparse LANGUAGES CXX Fortran)

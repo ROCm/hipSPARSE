@@ -33,7 +33,6 @@
 #include <hipsparse.h>
 #include <string>
 #include <typeinfo>
-#include <unistd.h>
 
 using namespace hipsparse;
 using namespace hipsparse_test;

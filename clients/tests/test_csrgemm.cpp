@@ -24,7 +24,6 @@
 #include "testing_csrgemm.hpp"
 #include "utility.hpp"
 
-#include <gtest/gtest.h>
 #include <hipsparse.h>
 #include <string>
 
@@ -107,20 +106,8 @@ Arguments setup_csrgemm_arguments(csrgemm_bin_tuple tup)
     // Determine absolute path of test matrix
     std::string bin_file = std::get<5>(tup);
 
-    // Get current executables absolute path
-    char    path_exe[PATH_MAX];
-    ssize_t len = readlink("/proc/self/exe", path_exe, sizeof(path_exe) - 1);
-    if(len < 14)
-    {
-        path_exe[0] = '\0';
-    }
-    else
-    {
-        path_exe[len - 14] = '\0';
-    }
-
     // Matrices are stored at the same path in matrices directory
-    arg.filename = std::string(path_exe) + "../matrices/" + bin_file;
+    arg.filename = hipsparse_exepath() + "../matrices/" + bin_file;
 
     return arg;
 }
@@ -181,22 +168,22 @@ TEST_P(parameterized_csrgemm_bin, csrgemm_bin_double)
 }
 #endif
 
-INSTANTIATE_TEST_CASE_P(csrgemm,
-                        parameterized_csrgemm,
-                        testing::Combine(testing::ValuesIn(csrgemm_M_range),
-                                         testing::ValuesIn(csrgemm_N_range),
-                                         testing::ValuesIn(csrgemm_K_range),
-                                         testing::ValuesIn(csrgemm_idxbaseA_range),
-                                         testing::ValuesIn(csrgemm_idxbaseB_range),
-                                         testing::ValuesIn(csrgemm_idxbaseC_range),
-                                         testing::ValuesIn(csrgemm_transA_range),
-                                         testing::ValuesIn(csrgemm_transB_range)));
+INSTANTIATE_TEST_SUITE_P(csrgemm,
+                         parameterized_csrgemm,
+                         testing::Combine(testing::ValuesIn(csrgemm_M_range),
+                                          testing::ValuesIn(csrgemm_N_range),
+                                          testing::ValuesIn(csrgemm_K_range),
+                                          testing::ValuesIn(csrgemm_idxbaseA_range),
+                                          testing::ValuesIn(csrgemm_idxbaseB_range),
+                                          testing::ValuesIn(csrgemm_idxbaseC_range),
+                                          testing::ValuesIn(csrgemm_transA_range),
+                                          testing::ValuesIn(csrgemm_transB_range)));
 
-INSTANTIATE_TEST_CASE_P(csrgemm_bin,
-                        parameterized_csrgemm_bin,
-                        testing::Combine(testing::ValuesIn(csrgemm_idxbaseA_range),
-                                         testing::ValuesIn(csrgemm_idxbaseB_range),
-                                         testing::ValuesIn(csrgemm_idxbaseC_range),
-                                         testing::ValuesIn(csrgemm_transA_range),
-                                         testing::ValuesIn(csrgemm_transB_range),
-                                         testing::ValuesIn(csrgemm_bin)));
+INSTANTIATE_TEST_SUITE_P(csrgemm_bin,
+                         parameterized_csrgemm_bin,
+                         testing::Combine(testing::ValuesIn(csrgemm_idxbaseA_range),
+                                          testing::ValuesIn(csrgemm_idxbaseB_range),
+                                          testing::ValuesIn(csrgemm_idxbaseC_range),
+                                          testing::ValuesIn(csrgemm_transA_range),
+                                          testing::ValuesIn(csrgemm_transB_range),
+                                          testing::ValuesIn(csrgemm_bin)));
