@@ -164,12 +164,12 @@ template <typename I, typename T>
 hipsparseStatus_t testing_spsv_coo(void)
 {
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11030)
-    T                    h_alpha   = make_DataType<T>(2.0);
-    hipsparseOperation_t transA    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
-    hipsparseIndexBase_t idx_base  = HIPSPARSE_INDEX_BASE_ZERO;
-    hipsparseDiagType_t  diag      = HIPSPARSE_DIAG_TYPE_UNIT;
-    hipsparseFillMode_t  uplo      = HIPSPARSE_FILL_MODE_LOWER;
-    hipsparseSpSVAlg_t   alg       = HIPSPARSE_SPSV_ALG_DEFAULT;
+    T                    h_alpha  = make_DataType<T>(2.3);
+    hipsparseOperation_t transA   = HIPSPARSE_OPERATION_NON_TRANSPOSE;
+    hipsparseIndexBase_t idx_base = HIPSPARSE_INDEX_BASE_ZERO;
+    hipsparseDiagType_t  diag     = HIPSPARSE_DIAG_TYPE_NON_UNIT;
+    hipsparseFillMode_t  uplo     = HIPSPARSE_FILL_MODE_LOWER;
+    hipsparseSpSVAlg_t   alg      = HIPSPARSE_SPSV_ALG_DEFAULT;
     hipsparseStatus_t    status;
 
     // Determine absolute path of test matrix

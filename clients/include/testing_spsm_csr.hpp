@@ -180,14 +180,14 @@ template <typename I, typename J, typename T>
 hipsparseStatus_t testing_spsm_csr(void)
 {
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
-    T                    h_alpha   = make_DataType<T>(2.0);
-    hipsparseOperation_t transA    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
-    hipsparseOperation_t transB    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
-    hipsparseIndexBase_t idx_base  = HIPSPARSE_INDEX_BASE_ZERO;
-    hipsparseDiagType_t  diag      = HIPSPARSE_DIAG_TYPE_UNIT;
-    hipsparseFillMode_t  uplo      = HIPSPARSE_FILL_MODE_LOWER;
-    hipsparseOrder_t     order     = HIPSPARSE_ORDER_COLUMN;
-    hipsparseSpSMAlg_t   alg       = HIPSPARSE_SPSM_ALG_DEFAULT;
+    T                    h_alpha  = make_DataType<T>(2.3);
+    hipsparseOperation_t transA   = HIPSPARSE_OPERATION_NON_TRANSPOSE;
+    hipsparseOperation_t transB   = HIPSPARSE_OPERATION_NON_TRANSPOSE;
+    hipsparseIndexBase_t idx_base = HIPSPARSE_INDEX_BASE_ZERO;
+    hipsparseDiagType_t  diag     = HIPSPARSE_DIAG_TYPE_NON_UNIT;
+    hipsparseFillMode_t  uplo     = HIPSPARSE_FILL_MODE_LOWER;
+    hipsparseOrder_t     order    = HIPSPARSE_ORDER_COLUMN;
+    hipsparseSpSMAlg_t   alg      = HIPSPARSE_SPSM_ALG_DEFAULT;
     hipsparseStatus_t    status;
 
     // Determine absolute path of test matrix

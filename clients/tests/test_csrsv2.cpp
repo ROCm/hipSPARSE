@@ -42,28 +42,20 @@ int csrsv2_M_range[] = {-1, 0, 647};
 
 double csrsv2_alpha_range[] = {2.3};
 
-// base csrsv2_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
-// op   csrsv2_op_range[]      = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPERATION_TRANSPOSE};
-// diag csrsv2_diag_range[]    = {HIPSPARSE_DIAG_TYPE_NON_UNIT};
-// fill csrsv2_fill_range[]    = {HIPSPARSE_FILL_MODE_LOWER, HIPSPARSE_FILL_MODE_UPPER};
+base csrsv2_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+op   csrsv2_op_range[]      = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPERATION_TRANSPOSE};
+diag csrsv2_diag_range[]    = {HIPSPARSE_DIAG_TYPE_NON_UNIT};
+fill csrsv2_fill_range[]    = {HIPSPARSE_FILL_MODE_LOWER, HIPSPARSE_FILL_MODE_UPPER};
 
-// std::string csrsv2_bin[] = {"rma10.bin",
-//                             "mc2depi.bin",
-//                             "nos1.bin",
-//                             "nos2.bin",
-//                             "nos3.bin",
-//                             "nos4.bin",
-//                             "nos5.bin",
-//                             "nos6.bin",
-//                             "sme3Dc.bin"};
-
-
-base csrsv2_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO};
-op   csrsv2_op_range[]      = {HIPSPARSE_OPERATION_NON_TRANSPOSE};
-diag csrsv2_diag_range[]    = {HIPSPARSE_DIAG_TYPE_UNIT};
-fill csrsv2_fill_range[]    = {HIPSPARSE_FILL_MODE_LOWER};
-
-std::string csrsv2_bin[] = {"nos2.bin"};
+std::string csrsv2_bin[] = {"rma10.bin",
+                            "mc2depi.bin",
+                            "nos1.bin",
+                            "nos2.bin",
+                            "nos3.bin",
+                            "nos4.bin",
+                            "nos5.bin",
+                            "nos6.bin",
+                            "sme3Dc.bin"};
 
 class parameterized_csrsv2 : public testing::TestWithParam<csrsv2_tuple>
 {
@@ -151,21 +143,21 @@ TEST_P(parameterized_csrsv2, csrsv2_double)
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-// TEST_P(parameterized_csrsv2, csrsv2_float_complex)
-// {
-//     Arguments arg = setup_csrsv2_arguments(GetParam());
+TEST_P(parameterized_csrsv2, csrsv2_float_complex)
+{
+    Arguments arg = setup_csrsv2_arguments(GetParam());
 
-//     hipsparseStatus_t status = testing_csrsv2<hipComplex>(arg);
-//     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
-// }
+    hipsparseStatus_t status = testing_csrsv2<hipComplex>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
 
-// TEST_P(parameterized_csrsv2, csrsv2_double_complex)
-// {
-//     Arguments arg = setup_csrsv2_arguments(GetParam());
+TEST_P(parameterized_csrsv2, csrsv2_double_complex)
+{
+    Arguments arg = setup_csrsv2_arguments(GetParam());
 
-//     hipsparseStatus_t status = testing_csrsv2<hipDoubleComplex>(arg);
-//     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
-// }
+    hipsparseStatus_t status = testing_csrsv2<hipDoubleComplex>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
 
 TEST_P(parameterized_csrsv2_bin, csrsv2_bin_float)
 {

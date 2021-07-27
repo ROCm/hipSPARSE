@@ -165,12 +165,12 @@ template <typename I, typename J, typename T>
 hipsparseStatus_t testing_spsv_csr(void)
 {
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11030)
-    T                    h_alpha   = make_DataType<T>(2.0);
-    hipsparseOperation_t transA    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
-    hipsparseIndexBase_t idx_base  = HIPSPARSE_INDEX_BASE_ZERO;
-    hipsparseDiagType_t  diag      = HIPSPARSE_DIAG_TYPE_UNIT;
-    hipsparseFillMode_t  uplo      = HIPSPARSE_FILL_MODE_LOWER;
-    hipsparseSpSVAlg_t   alg       = HIPSPARSE_SPSV_ALG_DEFAULT;
+    T                    h_alpha  = make_DataType<T>(2.3);
+    hipsparseOperation_t transA   = HIPSPARSE_OPERATION_NON_TRANSPOSE;
+    hipsparseIndexBase_t idx_base = HIPSPARSE_INDEX_BASE_ZERO;
+    hipsparseDiagType_t  diag     = HIPSPARSE_DIAG_TYPE_NON_UNIT;
+    hipsparseFillMode_t  uplo     = HIPSPARSE_FILL_MODE_LOWER;
+    hipsparseSpSVAlg_t   alg      = HIPSPARSE_SPSV_ALG_DEFAULT;
     hipsparseStatus_t    status;
 
     // Determine absolute path of test matrix
@@ -184,7 +184,7 @@ hipsparseStatus_t testing_spsv_csr(void)
         path_exe[len - 14] = '\0';
 
     // Matrices are stored at the same path in matrices directory
-    std::string filename = std::string(path_exe) + "../matrices/nos2.bin";
+    std::string filename = std::string(path_exe) + "../matrices/nos3.bin";
 
     // Index and data type
     hipsparseIndexType_t typeI
@@ -286,14 +286,10 @@ hipsparseStatus_t testing_spsv_csr(void)
     CHECK_HIPSPARSE_ERROR(
         hipsparseSpMatSetAttribute(A, HIPSPARSE_SPMAT_DIAG_TYPE, &diag, sizeof(diag)));
 
-    std::cout << "m: " << m << " n: " << n << " nnz: "<< nnz << std::endl;
-
     // Query SpSV buffer
     size_t bufferSize;
     CHECK_HIPSPARSE_ERROR(hipsparseSpSV_bufferSize(
         handle, transA, &h_alpha, A, x, y1, typeT, alg, descr, &bufferSize));
-
-    std::cout << "buffer size: " << bufferSize << std::endl;
 
     void* buffer;
     CHECK_HIP_ERROR(hipMalloc(&buffer, bufferSize));
@@ -322,13 +318,6 @@ hipsparseStatus_t testing_spsv_csr(void)
     CHECK_HIP_ERROR(hipMemcpy(hy_1.data(), dy_1, sizeof(T) * m, hipMemcpyDeviceToHost));
     CHECK_HIP_ERROR(hipMemcpy(hy_2.data(), dy_2, sizeof(T) * m, hipMemcpyDeviceToHost));
 
-    std::cout << "CPU hy_gold" << std::endl;
-    for(int i = 0; i < 100; i++)
-    {
-        std::cout << hy_gold[i] << " ";
-    }
-    std::cout << "" << std::endl;
-
     J struct_pivot  = -1;
     J numeric_pivot = -1;
     host_csrsv(transA,
@@ -345,21 +334,6 @@ hipsparseStatus_t testing_spsv_csr(void)
                idx_base,
                &struct_pivot,
                &numeric_pivot);
-
-    std::cout << "GPU hy_1" << std::endl;
-    for(int i = 0; i < 100; i++)
-    {
-        std::cout << hy_1[i] << " ";
-    }
-    std::cout << "" << std::endl;
-
-    std::cout << "CPU hy_gold" << std::endl;
-    for(int i = 0; i < 100; i++)
-    {
-        std::cout << hy_gold[i] << " ";
-    }
-    std::cout << "" << std::endl;
-
 
     if(struct_pivot == -1 && numeric_pivot == -1)
     {

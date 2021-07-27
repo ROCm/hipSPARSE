@@ -794,20 +794,6 @@ hipsparseStatus_t testing_csrsv2(Arguments argus)
             return HIPSPARSE_STATUS_SUCCESS;
         }
 
-        std::cout << "GPU hy_1" << std::endl;
-        for(int i = 0; i < 100; i++)
-        {
-            std::cout << hy_1[i] << " ";
-        }
-        std::cout << "" << std::endl;
-
-        std::cout << "CPU hy_gold" << std::endl;
-        for(int i = 0; i < 100; i++)
-        {
-            std::cout << hy_gold[i] << " ";
-        }
-        std::cout << "" << std::endl;
-
         unit_check_near(1, n, 1, hy_gold.data(), hy_1.data());
         unit_check_near(1, n, 1, hy_gold.data(), hy_2.data());
     }
