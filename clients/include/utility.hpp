@@ -3562,14 +3562,14 @@ void host_csr_lsolve(J                    M,
     // Process lower triangular part
     for(J row = 0; row < M; ++row)
     {
-        temp.assign(prop.warpSize, static_cast<T>(0));
+        temp.assign(prop.warpSize, make_DataType<T>(0.0));
         temp[0] = alpha * x[row];
 
         I diag      = -1;
         I row_begin = csr_row_ptr[row] - base;
         I row_end   = csr_row_ptr[row + 1] - base;
 
-        T diag_val = static_cast<T>(0);
+        T diag_val = make_DataType<T>(0.0);
 
         for(I l = row_begin; l < row_end; l += prop.warpSize)
         {
@@ -3586,13 +3586,13 @@ void host_csr_lsolve(J                    M,
                 J local_col = csr_col_ind[j] - base;
                 T local_val = csr_val[j];
 
-                if(local_val == static_cast<T>(0) && local_col == row
+                if(local_val == make_DataType<T>(0.0) && local_col == row
                    && diag_type == HIPSPARSE_DIAG_TYPE_NON_UNIT)
                 {
                     // Numerical zero pivot found, avoid division by 0
                     // and store index for later use.
                     *numeric_pivot = std::min(*numeric_pivot, row + base);
-                    local_val      = static_cast<T>(1);
+                    local_val      = make_DataType<T>(1);
                 }
 
                 // Ignore all entries that are above the diagonal
@@ -3609,7 +3609,7 @@ void host_csr_lsolve(J                    M,
                     if(diag_type == HIPSPARSE_DIAG_TYPE_NON_UNIT)
                     {
                         diag     = j;
-                        diag_val = static_cast<T>(1) / local_val;
+                        diag_val = make_DataType<T>(1) / local_val;
                     }
 
                     break;
@@ -3669,14 +3669,14 @@ void host_csr_usolve(J                    M,
     // Process upper triangular part
     for(J row = M - 1; row >= 0; --row)
     {
-        temp.assign(prop.warpSize, static_cast<T>(0));
+        temp.assign(prop.warpSize, make_DataType<T>(0));
         temp[0] = alpha * x[row];
 
         I diag      = -1;
         I row_begin = csr_row_ptr[row] - base;
         I row_end   = csr_row_ptr[row + 1] - base;
 
-        T diag_val = static_cast<T>(0);
+        T diag_val = make_DataType<T>(0);
 
         for(I l = row_end - 1; l >= row_begin; l -= prop.warpSize)
         {
@@ -3705,14 +3705,14 @@ void host_csr_usolve(J                    M,
                     if(diag_type == HIPSPARSE_DIAG_TYPE_NON_UNIT)
                     {
                         // Check for numerical zero
-                        if(local_val == static_cast<T>(0))
+                        if(local_val == make_DataType<T>(0))
                         {
                             *numeric_pivot = std::min(*numeric_pivot, row + base);
-                            local_val      = static_cast<T>(1);
+                            local_val      = make_DataType<T>(1);
                         }
 
                         diag     = j;
-                        diag_val = static_cast<T>(1) / local_val;
+                        diag_val = make_DataType<T>(1) / local_val;
                     }
 
                     continue;
