@@ -5866,7 +5866,7 @@ hipsparseStatus_t hipsparseCreateCsc(hipsparseSpMatDescr_t* spMatDescr,
                                      hipDataType            valueType);
 #endif
 
-/* Description: Create a sparse CSC matrix */
+/* Description: Create a sparse Blocked ELL matrix */
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11021)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreateBlockedEll(hipsparseSpMatDescr_t* spMatDescr,

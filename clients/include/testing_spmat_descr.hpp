@@ -213,10 +213,11 @@ void testing_spmat_descr_bad_arg(void)
 
     // Create valid descriptors
     hipsparseSpMatDescr_t coo;
-    hipsparseSpMatDescr_t bell;
     hipsparseSpMatDescr_t coo_aos;
     hipsparseSpMatDescr_t csr;
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11021)
+    hipsparseSpMatDescr_t bell;
     verify_hipsparse_status_success(hipsparseCreateBlockedEll(&bell,
                                                               rows,
                                                               cols,
@@ -228,7 +229,7 @@ void testing_spmat_descr_bad_arg(void)
                                                               idxBase,
                                                               dataType),
                                     "Success");
-
+#endif
     verify_hipsparse_status_success(
         hipsparseCreateCoo(
             &coo, rows, cols, nnz, row_data, col_data, val_data, rowType, idxBase, dataType),
