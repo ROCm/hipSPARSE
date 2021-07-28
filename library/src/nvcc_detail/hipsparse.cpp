@@ -10094,6 +10094,8 @@ cusparseFormat_t hipFormatToCudaFormat(hipsparseFormat_t format)
         return CUSPARSE_FORMAT_COO_AOS;
     case HIPSPARSE_FORMAT_CSR:
         return CUSPARSE_FORMAT_CSR;
+    case HIPSPARSE_FORMAT_BLOCKED_ELL:
+        return CUSPARSE_FORMAT_BLOCKED_ELL;
     default:
         throw "Non existent hipsparseFormat_t";
     }
@@ -10109,6 +10111,8 @@ hipsparseFormat_t CudaFormatToHIPFormat(cusparseFormat_t format)
         return HIPSPARSE_FORMAT_COO_AOS;
     case CUSPARSE_FORMAT_CSR:
         return HIPSPARSE_FORMAT_CSR;
+    case CUSPARSE_FORMAT_BLOCKED_ELL:
+        return HIPSPARSE_FORMAT_BLOCKED_ELL;
     default:
         throw "Non existent cusparseFormat_t";
     }
@@ -10245,6 +10249,8 @@ cusparseSpMMAlg_t hipSpMMAlgToCudaSpMMAlg(hipsparseSpMMAlg_t alg)
         return CUSPARSE_SPMM_CSR_ALG1;
     case HIPSPARSE_SPMM_CSR_ALG2:
         return CUSPARSE_SPMM_CSR_ALG2;
+    case HIPSPARSE_SPMM_BLOCKED_ELL_ALG1:
+        return CUSPARSE_SPMM_BLOCKED_ELL_ALG1;
     default:
         throw "Non existant hipsparseSpMMAlg_t";
     }
@@ -10559,6 +10565,32 @@ hipsparseStatus_t hipsparseCreateCsc(hipsparseSpMatDescr_t* spMatDescr,
 }
 #endif
 
+#if(CUDART_VERSION >= 11021)
+hipsparseStatus_t hipsparseCreateBlockedEll(hipsparseSpMatDescr_t* spMatDescr,
+					    int64_t                rows,
+					    int64_t                cols,
+					    int64_t                ellBlockSize,
+					    int64_t                ellCols,
+					    void *                 ellColInd,
+					    void *                 ellValue,
+					    hipsparseIndexType_t   ellIdxType,
+					    hipsparseIndexBase_t   idxBase,
+					    hipDataType            valueType)
+{
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseCreateBlockedEll((cusparseSpMatDescr_t*)spMatDescr,
+				 rows,
+				 cols,
+				 ellBlockSize,
+				 ellCols,
+				 ellColInd,
+				 ellValue,
+				 hipIndexTypeToCudaIndexType(ellIdxType),
+				 hipIndexBaseToCudaIndexBase(idxBase),
+				 hipDataTypeToCudaDataType(valueType)));
+}
+#endif
+
 #if(CUDART_VERSION >= 10010)
 hipsparseStatus_t hipsparseDestroySpMat(hipsparseSpMatDescr_t spMatDescr)
 {
@@ -10669,6 +10701,40 @@ hipsparseStatus_t hipsparseCsrGet(const hipsparseSpMatDescr_t spMatDescr,
     *csrColIndType     = CudaIndexTypeToHIPIndexType(cuda_col_index_type);
     *idxBase           = CudaIndexBaseToHIPIndexBase(cuda_index_base);
     *valueType         = CudaDataTypeToHIPDataType(cuda_data_type);
+
+    return HIPSPARSE_STATUS_SUCCESS;
+}
+#endif
+
+#if(CUDART_VERSION >= 11021)
+hipsparseStatus_t hipsparseBlockedEllGet(const hipsparseSpMatDescr_t spMatDescr,
+					 int64_t*                    rows,
+					 int64_t*                    cols,
+					 int64_t*                    ellBlockSize,
+					 int64_t*                    ellCols,
+					 void**                      ellColInd,
+					 void**                      ellValue,
+					 hipsparseIndexType_t*       ellIdxType,
+					 hipsparseIndexBase_t*       idxBase,
+					 hipDataType*                valueType)
+{
+    cusparseIndexType_t cuda_index_type;
+    cusparseIndexBase_t cuda_index_base;
+    cudaDataType        cuda_data_type;
+    RETURN_IF_CUSPARSE_ERROR(cusparseBlockedEllGet((const cusparseSpMatDescr_t)spMatDescr,
+						   rows,
+						   cols,
+						   ellBlockSize,
+						   ellCols,
+						   ellColInd,
+						   ellValue,
+						   ellIdxType != nullptr ? &cuda_index_type : nullptr,
+						   idxBase != nullptr ? &cuda_index_base : nullptr,
+						   valueType != nullptr ? &cuda_data_type : nullptr));
+
+    *ellIdxType = CudaIndexTypeToHIPIndexType(cuda_index_type);
+    *idxBase   = CudaIndexBaseToHIPIndexBase(cuda_index_base);
+    *valueType = CudaDataTypeToHIPDataType(cuda_data_type);
 
     return HIPSPARSE_STATUS_SUCCESS;
 }
