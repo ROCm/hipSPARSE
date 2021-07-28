@@ -1375,45 +1375,48 @@ void host_prune_csr_to_csr_by_percentage(int                     M,
                              threshold);
 }
 
-template <typename T>
-inline void host_csr_to_csc(int                     M,
-                            int                     N,
-                            int                     nnz,
-                            const std::vector<int>& csr_row_ptr,
-                            const std::vector<int>& csr_col_ind,
-                            const std::vector<T>&   csr_val,
-                            std::vector<int>&       csc_row_ind,
-                            std::vector<int>&       csc_col_ptr,
-                            std::vector<T>&         csc_val,
-                            hipsparseAction_t       action,
-                            hipsparseIndexBase_t    base)
+template <typename I, typename J, typename T>
+inline void host_csr_to_csc(J        M,
+                            J        N,
+                            I        nnz,
+                            const I* csr_row_ptr,
+                            const J* csr_col_ind,
+                            const T* csr_val,
+                            //const std::vector<I>& csr_row_ptr,
+                            //const std::vector<J>& csr_col_ind,
+                            //const std::vector<T>&   csr_val,
+                            std::vector<J>&      csc_row_ind,
+                            std::vector<I>&      csc_col_ptr,
+                            std::vector<T>&      csc_val,
+                            hipsparseAction_t    action,
+                            hipsparseIndexBase_t base)
 {
     csc_row_ind.resize(nnz);
     csc_col_ptr.resize(N + 1, 0);
     csc_val.resize(nnz);
 
     // Determine nnz per column
-    for(int i = 0; i < nnz; ++i)
+    for(I i = 0; i < nnz; ++i)
     {
         ++csc_col_ptr[csr_col_ind[i] + 1 - base];
     }
 
     // Scan
-    for(int i = 0; i < N; ++i)
+    for(J i = 0; i < N; ++i)
     {
         csc_col_ptr[i + 1] += csc_col_ptr[i];
     }
 
     // Fill row indices and values
-    for(int i = 0; i < M; ++i)
+    for(J i = 0; i < M; ++i)
     {
-        int row_begin = csr_row_ptr[i] - base;
-        int row_end   = csr_row_ptr[i + 1] - base;
+        I row_begin = csr_row_ptr[i] - base;
+        I row_end   = csr_row_ptr[i + 1] - base;
 
-        for(int j = row_begin; j < row_end; ++j)
+        for(I j = row_begin; j < row_end; ++j)
         {
-            int col = csr_col_ind[j] - base;
-            int idx = csc_col_ptr[col];
+            J col = csr_col_ind[j] - base;
+            I idx = csc_col_ptr[col];
 
             csc_row_ind[idx] = i + base;
             csc_val[idx]     = csr_val[j];
@@ -1423,7 +1426,7 @@ inline void host_csr_to_csc(int                     M,
     }
 
     // Shift column pointer array
-    for(int i = N; i > 0; --i)
+    for(J i = N; i > 0; --i)
     {
         csc_col_ptr[i] = csc_col_ptr[i - 1] + base;
     }
@@ -3166,20 +3169,20 @@ void csric0(int                  M,
 
 /* ============================================================================================ */
 /*! \brief  Sparse triangular system solve using CSR storage format. */
-template <typename T>
-static inline void host_lssolve(int                     M,
-                                int                     nrhs,
-                                hipsparseOperation_t    transB,
-                                T                       alpha,
-                                const std::vector<int>& csr_row_ptr,
-                                const std::vector<int>& csr_col_ind,
-                                const std::vector<T>&   csr_val,
-                                std::vector<T>&         B,
-                                int                     ldb,
-                                hipsparseDiagType_t     diag_type,
-                                hipsparseIndexBase_t    base,
-                                int&                    struct_pivot,
-                                int&                    numeric_pivot)
+template <typename I, typename J, typename T>
+static inline void host_lssolve(J                     M,
+                                J                     nrhs,
+                                hipsparseOperation_t  transB,
+                                T                     alpha,
+                                const std::vector<I>& csr_row_ptr,
+                                const std::vector<J>& csr_col_ind,
+                                const std::vector<T>& csr_val,
+                                std::vector<T>&       B,
+                                J                     ldb,
+                                hipsparseDiagType_t   diag_type,
+                                hipsparseIndexBase_t  base,
+                                J*                    struct_pivot,
+                                J*                    numeric_pivot)
 {
     // Get device properties
     int             dev;
@@ -3191,30 +3194,29 @@ static inline void host_lssolve(int                     M,
 #ifdef _OPENMP
 #pragma omp parallel for
 #endif
-    for(int i = 0; i < nrhs; ++i)
+    for(J i = 0; i < nrhs; ++i)
     {
         std::vector<T> temp(prop.warpSize);
 
         // Process lower triangular part
-        for(int row = 0; row < M; ++row)
+        for(J row = 0; row < M; ++row)
         {
             temp.assign(prop.warpSize, make_DataType<T>(0.0));
 
-            int idx_B
-                = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? i * ldb + row : row * ldb + i;
+            J idx_B = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? i * ldb + row : row * ldb + i;
             temp[0] = alpha * B[idx_B];
 
-            int diag      = -1;
-            int row_begin = csr_row_ptr[row] - base;
-            int row_end   = csr_row_ptr[row + 1] - base;
+            I diag      = -1;
+            I row_begin = csr_row_ptr[row] - base;
+            I row_end   = csr_row_ptr[row + 1] - base;
 
             T diag_val = make_DataType<T>(0.0);
 
-            for(int l = row_begin; l < row_end; l += prop.warpSize)
+            for(I l = row_begin; l < row_end; l += prop.warpSize)
             {
                 for(unsigned int k = 0; k < prop.warpSize; ++k)
                 {
-                    int j = l + k;
+                    I j = l + k;
 
                     // Do not run out of bounds
                     if(j >= row_end)
@@ -3222,16 +3224,16 @@ static inline void host_lssolve(int                     M,
                         break;
                     }
 
-                    int local_col = csr_col_ind[j] - base;
-                    T   local_val = csr_val[j];
+                    J local_col = csr_col_ind[j] - base;
+                    T local_val = csr_val[j];
 
                     if(local_val == make_DataType<T>(0.0) && local_col == row
                        && diag_type == HIPSPARSE_DIAG_TYPE_NON_UNIT)
                     {
                         // Numerical zero pivot found, avoid division by 0 and store
                         // index for later use
-                        numeric_pivot = std::min(numeric_pivot, row + base);
-                        local_val     = make_DataType<T>(1.0);
+                        *numeric_pivot = std::min(*numeric_pivot, row + base);
+                        local_val      = make_DataType<T>(1.0);
                     }
 
                     // Ignore all entries that are above the diagonal
@@ -3255,10 +3257,10 @@ static inline void host_lssolve(int                     M,
                     }
 
                     // Lower triangular part
-                    int idx = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? i * ldb + local_col
-                                                                            : local_col * ldb + i;
-                    T   neg_val = make_DataType<T>(-1.0) * local_val;
-                    temp[k]     = testing_fma(neg_val, B[idx], temp[k]);
+                    J idx     = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? i * ldb + local_col
+                                                                              : local_col * ldb + i;
+                    T neg_val = make_DataType<T>(-1.0) * local_val;
+                    temp[k]   = testing_fma(neg_val, B[idx], temp[k]);
                 }
             }
 
@@ -3274,7 +3276,7 @@ static inline void host_lssolve(int                     M,
             {
                 if(diag == -1)
                 {
-                    struct_pivot = std::min(struct_pivot, row + base);
+                    *struct_pivot = std::min(*struct_pivot, row + base);
                 }
 
                 B[idx_B] = temp[0] * diag_val;
@@ -3287,20 +3289,20 @@ static inline void host_lssolve(int                     M,
     }
 }
 
-template <typename T>
-static inline void host_ussolve(int                     M,
-                                int                     nrhs,
-                                hipsparseOperation_t    transB,
-                                T                       alpha,
-                                const std::vector<int>& csr_row_ptr,
-                                const std::vector<int>& csr_col_ind,
-                                const std::vector<T>&   csr_val,
-                                std::vector<T>&         B,
-                                int                     ldb,
-                                hipsparseDiagType_t     diag_type,
-                                hipsparseIndexBase_t    base,
-                                int&                    struct_pivot,
-                                int&                    numeric_pivot)
+template <typename I, typename J, typename T>
+static inline void host_ussolve(J                     M,
+                                J                     nrhs,
+                                hipsparseOperation_t  transB,
+                                T                     alpha,
+                                const std::vector<I>& csr_row_ptr,
+                                const std::vector<J>& csr_col_ind,
+                                const std::vector<T>& csr_val,
+                                std::vector<T>&       B,
+                                J                     ldb,
+                                hipsparseDiagType_t   diag_type,
+                                hipsparseIndexBase_t  base,
+                                J*                    struct_pivot,
+                                J*                    numeric_pivot)
 {
     // Get device properties
     int             dev;
@@ -3312,30 +3314,29 @@ static inline void host_ussolve(int                     M,
 #ifdef _OPENMP
 #pragma omp parallel for
 #endif
-    for(int i = 0; i < nrhs; ++i)
+    for(J i = 0; i < nrhs; ++i)
     {
         std::vector<T> temp(prop.warpSize);
 
         // Process upper triangular part
-        for(int row = M - 1; row >= 0; --row)
+        for(J row = M - 1; row >= 0; --row)
         {
             temp.assign(prop.warpSize, make_DataType<T>(0.0));
 
-            int idx_B
-                = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? i * ldb + row : row * ldb + i;
+            J idx_B = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? i * ldb + row : row * ldb + i;
             temp[0] = alpha * B[idx_B];
 
-            int diag      = -1;
-            int row_begin = csr_row_ptr[row] - base;
-            int row_end   = csr_row_ptr[row + 1] - base;
+            I diag      = -1;
+            I row_begin = csr_row_ptr[row] - base;
+            I row_end   = csr_row_ptr[row + 1] - base;
 
             T diag_val = make_DataType<T>(0.0);
 
-            for(int l = row_end - 1; l >= row_begin; l -= prop.warpSize)
+            for(I l = row_end - 1; l >= row_begin; l -= prop.warpSize)
             {
                 for(unsigned int k = 0; k < prop.warpSize; ++k)
                 {
-                    int j = l - k;
+                    I j = l - k;
 
                     // Do not run out of bounds
                     if(j < row_begin)
@@ -3343,8 +3344,8 @@ static inline void host_ussolve(int                     M,
                         break;
                     }
 
-                    int local_col = csr_col_ind[j] - base;
-                    T   local_val = csr_val[j];
+                    J local_col = csr_col_ind[j] - base;
+                    T local_val = csr_val[j];
 
                     // Ignore all entries that are below the diagonal
                     if(local_col < row)
@@ -3360,8 +3361,8 @@ static inline void host_ussolve(int                     M,
                             // Check for numerical zero
                             if(local_val == make_DataType<T>(0.0))
                             {
-                                numeric_pivot = std::min(numeric_pivot, row + base);
-                                local_val     = make_DataType<T>(1.0);
+                                *numeric_pivot = std::min(*numeric_pivot, row + base);
+                                local_val      = make_DataType<T>(1.0);
                             }
 
                             diag     = j;
@@ -3372,10 +3373,10 @@ static inline void host_ussolve(int                     M,
                     }
 
                     // Upper triangular part
-                    int idx = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? i * ldb + local_col
-                                                                            : local_col * ldb + i;
-                    T   neg_val = make_DataType<T>(-1.0) * local_val;
-                    temp[k]     = testing_fma(neg_val, B[idx], temp[k]);
+                    J idx     = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? i * ldb + local_col
+                                                                              : local_col * ldb + i;
+                    T neg_val = make_DataType<T>(-1.0) * local_val;
+                    temp[k]   = testing_fma(neg_val, B[idx], temp[k]);
                 }
             }
 
@@ -3391,7 +3392,7 @@ static inline void host_ussolve(int                     M,
             {
                 if(diag == -1)
                 {
-                    struct_pivot = std::min(struct_pivot, row + base);
+                    *struct_pivot = std::min(*struct_pivot, row + base);
                 }
 
                 B[idx_B] = temp[0] * diag_val;
@@ -3541,27 +3542,390 @@ void bsrsm(int                  mb,
     *numeric_pivot = (*numeric_pivot == mb + 1) ? -1 : *numeric_pivot;
 }
 
-template <typename T>
-void csrsm(int                     M,
-           int                     nrhs,
-           int                     nnz,
-           hipsparseOperation_t    transA,
-           hipsparseOperation_t    transB,
-           T                       alpha,
-           const std::vector<int>& csr_row_ptr,
-           const std::vector<int>& csr_col_ind,
-           const std::vector<T>&   csr_val,
-           std::vector<T>&         B,
-           int                     ldb,
-           hipsparseDiagType_t     diag_type,
-           hipsparseFillMode_t     fill_mode,
-           hipsparseIndexBase_t    base,
-           int&                    struct_pivot,
-           int&                    numeric_pivot)
+template <typename I, typename J, typename T>
+void host_csr_lsolve(J                    M,
+                     T                    alpha,
+                     const I*             csr_row_ptr,
+                     const J*             csr_col_ind,
+                     const T*             csr_val,
+                     const T*             x,
+                     T*                   y,
+                     hipsparseDiagType_t  diag_type,
+                     hipsparseIndexBase_t base,
+                     J*                   struct_pivot,
+                     J*                   numeric_pivot)
+{
+    // Get device properties
+    int             dev;
+    hipDeviceProp_t prop;
+
+    hipGetDevice(&dev);
+    hipGetDeviceProperties(&prop, dev);
+
+    std::vector<T> temp(prop.warpSize);
+
+    // Process lower triangular part
+    for(J row = 0; row < M; ++row)
+    {
+        temp.assign(prop.warpSize, make_DataType<T>(0.0));
+        temp[0] = alpha * x[row];
+
+        I diag      = -1;
+        I row_begin = csr_row_ptr[row] - base;
+        I row_end   = csr_row_ptr[row + 1] - base;
+
+        T diag_val = make_DataType<T>(0.0);
+
+        for(I l = row_begin; l < row_end; l += prop.warpSize)
+        {
+            for(unsigned int k = 0; k < prop.warpSize; ++k)
+            {
+                I j = l + k;
+
+                // Do not run out of bounds
+                if(j >= row_end)
+                {
+                    break;
+                }
+
+                J local_col = csr_col_ind[j] - base;
+                T local_val = csr_val[j];
+
+                if(local_val == make_DataType<T>(0.0) && local_col == row
+                   && diag_type == HIPSPARSE_DIAG_TYPE_NON_UNIT)
+                {
+                    // Numerical zero pivot found, avoid division by 0
+                    // and store index for later use.
+                    *numeric_pivot = std::min(*numeric_pivot, row + base);
+                    local_val      = make_DataType<T>(1);
+                }
+
+                // Ignore all entries that are above the diagonal
+                if(local_col > row)
+                {
+                    break;
+                }
+
+                // Diagonal entry
+                if(local_col == row)
+                {
+                    // If diagonal type is non unit, do division by diagonal entry
+                    // This is not required for unit diagonal for obvious reasons
+                    if(diag_type == HIPSPARSE_DIAG_TYPE_NON_UNIT)
+                    {
+                        diag     = j;
+                        diag_val = make_DataType<T>(1) / local_val;
+                    }
+
+                    break;
+                }
+
+                // Lower triangular part
+                temp[k] = testing_fma(-local_val, y[local_col], temp[k]);
+            }
+        }
+
+        for(unsigned int j = 1; j < prop.warpSize; j <<= 1)
+        {
+            for(unsigned int k = 0; k < prop.warpSize - j; ++k)
+            {
+                temp[k] = temp[k] + temp[k + j];
+            }
+        }
+
+        if(diag_type == HIPSPARSE_DIAG_TYPE_NON_UNIT)
+        {
+            if(diag == -1)
+            {
+                *struct_pivot = std::min(*struct_pivot, row + base);
+            }
+
+            y[row] = temp[0] * diag_val;
+        }
+        else
+        {
+            y[row] = temp[0];
+        }
+    }
+}
+
+template <typename I, typename J, typename T>
+void host_csr_usolve(J                    M,
+                     T                    alpha,
+                     const I*             csr_row_ptr,
+                     const J*             csr_col_ind,
+                     const T*             csr_val,
+                     const T*             x,
+                     T*                   y,
+                     hipsparseDiagType_t  diag_type,
+                     hipsparseIndexBase_t base,
+                     J*                   struct_pivot,
+                     J*                   numeric_pivot)
+{
+    // Get device properties
+    int             dev;
+    hipDeviceProp_t prop;
+
+    hipGetDevice(&dev);
+    hipGetDeviceProperties(&prop, dev);
+
+    std::vector<T> temp(prop.warpSize);
+
+    // Process upper triangular part
+    for(J row = M - 1; row >= 0; --row)
+    {
+        temp.assign(prop.warpSize, make_DataType<T>(0));
+        temp[0] = alpha * x[row];
+
+        I diag      = -1;
+        I row_begin = csr_row_ptr[row] - base;
+        I row_end   = csr_row_ptr[row + 1] - base;
+
+        T diag_val = make_DataType<T>(0);
+
+        for(I l = row_end - 1; l >= row_begin; l -= prop.warpSize)
+        {
+            for(unsigned int k = 0; k < prop.warpSize; ++k)
+            {
+                I j = l - k;
+
+                // Do not run out of bounds
+                if(j < row_begin)
+                {
+                    break;
+                }
+
+                J local_col = csr_col_ind[j] - base;
+                T local_val = csr_val[j];
+
+                // Ignore all entries that are below the diagonal
+                if(local_col < row)
+                {
+                    continue;
+                }
+
+                // Diagonal entry
+                if(local_col == row)
+                {
+                    if(diag_type == HIPSPARSE_DIAG_TYPE_NON_UNIT)
+                    {
+                        // Check for numerical zero
+                        if(local_val == make_DataType<T>(0))
+                        {
+                            *numeric_pivot = std::min(*numeric_pivot, row + base);
+                            local_val      = make_DataType<T>(1);
+                        }
+
+                        diag     = j;
+                        diag_val = make_DataType<T>(1) / local_val;
+                    }
+
+                    continue;
+                }
+
+                // Upper triangular part
+                temp[k] = testing_fma(-local_val, y[local_col], temp[k]);
+            }
+        }
+
+        for(unsigned int j = 1; j < prop.warpSize; j <<= 1)
+        {
+            for(unsigned int k = 0; k < prop.warpSize - j; ++k)
+            {
+                temp[k] = temp[k] + temp[k + j];
+            }
+        }
+
+        if(diag_type == HIPSPARSE_DIAG_TYPE_NON_UNIT)
+        {
+            if(diag == -1)
+            {
+                *struct_pivot = std::min(*struct_pivot, row + base);
+            }
+
+            y[row] = temp[0] * diag_val;
+        }
+        else
+        {
+            y[row] = temp[0];
+        }
+    }
+}
+
+template <typename I, typename J, typename T>
+void host_csrsv(hipsparseOperation_t trans,
+                J                    M,
+                I                    nnz,
+                T                    alpha,
+                const I*             csr_row_ptr,
+                const J*             csr_col_ind,
+                const T*             csr_val,
+                const T*             x,
+                T*                   y,
+                hipsparseDiagType_t  diag_type,
+                hipsparseFillMode_t  fill_mode,
+                hipsparseIndexBase_t base,
+                J*                   struct_pivot,
+                J*                   numeric_pivot)
 {
     // Initialize pivot
-    struct_pivot  = M + 1;
-    numeric_pivot = M + 1;
+    *struct_pivot  = M + 1;
+    *numeric_pivot = M + 1;
+
+    if(trans == HIPSPARSE_OPERATION_NON_TRANSPOSE)
+    {
+        if(fill_mode == HIPSPARSE_FILL_MODE_LOWER)
+        {
+            host_csr_lsolve(M,
+                            alpha,
+                            csr_row_ptr,
+                            csr_col_ind,
+                            csr_val,
+                            x,
+                            y,
+                            diag_type,
+                            base,
+                            struct_pivot,
+                            numeric_pivot);
+        }
+        else
+        {
+            host_csr_usolve(M,
+                            alpha,
+                            csr_row_ptr,
+                            csr_col_ind,
+                            csr_val,
+                            x,
+                            y,
+                            diag_type,
+                            base,
+                            struct_pivot,
+                            numeric_pivot);
+        }
+    }
+    else if(trans == HIPSPARSE_OPERATION_TRANSPOSE)
+    {
+        // Transpose matrix
+        std::vector<I> csrt_row_ptr(M + 1);
+        std::vector<J> csrt_col_ind(nnz);
+        std::vector<T> csrt_val(nnz);
+
+        host_csr_to_csc(M,
+                        M,
+                        nnz,
+                        csr_row_ptr,
+                        csr_col_ind,
+                        csr_val,
+                        csrt_col_ind,
+                        csrt_row_ptr,
+                        csrt_val,
+                        HIPSPARSE_ACTION_NUMERIC,
+                        base);
+
+        if(fill_mode == HIPSPARSE_FILL_MODE_LOWER)
+        {
+            host_csr_usolve(M,
+                            alpha,
+                            csrt_row_ptr.data(),
+                            csrt_col_ind.data(),
+                            csrt_val.data(),
+                            x,
+                            y,
+                            diag_type,
+                            base,
+                            struct_pivot,
+                            numeric_pivot);
+        }
+        else
+        {
+            host_csr_lsolve(M,
+                            alpha,
+                            csrt_row_ptr.data(),
+                            csrt_col_ind.data(),
+                            csrt_val.data(),
+                            x,
+                            y,
+                            diag_type,
+                            base,
+                            struct_pivot,
+                            numeric_pivot);
+        }
+    }
+
+    *numeric_pivot = std::min(*numeric_pivot, *struct_pivot);
+
+    *struct_pivot  = (*struct_pivot == M + 1) ? -1 : *struct_pivot;
+    *numeric_pivot = (*numeric_pivot == M + 1) ? -1 : *numeric_pivot;
+}
+
+template <typename I, typename T>
+void host_coosv(hipsparseOperation_t  trans,
+                I                     M,
+                I                     nnz,
+                T                     alpha,
+                const std::vector<I>& coo_row_ind,
+                const std::vector<I>& coo_col_ind,
+                const std::vector<T>& coo_val,
+                const std::vector<T>& x,
+                std::vector<T>&       y,
+                hipsparseDiagType_t   diag_type,
+                hipsparseFillMode_t   fill_mode,
+                hipsparseIndexBase_t  base,
+                I*                    struct_pivot,
+                I*                    numeric_pivot)
+{
+    std::vector<I> csr_row_ptr(M + 1);
+
+    //host_coo_to_csr(M, coo_row_ind, csr_row_ptr, base);
+    // coo2csr on host
+    for(I i = 0; i < nnz; ++i)
+    {
+        ++csr_row_ptr[coo_row_ind[i] + 1 - base];
+    }
+
+    csr_row_ptr[0] = base;
+    for(I i = 0; i < M; ++i)
+    {
+        csr_row_ptr[i + 1] += csr_row_ptr[i];
+    }
+
+    host_csrsv(trans,
+               M,
+               nnz,
+               alpha,
+               csr_row_ptr.data(),
+               coo_col_ind.data(),
+               coo_val.data(),
+               x.data(),
+               y.data(),
+               diag_type,
+               fill_mode,
+               base,
+               struct_pivot,
+               numeric_pivot);
+}
+
+template <typename I, typename J, typename T>
+void host_csrsm(J                     M,
+                J                     nrhs,
+                I                     nnz,
+                hipsparseOperation_t  transA,
+                hipsparseOperation_t  transB,
+                T                     alpha,
+                const std::vector<I>& csr_row_ptr,
+                const std::vector<J>& csr_col_ind,
+                const std::vector<T>& csr_val,
+                std::vector<T>&       B,
+                J                     ldb,
+                hipsparseDiagType_t   diag_type,
+                hipsparseFillMode_t   fill_mode,
+                hipsparseIndexBase_t  base,
+                J*                    struct_pivot,
+                J*                    numeric_pivot)
+{
+    // Initialize pivot
+    *struct_pivot  = M + 1;
+    *numeric_pivot = M + 1;
 
     if(transA == HIPSPARSE_OPERATION_NON_TRANSPOSE)
     {
@@ -3601,16 +3965,16 @@ void csrsm(int                     M,
     else if(transA == HIPSPARSE_OPERATION_TRANSPOSE)
     {
         // Transpose matrix
-        std::vector<int> csrt_row_ptr(M + 1);
-        std::vector<int> csrt_col_ind(nnz);
-        std::vector<T>   csrt_val(nnz);
+        std::vector<I> csrt_row_ptr(M + 1);
+        std::vector<J> csrt_col_ind(nnz);
+        std::vector<T> csrt_val(nnz);
 
         host_csr_to_csc(M,
                         M,
                         nnz,
-                        csr_row_ptr,
-                        csr_col_ind,
-                        csr_val,
+                        csr_row_ptr.data(),
+                        csr_col_ind.data(),
+                        csr_val.data(),
                         csrt_col_ind,
                         csrt_row_ptr,
                         csrt_val,
@@ -3651,10 +4015,61 @@ void csrsm(int                     M,
         }
     }
 
-    numeric_pivot = std::min(numeric_pivot, struct_pivot);
+    *numeric_pivot = std::min(*numeric_pivot, *struct_pivot);
 
-    struct_pivot  = (struct_pivot == M + 1) ? -1 : struct_pivot;
-    numeric_pivot = (numeric_pivot == M + 1) ? -1 : numeric_pivot;
+    *struct_pivot  = (*struct_pivot == M + 1) ? -1 : *struct_pivot;
+    *numeric_pivot = (*numeric_pivot == M + 1) ? -1 : *numeric_pivot;
+}
+
+template <typename I, typename T>
+void host_coosm(I                     M,
+                I                     nrhs,
+                I                     nnz,
+                hipsparseOperation_t  transA,
+                hipsparseOperation_t  transB,
+                T                     alpha,
+                const std::vector<I>& coo_row_ind,
+                const std::vector<I>& coo_col_ind,
+                const std::vector<T>& coo_val,
+                std::vector<T>&       B,
+                I                     ldb,
+                hipsparseDiagType_t   diag_type,
+                hipsparseFillMode_t   fill_mode,
+                hipsparseIndexBase_t  base,
+                I*                    struct_pivot,
+                I*                    numeric_pivot)
+{
+    std::vector<I> csr_row_ptr(M + 1);
+
+    //host_coo_to_csr(M, coo_row_ind, csr_row_ptr, base);
+    // coo2csr on host
+    for(I i = 0; i < nnz; ++i)
+    {
+        ++csr_row_ptr[coo_row_ind[i] + 1 - base];
+    }
+
+    csr_row_ptr[0] = base;
+    for(I i = 0; i < M; ++i)
+    {
+        csr_row_ptr[i + 1] += csr_row_ptr[i];
+    }
+
+    host_csrsm(M,
+               nrhs,
+               nnz,
+               transA,
+               transB,
+               alpha,
+               csr_row_ptr,
+               coo_col_ind,
+               coo_val,
+               B,
+               ldb,
+               diag_type,
+               fill_mode,
+               base,
+               struct_pivot,
+               numeric_pivot);
 }
 
 /* ============================================================================================ */

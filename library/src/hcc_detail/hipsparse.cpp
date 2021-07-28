@@ -548,6 +548,28 @@ rocsparse_sddmm_alg_ hipSDDMMAlgToHCCSDDMMAlg(hipsparseSDDMMAlg_t alg)
     }
 }
 
+rocsparse_spsv_alg_ hipSpSVAlgToHCCSpSVAlg(hipsparseSpSVAlg_t alg)
+{
+    switch(alg)
+    {
+    case HIPSPARSE_SPSV_ALG_DEFAULT:
+        return rocsparse_spsv_alg_default;
+    default:
+        throw "Non existent hipsparseSpSVAlg_t";
+    }
+}
+
+rocsparse_spsm_alg_ hipSpSMAlgToHCCSpSMAlg(hipsparseSpSMAlg_t alg)
+{
+    switch(alg)
+    {
+    case HIPSPARSE_SPSM_ALG_DEFAULT:
+        return rocsparse_spsm_alg_default;
+    default:
+        throw "Non existent hipsparseSpSMAlg_t";
+    }
+}
+
 rocsparse_format_ hipFormatToHCCFormat(hipsparseFormat_t format)
 {
     switch(format)
@@ -12836,6 +12858,24 @@ hipsparseStatus_t hipsparseDnMatSetValues(hipsparseDnMatDescr_t dnMatDescr, void
         rocsparse_dnmat_set_values((rocsparse_dnmat_descr)dnMatDescr, values));
 }
 
+hipsparseStatus_t hipsparseSpMatGetAttribute(hipsparseSpMatDescr_t     spMatDescr,
+                                             hipsparseSpMatAttribute_t attribute,
+                                             void*                     data,
+                                             size_t                    dataSize)
+{
+    return rocSPARSEStatusToHIPStatus(rocsparse_spmat_get_attribute(
+        (rocsparse_spmat_descr)spMatDescr, (rocsparse_spmat_attribute)attribute, data, dataSize));
+}
+
+hipsparseStatus_t hipsparseSpMatSetAttribute(hipsparseSpMatDescr_t     spMatDescr,
+                                             hipsparseSpMatAttribute_t attribute,
+                                             const void*               data,
+                                             size_t                    dataSize)
+{
+    return rocSPARSEStatusToHIPStatus(rocsparse_spmat_set_attribute(
+        (rocsparse_spmat_descr)spMatDescr, (rocsparse_spmat_attribute)attribute, data, dataSize));
+}
+
 hipsparseStatus_t hipsparseAxpby(hipsparseHandle_t     handle,
                                  const void*           alpha,
                                  hipsparseSpVecDescr_t vecX,
@@ -13413,6 +13453,180 @@ hipsparseStatus_t hipsparseSDDMM_preprocess(hipsparseHandle_t           handle,
                                    hipDataTypeToHCCDataType(computeType),
                                    hipSDDMMAlgToHCCSDDMMAlg(alg),
                                    tempBuffer));
+}
+
+hipsparseStatus_t hipsparseSpSV_createDescr(hipsparseSpSVDescr_t* descr)
+{
+    // Do nothing
+    return HIPSPARSE_STATUS_SUCCESS;
+}
+
+hipsparseStatus_t hipsparseSpSV_destroyDescr(hipsparseSpSVDescr_t descr)
+{
+    // Do nothing
+    return HIPSPARSE_STATUS_SUCCESS;
+}
+
+hipsparseStatus_t hipsparseSpSV_bufferSize(hipsparseHandle_t           handle,
+                                           hipsparseOperation_t        opA,
+                                           const void*                 alpha,
+                                           const hipsparseSpMatDescr_t matA,
+                                           const hipsparseDnVecDescr_t x,
+                                           const hipsparseDnVecDescr_t y,
+                                           hipDataType                 computeType,
+                                           hipsparseSpSVAlg_t          alg,
+                                           hipsparseSpSVDescr_t        spsvDescr,
+                                           size_t*                     bufferSize)
+{
+    return rocSPARSEStatusToHIPStatus(rocsparse_spsv((rocsparse_handle)handle,
+                                                     hipOperationToHCCOperation(opA),
+                                                     alpha,
+                                                     (const rocsparse_spmat_descr)matA,
+                                                     (const rocsparse_dnvec_descr)x,
+                                                     (const rocsparse_dnvec_descr)y,
+                                                     hipDataTypeToHCCDataType(computeType),
+                                                     hipSpSVAlgToHCCSpSVAlg(alg),
+                                                     rocsparse_spsv_stage_buffer_size,
+                                                     bufferSize,
+                                                     nullptr));
+}
+
+hipsparseStatus_t hipsparseSpSV_analysis(hipsparseHandle_t           handle,
+                                         hipsparseOperation_t        opA,
+                                         const void*                 alpha,
+                                         const hipsparseSpMatDescr_t matA,
+                                         const hipsparseDnVecDescr_t x,
+                                         const hipsparseDnVecDescr_t y,
+                                         hipDataType                 computeType,
+                                         hipsparseSpSVAlg_t          alg,
+                                         hipsparseSpSVDescr_t        spsvDescr,
+                                         void*                       externalBuffer)
+{
+    return rocSPARSEStatusToHIPStatus(rocsparse_spsv((rocsparse_handle)handle,
+                                                     hipOperationToHCCOperation(opA),
+                                                     alpha,
+                                                     (const rocsparse_spmat_descr)matA,
+                                                     (const rocsparse_dnvec_descr)x,
+                                                     (const rocsparse_dnvec_descr)y,
+                                                     hipDataTypeToHCCDataType(computeType),
+                                                     hipSpSVAlgToHCCSpSVAlg(alg),
+                                                     rocsparse_spsv_stage_preprocess,
+                                                     nullptr,
+                                                     externalBuffer));
+}
+
+hipsparseStatus_t hipsparseSpSV_solve(hipsparseHandle_t           handle,
+                                      hipsparseOperation_t        opA,
+                                      const void*                 alpha,
+                                      const hipsparseSpMatDescr_t matA,
+                                      const hipsparseDnVecDescr_t x,
+                                      const hipsparseDnVecDescr_t y,
+                                      hipDataType                 computeType,
+                                      hipsparseSpSVAlg_t          alg,
+                                      hipsparseSpSVDescr_t        spsvDescr,
+                                      void*                       externalBuffer)
+{
+    return rocSPARSEStatusToHIPStatus(rocsparse_spsv((rocsparse_handle)handle,
+                                                     hipOperationToHCCOperation(opA),
+                                                     alpha,
+                                                     (const rocsparse_spmat_descr)matA,
+                                                     (const rocsparse_dnvec_descr)x,
+                                                     (const rocsparse_dnvec_descr)y,
+                                                     hipDataTypeToHCCDataType(computeType),
+                                                     hipSpSVAlgToHCCSpSVAlg(alg),
+                                                     rocsparse_spsv_stage_compute,
+                                                     nullptr,
+                                                     externalBuffer));
+}
+
+hipsparseStatus_t hipsparseSpSM_createDescr(hipsparseSpSMDescr_t* descr)
+{
+    // Do nothing
+    return HIPSPARSE_STATUS_SUCCESS;
+}
+
+hipsparseStatus_t hipsparseSpSM_destroyDescr(hipsparseSpSMDescr_t descr)
+{
+    // Do nothing
+    return HIPSPARSE_STATUS_SUCCESS;
+}
+
+hipsparseStatus_t hipsparseSpSM_bufferSize(hipsparseHandle_t           handle,
+                                           hipsparseOperation_t        opA,
+                                           hipsparseOperation_t        opB,
+                                           const void*                 alpha,
+                                           const hipsparseSpMatDescr_t matA,
+                                           const hipsparseDnMatDescr_t matB,
+                                           const hipsparseDnMatDescr_t matC,
+                                           hipDataType                 computeType,
+                                           hipsparseSpSMAlg_t          alg,
+                                           hipsparseSpSMDescr_t        spsmDescr,
+                                           size_t*                     bufferSize)
+{
+    return rocSPARSEStatusToHIPStatus(rocsparse_spsm((rocsparse_handle)handle,
+                                                     hipOperationToHCCOperation(opA),
+                                                     hipOperationToHCCOperation(opB),
+                                                     alpha,
+                                                     (const rocsparse_spmat_descr)matA,
+                                                     (const rocsparse_dnmat_descr)matB,
+                                                     (const rocsparse_dnmat_descr)matC,
+                                                     hipDataTypeToHCCDataType(computeType),
+                                                     hipSpSMAlgToHCCSpSMAlg(alg),
+                                                     rocsparse_spsm_stage_buffer_size,
+                                                     bufferSize,
+                                                     nullptr));
+}
+
+hipsparseStatus_t hipsparseSpSM_analysis(hipsparseHandle_t           handle,
+                                         hipsparseOperation_t        opA,
+                                         hipsparseOperation_t        opB,
+                                         const void*                 alpha,
+                                         const hipsparseSpMatDescr_t matA,
+                                         const hipsparseDnMatDescr_t matB,
+                                         const hipsparseDnMatDescr_t matC,
+                                         hipDataType                 computeType,
+                                         hipsparseSpSMAlg_t          alg,
+                                         hipsparseSpSMDescr_t        spsmDescr,
+                                         void*                       externalBuffer)
+{
+    return rocSPARSEStatusToHIPStatus(rocsparse_spsm((rocsparse_handle)handle,
+                                                     hipOperationToHCCOperation(opA),
+                                                     hipOperationToHCCOperation(opB),
+                                                     alpha,
+                                                     (const rocsparse_spmat_descr)matA,
+                                                     (const rocsparse_dnmat_descr)matB,
+                                                     (const rocsparse_dnmat_descr)matC,
+                                                     hipDataTypeToHCCDataType(computeType),
+                                                     hipSpSMAlgToHCCSpSMAlg(alg),
+                                                     rocsparse_spsm_stage_preprocess,
+                                                     nullptr,
+                                                     externalBuffer));
+}
+
+hipsparseStatus_t hipsparseSpSM_solve(hipsparseHandle_t           handle,
+                                      hipsparseOperation_t        opA,
+                                      hipsparseOperation_t        opB,
+                                      const void*                 alpha,
+                                      const hipsparseSpMatDescr_t matA,
+                                      const hipsparseDnMatDescr_t matB,
+                                      const hipsparseDnMatDescr_t matC,
+                                      hipDataType                 computeType,
+                                      hipsparseSpSMAlg_t          alg,
+                                      hipsparseSpSMDescr_t        spsmDescr,
+                                      void*                       externalBuffer)
+{
+    return rocSPARSEStatusToHIPStatus(rocsparse_spsm((rocsparse_handle)handle,
+                                                     hipOperationToHCCOperation(opA),
+                                                     hipOperationToHCCOperation(opB),
+                                                     alpha,
+                                                     (const rocsparse_spmat_descr)matA,
+                                                     (const rocsparse_dnmat_descr)matB,
+                                                     (const rocsparse_dnmat_descr)matC,
+                                                     hipDataTypeToHCCDataType(computeType),
+                                                     hipSpSMAlgToHCCSpSMAlg(alg),
+                                                     rocsparse_spsm_stage_compute,
+                                                     nullptr,
+                                                     externalBuffer));
 }
 
 hipsparseStatus_t hipsparseSgtsv2StridedBatch_bufferSizeExt(hipsparseHandle_t handle,

@@ -205,6 +205,10 @@ set(HIPSPARSE_TEST_SOURCES
   test_gtsv.cpp
   test_gtsv2_nopivot.cpp
   test_csrcolor.cpp
+  test_spsv_csr.cpp
+  test_spsv_coo.cpp
+  test_spsm_csr.cpp
+  test_spsm_coo.cpp
 )
 
 

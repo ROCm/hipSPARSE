@@ -1193,22 +1193,22 @@ hipsparseStatus_t testing_csrsm2(Arguments argus)
             hipMemcpy(&h_solve_pivot_2, d_solve_pivot_2, sizeof(int), hipMemcpyDeviceToHost));
 
         // Host csrsm2
-        csrsm(m,
-              nrhs,
-              nnz,
-              transA,
-              transB,
-              h_alpha,
-              hcsr_row_ptr,
-              hcsr_col_ind,
-              hcsr_val,
-              hB_gold,
-              ldb,
-              diag,
-              uplo,
-              idx_base,
-              h_analysis_pivot_gold,
-              h_solve_pivot_gold);
+        host_csrsm(m,
+                   nrhs,
+                   nnz,
+                   transA,
+                   transB,
+                   h_alpha,
+                   hcsr_row_ptr,
+                   hcsr_col_ind,
+                   hcsr_val,
+                   hB_gold,
+                   ldb,
+                   diag,
+                   uplo,
+                   idx_base,
+                   &h_analysis_pivot_gold,
+                   &h_solve_pivot_gold);
 
         // Check pivots
         unit_check_general(1, 1, 1, &h_analysis_pivot_gold, &h_analysis_pivot_1);
