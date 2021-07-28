@@ -90,7 +90,7 @@ set_target_properties(hipsparse PROPERTIES CXX_VISIBILITY_PRESET "hidden" VISIBI
 set_target_properties(hipsparse PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/staging")
 set_target_propertieS(hipsparse PROPERTIES DEBUG_POSTFIX "-d")
 
-if (WIN32)
+if (WIN32 AND BUILD_SHARED_LIBS)
   add_custom_command( TARGET hipsparse POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_BINARY_DIR}/staging/$<TARGET_FILE_NAME:hipsparse> ${PROJECT_BINARY_DIR}/clients/staging/$<TARGET_FILE_NAME:hipsparse> )
   if( ${CMAKE_BUILD_TYPE} MATCHES "Debug")
     add_custom_command( TARGET hipsparse POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_BINARY_DIR}/staging/hipsparse.pdb ${PROJECT_BINARY_DIR}/clients/staging/hipsparse.pdb )
