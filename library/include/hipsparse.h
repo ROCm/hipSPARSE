@@ -5605,18 +5605,20 @@ typedef struct hipsparseSpSMDescr* hipsparseSpSMDescr_t;
 #if(!defined(CUDART_VERSION))
 typedef enum
 {
-    HIPSPARSE_FORMAT_CSR     = 1, /* Compressed Sparse Row */
-    HIPSPARSE_FORMAT_CSC     = 2, /* Compressed Sparse Column */
-    HIPSPARSE_FORMAT_COO     = 3, /* Coordinate - Structure of Arrays */
-    HIPSPARSE_FORMAT_COO_AOS = 4 /* Coordinate - Array of Structures */
+    HIPSPARSE_FORMAT_CSR         = 1, /* Compressed Sparse Row */
+    HIPSPARSE_FORMAT_CSC         = 2, /* Compressed Sparse Column */
+    HIPSPARSE_FORMAT_COO         = 3, /* Coordinate - Structure of Arrays */
+    HIPSPARSE_FORMAT_COO_AOS     = 4, /* Coordinate - Array of Structures */
+    HIPSPARSE_FORMAT_BLOCKED_ELL = 5 /* Blocked ELL */
 } hipsparseFormat_t;
 #else
 #if(CUDART_VERSION >= 10010)
 typedef enum
 {
-    HIPSPARSE_FORMAT_CSR     = 1, /* Compressed Sparse Row */
-    HIPSPARSE_FORMAT_COO     = 3, /* Coordinate - Structure of Arrays */
-    HIPSPARSE_FORMAT_COO_AOS = 4 /* Coordinate - Array of Structures */
+    HIPSPARSE_FORMAT_CSR         = 1, /* Compressed Sparse Row */
+    HIPSPARSE_FORMAT_COO         = 3, /* Coordinate - Structure of Arrays */
+    HIPSPARSE_FORMAT_COO_AOS     = 4, /* Coordinate - Array of Structures */
+    HIPSPARSE_FORMAT_BLOCKED_ELL = 5 /* Blocked ELL */
 } hipsparseFormat_t;
 #endif
 #endif
@@ -5664,27 +5666,29 @@ typedef enum
 #if(!defined(CUDART_VERSION))
 typedef enum
 {
-    HIPSPARSE_SPMM_ALG_DEFAULT = 0,
-    HIPSPARSE_SPMM_COO_ALG1    = 1,
-    HIPSPARSE_SPMM_COO_ALG2    = 2,
-    HIPSPARSE_SPMM_CSR_ALG1    = 3
+    HIPSPARSE_SPMM_ALG_DEFAULT      = 0,
+    HIPSPARSE_SPMM_COO_ALG1         = 1,
+    HIPSPARSE_SPMM_COO_ALG2         = 2,
+    HIPSPARSE_SPMM_CSR_ALG1         = 3,
+    HIPSPARSE_SPMM_BLOCKED_ELL_ALG1 = 4
 } hipsparseSpMMAlg_t;
 #else
 #if(CUDART_VERSION >= 11000)
 typedef enum
 {
-    HIPSPARSE_MM_ALG_DEFAULT   = 0,
-    HIPSPARSE_COOMM_ALG1       = 1,
-    HIPSPARSE_COOMM_ALG2       = 2,
-    HIPSPARSE_COOMM_ALG3       = 3,
-    HIPSPARSE_CSRMM_ALG1       = 4,
-    HIPSPARSE_SPMM_ALG_DEFAULT = 5,
-    HIPSPARSE_SPMM_COO_ALG1    = 6,
-    HIPSPARSE_SPMM_COO_ALG2    = 7,
-    HIPSPARSE_SPMM_COO_ALG3    = 8,
-    HIPSPARSE_SPMM_COO_ALG4    = 9,
-    HIPSPARSE_SPMM_CSR_ALG1    = 10,
-    HIPSPARSE_SPMM_CSR_ALG2    = 11
+    HIPSPARSE_MM_ALG_DEFAULT        = 0,
+    HIPSPARSE_COOMM_ALG1            = 1,
+    HIPSPARSE_COOMM_ALG2            = 2,
+    HIPSPARSE_COOMM_ALG3            = 3,
+    HIPSPARSE_CSRMM_ALG1            = 4,
+    HIPSPARSE_SPMM_ALG_DEFAULT      = 5,
+    HIPSPARSE_SPMM_COO_ALG1         = 6,
+    HIPSPARSE_SPMM_COO_ALG2         = 7,
+    HIPSPARSE_SPMM_COO_ALG3         = 8,
+    HIPSPARSE_SPMM_COO_ALG4         = 9,
+    HIPSPARSE_SPMM_CSR_ALG1         = 10,
+    HIPSPARSE_SPMM_CSR_ALG2         = 11,
+    HIPSPARSE_SPMM_BLOCKED_ELL_ALG1 = 12
 } hipsparseSpMMAlg_t;
 #elif(CUDART_VERSION >= 10010)
 typedef enum
@@ -5862,6 +5866,21 @@ hipsparseStatus_t hipsparseCreateCsc(hipsparseSpMatDescr_t* spMatDescr,
                                      hipDataType            valueType);
 #endif
 
+/* Description: Create a sparse Blocked ELL matrix */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11021)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCreateBlockedEll(hipsparseSpMatDescr_t* spMatDescr,
+                                            int64_t                rows,
+                                            int64_t                cols,
+                                            int64_t                ellBlockSize,
+                                            int64_t                ellCols,
+                                            void*                  ellColInd,
+                                            void*                  ellValue,
+                                            hipsparseIndexType_t   ellIdxType,
+                                            hipsparseIndexBase_t   idxBase,
+                                            hipDataType            valueType);
+#endif
+
 /* Description: Destroy a sparse matrix */
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
@@ -5911,6 +5930,21 @@ hipsparseStatus_t hipsparseCsrGet(const hipsparseSpMatDescr_t spMatDescr,
                                   hipsparseIndexType_t*       csrColIndType,
                                   hipsparseIndexBase_t*       idxBase,
                                   hipDataType*                valueType);
+#endif
+
+/* Description: Get pointers of a sparse CSR matrix */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11021)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseBlockedEllGet(const hipsparseSpMatDescr_t spMatDescr,
+                                         int64_t*                    rows,
+                                         int64_t*                    cols,
+                                         int64_t*                    ellBlockSize,
+                                         int64_t*                    ellCols,
+                                         void**                      ellColInd,
+                                         void**                      ellValue,
+                                         hipsparseIndexType_t*       ellIdxType,
+                                         hipsparseIndexBase_t*       idxBase,
+                                         hipDataType*                valueType);
 #endif
 
 /* Description: Set pointers of a sparse CSR matrix */
