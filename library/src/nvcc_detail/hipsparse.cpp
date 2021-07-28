@@ -10567,27 +10567,27 @@ hipsparseStatus_t hipsparseCreateCsc(hipsparseSpMatDescr_t* spMatDescr,
 
 #if(CUDART_VERSION >= 11021)
 hipsparseStatus_t hipsparseCreateBlockedEll(hipsparseSpMatDescr_t* spMatDescr,
-					    int64_t                rows,
-					    int64_t                cols,
-					    int64_t                ellBlockSize,
-					    int64_t                ellCols,
-					    void *                 ellColInd,
-					    void *                 ellValue,
-					    hipsparseIndexType_t   ellIdxType,
-					    hipsparseIndexBase_t   idxBase,
-					    hipDataType            valueType)
+                                            int64_t                rows,
+                                            int64_t                cols,
+                                            int64_t                ellBlockSize,
+                                            int64_t                ellCols,
+                                            void*                  ellColInd,
+                                            void*                  ellValue,
+                                            hipsparseIndexType_t   ellIdxType,
+                                            hipsparseIndexBase_t   idxBase,
+                                            hipDataType            valueType)
 {
     return hipCUSPARSEStatusToHIPStatus(
         cusparseCreateBlockedEll((cusparseSpMatDescr_t*)spMatDescr,
-				 rows,
-				 cols,
-				 ellBlockSize,
-				 ellCols,
-				 ellColInd,
-				 ellValue,
-				 hipIndexTypeToCudaIndexType(ellIdxType),
-				 hipIndexBaseToCudaIndexBase(idxBase),
-				 hipDataTypeToCudaDataType(valueType)));
+                                 rows,
+                                 cols,
+                                 ellBlockSize,
+                                 ellCols,
+                                 ellColInd,
+                                 ellValue,
+                                 hipIndexTypeToCudaIndexType(ellIdxType),
+                                 hipIndexBaseToCudaIndexBase(idxBase),
+                                 hipDataTypeToCudaDataType(valueType)));
 }
 #endif
 
@@ -10708,33 +10708,34 @@ hipsparseStatus_t hipsparseCsrGet(const hipsparseSpMatDescr_t spMatDescr,
 
 #if(CUDART_VERSION >= 11021)
 hipsparseStatus_t hipsparseBlockedEllGet(const hipsparseSpMatDescr_t spMatDescr,
-					 int64_t*                    rows,
-					 int64_t*                    cols,
-					 int64_t*                    ellBlockSize,
-					 int64_t*                    ellCols,
-					 void**                      ellColInd,
-					 void**                      ellValue,
-					 hipsparseIndexType_t*       ellIdxType,
-					 hipsparseIndexBase_t*       idxBase,
-					 hipDataType*                valueType)
+                                         int64_t*                    rows,
+                                         int64_t*                    cols,
+                                         int64_t*                    ellBlockSize,
+                                         int64_t*                    ellCols,
+                                         void**                      ellColInd,
+                                         void**                      ellValue,
+                                         hipsparseIndexType_t*       ellIdxType,
+                                         hipsparseIndexBase_t*       idxBase,
+                                         hipDataType*                valueType)
 {
     cusparseIndexType_t cuda_index_type;
     cusparseIndexBase_t cuda_index_base;
     cudaDataType        cuda_data_type;
-    RETURN_IF_CUSPARSE_ERROR(cusparseBlockedEllGet((const cusparseSpMatDescr_t)spMatDescr,
-						   rows,
-						   cols,
-						   ellBlockSize,
-						   ellCols,
-						   ellColInd,
-						   ellValue,
-						   ellIdxType != nullptr ? &cuda_index_type : nullptr,
-						   idxBase != nullptr ? &cuda_index_base : nullptr,
-						   valueType != nullptr ? &cuda_data_type : nullptr));
+    RETURN_IF_CUSPARSE_ERROR(
+        cusparseBlockedEllGet((const cusparseSpMatDescr_t)spMatDescr,
+                              rows,
+                              cols,
+                              ellBlockSize,
+                              ellCols,
+                              ellColInd,
+                              ellValue,
+                              ellIdxType != nullptr ? &cuda_index_type : nullptr,
+                              idxBase != nullptr ? &cuda_index_base : nullptr,
+                              valueType != nullptr ? &cuda_data_type : nullptr));
 
     *ellIdxType = CudaIndexTypeToHIPIndexType(cuda_index_type);
-    *idxBase   = CudaIndexBaseToHIPIndexBase(cuda_index_base);
-    *valueType = CudaDataTypeToHIPDataType(cuda_data_type);
+    *idxBase    = CudaIndexBaseToHIPIndexBase(cuda_index_base);
+    *valueType  = CudaDataTypeToHIPDataType(cuda_data_type);
 
     return HIPSPARSE_STATUS_SUCCESS;
 }
