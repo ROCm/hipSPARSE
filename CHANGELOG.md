@@ -1,6 +1,6 @@
 # Change Log for hipSPARSE
 
-## (Unreleased) hipSPARSE 1.11.0
+## (Unreleased) hipSPARSE 1.11.1
 ### Added
 - SpMM for BLOCKED ELL format
 - Generic routines for SpSV and SpSM
@@ -9,6 +9,7 @@
 - Additional algorithm for SpMM in CSR format
 ### Changed
 - Packaging split into a runtime package called hipsparse and a development package called hipsparse-devel. The development package depends on runtime. The runtime package suggests the development package for all supported OSes except CentOS 7 to aid in the transition. The suggests feature in packaging is introduced as a deprecated feature and will be removed in a future rocm release.
+- GTest dependency updated to v1.10.0
 ### Known Issues
 - none
 
