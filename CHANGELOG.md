@@ -1,5 +1,9 @@
 # Change Log for hipSPARSE
 
+## (Unreleased) hipSPARSE 1.xx.x
+### Added
+- hipSPARSE documentation
+
 ## (Unreleased) hipSPARSE 1.11.1
 ### Added
 - SpMM for BLOCKED ELL format
