@@ -266,8 +266,8 @@ if (WIN32)
   file( GLOB third_party_dlls
     LIST_DIRECTORIES OFF
     CONFIGURE_DEPENDS
-    ${HIP_DIR}/bin/*.dll
-    ${HIP_DIR}/bin/hipinfo.exe
+    $ENV{HIP_DIR}/bin/*.dll
+    $ENV{HIP_DIR}/bin/hipinfo.exe
     ${ROCSPARSE_PATH}/bin/librocsparse.dll
     ${CMAKE_SOURCE_DIR}/rtest.*
     C:/Windows/System32/libomp140*.dll
