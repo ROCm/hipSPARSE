@@ -425,7 +425,7 @@ void testing_gebsr2gebsc_bad_arg(void)
     verify_hipsparse_status_invalid_pointer(status, "Error: buffer is invalid");
 }
 
-#define DEVICE_ALLOC(TYPE, NAME, SIZE)                                                         \
+#define DEVICE_ALLOC(TYPE, NAME, SIZE)                                                            \
     auto  NAME##_managed = hipsparse_unique_ptr{device_malloc(sizeof(TYPE) * SIZE), device_free}; \
     TYPE* NAME           = (TYPE*)NAME##_managed.get()
 
@@ -444,10 +444,10 @@ hipsparseStatus_t testing_gebsr2gebsc(Arguments argus)
     if(argus.M <= 0 || argus.N <= 0 || argus.row_block_dimA <= 0 || argus.col_block_dimA <= 0)
     {
 #if(defined(CUDART_VERSION))
-	if(argus.row_block_dimA == 0 || argus.col_block_dimA == 0)
-	{
-	    return HIPSPARSE_STATUS_SUCCESS;
-	}
+        if(argus.row_block_dimA == 0 || argus.col_block_dimA == 0)
+        {
+            return HIPSPARSE_STATUS_SUCCESS;
+        }
 #endif
 
         int M             = argus.M;
