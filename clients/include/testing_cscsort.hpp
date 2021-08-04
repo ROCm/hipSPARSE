@@ -39,7 +39,7 @@ using namespace hipsparse_test;
 
 void testing_cscsort_bad_arg(void)
 {
-#ifdef __HIP_PLATFORM_NVCC__
+#ifdef __HIP_PLATFORM_NVIDIA__
     // do not test for bad args
     return;
 #endif
@@ -207,7 +207,7 @@ hipsparseStatus_t testing_cscsort(Arguments argus)
     // Argument sanity check before allocating invalid memory
     if(m <= 0 || n <= 0 || nnz <= 0)
     {
-#ifdef __HIP_PLATFORM_NVCC__
+#ifdef __HIP_PLATFORM_NVIDIA__
         // Do not test args in cusparse
         return HIPSPARSE_STATUS_SUCCESS;
 #endif
@@ -363,7 +363,7 @@ hipsparseStatus_t testing_cscsort(Arguments argus)
     float* dcsc_val_sorted = (float*)dcsc_val_sorted_managed.get();
 
     // Set permutation vector, if asked for
-#ifdef __HIP_PLATFORM_NVCC__
+#ifdef __HIP_PLATFORM_NVIDIA__
     // cusparse does not allow nullptr
     int* dperm = (int*)dperm_managed.get();
 #else

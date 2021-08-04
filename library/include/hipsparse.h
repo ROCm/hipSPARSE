@@ -24,7 +24,7 @@
 //! HIP = Heterogeneous-compute Interface for Portability
 //!
 //! Define a extremely thin runtime layer that allows source code to be compiled
-//! unmodified through either AMD HCC or NVCC. Key features tend to be in the spirit
+//! unmodified through either AMD HIP or CUDA. Key features tend to be in the spirit
 //! and terminology of CUDA, but with a portable path to other accelerators as well.
 //!
 //! This is the master include file for hipSPARSE, wrapping around rocSPARSE and
@@ -63,20 +63,6 @@ typedef void* hipsparseHandle_t;
 typedef void* hipsparseMatDescr_t;
 typedef void* hipsparseHybMat_t;
 typedef void* hipsparseColorInfo_t;
-#if defined(__HIP_PLATFORM_HCC__)
-typedef void* bsrsv2Info_t;
-typedef void* bsrsm2Info_t;
-typedef void* bsrilu02Info_t;
-typedef void* bsric02Info_t;
-typedef void* csrsv2Info_t;
-typedef void* csrsm2Info_t;
-typedef void* csrilu02Info_t;
-typedef void* csric02Info_t;
-typedef void* csrgemm2Info_t;
-typedef void* pruneInfo_t;
-struct csru2csrInfo;
-typedef struct csru2csrInfo* csru2csrInfo_t;
-#elif defined(__HIP_PLATFORM_NVCC__)
 struct bsrsv2Info;
 typedef struct bsrsv2Info* bsrsv2Info_t;
 struct bsrsm2Info;
@@ -99,7 +85,6 @@ struct pruneInfo;
 typedef struct pruneInfo* pruneInfo_t;
 struct csru2csrInfo;
 typedef struct csru2csrInfo* csru2csrInfo_t;
-#endif
 
 // clang-format off
 

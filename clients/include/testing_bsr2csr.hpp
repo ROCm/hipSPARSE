@@ -40,7 +40,7 @@ using namespace hipsparse_test;
 template <typename T>
 void testing_bsr2csr_bad_arg(void)
 {
-#ifdef __HIP_PLATFORM_NVCC__
+#ifdef __HIP_PLATFORM_NVIDIA__
     // do not test for bad args
     return;
 #endif
@@ -321,7 +321,7 @@ hipsparseStatus_t testing_bsr2csr(Arguments argus)
 
     if(block_dim == 1)
     {
-#ifdef __HIP_PLATFORM_NVCC__
+#ifdef __HIP_PLATFORM_NVIDIA__
         // cusparse does not support asynchronous execution if block_dim == 1
         return HIPSPARSE_STATUS_SUCCESS;
 #endif

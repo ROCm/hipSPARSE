@@ -42,7 +42,7 @@ template <hipsparseDirection_t DIRA, typename T, typename FUNC>
 void testing_csx2dense_bad_arg(FUNC& csx2dense)
 {
 
-#ifdef __HIP_PLATFORM_NVCC__
+#ifdef __HIP_PLATFORM_NVIDIA__
     // do not test for bad args
     return;
 #endif
