@@ -3204,7 +3204,15 @@ static inline void host_lssolve(J                     M,
             temp.assign(prop.warpSize, make_DataType<T>(0.0));
 
             J idx_B = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? i * ldb + row : row * ldb + i;
-            temp[0] = alpha * B[idx_B];
+            
+            if(transB == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE)
+            {
+                temp[0] = alpha * testing_conj(B[idx_B]);
+            }
+            else
+            {
+                temp[0] = alpha * B[idx_B];
+            }
 
             I diag      = -1;
             I row_begin = csr_row_ptr[row] - base;
@@ -3260,7 +3268,16 @@ static inline void host_lssolve(J                     M,
                     J idx     = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? i * ldb + local_col
                                                                               : local_col * ldb + i;
                     T neg_val = make_DataType<T>(-1.0) * local_val;
-                    temp[k]   = testing_fma(neg_val, B[idx], temp[k]);
+
+
+                    if(transB == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE)
+                    {
+                        temp[k]   = testing_fma(neg_val, testing_conj(B[idx]), temp[k]);
+                    }
+                    else
+                    {
+                        temp[k]   = testing_fma(neg_val, B[idx], temp[k]);
+                    }
                 }
             }
 
@@ -3324,7 +3341,15 @@ static inline void host_ussolve(J                     M,
             temp.assign(prop.warpSize, make_DataType<T>(0.0));
 
             J idx_B = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? i * ldb + row : row * ldb + i;
-            temp[0] = alpha * B[idx_B];
+
+            if(transB == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE)
+            {
+                temp[0] = alpha * testing_conj(B[idx_B]);
+            }
+            else
+            {
+                temp[0] = alpha * B[idx_B];
+            }
 
             I diag      = -1;
             I row_begin = csr_row_ptr[row] - base;
@@ -3376,7 +3401,15 @@ static inline void host_ussolve(J                     M,
                     J idx     = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? i * ldb + local_col
                                                                               : local_col * ldb + i;
                     T neg_val = make_DataType<T>(-1.0) * local_val;
-                    temp[k]   = testing_fma(neg_val, B[idx], temp[k]);
+
+                    if(transB == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE)
+                    {
+                        temp[k]   = testing_fma(neg_val, testing_conj(B[idx]), temp[k]);
+                    }
+                    else
+                    {
+                        temp[k]   = testing_fma(neg_val, B[idx], temp[k]);
+                    }
                 }
             }
 
@@ -3803,7 +3836,7 @@ void host_csrsv(hipsparseOperation_t trans,
                             numeric_pivot);
         }
     }
-    else if(trans == HIPSPARSE_OPERATION_TRANSPOSE)
+    else if(trans == HIPSPARSE_OPERATION_TRANSPOSE || trans == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE)
     {
         // Transpose matrix
         std::vector<I> csrt_row_ptr(M + 1);
@@ -3821,6 +3854,14 @@ void host_csrsv(hipsparseOperation_t trans,
                         csrt_val,
                         HIPSPARSE_ACTION_NUMERIC,
                         base);
+
+        if(trans == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE)
+        {
+            for(size_t i = 0; i < csrt_val.size(); i++)
+            {
+                csrt_val[i] = testing_conj(csrt_val[i]);
+            }
+        }
 
         if(fill_mode == HIPSPARSE_FILL_MODE_LOWER)
         {
@@ -3962,7 +4003,7 @@ void host_csrsm(J                     M,
                          numeric_pivot);
         }
     }
-    else if(transA == HIPSPARSE_OPERATION_TRANSPOSE)
+    else if(transA == HIPSPARSE_OPERATION_TRANSPOSE || transA == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE)
     {
         // Transpose matrix
         std::vector<I> csrt_row_ptr(M + 1);
@@ -3980,6 +4021,14 @@ void host_csrsm(J                     M,
                         csrt_val,
                         HIPSPARSE_ACTION_NUMERIC,
                         base);
+
+        if(transA == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE)
+        {
+            for(size_t i = 0; i < csrt_val.size(); i++)
+            {
+                csrt_val[i] = testing_conj(csrt_val[i]);
+            }
+        }
 
         if(fill_mode == HIPSPARSE_FILL_MODE_LOWER)
         {
