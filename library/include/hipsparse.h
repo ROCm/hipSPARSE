@@ -5707,8 +5707,7 @@ typedef enum
     HIPSPARSE_SPMM_CSR_ALG1         = 10,
     HIPSPARSE_SPMM_CSR_ALG2         = 11,
     HIPSPARSE_SPMM_BLOCKED_ELL_ALG1 = 12,
-    HIPSPARSE_COOMM_ALG4            = 13,
-    HIPSPARSE_SPMM_CSR_ALG3         = 14
+    HIPSPARSE_SPMM_CSR_ALG3         = 13
 } hipsparseSpMMAlg_t;
 #else
 #if(CUDART_VERSION >= 11021)
@@ -5727,8 +5726,7 @@ typedef enum
     HIPSPARSE_SPMM_CSR_ALG1         = 10,
     HIPSPARSE_SPMM_CSR_ALG2         = 11,
     HIPSPARSE_SPMM_BLOCKED_ELL_ALG1 = 12,
-    HIPSPARSE_COOMM_ALG4            = 13,
-    HIPSPARSE_SPMM_CSR_ALG3         = 14
+    HIPSPARSE_SPMM_CSR_ALG3         = 13
 } hipsparseSpMMAlg_t;
 #elif(CUDART_VERSION >= 11003)
 typedef enum
@@ -5745,8 +5743,7 @@ typedef enum
     HIPSPARSE_SPMM_COO_ALG4         = 9,
     HIPSPARSE_SPMM_CSR_ALG1         = 10,
     HIPSPARSE_SPMM_CSR_ALG2         = 11,
-    HIPSPARSE_SPMM_BLOCKED_ELL_ALG1 = 12,
-    HIPSPARSE_COOMM_ALG4            = 13
+    HIPSPARSE_SPMM_BLOCKED_ELL_ALG1 = 12
 } hipsparseSpMMAlg_t;
 #elif(CUDART_VERSION >= 10010)
 typedef enum

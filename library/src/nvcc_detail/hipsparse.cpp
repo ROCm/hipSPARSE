@@ -10260,8 +10260,6 @@ cusparseSpMMAlg_t hipSpMMAlgToCudaSpMMAlg(hipsparseSpMMAlg_t alg)
         return CUSPARSE_COOMM_ALG2;
     case HIPSPARSE_COOMM_ALG3:
         return CUSPARSE_COOMM_ALG3;
-    case HIPSPARSE_COOMM_ALG4:
-        return CUSPARSE_COOMM_ALG4;
     case HIPSPARSE_CSRMM_ALG1:
         return CUSPARSE_CSRMM_ALG1;
     case HIPSPARSE_SPMM_ALG_DEFAULT:
@@ -10299,8 +10297,6 @@ cusparseSpMMAlg_t hipSpMMAlgToCudaSpMMAlg(hipsparseSpMMAlg_t alg)
         return CUSPARSE_COOMM_ALG2;
     case HIPSPARSE_COOMM_ALG3:
         return CUSPARSE_COOMM_ALG3;
-    case HIPSPARSE_COOMM_ALG4:
-        return CUSPARSE_COOMM_ALG4;
     case HIPSPARSE_CSRMM_ALG1:
         return CUSPARSE_CSRMM_ALG1;
     case HIPSPARSE_SPMM_ALG_DEFAULT:

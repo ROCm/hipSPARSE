@@ -485,7 +485,6 @@ rocsparse_spmm_alg_ hipSpMMAlgToHCCSpMMAlg(hipsparseSpMMAlg_t alg)
         return rocsparse_spmm_alg_coo_segmented;
     case HIPSPARSE_COOMM_ALG3:
     case HIPSPARSE_SPMM_COO_ALG3:
-    case HIPSPARSE_COOMM_ALG4:
     case HIPSPARSE_SPMM_COO_ALG4:
         return rocsparse_spmm_alg_coo_segmented_atomic;
     case HIPSPARSE_CSRMM_ALG1:
