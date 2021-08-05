@@ -453,12 +453,17 @@ rocsparse_spmv_alg_ hipSpMVAlgToHCCSpMVAlg(hipsparseSpMVAlg_t alg)
     switch(alg)
     {
     case HIPSPARSE_MV_ALG_DEFAULT:
+    case HIPSPARSE_SPMV_ALG_DEFAULT:
         return rocsparse_spmv_alg_default;
     case HIPSPARSE_COOMV_ALG:
+    case HIPSPARSE_SPMV_COO_ALG1:
+    case HIPSPARSE_SPMV_COO_ALG2:
         return rocsparse_spmv_alg_coo;
     case HIPSPARSE_CSRMV_ALG1:
+    case HIPSPARSE_SPMV_CSR_ALG1:
         return rocsparse_spmv_alg_csr_adaptive;
     case HIPSPARSE_CSRMV_ALG2:
+    case HIPSPARSE_SPMV_CSR_ALG2:
         return rocsparse_spmv_alg_csr_stream;
     default:
         throw "Non existent hipsparseSpMVAlg_t";
@@ -469,13 +474,25 @@ rocsparse_spmm_alg_ hipSpMMAlgToHCCSpMMAlg(hipsparseSpMMAlg_t alg)
 {
     switch(alg)
     {
+    case HIPSPARSE_MM_ALG_DEFAULT:
     case HIPSPARSE_SPMM_ALG_DEFAULT:
         return rocsparse_spmm_alg_default;
+    case HIPSPARSE_COOMM_ALG1:
     case HIPSPARSE_SPMM_COO_ALG1:
         return rocsparse_spmm_alg_coo_atomic;
+    case HIPSPARSE_COOMM_ALG2:
     case HIPSPARSE_SPMM_COO_ALG2:
         return rocsparse_spmm_alg_coo_segmented;
+    case HIPSPARSE_COOMM_ALG3:
+    case HIPSPARSE_SPMM_COO_ALG3:
+    case HIPSPARSE_COOMM_ALG4:
+    case HIPSPARSE_SPMM_COO_ALG4:
+        return rocsparse_spmm_alg_coo_segmented_atomic;
+    case HIPSPARSE_CSRMM_ALG1:
     case HIPSPARSE_SPMM_CSR_ALG1:
+        return rocsparse_spmm_alg_csr_row_split;
+    case HIPSPARSE_SPMM_CSR_ALG2:
+    case HIPSPARSE_SPMM_CSR_ALG3:
         return rocsparse_spmm_alg_csr;
     case HIPSPARSE_SPMM_BLOCKED_ELL_ALG1:
         return rocsparse_spmm_alg_bell;
