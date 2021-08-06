@@ -154,9 +154,6 @@ typedef enum {
 #endif
 #endif
 
-
-
-
 /* Types definitions */
 typedef enum {
     HIPSPARSE_POINTER_MODE_HOST   = 0,
