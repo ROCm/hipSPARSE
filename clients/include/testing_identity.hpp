@@ -56,7 +56,8 @@ void testing_identity_bad_arg(void)
     }
 
 #if(!defined(CUDART_VERSION))
-    verify_hipsparse_status_invalid_pointer(hipsparseCreateIdentityPermutation(handle, n, (int*)nullptr), "Error: p is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseCreateIdentityPermutation(handle, n, (int*)nullptr), "Error: p is nullptr");
     verify_hipsparse_status_invalid_handle(hipsparseCreateIdentityPermutation(nullptr, n, p));
 #endif
 }
