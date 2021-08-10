@@ -97,7 +97,7 @@ std::string hipsparse_exepath();
         return error;                                            \
     }
 
-#ifdef __HIP_PLATFORM_NVCC__
+#ifdef __HIP_PLATFORM_NVIDIA__
 static inline hipComplex operator-(const hipComplex& op)
 {
     hipComplex ret;

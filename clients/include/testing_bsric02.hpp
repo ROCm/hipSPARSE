@@ -41,7 +41,7 @@ using namespace hipsparse_test;
 template <typename T>
 void testing_bsric02_bad_arg(void)
 {
-#ifdef __HIP_PLATFORM_NVCC__
+#ifdef __HIP_PLATFORM_NVIDIA__
     // do not test for bad args
     return;
 #endif
@@ -331,7 +331,7 @@ hipsparseStatus_t testing_bsric02(Arguments argus)
     // Argument sanity check before allocating invalid memory
     if(mb <= 0 || block_dim <= 0)
     {
-#ifdef __HIP_PLATFORM_NVCC__
+#ifdef __HIP_PLATFORM_NVIDIA__
         // Do not test args in cusparse
         return HIPSPARSE_STATUS_SUCCESS;
 #endif
@@ -746,7 +746,7 @@ hipsparseStatus_t testing_bsric02(Arguments argus)
             h_solve_pivot_gold = std::min(numerical_pivot, structural_pivot);
         }
 
-#ifndef __HIP_PLATFORM_NVCC__
+#ifndef __HIP_PLATFORM_NVIDIA__
         // Do not check pivots in cusparse
         unit_check_general(1, 1, 1, &h_analysis_pivot_gold, &h_analysis_pivot_1);
         unit_check_general(1, 1, 1, &h_analysis_pivot_gold, &h_analysis_pivot_2);

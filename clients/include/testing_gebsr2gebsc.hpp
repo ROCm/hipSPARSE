@@ -41,7 +41,7 @@ template <typename T>
 void testing_gebsr2gebsc_bad_arg(void)
 {
 
-#ifdef __HIP_PLATFORM_NVCC__
+#ifdef __HIP_PLATFORM_NVIDIA__
     // do not test for bad args
     return;
 #endif
