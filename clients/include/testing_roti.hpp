@@ -38,10 +38,10 @@ using namespace hipsparse_test;
 template <typename T>
 void testing_roti_bad_arg(void)
 {
-//#ifdef __HIP_PLATFORM_NVIDIA__
-//    // do not test for bad args
-//    return;
-//#endif
+    //#ifdef __HIP_PLATFORM_NVCC__
+    //    // do not test for bad args
+    //    return;
+    //#endif
     int nnz       = 100;
     int safe_size = 100;
     T   c         = 3.7;
@@ -67,16 +67,28 @@ void testing_roti_bad_arg(void)
         return;
     }
 
-    verify_hipsparse_status_invalid_value(hipsparseXroti(handle, -1, dx_val, dx_ind, dy, &c, &s, idx_base), "Error: nnz is invalid");
+    verify_hipsparse_status_invalid_value(
+        hipsparseXroti(handle, -1, dx_val, dx_ind, dy, &c, &s, idx_base), "Error: nnz is invalid");
 
     // cusparse returns success when passed nullptrs
 #if(!defined(CUDART_VERSION))
-    verify_hipsparse_status_invalid_pointer(hipsparseXroti(handle, nnz, dx_val, (int*)nullptr, dy, &c, &s, idx_base), "Error: x_ind is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXroti(handle, nnz, (T*)nullptr, dx_ind, dy, &c, &s, idx_base), "Error: x_val is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXroti(handle, nnz, dx_val, dx_ind, (T*)nullptr, &c, &s, idx_base), "Error: y is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXroti(handle, nnz, dx_val, dx_ind, dy, (T*)nullptr, &s, idx_base), "Error: c is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXroti(handle, nnz, dx_val, dx_ind, dy, &c, (T*)nullptr, idx_base), "Error: s is nullptr");
-    verify_hipsparse_status_invalid_handle(hipsparseXroti(nullptr, nnz, dx_val, dx_ind, dy, &c, &s, idx_base));
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXroti(handle, nnz, dx_val, (int*)nullptr, dy, &c, &s, idx_base),
+        "Error: x_ind is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXroti(handle, nnz, (T*)nullptr, dx_ind, dy, &c, &s, idx_base),
+        "Error: x_val is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXroti(handle, nnz, dx_val, dx_ind, (T*)nullptr, &c, &s, idx_base),
+        "Error: y is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXroti(handle, nnz, dx_val, dx_ind, dy, (T*)nullptr, &s, idx_base),
+        "Error: c is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXroti(handle, nnz, dx_val, dx_ind, dy, &c, (T*)nullptr, idx_base),
+        "Error: s is nullptr");
+    verify_hipsparse_status_invalid_handle(
+        hipsparseXroti(nullptr, nnz, dx_val, dx_ind, dy, &c, &s, idx_base));
 #endif
 }
 
