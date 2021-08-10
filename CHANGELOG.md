@@ -4,7 +4,7 @@
 ### Added
 - hipSPARSE documentation
 
-## (Unreleased) hipSPARSE 1.11.1
+## (Unreleased) hipSPARSE 1.11.2
 ### Added
 - SpMM for BLOCKED ELL format
 - Generic routines for SpSV and SpSM
