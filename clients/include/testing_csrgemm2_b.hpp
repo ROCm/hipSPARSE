@@ -39,7 +39,7 @@ using namespace hipsparse_test;
 template <typename T>
 void testing_csrgemm2_b_bad_arg(void)
 {
-#ifdef __HIP_PLATFORM_NVCC__
+#ifdef __HIP_PLATFORM_NVIDIA__
     // do not test for bad args
     return;
 #endif
@@ -929,7 +929,7 @@ hipsparseStatus_t testing_csrgemm2_b(Arguments argus)
     // Argument sanity check before allocating invalid memory
     if(M <= 0 || N <= 0 || nnz_D <= 0)
     {
-#ifdef __HIP_PLATFORM_NVCC__
+#ifdef __HIP_PLATFORM_NVIDIA__
         // do not test for zero
         return HIPSPARSE_STATUS_SUCCESS;
 #endif
@@ -1389,7 +1389,7 @@ hipsparseStatus_t testing_csrgemm2_b(Arguments argus)
         unit_check_general(1, nnz_C_gold, 1, hcsr_col_ind_C_gold.data(), hcsr_col_ind_C.data());
         unit_check_near(1, nnz_C_gold, 1, hcsr_val_C_gold.data(), hcsr_val_C_1.data());
 
-#ifdef __HIP_PLATFORM_HCC__
+#ifdef __HIP_PLATFORM_AMD__
         // Device pointer mode
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
         CHECK_HIPSPARSE_ERROR(hipsparseXcsrgemm2(handle,

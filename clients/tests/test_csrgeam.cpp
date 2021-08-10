@@ -82,7 +82,7 @@ Arguments setup_csrgeam_arguments(csrgeam_tuple tup)
     arg.alpha    = std::get<2>(tup);
     arg.beta     = std::get<3>(tup);
     arg.idx_base = std::get<4>(tup);
-#ifdef __HIP_PLATFORM_NVCC__
+#ifdef __HIP_PLATFORM_NVIDIA__
     // There is a bug with index base in cusparse
     arg.idx_base2 = std::get<4>(tup);
     arg.idx_base3 = std::get<4>(tup);
@@ -102,7 +102,7 @@ Arguments setup_csrgeam_arguments(csrgeam_bin_tuple tup)
     arg.alpha    = std::get<0>(tup);
     arg.beta     = std::get<1>(tup);
     arg.idx_base = std::get<2>(tup);
-#ifdef __HIP_PLATFORM_NVCC__
+#ifdef __HIP_PLATFORM_NVIDIA__
     // There is a bug with index base in cusparse
     arg.idx_base2 = std::get<2>(tup);
     arg.idx_base3 = std::get<2>(tup);

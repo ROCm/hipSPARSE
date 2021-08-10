@@ -41,7 +41,7 @@ double csrilu02_boost_vali_range[] = {0.2};
 base csrilu02_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
 std::string csrilu02_bin[] = {"mac_econ_fwd500.bin",
-#ifdef __HIP_PLATFORM_HCC__
+#ifdef __HIP_PLATFORM_AMD__
                               // exclude some matrices from cusparse check,
                               // they use weaker division producing more rounding errors
                               "rma10.bin",

@@ -41,7 +41,7 @@ template <typename T>
 void testing_csr2gebsr_bad_arg(void)
 {
 
-#ifdef __HIP_PLATFORM_NVCC__
+#ifdef __HIP_PLATFORM_NVIDIA__
     // do not test for bad args
     return;
 #endif
@@ -464,7 +464,7 @@ hipsparseStatus_t testing_csr2gebsr(Arguments argus)
 
     if(row_block_dim == 1)
     {
-#ifdef __HIP_PLATFORM_NVCC__
+#ifdef __HIP_PLATFORM_NVIDIA__
         // Do not test cusparse with block dim 1
         return HIPSPARSE_STATUS_SUCCESS;
 #endif
@@ -473,7 +473,7 @@ hipsparseStatus_t testing_csr2gebsr(Arguments argus)
     // Argument sanity check before allocating invalid memory
     if(m <= 0 || n <= 0 || row_block_dim <= 0 || col_block_dim <= 0)
     {
-#ifdef __HIP_PLATFORM_NVCC__
+#ifdef __HIP_PLATFORM_NVIDIA__
         // Do not test args in cusparse
         return HIPSPARSE_STATUS_SUCCESS;
 #endif

@@ -40,7 +40,7 @@ using namespace hipsparse_test;
 template <typename T>
 void testing_csrilu02_bad_arg(void)
 {
-#ifdef __HIP_PLATFORM_NVCC__
+#ifdef __HIP_PLATFORM_NVIDIA__
     // do not test for bad args
     return;
 #endif
@@ -369,7 +369,7 @@ hipsparseStatus_t testing_csrilu02(Arguments argus)
     // Argument sanity check before allocating invalid memory
     if(m <= 0 || nnz <= 0)
     {
-#ifdef __HIP_PLATFORM_NVCC__
+#ifdef __HIP_PLATFORM_NVIDIA__
         // Do not test args in cusparse
         return HIPSPARSE_STATUS_SUCCESS;
 #endif
@@ -611,10 +611,10 @@ hipsparseStatus_t testing_csrilu02(Arguments argus)
             return HIPSPARSE_STATUS_SUCCESS;
         }
 
-#if defined(__HIP_PLATFORM_HCC__)
+#if defined(__HIP_PLATFORM_AMD__)
         unit_check_general(1, nnz, 1, hcsr_val.data(), result1.data());
         unit_check_general(1, nnz, 1, hcsr_val.data(), result2.data());
-#elif defined(__HIP_PLATFORM_NVCC__)
+#elif defined(__HIP_PLATFORM_NVIDIA__)
         // do weaker check for cusparse
         unit_check_near(1, nnz, 1, hcsr_val.data(), result1.data());
         unit_check_near(1, nnz, 1, hcsr_val.data(), result2.data());

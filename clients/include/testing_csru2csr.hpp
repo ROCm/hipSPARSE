@@ -77,7 +77,7 @@ void testing_csru2csr_bad_arg(void)
     }
 
     // Testing csru2csr_bufferSizeExt for bad args
-#ifndef __HIP_PLATFORM_NVCC__
+#ifndef __HIP_PLATFORM_NVIDIA__
     // cusparse seem to not have any error checking
     verify_hipsparse_status_invalid_handle(hipsparseXcsru2csr_bufferSizeExt(
         nullptr, m, n, nnz, csr_val, csr_row_ptr, csr_col_ind, info, &bufferSize));
@@ -114,7 +114,7 @@ void testing_csru2csr_bad_arg(void)
         hipsparseXcsru2csr_bufferSizeExt(
             handle, m, n, -1, csr_val, csr_row_ptr, csr_col_ind, info, &bufferSize),
         "Error: nnz is invalid");
-#ifndef __HIP_PLATFORM_NVCC__
+#ifndef __HIP_PLATFORM_NVIDIA__
     // cusparse seem to not have any error checking for some parts
     verify_hipsparse_status_success(
         hipsparseXcsru2csr_bufferSizeExt(
@@ -135,7 +135,7 @@ void testing_csru2csr_bad_arg(void)
 #endif
 
     // Testing csru2csr for bad args
-#ifndef __HIP_PLATFORM_NVCC__
+#ifndef __HIP_PLATFORM_NVIDIA__
     // cusparse seem to not have any error checking for some parts
     verify_hipsparse_status_invalid_handle(hipsparseXcsru2csr(
         nullptr, m, n, nnz, descr, csr_val, csr_row_ptr, csr_col_ind, info, buffer));
@@ -174,7 +174,7 @@ void testing_csru2csr_bad_arg(void)
         hipsparseXcsru2csr(
             handle, m, n, -1, descr, csr_val, csr_row_ptr, csr_col_ind, info, buffer),
         "Error: nnz is invalid");
-#ifndef __HIP_PLATFORM_NVCC__
+#ifndef __HIP_PLATFORM_NVIDIA__
     // cusparse seem to not have any error checking for some parts
     verify_hipsparse_status_success(
         hipsparseXcsru2csr(
@@ -191,7 +191,7 @@ void testing_csru2csr_bad_arg(void)
 #endif
 
     // Testing csr2csru for bad args
-#ifndef __HIP_PLATFORM_NVCC__
+#ifndef __HIP_PLATFORM_NVIDIA__
     // cusparse seem to not have any error checking for some parts
     verify_hipsparse_status_invalid_handle(hipsparseXcsr2csru(
         nullptr, m, n, nnz, descr, csr_val, csr_row_ptr, csr_col_ind, info, buffer));
@@ -230,7 +230,7 @@ void testing_csru2csr_bad_arg(void)
         hipsparseXcsr2csru(
             handle, m, n, -1, descr, csr_val, csr_row_ptr, csr_col_ind, info, buffer),
         "Error: nnz is invalid");
-#ifndef __HIP_PLATFORM_NVCC__
+#ifndef __HIP_PLATFORM_NVIDIA__
     // cusparse seem to not have any error checking for some parts
     verify_hipsparse_status_success(
         hipsparseXcsr2csru(
