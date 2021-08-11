@@ -40,7 +40,7 @@ using namespace hipsparse_test;
 template <typename T>
 void testing_bsrilu02_bad_arg(void)
 {
-#ifdef __HIP_PLATFORM_NVCC__
+#ifdef __HIP_PLATFORM_NVIDIA__
     // do not test for bad args
     return;
 #endif
@@ -371,7 +371,7 @@ hipsparseStatus_t testing_bsrilu02(Arguments argus)
     // Argument sanity check before allocating invalid memory
     if(mb <= 0 || block_dim <= 0)
     {
-#ifdef __HIP_PLATFORM_NVCC__
+#ifdef __HIP_PLATFORM_NVIDIA__
         // Do not test args in cusparse
         return HIPSPARSE_STATUS_SUCCESS;
 #endif

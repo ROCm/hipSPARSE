@@ -174,17 +174,17 @@ hipsparseStatus_t testing_nnz(Arguments argus)
 
     if(M <= 0 || N <= 0 || lda < M)
     {
-	// cusparse returns internal error for this case
+        // cusparse returns internal error for this case
 #if(defined(CUDART_VERSION))
-	if((M == 0 || N == 0) && lda >= M)
-	{
-	    return HIPSPARSE_STATUS_SUCCESS;
-	}
+        if((M == 0 || N == 0) && lda >= M)
+        {
+            return HIPSPARSE_STATUS_SUCCESS;
+        }
 #endif
 
         status
             = hipsparseXnnz(handle, dirA, M, N, descrA, (const T*)nullptr, lda, nullptr, nullptr);
-	if(((M == 0 && N >= 0) || (M >= 0 && N == 0)) && (lda >= M))
+        if(((M == 0 && N >= 0) || (M >= 0 && N == 0)) && (lda >= M))
         {
             verify_hipsparse_status_success(status, "Error: M or N = 0 must be successful.");
         }

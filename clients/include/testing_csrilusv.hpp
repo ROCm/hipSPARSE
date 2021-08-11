@@ -183,9 +183,9 @@ hipsparseStatus_t testing_csrilusv(Arguments argus)
     }
 
 // Check csrilu0 factorization
-#if defined(__HIP_PLATFORM_HCC__)
+#if defined(__HIP_PLATFORM_AMD__)
     unit_check_general(1, nnz, 1, hcsr_val.data(), iluresult.data());
-#elif defined(__HIP_PLATFORM_NVCC__)
+#elif defined(__HIP_PLATFORM_NVIDIA__)
     unit_check_near(1, nnz, 1, hcsr_val.data(), iluresult.data());
 #endif
 
@@ -390,10 +390,10 @@ hipsparseStatus_t testing_csrilusv(Arguments argus)
     CHECK_HIP_ERROR(hipMemcpy(hz_2.data(), dz_2, sizeof(T) * m, hipMemcpyDeviceToHost));
 
 // Check z
-#if defined(__HIP_PLATFORM_HCC__)
+#if defined(__HIP_PLATFORM_AMD__)
     unit_check_general(1, m, 1, hz_gold.data(), hz_1.data());
     unit_check_general(1, m, 1, hz_gold.data(), hz_2.data());
-#elif defined(__HIP_PLATFORM_NVCC__)
+#elif defined(__HIP_PLATFORM_NVIDIA__)
     unit_check_near(1, m, 1, hz_gold.data(), hz_1.data());
     unit_check_near(1, m, 1, hz_gold.data(), hz_2.data());
 #endif
