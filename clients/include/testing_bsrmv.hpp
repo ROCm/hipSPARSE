@@ -40,7 +40,7 @@ using namespace hipsparse_test;
 template <typename T>
 void testing_bsrmv_bad_arg(void)
 {
-#ifdef __HIP_PLATFORM_NVCC__
+#ifdef __HIP_PLATFORM_NVIDIA__
     // do not test for bad args
     return;
 #endif
@@ -329,7 +329,7 @@ hipsparseStatus_t testing_bsrmv(Arguments argus)
 
     if(block_dim == 1)
     {
-#ifdef __HIP_PLATFORM_NVCC__
+#ifdef __HIP_PLATFORM_NVIDIA__
         // cusparse only accepts block_dim > 1
         return HIPSPARSE_STATUS_SUCCESS;
 #endif

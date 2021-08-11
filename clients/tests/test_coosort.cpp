@@ -36,9 +36,9 @@ int                  coosort_N_range[] = {-3, 0, 33, 242, 1623, 10000};
 hipsparseOperation_t coosort_trans[]
     = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPERATION_TRANSPOSE};
 
-#if defined(__HIP_PLATFORM_HCC__)
+#if defined(__HIP_PLATFORM_AMD__)
 int coosort_perm[] = {0, 1};
-#elif defined(__HIP_PLATFORM_NVCC__)
+#elif defined(__HIP_PLATFORM_NVIDIA__)
 // cusparse does not allow without permutation
 int coosort_perm[] = {1};
 #endif
