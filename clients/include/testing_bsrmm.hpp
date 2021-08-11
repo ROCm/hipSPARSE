@@ -385,7 +385,7 @@ void testing_bsrmm_bad_arg(void)
                              dC,
                              ldc);
     verify_hipsparse_status_not_supported(status,
-                                           "Error: Passed value for transA is not supported");
+                                          "Error: Passed value for transA is not supported");
 
     status = hipsparseXbsrmm(handle,
                              dirA,
@@ -407,7 +407,7 @@ void testing_bsrmm_bad_arg(void)
                              dC,
                              ldc);
     verify_hipsparse_status_not_supported(status,
-                                           "Error: Passed value for transA is not supported");
+                                          "Error: Passed value for transA is not supported");
 
     status = hipsparseXbsrmm(handle,
                              dirA,
@@ -429,7 +429,7 @@ void testing_bsrmm_bad_arg(void)
                              dC,
                              ldc);
     verify_hipsparse_status_not_supported(status,
-                                           "Error: Passed value for transB is not supported");
+                                          "Error: Passed value for transB is not supported");
 }
 
 template <typename T>
