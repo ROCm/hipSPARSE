@@ -44,6 +44,7 @@ extern "C" {
         }                                                               \
     }
 
+#if(CUDART_VERSION >= 11003)
 hipsparseStatus_t hipCUSPARSEStatusToHIPStatus(cusparseStatus_t cuStatus)
 {
     switch(cuStatus)
@@ -68,10 +69,43 @@ hipsparseStatus_t hipCUSPARSEStatusToHIPStatus(cusparseStatus_t cuStatus)
         return HIPSPARSE_STATUS_MATRIX_TYPE_NOT_SUPPORTED;
     case CUSPARSE_STATUS_ZERO_PIVOT:
         return HIPSPARSE_STATUS_ZERO_PIVOT;
+    case CUSPARSE_STATUS_NOT_SUPPORTED:
+        return HIPSPARSE_STATUS_NOT_SUPPORTED;
+    case CUSPARSE_STATUS_INSUFFICIENT_RESOURCES:
+        return HIPSPARSE_STATUS_INSUFFICIENT_RESOURCES;
     default:
         throw "Non existent cusparseStatus_t";
     }
 }
+#elif(CUDART_VERSION >= 10010)
+switch(cuStatus)
+{
+case CUSPARSE_STATUS_SUCCESS:
+    return HIPSPARSE_STATUS_SUCCESS;
+case CUSPARSE_STATUS_NOT_INITIALIZED:
+    return HIPSPARSE_STATUS_NOT_INITIALIZED;
+case CUSPARSE_STATUS_ALLOC_FAILED:
+    return HIPSPARSE_STATUS_ALLOC_FAILED;
+case CUSPARSE_STATUS_INVALID_VALUE:
+    return HIPSPARSE_STATUS_INVALID_VALUE;
+case CUSPARSE_STATUS_ARCH_MISMATCH:
+    return HIPSPARSE_STATUS_ARCH_MISMATCH;
+case CUSPARSE_STATUS_MAPPING_ERROR:
+    return HIPSPARSE_STATUS_MAPPING_ERROR;
+case CUSPARSE_STATUS_EXECUTION_FAILED:
+    return HIPSPARSE_STATUS_EXECUTION_FAILED;
+case CUSPARSE_STATUS_INTERNAL_ERROR:
+    return HIPSPARSE_STATUS_INTERNAL_ERROR;
+case CUSPARSE_STATUS_MATRIX_TYPE_NOT_SUPPORTED:
+    return HIPSPARSE_STATUS_MATRIX_TYPE_NOT_SUPPORTED;
+case CUSPARSE_STATUS_ZERO_PIVOT:
+    return HIPSPARSE_STATUS_ZERO_PIVOT;
+case CUSPARSE_STATUS_NOT_SUPPORTED:
+    return HIPSPARSE_STATUS_NOT_SUPPORTED;
+default:
+    throw "Non existent cusparseStatus_t";
+}
+#endif
 
 cusparsePointerMode_t hipPointerModeToCudaPointerMode(hipsparsePointerMode_t mode)
 {
