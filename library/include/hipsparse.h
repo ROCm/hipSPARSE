@@ -103,7 +103,14 @@ typedef struct csru2csrInfo* csru2csrInfo_t;
 
 // clang-format off
 
-/* hipSPARSE status types */
+/*! \ingroup types_module
+ *  \brief List of hipsparse status codes definition.
+ *
+ *  \details
+ *  This is a list of the \ref hipsparseStatus_t types that are used by the hipSPARSE
+ *  library.
+ */
+#if(!defined(CUDART_VERSION))
 typedef enum {
     HIPSPARSE_STATUS_SUCCESS                   = 0, // Function succeeds
     HIPSPARSE_STATUS_NOT_INITIALIZED           = 1, // hipSPARSE was not initialized
@@ -118,6 +125,38 @@ typedef enum {
     HIPSPARSE_STATUS_NOT_SUPPORTED             = 10, // Operation is not supported
     HIPSPARSE_STATUS_INSUFFICIENT_RESOURCES    = 11 // Resources are insufficient
 } hipsparseStatus_t;
+#else
+#if(CUDART_VERSION >= 11003)
+typedef enum {
+    HIPSPARSE_STATUS_SUCCESS                   = 0, // Function succeeds
+    HIPSPARSE_STATUS_NOT_INITIALIZED           = 1, // hipSPARSE was not initialized
+    HIPSPARSE_STATUS_ALLOC_FAILED              = 2, // Resource allocation failed
+    HIPSPARSE_STATUS_INVALID_VALUE             = 3, // Unsupported value was passed to the function
+    HIPSPARSE_STATUS_ARCH_MISMATCH             = 4, // Device architecture not supported
+    HIPSPARSE_STATUS_MAPPING_ERROR             = 5, // Access to GPU memory space failed
+    HIPSPARSE_STATUS_EXECUTION_FAILED          = 6, // GPU program failed to execute
+    HIPSPARSE_STATUS_INTERNAL_ERROR            = 7, // An internal hipSPARSE operation failed
+    HIPSPARSE_STATUS_MATRIX_TYPE_NOT_SUPPORTED = 8, // Matrix type not supported
+    HIPSPARSE_STATUS_ZERO_PIVOT                = 9, // Zero pivot was computed
+    HIPSPARSE_STATUS_NOT_SUPPORTED             = 10, // Operation is not supported
+    HIPSPARSE_STATUS_INSUFFICIENT_RESOURCES    = 11 // Resources are insufficient
+} hipsparseStatus_t;
+#elif(CUDART_VERSION >= 10010)
+typedef enum {
+    HIPSPARSE_STATUS_SUCCESS                   = 0, // Function succeeds
+    HIPSPARSE_STATUS_NOT_INITIALIZED           = 1, // hipSPARSE was not initialized
+    HIPSPARSE_STATUS_ALLOC_FAILED              = 2, // Resource allocation failed
+    HIPSPARSE_STATUS_INVALID_VALUE             = 3, // Unsupported value was passed to the function
+    HIPSPARSE_STATUS_ARCH_MISMATCH             = 4, // Device architecture not supported
+    HIPSPARSE_STATUS_MAPPING_ERROR             = 5, // Access to GPU memory space failed
+    HIPSPARSE_STATUS_EXECUTION_FAILED          = 6, // GPU program failed to execute
+    HIPSPARSE_STATUS_INTERNAL_ERROR            = 7, // An internal hipSPARSE operation failed
+    HIPSPARSE_STATUS_MATRIX_TYPE_NOT_SUPPORTED = 8, // Matrix type not supported
+    HIPSPARSE_STATUS_ZERO_PIVOT                = 9, // Zero pivot was computed
+    HIPSPARSE_STATUS_NOT_SUPPORTED             = 10 // Operation is not supported
+} hipsparseStatus_t;
+#endif
+#endif
 
 /* Types definitions */
 typedef enum {

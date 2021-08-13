@@ -105,7 +105,7 @@ hipsparseStatus_t rocSPARSEStatusToHIPStatus(rocsparse_status_ status)
     case rocsparse_status_invalid_handle:
         return HIPSPARSE_STATUS_INVALID_VALUE;
     case rocsparse_status_not_implemented:
-        return HIPSPARSE_STATUS_INTERNAL_ERROR;
+        return HIPSPARSE_STATUS_NOT_SUPPORTED;
     case rocsparse_status_invalid_pointer:
         return HIPSPARSE_STATUS_INVALID_VALUE;
     case rocsparse_status_invalid_size:
