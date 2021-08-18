@@ -10201,7 +10201,34 @@ hipsparseIndexType_t CudaIndexTypeToHIPIndexType(cusparseIndexType_t type)
 }
 #endif
 
-#if(CUDART_VERSION >= 10010)
+#if(CUDART_VERSION >= 11021)
+cusparseSpMVAlg_t hipSpMVAlgToCudaSpMVAlg(hipsparseSpMVAlg_t alg)
+{
+    switch(alg)
+    {
+    case HIPSPARSE_MV_ALG_DEFAULT:
+        return CUSPARSE_MV_ALG_DEFAULT;
+    case HIPSPARSE_SPMV_ALG_DEFAULT:
+        return CUSPARSE_SPMV_ALG_DEFAULT;
+    case HIPSPARSE_COOMV_ALG:
+        return CUSPARSE_COOMV_ALG;
+    case HIPSPARSE_SPMV_COO_ALG1:
+        return CUSPARSE_SPMV_COO_ALG1;
+    case HIPSPARSE_SPMV_COO_ALG2:
+        return CUSPARSE_SPMV_COO_ALG2;
+    case HIPSPARSE_CSRMV_ALG1:
+        return CUSPARSE_CSRMV_ALG1;
+    case HIPSPARSE_SPMV_CSR_ALG1:
+        return CUSPARSE_SPMV_CSR_ALG1;
+    case HIPSPARSE_CSRMV_ALG2:
+        return CUSPARSE_CSRMV_ALG2;
+    case HIPSPARSE_SPMV_CSR_ALG2:
+        return CUSPARSE_SPMV_CSR_ALG2;
+    default:
+        throw "Non existant hipsparseSpMVAlg_t";
+    }
+}
+#elif(CUDART_VERSION >= 10010)
 cusparseSpMVAlg_t hipSpMVAlgToCudaSpMVAlg(hipsparseSpMVAlg_t alg)
 {
     switch(alg)
@@ -10220,7 +10247,44 @@ cusparseSpMVAlg_t hipSpMVAlgToCudaSpMVAlg(hipsparseSpMVAlg_t alg)
 }
 #endif
 
-#if(CUDART_VERSION >= 11000)
+#if(CUDART_VERSION >= 11021)
+cusparseSpMMAlg_t hipSpMMAlgToCudaSpMMAlg(hipsparseSpMMAlg_t alg)
+{
+    switch(alg)
+    {
+    case HIPSPARSE_MM_ALG_DEFAULT:
+        return CUSPARSE_MM_ALG_DEFAULT;
+    case HIPSPARSE_COOMM_ALG1:
+        return CUSPARSE_COOMM_ALG1;
+    case HIPSPARSE_COOMM_ALG2:
+        return CUSPARSE_COOMM_ALG2;
+    case HIPSPARSE_COOMM_ALG3:
+        return CUSPARSE_COOMM_ALG3;
+    case HIPSPARSE_CSRMM_ALG1:
+        return CUSPARSE_CSRMM_ALG1;
+    case HIPSPARSE_SPMM_ALG_DEFAULT:
+        return CUSPARSE_SPMM_ALG_DEFAULT;
+    case HIPSPARSE_SPMM_COO_ALG1:
+        return CUSPARSE_SPMM_COO_ALG1;
+    case HIPSPARSE_SPMM_COO_ALG2:
+        return CUSPARSE_SPMM_COO_ALG2;
+    case HIPSPARSE_SPMM_COO_ALG3:
+        return CUSPARSE_SPMM_COO_ALG3;
+    case HIPSPARSE_SPMM_COO_ALG4:
+        return CUSPARSE_SPMM_COO_ALG4;
+    case HIPSPARSE_SPMM_CSR_ALG1:
+        return CUSPARSE_SPMM_CSR_ALG1;
+    case HIPSPARSE_SPMM_CSR_ALG2:
+        return CUSPARSE_SPMM_CSR_ALG2;
+    case HIPSPARSE_SPMM_CSR_ALG3:
+        return CUSPARSE_SPMM_CSR_ALG3;
+    case HIPSPARSE_SPMM_BLOCKED_ELL_ALG1:
+        return CUSPARSE_SPMM_BLOCKED_ELL_ALG1;
+    default:
+        throw "Non existant hipsparseSpMMAlg_t";
+    }
+}
+#elif(CUDART_VERSION >= 11003)
 cusparseSpMMAlg_t hipSpMMAlgToCudaSpMMAlg(hipsparseSpMMAlg_t alg)
 {
     switch(alg)
