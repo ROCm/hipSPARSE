@@ -499,7 +499,7 @@ void testing_spmat_descr_bad_arg(void)
                                                             nullptr),
                                             "Error: dataType is nullptr");
 #endif
- 
+
 #if(!defined(CUDART_VERSION))
     verify_hipsparse_status_invalid_pointer(hipsparseBlockedEllGet(nullptr,
                                                                    &rows,

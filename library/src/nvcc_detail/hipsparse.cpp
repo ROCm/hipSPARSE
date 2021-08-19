@@ -10816,7 +10816,7 @@ hipsparseStatus_t hipsparseBlockedEllGet(const hipsparseSpMatDescr_t spMatDescr,
                                          hipsparseIndexBase_t*       idxBase,
                                          hipDataType*                valueType)
 {
-    // As of cusparse 11.4.1, this routine does not actually exist as a symbol in the cusparse 
+    // As of cusparse 11.4.1, this routine does not actually exist as a symbol in the cusparse
     // library (the documentation indicates that it should exist starting at cusparse 11.2.1).
     // Uncomment once it has been added
     // cusparseIndexType_t cuda_index_type;
@@ -11052,8 +11052,11 @@ hipsparseStatus_t hipsparseSpMatSetAttribute(hipsparseSpMatDescr_t     spMatDesc
                                              const void*               data,
                                              size_t                    dataSize)
 {
-    return hipCUSPARSEStatusToHIPStatus(cusparseSpMatSetAttribute(
-        (cusparseSpMatDescr_t)spMatDescr, (cusparseSpMatAttribute_t)attribute, const_cast<void*>(data), dataSize));
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseSpMatSetAttribute((cusparseSpMatDescr_t)spMatDescr,
+                                  (cusparseSpMatAttribute_t)attribute,
+                                  const_cast<void*>(data),
+                                  dataSize));
 }
 #endif
 
