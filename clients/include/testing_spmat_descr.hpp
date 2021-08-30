@@ -160,27 +160,28 @@ void testing_spmat_descr_bad_arg(void)
         "Error: val_data is nullptr");
 
     // hipsparseCreateBlockedEll
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11021)
+#if(!defined(CUDART_VERSION))
     verify_hipsparse_status_invalid_pointer(hipsparseCreateBlockedEll(nullptr,
                                                                       rows,
                                                                       cols,
-                                                                      ell_cols,
                                                                       ell_blocksize,
+                                                                      ell_cols,
                                                                       col_data,
                                                                       val_data,
                                                                       colType,
                                                                       idxBase,
                                                                       dataType),
                                             "Error: A is nullptr");
-
+#endif
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11021)
     verify_hipsparse_status_invalid_size(
         hipsparseCreateBlockedEll(
-            &A, -1, cols, ell_cols, ell_blocksize, col_data, val_data, colType, idxBase, dataType),
+            &A, -1, cols, ell_blocksize, ell_cols, col_data, val_data, colType, idxBase, dataType),
         "Error: rows is < 0");
 
     verify_hipsparse_status_invalid_size(
         hipsparseCreateBlockedEll(
-            &A, rows, -1, ell_cols, ell_blocksize, col_data, val_data, colType, idxBase, dataType),
+            &A, rows, -1, ell_blocksize, ell_cols, col_data, val_data, colType, idxBase, dataType),
         "Error: cols is < 0");
 
     verify_hipsparse_status_invalid_size(
@@ -221,8 +222,8 @@ void testing_spmat_descr_bad_arg(void)
     verify_hipsparse_status_success(hipsparseCreateBlockedEll(&bell,
                                                               rows,
                                                               cols,
-                                                              ell_cols,
                                                               ell_blocksize,
+                                                              ell_cols,
                                                               col_data,
                                                               val_data,
                                                               colType,
@@ -258,7 +259,7 @@ void testing_spmat_descr_bad_arg(void)
     void* val_ptr;
 
     // hipsparseCooGet
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
+#if(!defined(CUDART_VERSION))
     verify_hipsparse_status_invalid_pointer(hipsparseCooGet(nullptr,
                                                             &rows,
                                                             &cols,
@@ -270,6 +271,8 @@ void testing_spmat_descr_bad_arg(void)
                                                             &idxBase,
                                                             &dataType),
                                             "Error: A is nullptr");
+#endif
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
     verify_hipsparse_status_invalid_pointer(
         hipsparseCooGet(
             coo, nullptr, &cols, &nnz, &row_ptr, &col_ptr, &val_ptr, &rowType, &idxBase, &dataType),
@@ -316,47 +319,49 @@ void testing_spmat_descr_bad_arg(void)
 #endif
 
     // hipsparseCooAoSGet
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
+#if(!defined(CUDART_VERSION))
     verify_hipsparse_status_invalid_pointer(
         hipsparseCooAoSGet(
             nullptr, &rows, &cols, &nnz, &ind_ptr, &val_ptr, &cooType, &idxBase, &dataType),
         "Error: A is nullptr");
+#endif
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
     verify_hipsparse_status_invalid_pointer(
         hipsparseCooAoSGet(
-            coo, nullptr, &cols, &nnz, &ind_ptr, &val_ptr, &cooType, &idxBase, &dataType),
+            coo_aos, nullptr, &cols, &nnz, &ind_ptr, &val_ptr, &cooType, &idxBase, &dataType),
         "Error: rows is nullptr");
     verify_hipsparse_status_invalid_pointer(
         hipsparseCooAoSGet(
-            coo, &rows, nullptr, &nnz, &ind_ptr, &val_ptr, &cooType, &idxBase, &dataType),
+            coo_aos, &rows, nullptr, &nnz, &ind_ptr, &val_ptr, &cooType, &idxBase, &dataType),
         "Error: cols is nullptr");
     verify_hipsparse_status_invalid_pointer(
         hipsparseCooAoSGet(
-            coo, &rows, &cols, nullptr, &ind_ptr, &val_ptr, &cooType, &idxBase, &dataType),
+            coo_aos, &rows, &cols, nullptr, &ind_ptr, &val_ptr, &cooType, &idxBase, &dataType),
         "Error: nnz is nullptr");
     verify_hipsparse_status_invalid_pointer(
         hipsparseCooAoSGet(
-            coo, &rows, &cols, &nnz, nullptr, &val_ptr, &cooType, &idxBase, &dataType),
+            coo_aos, &rows, &cols, &nnz, nullptr, &val_ptr, &cooType, &idxBase, &dataType),
         "Error: ind_ptr is nullptr");
     verify_hipsparse_status_invalid_pointer(
         hipsparseCooAoSGet(
-            coo, &rows, &cols, &nnz, &ind_ptr, nullptr, &cooType, &idxBase, &dataType),
+            coo_aos, &rows, &cols, &nnz, &ind_ptr, nullptr, &cooType, &idxBase, &dataType),
         "Error: val_ptr is nullptr");
     verify_hipsparse_status_invalid_pointer(
         hipsparseCooAoSGet(
-            coo, &rows, &cols, &nnz, &ind_ptr, &val_ptr, nullptr, &idxBase, &dataType),
+            coo_aos, &rows, &cols, &nnz, &ind_ptr, &val_ptr, nullptr, &idxBase, &dataType),
         "Error: cooType is nullptr");
     verify_hipsparse_status_invalid_pointer(
         hipsparseCooAoSGet(
-            coo, &rows, &cols, &nnz, &ind_ptr, &val_ptr, &cooType, nullptr, &dataType),
+            coo_aos, &rows, &cols, &nnz, &ind_ptr, &val_ptr, &cooType, nullptr, &dataType),
         "Error: idxBase is nullptr");
     verify_hipsparse_status_invalid_pointer(
         hipsparseCooAoSGet(
-            coo, &rows, &cols, &nnz, &ind_ptr, &val_ptr, &cooType, &idxBase, nullptr),
+            coo_aos, &rows, &cols, &nnz, &ind_ptr, &val_ptr, &cooType, &idxBase, nullptr),
         "Error: dataType is nullptr");
 #endif
 
     // hipsparseCsrGet
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
+#if(!defined(CUDART_VERSION))
     verify_hipsparse_status_invalid_pointer(hipsparseCsrGet(nullptr,
                                                             &rows,
                                                             &cols,
@@ -369,6 +374,8 @@ void testing_spmat_descr_bad_arg(void)
                                                             &idxBase,
                                                             &dataType),
                                             "Error: A is nullptr");
+#endif
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
     verify_hipsparse_status_invalid_pointer(hipsparseCsrGet(csr,
                                                             nullptr,
                                                             &cols,
@@ -493,7 +500,7 @@ void testing_spmat_descr_bad_arg(void)
                                             "Error: dataType is nullptr");
 #endif
 
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11021)
+#if(!defined(CUDART_VERSION))
     verify_hipsparse_status_invalid_pointer(hipsparseBlockedEllGet(nullptr,
                                                                    &rows,
                                                                    &cols,
@@ -608,9 +615,11 @@ void testing_spmat_descr_bad_arg(void)
 #endif
 
     // hipsparseCsrSetPointers
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
+#if(!defined(CUDART_VERSION))
     verify_hipsparse_status_invalid_pointer(
         hipsparseCsrSetPointers(nullptr, row_data, col_data, val_data), "Error: A is nullptr");
+#endif
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
     verify_hipsparse_status_invalid_pointer(
         hipsparseCsrSetPointers(csr, nullptr, col_data, val_data), "Error: row_data is nullptr");
     verify_hipsparse_status_invalid_pointer(
@@ -668,6 +677,10 @@ void testing_spmat_descr_bad_arg(void)
     verify_hipsparse_status_success(hipsparseDestroySpMat(coo), "Success");
     verify_hipsparse_status_success(hipsparseDestroySpMat(coo_aos), "Success");
     verify_hipsparse_status_success(hipsparseDestroySpMat(csr), "Success");
+#endif
+
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11021)
+    verify_hipsparse_status_success(hipsparseDestroySpMat(bell), "Success");
 #endif
 }
 

@@ -10816,26 +10816,31 @@ hipsparseStatus_t hipsparseBlockedEllGet(const hipsparseSpMatDescr_t spMatDescr,
                                          hipsparseIndexBase_t*       idxBase,
                                          hipDataType*                valueType)
 {
-    cusparseIndexType_t cuda_index_type;
-    cusparseIndexBase_t cuda_index_base;
-    cudaDataType        cuda_data_type;
-    RETURN_IF_CUSPARSE_ERROR(
-        cusparseBlockedEllGet((const cusparseSpMatDescr_t)spMatDescr,
-                              rows,
-                              cols,
-                              ellBlockSize,
-                              ellCols,
-                              ellColInd,
-                              ellValue,
-                              ellIdxType != nullptr ? &cuda_index_type : nullptr,
-                              idxBase != nullptr ? &cuda_index_base : nullptr,
-                              valueType != nullptr ? &cuda_data_type : nullptr));
+    // As of cusparse 11.4.1, this routine does not actually exist as a symbol in the cusparse
+    // library (the documentation indicates that it should exist starting at cusparse 11.2.1).
+    // Uncomment once it has been added
+    // cusparseIndexType_t cuda_index_type;
+    // cusparseIndexBase_t cuda_index_base;
+    // cudaDataType        cuda_data_type;
 
-    *ellIdxType = CudaIndexTypeToHIPIndexType(cuda_index_type);
-    *idxBase    = CudaIndexBaseToHIPIndexBase(cuda_index_base);
-    *valueType  = CudaDataTypeToHIPDataType(cuda_data_type);
+    // RETURN_IF_CUSPARSE_ERROR(
+    //     cusparseBlockedEllGet((cusparseSpMatDescr_t)spMatDescr,
+    //                           rows,
+    //                           cols,
+    //                           ellBlockSize,
+    //                           ellCols,
+    //                           ellColInd,
+    //                           ellValue,
+    //                           ellIdxType != nullptr ? &cuda_index_type : nullptr,
+    //                           idxBase != nullptr ? &cuda_index_base : nullptr,
+    //                           valueType != nullptr ? &cuda_data_type : nullptr));
 
-    return HIPSPARSE_STATUS_SUCCESS;
+    // *ellIdxType = CudaIndexTypeToHIPIndexType(cuda_index_type);
+    // *idxBase    = CudaIndexBaseToHIPIndexBase(cuda_index_base);
+    // *valueType  = CudaDataTypeToHIPDataType(cuda_data_type);
+
+    // return HIPSPARSE_STATUS_SUCCESS;
+    return HIPSPARSE_STATUS_NOT_SUPPORTED;
 }
 #endif
 
@@ -11036,7 +11041,7 @@ hipsparseStatus_t hipsparseSpMatGetAttribute(hipsparseSpMatDescr_t     spMatDesc
                                              size_t                    dataSize)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseSpMatGetAttribute(
-        (cusparseSpMatDescr_t)spMatDescr, (hipsparseSpMatAttribute_t)attribute, data, dataSize));
+        (cusparseSpMatDescr_t)spMatDescr, (cusparseSpMatAttribute_t)attribute, data, dataSize));
 }
 #endif
 
@@ -11047,8 +11052,11 @@ hipsparseStatus_t hipsparseSpMatSetAttribute(hipsparseSpMatDescr_t     spMatDesc
                                              const void*               data,
                                              size_t                    dataSize)
 {
-    return hipCUSPARSEStatusToHIPStatus(cusparseSpMatSetAttribute(
-        (cusparseSpMatDescr_t)spMatDescr, (hipsparseSpMatAttribute_t)attribute, data, dataSize));
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseSpMatSetAttribute((cusparseSpMatDescr_t)spMatDescr,
+                                  (cusparseSpMatAttribute_t)attribute,
+                                  const_cast<void*>(data),
+                                  dataSize));
 }
 #endif
 
@@ -11627,8 +11635,7 @@ hipsparseStatus_t hipsparseSpSV_solve(hipsparseHandle_t           handle,
                                                            (const cusparseDnVecDescr_t)y,
                                                            hipDataTypeToCudaDataType(computeType),
                                                            hipSpSVAlgToCudaSpSVAlg(alg),
-                                                           (cusparseSpSVDescr_t)spsvDescr,
-                                                           externalBuffer));
+                                                           (cusparseSpSVDescr_t)spsvDescr));
 }
 #endif
 
@@ -11724,8 +11731,7 @@ hipsparseStatus_t hipsparseSpSM_solve(hipsparseHandle_t           handle,
                                                            (const cusparseDnMatDescr_t)matC,
                                                            hipDataTypeToCudaDataType(computeType),
                                                            hipSpSMAlgToCudaSpSMAlg(alg),
-                                                           (cusparseSpSMDescr_t)spsmDescr,
-                                                           externalBuffer));
+                                                           (cusparseSpSMDescr_t)spsmDescr));
 }
 #endif
 

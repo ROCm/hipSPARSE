@@ -104,10 +104,6 @@ void testing_csr2csr_compress_bad_arg(void)
         handle, m, nullptr, csr_val_A, csr_row_ptr_A, nnz_per_row, nnz_C, tol);
     verify_hipsparse_status_invalid_pointer(status, "Error: Matrix descriptor is invalid");
 
-    status = hipsparseXnnz_compress(
-        handle, m, csr_descr, (const T*)nullptr, csr_row_ptr_A, nnz_per_row, nnz_C, tol);
-    verify_hipsparse_status_invalid_pointer(status, "Error: CSR values array is invalid");
-
     status
         = hipsparseXnnz_compress(handle, m, csr_descr, csr_val_A, nullptr, nnz_per_row, nnz_C, tol);
     verify_hipsparse_status_invalid_pointer(status, "Error: CSR row pointer array is invalid");
