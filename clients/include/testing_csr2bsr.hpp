@@ -139,19 +139,6 @@ void testing_csr2bsr_bad_arg(void)
                                   n,
                                   csr_descr,
                                   csr_row_ptr,
-                                  nullptr,
-                                  block_dim,
-                                  bsr_descr,
-                                  bsr_row_ptr,
-                                  &bsr_nnzb);
-    verify_hipsparse_status_invalid_pointer(status, "Error: csr_col_ind is nullptr");
-
-    status = hipsparseXcsr2bsrNnz(handle,
-                                  dir,
-                                  m,
-                                  n,
-                                  csr_descr,
-                                  csr_row_ptr,
                                   csr_col_ind,
                                   block_dim,
                                   nullptr,
