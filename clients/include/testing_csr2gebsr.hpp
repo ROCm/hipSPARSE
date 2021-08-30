@@ -263,13 +263,6 @@ void testing_csr2gebsr_bad_arg(void)
 
     {
         ARGSET;
-        arg_csr_col_ind = nullptr;
-        status          = CALL_NNZ;
-        verify_hipsparse_status_invalid_pointer(status, "Error: csr_col_ind is nullptr");
-    }
-
-    {
-        ARGSET;
         arg_bsr_descr = nullptr;
         status        = CALL_NNZ;
         verify_hipsparse_status_invalid_pointer(status, "Error: bsr_descr is nullptr");
