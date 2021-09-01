@@ -386,8 +386,7 @@ hipsparseStatus_t testing_csrmm(Arguments argus)
 
         if(M < 0 || N < 0 || K < 0)
         {
-            verify_hipsparse_status_invalid_size(status,
-                                                 "Error: M < 0 || N < 0 || K < 0");
+            verify_hipsparse_status_invalid_size(status, "Error: M < 0 || N < 0 || K < 0");
         }
         else
         {
@@ -408,14 +407,8 @@ hipsparseStatus_t testing_csrmm(Arguments argus)
     // Initial Data on CPU
     if(binfile != "")
     {
-        if(read_bin_matrix(binfile.c_str(),
-                           M,
-                           K,
-                           nnz,
-                           hcsr_row_ptrA,
-                           hcsr_col_indA,
-                           hcsr_valA,
-                           idx_base)
+        if(read_bin_matrix(
+               binfile.c_str(), M, K, nnz, hcsr_row_ptrA, hcsr_col_indA, hcsr_valA, idx_base)
            != 0)
         {
             fprintf(stderr, "Cannot open [read] %s\n", binfile.c_str());
@@ -428,14 +421,8 @@ hipsparseStatus_t testing_csrmm(Arguments argus)
 
         if(filename != "")
         {
-            if(read_mtx_matrix(filename.c_str(),
-                               M,
-                               K,
-                               nnz,
-                               hcoo_row_indA,
-                               hcsr_col_indA,
-                               hcsr_valA,
-                               idx_base)
+            if(read_mtx_matrix(
+                   filename.c_str(), M, K, nnz, hcoo_row_indA, hcsr_col_indA, hcsr_valA, idx_base)
                != 0)
             {
                 fprintf(stderr, "Cannot open [read] %s\n", filename.c_str());
@@ -464,21 +451,23 @@ hipsparseStatus_t testing_csrmm(Arguments argus)
     // Some matrix properties
     int A_m = M;
     int A_n = K;
-    int B_m
-        = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? (transA == HIPSPARSE_OPERATION_NON_TRANSPOSE ? K : M) : N;
-    int B_n
-        = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? N : (transA == HIPSPARSE_OPERATION_NON_TRANSPOSE ? K : M);
+    int B_m = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE)
+                  ? (transA == HIPSPARSE_OPERATION_NON_TRANSPOSE ? K : M)
+                  : N;
+    int B_n = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE)
+                  ? N
+                  : (transA == HIPSPARSE_OPERATION_NON_TRANSPOSE ? K : M);
 
-    int C_m = (transA == HIPSPARSE_OPERATION_NON_TRANSPOSE ? M : K);
-    int C_n = N;
-    ldb = B_m;
-    ldc = C_m;
+    int C_m   = (transA == HIPSPARSE_OPERATION_NON_TRANSPOSE ? M : K);
+    int C_n   = N;
+    ldb       = B_m;
+    ldc       = C_m;
     int nrowB = ldb;
     int ncolB = B_n;
     int nrowC = ldc;
     int ncolC = C_n;
-    int Bnnz = nrowB * ncolB;
-    int Cnnz = nrowC * ncolC;
+    int Bnnz  = nrowB * ncolB;
+    int Cnnz  = nrowC * ncolC;
 
     // Host structures - Dense matrix B and C
     std::vector<T> hB(Bnnz);
