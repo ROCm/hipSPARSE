@@ -303,7 +303,6 @@ hipsparseStatus_t testing_csrmm(Arguments argus)
     hipsparseOperation_t transA    = argus.transA;
     hipsparseOperation_t transB    = argus.transB;
     hipsparseIndexBase_t idx_base  = argus.idx_base;
-    hipsparseOrder_t     order     = HIPSPARSE_ORDER_COLUMN;
     std::string          binfile   = "";
     std::string          filename  = "";
     hipsparseStatus_t    status;
@@ -339,7 +338,7 @@ hipsparseStatus_t testing_csrmm(Arguments argus)
     int nnz = M * scale * K;
 
     // Argument sanity check before allocating invalid memory
-    if(M <= 0 || N <= 0 || K <= 0 || nnz <= 0)
+    if(M <= 0 || N <= 0 || K <= 0)
     {
 #ifdef __HIP_PLATFORM_NVIDIA__
         // Do not test args in cusparse
@@ -385,14 +384,14 @@ hipsparseStatus_t testing_csrmm(Arguments argus)
                                   dC,
                                   ldc);
 
-        if(M < 0 || N < 0 || K < 0 || nnz < 0)
+        if(M < 0 || N < 0 || K < 0)
         {
             verify_hipsparse_status_invalid_size(status,
-                                                 "Error: M < 0 || N < 0 || K < 0 || nnz < 0");
+                                                 "Error: M < 0 || N < 0 || K < 0");
         }
         else
         {
-            verify_hipsparse_status_success(status, "M >= 0 && N >= 0 && K >= 0 && nnz >= 0");
+            verify_hipsparse_status_success(status, "M >= 0 && N >= 0 && K >= 0");
         }
 
         return HIPSPARSE_STATUS_SUCCESS;
@@ -407,13 +406,11 @@ hipsparseStatus_t testing_csrmm(Arguments argus)
     std::vector<T>   hcsr_valA;
 
     // Initial Data on CPU
-    int nrows = (transA == HIPSPARSE_OPERATION_NON_TRANSPOSE ? M : K);
-    int ncols = (transA == HIPSPARSE_OPERATION_NON_TRANSPOSE ? K : M);
     if(binfile != "")
     {
         if(read_bin_matrix(binfile.c_str(),
-                           nrows,
-                           ncols,
+                           M,
+                           K,
                            nnz,
                            hcsr_row_ptrA,
                            hcsr_col_indA,
@@ -432,8 +429,8 @@ hipsparseStatus_t testing_csrmm(Arguments argus)
         if(filename != "")
         {
             if(read_mtx_matrix(filename.c_str(),
-                               nrows,
-                               ncols,
+                               M,
+                               K,
                                nnz,
                                hcoo_row_indA,
                                hcsr_col_indA,
@@ -447,43 +444,39 @@ hipsparseStatus_t testing_csrmm(Arguments argus)
         }
         else
         {
-            gen_matrix_coo(nrows, ncols, nnz, hcoo_row_indA, hcsr_col_indA, hcsr_valA, idx_base);
+            gen_matrix_coo(M, K, nnz, hcoo_row_indA, hcsr_col_indA, hcsr_valA, idx_base);
         }
 
         // Convert COO to CSR
-        hcsr_row_ptrA.resize(nrows + 1, 0);
+        hcsr_row_ptrA.resize(M + 1, 0);
         for(int i = 0; i < nnz; ++i)
         {
             ++hcsr_row_ptrA[hcoo_row_indA[i] + 1 - idx_base];
         }
 
         hcsr_row_ptrA[0] = idx_base;
-        for(int i = 0; i < nrows; ++i)
+        for(int i = 0; i < M; ++i)
         {
             hcsr_row_ptrA[i + 1] += hcsr_row_ptrA[i];
         }
     }
 
-    M = (transA == HIPSPARSE_OPERATION_NON_TRANSPOSE ? nrows : ncols);
-    K = (transA == HIPSPARSE_OPERATION_NON_TRANSPOSE ? ncols : nrows);
-
     // Some matrix properties
-    int A_m = (transA == HIPSPARSE_OPERATION_NON_TRANSPOSE ? M : K);
-    int A_n = (transA == HIPSPARSE_OPERATION_NON_TRANSPOSE ? K : M);
-    int B_m = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE ? K : N);
-    int B_n = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE ? N : K);
-    int C_m = M;
+    int A_m = M;
+    int A_n = K;
+    int B_m
+        = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? (transA == HIPSPARSE_OPERATION_NON_TRANSPOSE ? K : M) : N;
+    int B_n
+        = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? N : (transA == HIPSPARSE_OPERATION_NON_TRANSPOSE ? K : M);
+
+    int C_m = (transA == HIPSPARSE_OPERATION_NON_TRANSPOSE ? M : K);
     int C_n = N;
-    ldb     = order == HIPSPARSE_ORDER_COLUMN
-                  ? (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE ? 2 * K : 2 * N)
-                  : (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE ? 2 * N : 2 * K);
-    ldc     = order == HIPSPARSE_ORDER_COLUMN ? 2 * M : 2 * N;
-
-    int nrowB = order == HIPSPARSE_ORDER_COLUMN ? ldb : B_m;
-    int ncolB = order == HIPSPARSE_ORDER_COLUMN ? B_n : ldb;
-    int nrowC = order == HIPSPARSE_ORDER_COLUMN ? ldc : C_m;
-    int ncolC = order == HIPSPARSE_ORDER_COLUMN ? C_n : ldc;
-
+    ldb = B_m;
+    ldc = C_m;
+    int nrowB = ldb;
+    int ncolB = B_n;
+    int nrowC = ldc;
+    int ncolC = C_n;
     int Bnnz = nrowB * ncolB;
     int Cnnz = nrowC * ncolC;
 
@@ -606,7 +599,7 @@ hipsparseStatus_t testing_csrmm(Arguments argus)
                    h_beta,
                    hC_gold,
                    ldc,
-                   order,
+                   HIPSPARSE_ORDER_COLUMN,
                    idx_base);
 
         cpu_time_used = get_time_us() - cpu_time_used;

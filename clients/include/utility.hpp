@@ -2477,7 +2477,7 @@ void host_csrmm(J                     M,
     else
     {
         // scale C by beta
-        for(size_t i = 0; i < M; i++)
+        for(size_t i = 0; i < K; i++)
         {
             for(J j = 0; j < N; ++j)
             {
@@ -2486,7 +2486,7 @@ void host_csrmm(J                     M,
             }
         }
 
-        for(size_t i = 0; i < K; i++)
+        for(size_t i = 0; i < M; i++)
         {
             for(J j = 0; j < N; ++j)
             {
