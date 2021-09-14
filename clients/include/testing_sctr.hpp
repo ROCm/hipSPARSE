@@ -61,14 +61,20 @@ void testing_sctr_bad_arg(void)
         return;
     }
 
-    verify_hipsparse_status_invalid_value(hipsparseXsctr(handle, -1, dx_val, dx_ind, dy, idx_base), "Error: nnz is invalid");
+    verify_hipsparse_status_invalid_value(hipsparseXsctr(handle, -1, dx_val, dx_ind, dy, idx_base),
+                                          "Error: nnz is invalid");
 
     // cusparse returns success for these
 #if(!defined(CUDART_VERSION))
-    verify_hipsparse_status_invalid_pointer(hipsparseXsctr(handle, nnz, dx_val, (int*)nullptr, dy, idx_base), "Error: x_ind is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXsctr(handle, nnz, (T*)nullptr, dx_ind, dy, idx_base), "Error: x_val is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXsctr(handle, nnz, dx_val, dx_ind, (T*)nullptr, idx_base), "Error: y is nullptr");
-    verify_hipsparse_status_invalid_handle(hipsparseXsctr(nullptr, nnz, dx_val, dx_ind, dy, idx_base));
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXsctr(handle, nnz, dx_val, (int*)nullptr, dy, idx_base),
+        "Error: x_ind is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXsctr(handle, nnz, (T*)nullptr, dx_ind, dy, idx_base), "Error: x_val is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXsctr(handle, nnz, dx_val, dx_ind, (T*)nullptr, idx_base), "Error: y is nullptr");
+    verify_hipsparse_status_invalid_handle(
+        hipsparseXsctr(nullptr, nnz, dx_val, dx_ind, dy, idx_base));
 #endif
 }
 

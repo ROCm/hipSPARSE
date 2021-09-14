@@ -39,7 +39,7 @@ using namespace hipsparse_test;
 
 void testing_sddmm_csr_bad_arg(void)
 {
-#ifdef __HIP_PLATFORM_NVCC__
+#ifdef __HIP_PLATFORM_NVIDIA__
     // do not test for bad args
     return;
 #endif

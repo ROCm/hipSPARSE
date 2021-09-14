@@ -39,7 +39,7 @@ using namespace hipsparse_test;
 
 void testing_coo2csr_bad_arg(void)
 {
-#ifdef __HIP_PLATFORM_NVCC__
+#ifdef __HIP_PLATFORM_NVIDIA__
     // do not test for bad args
     return;
 #endif
@@ -127,7 +127,7 @@ hipsparseStatus_t testing_coo2csr(Arguments argus)
     // Argument sanity check before allocating invalid memory
     if(m <= 0 || n <= 0 || nnz <= 0)
     {
-#ifdef __HIP_PLATFORM_NVCC__
+#ifdef __HIP_PLATFORM_NVIDIA__
         // Do not test args in cusparse
         return HIPSPARSE_STATUS_SUCCESS;
 #endif

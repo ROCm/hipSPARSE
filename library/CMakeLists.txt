@@ -75,7 +75,7 @@ target_include_directories(hipsparse
 if(NOT BUILD_CUDA)
   target_link_libraries(hipsparse PRIVATE roc::rocsparse hip::host)
 else()
-  target_compile_definitions(hipsparse PRIVATE __HIP_PLATFORM_NVCC__)
+  target_compile_definitions(hipsparse PRIVATE __HIP_PLATFORM_NVIDIA__)
   target_include_directories(hipsparse
                                PUBLIC
                                  $<BUILD_INTERFACE:${CUDA_INCLUDE_DIRS}>
@@ -134,9 +134,19 @@ if(NOT BUILD_CUDA)
   set(CPACK_RPM_PACKAGE_REQUIRES "rocsparse >= 1.12.10")
 endif()
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/../LICENSE.md")
-
-if(NOT CPACK_PACKAGING_INSTALL_PREFIX)
-  set(CPACK_PACKAGING_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
+if(WIN32)
+  set(CPACK_SOURCE_GENERATOR "ZIP")
+  set(CPACK_GENERATOR "ZIP")
+  set(CMAKE_INSTALL_PREFIX "C:/hipSDK" CACHE PATH "Install path" FORCE)
+  set(INSTALL_PREFIX "C:/hipSDK")
+  set(CPACK_SET_DESTDIR OFF)
+  set(CPACK_PACKAGE_INSTALL_DIRECTORY "C:/hipSDK")
+  set(CPACK_PACKAGING_INSTALL_PREFIX "")
+  set(CPACK_INCLUDE_TOPLEVEL_DIRECTORY OFF)
+else()
+  if(NOT CPACK_PACKAGING_INSTALL_PREFIX)
+    set(CPACK_PACKAGING_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
+  endif()
 endif()
 
 set(CPACK_RPM_EXCLUDE_FROM_AUTO_FILELIST_ADDITION "\${CPACK_PACKAGING_INSTALL_PREFIX}" "\${CPACK_PACKAGING_INSTALL_PREFIX}/include")

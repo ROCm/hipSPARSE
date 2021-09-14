@@ -129,9 +129,11 @@ void testing_spsv_csr_bad_arg(void)
     verify_hipsparse_status_invalid_pointer(
         hipsparseSpSV_analysis(handle, transA, &alpha, A, x, nullptr, dataType, alg, descr, dbuf),
         "Error: y is nullptr");
+#if(!defined(CUDART_VERSION))
     verify_hipsparse_status_invalid_pointer(
         hipsparseSpSV_analysis(handle, transA, &alpha, A, x, y, dataType, alg, descr, nullptr),
         "Error: dbuf is nullptr");
+#endif
 
     // SpSV solve
     verify_hipsparse_status_invalid_handle(
@@ -148,9 +150,11 @@ void testing_spsv_csr_bad_arg(void)
     verify_hipsparse_status_invalid_pointer(
         hipsparseSpSV_solve(handle, transA, &alpha, A, x, nullptr, dataType, alg, descr, dbuf),
         "Error: y is nullptr");
+#if(!defined(CUDART_VERSION))
     verify_hipsparse_status_invalid_pointer(
         hipsparseSpSV_solve(handle, transA, &alpha, A, x, y, dataType, alg, descr, nullptr),
         "Error: dbuf is nullptr");
+#endif
 
     // Destruct
     verify_hipsparse_status_success(hipsparseSpSV_destroyDescr(descr), "success");

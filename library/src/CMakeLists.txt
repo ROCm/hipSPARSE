@@ -31,4 +31,4 @@ else()
 endif()
 
 # hipSPARSE Fortran source
-set(hipsparse_fortran_source src/hipsparse.f src/hipsparse_enums.f)
+set(hipsparse_fortran_source src/hipsparse.f90 src/hipsparse_enums.f90)
