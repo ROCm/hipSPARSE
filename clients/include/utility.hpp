@@ -69,35 +69,63 @@ std::string hipsparse_exepath();
         exit(EXIT_FAILURE);                   \
     }
 
-#define CHECK_HIPSPARSE_ERROR(error)                             \
-    if(error != HIPSPARSE_STATUS_SUCCESS)                        \
-    {                                                            \
-        fprintf(stderr, "hipSPARSE error: ");                    \
-        if(error == HIPSPARSE_STATUS_NOT_INITIALIZED)            \
-        {                                                        \
-            fprintf(stderr, "HIPSPARSE_STATUS_NOT_INITIALIZED"); \
-        }                                                        \
-        else if(error == HIPSPARSE_STATUS_INTERNAL_ERROR)        \
-        {                                                        \
-            fprintf(stderr, " HIPSPARSE_STATUS_INTERNAL_ERROR"); \
-        }                                                        \
-        else if(error == HIPSPARSE_STATUS_INVALID_VALUE)         \
-        {                                                        \
-            fprintf(stderr, "HIPSPARSE_STATUS_INVALID_VALUE");   \
-        }                                                        \
-        else if(error == HIPSPARSE_STATUS_ALLOC_FAILED)          \
-        {                                                        \
-            fprintf(stderr, "HIPSPARSE_STATUS_ALLOC_FAILED");    \
-        }                                                        \
-        else                                                     \
-        {                                                        \
-            fprintf(stderr, "HIPSPARSE_STATUS ERROR");           \
-        }                                                        \
-        fprintf(stderr, "\n");                                   \
-        return error;                                            \
+#define CHECK_HIPSPARSE_ERROR(error)                                       \
+    if(error != HIPSPARSE_STATUS_SUCCESS)                                  \
+    {                                                                      \
+        fprintf(stderr, "hipSPARSE error: ");                              \
+        if(error == HIPSPARSE_STATUS_NOT_INITIALIZED)                      \
+        {                                                                  \
+            fprintf(stderr, "HIPSPARSE_STATUS_NOT_INITIALIZED");           \
+        }                                                                  \
+        else if(error == HIPSPARSE_STATUS_ALLOC_FAILED)                    \
+        {                                                                  \
+            fprintf(stderr, "HIPSPARSE_STATUS_ALLOC_FAILED");              \
+        }                                                                  \
+        else if(error == HIPSPARSE_STATUS_INVALID_VALUE)                   \
+        {                                                                  \
+            fprintf(stderr, "HIPSPARSE_STATUS_INVALID_VALUE");             \
+        }                                                                  \
+        else if(error == HIPSPARSE_STATUS_ARCH_MISMATCH)                   \
+        {                                                                  \
+            fprintf(stderr, "HIPSPARSE_STATUS_ARCH_MISMATCH");             \
+        }                                                                  \
+        else if(error == HIPSPARSE_STATUS_MAPPING_ERROR)                   \
+        {                                                                  \
+            fprintf(stderr, "HIPSPARSE_STATUS_MAPPING_ERROR");             \
+        }                                                                  \
+        else if(error == HIPSPARSE_STATUS_EXECUTION_FAILED)                \
+        {                                                                  \
+            fprintf(stderr, "HIPSPARSE_STATUS_EXECUTION_FAILED");          \
+        }                                                                  \
+        else if(error == HIPSPARSE_STATUS_INTERNAL_ERROR)                  \
+        {                                                                  \
+            fprintf(stderr, " HIPSPARSE_STATUS_INTERNAL_ERROR");           \
+        }                                                                  \
+        else if(error == HIPSPARSE_STATUS_MATRIX_TYPE_NOT_SUPPORTED)       \
+        {                                                                  \
+            fprintf(stderr, "HIPSPARSE_STATUS_MATRIX_TYPE_NOT_SUPPORTED"); \
+        }                                                                  \
+        else if(error == HIPSPARSE_STATUS_ZERO_PIVOT)                      \
+        {                                                                  \
+            fprintf(stderr, " HIPSPARSE_STATUS_ZERO_PIVOT");               \
+        }                                                                  \
+        else if(error == HIPSPARSE_STATUS_NOT_SUPPORTED)                   \
+        {                                                                  \
+            fprintf(stderr, " HIPSPARSE_STATUS_NOT_SUPPORTED");            \
+        }                                                                  \
+        else if(error == HIPSPARSE_STATUS_INSUFFICIENT_RESOURCES)          \
+        {                                                                  \
+            fprintf(stderr, " HIPSPARSE_STATUS_INSUFFICIENT_RESOURCES");   \
+        }                                                                  \
+        else                                                               \
+        {                                                                  \
+            fprintf(stderr, "HIPSPARSE_STATUS ERROR");                     \
+        }                                                                  \
+        fprintf(stderr, "\n");                                             \
+        return error;                                                      \
     }
 
-#ifdef __HIP_PLATFORM_NVCC__
+#ifdef __HIP_PLATFORM_NVIDIA__
 static inline hipComplex operator-(const hipComplex& op)
 {
     hipComplex ret;
@@ -2449,7 +2477,7 @@ void host_csrmm(J                     M,
     else
     {
         // scale C by beta
-        for(size_t i = 0; i < M; i++)
+        for(size_t i = 0; i < K; i++)
         {
             for(J j = 0; j < N; ++j)
             {
@@ -2458,7 +2486,7 @@ void host_csrmm(J                     M,
             }
         }
 
-        for(size_t i = 0; i < K; i++)
+        for(size_t i = 0; i < M; i++)
         {
             for(J j = 0; j < N; ++j)
             {
@@ -3204,7 +3232,15 @@ static inline void host_lssolve(J                     M,
             temp.assign(prop.warpSize, make_DataType<T>(0.0));
 
             J idx_B = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? i * ldb + row : row * ldb + i;
-            temp[0] = alpha * B[idx_B];
+
+            if(transB == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE)
+            {
+                temp[0] = alpha * testing_conj(B[idx_B]);
+            }
+            else
+            {
+                temp[0] = alpha * B[idx_B];
+            }
 
             I diag      = -1;
             I row_begin = csr_row_ptr[row] - base;
@@ -3260,7 +3296,15 @@ static inline void host_lssolve(J                     M,
                     J idx     = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? i * ldb + local_col
                                                                               : local_col * ldb + i;
                     T neg_val = make_DataType<T>(-1.0) * local_val;
-                    temp[k]   = testing_fma(neg_val, B[idx], temp[k]);
+
+                    if(transB == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE)
+                    {
+                        temp[k] = testing_fma(neg_val, testing_conj(B[idx]), temp[k]);
+                    }
+                    else
+                    {
+                        temp[k] = testing_fma(neg_val, B[idx], temp[k]);
+                    }
                 }
             }
 
@@ -3324,7 +3368,15 @@ static inline void host_ussolve(J                     M,
             temp.assign(prop.warpSize, make_DataType<T>(0.0));
 
             J idx_B = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? i * ldb + row : row * ldb + i;
-            temp[0] = alpha * B[idx_B];
+
+            if(transB == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE)
+            {
+                temp[0] = alpha * testing_conj(B[idx_B]);
+            }
+            else
+            {
+                temp[0] = alpha * B[idx_B];
+            }
 
             I diag      = -1;
             I row_begin = csr_row_ptr[row] - base;
@@ -3376,7 +3428,15 @@ static inline void host_ussolve(J                     M,
                     J idx     = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? i * ldb + local_col
                                                                               : local_col * ldb + i;
                     T neg_val = make_DataType<T>(-1.0) * local_val;
-                    temp[k]   = testing_fma(neg_val, B[idx], temp[k]);
+
+                    if(transB == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE)
+                    {
+                        temp[k] = testing_fma(neg_val, testing_conj(B[idx]), temp[k]);
+                    }
+                    else
+                    {
+                        temp[k] = testing_fma(neg_val, B[idx], temp[k]);
+                    }
                 }
             }
 
@@ -3803,7 +3863,8 @@ void host_csrsv(hipsparseOperation_t trans,
                             numeric_pivot);
         }
     }
-    else if(trans == HIPSPARSE_OPERATION_TRANSPOSE)
+    else if(trans == HIPSPARSE_OPERATION_TRANSPOSE
+            || trans == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE)
     {
         // Transpose matrix
         std::vector<I> csrt_row_ptr(M + 1);
@@ -3821,6 +3882,14 @@ void host_csrsv(hipsparseOperation_t trans,
                         csrt_val,
                         HIPSPARSE_ACTION_NUMERIC,
                         base);
+
+        if(trans == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE)
+        {
+            for(size_t i = 0; i < csrt_val.size(); i++)
+            {
+                csrt_val[i] = testing_conj(csrt_val[i]);
+            }
+        }
 
         if(fill_mode == HIPSPARSE_FILL_MODE_LOWER)
         {
@@ -3962,7 +4031,8 @@ void host_csrsm(J                     M,
                          numeric_pivot);
         }
     }
-    else if(transA == HIPSPARSE_OPERATION_TRANSPOSE)
+    else if(transA == HIPSPARSE_OPERATION_TRANSPOSE
+            || transA == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE)
     {
         // Transpose matrix
         std::vector<I> csrt_row_ptr(M + 1);
@@ -3980,6 +4050,14 @@ void host_csrsm(J                     M,
                         csrt_val,
                         HIPSPARSE_ACTION_NUMERIC,
                         base);
+
+        if(transA == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE)
+        {
+            for(size_t i = 0; i < csrt_val.size(); i++)
+            {
+                csrt_val[i] = testing_conj(csrt_val[i]);
+            }
+        }
 
         if(fill_mode == HIPSPARSE_FILL_MODE_LOWER)
         {

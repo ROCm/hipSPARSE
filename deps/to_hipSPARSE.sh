@@ -102,7 +102,7 @@ sed -i 's/rocsparse_destroy_hyb_mat/hipsparseDestroyHybMat/g' $1
 # Status
 sed -i 's/rocsparse_status_success/HIPSPARSE_STATUS_SUCCESS/g' $1
 sed -i 's/rocsparse_status_invalid_handle/HIPSPARSE_STATUS_NOT_INITIALIZED/g' $1
-sed -i 's/rocsparse_status_not_implemented/HIPSPARSE_STATUS_INTERNAL_ERROR/g' $1
+sed -i 's/rocsparse_status_not_implemented/HIPSPARSE_STATUS_NOT_SUPPORTED/g' $1
 sed -i 's/rocsparse_status_invalid_pointer/HIPSPARSE_STATUS_INVALID_VALUE/g' $1
 sed -i 's/rocsparse_status_invalid_size/HIPSPARSE_STATUS_INVALID_VALUE/g' $1
 sed -i 's/rocsparse_status_memory_error/HIPSPARSE_STATUS_ALLOC_FAILED/g' $1

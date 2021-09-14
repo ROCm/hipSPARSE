@@ -392,12 +392,12 @@ hipsparseStatus_t testing_prune_dense2csr_by_percentage(Arguments argus)
     // Argument sanity check before allocating invalid memory
     if(M <= 0 || N <= 0 || LDA < M || percentage < 0.0 || percentage > 100.0)
     {
-	// cusparse does not seem to check LDA < M
+        // cusparse does not seem to check LDA < M
 #if(defined(CUDART_VERSION))
-	if(LDA < M)
-	{
-	    return HIPSPARSE_STATUS_SUCCESS;
-	}
+        if(LDA < M)
+        {
+            return HIPSPARSE_STATUS_SUCCESS;
+        }
 #endif
         size_t safe_size = 100;
 

@@ -41,7 +41,7 @@ using namespace hipsparse_test;
 template <typename T>
 void testing_csr2csr_compress_bad_arg(void)
 {
-#ifdef __HIP_PLATFORM_NVCC__
+#ifdef __HIP_PLATFORM_NVIDIA__
     // do not test for bad args
     return;
 #endif
@@ -103,10 +103,6 @@ void testing_csr2csr_compress_bad_arg(void)
     status = hipsparseXnnz_compress(
         handle, m, nullptr, csr_val_A, csr_row_ptr_A, nnz_per_row, nnz_C, tol);
     verify_hipsparse_status_invalid_pointer(status, "Error: Matrix descriptor is invalid");
-
-    status = hipsparseXnnz_compress(
-        handle, m, csr_descr, (const T*)nullptr, csr_row_ptr_A, nnz_per_row, nnz_C, tol);
-    verify_hipsparse_status_invalid_pointer(status, "Error: CSR values array is invalid");
 
     status
         = hipsparseXnnz_compress(handle, m, csr_descr, csr_val_A, nullptr, nnz_per_row, nnz_C, tol);
@@ -377,7 +373,7 @@ hipsparseStatus_t testing_csr2csr_compress(Arguments argus)
     // Argument sanity check before allocating invalid memory
     if(m <= 0 || n <= 0 || testing_real(tol) < testing_real(make_DataType<T>(0)))
     {
-#ifdef __HIP_PLATFORM_NVCC__
+#ifdef __HIP_PLATFORM_NVIDIA__
         // Do not test args in cusparse
         return HIPSPARSE_STATUS_SUCCESS;
 #endif

@@ -203,18 +203,24 @@ hipsparseStatus_t testing_spvv(void)
     CHECK_HIP_ERROR(hipFree(externalBuffer));
 
     // SpVV conjugate-transpose pointer-mode device
-    if(dataType == HIP_C_32F || dataType == HIP_C_64F){
+    if(dataType == HIP_C_32F || dataType == HIP_C_64F)
+    {
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
-        CHECK_HIPSPARSE_ERROR(hipsparseSpVV_bufferSize(
-        handle, HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE, x, y, dresult_C, dataType, &bufferSize));
+        CHECK_HIPSPARSE_ERROR(hipsparseSpVV_bufferSize(handle,
+                                                       HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE,
+                                                       x,
+                                                       y,
+                                                       dresult_C,
+                                                       dataType,
+                                                       &bufferSize));
         CHECK_HIP_ERROR(hipMalloc(&externalBuffer, bufferSize));
         CHECK_HIPSPARSE_ERROR(hipsparseSpVV(handle,
-                                        HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE,
-                                        x,
-                                        y,
-                                        dresult_C,
-                                        dataType,
-                                        externalBuffer));
+                                            HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE,
+                                            x,
+                                            y,
+                                            dresult_C,
+                                            dataType,
+                                            externalBuffer));
         CHECK_HIP_ERROR(hipFree(externalBuffer));
 
         // Copy output from device to CPU
@@ -232,14 +238,15 @@ hipsparseStatus_t testing_spvv(void)
     unit_check_general(1, 1, 1, &hresult_N_gold, &hresult_N);
 
     // CPU transpose
-    if(dataType == HIP_C_32F || dataType == HIP_C_64F){
+    if(dataType == HIP_C_32F || dataType == HIP_C_64F)
+    {
         hresult_C_gold = make_DataType<T>(0);
         for(I i = 0; i < nnz; ++i)
         {
             hresult_C_gold = hresult_C_gold + testing_conj(hx_val[i]) * hy[hx_ind[i] - idxBase];
         }
 
-	// Verify results against host
+        // Verify results against host
         unit_check_general(1, 1, 1, &hresult_C_gold, &hresult_C);
     }
 

@@ -40,7 +40,7 @@ using namespace hipsparse_test;
 template <typename T>
 void testing_csric02_bad_arg(void)
 {
-#ifdef __HIP_PLATFORM_NVCC__
+#ifdef __HIP_PLATFORM_NVIDIA__
     // do not test for bad args
     return;
 #endif
@@ -328,7 +328,7 @@ hipsparseStatus_t testing_csric02(Arguments argus)
     // Argument sanity check before allocating invalid memory
     if(m <= 0 || nnz <= 0)
     {
-#ifdef __HIP_PLATFORM_NVCC__
+#ifdef __HIP_PLATFORM_NVIDIA__
         // Do not test args in cusparse
         return HIPSPARSE_STATUS_SUCCESS;
 #endif
@@ -591,7 +591,7 @@ hipsparseStatus_t testing_csric02(Arguments argus)
 
         cpu_time_used = get_time_us() - cpu_time_used;
 
-#ifndef __HIP_PLATFORM_NVCC__
+#ifndef __HIP_PLATFORM_NVIDIA__
         // Do not check pivots in cusparse
         unit_check_general(1, 1, 1, &h_analysis_pivot_gold, &h_analysis_pivot_1);
         unit_check_general(1, 1, 1, &h_analysis_pivot_gold, &h_analysis_pivot_2);
