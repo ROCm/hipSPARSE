@@ -458,6 +458,7 @@ hipsparseStatus_t testing_csrmv(Arguments argus)
             {
                 int row_begin = hcsr_row_ptr[i] - idx_base;
                 int row_end   = hcsr_row_ptr[i + 1] - idx_base;
+                T   row_val   = h_alpha * hx[i];
 
                 for(int j = row_begin; j < row_end; ++j)
                 {
@@ -466,7 +467,7 @@ hipsparseStatus_t testing_csrmv(Arguments argus)
                                   ? testing_conj(hval[j])
                                   : hval[j];
 
-                    hy_gold[col] = testing_fma(h_alpha * val, hx[i], hy_gold[col]);
+                    hy_gold[col] = testing_fma(val, row_val, hy_gold[col]);
                 }
             }
         }
