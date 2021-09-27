@@ -3,6 +3,7 @@
 ## (Unreleased) hipSPARSE 1.xx.x
 ### Added
 - hipSPARSE documentation
+- Added (conjugate) transpose support for csrmv and spmv routines
 
 ## (Unreleased) hipSPARSE 1.11.2
 ### Added
