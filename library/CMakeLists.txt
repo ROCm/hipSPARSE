@@ -65,7 +65,7 @@ add_library(roc::hipsparse ALIAS hipsparse)
 
 # Target include directories
 target_include_directories(hipsparse
-                           PRIVATE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/include>
+                           PUBLIC  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/include>
                            PUBLIC  $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/library/include>
                                    $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
                                    $<INSTALL_INTERFACE:include>)
@@ -98,26 +98,25 @@ include(GenerateExportHeader)
 generate_export_header(hipsparse EXPORT_FILE_NAME ${PROJECT_BINARY_DIR}/include/hipsparse-export.h)
 
 # Install targets
-rocm_install_targets(TARGETS hipsparse
-                     INCLUDE
-                       ${CMAKE_SOURCE_DIR}/library/include
-                       ${CMAKE_BINARY_DIR}/include
-                     PREFIX hipsparse)
+rocm_install_targets(TARGETS hipsparse)
+
+install(
+       DIRECTORY "${CMAKE_SOURCE_DIR}/library/include/" "${PROJECT_BINARY_DIR}/include/"
+       DESTINATION "include/hipsparse/"
+       FILES_MATCHING
+       PATTERN "*.h"
+       PATTERN "*.hpp"
+       PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ )
 
 # Export targets
 if(NOT BUILD_CUDA)
   rocm_export_targets(TARGETS roc::hipsparse
-                      PREFIX hipsparse
                       DEPENDS PACKAGE hip
                       NAMESPACE roc::)
 else()
   rocm_export_targets(TARGETS roc::hipsparse
-                      PREFIX hipsparse
                       NAMESPACE roc::)
 endif()
-
-# Symbolic links
-rocm_install_symlink_subdir(hipsparse)
 
 # Package specific CPACK vars
 if(NOT BUILD_CUDA)
