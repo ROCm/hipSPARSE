@@ -25,7 +25,7 @@
 
 #include <hip/hip_complex.h>
 #include <hip/hip_runtime_api.h>
-#include <rocsparse.h>
+#include <rocsparse/rocsparse.h>
 #include <stdio.h>
 #include <stdlib.h>
 
