@@ -79,7 +79,7 @@ option(BUILD_SHARED_LIBS "Build hipSPARSE as a shared library" ON)
 option(BUILD_CLIENTS_TESTS "Build tests (requires googletest)" OFF)
 option(BUILD_CLIENTS_SAMPLES "Build examples" ON)
 option(BUILD_VERBOSE "Output additional build information" OFF)
-option(BUILD_CUDA "Build hipSPARSE for CUDA" OFF)
+option(USE_CUDA "Build hipSPARSE for CUDA" OFF)
 option(BUILD_CODE_COVERAGE "Build with code coverage enabled" OFF)
 option(BUILD_ADDRESS_SANITIZER "Build with address sanitizer enabled" OFF)
 
