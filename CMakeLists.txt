@@ -36,7 +36,7 @@ else()
 endif()
 
 # Pick up static and dynamic shared object files
-list( APPEND CMAKE_PREFIX_PATH /opt/rocm/llvm /opt/rocm/hip )
+list( APPEND CMAKE_PREFIX_PATH /opt/rocm/llvm /opt/rocm )
 
 # CMake modules
 list(APPEND CMAKE_MODULE_PATH
