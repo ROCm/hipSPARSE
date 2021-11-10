@@ -1,5 +1,5 @@
 /* ************************************************************************
- * Copyright (c) 2020 Advanced Micro Devices, Inc.
+ * Copyright (c) 2021 Advanced Micro Devices, Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,7 +34,7 @@ TEST(spgemmreuse_csr_bad_arg, spgemmreuse_csr_float)
 TEST(spgemmreuse_csr, spgemmreuse_csr_i32_i32_float)
 {
     hipsparseStatus_t status = testing_spgemmreuse_csr<int32_t, int32_t, float>();
-    std::cout << status<<std::endl;
+    std::cout << status << std::endl;
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 

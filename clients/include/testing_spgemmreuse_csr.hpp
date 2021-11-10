@@ -62,7 +62,7 @@ void testing_spgemmreuse_csr_bad_arg(void)
 
     std::unique_ptr<spgemm_struct> unique_ptr_descr(new spgemm_struct);
     hipsparseSpGEMMDescr_t         descr = unique_ptr_descr->descr;
-    auto dcsr_row_ptr_A_managed
+    auto                           dcsr_row_ptr_A_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
     auto dcsr_col_ind_A_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
@@ -144,140 +144,67 @@ void testing_spgemmreuse_csr_bad_arg(void)
                                     "success");
 
     // SpGEMM work estimation
-    verify_hipsparse_status_invalid_handle(hipsparseSpGEMMreuse_workEstimation(nullptr,
-									       transA,
-									       transB,
-									       A,
-									       B,
-									       C,
-									       alg,
-									       descr,
-									       &bufferSize,
-									       nullptr));
-    
-    verify_hipsparse_status_invalid_pointer(hipsparseSpGEMMreuse_workEstimation(handle,
-                                                                           transA,
-                                                                           transB,
-                                                                           nullptr,
-                                                                           B,
-                                                                           C,
-                                                                           alg,
-                                                                           descr,
-                                                                           &bufferSize,
-                                                                           nullptr),
-                                            "Error: A is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseSpGEMMreuse_workEstimation(handle,
-                                                                           transA,
-                                                                           transB,
-                                                                           A,
-                                                                           nullptr,
-                                                                           C,
-                                                                           alg,
-                                                                           descr,
-                                                                           &bufferSize,
-                                                                           nullptr),
-                                            "Error: B is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseSpGEMMreuse_workEstimation(handle,
-                                                                           transA,
-                                                                           transB,
-                                                                           A,
-                                                                           B,
-                                                                           nullptr,
-                                                                           alg,
-                                                                           descr,
-                                                                           &bufferSize,
-                                                                           nullptr),
-                                            "Error: C is nullptr");
-    
+    verify_hipsparse_status_invalid_handle(hipsparseSpGEMMreuse_workEstimation(
+        nullptr, transA, transB, A, B, C, alg, descr, &bufferSize, nullptr));
+
     verify_hipsparse_status_invalid_pointer(
         hipsparseSpGEMMreuse_workEstimation(
-            handle, transA, transB, A, B, C,  alg, descr, nullptr, nullptr),
+            handle, transA, transB, nullptr, B, C, alg, descr, &bufferSize, nullptr),
+        "Error: A is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseSpGEMMreuse_workEstimation(
+            handle, transA, transB, A, nullptr, C, alg, descr, &bufferSize, nullptr),
+        "Error: B is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseSpGEMMreuse_workEstimation(
+            handle, transA, transB, A, B, nullptr, alg, descr, &bufferSize, nullptr),
+        "Error: C is nullptr");
+
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseSpGEMMreuse_workEstimation(
+            handle, transA, transB, A, B, C, alg, descr, nullptr, nullptr),
         "Error: bufferSize is nullptr");
 
     // SpGEMM compute
     verify_hipsparse_status_invalid_handle(hipsparseSpGEMMreuse_compute(
         nullptr, transA, transB, &alpha, A, B, &beta, C, dataType, alg, descr));
-    verify_hipsparse_status_invalid_pointer(hipsparseSpGEMMreuse_compute(handle,
-                                                                    transA,
-                                                                    transB,
-                                                                    nullptr,
-                                                                    A,
-                                                                    B,
-                                                                    &beta,
-                                                                    C,
-                                                                    dataType,
-                                                                    alg,
-                                                                    descr),
-                                            "Error: alpha is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseSpGEMMreuse_compute(handle,
-                                                                    transA,
-                                                                    transB,
-                                                                    &alpha,
-                                                                    nullptr,
-                                                                    B,
-                                                                    &beta,
-                                                                    C,
-                                                                    dataType,
-                                                                    alg,
-                                                                    descr),
-                                            "Error: A is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseSpGEMMreuse_compute(handle,
-                                                                    transA,
-                                                                    transB,
-                                                                    &alpha,
-                                                                    A,
-                                                                    nullptr,
-                                                                    &beta,
-                                                                    C,
-                                                                    dataType,
-                                                                    alg,
-                                                                    descr),
-                                            "Error: B is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseSpGEMMreuse_compute(handle,
-                                                                    transA,
-                                                                    transB,
-                                                                    &alpha,
-                                                                    A,
-                                                                    B,
-                                                                    nullptr,
-                                                                    C,
-                                                                    dataType,
-                                                                    alg,
-                                                                    descr),
-                                            "Error: beta is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseSpGEMMreuse_compute(handle,
-                                                                    transA,
-                                                                    transB,
-                                                                    &alpha,
-                                                                    A,
-                                                                    B,
-                                                                    &beta,
-                                                                    nullptr,
-                                                                    dataType,
-                                                                    alg,
-                                                                    descr),
-                                            "Error: C is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseSpGEMMreuse_compute(
+            handle, transA, transB, nullptr, A, B, &beta, C, dataType, alg, descr),
+        "Error: alpha is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseSpGEMMreuse_compute(
+            handle, transA, transB, &alpha, nullptr, B, &beta, C, dataType, alg, descr),
+        "Error: A is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseSpGEMMreuse_compute(
+            handle, transA, transB, &alpha, A, nullptr, &beta, C, dataType, alg, descr),
+        "Error: B is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseSpGEMMreuse_compute(
+            handle, transA, transB, &alpha, A, B, nullptr, C, dataType, alg, descr),
+        "Error: beta is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseSpGEMMreuse_compute(
+            handle, transA, transB, &alpha, A, B, &beta, nullptr, dataType, alg, descr),
+        "Error: C is nullptr");
 
     // SpGEMMreuse copy
     verify_hipsparse_status_invalid_pointer(
         hipsparseSpGEMMreuse_copy(
-				   handle, transA, transB, nullptr, B, C, alg, descr, &bufferSize,
-								      nullptr),
+            handle, transA, transB, nullptr, B, C, alg, descr, &bufferSize, nullptr),
         "Error: A is nullptr");
     verify_hipsparse_status_invalid_pointer(
         hipsparseSpGEMMreuse_copy(
-				   handle, transA, transB, A, nullptr, C, alg, descr,&bufferSize,
-								      nullptr),
+            handle, transA, transB, A, nullptr, C, alg, descr, &bufferSize, nullptr),
         "Error: B is nullptr");
     verify_hipsparse_status_invalid_pointer(
         hipsparseSpGEMMreuse_copy(
-				   handle, transA, transB, A, B, nullptr, alg, descr,&bufferSize,
-								      nullptr),
+            handle, transA, transB, A, B, nullptr, alg, descr, &bufferSize, nullptr),
         "Error: C is nullptr");
 
     verify_hipsparse_status_invalid_pointer(
-        hipsparseSpGEMMreuse_copy(
-				   handle, transA, transB, A, B, C, alg, descr, nullptr, nullptr),
+        hipsparseSpGEMMreuse_copy(handle, transA, transB, A, B, C, alg, descr, nullptr, nullptr),
         "Error: bufferSize is nullptr");
 
     // Destruct
@@ -449,83 +376,66 @@ hipsparseStatus_t testing_spgemmreuse_csr(void)
         &C1, m, n, 0, dcsr_row_ptr_C_1, nullptr, nullptr, typeI, typeJ, idxBaseC, typeT));
     // Query SpGEMM work estimation buffer
     size_t bufferSize1;
-    CHECK_HIPSPARSE_ERROR(hipsparseSpGEMMreuse_workEstimation(handle,
-                                                         transA,
-                                                         transB,
-                                                         A,
-                                                         B,
-                                                         C1,
-                                                         alg,
-                                                         descr,
-                                                         &bufferSize1,
-                                                         nullptr));
+    CHECK_HIPSPARSE_ERROR(hipsparseSpGEMMreuse_workEstimation(
+        handle, transA, transB, A, B, C1, alg, descr, &bufferSize1, nullptr));
 
     void* externalBuffer1;
     CHECK_HIP_ERROR(hipMalloc(&externalBuffer1, bufferSize1));
 
     // SpGEMMreuse work estimation
-    CHECK_HIPSPARSE_ERROR(hipsparseSpGEMMreuse_workEstimation(handle,
-                                                         transA,
-                                                         transB,
-                                                         A,
-                                                         B,
-                                                         C1,
-                                                         alg,
-                                                         descr,
-                                                         &bufferSize1,
-                                                         externalBuffer1));
+    CHECK_HIPSPARSE_ERROR(hipsparseSpGEMMreuse_workEstimation(
+        handle, transA, transB, A, B, C1, alg, descr, &bufferSize1, externalBuffer1));
     // Query SpGEMM_nnz
 
     // SpGEMM work estimation
-    size_t bufferSize2,bufferSize3,bufferSize4,bufferSize5;
-    void * externalBuffer2 = nullptr, * externalBuffer3 = nullptr, *externalBuffer4 = nullptr, *externalBuffer5 = nullptr;
-    
+    size_t bufferSize2, bufferSize3, bufferSize4, bufferSize5;
+    void * externalBuffer2 = nullptr, *externalBuffer3 = nullptr, *externalBuffer4 = nullptr,
+         *externalBuffer5 = nullptr;
+
     CHECK_HIPSPARSE_ERROR(hipsparseSpGEMMreuse_nnz(handle,
-						   transA,
-						   transB,
-						   A,
-						   B,
-						   C1,
-						   alg,
-						   descr,
-						   &bufferSize2,
-						   externalBuffer2,
-						   &bufferSize3,
-						   externalBuffer3,
-						   &bufferSize4,
-						   externalBuffer4));
+                                                   transA,
+                                                   transB,
+                                                   A,
+                                                   B,
+                                                   C1,
+                                                   alg,
+                                                   descr,
+                                                   &bufferSize2,
+                                                   externalBuffer2,
+                                                   &bufferSize3,
+                                                   externalBuffer3,
+                                                   &bufferSize4,
+                                                   externalBuffer4));
 
     CHECK_HIP_ERROR(hipMalloc(&externalBuffer2, bufferSize2));
     CHECK_HIP_ERROR(hipMalloc(&externalBuffer3, bufferSize3));
     CHECK_HIP_ERROR(hipMalloc(&externalBuffer4, bufferSize4));
 
     CHECK_HIPSPARSE_ERROR(hipsparseSpGEMMreuse_nnz(handle,
-                                                         transA,
-                                                         transB,
-                                                         A,
-                                                         B,
-                                                         C1,
-                                                         alg,
-                                                         descr,
-                                                         &bufferSize2,
-						   externalBuffer2,
-                                                         &bufferSize3,
-						   externalBuffer3,
-                                                         &bufferSize4,
-						   externalBuffer4));
+                                                   transA,
+                                                   transB,
+                                                   A,
+                                                   B,
+                                                   C1,
+                                                   alg,
+                                                   descr,
+                                                   &bufferSize2,
+                                                   externalBuffer2,
+                                                   &bufferSize3,
+                                                   externalBuffer3,
+                                                   &bufferSize4,
+                                                   externalBuffer4));
 
-    
     // We can already free buffer1
     CHECK_HIP_ERROR(hipFree(externalBuffer1));
     CHECK_HIP_ERROR(hipFree(externalBuffer2));
-
 
     // Get nnz of C
     int64_t rows_C, cols_C, nnz_C_1, nnz_C_2;
     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
     CHECK_HIPSPARSE_ERROR(hipsparseSpMatGetSize(C1, &rows_C, &cols_C, &nnz_C_1));
-    nnz_C_2= nnz_C_1;
-    
+    nnz_C_2 = nnz_C_1;
+
     // Allocate C
     auto dcsr_col_ind_C_1_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(J) * nnz_C_1), device_free};
@@ -553,69 +463,43 @@ hipsparseStatus_t testing_spgemmreuse_csr(void)
     CHECK_HIPSPARSE_ERROR(
         hipsparseCsrSetPointers(C1, dcsr_row_ptr_C_1, dcsr_col_ind_C_1, dcsr_val_C_1));
 
-
-    CHECK_HIPSPARSE_ERROR(hipsparseSpGEMMreuse_copy(handle,
-						    transA,
-						    transB,
-						    A,
-						    B,
-						    C1,
-						    alg,
-						    descr,
-						    &bufferSize5,
-						   externalBuffer5));
+    CHECK_HIPSPARSE_ERROR(hipsparseSpGEMMreuse_copy(
+        handle, transA, transB, A, B, C1, alg, descr, &bufferSize5, externalBuffer5));
     CHECK_HIP_ERROR(hipMalloc(&externalBuffer5, bufferSize5));
-    
-    CHECK_HIPSPARSE_ERROR(hipsparseSpGEMMreuse_copy(handle,
-						    transA,
-						    transB,
-						    A,
-						    B,
-						    C1,
-						    alg,
-						    descr,
-						    &bufferSize5,
-						    externalBuffer5));
 
-    
+    CHECK_HIPSPARSE_ERROR(hipsparseSpGEMMreuse_copy(
+        handle, transA, transB, A, B, C1, alg, descr, &bufferSize5, externalBuffer5));
+
     CHECK_HIP_ERROR(hipFree(externalBuffer3));
     externalBuffer3 = nullptr;
     // Query SpGEMM compute buffer
 
     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
-    CHECK_HIPSPARSE_ERROR(hipsparseSpGEMMreuse_compute(handle,
-						       transA,
-						       transB,
-						       &h_alpha,
-						       A,
-						       B,
-						       &h_beta,
-						       C1,
-						       typeT,
-						       alg,
-						       descr));
+    CHECK_HIPSPARSE_ERROR(hipsparseSpGEMMreuse_compute(
+        handle, transA, transB, &h_alpha, A, B, &h_beta, C1, typeT, alg, descr));
 
     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
     CHECK_HIP_ERROR(hipMemcpy(
         dcsr_row_ptr_C_2, dcsr_row_ptr_C_1, sizeof(I) * (m + 1), hipMemcpyDeviceToDevice));
-    CHECK_HIP_ERROR(hipMemcpy(
-        dcsr_col_ind_C_2, dcsr_col_ind_C_1, sizeof(J) * nnz_C_1, hipMemcpyDeviceToDevice))
-    CHECK_HIP_ERROR(hipMemcpy(
-        dcsr_val_C_2, dcsr_val_C_1, sizeof(T) * nnz_C_1, hipMemcpyDeviceToDevice));
+    CHECK_HIP_ERROR(
+        hipMemcpy(dcsr_col_ind_C_2, dcsr_col_ind_C_1, sizeof(J) * nnz_C_1, hipMemcpyDeviceToDevice))
+    CHECK_HIP_ERROR(
+        hipMemcpy(dcsr_val_C_2, dcsr_val_C_1, sizeof(T) * nnz_C_1, hipMemcpyDeviceToDevice));
 
-    CHECK_HIPSPARSE_ERROR(hipsparseCreateCsr(&C2, m, n, nnz_C_1, dcsr_row_ptr_C_2, dcsr_col_ind_C_2, dcsr_val_C_2, typeI, typeJ, idxBaseC, typeT));
+    CHECK_HIPSPARSE_ERROR(hipsparseCreateCsr(&C2,
+                                             m,
+                                             n,
+                                             nnz_C_1,
+                                             dcsr_row_ptr_C_2,
+                                             dcsr_col_ind_C_2,
+                                             dcsr_val_C_2,
+                                             typeI,
+                                             typeJ,
+                                             idxBaseC,
+                                             typeT));
 
-    CHECK_HIPSPARSE_ERROR(hipsparseSpGEMMreuse_compute(handle,
-						       transA,
-						       transB,
-						       d_alpha,
-						       A,
-						       B,
-						       d_beta,
-						       C1,
-						       typeT,
-						       alg,
-						       descr));
+    CHECK_HIPSPARSE_ERROR(hipsparseSpGEMMreuse_compute(
+        handle, transA, transB, d_alpha, A, B, d_beta, C1, typeT, alg, descr));
 
     CHECK_HIP_ERROR(hipFree(externalBuffer4));
     externalBuffer4 = nullptr;
@@ -629,7 +513,7 @@ hipsparseStatus_t testing_spgemmreuse_csr(void)
     std::vector<J> hcsr_col_ind_C_2(nnz_C_2);
     std::vector<T> hcsr_val_C_1(nnz_C_1);
     std::vector<T> hcsr_val_C_2(nnz_C_2);
-    
+
     CHECK_HIP_ERROR(hipMemcpy(
         hcsr_row_ptr_C_1.data(), dcsr_row_ptr_C_1, sizeof(I) * (m + 1), hipMemcpyDeviceToHost));
     CHECK_HIP_ERROR(hipMemcpy(
@@ -664,7 +548,7 @@ hipsparseStatus_t testing_spgemmreuse_csr(void)
                                       HIPSPARSE_INDEX_BASE_ZERO);
     // Verify nnz and row pointer array
     unit_check_general(1, 1, 1, &nnz_C_gold, &nnz_C_1);
-        unit_check_general(1, 1, 1, &nnz_C_gold, &nnz_C_2);
+    unit_check_general(1, 1, 1, &nnz_C_gold, &nnz_C_2);
     unit_check_general(1, m + 1, 1, hcsr_row_ptr_C_gold.data(), hcsr_row_ptr_C_1.data());
     unit_check_general(1, m + 1, 1, hcsr_row_ptr_C_gold.data(), hcsr_row_ptr_C_2.data());
 
@@ -711,7 +595,6 @@ hipsparseStatus_t testing_spgemmreuse_csr(void)
 
     return HIPSPARSE_STATUS_SUCCESS;
 #endif
-
 }
 
 #endif // TESTING_SPGEMM_CSR_HPP
