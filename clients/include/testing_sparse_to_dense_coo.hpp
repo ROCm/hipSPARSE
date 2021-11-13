@@ -29,7 +29,7 @@
 #include "unit.hpp"
 #include "utility.hpp"
 
-#include <hipsparse.h>
+#include <hipsparse/hipsparse.h>
 #include <string>
 #include <typeinfo>
 #include <unistd.h>

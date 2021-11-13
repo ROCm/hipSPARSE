@@ -28,7 +28,7 @@
 #include "arg_check.hpp"
 
 #include <hip/hip_runtime_api.h>
-#include <hipsparse.h>
+#include <hipsparse/hipsparse.h>
 #include <memory>
 
 #define PRINT_IF_HIP_ERROR(INPUT_STATUS_FOR_CHECK)                \

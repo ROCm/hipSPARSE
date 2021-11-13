@@ -25,7 +25,7 @@
 #ifndef ARG_CHECK_HPP
 #define ARG_CHECK_HPP
 
-#include <hipsparse.h>
+#include <hipsparse/hipsparse.h>
 
 void verify_hipsparse_status(hipsparseStatus_t status,
                              hipsparseStatus_t expected_status,
