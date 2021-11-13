@@ -24,7 +24,7 @@
 #include "testing_spgemm_csr.hpp"
 
 #include <gtest/gtest.h>
-#include <hipsparse.h>
+#include <hipsparse/hipsparse.h>
 
 #if(!defined(CUDART_VERSION))
 TEST(spgemm_csr_bad_arg, spgemm_csr_float)

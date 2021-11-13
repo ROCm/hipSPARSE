@@ -30,7 +30,7 @@
 #include "unit.hpp"
 #include "utility.hpp"
 
-#include <hipsparse.h>
+#include <hipsparse/hipsparse.h>
 
 using namespace hipsparse;
 using namespace hipsparse_test;

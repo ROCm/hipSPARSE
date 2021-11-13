@@ -21,7 +21,7 @@
 *
 * ************************************************************************ */
 
-#include "hipsparse.h"
+#include "hipsparse/hipsparse.h"
 
 #include <cuda_runtime_api.h>
 #include <cusparse_v2.h>

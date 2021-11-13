@@ -27,7 +27,7 @@
 
 #include "hipsparse_test_unique_ptr.hpp"
 
-#include <hipsparse.h>
+#include <hipsparse/hipsparse.h>
 
 #include <iostream>
 

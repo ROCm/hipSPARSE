@@ -25,7 +25,7 @@
 #ifndef UNIT_HPP
 #define UNIT_HPP
 
-#include <hipsparse.h>
+#include <hipsparse/hipsparse.h>
 
 /* =====================================================================
 

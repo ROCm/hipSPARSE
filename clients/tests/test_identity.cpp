@@ -25,7 +25,7 @@
 #include "utility.hpp"
 
 #include <gtest/gtest.h>
-#include <hipsparse.h>
+#include <hipsparse/hipsparse.h>
 #include <vector>
 
 int identity_N_range[] = {-3, 0, 33, 242, 623, 1000};

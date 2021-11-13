@@ -25,7 +25,7 @@
 #include "utility.hpp"
 
 #include <gtest/gtest.h>
-#include <hipsparse.h>
+#include <hipsparse/hipsparse.h>
 #include <string>
 #include <vector>
 typedef hipsparseIndexBase_t            base;
