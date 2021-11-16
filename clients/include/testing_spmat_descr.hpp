@@ -29,7 +29,7 @@
 #ifdef GOOGLE_TEST
 #include <gtest/gtest.h>
 #endif
-#include <hipsparse.h>
+#include <hipsparse/hipsparse.h>
 
 #include <iostream>
 

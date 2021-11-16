@@ -32,7 +32,7 @@
 
 #include <algorithm>
 #include <cmath>
-#include <hipsparse.h>
+#include <hipsparse/hipsparse.h>
 #include <limits>
 #include <string>
 

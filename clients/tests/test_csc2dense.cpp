@@ -24,7 +24,7 @@
 #include "testing_csc2dense.hpp"
 #include "utility.hpp"
 
-#include <hipsparse.h>
+#include <hipsparse/hipsparse.h>
 #include <string>
 #include <vector>
 typedef hipsparseIndexBase_t            base;

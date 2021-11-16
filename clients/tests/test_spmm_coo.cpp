@@ -23,7 +23,7 @@
 
 #include "testing_spmm_coo.hpp"
 
-#include <hipsparse.h>
+#include <hipsparse/hipsparse.h>
 
 TEST(spmm_coo_bad_arg, spmm_coo_float)
 {

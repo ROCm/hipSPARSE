@@ -23,7 +23,7 @@
 
 #include "testing_csrcolor.hpp"
 
-#include <hipsparse.h>
+#include <hipsparse/hipsparse.h>
 
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 

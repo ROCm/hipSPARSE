@@ -23,7 +23,7 @@
 
 #include "hipsparse.hpp"
 
-#include <hipsparse.h>
+#include <hipsparse/hipsparse.h>
 
 namespace hipsparse
 {

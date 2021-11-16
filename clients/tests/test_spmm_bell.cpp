@@ -23,7 +23,7 @@
 
 #include "testing_spmm_bell.hpp"
 
-#include <hipsparse.h>
+#include <hipsparse/hipsparse.h>
 
 #if(!defined(CUDART_VERSION))
 TEST(spmm_bell_bad_arg, spmm_bell_float)

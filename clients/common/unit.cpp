@@ -25,7 +25,7 @@
 
 #include <algorithm>
 #include <hip/hip_runtime_api.h>
-#include <hipsparse.h>
+#include <hipsparse/hipsparse.h>
 #include <limits>
 
 #ifdef GOOGLE_TEST
