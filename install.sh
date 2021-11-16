@@ -435,9 +435,9 @@ pushd .
 
   # cuda or hip
   if [[ "${build_cuda}" == false ]]; then
-    cmake_common_options="${cmake_common_options} -DBUILD_CUDA=OFF"
+    cmake_common_options="${cmake_common_options} -DUSE_CUDA=OFF"
   else
-    cmake_common_options="${cmake_common_options} -DBUILD_CUDA=ON"
+    cmake_common_options="${cmake_common_options} -DUSE_CUDA=ON"
   fi
 
   # Build library
