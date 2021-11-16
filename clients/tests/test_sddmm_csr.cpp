@@ -23,7 +23,7 @@
 
 #include "testing_sddmm_csr.hpp"
 
-#include <hipsparse.h>
+#include <hipsparse/hipsparse.h>
 
 // Only run tests for CUDA 11.2 or greater
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11020)

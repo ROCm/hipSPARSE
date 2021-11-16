@@ -23,7 +23,7 @@
 
 #include "testing_bsrxmv.hpp"
 
-#include <hipsparse.h>
+#include <hipsparse/hipsparse.h>
 
 TEST(bsrxmv_bad_arg, bsrxmv_bad_arg_float)
 {

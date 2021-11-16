@@ -25,7 +25,7 @@
 #ifndef TESTING_UTILITY_HPP
 #define TESTING_UTILITY_HPP
 
-#include "hipsparse.h"
+#include "hipsparse/hipsparse.h"
 #include <algorithm>
 #include <assert.h>
 #include <complex>

@@ -31,7 +31,7 @@
 #include "utility.hpp"
 
 #include <algorithm>
-#include <hipsparse.h>
+#include <hipsparse/hipsparse.h>
 #include <iostream>
 #include <string>
 

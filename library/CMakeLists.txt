@@ -31,13 +31,17 @@ if(BUILD_VERBOSE)
 endif()
 
 # Configure a header file to pass the hipSPARSE version
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/include/hipsparse-version.h.in"
-               "${PROJECT_BINARY_DIR}/include/hipsparse-version.h")
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/include/hipsparse/hipsparse-version.h.in"
+               "${PROJECT_BINARY_DIR}/include/hipsparse/hipsparse-version.h")
+
+# Copy Header files to build directory
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/include/hipsparse/hipsparse.h"
+               "${PROJECT_BINARY_DIR}/include/hipsparse/hipsparse.h" COPYONLY)
 
 # Public hipSPARSE headers
 set(hipsparse_headers_public
-  include/hipsparse.h
-  ${PROJECT_BINARY_DIR}/include/hipsparse-version.h)
+  include/hipsparse/hipsparse.h
+  ${PROJECT_BINARY_DIR}/include/hipsparse/hipsparse-version.h)
 
 source_group("Header Files\\Public" FILES ${hipsparse_headers_public})
 
@@ -104,13 +108,13 @@ endif()
 
 # Generate export header
 include(GenerateExportHeader)
-generate_export_header(hipsparse EXPORT_FILE_NAME ${PROJECT_BINARY_DIR}/include/hipsparse-export.h)
+generate_export_header(hipsparse EXPORT_FILE_NAME ${PROJECT_BINARY_DIR}/include/hipsparse/hipsparse-export.h)
 
 # Install targets
 rocm_install_targets(TARGETS hipsparse)
 
 install(
-       DIRECTORY "${CMAKE_SOURCE_DIR}/library/include/" "${PROJECT_BINARY_DIR}/include/"
+       DIRECTORY "${CMAKE_SOURCE_DIR}/library/include/hipsparse/" "${PROJECT_BINARY_DIR}/include/hipsparse/"
        DESTINATION "include/hipsparse/"
        FILES_MATCHING
        PATTERN "*.h"

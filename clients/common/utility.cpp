@@ -52,7 +52,7 @@ namespace std
 #include "utility.hpp"
 
 #include <hip/hip_runtime_api.h>
-#include <hipsparse.h>
+#include <hipsparse/hipsparse.h>
 #include <stdio.h>
 // #include <sys/time.h>
 #include <chrono>

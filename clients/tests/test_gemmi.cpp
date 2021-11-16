@@ -24,7 +24,7 @@
 #include "testing_gemmi.hpp"
 #include "utility.hpp"
 
-#include <hipsparse.h>
+#include <hipsparse/hipsparse.h>
 #include <string>
 
 typedef std::tuple<int, int, int, double, double>    gemmi_tuple;

@@ -24,7 +24,7 @@
 #include "testing_csrgemm2_b.hpp"
 #include "utility.hpp"
 
-#include <hipsparse.h>
+#include <hipsparse/hipsparse.h>
 #include <string>
 
 typedef hipsparseIndexBase_t base;

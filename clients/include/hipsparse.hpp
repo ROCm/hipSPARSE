@@ -25,7 +25,7 @@
 #ifndef _HIPSPARSE_HPP_
 #define _HIPSPARSE_HPP_
 
-#include <hipsparse.h>
+#include <hipsparse/hipsparse.h>
 
 namespace hipsparse
 {

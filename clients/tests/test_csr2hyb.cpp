@@ -24,7 +24,7 @@
 #include "testing_csr2hyb.hpp"
 #include "utility.hpp"
 
-#include <hipsparse.h>
+#include <hipsparse/hipsparse.h>
 #include <string>
 #include <vector>
 
