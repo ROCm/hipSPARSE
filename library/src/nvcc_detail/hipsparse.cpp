@@ -44,9 +44,10 @@ extern "C" {
         }                                                               \
     }
 
-#if(CUDART_VERSION >= 11003)
 hipsparseStatus_t hipCUSPARSEStatusToHIPStatus(cusparseStatus_t cuStatus)
 {
+    
+#if(CUDART_VERSION >= 11003)
     switch(cuStatus)
     {
     case CUSPARSE_STATUS_SUCCESS:
@@ -76,7 +77,6 @@ hipsparseStatus_t hipCUSPARSEStatusToHIPStatus(cusparseStatus_t cuStatus)
     default:
         throw "Non existent cusparseStatus_t";
     }
-}
 #elif(CUDART_VERSION >= 10010)
 switch(cuStatus)
 {
@@ -105,7 +105,10 @@ case CUSPARSE_STATUS_NOT_SUPPORTED:
 default:
     throw "Non existent cusparseStatus_t";
 }
+#else
+#error "CUDART_VERSION is not supported"
 #endif
+}
 
 cusparsePointerMode_t hipPointerModeToCudaPointerMode(hipsparsePointerMode_t mode)
 {
