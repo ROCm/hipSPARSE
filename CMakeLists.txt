@@ -79,9 +79,15 @@ option(BUILD_SHARED_LIBS "Build hipSPARSE as a shared library" ON)
 option(BUILD_CLIENTS_TESTS "Build tests (requires googletest)" OFF)
 option(BUILD_CLIENTS_SAMPLES "Build examples" ON)
 option(BUILD_VERBOSE "Output additional build information" OFF)
-option(BUILD_CUDA "Build hipSPARSE for CUDA" OFF)
+option(USE_CUDA "Build hipSPARSE using CUDA backend" OFF)
+option(BUILD_CUDA "Build hipSPARSE using CUDA backend" OFF)
 option(BUILD_CODE_COVERAGE "Build with code coverage enabled" OFF)
 option(BUILD_ADDRESS_SANITIZER "Build with address sanitizer enabled" OFF)
+
+if(BUILD_CUDA)
+  message(DEPRECATION "Using BUILD_CUDA is deprecated and will be removed as an option in a future release. Instead use USE_CUDA")
+  set(USE_CUDA ${BUILD_CUDA})
+endif()
 
 if(BUILD_CODE_COVERAGE)
   add_compile_options(-fprofile-arcs -ftest-coverage)
@@ -98,7 +104,7 @@ endif()
 include(cmake/Dependencies.cmake)
 
 # Setup version
-rocm_setup_version(VERSION 1.11.4)
+rocm_setup_version(VERSION 2.0.0)
 set(hipsparse_SOVERSION 0.1)
 
 # hipSPARSE library
