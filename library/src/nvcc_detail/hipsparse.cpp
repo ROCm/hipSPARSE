@@ -10131,8 +10131,10 @@ cusparseFormat_t hipFormatToCudaFormat(hipsparseFormat_t format)
         return CUSPARSE_FORMAT_COO_AOS;
     case HIPSPARSE_FORMAT_CSR:
         return CUSPARSE_FORMAT_CSR;
+#if(CUDART_VERSION >= 11021)    
     case HIPSPARSE_FORMAT_BLOCKED_ELL:
         return CUSPARSE_FORMAT_BLOCKED_ELL;
+#endif
     default:
         throw "Non existent hipsparseFormat_t";
     }
@@ -10148,8 +10150,11 @@ hipsparseFormat_t CudaFormatToHIPFormat(cusparseFormat_t format)
         return HIPSPARSE_FORMAT_COO_AOS;
     case CUSPARSE_FORMAT_CSR:
         return HIPSPARSE_FORMAT_CSR;
+            
+#if(CUDART_VERSION >= 11021)    
     case CUSPARSE_FORMAT_BLOCKED_ELL:
         return HIPSPARSE_FORMAT_BLOCKED_ELL;
+#endif
     default:
         throw "Non existent cusparseFormat_t";
     }
