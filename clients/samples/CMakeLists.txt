@@ -34,7 +34,7 @@ function(add_hipsparse_example EXAMPLE_SOURCE)
   # Linker dependencies
   target_link_libraries(${EXAMPLE_TARGET} PRIVATE roc::hipsparse)
 
-  if(NOT BUILD_CUDA)
+  if(NOT USE_CUDA)
     target_link_libraries(${EXAMPLE_TARGET} PRIVATE hip::host)
   else()
     target_compile_definitions(${EXAMPLE_TARGET} PRIVATE __HIP_PLATFORM_NVIDIA__)
@@ -48,14 +48,14 @@ endfunction()
 # Examples
 add_hipsparse_example(example_handle.cpp)
 
-if(NOT BUILD_CUDA OR (BUILD_CUDA AND CUDA_VERSION LESS 11))
+if(NOT USE_CUDA OR (USE_CUDA AND CUDA_VERSION LESS 11))
 add_hipsparse_example(example_csrmv.cpp)
 add_hipsparse_example(example_hybmv.cpp)
 endif()
 
 if (NOT WIN32)
 # Fortran examples
-if(TARGET hipsparse AND NOT BUILD_CUDA)
+if(TARGET hipsparse AND NOT USE_CUDA)
   # Compile Fortran examples only if built directly with package
   # else the Fortran module file is not generated
   

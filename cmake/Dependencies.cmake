@@ -27,7 +27,7 @@
 find_package(Git REQUIRED)
 
 # Either rocSPARSE or cuSPARSE is required
-if(NOT BUILD_CUDA)
+if(NOT USE_CUDA)
   find_package(hip REQUIRED CONFIG PATHS ${HIP_PATH} ${ROCM_PATH} /opt/rocm)
   find_package(rocsparse REQUIRED)
   if(WIN32)
