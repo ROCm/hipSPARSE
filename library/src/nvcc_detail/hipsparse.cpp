@@ -44,9 +44,10 @@ extern "C" {
         }                                                               \
     }
 
-#if(CUDART_VERSION >= 11003)
 hipsparseStatus_t hipCUSPARSEStatusToHIPStatus(cusparseStatus_t cuStatus)
 {
+
+#if(CUDART_VERSION >= 11003)
     switch(cuStatus)
     {
     case CUSPARSE_STATUS_SUCCESS:
@@ -76,36 +77,38 @@ hipsparseStatus_t hipCUSPARSEStatusToHIPStatus(cusparseStatus_t cuStatus)
     default:
         throw "Non existent cusparseStatus_t";
     }
-}
 #elif(CUDART_VERSION >= 10010)
-switch(cuStatus)
-{
-case CUSPARSE_STATUS_SUCCESS:
-    return HIPSPARSE_STATUS_SUCCESS;
-case CUSPARSE_STATUS_NOT_INITIALIZED:
-    return HIPSPARSE_STATUS_NOT_INITIALIZED;
-case CUSPARSE_STATUS_ALLOC_FAILED:
-    return HIPSPARSE_STATUS_ALLOC_FAILED;
-case CUSPARSE_STATUS_INVALID_VALUE:
-    return HIPSPARSE_STATUS_INVALID_VALUE;
-case CUSPARSE_STATUS_ARCH_MISMATCH:
-    return HIPSPARSE_STATUS_ARCH_MISMATCH;
-case CUSPARSE_STATUS_MAPPING_ERROR:
-    return HIPSPARSE_STATUS_MAPPING_ERROR;
-case CUSPARSE_STATUS_EXECUTION_FAILED:
-    return HIPSPARSE_STATUS_EXECUTION_FAILED;
-case CUSPARSE_STATUS_INTERNAL_ERROR:
-    return HIPSPARSE_STATUS_INTERNAL_ERROR;
-case CUSPARSE_STATUS_MATRIX_TYPE_NOT_SUPPORTED:
-    return HIPSPARSE_STATUS_MATRIX_TYPE_NOT_SUPPORTED;
-case CUSPARSE_STATUS_ZERO_PIVOT:
-    return HIPSPARSE_STATUS_ZERO_PIVOT;
-case CUSPARSE_STATUS_NOT_SUPPORTED:
-    return HIPSPARSE_STATUS_NOT_SUPPORTED;
-default:
-    throw "Non existent cusparseStatus_t";
-}
+    switch(cuStatus)
+    {
+    case CUSPARSE_STATUS_SUCCESS:
+        return HIPSPARSE_STATUS_SUCCESS;
+    case CUSPARSE_STATUS_NOT_INITIALIZED:
+        return HIPSPARSE_STATUS_NOT_INITIALIZED;
+    case CUSPARSE_STATUS_ALLOC_FAILED:
+        return HIPSPARSE_STATUS_ALLOC_FAILED;
+    case CUSPARSE_STATUS_INVALID_VALUE:
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    case CUSPARSE_STATUS_ARCH_MISMATCH:
+        return HIPSPARSE_STATUS_ARCH_MISMATCH;
+    case CUSPARSE_STATUS_MAPPING_ERROR:
+        return HIPSPARSE_STATUS_MAPPING_ERROR;
+    case CUSPARSE_STATUS_EXECUTION_FAILED:
+        return HIPSPARSE_STATUS_EXECUTION_FAILED;
+    case CUSPARSE_STATUS_INTERNAL_ERROR:
+        return HIPSPARSE_STATUS_INTERNAL_ERROR;
+    case CUSPARSE_STATUS_MATRIX_TYPE_NOT_SUPPORTED:
+        return HIPSPARSE_STATUS_MATRIX_TYPE_NOT_SUPPORTED;
+    case CUSPARSE_STATUS_ZERO_PIVOT:
+        return HIPSPARSE_STATUS_ZERO_PIVOT;
+    case CUSPARSE_STATUS_NOT_SUPPORTED:
+        return HIPSPARSE_STATUS_NOT_SUPPORTED;
+    default:
+        throw "Non existent cusparseStatus_t";
+    }
+#else
+#error "CUDART_VERSION is not supported"
 #endif
+}
 
 cusparsePointerMode_t hipPointerModeToCudaPointerMode(hipsparsePointerMode_t mode)
 {
@@ -10128,8 +10131,10 @@ cusparseFormat_t hipFormatToCudaFormat(hipsparseFormat_t format)
         return CUSPARSE_FORMAT_COO_AOS;
     case HIPSPARSE_FORMAT_CSR:
         return CUSPARSE_FORMAT_CSR;
+#if(CUDART_VERSION >= 11021)
     case HIPSPARSE_FORMAT_BLOCKED_ELL:
         return CUSPARSE_FORMAT_BLOCKED_ELL;
+#endif
     default:
         throw "Non existent hipsparseFormat_t";
     }
@@ -10145,8 +10150,11 @@ hipsparseFormat_t CudaFormatToHIPFormat(cusparseFormat_t format)
         return HIPSPARSE_FORMAT_COO_AOS;
     case CUSPARSE_FORMAT_CSR:
         return HIPSPARSE_FORMAT_CSR;
+
+#if(CUDART_VERSION >= 11021)
     case CUSPARSE_FORMAT_BLOCKED_ELL:
         return HIPSPARSE_FORMAT_BLOCKED_ELL;
+#endif
     default:
         throw "Non existent cusparseFormat_t";
     }
