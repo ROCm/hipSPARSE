@@ -379,10 +379,8 @@ hipsparseStatus_t testing_spgemmreuse_csr(void)
     CHECK_HIPSPARSE_ERROR(hipsparseSpGEMMreuse_workEstimation(
         handle, transA, transB, A, B, C1, alg, descr, &bufferSize1, nullptr));
 
-
-    auto externalBuffer1_managed
-        = hipsparse_unique_ptr{device_malloc(bufferSize1), device_free};
-    void* externalBuffer1 = (void*)externalBuffer1_managed.get();
+    auto  externalBuffer1_managed = hipsparse_unique_ptr{device_malloc(bufferSize1), device_free};
+    void* externalBuffer1         = (void*)externalBuffer1_managed.get();
 
     // SpGEMMreuse work estimation
     CHECK_HIPSPARSE_ERROR(hipsparseSpGEMMreuse_workEstimation(
@@ -392,7 +390,7 @@ hipsparseStatus_t testing_spgemmreuse_csr(void)
     // SpGEMM work estimation
     size_t bufferSize2, bufferSize3, bufferSize4, bufferSize5;
 
-    void * externalBuffer2 = nullptr, *externalBuffer3 = nullptr, *externalBuffer4 = nullptr,
+    void *externalBuffer2 = nullptr, *externalBuffer3 = nullptr, *externalBuffer4 = nullptr,
          *externalBuffer5 = nullptr;
 
     CHECK_HIPSPARSE_ERROR(hipsparseSpGEMMreuse_nnz(handle,
@@ -410,15 +408,12 @@ hipsparseStatus_t testing_spgemmreuse_csr(void)
                                                    &bufferSize4,
                                                    externalBuffer4));
 
-    auto externalBuffer2_managed
-      = hipsparse_unique_ptr{device_malloc(bufferSize2), device_free};
-    externalBuffer2 = (void*)externalBuffer2_managed.get();
-    auto externalBuffer3_managed
-      = hipsparse_unique_ptr{device_malloc(bufferSize3), device_free};
-    externalBuffer3 = (void*)externalBuffer3_managed.get();
-    auto externalBuffer4_managed
-      = hipsparse_unique_ptr{device_malloc(bufferSize4), device_free};
-    externalBuffer4 = (void*)externalBuffer4_managed.get();
+    auto externalBuffer2_managed = hipsparse_unique_ptr{device_malloc(bufferSize2), device_free};
+    externalBuffer2              = (void*)externalBuffer2_managed.get();
+    auto externalBuffer3_managed = hipsparse_unique_ptr{device_malloc(bufferSize3), device_free};
+    externalBuffer3              = (void*)externalBuffer3_managed.get();
+    auto externalBuffer4_managed = hipsparse_unique_ptr{device_malloc(bufferSize4), device_free};
+    externalBuffer4              = (void*)externalBuffer4_managed.get();
 
     CHECK_HIP_ERROR(hipMalloc(&externalBuffer2, bufferSize2));
     CHECK_HIP_ERROR(hipMalloc(&externalBuffer3, bufferSize3));
@@ -481,9 +476,8 @@ hipsparseStatus_t testing_spgemmreuse_csr(void)
     CHECK_HIPSPARSE_ERROR(hipsparseSpGEMMreuse_copy(
         handle, transA, transB, A, B, C1, alg, descr, &bufferSize5, externalBuffer5));
 
-    auto externalBuffer5_managed
-      = hipsparse_unique_ptr{device_malloc(bufferSize5), device_free};
-    externalBuffer5 = (void*)externalBuffer5_managed.get();
+    auto externalBuffer5_managed = hipsparse_unique_ptr{device_malloc(bufferSize5), device_free};
+    externalBuffer5              = (void*)externalBuffer5_managed.get();
 
     CHECK_HIPSPARSE_ERROR(hipsparseSpGEMMreuse_copy(
         handle, transA, transB, A, B, C1, alg, descr, &bufferSize5, externalBuffer5));

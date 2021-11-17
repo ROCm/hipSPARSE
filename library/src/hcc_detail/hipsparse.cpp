@@ -13475,7 +13475,6 @@ hipsparseStatus_t hipsparseSpGEMM_copy(hipsparseHandle_t      handle,
     return status;
 }
 
-
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpGEMMreuse_workEstimation(hipsparseHandle_t      handle,
                                                       hipsparseOperation_t   opA,
@@ -13757,8 +13756,6 @@ hipsparseStatus_t hipsparseSpGEMMreuse_copy(hipsparseHandle_t      handle,
                                                spgemmDescr->externalBuffer));
     return HIPSPARSE_STATUS_SUCCESS;
 }
-
-
 
 hipsparseStatus_t hipsparseSDDMM(hipsparseHandle_t           handle,
                                  hipsparseOperation_t        opA,
