@@ -10374,6 +10374,34 @@ cusparseSpMMAlg_t hipSpMMAlgToCudaSpMMAlg(hipsparseSpMMAlg_t alg)
 }
 #endif
 
+#if(CUDART_VERSION >= 11031)
+cusparseSpGEMMAlg_t hipSpGEMMAlgToCudaSpGEMMAlg(hipsparseSpGEMMAlg_t alg)
+{
+    switch(alg)
+    {
+    case HIPSPARSE_SPGEMM_DEFAULT:
+        return CUSPARSE_SPGEMM_DEFAULT;
+    case HIPSPARSE_SPGEMM_CSR_ALG_NONDETERMINISTIC:
+        return CUSPARSE_SPGEMM_CSR_ALG_NONDETERMINISTIC;
+    case HIPSPARSE_SPGEMM_CSR_ALG_DETERMINISTIC:
+        return CUSPARSE_SPGEMM_CSR_ALG_NONDETERMINISTIC;
+    default:
+        throw "Non existant cusparseSpGEMMAlg_t";
+    }
+}
+#elif(CUDART_VERSION >= 11000)
+cusparseSpGEMMAlg_t hipSpGEMMAlgToCudaSpGEMMAlg(hipsparseSpGEMMAlg_t alg)
+{
+    switch(alg)
+    {
+    case HIPSPARSE_SPGEMM_DEFAULT:
+        return CUSPARSE_SPGEMM_DEFAULT;
+    default:
+        throw "Non existant cusparseSpGEMMAlg_t";
+    }
+}
+#endif
+
 #if(CUDART_VERSION >= 11000)
 cusparseSpGEMMAlg_t hipSpGEMMAlgToCudaSpGEMMAlg(hipsparseSpGEMMAlg_t alg)
 {
@@ -10390,6 +10418,8 @@ cusparseSpGEMMAlg_t hipSpGEMMAlgToCudaSpGEMMAlg(hipsparseSpGEMMAlg_t alg)
     }
 }
 #endif
+
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
 
 #if(CUDART_VERSION >= 11020)
 cusparseSparseToDenseAlg_t hipSpToDnAlgToCudaSpToDnAlg(hipsparseSparseToDenseAlg_t alg)
@@ -10439,7 +10469,7 @@ hipsparseDenseToSparseAlg_t CudaDnToSpAlgToHipDnToSpAlg(cusparseDenseToSparseAlg
 }
 #endif
 
-#if(CUDART_VERSION >= 11020)
+#if(CUDART_VERSION >= 11022)
 cusparseSDDMMAlg_t hipSDDMMAlgToCudaSDDMMAlg(hipsparseSDDMMAlg_t alg)
 {
     switch(alg)
@@ -11470,7 +11500,7 @@ hipsparseStatus_t hipsparseSpGEMM_copy(hipsparseHandle_t      handle,
 }
 #endif
 
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpGEMMreuse_workEstimation(hipsparseHandle_t      handle,
                                                       hipsparseOperation_t   opA,
@@ -11497,7 +11527,7 @@ hipsparseStatus_t hipsparseSpGEMMreuse_workEstimation(hipsparseHandle_t      han
 }
 #endif
 
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpGEMMreuse_nnz(hipsparseHandle_t      handle,
                                            hipsparseOperation_t   opA,
@@ -11532,7 +11562,7 @@ hipsparseStatus_t hipsparseSpGEMMreuse_nnz(hipsparseHandle_t      handle,
 
 #endif
 
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpGEMMreuse_compute(hipsparseHandle_t      handle,
                                                hipsparseOperation_t   opA,
@@ -11561,7 +11591,7 @@ hipsparseStatus_t hipsparseSpGEMMreuse_compute(hipsparseHandle_t      handle,
 }
 #endif
 
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpGEMMreuse_copy(hipsparseHandle_t      handle,
                                             hipsparseOperation_t   opA,
@@ -11588,7 +11618,7 @@ hipsparseStatus_t hipsparseSpGEMMreuse_copy(hipsparseHandle_t      handle,
 
 #endif
 
-#if(CUDART_VERSION >= 11020)
+#if(CUDART_VERSION >= 11022)
 hipsparseStatus_t hipsparseSDDMM(hipsparseHandle_t           handle,
                                  hipsparseOperation_t        opA,
                                  hipsparseOperation_t        opB,
@@ -11615,7 +11645,7 @@ hipsparseStatus_t hipsparseSDDMM(hipsparseHandle_t           handle,
 }
 #endif
 
-#if(CUDART_VERSION >= 11020)
+#if(CUDART_VERSION >= 11022)
 hipsparseStatus_t hipsparseSDDMM_bufferSize(hipsparseHandle_t           handle,
                                             hipsparseOperation_t        opA,
                                             hipsparseOperation_t        opB,
@@ -11643,7 +11673,7 @@ hipsparseStatus_t hipsparseSDDMM_bufferSize(hipsparseHandle_t           handle,
 }
 #endif
 
-#if(CUDART_VERSION >= 11020)
+#if(CUDART_VERSION >= 11022)
 hipsparseStatus_t hipsparseSDDMM_preprocess(hipsparseHandle_t           handle,
                                             hipsparseOperation_t        opA,
                                             hipsparseOperation_t        opB,

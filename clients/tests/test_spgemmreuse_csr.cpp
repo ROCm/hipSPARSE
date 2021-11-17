@@ -25,7 +25,7 @@
 
 #include <hipsparse.h>
 
-#if(!defined(CUDART_VERSION))
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
 TEST(spgemmreuse_csr_bad_arg, spgemmreuse_csr_float)
 {
     testing_spgemmreuse_csr_bad_arg();

@@ -13475,7 +13475,7 @@ hipsparseStatus_t hipsparseSpGEMM_copy(hipsparseHandle_t      handle,
     return status;
 }
 
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
+
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpGEMMreuse_workEstimation(hipsparseHandle_t      handle,
                                                       hipsparseOperation_t   opA,
@@ -13511,9 +13511,7 @@ hipsparseStatus_t hipsparseSpGEMMreuse_workEstimation(hipsparseHandle_t      han
 
     return HIPSPARSE_STATUS_SUCCESS;
 }
-#endif
 
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpGEMMreuse_nnz(hipsparseHandle_t      handle,
                                            hipsparseOperation_t   opA,
@@ -13623,9 +13621,6 @@ hipsparseStatus_t hipsparseSpGEMMreuse_nnz(hipsparseHandle_t      handle,
     return HIPSPARSE_STATUS_SUCCESS;
 }
 
-#endif
-
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpGEMMreuse_compute(hipsparseHandle_t      handle,
                                                hipsparseOperation_t   opA,
@@ -13664,9 +13659,7 @@ hipsparseStatus_t hipsparseSpGEMMreuse_compute(hipsparseHandle_t      handle,
                                                        &spgemmDescr->bufferSize,
                                                        spgemmDescr->externalBuffer));
 }
-#endif
 
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpGEMMreuse_copy(hipsparseHandle_t      handle,
                                             hipsparseOperation_t   opA,
@@ -13765,7 +13758,7 @@ hipsparseStatus_t hipsparseSpGEMMreuse_copy(hipsparseHandle_t      handle,
     return HIPSPARSE_STATUS_SUCCESS;
 }
 
-#endif
+
 
 hipsparseStatus_t hipsparseSDDMM(hipsparseHandle_t           handle,
                                  hipsparseOperation_t        opA,

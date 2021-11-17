@@ -25,8 +25,8 @@
 
 #include <hipsparse.h>
 
-// Only run tests for CUDA 11.2 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11020)
+// Only run tests for CUDA 11.2.2 or greater
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11022)
 TEST(sddmm_csr_bad_arg, sddmm_csr_float)
 {
     testing_sddmm_csr_bad_arg();

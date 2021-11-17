@@ -37,7 +37,7 @@ using namespace hipsparse_test;
 
 void testing_spgemmreuse_csr_bad_arg(void)
 {
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
     int64_t              m         = 100;
     int64_t              n         = 100;
     int64_t              k         = 100;
@@ -218,7 +218,7 @@ template <typename I, typename J, typename T>
 hipsparseStatus_t testing_spgemmreuse_csr(void)
 {
 
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
     I                    safe_size = 100;
     T                    h_alpha   = make_DataType<T>(2.0);
     T                    h_beta    = make_DataType<T>(0.0);
@@ -379,8 +379,10 @@ hipsparseStatus_t testing_spgemmreuse_csr(void)
     CHECK_HIPSPARSE_ERROR(hipsparseSpGEMMreuse_workEstimation(
         handle, transA, transB, A, B, C1, alg, descr, &bufferSize1, nullptr));
 
-    void* externalBuffer1;
-    CHECK_HIP_ERROR(hipMalloc(&externalBuffer1, bufferSize1));
+
+    auto externalBuffer1_managed
+        = hipsparse_unique_ptr{device_malloc(bufferSize1), device_free};
+    void* externalBuffer1 = (void*)externalBuffer1_managed.get();
 
     // SpGEMMreuse work estimation
     CHECK_HIPSPARSE_ERROR(hipsparseSpGEMMreuse_workEstimation(
@@ -389,6 +391,7 @@ hipsparseStatus_t testing_spgemmreuse_csr(void)
 
     // SpGEMM work estimation
     size_t bufferSize2, bufferSize3, bufferSize4, bufferSize5;
+
     void * externalBuffer2 = nullptr, *externalBuffer3 = nullptr, *externalBuffer4 = nullptr,
          *externalBuffer5 = nullptr;
 
@@ -406,6 +409,16 @@ hipsparseStatus_t testing_spgemmreuse_csr(void)
                                                    externalBuffer3,
                                                    &bufferSize4,
                                                    externalBuffer4));
+
+    auto externalBuffer2_managed
+      = hipsparse_unique_ptr{device_malloc(bufferSize2), device_free};
+    externalBuffer2 = (void*)externalBuffer2_managed.get();
+    auto externalBuffer3_managed
+      = hipsparse_unique_ptr{device_malloc(bufferSize3), device_free};
+    externalBuffer3 = (void*)externalBuffer3_managed.get();
+    auto externalBuffer4_managed
+      = hipsparse_unique_ptr{device_malloc(bufferSize4), device_free};
+    externalBuffer4 = (void*)externalBuffer4_managed.get();
 
     CHECK_HIP_ERROR(hipMalloc(&externalBuffer2, bufferSize2));
     CHECK_HIP_ERROR(hipMalloc(&externalBuffer3, bufferSize3));
@@ -427,8 +440,11 @@ hipsparseStatus_t testing_spgemmreuse_csr(void)
                                                    externalBuffer4));
 
     // We can already free buffer1
-    CHECK_HIP_ERROR(hipFree(externalBuffer1));
-    CHECK_HIP_ERROR(hipFree(externalBuffer2));
+    externalBuffer1_managed.reset(nullptr);
+    externalBuffer1 = nullptr;
+
+    externalBuffer2_managed.reset(nullptr);
+    externalBuffer2 = nullptr;
 
     // Get nnz of C
     int64_t rows_C, cols_C, nnz_C_1, nnz_C_2;
@@ -455,7 +471,6 @@ hipsparseStatus_t testing_spgemmreuse_csr(void)
         verify_hipsparse_status_success(
             HIPSPARSE_STATUS_ALLOC_FAILED,
             "!dcsr_col_ind_C_1 || !dcsr_val_C_1 || !dcsr_col_ind_C_2 || !dcsr_val_C_2");
-
         return HIPSPARSE_STATUS_ALLOC_FAILED;
     }
 
@@ -465,13 +480,17 @@ hipsparseStatus_t testing_spgemmreuse_csr(void)
 
     CHECK_HIPSPARSE_ERROR(hipsparseSpGEMMreuse_copy(
         handle, transA, transB, A, B, C1, alg, descr, &bufferSize5, externalBuffer5));
-    CHECK_HIP_ERROR(hipMalloc(&externalBuffer5, bufferSize5));
+
+    auto externalBuffer5_managed
+      = hipsparse_unique_ptr{device_malloc(bufferSize5), device_free};
+    externalBuffer5 = (void*)externalBuffer5_managed.get();
 
     CHECK_HIPSPARSE_ERROR(hipsparseSpGEMMreuse_copy(
         handle, transA, transB, A, B, C1, alg, descr, &bufferSize5, externalBuffer5));
 
-    CHECK_HIP_ERROR(hipFree(externalBuffer3));
+    externalBuffer3_managed.reset(nullptr);
     externalBuffer3 = nullptr;
+
     // Query SpGEMM compute buffer
 
     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
@@ -501,9 +520,10 @@ hipsparseStatus_t testing_spgemmreuse_csr(void)
     CHECK_HIPSPARSE_ERROR(hipsparseSpGEMMreuse_compute(
         handle, transA, transB, d_alpha, A, B, d_beta, C1, typeT, alg, descr));
 
-    CHECK_HIP_ERROR(hipFree(externalBuffer4));
+    externalBuffer4_managed.reset(nullptr);
     externalBuffer4 = nullptr;
-    CHECK_HIP_ERROR(hipFree(externalBuffer5));
+
+    externalBuffer5_managed.reset(nullptr);
     externalBuffer5 = nullptr;
 
     // Copy output from device to CPU
