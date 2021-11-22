@@ -42,10 +42,10 @@ void testing_gtsv_interleaved_batch_bad_arg(void)
 {
     // Dont do bad argument checking for cuda
 #if(!defined(CUDART_VERSION))
-    int safe_size    = 100;
-    int algo         = 0;
-    int m            = 10;
-    int batch_count  = 10;
+    int safe_size   = 100;
+    int algo        = 0;
+    int m           = 10;
+    int batch_count = 10;
 
     // Create handle
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
@@ -79,8 +79,7 @@ void testing_gtsv_interleaved_batch_bad_arg(void)
             handle, algo, -1, ddl, dd, ddu, dx, batch_count, &bsize),
         "Error: m is invalid");
     verify_hipsparse_status_invalid_value(
-        hipsparseXgtsvInterleavedBatch_bufferSizeExt(
-            handle, algo, m, ddl, dd, ddu, dx, -1, &bsize),
+        hipsparseXgtsvInterleavedBatch_bufferSizeExt(handle, algo, m, ddl, dd, ddu, dx, -1, &bsize),
         "Error: batch_count is invalid");
     verify_hipsparse_status_invalid_pointer(
         hipsparseXgtsvInterleavedBatch_bufferSizeExt(
@@ -129,8 +128,7 @@ void testing_gtsv_interleaved_batch_bad_arg(void)
             handle, algo, m, ddl, dd, ddu, (T*)nullptr, batch_count, dbuf),
         "Error: dx is nullptr");
     verify_hipsparse_status_invalid_pointer(
-        hipsparseXgtsvInterleavedBatch(
-            handle, algo, m, ddl, dd, ddu, dx, batch_count, nullptr),
+        hipsparseXgtsvInterleavedBatch(handle, algo, m, ddl, dd, ddu, dx, batch_count, nullptr),
         "Error: bsize is nullptr");
 #endif
 }
@@ -145,9 +143,9 @@ hipsparseStatus_t testing_gtsv_interleaved_batch(void)
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
     hipsparseHandle_t              handle = test_handle->handle;
 
-    int algo         = 0;
-    int m            = 512;
-    int batch_count  = 512;
+    int algo        = 0;
+    int m           = 512;
+    int batch_count = 512;
 
     // Host structures
     std::vector<T> hdl(m * batch_count, make_DataType<T>(1));
@@ -157,7 +155,7 @@ hipsparseStatus_t testing_gtsv_interleaved_batch(void)
 
     for(int i = 0; i < batch_count; i++)
     {
-        hdl[i]     = make_DataType<T>(0);
+        hdl[i]                         = make_DataType<T>(0);
         hdu[batch_count * (m - 1) + i] = make_DataType<T>(0);
     }
 
@@ -166,12 +164,10 @@ hipsparseStatus_t testing_gtsv_interleaved_batch(void)
     // allocate memory on device
     auto ddl_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(T) * m * batch_count), device_free};
-    auto dd_managed
-        = hipsparse_unique_ptr{device_malloc(sizeof(T) * m * batch_count), device_free};
+    auto dd_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * m * batch_count), device_free};
     auto ddu_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(T) * m * batch_count), device_free};
-    auto dx_managed
-        = hipsparse_unique_ptr{device_malloc(sizeof(T) * m * batch_count), device_free};
+    auto dx_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * m * batch_count), device_free};
 
     T* ddl = (T*)ddl_managed.get();
     T* dd  = (T*)dd_managed.get();
@@ -186,14 +182,10 @@ hipsparseStatus_t testing_gtsv_interleaved_batch(void)
     }
 
     // copy data from CPU to device
-    CHECK_HIP_ERROR(
-        hipMemcpy(ddl, hdl.data(), sizeof(T) * m * batch_count, hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(
-        hipMemcpy(dd, hd.data(), sizeof(T) * m * batch_count, hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(
-        hipMemcpy(ddu, hdu.data(), sizeof(T) * m * batch_count, hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(
-        hipMemcpy(dx, hx.data(), sizeof(T) * m * batch_count, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(ddl, hdl.data(), sizeof(T) * m * batch_count, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(dd, hd.data(), sizeof(T) * m * batch_count, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(ddu, hdu.data(), sizeof(T) * m * batch_count, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(dx, hx.data(), sizeof(T) * m * batch_count, hipMemcpyHostToDevice));
 
     // Query SparseToDense buffer
     size_t bufferSize;
@@ -203,12 +195,11 @@ hipsparseStatus_t testing_gtsv_interleaved_batch(void)
     void* buffer;
     CHECK_HIP_ERROR(hipMalloc(&buffer, bufferSize));
 
-    CHECK_HIPSPARSE_ERROR(hipsparseXgtsvInterleavedBatch(
-        handle, algo, m, ddl, dd, ddu, dx, batch_count, buffer));
+    CHECK_HIPSPARSE_ERROR(
+        hipsparseXgtsvInterleavedBatch(handle, algo, m, ddl, dd, ddu, dx, batch_count, buffer));
 
     // copy output from device to CPU
-    CHECK_HIP_ERROR(
-        hipMemcpy(hx.data(), dx, sizeof(T) * m * batch_count, hipMemcpyDeviceToHost));
+    CHECK_HIP_ERROR(hipMemcpy(hx.data(), dx, sizeof(T) * m * batch_count, hipMemcpyDeviceToHost));
 
     // Check
     std::vector<T> hresult(m * batch_count, make_DataType<T>(3));
@@ -217,7 +208,7 @@ hipsparseStatus_t testing_gtsv_interleaved_batch(void)
         hresult[j] = hd[j] * hx[j] + hdu[j] * hx[batch_count + j];
         hresult[batch_count * (m - 1) + j]
             = hdl[batch_count * (m - 1) + j] * hx[batch_count * (m - 2) + j]
-                + hd[batch_count * (m - 1) + j] * hx[batch_count * (m - 1) + j];
+              + hd[batch_count * (m - 1) + j] * hx[batch_count * (m - 1) + j];
     }
 
     for(rocsparse_int i = 1; i < m - 1; i++)
@@ -226,8 +217,8 @@ hipsparseStatus_t testing_gtsv_interleaved_batch(void)
         {
             hresult[batch_count * i + j]
                 = hdl[batch_count * i + j] * hx[batch_count * (i - 1) + j]
-                    + hd[batch_count * i + j] * hx[batch_count * i + j]
-                    + hdu[batch_count * i + j] * hx[batch_count * (i + 1) + j];
+                  + hd[batch_count * i + j] * hx[batch_count * i + j]
+                  + hdu[batch_count * i + j] * hx[batch_count * (i + 1) + j];
         }
     }
 

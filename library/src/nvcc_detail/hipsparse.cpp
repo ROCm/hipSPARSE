@@ -12169,22 +12169,6 @@ hipsparseStatus_t hipsparseZgtsv2_nopivot(hipsparseHandle_t       handle,
                                                                pBuffer));
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 hipsparseStatus_t hipsparseSgtsvInterleavedBatch_bufferSizeExt(hipsparseHandle_t handle,
                                                                int               algo,
                                                                int               m,
@@ -12200,28 +12184,28 @@ hipsparseStatus_t hipsparseSgtsvInterleavedBatch_bufferSizeExt(hipsparseHandle_t
 }
 
 hipsparseStatus_t hipsparseDgtsvInterleavedBatch_bufferSizeExt(hipsparseHandle_t handle,
-                                                            int               algo,
-                                                            int               m,
-                                                            const double*      dl,
-                                                            const double*      d,
-                                                            const double*      du,
-                                                            const double*      x,
-                                                            int               batchCount,
-                                                            size_t*           pBufferSizeInBytes)
+                                                               int               algo,
+                                                               int               m,
+                                                               const double*     dl,
+                                                               const double*     d,
+                                                               const double*     du,
+                                                               const double*     x,
+                                                               int               batchCount,
+                                                               size_t*           pBufferSizeInBytes)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseDgtsvInterleavedBatch_bufferSizeExt(
         (cusparseHandle_t)handle, algo, m, dl, d, du, x, batchCount, pBufferSizeInBytes));
 }
 
 hipsparseStatus_t hipsparseCgtsvInterleavedBatch_bufferSizeExt(hipsparseHandle_t handle,
-                                                            int               algo,
-                                                            int               m,
-                                                            const hipComplex*      dl,
-                                                            const hipComplex*      d,
-                                                            const hipComplex*      du,
-                                                            const hipComplex*      x,
-                                                            int               batchCount,
-                                                            size_t*           pBufferSizeInBytes)
+                                                               int               algo,
+                                                               int               m,
+                                                               const hipComplex* dl,
+                                                               const hipComplex* d,
+                                                               const hipComplex* du,
+                                                               const hipComplex* x,
+                                                               int               batchCount,
+                                                               size_t*           pBufferSizeInBytes)
 {
     return hipCUSPARSEStatusToHIPStatus(
         cusparseCgtsvInterleavedBatch_bufferSizeExt((cusparseHandle_t)handle,
@@ -12235,15 +12219,15 @@ hipsparseStatus_t hipsparseCgtsvInterleavedBatch_bufferSizeExt(hipsparseHandle_t
                                                     pBufferSizeInBytes));
 }
 
-hipsparseStatus_t hipsparseZgtsvInterleavedBatch_bufferSizeExt(hipsparseHandle_t handle,
-                                                            int               algo,
-                                                            int               m,
-                                                            const hipDoubleComplex*      dl,
-                                                            const hipDoubleComplex*      d,
-                                                            const hipDoubleComplex*      du,
-                                                            const hipDoubleComplex*      x,
-                                                            int               batchCount,
-                                                            size_t*           pBufferSizeInBytes)
+hipsparseStatus_t hipsparseZgtsvInterleavedBatch_bufferSizeExt(hipsparseHandle_t       handle,
+                                                               int                     algo,
+                                                               int                     m,
+                                                               const hipDoubleComplex* dl,
+                                                               const hipDoubleComplex* d,
+                                                               const hipDoubleComplex* du,
+                                                               const hipDoubleComplex* x,
+                                                               int                     batchCount,
+                                                               size_t* pBufferSizeInBytes)
 {
     return hipCUSPARSEStatusToHIPStatus(
         cusparseZgtsvInterleavedBatch_bufferSizeExt((cusparseHandle_t)handle,
@@ -12258,28 +12242,28 @@ hipsparseStatus_t hipsparseZgtsvInterleavedBatch_bufferSizeExt(hipsparseHandle_t
 }
 
 hipsparseStatus_t hipsparseSgtsvInterleavedBatch(hipsparseHandle_t handle,
-                                                int               algo,
-                                                int               m,
-                                                float*      dl,
-                                                float*      d,
-                                                float*      du,
-                                                float*      x,
-                                                int               batchCount,
-                                                void*             pBuffer)
+                                                 int               algo,
+                                                 int               m,
+                                                 float*            dl,
+                                                 float*            d,
+                                                 float*            du,
+                                                 float*            x,
+                                                 int               batchCount,
+                                                 void*             pBuffer)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseSgtsvInterleavedBatch(
         (cusparseHandle_t)handle, algo, m, dl, d, du, x, batchCount, pBuffer));
 }
 
 hipsparseStatus_t hipsparseDgtsvInterleavedBatch(hipsparseHandle_t handle,
-                                                int               algo,
-                                                int               m,
-                                                double*      dl,
-                                                double*      d,
-                                                double*      du,
-                                                double*      x,
-                                                int               batchCount,
-                                                void*             pBuffer)
+                                                 int               algo,
+                                                 int               m,
+                                                 double*           dl,
+                                                 double*           d,
+                                                 double*           du,
+                                                 double*           x,
+                                                 int               batchCount,
+                                                 void*             pBuffer)
 
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseDgtsvInterleavedBatch(
@@ -12287,71 +12271,48 @@ hipsparseStatus_t hipsparseDgtsvInterleavedBatch(hipsparseHandle_t handle,
 }
 
 hipsparseStatus_t hipsparseCgtsvInterleavedBatch(hipsparseHandle_t handle,
-                                                int               algo,
-                                                int               m,
-                                                hipComplex*      dl,
-                                                hipComplex*      d,
-                                                hipComplex*      du,
-                                                hipComplex*      x,
-                                                int               batchCount,
-                                                void*             pBuffer)
+                                                 int               algo,
+                                                 int               m,
+                                                 hipComplex*       dl,
+                                                 hipComplex*       d,
+                                                 hipComplex*       du,
+                                                 hipComplex*       x,
+                                                 int               batchCount,
+                                                 void*             pBuffer)
 
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseCgtsvInterleavedBatch((cusparseHandle_t)handle,
-                                                                    algo,
-                                                                    m,
-                                                                    (const cuComplex*)dl,
-                                                                    (const cuComplex*)d,
-                                                                    (const cuComplex*)du,
-                                                                    (cuComplex*)x,
-                                                                    batchCount,
-                                                                    pBuffer));
+                                                                      algo,
+                                                                      m,
+                                                                      (const cuComplex*)dl,
+                                                                      (const cuComplex*)d,
+                                                                      (const cuComplex*)du,
+                                                                      (cuComplex*)x,
+                                                                      batchCount,
+                                                                      pBuffer));
 }
 
 hipsparseStatus_t hipsparseZgtsvInterleavedBatch(hipsparseHandle_t handle,
-                                                int               algo,
-                                                int               m,
-                                                hipDoubleComplex*      dl,
-                                                hipDoubleComplex*      d,
-                                                hipDoubleComplex*      du,
-                                                hipDoubleComplex*      x,
-                                                int               batchCount,
-                                                void*             pBuffer)
+                                                 int               algo,
+                                                 int               m,
+                                                 hipDoubleComplex* dl,
+                                                 hipDoubleComplex* d,
+                                                 hipDoubleComplex* du,
+                                                 hipDoubleComplex* x,
+                                                 int               batchCount,
+                                                 void*             pBuffer)
 
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseZgtsvInterleavedBatch((cusparseHandle_t)handle,
-                                                                    algo,
-                                                                    m,
-                                                                    (const cuDoubleComplex*)dl,
-                                                                    (const cuDoubleComplex*)d,
-                                                                    (const cuDoubleComplex*)du,
-                                                                    (cuDoubleComplex*)x,
-                                                                    batchCount,
-                                                                    pBuffer));
+                                                                      algo,
+                                                                      m,
+                                                                      (const cuDoubleComplex*)dl,
+                                                                      (const cuDoubleComplex*)d,
+                                                                      (const cuDoubleComplex*)du,
+                                                                      (cuDoubleComplex*)x,
+                                                                      batchCount,
+                                                                      pBuffer));
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseScsrcolor(hipsparseHandle_t         handle,
