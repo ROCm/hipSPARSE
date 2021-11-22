@@ -217,7 +217,7 @@ set(HIPSPARSE_TEST_SOURCES
 )
 
 
-if(NOT BUILD_CUDA)
+if(NOT USE_CUDA)
     list(APPEND HIPSPARSE_TEST_SOURCES
         test_doti.cpp
         test_dotci.cpp
@@ -255,7 +255,7 @@ if(OPENMP_FOUND AND THREADS_FOUND)
   target_link_libraries(hipsparse-test PRIVATE OpenMP::OpenMP_CXX ${OpenMP_CXX_FLAGS})
 endif()
 
-if(NOT BUILD_CUDA)
+if(NOT USE_CUDA)
   target_link_libraries(hipsparse-test PRIVATE hip::host)
 else()
   target_compile_definitions(hipsparse-test PRIVATE __HIP_PLATFORM_NVIDIA__)

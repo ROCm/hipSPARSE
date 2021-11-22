@@ -76,7 +76,7 @@ target_include_directories(hipsparse
                                    $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
                                    $<INSTALL_INTERFACE:include>)
 
-if(NOT BUILD_CUDA)
+if(NOT USE_CUDA)
   target_link_libraries(hipsparse PRIVATE roc::rocsparse hip::host)
 else()
   target_compile_definitions(hipsparse PRIVATE __HIP_PLATFORM_NVIDIA__)
@@ -122,7 +122,7 @@ install(
        PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ )
 
 # Export targets
-if(NOT BUILD_CUDA)
+if(NOT USE_CUDA)
   rocm_export_targets(TARGETS roc::hipsparse
                       DEPENDS PACKAGE hip
                       NAMESPACE roc::)
@@ -132,7 +132,7 @@ else()
 endif()
 
 # Package specific CPACK vars
-if(NOT BUILD_CUDA)
+if(NOT USE_CUDA)
   set(CPACK_DEBIAN_PACKAGE_DEPENDS "rocsparse (>= 1.12.10)")
   set(CPACK_RPM_PACKAGE_REQUIRES "rocsparse >= 1.12.10")
 endif()
@@ -155,7 +155,7 @@ endif()
 
 set(CPACK_RPM_EXCLUDE_FROM_AUTO_FILELIST_ADDITION "\${CPACK_PACKAGING_INSTALL_PREFIX}" "\${CPACK_PACKAGING_INSTALL_PREFIX}/include")
 
-if(NOT BUILD_CUDA)
+if(NOT USE_CUDA)
   set(package_name hipsparse)
 else()
   set(package_name hipsparse-alt)

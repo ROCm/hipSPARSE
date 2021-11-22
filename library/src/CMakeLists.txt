@@ -22,7 +22,7 @@
 # ########################################################################
 
 # hipSPARSE source
-if(NOT BUILD_CUDA)
+if(NOT USE_CUDA)
   # hipSPARSE source
   set(hipsparse_source src/hcc_detail/hipsparse.cpp)
 else()
