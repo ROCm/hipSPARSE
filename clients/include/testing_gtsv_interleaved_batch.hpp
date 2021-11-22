@@ -113,15 +113,15 @@ void testing_gtsv_interleaved_batch_bad_arg(void)
         "Error: batch_count is invalid");
     verify_hipsparse_status_invalid_pointer(
         hipsparseXgtsvInterleavedBatch(
-            handle, algo, m, (const T*)nullptr, dd, ddu, dx, batch_count, dbuf),
+            handle, algo, m, (T*)nullptr, dd, ddu, dx, batch_count, dbuf),
         "Error: ddl is nullptr");
     verify_hipsparse_status_invalid_pointer(
         hipsparseXgtsvInterleavedBatch(
-            handle, algo, m, ddl, (const T*)nullptr, ddu, dx, batch_count, dbuf),
+            handle, algo, m, ddl, (T*)nullptr, ddu, dx, batch_count, dbuf),
         "Error: dd is nullptr");
     verify_hipsparse_status_invalid_pointer(
         hipsparseXgtsvInterleavedBatch(
-            handle, algo, m, ddl, dd, (const T*)nullptr, dx, batch_count, dbuf),
+            handle, algo, m, ddl, dd, (T*)nullptr, dx, batch_count, dbuf),
         "Error: ddu is nullptr");
     verify_hipsparse_status_invalid_pointer(
         hipsparseXgtsvInterleavedBatch(
@@ -203,7 +203,7 @@ hipsparseStatus_t testing_gtsv_interleaved_batch(void)
 
     // Check
     std::vector<T> hresult(m * batch_count, make_DataType<T>(3));
-    for(rocsparse_int j = 0; j < batch_count; j++)
+    for(int j = 0; j < batch_count; j++)
     {
         hresult[j] = hd[j] * hx[j] + hdu[j] * hx[batch_count + j];
         hresult[batch_count * (m - 1) + j]
@@ -211,9 +211,9 @@ hipsparseStatus_t testing_gtsv_interleaved_batch(void)
               + hd[batch_count * (m - 1) + j] * hx[batch_count * (m - 1) + j];
     }
 
-    for(rocsparse_int i = 1; i < m - 1; i++)
+    for(int i = 1; i < m - 1; i++)
     {
-        for(rocsparse_int j = 0; j < batch_count; j++)
+        for(int j = 0; j < batch_count; j++)
         {
             hresult[batch_count * i + j]
                 = hdl[batch_count * i + j] * hx[batch_count * (i - 1) + j]

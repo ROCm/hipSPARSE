@@ -49,6 +49,9 @@
 #define DEPRECATED_CUDA_10000(warning)
 #define DEPRECATED_CUDA_9000(warning)
 
+#define INSTANTIATE_TEST_SUITE_P INSTANTIATE_TEST_CASE_P
+#define __HIP_PLATFORM_AMD__
+
 #if defined(CUDART_VERSION)
 #if CUDART_VERSION < 10000
 #undef DEPRECATED_CUDA_9000
@@ -5820,6 +5823,38 @@ hipsparseStatus_t hipsparseZgtsv2StridedBatch(hipsparseHandle_t       handle,
                                               void*                   pBuffer);
 /**@}*/
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*! \ingroup precond_module
 *  \brief Interleaved Batch tridiagonal solver
 *
@@ -5831,36 +5866,36 @@ hipsparseStatus_t hipsparseZgtsv2StridedBatch(hipsparseHandle_t       handle,
 /**@{*/
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSgtsvInterleavedBatch_bufferSizeExt(hipsparseHandle_t handle,
-                                                               int               algo,
+                                                               int              algo,
                                                                int               m,
                                                                const float*      dl,
                                                                const float*      d,
                                                                const float*      du,
                                                                const float*      x,
                                                                int               batchCount,
-                                                               size_t* pBufferSizeInBytes);
+                                                               size_t*           pBufferSizeInBytes);
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDgtsvInterleavedBatch_bufferSizeExt(hipsparseHandle_t handle,
-                                                               int               algo,
+                                                               int              algo,
                                                                int               m,
                                                                const double*     dl,
                                                                const double*     d,
                                                                const double*     du,
                                                                const double*     x,
                                                                int               batchCount,
-                                                               size_t* pBufferSizeInBytes);
+                                                               size_t*           pBufferSizeInBytes);
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCgtsvInterleavedBatch_bufferSizeExt(hipsparseHandle_t handle,
-                                                               int               algo,
+                                                               int              algo,
                                                                int               m,
                                                                const hipComplex* dl,
                                                                const hipComplex* d,
                                                                const hipComplex* du,
                                                                const hipComplex* x,
                                                                int               batchCount,
-                                                               size_t* pBufferSizeInBytes);
+                                                               size_t*           pBufferSizeInBytes);
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseZgtsvInterleavedBatch_bufferSizeExt(hipsparseHandle_t       handle,
@@ -5889,9 +5924,9 @@ HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSgtsvInterleavedBatch(hipsparseHandle_t handle,
                                                  int               algo,
                                                  int               m,
-                                                 float*            dl,
-                                                 float*            d,
-                                                 float*            du,
+                                                 float*      dl,
+                                                 float*      d,
+                                                 float*      du,
                                                  float*            x,
                                                  int               batchCount,
                                                  void*             pBuffer);
@@ -5900,9 +5935,9 @@ HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDgtsvInterleavedBatch(hipsparseHandle_t handle,
                                                  int               algo,
                                                  int               m,
-                                                 double*           dl,
-                                                 double*           d,
-                                                 double*           du,
+                                                 double*     dl,
+                                                 double*     d,
+                                                 double*     du,
                                                  double*           x,
                                                  int               batchCount,
                                                  void*             pBuffer);
@@ -5911,24 +5946,45 @@ HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCgtsvInterleavedBatch(hipsparseHandle_t handle,
                                                  int               algo,
                                                  int               m,
-                                                 hipComplex*       dl,
-                                                 hipComplex*       d,
-                                                 hipComplex*       du,
+                                                 hipComplex* dl,
+                                                 hipComplex* d,
+                                                 hipComplex* du,
                                                  hipComplex*       x,
                                                  int               batchCount,
                                                  void*             pBuffer);
 
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseZgtsvInterleavedBatch(hipsparseHandle_t handle,
+hipsparseStatus_t hipsparseZgtsvInterleavedBatch(hipsparseHandle_t       handle,
                                                  int               algo,
-                                                 int               m,
+                                                 int                     m,
                                                  hipDoubleComplex* dl,
                                                  hipDoubleComplex* d,
                                                  hipDoubleComplex* du,
-                                                 hipDoubleComplex* x,
-                                                 int               batchCount,
-                                                 void*             pBuffer);
+                                                 hipDoubleComplex*       x,
+                                                 int                     batchCount,
+                                                 void*                   pBuffer);
 /**@}*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /*
 * ===========================================================================
@@ -8514,10 +8570,8 @@ typedef enum
 {
     HIPSPARSE_FORMAT_CSR         = 1, /* Compressed Sparse Row */
     HIPSPARSE_FORMAT_COO         = 3, /* Coordinate - Structure of Arrays */
-    HIPSPARSE_FORMAT_COO_AOS     = 4 /* Coordinate - Array of Structures */
-#if(CUDART_VERSION >= 11021)
-    , HIPSPARSE_FORMAT_BLOCKED_ELL = 5 /* Blocked ELL */
-#endif
+    HIPSPARSE_FORMAT_COO_AOS     = 4, /* Coordinate - Array of Structures */
+    HIPSPARSE_FORMAT_BLOCKED_ELL = 5 /* Blocked ELL */
 } hipsparseFormat_t;
 #endif
 #endif
