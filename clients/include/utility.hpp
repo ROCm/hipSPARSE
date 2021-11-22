@@ -69,61 +69,61 @@ std::string hipsparse_exepath();
         exit(EXIT_FAILURE);                   \
     }
 
-#define CHECK_HIPSPARSE_ERROR(error)                                       \
-    if(error != HIPSPARSE_STATUS_SUCCESS)                                  \
-    {                                                                      \
-        fprintf(stderr, "hipSPARSE error: ");                              \
-        if(error == HIPSPARSE_STATUS_NOT_INITIALIZED)                      \
-        {                                                                  \
-            fprintf(stderr, "HIPSPARSE_STATUS_NOT_INITIALIZED");           \
-        }                                                                  \
-        else if(error == HIPSPARSE_STATUS_ALLOC_FAILED)                    \
-        {                                                                  \
-            fprintf(stderr, "HIPSPARSE_STATUS_ALLOC_FAILED");              \
-        }                                                                  \
-        else if(error == HIPSPARSE_STATUS_INVALID_VALUE)                   \
-        {                                                                  \
-            fprintf(stderr, "HIPSPARSE_STATUS_INVALID_VALUE");             \
-        }                                                                  \
-        else if(error == HIPSPARSE_STATUS_ARCH_MISMATCH)                   \
-        {                                                                  \
-            fprintf(stderr, "HIPSPARSE_STATUS_ARCH_MISMATCH");             \
-        }                                                                  \
-        else if(error == HIPSPARSE_STATUS_MAPPING_ERROR)                   \
-        {                                                                  \
-            fprintf(stderr, "HIPSPARSE_STATUS_MAPPING_ERROR");             \
-        }                                                                  \
-        else if(error == HIPSPARSE_STATUS_EXECUTION_FAILED)                \
-        {                                                                  \
-            fprintf(stderr, "HIPSPARSE_STATUS_EXECUTION_FAILED");          \
-        }                                                                  \
-        else if(error == HIPSPARSE_STATUS_INTERNAL_ERROR)                  \
-        {                                                                  \
-            fprintf(stderr, " HIPSPARSE_STATUS_INTERNAL_ERROR");           \
-        }                                                                  \
-        else if(error == HIPSPARSE_STATUS_MATRIX_TYPE_NOT_SUPPORTED)       \
-        {                                                                  \
-            fprintf(stderr, "HIPSPARSE_STATUS_MATRIX_TYPE_NOT_SUPPORTED"); \
-        }                                                                  \
-        else if(error == HIPSPARSE_STATUS_ZERO_PIVOT)                      \
-        {                                                                  \
-            fprintf(stderr, " HIPSPARSE_STATUS_ZERO_PIVOT");               \
-        }                                                                  \
-        else if(error == HIPSPARSE_STATUS_NOT_SUPPORTED)                   \
-        {                                                                  \
-            fprintf(stderr, " HIPSPARSE_STATUS_NOT_SUPPORTED");            \
-        }                                                                  \
-        else if(error == HIPSPARSE_STATUS_INSUFFICIENT_RESOURCES)          \
-        {                                                                  \
-            fprintf(stderr, " HIPSPARSE_STATUS_INSUFFICIENT_RESOURCES");   \
-        }                                                                  \
-        else                                                               \
-        {                                                                  \
-            fprintf(stderr, "HIPSPARSE_STATUS ERROR");                     \
-        }                                                                  \
-        fprintf(stderr, "\n");                                             \
-        return error;                                                      \
-    }
+
+#if(!defined(CUDART_VERSION) || (CUDART_VERSION >= 11003))
+
+#define CHECK_HIPSPARSE_ERROR_CASE__(token_) case token_: fprintf(stderr, #token_); break
+
+#define CHECK_HIPSPARSE_ERROR(error)					\
+  if(error != HIPSPARSE_STATUS_SUCCESS)					\
+    {									\
+      fprintf(stderr, "hipSPARSE error: ");				\
+      switch(error)							\
+	{								\
+	  CHECK_HIPSPARSE_ERROR_CASE__(HIPSPARSE_STATUS_SUCCESS);	\
+	  CHECK_HIPSPARSE_ERROR_CASE__(HIPSPARSE_STATUS_NOT_INITIALIZED); \
+	  CHECK_HIPSPARSE_ERROR_CASE__(HIPSPARSE_STATUS_ALLOC_FAILED);	\
+	  CHECK_HIPSPARSE_ERROR_CASE__(HIPSPARSE_STATUS_INVALID_VALUE);	\
+	  CHECK_HIPSPARSE_ERROR_CASE__(HIPSPARSE_STATUS_ARCH_MISMATCH);	\
+	  CHECK_HIPSPARSE_ERROR_CASE__(HIPSPARSE_STATUS_MAPPING_ERROR);	\
+	  CHECK_HIPSPARSE_ERROR_CASE__(HIPSPARSE_STATUS_EXECUTION_FAILED); \
+	  CHECK_HIPSPARSE_ERROR_CASE__(HIPSPARSE_STATUS_INTERNAL_ERROR); \
+	  CHECK_HIPSPARSE_ERROR_CASE__(HIPSPARSE_STATUS_MATRIX_TYPE_NOT_SUPPORTED); \
+	  CHECK_HIPSPARSE_ERROR_CASE__(HIPSPARSE_STATUS_ZERO_PIVOT);	\
+	  CHECK_HIPSPARSE_ERROR_CASE__(HIPSPARSE_STATUS_NOT_SUPPORTED);	\
+	  CHECK_HIPSPARSE_ERROR_CASE__(HIPSPARSE_STATUS_INSUFFICIENT_RESOURCES); \
+	}								\
+      fprintf(stderr, "\n");						\
+      return error;							\
+    }(void)0
+
+#else
+
+#define CHECK_HIPSPARSE_ERROR_CASE__(token_) case token_: fprintf(stderr, #token_); break
+
+#define CHECK_HIPSPARSE_ERROR(error)					\
+  if(error != HIPSPARSE_STATUS_SUCCESS)					\
+    {									\
+      fprintf(stderr, "hipSPARSE error: ");				\
+      switch(error)							\
+	{								\
+	  CHECK_HIPSPARSE_ERROR_CASE__(HIPSPARSE_STATUS_SUCCESS);	\
+	  CHECK_HIPSPARSE_ERROR_CASE__(HIPSPARSE_STATUS_NOT_INITIALIZED); \
+	  CHECK_HIPSPARSE_ERROR_CASE__(HIPSPARSE_STATUS_ALLOC_FAILED);	\
+	  CHECK_HIPSPARSE_ERROR_CASE__(HIPSPARSE_STATUS_INVALID_VALUE);	\
+	  CHECK_HIPSPARSE_ERROR_CASE__(HIPSPARSE_STATUS_ARCH_MISMATCH);	\
+	  CHECK_HIPSPARSE_ERROR_CASE__(HIPSPARSE_STATUS_MAPPING_ERROR);	\
+	  CHECK_HIPSPARSE_ERROR_CASE__(HIPSPARSE_STATUS_EXECUTION_FAILED); \
+	  CHECK_HIPSPARSE_ERROR_CASE__(HIPSPARSE_STATUS_INTERNAL_ERROR); \
+	  CHECK_HIPSPARSE_ERROR_CASE__(HIPSPARSE_STATUS_MATRIX_TYPE_NOT_SUPPORTED); \
+	  CHECK_HIPSPARSE_ERROR_CASE__(HIPSPARSE_STATUS_ZERO_PIVOT);	\
+	  CHECK_HIPSPARSE_ERROR_CASE__(HIPSPARSE_STATUS_NOT_SUPPORTED);	\
+	}								\
+      fprintf(stderr, "\n");						\
+      return error;							\
+    } (void)0
+
+#endif
 
 #ifdef __HIP_PLATFORM_NVIDIA__
 static inline hipComplex operator-(const hipComplex& op)
