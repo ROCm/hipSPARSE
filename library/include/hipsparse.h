@@ -45,12 +45,12 @@
 #include <hip/hip_complex.h>
 #include <hip/hip_runtime.h>
 
+#define INSTANTIATE_TEST_SUITE_P INSTANTIATE_TEST_CASE_P
+#define __HIP_PLATFORM_AMD__
+
 #define DEPRECATED_CUDA_11000(warning)
 #define DEPRECATED_CUDA_10000(warning)
 #define DEPRECATED_CUDA_9000(warning)
-
-#define INSTANTIATE_TEST_SUITE_P INSTANTIATE_TEST_CASE_P
-#define __HIP_PLATFORM_AMD__
 
 #if defined(CUDART_VERSION)
 #if CUDART_VERSION < 10000
@@ -8517,8 +8517,10 @@ typedef enum
 {
     HIPSPARSE_FORMAT_CSR         = 1, /* Compressed Sparse Row */
     HIPSPARSE_FORMAT_COO         = 3, /* Coordinate - Structure of Arrays */
-    HIPSPARSE_FORMAT_COO_AOS     = 4, /* Coordinate - Array of Structures */
-    HIPSPARSE_FORMAT_BLOCKED_ELL = 5 /* Blocked ELL */
+    HIPSPARSE_FORMAT_COO_AOS     = 4 /* Coordinate - Array of Structures */
+#if(CUDART_VERSION >= 11021)
+    , HIPSPARSE_FORMAT_BLOCKED_ELL = 5 /* Blocked ELL */
+#endif
 } hipsparseFormat_t;
 #endif
 #endif
