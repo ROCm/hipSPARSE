@@ -60,6 +60,9 @@ void testing_spmm_coo_bad_arg(void)
     hipsparseIndexBase_t idxBase   = HIPSPARSE_INDEX_BASE_ZERO;
     hipsparseIndexType_t idxType   = HIPSPARSE_INDEX_32I;
     hipDataType          dataType  = HIP_R_32F;
+    //
+    // !
+    //
 #if(CUDART_VERSION >= 11003)
     hipsparseSpMMAlg_t   alg       = HIPSPARSE_SPMM_COO_ALG1;
 #else
@@ -206,6 +209,9 @@ hipsparseStatus_t testing_spmm_coo()
     hipsparseOperation_t transB   = HIPSPARSE_OPERATION_NON_TRANSPOSE;
     hipsparseOrder_t     order    = HIPSPARSE_ORDER_COLUMN;
     hipsparseIndexBase_t idx_base = HIPSPARSE_INDEX_BASE_ZERO;
+    //
+    // !
+    //
 #if(CUDART_VERSION >= 11003)
     hipsparseSpMMAlg_t   alg       = HIPSPARSE_SPMM_COO_ALG1;
 #else
