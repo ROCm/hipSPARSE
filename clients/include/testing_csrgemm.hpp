@@ -1162,7 +1162,7 @@ hipsparseStatus_t testing_csrgemm(Arguments argus)
                                                    dBcol,
                                                    descr_C,
                                                    dCptr,
-                                                   dnnz_C))
+                                                   dnnz_C));
 
         // Compute csrgemm host solution
         std::vector<int> hcsr_row_ptr_C_gold(M + 1);
