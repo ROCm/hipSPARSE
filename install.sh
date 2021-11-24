@@ -324,8 +324,6 @@ while true; do
   esac
 done
 
-printf "AAAAAAAAAAAAA compiler ${compiler}\n"
-
 if [[ "${build_relocatable}" == true ]]; then
     if ! [ -z ${ROCM_PATH+x} ]; then
         rocm_path=${ROCM_PATH}
@@ -446,9 +444,6 @@ pushd .
     cmake_common_options="${cmake_common_options} -DUSE_CUDA=ON"
   fi
 
-  printf "BBBBBBBBBB CXX ${CXX}\n"
-  printf "BBBBBBBBBB compiler ${compiler}\n"
-
   # Build library
   if [[ "${build_relocatable}" == true ]]; then
     CXX=${compiler} ${cmake_executable} ${cmake_common_options} ${cmake_client_options} \
@@ -462,10 +457,7 @@ pushd .
   else
     CXX=${compiler} ${cmake_executable} -DCMAKE_EXE_LINKER_FLAGS=" ${cmake_build_static_options}" ${cmake_common_options} ${cmake_client_options} -DCMAKE_INSTALL_PREFIX=hipsparse-install -DROCM_PATH=${rocm_path} ../..
   fi
-
-  printf "CCCCCCCCCC CXX ${CXX}\n"
-  printf "CCCCCCCCCCCCC compiler ${compiler}\n"
-
+  
   check_exit_code "$?"
 
   make -j$(nproc) install
