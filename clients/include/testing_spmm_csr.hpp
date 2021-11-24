@@ -65,11 +65,11 @@ void testing_spmm_csr_bad_arg(void)
     // !
     //
 #if(CUDART_VERSION >= 11003)
-    hipsparseSpMMAlg_t   alg       = HIPSPARSE_SPMM_CSR_ALG1;
+    hipsparseSpMMAlg_t alg = HIPSPARSE_SPMM_CSR_ALG1;
 #else
-    hipsparseSpMMAlg_t   alg       = HIPSPARSE_MM_ALG_DEFAULT;
+    hipsparseSpMMAlg_t alg = HIPSPARSE_MM_ALG_DEFAULT;
 #endif
-    hipsparseStatus_t    status;
+    hipsparseStatus_t status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -215,11 +215,11 @@ hipsparseStatus_t testing_spmm_csr()
     // !
     //
 #if(CUDART_VERSION >= 11003)
-    hipsparseSpMMAlg_t   alg       = HIPSPARSE_SPMM_CSR_ALG1;
+    hipsparseSpMMAlg_t alg = HIPSPARSE_SPMM_CSR_ALG1;
 #else
-    hipsparseSpMMAlg_t   alg       = HIPSPARSE_MM_ALG_DEFAULT;
+    hipsparseSpMMAlg_t alg = HIPSPARSE_MM_ALG_DEFAULT;
 #endif
-    hipsparseStatus_t    status;
+    hipsparseStatus_t status;
 
     // Matrices are stored at the same path in matrices directory
     std::string filename = hipsparse_exepath() + "../matrices/nos3.bin";
