@@ -19,6 +19,7 @@ function display_help()
   echo "    [-g|--debug] -DCMAKE_BUILD_TYPE=Debug (default is =Release)"
   echo "    [-k|--relwithdebinfo] -DCMAKE_BUILD_TYPE=RelWithDebInfo"
   echo "    [--codecoverage] build with code coverage profiling enabled"
+  echo "    [--compiler] specify host compiler"
   echo "    [--cuda] build library for cuda backend"
   echo "    [--static] build static library"
   echo "    [--address-sanitizer] build with address sanitizer enabled. Uses hipcc to compile"
@@ -250,7 +251,7 @@ install_prefix=hipsparse-install
 rocm_path=/opt/rocm
 build_relocatable=false
 build_address_sanitizer=false
-compiler=
+compiler=${CXX}
 
 # #################################################
 # Parameter parsing
@@ -259,7 +260,7 @@ compiler=
 # check if we have a modern version of getopt that can handle whitespace and long parameters
 getopt -T
 if [[ $? -eq 4 ]]; then
-  GETOPT_PARSE=$(getopt --name "${0}" --longoptions help,install,clients,dependencies,debug,cuda,static,relocatable,codecoverage,relwithdebinfo,address-sanitizer --options hicdgrk -- "$@")
+  GETOPT_PARSE=$(getopt --name "${0}" --longoptions help,install,clients,dependencies,debug,compiler:,cuda,static,relocatable,codecoverage,relwithdebinfo,address-sanitizer --options hicdgrk -- "$@")
 else
   echo "Need a new version of getopt"
   exit 1
@@ -293,6 +294,9 @@ while true; do
     -g|--debug)
         build_release=false
         shift ;;
+    --compiler)
+        compiler=${2}
+        shift 2 ;;
     --cuda)
         build_cuda=true
         shift ;;
@@ -319,6 +323,8 @@ while true; do
         ;;
   esac
 done
+
+printf "AAAAAAAAAAAAA compiler ${compiler}\n"
 
 if [[ "${build_relocatable}" == true ]]; then
     if ! [ -z ${ROCM_PATH+x} ]; then
@@ -440,6 +446,9 @@ pushd .
     cmake_common_options="${cmake_common_options} -DUSE_CUDA=ON"
   fi
 
+  printf "BBBBBBBBBB CXX ${CXX}\n"
+  printf "BBBBBBBBBB compiler ${compiler}\n"
+
   # Build library
   if [[ "${build_relocatable}" == true ]]; then
     CXX=${compiler} ${cmake_executable} ${cmake_common_options} ${cmake_client_options} \
@@ -453,6 +462,9 @@ pushd .
   else
     CXX=${compiler} ${cmake_executable} -DCMAKE_EXE_LINKER_FLAGS=" ${cmake_build_static_options}" ${cmake_common_options} ${cmake_client_options} -DCMAKE_INSTALL_PREFIX=hipsparse-install -DROCM_PATH=${rocm_path} ../..
   fi
+
+  printf "CCCCCCCCCC CXX ${CXX}\n"
+  printf "CCCCCCCCCCCCC compiler ${compiler}\n"
 
   check_exit_code "$?"
 
