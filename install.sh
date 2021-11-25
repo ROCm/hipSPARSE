@@ -324,6 +324,12 @@ while true; do
   esac
 done
 
+# Note 'compiler' variable not changed after this point. This ensures that everything is built with the same compiler
+# provided by the user through either setting CXX externally (in which case compiler=${CXX} followed by CXX=${compiler})
+# or through using --compiler option. This is important so that googletest and hipsparse are built with the same 
+# compiler to ensure settings like position independent code is consistent when linking.
+CXX=${compiler}
+
 if [[ "${build_relocatable}" == true ]]; then
     if ! [ -z ${ROCM_PATH+x} ]; then
         rocm_path=${ROCM_PATH}
