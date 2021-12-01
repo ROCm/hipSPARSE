@@ -10419,7 +10419,6 @@ cusparseSpGEMMAlg_t hipSpGEMMAlgToCudaSpGEMMAlg(hipsparseSpGEMMAlg_t alg)
 }
 #endif
 
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
 
 #if(CUDART_VERSION >= 11020)
 cusparseSparseToDenseAlg_t hipSpToDnAlgToCudaSpToDnAlg(hipsparseSparseToDenseAlg_t alg)
