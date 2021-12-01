@@ -10382,9 +10382,9 @@ cusparseSpGEMMAlg_t hipSpGEMMAlgToCudaSpGEMMAlg(hipsparseSpGEMMAlg_t alg)
     case HIPSPARSE_SPGEMM_DEFAULT:
         return CUSPARSE_SPGEMM_DEFAULT;
     case HIPSPARSE_SPGEMM_CSR_ALG_NONDETERMINISTIC:
-        return CUSPARSE_SPGEMM_CSR_ALG_NONDETERMINISTIC;
+        return CUSPARSE_SPGEMM_CSR_ALG_NONDETERMINITIC;
     case HIPSPARSE_SPGEMM_CSR_ALG_DETERMINISTIC:
-        return CUSPARSE_SPGEMM_CSR_ALG_NONDETERMINISTIC;
+        return CUSPARSE_SPGEMM_CSR_ALG_NONDETERMINITIC;
     default:
         throw "Non existant cusparseSpGEMMAlg_t";
     }
@@ -10410,15 +10410,14 @@ cusparseSpGEMMAlg_t hipSpGEMMAlgToCudaSpGEMMAlg(hipsparseSpGEMMAlg_t alg)
     case HIPSPARSE_SPGEMM_DEFAULT:
         return CUSPARSE_SPGEMM_DEFAULT;
     case HIPSPARSE_SPGEMM_CSR_ALG_NONDETERMINISTIC:
-        return CUSPARSE_SPGEMM_CSR_ALG_NONDETERMINISTIC;
+        return CUSPARSE_SPGEMM_CSR_ALG_NONDETERMINITIC;
     case HIPSPARSE_SPGEMM_CSR_ALG_DETERMINISTIC:
-        return CUSPARSE_SPGEMM_CSR_ALG_NONDETERMINISTIC;
+        return CUSPARSE_SPGEMM_CSR_ALG_NONDETERMINITIC;
     default:
         throw "Non existant cusparseSpGEMMAlg_t";
     }
 }
 #endif
-
 
 #if(CUDART_VERSION >= 11020)
 cusparseSparseToDenseAlg_t hipSpToDnAlgToCudaSpToDnAlg(hipsparseSparseToDenseAlg_t alg)
