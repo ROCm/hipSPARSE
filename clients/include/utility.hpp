@@ -547,15 +547,15 @@ void gen_matrix_coo(I                    m,
         col_ind.resize(nnz);
     }
     if((I)val.size() != nnz)
-      {
+    {
         val.resize(nnz);
-      }
+    }
 
     // Uniform distributed row indices
     for(I i = 0; i < nnz; ++i)
-      {
+    {
         row_ind[i] = rand() % m;
-      }
+    }
 
     // Sort row indices
     std::sort(row_ind.begin(), row_ind.end());
@@ -563,57 +563,59 @@ void gen_matrix_coo(I                    m,
     // Sample column indices
     std::vector<bool> check(nnz, false);
 
-    { I i = 0;
-      while(i < nnz)
-	{
-	  I begin = i;
-	  while(row_ind[i] == row_ind[begin])
-	    {
-	      ++i;
-	      if(i >= nnz)
-		{
-		  break;
-		}
-	    }
+    {
+        I i = 0;
+        while(i < nnz)
+        {
+            I begin = i;
+            while(row_ind[i] == row_ind[begin])
+            {
+                ++i;
+                if(i >= nnz)
+                {
+                    break;
+                }
+            }
 
-	  // Sample i disjunct column indices
-	  I idx = begin;
-	  while(idx < i)
-	    {
+            // Sample i disjunct column indices
+            I idx = begin;
+            while(idx < i)
+            {
 #define MM_PI 3.1415
-	      // Normal distribution around the diagonal
-	      I rng = (i - begin) * sqrt(-2.0 * log((double)rand() / RAND_MAX))
-		* cos(2.0 * MM_PI * (double)rand() / RAND_MAX);
+                // Normal distribution around the diagonal
+                I rng = (i - begin) * sqrt(-2.0 * log((double)rand() / RAND_MAX))
+                        * cos(2.0 * MM_PI * (double)rand() / RAND_MAX);
 
-	      if(m <= n)
-		{
-		  rng += row_ind[begin];
-		}
+                if(m <= n)
+                {
+                    rng += row_ind[begin];
+                }
 
-	      // Repeat if running out of bounds
-	      if(rng < 0 || rng > n - 1)
-		{
-		  continue;
-		}
+                // Repeat if running out of bounds
+                if(rng < 0 || rng > n - 1)
+                {
+                    continue;
+                }
 
-	      // Check for disjunct column index in current row
-	      if(!check[rng])
-		{
-		  check[rng]   = true;
-		  col_ind[idx] = rng;
-		  ++idx;
-		}
-	    }
+                // Check for disjunct column index in current row
+                if(!check[rng])
+                {
+                    check[rng]   = true;
+                    col_ind[idx] = rng;
+                    ++idx;
+                }
+            }
 
-	  // Reset disjunct check array
-	  for(I j = begin; j < i; ++j)
-	    {
-	      check[col_ind[j]] = false;
-	    }
+            // Reset disjunct check array
+            for(I j = begin; j < i; ++j)
+            {
+                check[col_ind[j]] = false;
+            }
 
-	  // Partially sort column indices
-	  std::sort(&col_ind[begin], &col_ind[i]);
-	} }
+            // Partially sort column indices
+            std::sort(&col_ind[begin], &col_ind[i]);
+        }
+    }
 
     // Correct index base accordingly
     if(idx_base == HIPSPARSE_INDEX_BASE_ONE)
@@ -895,11 +897,11 @@ int read_bin_matrix(const char*          filename,
     err = fread(&nrowf, sizeof(int), 1, f);
     err |= fread(&ncolf, sizeof(int), 1, f);
     err |= fread(&nnzf, sizeof(int), 1, f);
-    if (err)
-      {
-	fclose(f);
-	return -1;
-      }
+    if(err)
+    {
+        fclose(f);
+        return -1;
+    }
     nrow = (J)nrowf;
     ncol = (J)ncolf;
     nnz  = (I)nnzf;
@@ -915,11 +917,11 @@ int read_bin_matrix(const char*          filename,
     err |= fread(ptrf.data(), sizeof(int), nrow + 1, f);
     err |= fread(colf.data(), sizeof(int), nnz, f);
     err |= fread(valf.data(), sizeof(double), nnz, f);
-    if (err)
-      {
-	fclose(f);
-	return -1;
-      }
+    if(err)
+    {
+        fclose(f);
+        return -1;
+    }
 
     fclose(f);
 
@@ -1860,15 +1862,17 @@ inline void host_csr_to_gebsr(hipsparseDirection_t    direction,
     bsr_val.resize(nnzb * row_block_dim * col_block_dim, make_DataType<T>(0));
 
     // fill GEBSR col indices array
-    { int index = 0;
-    for(int i = 0; i < nnz; i++)
     {
-        if(temp[i] != -1)
+        int index = 0;
+        for(int i = 0; i < nnz; i++)
         {
-            bsr_col_ind[index] = temp[i] + bsr_base;
-            index++;
+            if(temp[i] != -1)
+            {
+                bsr_col_ind[index] = temp[i] + bsr_base;
+                index++;
+            }
         }
-    } }
+    }
 
     // fill GEBSR values array
 #ifdef _OPENMP
@@ -1890,29 +1894,31 @@ inline void host_csr_to_gebsr(hipsparseDirection_t    direction,
 
             int local_col = col % col_block_dim;
 
-            { int index = 0;
-            for(int k = bstart; k < bend; k++)
             {
-                if(bsr_col_ind[k] - bsr_base == col / col_block_dim)
+                int index = 0;
+                for(int k = bstart; k < bend; k++)
                 {
-                    index  = k;
-                    bstart = k;
-                    break;
+                    if(bsr_col_ind[k] - bsr_base == col / col_block_dim)
+                    {
+                        index  = k;
+                        bstart = k;
+                        break;
+                    }
+                }
+
+                if(direction == HIPSPARSE_DIRECTION_ROW)
+                {
+                    bsr_val[row_block_dim * col_block_dim * index + col_block_dim * local_row
+                            + local_col]
+                        = csr_val[j];
+                }
+                else
+                {
+                    bsr_val[row_block_dim * col_block_dim * index + row_block_dim * local_col
+                            + local_row]
+                        = csr_val[j];
                 }
             }
-
-            if(direction == HIPSPARSE_DIRECTION_ROW)
-            {
-                bsr_val[row_block_dim * col_block_dim * index + col_block_dim * local_row
-                        + local_col]
-                    = csr_val[j];
-            }
-            else
-            {
-                bsr_val[row_block_dim * col_block_dim * index + row_block_dim * local_col
-                        + local_row]
-                    = csr_val[j];
-            } }
         }
     }
 }
@@ -5427,9 +5433,9 @@ public:
     int col_block_dimA = 1;
     int col_block_dimB = 1;
 
-  int lda{};
-  int ldb{};
-  int ldc{};
+    int lda{};
+    int ldb{};
+    int ldc{};
 
     double alpha      = 1.0;
     double alphai     = 0.0;
@@ -5459,7 +5465,7 @@ public:
     int ell_width = 0;
     int temp      = 0;
 
-  int    numericboost{};
+    int    numericboost{};
     double boosttol{};
     double boostval{};
     double boostvali{};

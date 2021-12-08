@@ -424,8 +424,8 @@ hipsparseStatus_t testing_bsric02(Arguments argus)
     }
     else if(argus.laplacian)
     {
-      m = gen_2d_laplacian(argus.laplacian, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base);
-        nnz   = hcsr_row_ptr[m];
+        m   = gen_2d_laplacian(argus.laplacian, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base);
+        nnz = hcsr_row_ptr[m];
     }
     else
     {

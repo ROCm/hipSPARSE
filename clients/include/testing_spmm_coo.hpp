@@ -373,11 +373,11 @@ hipsparseStatus_t testing_spmm_coo()
             I idx_C = order == HIPSPARSE_ORDER_COLUMN ? row + j * ldc : row * ldc + j;
 
             I idx_B = 0;
-	    //
-	    // transB == HIPSPARSE_OPERATION_NON_TRANSPOSE is always true.
-	    //
+            //
+            // transB == HIPSPARSE_OPERATION_NON_TRANSPOSE is always true.
+            //
             if(order == HIPSPARSE_ORDER_COLUMN)
-	      // || (transB == HIPSPARSE_OPERATION_TRANSPOSE && order == HIPSPARSE_ORDER_ROW))
+            // || (transB == HIPSPARSE_OPERATION_TRANSPOSE && order == HIPSPARSE_ORDER_ROW))
             {
                 idx_B = (col + j * ldb);
             }

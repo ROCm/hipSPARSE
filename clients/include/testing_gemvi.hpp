@@ -43,7 +43,7 @@ void testing_gemvi_bad_arg(void)
     int lda = 100;
 
     static constexpr hipsparseOperation_t opType  = HIPSPARSE_OPERATION_NON_TRANSPOSE;
-    hipsparseIndexBase_t idxBase = HIPSPARSE_INDEX_BASE_ZERO;
+    hipsparseIndexBase_t                  idxBase = HIPSPARSE_INDEX_BASE_ZERO;
 
     float alpha = 0.6;
     float beta  = 0.1;
@@ -154,8 +154,8 @@ hipsparseStatus_t testing_gemvi(void)
     int nnz = 237;
 
     static constexpr hipsparseOperation_t opType  = HIPSPARSE_OPERATION_NON_TRANSPOSE;
-    int lda = m;
-    hipsparseIndexBase_t idxBase = HIPSPARSE_INDEX_BASE_ZERO;
+    int                                   lda     = m;
+    hipsparseIndexBase_t                  idxBase = HIPSPARSE_INDEX_BASE_ZERO;
 
     T alpha = make_DataType<T>(0.6);
     T beta  = make_DataType<T>(3.2);

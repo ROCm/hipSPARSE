@@ -519,14 +519,25 @@ hipsparseStatus_t testing_bsrsv2(Arguments argus)
         }
 
         // Test hipsparseXbsrsv2_bufferSize
-        { size_t lsize;
-	  status = hipsparseXbsrsv2_bufferSizeExt(
-						  handle, dir, trans, mb, safe_size, descr, dval, dptr, dcol, block_dim, info, &lsize); }
+        {
+            size_t lsize;
+            status = hipsparseXbsrsv2_bufferSizeExt(handle,
+                                                    dir,
+                                                    trans,
+                                                    mb,
+                                                    safe_size,
+                                                    descr,
+                                                    dval,
+                                                    dptr,
+                                                    dcol,
+                                                    block_dim,
+                                                    info,
+                                                    &lsize);
+        }
 
         if(mb < 0 || block_dim < 0)
         {
-            verify_hipsparse_status_invalid_size(status,
-                                                 "Error: mb < 0 || block_dim < 0");
+            verify_hipsparse_status_invalid_size(status, "Error: mb < 0 || block_dim < 0");
         }
         else
         {
@@ -550,8 +561,7 @@ hipsparseStatus_t testing_bsrsv2(Arguments argus)
 
         if(mb < 0 || block_dim < 0)
         {
-            verify_hipsparse_status_invalid_size(status,
-                                                 "Error: mb < 0 || block_dim < 0");
+            verify_hipsparse_status_invalid_size(status, "Error: mb < 0 || block_dim < 0");
         }
         else
         {
@@ -578,8 +588,7 @@ hipsparseStatus_t testing_bsrsv2(Arguments argus)
 
         if(mb < 0 || block_dim < 0)
         {
-            verify_hipsparse_status_invalid_size(status,
-                                                 "Error: mb < 0 || block_dim < 0");
+            verify_hipsparse_status_invalid_size(status, "Error: mb < 0 || block_dim < 0");
         }
         else
         {
@@ -607,7 +616,7 @@ hipsparseStatus_t testing_bsrsv2(Arguments argus)
     srand(12345ULL);
     if(binfile != "")
     {
-      int n;
+        int n;
         if(read_bin_matrix(
                binfile.c_str(), m, n, nnz, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base)
            != 0)
@@ -617,9 +626,9 @@ hipsparseStatus_t testing_bsrsv2(Arguments argus)
         }
     }
     else if(argus.laplacian)
-    {     
-        m = gen_2d_laplacian(argus.laplacian, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base);
-        nnz   = hcsr_row_ptr[m];
+    {
+        m   = gen_2d_laplacian(argus.laplacian, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base);
+        nnz = hcsr_row_ptr[m];
     }
     else
     {
@@ -627,7 +636,7 @@ hipsparseStatus_t testing_bsrsv2(Arguments argus)
 
         if(filename != "")
         {
-	  int n;
+            int n;
             if(read_mtx_matrix(
                    filename.c_str(), m, n, nnz, hcoo_row_ind, hcsr_col_ind, hcsr_val, idx_base)
                != 0)
@@ -644,7 +653,7 @@ hipsparseStatus_t testing_bsrsv2(Arguments argus)
                 scale = 2.0 / m;
             }
             nnz = m * scale * m;
-	   
+
             gen_matrix_coo(m, m, nnz, hcoo_row_ind, hcsr_col_ind, hcsr_val, idx_base);
         }
 

@@ -441,7 +441,8 @@ hipsparseStatus_t testing_gebsr2gebsc(Arguments argus)
     hipsparseIndexBase_t base   = argus.idx_base;
 
     // Argument sanity check before allocating invalid memory
-    if( (argus.M <= 0 && argus.M != -99) || (argus.N <= 0  && argus.M != -99) || argus.row_block_dimA <= 0 || argus.col_block_dimA <= 0)
+    if((argus.M <= 0 && argus.M != -99) || (argus.N <= 0 && argus.M != -99)
+       || argus.row_block_dimA <= 0 || argus.col_block_dimA <= 0)
     {
 #if(defined(CUDART_VERSION))
         if(argus.row_block_dimA == 0 || argus.col_block_dimA == 0)
@@ -546,8 +547,8 @@ hipsparseStatus_t testing_gebsr2gebsc(Arguments argus)
         // matrix from cise.ufl.edu
         if(m == -99 && n == -99 && argus.timing == 0)
         {
-	  int safe_size = 100;
-            binfile = argus.filename;
+            int safe_size = 100;
+            binfile       = argus.filename;
             m = n = safe_size;
         }
 

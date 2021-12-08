@@ -629,7 +629,7 @@ hipsparseStatus_t testing_prune_csr2csr_by_percentage(Arguments argus)
     if(M == -99 && N == -99 && argus.timing == 0)
     {
         int safe_size = 100;
-        binfile = argus.filename;
+        binfile       = argus.filename;
         M = N = safe_size;
     }
 
