@@ -897,7 +897,7 @@ int read_bin_matrix(const char*          filename,
     err = fread(&nrowf, sizeof(int), 1, f);
     err |= fread(&ncolf, sizeof(int), 1, f);
     err |= fread(&nnzf, sizeof(int), 1, f);
-    if(err)
+    if(!err)
     {
         fclose(f);
         return -1;
@@ -917,7 +917,7 @@ int read_bin_matrix(const char*          filename,
     err |= fread(ptrf.data(), sizeof(int), nrow + 1, f);
     err |= fread(colf.data(), sizeof(int), nnz, f);
     err |= fread(valf.data(), sizeof(double), nnz, f);
-    if(err)
+    if(!err)
     {
         fclose(f);
         return -1;
