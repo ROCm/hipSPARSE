@@ -52,7 +52,6 @@ void testing_csr2gebsr_bad_arg(void)
 
     hipsparseIndexBase_t csr_idx_base = HIPSPARSE_INDEX_BASE_ZERO;
     hipsparseIndexBase_t bsr_idx_base = HIPSPARSE_INDEX_BASE_ZERO;
-    hipsparseDirection_t dir          = HIPSPARSE_DIRECTION_ROW;
 
     static const size_t safe_size = 100;
 
@@ -305,6 +304,25 @@ void testing_csr2gebsr_bad_arg(void)
 
 #undef CALL_NNZ
 #undef CALL_ARG_NNZ
+
+    
+#undef ARGSET
+#define ARGSET                                     \
+    arg_direction       = HIPSPARSE_DIRECTION_ROW; \
+    arg_m               = safe_size;               \
+    arg_n               = safe_size;               \
+    arg_csr_descr       = csr_descr;               \
+    arg_csr_val         = (T*)csr_val;             \
+    arg_csr_row_ptr     = csr_row_ptr;             \
+    arg_csr_col_ind     = csr_col_ind;             \
+    arg_bsr_descr       = bsr_descr;               \
+    arg_bsr_val         = (T*)bsr_val;             \
+    arg_bsr_row_ptr     = bsr_row_ptr;             \
+    arg_bsr_col_ind     = bsr_col_ind;             \
+    arg_row_block_dim   = safe_size;               \
+    arg_col_block_dim   = safe_size;               \
+    arg_p_buffer        = (void*)((T*)buffer);     \
+    arg_p_buffer_size   = &buffer_size
 
 #define CALL_ARG_FUNC                                                                          \
     arg_direction, arg_m, arg_n, arg_csr_descr, arg_csr_val, arg_csr_row_ptr, arg_csr_col_ind, \

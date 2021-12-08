@@ -211,14 +211,10 @@ hipsparseStatus_t testing_axpyi(Arguments argus)
         CHECK_HIP_ERROR(hipMemcpy(hy_2.data(), dy_2, sizeof(T) * N, hipMemcpyDeviceToHost));
 
         // CPU
-        double cpu_time_used = get_time_us();
-
         for(int i = 0; i < nnz; ++i)
         {
             hy_gold[hxInd[i] - idx_base] = hy_gold[hxInd[i] - idx_base] + h_alpha * hxVal[i];
         }
-
-        cpu_time_used = get_time_us() - cpu_time_used;
 
         // enable unit check, notice unit check is not invasive, but norm check is,
         // unit check and norm check can not be interchanged their order

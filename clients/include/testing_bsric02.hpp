@@ -424,7 +424,7 @@ hipsparseStatus_t testing_bsric02(Arguments argus)
     }
     else if(argus.laplacian)
     {
-        m = m = gen_2d_laplacian(argus.laplacian, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base);
+      m = gen_2d_laplacian(argus.laplacian, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base);
         nnz   = hcsr_row_ptr[m];
     }
     else
@@ -714,8 +714,6 @@ hipsparseStatus_t testing_bsric02(Arguments argus)
             hipMemcpy(&h_solve_pivot_2, d_solve_pivot_2, sizeof(int), hipMemcpyDeviceToHost));
 
         // Host csric02
-        double cpu_time_used = get_time_us();
-
         int numerical_pivot;
         int structural_pivot;
         host_bsric02<T>(dir,
@@ -727,8 +725,6 @@ hipsparseStatus_t testing_bsric02(Arguments argus)
                         idx_base,
                         &structural_pivot,
                         &numerical_pivot);
-
-        cpu_time_used = get_time_us() - cpu_time_used;
 
         h_analysis_pivot_gold = structural_pivot;
 

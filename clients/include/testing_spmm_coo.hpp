@@ -48,8 +48,6 @@ void testing_spmm_coo_bad_arg(void)
     int32_t              n         = 100;
     int32_t              m         = 100;
     int32_t              k         = 100;
-    int32_t              ldb       = 100;
-    int32_t              ldc       = 100;
     int32_t              nnz       = 100;
     int32_t              safe_size = 100;
     float                alpha     = 0.6;
@@ -68,13 +66,9 @@ void testing_spmm_coo_bad_arg(void)
 #else
     hipsparseSpMMAlg_t alg = HIPSPARSE_MM_ALG_DEFAULT;
 #endif
-    hipsparseStatus_t status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
-
-    std::unique_ptr<descr_struct> unique_ptr_descr(new descr_struct);
-    hipsparseMatDescr_t           descr = unique_ptr_descr->descr;
 
     auto drow_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(int32_t) * safe_size), device_free};
@@ -217,7 +211,6 @@ hipsparseStatus_t testing_spmm_coo()
 #else
     hipsparseSpMMAlg_t alg = HIPSPARSE_MM_ALG_DEFAULT;
 #endif
-    hipsparseStatus_t status;
 
     // Matrices are stored at the same path in matrices directory
     std::string filename = hipsparse_exepath() + "../matrices/nos3.bin";
@@ -359,7 +352,6 @@ hipsparseStatus_t testing_spmm_coo()
     CHECK_HIP_ERROR(hipMemcpy(hC_2.data(), dC_2, sizeof(T) * m * n, hipMemcpyDeviceToHost));
 
     // CPU
-    double cpu_time_used = get_time_us();
 
     for(I j = 0; j < n; j++)
     {
@@ -381,8 +373,11 @@ hipsparseStatus_t testing_spmm_coo()
             I idx_C = order == HIPSPARSE_ORDER_COLUMN ? row + j * ldc : row * ldc + j;
 
             I idx_B = 0;
-            if((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE && order == HIPSPARSE_ORDER_COLUMN)
-               || (transB == HIPSPARSE_OPERATION_TRANSPOSE && order == HIPSPARSE_ORDER_ROW))
+	    //
+	    // transB == HIPSPARSE_OPERATION_NON_TRANSPOSE is always true.
+	    //
+            if(order == HIPSPARSE_ORDER_COLUMN)
+	      // || (transB == HIPSPARSE_OPERATION_TRANSPOSE && order == HIPSPARSE_ORDER_ROW))
             {
                 idx_B = (col + j * ldb);
             }
@@ -394,8 +389,6 @@ hipsparseStatus_t testing_spmm_coo()
             hC_gold[idx_C] = hC_gold[idx_C] + val * hB[idx_B];
         }
     }
-
-    cpu_time_used = get_time_us() - cpu_time_used;
 
     unit_check_near(1, m * n, 1, hC_gold.data(), hC_1.data());
     unit_check_near(1, m * n, 1, hC_gold.data(), hC_2.data());

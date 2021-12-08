@@ -439,7 +439,6 @@ hipsparseStatus_t testing_bsrsv2(Arguments argus)
 {
     int                    safe_size = 100;
     int                    m         = argus.M;
-    int                    n         = argus.M;
     int                    block_dim = argus.block_dim;
     hipsparseIndexBase_t   idx_base  = argus.idx_base;
     hipsparseDirection_t   dir       = argus.dirA;
@@ -459,7 +458,6 @@ hipsparseStatus_t testing_bsrsv2(Arguments argus)
     {
         binfile = argus.filename;
         m       = safe_size;
-        n       = safe_size;
     }
 
     if(argus.timing == 1)
@@ -486,10 +484,9 @@ hipsparseStatus_t testing_bsrsv2(Arguments argus)
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatFillMode(descr, fill_mode));
 
     int mb = (block_dim < 1) ? -1 : (m + block_dim - 1) / block_dim;
-    int nb = (block_dim < 1) ? -1 : (n + block_dim - 1) / block_dim;
 
     // Argument sanity check before allocating invalid memory
-    if(mb <= 0 || m <= 0 || nb <= 0 || n <= 0 || block_dim <= 0)
+    if(mb <= 0 || m <= 0 || block_dim <= 0)
     {
 #ifdef __HIP_PLATFORM_NVIDIA__
         // Do not test args in cusparse
@@ -522,18 +519,18 @@ hipsparseStatus_t testing_bsrsv2(Arguments argus)
         }
 
         // Test hipsparseXbsrsv2_bufferSize
-        size_t size;
-        status = hipsparseXbsrsv2_bufferSizeExt(
-            handle, dir, trans, mb, safe_size, descr, dval, dptr, dcol, block_dim, info, &size);
+        { size_t lsize;
+	  status = hipsparseXbsrsv2_bufferSizeExt(
+						  handle, dir, trans, mb, safe_size, descr, dval, dptr, dcol, block_dim, info, &lsize); }
 
-        if(mb < 0 || nb < 0 || block_dim < 0)
+        if(mb < 0 || block_dim < 0)
         {
             verify_hipsparse_status_invalid_size(status,
-                                                 "Error: mb < 0 || nb < 0 || block_dim < 0");
+                                                 "Error: mb < 0 || block_dim < 0");
         }
         else
         {
-            verify_hipsparse_status_success(status, "mb >= 0 && nb >= 0 && block_dim >= 0");
+            verify_hipsparse_status_success(status, "mb >= 0 && block_dim >= 0");
         }
 
         // Test hipsparseXbsrsv2_analysis
@@ -551,14 +548,14 @@ hipsparseStatus_t testing_bsrsv2(Arguments argus)
                                            policy,
                                            buffer);
 
-        if(mb < 0 || nb < 0 || block_dim < 0)
+        if(mb < 0 || block_dim < 0)
         {
             verify_hipsparse_status_invalid_size(status,
-                                                 "Error: mb < 0 || nb < 0 || block_dim < 0");
+                                                 "Error: mb < 0 || block_dim < 0");
         }
         else
         {
-            verify_hipsparse_status_success(status, "mb >= 0 && nb >= 0 && block_dim >= 0");
+            verify_hipsparse_status_success(status, "mb >= 0 && block_dim >= 0");
         }
 
         // Test hipsparseXbsrsv2_solve
@@ -579,14 +576,14 @@ hipsparseStatus_t testing_bsrsv2(Arguments argus)
                                         policy,
                                         buffer);
 
-        if(mb < 0 || nb < 0 || block_dim < 0)
+        if(mb < 0 || block_dim < 0)
         {
             verify_hipsparse_status_invalid_size(status,
-                                                 "Error: mb < 0 || nb < 0 || block_dim < 0");
+                                                 "Error: mb < 0 || block_dim < 0");
         }
         else
         {
-            verify_hipsparse_status_success(status, "mb >= 0 && nb >= 0 && block_dim >= 0");
+            verify_hipsparse_status_success(status, "mb >= 0 && block_dim >= 0");
         }
 
         // Test hipsparseXbsrsv2_zeroPivot
@@ -610,6 +607,7 @@ hipsparseStatus_t testing_bsrsv2(Arguments argus)
     srand(12345ULL);
     if(binfile != "")
     {
+      int n;
         if(read_bin_matrix(
                binfile.c_str(), m, n, nnz, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base)
            != 0)
@@ -619,8 +617,8 @@ hipsparseStatus_t testing_bsrsv2(Arguments argus)
         }
     }
     else if(argus.laplacian)
-    {
-        m = n = gen_2d_laplacian(argus.laplacian, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base);
+    {     
+        m = gen_2d_laplacian(argus.laplacian, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base);
         nnz   = hcsr_row_ptr[m];
     }
     else
@@ -629,6 +627,7 @@ hipsparseStatus_t testing_bsrsv2(Arguments argus)
 
         if(filename != "")
         {
+	  int n;
             if(read_mtx_matrix(
                    filename.c_str(), m, n, nnz, hcoo_row_ind, hcsr_col_ind, hcsr_val, idx_base)
                != 0)
@@ -645,8 +644,8 @@ hipsparseStatus_t testing_bsrsv2(Arguments argus)
                 scale = 2.0 / m;
             }
             nnz = m * scale * m;
-
-            gen_matrix_coo(m, n, nnz, hcoo_row_ind, hcsr_col_ind, hcsr_val, idx_base);
+	   
+            gen_matrix_coo(m, m, nnz, hcoo_row_ind, hcsr_col_ind, hcsr_val, idx_base);
         }
 
         // Convert COO to CSR
@@ -664,14 +663,13 @@ hipsparseStatus_t testing_bsrsv2(Arguments argus)
     }
 
     mb = (m + block_dim - 1) / block_dim;
-    nb = (n + block_dim - 1) / block_dim;
 
-    std::vector<T> hx(nb * block_dim);
+    std::vector<T> hx(mb * block_dim);
     std::vector<T> hy_1(mb * block_dim);
     std::vector<T> hy_2(mb * block_dim);
     std::vector<T> hy_gold(mb * block_dim);
 
-    hipsparseInit<T>(hx, 1, nb * block_dim);
+    hipsparseInit<T>(hx, 1, mb * block_dim);
 
     // Allocate memory on device
     auto dcsr_row_ptr_managed
@@ -680,7 +678,7 @@ hipsparseStatus_t testing_bsrsv2(Arguments argus)
     auto dcsr_val_managed     = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
     auto dbsr_row_ptr_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(int) * (mb + 1)), device_free};
-    auto dx_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * nb * block_dim), device_free};
+    auto dx_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * mb * block_dim), device_free};
     auto dy_1_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(T) * mb * block_dim), device_free};
     auto dy_2_managed
@@ -713,7 +711,7 @@ hipsparseStatus_t testing_bsrsv2(Arguments argus)
     CHECK_HIP_ERROR(
         hipMemcpy(dcsr_col_ind, hcsr_col_ind.data(), sizeof(int) * nnz, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dcsr_val, hcsr_val.data(), sizeof(T) * nnz, hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(hipMemcpy(dx, hx.data(), sizeof(T) * n, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(dx, hx.data(), sizeof(T) * m, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dy_1, hy_1.data(), sizeof(T) * m, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(d_alpha, &h_alpha, sizeof(T), hipMemcpyHostToDevice));
 
@@ -722,7 +720,7 @@ hipsparseStatus_t testing_bsrsv2(Arguments argus)
     CHECK_HIPSPARSE_ERROR(hipsparseXcsr2bsrNnz(handle,
                                                dir,
                                                m,
-                                               n,
+                                               m,
                                                descr,
                                                dcsr_row_ptr,
                                                dcsr_col_ind,
@@ -749,7 +747,7 @@ hipsparseStatus_t testing_bsrsv2(Arguments argus)
     CHECK_HIPSPARSE_ERROR(hipsparseXcsr2bsr(handle,
                                             dir,
                                             m,
-                                            n,
+                                            m,
                                             descr,
                                             dcsr_val,
                                             dcsr_row_ptr,

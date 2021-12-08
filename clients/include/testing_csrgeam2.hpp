@@ -1023,9 +1023,7 @@ hipsparseStatus_t testing_csrgeam2(Arguments argus)
     int* dCptr_1 = (int*)dCptr_1_managed.get();
     int* dCptr_2 = (int*)dCptr_2_managed.get();
     int* dCcol_1;
-    int* dCcol_2;
     T*   dCval_1;
-    T*   dCval_2;
     T*   dalpha = (T*)dalpha_managed.get();
     T*   dbeta  = (T*)dbeta_managed.get();
 
@@ -1131,6 +1129,9 @@ hipsparseStatus_t testing_csrgeam2(Arguments argus)
         auto dCval_2_managed
             = hipsparse_unique_ptr{device_malloc(sizeof(T) * hnnz_C_1), device_free};
         auto dnnz_C_managed = hipsparse_unique_ptr{device_malloc(sizeof(int)), device_free};
+
+	int* dCcol_2;
+	T*   dCval_2;
 
         dCcol_2     = (int*)dCcol_2_managed.get();
         dCval_2     = (T*)dCval_2_managed.get();

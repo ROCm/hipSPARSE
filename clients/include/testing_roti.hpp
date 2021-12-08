@@ -48,7 +48,6 @@ void testing_roti_bad_arg(void)
     T   s         = 1.2;
 
     hipsparseIndexBase_t idx_base = HIPSPARSE_INDEX_BASE_ZERO;
-    hipsparseStatus_t    status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -218,8 +217,6 @@ hipsparseStatus_t testing_roti(Arguments argus)
         CHECK_HIP_ERROR(hipMemcpy(hy_2.data(), dy_2, sizeof(T) * N, hipMemcpyDeviceToHost));
 
         // CPU
-        double cpu_time_used = get_time_us();
-
         for(int i = 0; i < nnz; ++i)
         {
             int idx = hx_ind[i] - idx_base;
@@ -230,8 +227,6 @@ hipsparseStatus_t testing_roti(Arguments argus)
             hx_val_gold[i] = c * x + s * y;
             hy_gold[idx]   = c * y - s * x;
         }
-
-        cpu_time_used = get_time_us() - cpu_time_used;
 
         // enable unit check, notice unit check is not invasive, but norm check is,
         // unit check and norm check can not be interchanged their order

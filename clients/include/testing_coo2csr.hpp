@@ -253,8 +253,6 @@ hipsparseStatus_t testing_coo2csr(Arguments argus)
             hcsr_row_ptr.data(), dcsr_row_ptr, sizeof(int) * (m + 1), hipMemcpyDeviceToHost));
 
         // CPU
-        double cpu_time_used = get_time_us();
-
         // coo2csr on host
         for(int i = 0; i < nnz; ++i)
         {
@@ -266,8 +264,6 @@ hipsparseStatus_t testing_coo2csr(Arguments argus)
         {
             hcsr_row_ptr_gold[i + 1] += hcsr_row_ptr_gold[i];
         }
-
-        cpu_time_used = get_time_us() - cpu_time_used;
 
         // Unit check
         unit_check_general(1, m + 1, 1, hcsr_row_ptr_gold.data(), hcsr_row_ptr.data());
