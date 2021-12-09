@@ -14160,7 +14160,6 @@ hipsparseStatus_t hipsparseZgtsv2_nopivot(hipsparseHandle_t       handle,
 //                                                                rocsparse_int batch_stride,
 //                                                                size_t*       buffer_size);
 
-
 hipsparseStatus_t hipsparseSgtsvInterleavedBatch_bufferSizeExt(hipsparseHandle_t handle,
                                                                int               algo,
                                                                int               m,
