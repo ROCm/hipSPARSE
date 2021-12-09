@@ -14149,17 +14149,6 @@ hipsparseStatus_t hipsparseZgtsv2_nopivot(hipsparseHandle_t       handle,
                                                                pBuffer));
 }
 
-// rocsparse_status rocsparse_sgtsv_interleaved_batch_buffer_size(rocsparse_handle handle,
-//                                                                rocsparse_gtsv_interleaved_alg alg,
-//                                                                rocsparse_int                  m,
-//                                                                const float*                   dl,
-//                                                                const float*                   d,
-//                                                                const float*                   du,
-//                                                                const float*                   x,
-//                                                                rocsparse_int batch_count,
-//                                                                rocsparse_int batch_stride,
-//                                                                size_t*       buffer_size);
-
 hipsparseStatus_t hipsparseSgtsvInterleavedBatch_bufferSizeExt(hipsparseHandle_t handle,
                                                                int               algo,
                                                                int               m,
