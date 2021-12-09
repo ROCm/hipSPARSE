@@ -14149,7 +14149,6 @@ hipsparseStatus_t hipsparseZgtsv2_nopivot(hipsparseHandle_t       handle,
                                                                pBuffer));
 }
 
-// ROCSPARSE_EXPORT
 // rocsparse_status rocsparse_sgtsv_interleaved_batch_buffer_size(rocsparse_handle handle,
 //                                                                rocsparse_gtsv_interleaved_alg alg,
 //                                                                rocsparse_int                  m,
@@ -14158,7 +14157,9 @@ hipsparseStatus_t hipsparseZgtsv2_nopivot(hipsparseHandle_t       handle,
 //                                                                const float*                   du,
 //                                                                const float*                   x,
 //                                                                rocsparse_int batch_count,
+//                                                                rocsparse_int batch_stride,
 //                                                                size_t*       buffer_size);
+
 
 hipsparseStatus_t hipsparseSgtsvInterleavedBatch_bufferSizeExt(hipsparseHandle_t handle,
                                                                int               algo,
@@ -14178,6 +14179,7 @@ hipsparseStatus_t hipsparseSgtsvInterleavedBatch_bufferSizeExt(hipsparseHandle_t
                                                       d,
                                                       du,
                                                       x,
+                                                      batchCount,
                                                       batchCount,
                                                       pBufferSizeInBytes));
 }
@@ -14201,6 +14203,7 @@ hipsparseStatus_t hipsparseDgtsvInterleavedBatch_bufferSizeExt(hipsparseHandle_t
                                                       du,
                                                       x,
                                                       batchCount,
+                                                      batchCount,
                                                       pBufferSizeInBytes));
 }
 
@@ -14223,6 +14226,7 @@ hipsparseStatus_t hipsparseCgtsvInterleavedBatch_bufferSizeExt(hipsparseHandle_t
                                                       (const rocsparse_float_complex*)du,
                                                       (const rocsparse_float_complex*)x,
                                                       batchCount,
+                                                      batchCount,
                                                       pBufferSizeInBytes));
 }
 
@@ -14244,6 +14248,7 @@ hipsparseStatus_t hipsparseZgtsvInterleavedBatch_bufferSizeExt(hipsparseHandle_t
                                                       (const rocsparse_double_complex*)d,
                                                       (const rocsparse_double_complex*)du,
                                                       (const rocsparse_double_complex*)x,
+                                                      batchCount,
                                                       batchCount,
                                                       pBufferSizeInBytes));
 }
@@ -14268,6 +14273,7 @@ hipsparseStatus_t hipsparseSgtsvInterleavedBatch(hipsparseHandle_t handle,
                                           du,
                                           x,
                                           batchCount,
+                                          batchCount,
                                           pBuffer));
 }
 
@@ -14291,6 +14297,7 @@ hipsparseStatus_t hipsparseDgtsvInterleavedBatch(hipsparseHandle_t handle,
                                           du,
                                           x,
                                           batchCount,
+                                          batchCount,
                                           pBuffer));
 }
 
@@ -14312,6 +14319,7 @@ hipsparseStatus_t hipsparseCgtsvInterleavedBatch(hipsparseHandle_t handle,
                                           (rocsparse_float_complex*)d,
                                           (rocsparse_float_complex*)du,
                                           (rocsparse_float_complex*)x,
+                                          batchCount,
                                           batchCount,
                                           pBuffer));
 }
@@ -14335,6 +14343,7 @@ hipsparseStatus_t hipsparseZgtsvInterleavedBatch(hipsparseHandle_t handle,
                                           (rocsparse_double_complex*)d,
                                           (rocsparse_double_complex*)du,
                                           (rocsparse_double_complex*)x,
+                                          batchCount,
                                           batchCount,
                                           pBuffer));
 }
