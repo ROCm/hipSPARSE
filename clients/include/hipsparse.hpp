@@ -1435,6 +1435,28 @@ namespace hipsparse
                                               void*             pBuffer);
 
     template <typename T>
+    hipsparseStatus_t hipsparseXgtsvInterleavedBatch_bufferSizeExt(hipsparseHandle_t handle,
+                                                                   int               algo,
+                                                                   int               m,
+                                                                   const T*          dl,
+                                                                   const T*          d,
+                                                                   const T*          du,
+                                                                   const T*          x,
+                                                                   int               batchCount,
+                                                                   size_t* pBufferSizeInBytes);
+
+    template <typename T>
+    hipsparseStatus_t hipsparseXgtsvInterleavedBatch(hipsparseHandle_t handle,
+                                                     int               algo,
+                                                     int               m,
+                                                     T*                dl,
+                                                     T*                d,
+                                                     T*                du,
+                                                     T*                x,
+                                                     int               batchCount,
+                                                     void*             pBuffer);
+
+    template <typename T>
     hipsparseStatus_t hipsparseXcsrcolor(hipsparseHandle_t         handle,
                                          int                       m,
                                          int                       nnz,
