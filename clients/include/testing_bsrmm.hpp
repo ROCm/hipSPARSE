@@ -51,7 +51,6 @@ void testing_bsrmm_bad_arg(void)
     int                  block_dim = 100;
     int                  ldb       = 100;
     int                  ldc       = 100;
-    int                  nnz       = 100;
     int                  safe_size = 100;
     T                    alpha     = 0.6;
     T                    beta      = 0.2;

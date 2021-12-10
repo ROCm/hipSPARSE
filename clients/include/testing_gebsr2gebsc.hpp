@@ -441,7 +441,8 @@ hipsparseStatus_t testing_gebsr2gebsc(Arguments argus)
     hipsparseIndexBase_t base   = argus.idx_base;
 
     // Argument sanity check before allocating invalid memory
-    if(argus.M <= 0 || argus.N <= 0 || argus.row_block_dimA <= 0 || argus.col_block_dimA <= 0)
+    if((argus.M <= 0 && argus.M != -99) || (argus.N <= 0 && argus.M != -99)
+       || argus.row_block_dimA <= 0 || argus.col_block_dimA <= 0)
     {
 #if(defined(CUDART_VERSION))
         if(argus.row_block_dimA == 0 || argus.col_block_dimA == 0)
@@ -522,7 +523,7 @@ hipsparseStatus_t testing_gebsr2gebsc(Arguments argus)
     //
     // Build the gebsr matrix.
     //
-    hipsparseDirection_t bsr_dirb          = argus.dirA;
+    hipsparseDirection_t bsr_dirb;
     int                  bsr_mb            = -1;
     int                  bsr_nb            = -1;
     int                  bsr_nnzb          = -1;
@@ -544,10 +545,10 @@ hipsparseStatus_t testing_gebsr2gebsc(Arguments argus)
 
         // When in testing mode, M == N == -99 indicates that we are testing with a real
         // matrix from cise.ufl.edu
-        int safe_size = 100;
         if(m == -99 && n == -99 && argus.timing == 0)
         {
-            binfile = argus.filename;
+            int safe_size = 100;
+            binfile       = argus.filename;
             m = n = safe_size;
         }
 

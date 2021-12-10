@@ -579,8 +579,6 @@ hipsparseStatus_t testing_csric02(Arguments argus)
             hipMemcpy(&h_solve_pivot_2, d_solve_pivot_2, sizeof(int), hipMemcpyDeviceToHost));
 
         // Host csric02
-        double cpu_time_used = get_time_us();
-
         csric0(m,
                hcsr_row_ptr.data(),
                hcsr_col_ind.data(),
@@ -588,8 +586,6 @@ hipsparseStatus_t testing_csric02(Arguments argus)
                idx_base,
                h_analysis_pivot_gold,
                h_solve_pivot_gold);
-
-        cpu_time_used = get_time_us() - cpu_time_used;
 
 #ifndef __HIP_PLATFORM_NVIDIA__
         // Do not check pivots in cusparse

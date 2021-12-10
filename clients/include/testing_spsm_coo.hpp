@@ -47,13 +47,10 @@ void testing_spsm_coo_bad_arg(void)
     hipsparseOperation_t transA    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
     hipsparseOperation_t transB    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
     hipsparseIndexBase_t idxBase   = HIPSPARSE_INDEX_BASE_ZERO;
-    hipsparseDiagType_t  diag      = HIPSPARSE_DIAG_TYPE_UNIT;
-    hipsparseFillMode_t  uplo      = HIPSPARSE_FILL_MODE_LOWER;
     hipsparseOrder_t     order     = HIPSPARSE_ORDER_COLUMN;
     hipsparseIndexType_t idxType   = HIPSPARSE_INDEX_32I;
     hipDataType          dataType  = HIP_R_32F;
     hipsparseSpSMAlg_t   alg       = HIPSPARSE_SPSM_ALG_DEFAULT;
-    hipsparseStatus_t    status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;

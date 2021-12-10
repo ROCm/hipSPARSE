@@ -41,6 +41,7 @@ TEST(csru2csr, csru2csr_float)
 TEST(csru2csr, csru2csr_double)
 {
     hipsparseStatus_t status = testing_csru2csr<double>();
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
 TEST(csru2csr, csru2csr_hipComplex)
@@ -52,5 +53,6 @@ TEST(csru2csr, csru2csr_hipComplex)
 TEST(csru2csr, csru2csr_hipDoubleComplex)
 {
     hipsparseStatus_t status = testing_csru2csr<hipDoubleComplex>();
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 #endif

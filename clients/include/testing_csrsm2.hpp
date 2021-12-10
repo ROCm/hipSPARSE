@@ -746,11 +746,10 @@ hipsparseStatus_t testing_csrsm2(Arguments argus)
 {
     int                    safe_size = 100;
     int                    m         = argus.M;
-    int                    n         = argus.M;
     int                    nrhs      = argus.N;
     hipsparseIndexBase_t   idx_base  = argus.idx_base;
     hipsparseOperation_t   transA    = argus.transA;
-    hipsparseOperation_t   transB    = argus.transA;
+    hipsparseOperation_t   transB    = argus.transB;
     hipsparseDiagType_t    diag      = argus.diag_type;
     hipsparseFillMode_t    uplo      = argus.fill_mode;
     hipsparseSolvePolicy_t policy    = HIPSPARSE_SOLVE_POLICY_USE_LEVEL;
@@ -933,6 +932,7 @@ hipsparseStatus_t testing_csrsm2(Arguments argus)
     srand(12345ULL);
     if(binfile != "")
     {
+        int n;
         if(read_bin_matrix(
                binfile.c_str(), m, n, nnz, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base)
            != 0)
@@ -943,8 +943,8 @@ hipsparseStatus_t testing_csrsm2(Arguments argus)
     }
     else if(argus.laplacian)
     {
-        m = n = gen_2d_laplacian(argus.laplacian, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base);
-        nnz   = hcsr_row_ptr[m];
+        m   = gen_2d_laplacian(argus.laplacian, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base);
+        nnz = hcsr_row_ptr[m];
     }
     else
     {
@@ -952,6 +952,7 @@ hipsparseStatus_t testing_csrsm2(Arguments argus)
 
         if(filename != "")
         {
+            int n;
             if(read_mtx_matrix(
                    filename.c_str(), m, n, nnz, hcoo_row_ind, hcsr_col_ind, hcsr_val, idx_base)
                != 0)
@@ -962,7 +963,7 @@ hipsparseStatus_t testing_csrsm2(Arguments argus)
         }
         else
         {
-            gen_matrix_coo(m, n, nnz, hcoo_row_ind, hcsr_col_ind, hcsr_val, idx_base);
+            gen_matrix_coo(m, m, nnz, hcoo_row_ind, hcsr_col_ind, hcsr_val, idx_base);
         }
 
         // Convert COO to CSR

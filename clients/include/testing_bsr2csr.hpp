@@ -46,7 +46,6 @@ void testing_bsr2csr_bad_arg(void)
 #endif
     int                  m            = 100;
     int                  n            = 100;
-    int                  nnz          = 100;
     int                  safe_size    = 100;
     int                  block_dim    = 2;
     hipsparseIndexBase_t csr_idx_base = HIPSPARSE_INDEX_BASE_ZERO;
