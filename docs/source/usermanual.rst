@@ -1037,6 +1037,8 @@ Function name                                                                   
 :cpp:func:`hipsparseXgtsv2_nopivot() <hipsparseSgtsv2_nopivot>`                                                       x      x      x              x
 :cpp:func:`hipsparseXgtsv2StridedBatch_bufferSizeExt() <hipsparseSgtsv2StridedBatch_bufferSizeExt>`                   x      x      x              x
 :cpp:func:`hipsparseXgtsv2StridedBatch() <hipsparseSgtsv2StridedBatch>`                                               x      x      x              x
+:cpp:func:`hipsparseXgtsvInterleavedBatch_bufferSizeExt() <hipsparseSgtsvInterleavedBatch_bufferSizeExt>`             x      x      x              x
+:cpp:func:`hipsparseXgtsvInterleavedBatch() <hipsparseSgtsvInterleavedBatch>`                                         x      x      x              x
 :cpp:func:`hipsparseXgpsvInterleavedBatch_bufferSizeExt() <hipsparseSgpsvInterleavedBatch_bufferSizeExt>`             x      x      x              x
 :cpp:func:`hipsparseXgpsvInterleavedBatch() <hipsparseSgpsvInterleavedBatch>`                                         x      x      x              x
 ===================================================================================================================== ====== ====== ============== ==============
@@ -2344,6 +2346,28 @@ hipsparseXgtsv2StridedBatch()
 .. doxygenfunction:: hipsparseCgtsv2StridedBatch
   :outline:
 .. doxygenfunction:: hipsparseZgtsv2StridedBatch
+
+hipsparseXgtsvInterleavedBatch_bufferSizeExt()
+----------------------------------------------
+
+.. doxygenfunction:: hipsparseSgtsvInterleavedBatch_bufferSizeExt
+  :outline:
+.. doxygenfunction:: hipsparseDgtsvInterleavedBatch_bufferSizeExt
+  :outline:
+.. doxygenfunction:: hipsparseCgtsvInterleavedBatch_bufferSizeExt
+  :outline:
+.. doxygenfunction:: hipsparseZgtsvInterleavedBatch_bufferSizeExt
+
+hipsparseXgtsvInterleavedBatch()
+--------------------------------
+
+.. doxygenfunction:: hipsparseSgtsvInterleavedBatch
+  :outline:
+.. doxygenfunction:: hipsparseDgtsvInterleavedBatch
+  :outline:
+.. doxygenfunction:: hipsparseCgtsvInterleavedBatch
+  :outline:
+.. doxygenfunction:: hipsparseZgtsvInterleavedBatch
 
 hipsparseXgpsvInterleavedBatch_bufferSizeExt()
 ----------------------------------------------
