@@ -328,6 +328,14 @@ hipsparseStatus_t testing_spmm_csr()
     CHECK_HIPSPARSE_ERROR(hipsparseSpMM_bufferSize(
         handle, transA, transB, &h_alpha, A, B, &h_beta, C1, typeT, alg, &bufferSize));
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11021)
+    //When using cusparse backend, cant pass nullptr for buffer to preprocess
+    if(bufferSize == 0)
+    {
+        bufferSize = 4;
+    }
+#endif
+
     void* buffer;
     CHECK_HIP_ERROR(hipMalloc(&buffer, bufferSize));
 
