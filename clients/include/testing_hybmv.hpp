@@ -407,8 +407,6 @@ hipsparseStatus_t testing_hybmv(Arguments argus)
         CHECK_HIP_ERROR(hipMemcpy(hy_2.data(), dy_2, sizeof(T) * m, hipMemcpyDeviceToHost));
 
         // CPU
-        double cpu_time_used = get_time_us();
-
         // ELL part
         if(ell_nnz > 0)
         {
@@ -459,8 +457,6 @@ hipsparseStatus_t testing_hybmv(Arguments argus)
                 hy_gold[row] = hy_gold[row] + h_alpha * hcoo_val[i] * hx[col];
             }
         }
-
-        cpu_time_used = get_time_us() - cpu_time_used;
 
         unit_check_near(1, m, 1, hy_gold.data(), hy_1.data());
         unit_check_near(1, m, 1, hy_gold.data(), hy_2.data());

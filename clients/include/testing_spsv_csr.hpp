@@ -45,12 +45,9 @@ void testing_spsv_csr_bad_arg(void)
     float                alpha     = 0.6;
     hipsparseOperation_t transA    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
     hipsparseIndexBase_t idxBase   = HIPSPARSE_INDEX_BASE_ZERO;
-    hipsparseDiagType_t  diag      = HIPSPARSE_DIAG_TYPE_UNIT;
-    hipsparseFillMode_t  uplo      = HIPSPARSE_FILL_MODE_LOWER;
     hipsparseIndexType_t idxType   = HIPSPARSE_INDEX_32I;
     hipDataType          dataType  = HIP_R_32F;
     hipsparseSpSVAlg_t   alg       = HIPSPARSE_SPSV_ALG_DEFAULT;
-    hipsparseStatus_t    status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -174,7 +171,6 @@ hipsparseStatus_t testing_spsv_csr(void)
     hipsparseDiagType_t  diag     = HIPSPARSE_DIAG_TYPE_NON_UNIT;
     hipsparseFillMode_t  uplo     = HIPSPARSE_FILL_MODE_LOWER;
     hipsparseSpSVAlg_t   alg      = HIPSPARSE_SPSV_ALG_DEFAULT;
-    hipsparseStatus_t    status;
 
     std::string filename = hipsparse_exepath() + "../matrices/nos3.bin";
 

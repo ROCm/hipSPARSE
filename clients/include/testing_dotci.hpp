@@ -215,16 +215,11 @@ hipsparseStatus_t testing_dotci(Arguments argus)
         CHECK_HIP_ERROR(hipMemcpy(&hresult_2, dresult_2, sizeof(T), hipMemcpyDeviceToHost));
 
         // CPU
-        double cpu_time_used = get_time_us();
-
         hresult_gold = make_DataType<T>(0.0);
         for(int i = 0; i < nnz; ++i)
         {
             hresult_gold = hresult_gold + testing_conj(hx_val[i]) * hy[hx_ind[i] - idx_base];
         }
-
-        cpu_time_used = get_time_us() - cpu_time_used;
-
         // enable unit check, notice unit check is not invasive, but norm check is,
         // unit check and norm check can not be interchanged their order
         unit_check_general(1, 1, 1, &hresult_gold, &hresult_1);

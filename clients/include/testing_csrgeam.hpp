@@ -698,7 +698,6 @@ hipsparseStatus_t testing_csrgeam(Arguments argus)
     std::string          binfile    = "";
     std::string          filename   = "";
     hipsparseStatus_t    status;
-    size_t               size;
 
     // When in testing mode, M == N == -99 indicates that we are testing with a real
     // matrix from cise.ufl.edu

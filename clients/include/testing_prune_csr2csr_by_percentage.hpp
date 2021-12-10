@@ -626,10 +626,10 @@ hipsparseStatus_t testing_prune_csr2csr_by_percentage(Arguments argus)
 
     // When in testing mode, M == N == -99 indicates that we are testing with a real
     // matrix from cise.ufl.edu
-    int safe_size = 100;
     if(M == -99 && N == -99 && argus.timing == 0)
     {
-        binfile = argus.filename;
+        int safe_size = 100;
+        binfile       = argus.filename;
         M = N = safe_size;
     }
 

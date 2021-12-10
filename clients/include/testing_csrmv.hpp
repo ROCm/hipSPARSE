@@ -366,8 +366,6 @@ hipsparseStatus_t testing_csrmv(Arguments argus)
         CHECK_HIP_ERROR(hipMemcpy(hy_2.data(), dy_2, sizeof(T) * m, hipMemcpyDeviceToHost));
 
         // CPU - do the csrmv row reduction in the same order as the GPU
-        double cpu_time_used = get_time_us();
-
         if(transA == HIPSPARSE_OPERATION_NON_TRANSPOSE)
         {
             // Query for warpSize
@@ -471,8 +469,6 @@ hipsparseStatus_t testing_csrmv(Arguments argus)
                 }
             }
         }
-
-        cpu_time_used = get_time_us() - cpu_time_used;
 
         unit_check_near(1, m, 1, hy_gold.data(), hy_1.data());
         unit_check_near(1, m, 1, hy_gold.data(), hy_2.data());

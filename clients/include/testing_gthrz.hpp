@@ -184,15 +184,11 @@ hipsparseStatus_t testing_gthrz(Arguments argus)
         CHECK_HIP_ERROR(hipMemcpy(hy.data(), dy, sizeof(T) * N, hipMemcpyDeviceToHost));
 
         // CPU
-        double cpu_time_used = get_time_us();
-
         for(int i = 0; i < nnz; ++i)
         {
             hx_val_gold[i]                = hy_gold[hx_ind[i] - idx_base];
             hy_gold[hx_ind[i] - idx_base] = make_DataType<T>(0.0);
         }
-
-        cpu_time_used = get_time_us() - cpu_time_used;
 
         // enable unit check, notice unit check is not invasive, but norm check is,
         // unit check and norm check can not be interchanged their order

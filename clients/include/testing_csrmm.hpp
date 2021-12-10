@@ -572,8 +572,6 @@ hipsparseStatus_t testing_csrmm(Arguments argus)
         CHECK_HIP_ERROR(hipMemcpy(hC_2.data(), dC_2, sizeof(T) * Cnnz, hipMemcpyDeviceToHost));
 
         // CPU
-        double cpu_time_used = get_time_us();
-
         host_csrmm(M,
                    N,
                    K,
@@ -590,8 +588,6 @@ hipsparseStatus_t testing_csrmm(Arguments argus)
                    ldc,
                    HIPSPARSE_ORDER_COLUMN,
                    idx_base);
-
-        cpu_time_used = get_time_us() - cpu_time_used;
 
         unit_check_near(nrowC, ncolC, ldc, hC_gold.data(), hC_1.data());
         unit_check_near(nrowC, ncolC, ldc, hC_gold.data(), hC_2.data());

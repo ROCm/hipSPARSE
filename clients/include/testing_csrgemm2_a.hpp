@@ -51,7 +51,6 @@ void testing_csrgemm2_a_bad_arg(void)
     int safe_size = 100;
 
     T alpha = 1.0;
-    T zero  = 0.0;
 
     hipsparseStatus_t status;
     size_t            size;

@@ -137,8 +137,6 @@ hipsparseStatus_t testing_sparse_to_dense_csc(void)
     hipsparseSparseToDenseAlg_t alg      = HIPSPARSE_SPARSETODENSE_ALG_DEFAULT;
     hipsparseOrder_t            order    = HIPSPARSE_ORDER_COLUMN;
 
-    hipsparseStatus_t status;
-
     // Matrices are stored at the same path in matrices directory
     std::string filename = hipsparse_exepath() + "../matrices/nos3.bin";
 

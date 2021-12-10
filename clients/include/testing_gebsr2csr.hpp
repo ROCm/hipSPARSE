@@ -47,7 +47,6 @@ void testing_gebsr2csr_bad_arg(void)
 #endif
     int                  m             = 100;
     int                  n             = 100;
-    int                  nnz           = 100;
     int                  safe_size     = 100;
     int                  row_block_dim = 2;
     int                  col_block_dim = 2;

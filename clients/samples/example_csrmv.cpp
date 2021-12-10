@@ -129,7 +129,7 @@ int main(int argc, char* argv[])
     // CSR matrix vector multiplication
     for(int i = 0; i < trials; ++i)
     {
-        for(int i = 0; i < batch_size; ++i)
+        for(int j = 0; j < batch_size; ++j)
         {
             // Call hipsparse csrmv
             hipsparseDcsrmv(handle,

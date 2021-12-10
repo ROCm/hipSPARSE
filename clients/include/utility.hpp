@@ -563,56 +563,58 @@ void gen_matrix_coo(I                    m,
     // Sample column indices
     std::vector<bool> check(nnz, false);
 
-    I i = 0;
-    while(i < nnz)
     {
-        I begin = i;
-        while(row_ind[i] == row_ind[begin])
+        I i = 0;
+        while(i < nnz)
         {
-            ++i;
-            if(i >= nnz)
+            I begin = i;
+            while(row_ind[i] == row_ind[begin])
             {
-                break;
+                ++i;
+                if(i >= nnz)
+                {
+                    break;
+                }
             }
-        }
 
-        // Sample i disjunct column indices
-        I idx = begin;
-        while(idx < i)
-        {
+            // Sample i disjunct column indices
+            I idx = begin;
+            while(idx < i)
+            {
 #define MM_PI 3.1415
-            // Normal distribution around the diagonal
-            I rng = (i - begin) * sqrt(-2.0 * log((double)rand() / RAND_MAX))
-                    * cos(2.0 * MM_PI * (double)rand() / RAND_MAX);
+                // Normal distribution around the diagonal
+                I rng = (i - begin) * sqrt(-2.0 * log((double)rand() / RAND_MAX))
+                        * cos(2.0 * MM_PI * (double)rand() / RAND_MAX);
 
-            if(m <= n)
-            {
-                rng += row_ind[begin];
+                if(m <= n)
+                {
+                    rng += row_ind[begin];
+                }
+
+                // Repeat if running out of bounds
+                if(rng < 0 || rng > n - 1)
+                {
+                    continue;
+                }
+
+                // Check for disjunct column index in current row
+                if(!check[rng])
+                {
+                    check[rng]   = true;
+                    col_ind[idx] = rng;
+                    ++idx;
+                }
             }
 
-            // Repeat if running out of bounds
-            if(rng < 0 || rng > n - 1)
+            // Reset disjunct check array
+            for(I j = begin; j < i; ++j)
             {
-                continue;
+                check[col_ind[j]] = false;
             }
 
-            // Check for disjunct column index in current row
-            if(!check[rng])
-            {
-                check[rng]   = true;
-                col_ind[idx] = rng;
-                ++idx;
-            }
+            // Partially sort column indices
+            std::sort(&col_ind[begin], &col_ind[i]);
         }
-
-        // Reset disjunct check array
-        for(I j = begin; j < i; ++j)
-        {
-            check[col_ind[j]] = false;
-        }
-
-        // Partially sort column indices
-        std::sort(&col_ind[begin], &col_ind[i]);
     }
 
     // Correct index base accordingly
@@ -702,7 +704,7 @@ int read_mtx_matrix(const char*          filename,
     char type[16];
 
     // Extract banner
-    if(sscanf(line, "%s %s %s %s %s", banner, array, coord, data, type) != 5)
+    if(sscanf(line, "%15s %15s %15s %15s %15s", banner, array, coord, data, type) != 5)
     {
         return -1;
     }
@@ -895,7 +897,11 @@ int read_bin_matrix(const char*          filename,
     err = fread(&nrowf, sizeof(int), 1, f);
     err |= fread(&ncolf, sizeof(int), 1, f);
     err |= fread(&nnzf, sizeof(int), 1, f);
-
+    if(!err)
+    {
+        fclose(f);
+        return -1;
+    }
     nrow = (J)nrowf;
     ncol = (J)ncolf;
     nnz  = (I)nnzf;
@@ -911,6 +917,11 @@ int read_bin_matrix(const char*          filename,
     err |= fread(ptrf.data(), sizeof(int), nrow + 1, f);
     err |= fread(colf.data(), sizeof(int), nnz, f);
     err |= fread(valf.data(), sizeof(double), nnz, f);
+    if(!err)
+    {
+        fclose(f);
+        return -1;
+    }
 
     fclose(f);
 
@@ -1187,7 +1198,6 @@ void host_csx2dense(int                  m,
     {
     case HIPSPARSE_DIRECTION_COLUMN:
     {
-        static constexpr T s_zero = {};
         for(int col = 0; col < n; ++col)
         {
             for(int row = 0; row < m; ++row)
@@ -1205,7 +1215,6 @@ void host_csx2dense(int                  m,
 
     case HIPSPARSE_DIRECTION_ROW:
     {
-        static constexpr T s_zero = {};
         for(int row = 0; row < m; ++row)
         {
             for(int col = 0; col < n; ++col)
@@ -1853,13 +1862,15 @@ inline void host_csr_to_gebsr(hipsparseDirection_t    direction,
     bsr_val.resize(nnzb * row_block_dim * col_block_dim, make_DataType<T>(0));
 
     // fill GEBSR col indices array
-    int index = 0;
-    for(int i = 0; i < nnz; i++)
     {
-        if(temp[i] != -1)
+        int index = 0;
+        for(int i = 0; i < nnz; i++)
         {
-            bsr_col_ind[index] = temp[i] + bsr_base;
-            index++;
+            if(temp[i] != -1)
+            {
+                bsr_col_ind[index] = temp[i] + bsr_base;
+                index++;
+            }
         }
     }
 
@@ -1883,28 +1894,30 @@ inline void host_csr_to_gebsr(hipsparseDirection_t    direction,
 
             int local_col = col % col_block_dim;
 
-            int index = 0;
-            for(int k = bstart; k < bend; k++)
             {
-                if(bsr_col_ind[k] - bsr_base == col / col_block_dim)
+                int index = 0;
+                for(int k = bstart; k < bend; k++)
                 {
-                    index  = k;
-                    bstart = k;
-                    break;
+                    if(bsr_col_ind[k] - bsr_base == col / col_block_dim)
+                    {
+                        index  = k;
+                        bstart = k;
+                        break;
+                    }
                 }
-            }
 
-            if(direction == HIPSPARSE_DIRECTION_ROW)
-            {
-                bsr_val[row_block_dim * col_block_dim * index + col_block_dim * local_row
-                        + local_col]
-                    = csr_val[j];
-            }
-            else
-            {
-                bsr_val[row_block_dim * col_block_dim * index + row_block_dim * local_col
-                        + local_row]
-                    = csr_val[j];
+                if(direction == HIPSPARSE_DIRECTION_ROW)
+                {
+                    bsr_val[row_block_dim * col_block_dim * index + col_block_dim * local_row
+                            + local_col]
+                        = csr_val[j];
+                }
+                else
+                {
+                    bsr_val[row_block_dim * col_block_dim * index + row_block_dim * local_col
+                            + local_row]
+                        = csr_val[j];
+                }
             }
         }
     }
@@ -1931,9 +1944,6 @@ inline void host_gebsr_to_gebsr(hipsparseDirection_t    direction,
     int m = mb * row_block_dim_A;
     int n = nb * col_block_dim_A;
 
-    int mb_C = (m + row_block_dim_C - 1) / row_block_dim_C;
-    int nb_C = (n + col_block_dim_C - 1) / col_block_dim_C;
-
     // convert GEBSR to CSR format
     std::vector<int> csr_row_ptr;
     std::vector<int> csr_col_ind;
@@ -1953,8 +1963,6 @@ inline void host_gebsr_to_gebsr(hipsparseDirection_t    direction,
                       csr_row_ptr,
                       csr_col_ind,
                       HIPSPARSE_INDEX_BASE_ZERO);
-
-    int nnz = csr_row_ptr[m] - csr_row_ptr[0];
 
     // convert CSR to GEBSR format
     int nnzb_C;
@@ -2054,7 +2062,6 @@ inline void host_bsr_to_csr(hipsparseDirection_t    direction,
                             std::vector<T>&         csr_val)
 {
     int m    = Mb * block_dim;
-    int n    = Nb * block_dim;
     int nnzb = bsr_row_ptr[Mb] - bsr_row_ptr[0];
 
     csr_row_ptr.resize(m + 1, 0);
@@ -2371,7 +2378,6 @@ inline void host_bsrmm(int                     Mb,
     }
 
     int M = Mb * block_dim;
-    int K = Kb * block_dim;
 
 #ifdef _OPENMP
 #pragma omp parallel for schedule(dynamic, 1024)
@@ -2964,7 +2970,7 @@ inline void host_bsric02(hipsparseDirection_t    direction,
                     break;
                 }
 
-                T val_j = make_DataType<T>(0);
+                T val_j;
                 if(direction == HIPSPARSE_DIRECTION_ROW)
                 {
                     val_j = bsr_val[block_dim * block_dim * j + block_dim * local_row + k];
@@ -5175,10 +5181,10 @@ static I csrgemm2_nnz(J                    m,
                     I row_end_B   = csr_row_ptr_B[col_A + 1] - idx_base_B;
 
                     // Loop over columns of B in row col_A
-                    for(I k = row_begin_B; k < row_end_B; ++k)
+                    for(I irow = row_begin_B; irow < row_end_B; ++irow)
                     {
                         // Current column of B
-                        J col_B = csr_col_ind_B[k] - idx_base_B;
+                        J col_B = csr_col_ind_B[irow] - idx_base_B;
 
                         // Check if a new nnz is generated
                         if(nnz[col_B] != i)
@@ -5285,12 +5291,12 @@ static void csrgemm2(J                    m,
                     I row_end_B   = csr_row_ptr_B[col_A + 1] - idx_base_B;
 
                     // Loop over columns of B in row col_A
-                    for(I k = row_begin_B; k < row_end_B; ++k)
+                    for(I l = row_begin_B; l < row_end_B; ++l)
                     {
                         // Current column of B
-                        J col_B = csr_col_ind_B[k] - idx_base_B;
+                        J col_B = csr_col_ind_B[l] - idx_base_B;
                         // Current value of B
-                        T val_B = csr_val_B[k];
+                        T val_B = csr_val_B[l];
 
                         // Check if a new nnz is generated or if the product is appended
                         if(nnz[col_B] < row_begin_C)
@@ -5427,9 +5433,9 @@ public:
     int col_block_dimA = 1;
     int col_block_dimB = 1;
 
-    int lda;
-    int ldb;
-    int ldc;
+    int lda{};
+    int ldb{};
+    int ldc{};
 
     double alpha      = 1.0;
     double alphai     = 0.0;
@@ -5459,10 +5465,10 @@ public:
     int ell_width = 0;
     int temp      = 0;
 
-    int    numericboost;
-    double boosttol;
-    double boostval;
-    double boostvali;
+    int    numericboost{};
+    double boosttol{};
+    double boostval{};
+    double boostvali{};
 
     std::string filename = "";
 

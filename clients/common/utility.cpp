@@ -139,16 +139,18 @@ void query_version(char* version)
 /*  device query and print out their ID and name; return number of compute-capable devices. */
 int query_device_property()
 {
-    int               device_count;
-    hipsparseStatus_t status = (hipsparseStatus_t)hipGetDeviceCount(&device_count);
-    if(status != HIPSPARSE_STATUS_SUCCESS)
+    int device_count;
     {
-        printf("Query device error: cannot get device count.\n");
-        return -1;
-    }
-    else
-    {
-        printf("Query device success: there are %d devices\n", device_count);
+        hipsparseStatus_t status = (hipsparseStatus_t)hipGetDeviceCount(&device_count);
+        if(status != HIPSPARSE_STATUS_SUCCESS)
+        {
+            printf("Query device error: cannot get device count.\n");
+            return -1;
+        }
+        else
+        {
+            printf("Query device success: there are %d devices\n", device_count);
+        }
     }
 
     for(int i = 0; i < device_count; i++)

@@ -437,7 +437,6 @@ hipsparseStatus_t testing_csrsv2(Arguments argus)
 {
     int                    safe_size = 100;
     int                    m         = argus.M;
-    int                    n         = argus.M;
     hipsparseIndexBase_t   idx_base  = argus.idx_base;
     hipsparseOperation_t   trans     = argus.transA;
     hipsparseDiagType_t    diag_type = argus.diag_type;
@@ -579,6 +578,7 @@ hipsparseStatus_t testing_csrsv2(Arguments argus)
     srand(12345ULL);
     if(binfile != "")
     {
+        int n;
         if(read_bin_matrix(
                binfile.c_str(), m, n, nnz, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base)
            != 0)
@@ -589,8 +589,8 @@ hipsparseStatus_t testing_csrsv2(Arguments argus)
     }
     else if(argus.laplacian)
     {
-        m = n = gen_2d_laplacian(argus.laplacian, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base);
-        nnz   = hcsr_row_ptr[m];
+        m   = gen_2d_laplacian(argus.laplacian, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base);
+        nnz = hcsr_row_ptr[m];
     }
     else
     {
@@ -598,6 +598,7 @@ hipsparseStatus_t testing_csrsv2(Arguments argus)
 
         if(filename != "")
         {
+            int n;
             if(read_mtx_matrix(
                    filename.c_str(), m, n, nnz, hcoo_row_ind, hcsr_col_ind, hcsr_val, idx_base)
                != 0)
@@ -608,7 +609,7 @@ hipsparseStatus_t testing_csrsv2(Arguments argus)
         }
         else
         {
-            gen_matrix_coo(m, n, nnz, hcoo_row_ind, hcsr_col_ind, hcsr_val, idx_base);
+            gen_matrix_coo(m, m, nnz, hcoo_row_ind, hcsr_col_ind, hcsr_val, idx_base);
         }
 
         // Convert COO to CSR
@@ -626,9 +627,9 @@ hipsparseStatus_t testing_csrsv2(Arguments argus)
     }
 
     std::vector<T> hx(m);
-    std::vector<T> hy_1(n);
-    std::vector<T> hy_2(n);
-    std::vector<T> hy_gold(n);
+    std::vector<T> hy_1(m);
+    std::vector<T> hy_2(m);
+    std::vector<T> hy_gold(m);
 
     hipsparseInit<T>(hx, 1, m);
 
@@ -637,8 +638,8 @@ hipsparseStatus_t testing_csrsv2(Arguments argus)
     auto dcol_managed    = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
     auto dval_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
     auto dx_managed      = hipsparse_unique_ptr{device_malloc(sizeof(T) * m), device_free};
-    auto dy_1_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * n), device_free};
-    auto dy_2_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * n), device_free};
+    auto dy_1_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * m), device_free};
+    auto dy_2_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * m), device_free};
     auto d_alpha_managed = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
     auto d_position_managed = hipsparse_unique_ptr{device_malloc(sizeof(int)), device_free};
 
@@ -665,7 +666,7 @@ hipsparseStatus_t testing_csrsv2(Arguments argus)
     CHECK_HIP_ERROR(hipMemcpy(dcol, hcsr_col_ind.data(), sizeof(int) * nnz, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dval, hcsr_val.data(), sizeof(T) * nnz, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dx, hx.data(), sizeof(T) * m, hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(hipMemcpy(dy_1, hy_1.data(), sizeof(T) * n, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(dy_1, hy_1.data(), sizeof(T) * m, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(d_alpha, &h_alpha, sizeof(T), hipMemcpyHostToDevice));
 
     // Obtain csrsv2 buffer size
@@ -689,7 +690,7 @@ hipsparseStatus_t testing_csrsv2(Arguments argus)
 
     if(argus.unit_check)
     {
-        CHECK_HIP_ERROR(hipMemcpy(dy_2, hy_2.data(), sizeof(T) * n, hipMemcpyHostToDevice));
+        CHECK_HIP_ERROR(hipMemcpy(dy_2, hy_2.data(), sizeof(T) * m, hipMemcpyHostToDevice));
 
         // ROCSPARSE pointer mode host
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
@@ -734,15 +735,13 @@ hipsparseStatus_t testing_csrsv2(Arguments argus)
 
         // Copy output from device to CPU
         int hposition_2;
-        CHECK_HIP_ERROR(hipMemcpy(hy_1.data(), dy_1, sizeof(T) * n, hipMemcpyDeviceToHost));
-        CHECK_HIP_ERROR(hipMemcpy(hy_2.data(), dy_2, sizeof(T) * n, hipMemcpyDeviceToHost));
+        CHECK_HIP_ERROR(hipMemcpy(hy_1.data(), dy_1, sizeof(T) * m, hipMemcpyDeviceToHost));
+        CHECK_HIP_ERROR(hipMemcpy(hy_2.data(), dy_2, sizeof(T) * m, hipMemcpyDeviceToHost));
         CHECK_HIP_ERROR(hipMemcpy(&hposition_2, d_position, sizeof(int), hipMemcpyDeviceToHost));
 
         // Host csrsv2
         hipDeviceProp_t prop;
         hipGetDeviceProperties(&prop, 0);
-
-        double cpu_time_used = get_time_us();
 
         int position_gold;
         if((fill_mode == HIPSPARSE_FILL_MODE_LOWER && trans == HIPSPARSE_OPERATION_NON_TRANSPOSE)
@@ -775,8 +774,6 @@ hipsparseStatus_t testing_csrsv2(Arguments argus)
                                        prop.warpSize);
         }
 
-        cpu_time_used = get_time_us() - cpu_time_used;
-
         unit_check_general(1, 1, 1, &position_gold, &hposition_1);
         unit_check_general(1, 1, 1, &position_gold, &hposition_2);
 
@@ -794,8 +791,8 @@ hipsparseStatus_t testing_csrsv2(Arguments argus)
             return HIPSPARSE_STATUS_SUCCESS;
         }
 
-        unit_check_near(1, n, 1, hy_gold.data(), hy_1.data());
-        unit_check_near(1, n, 1, hy_gold.data(), hy_2.data());
+        unit_check_near(1, m, 1, hy_gold.data(), hy_1.data());
+        unit_check_near(1, m, 1, hy_gold.data(), hy_2.data());
     }
 
     return HIPSPARSE_STATUS_SUCCESS;

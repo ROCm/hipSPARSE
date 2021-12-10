@@ -49,8 +49,6 @@ void testing_sddmm_coo_aos_bad_arg(void)
     int32_t              n         = 100;
     int32_t              m         = 100;
     int32_t              k         = 100;
-    int32_t              ldb       = 100;
-    int32_t              ldc       = 100;
     int64_t              nnz       = 100;
     int32_t              safe_size = 100;
     float                alpha     = 0.6;
@@ -62,13 +60,9 @@ void testing_sddmm_coo_aos_bad_arg(void)
     hipsparseIndexType_t idxTypeI  = HIPSPARSE_INDEX_32I;
     hipDataType          dataType  = HIP_R_32F;
     hipsparseSDDMMAlg_t  alg       = HIPSPARSE_SDDMM_ALG_DEFAULT;
-    hipsparseStatus_t    status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
-
-    std::unique_ptr<descr_struct> unique_ptr_descr(new descr_struct);
-    hipsparseMatDescr_t           descr = unique_ptr_descr->descr;
 
     auto drowcol_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(int32_t) * safe_size), device_free};
@@ -204,7 +198,6 @@ hipsparseStatus_t testing_sddmm_coo_aos()
     hipsparseOrder_t     order    = HIPSPARSE_ORDER_COLUMN;
     hipsparseIndexBase_t idx_base = HIPSPARSE_INDEX_BASE_ZERO;
     hipsparseSDDMMAlg_t  alg      = HIPSPARSE_SDDMM_ALG_DEFAULT;
-    hipsparseStatus_t    status;
 
     // Matrices are stored at the same path in matrices directory
     std::string filename = hipsparse_exepath() + "../matrices/nos3.bin";

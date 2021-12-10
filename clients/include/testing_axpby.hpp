@@ -48,8 +48,6 @@ void testing_axpby_bad_arg(void)
     hipsparseIndexBase_t idxBase  = HIPSPARSE_INDEX_BASE_ZERO;
     hipDataType          dataType = HIP_R_32F;
 
-    hipsparseStatus_t status;
-
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
@@ -103,8 +101,6 @@ hipsparseStatus_t testing_axpby(void)
     T beta  = make_DataType<T>(0.5);
 
     hipsparseIndexBase_t idxBase = HIPSPARSE_INDEX_BASE_ZERO;
-
-    hipsparseStatus_t status;
 
     // Index and data type
     hipsparseIndexType_t idxType

@@ -48,8 +48,6 @@ void testing_spmm_bell_bad_arg(void)
     int32_t              n             = 100;
     int32_t              m             = 100;
     int32_t              k             = 100;
-    int32_t              ldb           = 100;
-    int32_t              ldc           = 100;
     int32_t              ell_blocksize = 2;
     int32_t              ell_cols      = 10;
     int32_t              safe_size     = 100;
@@ -62,13 +60,9 @@ void testing_spmm_bell_bad_arg(void)
     hipsparseIndexType_t idxType       = HIPSPARSE_INDEX_32I;
     hipDataType          dataType      = HIP_R_32F;
     hipsparseSpMMAlg_t   alg           = HIPSPARSE_SPMM_BLOCKED_ELL_ALG1;
-    hipsparseStatus_t    status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
-
-    std::unique_ptr<descr_struct> unique_ptr_descr(new descr_struct);
-    hipsparseMatDescr_t           descr = unique_ptr_descr->descr;
 
     auto dind_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(int32_t) * safe_size), device_free};
@@ -245,7 +239,6 @@ hipsparseStatus_t testing_spmm_bell()
     hipsparseOrder_t     order    = HIPSPARSE_ORDER_COLUMN;
     hipsparseIndexBase_t idx_base = HIPSPARSE_INDEX_BASE_ONE;
     hipsparseSpMMAlg_t   alg      = HIPSPARSE_SPMM_BLOCKED_ELL_ALG1;
-    hipsparseStatus_t    status;
 
     // Index and data type
     hipsparseIndexType_t typeI

@@ -581,8 +581,6 @@ hipsparseStatus_t testing_csrilu02(Arguments argus)
         CHECK_HIP_ERROR(hipMemcpy(result2.data(), dval2, sizeof(T) * nnz, hipMemcpyDeviceToHost));
 
         // Host csrilu02
-        double cpu_time_used = get_time_us();
-
         int position_gold = csrilu0(m,
                                     hcsr_row_ptr.data(),
                                     hcsr_col_ind.data(),
@@ -591,8 +589,6 @@ hipsparseStatus_t testing_csrilu02(Arguments argus)
                                     boost,
                                     boost_tol,
                                     boost_val);
-
-        cpu_time_used = get_time_us() - cpu_time_used;
 
         unit_check_general(1, 1, 1, &position_gold, &hposition_1);
         unit_check_general(1, 1, 1, &position_gold, &hposition_2);

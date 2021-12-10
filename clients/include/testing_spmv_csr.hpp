@@ -49,7 +49,6 @@ void testing_spmv_csr_bad_arg(void)
     hipsparseIndexType_t idxType   = HIPSPARSE_INDEX_32I;
     hipDataType          dataType  = HIP_R_32F;
     hipsparseSpMVAlg_t   alg       = HIPSPARSE_MV_ALG_DEFAULT;
-    hipsparseStatus_t    status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -151,7 +150,6 @@ hipsparseStatus_t testing_spmv_csr(void)
     hipsparseOperation_t transA    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
     hipsparseIndexBase_t idx_base  = HIPSPARSE_INDEX_BASE_ZERO;
     hipsparseSpMVAlg_t   alg       = HIPSPARSE_CSRMV_ALG2;
-    hipsparseStatus_t    status;
 
     // Matrices are stored at the same path in matrices directory
     std::string filename = hipsparse_exepath() + "../matrices/nos3.bin";
