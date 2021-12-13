@@ -207,6 +207,7 @@ set(HIPSPARSE_TEST_SOURCES
   test_sddmm_csc.cpp
   test_sddmm_coo.cpp
   test_sddmm_coo_aos.cpp
+  test_gpsv_interleaved_batch.cpp
   test_gtsv2_strided_batch.cpp
   test_gtsv.cpp
   test_gtsv2_nopivot.cpp

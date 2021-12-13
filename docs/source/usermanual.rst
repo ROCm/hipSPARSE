@@ -1039,6 +1039,8 @@ Function name                                                                   
 :cpp:func:`hipsparseXgtsv2StridedBatch() <hipsparseSgtsv2StridedBatch>`                                               x      x      x              x
 :cpp:func:`hipsparseXgtsvInterleavedBatch_bufferSizeExt() <hipsparseSgtsvInterleavedBatch_bufferSizeExt>`             x      x      x              x
 :cpp:func:`hipsparseXgtsvInterleavedBatch() <hipsparseSgtsvInterleavedBatch>`                                         x      x      x              x
+:cpp:func:`hipsparseXgpsvInterleavedBatch_bufferSizeExt() <hipsparseSgpsvInterleavedBatch_bufferSizeExt>`             x      x      x              x
+:cpp:func:`hipsparseXgpsvInterleavedBatch() <hipsparseSgpsvInterleavedBatch>`                                         x      x      x              x
 ===================================================================================================================== ====== ====== ============== ==============
 
 Conversion Functions
@@ -2366,6 +2368,28 @@ hipsparseXgtsvInterleavedBatch()
 .. doxygenfunction:: hipsparseCgtsvInterleavedBatch
   :outline:
 .. doxygenfunction:: hipsparseZgtsvInterleavedBatch
+
+hipsparseXgpsvInterleavedBatch_bufferSizeExt()
+----------------------------------------------
+
+.. doxygenfunction:: hipsparseSgpsvInterleavedBatch_bufferSizeExt
+  :outline:
+.. doxygenfunction:: hipsparseDgpsvInterleavedBatch_bufferSizeExt
+  :outline:
+.. doxygenfunction:: hipsparseCgpsvInterleavedBatch_bufferSizeExt
+  :outline:
+.. doxygenfunction:: hipsparseZgpsvInterleavedBatch_bufferSizeExt
+
+hipsparseXgpsvInterleavedBatch()
+--------------------------------
+
+.. doxygenfunction:: hipsparseSgpsvInterleavedBatch
+  :outline:
+.. doxygenfunction:: hipsparseDgpsvInterleavedBatch
+  :outline:
+.. doxygenfunction:: hipsparseCgpsvInterleavedBatch
+  :outline:
+.. doxygenfunction:: hipsparseZgpsvInterleavedBatch
 
 .. _hipsparse_conversion_functions_:
 

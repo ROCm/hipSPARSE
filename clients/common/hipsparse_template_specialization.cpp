@@ -8566,6 +8566,142 @@ namespace hipsparse
     }
 
     template <>
+    hipsparseStatus_t hipsparseXgpsvInterleavedBatch_bufferSizeExt(hipsparseHandle_t handle,
+                                                                   int               algo,
+                                                                   int               m,
+                                                                   const float*      ds,
+                                                                   const float*      dl,
+                                                                   const float*      d,
+                                                                   const float*      du,
+                                                                   const float*      dw,
+                                                                   const float*      x,
+                                                                   int               batchCount,
+                                                                   size_t* pBufferSizeInBytes)
+    {
+        return hipsparseSgpsvInterleavedBatch_bufferSizeExt(
+            handle, algo, m, ds, dl, d, du, dw, x, batchCount, pBufferSizeInBytes);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXgpsvInterleavedBatch_bufferSizeExt(hipsparseHandle_t handle,
+                                                                   int               algo,
+                                                                   int               m,
+                                                                   const double*     ds,
+                                                                   const double*     dl,
+                                                                   const double*     d,
+                                                                   const double*     du,
+                                                                   const double*     dw,
+                                                                   const double*     x,
+                                                                   int               batchCount,
+                                                                   size_t* pBufferSizeInBytes)
+    {
+        return hipsparseDgpsvInterleavedBatch_bufferSizeExt(
+            handle, algo, m, ds, dl, d, du, dw, x, batchCount, pBufferSizeInBytes);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXgpsvInterleavedBatch_bufferSizeExt(hipsparseHandle_t handle,
+                                                                   int               algo,
+                                                                   int               m,
+                                                                   const hipComplex* ds,
+                                                                   const hipComplex* dl,
+                                                                   const hipComplex* d,
+                                                                   const hipComplex* du,
+                                                                   const hipComplex* dw,
+                                                                   const hipComplex* x,
+                                                                   int               batchCount,
+                                                                   size_t* pBufferSizeInBytes)
+    {
+        return hipsparseCgpsvInterleavedBatch_bufferSizeExt(
+            handle, algo, m, ds, dl, d, du, dw, x, batchCount, pBufferSizeInBytes);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXgpsvInterleavedBatch_bufferSizeExt(hipsparseHandle_t       handle,
+                                                                   int                     algo,
+                                                                   int                     m,
+                                                                   const hipDoubleComplex* ds,
+                                                                   const hipDoubleComplex* dl,
+                                                                   const hipDoubleComplex* d,
+                                                                   const hipDoubleComplex* du,
+                                                                   const hipDoubleComplex* dw,
+                                                                   const hipDoubleComplex* x,
+                                                                   int     batchCount,
+                                                                   size_t* pBufferSizeInBytes)
+    {
+        return hipsparseZgpsvInterleavedBatch_bufferSizeExt(
+            handle, algo, m, ds, dl, d, du, dw, x, batchCount, pBufferSizeInBytes);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXgpsvInterleavedBatch(hipsparseHandle_t handle,
+                                                     int               algo,
+                                                     int               m,
+                                                     float*            ds,
+                                                     float*            dl,
+                                                     float*            d,
+                                                     float*            du,
+                                                     float*            dw,
+                                                     float*            x,
+                                                     int               batchCount,
+                                                     void*             pBuffer)
+    {
+        return hipsparseSgpsvInterleavedBatch(
+            handle, algo, m, ds, dl, d, du, dw, x, batchCount, pBuffer);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXgpsvInterleavedBatch(hipsparseHandle_t handle,
+                                                     int               algo,
+                                                     int               m,
+                                                     double*           ds,
+                                                     double*           dl,
+                                                     double*           d,
+                                                     double*           du,
+                                                     double*           dw,
+                                                     double*           x,
+                                                     int               batchCount,
+                                                     void*             pBuffer)
+    {
+        return hipsparseDgpsvInterleavedBatch(
+            handle, algo, m, ds, dl, d, du, dw, x, batchCount, pBuffer);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXgpsvInterleavedBatch(hipsparseHandle_t handle,
+                                                     int               algo,
+                                                     int               m,
+                                                     hipComplex*       ds,
+                                                     hipComplex*       dl,
+                                                     hipComplex*       d,
+                                                     hipComplex*       du,
+                                                     hipComplex*       dw,
+                                                     hipComplex*       x,
+                                                     int               batchCount,
+                                                     void*             pBuffer)
+    {
+        return hipsparseCgpsvInterleavedBatch(
+            handle, algo, m, ds, dl, d, du, dw, x, batchCount, pBuffer);
+    }
+
+    template <>
+    hipsparseStatus_t hipsparseXgpsvInterleavedBatch(hipsparseHandle_t handle,
+                                                     int               algo,
+                                                     int               m,
+                                                     hipDoubleComplex* ds,
+                                                     hipDoubleComplex* dl,
+                                                     hipDoubleComplex* d,
+                                                     hipDoubleComplex* du,
+                                                     hipDoubleComplex* dw,
+                                                     hipDoubleComplex* x,
+                                                     int               batchCount,
+                                                     void*             pBuffer)
+    {
+        return hipsparseZgpsvInterleavedBatch(
+            handle, algo, m, ds, dl, d, du, dw, x, batchCount, pBuffer);
+    }
+
+    template <>
     hipsparseStatus_t hipsparseXgtsv2StridedBatch_bufferSizeExt(hipsparseHandle_t handle,
                                                                 int               m,
                                                                 const float*      dl,
