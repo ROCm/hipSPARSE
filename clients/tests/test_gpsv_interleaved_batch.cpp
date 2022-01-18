@@ -21,32 +21,32 @@
  *
  * ************************************************************************ */
 
-#include "testing_sddmm_csc.hpp"
+#include "testing_gpsv_interleaved_batch.hpp"
 
 #include <hipsparse.h>
 
-// Only run tests for CUDA 11.2.2 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11022)
-TEST(sddmm_csc_bad_arg, sddmm_csc_float)
+// Only run tests for CUDA 11.1 or greater
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
+TEST(gpsv_interleaved_batch_bad_arg, gpsv_interleaved_batch_float)
 {
-    testing_sddmm_csc_bad_arg();
+    testing_gpsv_interleaved_batch_bad_arg<float>();
 }
 
-TEST(sddmm_csc, sddmm_csc_i32_i32_float)
+TEST(gpsv_interleaved_batch, gpsv_interleaved_batch_float)
 {
-    hipsparseStatus_t status = testing_sddmm_csc<int32_t, int32_t, float>();
+    hipsparseStatus_t status = testing_gpsv_interleaved_batch<float>();
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-TEST(sddmm_csc, sddmm_csc_i32_i32_double)
+TEST(gpsv_interleaved_batch, gpsv_interleaved_batch_double)
 {
-    hipsparseStatus_t status = testing_sddmm_csc<int32_t, int32_t, double>();
+    hipsparseStatus_t status = testing_gpsv_interleaved_batch<double>();
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-TEST(sddmm_csc, sddmm_csc_i32_i32_hipComplex)
+TEST(gpsv_interleaved_batch, gpsv_interleaved_batch_hipComplex)
 {
-    hipsparseStatus_t status = testing_sddmm_csc<int32_t, int32_t, hipComplex>();
+    hipsparseStatus_t status = testing_gpsv_interleaved_batch<hipComplex>();
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 #endif

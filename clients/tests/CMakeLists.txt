@@ -202,13 +202,16 @@ set(HIPSPARSE_TEST_SOURCES
   test_spmm_coo.cpp
   test_spmm_bell.cpp
   test_spgemm_csr.cpp
+  test_spgemmreuse_csr.cpp
   test_sddmm_csr.cpp
   test_sddmm_csc.cpp
   test_sddmm_coo.cpp
   test_sddmm_coo_aos.cpp
+  test_gpsv_interleaved_batch.cpp
   test_gtsv2_strided_batch.cpp
   test_gtsv.cpp
   test_gtsv2_nopivot.cpp
+  test_gtsv_interleaved_batch.cpp
   test_csrcolor.cpp
   test_spsv_csr.cpp
   test_spsv_coo.cpp

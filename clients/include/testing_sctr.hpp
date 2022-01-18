@@ -42,7 +42,6 @@ void testing_sctr_bad_arg(void)
     int safe_size = 100;
 
     hipsparseIndexBase_t idx_base = HIPSPARSE_INDEX_BASE_ZERO;
-    hipsparseStatus_t    status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -169,15 +168,10 @@ hipsparseStatus_t testing_sctr(Arguments argus)
         CHECK_HIP_ERROR(hipMemcpy(hy.data(), dy, sizeof(T) * N, hipMemcpyDeviceToHost));
 
         // CPU
-        double cpu_time_used = get_time_us();
-
         for(int i = 0; i < nnz; ++i)
         {
             hy_gold[hx_ind[i] - idx_base] = hx_val[i];
         }
-
-        cpu_time_used = get_time_us() - cpu_time_used;
-
         // enable unit check, notice unit check is not invasive, but norm check is,
         // unit check and norm check can not be interchanged their order
         unit_check_general(1, N, 1, hy_gold.data(), hy.data());

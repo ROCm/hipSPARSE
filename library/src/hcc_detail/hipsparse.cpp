@@ -550,6 +550,10 @@ rocsparse_spgemm_alg_ hipSpGEMMAlgToHCCSpGEMMAlg(hipsparseSpGEMMAlg_t alg)
     {
     case HIPSPARSE_SPGEMM_DEFAULT:
         return rocsparse_spgemm_alg_default;
+    case HIPSPARSE_SPGEMM_CSR_ALG_NONDETERMINISTIC:
+        return rocsparse_spgemm_alg_default;
+    case HIPSPARSE_SPGEMM_CSR_ALG_DETERMINISTIC:
+        return rocsparse_spgemm_alg_default;
     default:
         throw "Non existent hipSpGEMMAlg_t";
     }
@@ -13248,15 +13252,26 @@ hipsparseStatus_t hipsparseSpMM(hipsparseHandle_t           handle,
                                                         externalBuffer));
 }
 
+struct hipsparseSpGEMMDescr
+{
+    size_t bufferSize{};
+    void*  externalBuffer{};
+};
+
 hipsparseStatus_t hipsparseSpGEMM_createDescr(hipsparseSpGEMMDescr_t* descr)
 {
-    // Do nothing
+    *descr = new hipsparseSpGEMMDescr;
     return HIPSPARSE_STATUS_SUCCESS;
 }
 
 hipsparseStatus_t hipsparseSpGEMM_destroyDescr(hipsparseSpGEMMDescr_t descr)
 {
-    // Do nothing
+    // Check if info structure has been created
+    if(descr != nullptr)
+    {
+        delete descr;
+    }
+
     return HIPSPARSE_STATUS_SUCCESS;
 }
 
@@ -13458,6 +13473,288 @@ hipsparseStatus_t hipsparseSpGEMM_copy(hipsparseHandle_t      handle,
     RETURN_IF_HIP_ERROR(hipFree(buffer));
 
     return status;
+}
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpGEMMreuse_workEstimation(hipsparseHandle_t      handle,
+                                                      hipsparseOperation_t   opA,
+                                                      hipsparseOperation_t   opB,
+                                                      hipsparseSpMatDescr_t  matA,
+                                                      hipsparseSpMatDescr_t  matB,
+                                                      hipsparseSpMatDescr_t  matC,
+                                                      hipsparseSpGEMMAlg_t   alg,
+                                                      hipsparseSpGEMMDescr_t spgemmDescr,
+                                                      size_t*                bufferSize1,
+                                                      void*                  externalBuffer1)
+{
+    // Match cusparse error handling
+    if(handle == nullptr)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
+
+    if(matA == nullptr || matB == nullptr || matC == nullptr)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
+
+    if(bufferSize1 == nullptr)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
+
+    // spgemmDescr can be nullptr
+
+    // Do nothing
+    *bufferSize1 = 4;
+
+    return HIPSPARSE_STATUS_SUCCESS;
+}
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpGEMMreuse_nnz(hipsparseHandle_t      handle,
+                                           hipsparseOperation_t   opA,
+                                           hipsparseOperation_t   opB,
+                                           hipsparseSpMatDescr_t  matA,
+                                           hipsparseSpMatDescr_t  matB,
+                                           hipsparseSpMatDescr_t  matC,
+                                           hipsparseSpGEMMAlg_t   alg,
+                                           hipsparseSpGEMMDescr_t spgemmDescr,
+                                           size_t*                bufferSize2,
+                                           void*                  externalBuffer2,
+                                           size_t*                bufferSize3,
+                                           void*                  externalBuffer3,
+                                           size_t*                bufferSize4,
+                                           void*                  externalBuffer4)
+{
+    // Match cusparse error handling
+    if(handle == nullptr)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
+
+    if(matA == nullptr || matB == nullptr || matC == nullptr)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
+
+    if(bufferSize2 == nullptr)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
+    if(bufferSize3 == nullptr)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
+    if(bufferSize4 == nullptr)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
+
+    // spgemmDescr can be nullptr
+
+    // Do nothing for 3 and 4.
+
+    *bufferSize2 = 4;
+    *bufferSize3 = 4;
+
+    //
+    // On symbolic parts, it only checks if the pointers are null
+    // But being null or not is important to drive the algorithm.
+    // Then, trick:
+    //
+
+    char        alpha[128]{}, beta[128]{};
+    const void* alpha_ptr = (const void*)&alpha;
+    const void* beta_ptr  = (const void*)&beta;
+
+    int64_t              tmp_rows;
+    int64_t              tmp_cols;
+    int64_t              tmp_nnz;
+    void*                tmp_csr_row_ptr;
+    void*                tmp_csr_col_ind;
+    void*                tmp_csr_val;
+    rocsparse_indextype  tmp_row_ptr_type;
+    rocsparse_indextype  tmp_col_ind_type;
+    rocsparse_index_base tmp_idx_base;
+    rocsparse_datatype   tmp_data_type;
+    RETURN_IF_ROCSPARSE_ERROR(rocsparse_csr_get((rocsparse_spmat_descr)matC,
+                                                &tmp_rows,
+                                                &tmp_cols,
+                                                &tmp_nnz,
+                                                &tmp_csr_row_ptr,
+                                                &tmp_csr_col_ind,
+                                                &tmp_csr_val,
+                                                &tmp_row_ptr_type,
+                                                &tmp_col_ind_type,
+                                                &tmp_idx_base,
+                                                &tmp_data_type));
+
+    // Query for required buffer size
+    RETURN_IF_ROCSPARSE_ERROR(rocsparse_spgemm((rocsparse_handle)handle,
+                                               hipOperationToHCCOperation(opA),
+                                               hipOperationToHCCOperation(opB),
+                                               alpha_ptr,
+                                               (rocsparse_spmat_descr)matA,
+                                               (rocsparse_spmat_descr)matB,
+                                               beta_ptr,
+                                               (rocsparse_spmat_descr)matC,
+                                               (rocsparse_spmat_descr)matC,
+                                               tmp_data_type,
+                                               hipSpGEMMAlgToHCCSpGEMMAlg(alg),
+                                               (externalBuffer4 == nullptr)
+                                                   ? rocsparse_spgemm_stage_buffer_size
+                                                   : rocsparse_spgemm_stage_nnz,
+                                               bufferSize4,
+                                               externalBuffer4));
+
+    if(externalBuffer4 != nullptr)
+    {
+        spgemmDescr->externalBuffer = externalBuffer4;
+    }
+    else
+    {
+        spgemmDescr->bufferSize = *bufferSize4;
+    }
+
+    return HIPSPARSE_STATUS_SUCCESS;
+}
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpGEMMreuse_compute(hipsparseHandle_t      handle,
+                                               hipsparseOperation_t   opA,
+                                               hipsparseOperation_t   opB,
+                                               const void*            alpha,
+                                               hipsparseSpMatDescr_t  matA,
+                                               hipsparseSpMatDescr_t  matB,
+                                               const void*            beta,
+                                               hipsparseSpMatDescr_t  matC,
+                                               hipDataType            computeType,
+                                               hipsparseSpGEMMAlg_t   alg,
+                                               hipsparseSpGEMMDescr_t spgemmDescr)
+{
+    if(handle == nullptr || alpha == nullptr || beta == nullptr || spgemmDescr == nullptr)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
+    hipsparsePointerMode_t mode;
+    RETURN_IF_HIPSPARSE_ERROR(hipsparseGetPointerMode(handle, &mode));
+
+    const void* alpha_ptr = spgemm_get_ptr(mode, computeType, alpha);
+    const void* beta_ptr  = spgemm_get_ptr(mode, computeType, beta);
+
+    return rocSPARSEStatusToHIPStatus(rocsparse_spgemm((rocsparse_handle)handle,
+                                                       hipOperationToHCCOperation(opA),
+                                                       hipOperationToHCCOperation(opB),
+                                                       alpha_ptr,
+                                                       (rocsparse_spmat_descr)matA,
+                                                       (rocsparse_spmat_descr)matB,
+                                                       beta_ptr,
+                                                       (rocsparse_spmat_descr)matC,
+                                                       (rocsparse_spmat_descr)matC,
+                                                       hipDataTypeToHCCDataType(computeType),
+                                                       hipSpGEMMAlgToHCCSpGEMMAlg(alg),
+                                                       rocsparse_spgemm_stage_numeric,
+                                                       &spgemmDescr->bufferSize,
+                                                       spgemmDescr->externalBuffer));
+}
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpGEMMreuse_copy(hipsparseHandle_t      handle,
+                                            hipsparseOperation_t   opA,
+                                            hipsparseOperation_t   opB,
+                                            hipsparseSpMatDescr_t  matA,
+                                            hipsparseSpMatDescr_t  matB,
+                                            hipsparseSpMatDescr_t  matC,
+                                            hipsparseSpGEMMAlg_t   alg,
+                                            hipsparseSpGEMMDescr_t spgemmDescr,
+                                            size_t*                bufferSize5,
+                                            void*                  externalBuffer5)
+{
+    //
+    // This routine performs the symbolic calculation..
+    //
+    if(handle == nullptr)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
+    if(matA == nullptr || matB == nullptr || matC == nullptr)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
+
+    if(bufferSize5 == nullptr)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
+
+    if(spgemmDescr == nullptr)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
+
+    if(externalBuffer5 == nullptr)
+    {
+        *bufferSize5 = 4;
+        return HIPSPARSE_STATUS_SUCCESS;
+    }
+
+    //
+    // On symbolic parts, it only checks if the pointers are null
+    // But being null or not is important to drive the algorithm.
+    // Then, trick:
+    //
+    char        alpha[128]{}, beta[128]{};
+    const void* alpha_ptr = (const void*)&alpha;
+    const void* beta_ptr  = (const void*)&beta;
+
+    //
+    // Moreover computeType is not important.
+    //
+    rocsparse_datatype tmp_data_type;
+
+    //
+    //
+    //
+    {
+        int64_t              tmp_rows;
+        int64_t              tmp_cols;
+        int64_t              tmp_nnz;
+        void*                tmp_csr_row_ptr;
+        void*                tmp_csr_col_ind;
+        void*                tmp_csr_val;
+        rocsparse_indextype  tmp_row_ptr_type;
+        rocsparse_indextype  tmp_col_ind_type;
+        rocsparse_index_base tmp_idx_base;
+
+        RETURN_IF_ROCSPARSE_ERROR(rocsparse_csr_get((rocsparse_spmat_descr)matC,
+                                                    &tmp_rows,
+                                                    &tmp_cols,
+                                                    &tmp_nnz,
+                                                    &tmp_csr_row_ptr,
+                                                    &tmp_csr_col_ind,
+                                                    &tmp_csr_val,
+                                                    &tmp_row_ptr_type,
+                                                    &tmp_col_ind_type,
+                                                    &tmp_idx_base,
+                                                    &tmp_data_type));
+    }
+
+    RETURN_IF_ROCSPARSE_ERROR(rocsparse_spgemm((rocsparse_handle)handle,
+                                               hipOperationToHCCOperation(opA),
+                                               hipOperationToHCCOperation(opB),
+                                               alpha_ptr,
+                                               (rocsparse_spmat_descr)matA,
+                                               (rocsparse_spmat_descr)matB,
+                                               beta_ptr,
+                                               (rocsparse_spmat_descr)matC,
+                                               (rocsparse_spmat_descr)matC,
+                                               tmp_data_type,
+                                               hipSpGEMMAlgToHCCSpGEMMAlg(alg),
+                                               rocsparse_spgemm_stage_symbolic,
+                                               &spgemmDescr->bufferSize,
+                                               spgemmDescr->externalBuffer));
+    return HIPSPARSE_STATUS_SUCCESS;
 }
 
 hipsparseStatus_t hipsparseSDDMM(hipsparseHandle_t           handle,
@@ -14223,6 +14520,409 @@ hipsparseStatus_t hipsparseZgtsv2_nopivot(hipsparseHandle_t       handle,
                                                                (rocsparse_double_complex*)B,
                                                                ldb,
                                                                pBuffer));
+}
+
+hipsparseStatus_t hipsparseSgtsvInterleavedBatch_bufferSizeExt(hipsparseHandle_t handle,
+                                                               int               algo,
+                                                               int               m,
+                                                               const float*      dl,
+                                                               const float*      d,
+                                                               const float*      du,
+                                                               const float*      x,
+                                                               int               batchCount,
+                                                               size_t*           pBufferSizeInBytes)
+{
+    return rocSPARSEStatusToHIPStatus(
+        rocsparse_sgtsv_interleaved_batch_buffer_size((rocsparse_handle)handle,
+                                                      (rocsparse_gtsv_interleaved_alg)algo,
+                                                      m,
+                                                      dl,
+                                                      d,
+                                                      du,
+                                                      x,
+                                                      batchCount,
+                                                      batchCount,
+                                                      pBufferSizeInBytes));
+}
+
+hipsparseStatus_t hipsparseDgtsvInterleavedBatch_bufferSizeExt(hipsparseHandle_t handle,
+                                                               int               algo,
+                                                               int               m,
+                                                               const double*     dl,
+                                                               const double*     d,
+                                                               const double*     du,
+                                                               const double*     x,
+                                                               int               batchCount,
+                                                               size_t*           pBufferSizeInBytes)
+{
+    return rocSPARSEStatusToHIPStatus(
+        rocsparse_dgtsv_interleaved_batch_buffer_size((rocsparse_handle)handle,
+                                                      (rocsparse_gtsv_interleaved_alg)algo,
+                                                      m,
+                                                      dl,
+                                                      d,
+                                                      du,
+                                                      x,
+                                                      batchCount,
+                                                      batchCount,
+                                                      pBufferSizeInBytes));
+}
+
+hipsparseStatus_t hipsparseCgtsvInterleavedBatch_bufferSizeExt(hipsparseHandle_t handle,
+                                                               int               algo,
+                                                               int               m,
+                                                               const hipComplex* dl,
+                                                               const hipComplex* d,
+                                                               const hipComplex* du,
+                                                               const hipComplex* x,
+                                                               int               batchCount,
+                                                               size_t*           pBufferSizeInBytes)
+{
+    return rocSPARSEStatusToHIPStatus(
+        rocsparse_cgtsv_interleaved_batch_buffer_size((rocsparse_handle)handle,
+                                                      (rocsparse_gtsv_interleaved_alg)algo,
+                                                      m,
+                                                      (const rocsparse_float_complex*)dl,
+                                                      (const rocsparse_float_complex*)d,
+                                                      (const rocsparse_float_complex*)du,
+                                                      (const rocsparse_float_complex*)x,
+                                                      batchCount,
+                                                      batchCount,
+                                                      pBufferSizeInBytes));
+}
+
+hipsparseStatus_t hipsparseZgtsvInterleavedBatch_bufferSizeExt(hipsparseHandle_t       handle,
+                                                               int                     algo,
+                                                               int                     m,
+                                                               const hipDoubleComplex* dl,
+                                                               const hipDoubleComplex* d,
+                                                               const hipDoubleComplex* du,
+                                                               const hipDoubleComplex* x,
+                                                               int                     batchCount,
+                                                               size_t* pBufferSizeInBytes)
+{
+    return rocSPARSEStatusToHIPStatus(
+        rocsparse_zgtsv_interleaved_batch_buffer_size((rocsparse_handle)handle,
+                                                      (rocsparse_gtsv_interleaved_alg)algo,
+                                                      m,
+                                                      (const rocsparse_double_complex*)dl,
+                                                      (const rocsparse_double_complex*)d,
+                                                      (const rocsparse_double_complex*)du,
+                                                      (const rocsparse_double_complex*)x,
+                                                      batchCount,
+                                                      batchCount,
+                                                      pBufferSizeInBytes));
+}
+
+hipsparseStatus_t hipsparseSgtsvInterleavedBatch(hipsparseHandle_t handle,
+                                                 int               algo,
+                                                 int               m,
+                                                 float*            dl,
+                                                 float*            d,
+                                                 float*            du,
+                                                 float*            x,
+                                                 int               batchCount,
+                                                 void*             pBuffer)
+
+{
+    return rocSPARSEStatusToHIPStatus(
+        rocsparse_sgtsv_interleaved_batch((rocsparse_handle)handle,
+                                          (rocsparse_gtsv_interleaved_alg)algo,
+                                          m,
+                                          dl,
+                                          d,
+                                          du,
+                                          x,
+                                          batchCount,
+                                          batchCount,
+                                          pBuffer));
+}
+
+hipsparseStatus_t hipsparseDgtsvInterleavedBatch(hipsparseHandle_t handle,
+                                                 int               algo,
+                                                 int               m,
+                                                 double*           dl,
+                                                 double*           d,
+                                                 double*           du,
+                                                 double*           x,
+                                                 int               batchCount,
+                                                 void*             pBuffer)
+
+{
+    return rocSPARSEStatusToHIPStatus(
+        rocsparse_dgtsv_interleaved_batch((rocsparse_handle)handle,
+                                          (rocsparse_gtsv_interleaved_alg)algo,
+                                          m,
+                                          dl,
+                                          d,
+                                          du,
+                                          x,
+                                          batchCount,
+                                          batchCount,
+                                          pBuffer));
+}
+
+hipsparseStatus_t hipsparseCgtsvInterleavedBatch(hipsparseHandle_t handle,
+                                                 int               algo,
+                                                 int               m,
+                                                 hipComplex*       dl,
+                                                 hipComplex*       d,
+                                                 hipComplex*       du,
+                                                 hipComplex*       x,
+                                                 int               batchCount,
+                                                 void*             pBuffer)
+{
+    return rocSPARSEStatusToHIPStatus(
+        rocsparse_cgtsv_interleaved_batch((rocsparse_handle)handle,
+                                          (rocsparse_gtsv_interleaved_alg)algo,
+                                          m,
+                                          (rocsparse_float_complex*)dl,
+                                          (rocsparse_float_complex*)d,
+                                          (rocsparse_float_complex*)du,
+                                          (rocsparse_float_complex*)x,
+                                          batchCount,
+                                          batchCount,
+                                          pBuffer));
+}
+
+hipsparseStatus_t hipsparseZgtsvInterleavedBatch(hipsparseHandle_t handle,
+                                                 int               algo,
+                                                 int               m,
+                                                 hipDoubleComplex* dl,
+                                                 hipDoubleComplex* d,
+                                                 hipDoubleComplex* du,
+                                                 hipDoubleComplex* x,
+                                                 int               batchCount,
+                                                 void*             pBuffer)
+
+{
+    return rocSPARSEStatusToHIPStatus(
+        rocsparse_zgtsv_interleaved_batch((rocsparse_handle)handle,
+                                          (rocsparse_gtsv_interleaved_alg)algo,
+                                          m,
+                                          (rocsparse_double_complex*)dl,
+                                          (rocsparse_double_complex*)d,
+                                          (rocsparse_double_complex*)du,
+                                          (rocsparse_double_complex*)x,
+                                          batchCount,
+                                          batchCount,
+                                          pBuffer));
+}
+
+hipsparseStatus_t hipsparseSgpsvInterleavedBatch_bufferSizeExt(hipsparseHandle_t handle,
+                                                               int               algo,
+                                                               int               m,
+                                                               const float*      ds,
+                                                               const float*      dl,
+                                                               const float*      d,
+                                                               const float*      du,
+                                                               const float*      dw,
+                                                               const float*      x,
+                                                               int               batchCount,
+                                                               size_t*           pBufferSizeInBytes)
+{
+    return rocSPARSEStatusToHIPStatus(
+        rocsparse_sgpsv_interleaved_batch_buffer_size((rocsparse_handle)handle,
+                                                      (rocsparse_gpsv_interleaved_alg)algo,
+                                                      m,
+                                                      ds,
+                                                      dl,
+                                                      d,
+                                                      du,
+                                                      dw,
+                                                      x,
+                                                      batchCount,
+                                                      batchCount,
+                                                      pBufferSizeInBytes));
+}
+
+hipsparseStatus_t hipsparseDgpsvInterleavedBatch_bufferSizeExt(hipsparseHandle_t handle,
+                                                               int               algo,
+                                                               int               m,
+                                                               const double*     ds,
+                                                               const double*     dl,
+                                                               const double*     d,
+                                                               const double*     du,
+                                                               const double*     dw,
+                                                               const double*     x,
+                                                               int               batchCount,
+                                                               size_t*           pBufferSizeInBytes)
+{
+    return rocSPARSEStatusToHIPStatus(
+        rocsparse_dgpsv_interleaved_batch_buffer_size((rocsparse_handle)handle,
+                                                      (rocsparse_gpsv_interleaved_alg)algo,
+                                                      m,
+                                                      ds,
+                                                      dl,
+                                                      d,
+                                                      du,
+                                                      dw,
+                                                      x,
+                                                      batchCount,
+                                                      batchCount,
+                                                      pBufferSizeInBytes));
+}
+
+hipsparseStatus_t hipsparseCgpsvInterleavedBatch_bufferSizeExt(hipsparseHandle_t handle,
+                                                               int               algo,
+                                                               int               m,
+                                                               const hipComplex* ds,
+                                                               const hipComplex* dl,
+                                                               const hipComplex* d,
+                                                               const hipComplex* du,
+                                                               const hipComplex* dw,
+                                                               const hipComplex* x,
+                                                               int               batchCount,
+                                                               size_t*           pBufferSizeInBytes)
+{
+    return rocSPARSEStatusToHIPStatus(
+        rocsparse_cgpsv_interleaved_batch_buffer_size((rocsparse_handle)handle,
+                                                      (rocsparse_gpsv_interleaved_alg)algo,
+                                                      m,
+                                                      (const rocsparse_float_complex*)ds,
+                                                      (const rocsparse_float_complex*)dl,
+                                                      (const rocsparse_float_complex*)d,
+                                                      (const rocsparse_float_complex*)du,
+                                                      (const rocsparse_float_complex*)dw,
+                                                      (const rocsparse_float_complex*)x,
+                                                      batchCount,
+                                                      batchCount,
+                                                      pBufferSizeInBytes));
+}
+
+hipsparseStatus_t hipsparseZgpsvInterleavedBatch_bufferSizeExt(hipsparseHandle_t       handle,
+                                                               int                     algo,
+                                                               int                     m,
+                                                               const hipDoubleComplex* ds,
+                                                               const hipDoubleComplex* dl,
+                                                               const hipDoubleComplex* d,
+                                                               const hipDoubleComplex* du,
+                                                               const hipDoubleComplex* dw,
+                                                               const hipDoubleComplex* x,
+                                                               int                     batchCount,
+                                                               size_t* pBufferSizeInBytes)
+{
+    return rocSPARSEStatusToHIPStatus(
+        rocsparse_zgpsv_interleaved_batch_buffer_size((rocsparse_handle)handle,
+                                                      (rocsparse_gpsv_interleaved_alg)algo,
+                                                      m,
+                                                      (const rocsparse_double_complex*)ds,
+                                                      (const rocsparse_double_complex*)dl,
+                                                      (const rocsparse_double_complex*)d,
+                                                      (const rocsparse_double_complex*)du,
+                                                      (const rocsparse_double_complex*)dw,
+                                                      (const rocsparse_double_complex*)x,
+                                                      batchCount,
+                                                      batchCount,
+                                                      pBufferSizeInBytes));
+}
+
+hipsparseStatus_t hipsparseSgpsvInterleavedBatch(hipsparseHandle_t handle,
+                                                 int               algo,
+                                                 int               m,
+                                                 float*            ds,
+                                                 float*            dl,
+                                                 float*            d,
+                                                 float*            du,
+                                                 float*            dw,
+                                                 float*            x,
+                                                 int               batchCount,
+                                                 void*             pBuffer)
+{
+    return rocSPARSEStatusToHIPStatus(
+        rocsparse_sgpsv_interleaved_batch((rocsparse_handle)handle,
+                                          (rocsparse_gpsv_interleaved_alg)algo,
+                                          m,
+                                          ds,
+                                          dl,
+                                          d,
+                                          du,
+                                          dw,
+                                          x,
+                                          batchCount,
+                                          batchCount,
+                                          pBuffer));
+}
+
+hipsparseStatus_t hipsparseDgpsvInterleavedBatch(hipsparseHandle_t handle,
+                                                 int               algo,
+                                                 int               m,
+                                                 double*           ds,
+                                                 double*           dl,
+                                                 double*           d,
+                                                 double*           du,
+                                                 double*           dw,
+                                                 double*           x,
+                                                 int               batchCount,
+                                                 void*             pBuffer)
+{
+    return rocSPARSEStatusToHIPStatus(
+        rocsparse_dgpsv_interleaved_batch((rocsparse_handle)handle,
+                                          (rocsparse_gpsv_interleaved_alg)algo,
+                                          m,
+                                          ds,
+                                          dl,
+                                          d,
+                                          du,
+                                          dw,
+                                          x,
+                                          batchCount,
+                                          batchCount,
+                                          pBuffer));
+}
+
+hipsparseStatus_t hipsparseCgpsvInterleavedBatch(hipsparseHandle_t handle,
+                                                 int               algo,
+                                                 int               m,
+                                                 hipComplex*       ds,
+                                                 hipComplex*       dl,
+                                                 hipComplex*       d,
+                                                 hipComplex*       du,
+                                                 hipComplex*       dw,
+                                                 hipComplex*       x,
+                                                 int               batchCount,
+                                                 void*             pBuffer)
+{
+    return rocSPARSEStatusToHIPStatus(
+        rocsparse_cgpsv_interleaved_batch((rocsparse_handle)handle,
+                                          (rocsparse_gpsv_interleaved_alg)algo,
+                                          m,
+                                          (rocsparse_float_complex*)ds,
+                                          (rocsparse_float_complex*)dl,
+                                          (rocsparse_float_complex*)d,
+                                          (rocsparse_float_complex*)du,
+                                          (rocsparse_float_complex*)dw,
+                                          (rocsparse_float_complex*)x,
+                                          batchCount,
+                                          batchCount,
+                                          pBuffer));
+}
+
+hipsparseStatus_t hipsparseZgpsvInterleavedBatch(hipsparseHandle_t handle,
+                                                 int               algo,
+                                                 int               m,
+                                                 hipDoubleComplex* ds,
+                                                 hipDoubleComplex* dl,
+                                                 hipDoubleComplex* d,
+                                                 hipDoubleComplex* du,
+                                                 hipDoubleComplex* dw,
+                                                 hipDoubleComplex* x,
+                                                 int               batchCount,
+                                                 void*             pBuffer)
+{
+    return rocSPARSEStatusToHIPStatus(
+        rocsparse_zgpsv_interleaved_batch((rocsparse_handle)handle,
+                                          (rocsparse_gpsv_interleaved_alg)algo,
+                                          m,
+                                          (rocsparse_double_complex*)ds,
+                                          (rocsparse_double_complex*)dl,
+                                          (rocsparse_double_complex*)d,
+                                          (rocsparse_double_complex*)du,
+                                          (rocsparse_double_complex*)dw,
+                                          (rocsparse_double_complex*)x,
+                                          batchCount,
+                                          batchCount,
+                                          pBuffer));
 }
 
 HIPSPARSE_EXPORT

@@ -703,10 +703,10 @@ static int csrgemm_nnz(int                  m,
             int row_end_B   = csr_row_ptr_B[col_A + 1] - idx_base_B;
 
             // Loop over columns of B in row col_A
-            for(int k = row_begin_B; k < row_end_B; ++k)
+            for(int l = row_begin_B; l < row_end_B; ++l)
             {
                 // Current column of B
-                int col_B = csr_col_ind_B[k] - idx_base_B;
+                int col_B = csr_col_ind_B[l] - idx_base_B;
 
                 // Check if a new nnz is generated
                 if(nnz[col_B] != i)
@@ -761,12 +761,12 @@ static void csrgemm(int                  m,
             int row_end_B   = csr_row_ptr_B[col_A + 1] - idx_base_B;
 
             // Loop over columns of B in row col_A
-            for(int k = row_begin_B; k < row_end_B; ++k)
+            for(int l = row_begin_B; l < row_end_B; ++l)
             {
                 // Current column of B
-                int col_B = csr_col_ind_B[k] - idx_base_B;
+                int col_B = csr_col_ind_B[l] - idx_base_B;
                 // Current value of B
-                T val_B = csr_val_B[k];
+                T val_B = csr_val_B[l];
 
                 // Check if a new nnz is generated or if the product is appended
                 if(nnz[col_B] < row_begin_C)
@@ -826,7 +826,6 @@ hipsparseStatus_t testing_csrgemm(Arguments argus)
     std::string          binfile    = "";
     std::string          filename   = "";
     hipsparseStatus_t    status;
-    size_t               size;
 
     // When in testing mode, M == N == -99 indicates that we are testing with a real
     // matrix from cise.ufl.edu

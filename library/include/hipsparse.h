@@ -5820,6 +5820,244 @@ hipsparseStatus_t hipsparseZgtsv2StridedBatch(hipsparseHandle_t       handle,
                                               void*                   pBuffer);
 /**@}*/
 
+/*! \ingroup precond_module
+*  \brief Interleaved Batch tridiagonal solver
+*
+*  \details
+*  \p hipsparseXgtsvInterleavedBatch_bufferSizeExt returns the size of the temporary storage
+*  buffer that is required by hipsparseXgtsvInterleavedBatch(). The temporary storage buffer
+*  must be allocated by the user.
+*/
+/**@{*/
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSgtsvInterleavedBatch_bufferSizeExt(hipsparseHandle_t handle,
+                                                               int               algo,
+                                                               int               m,
+                                                               const float*      dl,
+                                                               const float*      d,
+                                                               const float*      du,
+                                                               const float*      x,
+                                                               int               batchCount,
+                                                               size_t* pBufferSizeInBytes);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDgtsvInterleavedBatch_bufferSizeExt(hipsparseHandle_t handle,
+                                                               int               algo,
+                                                               int               m,
+                                                               const double*     dl,
+                                                               const double*     d,
+                                                               const double*     du,
+                                                               const double*     x,
+                                                               int               batchCount,
+                                                               size_t* pBufferSizeInBytes);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCgtsvInterleavedBatch_bufferSizeExt(hipsparseHandle_t handle,
+                                                               int               algo,
+                                                               int               m,
+                                                               const hipComplex* dl,
+                                                               const hipComplex* d,
+                                                               const hipComplex* du,
+                                                               const hipComplex* x,
+                                                               int               batchCount,
+                                                               size_t* pBufferSizeInBytes);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseZgtsvInterleavedBatch_bufferSizeExt(hipsparseHandle_t       handle,
+                                                               int                     algo,
+                                                               int                     m,
+                                                               const hipDoubleComplex* dl,
+                                                               const hipDoubleComplex* d,
+                                                               const hipDoubleComplex* du,
+                                                               const hipDoubleComplex* x,
+                                                               int                     batchCount,
+                                                               size_t* pBufferSizeInBytes);
+/**@}*/
+
+/*! \ingroup precond_module
+*  \brief Interleaved Batch tridiagonal solver
+*
+*  \details
+*  \p hipsparseXgtsvInterleavedBatch solves a batched tridiagonal linear system
+*
+*  \note
+*  This function is non blocking and executed asynchronously with respect to the host.
+*  It may return before the actual computation has finished.
+*/
+/**@{*/
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSgtsvInterleavedBatch(hipsparseHandle_t handle,
+                                                 int               algo,
+                                                 int               m,
+                                                 float*            dl,
+                                                 float*            d,
+                                                 float*            du,
+                                                 float*            x,
+                                                 int               batchCount,
+                                                 void*             pBuffer);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDgtsvInterleavedBatch(hipsparseHandle_t handle,
+                                                 int               algo,
+                                                 int               m,
+                                                 double*           dl,
+                                                 double*           d,
+                                                 double*           du,
+                                                 double*           x,
+                                                 int               batchCount,
+                                                 void*             pBuffer);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCgtsvInterleavedBatch(hipsparseHandle_t handle,
+                                                 int               algo,
+                                                 int               m,
+                                                 hipComplex*       dl,
+                                                 hipComplex*       d,
+                                                 hipComplex*       du,
+                                                 hipComplex*       x,
+                                                 int               batchCount,
+                                                 void*             pBuffer);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseZgtsvInterleavedBatch(hipsparseHandle_t handle,
+                                                 int               algo,
+                                                 int               m,
+                                                 hipDoubleComplex* dl,
+                                                 hipDoubleComplex* d,
+                                                 hipDoubleComplex* du,
+                                                 hipDoubleComplex* x,
+                                                 int               batchCount,
+                                                 void*             pBuffer);
+/**@}*/
+
+/*! \ingroup precond_module
+*  \brief Interleaved Batch pentadiagonal solver
+*
+*  \details
+*  \p hipsparseXgpsvInterleavedBatch_bufferSizeExt returns the size of the temporary storage
+*  buffer that is required by hipsparseXgpsvInterleavedBatch(). The temporary storage buffer
+*  must be allocated by the user.
+*/
+/**@{*/
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSgpsvInterleavedBatch_bufferSizeExt(hipsparseHandle_t handle,
+                                                               int               algo,
+                                                               int               m,
+                                                               const float*      ds,
+                                                               const float*      dl,
+                                                               const float*      d,
+                                                               const float*      du,
+                                                               const float*      dw,
+                                                               const float*      x,
+                                                               int               batchCount,
+                                                               size_t* pBufferSizeInBytes);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDgpsvInterleavedBatch_bufferSizeExt(hipsparseHandle_t handle,
+                                                               int               algo,
+                                                               int               m,
+                                                               const double*     ds,
+                                                               const double*     dl,
+                                                               const double*     d,
+                                                               const double*     du,
+                                                               const double*     dw,
+                                                               const double*     x,
+                                                               int               batchCount,
+                                                               size_t* pBufferSizeInBytes);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCgpsvInterleavedBatch_bufferSizeExt(hipsparseHandle_t handle,
+                                                               int               algo,
+                                                               int               m,
+                                                               const hipComplex* ds,
+                                                               const hipComplex* dl,
+                                                               const hipComplex* d,
+                                                               const hipComplex* du,
+                                                               const hipComplex* dw,
+                                                               const hipComplex* x,
+                                                               int               batchCount,
+                                                               size_t* pBufferSizeInBytes);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseZgpsvInterleavedBatch_bufferSizeExt(hipsparseHandle_t       handle,
+                                                               int                     algo,
+                                                               int                     m,
+                                                               const hipDoubleComplex* ds,
+                                                               const hipDoubleComplex* dl,
+                                                               const hipDoubleComplex* d,
+                                                               const hipDoubleComplex* du,
+                                                               const hipDoubleComplex* dw,
+                                                               const hipDoubleComplex* x,
+                                                               int                     batchCount,
+                                                               size_t* pBufferSizeInBytes);
+
+/**@}*/
+
+/*! \ingroup precond_module
+*  \brief Interleaved Batch pentadiagonal solver
+*
+*  \details
+*  \p hipsparseXgpsvInterleavedBatch solves a batched pentadiagonal linear system
+*
+*  \note
+*  This function is non blocking and executed asynchronously with respect to the host.
+*  It may return before the actual computation has finished.
+*/
+/**@{*/
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSgpsvInterleavedBatch(hipsparseHandle_t handle,
+                                                 int               algo,
+                                                 int               m,
+                                                 float*            ds,
+                                                 float*            dl,
+                                                 float*            d,
+                                                 float*            du,
+                                                 float*            dw,
+                                                 float*            x,
+                                                 int               batchCount,
+                                                 void*             pBuffer);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDgpsvInterleavedBatch(hipsparseHandle_t handle,
+                                                 int               algo,
+                                                 int               m,
+                                                 double*           ds,
+                                                 double*           dl,
+                                                 double*           d,
+                                                 double*           du,
+                                                 double*           dw,
+                                                 double*           x,
+                                                 int               batchCount,
+                                                 void*             pBuffer);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCgpsvInterleavedBatch(hipsparseHandle_t handle,
+                                                 int               algo,
+                                                 int               m,
+                                                 hipComplex*       ds,
+                                                 hipComplex*       dl,
+                                                 hipComplex*       d,
+                                                 hipComplex*       du,
+                                                 hipComplex*       dw,
+                                                 hipComplex*       x,
+                                                 int               batchCount,
+                                                 void*             pBuffer);
+
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseZgpsvInterleavedBatch(hipsparseHandle_t handle,
+                                                 int               algo,
+                                                 int               m,
+                                                 hipDoubleComplex* ds,
+                                                 hipDoubleComplex* dl,
+                                                 hipDoubleComplex* d,
+                                                 hipDoubleComplex* du,
+                                                 hipDoubleComplex* dw,
+                                                 hipDoubleComplex* x,
+                                                 int               batchCount,
+                                                 void*             pBuffer);
+
+/**@}*/
+
 /*
 * ===========================================================================
 *    Sparse Format Conversions
@@ -8561,7 +8799,7 @@ typedef enum
 } hipsparseDenseToSparseAlg_t;
 #endif
 
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11020)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11022)
 typedef enum
 {
     HIPSPARSE_SDDMM_ALG_DEFAULT = 0
@@ -8590,11 +8828,19 @@ typedef enum
 } hipsparseSpMatAttribute_t;
 #endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
+typedef enum
+{
+    HIPSPARSE_SPGEMM_DEFAULT = 0,
+    HIPSPARSE_SPGEMM_CSR_ALG_NONDETERMINISTIC,
+    HIPSPARSE_SPGEMM_CSR_ALG_DETERMINISTIC
+} hipsparseSpGEMMAlg_t;
+#elif(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
 typedef enum
 {
     HIPSPARSE_SPGEMM_DEFAULT = 0
 } hipsparseSpGEMMAlg_t;
-
+#endif
 /* Sparse vector API */
 
 /* Description: Create a sparse vector */
@@ -9200,7 +9446,69 @@ hipsparseStatus_t hipsparseSpGEMM_copy(hipsparseHandle_t      handle,
                                        hipsparseSpGEMMDescr_t spgemmDescr);
 #endif
 
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11020)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpGEMMreuse_workEstimation(hipsparseHandle_t      handle,
+                                                      hipsparseOperation_t   opA,
+                                                      hipsparseOperation_t   opB,
+                                                      hipsparseSpMatDescr_t  matA,
+                                                      hipsparseSpMatDescr_t  matB,
+                                                      hipsparseSpMatDescr_t  matC,
+                                                      hipsparseSpGEMMAlg_t   alg,
+                                                      hipsparseSpGEMMDescr_t spgemmDescr,
+                                                      size_t*                bufferSize1,
+                                                      void*                  externalBuffer1);
+#endif
+
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpGEMMreuse_nnz(hipsparseHandle_t      handle,
+                                           hipsparseOperation_t   opA,
+                                           hipsparseOperation_t   opB,
+                                           hipsparseSpMatDescr_t  matA,
+                                           hipsparseSpMatDescr_t  matB,
+                                           hipsparseSpMatDescr_t  matC,
+                                           hipsparseSpGEMMAlg_t   alg,
+                                           hipsparseSpGEMMDescr_t spgemmDescr,
+                                           size_t*                bufferSize2,
+                                           void*                  externalBuffer2,
+                                           size_t*                bufferSize3,
+                                           void*                  externalBuffer3,
+                                           size_t*                bufferSize4,
+                                           void*                  externalBuffer4);
+
+#endif
+
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpGEMMreuse_compute(hipsparseHandle_t      handle,
+                                               hipsparseOperation_t   opA,
+                                               hipsparseOperation_t   opB,
+                                               const void*            alpha,
+                                               hipsparseSpMatDescr_t  matA,
+                                               hipsparseSpMatDescr_t  matB,
+                                               const void*            beta,
+                                               hipsparseSpMatDescr_t  matC,
+                                               hipDataType            computeType,
+                                               hipsparseSpGEMMAlg_t   alg,
+                                               hipsparseSpGEMMDescr_t spgemmDescr);
+#endif
+
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpGEMMreuse_copy(hipsparseHandle_t      handle,
+                                            hipsparseOperation_t   opA,
+                                            hipsparseOperation_t   opB,
+                                            hipsparseSpMatDescr_t  matA,
+                                            hipsparseSpMatDescr_t  matB,
+                                            hipsparseSpMatDescr_t  matC,
+                                            hipsparseSpGEMMAlg_t   alg,
+                                            hipsparseSpGEMMDescr_t spgemmDescr,
+                                            size_t*                bufferSize5,
+                                            void*                  externalBuffer5);
+#endif
+
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11022)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSDDMM(hipsparseHandle_t           handle,
                                  hipsparseOperation_t        opA,

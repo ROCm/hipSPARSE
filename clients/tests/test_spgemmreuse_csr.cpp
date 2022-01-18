@@ -21,32 +21,38 @@
  *
  * ************************************************************************ */
 
-#include "testing_sddmm_csc.hpp"
+#include "testing_spgemmreuse_csr.hpp"
 
 #include <hipsparse.h>
 
-// Only run tests for CUDA 11.2.2 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11022)
-TEST(sddmm_csc_bad_arg, sddmm_csc_float)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
+TEST(spgemmreuse_csr_bad_arg, spgemmreuse_csr_float)
 {
-    testing_sddmm_csc_bad_arg();
+    testing_spgemmreuse_csr_bad_arg();
 }
 
-TEST(sddmm_csc, sddmm_csc_i32_i32_float)
+TEST(spgemmreuse_csr, spgemmreuse_csr_i32_i32_float)
 {
-    hipsparseStatus_t status = testing_sddmm_csc<int32_t, int32_t, float>();
+    hipsparseStatus_t status = testing_spgemmreuse_csr<int32_t, int32_t, float>();
+    std::cout << status << std::endl;
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-TEST(sddmm_csc, sddmm_csc_i32_i32_double)
+TEST(spgemmreuse_csr, spgemmreuse_csr_i64_i32_double)
 {
-    hipsparseStatus_t status = testing_sddmm_csc<int32_t, int32_t, double>();
+    hipsparseStatus_t status = testing_spgemmreuse_csr<int64_t, int32_t, double>();
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-TEST(sddmm_csc, sddmm_csc_i32_i32_hipComplex)
+TEST(spgemmreuse_csr, spgemmreuse_csr_i64_i64_hipComplex)
 {
-    hipsparseStatus_t status = testing_sddmm_csc<int32_t, int32_t, hipComplex>();
+    hipsparseStatus_t status = testing_spgemmreuse_csr<int64_t, int64_t, hipComplex>();
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+
+TEST(spgemmreuse_csr, spgemmreuse_csr_i64_i64_hipDoubleComplex)
+{
+    hipsparseStatus_t status = testing_spgemmreuse_csr<int64_t, int64_t, hipDoubleComplex>();
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 #endif

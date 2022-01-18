@@ -42,13 +42,11 @@ void testing_gemvi_bad_arg(void)
     int nnz = 100;
     int lda = 100;
 
-    hipsparseOperation_t opType  = HIPSPARSE_OPERATION_NON_TRANSPOSE;
-    hipsparseIndexBase_t idxBase = HIPSPARSE_INDEX_BASE_ZERO;
+    static constexpr hipsparseOperation_t opType  = HIPSPARSE_OPERATION_NON_TRANSPOSE;
+    hipsparseIndexBase_t                  idxBase = HIPSPARSE_INDEX_BASE_ZERO;
 
     float alpha = 0.6;
     float beta  = 0.1;
-
-    hipsparseStatus_t status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -155,15 +153,12 @@ hipsparseStatus_t testing_gemvi(void)
     int n   = 724;
     int nnz = 237;
 
-    hipsparseOperation_t opType  = HIPSPARSE_OPERATION_NON_TRANSPOSE;
-    hipsparseIndexBase_t idxBase = HIPSPARSE_INDEX_BASE_ZERO;
+    static constexpr hipsparseOperation_t opType  = HIPSPARSE_OPERATION_NON_TRANSPOSE;
+    int                                   lda     = m;
+    hipsparseIndexBase_t                  idxBase = HIPSPARSE_INDEX_BASE_ZERO;
 
     T alpha = make_DataType<T>(0.6);
     T beta  = make_DataType<T>(3.2);
-
-    int lda = (opType == HIPSPARSE_OPERATION_NON_TRANSPOSE ? m : n);
-
-    hipsparseStatus_t status;
 
     // hipSPARSE handle
     std::unique_ptr<handle_struct> test_handle(new handle_struct);

@@ -48,8 +48,6 @@ void testing_spmm_csr_bad_arg(void)
     int32_t              n         = 100;
     int32_t              m         = 100;
     int32_t              k         = 100;
-    int32_t              ldb       = 100;
-    int32_t              ldc       = 100;
     int64_t              nnz       = 100;
     int32_t              safe_size = 100;
     float                alpha     = 0.6;
@@ -69,13 +67,9 @@ void testing_spmm_csr_bad_arg(void)
 #else
     hipsparseSpMMAlg_t alg = HIPSPARSE_MM_ALG_DEFAULT;
 #endif
-    hipsparseStatus_t status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
-
-    std::unique_ptr<descr_struct> unique_ptr_descr(new descr_struct);
-    hipsparseMatDescr_t           descr = unique_ptr_descr->descr;
 
     auto dptr_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(int64_t) * safe_size), device_free};
@@ -219,7 +213,6 @@ hipsparseStatus_t testing_spmm_csr()
 #else
     hipsparseSpMMAlg_t alg = HIPSPARSE_MM_ALG_DEFAULT;
 #endif
-    hipsparseStatus_t status;
 
     // Matrices are stored at the same path in matrices directory
     std::string filename = hipsparse_exepath() + "../matrices/nos3.bin";
@@ -327,6 +320,14 @@ hipsparseStatus_t testing_spmm_csr()
     size_t bufferSize;
     CHECK_HIPSPARSE_ERROR(hipsparseSpMM_bufferSize(
         handle, transA, transB, &h_alpha, A, B, &h_beta, C1, typeT, alg, &bufferSize));
+
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11021)
+    //When using cusparse backend, cant pass nullptr for buffer to preprocess
+    if(bufferSize == 0)
+    {
+        bufferSize = 4;
+    }
+#endif
 
     void* buffer;
     CHECK_HIP_ERROR(hipMalloc(&buffer, bufferSize));
