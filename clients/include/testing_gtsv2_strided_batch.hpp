@@ -87,22 +87,6 @@ void testing_gtsv2_strided_batch_bad_arg(void)
                                           "Error: batch_stride is invalid");
     verify_hipsparse_status_invalid_pointer(
         hipsparseXgtsv2StridedBatch_bufferSizeExt(
-            handle, m, (const T*)nullptr, dd, ddu, dx, batch_count, batch_stride, &bsize),
-        "Error: ddl is nullptr");
-    verify_hipsparse_status_invalid_pointer(
-        hipsparseXgtsv2StridedBatch_bufferSizeExt(
-            handle, m, ddl, (const T*)nullptr, ddu, dx, batch_count, batch_stride, &bsize),
-        "Error: dd is nullptr");
-    verify_hipsparse_status_invalid_pointer(
-        hipsparseXgtsv2StridedBatch_bufferSizeExt(
-            handle, m, ddl, dd, (const T*)nullptr, dx, batch_count, batch_stride, &bsize),
-        "Error: ddu is nullptr");
-    verify_hipsparse_status_invalid_pointer(
-        hipsparseXgtsv2StridedBatch_bufferSizeExt(
-            handle, m, ddl, dd, ddu, (const T*)nullptr, batch_count, batch_stride, &bsize),
-        "Error: dx is nullptr");
-    verify_hipsparse_status_invalid_pointer(
-        hipsparseXgtsv2StridedBatch_bufferSizeExt(
             handle, m, ddl, dd, ddu, dx, batch_count, batch_stride, nullptr),
         "Error: bsize is nullptr");
 

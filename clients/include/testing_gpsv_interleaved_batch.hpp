@@ -88,30 +88,6 @@ void testing_gpsv_interleaved_batch_bad_arg(void)
         "Error: batch_count is invalid");
     verify_hipsparse_status_invalid_pointer(
         hipsparseXgpsvInterleavedBatch_bufferSizeExt(
-            handle, algo, m, (const T*)nullptr, dds, dd, ddu, ddw, dx, batch_count, &bsize),
-        "Error: dds is nullptr");
-    verify_hipsparse_status_invalid_pointer(
-        hipsparseXgpsvInterleavedBatch_bufferSizeExt(
-            handle, algo, m, dds, (const T*)nullptr, dd, ddu, ddw, dx, batch_count, &bsize),
-        "Error: ddl is nullptr");
-    verify_hipsparse_status_invalid_pointer(
-        hipsparseXgpsvInterleavedBatch_bufferSizeExt(
-            handle, algo, m, dds, ddl, (const T*)nullptr, ddu, ddw, dx, batch_count, &bsize),
-        "Error: dd is nullptr");
-    verify_hipsparse_status_invalid_pointer(
-        hipsparseXgpsvInterleavedBatch_bufferSizeExt(
-            handle, algo, m, dds, ddl, dd, (const T*)nullptr, ddw, dx, batch_count, &bsize),
-        "Error: ddu is nullptr");
-    verify_hipsparse_status_invalid_pointer(
-        hipsparseXgpsvInterleavedBatch_bufferSizeExt(
-            handle, algo, m, dds, ddl, dd, ddu, (const T*)nullptr, dx, batch_count, &bsize),
-        "Error: ddw is nullptr");
-    verify_hipsparse_status_invalid_pointer(
-        hipsparseXgpsvInterleavedBatch_bufferSizeExt(
-            handle, algo, m, dds, ddl, dd, ddu, ddw, (const T*)nullptr, batch_count, &bsize),
-        "Error: dx is nullptr");
-    verify_hipsparse_status_invalid_pointer(
-        hipsparseXgpsvInterleavedBatch_bufferSizeExt(
             handle, algo, m, dds, ddl, dd, ddu, ddw, dx, batch_count, nullptr),
         "Error: bsize is nullptr");
 

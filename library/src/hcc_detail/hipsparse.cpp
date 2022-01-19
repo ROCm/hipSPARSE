@@ -14018,8 +14018,21 @@ hipsparseStatus_t hipsparseSgtsv2StridedBatch_bufferSizeExt(hipsparseHandle_t ha
                                                             int               batchStride,
                                                             size_t*           pBufferSizeInBytes)
 {
-    return rocSPARSEStatusToHIPStatus(rocsparse_sgtsv_no_pivot_strided_batch_buffer_size(
-        (rocsparse_handle)handle, m, dl, d, du, x, batchCount, batchStride, pBufferSizeInBytes));
+    // cusparse allows passing nullptr's for dl, d, du, and B. On the other hand rocsparse checks
+    // if they are nullptr and returns invalid pointer if they are. In both cases the pointers are
+    // never actually de-referenced. In order to work in the same way regardless of the backend
+    // that a user chooses, just pass in non-null dummy pointer.
+    const float* dummy = static_cast<const float*>((void*)0x4);
+    return rocSPARSEStatusToHIPStatus(
+        rocsparse_sgtsv_no_pivot_strided_batch_buffer_size((rocsparse_handle)handle,
+                                                           m,
+                                                           dummy,
+                                                           dummy,
+                                                           dummy,
+                                                           dummy,
+                                                           batchCount,
+                                                           batchStride,
+                                                           pBufferSizeInBytes));
 }
 
 hipsparseStatus_t hipsparseDgtsv2StridedBatch_bufferSizeExt(hipsparseHandle_t handle,
@@ -14032,8 +14045,21 @@ hipsparseStatus_t hipsparseDgtsv2StridedBatch_bufferSizeExt(hipsparseHandle_t ha
                                                             int               batchStride,
                                                             size_t*           pBufferSizeInBytes)
 {
-    return rocSPARSEStatusToHIPStatus(rocsparse_dgtsv_no_pivot_strided_batch_buffer_size(
-        (rocsparse_handle)handle, m, dl, d, du, x, batchCount, batchStride, pBufferSizeInBytes));
+    // cusparse allows passing nullptr's for dl, d, du, and B. On the other hand rocsparse checks
+    // if they are nullptr and returns invalid pointer if they are. In both cases the pointers are
+    // never actually de-referenced. In order to work in the same way regardless of the backend
+    // that a user chooses, just pass in non-null dummy pointer.
+    const double* dummy = static_cast<const double*>((void*)0x4);
+    return rocSPARSEStatusToHIPStatus(
+        rocsparse_dgtsv_no_pivot_strided_batch_buffer_size((rocsparse_handle)handle,
+                                                           m,
+                                                           dummy,
+                                                           dummy,
+                                                           dummy,
+                                                           dummy,
+                                                           batchCount,
+                                                           batchStride,
+                                                           pBufferSizeInBytes));
 }
 
 hipsparseStatus_t hipsparseCgtsv2StridedBatch_bufferSizeExt(hipsparseHandle_t handle,
@@ -14046,13 +14072,18 @@ hipsparseStatus_t hipsparseCgtsv2StridedBatch_bufferSizeExt(hipsparseHandle_t ha
                                                             int               batchStride,
                                                             size_t*           pBufferSizeInBytes)
 {
+    // cusparse allows passing nullptr's for dl, d, du, and B. On the other hand rocsparse checks
+    // if they are nullptr and returns invalid pointer if they are. In both cases the pointers are
+    // never actually de-referenced. In order to work in the same way regardless of the backend
+    // that a user chooses, just pass in non-null dummy pointer.
+    const hipComplex* dummy = static_cast<const hipComplex*>((void*)0x4);
     return rocSPARSEStatusToHIPStatus(
         rocsparse_cgtsv_no_pivot_strided_batch_buffer_size((rocsparse_handle)handle,
                                                            m,
-                                                           (const rocsparse_float_complex*)dl,
-                                                           (const rocsparse_float_complex*)d,
-                                                           (const rocsparse_float_complex*)du,
-                                                           (const rocsparse_float_complex*)x,
+                                                           (const rocsparse_float_complex*)dummy,
+                                                           (const rocsparse_float_complex*)dummy,
+                                                           (const rocsparse_float_complex*)dummy,
+                                                           (const rocsparse_float_complex*)dummy,
                                                            batchCount,
                                                            batchStride,
                                                            pBufferSizeInBytes));
@@ -14068,13 +14099,18 @@ hipsparseStatus_t hipsparseZgtsv2StridedBatch_bufferSizeExt(hipsparseHandle_t   
                                                             int                     batchStride,
                                                             size_t* pBufferSizeInBytes)
 {
+    // cusparse allows passing nullptr's for dl, d, du, and B. On the other hand rocsparse checks
+    // if they are nullptr and returns invalid pointer if they are. In both cases the pointers are
+    // never actually de-referenced. In order to work in the same way regardless of the backend
+    // that a user chooses, just pass in non-null dummy pointer.
+    const hipDoubleComplex* dummy = static_cast<const hipDoubleComplex*>((void*)0x4);
     return rocSPARSEStatusToHIPStatus(
         rocsparse_zgtsv_no_pivot_strided_batch_buffer_size((rocsparse_handle)handle,
                                                            m,
-                                                           (const rocsparse_double_complex*)dl,
-                                                           (const rocsparse_double_complex*)d,
-                                                           (const rocsparse_double_complex*)du,
-                                                           (const rocsparse_double_complex*)x,
+                                                           (const rocsparse_double_complex*)dummy,
+                                                           (const rocsparse_double_complex*)dummy,
+                                                           (const rocsparse_double_complex*)dummy,
+                                                           (const rocsparse_double_complex*)dummy,
                                                            batchCount,
                                                            batchStride,
                                                            pBufferSizeInBytes));
@@ -14165,8 +14201,13 @@ hipsparseStatus_t hipsparseSgtsv2_bufferSizeExt(hipsparseHandle_t handle,
                                                 int               ldb,
                                                 size_t*           pBufferSizeInBytes)
 {
+    // cusparse allows passing nullptr's for dl, d, du, and B. On the other hand rocsparse checks
+    // if they are nullptr and returns invalid pointer if they are. In both cases the pointers are
+    // never actually de-referenced. In order to work in the same way regardless of the backend
+    // that a user chooses, just pass in non-null dummy pointer.
+    const float* dummy = static_cast<const float*>((void*)0x4);
     return rocSPARSEStatusToHIPStatus(rocsparse_sgtsv_buffer_size(
-        (rocsparse_handle)handle, m, n, dl, d, du, B, ldb, pBufferSizeInBytes));
+        (rocsparse_handle)handle, m, n, dummy, dummy, dummy, dummy, ldb, pBufferSizeInBytes));
 }
 
 hipsparseStatus_t hipsparseDgtsv2_bufferSizeExt(hipsparseHandle_t handle,
@@ -14179,8 +14220,13 @@ hipsparseStatus_t hipsparseDgtsv2_bufferSizeExt(hipsparseHandle_t handle,
                                                 int               ldb,
                                                 size_t*           pBufferSizeInBytes)
 {
+    // cusparse allows passing nullptr's for dl, d, du, and B. On the other hand rocsparse checks
+    // if they are nullptr and returns invalid pointer if they are. In both cases the pointers are
+    // never actually de-referenced. In order to work in the same way regardless of the backend
+    // that a user chooses, just pass in non-null dummy pointer.
+    const double* dummy = static_cast<const double*>((void*)0x4);
     return rocSPARSEStatusToHIPStatus(rocsparse_dgtsv_buffer_size(
-        (rocsparse_handle)handle, m, n, dl, d, du, B, ldb, pBufferSizeInBytes));
+        (rocsparse_handle)handle, m, n, dummy, dummy, dummy, dummy, ldb, pBufferSizeInBytes));
 }
 
 hipsparseStatus_t hipsparseCgtsv2_bufferSizeExt(hipsparseHandle_t handle,
@@ -14193,14 +14239,19 @@ hipsparseStatus_t hipsparseCgtsv2_bufferSizeExt(hipsparseHandle_t handle,
                                                 int               ldb,
                                                 size_t*           pBufferSizeInBytes)
 {
+    // cusparse allows passing nullptr's for dl, d, du, and B. On the other hand rocsparse checks
+    // if they are nullptr and returns invalid pointer if they are. In both cases the pointers are
+    // never actually de-referenced. In order to work in the same way regardless of the backend
+    // that a user chooses, just pass in non-null dummy pointer.
+    const hipComplex* dummy = static_cast<const hipComplex*>((void*)0x4);
     return rocSPARSEStatusToHIPStatus(
         rocsparse_cgtsv_buffer_size((rocsparse_handle)handle,
                                     m,
                                     n,
-                                    (const rocsparse_float_complex*)dl,
-                                    (const rocsparse_float_complex*)d,
-                                    (const rocsparse_float_complex*)du,
-                                    (const rocsparse_float_complex*)B,
+                                    (const rocsparse_float_complex*)dummy,
+                                    (const rocsparse_float_complex*)dummy,
+                                    (const rocsparse_float_complex*)dummy,
+                                    (const rocsparse_float_complex*)dummy,
                                     ldb,
                                     pBufferSizeInBytes));
 }
@@ -14215,14 +14266,19 @@ hipsparseStatus_t hipsparseZgtsv2_bufferSizeExt(hipsparseHandle_t       handle,
                                                 int                     ldb,
                                                 size_t*                 pBufferSizeInBytes)
 {
+    // cusparse allows passing nullptr's for dl, d, du, and B. On the other hand rocsparse checks
+    // if they are nullptr and returns invalid pointer if they are. In both cases the pointers are
+    // never actually de-referenced. In order to work in the same way regardless of the backend
+    // that a user chooses, just pass in non-null dummy pointer.
+    const hipDoubleComplex* dummy = static_cast<const hipDoubleComplex*>((void*)0x4);
     return rocSPARSEStatusToHIPStatus(
         rocsparse_zgtsv_buffer_size((rocsparse_handle)handle,
                                     m,
                                     n,
-                                    (const rocsparse_double_complex*)dl,
-                                    (const rocsparse_double_complex*)d,
-                                    (const rocsparse_double_complex*)du,
-                                    (const rocsparse_double_complex*)B,
+                                    (const rocsparse_double_complex*)dummy,
+                                    (const rocsparse_double_complex*)dummy,
+                                    (const rocsparse_double_complex*)dummy,
+                                    (const rocsparse_double_complex*)dummy,
                                     ldb,
                                     pBufferSizeInBytes));
 }
@@ -14310,8 +14366,13 @@ hipsparseStatus_t hipsparseSgtsv2_nopivot_bufferSizeExt(hipsparseHandle_t handle
                                                         int               ldb,
                                                         size_t*           pBufferSizeInBytes)
 {
+    // cusparse allows passing nullptr's for dl, d, du, and B. On the other hand rocsparse checks
+    // if they are nullptr and returns invalid pointer if they are. In both cases the pointers are
+    // never actually de-referenced. In order to work in the same way regardless of the backend
+    // that a user chooses, just pass in non-null dummy pointer.
+    const float* dummy = static_cast<const float*>((void*)0x4);
     return rocSPARSEStatusToHIPStatus(rocsparse_sgtsv_no_pivot_buffer_size(
-        (rocsparse_handle)handle, m, n, dl, d, du, B, ldb, pBufferSizeInBytes));
+        (rocsparse_handle)handle, m, n, dummy, dummy, dummy, dummy, ldb, pBufferSizeInBytes));
 }
 
 hipsparseStatus_t hipsparseDgtsv2_nopivot_bufferSizeExt(hipsparseHandle_t handle,
@@ -14324,8 +14385,13 @@ hipsparseStatus_t hipsparseDgtsv2_nopivot_bufferSizeExt(hipsparseHandle_t handle
                                                         int               ldb,
                                                         size_t*           pBufferSizeInBytes)
 {
+    // cusparse allows passing nullptr's for dl, d, du, and B. On the other hand rocsparse checks
+    // if they are nullptr and returns invalid pointer if they are. In both cases the pointers are
+    // never actually de-referenced. In order to work in the same way regardless of the backend
+    // that a user chooses, just pass in non-null dummy pointer.
+    const double* dummy = static_cast<const double*>((void*)0x4);
     return rocSPARSEStatusToHIPStatus(rocsparse_dgtsv_no_pivot_buffer_size(
-        (rocsparse_handle)handle, m, n, dl, d, du, B, ldb, pBufferSizeInBytes));
+        (rocsparse_handle)handle, m, n, dummy, dummy, dummy, dummy, ldb, pBufferSizeInBytes));
 }
 
 hipsparseStatus_t hipsparseCgtsv2_nopivot_bufferSizeExt(hipsparseHandle_t handle,
@@ -14338,14 +14404,19 @@ hipsparseStatus_t hipsparseCgtsv2_nopivot_bufferSizeExt(hipsparseHandle_t handle
                                                         int               ldb,
                                                         size_t*           pBufferSizeInBytes)
 {
+    // cusparse allows passing nullptr's for dl, d, du, and B. On the other hand rocsparse checks
+    // if they are nullptr and returns invalid pointer if they are. In both cases the pointers are
+    // never actually de-referenced. In order to work in the same way regardless of the backend
+    // that a user chooses, just pass in non-null dummy pointer.
+    const hipComplex* dummy = static_cast<const hipComplex*>((void*)0x4);
     return rocSPARSEStatusToHIPStatus(
         rocsparse_cgtsv_no_pivot_buffer_size((rocsparse_handle)handle,
                                              m,
                                              n,
-                                             (const rocsparse_float_complex*)dl,
-                                             (const rocsparse_float_complex*)d,
-                                             (const rocsparse_float_complex*)du,
-                                             (const rocsparse_float_complex*)B,
+                                             (const rocsparse_float_complex*)dummy,
+                                             (const rocsparse_float_complex*)dummy,
+                                             (const rocsparse_float_complex*)dummy,
+                                             (const rocsparse_float_complex*)dummy,
                                              ldb,
                                              pBufferSizeInBytes));
 }
@@ -14360,14 +14431,19 @@ hipsparseStatus_t hipsparseZgtsv2_nopivot_bufferSizeExt(hipsparseHandle_t       
                                                         int                     ldb,
                                                         size_t*                 pBufferSizeInBytes)
 {
+    // cusparse allows passing nullptr's for dl, d, du, and B. On the other hand rocsparse checks
+    // if they are nullptr and returns invalid pointer if they are. In both cases the pointers are
+    // never actually de-referenced. In order to work in the same way regardless of the backend
+    // that a user chooses, just pass in non-null dummy pointer.
+    const hipDoubleComplex* dummy = static_cast<const hipDoubleComplex*>((void*)0x4);
     return rocSPARSEStatusToHIPStatus(
         rocsparse_zgtsv_no_pivot_buffer_size((rocsparse_handle)handle,
                                              m,
                                              n,
-                                             (const rocsparse_double_complex*)dl,
-                                             (const rocsparse_double_complex*)d,
-                                             (const rocsparse_double_complex*)du,
-                                             (const rocsparse_double_complex*)B,
+                                             (const rocsparse_double_complex*)dummy,
+                                             (const rocsparse_double_complex*)dummy,
+                                             (const rocsparse_double_complex*)dummy,
+                                             (const rocsparse_double_complex*)dummy,
                                              ldb,
                                              pBufferSizeInBytes));
 }
@@ -14456,14 +14532,19 @@ hipsparseStatus_t hipsparseSgtsvInterleavedBatch_bufferSizeExt(hipsparseHandle_t
                                                                int               batchCount,
                                                                size_t*           pBufferSizeInBytes)
 {
+    // cusparse allows passing nullptr's for dl, d, du, and B. On the other hand rocsparse checks
+    // if they are nullptr and returns invalid pointer if they are. In both cases the pointers are
+    // never actually de-referenced. In order to work in the same way regardless of the backend
+    // that a user chooses, just pass in non-null dummy pointer.
+    const float* dummy = static_cast<const float*>((void*)0x4);
     return rocSPARSEStatusToHIPStatus(
         rocsparse_sgtsv_interleaved_batch_buffer_size((rocsparse_handle)handle,
                                                       (rocsparse_gtsv_interleaved_alg)algo,
                                                       m,
-                                                      dl,
-                                                      d,
-                                                      du,
-                                                      x,
+                                                      dummy,
+                                                      dummy,
+                                                      dummy,
+                                                      dummy,
                                                       batchCount,
                                                       batchCount,
                                                       pBufferSizeInBytes));
@@ -14479,14 +14560,19 @@ hipsparseStatus_t hipsparseDgtsvInterleavedBatch_bufferSizeExt(hipsparseHandle_t
                                                                int               batchCount,
                                                                size_t*           pBufferSizeInBytes)
 {
+    // cusparse allows passing nullptr's for dl, d, du, and B. On the other hand rocsparse checks
+    // if they are nullptr and returns invalid pointer if they are. In both cases the pointers are
+    // never actually de-referenced. In order to work in the same way regardless of the backend
+    // that a user chooses, just pass in non-null dummy pointer.
+    const double* dummy = static_cast<const double*>((void*)0x4);
     return rocSPARSEStatusToHIPStatus(
         rocsparse_dgtsv_interleaved_batch_buffer_size((rocsparse_handle)handle,
                                                       (rocsparse_gtsv_interleaved_alg)algo,
                                                       m,
-                                                      dl,
-                                                      d,
-                                                      du,
-                                                      x,
+                                                      dummy,
+                                                      dummy,
+                                                      dummy,
+                                                      dummy,
                                                       batchCount,
                                                       batchCount,
                                                       pBufferSizeInBytes));
@@ -14502,14 +14588,19 @@ hipsparseStatus_t hipsparseCgtsvInterleavedBatch_bufferSizeExt(hipsparseHandle_t
                                                                int               batchCount,
                                                                size_t*           pBufferSizeInBytes)
 {
+    // cusparse allows passing nullptr's for dl, d, du, and B. On the other hand rocsparse checks
+    // if they are nullptr and returns invalid pointer if they are. In both cases the pointers are
+    // never actually de-referenced. In order to work in the same way regardless of the backend
+    // that a user chooses, just pass in non-null dummy pointer.
+    const hipComplex* dummy = static_cast<const hipComplex*>((void*)0x4);
     return rocSPARSEStatusToHIPStatus(
         rocsparse_cgtsv_interleaved_batch_buffer_size((rocsparse_handle)handle,
                                                       (rocsparse_gtsv_interleaved_alg)algo,
                                                       m,
-                                                      (const rocsparse_float_complex*)dl,
-                                                      (const rocsparse_float_complex*)d,
-                                                      (const rocsparse_float_complex*)du,
-                                                      (const rocsparse_float_complex*)x,
+                                                      (const rocsparse_float_complex*)dummy,
+                                                      (const rocsparse_float_complex*)dummy,
+                                                      (const rocsparse_float_complex*)dummy,
+                                                      (const rocsparse_float_complex*)dummy,
                                                       batchCount,
                                                       batchCount,
                                                       pBufferSizeInBytes));
@@ -14525,14 +14616,19 @@ hipsparseStatus_t hipsparseZgtsvInterleavedBatch_bufferSizeExt(hipsparseHandle_t
                                                                int                     batchCount,
                                                                size_t* pBufferSizeInBytes)
 {
+    // cusparse allows passing nullptr's for dl, d, du, and B. On the other hand rocsparse checks
+    // if they are nullptr and returns invalid pointer if they are. In both cases the pointers are
+    // never actually de-referenced. In order to work in the same way regardless of the backend
+    // that a user chooses, just pass in non-null dummy pointer.
+    const hipDoubleComplex* dummy = static_cast<const hipDoubleComplex*>((void*)0x4);
     return rocSPARSEStatusToHIPStatus(
         rocsparse_zgtsv_interleaved_batch_buffer_size((rocsparse_handle)handle,
                                                       (rocsparse_gtsv_interleaved_alg)algo,
                                                       m,
-                                                      (const rocsparse_double_complex*)dl,
-                                                      (const rocsparse_double_complex*)d,
-                                                      (const rocsparse_double_complex*)du,
-                                                      (const rocsparse_double_complex*)x,
+                                                      (const rocsparse_double_complex*)dummy,
+                                                      (const rocsparse_double_complex*)dummy,
+                                                      (const rocsparse_double_complex*)dummy,
+                                                      (const rocsparse_double_complex*)dummy,
                                                       batchCount,
                                                       batchCount,
                                                       pBufferSizeInBytes));
@@ -14645,16 +14741,21 @@ hipsparseStatus_t hipsparseSgpsvInterleavedBatch_bufferSizeExt(hipsparseHandle_t
                                                                int               batchCount,
                                                                size_t*           pBufferSizeInBytes)
 {
+    // cusparse allows passing nullptr's for dl, d, du, and B. On the other hand rocsparse checks
+    // if they are nullptr and returns invalid pointer if they are. In both cases the pointers are
+    // never actually de-referenced. In order to work in the same way regardless of the backend
+    // that a user chooses, just pass in non-null dummy pointer.
+    const float* dummy = static_cast<const float*>((void*)0x4);
     return rocSPARSEStatusToHIPStatus(
         rocsparse_sgpsv_interleaved_batch_buffer_size((rocsparse_handle)handle,
                                                       (rocsparse_gpsv_interleaved_alg)algo,
                                                       m,
-                                                      ds,
-                                                      dl,
-                                                      d,
-                                                      du,
-                                                      dw,
-                                                      x,
+                                                      dummy,
+                                                      dummy,
+                                                      dummy,
+                                                      dummy,
+                                                      dummy,
+                                                      dummy,
                                                       batchCount,
                                                       batchCount,
                                                       pBufferSizeInBytes));
@@ -14672,16 +14773,21 @@ hipsparseStatus_t hipsparseDgpsvInterleavedBatch_bufferSizeExt(hipsparseHandle_t
                                                                int               batchCount,
                                                                size_t*           pBufferSizeInBytes)
 {
+    // cusparse allows passing nullptr's for dl, d, du, and B. On the other hand rocsparse checks
+    // if they are nullptr and returns invalid pointer if they are. In both cases the pointers are
+    // never actually de-referenced. In order to work in the same way regardless of the backend
+    // that a user chooses, just pass in non-null dummy pointer.
+    const double* dummy = static_cast<const double*>((void*)0x4);
     return rocSPARSEStatusToHIPStatus(
         rocsparse_dgpsv_interleaved_batch_buffer_size((rocsparse_handle)handle,
                                                       (rocsparse_gpsv_interleaved_alg)algo,
                                                       m,
-                                                      ds,
-                                                      dl,
-                                                      d,
-                                                      du,
-                                                      dw,
-                                                      x,
+                                                      dummy,
+                                                      dummy,
+                                                      dummy,
+                                                      dummy,
+                                                      dummy,
+                                                      dummy,
                                                       batchCount,
                                                       batchCount,
                                                       pBufferSizeInBytes));
@@ -14699,16 +14805,21 @@ hipsparseStatus_t hipsparseCgpsvInterleavedBatch_bufferSizeExt(hipsparseHandle_t
                                                                int               batchCount,
                                                                size_t*           pBufferSizeInBytes)
 {
+    // cusparse allows passing nullptr's for dl, d, du, and B. On the other hand rocsparse checks
+    // if they are nullptr and returns invalid pointer if they are. In both cases the pointers are
+    // never actually de-referenced. In order to work in the same way regardless of the backend
+    // that a user chooses, just pass in non-null dummy pointer.
+    const hipComplex* dummy = static_cast<const hipComplex*>((void*)0x4);
     return rocSPARSEStatusToHIPStatus(
         rocsparse_cgpsv_interleaved_batch_buffer_size((rocsparse_handle)handle,
                                                       (rocsparse_gpsv_interleaved_alg)algo,
                                                       m,
-                                                      (const rocsparse_float_complex*)ds,
-                                                      (const rocsparse_float_complex*)dl,
-                                                      (const rocsparse_float_complex*)d,
-                                                      (const rocsparse_float_complex*)du,
-                                                      (const rocsparse_float_complex*)dw,
-                                                      (const rocsparse_float_complex*)x,
+                                                      (const rocsparse_float_complex*)dummy,
+                                                      (const rocsparse_float_complex*)dummy,
+                                                      (const rocsparse_float_complex*)dummy,
+                                                      (const rocsparse_float_complex*)dummy,
+                                                      (const rocsparse_float_complex*)dummy,
+                                                      (const rocsparse_float_complex*)dummy,
                                                       batchCount,
                                                       batchCount,
                                                       pBufferSizeInBytes));
@@ -14726,16 +14837,21 @@ hipsparseStatus_t hipsparseZgpsvInterleavedBatch_bufferSizeExt(hipsparseHandle_t
                                                                int                     batchCount,
                                                                size_t* pBufferSizeInBytes)
 {
+    // cusparse allows passing nullptr's for dl, d, du, and B. On the other hand rocsparse checks
+    // if they are nullptr and returns invalid pointer if they are. In both cases the pointers are
+    // never actually de-referenced. In order to work in the same way regardless of the backend
+    // that a user chooses, just pass in non-null dummy pointer.
+    const hipDoubleComplex* dummy = static_cast<const hipDoubleComplex*>((void*)0x4);
     return rocSPARSEStatusToHIPStatus(
         rocsparse_zgpsv_interleaved_batch_buffer_size((rocsparse_handle)handle,
                                                       (rocsparse_gpsv_interleaved_alg)algo,
                                                       m,
-                                                      (const rocsparse_double_complex*)ds,
-                                                      (const rocsparse_double_complex*)dl,
-                                                      (const rocsparse_double_complex*)d,
-                                                      (const rocsparse_double_complex*)du,
-                                                      (const rocsparse_double_complex*)dw,
-                                                      (const rocsparse_double_complex*)x,
+                                                      (const rocsparse_double_complex*)dummy,
+                                                      (const rocsparse_double_complex*)dummy,
+                                                      (const rocsparse_double_complex*)dummy,
+                                                      (const rocsparse_double_complex*)dummy,
+                                                      (const rocsparse_double_complex*)dummy,
+                                                      (const rocsparse_double_complex*)dummy,
                                                       batchCount,
                                                       batchCount,
                                                       pBufferSizeInBytes));
