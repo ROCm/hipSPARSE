@@ -84,22 +84,6 @@ void testing_gtsv2_nopivot_bad_arg(void)
         hipsparseXgtsv2_nopivot_bufferSizeExt(handle, m, n, ddl, dd, ddu, dB, -1, &bsize),
         "Error: ldb is invalid");
     verify_hipsparse_status_invalid_pointer(
-        hipsparseXgtsv2_nopivot_bufferSizeExt(
-            handle, m, n, (const T*)nullptr, dd, ddu, dB, ldb, &bsize),
-        "Error: ddl is nullptr");
-    verify_hipsparse_status_invalid_pointer(
-        hipsparseXgtsv2_nopivot_bufferSizeExt(
-            handle, m, n, ddl, (const T*)nullptr, ddu, dB, ldb, &bsize),
-        "Error: dd is nullptr");
-    verify_hipsparse_status_invalid_pointer(
-        hipsparseXgtsv2_nopivot_bufferSizeExt(
-            handle, m, n, ddl, dd, (const T*)nullptr, dB, ldb, &bsize),
-        "Error: ddu is nullptr");
-    verify_hipsparse_status_invalid_pointer(
-        hipsparseXgtsv2_nopivot_bufferSizeExt(
-            handle, m, n, ddl, dd, ddu, (const T*)nullptr, ldb, &bsize),
-        "Error: dB is nullptr");
-    verify_hipsparse_status_invalid_pointer(
         hipsparseXgtsv2_nopivot_bufferSizeExt(handle, m, n, ddl, dd, ddu, dB, ldb, nullptr),
         "Error: bsize is nullptr");
 
