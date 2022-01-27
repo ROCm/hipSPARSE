@@ -5205,7 +5205,8 @@ hipsparseStatus_t hipsparseXcsrgemmNnz(hipsparseHandle_t         handle,
     }
 
     // Obtain temporary buffer size
-    RETURN_IF_ROCSPARSE_ERROR(rocsparse_zcsrgemm_buffer_size((rocsparse_handle)handle,
+    hipsparseStatus_t status
+        = rocSPARSEStatusToHIPStatus(rocsparse_zcsrgemm_buffer_size((rocsparse_handle)handle,
                                                              hipOperationToHCCOperation(transA),
                                                              hipOperationToHCCOperation(transB),
                                                              m,
@@ -5228,10 +5229,26 @@ hipsparseStatus_t hipsparseXcsrgemmNnz(hipsparseHandle_t         handle,
                                                              info,
                                                              &buffer_size));
 
+    if(status != HIPSPARSE_STATUS_SUCCESS)
+    {
+        if(pointer_mode == rocsparse_pointer_mode_host)
+        {
+            free(alpha);
+        }
+        else
+        {
+            RETURN_IF_HIP_ERROR(hipFree(alpha));
+        }
+
+        rocsparse_destroy_mat_info(info);
+
+        return status;
+    }
+
     RETURN_IF_HIP_ERROR(hipMalloc(&temp_buffer, buffer_size));
 
     // Determine nnz
-    RETURN_IF_ROCSPARSE_ERROR(rocsparse_csrgemm_nnz((rocsparse_handle)handle,
+    status = rocSPARSEStatusToHIPStatus(rocsparse_csrgemm_nnz((rocsparse_handle)handle,
                                                     hipOperationToHCCOperation(transA),
                                                     hipOperationToHCCOperation(transB),
                                                     m,
@@ -5265,6 +5282,13 @@ hipsparseStatus_t hipsparseXcsrgemmNnz(hipsparseHandle_t         handle,
     }
 
     RETURN_IF_HIP_ERROR(hipFree(temp_buffer));
+
+    if(status != HIPSPARSE_STATUS_SUCCESS)
+    {
+        rocsparse_destroy_mat_info(info);
+
+        return status;
+    }
 
     RETURN_IF_ROCSPARSE_ERROR(rocsparse_destroy_mat_info(info));
 
@@ -5320,7 +5344,8 @@ hipsparseStatus_t hipsparseScsrgemm(hipsparseHandle_t         handle,
     }
 
     // Obtain temporary buffer size
-    RETURN_IF_ROCSPARSE_ERROR(rocsparse_scsrgemm_buffer_size((rocsparse_handle)handle,
+    hipsparseStatus_t status
+        = rocSPARSEStatusToHIPStatus(rocsparse_scsrgemm_buffer_size((rocsparse_handle)handle,
                                                              hipOperationToHCCOperation(transA),
                                                              hipOperationToHCCOperation(transB),
                                                              m,
@@ -5343,10 +5368,26 @@ hipsparseStatus_t hipsparseScsrgemm(hipsparseHandle_t         handle,
                                                              info,
                                                              &buffer_size));
 
+    if(status != HIPSPARSE_STATUS_SUCCESS)
+    {
+        if(pointer_mode == rocsparse_pointer_mode_host)
+        {
+            free(alpha);
+        }
+        else
+        {
+            RETURN_IF_HIP_ERROR(hipFree(alpha));
+        }
+
+        rocsparse_destroy_mat_info(info);
+
+        return status;
+    }
+
     RETURN_IF_HIP_ERROR(hipMalloc(&temp_buffer, buffer_size));
 
     // Perform csrgemm computation
-    RETURN_IF_ROCSPARSE_ERROR(rocsparse_scsrgemm((rocsparse_handle)handle,
+    status = rocSPARSEStatusToHIPStatus(rocsparse_scsrgemm((rocsparse_handle)handle,
                                                  hipOperationToHCCOperation(transA),
                                                  hipOperationToHCCOperation(transB),
                                                  m,
@@ -5386,6 +5427,13 @@ hipsparseStatus_t hipsparseScsrgemm(hipsparseHandle_t         handle,
     }
 
     RETURN_IF_HIP_ERROR(hipFree(temp_buffer));
+
+    if(status != HIPSPARSE_STATUS_SUCCESS)
+    {
+        rocsparse_destroy_mat_info(info);
+
+        return status;
+    }
 
     RETURN_IF_ROCSPARSE_ERROR(rocsparse_destroy_mat_info(info));
 
@@ -5441,7 +5489,8 @@ hipsparseStatus_t hipsparseDcsrgemm(hipsparseHandle_t         handle,
     }
 
     // Obtain temporary buffer size
-    RETURN_IF_ROCSPARSE_ERROR(rocsparse_dcsrgemm_buffer_size((rocsparse_handle)handle,
+    hipsparseStatus_t status
+        = rocSPARSEStatusToHIPStatus(rocsparse_dcsrgemm_buffer_size((rocsparse_handle)handle,
                                                              hipOperationToHCCOperation(transA),
                                                              hipOperationToHCCOperation(transB),
                                                              m,
@@ -5464,10 +5513,26 @@ hipsparseStatus_t hipsparseDcsrgemm(hipsparseHandle_t         handle,
                                                              info,
                                                              &buffer_size));
 
+    if(status != HIPSPARSE_STATUS_SUCCESS)
+    {
+        if(pointer_mode == rocsparse_pointer_mode_host)
+        {
+            free(alpha);
+        }
+        else
+        {
+            RETURN_IF_HIP_ERROR(hipFree(alpha));
+        }
+
+        rocsparse_destroy_mat_info(info);
+
+        return status;
+    }
+
     RETURN_IF_HIP_ERROR(hipMalloc(&temp_buffer, buffer_size));
 
     // Perform csrgemm computation
-    RETURN_IF_ROCSPARSE_ERROR(rocsparse_dcsrgemm((rocsparse_handle)handle,
+    status = rocSPARSEStatusToHIPStatus(rocsparse_dcsrgemm((rocsparse_handle)handle,
                                                  hipOperationToHCCOperation(transA),
                                                  hipOperationToHCCOperation(transB),
                                                  m,
@@ -5507,6 +5572,13 @@ hipsparseStatus_t hipsparseDcsrgemm(hipsparseHandle_t         handle,
     }
 
     RETURN_IF_HIP_ERROR(hipFree(temp_buffer));
+
+    if(status != HIPSPARSE_STATUS_SUCCESS)
+    {
+        rocsparse_destroy_mat_info(info);
+
+        return status;
+    }
 
     RETURN_IF_ROCSPARSE_ERROR(rocsparse_destroy_mat_info(info));
 
@@ -5562,7 +5634,8 @@ hipsparseStatus_t hipsparseCcsrgemm(hipsparseHandle_t         handle,
     }
 
     // Obtain temporary buffer size
-    RETURN_IF_ROCSPARSE_ERROR(rocsparse_ccsrgemm_buffer_size((rocsparse_handle)handle,
+    hipsparseStatus_t status
+        = rocSPARSEStatusToHIPStatus(rocsparse_ccsrgemm_buffer_size((rocsparse_handle)handle,
                                                              hipOperationToHCCOperation(transA),
                                                              hipOperationToHCCOperation(transB),
                                                              m,
@@ -5585,10 +5658,26 @@ hipsparseStatus_t hipsparseCcsrgemm(hipsparseHandle_t         handle,
                                                              info,
                                                              &buffer_size));
 
+    if(status != HIPSPARSE_STATUS_SUCCESS)
+    {
+        if(pointer_mode == rocsparse_pointer_mode_host)
+        {
+            free(alpha);
+        }
+        else
+        {
+            RETURN_IF_HIP_ERROR(hipFree(alpha));
+        }
+
+        rocsparse_destroy_mat_info(info);
+
+        return status;
+    }
+
     RETURN_IF_HIP_ERROR(hipMalloc(&temp_buffer, buffer_size));
 
     // Perform csrgemm computation
-    RETURN_IF_ROCSPARSE_ERROR(rocsparse_ccsrgemm((rocsparse_handle)handle,
+    status = rocSPARSEStatusToHIPStatus(rocsparse_ccsrgemm((rocsparse_handle)handle,
                                                  hipOperationToHCCOperation(transA),
                                                  hipOperationToHCCOperation(transB),
                                                  m,
@@ -5628,6 +5717,13 @@ hipsparseStatus_t hipsparseCcsrgemm(hipsparseHandle_t         handle,
     }
 
     RETURN_IF_HIP_ERROR(hipFree(temp_buffer));
+
+    if(status != HIPSPARSE_STATUS_SUCCESS)
+    {
+        rocsparse_destroy_mat_info(info);
+
+        return status;
+    }
 
     RETURN_IF_ROCSPARSE_ERROR(rocsparse_destroy_mat_info(info));
 
@@ -5684,7 +5780,8 @@ hipsparseStatus_t hipsparseZcsrgemm(hipsparseHandle_t         handle,
     }
 
     // Obtain temporary buffer size
-    RETURN_IF_ROCSPARSE_ERROR(rocsparse_zcsrgemm_buffer_size((rocsparse_handle)handle,
+    hipsparseStatus_t status
+        = rocSPARSEStatusToHIPStatus(rocsparse_zcsrgemm_buffer_size((rocsparse_handle)handle,
                                                              hipOperationToHCCOperation(transA),
                                                              hipOperationToHCCOperation(transB),
                                                              m,
@@ -5707,10 +5804,26 @@ hipsparseStatus_t hipsparseZcsrgemm(hipsparseHandle_t         handle,
                                                              info,
                                                              &buffer_size));
 
+    if(status != HIPSPARSE_STATUS_SUCCESS)
+    {
+        if(pointer_mode == rocsparse_pointer_mode_host)
+        {
+            free(alpha);
+        }
+        else
+        {
+            RETURN_IF_HIP_ERROR(hipFree(alpha));
+        }
+
+        rocsparse_destroy_mat_info(info);
+
+        return status;
+    }
+
     RETURN_IF_HIP_ERROR(hipMalloc(&temp_buffer, buffer_size));
 
     // Perform csrgemm computation
-    RETURN_IF_ROCSPARSE_ERROR(rocsparse_zcsrgemm((rocsparse_handle)handle,
+    status = rocSPARSEStatusToHIPStatus(rocsparse_zcsrgemm((rocsparse_handle)handle,
                                                  hipOperationToHCCOperation(transA),
                                                  hipOperationToHCCOperation(transB),
                                                  m,
@@ -5750,6 +5863,13 @@ hipsparseStatus_t hipsparseZcsrgemm(hipsparseHandle_t         handle,
     }
 
     RETURN_IF_HIP_ERROR(hipFree(temp_buffer));
+
+    if(status != HIPSPARSE_STATUS_SUCCESS)
+    {
+        rocsparse_destroy_mat_info(info);
+
+        return status;
+    }
 
     RETURN_IF_ROCSPARSE_ERROR(rocsparse_destroy_mat_info(info));
 
