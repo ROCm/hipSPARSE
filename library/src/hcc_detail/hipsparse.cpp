@@ -8705,7 +8705,6 @@ hipsparseStatus_t hipsparseDgebsr2gebsc_bufferSize(hipsparseHandle_t handle,
                                                    int               col_block_dim,
                                                    size_t*           p_buffer_size)
 {
-    //  (const rocsparse_float_complex*)
     RETURN_IF_ROCSPARSE_ERROR(rocsparse_dgebsr2gebsc_buffer_size((rocsparse_handle)handle,
                                                                  mb,
                                                                  nb,

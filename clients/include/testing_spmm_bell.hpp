@@ -301,7 +301,7 @@ hipsparseStatus_t testing_spmm_bell()
     auto dval_managed     = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
 
     auto dbell_ind_managed
-        = hipsparse_unique_ptr{device_malloc(sizeof(I) * ell_cols * m), device_free};
+        = hipsparse_unique_ptr{device_malloc(sizeof(I) * (ell_cols / ell_blocksize) * (m / ell_blocksize)), device_free};
     auto dbell_val_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(T) * ell_cols * m), device_free};
 
@@ -343,7 +343,7 @@ hipsparseStatus_t testing_spmm_bell()
     CHECK_HIP_ERROR(hipMemcpy(d_alpha, &h_alpha, sizeof(T), hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(d_beta, &h_beta, sizeof(T), hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(
-        hipMemcpy(dbell_ind, hbell_ind.data(), sizeof(I) * ell_cols * m, hipMemcpyHostToDevice));
+        hipMemcpy(dbell_ind, hbell_ind.data(), sizeof(I) * (ell_cols / ell_blocksize) * (m / ell_blocksize), hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(
         hipMemcpy(dbell_val, hbell_val.data(), sizeof(T) * ell_cols * m, hipMemcpyHostToDevice));
 
