@@ -663,7 +663,6 @@ hipsparseStatus_t testing_csr2gebsr(Arguments argus)
     }
 
     int mb = (m + row_block_dim - 1) / row_block_dim;
-    int nb = (n + col_block_dim - 1) / col_block_dim;
 
     // Allocate memory on the device
     auto dcsr_row_ptr_managed

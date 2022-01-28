@@ -45,7 +45,6 @@ void testing_csrcolor_bad_arg(void)
     return;
 #endif
 
-    static constexpr size_t safe_size       = 100;
     static constexpr int    M               = 10;
     static constexpr int    NNZ             = 10;
     floating_data_t<T>      fractionToColor = make_DataType<floating_data_t<T>>(1.0);
@@ -234,10 +233,7 @@ void testing_csrcolor_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_csrcolor()
 {
-    T                 h_alpha = make_DataType<T>(1.0);
-    hipsparseStatus_t status;
     // Determine absolute path of test matrix
-
     // Matrices are stored at the same path in matrices directory
     std::string filename = hipsparse_exepath() + "../matrices/nos3.bin";
 

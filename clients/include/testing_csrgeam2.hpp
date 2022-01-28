@@ -1022,8 +1022,8 @@ hipsparseStatus_t testing_csrgeam2(Arguments argus)
     T*   dBval   = (T*)dBval_managed.get();
     int* dCptr_1 = (int*)dCptr_1_managed.get();
     int* dCptr_2 = (int*)dCptr_2_managed.get();
-    int* dCcol_1;
-    T*   dCval_1;
+    int* dCcol_1 = nullptr;
+    T*   dCval_1 = nullptr;
     T*   dalpha = (T*)dalpha_managed.get();
     T*   dbeta  = (T*)dbeta_managed.get();
 

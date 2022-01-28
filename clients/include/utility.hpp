@@ -1557,7 +1557,7 @@ inline void host_csr_to_bsr(hipsparseDirection_t    direction,
         }
 
         int sum = 0;
-        for(int j = 0; j < temp.size(); j++)
+        for(size_t j = 0; j < temp.size(); j++)
         {
             sum += temp[j];
         }
@@ -2271,9 +2271,9 @@ inline void host_bsrmv(hipsparseDirection_t dir,
                 }
             }
 
-            for(unsigned int j = 1; j < WFSIZE; j <<= 1)
+            for(int j = 1; j < WFSIZE; j <<= 1)
             {
-                for(unsigned int k = 0; k < WFSIZE - j; ++k)
+                for(int k = 0; k < WFSIZE - j; ++k)
                 {
                     sum0[k] = sum0[k] + sum0[k + j];
                     sum1[k] = sum1[k] + sum1[k + j];
@@ -2303,7 +2303,7 @@ inline void host_bsrmv(hipsparseDirection_t dir,
 
                     for(int bj = 0; bj < bsr_dim; bj += WFSIZE)
                     {
-                        for(unsigned int k = 0; k < WFSIZE; ++k)
+                        for(int k = 0; k < WFSIZE; ++k)
                         {
                             if(bj + k < bsr_dim)
                             {
@@ -2326,9 +2326,9 @@ inline void host_bsrmv(hipsparseDirection_t dir,
                     }
                 }
 
-                for(unsigned int j = 1; j < WFSIZE; j <<= 1)
+                for(int j = 1; j < WFSIZE; j <<= 1)
                 {
-                    for(unsigned int k = 0; k < WFSIZE - j; ++k)
+                    for(int k = 0; k < WFSIZE - j; ++k)
                     {
                         sum[k] = sum[k] + sum[k + j];
                     }
@@ -2445,7 +2445,7 @@ void host_csrmm(J                     M,
 #ifdef _OPENMP
 #pragma omp parallel for schedule(dynamic, 1024)
 #endif
-        for(size_t i = 0; i < M; i++)
+        for(J i = 0; i < M; i++)
         {
             for(J j = 0; j < N; ++j)
             {
@@ -2496,7 +2496,7 @@ void host_csrmm(J                     M,
     else
     {
         // scale C by beta
-        for(size_t i = 0; i < K; i++)
+        for(J i = 0; i < K; i++)
         {
             for(J j = 0; j < N; ++j)
             {
@@ -2505,7 +2505,7 @@ void host_csrmm(J                     M,
             }
         }
 
-        for(size_t i = 0; i < M; i++)
+        for(J i = 0; i < M; i++)
         {
             for(J j = 0; j < N; ++j)
             {
@@ -3269,7 +3269,7 @@ static inline void host_lssolve(J                     M,
 
             for(I l = row_begin; l < row_end; l += prop.warpSize)
             {
-                for(unsigned int k = 0; k < prop.warpSize; ++k)
+                for(int k = 0; k < prop.warpSize; ++k)
                 {
                     I j = l + k;
 
@@ -3327,9 +3327,9 @@ static inline void host_lssolve(J                     M,
                 }
             }
 
-            for(unsigned int j = 1; j < prop.warpSize; j <<= 1)
+            for(int j = 1; j < prop.warpSize; j <<= 1)
             {
-                for(unsigned int k = 0; k < prop.warpSize - j; ++k)
+                for(int k = 0; k < prop.warpSize - j; ++k)
                 {
                     temp[k] = temp[k] + temp[k + j];
                 }
@@ -3405,7 +3405,7 @@ static inline void host_ussolve(J                     M,
 
             for(I l = row_end - 1; l >= row_begin; l -= prop.warpSize)
             {
-                for(unsigned int k = 0; k < prop.warpSize; ++k)
+                for(int k = 0; k < prop.warpSize; ++k)
                 {
                     I j = l - k;
 
@@ -3459,9 +3459,9 @@ static inline void host_ussolve(J                     M,
                 }
             }
 
-            for(unsigned int j = 1; j < prop.warpSize; j <<= 1)
+            for(int j = 1; j < prop.warpSize; j <<= 1)
             {
-                for(unsigned int k = 0; k < prop.warpSize - j; ++k)
+                for(int k = 0; k < prop.warpSize - j; ++k)
                 {
                     temp[k] = temp[k] + temp[k + j];
                 }
@@ -3657,7 +3657,7 @@ void host_csr_lsolve(J                    M,
 
         for(I l = row_begin; l < row_end; l += prop.warpSize)
         {
-            for(unsigned int k = 0; k < prop.warpSize; ++k)
+            for(int k = 0; k < prop.warpSize; ++k)
             {
                 I j = l + k;
 
@@ -3704,9 +3704,9 @@ void host_csr_lsolve(J                    M,
             }
         }
 
-        for(unsigned int j = 1; j < prop.warpSize; j <<= 1)
+        for(int j = 1; j < prop.warpSize; j <<= 1)
         {
-            for(unsigned int k = 0; k < prop.warpSize - j; ++k)
+            for(int k = 0; k < prop.warpSize - j; ++k)
             {
                 temp[k] = temp[k] + temp[k + j];
             }
@@ -3764,7 +3764,7 @@ void host_csr_usolve(J                    M,
 
         for(I l = row_end - 1; l >= row_begin; l -= prop.warpSize)
         {
-            for(unsigned int k = 0; k < prop.warpSize; ++k)
+            for(int k = 0; k < prop.warpSize; ++k)
             {
                 I j = l - k;
 
@@ -3807,9 +3807,9 @@ void host_csr_usolve(J                    M,
             }
         }
 
-        for(unsigned int j = 1; j < prop.warpSize; j <<= 1)
+        for(int j = 1; j < prop.warpSize; j <<= 1)
         {
-            for(unsigned int k = 0; k < prop.warpSize - j; ++k)
+            for(int k = 0; k < prop.warpSize - j; ++k)
             {
                 temp[k] = temp[k] + temp[k + j];
             }
@@ -4577,7 +4577,7 @@ int csr_lsolve(hipsparseOperation_t trans,
 
         T diag_val = make_DataType<T>(0.0);
 
-        for(unsigned int l = row_begin; l < row_end; l += wf_size)
+        for(int l = row_begin; l < row_end; l += wf_size)
         {
             for(unsigned int k = 0; k < wf_size; ++k)
             {
