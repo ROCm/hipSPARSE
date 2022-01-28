@@ -45,9 +45,9 @@ void testing_csrcolor_bad_arg(void)
     return;
 #endif
 
-    static constexpr int    M               = 10;
-    static constexpr int    NNZ             = 10;
-    floating_data_t<T>      fractionToColor = make_DataType<floating_data_t<T>>(1.0);
+    static constexpr int M               = 10;
+    static constexpr int NNZ             = 10;
+    floating_data_t<T>   fractionToColor = make_DataType<floating_data_t<T>>(1.0);
 
     hipsparseStatus_t status;
 

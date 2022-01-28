@@ -523,14 +523,14 @@ hipsparseStatus_t testing_gebsr2gebsc(Arguments argus)
     //
     // Build the gebsr matrix.
     //
-    int                  bsr_mb            = -1;
-    int                  bsr_nb            = -1;
-    int                  bsr_nnzb          = -1;
-    int                  bsr_row_block_dim = -1;
-    int                  bsr_col_block_dim = -1;
-    std::vector<int>     hbsr_row_ptr;
-    std::vector<int>     hbsr_col_ind;
-    std::vector<T>       hbsr_val;
+    int              bsr_mb            = -1;
+    int              bsr_nb            = -1;
+    int              bsr_nnzb          = -1;
+    int              bsr_row_block_dim = -1;
+    int              bsr_col_block_dim = -1;
+    std::vector<int> hbsr_row_ptr;
+    std::vector<int> hbsr_col_ind;
+    std::vector<T>   hbsr_val;
 
     {
         int m             = argus.M;

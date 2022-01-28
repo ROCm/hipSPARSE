@@ -141,11 +141,11 @@ template <typename I, typename T>
 hipsparseStatus_t testing_spmv_coo_aos(void)
 {
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
-    T                    h_alpha   = make_DataType<T>(2.0);
-    T                    h_beta    = make_DataType<T>(1.0);
-    hipsparseOperation_t transA    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
-    hipsparseIndexBase_t idx_base  = HIPSPARSE_INDEX_BASE_ZERO;
-    hipsparseSpMVAlg_t   alg       = HIPSPARSE_COOMV_ALG;
+    T                    h_alpha  = make_DataType<T>(2.0);
+    T                    h_beta   = make_DataType<T>(1.0);
+    hipsparseOperation_t transA   = HIPSPARSE_OPERATION_NON_TRANSPOSE;
+    hipsparseIndexBase_t idx_base = HIPSPARSE_INDEX_BASE_ZERO;
+    hipsparseSpMVAlg_t   alg      = HIPSPARSE_COOMV_ALG;
 
     // Matrices are stored at the same path in matrices directory
     std::string filename = hipsparse_exepath() + "../matrices/nos3.bin";

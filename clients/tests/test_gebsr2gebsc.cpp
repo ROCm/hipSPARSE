@@ -28,12 +28,9 @@
 #include <string>
 #include <vector>
 
-typedef std::
-    tuple<int, int, int, int, hipsparseAction_t, hipsparseIndexBase_t>
-        gebsr2gebsc_tuple;
-typedef std::
-    tuple<int, int, hipsparseAction_t, hipsparseIndexBase_t, std::string>
-        gebsr2gebsc_bin_tuple;
+typedef std::tuple<int, int, int, int, hipsparseAction_t, hipsparseIndexBase_t> gebsr2gebsc_tuple;
+typedef std::tuple<int, int, hipsparseAction_t, hipsparseIndexBase_t, std::string>
+    gebsr2gebsc_bin_tuple;
 
 int gebsr2gebsc_M_range[] = {-1, 0, 10, 872};
 int gebsr2gebsc_N_range[] = {-3, 0, 33, 623};
