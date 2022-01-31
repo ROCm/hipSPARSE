@@ -523,18 +523,16 @@ hipsparseStatus_t testing_gebsr2gebsc(Arguments argus)
     //
     // Build the gebsr matrix.
     //
-    hipsparseDirection_t bsr_dirb;
-    int                  bsr_mb            = -1;
-    int                  bsr_nb            = -1;
-    int                  bsr_nnzb          = -1;
-    int                  bsr_row_block_dim = -1;
-    int                  bsr_col_block_dim = -1;
-    std::vector<int>     hbsr_row_ptr;
-    std::vector<int>     hbsr_col_ind;
-    std::vector<T>       hbsr_val;
+    int              bsr_mb            = -1;
+    int              bsr_nb            = -1;
+    int              bsr_nnzb          = -1;
+    int              bsr_row_block_dim = -1;
+    int              bsr_col_block_dim = -1;
+    std::vector<int> hbsr_row_ptr;
+    std::vector<int> hbsr_col_ind;
+    std::vector<T>   hbsr_val;
 
     {
-        bsr_dirb          = argus.dirA;
         int m             = argus.M;
         int n             = argus.N;
         bsr_row_block_dim = argus.row_block_dimA;
@@ -626,10 +624,6 @@ hipsparseStatus_t testing_gebsr2gebsc(Arguments argus)
         bsr_nnzb       = nnz;
         size_t nvalues = bsr_nnzb * bsr_row_block_dim * bsr_col_block_dim;
         hbsr_val.resize(nvalues);
-        for(size_t i = 0; i < nvalues; ++i)
-        {
-            hbsr_val[i] = random_generator<T>();
-        }
         for(size_t i = 0; i < nvalues; ++i)
         {
             hbsr_val[i] = random_generator<T>();

@@ -490,7 +490,6 @@ hipsparseStatus_t testing_gebsr2csr(Arguments argus)
                 for(int k = bsr_row_ptr[i] - bsr_idx_base; k < bsr_row_ptr[i + 1] - bsr_idx_base;
                     ++k)
                 {
-                    int j = bsr_col_ind[k] - bsr_idx_base;
                     for(int c = 0; c < col_block_dim; ++c)
                     {
                         bsr_val[k * row_block_dim * col_block_dim + c * row_block_dim + r]
@@ -511,7 +510,6 @@ hipsparseStatus_t testing_gebsr2csr(Arguments argus)
                 for(int k = bsr_row_ptr[i] - bsr_idx_base; k < bsr_row_ptr[i + 1] - bsr_idx_base;
                     ++k)
                 {
-                    int j = bsr_col_ind[k] - bsr_idx_base;
                     for(int c = 0; c < col_block_dim; ++c)
                     {
                         bsr_val[k * row_block_dim * col_block_dim + r * col_block_dim + c]

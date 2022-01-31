@@ -65,6 +65,9 @@ endif()
 add_library(hipsparse ${hipsparse_source} ${hipsparse_headers_public})
 add_library(roc::hipsparse ALIAS hipsparse)
 
+# Target compile options
+target_compile_options(hipsparse PRIVATE -Wno-unused-command-line-argument -Wall)
+
 # Target include directories
 target_include_directories(hipsparse
                            PRIVATE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/include>

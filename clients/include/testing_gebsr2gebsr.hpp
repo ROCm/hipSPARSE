@@ -1098,7 +1098,6 @@ hipsparseStatus_t testing_gebsr2gebsr(Arguments argus)
     mb       = (m + row_block_dim_A - 1) / row_block_dim_A;
     nb       = (n + col_block_dim_A - 1) / col_block_dim_A;
     int mb_C = (mb * row_block_dim_A + row_block_dim_C - 1) / row_block_dim_C;
-    int nb_C = (nb * col_block_dim_A + col_block_dim_C - 1) / col_block_dim_C;
 
     // allocate memory on device
     auto dcsr_row_ptr_managed

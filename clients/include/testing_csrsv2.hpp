@@ -745,7 +745,7 @@ hipsparseStatus_t testing_csrsv2(Arguments argus)
 
         int position_gold;
         if((fill_mode == HIPSPARSE_FILL_MODE_LOWER && trans == HIPSPARSE_OPERATION_NON_TRANSPOSE)
-           || fill_mode == HIPSPARSE_FILL_MODE_UPPER && trans == HIPSPARSE_OPERATION_TRANSPOSE)
+           || (fill_mode == HIPSPARSE_FILL_MODE_UPPER && trans == HIPSPARSE_OPERATION_TRANSPOSE))
         {
             position_gold = csr_lsolve(trans,
                                        m,

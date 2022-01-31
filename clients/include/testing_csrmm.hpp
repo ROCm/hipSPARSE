@@ -450,7 +450,6 @@ hipsparseStatus_t testing_csrmm(Arguments argus)
 
     // Some matrix properties
     int A_m = M;
-    int A_n = K;
     int B_m = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE)
                   ? (transA == HIPSPARSE_OPERATION_NON_TRANSPOSE ? K : M)
                   : N;

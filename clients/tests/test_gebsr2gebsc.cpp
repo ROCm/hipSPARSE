@@ -28,12 +28,9 @@
 #include <string>
 #include <vector>
 
-typedef std::
-    tuple<int, int, int, int, hipsparseAction_t, hipsparseIndexBase_t, hipsparseDirection_t>
-        gebsr2gebsc_tuple;
-typedef std::
-    tuple<int, int, hipsparseAction_t, hipsparseIndexBase_t, hipsparseDirection_t, std::string>
-        gebsr2gebsc_bin_tuple;
+typedef std::tuple<int, int, int, int, hipsparseAction_t, hipsparseIndexBase_t> gebsr2gebsc_tuple;
+typedef std::tuple<int, int, hipsparseAction_t, hipsparseIndexBase_t, std::string>
+    gebsr2gebsc_bin_tuple;
 
 int gebsr2gebsc_M_range[] = {-1, 0, 10, 872};
 int gebsr2gebsc_N_range[] = {-3, 0, 33, 623};
@@ -41,17 +38,11 @@ int gebsr2gebsc_N_range[] = {-3, 0, 33, 623};
 int gebsr2gebsc_row_block_dim_range[] = {-1, 0, 1, 7, 16};
 int gebsr2gebsc_col_block_dim_range[] = {-1, 0, 1, 4, 16};
 
-hipsparseDirection_t gebsr2gebsc_dir_range[]
-    = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COLUMN};
-
 hipsparseAction_t gebsr2gebsc_action_range[]
     = {HIPSPARSE_ACTION_NUMERIC, HIPSPARSE_ACTION_SYMBOLIC};
 
 hipsparseIndexBase_t gebsr2gebsc_csr_base_range[]
     = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
-
-hipsparseDirection_t gebsr2gebsc_dir_range_bin[]
-    = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COLUMN};
 
 std::string gebsr2gebsc_bin[] = {"rma10.bin",
                                  "scircuit.bin",
@@ -90,7 +81,6 @@ Arguments setup_gebsr2gebsc_arguments(gebsr2gebsc_tuple tup)
     arg.col_block_dimA = std::get<3>(tup);
     arg.action         = std::get<4>(tup);
     arg.idx_base       = std::get<5>(tup);
-    arg.dirA           = std::get<6>(tup);
     arg.timing         = 0;
     return arg;
 }
@@ -104,11 +94,10 @@ Arguments setup_gebsr2gebsc_arguments(gebsr2gebsc_bin_tuple tup)
     arg.col_block_dimA = std::get<1>(tup);
     arg.action         = std::get<2>(tup);
     arg.idx_base       = std::get<3>(tup);
-    arg.dirA           = std::get<4>(tup);
     arg.timing         = 0;
 
     // Determine absolute path of test matrix
-    std::string bin_file = std::get<5>(tup);
+    std::string bin_file = std::get<4>(tup);
 
     // Matrices are stored at the same path in matrices directory
     arg.filename = hipsparse_exepath() + "../matrices/" + bin_file;
@@ -179,8 +168,7 @@ INSTANTIATE_TEST_SUITE_P(gebsr2gebsc,
                                           testing::ValuesIn(gebsr2gebsc_row_block_dim_range),
                                           testing::ValuesIn(gebsr2gebsc_col_block_dim_range),
                                           testing::ValuesIn(gebsr2gebsc_action_range),
-                                          testing::ValuesIn(gebsr2gebsc_csr_base_range),
-                                          testing::ValuesIn(gebsr2gebsc_dir_range)));
+                                          testing::ValuesIn(gebsr2gebsc_csr_base_range)));
 
 INSTANTIATE_TEST_SUITE_P(gebsr2gebsc_bin,
                          parameterized_gebsr2gebsc_bin,
@@ -188,5 +176,4 @@ INSTANTIATE_TEST_SUITE_P(gebsr2gebsc_bin,
                                           testing::ValuesIn(gebsr2gebsc_col_block_dim_range),
                                           testing::ValuesIn(gebsr2gebsc_action_range),
                                           testing::ValuesIn(gebsr2gebsc_csr_base_range),
-                                          testing::ValuesIn(gebsr2gebsc_dir_range_bin),
                                           testing::ValuesIn(gebsr2gebsc_bin)));

@@ -247,6 +247,9 @@ add_executable(hipsparse-test ${HIPSPARSE_TEST_SOURCES} ${HIPSPARSE_CLIENTS_COMM
 # Set GOOGLE_TEST definition
 target_compile_definitions(hipsparse-test PRIVATE GOOGLE_TEST)
 
+# Target compile options
+target_compile_options(hipsparse-test PRIVATE -Wno-unused-command-line-argument -Wall)
+
 # Internal common header
 target_include_directories(hipsparse-test PRIVATE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>)
 

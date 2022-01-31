@@ -55,7 +55,6 @@ void testing_spgemmreuse_csr_bad_arg(void)
     hipsparseIndexType_t idxType   = HIPSPARSE_INDEX_32I;
     hipDataType          dataType  = HIP_R_32F;
     hipsparseSpGEMMAlg_t alg       = HIPSPARSE_SPGEMM_DEFAULT;
-    hipsparseStatus_t    status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -219,16 +218,14 @@ hipsparseStatus_t testing_spgemmreuse_csr(void)
 {
 
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
-    I                    safe_size = 100;
-    T                    h_alpha   = make_DataType<T>(2.0);
-    T                    h_beta    = make_DataType<T>(0.0);
-    hipsparseOperation_t transA    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
-    hipsparseOperation_t transB    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
-    hipsparseIndexBase_t idxBaseA  = HIPSPARSE_INDEX_BASE_ZERO;
-    hipsparseIndexBase_t idxBaseB  = HIPSPARSE_INDEX_BASE_ZERO;
-    hipsparseIndexBase_t idxBaseC  = HIPSPARSE_INDEX_BASE_ZERO;
-    hipsparseSpGEMMAlg_t alg       = HIPSPARSE_SPGEMM_DEFAULT;
-    hipsparseStatus_t    status;
+    T                    h_alpha  = make_DataType<T>(2.0);
+    T                    h_beta   = make_DataType<T>(0.0);
+    hipsparseOperation_t transA   = HIPSPARSE_OPERATION_NON_TRANSPOSE;
+    hipsparseOperation_t transB   = HIPSPARSE_OPERATION_NON_TRANSPOSE;
+    hipsparseIndexBase_t idxBaseA = HIPSPARSE_INDEX_BASE_ZERO;
+    hipsparseIndexBase_t idxBaseB = HIPSPARSE_INDEX_BASE_ZERO;
+    hipsparseIndexBase_t idxBaseC = HIPSPARSE_INDEX_BASE_ZERO;
+    hipsparseSpGEMMAlg_t alg      = HIPSPARSE_SPGEMM_DEFAULT;
 
     // Matrices are stored at the same path in matrices directory
     std::string filename = hipsparse_exepath() + "../matrices/nos6.bin";
