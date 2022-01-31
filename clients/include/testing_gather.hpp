@@ -157,6 +157,9 @@ hipsparseStatus_t testing_gather(void)
 
     // Verify results against host
     unit_check_general(1, nnz, 1, hx_val_gold.data(), hx_val.data());
+
+    CHECK_HIPSPARSE_ERROR(hipsparseDestroySpVec(x));
+    CHECK_HIPSPARSE_ERROR(hipsparseDestroyDnVec(y));
 #endif
 
     return HIPSPARSE_STATUS_SUCCESS;
