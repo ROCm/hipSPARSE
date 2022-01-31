@@ -121,8 +121,6 @@ template <typename T>
 hipsparseStatus_t testing_gtsv_interleaved_batch(void)
 {
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
-    hipsparseStatus_t status;
-
     // hipSPARSE handle
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
     hipsparseHandle_t              handle = test_handle->handle;

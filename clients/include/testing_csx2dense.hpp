@@ -46,11 +46,10 @@ void testing_csx2dense_bad_arg(FUNC& csx2dense)
     // do not test for bad args
     return;
 #endif
-    static constexpr size_t safe_size = 100;
-    static constexpr int    M         = 10;
-    static constexpr int    N         = 10;
-    static constexpr int    LD        = M;
-    hipsparseStatus_t       status;
+    static constexpr int M  = 10;
+    static constexpr int N  = 10;
+    static constexpr int LD = M;
+    hipsparseStatus_t    status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -146,7 +145,7 @@ hipsparseStatus_t testing_csx2dense(const Arguments& argus, FUNC1& csx2dense, FU
 
     std::unique_ptr<descr_struct> unique_ptr_descr(new descr_struct);
     hipsparseMatDescr_t           descr = unique_ptr_descr->descr;
-    CHECK_HIPSPARSE_ERROR(hipsparseSetMatIndexBase(descr, HIPSPARSE_INDEX_BASE_ZERO));
+    CHECK_HIPSPARSE_ERROR(hipsparseSetMatIndexBase(descr, idx_base));
 
     if(M <= 0 || N <= 0 || LD < M)
     {

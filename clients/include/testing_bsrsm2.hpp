@@ -711,8 +711,8 @@ hipsparseStatus_t testing_bsrsm2(void)
                                                     HIPSPARSE_SOLVE_POLICY_USE_LEVEL,
                                                     dbuffer));
 
-    int               pos_analysis;
-    hipsparseStatus_t pivot_analysis = hipsparseXbsrsm2_zeroPivot(handle, info, &pos_analysis);
+    int pos_analysis;
+    hipsparseXbsrsm2_zeroPivot(handle, info, &pos_analysis);
 
     // HIPSPARSE pointer mode host
     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
