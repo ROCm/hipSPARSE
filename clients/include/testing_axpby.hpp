@@ -178,6 +178,9 @@ hipsparseStatus_t testing_axpby(void)
     // Verify results against host
     unit_check_general(1, size, 1, hy_gold.data(), hy.data());
 
+    CHECK_HIPSPARSE_ERROR(hipsparseDestroySpVec(x));
+    CHECK_HIPSPARSE_ERROR(hipsparseDestroyDnVec(y));
+
 #endif
 
     return HIPSPARSE_STATUS_SUCCESS;

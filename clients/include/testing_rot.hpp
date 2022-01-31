@@ -213,6 +213,11 @@ hipsparseStatus_t testing_rot(void)
     unit_check_general(1, nnz, 1, hx_val_gold.data(), hx_val_2.data());
     unit_check_general(1, size, 1, hy_gold.data(), hy_1.data());
     unit_check_general(1, size, 1, hy_gold.data(), hy_2.data());
+
+    CHECK_HIPSPARSE_ERROR(hipsparseDestroySpVec(x1));
+    CHECK_HIPSPARSE_ERROR(hipsparseDestroySpVec(x2));
+    CHECK_HIPSPARSE_ERROR(hipsparseDestroyDnVec(y1));
+    CHECK_HIPSPARSE_ERROR(hipsparseDestroyDnVec(y2));
 #endif
 
     return HIPSPARSE_STATUS_SUCCESS;
