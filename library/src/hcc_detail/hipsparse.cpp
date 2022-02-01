@@ -13385,18 +13385,19 @@ hipsparseStatus_t hipsparseSpMV(hipsparseHandle_t           handle,
                                 hipsparseSpMVAlg_t          alg,
                                 void*                       externalBuffer)
 {
-    size_t bufferSize;
-    hipsparseStatus_t status =  rocSPARSEStatusToHIPStatus(rocsparse_spmv((rocsparse_handle)handle,
-                                                                          hipOperationToHCCOperation(opA),
-                                                                          alpha,
-                                                                          (const rocsparse_spmat_descr)matA,
-                                                                          (const rocsparse_dnvec_descr)vecX,
-                                                                          beta,
-                                                                          (const rocsparse_dnvec_descr)vecY,
-                                                                          hipDataTypeToHCCDataType(computeType),
-                                                                          hipSpMVAlgToHCCSpMVAlg(alg),
-                                                                          &bufferSize,
-                                                                          nullptr));
+    size_t            bufferSize;
+    hipsparseStatus_t status
+        = rocSPARSEStatusToHIPStatus(rocsparse_spmv((rocsparse_handle)handle,
+                                                    hipOperationToHCCOperation(opA),
+                                                    alpha,
+                                                    (const rocsparse_spmat_descr)matA,
+                                                    (const rocsparse_dnvec_descr)vecX,
+                                                    beta,
+                                                    (const rocsparse_dnvec_descr)vecY,
+                                                    hipDataTypeToHCCDataType(computeType),
+                                                    hipSpMVAlgToHCCSpMVAlg(alg),
+                                                    &bufferSize,
+                                                    nullptr));
 
     if(status != HIPSPARSE_STATUS_SUCCESS)
     {
@@ -13407,16 +13408,16 @@ hipsparseStatus_t hipsparseSpMV(hipsparseHandle_t           handle,
     RETURN_IF_HIP_ERROR(hipMalloc(&buffer, bufferSize));
 
     status = rocSPARSEStatusToHIPStatus(rocsparse_spmv((rocsparse_handle)handle,
-                                                     hipOperationToHCCOperation(opA),
-                                                     alpha,
-                                                     (const rocsparse_spmat_descr)matA,
-                                                     (const rocsparse_dnvec_descr)vecX,
-                                                     beta,
-                                                     (const rocsparse_dnvec_descr)vecY,
-                                                     hipDataTypeToHCCDataType(computeType),
-                                                     hipSpMVAlgToHCCSpMVAlg(alg),
-                                                     &bufferSize,
-                                                     buffer));
+                                                       hipOperationToHCCOperation(opA),
+                                                       alpha,
+                                                       (const rocsparse_spmat_descr)matA,
+                                                       (const rocsparse_dnvec_descr)vecX,
+                                                       beta,
+                                                       (const rocsparse_dnvec_descr)vecY,
+                                                       hipDataTypeToHCCDataType(computeType),
+                                                       hipSpMVAlgToHCCSpMVAlg(alg),
+                                                       &bufferSize,
+                                                       buffer));
 
     RETURN_IF_HIP_ERROR(hipFree(&buffer));
 
