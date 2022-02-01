@@ -13375,12 +13375,8 @@ hipsparseStatus_t hipsparseSpMV_bufferSize(hipsparseHandle_t           handle,
         return rocSPARSEStatusToHIPStatus(rocsparse_status_invalid_handle);
     }
 
-    if(matA == nullptr || 
-       vecX == nullptr || 
-       vecY == nullptr || 
-       alpha == nullptr || 
-       beta == nullptr || 
-       bufferSize == nullptr)
+    if(matA == nullptr || vecX == nullptr || vecY == nullptr || alpha == nullptr || beta == nullptr
+       || bufferSize == nullptr)
     {
         return rocSPARSEStatusToHIPStatus(rocsparse_status_invalid_pointer);
     }
