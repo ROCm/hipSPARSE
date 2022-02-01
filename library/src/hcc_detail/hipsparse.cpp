@@ -13381,7 +13381,7 @@ hipsparseStatus_t hipsparseSpMV_bufferSize(hipsparseHandle_t           handle,
         return rocSPARSEStatusToHIPStatus(rocsparse_status_invalid_pointer);
     }
 
-    *bufferSize = 0;
+    *bufferSize = 4;
     return HIPSPARSE_STATUS_SUCCESS;
 }
 
@@ -13430,7 +13430,7 @@ hipsparseStatus_t hipsparseSpMV(hipsparseHandle_t           handle,
                                                        &bufferSize,
                                                        buffer));
 
-    RETURN_IF_HIP_ERROR(hipFree(&buffer));
+    RETURN_IF_HIP_ERROR(hipFree(buffer));
 
     return status;
 }
