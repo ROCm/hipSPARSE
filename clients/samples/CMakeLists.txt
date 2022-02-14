@@ -28,6 +28,10 @@ function(add_hipsparse_example EXAMPLE_SOURCE)
   get_filename_component(EXAMPLE_TARGET ${EXAMPLE_SOURCE} NAME_WE)
   add_executable(${EXAMPLE_TARGET} ${EXAMPLE_SOURCE} ${HIPSPARSE_CLIENTS_COMMON})
 
+  if("${EXAMPLE_TARGET}" MATCHES ".*fortran.*")
+    add_dependencies(${EXAMPLE_TARGET} hipsparse_fortran)
+  endif()
+
   # Include common client headers
   target_include_directories(${EXAMPLE_TARGET} PRIVATE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>)
 
