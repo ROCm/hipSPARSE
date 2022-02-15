@@ -360,43 +360,21 @@ hipsparseStatus_t testing_spmm_coo()
     CHECK_HIP_ERROR(hipMemcpy(hC_2.data(), dC_2, sizeof(T) * m * n, hipMemcpyDeviceToHost));
 
     // CPU
-
-    for(I j = 0; j < n; j++)
-    {
-        for(I i = 0; i < m; ++i)
-        {
-            I idx_C        = order == HIPSPARSE_ORDER_COLUMN ? i + j * ldc : i * ldc + j;
-            hC_gold[idx_C] = h_beta * hC_gold[idx_C];
-        }
-    }
-
-    for(I j = 0; j < n; j++)
-    {
-        for(I i = 0; i < nnz; ++i)
-        {
-            I row = hrow_ind[i] - idx_base;
-            I col = hcol_ind[i] - idx_base;
-            T val = h_alpha * hval[i];
-
-            I idx_C = order == HIPSPARSE_ORDER_COLUMN ? row + j * ldc : row * ldc + j;
-
-            I idx_B = 0;
-            //
-            // transB == HIPSPARSE_OPERATION_NON_TRANSPOSE is always true.
-            //
-            if(order == HIPSPARSE_ORDER_COLUMN)
-            // || (transB == HIPSPARSE_OPERATION_TRANSPOSE && order == HIPSPARSE_ORDER_ROW))
-            {
-                idx_B = (col + j * ldb);
-            }
-            else
-            {
-                idx_B = (j + col * ldb);
-            }
-
-            hC_gold[idx_C] = hC_gold[idx_C] + val * hB[idx_B];
-        }
-    }
+    host_coomm(m,
+                n,
+                nnz,
+                transB,
+                h_alpha,
+                hrow_ind.data(),
+                hcol_ind.data(),
+                hval.data(),
+                hB.data(),
+                ldb,
+                h_beta,
+                hC_gold.data(),
+                ldc,
+                order,
+                idx_base);
 
     unit_check_near(1, m * n, 1, hC_gold.data(), hC_1.data());
     unit_check_near(1, m * n, 1, hC_gold.data(), hC_2.data());

@@ -361,7 +361,7 @@ hipsparseStatus_t testing_spmm_batched_coo()
 
     host_coomm_batched(m,
                        n,
-                       k,
+                       nnz,
                        batch_count_A,
                        batch_stride_A,
                        transB,
