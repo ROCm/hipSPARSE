@@ -32,19 +32,19 @@ TEST(spmm_batched_coo_bad_arg, spmm_batched_coo_float)
     testing_spmm_batched_coo_bad_arg();
 }
 
-TEST(spmm_batched_coo, spmm_batched_coo_i32_i32_float)
+TEST(spmm_batched_coo, spmm_batched_coo_i32_float)
 {
     hipsparseStatus_t status = testing_spmm_batched_coo<int32_t, float>();
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-TEST(spmm_batched_coo, spmm_batched_coo_i32_i32_double)
+TEST(spmm_batched_coo, spmm_batched_coo_i32_double)
 {
     hipsparseStatus_t status = testing_spmm_batched_coo<int32_t, double>();
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-TEST(spmm_batched_coo, spmm_batched_coo_i32_i32_hipComplex)
+TEST(spmm_batched_coo, spmm_batched_coo_i32_hipComplex)
 {
     hipsparseStatus_t status = testing_spmm_batched_coo<int32_t, hipComplex>();
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);

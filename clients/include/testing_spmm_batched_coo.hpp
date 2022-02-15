@@ -62,7 +62,7 @@ void testing_spmm_batched_coo_bad_arg(void)
 #if(CUDART_VERSION >= 11003)
     hipsparseSpMMAlg_t alg = HIPSPARSE_SPMM_COO_ALG1;
 #else
-    hipsparseSpMMAlg_t alg = HIPSPARSE_MM_ALG_DEFAULT;
+    hipsparseSpMMAlg_t alg = HIPSPARSE_COOMM_ALG1;
 #endif
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
@@ -189,7 +189,7 @@ hipsparseStatus_t testing_spmm_batched_coo()
 #if(CUDART_VERSION >= 11003)
     hipsparseSpMMAlg_t alg = HIPSPARSE_SPMM_COO_ALG1;
 #else
-    hipsparseSpMMAlg_t alg = HIPSPARSE_MM_ALG_DEFAULT;
+    hipsparseSpMMAlg_t alg = HIPSPARSE_COOMM_ALG1;
 #endif
 
     // Matrices are stored at the same path in matrices directory
@@ -209,9 +209,9 @@ hipsparseStatus_t testing_spmm_batched_coo()
     hipsparseHandle_t              handle = test_handle->handle;
 
     // Host structures
-    std::vector<I> hcoo_row_ind;
-    std::vector<I> hcoo_col_ind;
-    std::vector<T> hcoo_val;
+    std::vector<I> hrow_ptr;
+    std::vector<I> hcol_ind;
+    std::vector<T> hval;
 
     // Initial Data on CPU
     srand(12345ULL);
@@ -220,11 +220,21 @@ hipsparseStatus_t testing_spmm_batched_coo()
     I k;
     I nnz;
 
-    if(read_bin_matrix(filename.c_str(), m, k, nnz, hcoo_row_ind, hcoo_col_ind, hcoo_val, idx_base)
-       != 0)
+    if(read_bin_matrix(filename.c_str(), m, k, nnz, hrow_ptr, hcol_ind, hval, idx_base) != 0)
     {
         fprintf(stderr, "Cannot open [read] %s\n", filename.c_str());
         return HIPSPARSE_STATUS_INTERNAL_ERROR;
+    }
+
+    std::vector<I> hrow_ind(nnz);
+
+    // Convert to COO
+    for(I i = 0; i < m; ++i)
+    {
+        for(I j = hrow_ptr[i]; j < hrow_ptr[i + 1]; ++j)
+        {
+            hrow_ind[j - idx_base] = i + idx_base;
+        }
     }
 
     I n   = 5;
@@ -278,9 +288,9 @@ hipsparseStatus_t testing_spmm_batched_coo()
     }
 
     // copy data from CPU to device
-    CHECK_HIP_ERROR(hipMemcpy(drow, hcoo_row_ind.data(), sizeof(I) * nnz, hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(hipMemcpy(dcol, hcoo_col_ind.data(), sizeof(I) * nnz, hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(hipMemcpy(dval, hcoo_val.data(), sizeof(T) * nnz, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(drow, hrow_ind.data(), sizeof(I) * nnz, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(dcol, hcol_ind.data(), sizeof(I) * nnz, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(dval, hval.data(), sizeof(T) * nnz, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(
         hipMemcpy(dB, hB.data(), sizeof(T) * batch_count_B * k * n, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(
@@ -356,9 +366,9 @@ hipsparseStatus_t testing_spmm_batched_coo()
                        batch_stride_A,
                        transB,
                        h_alpha,
-                       hcoo_row_ind.data(),
-                       hcoo_col_ind.data(),
-                       hcoo_val.data(),
+                       hrow_ind.data(),
+                       hcol_ind.data(),
+                       hval.data(),
                        hB.data(),
                        ldb,
                        batch_count_B,
