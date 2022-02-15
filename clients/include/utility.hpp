@@ -2423,22 +2423,22 @@ inline void host_bsrmm(int                     Mb,
 }
 
 template <typename I, typename J, typename T>
-void host_csrmm(J                     M,
-                J                     N,
-                J                     K,
-                hipsparseOperation_t  transA,
-                hipsparseOperation_t  transB,
-                T                     alpha,
-                const I*              csr_row_ptr_A,
-                const J*              csr_col_ind_A,
-                const T*              csr_val_A,
-                const T*              B,
-                J                     ldb,
-                T                     beta,
-                T*                    C,
-                J                     ldc,
-                hipsparseOrder_t      order,
-                hipsparseIndexBase_t  base)
+void host_csrmm(J                    M,
+                J                    N,
+                J                    K,
+                hipsparseOperation_t transA,
+                hipsparseOperation_t transB,
+                T                    alpha,
+                const I*             csr_row_ptr_A,
+                const J*             csr_col_ind_A,
+                const T*             csr_val_A,
+                const T*             B,
+                J                    ldb,
+                T                    beta,
+                T*                   C,
+                J                    ldc,
+                hipsparseOrder_t     order,
+                hipsparseIndexBase_t base)
 {
     if(transA == HIPSPARSE_OPERATION_NON_TRANSPOSE)
     {
@@ -2561,8 +2561,8 @@ void host_csrmm_batched(J                    M,
                         J                    batch_count_A,
                         J                    offsets_batch_stride_A,
                         I                    columns_values_batch_stride_A,
-                        hipsparseOperation_t  transA,
-                        hipsparseOperation_t  transB,
+                        hipsparseOperation_t transA,
+                        hipsparseOperation_t transB,
                         T                    alpha,
                         const I*             csr_row_ptr_A,
                         const J*             csr_col_ind_A,
@@ -2576,7 +2576,7 @@ void host_csrmm_batched(J                    M,
                         J                    ldc,
                         J                    batch_count_C,
                         I                    batch_stride_C,
-                        hipsparseOrder_t      order,
+                        hipsparseOrder_t     order,
                         hipsparseIndexBase_t base)
 {
     bool Ci_A_Bi  = (batch_count_A == 1 && batch_count_B == batch_count_C);
@@ -2656,25 +2656,11 @@ void host_csrmm_batched(J                    M,
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 template <typename T, typename I>
 void host_coomm(I                    M,
                 I                    N,
                 I                    nnz,
-                hipsparseOperation_t  transB,
+                hipsparseOperation_t transB,
                 T                    alpha,
                 const I*             coo_row_ind_A,
                 const I*             coo_col_ind_A,
@@ -2684,7 +2670,7 @@ void host_coomm(I                    M,
                 T                    beta,
                 T*                   C,
                 I                    ldc,
-                hipsparseOrder_t      order,
+                hipsparseOrder_t     order,
                 hipsparseIndexBase_t base)
 {
     for(I j = 0; j < N; j++)
@@ -2694,7 +2680,7 @@ void host_coomm(I                    M,
 #endif
         for(I i = 0; i < M; ++i)
         {
-            I idx_C = order == HIPSPARSE_ORDER_COLUMN ? i + j * ldc : i * ldc + j;
+            I idx_C  = order == HIPSPARSE_ORDER_COLUMN ? i + j * ldc : i * ldc + j;
             C[idx_C] = beta * C[idx_C];
         }
     }
@@ -2741,7 +2727,7 @@ void host_coomm_batched(I                    M,
                         I                    nnz,
                         I                    batch_count_A,
                         I                    batch_stride_A,
-                        hipsparseOperation_t  transB,
+                        hipsparseOperation_t transB,
                         T                    alpha,
                         const I*             coo_row_ind_A,
                         const I*             coo_col_ind_A,
@@ -2755,7 +2741,7 @@ void host_coomm_batched(I                    M,
                         I                    ldc,
                         I                    batch_count_C,
                         I                    batch_stride_C,
-                        hipsparseOrder_t      order,
+                        hipsparseOrder_t     order,
                         hipsparseIndexBase_t base)
 {
     bool Ci_A_Bi  = (batch_count_A == 1 && batch_count_B == batch_count_C);
@@ -2831,31 +2817,6 @@ void host_coomm_batched(I                    M,
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 template <typename T>
 int csrilu0(int                  m,

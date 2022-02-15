@@ -9118,13 +9118,18 @@ hipsparseStatus_t hipsparseSpMatSetStridedBatch(hipsparseSpMatDescr_t spMatDescr
 /* Description: Set the batch count and stride of the sparse COO matrix */
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseCooSetStridedBatch(hipsparseSpMatDescr_t spMatDescr, int batchCount, int64_t batchStride);
+hipsparseStatus_t hipsparseCooSetStridedBatch(hipsparseSpMatDescr_t spMatDescr,
+                                              int                   batchCount,
+                                              int64_t               batchStride);
 #endif
 
 /* Description: Set the batch count and stride of the sparse CSR matrix */
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseCsrSetStridedBatch(hipsparseSpMatDescr_t spMatDescr, int batchCount, int64_t offsetsBatchStride, int64_t columnsValuesBatchStride);
+hipsparseStatus_t hipsparseCsrSetStridedBatch(hipsparseSpMatDescr_t spMatDescr,
+                                              int                   batchCount,
+                                              int64_t               offsetsBatchStride,
+                                              int64_t               columnsValuesBatchStride);
 #endif
 
 /* Description: Get attribute from sparse matrix descriptor */
@@ -9227,31 +9232,21 @@ HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDnMatSetValues(hipsparseDnMatDescr_t dnMatDescr, void* values);
 #endif
 
-
-
-
-
-
 /* Description: Get the batch count and batch stride of the dense matrix*/
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseDnMatGetStridedBatch(hipsparseDnMatDescr_t dnMatDescr, int* batchCount, int64_t* batchStride);
+hipsparseStatus_t hipsparseDnMatGetStridedBatch(hipsparseDnMatDescr_t dnMatDescr,
+                                                int*                  batchCount,
+                                                int64_t*              batchStride);
 #endif
 
 /* Description: Set the batch count and batch stride of the dense matrix*/
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseDnMatSetStridedBatch(hipsparseDnMatDescr_t dnMatDescr, int batchCount, int64_t batchStride);
+hipsparseStatus_t hipsparseDnMatSetStridedBatch(hipsparseDnMatDescr_t dnMatDescr,
+                                                int                   batchCount,
+                                                int64_t               batchStride);
 #endif
-
-
-
-
-
-
-
-
-
 
 /* Generic API functions */
 

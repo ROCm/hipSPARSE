@@ -95,8 +95,9 @@ void testing_spmm_batched_coo_bad_arg(void)
     hipsparseDnMatDescr_t B, C;
 
     // Create SpMM structures
-    verify_hipsparse_status_success(hipsparseCreateCoo(&A, m, k, nnz, drow, dcol, dval, idxTypeI, idxBase, dataType),
-                                    "success");
+    verify_hipsparse_status_success(
+        hipsparseCreateCoo(&A, m, k, nnz, drow, dcol, dval, idxTypeI, idxBase, dataType),
+        "success");
     verify_hipsparse_status_success(hipsparseCreateDnMat(&B, k, n, k, dB, dataType, order),
                                     "success");
     verify_hipsparse_status_success(hipsparseCreateDnMat(&C, m, n, m, dC, dataType, order),
@@ -110,85 +111,58 @@ void testing_spmm_batched_coo_bad_arg(void)
     int64_t batch_stride_C;
 
     // C_i = A * B_i
-    batch_count_A         = 1;
-    batch_count_B         = 10;
-    batch_count_C         = 5;
-    batch_stride_A        = 0;
-    batch_stride_B        = k * n;
-    batch_stride_C        = m * n;
+    batch_count_A  = 1;
+    batch_count_B  = 10;
+    batch_count_C  = 5;
+    batch_stride_A = 0;
+    batch_stride_B = k * n;
+    batch_stride_C = m * n;
     verify_hipsparse_status_success(hipsparseCooSetStridedBatch(A, batch_count_A, batch_stride_A),
-                            "success");
+                                    "success");
     verify_hipsparse_status_success(hipsparseDnMatSetStridedBatch(B, batch_count_B, batch_stride_B),
-                            "success");
+                                    "success");
     verify_hipsparse_status_success(hipsparseDnMatSetStridedBatch(C, batch_count_C, batch_stride_C),
-                            "success");
+                                    "success");
 
-    verify_hipsparse_status_invalid_value(hipsparseSpMM(handle,
-                                            transA,
-                                            transB,
-                                            &alpha,
-                                            A,
-                                            B,
-                                            &beta,
-                                            C,
-                                            dataType,
-                                            alg,
-                                            dbuf),
-                            "Error: Combination of strided batch parameters is invald");
+    verify_hipsparse_status_invalid_value(
+        hipsparseSpMM(handle, transA, transB, &alpha, A, B, &beta, C, dataType, alg, dbuf),
+        "Error: Combination of strided batch parameters is invald");
 
     // C_i = A_i * B
-    batch_count_A         = 10;
-    batch_count_B         = 1;
-    batch_count_C         = 5;
-    batch_stride_A        = nnz;
-    batch_stride_B        = 0;
-    batch_stride_C        = m * n;
+    batch_count_A  = 10;
+    batch_count_B  = 1;
+    batch_count_C  = 5;
+    batch_stride_A = nnz;
+    batch_stride_B = 0;
+    batch_stride_C = m * n;
     verify_hipsparse_status_success(hipsparseCooSetStridedBatch(A, batch_count_A, batch_stride_A),
-                            "success");
+                                    "success");
     verify_hipsparse_status_success(hipsparseDnMatSetStridedBatch(B, batch_count_B, batch_stride_B),
-                            "success");
+                                    "success");
     verify_hipsparse_status_success(hipsparseDnMatSetStridedBatch(C, batch_count_C, batch_stride_C),
-                            "success");
+                                    "success");
 
-    verify_hipsparse_status_invalid_value(hipsparseSpMM(handle,
-                                            transA,
-                                            transB,
-                                            &alpha,
-                                            A,
-                                            B,
-                                            &beta,
-                                            C,
-                                            dataType,
-                                            alg,
-                                            dbuf),
-                            "Error: Combination of strided batch parameters is invald");
+    verify_hipsparse_status_invalid_value(
+        hipsparseSpMM(handle, transA, transB, &alpha, A, B, &beta, C, dataType, alg, dbuf),
+        "Error: Combination of strided batch parameters is invald");
 
     // C_i = A_i * B_i
-    batch_count_A       = 10;
-    batch_count_B       = 10;
-    batch_count_C       = 5;
-    batch_stride_A      = nnz;
-    batch_stride_B      = k * n;
-    batch_stride_C      = m * n;
+    batch_count_A  = 10;
+    batch_count_B  = 10;
+    batch_count_C  = 5;
+    batch_stride_A = nnz;
+    batch_stride_B = k * n;
+    batch_stride_C = m * n;
     verify_hipsparse_status_success(hipsparseCooSetStridedBatch(A, batch_count_A, batch_stride_A),
-                            "success");
+                                    "success");
     verify_hipsparse_status_success(hipsparseDnMatSetStridedBatch(B, batch_count_B, batch_stride_B),
-                            "success");
+                                    "success");
     verify_hipsparse_status_success(hipsparseDnMatSetStridedBatch(C, batch_count_C, batch_stride_C),
-                            "success");
+                                    "success");
 
-    verify_hipsparse_status_invalid_value(hipsparseSpMM(handle,
-                                            transA,
-                                            transB,
-                                            &alpha,
-                                            A,
-                                            B,
-                                            &beta,
-                                            C,
-                                            dataType,
-                                            alg,
-                                            dbuf),
-                            "Error: Combination of strided batch parameters is invald");
+    verify_hipsparse_status_invalid_value(
+        hipsparseSpMM(handle, transA, transB, &alpha, A, B, &beta, C, dataType, alg, dbuf),
+        "Error: Combination of strided batch parameters is invald");
 
     // Destruct
     verify_hipsparse_status_success(hipsparseDestroySpMat(A), "success");
@@ -207,7 +181,7 @@ hipsparseStatus_t testing_spmm_batched_coo()
     hipsparseOperation_t transB   = HIPSPARSE_OPERATION_NON_TRANSPOSE;
     hipsparseOrder_t     order    = HIPSPARSE_ORDER_COLUMN;
     hipsparseIndexBase_t idx_base = HIPSPARSE_INDEX_BASE_ZERO;
-    
+
     I batch_count_A = 1;
     I batch_count_B = 10;
     I batch_count_C = 10;
@@ -274,12 +248,15 @@ hipsparseStatus_t testing_spmm_batched_coo()
     hC_gold = hC_1;
 
     // allocate memory on device
-    auto drow_managed    = hipsparse_unique_ptr{device_malloc(sizeof(I) * nnz), device_free};
-    auto dcol_managed    = hipsparse_unique_ptr{device_malloc(sizeof(I) * nnz), device_free};
-    auto dval_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
-    auto dB_managed      = hipsparse_unique_ptr{device_malloc(sizeof(T) * batch_count_B * k * n), device_free};
-    auto dC_1_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * batch_count_C * m * n), device_free};
-    auto dC_2_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * batch_count_C * m * n), device_free};
+    auto drow_managed = hipsparse_unique_ptr{device_malloc(sizeof(I) * nnz), device_free};
+    auto dcol_managed = hipsparse_unique_ptr{device_malloc(sizeof(I) * nnz), device_free};
+    auto dval_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
+    auto dB_managed
+        = hipsparse_unique_ptr{device_malloc(sizeof(T) * batch_count_B * k * n), device_free};
+    auto dC_1_managed
+        = hipsparse_unique_ptr{device_malloc(sizeof(T) * batch_count_C * m * n), device_free};
+    auto dC_2_managed
+        = hipsparse_unique_ptr{device_malloc(sizeof(T) * batch_count_C * m * n), device_free};
     auto d_alpha_managed = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
     auto d_beta_managed  = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
 
@@ -301,13 +278,15 @@ hipsparseStatus_t testing_spmm_batched_coo()
     }
 
     // copy data from CPU to device
-    CHECK_HIP_ERROR(
-        hipMemcpy(drow, hcoo_row_ind.data(), sizeof(I) * nnz, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(drow, hcoo_row_ind.data(), sizeof(I) * nnz, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dcol, hcoo_col_ind.data(), sizeof(I) * nnz, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dval, hcoo_val.data(), sizeof(T) * nnz, hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(hipMemcpy(dB, hB.data(), sizeof(T) * batch_count_B * k * n, hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(hipMemcpy(dC_1, hC_1.data(), sizeof(T) * batch_count_C * m * n, hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(hipMemcpy(dC_2, hC_2.data(), sizeof(T) * batch_count_C * m * n, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(
+        hipMemcpy(dB, hB.data(), sizeof(T) * batch_count_B * k * n, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(
+        hipMemcpy(dC_1, hC_1.data(), sizeof(T) * batch_count_C * m * n, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(
+        hipMemcpy(dC_2, hC_2.data(), sizeof(T) * batch_count_C * m * n, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(d_alpha, &h_alpha, sizeof(T), hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(d_beta, &h_beta, sizeof(T), hipMemcpyHostToDevice));
 
@@ -362,33 +341,35 @@ hipsparseStatus_t testing_spmm_batched_coo()
         hipsparseSpMM(handle, transA, transB, d_alpha, A, B, d_beta, C2, typeT, alg, buffer));
 
     // copy output from device to CPU
-    CHECK_HIP_ERROR(hipMemcpy(hC_1.data(), dC_1, sizeof(T) * batch_count_C * m * n, hipMemcpyDeviceToHost));
-    CHECK_HIP_ERROR(hipMemcpy(hC_2.data(), dC_2, sizeof(T) * batch_count_C * m * n, hipMemcpyDeviceToHost));
+    CHECK_HIP_ERROR(
+        hipMemcpy(hC_1.data(), dC_1, sizeof(T) * batch_count_C * m * n, hipMemcpyDeviceToHost));
+    CHECK_HIP_ERROR(
+        hipMemcpy(hC_2.data(), dC_2, sizeof(T) * batch_count_C * m * n, hipMemcpyDeviceToHost));
 
     // CPU
     double cpu_time_used = get_time_us();
 
     host_coomm_batched(m,
-                        n,
-                        k,
-                        batch_count_A,
-                        batch_stride_A,
-                        transB,
-                        h_alpha,
-                        hcoo_row_ind.data(),
-                        hcoo_col_ind.data(),
-                        hcoo_val.data(),
-                        hB.data(),
-                        ldb,
-                        batch_count_B,
-                        batch_stride_B,
-                        h_beta,
-                        hC_gold.data(),
-                        ldc,
-                        batch_count_C,
-                        batch_stride_C,
-                        order,
-                        idx_base);
+                       n,
+                       k,
+                       batch_count_A,
+                       batch_stride_A,
+                       transB,
+                       h_alpha,
+                       hcoo_row_ind.data(),
+                       hcoo_col_ind.data(),
+                       hcoo_val.data(),
+                       hB.data(),
+                       ldb,
+                       batch_count_B,
+                       batch_stride_B,
+                       h_beta,
+                       hC_gold.data(),
+                       ldc,
+                       batch_count_C,
+                       batch_stride_C,
+                       order,
+                       idx_base);
 
     cpu_time_used = get_time_us() - cpu_time_used;
 
