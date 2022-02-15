@@ -361,20 +361,20 @@ hipsparseStatus_t testing_spmm_coo()
 
     // CPU
     host_coomm(m,
-                n,
-                nnz,
-                transB,
-                h_alpha,
-                hrow_ind.data(),
-                hcol_ind.data(),
-                hval.data(),
-                hB.data(),
-                ldb,
-                h_beta,
-                hC_gold.data(),
-                ldc,
-                order,
-                idx_base);
+               n,
+               nnz,
+               transB,
+               h_alpha,
+               hrow_ind.data(),
+               hcol_ind.data(),
+               hval.data(),
+               hB.data(),
+               ldb,
+               h_beta,
+               hC_gold.data(),
+               ldc,
+               order,
+               idx_base);
 
     unit_check_near(1, m * n, 1, hC_gold.data(), hC_1.data());
     unit_check_near(1, m * n, 1, hC_gold.data(), hC_2.data());
