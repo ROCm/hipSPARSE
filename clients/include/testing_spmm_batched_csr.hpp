@@ -1,5 +1,5 @@
 /* ************************************************************************
- * Copyright (c) 2021 Advanced Micro Devices, Inc.
+ * Copyright (c) 2022 Advanced Micro Devices, Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,8 +22,8 @@
  * ************************************************************************ */
 
 #pragma once
-#ifndef TESTING_SPMM_CSR_HPP
-#define TESTING_SPMM_CSR_HPP
+#ifndef TESTING_SPMM_BATCHED_CSR_HPP
+#define TESTING_SPMM_BATCHED_CSR_HPP
 
 #include "hipsparse.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
@@ -37,7 +37,7 @@
 using namespace hipsparse;
 using namespace hipsparse_test;
 
-void testing_spmm_csr_bad_arg(void)
+void testing_spmm_batched_csr_bad_arg(void)
 {
 #ifdef __HIP_PLATFORM_NVIDIA__
     // do not test for bad args
@@ -49,9 +49,9 @@ void testing_spmm_csr_bad_arg(void)
     int32_t              n         = 100;
     int32_t              k         = 100;
     int64_t              nnz       = 100;
-    int32_t              safe_size = 100;
     float                alpha     = 0.6;
     float                beta      = 0.2;
+    size_t               safe_size = 100;
     hipsparseOperation_t transA    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
     hipsparseOperation_t transB    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
     hipsparseOrder_t     order     = HIPSPARSE_ORDER_COLUMN;
@@ -59,9 +59,7 @@ void testing_spmm_csr_bad_arg(void)
     hipsparseIndexType_t idxTypeI  = HIPSPARSE_INDEX_64I;
     hipsparseIndexType_t idxTypeJ  = HIPSPARSE_INDEX_32I;
     hipDataType          dataType  = HIP_R_32F;
-    //
-    // !
-    //
+
 #if(CUDART_VERSION >= 11003)
     hipsparseSpMMAlg_t alg = HIPSPARSE_SPMM_CSR_ALG1;
 #else
@@ -97,8 +95,6 @@ void testing_spmm_csr_bad_arg(void)
     hipsparseSpMatDescr_t A;
     hipsparseDnMatDescr_t B, C;
 
-    size_t bsize;
-
     // Create SpMM structures
     verify_hipsparse_status_success(
         hipsparseCreateCsr(&A, m, k, nnz, dptr, dcol, dval, idxTypeI, idxTypeJ, idxBase, dataType),
@@ -108,85 +104,100 @@ void testing_spmm_csr_bad_arg(void)
     verify_hipsparse_status_success(hipsparseCreateDnMat(&C, m, n, m, dC, dataType, order),
                                     "success");
 
-    // SpMM buffer
-    verify_hipsparse_status_invalid_handle(hipsparseSpMM_bufferSize(
-        nullptr, transA, transB, &alpha, A, B, &beta, C, dataType, alg, &bsize));
-    verify_hipsparse_status_invalid_pointer(
-        hipsparseSpMM_bufferSize(
-            handle, transA, transB, nullptr, A, B, &beta, C, dataType, alg, &bsize),
-        "Error: alpha is nullptr");
-    verify_hipsparse_status_invalid_pointer(
-        hipsparseSpMM_bufferSize(
-            handle, transA, transB, &alpha, nullptr, B, &beta, C, dataType, alg, &bsize),
-        "Error: A is nullptr");
-    verify_hipsparse_status_invalid_pointer(
-        hipsparseSpMM_bufferSize(
-            handle, transA, transB, &alpha, A, nullptr, &beta, C, dataType, alg, &bsize),
-        "Error: B is nullptr");
-    verify_hipsparse_status_invalid_pointer(
-        hipsparseSpMM_bufferSize(
-            handle, transA, transB, &alpha, A, B, nullptr, C, dataType, alg, &bsize),
-        "Error: beta is nullptr");
-    verify_hipsparse_status_invalid_pointer(
-        hipsparseSpMM_bufferSize(
-            handle, transA, transB, &alpha, A, B, &beta, nullptr, dataType, alg, &bsize),
-        "Error: C is nullptr");
-    verify_hipsparse_status_invalid_pointer(
-        hipsparseSpMM_bufferSize(
-            handle, transA, transB, &alpha, A, B, &beta, C, dataType, alg, nullptr),
-        "Error: bsize is nullptr");
+    int     batch_count_A;
+    int     batch_count_B;
+    int     batch_count_C;
+    int64_t offsets_batch_stride_A;
+    int64_t columns_values_batch_stride_A;
+    int64_t batch_stride_B;
+    int64_t batch_stride_C;
 
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11021)
-    // SpMM_preprocess
-    verify_hipsparse_status_invalid_handle(hipsparseSpMM_preprocess(
-        nullptr, transA, transB, &alpha, A, B, &beta, C, dataType, alg, dbuf));
-    verify_hipsparse_status_invalid_pointer(
-        hipsparseSpMM_preprocess(
-            handle, transA, transB, nullptr, A, B, &beta, C, dataType, alg, dbuf),
-        "Error: alpha is nullptr");
-    verify_hipsparse_status_invalid_pointer(
-        hipsparseSpMM_preprocess(
-            handle, transA, transB, &alpha, nullptr, B, &beta, C, dataType, alg, dbuf),
-        "Error: A is nullptr");
-    verify_hipsparse_status_invalid_pointer(
-        hipsparseSpMM_preprocess(
-            handle, transA, transB, &alpha, A, nullptr, &beta, C, dataType, alg, dbuf),
-        "Error: B is nullptr");
-    verify_hipsparse_status_invalid_pointer(
-        hipsparseSpMM_preprocess(
-            handle, transA, transB, &alpha, A, B, nullptr, C, dataType, alg, dbuf),
-        "Error: beta is nullptr");
-    verify_hipsparse_status_invalid_pointer(
-        hipsparseSpMM_preprocess(
-            handle, transA, transB, &alpha, A, B, &beta, nullptr, dataType, alg, dbuf),
-        "Error: C is nullptr");
-    verify_hipsparse_status_invalid_pointer(
-        hipsparseSpMM_preprocess(
-            handle, transA, transB, &alpha, A, B, &beta, nullptr, dataType, alg, nullptr),
-        "Error: dbuf is nullptr");
-#endif
+    // C_i = A * B_i
+    batch_count_A                 = 1;
+    batch_count_B                 = 10;
+    batch_count_C                 = 5;
+    offsets_batch_stride_A        = 0;
+    columns_values_batch_stride_A = 0;
+    batch_stride_B                = k * n;
+    batch_stride_C                = m * n;
+    verify_hipsparse_status_success(hipsparseCsrSetStridedBatch(
+            A, batch_count_A, offsets_batch_stride_A, columns_values_batch_stride_A),
+                            "success");
+    verify_hipsparse_status_success(hipsparseDnMatSetStridedBatch(B, batch_count_B, batch_stride_B),
+                            "success");
+    verify_hipsparse_status_success(hipsparseDnMatSetStridedBatch(C, batch_count_C, batch_stride_C),
+                            "success");
 
-    // SpMM
-    verify_hipsparse_status_invalid_handle(
-        hipsparseSpMM(nullptr, transA, transB, &alpha, A, B, &beta, C, dataType, alg, dbuf));
-    verify_hipsparse_status_invalid_pointer(
-        hipsparseSpMM(handle, transA, transB, nullptr, A, B, &beta, C, dataType, alg, dbuf),
-        "Error: alpha is nullptr");
-    verify_hipsparse_status_invalid_pointer(
-        hipsparseSpMM(handle, transA, transB, &alpha, nullptr, B, &beta, C, dataType, alg, dbuf),
-        "Error: A is nullptr");
-    verify_hipsparse_status_invalid_pointer(
-        hipsparseSpMM(handle, transA, transB, &alpha, A, nullptr, &beta, C, dataType, alg, dbuf),
-        "Error: B is nullptr");
-    verify_hipsparse_status_invalid_pointer(
-        hipsparseSpMM(handle, transA, transB, &alpha, A, B, nullptr, C, dataType, alg, dbuf),
-        "Error: beta is nullptr");
-    verify_hipsparse_status_invalid_pointer(
-        hipsparseSpMM(handle, transA, transB, &alpha, A, B, &beta, nullptr, dataType, alg, dbuf),
-        "Error: C is nullptr");
-    verify_hipsparse_status_invalid_pointer(
-        hipsparseSpMM(handle, transA, transB, &alpha, A, B, &beta, nullptr, dataType, alg, nullptr),
-        "Error: dbuf is nullptr");
+    verify_hipsparse_status_invalid_value(hipsparseSpMM(handle,
+                                            transA,
+                                            transB,
+                                            &alpha,
+                                            A,
+                                            B,
+                                            &beta,
+                                            C,
+                                            dataType,
+                                            alg,
+                                            dbuf),
+                            "Error: Combination of strided batch parameters is invald");
+
+    // C_i = A_i * B
+    batch_count_A                 = 10;
+    batch_count_B                 = 1;
+    batch_count_C                 = 5;
+    offsets_batch_stride_A        = (m + 1);
+    columns_values_batch_stride_A = nnz;
+    batch_stride_B                = 0;
+    batch_stride_C                = m * n;
+    verify_hipsparse_status_success(hipsparseCsrSetStridedBatch(
+            A, batch_count_A, offsets_batch_stride_A, columns_values_batch_stride_A),
+                            "success");
+    verify_hipsparse_status_success(hipsparseDnMatSetStridedBatch(B, batch_count_B, batch_stride_B),
+                            "success");
+    verify_hipsparse_status_success(hipsparseDnMatSetStridedBatch(C, batch_count_C, batch_stride_C),
+                            "success");
+
+    verify_hipsparse_status_invalid_value(hipsparseSpMM(handle,
+                                            transA,
+                                            transB,
+                                            &alpha,
+                                            A,
+                                            B,
+                                            &beta,
+                                            C,
+                                            dataType,
+                                            alg,
+                                            dbuf),
+                            "Error: Combination of strided batch parameters is invald");
+
+    // C_i = A_i * B_i
+    batch_count_A                 = 10;
+    batch_count_B                 = 10;
+    batch_count_C                 = 5;
+    offsets_batch_stride_A        = (m + 1);
+    columns_values_batch_stride_A = nnz;
+    batch_stride_B                = k * n;
+    batch_stride_C                = m * n;
+    verify_hipsparse_status_success(hipsparseCsrSetStridedBatch(
+            A, batch_count_A, offsets_batch_stride_A, columns_values_batch_stride_A),
+                            "success");
+    verify_hipsparse_status_success(hipsparseDnMatSetStridedBatch(B, batch_count_B, batch_stride_B),
+                            "success");
+    verify_hipsparse_status_success(hipsparseDnMatSetStridedBatch(C, batch_count_C, batch_stride_C),
+                            "success");
+
+    verify_hipsparse_status_invalid_value(hipsparseSpMM(handle,
+                                            transA,
+                                            transB,
+                                            &alpha,
+                                            A,
+                                            B,
+                                            &beta,
+                                            C,
+                                            dataType,
+                                            alg,
+                                            dbuf),
+                            "Error: Combination of strided batch parameters is invald");
 
     // Destruct
     verify_hipsparse_status_success(hipsparseDestroySpMat(A), "success");
@@ -196,7 +207,7 @@ void testing_spmm_csr_bad_arg(void)
 }
 
 template <typename I, typename J, typename T>
-hipsparseStatus_t testing_spmm_csr()
+hipsparseStatus_t testing_spmm_batched_csr()
 {
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
     T                    h_alpha  = make_DataType<T>(2.0);
@@ -205,9 +216,11 @@ hipsparseStatus_t testing_spmm_csr()
     hipsparseOperation_t transB   = HIPSPARSE_OPERATION_NON_TRANSPOSE;
     hipsparseOrder_t     order    = HIPSPARSE_ORDER_COLUMN;
     hipsparseIndexBase_t idx_base = HIPSPARSE_INDEX_BASE_ZERO;
-    //
-    // !
-    //
+    
+    J batch_count_A = 1;
+    J batch_count_B = 10;
+    J batch_count_C = 10;
+
 #if(CUDART_VERSION >= 11003)
     hipsparseSpMMAlg_t alg = HIPSPARSE_SPMM_CSR_ALG1;
 #else
@@ -255,15 +268,20 @@ hipsparseStatus_t testing_spmm_csr()
     J ldb = k;
     J ldc = m;
 
-    std::vector<T> hB(k * n);
-    std::vector<T> hC_1(m * n);
-    std::vector<T> hC_2(m * n);
-    std::vector<T> hC_gold(m * n);
+    J offsets_batch_stride_A        = 0;
+    I columns_values_batch_stride_A = 0;
+    I batch_stride_B                = k * n;
+    I batch_stride_C                = m * n;
 
-    hipsparseInit<T>(hB, k, n);
-    hipsparseInit<T>(hC_1, m, n);
+    std::vector<T> hB(batch_count_B * k * n);
+    std::vector<T> hC_1(batch_count_C * m * n);
+    std::vector<T> hC_2(batch_count_C * m * n);
+    std::vector<T> hC_gold(batch_count_C * m * n);
 
-    // copy vector is easy in STL; hC_gold = hB: save a copy in hy_gold which will be output of CPU
+    hipsparseInit<T>(hB, batch_count_B * k * n, 1);
+    hipsparseInit<T>(hC_1, batch_count_C * m * n, 1);
+
+    // copy vector is easy in STL; hC_gold = hC: save a copy in hy_gold which will be output of CPU
     hC_2    = hC_1;
     hC_gold = hC_1;
 
@@ -271,9 +289,9 @@ hipsparseStatus_t testing_spmm_csr()
     auto dptr_managed    = hipsparse_unique_ptr{device_malloc(sizeof(I) * (m + 1)), device_free};
     auto dcol_managed    = hipsparse_unique_ptr{device_malloc(sizeof(J) * nnz), device_free};
     auto dval_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
-    auto dB_managed      = hipsparse_unique_ptr{device_malloc(sizeof(T) * k * n), device_free};
-    auto dC_1_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * m * n), device_free};
-    auto dC_2_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * m * n), device_free};
+    auto dB_managed      = hipsparse_unique_ptr{device_malloc(sizeof(T) * batch_count_B * k * n), device_free};
+    auto dC_1_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * batch_count_C * m * n), device_free};
+    auto dC_2_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * batch_count_C * m * n), device_free};
     auto d_alpha_managed = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
     auto d_beta_managed  = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
 
@@ -299,9 +317,9 @@ hipsparseStatus_t testing_spmm_csr()
         hipMemcpy(dptr, hcsr_row_ptr.data(), sizeof(I) * (m + 1), hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dcol, hcsr_col_ind.data(), sizeof(J) * nnz, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dval, hcsr_val.data(), sizeof(T) * nnz, hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(hipMemcpy(dB, hB.data(), sizeof(T) * k * n, hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(hipMemcpy(dC_1, hC_1.data(), sizeof(T) * m * n, hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(hipMemcpy(dC_2, hC_2.data(), sizeof(T) * m * n, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(dB, hB.data(), sizeof(T) * batch_count_B * k * n, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(dC_1, hC_1.data(), sizeof(T) * batch_count_C * m * n, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(dC_2, hC_2.data(), sizeof(T) * batch_count_C * m * n, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(d_alpha, &h_alpha, sizeof(T), hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(d_beta, &h_beta, sizeof(T), hipMemcpyHostToDevice));
 
@@ -315,6 +333,12 @@ hipsparseStatus_t testing_spmm_csr()
     CHECK_HIPSPARSE_ERROR(hipsparseCreateDnMat(&B, k, n, ldb, dB, typeT, order));
     CHECK_HIPSPARSE_ERROR(hipsparseCreateDnMat(&C1, m, n, ldc, dC_1, typeT, order));
     CHECK_HIPSPARSE_ERROR(hipsparseCreateDnMat(&C2, m, n, ldc, dC_2, typeT, order));
+
+    CHECK_HIPSPARSE_ERROR(hipsparseCsrSetStridedBatch(
+        A, batch_count_A, offsets_batch_stride_A, columns_values_batch_stride_A));
+    CHECK_HIPSPARSE_ERROR(hipsparseDnMatSetStridedBatch(B, batch_count_B, batch_stride_B));
+    CHECK_HIPSPARSE_ERROR(hipsparseDnMatSetStridedBatch(C1, batch_count_C, batch_stride_C));
+    CHECK_HIPSPARSE_ERROR(hipsparseDnMatSetStridedBatch(C2, batch_count_C, batch_stride_C));
 
     // Query SpMM buffer
     size_t bufferSize;
@@ -351,33 +375,41 @@ hipsparseStatus_t testing_spmm_csr()
         hipsparseSpMM(handle, transA, transB, d_alpha, A, B, d_beta, C2, typeT, alg, buffer));
 
     // copy output from device to CPU
-    CHECK_HIP_ERROR(hipMemcpy(hC_1.data(), dC_1, sizeof(T) * m * n, hipMemcpyDeviceToHost));
-    CHECK_HIP_ERROR(hipMemcpy(hC_2.data(), dC_2, sizeof(T) * m * n, hipMemcpyDeviceToHost));
+    CHECK_HIP_ERROR(hipMemcpy(hC_1.data(), dC_1, sizeof(T) * batch_count_C * m * n, hipMemcpyDeviceToHost));
+    CHECK_HIP_ERROR(hipMemcpy(hC_2.data(), dC_2, sizeof(T) * batch_count_C * m * n, hipMemcpyDeviceToHost));
 
     // CPU
     double cpu_time_used = get_time_us();
 
-    host_csrmm(m,
-               n,
-               k,
-               transA,
-               transB,
-               h_alpha,
-               hcsr_row_ptr.data(),
-               hcsr_col_ind.data(),
-               hcsr_val.data(),
-               hB.data(),
-               ldb,
-               h_beta,
-               hC_gold.data(),
-               ldc,
-               order,
-               idx_base);
+   
+    host_csrmm_batched(m,
+                        n,
+                        k,
+                        batch_count_A,
+                        offsets_batch_stride_A,
+                        columns_values_batch_stride_A,
+                        transA,
+                        transB,
+                        h_alpha,
+                        hcsr_row_ptr.data(),
+                        hcsr_col_ind.data(),
+                        hcsr_val.data(),
+                        hB.data(),
+                        ldb,
+                        batch_count_B,
+                        batch_stride_B,
+                        h_beta,
+                        hC_gold.data(),
+                        ldc,
+                        batch_count_C,
+                        batch_stride_C,
+                        order,
+                        idx_base);
 
     cpu_time_used = get_time_us() - cpu_time_used;
 
-    unit_check_near(1, m * n, 1, hC_gold.data(), hC_1.data());
-    unit_check_near(1, m * n, 1, hC_gold.data(), hC_2.data());
+    unit_check_near(1, batch_count_C * m * n, 1, hC_gold.data(), hC_1.data());
+    unit_check_near(1, batch_count_C * m * n, 1, hC_gold.data(), hC_2.data());
 
     CHECK_HIP_ERROR(hipFree(buffer));
     CHECK_HIPSPARSE_ERROR(hipsparseDestroySpMat(A));
@@ -390,4 +422,4 @@ hipsparseStatus_t testing_spmm_csr()
     return HIPSPARSE_STATUS_SUCCESS;
 }
 
-#endif // TESTING_SPMM_CSR_HPP
+#endif // TESTING_SPMM_BATCHED_CSR_HPP

@@ -2429,13 +2429,13 @@ void host_csrmm(J                     M,
                 hipsparseOperation_t  transA,
                 hipsparseOperation_t  transB,
                 T                     alpha,
-                const std::vector<I>& csr_row_ptr_A,
-                const std::vector<J>& csr_col_ind_A,
-                const std::vector<T>& csr_val_A,
-                const std::vector<T>& B,
+                const I*              csr_row_ptr_A,
+                const J*              csr_col_ind_A,
+                const T*              csr_val_A,
+                const T*              B,
                 J                     ldb,
                 T                     beta,
-                std::vector<T>&       C,
+                T*                    C,
                 J                     ldc,
                 hipsparseOrder_t      order,
                 hipsparseIndexBase_t  base)
@@ -2553,6 +2553,309 @@ void host_csrmm(J                     M,
         }
     }
 }
+
+template <typename T, typename I, typename J>
+void host_csrmm_batched(J                    M,
+                        J                    N,
+                        J                    K,
+                        J                    batch_count_A,
+                        J                    offsets_batch_stride_A,
+                        I                    columns_values_batch_stride_A,
+                        hipsparseOperation_t  transA,
+                        hipsparseOperation_t  transB,
+                        T                    alpha,
+                        const I*             csr_row_ptr_A,
+                        const J*             csr_col_ind_A,
+                        const T*             csr_val_A,
+                        const T*             B,
+                        J                    ldb,
+                        J                    batch_count_B,
+                        I                    batch_stride_B,
+                        T                    beta,
+                        T*                   C,
+                        J                    ldc,
+                        J                    batch_count_C,
+                        I                    batch_stride_C,
+                        hipsparseOrder_t      order,
+                        hipsparseIndexBase_t base)
+{
+    bool Ci_A_Bi  = (batch_count_A == 1 && batch_count_B == batch_count_C);
+    bool Ci_Ai_B  = (batch_count_B == 1 && batch_count_A == batch_count_C);
+    bool Ci_Ai_Bi = (batch_count_A == batch_count_C && batch_count_A == batch_count_B);
+
+    if(!Ci_A_Bi && !Ci_Ai_B && !Ci_Ai_Bi)
+    {
+        return;
+    }
+
+    if(Ci_A_Bi)
+    {
+        for(J i = 0; i < batch_count_C; i++)
+        {
+            host_csrmm(M,
+                       N,
+                       K,
+                       transA,
+                       transB,
+                       alpha,
+                       csr_row_ptr_A,
+                       csr_col_ind_A,
+                       csr_val_A,
+                       B + batch_stride_B * i,
+                       ldb,
+                       beta,
+                       C + batch_stride_C * i,
+                       ldc,
+                       order,
+                       base);
+        }
+    }
+    else if(Ci_Ai_B)
+    {
+        for(J i = 0; i < batch_count_C; i++)
+        {
+            host_csrmm(M,
+                       N,
+                       K,
+                       transA,
+                       transB,
+                       alpha,
+                       csr_row_ptr_A + offsets_batch_stride_A * i,
+                       csr_col_ind_A + columns_values_batch_stride_A * i,
+                       csr_val_A + columns_values_batch_stride_A * i,
+                       B,
+                       ldb,
+                       beta,
+                       C + batch_stride_C * i,
+                       ldc,
+                       order,
+                       base);
+        }
+    }
+    else if(Ci_Ai_Bi)
+    {
+        for(J i = 0; i < batch_count_C; i++)
+        {
+            host_csrmm(M,
+                       N,
+                       K,
+                       transA,
+                       transB,
+                       alpha,
+                       csr_row_ptr_A + offsets_batch_stride_A * i,
+                       csr_col_ind_A + columns_values_batch_stride_A * i,
+                       csr_val_A + columns_values_batch_stride_A * i,
+                       B + batch_stride_B * i,
+                       ldb,
+                       beta,
+                       C + batch_stride_C * i,
+                       ldc,
+                       order,
+                       base);
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+template <typename T, typename I>
+void host_coomm(I                    M,
+                I                    N,
+                I                    nnz,
+                hipsparseOperation_t  transB,
+                T                    alpha,
+                const I*             coo_row_ind_A,
+                const I*             coo_col_ind_A,
+                const T*             coo_val_A,
+                const T*             B,
+                I                    ldb,
+                T                    beta,
+                T*                   C,
+                I                    ldc,
+                hipsparseOrder_t      order,
+                hipsparseIndexBase_t base)
+{
+    for(I j = 0; j < N; j++)
+    {
+#ifdef _OPENMP
+#pragma omp parallel for schedule(dynamic, 1024)
+#endif
+        for(I i = 0; i < M; ++i)
+        {
+            I idx_C = order == HIPSPARSE_ORDER_COLUMN ? i + j * ldc : i * ldc + j;
+            C[idx_C] = beta * C[idx_C];
+        }
+    }
+
+#ifdef _OPENMP
+#pragma omp parallel for schedule(dynamic, 1024)
+#endif
+    for(I j = 0; j < N; j++)
+    {
+        for(I i = 0; i < nnz; ++i)
+        {
+            I row = coo_row_ind_A[i] - base;
+            I col = coo_col_ind_A[i] - base;
+            T val = alpha * coo_val_A[i];
+
+            I idx_C = order == HIPSPARSE_ORDER_COLUMN ? row + j * ldc : row * ldc + j;
+
+            I idx_B = 0;
+            if((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE && order == HIPSPARSE_ORDER_COLUMN)
+               || (transB != HIPSPARSE_OPERATION_NON_TRANSPOSE && order != HIPSPARSE_ORDER_COLUMN))
+            {
+                idx_B = (col + j * ldb);
+            }
+            else
+            {
+                idx_B = (j + col * ldb);
+            }
+
+            if(transB == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE)
+            {
+                C[idx_C] = testing_fma(val, testing_conj(B[idx_B]), C[idx_C]);
+            }
+            else
+            {
+                C[idx_C] = testing_fma(val, B[idx_B], C[idx_C]);
+            }
+        }
+    }
+}
+
+template <typename T, typename I>
+void host_coomm_batched(I                    M,
+                        I                    N,
+                        I                    nnz,
+                        I                    batch_count_A,
+                        I                    batch_stride_A,
+                        hipsparseOperation_t  transB,
+                        T                    alpha,
+                        const I*             coo_row_ind_A,
+                        const I*             coo_col_ind_A,
+                        const T*             coo_val_A,
+                        const T*             B,
+                        I                    ldb,
+                        I                    batch_count_B,
+                        I                    batch_stride_B,
+                        T                    beta,
+                        T*                   C,
+                        I                    ldc,
+                        I                    batch_count_C,
+                        I                    batch_stride_C,
+                        hipsparseOrder_t      order,
+                        hipsparseIndexBase_t base)
+{
+    bool Ci_A_Bi  = (batch_count_A == 1 && batch_count_B == batch_count_C);
+    bool Ci_Ai_B  = (batch_count_B == 1 && batch_count_A == batch_count_C);
+    bool Ci_Ai_Bi = (batch_count_A == batch_count_C && batch_count_A == batch_count_B);
+
+    if(!Ci_A_Bi && !Ci_Ai_B && !Ci_Ai_Bi)
+    {
+        return;
+    }
+
+    if(Ci_A_Bi)
+    {
+        for(I i = 0; i < batch_count_C; i++)
+        {
+            host_coomm(M,
+                       N,
+                       nnz,
+                       transB,
+                       alpha,
+                       coo_row_ind_A,
+                       coo_col_ind_A,
+                       coo_val_A,
+                       B + batch_stride_B * i,
+                       ldb,
+                       beta,
+                       C + batch_stride_C * i,
+                       ldc,
+                       order,
+                       base);
+        }
+    }
+    else if(Ci_Ai_B)
+    {
+        for(I i = 0; i < batch_count_C; i++)
+        {
+            host_coomm(M,
+                       N,
+                       nnz,
+                       transB,
+                       alpha,
+                       coo_row_ind_A + batch_stride_A * i,
+                       coo_col_ind_A + batch_stride_A * i,
+                       coo_val_A + batch_stride_A * i,
+                       B,
+                       ldb,
+                       beta,
+                       C + batch_stride_C * i,
+                       ldc,
+                       order,
+                       base);
+        }
+    }
+    else if(Ci_Ai_Bi)
+    {
+        for(I i = 0; i < batch_count_C; i++)
+        {
+            host_coomm(M,
+                       N,
+                       nnz,
+                       transB,
+                       alpha,
+                       coo_row_ind_A + batch_stride_A * i,
+                       coo_col_ind_A + batch_stride_A * i,
+                       coo_val_A + batch_stride_A * i,
+                       B + batch_stride_B * i,
+                       ldb,
+                       beta,
+                       C + batch_stride_C * i,
+                       ldc,
+                       order,
+                       base);
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 template <typename T>
 int csrilu0(int                  m,

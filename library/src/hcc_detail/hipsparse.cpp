@@ -13080,6 +13080,77 @@ hipsparseStatus_t hipsparseSpMatSetValues(hipsparseSpMatDescr_t spMatDescr, void
         rocsparse_spmat_set_values((rocsparse_spmat_descr)spMatDescr, values));
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+hipsparseStatus_t hipsparseSpMatGetStridedBatch(hipsparseSpMatDescr_t spMatDescr, int* batchCount)
+{
+    return rocSPARSEStatusToHIPStatus(
+        rocsparse_spmat_get_strided_batch((rocsparse_spmat_descr)spMatDescr, batchCount));
+}
+
+hipsparseStatus_t hipsparseSpMatSetStridedBatch(hipsparseSpMatDescr_t spMatDescr, int batchCount)
+{
+    return HIPSPARSE_STATUS_SUCCESS;
+}
+
+hipsparseStatus_t hipsparseCooSetStridedBatch(hipsparseSpMatDescr_t spMatDescr, int batchCount, int64_t batchStride)
+{
+    return rocSPARSEStatusToHIPStatus(
+        rocsparse_coo_set_strided_batch((rocsparse_spmat_descr)spMatDescr, batchCount, batchStride));
+}
+
+hipsparseStatus_t hipsparseCsrSetStridedBatch(hipsparseSpMatDescr_t spMatDescr, int batchCount, int64_t offsetsBatchStride, int64_t columnsValuesBatchStride)
+{
+    return rocSPARSEStatusToHIPStatus(
+        rocsparse_csr_set_strided_batch((rocsparse_spmat_descr)spMatDescr, batchCount, offsetsBatchStride, columnsValuesBatchStride));
+}
+
+
+
+
+hipsparseStatus_t hipsparseSpMatGetAttribute(hipsparseSpMatDescr_t     spMatDescr,
+                                             hipsparseSpMatAttribute_t attribute,
+                                             void*                     data,
+                                             size_t                    dataSize)
+{
+    return rocSPARSEStatusToHIPStatus(rocsparse_spmat_get_attribute(
+        (rocsparse_spmat_descr)spMatDescr, (rocsparse_spmat_attribute)attribute, data, dataSize));
+}
+
+hipsparseStatus_t hipsparseSpMatSetAttribute(hipsparseSpMatDescr_t     spMatDescr,
+                                             hipsparseSpMatAttribute_t attribute,
+                                             const void*               data,
+                                             size_t                    dataSize)
+{
+    return rocSPARSEStatusToHIPStatus(rocsparse_spmat_set_attribute(
+        (rocsparse_spmat_descr)spMatDescr, (rocsparse_spmat_attribute)attribute, data, dataSize));
+}
+
+
+
+
+
+
+
+
+
+
+
+
 hipsparseStatus_t hipsparseCreateDnVec(hipsparseDnVecDescr_t* dnVecDescr,
                                        int64_t                size,
                                        void*                  values,
@@ -13183,23 +13254,47 @@ hipsparseStatus_t hipsparseDnMatSetValues(hipsparseDnMatDescr_t dnMatDescr, void
         rocsparse_dnmat_set_values((rocsparse_dnmat_descr)dnMatDescr, values));
 }
 
-hipsparseStatus_t hipsparseSpMatGetAttribute(hipsparseSpMatDescr_t     spMatDescr,
-                                             hipsparseSpMatAttribute_t attribute,
-                                             void*                     data,
-                                             size_t                    dataSize)
+
+
+
+
+
+
+
+
+
+
+
+hipsparseStatus_t hipsparseDnMatGetStridedBatch(hipsparseDnMatDescr_t dnMatDescr, int* batchCount, int64_t* batchStride)
 {
-    return rocSPARSEStatusToHIPStatus(rocsparse_spmat_get_attribute(
-        (rocsparse_spmat_descr)spMatDescr, (rocsparse_spmat_attribute)attribute, data, dataSize));
+    return rocSPARSEStatusToHIPStatus(
+        rocsparse_dnmat_get_strided_batch((const rocsparse_dnmat_descr)dnMatDescr, batchCount, batchStride));
 }
 
-hipsparseStatus_t hipsparseSpMatSetAttribute(hipsparseSpMatDescr_t     spMatDescr,
-                                             hipsparseSpMatAttribute_t attribute,
-                                             const void*               data,
-                                             size_t                    dataSize)
+
+hipsparseStatus_t hipsparseDnMatSetStridedBatch(hipsparseDnMatDescr_t dnMatDescr, int batchCount, int64_t batchStride)
 {
-    return rocSPARSEStatusToHIPStatus(rocsparse_spmat_set_attribute(
-        (rocsparse_spmat_descr)spMatDescr, (rocsparse_spmat_attribute)attribute, data, dataSize));
+    return rocSPARSEStatusToHIPStatus(
+        rocsparse_dnmat_set_strided_batch((const rocsparse_dnmat_descr)dnMatDescr, batchCount, batchStride));
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 hipsparseStatus_t hipsparseAxpby(hipsparseHandle_t     handle,
                                  const void*           alpha,
