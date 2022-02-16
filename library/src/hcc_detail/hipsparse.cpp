@@ -13401,16 +13401,16 @@ hipsparseStatus_t hipsparseSpMV_preprocess(hipsparseHandle_t           handle,
     std::cout << "hipsparseSpMV_preprocess called" << std::endl;
     size_t bufferSize;
     return rocSPARSEStatusToHIPStatus(rocsparse_spmv((rocsparse_handle)handle,
-                                                    hipOperationToHCCOperation(opA),
-                                                    alpha,
-                                                    (const rocsparse_spmat_descr)matA,
-                                                    (const rocsparse_dnvec_descr)vecX,
-                                                    beta,
-                                                    (const rocsparse_dnvec_descr)vecY,
-                                                    hipDataTypeToHCCDataType(computeType),
-                                                    hipSpMVAlgToHCCSpMVAlg(alg),
-                                                    &bufferSize,
-                                                    nullptr)); 
+                                                     hipOperationToHCCOperation(opA),
+                                                     alpha,
+                                                     (const rocsparse_spmat_descr)matA,
+                                                     (const rocsparse_dnvec_descr)vecX,
+                                                     beta,
+                                                     (const rocsparse_dnvec_descr)vecY,
+                                                     hipDataTypeToHCCDataType(computeType),
+                                                     hipSpMVAlgToHCCSpMVAlg(alg),
+                                                     &bufferSize,
+                                                     nullptr));
 }
 
 hipsparseStatus_t hipsparseSpMV(hipsparseHandle_t           handle,

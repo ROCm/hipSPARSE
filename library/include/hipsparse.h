@@ -9338,7 +9338,6 @@ hipsparseStatus_t hipsparseSpMV_preprocess(hipsparseHandle_t           handle,
                                            void*                       externalBuffer);
 #endif
 
-
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 /* Description: Compute the sparse matrix multiplication with a dense matrix */
 HIPSPARSE_EXPORT

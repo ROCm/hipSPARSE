@@ -130,7 +130,8 @@ void testing_spmv_csr_bad_arg(void)
         hipsparseSpMV_preprocess(handle, transA, &alpha, A, x, &beta, nullptr, dataType, alg, dbuf),
         "Error: y is nullptr");
     verify_hipsparse_status_invalid_pointer(
-        hipsparseSpMV_preprocess(handle, transA, &alpha, A, x, &beta, nullptr, dataType, alg, nullptr),
+        hipsparseSpMV_preprocess(
+            handle, transA, &alpha, A, x, &beta, nullptr, dataType, alg, nullptr),
         "Error: dbuf is nullptr");
 
     // SpMV
