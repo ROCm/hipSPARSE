@@ -1,5 +1,5 @@
 /* ************************************************************************
-* Copyright (c) 2018-2021 Advanced Micro Devices, Inc.
+* Copyright (c) 2018-2022 Advanced Micro Devices, Inc.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -11056,8 +11056,7 @@ hipsparseStatus_t hipsparseDnMatSetValues(hipsparseDnMatDescr_t dnMatDescr, void
 }
 #endif
 
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
-HIPSPARSE_EXPORT
+#if(CUDART_VERSION >= 11031)
 hipsparseStatus_t hipsparseSpMatGetAttribute(hipsparseSpMatDescr_t     spMatDescr,
                                              hipsparseSpMatAttribute_t attribute,
                                              void*                     data,
@@ -11068,8 +11067,7 @@ hipsparseStatus_t hipsparseSpMatGetAttribute(hipsparseSpMatDescr_t     spMatDesc
 }
 #endif
 
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
-HIPSPARSE_EXPORT
+#if(CUDART_VERSION >= 11031)
 hipsparseStatus_t hipsparseSpMatSetAttribute(hipsparseSpMatDescr_t     spMatDescr,
                                              hipsparseSpMatAttribute_t attribute,
                                              const void*               data,
@@ -11274,6 +11272,33 @@ hipsparseStatus_t hipsparseSpMV_bufferSize(hipsparseHandle_t           handle,
                                 hipDataTypeToCudaDataType(computeType),
                                 hipSpMVAlgToCudaSpMVAlg(alg),
                                 bufferSize));
+}
+#endif
+
+#if(CUDART_VERSION >= 10010)
+hipsparseStatus_t hipsparseSpMV_preprocess(hipsparseHandle_t           handle,
+                                           hipsparseOperation_t        opA,
+                                           const void*                 alpha,
+                                           const hipsparseSpMatDescr_t matA,
+                                           const hipsparseDnVecDescr_t vecX,
+                                           const void*                 beta,
+                                           const hipsparseDnVecDescr_t vecY,
+                                           hipDataType                 computeType,
+                                           hipsparseSpMVAlg_t          alg,
+                                           void*                       externalBuffer)
+{
+    if(handle == nullptr)
+    {
+        return rocSPARSEStatusToHIPStatus(rocsparse_status_invalid_handle);
+    }
+
+    if(matA == nullptr || vecX == nullptr || vecY == nullptr || alpha == nullptr || beta == nullptr
+       || externalBuffer == nullptr)
+    {
+        return rocSPARSEStatusToHIPStatus(rocsparse_status_invalid_pointer);
+    }
+
+    return HIPSPARSE_STATUS_SUCCESS;
 }
 #endif
 
@@ -11489,8 +11514,7 @@ hipsparseStatus_t hipsparseSpGEMM_copy(hipsparseHandle_t      handle,
 }
 #endif
 
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
-HIPSPARSE_EXPORT
+#if(CUDART_VERSION >= 11031)
 hipsparseStatus_t hipsparseSpGEMMreuse_workEstimation(hipsparseHandle_t      handle,
                                                       hipsparseOperation_t   opA,
                                                       hipsparseOperation_t   opB,
@@ -11516,8 +11540,7 @@ hipsparseStatus_t hipsparseSpGEMMreuse_workEstimation(hipsparseHandle_t      han
 }
 #endif
 
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
-HIPSPARSE_EXPORT
+#if(CUDART_VERSION >= 11031)
 hipsparseStatus_t hipsparseSpGEMMreuse_nnz(hipsparseHandle_t      handle,
                                            hipsparseOperation_t   opA,
                                            hipsparseOperation_t   opB,
@@ -11551,8 +11574,7 @@ hipsparseStatus_t hipsparseSpGEMMreuse_nnz(hipsparseHandle_t      handle,
 
 #endif
 
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
-HIPSPARSE_EXPORT
+#if(CUDART_VERSION >= 11031)
 hipsparseStatus_t hipsparseSpGEMMreuse_compute(hipsparseHandle_t      handle,
                                                hipsparseOperation_t   opA,
                                                hipsparseOperation_t   opB,
@@ -11580,8 +11602,7 @@ hipsparseStatus_t hipsparseSpGEMMreuse_compute(hipsparseHandle_t      handle,
 }
 #endif
 
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
-HIPSPARSE_EXPORT
+#if(CUDART_VERSION >= 11031)
 hipsparseStatus_t hipsparseSpGEMMreuse_copy(hipsparseHandle_t      handle,
                                             hipsparseOperation_t   opA,
                                             hipsparseOperation_t   opB,
@@ -12583,7 +12604,6 @@ hipsparseStatus_t hipsparseZgpsvInterleavedBatch(hipsparseHandle_t handle,
         (cusparseHandle_t)handle, algo, m, ds, dl, d, du, dw, x, batchCount, pBuffer));
 }
 
-HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseScsrcolor(hipsparseHandle_t         handle,
                                      int                       m,
                                      int                       nnz,
@@ -12611,7 +12631,6 @@ hipsparseStatus_t hipsparseScsrcolor(hipsparseHandle_t         handle,
                                                           (cusparseColorInfo_t)info));
 }
 
-HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDcsrcolor(hipsparseHandle_t         handle,
                                      int                       m,
                                      int                       nnz,
@@ -12639,7 +12658,6 @@ hipsparseStatus_t hipsparseDcsrcolor(hipsparseHandle_t         handle,
                                                           (cusparseColorInfo_t)info));
 }
 
-HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCcsrcolor(hipsparseHandle_t         handle,
                                      int                       m,
                                      int                       nnz,
@@ -12667,7 +12685,6 @@ hipsparseStatus_t hipsparseCcsrcolor(hipsparseHandle_t         handle,
                                                           (cusparseColorInfo_t)info));
 }
 
-HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseZcsrcolor(hipsparseHandle_t         handle,
                                      int                       m,
                                      int                       nnz,
