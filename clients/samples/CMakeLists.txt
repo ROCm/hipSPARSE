@@ -28,7 +28,9 @@ function(add_hipsparse_example EXAMPLE_SOURCE)
   get_filename_component(EXAMPLE_TARGET ${EXAMPLE_SOURCE} NAME_WE)
   add_executable(${EXAMPLE_TARGET} ${EXAMPLE_SOURCE} ${HIPSPARSE_CLIENTS_COMMON})
 
-  if("${EXAMPLE_TARGET}" MATCHES ".*fortran.*")
+  get_filename_component(EXAMPLE_EXTENSION ${EXAMPLE_SOURCE} LAST_EXT)
+
+  if("${EXAMPLE_EXTENSION}" STREQUAL ".f90")
     add_dependencies(${EXAMPLE_TARGET} hipsparse_fortran)
   endif()
 
