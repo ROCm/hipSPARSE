@@ -26,19 +26,30 @@
 # Git
 find_package(Git REQUIRED)
 
+message("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+message(STATUS "\t==>HIP_PATH link            : ${HIP_PATH}")
+message(STATUS "\t==>CMAKE_MODULE_PATH link   : ${CMAKE_MODULE_PATH}")
+message(STATUS "\t==>CMAKE_PREFIX_PATH link   : ${CMAKE_PREFIX_PATH}")
+
 if( NOT DEFINED ENV{HIP_PATH})
-    set( HIP_PATH "/opt/rocm/hip" )
+    if(WIN32)
+        set( HIP_PATH "C:/hip" )
+    else ()
+        set( HIP_PATH "/opt/rocm/hip" )
 else( )
     set (HIP_PATH $ENV{HIP_PATH} )
 endif( )
 
+message("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")
+message(STATUS "\t==>HIP_PATH link            : ${HIP_PATH}")
+
 # Either rocSPARSE or cuSPARSE is required
 if(NOT USE_CUDA)
-  find_package(hip REQUIRED CONFIG PATHS ${HIP_PATH} ${ROCM_PATH} /opt/rocm)
-  find_package(rocsparse REQUIRED)
   if(WIN32)
+        find_package(hip REQUIRED CONFIG PATHS ${HIP_PATH} ${ROCM_PATH})
         find_package( rocsparse REQUIRED CONFIG PATHS ${ROCSPARSE_PATH} )
   else()
+        find_package(hip REQUIRED CONFIG PATHS ${HIP_PATH} ${ROCM_PATH} /opt/rocm)
         find_package( rocsparse REQUIRED CONFIG PATHS /opt/rocm /opt/rocm/rocsparse /usr/local/rocsparse )
   endif()
 else()
