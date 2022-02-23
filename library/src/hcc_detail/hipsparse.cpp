@@ -13381,8 +13381,6 @@ hipsparseStatus_t hipsparseSpMV_bufferSize(hipsparseHandle_t           handle,
         return rocSPARSEStatusToHIPStatus(rocsparse_status_invalid_pointer);
     }
 
-    std::cout << "hipsparseSpMV_bufferSize called" << std::endl;
-
     *bufferSize = 4;
     return HIPSPARSE_STATUS_SUCCESS;
 }
@@ -13398,7 +13396,6 @@ hipsparseStatus_t hipsparseSpMV_preprocess(hipsparseHandle_t           handle,
                                            hipsparseSpMVAlg_t          alg,
                                            void*                       externalBuffer)
 {
-    std::cout << "hipsparseSpMV_preprocess called" << std::endl;
     size_t bufferSize;
     return rocSPARSEStatusToHIPStatus(rocsparse_spmv((rocsparse_handle)handle,
                                                      hipOperationToHCCOperation(opA),
