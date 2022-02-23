@@ -11289,13 +11289,13 @@ hipsparseStatus_t hipsparseSpMV_preprocess(hipsparseHandle_t           handle,
 {
     if(handle == nullptr)
     {
-        return rocSPARSEStatusToHIPStatus(rocsparse_status_invalid_handle);
+        return HIPSPARSE_STATUS_INVALID_VALUE;
     }
 
     if(matA == nullptr || vecX == nullptr || vecY == nullptr || alpha == nullptr || beta == nullptr
        || externalBuffer == nullptr)
     {
-        return rocSPARSEStatusToHIPStatus(rocsparse_status_invalid_pointer);
+        return HIPSPARSE_STATUS_INVALID_VALUE;
     }
 
     return HIPSPARSE_STATUS_SUCCESS;
