@@ -26,22 +26,15 @@
 # Git
 find_package(Git REQUIRED)
 
-message("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-message(STATUS "\t==>HIP_PATH link            : ${HIP_PATH}")
-message(STATUS "\t==>CMAKE_MODULE_PATH link   : ${CMAKE_MODULE_PATH}")
-message(STATUS "\t==>CMAKE_PREFIX_PATH link   : ${CMAKE_PREFIX_PATH}")
-
 if( NOT DEFINED ENV{HIP_PATH})
     if(WIN32)
         set( HIP_PATH "C:/hip" )
     else ()
         set( HIP_PATH "/opt/rocm/hip" )
+    endif()
 else( )
-    set (HIP_PATH $ENV{HIP_PATH} )
+    file(TO_CMAKE_PATH "$ENV{HIP_PATH}" HIP_PATH)
 endif( )
-
-message("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")
-message(STATUS "\t==>HIP_PATH link            : ${HIP_PATH}")
 
 # Either rocSPARSE or cuSPARSE is required
 if(NOT USE_CUDA)

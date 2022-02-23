@@ -45,8 +45,6 @@
 #include <hip/hip_complex.h>
 #include <hip/hip_runtime.h>
 
-#define __HIP_PLATFORM_AMD__ 1
-
 #define DEPRECATED_CUDA_11000(warning)
 #define DEPRECATED_CUDA_10000(warning)
 #define DEPRECATED_CUDA_9000(warning)
