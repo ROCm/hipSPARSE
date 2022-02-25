@@ -1,5 +1,5 @@
 # ########################################################################
-# Copyright (c) 2018-2020 Advanced Micro Devices, Inc.
+# Copyright (c) 2018-2022 Advanced Micro Devices, Inc.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -27,6 +27,12 @@ set(HIPSPARSE_CLIENTS_COMMON ../common/utility.cpp)
 function(add_hipsparse_example EXAMPLE_SOURCE)
   get_filename_component(EXAMPLE_TARGET ${EXAMPLE_SOURCE} NAME_WE)
   add_executable(${EXAMPLE_TARGET} ${EXAMPLE_SOURCE} ${HIPSPARSE_CLIENTS_COMMON})
+
+  get_filename_component(EXAMPLE_EXTENSION ${EXAMPLE_SOURCE} LAST_EXT)
+
+  if("${EXAMPLE_EXTENSION}" STREQUAL ".f90")
+    add_dependencies(${EXAMPLE_TARGET} hipsparse_fortran)
+  endif()
 
   # Include common client headers
   target_include_directories(${EXAMPLE_TARGET} PRIVATE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>)
