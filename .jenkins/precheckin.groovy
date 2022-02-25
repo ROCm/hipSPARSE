@@ -19,7 +19,7 @@ def runCI =
     prj.compiler.compiler_name = 'c++'
     prj.compiler.compiler_path = 'c++'
     prj.libraryDependencies = ['rocSPARSE', 'rocPRIM']
-    prj.defaults.ccache = true
+    prj.defaults.ccache = false
 
     // Define test architectures, optional rocm version argument is available
     def nodes = new dockerNodes(nodeDetails, jobName, prj)
