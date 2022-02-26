@@ -32,12 +32,16 @@ endif()
 
 # Configure a header file to pass the hipSPARSE version
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/include/hipsparse-version.h.in"
-               "${PROJECT_BINARY_DIR}/include/hipsparse-version.h")
+               "${PROJECT_BINARY_DIR}/include/hipsparse/hipsparse-version.h")
+
+# Copy Header files to build directory
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/include/hipsparse.h"
+               "${PROJECT_BINARY_DIR}/include/hipsparse/hipsparse.h" COPYONLY)
 
 # Public hipSPARSE headers
 set(hipsparse_headers_public
   include/hipsparse.h
-  ${PROJECT_BINARY_DIR}/include/hipsparse-version.h)
+  ${PROJECT_BINARY_DIR}/include/hipsparse/hipsparse-version.h)
 
 source_group("Header Files\\Public" FILES ${hipsparse_headers_public})
 
@@ -107,29 +111,59 @@ endif()
 
 # Generate export header
 include(GenerateExportHeader)
-generate_export_header(hipsparse EXPORT_FILE_NAME ${PROJECT_BINARY_DIR}/include/hipsparse-export.h)
+generate_export_header(hipsparse EXPORT_FILE_NAME ${PROJECT_BINARY_DIR}/include/hipsparse/hipsparse-export.h)
+
+if (BUILD_FILE_REORG_BACKWARD_COMPATIBILITY)
+  include(${PROJECT_SOURCE_DIR}/cmake/hipsparse-backward-compat.cmake)
+  package_gen_bkwdcomp_hdrfile( "${PROJECT_BINARY_DIR}/include/hipsparse/hipsparse-version.h" )
+  package_gen_bkwdcomp_hdrfile( "${PROJECT_BINARY_DIR}/include/hipsparse/hipsparse-export.h" )
+  message( STATUS "Completed package_gen_bkwdcomp_hdrfile() for hipsparse version, export headers")
+endif( )
+
+
+
 
 # Install targets
 rocm_install_targets(TARGETS hipsparse
                      INCLUDE
-                       ${CMAKE_SOURCE_DIR}/library/include
                        ${CMAKE_BINARY_DIR}/include
-                     PREFIX hipsparse)
+                     )
+
+install(
+       DIRECTORY "${CMAKE_SOURCE_DIR}/library/include/hipsparse/" "${PROJECT_BINARY_DIR}/include/hipsparse/"
+       DESTINATION "include/hipsparse/"
+       FILES_MATCHING
+       PATTERN "*.h"
+       PATTERN "*.hpp"
+       PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ )
+
+if(BUILD_FILE_REORG_BACKWARD_COMPATIBILITY)
+install(
+    DIRECTORY
+       "${PROJECT_BINARY_DIR}/include/"
+        DESTINATION "include/"
+  FILES_MATCHING
+  PATTERN "*.h"
+  PATTERN "*.hpp"
+  PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ )
+
+  install(
+    DIRECTORY
+       "${PROJECT_BINARY_DIR}/hipsparse"
+        DESTINATION "." )
+  message( STATUS "Backward Compatible Sym Link Created for include directories" )
+endif()
+
 
 # Export targets
 if(NOT USE_CUDA)
   rocm_export_targets(TARGETS roc::hipsparse
-                      PREFIX hipsparse
                       DEPENDS PACKAGE hip
                       NAMESPACE roc::)
 else()
   rocm_export_targets(TARGETS roc::hipsparse
-                      PREFIX hipsparse
                       NAMESPACE roc::)
 endif()
-
-# Symbolic links
-rocm_install_symlink_subdir(hipsparse)
 
 # Package specific CPACK vars
 if(NOT USE_CUDA)

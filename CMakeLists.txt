@@ -36,7 +36,7 @@ else()
 endif()
 
 # Pick up static and dynamic shared object files
-list( APPEND CMAKE_PREFIX_PATH /opt/rocm/llvm /opt/rocm/hip )
+list( APPEND CMAKE_PREFIX_PATH /opt/rocm/llvm /opt/rocm /opt/rocm/hip )
 
 # CMake modules
 list(APPEND CMAKE_MODULE_PATH
@@ -102,6 +102,17 @@ endif()
 
 # Dependencies
 include(cmake/Dependencies.cmake)
+
+# FOR HANDLING ENABLE/DISABLE OPTIONAL BACKWARD COMPATIBILITY for FILE/FOLDER REORG
+option(BUILD_FILE_REORG_BACKWARD_COMPATIBILITY "Build with file/folder reorg with backward compatibility enabled" OFF)
+if(BUILD_FILE_REORG_BACKWARD_COMPATIBILITY)
+  include(cmake/hipsparse-backward-compat.cmake)
+  package_gen_bkwdcomp_hdrs()
+  message (STATUS "Completed package_gen_bkwdcomp_hdrs() Configuration")
+endif()
+
+
+
 
 # Setup version
 rocm_setup_version(VERSION 2.0.0)
