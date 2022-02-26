@@ -44,7 +44,7 @@ TEST(spgemmreuse_csr, spgemmreuse_csr_i32_i32_double)
 }
 
 // 64 bit indices not supported in cusparse
-#if(!defined(CUDART_VERSION)
+#if(!defined(CUDART_VERSION))
 TEST(spgemmreuse_csr, spgemmreuse_csr_i64_i32_double)
 {
     hipsparseStatus_t status = testing_spgemmreuse_csr<int64_t, int32_t, double>();
