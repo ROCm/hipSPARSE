@@ -56,7 +56,7 @@ include(src/CMakeLists.txt)
 
 if (NOT WIN32)
 # Set Fortran module output directory
-set(CMAKE_Fortran_MODULE_DIRECTORY ${PROJECT_BINARY_DIR}/include)
+set(CMAKE_Fortran_MODULE_DIRECTORY ${PROJECT_BINARY_DIR}/include/hipsparse)
 
 # Create hipSPARSE Fortran module
 add_library(hipsparse_fortran OBJECT ${hipsparse_fortran_source})
@@ -76,6 +76,7 @@ target_compile_options(hipsparse PRIVATE -Wno-unused-command-line-argument -Wall
 target_include_directories(hipsparse
                            PRIVATE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/include>
                            PUBLIC  $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/library/include>
+                                   $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include/hipsparse>
                                    $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
                                    $<INSTALL_INTERFACE:include>)
 
@@ -114,14 +115,12 @@ include(GenerateExportHeader)
 generate_export_header(hipsparse EXPORT_FILE_NAME ${PROJECT_BINARY_DIR}/include/hipsparse/hipsparse-export.h)
 
 if (BUILD_FILE_REORG_BACKWARD_COMPATIBILITY)
-  include(${PROJECT_SOURCE_DIR}/cmake/hipsparse-backward-compat.cmake)
-  package_gen_bkwdcomp_hdrfile( "${PROJECT_BINARY_DIR}/include/hipsparse/hipsparse-version.h" )
-  package_gen_bkwdcomp_hdrfile( "${PROJECT_BINARY_DIR}/include/hipsparse/hipsparse-export.h" )
-  message( STATUS "Completed package_gen_bkwdcomp_hdrfile() for hipsparse version, export headers")
+  rocm_wrap_header_file(
+    hipsparse-version.h hipsparse-export.h
+    GUARDS SYMLINK WRAPPER
+    WRAPPER_LOCATIONS include hipsparse/include
+  )
 endif( )
-
-
-
 
 # Install targets
 rocm_install_targets(TARGETS hipsparse
@@ -129,25 +128,8 @@ rocm_install_targets(TARGETS hipsparse
                        ${CMAKE_BINARY_DIR}/include
                      )
 
-install(
-       DIRECTORY "${CMAKE_SOURCE_DIR}/library/include/hipsparse/" "${PROJECT_BINARY_DIR}/include/hipsparse/"
-       DESTINATION "include/hipsparse/"
-       FILES_MATCHING
-       PATTERN "*.h"
-       PATTERN "*.hpp"
-       PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ )
-
 if(BUILD_FILE_REORG_BACKWARD_COMPATIBILITY)
-install(
-    DIRECTORY
-       "${PROJECT_BINARY_DIR}/include/"
-        DESTINATION "include/"
-  FILES_MATCHING
-  PATTERN "*.h"
-  PATTERN "*.hpp"
-  PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ )
-
-  install(
+  rocm_install(
     DIRECTORY
        "${PROJECT_BINARY_DIR}/hipsparse"
         DESTINATION "." )

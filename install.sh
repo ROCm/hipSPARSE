@@ -23,7 +23,7 @@ function display_help()
   echo "    [--cuda] build library for cuda backend"
   echo "    [--static] build static library"
   echo "    [--address-sanitizer] build with address sanitizer enabled. Uses hipcc to compile"
-  echo "    [--freorg-bkwdcomp] Build with backward compatibility for Package file/folder reorg enabled."
+  echo "    [--rm-legacy-include-dir] Remove legacy include dir Packaging added for file/folder reorg backward compatibility."
 }
 
 # This function is helpful for dockerfiles that do not have sudo installed, but the default user is root
@@ -252,7 +252,7 @@ install_prefix=hipsparse-install
 rocm_path=/opt/rocm
 build_relocatable=false
 build_address_sanitizer=false
-build_freorg_bkwdcomp=false
+build_freorg_bkwdcomp=true
 compiler=${CXX}
 
 # #################################################
@@ -262,7 +262,7 @@ compiler=${CXX}
 # check if we have a modern version of getopt that can handle whitespace and long parameters
 getopt -T
 if [[ $? -eq 4 ]]; then
-  GETOPT_PARSE=$(getopt --name "${0}" --longoptions help,install,clients,dependencies,debug,compiler:,cuda,static,relocatable,codecoverage,relwithdebinfo,address-sanitizer,freorg-bkwdcomp --options hicdgrk -- "$@")
+  GETOPT_PARSE=$(getopt --name "${0}" --longoptions help,install,clients,dependencies,debug,compiler:,cuda,static,relocatable,codecoverage,relwithdebinfo,address-sanitizer,rm-legacy-include-dir --options hicdgrk -- "$@")
 else
   echo "Need a new version of getopt"
   exit 1
@@ -316,8 +316,8 @@ while true; do
         build_address_sanitizer=true
         compiler=hipcc
         shift ;;
-    --freorg-bkwdcomp)
-        build_freorg_bkwdcomp=true
+    --rm-legacy-include-dir)
+        build_freorg_bkwdcomp=false
         shift ;;
     --prefix)
         install_prefix=${2}
@@ -433,6 +433,8 @@ pushd .
   # freorg backward compatible support enable
   if [[ "${build_freorg_bkwdcomp}" == true ]]; then
     cmake_common_options="${cmake_common_options} -DBUILD_FILE_REORG_BACKWARD_COMPATIBILITY=ON"
+  else
+    cmake_common_options="${cmake_common_options} -DBUILD_FILE_REORG_BACKWARD_COMPATIBILITY=OFF"
   fi
  
   # library type
