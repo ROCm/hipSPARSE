@@ -1,5 +1,5 @@
 /* ************************************************************************
- * Copyright (c) 2021 Advanced Micro Devices, Inc.
+ * Copyright (c) 2022 Advanced Micro Devices, Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -37,6 +37,11 @@ using namespace hipsparse_test;
 
 void testing_spsv_csr_bad_arg(void)
 {
+#ifdef __HIP_PLATFORM_NVIDIA__
+    // do not test for bad args
+    return;
+#endif
+
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11030)
     int64_t              m         = 100;
     int64_t              n         = 100;
