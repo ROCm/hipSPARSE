@@ -44,8 +44,7 @@ hipsparseAction_t gebsr2gebsc_action_range[]
 hipsparseIndexBase_t gebsr2gebsc_csr_base_range[]
     = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
-std::string gebsr2gebsc_bin[] = {"rma10.bin",
-                                 "scircuit.bin",
+std::string gebsr2gebsc_bin[] = {"scircuit.bin",
                                  "nos1.bin",
                                  "nos2.bin",
                                  "nos3.bin",

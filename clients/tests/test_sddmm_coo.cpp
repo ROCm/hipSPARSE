@@ -25,8 +25,8 @@
 
 #include <hipsparse.h>
 
-// Only run tests for CUDA 11.2.2 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11022)
+// COO format not supported in cusparse
+#if(!defined(CUDART_VERSION))
 TEST(sddmm_coo_bad_arg, sddmm_coo_float)
 {
     testing_sddmm_coo_bad_arg();
