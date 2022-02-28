@@ -157,7 +157,6 @@ TEST_P(parameterized_csrsm2_bin, csrsm2_bin_double)
     hipsparseStatus_t status = testing_csrsm2<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-#endif
 
 INSTANTIATE_TEST_SUITE_P(csrsm2,
                          parameterized_csrsm2,
@@ -180,3 +179,4 @@ INSTANTIATE_TEST_SUITE_P(csrsm2_bin,
                                           testing::ValuesIn(csrsm2_diag_range),
                                           testing::ValuesIn(csrsm2_fill_range),
                                           testing::ValuesIn(csrsm2_bin)));
+#endif
