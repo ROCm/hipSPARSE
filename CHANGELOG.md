@@ -1,6 +1,6 @@
 # Change Log for hipSPARSE
 
-## (Unreleased) hipSPARSE 2.0.0
+## hipSPARSE 2.0.0 for ROCm 5.0.0
 ### Added
 - Added (conjugate) transpose support for csrmv, hybmv and spmv routines
 
