@@ -1,5 +1,5 @@
 /* ************************************************************************
-* Copyright (c) 2018-2021 Advanced Micro Devices, Inc.
+* Copyright (c) 2018-2022 Advanced Micro Devices, Inc.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -9354,8 +9354,8 @@ hipsparseStatus_t hipsparseSpVV(hipsparseHandle_t     handle,
                                 void*                 externalBuffer);
 #endif
 
-/* Description: Compute the sparse matrix multiplication with a dense vector */
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
+/* Description: Buffer size step of the sparse matrix multiplication with a dense vector */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpMV_bufferSize(hipsparseHandle_t           handle,
                                            hipsparseOperation_t        opA,
@@ -9370,6 +9370,22 @@ hipsparseStatus_t hipsparseSpMV_bufferSize(hipsparseHandle_t           handle,
 #endif
 
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
+/* Description: Preprocess step of the sparse matrix multiplication with a dense vector (optional)*/
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpMV_preprocess(hipsparseHandle_t           handle,
+                                           hipsparseOperation_t        opA,
+                                           const void*                 alpha,
+                                           const hipsparseSpMatDescr_t matA,
+                                           const hipsparseDnVecDescr_t vecX,
+                                           const void*                 beta,
+                                           const hipsparseDnVecDescr_t vecY,
+                                           hipDataType                 computeType,
+                                           hipsparseSpMVAlg_t          alg,
+                                           void*                       externalBuffer);
+#endif
+
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
+/* Description: Compute the sparse matrix multiplication with a dense matrix */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpMV(hipsparseHandle_t           handle,
                                 hipsparseOperation_t        opA,

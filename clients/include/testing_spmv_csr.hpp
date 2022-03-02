@@ -1,5 +1,5 @@
 /* ************************************************************************
- * Copyright (c) 2020 Advanced Micro Devices, Inc.
+ * Copyright (c) 2022 Advanced Micro Devices, Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -110,6 +110,29 @@ void testing_spmv_csr_bad_arg(void)
     verify_hipsparse_status_invalid_pointer(
         hipsparseSpMV_bufferSize(handle, transA, &alpha, A, x, &beta, y, dataType, alg, nullptr),
         "Error: bsize is nullptr");
+
+    // SpMV preprocess (optional)
+    verify_hipsparse_status_invalid_handle(
+        hipsparseSpMV_preprocess(nullptr, transA, &alpha, A, x, &beta, y, dataType, alg, dbuf));
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseSpMV_preprocess(handle, transA, nullptr, A, x, &beta, y, dataType, alg, dbuf),
+        "Error: alpha is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseSpMV_preprocess(handle, transA, &alpha, nullptr, x, &beta, y, dataType, alg, dbuf),
+        "Error: A is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseSpMV_preprocess(handle, transA, &alpha, A, nullptr, &beta, y, dataType, alg, dbuf),
+        "Error: x is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseSpMV_preprocess(handle, transA, &alpha, A, x, nullptr, y, dataType, alg, dbuf),
+        "Error: beta is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseSpMV_preprocess(handle, transA, &alpha, A, x, &beta, nullptr, dataType, alg, dbuf),
+        "Error: y is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseSpMV_preprocess(
+            handle, transA, &alpha, A, x, &beta, nullptr, dataType, alg, nullptr),
+        "Error: dbuf is nullptr");
 
     // SpMV
     verify_hipsparse_status_invalid_handle(
@@ -254,6 +277,10 @@ hipsparseStatus_t testing_spmv_csr(void)
 
     void* buffer;
     CHECK_HIP_ERROR(hipMalloc(&buffer, bufferSize));
+
+    // Preprocess (optional)
+    CHECK_HIPSPARSE_ERROR(
+        hipsparseSpMV_preprocess(handle, transA, &h_alpha, A, x, &h_beta, y1, typeT, alg, buffer));
 
     // ROCSPARSE pointer mode host
     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));

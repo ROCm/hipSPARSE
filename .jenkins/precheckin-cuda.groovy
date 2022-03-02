@@ -42,8 +42,16 @@ def runCI =
         commonGroovy.runPackageCommand(platform, project)
     }
 
-    //Temporarily disable testing
-    buildProject(prj, formatCheck, nodes.dockerArray, compileCommand, null, packageCommand)
+    def testCommand =
+    {
+        platform, project->
+
+        def gfilter = "*checkin*csrmv*"
+
+        commonGroovy.runTestCommand(platform, project, gfilter)
+    }
+
+    buildProject(prj, formatCheck, nodes.dockerArray, compileCommand, testCommand, packageCommand)
 }
 
 ci: { 

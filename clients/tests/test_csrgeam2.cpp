@@ -151,7 +151,6 @@ TEST_P(parameterized_csrgeam2_bin, csrgeam2_bin_double)
     hipsparseStatus_t status = testing_csrgeam2<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-#endif
 
 INSTANTIATE_TEST_SUITE_P(csrgeam2,
                          parameterized_csrgeam2,
@@ -171,3 +170,4 @@ INSTANTIATE_TEST_SUITE_P(csrgeam2_bin,
                                           testing::ValuesIn(csrgeam2_idxbaseB_range),
                                           testing::ValuesIn(csrgeam2_idxbaseC_range),
                                           testing::ValuesIn(csrgeam2_bin)));
+#endif

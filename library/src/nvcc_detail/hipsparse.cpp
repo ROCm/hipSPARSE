@@ -1,5 +1,5 @@
 /* ************************************************************************
-* Copyright (c) 2018-2021 Advanced Micro Devices, Inc.
+* Copyright (c) 2018-2022 Advanced Micro Devices, Inc.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -11335,6 +11335,33 @@ hipsparseStatus_t hipsparseSpMV_bufferSize(hipsparseHandle_t           handle,
 #endif
 
 #if(CUDART_VERSION >= 10010)
+hipsparseStatus_t hipsparseSpMV_preprocess(hipsparseHandle_t           handle,
+                                           hipsparseOperation_t        opA,
+                                           const void*                 alpha,
+                                           const hipsparseSpMatDescr_t matA,
+                                           const hipsparseDnVecDescr_t vecX,
+                                           const void*                 beta,
+                                           const hipsparseDnVecDescr_t vecY,
+                                           hipDataType                 computeType,
+                                           hipsparseSpMVAlg_t          alg,
+                                           void*                       externalBuffer)
+{
+    if(handle == nullptr)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
+
+    if(matA == nullptr || vecX == nullptr || vecY == nullptr || alpha == nullptr || beta == nullptr
+       || externalBuffer == nullptr)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
+
+    return HIPSPARSE_STATUS_SUCCESS;
+}
+#endif
+
+#if(CUDART_VERSION >= 10010)
 hipsparseStatus_t hipsparseSpMV(hipsparseHandle_t           handle,
                                 hipsparseOperation_t        opA,
                                 const void*                 alpha,
@@ -12717,7 +12744,6 @@ hipsparseStatus_t hipsparseCcsrcolor(hipsparseHandle_t         handle,
                                                           (cusparseColorInfo_t)info));
 }
 
-HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseZcsrcolor(hipsparseHandle_t         handle,
                                      int                       m,
                                      int                       nnz,
