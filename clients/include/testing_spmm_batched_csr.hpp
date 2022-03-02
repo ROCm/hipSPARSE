@@ -191,7 +191,7 @@ hipsparseStatus_t testing_spmm_batched_csr()
 #endif
 
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
-    T                    h_alpha  = make_DataType<T>(2.0);
+    T                    h_alpha  = make_DataType<T>(1.0);
     T                    h_beta   = make_DataType<T>(1.0);
     hipsparseOperation_t transA   = HIPSPARSE_OPERATION_NON_TRANSPOSE;
     hipsparseOperation_t transB   = HIPSPARSE_OPERATION_NON_TRANSPOSE;
@@ -199,8 +199,8 @@ hipsparseStatus_t testing_spmm_batched_csr()
     hipsparseIndexBase_t idx_base = HIPSPARSE_INDEX_BASE_ZERO;
 
     J batch_count_A = 1;
-    J batch_count_B = 10;
-    J batch_count_C = 10;
+    J batch_count_B = 3;
+    J batch_count_C = 3;
 
 #if(CUDART_VERSION >= 11003)
     hipsparseSpMMAlg_t alg = HIPSPARSE_SPMM_CSR_ALG1;
@@ -226,26 +226,47 @@ hipsparseStatus_t testing_spmm_batched_csr()
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
     hipsparseHandle_t              handle = test_handle->handle;
 
-    // Host structures
-    std::vector<I> hcsr_row_ptr;
-    std::vector<J> hcsr_col_ind;
-    std::vector<T> hcsr_val;
+    // // Host structures
+    // std::vector<I> hcsr_row_ptr;
+    // std::vector<J> hcsr_col_ind;
+    // std::vector<T> hcsr_val;
 
     // Initial Data on CPU
     srand(12345ULL);
 
-    J m;
-    J k;
-    I nnz;
+    // J m;
+    // J k;
+    // I nnz;
 
-    if(read_bin_matrix(filename.c_str(), m, k, nnz, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base)
-       != 0)
-    {
-        fprintf(stderr, "Cannot open [read] %s\n", filename.c_str());
-        return HIPSPARSE_STATUS_INTERNAL_ERROR;
-    }
+    // if(read_bin_matrix(filename.c_str(), m, k, nnz, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base)
+    //    != 0)
+    // {
+    //     fprintf(stderr, "Cannot open [read] %s\n", filename.c_str());
+    //     return HIPSPARSE_STATUS_INTERNAL_ERROR;
+    // }
 
-    J n   = 5;
+
+    // A
+    // 1 0 3
+    // 2 2 0
+    // 1 4 1
+    // 0 5 3
+
+    // Host structures
+    std::vector<I> hcsr_row_ptr = {0, 2, 4, 7, 9};
+    std::vector<J> hcsr_col_ind = {0, 2, 0, 1, 0, 1, 2, 1, 2};
+    std::vector<T> hcsr_val = {1, 3, 2, 2, 1, 4, 1, 5, 3};
+
+    J m = 4;
+    J k = 3;
+    I nnz = 9;
+
+
+
+
+
+
+    J n   = 3;
     J ldb = k;
     J ldc = m;
 
@@ -259,8 +280,38 @@ hipsparseStatus_t testing_spmm_batched_csr()
     std::vector<T> hC_2(batch_count_C * m * n);
     std::vector<T> hC_gold(batch_count_C * m * n);
 
-    hipsparseInit<T>(hB, batch_count_B * k * n, 1);
-    hipsparseInit<T>(hC_1, batch_count_C * m * n, 1);
+    //hipsparseInit<T>(hB, batch_count_B * k * n, 1);
+    //hipsparseInit<T>(hC_1, batch_count_C * m * n, 1);
+
+    for(int i = 0; i < batch_count_B; i++)
+    {
+        for(int j = 0; j < k * n; j++)
+        {
+            hB[k * n * i + j] = i + 1;
+        }
+    }
+
+    for(int i = 0; i < batch_count_C; i++)
+    {
+        for(int j = 0; j < m * n; j++)
+        {
+            hC_1[m * n * i + j] = i + 1;
+        }
+    }
+
+    std::cout << "hB" << std::endl;
+    for(size_t i = 0; i < hB.size(); i++)
+    {
+        std::cout << hB[i] << " ";
+    }
+    std::cout << "" << std::endl;
+
+    std::cout << "hC_1" << std::endl;
+    for(size_t i = 0; i < hC_1.size(); i++)
+    {
+        std::cout << hC_1[i] << " ";
+    }
+    std::cout << "" << std::endl;
 
     // copy vector is easy in STL; hC_gold = hC: save a copy in hy_gold which will be output of CPU
     hC_2    = hC_1;
@@ -367,6 +418,13 @@ hipsparseStatus_t testing_spmm_batched_csr()
     CHECK_HIP_ERROR(
         hipMemcpy(hC_2.data(), dC_2, sizeof(T) * batch_count_C * m * n, hipMemcpyDeviceToHost));
 
+    std::cout << "GPU hC_1" << std::endl;
+    for(size_t i = 0; i < hC_1.size(); i++)
+    {
+        std::cout << hC_1[i] << " ";
+    }
+    std::cout << "" << std::endl;
+
     // CPU
     double cpu_time_used = get_time_us();
 
@@ -393,6 +451,13 @@ hipsparseStatus_t testing_spmm_batched_csr()
                        batch_stride_C,
                        order,
                        idx_base);
+
+    std::cout << "CPU hC_gold" << std::endl;
+    for(size_t i = 0; i < hC_gold.size(); i++)
+    {
+        std::cout << hC_gold[i] << " ";
+    }
+    std::cout << "" << std::endl;
 
     cpu_time_used = get_time_us() - cpu_time_used;
 

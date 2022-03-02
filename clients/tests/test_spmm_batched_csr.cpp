@@ -44,9 +44,9 @@ TEST(spmm_batched_csr, spmm_batched_csr_i32_i32_double)
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-TEST(spmm_batched_csr, spmm_batched_csr_i32_i32_hipComplex)
-{
-    hipsparseStatus_t status = testing_spmm_batched_csr<int32_t, int32_t, hipComplex>();
-    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
-}
+// TEST(spmm_batched_csr, spmm_batched_csr_i32_i32_hipComplex)
+// {
+//     hipsparseStatus_t status = testing_spmm_batched_csr<int32_t, int32_t, hipComplex>();
+//     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+// }
 #endif
