@@ -245,7 +245,6 @@ hipsparseStatus_t testing_spmm_batched_csr()
     //     return HIPSPARSE_STATUS_INTERNAL_ERROR;
     // }
 
-
     // A
     // 1 0 3
     // 2 2 0
@@ -255,16 +254,11 @@ hipsparseStatus_t testing_spmm_batched_csr()
     // Host structures
     std::vector<I> hcsr_row_ptr = {0, 2, 4, 7, 9};
     std::vector<J> hcsr_col_ind = {0, 2, 0, 1, 0, 1, 2, 1, 2};
-    std::vector<T> hcsr_val = {1, 3, 2, 2, 1, 4, 1, 5, 3};
+    std::vector<T> hcsr_val     = {1, 3, 2, 2, 1, 4, 1, 5, 3};
 
-    J m = 4;
-    J k = 3;
+    J m   = 4;
+    J k   = 3;
     I nnz = 9;
-
-
-
-
-
 
     J n   = 3;
     J ldb = k;
