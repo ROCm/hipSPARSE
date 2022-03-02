@@ -2673,15 +2673,32 @@ void host_coomm(I                    M,
                 hipsparseOrder_t     order,
                 hipsparseIndexBase_t base)
 {
-    for(I j = 0; j < N; j++)
+    if(order == HIPSPARSE_ORDER_COLUMN)
     {
+        for(I j = 0; j < N; j++)
+        {
 #ifdef _OPENMP
 #pragma omp parallel for schedule(dynamic, 1024)
 #endif
+            for(I i = 0; i < M; ++i)
+            {
+                I idx_C  = i + j * ldc;
+                C[idx_C] = beta * C[idx_C];
+            }
+        }
+    }
+    else
+    {
         for(I i = 0; i < M; ++i)
         {
-            I idx_C  = order == HIPSPARSE_ORDER_COLUMN ? i + j * ldc : i * ldc + j;
-            C[idx_C] = beta * C[idx_C];
+#ifdef _OPENMP
+#pragma omp parallel for schedule(dynamic, 1024)
+#endif
+            for(I j = 0; j < N; j++)
+            {
+                I idx_C  = i * ldc + j;
+                C[idx_C] = beta * C[idx_C];
+            }
         }
     }
 
