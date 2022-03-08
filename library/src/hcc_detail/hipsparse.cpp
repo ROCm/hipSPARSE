@@ -13088,8 +13088,8 @@ hipsparseStatus_t hipsparseSpMatGetStridedBatch(hipsparseSpMatDescr_t spMatDescr
 
 hipsparseStatus_t hipsparseSpMatSetStridedBatch(hipsparseSpMatDescr_t spMatDescr, int batchCount)
 {
-    return rocSPARSEStatusToHIPStatus(rocsparse_spmat_set_strided_batch(
-        (rocsparse_spmat_descr)spMatDescr, batchCount));
+    return rocSPARSEStatusToHIPStatus(
+        rocsparse_spmat_set_strided_batch((rocsparse_spmat_descr)spMatDescr, batchCount));
 }
 
 hipsparseStatus_t hipsparseCooSetStridedBatch(hipsparseSpMatDescr_t spMatDescr,
