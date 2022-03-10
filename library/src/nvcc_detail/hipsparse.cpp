@@ -10936,6 +10936,70 @@ hipsparseStatus_t hipsparseSpMatSetValues(hipsparseSpMatDescr_t spMatDescr, void
 #endif
 
 #if(CUDART_VERSION >= 10010)
+hipsparseStatus_t hipsparseSpMatGetStridedBatch(hipsparseSpMatDescr_t spMatDescr, int* batchCount)
+{
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseSpMatGetStridedBatch((cusparseSpMatDescr_t)spMatDescr, batchCount));
+}
+#endif
+
+#if(CUDART_VERSION >= 10010)
+hipsparseStatus_t hipsparseSpMatSetStridedBatch(hipsparseSpMatDescr_t spMatDescr, int batchCount)
+{
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseSpMatSetStridedBatch((cusparseSpMatDescr_t)spMatDescr, batchCount));
+}
+#endif
+
+#if(CUDART_VERSION >= 11000)
+hipsparseStatus_t hipsparseCooSetStridedBatch(hipsparseSpMatDescr_t spMatDescr,
+                                              int                   batchCount,
+                                              int64_t               batchStride)
+{
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseCooSetStridedBatch((cusparseSpMatDescr_t)spMatDescr, batchCount, batchStride));
+}
+#endif
+
+#if(CUDART_VERSION >= 11000)
+hipsparseStatus_t hipsparseCsrSetStridedBatch(hipsparseSpMatDescr_t spMatDescr,
+                                              int                   batchCount,
+                                              int64_t               offsetsBatchStride,
+                                              int64_t               columnsValuesBatchStride)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseCsrSetStridedBatch((cusparseSpMatDescr_t)spMatDescr,
+                                                                   batchCount,
+                                                                   offsetsBatchStride,
+                                                                   columnsValuesBatchStride));
+}
+#endif
+
+#if(CUDART_VERSION >= 11031)
+hipsparseStatus_t hipsparseSpMatGetAttribute(hipsparseSpMatDescr_t     spMatDescr,
+                                             hipsparseSpMatAttribute_t attribute,
+                                             void*                     data,
+                                             size_t                    dataSize)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseSpMatGetAttribute(
+        (cusparseSpMatDescr_t)spMatDescr, (cusparseSpMatAttribute_t)attribute, data, dataSize));
+}
+#endif
+
+#if(CUDART_VERSION >= 11031)
+hipsparseStatus_t hipsparseSpMatSetAttribute(hipsparseSpMatDescr_t     spMatDescr,
+                                             hipsparseSpMatAttribute_t attribute,
+                                             const void*               data,
+                                             size_t                    dataSize)
+{
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseSpMatSetAttribute((cusparseSpMatDescr_t)spMatDescr,
+                                  (cusparseSpMatAttribute_t)attribute,
+                                  const_cast<void*>(data),
+                                  dataSize));
+}
+#endif
+
+#if(CUDART_VERSION >= 10010)
 hipsparseStatus_t hipsparseCreateDnVec(hipsparseDnVecDescr_t* dnVecDescr,
                                        int64_t                size,
                                        void*                  values,
@@ -11056,28 +11120,23 @@ hipsparseStatus_t hipsparseDnMatSetValues(hipsparseDnMatDescr_t dnMatDescr, void
 }
 #endif
 
-#if(CUDART_VERSION >= 11031)
-hipsparseStatus_t hipsparseSpMatGetAttribute(hipsparseSpMatDescr_t     spMatDescr,
-                                             hipsparseSpMatAttribute_t attribute,
-                                             void*                     data,
-                                             size_t                    dataSize)
+#if(CUDART_VERSION >= 10010)
+hipsparseStatus_t hipsparseDnMatGetStridedBatch(hipsparseDnMatDescr_t dnMatDescr,
+                                                int*                  batchCount,
+                                                int64_t*              batchStride)
 {
-    return hipCUSPARSEStatusToHIPStatus(cusparseSpMatGetAttribute(
-        (cusparseSpMatDescr_t)spMatDescr, (cusparseSpMatAttribute_t)attribute, data, dataSize));
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseDnMatGetStridedBatch((cusparseDnMatDescr_t)dnMatDescr, batchCount, batchStride));
 }
 #endif
 
-#if(CUDART_VERSION >= 11031)
-hipsparseStatus_t hipsparseSpMatSetAttribute(hipsparseSpMatDescr_t     spMatDescr,
-                                             hipsparseSpMatAttribute_t attribute,
-                                             const void*               data,
-                                             size_t                    dataSize)
+#if(CUDART_VERSION >= 10010)
+hipsparseStatus_t hipsparseDnMatSetStridedBatch(hipsparseDnMatDescr_t dnMatDescr,
+                                                int                   batchCount,
+                                                int64_t               batchStride)
 {
     return hipCUSPARSEStatusToHIPStatus(
-        cusparseSpMatSetAttribute((cusparseSpMatDescr_t)spMatDescr,
-                                  (cusparseSpMatAttribute_t)attribute,
-                                  const_cast<void*>(data),
-                                  dataSize));
+        cusparseDnMatSetStridedBatch((cusparseDnMatDescr_t)dnMatDescr, batchCount, batchStride));
 }
 #endif
 
