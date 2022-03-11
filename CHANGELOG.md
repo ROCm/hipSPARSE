@@ -1,5 +1,17 @@
 # Change Log for hipSPARSE
 
+## hipSPARSE 2.1.0 for ROCm 5.1.0
+### Added
+- Added gtsv_interleaved_batch and gpsv_interleaved_batch routines
+- Add SpGEMM_reuse
+### Changed
+- Changed BUILD_CUDA with USE_CUDA in install script and cmake files
+- Update googletest to 11.1
+### Improved
+- Fixed a bug in SpMM Alg versioning
+### Known Issues
+- none
+
 ## hipSPARSE 2.0.0 for ROCm 5.0.0
 ### Added
 - Added (conjugate) transpose support for csrmv, hybmv and spmv routines
