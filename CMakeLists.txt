@@ -141,6 +141,7 @@ if(BUILD_CLIENTS_SAMPLES OR BUILD_CLIENTS_TESTS)
     rocm_package_add_deb_dependencies(COMPONENT tests DEPENDS "libomp-dev")
     rocm_package_add_rpm_dependencies(COMPONENT benchmarks DEPENDS "${OPENMP_PKG}")
     rocm_package_add_deb_dependencies(COMPONENT benchmarks DEPENDS "libomp-dev")
+  endif()
 endif()
 
 # Package specific CPACK vars
