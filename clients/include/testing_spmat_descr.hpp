@@ -672,6 +672,66 @@ void testing_spmat_descr_bad_arg(void)
                                             "Error: val_ptr is nullptr");
 #endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
+    int     batch_count                 = 100;
+    int64_t batch_stride                = 100;
+    int64_t offsets_batch_stride        = 100;
+    int64_t columns_values_batch_stride = 100;
+
+    // hipsparseSpMatGetStridedBatch
+    verify_hipsparse_status_invalid_pointer(hipsparseSpMatGetStridedBatch(nullptr, &batch_count),
+                                            "Error: A is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseSpMatGetStridedBatch(coo, nullptr),
+                                            "Error: batch count is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseSpMatGetStridedBatch(csr, nullptr),
+                                            "Error: batch count is nullptr");
+
+    // hipsparseSpMatSetStridedBatch
+    verify_hipsparse_status_invalid_pointer(hipsparseSpMatSetStridedBatch(nullptr, batch_count),
+                                            "Error: A is nullptr");
+    verify_hipsparse_status_invalid_size(hipsparseSpMatSetStridedBatch(coo, -1),
+                                         "Error: batch count is invalid");
+    verify_hipsparse_status_invalid_size(hipsparseSpMatSetStridedBatch(csr, -1),
+                                         "Error: batch count is invalid");
+#endif
+
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
+    // hipsparseCooSetStridedBatch
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseCooSetStridedBatch(nullptr, batch_count, batch_stride), "Error: A is nullptr");
+    verify_hipsparse_status_invalid_size(hipsparseCooSetStridedBatch(coo, -1, batch_stride),
+                                         "Error: batch count is invalid");
+    verify_hipsparse_status_invalid_size(hipsparseCooSetStridedBatch(coo, batch_count, -1),
+                                         "Error: batch stride is invalid");
+    verify_hipsparse_status_invalid_size(hipsparseCooSetStridedBatch(coo, -1, -1),
+                                         "Error: batch count and batch stride is invalid");
+
+    // hipsparseCsrSetStridedBatch
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseCsrSetStridedBatch(
+            nullptr, batch_count, offsets_batch_stride, columns_values_batch_stride),
+        "Error: A is nullptr");
+    verify_hipsparse_status_invalid_size(
+        hipsparseCsrSetStridedBatch(csr, -1, offsets_batch_stride, columns_values_batch_stride),
+        "Error: batch count is invalid");
+    verify_hipsparse_status_invalid_size(
+        hipsparseCsrSetStridedBatch(csr, batch_count, -1, columns_values_batch_stride),
+        "Error: batch stride is invalid");
+    verify_hipsparse_status_invalid_size(
+        hipsparseCsrSetStridedBatch(csr, batch_count, offsets_batch_stride, -1),
+        "Error: batch stride is invalid");
+    verify_hipsparse_status_invalid_size(
+        hipsparseCsrSetStridedBatch(csr, -1, -1, columns_values_batch_stride),
+        "Error: batch count and batch stride is invalid");
+    verify_hipsparse_status_invalid_size(hipsparseCsrSetStridedBatch(csr, batch_count, -1, -1),
+                                         "Error: batch count and batch stride is invalid");
+    verify_hipsparse_status_invalid_size(
+        hipsparseCsrSetStridedBatch(csr, -1, offsets_batch_stride, -1),
+        "Error: batch count and batch stride is invalid");
+    verify_hipsparse_status_invalid_size(hipsparseCsrSetStridedBatch(csr, -1, -1, -1),
+                                         "Error: batch count and batch stride is invalid");
+#endif
+
     // Destroy valid descriptors
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
     verify_hipsparse_status_success(hipsparseDestroySpMat(coo), "Success");

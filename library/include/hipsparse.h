@@ -9100,6 +9100,54 @@ HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpMatSetValues(hipsparseSpMatDescr_t spMatDescr, void* values);
 #endif
 
+/* Description: Get the batch count of the sparse matrix */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpMatGetStridedBatch(hipsparseSpMatDescr_t spMatDescr, int* batchCount);
+#endif
+
+/* Description: Set the batch count of the sparse matrix */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
+DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpMatSetStridedBatch(hipsparseSpMatDescr_t spMatDescr, int batchCount);
+#endif
+
+/* Description: Set the batch count and stride of the sparse COO matrix */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCooSetStridedBatch(hipsparseSpMatDescr_t spMatDescr,
+                                              int                   batchCount,
+                                              int64_t               batchStride);
+#endif
+
+/* Description: Set the batch count and stride of the sparse CSR matrix */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCsrSetStridedBatch(hipsparseSpMatDescr_t spMatDescr,
+                                              int                   batchCount,
+                                              int64_t               offsetsBatchStride,
+                                              int64_t               columnsValuesBatchStride);
+#endif
+
+/* Description: Get attribute from sparse matrix descriptor */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpMatGetAttribute(hipsparseSpMatDescr_t     spMatDescr,
+                                             hipsparseSpMatAttribute_t attribute,
+                                             void*                     data,
+                                             size_t                    dataSize);
+#endif
+
+/* Description: Set attribute in sparse matrix descriptor */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpMatSetAttribute(hipsparseSpMatDescr_t     spMatDescr,
+                                             hipsparseSpMatAttribute_t attribute,
+                                             const void*               data,
+                                             size_t                    dataSize);
+#endif
+
 /* Dense vector API */
 
 /* Description: Create dense vector */
@@ -9182,22 +9230,20 @@ HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDnMatSetValues(hipsparseDnMatDescr_t dnMatDescr, void* values);
 #endif
 
-/* Description: Get attribute from sparse matrix descriptor */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
+/* Description: Get the batch count and batch stride of the dense matrix*/
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseSpMatGetAttribute(hipsparseSpMatDescr_t     spMatDescr,
-                                             hipsparseSpMatAttribute_t attribute,
-                                             void*                     data,
-                                             size_t                    dataSize);
+hipsparseStatus_t hipsparseDnMatGetStridedBatch(hipsparseDnMatDescr_t dnMatDescr,
+                                                int*                  batchCount,
+                                                int64_t*              batchStride);
 #endif
 
-/* Description: Set attribute in sparse matrix descriptor */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
+/* Description: Set the batch count and batch stride of the dense matrix*/
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseSpMatSetAttribute(hipsparseSpMatDescr_t     spMatDescr,
-                                             hipsparseSpMatAttribute_t attribute,
-                                             const void*               data,
-                                             size_t                    dataSize);
+hipsparseStatus_t hipsparseDnMatSetStridedBatch(hipsparseDnMatDescr_t dnMatDescr,
+                                                int                   batchCount,
+                                                int64_t               batchStride);
 #endif
 
 /* Generic API functions */
