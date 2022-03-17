@@ -116,15 +116,85 @@ endif()
 
 
 # Setup version
-rocm_setup_version(VERSION 2.0.0)
+rocm_setup_version(VERSION 2.1.0)
 set(hipsparse_SOVERSION 0.1)
 
 # hipSPARSE library
 add_subdirectory(library)
 
 if(BUILD_CLIENTS_SAMPLES OR BUILD_CLIENTS_TESTS)
+  if(NOT CLIENTS_OS)
+    rocm_set_os_id(CLIENTS_OS)
+    string(TOLOWER "${CLIENTS_OS}" CLIENTS_OS)
+    rocm_read_os_release(CLIENTS_OS_VERSION VERSION_ID)
+  endif()
+  message(STATUS "OS: ${CLIENTS_OS} ${CLIENTS_OS_VERSION}")
+  set(GFORTRAN_PKG "gcc-gfortran")
+  set(OPENMP_PKG "libgomp")
+  if(CLIENTS_OS STREQUAL "sles")
+    set(GFORTRAN_PKG "gcc-fortran")
+    set(OPENMP_PKG "libgomp1")
+  elseif(CLIENTS_OS STREQUAL "centos" AND CLIENTS_OS_VERSION EQUAL 7)
+    set(GFORTRAN_PKG "devtoolset-7-gcc-gfortran")
+  endif()
   add_subdirectory(clients)
+  rocm_package_setup_component(clients)
+  if(BUILD_CLIENTS_TESTS)
+    rocm_package_setup_client_component(tests)
+  endif()
+  if(NOT WIN32)
+    rocm_package_add_rpm_dependencies(COMPONENT tests DEPENDS "${GFORTRAN_PKG}")
+    rocm_package_add_deb_dependencies(COMPONENT tests DEPENDS "gfortran")
+    rocm_package_add_rpm_dependencies(COMPONENT benchmarks DEPENDS "${GFORTRAN_PKG}")
+    rocm_package_add_deb_dependencies(COMPONENT benchmarks DEPENDS "gfortran")
+  endif()
+  if(TARGET OpenMP::OpenMP_CXX)
+    rocm_package_add_rpm_dependencies(COMPONENT tests DEPENDS "${OPENMP_PKG}")
+    rocm_package_add_deb_dependencies(COMPONENT tests DEPENDS "libomp-dev")
+    rocm_package_add_rpm_dependencies(COMPONENT benchmarks DEPENDS "${OPENMP_PKG}")
+    rocm_package_add_deb_dependencies(COMPONENT benchmarks DEPENDS "libomp-dev")
+  endif()
 endif()
+
+# Package specific CPACK vars
+if(NOT USE_CUDA)
+  rocm_package_add_dependencies(DEPENDS "rocsparse >= 1.12.10")
+endif()
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.md")
+set(CPACK_RPM_PACKAGE_LICENSE "MIT")
+
+if(WIN32)
+  set(CPACK_SOURCE_GENERATOR "ZIP")
+  set(CPACK_GENERATOR "ZIP")
+  set(CMAKE_INSTALL_PREFIX "C:/hipSDK" CACHE PATH "Install path" FORCE)
+  set(INSTALL_PREFIX "C:/hipSDK")
+  set(CPACK_SET_DESTDIR OFF)
+  set(CPACK_PACKAGE_INSTALL_DIRECTORY "C:/hipSDK")
+  set(CPACK_PACKAGING_INSTALL_PREFIX "")
+  set(CPACK_INCLUDE_TOPLEVEL_DIRECTORY OFF)
+else()
+  if(NOT CPACK_PACKAGING_INSTALL_PREFIX)
+    set(CPACK_PACKAGING_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
+  endif()
+endif()
+
+set(CPACK_RPM_EXCLUDE_FROM_AUTO_FILELIST_ADDITION "\${CPACK_PACKAGING_INSTALL_PREFIX}" "\${CPACK_PACKAGING_INSTALL_PREFIX}/include")
+
+if(NOT USE_CUDA)
+  set(package_name hipsparse)
+else()
+  set(package_name hipsparse-alt)
+endif()
+
+set(HIPSPARSE_CONFIG_DIR "\${CPACK_PACKAGING_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}" CACHE PATH "Path placed into ldconfig file")
+
+rocm_create_package(
+  NAME ${package_name}
+  DESCRIPTION "Radeon Open Compute SPARSE library"
+  MAINTAINER "hipSPARSE Maintainer <hipsparse-maintainer@amd.com>"
+  LDCONFIG
+  LDCONFIG_DIR ${HIPSPARSE_CONFIG_DIR})
+
 
 #
 # ADDITIONAL TARGETS FOR CODE COVERAGE

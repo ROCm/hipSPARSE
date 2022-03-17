@@ -199,7 +199,9 @@ set(HIPSPARSE_TEST_SOURCES
   test_sparse_to_dense_csc.cpp
   test_sparse_to_dense_coo.cpp
   test_spmm_csr.cpp
+  test_spmm_batched_csr.cpp
   test_spmm_coo.cpp
+  test_spmm_batched_coo.cpp
   test_spmm_bell.cpp
   test_spgemm_csr.cpp
   test_spgemmreuse_csr.cpp
@@ -270,6 +272,8 @@ else()
 endif()
 
 set_target_properties(hipsparse-test PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/staging")
+
+rocm_install(TARGETS hipsparse-test COMPONENT tests)
 
 if (WIN32)
   # for now adding in all .dll as dependency chain is not cmake based on win32
