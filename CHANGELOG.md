@@ -1,5 +1,9 @@
 # Change Log for hipSPARSE
 
+## hipSPARSE 2.2.0
+### Added
+- Packages for test and benchmark executables on all supported OSes using CPack.
+
 ## hipSPARSE 2.1.0 for ROCm 5.1.0
 ### Added
 - Added gtsv_interleaved_batch and gpsv_interleaved_batch routines
