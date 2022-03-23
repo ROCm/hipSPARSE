@@ -32,12 +32,16 @@ endif()
 
 # Configure a header file to pass the hipSPARSE version
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/include/hipsparse-version.h.in"
-               "${PROJECT_BINARY_DIR}/include/hipsparse-version.h")
+               "${PROJECT_BINARY_DIR}/include/hipsparse/hipsparse-version.h")
+
+# Copy Header files to build directory
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/include/hipsparse.h"
+               "${PROJECT_BINARY_DIR}/include/hipsparse/hipsparse.h" COPYONLY)
 
 # Public hipSPARSE headers
 set(hipsparse_headers_public
   include/hipsparse.h
-  ${PROJECT_BINARY_DIR}/include/hipsparse-version.h)
+  ${PROJECT_BINARY_DIR}/include/hipsparse/hipsparse-version.h)
 
 source_group("Header Files\\Public" FILES ${hipsparse_headers_public})
 
@@ -52,7 +56,7 @@ include(src/CMakeLists.txt)
 
 if (NOT WIN32)
 # Set Fortran module output directory
-set(CMAKE_Fortran_MODULE_DIRECTORY ${PROJECT_BINARY_DIR}/include)
+set(CMAKE_Fortran_MODULE_DIRECTORY ${PROJECT_BINARY_DIR}/include/hipsparse)
 
 # Create hipSPARSE Fortran module
 add_library(hipsparse_fortran OBJECT ${hipsparse_fortran_source})
@@ -72,6 +76,7 @@ target_compile_options(hipsparse PRIVATE -Wno-unused-command-line-argument -Wall
 target_include_directories(hipsparse
                            PRIVATE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/include>
                            PUBLIC  $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/library/include>
+                                   $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include/hipsparse>
                                    $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
                                    $<INSTALL_INTERFACE:include>)
 
@@ -107,27 +112,37 @@ endif()
 
 # Generate export header
 include(GenerateExportHeader)
-generate_export_header(hipsparse EXPORT_FILE_NAME ${PROJECT_BINARY_DIR}/include/hipsparse-export.h)
+generate_export_header(hipsparse EXPORT_FILE_NAME ${PROJECT_BINARY_DIR}/include/hipsparse/hipsparse-export.h)
+
+if (BUILD_FILE_REORG_BACKWARD_COMPATIBILITY)
+  rocm_wrap_header_file(
+    hipsparse-version.h hipsparse-export.h
+    GUARDS SYMLINK WRAPPER
+    WRAPPER_LOCATIONS include hipsparse/include
+  )
+endif( )
 
 # Install targets
 rocm_install_targets(TARGETS hipsparse
                      INCLUDE
-                       ${CMAKE_SOURCE_DIR}/library/include
                        ${CMAKE_BINARY_DIR}/include
-                     PREFIX hipsparse)
+                     )
+
+if(BUILD_FILE_REORG_BACKWARD_COMPATIBILITY)
+  rocm_install(
+    DIRECTORY
+       "${PROJECT_BINARY_DIR}/hipsparse"
+        DESTINATION "." )
+  message( STATUS "Backward Compatible Sym Link Created for include directories" )
+endif()
+
 
 # Export targets
 if(NOT USE_CUDA)
   rocm_export_targets(TARGETS roc::hipsparse
-                      PREFIX hipsparse
                       DEPENDS PACKAGE hip
                       NAMESPACE roc::)
 else()
   rocm_export_targets(TARGETS roc::hipsparse
-                      PREFIX hipsparse
                       NAMESPACE roc::)
 endif()
-
-# Symbolic links
-rocm_install_symlink_subdir(hipsparse)
-
