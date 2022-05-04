@@ -146,7 +146,7 @@ install_packages( )
   local client_dependencies_sles=( "gcc-fortran" )
 
   if [[ ( "${ID}" == "centos" ) || ( "${ID}" == "rhel" ) ]]; then
-    if [[ "${VERSION_ID}" == "6" ]]; then
+    if [[ "${MAJORVERSION}" == "6" ]]; then
       library_dependencies_centos_6+=( "numactl" )
     else
       library_dependencies_centos_7+=( "numactl-libs" )
@@ -164,13 +164,13 @@ install_packages( )
 #     yum -y update brings *all* installed packages up to date
 #     without seeking user approval
 #     elevate_if_not_root yum -y update
-      if [[ ( "${VERSION_ID}" -ge 8 ) ]]; then
+      if [[ ( "${MAJORVERSION}" -ge 8 ) ]]; then
         install_yum_packages "${library_dependencies_centos_8[@]}"
 
         if [[ "${build_clients}" == true ]]; then
           install_yum_packages "${client_dependencies_centos_8[@]}"
         fi
-      elif [[ ( "${VERSION_ID}" -eq 6 ) ]]; then
+      elif [[ ( "${MAJORVERSION}" -eq 6 ) ]]; then
         install_yum_packages "${library_dependencies_centos_6[@]}"
 
         if [[ "${build_clients}" == true ]]; then
@@ -234,6 +234,7 @@ else
   exit 2
 fi
 
+MAJORVERSION=$(echo $VERSION_ID | cut -f1 -d.)
 # The following function exits script if an unsupported distro is detected
 supported_distro
 
