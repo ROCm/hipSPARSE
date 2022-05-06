@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Author: Nico Trost
+# Author : Nico Trost
 
 #set -x #echo on
 
