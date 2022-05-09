@@ -119,6 +119,7 @@ if (BUILD_FILE_REORG_BACKWARD_COMPATIBILITY)
     hipsparse-version.h hipsparse-export.h
     GUARDS SYMLINK WRAPPER
     WRAPPER_LOCATIONS include hipsparse/include
+    ORIGINAL_FILES ${PROJECT_BINARY_DIR}/include/hipsparse/hipsparse-version.h
   )
 endif( )
 
