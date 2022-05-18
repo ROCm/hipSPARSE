@@ -128,7 +128,7 @@ rocm_install_targets(TARGETS hipsparse
                        ${CMAKE_BINARY_DIR}/include
                      )
 
-if(BUILD_FILE_REORG_BACKWARD_COMPATIBILITY)
+if(BUILD_FILE_REORG_BACKWARD_COMPATIBILITY AND NOT WIN32)
   rocm_install(
     DIRECTORY
        "${PROJECT_BINARY_DIR}/hipsparse"
