@@ -66,9 +66,6 @@ endif( )
 # hipSPARSE project
 project(hipsparse LANGUAGES CXX Fortran)
 
-# Force library install path to lib (CentOS 7 defaults to lib64)
-set(CMAKE_INSTALL_LIBDIR "lib" CACHE INTERNAL "Installation directory for libraries" FORCE)
-
 # Build flags
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -110,7 +107,7 @@ if(BUILD_FILE_REORG_BACKWARD_COMPATIBILITY)
     ${CMAKE_SOURCE_DIR}/library/include
     PATTERNS "*.h"
     GUARDS SYMLINK WRAPPER
-    WRAPPER_LOCATIONS include
+    WRAPPER_LOCATIONS ${CMAKE_INSTALL_INCLUDEDIR}
   )
 endif()
 
@@ -178,7 +175,7 @@ else()
   endif()
 endif()
 
-set(CPACK_RPM_EXCLUDE_FROM_AUTO_FILELIST_ADDITION "\${CPACK_PACKAGING_INSTALL_PREFIX}" "\${CPACK_PACKAGING_INSTALL_PREFIX}/include")
+set(CPACK_RPM_EXCLUDE_FROM_AUTO_FILELIST_ADDITION "\${CPACK_PACKAGING_INSTALL_PREFIX}" "\${CPACK_PACKAGING_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}")
 
 if(NOT USE_CUDA)
   set(package_name hipsparse)

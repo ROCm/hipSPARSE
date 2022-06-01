@@ -45,12 +45,6 @@ set(hipsparse_headers_public
 
 source_group("Header Files\\Public" FILES ${hipsparse_headers_public})
 
-include(GNUInstallDirs)
-
-set(BIN_INSTALL_DIR ${CMAKE_INSTALL_BINDIR})
-set(LIB_INSTALL_DIR ${CMAKE_INSTALL_LIBDIR})
-set(INCLUDE_INSTALL_DIR ${CMAKE_INSTALL_INCLUDEDIR})
-
 # Include sources
 include(src/CMakeLists.txt)
 
@@ -78,7 +72,7 @@ target_include_directories(hipsparse
                            PUBLIC  $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/library/include>
                                    $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include/hipsparse>
                                    $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
-                                   $<INSTALL_INTERFACE:include>)
+                                   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
 if(NOT USE_CUDA)
   target_link_libraries(hipsparse PRIVATE roc::rocsparse hip::host)
@@ -118,7 +112,7 @@ if (BUILD_FILE_REORG_BACKWARD_COMPATIBILITY)
   rocm_wrap_header_file(
     hipsparse-version.h hipsparse-export.h
     GUARDS SYMLINK WRAPPER
-    WRAPPER_LOCATIONS include hipsparse/include
+    WRAPPER_LOCATIONS ${CMAKE_INSTALL_INCLUDEDIR} hipsparse/${CMAKE_INSTALL_INCLUDEDIR}
     ORIGINAL_FILES ${PROJECT_BINARY_DIR}/include/hipsparse/hipsparse-version.h
   )
 endif( )
