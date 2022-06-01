@@ -114,7 +114,7 @@ endif()
 include(GenerateExportHeader)
 generate_export_header(hipsparse EXPORT_FILE_NAME ${PROJECT_BINARY_DIR}/include/hipsparse/hipsparse-export.h)
 
-if (BUILD_FILE_REORG_BACKWARD_COMPATIBILITY)
+if (BUILD_FILE_REORG_BACKWARD_COMPATIBILITY AND NOT WIN32)
   rocm_wrap_header_file(
     hipsparse-version.h hipsparse-export.h
     GUARDS SYMLINK WRAPPER
@@ -129,7 +129,7 @@ rocm_install_targets(TARGETS hipsparse
                        ${CMAKE_BINARY_DIR}/include
                      )
 
-if(BUILD_FILE_REORG_BACKWARD_COMPATIBILITY)
+if(BUILD_FILE_REORG_BACKWARD_COMPATIBILITY AND NOT WIN32)
   rocm_install(
     DIRECTORY
        "${PROJECT_BINARY_DIR}/hipsparse"
