@@ -1,6 +1,6 @@
 # Change Log for hipSPARSE
 
-## hipSPARSE 2.2.0
+## hipSPARSE 2.2.0 for ROCm 5.2.0
 ### Added
 - Packages for test and benchmark executables on all supported OSes using CPack.
 
