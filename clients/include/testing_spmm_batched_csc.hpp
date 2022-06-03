@@ -22,8 +22,8 @@
  * ************************************************************************ */
 
 #pragma once
-#ifndef TESTING_SPMM_BATCHED_CSR_HPP
-#define TESTING_SPMM_BATCHED_CSR_HPP
+#ifndef TESTING_SPMM_BATCHED_CSC_HPP
+#define TESTING_SPMM_BATCHED_CSC_HPP
 
 #include "hipsparse.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
@@ -37,7 +37,7 @@
 using namespace hipsparse;
 using namespace hipsparse_test;
 
-void testing_spmm_batched_csr_bad_arg(void)
+void testing_spmm_batched_csc_bad_arg(void)
 {
 #ifdef __HIP_PLATFORM_NVIDIA__
     // do not test for bad args
@@ -71,7 +71,7 @@ void testing_spmm_batched_csr_bad_arg(void)
 
     auto dptr_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(int64_t) * safe_size), device_free};
-    auto dcol_managed
+    auto drow_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(int32_t) * safe_size), device_free};
     auto dval_managed = hipsparse_unique_ptr{device_malloc(sizeof(float) * safe_size), device_free};
     auto dB_managed   = hipsparse_unique_ptr{device_malloc(sizeof(float) * safe_size), device_free};
@@ -79,13 +79,13 @@ void testing_spmm_batched_csr_bad_arg(void)
     auto dbuf_managed = hipsparse_unique_ptr{device_malloc(sizeof(char) * safe_size), device_free};
 
     int64_t* dptr = (int64_t*)dptr_managed.get();
-    int32_t* dcol = (int32_t*)dcol_managed.get();
+    int32_t* drow = (int32_t*)drow_managed.get();
     float*   dval = (float*)dval_managed.get();
     float*   dB   = (float*)dB_managed.get();
     float*   dC   = (float*)dC_managed.get();
     void*    dbuf = (void*)dbuf_managed.get();
 
-    if(!dval || !dptr || !dcol || !dB || !dC || !dbuf)
+    if(!dval || !dptr || !drow || !dB || !dC || !dbuf)
     {
         PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
         return;
@@ -97,7 +97,7 @@ void testing_spmm_batched_csr_bad_arg(void)
 
     // Create SpMM structures
     verify_hipsparse_status_success(
-        hipsparseCreateCsr(&A, m, k, nnz, dptr, dcol, dval, idxTypeI, idxTypeJ, idxBase, dataType),
+        hipsparseCreateCsc(&A, m, k, nnz, dptr, drow, dval, idxTypeI, idxTypeJ, idxBase, dataType),
         "success");
     verify_hipsparse_status_success(hipsparseCreateDnMat(&B, k, n, k, dB, dataType, order),
                                     "success");
@@ -108,7 +108,7 @@ void testing_spmm_batched_csr_bad_arg(void)
     int     batch_count_B;
     int     batch_count_C;
     int64_t offsets_batch_stride_A;
-    int64_t columns_values_batch_stride_A;
+    int64_t rows_values_batch_stride_A;
     int64_t batch_stride_B;
     int64_t batch_stride_C;
 
@@ -117,12 +117,12 @@ void testing_spmm_batched_csr_bad_arg(void)
     batch_count_B                 = 10;
     batch_count_C                 = 5;
     offsets_batch_stride_A        = 0;
-    columns_values_batch_stride_A = 0;
+    rows_values_batch_stride_A = 0;
     batch_stride_B                = k * n;
     batch_stride_C                = m * n;
     verify_hipsparse_status_success(
         hipsparseCsrSetStridedBatch(
-            A, batch_count_A, offsets_batch_stride_A, columns_values_batch_stride_A),
+            A, batch_count_A, offsets_batch_stride_A, rows_values_batch_stride_A),
         "success");
     verify_hipsparse_status_success(hipsparseDnMatSetStridedBatch(B, batch_count_B, batch_stride_B),
                                     "success");
@@ -137,13 +137,13 @@ void testing_spmm_batched_csr_bad_arg(void)
     batch_count_A                 = 10;
     batch_count_B                 = 1;
     batch_count_C                 = 5;
-    offsets_batch_stride_A        = (m + 1);
-    columns_values_batch_stride_A = nnz;
+    offsets_batch_stride_A        = (k + 1);
+    rows_values_batch_stride_A = nnz;
     batch_stride_B                = 0;
     batch_stride_C                = m * n;
     verify_hipsparse_status_success(
         hipsparseCsrSetStridedBatch(
-            A, batch_count_A, offsets_batch_stride_A, columns_values_batch_stride_A),
+            A, batch_count_A, offsets_batch_stride_A, rows_values_batch_stride_A),
         "success");
     verify_hipsparse_status_success(hipsparseDnMatSetStridedBatch(B, batch_count_B, batch_stride_B),
                                     "success");
@@ -158,13 +158,13 @@ void testing_spmm_batched_csr_bad_arg(void)
     batch_count_A                 = 10;
     batch_count_B                 = 10;
     batch_count_C                 = 5;
-    offsets_batch_stride_A        = (m + 1);
-    columns_values_batch_stride_A = nnz;
+    offsets_batch_stride_A        = (k + 1);
+    rows_values_batch_stride_A = nnz;
     batch_stride_B                = k * n;
     batch_stride_C                = m * n;
     verify_hipsparse_status_success(
         hipsparseCsrSetStridedBatch(
-            A, batch_count_A, offsets_batch_stride_A, columns_values_batch_stride_A),
+            A, batch_count_A, offsets_batch_stride_A, rows_values_batch_stride_A),
         "success");
     verify_hipsparse_status_success(hipsparseDnMatSetStridedBatch(B, batch_count_B, batch_stride_B),
                                     "success");
@@ -183,9 +183,9 @@ void testing_spmm_batched_csr_bad_arg(void)
 }
 
 template <typename I, typename J, typename T>
-hipsparseStatus_t testing_spmm_batched_csr()
+hipsparseStatus_t testing_spmm_batched_csc()
 {
-#ifdef __HIP_PLATFORM_NVIDIA__
+#ifdef __HIP_PLATFORM_NVIDIA__                                                                                                                    
     // do not test for bad args
     return HIPSPARSE_STATUS_SUCCESS;
 #endif
@@ -227,9 +227,9 @@ hipsparseStatus_t testing_spmm_batched_csr()
     hipsparseHandle_t              handle = test_handle->handle;
 
     // Host structures
-    std::vector<I> hcsr_row_ptr;
-    std::vector<J> hcsr_col_ind;
-    std::vector<T> hcsr_val;
+    std::vector<I> hcsc_col_ptr;
+    std::vector<J> hcsc_row_ind;
+    std::vector<T> hcsc_val;
 
     // Initial Data on CPU
     srand(12345ULL);
@@ -238,7 +238,7 @@ hipsparseStatus_t testing_spmm_batched_csr()
     J k;
     I nnz;
 
-    if(read_bin_matrix(filename.c_str(), m, k, nnz, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base)
+    if(read_bin_matrix(filename.c_str(), k, m, nnz, hcsc_col_ptr, hcsc_row_ind, hcsc_val, idx_base)
        != 0)
     {
         fprintf(stderr, "Cannot open [read] %s\n", filename.c_str());
@@ -250,7 +250,7 @@ hipsparseStatus_t testing_spmm_batched_csr()
     J ldc = m;
 
     J offsets_batch_stride_A        = 0;
-    I columns_values_batch_stride_A = 0;
+    I rows_values_batch_stride_A = 0;
     I batch_stride_B                = k * n;
     I batch_stride_C                = m * n;
 
@@ -267,8 +267,8 @@ hipsparseStatus_t testing_spmm_batched_csr()
     hC_gold = hC_1;
 
     // allocate memory on device
-    auto dptr_managed = hipsparse_unique_ptr{device_malloc(sizeof(I) * (m + 1)), device_free};
-    auto dcol_managed = hipsparse_unique_ptr{device_malloc(sizeof(J) * nnz), device_free};
+    auto dptr_managed = hipsparse_unique_ptr{device_malloc(sizeof(I) * (k + 1)), device_free};
+    auto drow_managed = hipsparse_unique_ptr{device_malloc(sizeof(J) * nnz), device_free};
     auto dval_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
     auto dB_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(T) * batch_count_B * k * n), device_free};
@@ -280,7 +280,7 @@ hipsparseStatus_t testing_spmm_batched_csr()
     auto d_beta_managed  = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
 
     I* dptr    = (I*)dptr_managed.get();
-    J* dcol    = (J*)dcol_managed.get();
+    J* drow    = (J*)drow_managed.get();
     T* dval    = (T*)dval_managed.get();
     T* dB      = (T*)dB_managed.get();
     T* dC_1    = (T*)dC_1_managed.get();
@@ -288,19 +288,19 @@ hipsparseStatus_t testing_spmm_batched_csr()
     T* d_alpha = (T*)d_alpha_managed.get();
     T* d_beta  = (T*)d_beta_managed.get();
 
-    if(!dval || !dptr || !dcol || !dB || !dC_1 || !dC_2 || !d_alpha || !d_beta)
+    if(!dval || !dptr || !drow || !dB || !dC_1 || !dC_2 || !d_alpha || !d_beta)
     {
         verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!dval || !dptr || !dcol || !dB || "
+                                        "!dval || !dptr || !drow || !dB || "
                                         "!dC_1 || !dC_2 || !d_alpha || !d_beta");
         return HIPSPARSE_STATUS_ALLOC_FAILED;
     }
 
     // copy data from CPU to device
     CHECK_HIP_ERROR(
-        hipMemcpy(dptr, hcsr_row_ptr.data(), sizeof(I) * (m + 1), hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(hipMemcpy(dcol, hcsr_col_ind.data(), sizeof(J) * nnz, hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(hipMemcpy(dval, hcsr_val.data(), sizeof(T) * nnz, hipMemcpyHostToDevice));
+        hipMemcpy(dptr, hcsc_col_ptr.data(), sizeof(I) * (k + 1), hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(drow, hcsc_row_ind.data(), sizeof(J) * nnz, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(dval, hcsc_val.data(), sizeof(T) * nnz, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(
         hipMemcpy(dB, hB.data(), sizeof(T) * batch_count_B * k * n, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(
@@ -313,7 +313,7 @@ hipsparseStatus_t testing_spmm_batched_csr()
     // Create matrices
     hipsparseSpMatDescr_t A;
     CHECK_HIPSPARSE_ERROR(
-        hipsparseCreateCsr(&A, m, k, nnz, dptr, dcol, dval, typeI, typeJ, idx_base, typeT));
+        hipsparseCreateCsc(&A, m, k, nnz, dptr, drow, dval, typeI, typeJ, idx_base, typeT));
 
     // Create dense matrices
     hipsparseDnMatDescr_t B, C1, C2;
@@ -322,7 +322,7 @@ hipsparseStatus_t testing_spmm_batched_csr()
     CHECK_HIPSPARSE_ERROR(hipsparseCreateDnMat(&C2, m, n, ldc, dC_2, typeT, order));
 
     CHECK_HIPSPARSE_ERROR(hipsparseCsrSetStridedBatch(
-        A, batch_count_A, offsets_batch_stride_A, columns_values_batch_stride_A));
+        A, batch_count_A, offsets_batch_stride_A, rows_values_batch_stride_A));
     CHECK_HIPSPARSE_ERROR(hipsparseDnMatSetStridedBatch(B, batch_count_B, batch_stride_B));
     CHECK_HIPSPARSE_ERROR(hipsparseDnMatSetStridedBatch(C1, batch_count_C, batch_stride_C));
     CHECK_HIPSPARSE_ERROR(hipsparseDnMatSetStridedBatch(C2, batch_count_C, batch_stride_C));
@@ -370,18 +370,18 @@ hipsparseStatus_t testing_spmm_batched_csr()
     // CPU
     double cpu_time_used = get_time_us();
 
-    host_csrmm_batched(m,
+    host_cscmm_batched(m,
                        n,
                        k,
                        batch_count_A,
                        offsets_batch_stride_A,
-                       columns_values_batch_stride_A,
+                       rows_values_batch_stride_A,
                        transA,
                        transB,
                        h_alpha,
-                       hcsr_row_ptr.data(),
-                       hcsr_col_ind.data(),
-                       hcsr_val.data(),
+                       hcsc_col_ptr.data(),
+                       hcsc_row_ind.data(),
+                       hcsc_val.data(),
                        hB.data(),
                        ldb,
                        batch_count_B,
@@ -392,8 +392,7 @@ hipsparseStatus_t testing_spmm_batched_csr()
                        batch_count_C,
                        batch_stride_C,
                        order,
-                       idx_base,
-                       false);
+                       idx_base);
 
     cpu_time_used = get_time_us() - cpu_time_used;
 
@@ -411,4 +410,4 @@ hipsparseStatus_t testing_spmm_batched_csr()
     return HIPSPARSE_STATUS_SUCCESS;
 }
 
-#endif // TESTING_SPMM_BATCHED_CSR_HPP
+#endif // TESTING_SPMM_BATCHED_CSC_HPP

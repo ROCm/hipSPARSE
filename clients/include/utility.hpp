@@ -340,6 +340,12 @@ static inline hipDoubleComplex testing_conj(hipDoubleComplex x)
     return make_DataType<hipDoubleComplex>(x.x, -x.y);
 }
 
+template<typename T>
+inline T testing_conj(T val, bool conj)
+{
+    return conj ? testing_conj(val) : val;
+}
+
 /* ============================================================================================ */
 /*! \brief real */
 static inline float testing_real(float x)
@@ -2438,8 +2444,12 @@ void host_csrmm(J                    M,
                 T*                   C,
                 J                    ldc,
                 hipsparseOrder_t     order,
-                hipsparseIndexBase_t base)
+                hipsparseIndexBase_t base,
+                bool                 force_conj_A)
 {
+    bool conj_A = (transA == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE || force_conj_A);
+    bool conj_B = (transB == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE);
+
     if(transA == HIPSPARSE_OPERATION_NON_TRANSPOSE)
     {
 #ifdef _OPENMP
@@ -2472,14 +2482,7 @@ void host_csrmm(J                    M,
                         idx_B = (j + (csr_col_ind_A[k] - base) * ldb);
                     }
 
-                    if(transB == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE)
-                    {
-                        sum = testing_fma(csr_val_A[k], testing_conj(B[idx_B]), sum);
-                    }
-                    else
-                    {
-                        sum = testing_fma(csr_val_A[k], B[idx_B], sum);
-                    }
+                    sum = testing_fma(testing_conj(csr_val_A[k], conj_A), testing_conj(B[idx_B], conj_B), sum);
                 }
 
                 if(beta == make_DataType<T>(0))
@@ -2515,12 +2518,7 @@ void host_csrmm(J                    M,
                 for(I k = row_begin; k < row_end; ++k)
                 {
                     J col = csr_col_ind_A[k] - base;
-                    T val = csr_val_A[k];
-
-                    if(transA == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE)
-                    {
-                        val = testing_conj(val);
-                    }
+                    T val = testing_conj(csr_val_A[k], conj_A);
 
                     J idx_B = 0;
 
@@ -2540,14 +2538,7 @@ void host_csrmm(J                    M,
 
                     J idx_C = (order == HIPSPARSE_ORDER_COLUMN) ? col + j * ldc : col * ldc + j;
 
-                    if(transB == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE)
-                    {
-                        C[idx_C] = C[idx_C] + alpha * val * testing_conj(B[idx_B]);
-                    }
-                    else
-                    {
-                        C[idx_C] = C[idx_C] + alpha * val * B[idx_B];
-                    }
+                    C[idx_C] = C[idx_C] + alpha * val * testing_conj(B[idx_B], conj_B);
                 }
             }
         }
@@ -2577,7 +2568,8 @@ void host_csrmm_batched(J                    M,
                         J                    batch_count_C,
                         I                    batch_stride_C,
                         hipsparseOrder_t     order,
-                        hipsparseIndexBase_t base)
+                        hipsparseIndexBase_t base,
+                        bool                 force_conj_A)
 {
     bool Ci_A_Bi  = (batch_count_A == 1 && batch_count_B == batch_count_C);
     bool Ci_Ai_B  = (batch_count_B == 1 && batch_count_A == batch_count_C);
@@ -2607,7 +2599,8 @@ void host_csrmm_batched(J                    M,
                        C + batch_stride_C * i,
                        ldc,
                        order,
-                       base);
+                       base,
+                       force_conj_A);
         }
     }
     else if(Ci_Ai_B)
@@ -2629,7 +2622,8 @@ void host_csrmm_batched(J                    M,
                        C + batch_stride_C * i,
                        ldc,
                        order,
-                       base);
+                       base,
+                       force_conj_A);
         }
     }
     else if(Ci_Ai_Bi)
@@ -2651,10 +2645,206 @@ void host_csrmm_batched(J                    M,
                        C + batch_stride_C * i,
                        ldc,
                        order,
-                       base);
+                       base,
+                       force_conj_A);
         }
     }
 }
+
+template <typename T, typename I, typename J>
+void host_cscmm(J                    M,
+                J                    N,
+                J                    K,
+                hipsparseOperation_t transA,
+                hipsparseOperation_t transB,
+                T                    alpha,
+                const I*             csc_col_ptr_A,
+                const J*             csc_row_ind_A,
+                const T*             csc_val_A,
+                const T*             B,
+                J                    ldb,
+                T                    beta,
+                T*                   C,
+                J                    ldc,
+                hipsparseOrder_t     order,
+                hipsparseIndexBase_t base)
+{
+    switch(transA)
+    {
+    case HIPSPARSE_OPERATION_NON_TRANSPOSE:
+    {
+        return host_csrmm(K,
+                          N,
+                          M,
+                          HIPSPARSE_OPERATION_TRANSPOSE,
+                          transB,
+                          alpha,
+                          csc_col_ptr_A,
+                          csc_row_ind_A,
+                          csc_val_A,
+                          B,
+                          ldb,
+                          beta,
+                          C,
+                          ldc,
+                          order,
+                          base,
+                          false);
+    }
+    case HIPSPARSE_OPERATION_TRANSPOSE:
+    {
+        return host_csrmm(K,
+                          N,
+                          M,
+                          HIPSPARSE_OPERATION_NON_TRANSPOSE,
+                          transB,
+                          alpha,
+                          csc_col_ptr_A,
+                          csc_row_ind_A,
+                          csc_val_A,
+                          B,
+                          ldb,
+                          beta,
+                          C,
+                          ldc,
+                          order,
+                          base,
+                          false);
+    }
+    case HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE:
+    {
+        return host_csrmm(K,
+                          N,
+                          M,
+                          HIPSPARSE_OPERATION_NON_TRANSPOSE,
+                          transB,
+                          alpha,
+                          csc_col_ptr_A,
+                          csc_row_ind_A,
+                          csc_val_A,
+                          B,
+                          ldb,
+                          beta,
+                          C,
+                          ldc,
+                          order,
+                          base,
+                          true);
+    }
+    }
+}
+
+template <typename T, typename I, typename J>
+void host_cscmm_batched(J                    M,
+                        J                    N,
+                        J                    K,
+                        J                    batch_count_A,
+                        I                    offsets_batch_stride_A,
+                        I                    rows_values_batch_stride_A,
+                        hipsparseOperation_t  transA,
+                        hipsparseOperation_t  transB,
+                        T                    alpha,
+                        const I*             csc_col_ptr_A,
+                        const J*             csc_row_ind_A,
+                        const T*             csc_val_A,
+                        const T*             B,
+                        J                    ldb,
+                        J                    batch_count_B,
+                        I                    batch_stride_B,
+                        T                    beta,
+                        T*                   C,
+                        J                    ldc,
+                        J                    batch_count_C,
+                        I                    batch_stride_C,
+                        hipsparseOrder_t      order,
+                        hipsparseIndexBase_t base)
+{
+    switch(transA)
+    {
+    case HIPSPARSE_OPERATION_NON_TRANSPOSE:
+    {
+        return host_csrmm_batched(K,
+                                  N,
+                                  M,
+                                  batch_count_A,
+                                  offsets_batch_stride_A,
+                                  rows_values_batch_stride_A,
+                                  HIPSPARSE_OPERATION_TRANSPOSE,
+                                  transB,
+                                  alpha,
+                                  csc_col_ptr_A,
+                                  csc_row_ind_A,
+                                  csc_val_A,
+                                  B,
+                                  ldb,
+                                  batch_count_B,
+                                  batch_stride_B,
+                                  beta,
+                                  C,
+                                  ldc,
+                                  batch_count_C,
+                                  batch_stride_C,
+                                  order,
+                                  base,
+                                  false);
+    }
+    case HIPSPARSE_OPERATION_TRANSPOSE:
+    {
+        return host_csrmm_batched(K,
+                                  N,
+                                  M,
+                                  batch_count_A,
+                                  offsets_batch_stride_A,
+                                  rows_values_batch_stride_A,
+                                  HIPSPARSE_OPERATION_NON_TRANSPOSE,
+                                  transB,
+                                  alpha,
+                                  csc_col_ptr_A,
+                                  csc_row_ind_A,
+                                  csc_val_A,
+                                  B,
+                                  ldb,
+                                  batch_count_B,
+                                  batch_stride_B,
+                                  beta,
+                                  C,
+                                  ldc,
+                                  batch_count_C,
+                                  batch_stride_C,
+                                  order,
+                                  base,
+                                  false);
+    }
+    case HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE:
+    {
+        return host_csrmm_batched(K,
+                                  N,
+                                  M,
+                                  batch_count_A,
+                                  offsets_batch_stride_A,
+                                  rows_values_batch_stride_A,
+                                  HIPSPARSE_OPERATION_NON_TRANSPOSE,
+                                  transB,
+                                  alpha,
+                                  csc_col_ptr_A,
+                                  csc_row_ind_A,
+                                  csc_val_A,
+                                  B,
+                                  ldb,
+                                  batch_count_B,
+                                  batch_stride_B,
+                                  beta,
+                                  C,
+                                  ldc,
+                                  batch_count_C,
+                                  batch_stride_C,
+                                  order,
+                                  base,
+                                  true);
+    }
+    }
+}
+
 
 template <typename T, typename I>
 void host_coomm(I                    M,

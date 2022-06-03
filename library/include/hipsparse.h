@@ -39,6 +39,8 @@
 #ifndef _HIPSPARSE_H_
 #define _HIPSPARSE_H_
 
+#define INSTANTIATE_TEST_SUITE_P INSTANTIATE_TEST_CASE_P
+
 #include "hipsparse-export.h"
 #include "hipsparse-version.h"
 
@@ -8645,7 +8647,8 @@ typedef enum
     HIPSPARSE_FORMAT_COO_AOS = 4 /* Coordinate - Array of Structures */
 #if(CUDART_VERSION >= 11021)
     ,
-    HIPSPARSE_FORMAT_BLOCKED_ELL = 5 /* Blocked ELL */
+    HIPSPARSE_FORMAT_BLOCKED_ELL = 5, /* Blocked ELL */
+    HIPSPARSE_FORMAT_CSC = 6 /* Compressed Sparse Column */
 #endif
 } hipsparseFormat_t;
 #endif
