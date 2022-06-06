@@ -8645,8 +8645,8 @@ typedef enum
     HIPSPARSE_FORMAT_COO_AOS = 4 /* Coordinate - Array of Structures */
 #if(CUDART_VERSION >= 11021)
     ,
-    HIPSPARSE_FORMAT_BLOCKED_ELL = 5, /* Blocked ELL */
-    HIPSPARSE_FORMAT_CSC         = 6 /* Compressed Sparse Column */
+    HIPSPARSE_FORMAT_CSC         = 2, /* Compressed Sparse Column */
+    HIPSPARSE_FORMAT_BLOCKED_ELL = 5 /* Blocked ELL */
 #endif
 } hipsparseFormat_t;
 #endif
