@@ -66,7 +66,6 @@ void testing_spmm_batched_csc_bad_arg(void)
     hipsparseSpMMAlg_t alg = HIPSPARSE_MM_ALG_DEFAULT;
 #endif
 
-
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
@@ -114,13 +113,13 @@ void testing_spmm_batched_csc_bad_arg(void)
     int64_t batch_stride_C;
 
     // C_i = A * B_i
-    batch_count_A                 = 1;
-    batch_count_B                 = 10;
-    batch_count_C                 = 5;
-    offsets_batch_stride_A        = 0;
+    batch_count_A              = 1;
+    batch_count_B              = 10;
+    batch_count_C              = 5;
+    offsets_batch_stride_A     = 0;
     rows_values_batch_stride_A = 0;
-    batch_stride_B                = k * n;
-    batch_stride_C                = m * n;
+    batch_stride_B             = k * n;
+    batch_stride_C             = m * n;
     verify_hipsparse_status_success(
         hipsparseCsrSetStridedBatch(
             A, batch_count_A, offsets_batch_stride_A, rows_values_batch_stride_A),
@@ -135,13 +134,13 @@ void testing_spmm_batched_csc_bad_arg(void)
         "Error: Combination of strided batch parameters is invald");
 
     // C_i = A_i * B
-    batch_count_A                 = 10;
-    batch_count_B                 = 1;
-    batch_count_C                 = 5;
-    offsets_batch_stride_A        = (k + 1);
+    batch_count_A              = 10;
+    batch_count_B              = 1;
+    batch_count_C              = 5;
+    offsets_batch_stride_A     = (k + 1);
     rows_values_batch_stride_A = nnz;
-    batch_stride_B                = 0;
-    batch_stride_C                = m * n;
+    batch_stride_B             = 0;
+    batch_stride_C             = m * n;
     verify_hipsparse_status_success(
         hipsparseCsrSetStridedBatch(
             A, batch_count_A, offsets_batch_stride_A, rows_values_batch_stride_A),
@@ -156,13 +155,13 @@ void testing_spmm_batched_csc_bad_arg(void)
         "Error: Combination of strided batch parameters is invald");
 
     // C_i = A_i * B_i
-    batch_count_A                 = 10;
-    batch_count_B                 = 10;
-    batch_count_C                 = 5;
-    offsets_batch_stride_A        = (k + 1);
+    batch_count_A              = 10;
+    batch_count_B              = 10;
+    batch_count_C              = 5;
+    offsets_batch_stride_A     = (k + 1);
     rows_values_batch_stride_A = nnz;
-    batch_stride_B                = k * n;
-    batch_stride_C                = m * n;
+    batch_stride_B             = k * n;
+    batch_stride_C             = m * n;
     verify_hipsparse_status_success(
         hipsparseCsrSetStridedBatch(
             A, batch_count_A, offsets_batch_stride_A, rows_values_batch_stride_A),
@@ -186,7 +185,7 @@ void testing_spmm_batched_csc_bad_arg(void)
 template <typename I, typename J, typename T>
 hipsparseStatus_t testing_spmm_batched_csc()
 {
-#ifdef __HIP_PLATFORM_NVIDIA__                                                                                                                    
+#ifdef __HIP_PLATFORM_NVIDIA__
     // do not test for bad args
     return HIPSPARSE_STATUS_SUCCESS;
 #endif
@@ -250,10 +249,10 @@ hipsparseStatus_t testing_spmm_batched_csc()
     J ldb = k;
     J ldc = m;
 
-    J offsets_batch_stride_A        = 0;
+    J offsets_batch_stride_A     = 0;
     I rows_values_batch_stride_A = 0;
-    I batch_stride_B                = k * n;
-    I batch_stride_C                = m * n;
+    I batch_stride_B             = k * n;
+    I batch_stride_C             = m * n;
 
     std::vector<T> hB(batch_count_B * k * n);
     std::vector<T> hC_1(batch_count_C * m * n);

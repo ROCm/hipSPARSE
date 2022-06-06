@@ -2482,8 +2482,8 @@ void host_csrmm(J                    M,
                         idx_B = (j + (csr_col_ind_A[k] - base) * ldb);
                     }
 
-                    sum = 
-                        testing_fma(testing_conj(csr_val_A[k], conj_A), testing_conj(B[idx_B], conj_B), sum);
+                    sum = testing_fma(
+                        testing_conj(csr_val_A[k], conj_A), testing_conj(B[idx_B], conj_B), sum);
                 }
 
                 if(beta == make_DataType<T>(0))
@@ -2742,8 +2742,8 @@ void host_cscmm_batched(J                    M,
                         J                    batch_count_A,
                         I                    offsets_batch_stride_A,
                         I                    rows_values_batch_stride_A,
-                        hipsparseOperation_t  transA,
-                        hipsparseOperation_t  transB,
+                        hipsparseOperation_t transA,
+                        hipsparseOperation_t transB,
                         T                    alpha,
                         const I*             csc_col_ptr_A,
                         const J*             csc_row_ind_A,
@@ -2757,7 +2757,7 @@ void host_cscmm_batched(J                    M,
                         J                    ldc,
                         J                    batch_count_C,
                         I                    batch_stride_C,
-                        hipsparseOrder_t      order,
+                        hipsparseOrder_t     order,
                         hipsparseIndexBase_t base)
 {
     switch(transA)
@@ -2845,7 +2845,6 @@ void host_cscmm_batched(J                    M,
     }
     }
 }
-
 
 template <typename T, typename I>
 void host_coomm(I                    M,
