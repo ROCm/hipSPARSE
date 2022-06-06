@@ -8648,7 +8648,7 @@ typedef enum
 #if(CUDART_VERSION >= 11021)
     ,
     HIPSPARSE_FORMAT_BLOCKED_ELL = 5, /* Blocked ELL */
-    HIPSPARSE_FORMAT_CSC = 6 /* Compressed Sparse Column */
+    HIPSPARSE_FORMAT_CSC         = 6 /* Compressed Sparse Column */
 #endif
 } hipsparseFormat_t;
 #endif

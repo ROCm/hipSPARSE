@@ -340,7 +340,7 @@ static inline hipDoubleComplex testing_conj(hipDoubleComplex x)
     return make_DataType<hipDoubleComplex>(x.x, -x.y);
 }
 
-template<typename T>
+template <typename T>
 inline T testing_conj(T val, bool conj)
 {
     return conj ? testing_conj(val) : val;
@@ -2482,7 +2482,8 @@ void host_csrmm(J                    M,
                         idx_B = (j + (csr_col_ind_A[k] - base) * ldb);
                     }
 
-                    sum = testing_fma(testing_conj(csr_val_A[k], conj_A), testing_conj(B[idx_B], conj_B), sum);
+                    sum = 
+                        testing_fma(testing_conj(csr_val_A[k], conj_A), testing_conj(B[idx_B], conj_B), sum);
                 }
 
                 if(beta == make_DataType<T>(0))

@@ -66,6 +66,7 @@ void testing_spmm_batched_csc_bad_arg(void)
     hipsparseSpMMAlg_t alg = HIPSPARSE_MM_ALG_DEFAULT;
 #endif
 
+
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
