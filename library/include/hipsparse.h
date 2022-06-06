@@ -39,8 +39,6 @@
 #ifndef _HIPSPARSE_H_
 #define _HIPSPARSE_H_
 
-#define INSTANTIATE_TEST_SUITE_P INSTANTIATE_TEST_CASE_P
-
 #include "hipsparse-export.h"
 #include "hipsparse-version.h"
 
