@@ -586,7 +586,8 @@ hipsparseStatus_t testing_csrmm(Arguments argus)
                    hC_gold.data(),
                    ldc,
                    HIPSPARSE_ORDER_COLUMN,
-                   idx_base);
+                   idx_base,
+                   false);
 
         unit_check_near(nrowC, ncolC, ldc, hC_gold.data(), hC_1.data());
         unit_check_near(nrowC, ncolC, ldc, hC_gold.data(), hC_2.data());
