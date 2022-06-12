@@ -1,5 +1,9 @@
 # Change Log for hipSPARSE
 
+## hipSPARSE 2.3.0 for ROCm 5.3.0
+### Added
+- Add SpMM and SpMM batched for CSC format
+
 ## hipSPARSE 2.2.0 for ROCm 5.2.0
 ### Added
 - Packages for test and benchmark executables on all supported OSes using CPack.

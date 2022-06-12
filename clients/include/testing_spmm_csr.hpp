@@ -372,7 +372,8 @@ hipsparseStatus_t testing_spmm_csr()
                hC_gold.data(),
                ldc,
                order,
-               idx_base);
+               idx_base,
+               false);
 
     cpu_time_used = get_time_us() - cpu_time_used;
 

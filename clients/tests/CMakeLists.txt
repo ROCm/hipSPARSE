@@ -200,6 +200,8 @@ set(HIPSPARSE_TEST_SOURCES
   test_sparse_to_dense_coo.cpp
   test_spmm_csr.cpp
   test_spmm_batched_csr.cpp
+  test_spmm_csc.cpp
+  test_spmm_batched_csc.cpp
   test_spmm_coo.cpp
   test_spmm_batched_coo.cpp
   test_spmm_bell.cpp
