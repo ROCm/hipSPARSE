@@ -213,7 +213,8 @@ hipsparseStatus_t testing_axpyi(Arguments argus)
         // CPU
         for(int i = 0; i < nnz; ++i)
         {
-            hy_gold[hxInd[i] - idx_base] = hy_gold[hxInd[i] - idx_base] + testing_mult(h_alpha, hxVal[i]);
+            hy_gold[hxInd[i] - idx_base]
+                = hy_gold[hxInd[i] - idx_base] + testing_mult(h_alpha, hxVal[i]);
         }
 
         // enable unit check, notice unit check is not invasive, but norm check is,

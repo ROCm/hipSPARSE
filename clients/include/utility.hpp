@@ -2308,8 +2308,10 @@ inline void host_bsrmv(hipsparseDirection_t dir,
 
             if(beta != make_DataType<T>(0))
             {
-                y[row * bsr_dim + 0] = testing_fma(beta, y[row * bsr_dim + 0], testing_mult(alpha, sum0[0]));
-                y[row * bsr_dim + 1] = testing_fma(beta, y[row * bsr_dim + 1], testing_mult(alpha, sum1[0]));
+                y[row * bsr_dim + 0]
+                    = testing_fma(beta, y[row * bsr_dim + 0], testing_mult(alpha, sum0[0]));
+                y[row * bsr_dim + 1]
+                    = testing_fma(beta, y[row * bsr_dim + 1], testing_mult(alpha, sum1[0]));
             }
             else
             {
