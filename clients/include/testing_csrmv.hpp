@@ -456,7 +456,7 @@ hipsparseStatus_t testing_csrmv(Arguments argus)
             {
                 int row_begin = hcsr_row_ptr[i] - idx_base;
                 int row_end   = hcsr_row_ptr[i + 1] - idx_base;
-                T   row_val   = h_alpha * hx[i];
+                T   row_val   = testing_mult(h_alpha, hx[i]);
 
                 for(int j = row_begin; j < row_end; ++j)
                 {

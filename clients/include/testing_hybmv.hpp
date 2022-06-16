@@ -430,11 +430,11 @@ hipsparseStatus_t testing_hybmv(Arguments argus)
 
                 if(h_beta != zero)
                 {
-                    hy_gold[i] = h_beta * hy_gold[i] + h_alpha * sum;
+                    hy_gold[i] = testing_mult(h_beta, hy_gold[i]) + testing_mult(h_alpha, sum);
                 }
                 else
                 {
-                    hy_gold[i] = h_alpha * sum;
+                    hy_gold[i] = testing_mult(h_alpha, sum);
                 }
             }
         }
@@ -446,7 +446,7 @@ hipsparseStatus_t testing_hybmv(Arguments argus)
 
             for(int i = 0; i < m; ++i)
             {
-                hy_gold[i] = hy_gold[i] * coo_beta;
+                hy_gold[i] = testing_mult(hy_gold[i], coo_beta);
             }
 
             for(int i = 0; i < coo_nnz; ++i)
@@ -454,7 +454,7 @@ hipsparseStatus_t testing_hybmv(Arguments argus)
                 int row = hcoo_row[i] - idx_base;
                 int col = hcoo_col[i] - idx_base;
 
-                hy_gold[row] = hy_gold[row] + h_alpha * hcoo_val[i] * hx[col];
+                hy_gold[row] = hy_gold[row] + testing_mult(h_alpha, testing_mult(hcoo_val[i], hx[col]));
             }
         }
 
