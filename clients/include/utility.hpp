@@ -4765,7 +4765,7 @@ void bsr_lsolve(hipsparseDirection_t dir,
                         *struct_pivot = std::min(*struct_pivot, bsr_row + base);
                     }
 
-                    X[idx_X] = sum * diag_val;
+                    X[idx_X] = testing_mult(sum, diag_val);
                 }
                 else
                 {
@@ -4872,7 +4872,7 @@ void bsr_usolve(hipsparseDirection_t dir,
                         *struct_pivot = std::min(*struct_pivot, bsr_row + base);
                     }
 
-                    X[idx_X] = sum * diag_val;
+                    X[idx_X] = testing_mult(sum, diag_val);
                 }
                 else
                 {
@@ -5131,7 +5131,7 @@ int csr_lsolve(hipsparseOperation_t trans,
                 pivot = std::min(pivot, i + idx_base);
             }
 
-            y[i] = temp[0] * diag_val;
+            y[i] = testing_mult(temp[0], diag_val);
         }
         else
         {
@@ -5262,7 +5262,7 @@ int csr_usolve(hipsparseOperation_t trans,
                 pivot = std::min(pivot, i + idx_base);
             }
 
-            y[i] = temp[0] * diag_val;
+            y[i] = testing_mult(temp[0], diag_val);
         }
         else
         {
