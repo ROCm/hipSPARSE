@@ -271,6 +271,7 @@ hipsparseStatus_t testing_spmv_coo_aos(void)
     CHECK_HIP_ERROR(hipMemcpy(hy_1.data(), dy_1, sizeof(T) * m, hipMemcpyDeviceToHost));
     CHECK_HIP_ERROR(hipMemcpy(hy_2.data(), dy_2, sizeof(T) * m, hipMemcpyDeviceToHost));
 
+
     // Host SpMV
 #ifdef _OPENMP
 #pragma omp parallel for schedule(dynamic, 1024)

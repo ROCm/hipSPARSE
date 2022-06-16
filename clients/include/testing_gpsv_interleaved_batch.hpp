@@ -189,6 +189,7 @@ hipsparseStatus_t testing_gpsv_interleaved_batch(void)
                                         "!dds || !ddl || !dd || !ddu || !ddw || !dx");
         return HIPSPARSE_STATUS_ALLOC_FAILED;
     }
+    
 
     // copy data from CPU to device
     CHECK_HIP_ERROR(hipMemcpy(dds, hds.data(), sizeof(T) * m * batch_count, hipMemcpyHostToDevice));

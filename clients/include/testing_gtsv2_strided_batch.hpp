@@ -21,6 +21,7 @@
  *
  * ************************************************************************ */
 
+
 #pragma once
 #ifndef TESTING_GTSV2_NOPIVOT_STRIDED_BATCH_HPP
 #define TESTING_GTSV2_NOPIVOT_STRIDED_BATCH_HPP

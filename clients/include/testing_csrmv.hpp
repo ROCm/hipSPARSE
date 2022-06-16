@@ -424,6 +424,7 @@ hipsparseStatus_t testing_csrmv(Arguments argus)
                         }
                     }
                 }
+                
 
                 for(int j = 1; j < WF_SIZE; j <<= 1)
                 {
