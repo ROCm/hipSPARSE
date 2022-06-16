@@ -3837,7 +3837,7 @@ static inline void host_lssolve(J                     M,
                     *struct_pivot = std::min(*struct_pivot, row + base);
                 }
 
-                B[idx_B] = temp[0] * diag_val;
+                B[idx_B] = testing_mult(temp[0], diag_val);
             }
             else
             {
@@ -3969,7 +3969,7 @@ static inline void host_ussolve(J                     M,
                     *struct_pivot = std::min(*struct_pivot, row + base);
                 }
 
-                B[idx_B] = temp[0] * diag_val;
+                B[idx_B] = testing_mult(temp[0], diag_val);
             }
             else
             {
@@ -4214,7 +4214,7 @@ void host_csr_lsolve(J                    M,
                 *struct_pivot = std::min(*struct_pivot, row + base);
             }
 
-            y[row] = temp[0] * diag_val;
+            y[row] = testing_mult(temp[0], diag_val);
         }
         else
         {
@@ -4317,7 +4317,7 @@ void host_csr_usolve(J                    M,
                 *struct_pivot = std::min(*struct_pivot, row + base);
             }
 
-            y[row] = temp[0] * diag_val;
+            y[row] = testing_mult(temp[0], diag_val);
         }
         else
         {
