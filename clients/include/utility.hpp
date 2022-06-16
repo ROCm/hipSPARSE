@@ -2561,7 +2561,9 @@ void host_csrmm(J                    M,
 
                     J idx_C = (order == HIPSPARSE_ORDER_COLUMN) ? col + j * ldc : col * ldc + j;
 
-                    C[idx_C] = C[idx_C] + testing_mult(alpha, testing_mult(val, testing_conj(B[idx_B], conj_B)));
+                    C[idx_C]
+                        = C[idx_C]
+                          + testing_mult(alpha, testing_mult(val, testing_conj(B[idx_B], conj_B)));
                 }
             }
         }
@@ -3807,7 +3809,7 @@ static inline void host_lssolve(J                     M,
                     // Lower triangular part
                     J idx     = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? i * ldb + local_col
                                                                               : local_col * ldb + i;
-                    T neg_val = make_DataType<T>(-1.0) * local_val;
+                    T neg_val = testing_mult(make_DataType<T>(-1.0), local_val);
 
                     if(transB == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE)
                     {
@@ -3939,7 +3941,7 @@ static inline void host_ussolve(J                     M,
                     // Upper triangular part
                     J idx     = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? i * ldb + local_col
                                                                               : local_col * ldb + i;
-                    T neg_val = make_DataType<T>(-1.0) * local_val;
+                    T neg_val = testing_mult(make_DataType<T>(-1.0), local_val);
 
                     if(transB == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE)
                     {
