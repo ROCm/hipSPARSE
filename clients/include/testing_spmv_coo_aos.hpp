@@ -283,7 +283,7 @@ hipsparseStatus_t testing_spmv_coo_aos(void)
     for(I i = 0; i < nnz; ++i)
     {
         hy_gold[hind[2 * i] - idx_base] = testing_fma(
-            h_alpha * hval[i], hx[hind[2 * i + 1] - idx_base], hy_gold[hind[2 * i] - idx_base]);
+            testing_mult(h_alpha, hval[i]), hx[hind[2 * i + 1] - idx_base], hy_gold[hind[2 * i] - idx_base]);
     }
 
     unit_check_near(1, m, 1, hy_gold.data(), hy_1.data());

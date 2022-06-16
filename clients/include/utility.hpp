@@ -3529,7 +3529,7 @@ inline void host_bsric02(hipsparseDirection_t    direction,
                     }
                 }
 
-                val_j = (val_j - local_sum) * inv_diag;
+                val_j = testing_mult((val_j - local_sum), inv_diag);
                 sum   = testing_fma(val_j, testing_conj(val_j), sum);
 
                 if(direction == HIPSPARSE_DIRECTION_ROW)
@@ -3680,7 +3680,7 @@ void csric0(int                  M,
                 }
             }
 
-            val_j = (val_j - local_sum) * inv_diag;
+            val_j = testing_mult((val_j - local_sum), inv_diag);
             sum   = testing_fma(val_j, testing_conj(val_j), sum);
 
             csr_val[j] = val_j;

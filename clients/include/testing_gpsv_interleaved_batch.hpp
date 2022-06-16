@@ -219,19 +219,19 @@ hipsparseStatus_t testing_gpsv_interleaved_batch(void)
     {
         for(int i = 0; i < m; ++i)
         {
-            T sum = hd[batch_count * i + b] * hx[batch_count * i + b];
+            T sum = testing_mult(hd[batch_count * i + b], hx[batch_count * i + b]);
 
             sum = sum
-                  + ((i - 2 >= 0) ? hds[batch_count * i + b] * hx[batch_count * (i - 2) + b]
+                  + ((i - 2 >= 0) ? testing_mult(hds[batch_count * i + b], hx[batch_count * (i - 2) + b])
                                   : make_DataType<T>(0));
             sum = sum
-                  + ((i - 1 >= 0) ? hdl[batch_count * i + b] * hx[batch_count * (i - 1) + b]
+                  + ((i - 1 >= 0) ? testing_mult(hdl[batch_count * i + b], hx[batch_count * (i - 1) + b])
                                   : make_DataType<T>(0));
             sum = sum
-                  + ((i + 1 < m) ? hdu[batch_count * i + b] * hx[batch_count * (i + 1) + b]
+                  + ((i + 1 < m) ? testing_mult(hdu[batch_count * i + b], hx[batch_count * (i + 1) + b])
                                  : make_DataType<T>(0));
             sum = sum
-                  + ((i + 2 < m) ? hdw[batch_count * i + b] * hx[batch_count * (i + 2) + b]
+                  + ((i + 2 < m) ? testing_mult(hdw[batch_count * i + b], hx[batch_count * (i + 2) + b])
                                  : make_DataType<T>(0));
 
             hresult[batch_count * i + b] = sum;

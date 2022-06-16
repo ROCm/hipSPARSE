@@ -178,13 +178,13 @@ hipsparseStatus_t testing_gtsv2(void)
     std::vector<T> hresult = hB_original;
     for(int j = 0; j < n; j++)
     {
-        hresult[ldb * j] = hd[0] * hB[ldb * j] + hdu[0] * hB[ldb * j + 1];
+        hresult[ldb * j] = testing_mult(hd[0], hB[ldb * j]) + testing_mult(hdu[0], hB[ldb * j + 1]);
         hresult[ldb * j + m - 1]
-            = hdl[m - 1] * hB[ldb * j + m - 2] + hd[m - 1] * hB[ldb * j + m - 1];
+            = testing_mult(hdl[m - 1], hB[ldb * j + m - 2]) + testing_mult(hd[m - 1], hB[ldb * j + m - 1]);
         for(int i = 1; i < m - 1; i++)
         {
-            hresult[ldb * j + i] = hdl[i] * hB[ldb * j + i - 1] + hd[i] * hB[ldb * j + i]
-                                   + hdu[i] * hB[ldb * j + i + 1];
+            hresult[ldb * j + i] = testing_mult(hdl[i], hB[ldb * j + i - 1]) + testing_mult(hd[i], hB[ldb * j + i])
+                                   + testing_mult(hdu[i], hB[ldb * j + i + 1]);
         }
     }
 

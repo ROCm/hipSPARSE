@@ -217,7 +217,7 @@ hipsparseStatus_t testing_doti(Arguments argus)
         hresult_gold = make_DataType<T>(0.0);
         for(int i = 0; i < nnz; ++i)
         {
-            hresult_gold = hresult_gold + hy[hx_ind[i] - idx_base] * hx_val[i];
+            hresult_gold = hresult_gold + testing_mult(hy[hx_ind[i] - idx_base], hx_val[i]);
         }
 
         // enable unit check, notice unit check is not invasive, but norm check is,

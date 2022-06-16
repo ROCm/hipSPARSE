@@ -187,10 +187,10 @@ hipsparseStatus_t testing_gtsv_interleaved_batch(void)
     std::vector<T> hresult(m * batch_count, make_DataType<T>(3));
     for(int j = 0; j < batch_count; j++)
     {
-        hresult[j] = hd[j] * hx[j] + hdu[j] * hx[batch_count + j];
+        hresult[j] = testing_mult(hd[j], hx[j]) + testing_mult(hdu[j], hx[batch_count + j]);
         hresult[batch_count * (m - 1) + j]
-            = hdl[batch_count * (m - 1) + j] * hx[batch_count * (m - 2) + j]
-              + hd[batch_count * (m - 1) + j] * hx[batch_count * (m - 1) + j];
+            = testing_mult(hdl[batch_count * (m - 1) + j], hx[batch_count * (m - 2) + j])
+              + testing_mult(hd[batch_count * (m - 1) + j], hx[batch_count * (m - 1) + j]);
     }
 
     for(int i = 1; i < m - 1; i++)
@@ -198,9 +198,9 @@ hipsparseStatus_t testing_gtsv_interleaved_batch(void)
         for(int j = 0; j < batch_count; j++)
         {
             hresult[batch_count * i + j]
-                = hdl[batch_count * i + j] * hx[batch_count * (i - 1) + j]
-                  + hd[batch_count * i + j] * hx[batch_count * i + j]
-                  + hdu[batch_count * i + j] * hx[batch_count * (i + 1) + j];
+                = testing_mult(hdl[batch_count * i + j], hx[batch_count * (i - 1) + j])
+                  + testing_mult(hd[batch_count * i + j], hx[batch_count * i + j])
+                  + testing_mult(hdu[batch_count * i + j], hx[batch_count * (i + 1) + j]);
         }
     }
 

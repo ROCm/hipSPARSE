@@ -420,7 +420,7 @@ hipsparseStatus_t testing_hybmv(Arguments argus)
 
                     if(col >= 0 && col < n)
                     {
-                        sum = sum + hell_val[idx] * hx[col];
+                        sum = sum + testing_mult(hell_val[idx], hx[col]);
                     }
                     else
                     {
