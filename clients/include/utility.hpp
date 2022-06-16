@@ -2195,7 +2195,7 @@ inline void host_bsrmv(hipsparseDirection_t dir,
         {
             for(int i = 0; i < mb * bsr_dim; ++i)
             {
-                y[i] = beta * y[i];
+                y[i] = testing_mult(beta, y[i]);
             }
         }
 
@@ -2444,7 +2444,7 @@ inline void host_bsrmm(int                     Mb,
             }
             else
             {
-                C[idx_C] = sum + beta * C[idx_C];
+                C[idx_C] = sum + testing_mult(beta, C[idx_C]);
             }
         }
     }
@@ -2527,7 +2527,7 @@ void host_csrmm(J                    M,
             for(J j = 0; j < N; ++j)
             {
                 J idx_C  = (order == HIPSPARSE_ORDER_COLUMN) ? i + j * ldc : i * ldc + j;
-                C[idx_C] = beta * C[idx_C];
+                C[idx_C] = testing_mult(beta, C[idx_C]);
             }
         }
 
@@ -5552,7 +5552,7 @@ static void host_csrgeam(int                  M,
                 int col_B = csr_col_ind_B[j] - base_B;
 
                 // Current value of B
-                T val_B = beta * csr_val_B[j];
+                T val_B = testing_mult(beta, csr_val_B[j]);
 
                 // Check if a new nnz is generated or if the value is added
                 if(nnz[col_B] < row_begin_C)
@@ -5819,7 +5819,7 @@ static void csrgemm2(J                    m,
                     // Current column of D
                     J col_D = csr_col_ind_D[j] - idx_base_D;
                     // Current value of D
-                    T val_D = *beta * csr_val_D[j];
+                    T val_D = testing_mult(*beta, csr_val_D[j]);
 
                     // Check if a new nnz is generated or if the value is added
                     if(nnz[col_D] < row_begin_C)
