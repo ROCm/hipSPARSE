@@ -5798,12 +5798,12 @@ static void csrgemm2(J                    m,
                         {
                             nnz[col_B]               = row_end_C;
                             csr_col_ind_C[row_end_C] = col_B + idx_base_C;
-                            csr_val_C[row_end_C]     = val_A * val_B;
+                            csr_val_C[row_end_C]     = testing_mult(val_A, val_B);
                             ++row_end_C;
                         }
                         else
                         {
-                            csr_val_C[nnz[col_B]] = csr_val_C[nnz[col_B]] + val_A * val_B;
+                            csr_val_C[nnz[col_B]] = csr_val_C[nnz[col_B]] + testing_mult(val_A, val_B);
                         }
                     }
                 }

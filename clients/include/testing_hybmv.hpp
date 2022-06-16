@@ -454,7 +454,8 @@ hipsparseStatus_t testing_hybmv(Arguments argus)
                 int row = hcoo_row[i] - idx_base;
                 int col = hcoo_col[i] - idx_base;
 
-                hy_gold[row] = hy_gold[row] + testing_mult(h_alpha, testing_mult(hcoo_val[i], hx[col]));
+                hy_gold[row]
+                    = hy_gold[row] + testing_mult(h_alpha, testing_mult(hcoo_val[i], hx[col]));
             }
         }
 

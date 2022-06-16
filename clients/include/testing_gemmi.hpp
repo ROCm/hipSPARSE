@@ -555,7 +555,8 @@ hipsparseStatus_t testing_gemmi(Arguments argus)
                     sum = testing_fma(val_A, val_B, sum);
                 }
 
-                hC_gold[j * ldc + i] = testing_fma(h_beta, hC_gold[j * ldc + i], testing_mult(h_alpha, sum));
+                hC_gold[j * ldc + i]
+                    = testing_fma(h_beta, hC_gold[j * ldc + i], testing_mult(h_alpha, sum));
             }
         }
 
