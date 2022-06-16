@@ -2434,7 +2434,7 @@ inline void host_bsrmm(int                     Mb,
                                     ? j * ldb + block_dim * (bsr_col_ind_A[s] - base) + t
                                     : (block_dim * (bsr_col_ind_A[s] - base) + t) * ldb + j;
 
-                    sum = sum + alpha * testing_mult(bsr_val_A[idx_A], B[idx_B]);
+                    sum = sum + testing_mult(alpha, testing_mult(bsr_val_A[idx_A], B[idx_B]));
                 }
             }
 
@@ -2561,7 +2561,7 @@ void host_csrmm(J                    M,
 
                     J idx_C = (order == HIPSPARSE_ORDER_COLUMN) ? col + j * ldc : col * ldc + j;
 
-                    C[idx_C] = C[idx_C] + alpha * testing_mult(val, testing_conj(B[idx_B], conj_B));
+                    C[idx_C] = C[idx_C] + testing_mult(alpha, testing_mult(val, testing_conj(B[idx_B], conj_B)));
                 }
             }
         }
@@ -3883,7 +3883,7 @@ static inline void host_ussolve(J                     M,
 
             if(transB == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE)
             {
-                temp[0] = alpha * testing_conj(B[idx_B]);
+                temp[0] = testing_mult(alpha, testing_conj(B[idx_B]));
             }
             else
             {
