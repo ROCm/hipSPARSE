@@ -276,6 +276,27 @@ inline T make_DataType(double real, double imag = 0.0)
     return make_DataType2<T>(real, imag);
 }
 
+
+/* ============================================================================================ */
+/*! \brief mult */
+template <typename T>
+inline T testing_mult(T p, T q)
+{
+    return p * q;
+}
+
+template <>
+inline hipComplex testing_mult(hipComplex p, hipComplex q)
+{
+    return hipCmulf(p, q);
+}
+
+template <>
+inline hipDoubleComplex testing_mult(hipDoubleComplex p, hipDoubleComplex q)
+{
+    return hipCmul(p, q);
+}
+
 /* ============================================================================================ */
 /*! \brief fma */
 template <typename T>
