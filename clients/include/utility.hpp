@@ -5803,7 +5803,8 @@ static void csrgemm2(J                    m,
                         }
                         else
                         {
-                            csr_val_C[nnz[col_B]] = csr_val_C[nnz[col_B]] + testing_mult(val_A, val_B);
+                            csr_val_C[nnz[col_B]] 
+                                = csr_val_C[nnz[col_B]] + testing_mult(val_A, val_B);
                         }
                     }
                 }
