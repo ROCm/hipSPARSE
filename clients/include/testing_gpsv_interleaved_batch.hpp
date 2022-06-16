@@ -189,7 +189,6 @@ hipsparseStatus_t testing_gpsv_interleaved_batch(void)
                                         "!dds || !ddl || !dd || !ddu || !ddw || !dx");
         return HIPSPARSE_STATUS_ALLOC_FAILED;
     }
-    
 
     // copy data from CPU to device
     CHECK_HIP_ERROR(hipMemcpy(dds, hds.data(), sizeof(T) * m * batch_count, hipMemcpyHostToDevice));
@@ -223,17 +222,21 @@ hipsparseStatus_t testing_gpsv_interleaved_batch(void)
             T sum = testing_mult(hd[batch_count * i + b], hx[batch_count * i + b]);
 
             sum = sum
-                  + ((i - 2 >= 0) ? testing_mult(hds[batch_count * i + b], hx[batch_count * (i - 2) + b])
-                                  : make_DataType<T>(0));
+                  + ((i - 2 >= 0)
+                         ? testing_mult(hds[batch_count * i + b], hx[batch_count * (i - 2) + b])
+                         : make_DataType<T>(0));
             sum = sum
-                  + ((i - 1 >= 0) ? testing_mult(hdl[batch_count * i + b], hx[batch_count * (i - 1) + b])
-                                  : make_DataType<T>(0));
+                  + ((i - 1 >= 0)
+                         ? testing_mult(hdl[batch_count * i + b], hx[batch_count * (i - 1) + b])
+                         : make_DataType<T>(0));
             sum = sum
-                  + ((i + 1 < m) ? testing_mult(hdu[batch_count * i + b], hx[batch_count * (i + 1) + b])
-                                 : make_DataType<T>(0));
+                  + ((i + 1 < m)
+                         ? testing_mult(hdu[batch_count * i + b], hx[batch_count * (i + 1) + b])
+                         : make_DataType<T>(0));
             sum = sum
-                  + ((i + 2 < m) ? testing_mult(hdw[batch_count * i + b], hx[batch_count * (i + 2) + b])
-                                 : make_DataType<T>(0));
+                  + ((i + 2 < m)
+                         ? testing_mult(hdw[batch_count * i + b], hx[batch_count * (i + 2) + b])
+                         : make_DataType<T>(0));
 
             hresult[batch_count * i + b] = sum;
         }

@@ -21,7 +21,6 @@
  *
  * ************************************************************************ */
 
-
 #pragma once
 #ifndef TESTING_GTSV2_NOPIVOT_STRIDED_BATCH_HPP
 #define TESTING_GTSV2_NOPIVOT_STRIDED_BATCH_HPP
@@ -204,8 +203,9 @@ hipsparseStatus_t testing_gtsv2_strided_batch(void)
     std::vector<T> hresult(batch_stride * batch_count, make_DataType<T>(3));
     for(int j = 0; j < batch_count; j++)
     {
-        hresult[batch_stride * j] = testing_mult(hd[batch_stride * j + 0], hx[batch_stride * j])
-                                    + testing_mult(hdu[batch_stride * j + 0], hx[batch_stride * j + 1]);
+        hresult[batch_stride * j]
+            = testing_mult(hd[batch_stride * j + 0], hx[batch_stride * j])
+              + testing_mult(hdu[batch_stride * j + 0], hx[batch_stride * j + 1]);
         hresult[batch_stride * j + m - 1]
             = testing_mult(hdl[batch_stride * j + m - 1], hx[batch_stride * j + m - 2])
               + testing_mult(hd[batch_stride * j + m - 1], hx[batch_stride * j + m - 1]);

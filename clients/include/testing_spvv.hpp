@@ -21,7 +21,6 @@
  *
  * ************************************************************************ */
 
-
 #pragma once
 #ifndef TESTING_SPVV_HPP
 #define TESTING_SPVV_HPP
@@ -240,7 +239,8 @@ hipsparseStatus_t testing_spvv(void)
         hresult_C_gold = make_DataType<T>(0);
         for(I i = 0; i < nnz; ++i)
         {
-            hresult_C_gold = hresult_C_gold + testing_mult(testing_conj(hx_val[i]), hy[hx_ind[i] - idxBase]);
+            hresult_C_gold
+                = hresult_C_gold + testing_mult(testing_conj(hx_val[i]), hy[hx_ind[i] - idxBase]);
         }
 
         // Verify results against host

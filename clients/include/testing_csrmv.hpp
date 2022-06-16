@@ -419,12 +419,12 @@ hipsparseStatus_t testing_csrmv(Arguments argus)
                     {
                         if(j + k < hcsr_row_ptr[i + 1] - idx_base)
                         {
-                            sum[k] = testing_fma(
-                                testing_mult(h_alpha, hval[j + k]), hx[hcol_ind[j + k] - idx_base], sum[k]);
+                            sum[k] = testing_fma(testing_mult(h_alpha, hval[j + k]),
+                                                 hx[hcol_ind[j + k] - idx_base],
+                                                 sum[k]);
                         }
                     }
                 }
-                
 
                 for(int j = 1; j < WF_SIZE; j <<= 1)
                 {
