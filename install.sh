@@ -463,6 +463,9 @@ pushd .
     cmake_common_options="${cmake_common_options} -DUSE_CUDA=ON"
   fi
 
+  #Setting default GNU LIBDIR in build scripts as per arch board recommendation
+  cmake_common_options="${cmake_common_options} -DCMAKE_INSTALL_LIBDIR=lib"
+
   # Build library
   if [[ "${build_relocatable}" == true ]]; then
     CXX=${compiler} ${cmake_executable} ${cmake_common_options} ${cmake_client_options} \
