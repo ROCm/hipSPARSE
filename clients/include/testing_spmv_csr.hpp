@@ -347,7 +347,7 @@ hipsparseStatus_t testing_spmv_csr(void)
                 if(j + k < hcsr_row_ptr[i + 1] - idx_base)
                 {
                     sum[k] = testing_fma(
-                        h_alpha * hval[j + k], hx[hcol_ind[j + k] - idx_base], sum[k]);
+                        testing_mult(h_alpha, hval[j + k]), hx[hcol_ind[j + k] - idx_base], sum[k]);
                 }
             }
         }

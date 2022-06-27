@@ -167,7 +167,7 @@ hipsparseStatus_t testing_axpby(void)
     // CPU
     for(int64_t i = 0; i < size; ++i)
     {
-        hy_gold[i] = beta * hy_gold[i];
+        hy_gold[i] = testing_mult(beta, hy_gold[i]);
     }
 
     for(int64_t i = 0; i < nnz; ++i)
