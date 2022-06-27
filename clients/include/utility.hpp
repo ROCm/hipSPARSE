@@ -277,6 +277,26 @@ inline T make_DataType(double real, double imag = 0.0)
 }
 
 /* ============================================================================================ */
+/*! \brief mult */
+template <typename T>
+inline T testing_mult(T p, T q)
+{
+    return p * q;
+}
+
+template <>
+inline hipComplex testing_mult(hipComplex p, hipComplex q)
+{
+    return hipCmulf(p, q);
+}
+
+template <>
+inline hipDoubleComplex testing_mult(hipDoubleComplex p, hipDoubleComplex q)
+{
+    return hipCmul(p, q);
+}
+
+/* ============================================================================================ */
 /*! \brief fma */
 template <typename T>
 inline T testing_fma(T p, T q, T r)
@@ -2175,7 +2195,7 @@ inline void host_bsrmv(hipsparseDirection_t dir,
         {
             for(int i = 0; i < mb * bsr_dim; ++i)
             {
-                y[i] = beta * y[i];
+                y[i] = testing_mult(beta, y[i]);
             }
         }
 
@@ -2288,13 +2308,15 @@ inline void host_bsrmv(hipsparseDirection_t dir,
 
             if(beta != make_DataType<T>(0))
             {
-                y[row * bsr_dim + 0] = testing_fma(beta, y[row * bsr_dim + 0], alpha * sum0[0]);
-                y[row * bsr_dim + 1] = testing_fma(beta, y[row * bsr_dim + 1], alpha * sum1[0]);
+                y[row * bsr_dim + 0]
+                    = testing_fma(beta, y[row * bsr_dim + 0], testing_mult(alpha, sum0[0]));
+                y[row * bsr_dim + 1]
+                    = testing_fma(beta, y[row * bsr_dim + 1], testing_mult(alpha, sum1[0]));
             }
             else
             {
-                y[row * bsr_dim + 0] = alpha * sum0[0];
-                y[row * bsr_dim + 1] = alpha * sum1[0];
+                y[row * bsr_dim + 0] = testing_mult(alpha, sum0[0]);
+                y[row * bsr_dim + 1] = testing_mult(alpha, sum1[0]);
             }
         }
         else
@@ -2343,11 +2365,11 @@ inline void host_bsrmv(hipsparseDirection_t dir,
                 if(beta != make_DataType<T>(0))
                 {
                     y[row * bsr_dim + bi]
-                        = testing_fma(beta, y[row * bsr_dim + bi], alpha * sum[0]);
+                        = testing_fma(beta, y[row * bsr_dim + bi], testing_mult(alpha, sum[0]));
                 }
                 else
                 {
-                    y[row * bsr_dim + bi] = alpha * sum[0];
+                    y[row * bsr_dim + bi] = testing_mult(alpha, sum[0]);
                 }
             }
         }
@@ -2412,7 +2434,7 @@ inline void host_bsrmm(int                     Mb,
                                     ? j * ldb + block_dim * (bsr_col_ind_A[s] - base) + t
                                     : (block_dim * (bsr_col_ind_A[s] - base) + t) * ldb + j;
 
-                    sum = sum + alpha * bsr_val_A[idx_A] * B[idx_B];
+                    sum = sum + testing_mult(alpha, testing_mult(bsr_val_A[idx_A], B[idx_B]));
                 }
             }
 
@@ -2422,7 +2444,7 @@ inline void host_bsrmm(int                     Mb,
             }
             else
             {
-                C[idx_C] = sum + beta * C[idx_C];
+                C[idx_C] = sum + testing_mult(beta, C[idx_C]);
             }
         }
     }
@@ -2488,11 +2510,11 @@ void host_csrmm(J                    M,
 
                 if(beta == make_DataType<T>(0))
                 {
-                    C[idx_C] = alpha * sum;
+                    C[idx_C] = testing_mult(alpha, sum);
                 }
                 else
                 {
-                    C[idx_C] = testing_fma(beta, C[idx_C], alpha * sum);
+                    C[idx_C] = testing_fma(beta, C[idx_C], testing_mult(alpha, sum));
                 }
             }
         }
@@ -2505,7 +2527,7 @@ void host_csrmm(J                    M,
             for(J j = 0; j < N; ++j)
             {
                 J idx_C  = (order == HIPSPARSE_ORDER_COLUMN) ? i + j * ldc : i * ldc + j;
-                C[idx_C] = beta * C[idx_C];
+                C[idx_C] = testing_mult(beta, C[idx_C]);
             }
         }
 
@@ -2539,7 +2561,9 @@ void host_csrmm(J                    M,
 
                     J idx_C = (order == HIPSPARSE_ORDER_COLUMN) ? col + j * ldc : col * ldc + j;
 
-                    C[idx_C] = C[idx_C] + alpha * val * testing_conj(B[idx_B], conj_B);
+                    C[idx_C]
+                        = C[idx_C]
+                          + testing_mult(alpha, testing_mult(val, testing_conj(B[idx_B], conj_B)));
                 }
             }
         }
@@ -2873,7 +2897,7 @@ void host_coomm(I                    M,
             for(I i = 0; i < M; ++i)
             {
                 I idx_C  = i + j * ldc;
-                C[idx_C] = beta * C[idx_C];
+                C[idx_C] = testing_mult(beta, C[idx_C]);
             }
         }
     }
@@ -2887,7 +2911,7 @@ void host_coomm(I                    M,
             for(I j = 0; j < N; j++)
             {
                 I idx_C  = i * ldc + j;
-                C[idx_C] = beta * C[idx_C];
+                C[idx_C] = testing_mult(beta, C[idx_C]);
             }
         }
     }
@@ -2901,7 +2925,7 @@ void host_coomm(I                    M,
         {
             I row = coo_row_ind_A[i] - base;
             I col = coo_col_ind_A[i] - base;
-            T val = alpha * coo_val_A[i];
+            T val = testing_mult(alpha, coo_val_A[i]);
 
             I idx_C = order == HIPSPARSE_ORDER_COLUMN ? row + j * ldc : row * ldc + j;
 
@@ -3505,7 +3529,7 @@ inline void host_bsric02(hipsparseDirection_t    direction,
                     }
                 }
 
-                val_j = (val_j - local_sum) * inv_diag;
+                val_j = testing_mult((val_j - local_sum), inv_diag);
                 sum   = testing_fma(val_j, testing_conj(val_j), sum);
 
                 if(direction == HIPSPARSE_DIRECTION_ROW)
@@ -3656,7 +3680,7 @@ void csric0(int                  M,
                 }
             }
 
-            val_j = (val_j - local_sum) * inv_diag;
+            val_j = testing_mult((val_j - local_sum), inv_diag);
             sum   = testing_fma(val_j, testing_conj(val_j), sum);
 
             csr_val[j] = val_j;
@@ -3725,11 +3749,11 @@ static inline void host_lssolve(J                     M,
 
             if(transB == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE)
             {
-                temp[0] = alpha * testing_conj(B[idx_B]);
+                temp[0] = testing_mult(alpha, testing_conj(B[idx_B]));
             }
             else
             {
-                temp[0] = alpha * B[idx_B];
+                temp[0] = testing_mult(alpha, B[idx_B]);
             }
 
             I diag      = -1;
@@ -3785,7 +3809,7 @@ static inline void host_lssolve(J                     M,
                     // Lower triangular part
                     J idx     = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? i * ldb + local_col
                                                                               : local_col * ldb + i;
-                    T neg_val = make_DataType<T>(-1.0) * local_val;
+                    T neg_val = testing_mult(make_DataType<T>(-1.0), local_val);
 
                     if(transB == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE)
                     {
@@ -3813,7 +3837,7 @@ static inline void host_lssolve(J                     M,
                     *struct_pivot = std::min(*struct_pivot, row + base);
                 }
 
-                B[idx_B] = temp[0] * diag_val;
+                B[idx_B] = testing_mult(temp[0], diag_val);
             }
             else
             {
@@ -3861,11 +3885,11 @@ static inline void host_ussolve(J                     M,
 
             if(transB == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE)
             {
-                temp[0] = alpha * testing_conj(B[idx_B]);
+                temp[0] = testing_mult(alpha, testing_conj(B[idx_B]));
             }
             else
             {
-                temp[0] = alpha * B[idx_B];
+                temp[0] = testing_mult(alpha, B[idx_B]);
             }
 
             I diag      = -1;
@@ -3917,7 +3941,7 @@ static inline void host_ussolve(J                     M,
                     // Upper triangular part
                     J idx     = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? i * ldb + local_col
                                                                               : local_col * ldb + i;
-                    T neg_val = make_DataType<T>(-1.0) * local_val;
+                    T neg_val = testing_mult(make_DataType<T>(-1.0), local_val);
 
                     if(transB == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE)
                     {
@@ -3945,7 +3969,7 @@ static inline void host_ussolve(J                     M,
                     *struct_pivot = std::min(*struct_pivot, row + base);
                 }
 
-                B[idx_B] = temp[0] * diag_val;
+                B[idx_B] = testing_mult(temp[0], diag_val);
             }
             else
             {
@@ -4118,7 +4142,7 @@ void host_csr_lsolve(J                    M,
     for(J row = 0; row < M; ++row)
     {
         temp.assign(prop.warpSize, make_DataType<T>(0.0));
-        temp[0] = alpha * x[row];
+        temp[0] = testing_mult(alpha, x[row]);
 
         I diag      = -1;
         I row_begin = csr_row_ptr[row] - base;
@@ -4190,7 +4214,7 @@ void host_csr_lsolve(J                    M,
                 *struct_pivot = std::min(*struct_pivot, row + base);
             }
 
-            y[row] = temp[0] * diag_val;
+            y[row] = testing_mult(temp[0], diag_val);
         }
         else
         {
@@ -4225,7 +4249,7 @@ void host_csr_usolve(J                    M,
     for(J row = M - 1; row >= 0; --row)
     {
         temp.assign(prop.warpSize, make_DataType<T>(0));
-        temp[0] = alpha * x[row];
+        temp[0] = testing_mult(alpha, x[row]);
 
         I diag      = -1;
         I row_begin = csr_row_ptr[row] - base;
@@ -4293,7 +4317,7 @@ void host_csr_usolve(J                    M,
                 *struct_pivot = std::min(*struct_pivot, row + base);
             }
 
-            y[row] = temp[0] * diag_val;
+            y[row] = testing_mult(temp[0], diag_val);
         }
         else
         {
@@ -4683,7 +4707,7 @@ void bsr_lsolve(hipsparseDirection_t dir,
                 int idx_X = (trans_X == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? i * ldx + local_row
                                                                            : local_row * ldx + i;
 
-                T sum      = alpha * B[idx_B];
+                T sum      = testing_mult(alpha, B[idx_B]);
                 T diag_val = make_DataType<T>(0);
 
                 // Loop over BSR columns
@@ -4743,7 +4767,7 @@ void bsr_lsolve(hipsparseDirection_t dir,
                         *struct_pivot = std::min(*struct_pivot, bsr_row + base);
                     }
 
-                    X[idx_X] = sum * diag_val;
+                    X[idx_X] = testing_mult(sum, diag_val);
                 }
                 else
                 {
@@ -4794,7 +4818,7 @@ void bsr_usolve(hipsparseDirection_t dir,
                                                                            : local_row * ldb + i;
                 int idx_X = (trans_X == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? i * ldx + local_row
                                                                            : local_row * ldx + i;
-                T   sum   = alpha * B[idx_B];
+                T   sum   = testing_mult(alpha, B[idx_B]);
 
                 int diag     = -1;
                 T   diag_val = make_DataType<T>(0);
@@ -4850,7 +4874,7 @@ void bsr_usolve(hipsparseDirection_t dir,
                         *struct_pivot = std::min(*struct_pivot, bsr_row + base);
                     }
 
-                    X[idx_X] = sum * diag_val;
+                    X[idx_X] = testing_mult(sum, diag_val);
                 }
                 else
                 {
@@ -5040,7 +5064,7 @@ int csr_lsolve(hipsparseOperation_t trans,
     for(int i = 0; i < m; ++i)
     {
         temp.assign(wf_size, make_DataType<T>(0.0));
-        temp[0] = alpha * x[i];
+        temp[0] = testing_mult(alpha, x[i]);
 
         int diag      = -1;
         int row_begin = csr_row_ptr[i] - idx_base;
@@ -5109,7 +5133,7 @@ int csr_lsolve(hipsparseOperation_t trans,
                 pivot = std::min(pivot, i + idx_base);
             }
 
-            y[i] = temp[0] * diag_val;
+            y[i] = testing_mult(temp[0], diag_val);
         }
         else
         {
@@ -5171,7 +5195,7 @@ int csr_usolve(hipsparseOperation_t trans,
     for(int i = m - 1; i >= 0; --i)
     {
         temp.assign(wf_size, make_DataType<T>(0.0));
-        temp[0] = alpha * x[i];
+        temp[0] = testing_mult(alpha, x[i]);
 
         int diag      = -1;
         int row_begin = csr_row_ptr[i] - idx_base;
@@ -5240,7 +5264,7 @@ int csr_usolve(hipsparseOperation_t trans,
                 pivot = std::min(pivot, i + idx_base);
             }
 
-            y[i] = temp[0] * diag_val;
+            y[i] = testing_mult(temp[0], diag_val);
         }
         else
         {
@@ -5511,7 +5535,7 @@ static void host_csrgeam(int                  M,
                 int col_A = csr_col_ind_A[j] - base_A;
 
                 // Current value of A
-                T val_A = alpha * csr_val_A[j];
+                T val_A = testing_mult(alpha, csr_val_A[j]);
 
                 nnz[col_A] = row_end_C;
 
@@ -5530,7 +5554,7 @@ static void host_csrgeam(int                  M,
                 int col_B = csr_col_ind_B[j] - base_B;
 
                 // Current value of B
-                T val_B = beta * csr_val_B[j];
+                T val_B = testing_mult(beta, csr_val_B[j]);
 
                 // Check if a new nnz is generated or if the value is added
                 if(nnz[col_B] < row_begin_C)
@@ -5756,7 +5780,7 @@ static void csrgemm2(J                    m,
                     // Current column of A
                     J col_A = csr_col_ind_A[j] - idx_base_A;
                     // Current value of A
-                    T val_A = *alpha * csr_val_A[j];
+                    T val_A = testing_mult(*alpha, csr_val_A[j]);
 
                     I row_begin_B = csr_row_ptr_B[col_A] - idx_base_B;
                     I row_end_B   = csr_row_ptr_B[col_A + 1] - idx_base_B;
@@ -5774,12 +5798,13 @@ static void csrgemm2(J                    m,
                         {
                             nnz[col_B]               = row_end_C;
                             csr_col_ind_C[row_end_C] = col_B + idx_base_C;
-                            csr_val_C[row_end_C]     = val_A * val_B;
+                            csr_val_C[row_end_C]     = testing_mult(val_A, val_B);
                             ++row_end_C;
                         }
                         else
                         {
-                            csr_val_C[nnz[col_B]] = csr_val_C[nnz[col_B]] + val_A * val_B;
+                            csr_val_C[nnz[col_B]]
+                                = csr_val_C[nnz[col_B]] + testing_mult(val_A, val_B);
                         }
                     }
                 }
@@ -5797,7 +5822,7 @@ static void csrgemm2(J                    m,
                     // Current column of D
                     J col_D = csr_col_ind_D[j] - idx_base_D;
                     // Current value of D
-                    T val_D = *beta * csr_val_D[j];
+                    T val_D = testing_mult(*beta, csr_val_D[j]);
 
                     // Check if a new nnz is generated or if the value is added
                     if(nnz[col_D] < row_begin_C)

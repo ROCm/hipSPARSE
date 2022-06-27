@@ -419,8 +419,9 @@ hipsparseStatus_t testing_csrmv(Arguments argus)
                     {
                         if(j + k < hcsr_row_ptr[i + 1] - idx_base)
                         {
-                            sum[k] = testing_fma(
-                                h_alpha * hval[j + k], hx[hcol_ind[j + k] - idx_base], sum[k]);
+                            sum[k] = testing_fma(testing_mult(h_alpha, hval[j + k]),
+                                                 hx[hcol_ind[j + k] - idx_base],
+                                                 sum[k]);
                         }
                     }
                 }
@@ -448,7 +449,7 @@ hipsparseStatus_t testing_csrmv(Arguments argus)
             // Scale y with beta
             for(int i = 0; i < ncol; ++i)
             {
-                hy_gold[i] = hy_gold[i] * h_beta;
+                hy_gold[i] = testing_mult(hy_gold[i], h_beta);
             }
 
             // Transposed SpMV
@@ -456,7 +457,7 @@ hipsparseStatus_t testing_csrmv(Arguments argus)
             {
                 int row_begin = hcsr_row_ptr[i] - idx_base;
                 int row_end   = hcsr_row_ptr[i + 1] - idx_base;
-                T   row_val   = h_alpha * hx[i];
+                T   row_val   = testing_mult(h_alpha, hx[i]);
 
                 for(int j = row_begin; j < row_end; ++j)
                 {

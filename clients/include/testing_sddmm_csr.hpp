@@ -346,7 +346,7 @@ hipsparseStatus_t testing_sddmm_csr()
             {
                 sum = testing_fma(x[incx * k_], y[incy * k_], sum);
             }
-            hcsr_val[at] = hcsr_val[at] * h_beta + h_alpha * sum;
+            hcsr_val[at] = testing_mult(hcsr_val[at], h_beta) + testing_mult(h_alpha, sum);
         }
     }
 
