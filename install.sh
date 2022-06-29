@@ -427,8 +427,12 @@ pushd .
   fi
 
   # address sanitizer
+  # set dafault LIBDIR: "libasan" with address sanitizer else "lib"
   if [[ "${build_address_sanitizer}" == true ]]; then
     cmake_common_options="$cmake_common_options -DBUILD_ADDRESS_SANITIZER=ON"
+    cmake_common_options="${cmake_common_options} -DCMAKE_INSTALL_LIBDIR=libasan"
+  else
+    cmake_common_options="${cmake_common_options} -DCMAKE_INSTALL_LIBDIR=lib"
   fi
 
   # freorg backward compatible support enable
@@ -462,9 +466,6 @@ pushd .
   else
     cmake_common_options="${cmake_common_options} -DUSE_CUDA=ON"
   fi
-
-  #Setting default GNU LIBDIR in build scripts as per arch board recommendation
-  cmake_common_options="${cmake_common_options} -DCMAKE_INSTALL_LIBDIR=lib"
 
   # Build library
   if [[ "${build_relocatable}" == true ]]; then
