@@ -596,12 +596,14 @@ rocsparse_format_ hipFormatToHCCFormat(hipsparseFormat_t format)
 {
     switch(format)
     {
+    case HIPSPARSE_FORMAT_CSR:
+        return rocsparse_format_csr;
+    case HIPSPARSE_FORMAT_CSC:
+        return rocsparse_format_csc;
     case HIPSPARSE_FORMAT_COO:
         return rocsparse_format_coo;
     case HIPSPARSE_FORMAT_COO_AOS:
         return rocsparse_format_coo_aos;
-    case HIPSPARSE_FORMAT_CSR:
-        return rocsparse_format_csr;
     case HIPSPARSE_FORMAT_BLOCKED_ELL:
         return rocsparse_format_bell;
     default:
@@ -613,12 +615,14 @@ hipsparseFormat_t HCCFormatToHIPFormat(rocsparse_format_ format)
 {
     switch(format)
     {
+    case rocsparse_format_csr:
+        return HIPSPARSE_FORMAT_CSR;
+    case rocsparse_format_csc:
+        return HIPSPARSE_FORMAT_CSC;
     case rocsparse_format_coo:
         return HIPSPARSE_FORMAT_COO;
     case rocsparse_format_coo_aos:
         return HIPSPARSE_FORMAT_COO_AOS;
-    case rocsparse_format_csr:
-        return HIPSPARSE_FORMAT_CSR;
     case rocsparse_format_bell:
         return HIPSPARSE_FORMAT_BLOCKED_ELL;
     default:
