@@ -46,7 +46,7 @@ void testing_dense_to_sparse_coo_bad_arg(void)
 
     hipsparseIndexBase_t        idxBase = HIPSPARSE_INDEX_BASE_ZERO;
     hipsparseDenseToSparseAlg_t alg     = HIPSPARSE_DENSETOSPARSE_ALG_DEFAULT;
-    hipsparseOrder_t            order   = HIPSPARSE_ORDER_COLUMN;
+    hipsparseOrder_t            order   = HIPSPARSE_ORDER_COL;
 
     // Index and data type
     hipsparseIndexType_t iType    = HIPSPARSE_INDEX_64I;
@@ -140,7 +140,7 @@ hipsparseStatus_t testing_dense_to_sparse_coo(void)
 #if(!defined(CUDART_VERSION))
     hipsparseIndexBase_t        idx_base = HIPSPARSE_INDEX_BASE_ZERO;
     hipsparseDenseToSparseAlg_t alg      = HIPSPARSE_DENSETOSPARSE_ALG_DEFAULT;
-    hipsparseOrder_t            order    = HIPSPARSE_ORDER_COLUMN;
+    hipsparseOrder_t            order    = HIPSPARSE_ORDER_COL;
 
     // Index and data type
     hipsparseIndexType_t typeI

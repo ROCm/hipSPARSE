@@ -8657,20 +8657,20 @@ typedef enum
 #if(!defined(CUDART_VERSION))
 typedef enum
 {
-    HIPSPARSE_ORDER_ROW    = 0,
-    HIPSPARSE_ORDER_COLUMN = 1
+    HIPSPARSE_ORDER_ROW = 0,
+    HIPSPARSE_ORDER_COL = 1
 } hipsparseOrder_t;
 #else
 #if(CUDART_VERSION >= 11000)
 typedef enum
 {
-    HIPSPARSE_ORDER_ROW    = 0,
-    HIPSPARSE_ORDER_COLUMN = 1
+    HIPSPARSE_ORDER_ROW = 0,
+    HIPSPARSE_ORDER_COL = 1
 } hipsparseOrder_t;
 #elif(CUDART_VERSION >= 10010)
 typedef enum
 {
-    HIPSPARSE_ORDER_COLUMN = 1
+    HIPSPARSE_ORDER_COL = 1
 } hipsparseOrder_t;
 #endif
 #endif
