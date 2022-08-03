@@ -1,5 +1,9 @@
 # Change Log for hipSPARSE
 
+## hipSPARSE 2.3.3
+### Changed
+- HIPSPARSE_ORDER_COLUMN has been renamed to HIPSPARSE_ORDER_COL to match cusparse
+
 ## hipSPARSE 2.3.1 for ROCm 5.3.0
 ### Added
 - Add SpMM and SpMM batched for CSC format
