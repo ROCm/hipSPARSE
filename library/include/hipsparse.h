@@ -8658,6 +8658,7 @@ typedef enum
 typedef enum
 {
     HIPSPARSE_ORDER_ROW = 0,
+    HIPSPARSE_ORDER_COLUMN [[deprecated("Please use HIPSPARSE_ORDER_COL instead")]] = 1,
     HIPSPARSE_ORDER_COL = 1
 } hipsparseOrder_t;
 #else
@@ -8665,11 +8666,13 @@ typedef enum
 typedef enum
 {
     HIPSPARSE_ORDER_ROW = 0,
+    HIPSPARSE_ORDER_COLUMN [[deprecated("Please use HIPSPARSE_ORDER_COL instead")]] = 1,
     HIPSPARSE_ORDER_COL = 1
 } hipsparseOrder_t;
 #elif(CUDART_VERSION >= 10010)
 typedef enum
 {
+    HIPSPARSE_ORDER_COLUMN [[deprecated("Please use HIPSPARSE_ORDER_COL instead")]] = 1,
     HIPSPARSE_ORDER_COL = 1
 } hipsparseOrder_t;
 #endif
