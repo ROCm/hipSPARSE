@@ -52,7 +52,7 @@ void testing_spsm_csr_bad_arg(void)
     hipsparseOperation_t transA    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
     hipsparseOperation_t transB    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
     hipsparseIndexBase_t idxBase   = HIPSPARSE_INDEX_BASE_ZERO;
-    hipsparseOrder_t     order     = HIPSPARSE_ORDER_COLUMN;
+    hipsparseOrder_t     order     = HIPSPARSE_ORDER_COL;
     hipsparseIndexType_t idxType   = HIPSPARSE_INDEX_32I;
     hipDataType          dataType  = HIP_R_32F;
     hipsparseSpSMAlg_t   alg       = HIPSPARSE_SPSM_ALG_DEFAULT;
@@ -189,7 +189,7 @@ hipsparseStatus_t testing_spsm_csr(void)
     hipsparseIndexBase_t idx_base = HIPSPARSE_INDEX_BASE_ZERO;
     hipsparseDiagType_t  diag     = HIPSPARSE_DIAG_TYPE_NON_UNIT;
     hipsparseFillMode_t  uplo     = HIPSPARSE_FILL_MODE_LOWER;
-    hipsparseOrder_t     order    = HIPSPARSE_ORDER_COLUMN;
+    hipsparseOrder_t     order    = HIPSPARSE_ORDER_COL;
     hipsparseSpSMAlg_t   alg      = HIPSPARSE_SPSM_ALG_DEFAULT;
 
     std::string filename = hipsparse_exepath() + "../matrices/nos3.bin";

@@ -10175,7 +10175,7 @@ cusparseOrder_t hipOrderToCudaOrder(hipsparseOrder_t op)
     {
     case HIPSPARSE_ORDER_ROW:
         return CUSPARSE_ORDER_ROW;
-    case HIPSPARSE_ORDER_COLUMN:
+    case HIPSPARSE_ORDER_COL:
         return CUSPARSE_ORDER_COL;
     default:
         throw "Non existent hipsparseOrder_t";
@@ -10189,7 +10189,7 @@ hipsparseOrder_t CudaOrderToHIPOrder(cusparseOrder_t op)
     case CUSPARSE_ORDER_ROW:
         return HIPSPARSE_ORDER_ROW;
     case CUSPARSE_ORDER_COL:
-        return HIPSPARSE_ORDER_COLUMN;
+        return HIPSPARSE_ORDER_COL;
     default:
         throw "Non existent cusparseOrder_t";
     }
@@ -10199,7 +10199,7 @@ cusparseOrder_t hipOrderToCudaOrder(hipsparseOrder_t op)
 {
     switch(op)
     {
-    case HIPSPARSE_ORDER_COLUMN:
+    case HIPSPARSE_ORDER_COL:
         return CUSPARSE_ORDER_COL;
     default:
         throw "Non existent hipsparseOrder_t";
@@ -10211,7 +10211,7 @@ hipsparseOrder_t CudaOrderToHIPOrder(cusparseOrder_t op)
     switch(op)
     {
     case CUSPARSE_ORDER_COL:
-        return HIPSPARSE_ORDER_COLUMN;
+        return HIPSPARSE_ORDER_COL;
     default:
         throw "Non existent cusparseOrder_t";
     }
