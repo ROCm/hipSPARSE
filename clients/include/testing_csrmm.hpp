@@ -585,7 +585,7 @@ hipsparseStatus_t testing_csrmm(Arguments argus)
                    h_beta,
                    hC_gold.data(),
                    ldc,
-                   HIPSPARSE_ORDER_COLUMN,
+                   HIPSPARSE_ORDER_COL,
                    idx_base,
                    false);
 

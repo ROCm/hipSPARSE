@@ -46,7 +46,7 @@ void testing_sparse_to_dense_coo_bad_arg(void)
 
     hipsparseIndexBase_t        idxBase = HIPSPARSE_INDEX_BASE_ZERO;
     hipsparseSparseToDenseAlg_t alg     = HIPSPARSE_SPARSETODENSE_ALG_DEFAULT;
-    hipsparseOrder_t            order   = HIPSPARSE_ORDER_COLUMN;
+    hipsparseOrder_t            order   = HIPSPARSE_ORDER_COL;
 
     // Index and data type
     hipsparseIndexType_t iType    = HIPSPARSE_INDEX_32I;
@@ -129,7 +129,7 @@ hipsparseStatus_t testing_sparse_to_dense_coo(void)
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11020)
     hipsparseIndexBase_t        idx_base = HIPSPARSE_INDEX_BASE_ZERO;
     hipsparseSparseToDenseAlg_t alg      = HIPSPARSE_SPARSETODENSE_ALG_DEFAULT;
-    hipsparseOrder_t            order    = HIPSPARSE_ORDER_COLUMN;
+    hipsparseOrder_t            order    = HIPSPARSE_ORDER_COL;
 
     // Matrices are stored at the same path in matrices directory
     std::string filename = hipsparse_exepath() + "../matrices/nos3.bin";

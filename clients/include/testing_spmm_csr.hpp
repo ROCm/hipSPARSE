@@ -54,7 +54,7 @@ void testing_spmm_csr_bad_arg(void)
     float                beta      = 0.2;
     hipsparseOperation_t transA    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
     hipsparseOperation_t transB    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
-    hipsparseOrder_t     order     = HIPSPARSE_ORDER_COLUMN;
+    hipsparseOrder_t     order     = HIPSPARSE_ORDER_COL;
     hipsparseIndexBase_t idxBase   = HIPSPARSE_INDEX_BASE_ZERO;
     hipsparseIndexType_t idxTypeI  = HIPSPARSE_INDEX_64I;
     hipsparseIndexType_t idxTypeJ  = HIPSPARSE_INDEX_32I;
@@ -203,7 +203,7 @@ hipsparseStatus_t testing_spmm_csr()
     T                    h_beta   = make_DataType<T>(1.0);
     hipsparseOperation_t transA   = HIPSPARSE_OPERATION_NON_TRANSPOSE;
     hipsparseOperation_t transB   = HIPSPARSE_OPERATION_NON_TRANSPOSE;
-    hipsparseOrder_t     order    = HIPSPARSE_ORDER_COLUMN;
+    hipsparseOrder_t     order    = HIPSPARSE_ORDER_COL;
     hipsparseIndexBase_t idx_base = HIPSPARSE_INDEX_BASE_ZERO;
     //
     // !

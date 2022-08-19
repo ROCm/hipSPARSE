@@ -2483,19 +2483,17 @@ void host_csrmm(J                    M,
             {
                 I row_begin = csr_row_ptr_A[i] - base;
                 I row_end   = csr_row_ptr_A[i + 1] - base;
-                J idx_C     = order == HIPSPARSE_ORDER_COLUMN ? i + j * ldc : i * ldc + j;
+                J idx_C     = order == HIPSPARSE_ORDER_COL ? i + j * ldc : i * ldc + j;
 
                 T sum = make_DataType<T>(0);
 
                 for(I k = row_begin; k < row_end; ++k)
                 {
                     J idx_B = 0;
-                    if((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE
-                        && order == HIPSPARSE_ORDER_COLUMN)
-                       || (transB == HIPSPARSE_OPERATION_TRANSPOSE
-                           && order != HIPSPARSE_ORDER_COLUMN)
+                    if((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE && order == HIPSPARSE_ORDER_COL)
+                       || (transB == HIPSPARSE_OPERATION_TRANSPOSE && order != HIPSPARSE_ORDER_COL)
                        || (transB == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE
-                           && order != HIPSPARSE_ORDER_COLUMN))
+                           && order != HIPSPARSE_ORDER_COL))
                     {
                         idx_B = (csr_col_ind_A[k] - base + j * ldb);
                     }
@@ -2526,7 +2524,7 @@ void host_csrmm(J                    M,
         {
             for(J j = 0; j < N; ++j)
             {
-                J idx_C  = (order == HIPSPARSE_ORDER_COLUMN) ? i + j * ldc : i * ldc + j;
+                J idx_C  = (order == HIPSPARSE_ORDER_COL) ? i + j * ldc : i * ldc + j;
                 C[idx_C] = testing_mult(beta, C[idx_C]);
             }
         }
@@ -2545,12 +2543,10 @@ void host_csrmm(J                    M,
 
                     J idx_B = 0;
 
-                    if((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE
-                        && order == HIPSPARSE_ORDER_COLUMN)
-                       || (transB == HIPSPARSE_OPERATION_TRANSPOSE
-                           && order != HIPSPARSE_ORDER_COLUMN)
+                    if((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE && order == HIPSPARSE_ORDER_COL)
+                       || (transB == HIPSPARSE_OPERATION_TRANSPOSE && order != HIPSPARSE_ORDER_COL)
                        || (transB == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE
-                           && order != HIPSPARSE_ORDER_COLUMN))
+                           && order != HIPSPARSE_ORDER_COL))
                     {
                         idx_B = (i + j * ldb);
                     }
@@ -2559,7 +2555,7 @@ void host_csrmm(J                    M,
                         idx_B = (j + i * ldb);
                     }
 
-                    J idx_C = (order == HIPSPARSE_ORDER_COLUMN) ? col + j * ldc : col * ldc + j;
+                    J idx_C = (order == HIPSPARSE_ORDER_COL) ? col + j * ldc : col * ldc + j;
 
                     C[idx_C]
                         = C[idx_C]
@@ -2887,7 +2883,7 @@ void host_coomm(I                    M,
                 hipsparseOrder_t     order,
                 hipsparseIndexBase_t base)
 {
-    if(order == HIPSPARSE_ORDER_COLUMN)
+    if(order == HIPSPARSE_ORDER_COL)
     {
         for(I j = 0; j < N; j++)
         {
@@ -2927,11 +2923,11 @@ void host_coomm(I                    M,
             I col = coo_col_ind_A[i] - base;
             T val = testing_mult(alpha, coo_val_A[i]);
 
-            I idx_C = order == HIPSPARSE_ORDER_COLUMN ? row + j * ldc : row * ldc + j;
+            I idx_C = order == HIPSPARSE_ORDER_COL ? row + j * ldc : row * ldc + j;
 
             I idx_B = 0;
-            if((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE && order == HIPSPARSE_ORDER_COLUMN)
-               || (transB != HIPSPARSE_OPERATION_NON_TRANSPOSE && order != HIPSPARSE_ORDER_COLUMN))
+            if((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE && order == HIPSPARSE_ORDER_COL)
+               || (transB != HIPSPARSE_OPERATION_NON_TRANSPOSE && order != HIPSPARSE_ORDER_COL))
             {
                 idx_B = (col + j * ldb);
             }

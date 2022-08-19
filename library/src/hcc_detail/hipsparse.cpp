@@ -368,7 +368,7 @@ rocsparse_order_ hipOrderToHCCOrder(hipsparseOrder_t op)
     {
     case HIPSPARSE_ORDER_ROW:
         return rocsparse_order_row;
-    case HIPSPARSE_ORDER_COLUMN:
+    case HIPSPARSE_ORDER_COL:
         return rocsparse_order_column;
     default:
         throw "Non existent hipsparseOrder_t";
@@ -382,7 +382,7 @@ hipsparseOrder_t HCCOrderToHIPOrder(rocsparse_order_ op)
     case rocsparse_order_row:
         return HIPSPARSE_ORDER_ROW;
     case rocsparse_order_column:
-        return HIPSPARSE_ORDER_COLUMN;
+        return HIPSPARSE_ORDER_COL;
     default:
         throw "Non existent rocsparse_order";
     }
