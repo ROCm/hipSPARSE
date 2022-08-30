@@ -3248,7 +3248,7 @@ inline void host_bsrilu02(hipsparseDirection_t    dir,
                     T val = bsr_val[BSR_IND(j, bk, bi, dir)];
 
                     // Multiplication factor
-                    bsr_val[BSR_IND(j, bk, bi, dir)] = testing_div(val, diag);
+                    bsr_val[BSR_IND(j, bk, bi, dir)] = val = testing_div(val, diag);
 
                     // Loop through columns of bk-th row and do linear combination
                     for(int bj = bi + 1; bj < bsr_dim; ++bj)
@@ -3329,7 +3329,7 @@ inline void host_bsrilu02(hipsparseDirection_t    dir,
                     T val = bsr_val[BSR_IND(j, bk, bi, dir)];
 
                     // Multiplication factor
-                    bsr_val[BSR_IND(j, bk, bi, dir)] = testing_div(val, diag);
+                    bsr_val[BSR_IND(j, bk, bi, dir)] = val = testing_div(val, diag);
 
                     // Loop through remaining columns of bk-th row and do linear combination
                     for(int bj = bi + 1; bj < bsr_dim; ++bj)
