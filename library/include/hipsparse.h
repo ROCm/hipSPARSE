@@ -45,6 +45,8 @@
 #include <hip/hip_complex.h>
 #include <hip/hip_runtime.h>
 
+#define INSTANTIATE_TEST_SUITE_P INSTANTIATE_TEST_CASE_P
+
 #define DEPRECATED_CUDA_11000(warning)
 #define DEPRECATED_CUDA_10000(warning)
 #define DEPRECATED_CUDA_9000(warning)
@@ -6878,6 +6880,137 @@ hipsparseStatus_t hipsparseZcsr2csc(hipsparseHandle_t       handle,
                                     hipsparseIndexBase_t    idxBase);
 /**@}*/
 #endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
+typedef enum
+{
+    HIPSPARSE_CSR2CSC_ALG1 = 1,
+    HIPSPARSE_CSR2CSC_ALG2 = 2
+} hipsparseCsr2CscAlg_t;
+#endif
+
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
+/*! \ingroup conv_module
+*  \brief This function computes the size of the user allocated temporary storage buffer used
+*  when converting a sparse CSR matrix into a sparse CSC matrix.
+*
+*  \details
+*  \p hipsparseXcsr2cscEx2_bufferSize calculates the required user allocated temporary buffer needed 
+*  by \p hipsparseXcsr2cscEx2 to convert a CSR matrix into a CSC matrix. \p hipsparseXcsr2cscEx2
+*  can also be used to convert a CSC matrix into a CSR matrix. \p copy_values decides
+*  whether \p csc_val is being filled during conversion (\ref HIPSPARSE_ACTION_NUMERIC)
+*  or not (\ref HIPSPARSE_ACTION_SYMBOLIC).
+*
+*  \note
+*  The resulting matrix can also be seen as the transpose of the input matrix.
+*
+*  \note
+*  This function is non blocking and executed asynchronously with respect to the host.
+*  It may return before the actual computation has finished.
+*/
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCsr2cscEx2_bufferSize(hipsparseHandle_t    handle,
+                                                int                   m,
+                                                int                   n,
+                                                int                   nnz,
+                                                const void*           csrVal,
+                                                const int*            csrRowPtr,
+                                                const int*            csrColInd,
+                                                void*                 cscVal,
+                                                int*                  cscColPtr,
+                                                int*                  cscRowInd,
+                                                hipDataType           valType,
+                                                hipsparseAction_t     copyValues,
+                                                hipsparseIndexBase_t  idxBase,
+                                                hipsparseCsr2CscAlg_t alg,
+                                                size_t*               bufferSize);
+#endif
+
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
+/*! \ingroup conv_module
+*  \brief Convert a sparse CSR matrix into a sparse CSC matrix
+*
+*  \details
+*  \p hipsparseXcsr2cscEx2 converts a CSR matrix into a CSC matrix. \p hipsparseXcsr2cscEx2
+*  can also be used to convert a CSC matrix into a CSR matrix. \p copy_values decides
+*  whether \p csc_val is being filled during conversion (\ref HIPSPARSE_ACTION_NUMERIC)
+*  or not (\ref HIPSPARSE_ACTION_SYMBOLIC).
+*
+*  \note
+*  The resulting matrix can also be seen as the transpose of the input matrix.
+*
+*  \note
+*  This function is non blocking and executed asynchronously with respect to the host.
+*  It may return before the actual computation has finished.
+*/
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCsr2cscEx2(hipsparseHandle_t    handle,
+                                    int                  m,
+                                    int                  n,
+                                    int                  nnz,
+                                    const void*          csrVal,
+                                    const int*           csrRowPtr,
+                                    const int*           csrColInd,
+                                    void*                cscVal,
+                                    int*                 cscColPtr,
+                                    int*                 cscRowInd,
+                                    hipDataType          valType,
+                                    hipsparseAction_t    copyValues,
+                                    hipsparseIndexBase_t idxBase,
+                                    hipsparseCsr2CscAlg_t alg,
+                                    void*                buffer);
+#endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
 /*! \ingroup conv_module

@@ -8259,6 +8259,112 @@ hipsparseStatus_t hipsparseZcsr2csc(hipsparseHandle_t       handle,
 }
 #endif
 
+
+
+
+
+
+
+
+
+
+
+#if(CUDART_VERSION >= 10010)
+cusparseSpMMAlg_t hipCsr2CscAlgToCudaCsr2CscAlg(hipsparseCsr2CscAlg_t alg)
+{
+    switch(alg)
+    {
+    case HIPSPARSE_CSR2CSC_ALG1:
+        return CUSPARSE_CSR2CSC_ALG1;
+    case HIPSPARSE_CSR2CSC_ALG2:
+        return CUSPARSE_CSR2CSC_ALG2;
+    default:
+        throw "Non existant hipsparseCsr2CscAlg_t";
+    }
+}
+
+hipsparseStatus_t hipsparseCsr2cscEx2_bufferSize(hipsparseHandle_t    handle,
+                                                int                   m,
+                                                int                   n,
+                                                int                   nnz,
+                                                const void*           csrVal,
+                                                const int*            csrRowPtr,
+                                                const int*            csrColInd,
+                                                void*                 cscVal,
+                                                int*                  cscColPtr,
+                                                int*                  cscRowInd,
+                                                hipDataType           valType,
+                                                hipsparseAction_t     copyValues,
+                                                hipsparseIndexBase_t  idxBase,
+                                                hipsparseCsr2CscAlg_t alg,
+                                                size_t*               bufferSize)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseCsr2cscEx2_bufferSize((cusparseHandle_t)handle,
+                                                         m,
+                                                         n,
+                                                         nnz,
+                                                         csrVal,
+                                                         csrRowPtr,
+                                                         csrColInd,
+                                                         cscVal,
+                                                         cscColPtr,
+                                                         cscRowInd,
+                                                         hipDataTypeToCudaDataType(valType),
+                                                         hipActionToCudaAction(copyValues),
+                                                         hipIndexBaseToCudaIndexBase(idxBase),
+                                                         hipCsr2CscAlgToCudaCsr2CscAlg(alg),
+                                                         bufferSize));
+}
+
+hipsparseStatus_t hipsparseCsr2cscEx2(hipsparseHandle_t    handle,
+                                    int                  m,
+                                    int                  n,
+                                    int                  nnz,
+                                    const void*          csrVal,
+                                    const int*           csrRowPtr,
+                                    const int*           csrColInd,
+                                    void*                cscVal,
+                                    int*                 cscColPtr,
+                                    int*                 cscRowInd,
+                                    hipDataType          valType,
+                                    hipsparseAction_t    copyValues,
+                                    hipsparseIndexBase_t idxBase,
+                                    hipsparseCsr2CscAlg_t alg,
+                                    void*                buffer)
+{
+    return hipCUSPARSEStatusToHIPStatus(cusparseCsr2cscEx2((cusparseHandle_t)handle,
+                                                         m,
+                                                         n,
+                                                         nnz,
+                                                         csrVal,
+                                                         csrRowPtr,
+                                                         csrColInd,
+                                                         cscVal,
+                                                         cscColPtr,
+                                                         cscRowInd,
+                                                         hipDataTypeToCudaDataType(valType),
+                                                         hipActionToCudaAction(copyValues),
+                                                         hipIndexBaseToCudaIndexBase(idxBase),
+                                                         hipCsr2CscAlgToCudaCsr2CscAlg(alg),
+                                                         buffer));
+}
+#endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #if CUDART_VERSION < 11000
 hipsparseStatus_t hipsparseScsr2hyb(hipsparseHandle_t         handle,
                                     int                       m,
