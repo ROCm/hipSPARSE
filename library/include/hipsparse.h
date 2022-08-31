@@ -6881,30 +6881,6 @@ hipsparseStatus_t hipsparseZcsr2csc(hipsparseHandle_t       handle,
 /**@}*/
 #endif
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 typedef enum
 {
@@ -6933,21 +6909,21 @@ typedef enum
 *  It may return before the actual computation has finished.
 */
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseCsr2cscEx2_bufferSize(hipsparseHandle_t    handle,
-                                                int                   m,
-                                                int                   n,
-                                                int                   nnz,
-                                                const void*           csrVal,
-                                                const int*            csrRowPtr,
-                                                const int*            csrColInd,
-                                                void*                 cscVal,
-                                                int*                  cscColPtr,
-                                                int*                  cscRowInd,
-                                                hipDataType           valType,
-                                                hipsparseAction_t     copyValues,
-                                                hipsparseIndexBase_t  idxBase,
-                                                hipsparseCsr2CscAlg_t alg,
-                                                size_t*               bufferSize);
+hipsparseStatus_t hipsparseCsr2cscEx2_bufferSize(hipsparseHandle_t     handle,
+                                                 int                   m,
+                                                 int                   n,
+                                                 int                   nnz,
+                                                 const void*           csrVal,
+                                                 const int*            csrRowPtr,
+                                                 const int*            csrColInd,
+                                                 void*                 cscVal,
+                                                 int*                  cscColPtr,
+                                                 int*                  cscRowInd,
+                                                 hipDataType           valType,
+                                                 hipsparseAction_t     copyValues,
+                                                 hipsparseIndexBase_t  idxBase,
+                                                 hipsparseCsr2CscAlg_t alg,
+                                                 size_t*               bufferSize);
 #endif
 
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
@@ -6968,49 +6944,22 @@ hipsparseStatus_t hipsparseCsr2cscEx2_bufferSize(hipsparseHandle_t    handle,
 *  It may return before the actual computation has finished.
 */
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseCsr2cscEx2(hipsparseHandle_t    handle,
-                                    int                  m,
-                                    int                  n,
-                                    int                  nnz,
-                                    const void*          csrVal,
-                                    const int*           csrRowPtr,
-                                    const int*           csrColInd,
-                                    void*                cscVal,
-                                    int*                 cscColPtr,
-                                    int*                 cscRowInd,
-                                    hipDataType          valType,
-                                    hipsparseAction_t    copyValues,
-                                    hipsparseIndexBase_t idxBase,
-                                    hipsparseCsr2CscAlg_t alg,
-                                    void*                buffer);
+hipsparseStatus_t hipsparseCsr2cscEx2(hipsparseHandle_t     handle,
+                                      int                   m,
+                                      int                   n,
+                                      int                   nnz,
+                                      const void*           csrVal,
+                                      const int*            csrRowPtr,
+                                      const int*            csrColInd,
+                                      void*                 cscVal,
+                                      int*                  cscColPtr,
+                                      int*                  cscRowInd,
+                                      hipDataType           valType,
+                                      hipsparseAction_t     copyValues,
+                                      hipsparseIndexBase_t  idxBase,
+                                      hipsparseCsr2CscAlg_t alg,
+                                      void*                 buffer);
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
 /*! \ingroup conv_module

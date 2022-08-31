@@ -34,23 +34,24 @@ typedef std::tuple<hipsparseAction_t, hipsparseIndexBase_t, std::string> csr2csc
 int csr2csc_ex2_M_range[] = {-1, 0, 10, 500, 872, 1000};
 int csr2csc_ex2_N_range[] = {-3, 0, 33, 242, 623, 1000};
 
-hipsparseAction_t csr2csc_ex2_action_range[] = {HIPSPARSE_ACTION_NUMERIC, HIPSPARSE_ACTION_SYMBOLIC};
+hipsparseAction_t csr2csc_ex2_action_range[]
+    = {HIPSPARSE_ACTION_NUMERIC, HIPSPARSE_ACTION_SYMBOLIC};
 
 hipsparseIndexBase_t csr2csc_ex2_csr_base_range[]
     = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
 std::string csr2csc_ex2_bin[] = {"rma10.bin",
-                             "mc2depi.bin",
-                             "scircuit.bin",
-                             "nos1.bin",
-                             "nos2.bin",
-                             "nos3.bin",
-                             "nos4.bin",
-                             "nos5.bin",
-                             "nos6.bin",
-                             "nos7.bin",
-                             "webbase-1M.bin",
-                             "shipsec1.bin"};
+                                 "mc2depi.bin",
+                                 "scircuit.bin",
+                                 "nos1.bin",
+                                 "nos2.bin",
+                                 "nos3.bin",
+                                 "nos4.bin",
+                                 "nos5.bin",
+                                 "nos6.bin",
+                                 "nos7.bin",
+                                 "webbase-1M.bin",
+                                 "shipsec1.bin"};
 
 class parameterized_csr2csc_ex2 : public testing::TestWithParam<csr2csc_ex2_tuple>
 {

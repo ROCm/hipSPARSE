@@ -44,10 +44,10 @@ void testing_csr2csc_ex2_bad_arg(void)
     // do not test for bad args
     return;
 #endif
-    int               m         = 100;
-    int               n         = 100;
-    int               nnz       = 100;
-    int               safe_size = 100;
+    int               m           = 100;
+    int               n           = 100;
+    int               nnz         = 100;
+    int               safe_size   = 100;
     size_t            buffer_size = 0;
     hipsparseStatus_t status;
 
@@ -67,15 +67,16 @@ void testing_csr2csc_ex2_bad_arg(void)
     auto buffer_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(char) * safe_size), device_free};
 
-    int* csr_row_ptr = (int*)csr_row_ptr_managed.get();
-    int* csr_col_ind = (int*)csr_col_ind_managed.get();
-    T*   csr_val     = (T*)csr_val_managed.get();
-    int* csc_row_ind = (int*)csc_row_ind_managed.get();
-    int* csc_col_ptr = (int*)csc_col_ptr_managed.get();
-    T*   csc_val     = (T*)csc_val_managed.get();
+    int*  csr_row_ptr = (int*)csr_row_ptr_managed.get();
+    int*  csr_col_ind = (int*)csr_col_ind_managed.get();
+    T*    csr_val     = (T*)csr_val_managed.get();
+    int*  csc_row_ind = (int*)csc_row_ind_managed.get();
+    int*  csc_col_ptr = (int*)csc_col_ptr_managed.get();
+    T*    csc_val     = (T*)csc_val_managed.get();
     void* buffer      = (void*)buffer_managed.get();
 
-    if(!csr_row_ptr || !csr_col_ind || !csr_val || !csc_row_ind || !csc_col_ptr || !csc_val || !buffer)
+    if(!csr_row_ptr || !csr_col_ind || !csr_val || !csc_row_ind || !csc_col_ptr || !csc_val
+       || !buffer)
     {
         PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
         return;
@@ -88,20 +89,20 @@ void testing_csr2csc_ex2_bad_arg(void)
         hipsparseHandle_t handle_null = nullptr;
 
         status = hipsparseCsr2cscEx2_bufferSize(handle_null,
-                                   m,
-                                   n,
-                                   nnz,
-                                   csr_val,
-                                   csr_row_ptr,
-                                   csr_col_ind,
-                                   csc_val,
-                                   csc_col_ptr,
-                                   csc_row_ind,
-                                   HIP_R_32F,
-                                   HIPSPARSE_ACTION_NUMERIC,
-                                   HIPSPARSE_INDEX_BASE_ZERO,
-                                   HIPSPARSE_CSR2CSC_ALG1,
-                                   &buffer_size);
+                                                m,
+                                                n,
+                                                nnz,
+                                                csr_val,
+                                                csr_row_ptr,
+                                                csr_col_ind,
+                                                csc_val,
+                                                csc_col_ptr,
+                                                csc_row_ind,
+                                                HIP_R_32F,
+                                                HIPSPARSE_ACTION_NUMERIC,
+                                                HIPSPARSE_INDEX_BASE_ZERO,
+                                                HIPSPARSE_CSR2CSC_ALG1,
+                                                &buffer_size);
         verify_hipsparse_status_invalid_handle(status);
     }
 
@@ -110,20 +111,20 @@ void testing_csr2csc_ex2_bad_arg(void)
         int* csr_row_ptr_null = nullptr;
 
         status = hipsparseCsr2cscEx2_bufferSize(handle,
-                                   m,
-                                   n,
-                                   nnz,
-                                   csr_val,
-                                   csr_row_ptr_null,
-                                   csr_col_ind,
-                                   csc_val,
-                                   csc_col_ptr,
-                                   csc_row_ind,
-                                   HIP_R_32F,
-                                   HIPSPARSE_ACTION_NUMERIC,
-                                   HIPSPARSE_INDEX_BASE_ZERO,
-                                   HIPSPARSE_CSR2CSC_ALG1,
-                                   &buffer_size);
+                                                m,
+                                                n,
+                                                nnz,
+                                                csr_val,
+                                                csr_row_ptr_null,
+                                                csr_col_ind,
+                                                csc_val,
+                                                csc_col_ptr,
+                                                csc_row_ind,
+                                                HIP_R_32F,
+                                                HIPSPARSE_ACTION_NUMERIC,
+                                                HIPSPARSE_INDEX_BASE_ZERO,
+                                                HIPSPARSE_CSR2CSC_ALG1,
+                                                &buffer_size);
         verify_hipsparse_status_invalid_pointer(status, "Error: csr_row_ptr is nullptr");
     }
 
@@ -132,20 +133,20 @@ void testing_csr2csc_ex2_bad_arg(void)
         int* csr_col_ind_null = nullptr;
 
         status = hipsparseCsr2cscEx2_bufferSize(handle,
-                                   m,
-                                   n,
-                                   nnz,
-                                   csr_val,
-                                   csr_row_ptr,
-                                   csr_col_ind_null,
-                                   csc_val,
-                                   csc_col_ptr,
-                                   csc_row_ind,
-                                   HIP_R_32F,
-                                   HIPSPARSE_ACTION_NUMERIC,
-                                   HIPSPARSE_INDEX_BASE_ZERO,
-                                   HIPSPARSE_CSR2CSC_ALG1,
-                                   &buffer_size);
+                                                m,
+                                                n,
+                                                nnz,
+                                                csr_val,
+                                                csr_row_ptr,
+                                                csr_col_ind_null,
+                                                csc_val,
+                                                csc_col_ptr,
+                                                csc_row_ind,
+                                                HIP_R_32F,
+                                                HIPSPARSE_ACTION_NUMERIC,
+                                                HIPSPARSE_INDEX_BASE_ZERO,
+                                                HIPSPARSE_CSR2CSC_ALG1,
+                                                &buffer_size);
         verify_hipsparse_status_invalid_pointer(status, "Error: csr_col_ind is nullptr");
     }
 
@@ -154,20 +155,20 @@ void testing_csr2csc_ex2_bad_arg(void)
         size_t* buffer_size_null = nullptr;
 
         status = hipsparseCsr2cscEx2_bufferSize(handle,
-                                   m,
-                                   n,
-                                   nnz,
-                                   csr_val,
-                                   csr_row_ptr,
-                                   csr_col_ind,
-                                   csc_val,
-                                   csc_col_ptr,
-                                   csc_row_ind,
-                                   HIP_R_32F,
-                                   HIPSPARSE_ACTION_NUMERIC,
-                                   HIPSPARSE_INDEX_BASE_ZERO,
-                                   HIPSPARSE_CSR2CSC_ALG1,
-                                   buffer_size_null);
+                                                m,
+                                                n,
+                                                nnz,
+                                                csr_val,
+                                                csr_row_ptr,
+                                                csr_col_ind,
+                                                csc_val,
+                                                csc_col_ptr,
+                                                csc_row_ind,
+                                                HIP_R_32F,
+                                                HIPSPARSE_ACTION_NUMERIC,
+                                                HIPSPARSE_INDEX_BASE_ZERO,
+                                                HIPSPARSE_CSR2CSC_ALG1,
+                                                buffer_size_null);
         verify_hipsparse_status_invalid_pointer(status, "Error: buffer_size is nullptr");
     }
 
@@ -178,20 +179,20 @@ void testing_csr2csc_ex2_bad_arg(void)
         hipsparseHandle_t handle_null = nullptr;
 
         status = hipsparseCsr2cscEx2(handle_null,
-                                   m,
-                                   n,
-                                   nnz,
-                                   csr_val,
-                                   csr_row_ptr,
-                                   csr_col_ind,
-                                   csc_val,
-                                   csc_col_ptr,
-                                   csc_row_ind,
-                                   HIP_R_32F,
-                                   HIPSPARSE_ACTION_NUMERIC,
-                                   HIPSPARSE_INDEX_BASE_ZERO,
-                                   HIPSPARSE_CSR2CSC_ALG1,
-                                   buffer);
+                                     m,
+                                     n,
+                                     nnz,
+                                     csr_val,
+                                     csr_row_ptr,
+                                     csr_col_ind,
+                                     csc_val,
+                                     csc_col_ptr,
+                                     csc_row_ind,
+                                     HIP_R_32F,
+                                     HIPSPARSE_ACTION_NUMERIC,
+                                     HIPSPARSE_INDEX_BASE_ZERO,
+                                     HIPSPARSE_CSR2CSC_ALG1,
+                                     buffer);
         verify_hipsparse_status_invalid_handle(status);
     }
 
@@ -200,20 +201,20 @@ void testing_csr2csc_ex2_bad_arg(void)
         int* csr_row_ptr_null = nullptr;
 
         status = hipsparseCsr2cscEx2(handle,
-                                   m,
-                                   n,
-                                   nnz,
-                                   csr_val,
-                                   csr_row_ptr_null,
-                                   csr_col_ind,
-                                   csc_val,
-                                   csc_col_ptr,
-                                   csc_row_ind,
-                                   HIP_R_32F,
-                                   HIPSPARSE_ACTION_NUMERIC,
-                                   HIPSPARSE_INDEX_BASE_ZERO,
-                                   HIPSPARSE_CSR2CSC_ALG1,
-                                   buffer);
+                                     m,
+                                     n,
+                                     nnz,
+                                     csr_val,
+                                     csr_row_ptr_null,
+                                     csr_col_ind,
+                                     csc_val,
+                                     csc_col_ptr,
+                                     csc_row_ind,
+                                     HIP_R_32F,
+                                     HIPSPARSE_ACTION_NUMERIC,
+                                     HIPSPARSE_INDEX_BASE_ZERO,
+                                     HIPSPARSE_CSR2CSC_ALG1,
+                                     buffer);
         verify_hipsparse_status_invalid_pointer(status, "Error: csr_row_ptr is nullptr");
     }
 
@@ -222,20 +223,20 @@ void testing_csr2csc_ex2_bad_arg(void)
         int* csr_col_ind_null = nullptr;
 
         status = hipsparseCsr2cscEx2(handle,
-                                   m,
-                                   n,
-                                   nnz,
-                                   csr_val,
-                                   csr_row_ptr,
-                                   csr_col_ind_null,
-                                   csc_val,
-                                   csc_col_ptr,
-                                   csc_row_ind,
-                                   HIP_R_32F,
-                                   HIPSPARSE_ACTION_NUMERIC,
-                                   HIPSPARSE_INDEX_BASE_ZERO,
-                                   HIPSPARSE_CSR2CSC_ALG1,
-                                   buffer);
+                                     m,
+                                     n,
+                                     nnz,
+                                     csr_val,
+                                     csr_row_ptr,
+                                     csr_col_ind_null,
+                                     csc_val,
+                                     csc_col_ptr,
+                                     csc_row_ind,
+                                     HIP_R_32F,
+                                     HIPSPARSE_ACTION_NUMERIC,
+                                     HIPSPARSE_INDEX_BASE_ZERO,
+                                     HIPSPARSE_CSR2CSC_ALG1,
+                                     buffer);
         verify_hipsparse_status_invalid_pointer(status, "Error: csr_col_ind is nullptr");
     }
 
@@ -244,20 +245,20 @@ void testing_csr2csc_ex2_bad_arg(void)
         T* csr_val_null = nullptr;
 
         status = hipsparseCsr2cscEx2(handle,
-                                   m,
-                                   n,
-                                   nnz,
-                                   csr_val_null,
-                                   csr_row_ptr,
-                                   csr_col_ind,
-                                   csc_val,
-                                   csc_col_ptr,
-                                   csc_row_ind,
-                                   HIP_R_32F,
-                                   HIPSPARSE_ACTION_NUMERIC,
-                                   HIPSPARSE_INDEX_BASE_ZERO,
-                                   HIPSPARSE_CSR2CSC_ALG1,
-                                   buffer);
+                                     m,
+                                     n,
+                                     nnz,
+                                     csr_val_null,
+                                     csr_row_ptr,
+                                     csr_col_ind,
+                                     csc_val,
+                                     csc_col_ptr,
+                                     csc_row_ind,
+                                     HIP_R_32F,
+                                     HIPSPARSE_ACTION_NUMERIC,
+                                     HIPSPARSE_INDEX_BASE_ZERO,
+                                     HIPSPARSE_CSR2CSC_ALG1,
+                                     buffer);
         verify_hipsparse_status_invalid_pointer(status, "Error: csr_val is nullptr");
     }
 
@@ -266,20 +267,20 @@ void testing_csr2csc_ex2_bad_arg(void)
         int* csc_col_ptr_null = nullptr;
 
         status = hipsparseCsr2cscEx2(handle,
-                                   m,
-                                   n,
-                                   nnz,
-                                   csr_val,
-                                   csr_row_ptr,
-                                   csr_col_ind,
-                                   csc_val,
-                                   csc_col_ptr_null,
-                                   csc_row_ind,
-                                   HIP_R_32F,
-                                   HIPSPARSE_ACTION_NUMERIC,
-                                   HIPSPARSE_INDEX_BASE_ZERO,
-                                   HIPSPARSE_CSR2CSC_ALG1,
-                                   buffer);
+                                     m,
+                                     n,
+                                     nnz,
+                                     csr_val,
+                                     csr_row_ptr,
+                                     csr_col_ind,
+                                     csc_val,
+                                     csc_col_ptr_null,
+                                     csc_row_ind,
+                                     HIP_R_32F,
+                                     HIPSPARSE_ACTION_NUMERIC,
+                                     HIPSPARSE_INDEX_BASE_ZERO,
+                                     HIPSPARSE_CSR2CSC_ALG1,
+                                     buffer);
         verify_hipsparse_status_invalid_pointer(status, "Error: csc_col_ptr is nullptr");
     }
 
@@ -288,20 +289,20 @@ void testing_csr2csc_ex2_bad_arg(void)
         int* csc_row_ind_null = nullptr;
 
         status = hipsparseCsr2cscEx2(handle,
-                                   m,
-                                   n,
-                                   nnz,
-                                   csr_val,
-                                   csr_row_ptr,
-                                   csr_col_ind,
-                                   csc_val,
-                                   csc_col_ptr,
-                                   csc_row_ind_null,
-                                   HIP_R_32F,
-                                   HIPSPARSE_ACTION_NUMERIC,
-                                   HIPSPARSE_INDEX_BASE_ZERO,
-                                   HIPSPARSE_CSR2CSC_ALG1,
-                                   buffer);
+                                     m,
+                                     n,
+                                     nnz,
+                                     csr_val,
+                                     csr_row_ptr,
+                                     csr_col_ind,
+                                     csc_val,
+                                     csc_col_ptr,
+                                     csc_row_ind_null,
+                                     HIP_R_32F,
+                                     HIPSPARSE_ACTION_NUMERIC,
+                                     HIPSPARSE_INDEX_BASE_ZERO,
+                                     HIPSPARSE_CSR2CSC_ALG1,
+                                     buffer);
         verify_hipsparse_status_invalid_pointer(status, "Error: csc_row_ind is nullptr");
     }
 
@@ -310,20 +311,20 @@ void testing_csr2csc_ex2_bad_arg(void)
         T* csc_val_null = nullptr;
 
         status = hipsparseCsr2cscEx2(handle,
-                                   m,
-                                   n,
-                                   nnz,
-                                   csr_val,
-                                   csr_row_ptr,
-                                   csr_col_ind,
-                                   csc_val_null,
-                                   csc_col_ptr,
-                                   csc_row_ind,
-                                   HIP_R_32F,
-                                   HIPSPARSE_ACTION_NUMERIC,
-                                   HIPSPARSE_INDEX_BASE_ZERO,
-                                   HIPSPARSE_CSR2CSC_ALG1,
-                                   buffer);
+                                     m,
+                                     n,
+                                     nnz,
+                                     csr_val,
+                                     csr_row_ptr,
+                                     csr_col_ind,
+                                     csc_val_null,
+                                     csc_col_ptr,
+                                     csc_row_ind,
+                                     HIP_R_32F,
+                                     HIPSPARSE_ACTION_NUMERIC,
+                                     HIPSPARSE_INDEX_BASE_ZERO,
+                                     HIPSPARSE_CSR2CSC_ALG1,
+                                     buffer);
         verify_hipsparse_status_invalid_pointer(status, "Error: csc_val is nullptr");
     }
 
@@ -332,20 +333,20 @@ void testing_csr2csc_ex2_bad_arg(void)
         T* buffer_null = nullptr;
 
         status = hipsparseCsr2cscEx2(handle,
-                                   m,
-                                   n,
-                                   nnz,
-                                   csr_val,
-                                   csr_row_ptr,
-                                   csr_col_ind,
-                                   csc_val,
-                                   csc_col_ptr,
-                                   csc_row_ind,
-                                   HIP_R_32F,
-                                   HIPSPARSE_ACTION_NUMERIC,
-                                   HIPSPARSE_INDEX_BASE_ZERO,
-                                   HIPSPARSE_CSR2CSC_ALG1,
-                                   buffer_null);
+                                     m,
+                                     n,
+                                     nnz,
+                                     csr_val,
+                                     csr_row_ptr,
+                                     csr_col_ind,
+                                     csc_val,
+                                     csc_col_ptr,
+                                     csc_row_ind,
+                                     HIP_R_32F,
+                                     HIPSPARSE_ACTION_NUMERIC,
+                                     HIPSPARSE_INDEX_BASE_ZERO,
+                                     HIPSPARSE_CSR2CSC_ALG1,
+                                     buffer_null);
         verify_hipsparse_status_invalid_pointer(status, "Error: buffer is nullptr");
     }
 }
@@ -353,15 +354,15 @@ void testing_csr2csc_ex2_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_csr2csc_ex2(Arguments argus)
 {
-    int                  m         = argus.M;
-    int                  n         = argus.N;
-    int                  safe_size = 100;
-    hipsparseIndexBase_t idx_base  = argus.idx_base;
-    hipsparseAction_t    action    = argus.action;
-    std::string          binfile   = "";
-    std::string          filename  = "";
-    size_t buffer_size = 0;
-    hipsparseStatus_t    status;
+    int                   m           = argus.M;
+    int                   n           = argus.N;
+    int                   safe_size   = 100;
+    hipsparseIndexBase_t  idx_base    = argus.idx_base;
+    hipsparseAction_t     action      = argus.action;
+    std::string           binfile     = "";
+    std::string           filename    = "";
+    size_t                buffer_size = 0;
+    hipsparseStatus_t     status;
     hipsparseCsr2CscAlg_t alg = HIPSPARSE_CSR2CSC_ALG1;
 
     hipDataType dataType
@@ -416,15 +417,16 @@ hipsparseStatus_t testing_csr2csc_ex2(Arguments argus)
         auto buffer_managed
             = hipsparse_unique_ptr{device_malloc(sizeof(char) * safe_size), device_free};
 
-        int* csr_row_ptr = (int*)csr_row_ptr_managed.get();
-        int* csr_col_ind = (int*)csr_col_ind_managed.get();
-        T*   csr_val     = (T*)csr_val_managed.get();
-        int* csc_row_ind = (int*)csc_row_ind_managed.get();
-        int* csc_col_ptr = (int*)csc_col_ptr_managed.get();
-        T*   csc_val     = (T*)csc_val_managed.get();
-        void* buffer = (void*)buffer_managed.get();
+        int*  csr_row_ptr = (int*)csr_row_ptr_managed.get();
+        int*  csr_col_ind = (int*)csr_col_ind_managed.get();
+        T*    csr_val     = (T*)csr_val_managed.get();
+        int*  csc_row_ind = (int*)csc_row_ind_managed.get();
+        int*  csc_col_ptr = (int*)csc_col_ptr_managed.get();
+        T*    csc_val     = (T*)csc_val_managed.get();
+        void* buffer      = (void*)buffer_managed.get();
 
-        if(!csr_row_ptr || !csr_col_ind || !csr_val || !csc_row_ind || !csc_col_ptr || !csc_val || !buffer)
+        if(!csr_row_ptr || !csr_col_ind || !csr_val || !csc_row_ind || !csc_col_ptr || !csc_val
+           || !buffer)
         {
             verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
                                             "!csr_row_ptr || !csr_col_ind || !csr_val || "
@@ -458,20 +460,20 @@ hipsparseStatus_t testing_csr2csc_ex2(Arguments argus)
         }
 
         status = hipsparseCsr2cscEx2(handle,
-                                                m,
-                                                n,
-                                                nnz,
-                                                csr_val,
-                                                csr_row_ptr,
-                                                csr_col_ind,
-                                                csc_val,
-                                                csc_row_ind,
-                                                csc_col_ptr,
-                                                dataType,
-                                                action,
-                                                idx_base,
-                                                alg,
-                                                buffer);
+                                     m,
+                                     n,
+                                     nnz,
+                                     csr_val,
+                                     csr_row_ptr,
+                                     csr_col_ind,
+                                     csc_val,
+                                     csc_row_ind,
+                                     csc_col_ptr,
+                                     dataType,
+                                     action,
+                                     idx_base,
+                                     alg,
+                                     buffer);
 
         if(m < 0 || n < 0 || nnz < 0)
         {
@@ -578,23 +580,24 @@ hipsparseStatus_t testing_csr2csc_ex2(Arguments argus)
     CHECK_HIP_ERROR(hipMemcpy(dcsr_val, hcsr_val.data(), sizeof(T) * nnz, hipMemcpyHostToDevice));
 
     CHECK_HIPSPARSE_ERROR(hipsparseCsr2cscEx2_bufferSize(handle,
-                                                m,
-                                                n,
-                                                nnz,
-                                                dcsr_val,
-                                                dcsr_row_ptr,
-                                                dcsr_col_ind,
-                                                dcsc_val,
-                                                dcsc_row_ind,
-                                                dcsc_col_ptr,
-                                                dataType,
-                                                action,
-                                                idx_base,
-                                                alg,
-                                                &buffer_size));
+                                                         m,
+                                                         n,
+                                                         nnz,
+                                                         dcsr_val,
+                                                         dcsr_row_ptr,
+                                                         dcsr_col_ind,
+                                                         dcsc_val,
+                                                         dcsc_row_ind,
+                                                         dcsc_col_ptr,
+                                                         dataType,
+                                                         action,
+                                                         idx_base,
+                                                         alg,
+                                                         &buffer_size));
 
     // Allocate buffer on the device
-    auto dbuffer_managed = hipsparse_unique_ptr{device_malloc(sizeof(char) * buffer_size), device_free};
+    auto dbuffer_managed
+        = hipsparse_unique_ptr{device_malloc(sizeof(char) * buffer_size), device_free};
 
     void* dbuffer = (void*)dbuffer_managed.get();
 
@@ -607,20 +610,20 @@ hipsparseStatus_t testing_csr2csc_ex2(Arguments argus)
     if(argus.unit_check)
     {
         CHECK_HIPSPARSE_ERROR(hipsparseCsr2cscEx2(handle,
-                                                m,
-                                                n,
-                                                nnz,
-                                                dcsr_val,
-                                                dcsr_row_ptr,
-                                                dcsr_col_ind,
-                                                dcsc_val,
-                                                dcsc_row_ind,
-                                                dcsc_col_ptr,
-                                                dataType,
-                                                action,
-                                                idx_base,
-                                                alg,
-                                                dbuffer));
+                                                  m,
+                                                  n,
+                                                  nnz,
+                                                  dcsr_val,
+                                                  dcsr_row_ptr,
+                                                  dcsr_col_ind,
+                                                  dcsc_val,
+                                                  dcsc_row_ind,
+                                                  dcsc_col_ptr,
+                                                  dataType,
+                                                  action,
+                                                  idx_base,
+                                                  alg,
+                                                  dbuffer));
 
         // Copy output from device to host
         std::vector<int> hcsc_row_ind(nnz);
