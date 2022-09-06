@@ -8260,7 +8260,7 @@ hipsparseStatus_t hipsparseZcsr2csc(hipsparseHandle_t       handle,
 #endif
 
 #if(CUDART_VERSION >= 10010)
-cusparseSpMMAlg_t hipCsr2CscAlgToCudaCsr2CscAlg(hipsparseCsr2CscAlg_t alg)
+cusparseCsr2CscAlg_t hipCsr2CscAlgToCudaCsr2CscAlg(hipsparseCsr2CscAlg_t alg)
 {
     switch(alg)
     {
