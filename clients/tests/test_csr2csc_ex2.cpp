@@ -115,45 +115,45 @@ TEST_P(parameterized_csr2csc_ex2, csr2csc_ex2_float)
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-// TEST_P(parameterized_csr2csc_ex2, csr2csc_ex2_double)
-// {
-//     Arguments arg = setup_csr2csc_ex2_arguments(GetParam());
+TEST_P(parameterized_csr2csc_ex2, csr2csc_ex2_double)
+{
+    Arguments arg = setup_csr2csc_ex2_arguments(GetParam());
 
-//     hipsparseStatus_t status = testing_csr2csc_ex2<double>(arg);
-//     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
-// }
+    hipsparseStatus_t status = testing_csr2csc_ex2<double>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
 
-// TEST_P(parameterized_csr2csc_ex2, csr2csc_ex2_float_complex)
-// {
-//     Arguments arg = setup_csr2csc_ex2_arguments(GetParam());
+TEST_P(parameterized_csr2csc_ex2, csr2csc_ex2_float_complex)
+{
+    Arguments arg = setup_csr2csc_ex2_arguments(GetParam());
 
-//     hipsparseStatus_t status = testing_csr2csc_ex2<hipComplex>(arg);
-//     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
-// }
+    hipsparseStatus_t status = testing_csr2csc_ex2<hipComplex>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
 
-// TEST_P(parameterized_csr2csc_ex2, csr2csc_ex2_double_complex)
-// {
-//     Arguments arg = setup_csr2csc_ex2_arguments(GetParam());
+TEST_P(parameterized_csr2csc_ex2, csr2csc_ex2_double_complex)
+{
+    Arguments arg = setup_csr2csc_ex2_arguments(GetParam());
 
-//     hipsparseStatus_t status = testing_csr2csc_ex2<hipDoubleComplex>(arg);
-//     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
-// }
+    hipsparseStatus_t status = testing_csr2csc_ex2<hipDoubleComplex>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
 
-// TEST_P(parameterized_csr2csc_ex2_bin, csr2csc_ex2_bin_float)
-// {
-//     Arguments arg = setup_csr2csc_ex2_arguments(GetParam());
+TEST_P(parameterized_csr2csc_ex2_bin, csr2csc_ex2_bin_float)
+{
+    Arguments arg = setup_csr2csc_ex2_arguments(GetParam());
 
-//     hipsparseStatus_t status = testing_csr2csc_ex2<float>(arg);
-//     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
-// }
+    hipsparseStatus_t status = testing_csr2csc_ex2<float>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
 
-// TEST_P(parameterized_csr2csc_ex2_bin, csr2csc_ex2_bin_double)
-// {
-//     Arguments arg = setup_csr2csc_ex2_arguments(GetParam());
+TEST_P(parameterized_csr2csc_ex2_bin, csr2csc_ex2_bin_double)
+{
+    Arguments arg = setup_csr2csc_ex2_arguments(GetParam());
 
-//     hipsparseStatus_t status = testing_csr2csc_ex2<double>(arg);
-//     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
-// }
+    hipsparseStatus_t status = testing_csr2csc_ex2<double>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
 #endif
 
 INSTANTIATE_TEST_SUITE_P(csr2csc_ex2,
