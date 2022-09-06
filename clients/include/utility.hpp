@@ -297,6 +297,26 @@ inline hipDoubleComplex testing_mult(hipDoubleComplex p, hipDoubleComplex q)
 }
 
 /* ============================================================================================ */
+/*! \brief div */
+template <typename T>
+inline T testing_div(T p, T q)
+{
+    return p / q;
+}
+
+template <>
+inline hipComplex testing_div(hipComplex p, hipComplex q)
+{
+    return hipCdivf(p, q);
+}
+
+template <>
+inline hipDoubleComplex testing_div(hipDoubleComplex p, hipDoubleComplex q)
+{
+    return hipCdiv(p, q);
+}
+
+/* ============================================================================================ */
 /*! \brief fma */
 template <typename T>
 inline T testing_fma(T p, T q, T r)
@@ -547,7 +567,7 @@ void gen_dense_random_sparsity_pattern(int m, int n, T* A, int lda, float sparsi
         {
             const float d  = ((float)rand()) / ((float)RAND_MAX);
             A[j * lda + i] = (d < sparsity_ratio)
-                                 ? make_DataType<T>(rand()) / make_DataType<T>(RAND_MAX)
+                                 ? testing_div(make_DataType<T>(rand()), make_DataType<T>(RAND_MAX))
                                  : make_DataType<T>(0);
         }
     }
@@ -3102,7 +3122,7 @@ int csrilu0(int                  m,
                 }
 
                 // multiplication factor
-                val[j] = val[j] / diag_val;
+                val[j] = testing_div(val[j], diag_val);
 
                 // loop over upper offset pointer and do linear combination for nnz entry
                 for(int k = diag_j + 1; k < ptr[col_j + 1] - idx_base; ++k)
@@ -3228,7 +3248,7 @@ inline void host_bsrilu02(hipsparseDirection_t    dir,
                     T val = bsr_val[BSR_IND(j, bk, bi, dir)];
 
                     // Multiplication factor
-                    bsr_val[BSR_IND(j, bk, bi, dir)] = val = val / diag;
+                    bsr_val[BSR_IND(j, bk, bi, dir)] = val = testing_div(val, diag);
 
                     // Loop through columns of bk-th row and do linear combination
                     for(int bj = bi + 1; bj < bsr_dim; ++bj)
@@ -3309,7 +3329,7 @@ inline void host_bsrilu02(hipsparseDirection_t    dir,
                     T val = bsr_val[BSR_IND(j, bk, bi, dir)];
 
                     // Multiplication factor
-                    bsr_val[BSR_IND(j, bk, bi, dir)] = val = val / diag;
+                    bsr_val[BSR_IND(j, bk, bi, dir)] = val = testing_div(val, diag);
 
                     // Loop through remaining columns of bk-th row and do linear combination
                     for(int bj = bi + 1; bj < bsr_dim; ++bj)
@@ -3494,7 +3514,7 @@ inline void host_bsric02(hipsparseDirection_t    direction,
                     inv_diag = make_DataType<T>(1);
                 }
 
-                inv_diag = make_DataType<T>(1) / inv_diag;
+                inv_diag = testing_div(make_DataType<T>(1), inv_diag);
 
                 // loop over upper offset pointer and do linear combination for nnz entry
                 for(int l = row_begin_j; l < row_end_j + 1; l++)
@@ -3661,7 +3681,7 @@ void csric0(int                  M,
                 return;
             }
 
-            inv_diag = make_DataType<T>(1.0) / inv_diag;
+            inv_diag = testing_div(make_DataType<T>(1.0), inv_diag);
 
             // loop over upper offset pointer and do linear combination for nnz entry
             for(int k = row_begin_j; k < row_diag_j; ++k)
@@ -3796,7 +3816,7 @@ static inline void host_lssolve(J                     M,
                         if(diag_type == HIPSPARSE_DIAG_TYPE_NON_UNIT)
                         {
                             diag     = j;
-                            diag_val = make_DataType<T>(1.0) / local_val;
+                            diag_val = testing_div(make_DataType<T>(1.0), local_val);
                         }
 
                         break;
@@ -3928,7 +3948,7 @@ static inline void host_ussolve(J                     M,
                             }
 
                             diag     = j;
-                            diag_val = make_DataType<T>(1.0) / local_val;
+                            diag_val = testing_div(make_DataType<T>(1.0), local_val);
                         }
 
                         continue;
@@ -4184,7 +4204,7 @@ void host_csr_lsolve(J                    M,
                     if(diag_type == HIPSPARSE_DIAG_TYPE_NON_UNIT)
                     {
                         diag     = j;
-                        diag_val = make_DataType<T>(1) / local_val;
+                        diag_val = testing_div(make_DataType<T>(1), local_val);
                     }
 
                     break;
@@ -4287,7 +4307,7 @@ void host_csr_usolve(J                    M,
                         }
 
                         diag     = j;
-                        diag_val = make_DataType<T>(1) / local_val;
+                        diag_val = testing_div(make_DataType<T>(1), local_val);
                     }
 
                     continue;
@@ -4742,7 +4762,7 @@ void bsr_lsolve(hipsparseDirection_t dir,
                             if(diag_type == HIPSPARSE_DIAG_TYPE_NON_UNIT)
                             {
                                 diag     = j;
-                                diag_val = make_DataType<T>(1) / local_val;
+                                diag_val = testing_div(make_DataType<T>(1), local_val);
                             }
 
                             break;
@@ -4849,7 +4869,7 @@ void bsr_usolve(hipsparseDirection_t dir,
                                 }
 
                                 diag     = j;
-                                diag_val = make_DataType<T>(1) / local_val;
+                                diag_val = testing_div(make_DataType<T>(1), local_val);
                             }
 
                             continue;
@@ -5101,7 +5121,7 @@ int csr_lsolve(hipsparseOperation_t trans,
                         }
 
                         diag     = j;
-                        diag_val = make_DataType<T>(1.0) / val_j;
+                        diag_val = testing_div(make_DataType<T>(1.0), val_j);
                     }
 
                     break;
@@ -5232,7 +5252,7 @@ int csr_usolve(hipsparseOperation_t trans,
                         }
 
                         diag     = j;
-                        diag_val = make_DataType<T>(1.0) / val_j;
+                        diag_val = testing_div(make_DataType<T>(1.0), val_j);
                     }
 
                     continue;
