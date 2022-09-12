@@ -1,6 +1,8 @@
 # Change Log for hipSPARSE
 
 ## hipSPARSE 2.3.3
+### Added
+- Added hipsparseCsr2cscEx2_bufferSize and hipsparseCsr2cscEx2 routines
 ### Changed
 - HIPSPARSE_ORDER_COLUMN has been renamed to HIPSPARSE_ORDER_COL to match cusparse
 

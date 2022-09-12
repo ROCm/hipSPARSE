@@ -229,6 +229,7 @@ if(NOT USE_CUDA)
         test_doti.cpp
         test_dotci.cpp
         test_csr2csc.cpp
+        test_csr2csc_ex2.cpp
         test_csrgemm.cpp
         test_csrgeam.cpp
         test_csrmv.cpp
