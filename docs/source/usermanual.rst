@@ -709,6 +709,11 @@ hipsparseIndextype_t
 
 .. doxygenenum:: hipsparseIndexType_t
 
+hipsparseCsr2CscAlg_t
+---------------------
+
+.. doxygenenum:: hipsparseCsr2CscAlg_t
+
 hipsparseSpMVAlg_t
 ------------------
 
@@ -2546,6 +2551,16 @@ hipsparseXcsr2csc()
 .. doxygenfunction:: hipsparseCcsr2csc
   :outline:
 .. doxygenfunction:: hipsparseZcsr2csc
+
+hipsparseXcsr2cscEx2_bufferSize()
+---------------------------------
+
+.. doxygenfunction:: hipsparseCsr2cscEx2_bufferSize
+
+hipsparseXcsr2cscEx2()
+----------------------
+
+.. doxygenfunction:: hipsparseCsr2cscEx2
 
 hipsparseXcsr2hyb()
 -------------------
