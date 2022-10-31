@@ -173,48 +173,48 @@ typedef struct csru2csrInfo* csru2csrInfo_t;
  */
 #if(!defined(CUDART_VERSION))
 typedef enum {
-    HIPSPARSE_STATUS_SUCCESS                   = 0, // Function succeeds
-    HIPSPARSE_STATUS_NOT_INITIALIZED           = 1, // hipSPARSE was not initialized
-    HIPSPARSE_STATUS_ALLOC_FAILED              = 2, // Resource allocation failed
-    HIPSPARSE_STATUS_INVALID_VALUE             = 3, // Unsupported value was passed to the function
-    HIPSPARSE_STATUS_ARCH_MISMATCH             = 4, // Device architecture not supported
-    HIPSPARSE_STATUS_MAPPING_ERROR             = 5, // Access to GPU memory space failed
-    HIPSPARSE_STATUS_EXECUTION_FAILED          = 6, // GPU program failed to execute
-    HIPSPARSE_STATUS_INTERNAL_ERROR            = 7, // An internal hipSPARSE operation failed
-    HIPSPARSE_STATUS_MATRIX_TYPE_NOT_SUPPORTED = 8, // Matrix type not supported
-    HIPSPARSE_STATUS_ZERO_PIVOT                = 9, // Zero pivot was computed
-    HIPSPARSE_STATUS_NOT_SUPPORTED             = 10, // Operation is not supported
-    HIPSPARSE_STATUS_INSUFFICIENT_RESOURCES    = 11 // Resources are insufficient
+    HIPSPARSE_STATUS_SUCCESS                   = 0, /**< Function succeeds */
+    HIPSPARSE_STATUS_NOT_INITIALIZED           = 1, /**< hipSPARSE was not initialized */
+    HIPSPARSE_STATUS_ALLOC_FAILED              = 2, /**< Resource allocation failed */
+    HIPSPARSE_STATUS_INVALID_VALUE             = 3, /**< Unsupported value was passed to the function */
+    HIPSPARSE_STATUS_ARCH_MISMATCH             = 4, /**< Device architecture not supported */
+    HIPSPARSE_STATUS_MAPPING_ERROR             = 5, /**< Access to GPU memory space failed */
+    HIPSPARSE_STATUS_EXECUTION_FAILED          = 6, /**< GPU program failed to execute */
+    HIPSPARSE_STATUS_INTERNAL_ERROR            = 7, /**< An internal hipSPARSE operation failed */
+    HIPSPARSE_STATUS_MATRIX_TYPE_NOT_SUPPORTED = 8, /**< Matrix type not supported */
+    HIPSPARSE_STATUS_ZERO_PIVOT                = 9, /**< Zero pivot was computed */
+    HIPSPARSE_STATUS_NOT_SUPPORTED             = 10, /**< Operation is not supported */
+    HIPSPARSE_STATUS_INSUFFICIENT_RESOURCES    = 11 /**< Resources are insufficient */
 } hipsparseStatus_t;
 #else
 #if(CUDART_VERSION >= 11003)
 typedef enum {
-    HIPSPARSE_STATUS_SUCCESS                   = 0, // Function succeeds
-    HIPSPARSE_STATUS_NOT_INITIALIZED           = 1, // hipSPARSE was not initialized
-    HIPSPARSE_STATUS_ALLOC_FAILED              = 2, // Resource allocation failed
-    HIPSPARSE_STATUS_INVALID_VALUE             = 3, // Unsupported value was passed to the function
-    HIPSPARSE_STATUS_ARCH_MISMATCH             = 4, // Device architecture not supported
-    HIPSPARSE_STATUS_MAPPING_ERROR             = 5, // Access to GPU memory space failed
-    HIPSPARSE_STATUS_EXECUTION_FAILED          = 6, // GPU program failed to execute
-    HIPSPARSE_STATUS_INTERNAL_ERROR            = 7, // An internal hipSPARSE operation failed
-    HIPSPARSE_STATUS_MATRIX_TYPE_NOT_SUPPORTED = 8, // Matrix type not supported
-    HIPSPARSE_STATUS_ZERO_PIVOT                = 9, // Zero pivot was computed
-    HIPSPARSE_STATUS_NOT_SUPPORTED             = 10, // Operation is not supported
-    HIPSPARSE_STATUS_INSUFFICIENT_RESOURCES    = 11 // Resources are insufficient
+    HIPSPARSE_STATUS_SUCCESS                   = 0, /**< Function succeeds */
+    HIPSPARSE_STATUS_NOT_INITIALIZED           = 1, /**< hipSPARSE was not initialized */
+    HIPSPARSE_STATUS_ALLOC_FAILED              = 2, /**< Resource allocation failed */
+    HIPSPARSE_STATUS_INVALID_VALUE             = 3, /**< Unsupported value was passed to the function */
+    HIPSPARSE_STATUS_ARCH_MISMATCH             = 4, /**< Device architecture not supported */
+    HIPSPARSE_STATUS_MAPPING_ERROR             = 5, /**< Access to GPU memory space failed */
+    HIPSPARSE_STATUS_EXECUTION_FAILED          = 6, /**< GPU program failed to execute */
+    HIPSPARSE_STATUS_INTERNAL_ERROR            = 7, /**< An internal hipSPARSE operation failed */
+    HIPSPARSE_STATUS_MATRIX_TYPE_NOT_SUPPORTED = 8, /**< Matrix type not supported */
+    HIPSPARSE_STATUS_ZERO_PIVOT                = 9, /**< Zero pivot was computed */
+    HIPSPARSE_STATUS_NOT_SUPPORTED             = 10, /**< Operation is not supported */
+    HIPSPARSE_STATUS_INSUFFICIENT_RESOURCES    = 11 /**< Resources are insufficient */
 } hipsparseStatus_t;
 #elif(CUDART_VERSION >= 10010)
 typedef enum {
-    HIPSPARSE_STATUS_SUCCESS                   = 0, // Function succeeds
-    HIPSPARSE_STATUS_NOT_INITIALIZED           = 1, // hipSPARSE was not initialized
-    HIPSPARSE_STATUS_ALLOC_FAILED              = 2, // Resource allocation failed
-    HIPSPARSE_STATUS_INVALID_VALUE             = 3, // Unsupported value was passed to the function
-    HIPSPARSE_STATUS_ARCH_MISMATCH             = 4, // Device architecture not supported
-    HIPSPARSE_STATUS_MAPPING_ERROR             = 5, // Access to GPU memory space failed
-    HIPSPARSE_STATUS_EXECUTION_FAILED          = 6, // GPU program failed to execute
-    HIPSPARSE_STATUS_INTERNAL_ERROR            = 7, // An internal hipSPARSE operation failed
-    HIPSPARSE_STATUS_MATRIX_TYPE_NOT_SUPPORTED = 8, // Matrix type not supported
-    HIPSPARSE_STATUS_ZERO_PIVOT                = 9, // Zero pivot was computed
-    HIPSPARSE_STATUS_NOT_SUPPORTED             = 10 // Operation is not supported
+    HIPSPARSE_STATUS_SUCCESS                   = 0, /**< Function succeeds */
+    HIPSPARSE_STATUS_NOT_INITIALIZED           = 1, /**< hipSPARSE was not initialized */
+    HIPSPARSE_STATUS_ALLOC_FAILED              = 2, /**< Resource allocation failed */
+    HIPSPARSE_STATUS_INVALID_VALUE             = 3, /**< Unsupported value was passed to the function */
+    HIPSPARSE_STATUS_ARCH_MISMATCH             = 4, /**< Device architecture not supported */
+    HIPSPARSE_STATUS_MAPPING_ERROR             = 5, /**< Access to GPU memory space failed */
+    HIPSPARSE_STATUS_EXECUTION_FAILED          = 6, /**< GPU program failed to execute */
+    HIPSPARSE_STATUS_INTERNAL_ERROR            = 7, /**< An internal hipSPARSE operation failed */
+    HIPSPARSE_STATUS_MATRIX_TYPE_NOT_SUPPORTED = 8, /**< Matrix type not supported */
+    HIPSPARSE_STATUS_ZERO_PIVOT                = 9, /**< Zero pivot was computed */
+    HIPSPARSE_STATUS_NOT_SUPPORTED             = 10 /**< Operation is not supported */
 } hipsparseStatus_t;
 #endif
 #endif
@@ -229,8 +229,8 @@ typedef enum {
  *  hipsparseGetPointerMode().
  */
 typedef enum {
-    HIPSPARSE_POINTER_MODE_HOST   = 0,
-    HIPSPARSE_POINTER_MODE_DEVICE = 1
+    HIPSPARSE_POINTER_MODE_HOST   = 0, /**< Scalar pointers are in host memory */
+    HIPSPARSE_POINTER_MODE_DEVICE = 1 /**< Scalar pointers are in device memory */
 } hipsparsePointerMode_t;
 
 /*! \ingroup types_module
@@ -241,8 +241,8 @@ typedef enum {
  *  matrix, or only on the sparsity pattern of the matrix.
  */
 typedef enum {
-    HIPSPARSE_ACTION_SYMBOLIC = 0,
-    HIPSPARSE_ACTION_NUMERIC  = 1
+    HIPSPARSE_ACTION_SYMBOLIC = 0, /**< Operate only on indices */
+    HIPSPARSE_ACTION_NUMERIC  = 1 /**< Operate on data and indices */
 } hipsparseAction_t;
 
 /*! \ingroup types_module
@@ -255,10 +255,10 @@ typedef enum {
  *  obtained by hipsparseGetMatType().
  */
 typedef enum {
-    HIPSPARSE_MATRIX_TYPE_GENERAL    = 0,
-    HIPSPARSE_MATRIX_TYPE_SYMMETRIC  = 1,
-    HIPSPARSE_MATRIX_TYPE_HERMITIAN  = 2,
-    HIPSPARSE_MATRIX_TYPE_TRIANGULAR = 3
+    HIPSPARSE_MATRIX_TYPE_GENERAL    = 0, /**< General matrix type */
+    HIPSPARSE_MATRIX_TYPE_SYMMETRIC  = 1, /**< Symmetric matrix type */
+    HIPSPARSE_MATRIX_TYPE_HERMITIAN  = 2, /**< Hermitian matrix type */
+    HIPSPARSE_MATRIX_TYPE_TRIANGULAR = 3 /**< Triangular matrix type */
 } hipsparseMatrixType_t;
 
 /*! \ingroup types_module
@@ -271,8 +271,8 @@ typedef enum {
  *  \ref hipsparseFillMode_t of a matrix can be obtained by hipsparseGetMatFillMode().
  */
 typedef enum {
-    HIPSPARSE_FILL_MODE_LOWER = 0,
-    HIPSPARSE_FILL_MODE_UPPER = 1
+    HIPSPARSE_FILL_MODE_LOWER = 0, /**< Lower triangular part is stored */
+    HIPSPARSE_FILL_MODE_UPPER = 1 /**< Upper triangular part is stored */
 } hipsparseFillMode_t;
 
 /*! \ingroup types_module
@@ -286,8 +286,8 @@ typedef enum {
  *  \ref hipsparseDiagType_t of a matrix can be obtained by hipsparseGetMatDiagType().
  */
 typedef enum {
-    HIPSPARSE_DIAG_TYPE_NON_UNIT = 0,
-    HIPSPARSE_DIAG_TYPE_UNIT     = 1
+    HIPSPARSE_DIAG_TYPE_NON_UNIT = 0, /**< Diagonal entries are non-unity */
+    HIPSPARSE_DIAG_TYPE_UNIT     = 1  /**< Diagonal entries are unity */
 } hipsparseDiagType_t;
 
 /*! \ingroup types_module
@@ -300,8 +300,8 @@ typedef enum {
  *  can be obtained by hipsparseGetMatIndexBase().
  */
 typedef enum {
-    HIPSPARSE_INDEX_BASE_ZERO = 0,
-    HIPSPARSE_INDEX_BASE_ONE  = 1
+    HIPSPARSE_INDEX_BASE_ZERO = 0, /**< Zero based indexing */
+    HIPSPARSE_INDEX_BASE_ONE  = 1  /**< One based indexing */
 } hipsparseIndexBase_t;
 
 /*! \ingroup types_module
@@ -311,9 +311,9 @@ typedef enum {
  *  The \ref hipsparseOperation_t indicates the operation performed with the given matrix.
  */
 typedef enum {
-    HIPSPARSE_OPERATION_NON_TRANSPOSE       = 0,
-    HIPSPARSE_OPERATION_TRANSPOSE           = 1,
-    HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE = 2
+    HIPSPARSE_OPERATION_NON_TRANSPOSE       = 0, /**< Operate with matrix */
+    HIPSPARSE_OPERATION_TRANSPOSE           = 1, /**< Operate with transpose */
+    HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE = 2  /**< Operate with conj. transpose */
 } hipsparseOperation_t;
 
 /*! \ingroup types_module
@@ -324,9 +324,9 @@ typedef enum {
  *  between COO and ELL storage formats is performed.
  */
 typedef enum {
-    HIPSPARSE_HYB_PARTITION_AUTO = 0,
-    HIPSPARSE_HYB_PARTITION_USER = 1,
-    HIPSPARSE_HYB_PARTITION_MAX  = 2
+    HIPSPARSE_HYB_PARTITION_AUTO = 0, /**< Automatically decide on ELL nnz per row */
+    HIPSPARSE_HYB_PARTITION_USER = 1, /**< User given ELL nnz per row */
+    HIPSPARSE_HYB_PARTITION_MAX  = 2  /**< Max ELL nnz per row, no COO part */
 } hipsparseHybPartition_t;
 
 /*! \ingroup types_module
@@ -337,8 +337,8 @@ typedef enum {
  *  solve.
  */
 typedef enum {
-    HIPSPARSE_SOLVE_POLICY_NO_LEVEL  = 0,
-    HIPSPARSE_SOLVE_POLICY_USE_LEVEL = 1
+    HIPSPARSE_SOLVE_POLICY_NO_LEVEL  = 0, /**< No level information generated */
+    HIPSPARSE_SOLVE_POLICY_USE_LEVEL = 1  /**< Generate level information */
 } hipsparseSolvePolicy_t;
 
 typedef enum {
@@ -354,8 +354,8 @@ typedef enum {
  *  rows or by columns, assuming column-major storage.
  */
 typedef enum {
-    HIPSPARSE_DIRECTION_ROW = 0,
-    HIPSPARSE_DIRECTION_COLUMN = 1
+    HIPSPARSE_DIRECTION_ROW = 0, /**< Parse the matrix by rows */
+    HIPSPARSE_DIRECTION_COLUMN = 1 /**< Parse the matrix by columns */
 } hipsparseDirection_t;
 
 // clang-format on
@@ -8737,23 +8737,23 @@ typedef enum
 #if(!defined(CUDART_VERSION))
 typedef enum
 {
-    HIPSPARSE_ORDER_ROW                                                             = 0,
-    HIPSPARSE_ORDER_COLUMN [[deprecated("Please use HIPSPARSE_ORDER_COL instead")]] = 1,
-    HIPSPARSE_ORDER_COL                                                             = 1
+    HIPSPARSE_ORDER_ROW                                                             = 0,  /**< Row major */
+    HIPSPARSE_ORDER_COLUMN [[deprecated("Please use HIPSPARSE_ORDER_COL instead")]] = 1,  /**< Column major */
+    HIPSPARSE_ORDER_COL                                                             = 1   /**< Column major */
 } hipsparseOrder_t;
 #else
 #if(CUDART_VERSION >= 11000)
 typedef enum
 {
-    HIPSPARSE_ORDER_ROW                                                             = 0,
-    HIPSPARSE_ORDER_COLUMN [[deprecated("Please use HIPSPARSE_ORDER_COL instead")]] = 1,
-    HIPSPARSE_ORDER_COL                                                             = 1
+    HIPSPARSE_ORDER_ROW                                                             = 0, /**< Row major */
+    HIPSPARSE_ORDER_COLUMN [[deprecated("Please use HIPSPARSE_ORDER_COL instead")]] = 1, /**< Column major */
+    HIPSPARSE_ORDER_COL                                                             = 1 /**< Column major */
 } hipsparseOrder_t;
 #elif(CUDART_VERSION >= 10010)
 typedef enum
 {
-    HIPSPARSE_ORDER_COLUMN [[deprecated("Please use HIPSPARSE_ORDER_COL instead")]] = 1,
-    HIPSPARSE_ORDER_COL                                                             = 1
+    HIPSPARSE_ORDER_COLUMN [[deprecated("Please use HIPSPARSE_ORDER_COL instead")]] = 1, /**< Column major */
+    HIPSPARSE_ORDER_COL                                                             = 1 /**< Column major */
 } hipsparseOrder_t;
 #endif
 #endif
@@ -8761,9 +8761,9 @@ typedef enum
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 typedef enum
 {
-    HIPSPARSE_INDEX_16U = 1, /* 16 bit unsigned integer indices */
-    HIPSPARSE_INDEX_32I = 2, /* 32 bit signed integer indices */
-    HIPSPARSE_INDEX_64I = 3 /* 64 bit signed integer indices */
+    HIPSPARSE_INDEX_16U = 1, /**< 16 bit unsigned integer indices */
+    HIPSPARSE_INDEX_32I = 2, /**< 32 bit signed integer indices */
+    HIPSPARSE_INDEX_64I = 3 /**< 64 bit signed integer indices */
 } hipsparseIndexType_t;
 #endif
 
@@ -8909,8 +8909,8 @@ typedef enum
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
 typedef enum
 {
-    HIPSPARSE_SPMAT_FILL_MODE = 0,
-    HIPSPARSE_SPMAT_DIAG_TYPE = 1
+    HIPSPARSE_SPMAT_FILL_MODE = 0, /**< Fill mode attribute */
+    HIPSPARSE_SPMAT_DIAG_TYPE = 1  /**< Diag type attribute */
 } hipsparseSpMatAttribute_t;
 #endif
 
