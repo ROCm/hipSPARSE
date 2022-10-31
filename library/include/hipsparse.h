@@ -8737,23 +8737,26 @@ typedef enum
 #if(!defined(CUDART_VERSION))
 typedef enum
 {
-    HIPSPARSE_ORDER_ROW                                                             = 0,  /**< Row major */
-    HIPSPARSE_ORDER_COLUMN [[deprecated("Please use HIPSPARSE_ORDER_COL instead")]] = 1,  /**< Column major */
-    HIPSPARSE_ORDER_COL                                                             = 1   /**< Column major */
+    HIPSPARSE_ORDER_ROW = 0, /**< Row major */
+    HIPSPARSE_ORDER_COLUMN [[deprecated("Please use HIPSPARSE_ORDER_COL instead")]]
+    = 1, /**< Column major */
+    HIPSPARSE_ORDER_COL = 1 /**< Column major */
 } hipsparseOrder_t;
 #else
 #if(CUDART_VERSION >= 11000)
 typedef enum
 {
-    HIPSPARSE_ORDER_ROW                                                             = 0, /**< Row major */
-    HIPSPARSE_ORDER_COLUMN [[deprecated("Please use HIPSPARSE_ORDER_COL instead")]] = 1, /**< Column major */
-    HIPSPARSE_ORDER_COL                                                             = 1 /**< Column major */
+    HIPSPARSE_ORDER_ROW = 0, /**< Row major */
+    HIPSPARSE_ORDER_COLUMN [[deprecated("Please use HIPSPARSE_ORDER_COL instead")]]
+    = 1, /**< Column major */
+    HIPSPARSE_ORDER_COL = 1 /**< Column major */
 } hipsparseOrder_t;
 #elif(CUDART_VERSION >= 10010)
 typedef enum
 {
-    HIPSPARSE_ORDER_COLUMN [[deprecated("Please use HIPSPARSE_ORDER_COL instead")]] = 1, /**< Column major */
-    HIPSPARSE_ORDER_COL                                                             = 1 /**< Column major */
+    HIPSPARSE_ORDER_COLUMN [[deprecated("Please use HIPSPARSE_ORDER_COL instead")]]
+    = 1, /**< Column major */
+    HIPSPARSE_ORDER_COL = 1 /**< Column major */
 } hipsparseOrder_t;
 #endif
 #endif
@@ -8910,7 +8913,7 @@ typedef enum
 typedef enum
 {
     HIPSPARSE_SPMAT_FILL_MODE = 0, /**< Fill mode attribute */
-    HIPSPARSE_SPMAT_DIAG_TYPE = 1  /**< Diag type attribute */
+    HIPSPARSE_SPMAT_DIAG_TYPE = 1 /**< Diag type attribute */
 } hipsparseSpMatAttribute_t;
 #endif
 
