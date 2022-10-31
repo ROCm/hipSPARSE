@@ -3077,7 +3077,7 @@ hipsparseStatus_t hipsparseZbsrsm2_solve(hipsparseHandle_t         handle,
                                          int                       ldx,
                                          hipsparseSolvePolicy_t    policy,
                                          void*                     pBuffer);
-/**@{*/
+/**@}*/
 
 /*! \ingroup level3_module
 *  \brief Sparse triangular system solve using CSR storage format
