@@ -8744,6 +8744,13 @@ typedef enum
 #endif
 #endif
 
+/*! \ingroup generic_module
+ *  \brief List of hipsparse dense matrix memory layout ordering.
+ *
+ *  \details
+ *  This is a list of the \ref hipsparseOrder_t types that are used by the hipSPARSE
+ *  library.
+ */
 #if(!defined(CUDART_VERSION))
 typedef enum
 {
@@ -8771,6 +8778,13 @@ typedef enum
 #endif
 #endif
 
+/*! \ingroup generic_module
+ *  \brief List of hipsparse index type used by sparse matrix indices.
+ *
+ *  \details
+ *  This is a list of the \ref hipsparseIndexType_t types that are used by the hipSPARSE
+ *  library.
+ */
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 typedef enum
 {
@@ -8780,6 +8794,13 @@ typedef enum
 } hipsparseIndexType_t;
 #endif
 
+/*! \ingroup generic_module
+ *  \brief List of hipsparse SpMV algorithms.
+ *
+ *  \details
+ *  This is a list of the \ref hipsparseSpMVAlg_t types that are used by the hipSPARSE
+ *  library.
+ */
 #if(!defined(CUDART_VERSION))
 typedef enum
 {
@@ -8818,6 +8839,13 @@ typedef enum
 #endif
 #endif
 
+/*! \ingroup generic_module
+ *  \brief List of hipsparse SpMM algorithms.
+ *
+ *  \details
+ *  This is a list of the \ref hipsparseSpMMAlg_t types that are used by the hipSPARSE
+ *  library.
+ */
 #if(!defined(CUDART_VERSION))
 typedef enum
 {
@@ -8884,6 +8912,13 @@ typedef enum
 #endif
 #endif
 
+/*! \ingroup generic_module
+ *  \brief List of hipsparse SparseToDense algorithms.
+ *
+ *  \details
+ *  This is a list of the \ref hipsparseSparseToDenseAlg_t types that are used by the hipSPARSE
+ *  library.
+ */
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11020)
 typedef enum
 {
@@ -8891,6 +8926,13 @@ typedef enum
 } hipsparseSparseToDenseAlg_t;
 #endif
 
+/*! \ingroup generic_module
+ *  \brief List of hipsparse DenseToSparse algorithms.
+ *
+ *  \details
+ *  This is a list of the \ref hipsparseDenseToSparseAlg_t types that are used by the hipSPARSE
+ *  library.
+ */
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11020)
 typedef enum
 {
@@ -8898,6 +8940,13 @@ typedef enum
 } hipsparseDenseToSparseAlg_t;
 #endif
 
+/*! \ingroup generic_module
+ *  \brief List of hipsparse SDDMM algorithms.
+ *
+ *  \details
+ *  This is a list of the \ref hipsparseSDDMMAlg_t types that are used by the hipSPARSE
+ *  library.
+ */
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11022)
 typedef enum
 {
@@ -8905,6 +8954,13 @@ typedef enum
 } hipsparseSDDMMAlg_t;
 #endif
 
+/*! \ingroup generic_module
+ *  \brief List of hipsparse SpSV algorithms.
+ *
+ *  \details
+ *  This is a list of the \ref hipsparseSpSVAlg_t types that are used by the hipSPARSE
+ *  library.
+ */
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11030)
 typedef enum
 {
@@ -8912,6 +8968,13 @@ typedef enum
 } hipsparseSpSVAlg_t;
 #endif
 
+/*! \ingroup generic_module
+ *  \brief List of hipsparse SpSM algorithms.
+ *
+ *  \details
+ *  This is a list of the \ref hipsparseSpSMAlg_t types that are used by the hipSPARSE
+ *  library.
+ */
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
 typedef enum
 {
@@ -8919,6 +8982,13 @@ typedef enum
 } hipsparseSpSMAlg_t;
 #endif
 
+/*! \ingroup generic_module
+ *  \brief List of hipsparse attributes.
+ *
+ *  \details
+ *  This is a list of the \ref hipsparseSpMatAttribute_t types that are used by the hipSPARSE
+ *  library.
+ */
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
 typedef enum
 {
@@ -8927,6 +8997,13 @@ typedef enum
 } hipsparseSpMatAttribute_t;
 #endif
 
+/*! \ingroup generic_module
+ *  \brief List of hipsparse SpGEMM algorithms.
+ *
+ *  \details
+ *  This is a list of the \ref hipsparseSpGEMMAlg_t types that are used by the hipSPARSE
+ *  library.
+ */
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
 typedef enum
 {
