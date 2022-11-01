@@ -732,9 +732,10 @@ int read_mtx_matrix(const char*          filename,
     FILE* f = fopen(filename, "r");
     if(!f)
     {
-        fprintf(stderr, "Failed to open matrix file %s because it does not exist. Please download the "
-               "matrix file using the install script with -c flag.",
-               filename);
+        fprintf(stderr,
+                "Failed to open matrix file %s because it does not exist. Please download the "
+                "matrix file using the install script with -c flag.",
+                filename);
         return -1;
     }
 
