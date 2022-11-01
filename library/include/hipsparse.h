@@ -9714,7 +9714,6 @@ hipsparseStatus_t hipsparseSpVV(hipsparseHandle_t     handle,
                                 void*                 externalBuffer);
 #endif
 
-
 /*! \ingroup generic_module
 *  \brief Description: Buffer size step of the sparse matrix multiplication with a dense vector
 *
@@ -10142,7 +10141,6 @@ hipsparseStatus_t hipsparseSpSV_analysis(hipsparseHandle_t           handle,
                                          void*                       externalBuffer);
 #endif
 
-
 /*! \ingroup generic_module
 *  \brief Description: Sparse triangular solve
 *
@@ -10223,7 +10221,6 @@ hipsparseStatus_t hipsparseSpSM_bufferSize(hipsparseHandle_t           handle,
                                            hipsparseSpSMDescr_t        spsmDescr,
                                            size_t*                     bufferSize);
 #endif
-
 
 /*! \ingroup generic_module
 *  \brief Description: Analysis step of solution of triangular linear system op(A) * C = alpha * op(B),
