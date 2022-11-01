@@ -3934,7 +3934,7 @@ hipsparseStatus_t hipsparseZcsrgeam2(hipsparseHandle_t         handle,
 *  row, additional temporary storage buffer is allocated by the algorithm.
 *
 *  \note
-*  Currently, only \p trans_A == \p trans_B == \ref HIPSPARSE_OPERATION_NONE is
+*  Currently, only \p trans_A == \p trans_B == \ref HIPSPARSE_OPERATION_NON_TRANSPOSE is
 *  supported.
 *
 *  \note
@@ -8933,6 +8933,18 @@ typedef enum
 /* Sparse vector API */
 
 /* Description: Create a sparse vector */
+
+
+
+
+
+/*! \ingroup generic_module
+*  \brief Description: Create a sparse vector.
+*
+*  \details
+*  \p hipsparseCreateSpVec creates a sparse vector descriptor. It should be
+*  destroyed at the end using hipsparseDestroyMatDescr().
+*/
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreateSpVec(hipsparseSpVecDescr_t* spVecDescr,
@@ -8945,13 +8957,24 @@ hipsparseStatus_t hipsparseCreateSpVec(hipsparseSpVecDescr_t* spVecDescr,
                                        hipDataType            valueType);
 #endif
 
-/* Description: Destroy a sparse vector */
+/*! \ingroup generic_module
+*  \brief Description: Destroy a sparse vector.
+*
+*  \details
+*  \p hipsparseDestroySpVec destroys a sparse vector descriptor and releases all
+*  resources used by the descriptor.
+*/
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroySpVec(hipsparseSpVecDescr_t spVecDescr);
 #endif
 
-/* Description: Get pointers to a sparse vectors data and index array */
+/*! \ingroup generic_module
+*  \brief Description: Get the fields of the sparse vector descriptor.
+*
+*  \details
+*  \p hipsparseSpVecGet gets the fields of the sparse vector descriptor
+*/
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpVecGet(const hipsparseSpVecDescr_t spVecDescr,
@@ -8964,20 +8987,26 @@ hipsparseStatus_t hipsparseSpVecGet(const hipsparseSpVecDescr_t spVecDescr,
                                     hipDataType*                valueType);
 #endif
 
-/* Description: Get index base of a sparse vector */
+/*! \ingroup generic_module
+*  \brief Description: Get index base of a sparse vector.
+*/
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpVecGetIndexBase(const hipsparseSpVecDescr_t spVecDescr,
                                              hipsparseIndexBase_t*       idxBase);
 #endif
 
-/* Description: Get pointer to a sparse vector data array */
+/*! \ingroup generic_module
+*  \brief Description: Get pointer to a sparse vector data array.
+*/
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpVecGetValues(const hipsparseSpVecDescr_t spVecDescr, void** values);
 #endif
 
-/* Description: Set pointer of a sparse vector data array */
+/*! \ingroup generic_module
+*  \brief Description: Set pointer of a sparse vector data array.
+*/
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpVecSetValues(hipsparseSpVecDescr_t spVecDescr, void* values);
@@ -8985,7 +9014,12 @@ hipsparseStatus_t hipsparseSpVecSetValues(hipsparseSpVecDescr_t spVecDescr, void
 
 /* Sparse matrix API */
 
-/* Description: Create a sparse COO matrix */
+/*! \ingroup aux_module
+*  \brief Description: Create a sparse COO matrix descriptor
+*  \details
+*  \p hipsparseCreateCoo creates a sparse COO matrix descriptor. It should be
+*  destroyed at the end using \p hipsparseDestroySpMat.
+*/
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreateCoo(hipsparseSpMatDescr_t* spMatDescr,
@@ -9000,7 +9034,12 @@ hipsparseStatus_t hipsparseCreateCoo(hipsparseSpMatDescr_t* spMatDescr,
                                      hipDataType            valueType);
 #endif
 
-/* Description: Create a sparse COO (AoS) matrix */
+/*! \ingroup aux_module
+*  \brief Description: Create a sparse COO (AoS) matrix descriptor
+*  \details
+*  \p hipsparseCreateCooAoS creates a sparse COO (AoS) matrix descriptor. It should be
+*  destroyed at the end using \p hipsparseDestroySpMat.
+*/
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreateCooAoS(hipsparseSpMatDescr_t* spMatDescr,
@@ -9014,7 +9053,12 @@ hipsparseStatus_t hipsparseCreateCooAoS(hipsparseSpMatDescr_t* spMatDescr,
                                         hipDataType            valueType);
 #endif
 
-/* Description: Create a sparse CSR matrix */
+/*! \ingroup aux_module
+*  \brief Description: Create a sparse CSR matrix descriptor
+*  \details
+*  \p hipsparseCreateCsr creates a sparse CSR matrix descriptor. It should be
+*  destroyed at the end using \p hipsparseDestroySpMat.
+*/
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreateCsr(hipsparseSpMatDescr_t* spMatDescr,
@@ -9030,7 +9074,12 @@ hipsparseStatus_t hipsparseCreateCsr(hipsparseSpMatDescr_t* spMatDescr,
                                      hipDataType            valueType);
 #endif
 
-/* Description: Create a sparse CSC matrix */
+/*! \ingroup aux_module
+*  \brief Description: Create a sparse CSC matrix descriptor
+*  \details
+*  \p hipsparseCreateCsr creates a sparse CSC matrix descriptor. It should be
+*  destroyed at the end using \p hipsparseDestroySpMat.
+*/
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11020)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreateCsc(hipsparseSpMatDescr_t* spMatDescr,
@@ -9046,7 +9095,12 @@ hipsparseStatus_t hipsparseCreateCsc(hipsparseSpMatDescr_t* spMatDescr,
                                      hipDataType            valueType);
 #endif
 
-/* Description: Create a sparse Blocked ELL matrix */
+/*! \ingroup aux_module
+*  \brief Description: Create a sparse Blocked ELL matrix descriptor
+*  \details
+*  \p hipsparseCreateCsr creates a sparse Blocked ELL matrix descriptor. It should be
+*  destroyed at the end using \p hipsparseDestroySpMat.
+*/
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11021)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreateBlockedEll(hipsparseSpMatDescr_t* spMatDescr,
@@ -9061,13 +9115,22 @@ hipsparseStatus_t hipsparseCreateBlockedEll(hipsparseSpMatDescr_t* spMatDescr,
                                             hipDataType            valueType);
 #endif
 
-/* Description: Destroy a sparse matrix */
+/*! \ingroup aux_module
+*  \brief Description: Destroy a sparse matrix descriptor
+*  \details
+*  \p hipsparseDestroySpMat destroys a sparse matrix descriptor and releases all
+*  resources used by the descriptor.
+*/
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroySpMat(hipsparseSpMatDescr_t spMatDescr);
 #endif
 
-/* Description: Get pointers of a sparse COO matrix */
+/*! \ingroup aux_module
+*  \brief Description: Get pointers of a sparse COO matrix
+*  \details
+*  \p hipsparseCooGet gets the fields of the sparse COO matrix descriptor
+*/
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCooGet(const hipsparseSpMatDescr_t spMatDescr,
@@ -9082,7 +9145,11 @@ hipsparseStatus_t hipsparseCooGet(const hipsparseSpMatDescr_t spMatDescr,
                                   hipDataType*                valueType);
 #endif
 
-/* Description: Get pointers of a sparse COO (AoS) matrix */
+/*! \ingroup aux_module
+*  \brief Description: Get pointers of a sparse COO (AoS) matrix
+*  \details
+*  \p hipsparseCooAoSGet gets the fields of the sparse COO (AoS) matrix descriptor
+*/
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCooAoSGet(const hipsparseSpMatDescr_t spMatDescr,
@@ -9096,7 +9163,11 @@ hipsparseStatus_t hipsparseCooAoSGet(const hipsparseSpMatDescr_t spMatDescr,
                                      hipDataType*                valueType);
 #endif
 
-/* Description: Get pointers of a sparse CSR matrix */
+/*! \ingroup aux_module
+*  \brief Description: Get pointers of a sparse CSR matrix
+*  \details
+*  \p hipsparseCsrGet gets the fields of the sparse CSR matrix descriptor
+*/
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCsrGet(const hipsparseSpMatDescr_t spMatDescr,
@@ -9112,7 +9183,11 @@ hipsparseStatus_t hipsparseCsrGet(const hipsparseSpMatDescr_t spMatDescr,
                                   hipDataType*                valueType);
 #endif
 
-/* Description: Get pointers of a sparse CSR matrix */
+/*! \ingroup aux_module
+*  \brief Description: Get pointers of a sparse blocked ELL matrix
+*  \details
+*  \p hipsparseBlockedEllGet gets the fields of the sparse blocked ELL matrix descriptor
+*/
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11021)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseBlockedEllGet(const hipsparseSpMatDescr_t spMatDescr,
@@ -9127,7 +9202,11 @@ hipsparseStatus_t hipsparseBlockedEllGet(const hipsparseSpMatDescr_t spMatDescr,
                                          hipDataType*                valueType);
 #endif
 
-/* Description: Set pointers of a sparse CSR matrix */
+/*! \ingroup aux_module
+*  \brief Description: Set pointers of a sparse CSR matrix
+*  \details
+*  \p hipsparseCsrSetPointers sets the fields of the sparse CSR matrix descriptor
+*/
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCsrSetPointers(hipsparseSpMatDescr_t spMatDescr,
@@ -9136,7 +9215,11 @@ hipsparseStatus_t hipsparseCsrSetPointers(hipsparseSpMatDescr_t spMatDescr,
                                           void*                 csrValues);
 #endif
 
-/* Description: Set pointers of a sparse CSC matrix */
+/*! \ingroup aux_module
+*  \brief Description: Set pointers of a sparse CSC matrix
+*  \details
+*  \p hipsparseCscSetPointers sets the fields of the sparse CSC matrix descriptor
+*/
 #if(!defined(CUDART_VERSION))
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCscSetPointers(hipsparseSpMatDescr_t spMatDescr,
@@ -9145,7 +9228,11 @@ hipsparseStatus_t hipsparseCscSetPointers(hipsparseSpMatDescr_t spMatDescr,
                                           void*                 cscValues);
 #endif
 
-/* Description: Set pointers of a sparse COO matrix */
+/*! \ingroup aux_module
+*  \brief Description: Set pointers of a sparse COO matrix
+*  \details
+*  \p hipsparseCooSetPointers sets the fields of the sparse COO matrix descriptor
+*/
 #if(!defined(CUDART_VERSION))
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCooSetPointers(hipsparseSpMatDescr_t spMatDescr,
@@ -9154,7 +9241,9 @@ hipsparseStatus_t hipsparseCooSetPointers(hipsparseSpMatDescr_t spMatDescr,
                                           void*                 cooValues);
 #endif
 
-/* Description: Get the sizes of a sparse matrix */
+/*! \ingroup aux_module
+*  \brief Description: Get the sizes of a sparse matrix
+*/
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpMatGetSize(hipsparseSpMatDescr_t spMatDescr,
@@ -9163,46 +9252,60 @@ hipsparseStatus_t hipsparseSpMatGetSize(hipsparseSpMatDescr_t spMatDescr,
                                         int64_t*              nnz);
 #endif
 
-/* Description: Get the format of a sparse matrix */
+/*! \ingroup aux_module
+*  \brief Description: Get the format of a sparse matrix
+*/
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpMatGetFormat(const hipsparseSpMatDescr_t spMatDescr,
                                           hipsparseFormat_t*          format);
 #endif
 
-/* Description: Get the index base of a sparse matrix */
+/*! \ingroup aux_module
+*  \brief Description: Get the index base of a sparse matrix
+*/
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpMatGetIndexBase(const hipsparseSpMatDescr_t spMatDescr,
                                              hipsparseIndexBase_t*       idxBase);
 #endif
 
-/* Description: Get the pointer of the values array of a sparse matrix */
+/*! \ingroup aux_module
+*  \brief Description: Get the pointer of the values array of a sparse matrix
+*/
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpMatGetValues(hipsparseSpMatDescr_t spMatDescr, void** values);
 #endif
 
-/* Description: Set the pointer of the values array of a sparse matrix */
+/*! \ingroup aux_module
+*  \brief Description: Set the pointer of the values array of a sparse matrix
+*/
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpMatSetValues(hipsparseSpMatDescr_t spMatDescr, void* values);
 #endif
 
-/* Description: Get the batch count of the sparse matrix */
+/*! \ingroup aux_module
+*  \brief Description: Get the batch count of the sparse matrix
+*/
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpMatGetStridedBatch(hipsparseSpMatDescr_t spMatDescr, int* batchCount);
 #endif
 
-/* Description: Set the batch count of the sparse matrix */
+/*! \ingroup aux_module
+*  \brief Description: Set the batch count of the sparse matrix
+*/
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpMatSetStridedBatch(hipsparseSpMatDescr_t spMatDescr, int batchCount);
 #endif
 
-/* Description: Set the batch count and stride of the sparse COO matrix */
+/*! \ingroup aux_module
+*  \brief Description: Set the batch count and stride of the sparse COO matrix
+*/
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCooSetStridedBatch(hipsparseSpMatDescr_t spMatDescr,
@@ -9210,7 +9313,9 @@ hipsparseStatus_t hipsparseCooSetStridedBatch(hipsparseSpMatDescr_t spMatDescr,
                                               int64_t               batchStride);
 #endif
 
-/* Description: Set the batch count and stride of the sparse CSR matrix */
+/*! \ingroup aux_module
+*  \brief Description: Set the batch count and stride of the sparse CSR matrix
+*/
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCsrSetStridedBatch(hipsparseSpMatDescr_t spMatDescr,
@@ -9219,7 +9324,9 @@ hipsparseStatus_t hipsparseCsrSetStridedBatch(hipsparseSpMatDescr_t spMatDescr,
                                               int64_t               columnsValuesBatchStride);
 #endif
 
-/* Description: Get attribute from sparse matrix descriptor */
+/*! \ingroup aux_module
+*  \brief Description: Get attribute from sparse matrix descriptor
+*/
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpMatGetAttribute(hipsparseSpMatDescr_t     spMatDescr,
@@ -9228,7 +9335,9 @@ hipsparseStatus_t hipsparseSpMatGetAttribute(hipsparseSpMatDescr_t     spMatDesc
                                              size_t                    dataSize);
 #endif
 
-/* Description: Set attribute in sparse matrix descriptor */
+/*! \ingroup aux_module
+*  \brief Description: Set attribute in sparse matrix descriptor
+*/
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpMatSetAttribute(hipsparseSpMatDescr_t     spMatDescr,
@@ -9239,7 +9348,12 @@ hipsparseStatus_t hipsparseSpMatSetAttribute(hipsparseSpMatDescr_t     spMatDesc
 
 /* Dense vector API */
 
-/* Description: Create dense vector */
+/*! \ingroup aux_module
+*  \brief Description: Create dense vector
+*  \details
+*  \p hipsparseCreateDnVec creates a dense vector descriptor. It should be
+*  destroyed at the end using hipsparseDestroyDnVec().
+*/
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreateDnVec(hipsparseDnVecDescr_t* dnVecDescr,
@@ -9249,12 +9363,23 @@ hipsparseStatus_t hipsparseCreateDnVec(hipsparseDnVecDescr_t* dnVecDescr,
 #endif
 
 /* Description: Destroy dense vector */
+
+/*! \ingroup aux_module
+*  \brief Description: Destroy dense vector
+*  \details
+*  \p hipsparseDestroyDnVec destroys a dense vector descriptor and releases all
+*  resources used by the descriptor.
+*/
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroyDnVec(hipsparseDnVecDescr_t dnVecDescr);
 #endif
 
-/* Description: Get value pointer from a dense vector */
+/*! \ingroup aux_module
+*  \brief Description: Get the fields from a dense vector
+*  \details
+*  \p hipsparseDnVecGet gets the fields of the dense vector descriptor
+*/
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDnVecGet(const hipsparseDnVecDescr_t dnVecDescr,
@@ -9263,13 +9388,21 @@ hipsparseStatus_t hipsparseDnVecGet(const hipsparseDnVecDescr_t dnVecDescr,
                                     hipDataType*                valueType);
 #endif
 
-/* Description: Get value pointer from a dense vector */
+/*! \ingroup aux_module
+*  \brief Description: Get value pointer from a dense vector
+*  \details
+*  \p hipsparseDnVecGetValues gets the fields of the dense vector descriptor
+*/
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDnVecGetValues(const hipsparseDnVecDescr_t dnVecDescr, void** values);
 #endif
 
-/* Description: Set value pointer of a dense vector */
+/*! \ingroup aux_module
+*  \brief Description: Set value pointer of a dense vector
+*  \details
+*  \p hipsparseDnVecSetValues sets the fields of the dense vector descriptor
+*/
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDnVecSetValues(hipsparseDnVecDescr_t dnVecDescr, void* values);
@@ -9278,6 +9411,13 @@ hipsparseStatus_t hipsparseDnVecSetValues(hipsparseDnVecDescr_t dnVecDescr, void
 /* Dense matrix API */
 
 /* Description: Create dense matrix */
+
+/*! \ingroup aux_module
+*  \brief Description: Create dense matrix
+*  \details
+*  \p hipsparseCreateDnMat creates a dense matrix descriptor. It should be
+*  destroyed at the end using rocsparseDestroyDnMat().
+*/
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreateDnMat(hipsparseDnMatDescr_t* dnMatDescr,
@@ -9289,13 +9429,20 @@ hipsparseStatus_t hipsparseCreateDnMat(hipsparseDnMatDescr_t* dnMatDescr,
                                        hipsparseOrder_t       order);
 #endif
 
-/* Description: Destroy dense matrix */
+/*! \ingroup aux_module
+*  \brief Description: Destroy dense matrix
+*  \details
+*  \p hipsparseDestroyDnMat destroys a dense matrix descriptor and releases all
+*  resources used by the descriptor.
+*/
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroyDnMat(hipsparseDnMatDescr_t dnMatDescr);
 #endif
 
-/* Description: Get value pointer from a dense matrix */
+/*! \ingroup aux_module
+*  \brief Description: Get fields from a dense matrix
+*/
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDnMatGet(const hipsparseDnMatDescr_t dnMatDescr,
@@ -9307,19 +9454,25 @@ hipsparseStatus_t hipsparseDnMatGet(const hipsparseDnMatDescr_t dnMatDescr,
                                     hipsparseOrder_t*           order);
 #endif
 
-/* Description: Get value pointer from a dense matrix */
+/*! \ingroup aux_module
+*  \brief Description: Get value pointer from a dense matrix
+*/
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDnMatGetValues(const hipsparseDnMatDescr_t dnMatDescr, void** values);
 #endif
 
-/* Description: Set value pointer of a dense matrix */
+/*! \ingroup aux_module
+*  \brief Description: Set value pointer of a dense matrix
+*/
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDnMatSetValues(hipsparseDnMatDescr_t dnMatDescr, void* values);
 #endif
 
-/* Description: Get the batch count and batch stride of the dense matrix*/
+/*! \ingroup aux_module
+*  \brief Description: Get the batch count and batch stride of the dense matrix
+*/
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDnMatGetStridedBatch(hipsparseDnMatDescr_t dnMatDescr,
@@ -9327,7 +9480,9 @@ hipsparseStatus_t hipsparseDnMatGetStridedBatch(hipsparseDnMatDescr_t dnMatDescr
                                                 int64_t*              batchStride);
 #endif
 
-/* Description: Set the batch count and batch stride of the dense matrix*/
+/*! \ingroup aux_module
+*  \brief Description: Set the batch count and batch stride of the dense matrix
+*/
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDnMatSetStridedBatch(hipsparseDnMatDescr_t dnMatDescr,
