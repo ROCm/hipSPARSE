@@ -8934,10 +8934,6 @@ typedef enum
 
 /* Description: Create a sparse vector */
 
-
-
-
-
 /*! \ingroup generic_module
 *  \brief Description: Create a sparse vector.
 *
