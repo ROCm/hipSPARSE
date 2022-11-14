@@ -23,9 +23,6 @@
 
 # Dependencies
 
-# Git
-find_package(Git REQUIRED)
-
 if( NOT DEFINED ENV{HIP_PATH})
     if(WIN32)
         set( HIP_PATH "C:/hip" )
