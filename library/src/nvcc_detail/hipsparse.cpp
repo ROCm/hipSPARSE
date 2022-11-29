@@ -360,6 +360,7 @@ cusparseSolvePolicy_t hipPolicyToCudaPolicy(hipsparseSolvePolicy_t policy)
     }
 }
 
+#if CUDART_VERSION < 11050
 cusparseSideMode_t hipSideToCudaSide(hipsparseSideMode_t side)
 {
     switch(side)
@@ -385,6 +386,7 @@ hipsparseSideMode_t CudaSideToHIPSide(cusparseSideMode_t side)
         throw "Non existent cusparseSideMode_t";
     }
 }
+#endif
 
 #if CUDART_VERSION > 10000
 cudaDataType hipDataTypeToCudaDataType(hipDataType datatype)
