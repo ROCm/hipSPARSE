@@ -113,7 +113,7 @@ endif()
 
 
 # Setup version
-rocm_setup_version(VERSION 2.3.3)
+rocm_setup_version(VERSION 2.3.4)
 set(hipsparse_SOVERSION 0.1)
 
 # hipSPARSE library

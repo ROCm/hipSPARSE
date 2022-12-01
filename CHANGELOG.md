@@ -1,5 +1,12 @@
 # Change Log for hipSPARSE
 
+## hipSPARSE 2.3.4
+### Improved
+- Fixed an issue, where the rocm folder was not removed on upgrade of meta packages
+- Fixed a compilation issue with cusparse backend
+- Added more detailed messages on unit test failures due to missing input data
+- Improved documentation
+
 ## hipSPARSE 2.3.3 for ROCm 5.4.0
 ### Added
 - Added hipsparseCsr2cscEx2_bufferSize and hipsparseCsr2cscEx2 routines
