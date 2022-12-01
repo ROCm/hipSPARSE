@@ -1,6 +1,6 @@
 # Change Log for hipSPARSE
 
-## hipSPARSE 2.3.3
+## hipSPARSE 2.3.3 for ROCm 5.4.0
 ### Added
 - Added hipsparseCsr2cscEx2_bufferSize and hipsparseCsr2cscEx2 routines
 ### Changed
