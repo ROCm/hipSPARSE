@@ -65,7 +65,7 @@
 #if HIPSPARSE_HAS_DEPRECATED_MSG
     #define HIPSPARSE_DEPRECATED_MSG(MSG) [[deprecated(MSG)]]
 #else
-    #define HIPSPARSE_DEPRECATED_MSG HIPSPARSE_DEPRECATED // defined in hipsparse-export.h
+    #define HIPSPARSE_DEPRECATED_MSG(MSG) HIPSPARSE_DEPRECATED // defined in hipsparse-export.h
 #endif
 /// \endcond
 
