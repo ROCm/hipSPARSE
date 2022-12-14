@@ -1,11 +1,12 @@
 # Change Log for hipSPARSE
 
-## hipSPARSE 2.3.4
+## hipSPARSE 2.3.5
 ### Improved
 - Fixed an issue, where the rocm folder was not removed on upgrade of meta packages
 - Fixed a compilation issue with cusparse backend
 - Added more detailed messages on unit test failures due to missing input data
 - Improved documentation
+- Fixed a bug with deprecation messages when using gcc9 (Thanks @Maetveis)
 
 ## hipSPARSE 2.3.3 for ROCm 5.4.0
 ### Added
