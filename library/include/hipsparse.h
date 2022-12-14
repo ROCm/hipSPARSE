@@ -49,18 +49,36 @@
 #define DEPRECATED_CUDA_11000(warning)
 #define DEPRECATED_CUDA_10000(warning)
 #define DEPRECATED_CUDA_9000(warning)
+
+#ifdef __cplusplus
+    #ifndef __has_cpp_attribute
+        #define __has_cpp_attribute(X) 0
+    #endif
+    #define HIPSPARSE_HAS_DEPRECATED_MSG __has_cpp_attribute(deprecated) >= 201309L
+#else
+    #ifndef __has_c_attribute
+        #define __has_c_attribute(X) 0
+    #endif
+    #define HIPSPARSE_HAS_DEPRECATED_MSG __has_c_attribute(deprecated) >= 201904L
+#endif
+
+#if HIPSPARSE_HAS_DEPRECATED_MSG
+    #define HIPSPARSE_DEPRECATED_MSG(MSG) [[deprecated(MSG)]]
+#else
+    #define HIPSPARSE_DEPRECATED_MSG(MSG) HIPSPARSE_DEPRECATED // defined in hipsparse-export.h
+#endif
 /// \endcond
 
 #if defined(CUDART_VERSION)
 #if CUDART_VERSION < 10000
 #undef DEPRECATED_CUDA_9000
-#define DEPRECATED_CUDA_9000(warning) [[deprecated(warning)]]
+#define DEPRECATED_CUDA_9000(warning) HIPSPARSE_DEPRECATED_MSG(warning)
 #elif CUDART_VERSION < 11000
 #undef DEPRECATED_CUDA_10000
-#define DEPRECATED_CUDA_10000(warning) [[deprecated(warning)]]
+#define DEPRECATED_CUDA_10000(warning) HIPSPARSE_DEPRECATED_MSG(warning)
 #elif CUDART_VERSION < 12000
 #undef DEPRECATED_CUDA_11000
-#define DEPRECATED_CUDA_11000(warning) [[deprecated(warning)]]
+#define DEPRECATED_CUDA_11000(warning) HIPSPARSE_DEPRECATED_MSG(warning)
 #endif
 #endif
 
@@ -8755,7 +8773,7 @@ typedef enum
 typedef enum
 {
     HIPSPARSE_ORDER_ROW = 0, /**< Row major */
-    HIPSPARSE_ORDER_COLUMN [[deprecated("Please use HIPSPARSE_ORDER_COL instead")]]
+    HIPSPARSE_ORDER_COLUMN HIPSPARSE_DEPRECATED_MSG("Please use HIPSPARSE_ORDER_COL instead")
     = 1, /**< Column major */
     HIPSPARSE_ORDER_COL = 1 /**< Column major */
 } hipsparseOrder_t;
@@ -8764,14 +8782,14 @@ typedef enum
 typedef enum
 {
     HIPSPARSE_ORDER_ROW = 0, /**< Row major */
-    HIPSPARSE_ORDER_COLUMN [[deprecated("Please use HIPSPARSE_ORDER_COL instead")]]
+    HIPSPARSE_ORDER_COLUMN HIPSPARSE_DEPRECATED_MSG("Please use HIPSPARSE_ORDER_COL instead")
     = 1, /**< Column major */
     HIPSPARSE_ORDER_COL = 1 /**< Column major */
 } hipsparseOrder_t;
 #elif(CUDART_VERSION >= 10010)
 typedef enum
 {
-    HIPSPARSE_ORDER_COLUMN [[deprecated("Please use HIPSPARSE_ORDER_COL instead")]]
+    HIPSPARSE_ORDER_COLUMN HIPSPARSE_DEPRECATED_MSG("Please use HIPSPARSE_ORDER_COL instead")
     = 1, /**< Column major */
     HIPSPARSE_ORDER_COL = 1 /**< Column major */
 } hipsparseOrder_t;
