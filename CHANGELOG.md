@@ -1,6 +1,6 @@
 # Change Log for hipSPARSE
 
-## hipSPARSE 2.3.5
+## hipSPARSE 2.3.5 for ROCm 5.5.0
 ### Improved
 - Fixed an issue, where the rocm folder was not removed on upgrade of meta packages
 - Fixed a compilation issue with cusparse backend
