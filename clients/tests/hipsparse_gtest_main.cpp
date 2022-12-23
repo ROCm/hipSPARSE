@@ -166,7 +166,7 @@ int main(int argc, char** argv)
             device_id = atoi(argv[i + 1]);
         }
 
-        if(strcmp(argv[i], "--version") == 0 || strcmp(argv[i], "-v") == 0)
+        if(strcmp(argv[i], "--version") == 0)
         {
             printf("hipSPARSE version: %s\n", version);
 
