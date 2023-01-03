@@ -454,7 +454,7 @@ hipsparseStatus_t hipsparseGetStream(hipsparseHandle_t handle, hipStream_t* stre
  *  \p hipsparseSetPointerMode specifies the pointer mode to be used by the hipSPARSE
  *  library context and all subsequent function calls. By default, all values are passed
  *  by reference on the host. Valid pointer modes are \ref HIPSPARSE_POINTER_MODE_HOST
- *  or \p HIPSPARSE_POINTER_MODE_DEVICE.
+ *  or \ref HIPSPARSE_POINTER_MODE_DEVICE.
  */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSetPointerMode(hipsparseHandle_t handle, hipsparsePointerMode_t mode);
