@@ -152,8 +152,7 @@ html_theme_options = {
 # further.  For a list of options available for each theme, see the
 # documentation.
 html_theme_options = {
-    'logo_only': True,
-    'display_version': True
+    'logo_only': True
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
