@@ -10245,52 +10245,106 @@ hipsparseStatus_t hipsparseZcsr2csru(hipsparseHandle_t         handle,
 }
 
 /* Generic API */
-#if(CUDART_VERSION >= 10010)
+#if(CUDART_VERSION >= 12000)
 cusparseFormat_t hipFormatToCudaFormat(hipsparseFormat_t format)
 {
     switch(format)
     {
     case HIPSPARSE_FORMAT_CSR:
         return CUSPARSE_FORMAT_CSR;
-#if(CUDART_VERSION >= 11021)
     case HIPSPARSE_FORMAT_CSC:
         return CUSPARSE_FORMAT_CSC;
-#endif
     case HIPSPARSE_FORMAT_COO:
         return CUSPARSE_FORMAT_COO;
-#if(CUDART_VERSION < 12000)
-    case HIPSPARSE_FORMAT_COO_AOS:
-        return CUSPARSE_FORMAT_COO_AOS;
-#endif
-#if(CUDART_VERSION >= 11021)
     case HIPSPARSE_FORMAT_BLOCKED_ELL:
         return CUSPARSE_FORMAT_BLOCKED_ELL;
-#endif
     default:
         throw "Non existent hipsparseFormat_t";
     }
 }
+#elif(CUDART_VERSION >= 11021 && CUDART_VERSION < 12000)
+cusparseFormat_t hipFormatToCudaFormat(hipsparseFormat_t format)
+{
+    switch(format)
+    {
+    case HIPSPARSE_FORMAT_CSR:
+        return CUSPARSE_FORMAT_CSR;
+    case HIPSPARSE_FORMAT_CSC:
+        return CUSPARSE_FORMAT_CSC;
+    case HIPSPARSE_FORMAT_COO:
+        return CUSPARSE_FORMAT_COO;
+    case HIPSPARSE_FORMAT_COO_AOS:
+        return CUSPARSE_FORMAT_COO_AOS;
+    case HIPSPARSE_FORMAT_BLOCKED_ELL:
+        return CUSPARSE_FORMAT_BLOCKED_ELL;
+    default:
+        throw "Non existent hipsparseFormat_t";
+    }
+}
+#elif(CUDART_VERSION >= 10010 && CUDART_VERSION < 11021)
+cusparseFormat_t hipFormatToCudaFormat(hipsparseFormat_t format)
+{
+    switch(format)
+    {
+    case HIPSPARSE_FORMAT_CSR:
+        return CUSPARSE_FORMAT_CSR;
+    case HIPSPARSE_FORMAT_COO:
+        return CUSPARSE_FORMAT_COO;
+    case HIPSPARSE_FORMAT_COO_AOS:
+        return CUSPARSE_FORMAT_COO_AOS;
+    default:
+        throw "Non existent hipsparseFormat_t";
+    }
+}
+#endif
 
+#if(CUDART_VERSION >= 12000)
 hipsparseFormat_t CudaFormatToHIPFormat(cusparseFormat_t format)
 {
     switch(format)
     {
     case CUSPARSE_FORMAT_CSR:
         return HIPSPARSE_FORMAT_CSR;
-#if(CUDART_VERSION >= 11021)
     case CUSPARSE_FORMAT_CSC:
         return HIPSPARSE_FORMAT_CSC;
-#endif
     case CUSPARSE_FORMAT_COO:
         return HIPSPARSE_FORMAT_COO;
-#if(CUDART_VERSION < 12000)
-    case CUSPARSE_FORMAT_COO_AOS:
-        return HIPSPARSE_FORMAT_COO_AOS;
-#endif
-#if(CUDART_VERSION >= 11021)
     case CUSPARSE_FORMAT_BLOCKED_ELL:
         return HIPSPARSE_FORMAT_BLOCKED_ELL;
-#endif
+    default:
+        throw "Non existent cusparseFormat_t";
+    }
+}
+#elif(CUDART_VERSION >= 11021 && CUDART_VERSION < 12000)
+hipsparseFormat_t CudaFormatToHIPFormat(cusparseFormat_t format)
+{
+    switch(format)
+    {
+    case CUSPARSE_FORMAT_CSR:
+        return HIPSPARSE_FORMAT_CSR;
+    case CUSPARSE_FORMAT_CSC:
+        return HIPSPARSE_FORMAT_CSC;
+    case CUSPARSE_FORMAT_COO:
+        return HIPSPARSE_FORMAT_COO;
+    case CUSPARSE_FORMAT_COO_AOS:
+        return HIPSPARSE_FORMAT_COO_AOS;
+    case CUSPARSE_FORMAT_BLOCKED_ELL:
+        return HIPSPARSE_FORMAT_BLOCKED_ELL;
+    default:
+        throw "Non existent cusparseFormat_t";
+    }
+}
+#elif(CUDART_VERSION >= 10010 && CUDART_VERSION < 11021)
+hipsparseFormat_t CudaFormatToHIPFormat(cusparseFormat_t format)
+{
+    switch(format)
+    {
+    case CUSPARSE_FORMAT_CSR:
+        return HIPSPARSE_FORMAT_CSR;
+    case CUSPARSE_FORMAT_COO:
+        return HIPSPARSE_FORMAT_COO;
+    case CUSPARSE_FORMAT_COO_AOS:
+        return HIPSPARSE_FORMAT_COO_AOS;
     default:
         throw "Non existent cusparseFormat_t";
     }
