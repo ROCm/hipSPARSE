@@ -6960,15 +6960,15 @@ hipsparseStatus_t hipsparseZcsr2csc(hipsparseHandle_t       handle,
 typedef enum
 {
     HIPSPARSE_CSR2CSC_ALG_DEFAULT = 0,
-    HIPSPARSE_CSR2CSC_ALG1 = 1,
-    HIPSPARSE_CSR2CSC_ALG2 = 2
+    HIPSPARSE_CSR2CSC_ALG1        = 1,
+    HIPSPARSE_CSR2CSC_ALG2        = 2
 } hipsparseCsr2CscAlg_t;
 #else
 #if(CUDART_VERSION >= 12000)
 typedef enum
 {
     HIPSPARSE_CSR2CSC_ALG_DEFAULT = 1,
-    HIPSPARSE_CSR2CSC_ALG1 = 2
+    HIPSPARSE_CSR2CSC_ALG1        = 2
 } hipsparseCsr2CscAlg_t;
 #elif(CUDART_VERSION >= 10010 && CUDART_VERSION < 12000)
 typedef enum

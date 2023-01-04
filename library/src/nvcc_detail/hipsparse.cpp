@@ -8287,7 +8287,6 @@ hipsparseStatus_t hipsparseZcsr2csc(hipsparseHandle_t       handle,
 }
 #endif
 
-
 #if(CUDART_VERSION >= 12000)
 cusparseCsr2CscAlg_t hipCsr2CscAlgToCudaCsr2CscAlg(hipsparseCsr2CscAlg_t alg)
 {
