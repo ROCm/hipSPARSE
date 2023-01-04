@@ -8287,7 +8287,21 @@ hipsparseStatus_t hipsparseZcsr2csc(hipsparseHandle_t       handle,
 }
 #endif
 
-#if(CUDART_VERSION >= 10010)
+
+#if(CUDART_VERSION >= 12000)
+cusparseCsr2CscAlg_t hipCsr2CscAlgToCudaCsr2CscAlg(hipsparseCsr2CscAlg_t alg)
+{
+    switch(alg)
+    {
+    case HIPSPARSE_CSR2CSC_ALG1:
+        return CUSPARSE_CSR2CSC_ALG1;
+    case HIPSPARSE_CSR2CSC_ALG_DEFAULT:
+        return CUSPARSE_CSR2CSC_ALG_DEFAULT;
+    default:
+        throw "Non existant hipsparseCsr2CscAlg_t";
+    }
+}
+#elif(CUDART_VERSION >= 10010 && CUDART_VERSION < 12000)
 cusparseCsr2CscAlg_t hipCsr2CscAlgToCudaCsr2CscAlg(hipsparseCsr2CscAlg_t alg)
 {
     switch(alg)
@@ -8300,6 +8314,7 @@ cusparseCsr2CscAlg_t hipCsr2CscAlgToCudaCsr2CscAlg(hipsparseCsr2CscAlg_t alg)
         throw "Non existant hipsparseCsr2CscAlg_t";
     }
 }
+#endif
 
 hipsparseStatus_t hipsparseCsr2cscEx2_bufferSize(hipsparseHandle_t     handle,
                                                  int                   m,
@@ -10243,8 +10258,10 @@ cusparseFormat_t hipFormatToCudaFormat(hipsparseFormat_t format)
 #endif
     case HIPSPARSE_FORMAT_COO:
         return CUSPARSE_FORMAT_COO;
+#if(CUDART_VERSION < 12000)
     case HIPSPARSE_FORMAT_COO_AOS:
         return CUSPARSE_FORMAT_COO_AOS;
+#endif
 #if(CUDART_VERSION >= 11021)
     case HIPSPARSE_FORMAT_BLOCKED_ELL:
         return CUSPARSE_FORMAT_BLOCKED_ELL;
@@ -10266,8 +10283,10 @@ hipsparseFormat_t CudaFormatToHIPFormat(cusparseFormat_t format)
 #endif
     case CUSPARSE_FORMAT_COO:
         return HIPSPARSE_FORMAT_COO;
+#if(CUDART_VERSION < 12000)
     case CUSPARSE_FORMAT_COO_AOS:
         return HIPSPARSE_FORMAT_COO_AOS;
+#endif
 #if(CUDART_VERSION >= 11021)
     case CUSPARSE_FORMAT_BLOCKED_ELL:
         return HIPSPARSE_FORMAT_BLOCKED_ELL;
@@ -10360,7 +10379,26 @@ hipsparseIndexType_t CudaIndexTypeToHIPIndexType(cusparseIndexType_t type)
 }
 #endif
 
-#if(CUDART_VERSION >= 11021)
+#if(CUDART_VERSION >= 12000)
+cusparseSpMVAlg_t hipSpMVAlgToCudaSpMVAlg(hipsparseSpMVAlg_t alg)
+{
+    switch(alg)
+    {
+    case HIPSPARSE_SPMV_ALG_DEFAULT:
+        return CUSPARSE_SPMV_ALG_DEFAULT;
+    case HIPSPARSE_SPMV_COO_ALG1:
+        return CUSPARSE_SPMV_COO_ALG1;
+    case HIPSPARSE_SPMV_COO_ALG2:
+        return CUSPARSE_SPMV_COO_ALG2;
+    case HIPSPARSE_SPMV_CSR_ALG1:
+        return CUSPARSE_SPMV_CSR_ALG1;
+    case HIPSPARSE_SPMV_CSR_ALG2:
+        return CUSPARSE_SPMV_CSR_ALG2;
+    default:
+        throw "Non existant hipsparseSpMVAlg_t";
+    }
+}
+#elif(CUDART_VERSION >= 11021 && CUDART_VERSION < 12000)
 cusparseSpMVAlg_t hipSpMVAlgToCudaSpMVAlg(hipsparseSpMVAlg_t alg)
 {
     switch(alg)
@@ -10387,7 +10425,7 @@ cusparseSpMVAlg_t hipSpMVAlgToCudaSpMVAlg(hipsparseSpMVAlg_t alg)
         throw "Non existant hipsparseSpMVAlg_t";
     }
 }
-#elif(CUDART_VERSION >= 10010)
+#elif(CUDART_VERSION >= 10010 && CUDART_VERSION < 11021)
 cusparseSpMVAlg_t hipSpMVAlgToCudaSpMVAlg(hipsparseSpMVAlg_t alg)
 {
     switch(alg)
@@ -10406,7 +10444,34 @@ cusparseSpMVAlg_t hipSpMVAlgToCudaSpMVAlg(hipsparseSpMVAlg_t alg)
 }
 #endif
 
-#if(CUDART_VERSION >= 11021)
+#if(CUDART_VERSION >= 12000)
+cusparseSpMMAlg_t hipSpMMAlgToCudaSpMMAlg(hipsparseSpMMAlg_t alg)
+{
+    switch(alg)
+    {
+    case HIPSPARSE_SPMM_ALG_DEFAULT:
+        return CUSPARSE_SPMM_ALG_DEFAULT;
+    case HIPSPARSE_SPMM_COO_ALG1:
+        return CUSPARSE_SPMM_COO_ALG1;
+    case HIPSPARSE_SPMM_COO_ALG2:
+        return CUSPARSE_SPMM_COO_ALG2;
+    case HIPSPARSE_SPMM_COO_ALG3:
+        return CUSPARSE_SPMM_COO_ALG3;
+    case HIPSPARSE_SPMM_COO_ALG4:
+        return CUSPARSE_SPMM_COO_ALG4;
+    case HIPSPARSE_SPMM_CSR_ALG1:
+        return CUSPARSE_SPMM_CSR_ALG1;
+    case HIPSPARSE_SPMM_CSR_ALG2:
+        return CUSPARSE_SPMM_CSR_ALG2;
+    case HIPSPARSE_SPMM_CSR_ALG3:
+        return CUSPARSE_SPMM_CSR_ALG3;
+    case HIPSPARSE_SPMM_BLOCKED_ELL_ALG1:
+        return CUSPARSE_SPMM_BLOCKED_ELL_ALG1;
+    default:
+        throw "Non existant hipsparseSpMMAlg_t";
+    }
+}
+#elif(CUDART_VERSION >= 11021 && CUDART_VERSION < 12000)
 cusparseSpMMAlg_t hipSpMMAlgToCudaSpMMAlg(hipsparseSpMMAlg_t alg)
 {
     switch(alg)
@@ -10443,7 +10508,7 @@ cusparseSpMMAlg_t hipSpMMAlgToCudaSpMMAlg(hipsparseSpMMAlg_t alg)
         throw "Non existant hipsparseSpMMAlg_t";
     }
 }
-#elif(CUDART_VERSION >= 11003)
+#elif(CUDART_VERSION >= 11003 && CUDART_VERSION < 11021)
 cusparseSpMMAlg_t hipSpMMAlgToCudaSpMMAlg(hipsparseSpMMAlg_t alg)
 {
     switch(alg)
@@ -10478,7 +10543,7 @@ cusparseSpMMAlg_t hipSpMMAlgToCudaSpMMAlg(hipsparseSpMMAlg_t alg)
         throw "Non existant hipsparseSpMMAlg_t";
     }
 }
-#elif(CUDART_VERSION >= 10010)
+#elif(CUDART_VERSION >= 10010 && CUDART_VERSION < 11003)
 cusparseSpMMAlg_t hipSpMMAlgToCudaSpMMAlg(hipsparseSpMMAlg_t alg)
 {
     switch(alg)
