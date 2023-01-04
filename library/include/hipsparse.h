@@ -50,6 +50,7 @@
 #define DEPRECATED_CUDA_10000(warning)
 #define DEPRECATED_CUDA_9000(warning)
 
+
 #ifdef __cplusplus
     #ifndef __has_cpp_attribute
         #define __has_cpp_attribute(X) 0
