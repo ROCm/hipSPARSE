@@ -52,21 +52,21 @@
 #define DEPRECATED_CUDA_9000(warning)
 
 #ifdef __cplusplus
-    #ifndef __has_cpp_attribute
-        #define __has_cpp_attribute(X) 0
-    #endif
-    #define HIPSPARSE_HAS_DEPRECATED_MSG __has_cpp_attribute(deprecated) >= 201309L
+#ifndef __has_cpp_attribute
+#define __has_cpp_attribute(X) 0
+#endif
+#define HIPSPARSE_HAS_DEPRECATED_MSG __has_cpp_attribute(deprecated) >= 201309L
 #else
-    #ifndef __has_c_attribute
-        #define __has_c_attribute(X) 0
-    #endif
-    #define HIPSPARSE_HAS_DEPRECATED_MSG __has_c_attribute(deprecated) >= 201904L
+#ifndef __has_c_attribute
+#define __has_c_attribute(X) 0
+#endif
+#define HIPSPARSE_HAS_DEPRECATED_MSG __has_c_attribute(deprecated) >= 201904L
 #endif
 
 #if HIPSPARSE_HAS_DEPRECATED_MSG
-    #define HIPSPARSE_DEPRECATED_MSG(MSG) [[deprecated(MSG)]]
+#define HIPSPARSE_DEPRECATED_MSG(MSG) [[deprecated(MSG)]]
 #else
-    #define HIPSPARSE_DEPRECATED_MSG(MSG) HIPSPARSE_DEPRECATED // defined in hipsparse-export.h
+#define HIPSPARSE_DEPRECATED_MSG(MSG) HIPSPARSE_DEPRECATED // defined in hipsparse-export.h
 #endif
 /// \endcond
 
@@ -3129,22 +3129,6 @@ hipsparseStatus_t hipsparseZbsrsm2_solve(hipsparseHandle_t         handle,
                                          hipsparseSolvePolicy_t    policy,
                                          void*                     pBuffer);
 /**@}*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 /*! \ingroup level3_module
@@ -6636,29 +6620,6 @@ hipsparseStatus_t hipsparseDpruneDense2csrByPercentage(hipsparseHandle_t        
                                                        void*                     buffer);
 /**@}*/
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 /*! \ingroup conv_module
 *  \brief
@@ -8844,11 +8805,11 @@ typedef enum
 #if(CUDART_VERSION >= 10010)
 typedef enum
 {
-    HIPSPARSE_FORMAT_CSR     = 1, /* Compressed Sparse Row */
+    HIPSPARSE_FORMAT_CSR = 1, /* Compressed Sparse Row */
 #if(CUDART_VERSION >= 11021)
-    HIPSPARSE_FORMAT_CSC     = 2, /* Compressed Sparse Column */
+    HIPSPARSE_FORMAT_CSC = 2, /* Compressed Sparse Column */
 #endif
-    HIPSPARSE_FORMAT_COO     = 3 /* Coordinate - Structure of Arrays */
+    HIPSPARSE_FORMAT_COO = 3 /* Coordinate - Structure of Arrays */
 #if(CUDART_VERSION < 12000)
     ,
     HIPSPARSE_FORMAT_COO_AOS = 4 /* Coordinate - Array of Structures */

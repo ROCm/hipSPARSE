@@ -604,9 +604,6 @@ hipsparseStatus_t hipsparseDestroyBsrilu02Info(bsrilu02Info_t info)
     return hipCUSPARSEStatusToHIPStatus(cusparseDestroyBsrilu02Info((bsrilu02Info_t)info));
 }
 
-
-
-
 #if CUDART_VERSION < 12000
 hipsparseStatus_t hipsparseCreateCsrsv2Info(csrsv2Info_t* info)
 {
@@ -628,11 +625,6 @@ hipsparseStatus_t hipsparseDestroyCsrsm2Info(csrsm2Info_t info)
     return hipCUSPARSEStatusToHIPStatus(cusparseDestroyCsrsm2Info((csrsm2Info_t)info));
 }
 #endif
-
-
-
-
-
 
 hipsparseStatus_t hipsparseCreateColorInfo(hipsparseColorInfo_t* info)
 {
