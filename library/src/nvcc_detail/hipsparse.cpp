@@ -8315,6 +8315,7 @@ cusparseCsr2CscAlg_t hipCsr2CscAlgToCudaCsr2CscAlg(hipsparseCsr2CscAlg_t alg)
 }
 #endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 hipsparseStatus_t hipsparseCsr2cscEx2_bufferSize(hipsparseHandle_t     handle,
                                                  int                   m,
                                                  int                   n,
