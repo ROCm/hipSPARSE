@@ -9032,52 +9032,6 @@ typedef enum
     HIPSPARSE_CSRMM_ALG1     = 4
 } hipsparseSpMMAlg_t;
 #endif
-
-// #if(CUDART_VERSION >= 11021)
-// typedef enum
-// {
-//     HIPSPARSE_MM_ALG_DEFAULT        = 0,
-//     HIPSPARSE_COOMM_ALG1            = 1,
-//     HIPSPARSE_COOMM_ALG2            = 2,
-//     HIPSPARSE_COOMM_ALG3            = 3,
-//     HIPSPARSE_CSRMM_ALG1            = 4,
-//     HIPSPARSE_SPMM_ALG_DEFAULT      = 5,
-//     HIPSPARSE_SPMM_COO_ALG1         = 6,
-//     HIPSPARSE_SPMM_COO_ALG2         = 7,
-//     HIPSPARSE_SPMM_COO_ALG3         = 8,
-//     HIPSPARSE_SPMM_COO_ALG4         = 9,
-//     HIPSPARSE_SPMM_CSR_ALG1         = 10,
-//     HIPSPARSE_SPMM_CSR_ALG2         = 11,
-//     HIPSPARSE_SPMM_BLOCKED_ELL_ALG1 = 12,
-//     HIPSPARSE_SPMM_CSR_ALG3         = 13
-// } hipsparseSpMMAlg_t;
-// #elif(CUDART_VERSION >= 11003)
-// typedef enum
-// {
-//     HIPSPARSE_MM_ALG_DEFAULT        = 0,
-//     HIPSPARSE_COOMM_ALG1            = 1,
-//     HIPSPARSE_COOMM_ALG2            = 2,
-//     HIPSPARSE_COOMM_ALG3            = 3,
-//     HIPSPARSE_CSRMM_ALG1            = 4,
-//     HIPSPARSE_SPMM_ALG_DEFAULT      = 5,
-//     HIPSPARSE_SPMM_COO_ALG1         = 6,
-//     HIPSPARSE_SPMM_COO_ALG2         = 7,
-//     HIPSPARSE_SPMM_COO_ALG3         = 8,
-//     HIPSPARSE_SPMM_COO_ALG4         = 9,
-//     HIPSPARSE_SPMM_CSR_ALG1         = 10,
-//     HIPSPARSE_SPMM_CSR_ALG2         = 11,
-//     HIPSPARSE_SPMM_BLOCKED_ELL_ALG1 = 12
-// } hipsparseSpMMAlg_t;
-// #elif(CUDART_VERSION >= 10010)
-// typedef enum
-// {
-//     HIPSPARSE_MM_ALG_DEFAULT = 0,
-//     HIPSPARSE_COOMM_ALG1     = 1,
-//     HIPSPARSE_COOMM_ALG2     = 2,
-//     HIPSPARSE_COOMM_ALG3     = 3,
-//     HIPSPARSE_CSRMM_ALG1     = 4
-// } hipsparseSpMMAlg_t;
-// #endif
 #endif
 
 /*! \ingroup generic_module
