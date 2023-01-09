@@ -46,6 +46,7 @@
 #include <hip/hip_runtime.h>
 
 /// \cond DO_NOT_DOCUMENT
+#define DEPRECATED_CUDA_12000(warning)
 #define DEPRECATED_CUDA_11000(warning)
 #define DEPRECATED_CUDA_10000(warning)
 #define DEPRECATED_CUDA_9000(warning)
@@ -79,6 +80,9 @@
 #elif CUDART_VERSION < 12000
 #undef DEPRECATED_CUDA_11000
 #define DEPRECATED_CUDA_11000(warning) HIPSPARSE_DEPRECATED_MSG(warning)
+#elif CUDART_VERSION < 13000
+#undef DEPRECATED_CUDA_12000
+#define DEPRECATED_CUDA_12000(warning) HIPSPARSE_DEPRECATED_MSG(warning)
 #endif
 #endif
 
@@ -687,6 +691,7 @@ hipsparseStatus_t hipsparseCreateBsric02Info(bsric02Info_t* info);
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroyBsric02Info(bsric02Info_t info);
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 /* Info structures */
 /*! \ingroup aux_module
  *  \brief Create a csrsv2 info structure
@@ -696,6 +701,7 @@ hipsparseStatus_t hipsparseDestroyBsric02Info(bsric02Info_t info);
  *  that is gathered during the analysis routines available. It should be destroyed
  *  at the end using hipsparseDestroyCsrsv2Info().
  */
+DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreateCsrsv2Info(csrsv2Info_t* info);
 
@@ -705,6 +711,7 @@ hipsparseStatus_t hipsparseCreateCsrsv2Info(csrsv2Info_t* info);
  *  \details
  *  \p hipsparseDestroyCsrsv2Info destroys a csrsv2 info structure.
  */
+DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroyCsrsv2Info(csrsv2Info_t info);
 
@@ -717,6 +724,7 @@ hipsparseStatus_t hipsparseDestroyCsrsv2Info(csrsv2Info_t info);
  *  that is gathered during the analysis routines available. It should be destroyed
  *  at the end using hipsparseDestroyCsrsm2Info().
  */
+DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreateCsrsm2Info(csrsm2Info_t* info);
 
@@ -726,8 +734,10 @@ hipsparseStatus_t hipsparseCreateCsrsm2Info(csrsm2Info_t* info);
  *  \details
  *  \p hipsparseDestroyCsrsm2Info destroys a csrsm2 info structure.
  */
+DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroyCsrsm2Info(csrsm2Info_t info);
+#endif
 
 /* Info structures */
 /*! \ingroup aux_module
@@ -1366,6 +1376,7 @@ hipsparseStatus_t hipsparseZcsrmv(hipsparseHandle_t         handle,
 /**@}*/
 #endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 /*! \ingroup level2_module
 *  \brief Sparse triangular solve using CSR storage format
 *
@@ -1382,10 +1393,13 @@ hipsparseStatus_t hipsparseZcsrmv(hipsparseHandle_t         handle,
 *  \note \p hipsparseXcsrsv2_zeroPivot is a blocking function. It might influence
 *  performance negatively.
 */
+DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
 hipsparseStatus_t
     hipsparseXcsrsv2_zeroPivot(hipsparseHandle_t handle, csrsv2Info_t info, int* position);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 /*! \ingroup level2_module
 *  \brief Sparse triangular solve using CSR storage format
 *
@@ -1397,6 +1411,7 @@ hipsparseStatus_t
 *  temporary storage buffer must be allocated by the user.
 */
 /**@{*/
+DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseScsrsv2_bufferSize(hipsparseHandle_t         handle,
                                               hipsparseOperation_t      transA,
@@ -1408,6 +1423,7 @@ hipsparseStatus_t hipsparseScsrsv2_bufferSize(hipsparseHandle_t         handle,
                                               const int*                csrSortedColIndA,
                                               csrsv2Info_t              info,
                                               int*                      pBufferSizeInBytes);
+DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDcsrsv2_bufferSize(hipsparseHandle_t         handle,
                                               hipsparseOperation_t      transA,
@@ -1419,6 +1435,7 @@ hipsparseStatus_t hipsparseDcsrsv2_bufferSize(hipsparseHandle_t         handle,
                                               const int*                csrSortedColIndA,
                                               csrsv2Info_t              info,
                                               int*                      pBufferSizeInBytes);
+DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCcsrsv2_bufferSize(hipsparseHandle_t         handle,
                                               hipsparseOperation_t      transA,
@@ -1430,6 +1447,7 @@ hipsparseStatus_t hipsparseCcsrsv2_bufferSize(hipsparseHandle_t         handle,
                                               const int*                csrSortedColIndA,
                                               csrsv2Info_t              info,
                                               int*                      pBufferSizeInBytes);
+DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseZcsrsv2_bufferSize(hipsparseHandle_t         handle,
                                               hipsparseOperation_t      transA,
@@ -1442,6 +1460,7 @@ hipsparseStatus_t hipsparseZcsrsv2_bufferSize(hipsparseHandle_t         handle,
                                               csrsv2Info_t              info,
                                               int*                      pBufferSizeInBytes);
 /**@}*/
+#endif
 
 /*! \ingroup level2_module
 *  \brief Sparse triangular solve using CSR storage format
@@ -1500,6 +1519,7 @@ hipsparseStatus_t hipsparseZcsrsv2_bufferSizeExt(hipsparseHandle_t         handl
                                                  size_t*                   pBufferSize);
 /**@}*/
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 /*! \ingroup level2_module
 *  \brief Sparse triangular solve using CSR storage format
 *
@@ -1512,6 +1532,7 @@ hipsparseStatus_t hipsparseZcsrsv2_bufferSizeExt(hipsparseHandle_t         handl
 *  It may return before the actual computation has finished.
 */
 /**@{*/
+DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseScsrsv2_analysis(hipsparseHandle_t         handle,
                                             hipsparseOperation_t      transA,
@@ -1524,6 +1545,7 @@ hipsparseStatus_t hipsparseScsrsv2_analysis(hipsparseHandle_t         handle,
                                             csrsv2Info_t              info,
                                             hipsparseSolvePolicy_t    policy,
                                             void*                     pBuffer);
+DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDcsrsv2_analysis(hipsparseHandle_t         handle,
                                             hipsparseOperation_t      transA,
@@ -1536,6 +1558,7 @@ hipsparseStatus_t hipsparseDcsrsv2_analysis(hipsparseHandle_t         handle,
                                             csrsv2Info_t              info,
                                             hipsparseSolvePolicy_t    policy,
                                             void*                     pBuffer);
+DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCcsrsv2_analysis(hipsparseHandle_t         handle,
                                             hipsparseOperation_t      transA,
@@ -1548,6 +1571,7 @@ hipsparseStatus_t hipsparseCcsrsv2_analysis(hipsparseHandle_t         handle,
                                             csrsv2Info_t              info,
                                             hipsparseSolvePolicy_t    policy,
                                             void*                     pBuffer);
+DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseZcsrsv2_analysis(hipsparseHandle_t         handle,
                                             hipsparseOperation_t      transA,
@@ -1561,7 +1585,9 @@ hipsparseStatus_t hipsparseZcsrsv2_analysis(hipsparseHandle_t         handle,
                                             hipsparseSolvePolicy_t    policy,
                                             void*                     pBuffer);
 /**@}*/
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 /*! \ingroup level2_module
 *  \brief Sparse triangular solve using CSR storage format
 *
@@ -1605,6 +1631,7 @@ hipsparseStatus_t hipsparseZcsrsv2_analysis(hipsparseHandle_t         handle,
 *  \p trans == \ref HIPSPARSE_OPERATION_TRANSPOSE is supported.
 */
 /**@{*/
+DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseScsrsv2_solve(hipsparseHandle_t         handle,
                                          hipsparseOperation_t      transA,
@@ -1620,6 +1647,7 @@ hipsparseStatus_t hipsparseScsrsv2_solve(hipsparseHandle_t         handle,
                                          float*                    x,
                                          hipsparseSolvePolicy_t    policy,
                                          void*                     pBuffer);
+DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDcsrsv2_solve(hipsparseHandle_t         handle,
                                          hipsparseOperation_t      transA,
@@ -1635,6 +1663,7 @@ hipsparseStatus_t hipsparseDcsrsv2_solve(hipsparseHandle_t         handle,
                                          double*                   x,
                                          hipsparseSolvePolicy_t    policy,
                                          void*                     pBuffer);
+DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCcsrsv2_solve(hipsparseHandle_t         handle,
                                          hipsparseOperation_t      transA,
@@ -1650,6 +1679,7 @@ hipsparseStatus_t hipsparseCcsrsv2_solve(hipsparseHandle_t         handle,
                                          hipComplex*               x,
                                          hipsparseSolvePolicy_t    policy,
                                          void*                     pBuffer);
+DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseZcsrsv2_solve(hipsparseHandle_t         handle,
                                          hipsparseOperation_t      transA,
@@ -1666,6 +1696,7 @@ hipsparseStatus_t hipsparseZcsrsv2_solve(hipsparseHandle_t         handle,
                                          hipsparseSolvePolicy_t    policy,
                                          void*                     pBuffer);
 /**@}*/
+#endif
 
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
 /*! \ingroup level2_module
@@ -3099,6 +3130,7 @@ hipsparseStatus_t hipsparseZbsrsm2_solve(hipsparseHandle_t         handle,
                                          void*                     pBuffer);
 /**@}*/
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 /*! \ingroup level3_module
 *  \brief Sparse triangular system solve using CSR storage format
 *
@@ -3114,10 +3146,13 @@ hipsparseStatus_t hipsparseZbsrsm2_solve(hipsparseHandle_t         handle,
 *  \note \p hipsparseXcsrsm2_zeroPivot is a blocking function. It might influence
 *  performance negatively.
 */
+DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
 hipsparseStatus_t
     hipsparseXcsrsm2_zeroPivot(hipsparseHandle_t handle, csrsm2Info_t info, int* position);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 /*! \ingroup level3_module
 *  \brief Sparse triangular system solve using CSR storage format
 *
@@ -3127,6 +3162,7 @@ hipsparseStatus_t
 *  temporary storage buffer must be allocated by the user.
 */
 /**@{*/
+DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseScsrsm2_bufferSizeExt(hipsparseHandle_t         handle,
                                                  int                       algo,
@@ -3145,7 +3181,7 @@ hipsparseStatus_t hipsparseScsrsm2_bufferSizeExt(hipsparseHandle_t         handl
                                                  csrsm2Info_t              info,
                                                  hipsparseSolvePolicy_t    policy,
                                                  size_t*                   pBufferSize);
-
+DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDcsrsm2_bufferSizeExt(hipsparseHandle_t         handle,
                                                  int                       algo,
@@ -3164,7 +3200,7 @@ hipsparseStatus_t hipsparseDcsrsm2_bufferSizeExt(hipsparseHandle_t         handl
                                                  csrsm2Info_t              info,
                                                  hipsparseSolvePolicy_t    policy,
                                                  size_t*                   pBufferSize);
-
+DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCcsrsm2_bufferSizeExt(hipsparseHandle_t         handle,
                                                  int                       algo,
@@ -3183,7 +3219,7 @@ hipsparseStatus_t hipsparseCcsrsm2_bufferSizeExt(hipsparseHandle_t         handl
                                                  csrsm2Info_t              info,
                                                  hipsparseSolvePolicy_t    policy,
                                                  size_t*                   pBufferSize);
-
+DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseZcsrsm2_bufferSizeExt(hipsparseHandle_t         handle,
                                                  int                       algo,
@@ -3203,7 +3239,9 @@ hipsparseStatus_t hipsparseZcsrsm2_bufferSizeExt(hipsparseHandle_t         handl
                                                  hipsparseSolvePolicy_t    policy,
                                                  size_t*                   pBufferSize);
 /**@}*/
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 /*! \ingroup level3_module
 *  \brief Sparse triangular system solve using CSR storage format
 *
@@ -3218,6 +3256,7 @@ hipsparseStatus_t hipsparseZcsrsm2_bufferSizeExt(hipsparseHandle_t         handl
 *  It may return before the actual computation has finished.
 */
 /**@{*/
+DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseScsrsm2_analysis(hipsparseHandle_t         handle,
                                             int                       algo,
@@ -3236,7 +3275,7 @@ hipsparseStatus_t hipsparseScsrsm2_analysis(hipsparseHandle_t         handle,
                                             csrsm2Info_t              info,
                                             hipsparseSolvePolicy_t    policy,
                                             void*                     pBuffer);
-
+DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDcsrsm2_analysis(hipsparseHandle_t         handle,
                                             int                       algo,
@@ -3255,7 +3294,7 @@ hipsparseStatus_t hipsparseDcsrsm2_analysis(hipsparseHandle_t         handle,
                                             csrsm2Info_t              info,
                                             hipsparseSolvePolicy_t    policy,
                                             void*                     pBuffer);
-
+DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCcsrsm2_analysis(hipsparseHandle_t         handle,
                                             int                       algo,
@@ -3274,7 +3313,7 @@ hipsparseStatus_t hipsparseCcsrsm2_analysis(hipsparseHandle_t         handle,
                                             csrsm2Info_t              info,
                                             hipsparseSolvePolicy_t    policy,
                                             void*                     pBuffer);
-
+DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseZcsrsm2_analysis(hipsparseHandle_t         handle,
                                             int                       algo,
@@ -3294,7 +3333,9 @@ hipsparseStatus_t hipsparseZcsrsm2_analysis(hipsparseHandle_t         handle,
                                             hipsparseSolvePolicy_t    policy,
                                             void*                     pBuffer);
 /**@}*/
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 /*! \ingroup level3_module
 *  \brief Sparse triangular system solve using CSR storage format
 *
@@ -3357,6 +3398,7 @@ hipsparseStatus_t hipsparseZcsrsm2_analysis(hipsparseHandle_t         handle,
 *  \p trans_B != \ref HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE is supported.
 */
 /**@{*/
+DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseScsrsm2_solve(hipsparseHandle_t         handle,
                                          int                       algo,
@@ -3375,7 +3417,7 @@ hipsparseStatus_t hipsparseScsrsm2_solve(hipsparseHandle_t         handle,
                                          csrsm2Info_t              info,
                                          hipsparseSolvePolicy_t    policy,
                                          void*                     pBuffer);
-
+DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDcsrsm2_solve(hipsparseHandle_t         handle,
                                          int                       algo,
@@ -3394,7 +3436,7 @@ hipsparseStatus_t hipsparseDcsrsm2_solve(hipsparseHandle_t         handle,
                                          csrsm2Info_t              info,
                                          hipsparseSolvePolicy_t    policy,
                                          void*                     pBuffer);
-
+DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCcsrsm2_solve(hipsparseHandle_t         handle,
                                          int                       algo,
@@ -3413,7 +3455,7 @@ hipsparseStatus_t hipsparseCcsrsm2_solve(hipsparseHandle_t         handle,
                                          csrsm2Info_t              info,
                                          hipsparseSolvePolicy_t    policy,
                                          void*                     pBuffer);
-
+DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseZcsrsm2_solve(hipsparseHandle_t         handle,
                                          int                       algo,
@@ -3433,6 +3475,7 @@ hipsparseStatus_t hipsparseZcsrsm2_solve(hipsparseHandle_t         handle,
                                          hipsparseSolvePolicy_t    policy,
                                          void*                     pBuffer);
 /**@}*/
+#endif
 
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 /*! \ingroup level3_module
@@ -4227,7 +4270,9 @@ hipsparseStatus_t hipsparseZcsrgemm2_bufferSizeExt(hipsparseHandle_t         han
                                                    csrgemm2Info_t            info,
                                                    size_t*                   pBufferSizeInBytes);
 /**@}*/
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 /*! \ingroup extra_module
 *  \brief Sparse matrix sparse matrix multiplication using CSR storage format
 *
@@ -4272,7 +4317,9 @@ hipsparseStatus_t hipsparseXcsrgemm2Nnz(hipsparseHandle_t         handle,
                                         int*                      nnzTotalDevHostPtr,
                                         const csrgemm2Info_t      info,
                                         void*                     pBuffer);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 /*! \ingroup extra_module
 *  \brief Sparse matrix sparse matrix multiplication using CSR storage format
 *
@@ -6573,6 +6620,7 @@ hipsparseStatus_t hipsparseDpruneDense2csrByPercentage(hipsparseHandle_t        
                                                        void*                     buffer);
 /**@}*/
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 /*! \ingroup conv_module
 *  \brief
 *
@@ -6581,6 +6629,7 @@ hipsparseStatus_t hipsparseDpruneDense2csrByPercentage(hipsparseHandle_t        
 *  It is executed asynchronously with respect to the host and may return control to the application on the host before the entire result is ready.
 */
 /**@{*/
+DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSdense2csc(hipsparseHandle_t         handle,
                                       int                       m,
@@ -6592,7 +6641,7 @@ hipsparseStatus_t hipsparseSdense2csc(hipsparseHandle_t         handle,
                                       float*                    csc_val,
                                       int*                      csc_row_ind,
                                       int*                      csc_col_ptr);
-
+DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDdense2csc(hipsparseHandle_t         handle,
                                       int                       m,
@@ -6604,6 +6653,7 @@ hipsparseStatus_t hipsparseDdense2csc(hipsparseHandle_t         handle,
                                       double*                   csc_val,
                                       int*                      csc_row_ind,
                                       int*                      csc_col_ptr);
+DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCdense2csc(hipsparseHandle_t         handle,
                                       int                       m,
@@ -6615,7 +6665,7 @@ hipsparseStatus_t hipsparseCdense2csc(hipsparseHandle_t         handle,
                                       hipComplex*               csc_val,
                                       int*                      csc_row_ind,
                                       int*                      csc_col_ptr);
-
+DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseZdense2csc(hipsparseHandle_t         handle,
                                       int                       m,
@@ -6628,13 +6678,16 @@ hipsparseStatus_t hipsparseZdense2csc(hipsparseHandle_t         handle,
                                       int*                      csc_row_ind,
                                       int*                      csc_col_ptr);
 /**@}*/
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 /*! \ingroup conv_module
 *  \brief
 *  This function converts the sparse matrix in CSR format into a dense matrix.
 *  It is executed asynchronously with respect to the host and may return control to the application on the host before the entire result is ready.
 */
 /**@{*/
+DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseScsr2dense(hipsparseHandle_t         handle,
                                       int                       m,
@@ -6645,7 +6698,7 @@ hipsparseStatus_t hipsparseScsr2dense(hipsparseHandle_t         handle,
                                       const int*                csr_col_ind,
                                       float*                    A,
                                       int                       ld);
-
+DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDcsr2dense(hipsparseHandle_t         handle,
                                       int                       m,
@@ -6656,7 +6709,7 @@ hipsparseStatus_t hipsparseDcsr2dense(hipsparseHandle_t         handle,
                                       const int*                csr_col_ind,
                                       double*                   A,
                                       int                       ld);
-
+DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCcsr2dense(hipsparseHandle_t         handle,
                                       int                       m,
@@ -6667,7 +6720,7 @@ hipsparseStatus_t hipsparseCcsr2dense(hipsparseHandle_t         handle,
                                       const int*                csr_col_ind,
                                       hipComplex*               A,
                                       int                       ld);
-
+DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseZcsr2dense(hipsparseHandle_t         handle,
                                       int                       m,
@@ -6679,13 +6732,16 @@ hipsparseStatus_t hipsparseZcsr2dense(hipsparseHandle_t         handle,
                                       hipDoubleComplex*         A,
                                       int                       ld);
 /**@}*/
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 /*! \ingroup conv_module
 *  \brief
 *  This function converts the sparse matrix in CSC format into a dense matrix.
 *  It is executed asynchronously with respect to the host and may return control to the application on the host before the entire result is ready.
 */
 /**@{*/
+DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseScsc2dense(hipsparseHandle_t         handle,
                                       int                       m,
@@ -6696,7 +6752,7 @@ hipsparseStatus_t hipsparseScsc2dense(hipsparseHandle_t         handle,
                                       const int*                csc_col_ptr,
                                       float*                    A,
                                       int                       ld);
-
+DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDcsc2dense(hipsparseHandle_t         handle,
                                       int                       m,
@@ -6707,7 +6763,7 @@ hipsparseStatus_t hipsparseDcsc2dense(hipsparseHandle_t         handle,
                                       const int*                csc_col_ptr,
                                       double*                   A,
                                       int                       ld);
-
+DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCcsc2dense(hipsparseHandle_t         handle,
                                       int                       m,
@@ -6718,7 +6774,7 @@ hipsparseStatus_t hipsparseCcsc2dense(hipsparseHandle_t         handle,
                                       const int*                csc_col_ptr,
                                       hipComplex*               A,
                                       int                       ld);
-
+DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseZcsc2dense(hipsparseHandle_t         handle,
                                       int                       m,
@@ -6730,6 +6786,7 @@ hipsparseStatus_t hipsparseZcsc2dense(hipsparseHandle_t         handle,
                                       hipDoubleComplex*         A,
                                       int                       ld);
 /**@}*/
+#endif
 
 /*! \ingroup conv_module
 *  \brief
@@ -6899,12 +6956,27 @@ hipsparseStatus_t hipsparseZcsr2csc(hipsparseHandle_t       handle,
 /**@}*/
 #endif
 
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
+#if(!defined(CUDART_VERSION))
+typedef enum
+{
+    HIPSPARSE_CSR2CSC_ALG_DEFAULT = 0,
+    HIPSPARSE_CSR2CSC_ALG1        = 1,
+    HIPSPARSE_CSR2CSC_ALG2        = 2
+} hipsparseCsr2CscAlg_t;
+#else
+#if(CUDART_VERSION >= 12000)
+typedef enum
+{
+    HIPSPARSE_CSR2CSC_ALG_DEFAULT = 1,
+    HIPSPARSE_CSR2CSC_ALG1        = 2
+} hipsparseCsr2CscAlg_t;
+#elif(CUDART_VERSION >= 10010 && CUDART_VERSION < 12000)
 typedef enum
 {
     HIPSPARSE_CSR2CSC_ALG1 = 1,
     HIPSPARSE_CSR2CSC_ALG2 = 2
 } hipsparseCsr2CscAlg_t;
+#endif
 #endif
 
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
@@ -8745,19 +8817,29 @@ typedef enum
     HIPSPARSE_FORMAT_BLOCKED_ELL = 5 /* Blocked ELL */
 } hipsparseFormat_t;
 #else
-#if(CUDART_VERSION >= 10010)
+#if(CUDART_VERSION >= 12000)
+typedef enum
+{
+    HIPSPARSE_FORMAT_CSR         = 1, /* Compressed Sparse Row */
+    HIPSPARSE_FORMAT_CSC         = 2, /* Compressed Sparse Column */
+    HIPSPARSE_FORMAT_COO         = 3, /* Coordinate - Structure of Arrays */
+    HIPSPARSE_FORMAT_BLOCKED_ELL = 5 /* Blocked ELL */
+} hipsparseFormat_t;
+#elif(CUDART_VERSION >= 11021 && CUDART_VERSION < 12000)
+typedef enum
+{
+    HIPSPARSE_FORMAT_CSR         = 1, /* Compressed Sparse Row */
+    HIPSPARSE_FORMAT_CSC         = 2, /* Compressed Sparse Column */
+    HIPSPARSE_FORMAT_COO         = 3, /* Coordinate - Structure of Arrays */
+    HIPSPARSE_FORMAT_COO_AOS     = 4, /* Coordinate - Array of Structures */
+    HIPSPARSE_FORMAT_BLOCKED_ELL = 5 /* Blocked ELL */
+} hipsparseFormat_t;
+#elif(CUDART_VERSION >= 10010 && CUDART_VERSION < 11021)
 typedef enum
 {
     HIPSPARSE_FORMAT_CSR     = 1, /* Compressed Sparse Row */
-#if(CUDART_VERSION >= 11021)
-    HIPSPARSE_FORMAT_CSC     = 2, /* Compressed Sparse Column */
-#endif
     HIPSPARSE_FORMAT_COO     = 3, /* Coordinate - Structure of Arrays */
-    HIPSPARSE_FORMAT_COO_AOS = 4 /* Coordinate - Array of Structures */
-#if(CUDART_VERSION >= 11021)
-    ,
-    HIPSPARSE_FORMAT_BLOCKED_ELL = 5 /* Blocked ELL */
-#endif
+    HIPSPARSE_FORMAT_COO_AOS = 4, /* Coordinate - Array of Structures */
 } hipsparseFormat_t;
 #endif
 #endif
@@ -8833,7 +8915,16 @@ typedef enum
     HIPSPARSE_SPMV_CSR_ALG2    = 8
 } hipsparseSpMVAlg_t;
 #else
-#if(CUDART_VERSION >= 11021)
+#if(CUDART_VERSION >= 12000)
+typedef enum
+{
+    HIPSPARSE_SPMV_ALG_DEFAULT = 4,
+    HIPSPARSE_SPMV_COO_ALG1    = 5,
+    HIPSPARSE_SPMV_COO_ALG2    = 6,
+    HIPSPARSE_SPMV_CSR_ALG1    = 7,
+    HIPSPARSE_SPMV_CSR_ALG2    = 8
+} hipsparseSpMVAlg_t;
+#elif(CUDART_VERSION >= 11021 && CUDART_VERSION < 12000)
 typedef enum
 {
     HIPSPARSE_MV_ALG_DEFAULT   = 0,
@@ -8846,7 +8937,7 @@ typedef enum
     HIPSPARSE_SPMV_CSR_ALG1    = 7,
     HIPSPARSE_SPMV_CSR_ALG2    = 8
 } hipsparseSpMVAlg_t;
-#elif(CUDART_VERSION >= 10010)
+#elif(CUDART_VERSION >= 10010 && CUDART_VERSION < 11021)
 typedef enum
 {
     HIPSPARSE_MV_ALG_DEFAULT = 0,
@@ -8883,7 +8974,20 @@ typedef enum
     HIPSPARSE_SPMM_CSR_ALG3         = 13
 } hipsparseSpMMAlg_t;
 #else
-#if(CUDART_VERSION >= 11021)
+#if(CUDART_VERSION >= 12000)
+typedef enum
+{
+    HIPSPARSE_SPMM_ALG_DEFAULT      = 5,
+    HIPSPARSE_SPMM_COO_ALG1         = 6,
+    HIPSPARSE_SPMM_COO_ALG2         = 7,
+    HIPSPARSE_SPMM_COO_ALG3         = 8,
+    HIPSPARSE_SPMM_COO_ALG4         = 9,
+    HIPSPARSE_SPMM_CSR_ALG1         = 10,
+    HIPSPARSE_SPMM_CSR_ALG2         = 11,
+    HIPSPARSE_SPMM_BLOCKED_ELL_ALG1 = 12,
+    HIPSPARSE_SPMM_CSR_ALG3         = 13
+} hipsparseSpMMAlg_t;
+#elif(CUDART_VERSION >= 11021 && CUDART_VERSION < 12000)
 typedef enum
 {
     HIPSPARSE_MM_ALG_DEFAULT        = 0,
@@ -8901,7 +9005,7 @@ typedef enum
     HIPSPARSE_SPMM_BLOCKED_ELL_ALG1 = 12,
     HIPSPARSE_SPMM_CSR_ALG3         = 13
 } hipsparseSpMMAlg_t;
-#elif(CUDART_VERSION >= 11003)
+#elif(CUDART_VERSION >= 11003 && CUDART_VERSION < 11021)
 typedef enum
 {
     HIPSPARSE_MM_ALG_DEFAULT        = 0,
@@ -8918,7 +9022,7 @@ typedef enum
     HIPSPARSE_SPMM_CSR_ALG2         = 11,
     HIPSPARSE_SPMM_BLOCKED_ELL_ALG1 = 12
 } hipsparseSpMMAlg_t;
-#elif(CUDART_VERSION >= 10010)
+#elif(CUDART_VERSION >= 10010 && CUDART_VERSION < 11003)
 typedef enum
 {
     HIPSPARSE_MM_ALG_DEFAULT = 0,
@@ -9140,7 +9244,8 @@ hipsparseStatus_t hipsparseCreateCoo(hipsparseSpMatDescr_t* spMatDescr,
 *  \p hipsparseCreateCooAoS creates a sparse COO (AoS) matrix descriptor. It should be
 *  destroyed at the end using \p hipsparseDestroySpMat.
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
+#if(!defined(CUDART_VERSION) || (CUDART_VERSION >= 10010 && CUDART_VERSION < 12000))
+DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreateCooAoS(hipsparseSpMatDescr_t* spMatDescr,
                                         int64_t                rows,
@@ -9250,7 +9355,8 @@ hipsparseStatus_t hipsparseCooGet(const hipsparseSpMatDescr_t spMatDescr,
 *  \details
 *  \p hipsparseCooAoSGet gets the fields of the sparse COO (AoS) matrix descriptor
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
+#if(!defined(CUDART_VERSION) || (CUDART_VERSION >= 10010 && CUDART_VERSION < 12000))
+DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCooAoSGet(const hipsparseSpMatDescr_t spMatDescr,
                                      int64_t*                    rows,
@@ -9397,7 +9503,7 @@ hipsparseStatus_t hipsparseSpMatGetStridedBatch(hipsparseSpMatDescr_t spMatDescr
 /*! \ingroup generic_module
 *  \brief Description: Set the batch count of the sparse matrix
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
+#if(!defined(CUDART_VERSION) || (CUDART_VERSION >= 10010 && CUDART_VERSION < 12000))
 DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpMatSetStridedBatch(hipsparseSpMatDescr_t spMatDescr, int batchCount);
