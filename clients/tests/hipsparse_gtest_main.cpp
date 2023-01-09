@@ -152,6 +152,10 @@ public:
 
 int main(int argc, char** argv)
 {
+    // Print version
+    char version[256];
+    query_version(version);
+
     // Get device id from command line
     int device_id = 0;
 
@@ -160,6 +164,13 @@ int main(int argc, char** argv)
         if(strcmp(argv[i], "--device") == 0 && argc > i + 1)
         {
             device_id = atoi(argv[i + 1]);
+        }
+
+        if(strcmp(argv[i], "--version") == 0)
+        {
+            printf("hipSPARSE version: %s\n", version);
+
+            return 0;
         }
     }
 
@@ -175,10 +186,6 @@ int main(int argc, char** argv)
     {
         set_device(device_id);
     }
-
-    // Print version
-    char version[256];
-    query_version(version);
 
     printf("hipSPARSE version: %s\n", version);
 
