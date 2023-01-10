@@ -1211,8 +1211,6 @@ hipsparseDestroy()
 
 .. doxygenfunction:: hipsparseDestroy
 
-.. _hipsparse_set_stream_:
-
 hipsparseGetVersion()
 ---------------------
 
@@ -1222,6 +1220,8 @@ hipsparseGetGitRevision()
 -------------------------
 
 .. doxygenfunction:: hipsparseGetGitRevision
+
+.. _hipsparse_set_stream_:
 
 hipsparseSetStream()
 --------------------
