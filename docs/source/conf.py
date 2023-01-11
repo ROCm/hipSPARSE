@@ -193,6 +193,7 @@ latex_elements = {
     # Additional stuff for the LaTeX preamble.
     #
     'preamble': '\setcounter{tocdepth}{5}',
+    'preamble': '\\usepackage[strings]{underscore}',
 
     # Latex figure (float) alignment
     #
