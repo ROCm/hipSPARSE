@@ -183,7 +183,12 @@ set(HIPSPARSE_TEST_SOURCES
   test_gebsr2gebsc.cpp
   test_spmat_descr.cpp
   test_spvec_descr.cpp
+  test_dnmat_descr.cpp
   test_dnvec_descr.cpp
+  test_const_spmat_descr.cpp
+  test_const_spvec_descr.cpp
+  test_const_dnmat_descr.cpp
+  test_const_dnvec_descr.cpp
   test_spmv_coo.cpp
   test_spmv_coo_aos.cpp
   test_spmv_csr.cpp
