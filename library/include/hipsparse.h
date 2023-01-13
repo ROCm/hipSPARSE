@@ -35,9 +35,8 @@
 // This is the master include file for hipSPARSE, wrapping around rocSPARSE and
 // cuSPARSE "version 2".
 
-#pragma once
-#ifndef _HIPSPARSE_H_
-#define _HIPSPARSE_H_
+#ifndef HIPSPARSE_H
+#define HIPSPARSE_H
 
 #include "hipsparse-export.h"
 #include "hipsparse-version.h"
@@ -10497,4 +10496,4 @@ hipsparseStatus_t hipsparseSpSM_solve(hipsparseHandle_t           handle,
 }
 #endif
 
-#endif // _HIPSPARSE_H_
+#endif // HIPSPARSE_H
