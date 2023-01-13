@@ -11745,13 +11745,13 @@ hipsparseStatus_t hipsparseDnMatGet(const hipsparseDnMatDescr_t dnMatDescr,
 {
     cudaDataType    cuda_data_type;
     cusparseOrder_t cusparse_order;
-    hipCUSPARSEStatusToHIPStatus(cusparseDnMatGet((const cusparseDnMatDescr_t)dnMatDescr,
-                                                  rows,
-                                                  cols,
-                                                  ld,
-                                                  values,
-                                                  valueType != nullptr ? &cuda_data_type : nullptr,
-                                                  order != nullptr ? &cusparse_order : nullptr));
+    RETURN_IF_CUSPARSE_ERROR(cusparseDnMatGet((const cusparseDnMatDescr_t)dnMatDescr,
+                                              rows,
+                                              cols,
+                                              ld,
+                                              values,
+                                              valueType != nullptr ? &cuda_data_type : nullptr,
+                                              order != nullptr ? &cusparse_order : nullptr));
 
     *valueType = CudaDataTypeToHIPDataType(cuda_data_type);
     *order     = CudaOrderToHIPOrder(cusparse_order);
@@ -11771,13 +11771,13 @@ hipsparseStatus_t hipsparseConstDnMatGet(hipsparseConstDnMatDescr_t dnMatDescr,
 {
     cudaDataType    cuda_data_type;
     cusparseOrder_t cusparse_order;
-    hipCUSPARSEStatusToHIPStatus(cusparseConstDnMatGet((const cusparseConstDnMatDescr_t)dnMatDescr,
-                                                       rows,
-                                                       cols,
-                                                       ld,
-                                                       values,
-                                                       valueType != nullptr ? &cuda_data_type : nullptr,
-                                                       order != nullptr ? &cusparse_order : nullptr));
+    RETURN_IF_CUSPARSE_ERROR(cusparseConstDnMatGet((const cusparseConstDnMatDescr_t)dnMatDescr,
+                                                   rows,
+                                                   cols,
+                                                   ld,
+                                                   values,
+                                                   valueType != nullptr ? &cuda_data_type : nullptr,
+                                                   order != nullptr ? &cusparse_order : nullptr));
 
     *valueType = CudaDataTypeToHIPDataType(cuda_data_type);
     *order     = CudaOrderToHIPOrder(cusparse_order);
