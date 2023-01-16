@@ -110,7 +110,6 @@ void testing_const_dnmat_descr_bad_arg(void)
         hipsparseConstDnMatGet(x, &rows, &cols, &ld, &data, &dataType, nullptr),
         "Error: order is nullptr");
 
-
     // hipsparseConstDnMatGetValues
     verify_hipsparse_status_invalid_pointer(hipsparseConstDnMatGetValues(nullptr, &data),
                                             "Error: x is nullptr");
@@ -125,8 +124,8 @@ void testing_const_dnmat_descr_bad_arg(void)
         hipsparseDnMatGetStridedBatch(nullptr, &batch_count, &batch_stride), "Error: x is nullptr");
     verify_hipsparse_status_invalid_pointer(
         hipsparseDnMatGetStridedBatch(x, nullptr, &batch_stride), "Error: batch_count is nullptr");
-    verify_hipsparse_status_invalid_pointer(
-        hipsparseDnMatGetStridedBatch(x, &batch_count, nullptr), "Error: batch_stride is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseDnMatGetStridedBatch(x, &batch_count, nullptr),
+                                            "Error: batch_stride is nullptr");
 
     // Destroy valid descriptor
     verify_hipsparse_status_success(hipsparseDestroyDnVec(x), "Success");

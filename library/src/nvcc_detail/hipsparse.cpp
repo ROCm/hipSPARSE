@@ -10878,7 +10878,7 @@ hipsparseStatus_t hipsparseSpVecGetValues(const hipsparseSpVecDescr_t spVecDescr
 
 #if(CUDART_VERSION >= 12000)
 hipsparseStatus_t hipsparseConstSpVecGetValues(hipsparseConstSpVecDescr_t spVecDescr,
-                                               const void** values)
+                                               const void**               values)
 {
     return hipCUSPARSEStatusToHIPStatus(
         cusparseConstSpVecGetValues((const cusparseConstSpVecDescr_t)spVecDescr, values));
