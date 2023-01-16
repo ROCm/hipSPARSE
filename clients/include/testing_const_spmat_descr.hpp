@@ -475,15 +475,15 @@ void testing_const_spmat_descr_bad_arg(void)
     // hipsparseConstBlockedEllGet
 #if(!defined(CUDART_VERSION))
     verify_hipsparse_status_invalid_pointer(hipsparseConstBlockedEllGet(nullptr,
-                                                                   &rows,
-                                                                   &cols,
-                                                                   &ell_blocksize,
-                                                                   &ell_cols,
-                                                                   &col_ptr,
-                                                                   &val_ptr,
-                                                                   &colType,
-                                                                   &idxBase,
-                                                                   &dataType),
+                                                                        &rows,
+                                                                        &cols,
+                                                                        &ell_blocksize,
+                                                                        &ell_cols,
+                                                                        &col_ptr,
+                                                                        &val_ptr,
+                                                                        &colType,
+                                                                        &idxBase,
+                                                                        &dataType),
                                             "Error: A is nullptr");
 #endif
     verify_hipsparse_status_invalid_pointer(hipsparseConstBlockedEllGet(bell,
