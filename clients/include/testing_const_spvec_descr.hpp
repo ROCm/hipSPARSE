@@ -60,7 +60,8 @@ void testing_const_spvec_descr_bad_arg(void)
 
     // hipsparseCreateConstSpVec
     verify_hipsparse_status_invalid_pointer(
-        hipsparseCreateConstSpVec(nullptr, size, nnz, idx_data, val_data, idxType, idxBase, dataType),
+        hipsparseCreateConstSpVec(
+            nullptr, size, nnz, idx_data, val_data, idxType, idxBase, dataType),
         "Error: x is nullptr");
     verify_hipsparse_status_invalid_size(
         hipsparseCreateConstSpVec(&x, -1, nnz, idx_data, val_data, idxType, idxBase, dataType),

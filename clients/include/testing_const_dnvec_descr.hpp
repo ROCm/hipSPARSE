@@ -54,8 +54,8 @@ void testing_const_dnvec_descr_bad_arg(void)
     hipsparseConstDnVecDescr_t x;
 
     // hipsparseCreateConstDnVec
-    verify_hipsparse_status_invalid_pointer(hipsparseCreateConstDnVec(nullptr, size, val_data, dataType),
-                                            "Error: x is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseCreateConstDnVec(nullptr, size, val_data, dataType), "Error: x is nullptr");
     verify_hipsparse_status_invalid_size(hipsparseCreateConstDnVec(&x, -1, val_data, dataType),
                                          "Error: size is < 0");
     verify_hipsparse_status_invalid_pointer(hipsparseCreateConstDnVec(&x, size, nullptr, dataType),
@@ -69,13 +69,14 @@ void testing_const_dnvec_descr_bad_arg(void)
 #endif
 
     // Create valid descriptor
-    verify_hipsparse_status_success(hipsparseCreateConstDnVec(&x, size, val_data, dataType), "Success");
+    verify_hipsparse_status_success(hipsparseCreateConstDnVec(&x, size, val_data, dataType),
+                                    "Success");
 
     // hipsparseConstDnVecGet
     const void* data;
 
-    verify_hipsparse_status_invalid_pointer(hipsparseConstDnVecGet(nullptr, &size, &data, &dataType),
-                                            "Error: x is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseConstDnVecGet(nullptr, &size, &data, &dataType), "Error: x is nullptr");
     verify_hipsparse_status_invalid_pointer(hipsparseConstDnVecGet(x, nullptr, &data, &dataType),
                                             "Error: size is nullptr");
     verify_hipsparse_status_invalid_pointer(hipsparseConstDnVecGet(x, &size, nullptr, &dataType),
