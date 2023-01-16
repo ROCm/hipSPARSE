@@ -9264,7 +9264,8 @@ hipsparseStatus_t hipsparseSpVecGetValues(const hipsparseSpVecDescr_t spVecDescr
 */
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseConstSpVecGetValues(hipsparseConstSpVecDescr_t spVecDescr, const void** values);
+hipsparseStatus_t hipsparseConstSpVecGetValues(hipsparseConstSpVecDescr_t spVecDescr,
+                                               const void**               values);
 #endif
 
 /*! \ingroup generic_module
@@ -9722,7 +9723,8 @@ hipsparseStatus_t hipsparseSpMatSetValues(hipsparseSpMatDescr_t spMatDescr, void
 */
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseSpMatGetStridedBatch(hipsparseConstSpMatDescr_t spMatDescr, int* batchCount);
+hipsparseStatus_t hipsparseSpMatGetStridedBatch(hipsparseConstSpMatDescr_t spMatDescr,
+                                                int*                       batchCount);
 #elif(CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpMatGetStridedBatch(hipsparseSpMatDescr_t spMatDescr, int* batchCount);
@@ -9877,7 +9879,7 @@ hipsparseStatus_t hipsparseDnVecGetValues(const hipsparseDnVecDescr_t dnVecDescr
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseConstDnVecGetValues(hipsparseConstDnVecDescr_t dnVecDescr,
-                                               const void** values);
+                                               const void**               values);
 #endif
 
 /*! \ingroup generic_module
@@ -9962,12 +9964,12 @@ hipsparseStatus_t hipsparseDnMatGet(const hipsparseDnMatDescr_t dnMatDescr,
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseConstDnMatGet(hipsparseConstDnMatDescr_t dnMatDescr,
-                                         int64_t*                    rows,
-                                         int64_t*                    cols,
-                                         int64_t*                    ld,
-                                         const void**                values,
-                                         hipDataType*                valueType,
-                                         hipsparseOrder_t*           order);
+                                         int64_t*                   rows,
+                                         int64_t*                   cols,
+                                         int64_t*                   ld,
+                                         const void**               values,
+                                         hipDataType*               valueType,
+                                         hipsparseOrder_t*          order);
 #endif
 
 /*! \ingroup generic_module

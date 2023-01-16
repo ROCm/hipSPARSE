@@ -44,7 +44,8 @@ void testing_dnmat_descr_bad_arg(void)
     hipDataType dataType = HIP_R_32F;
 
     // Allocate memory on device
-    auto val_data_managed = hipsparse_unique_ptr{device_malloc(sizeof(float) * rows * cols), device_free};
+    auto val_data_managed
+        = hipsparse_unique_ptr{device_malloc(sizeof(float) * rows * cols), device_free};
 
     float* val_data = (float*)val_data_managed.get();
 
@@ -57,16 +58,18 @@ void testing_dnmat_descr_bad_arg(void)
     hipsparseDnMatDescr_t x;
 
     // hipsparseCreateDnMat
-    verify_hipsparse_status_invalid_pointer(hipsparseCreateDnMat(nullptr, rows, cols, ld, val_data, dataType, order),
-                                            "Error: x is nullptr");
-    verify_hipsparse_status_invalid_size(hipsparseCreateDnMat(&x, -1, cols, ld, val_data, dataType, order),
-                                         "Error: rows is < 0");
-    verify_hipsparse_status_invalid_size(hipsparseCreateDnMat(&x, rows, -1, ld, val_data, dataType, order),
-                                         "Error: cols is < 0");
-    verify_hipsparse_status_invalid_size(hipsparseCreateDnMat(&x, rows, cols, -1, val_data, dataType, order),
-                                         "Error: ld is < 0");
-    verify_hipsparse_status_invalid_pointer(hipsparseCreateDnMat(&x, rows, cols, ld, nullptr, dataType, order),
-                                            "Error: val_data is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseCreateDnMat(nullptr, rows, cols, ld, val_data, dataType, order),
+        "Error: x is nullptr");
+    verify_hipsparse_status_invalid_size(
+        hipsparseCreateDnMat(&x, -1, cols, ld, val_data, dataType, order), "Error: rows is < 0");
+    verify_hipsparse_status_invalid_size(
+        hipsparseCreateDnMat(&x, rows, -1, ld, val_data, dataType, order), "Error: cols is < 0");
+    verify_hipsparse_status_invalid_size(
+        hipsparseCreateDnMat(&x, rows, cols, -1, val_data, dataType, order), "Error: ld is < 0");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseCreateDnMat(&x, rows, cols, ld, nullptr, dataType, order),
+        "Error: val_data is nullptr");
 
     // hipsparseDestroyDnVec
 #if(!defined(CUDART_VERSION))
@@ -76,26 +79,33 @@ void testing_dnmat_descr_bad_arg(void)
 #endif
 
     // Create valid descriptor
-    verify_hipsparse_status_success(hipsparseCreateDnMat(&x, rows, cols, ld, val_data, dataType, order), "Success");
+    verify_hipsparse_status_success(
+        hipsparseCreateDnMat(&x, rows, cols, ld, val_data, dataType, order), "Success");
 
     // hipsparseDnMatGet
     void* data;
 
-    verify_hipsparse_status_invalid_pointer(hipsparseDnMatGet(nullptr, &rows, &cols, &ld, &data, &dataType, &order),
-                                            "Error: x is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseDnMatGet(x, nullptr, &cols, &ld, &data, &dataType, &order),
-                                            "Error: rows is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseDnMatGet(x, &rows, nullptr, &ld, &data, &dataType, &order),
-                                            "Error: cols is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseDnMatGet(x, &rows, &cols, nullptr, &data, &dataType, &order),
-                                            "Error: ld is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseDnMatGet(x, &rows, &cols, &ld, nullptr, &dataType, &order),
-                                            "Error: data is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseDnMatGet(x, &rows, &cols, &ld, &data, nullptr, &order),
-                                            "Error: dataType is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseDnMatGet(x, &rows, &cols, &ld, &data, &dataType, nullptr),
-                                            "Error: order is nullptr");
-
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseDnMatGet(nullptr, &rows, &cols, &ld, &data, &dataType, &order),
+        "Error: x is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseDnMatGet(x, nullptr, &cols, &ld, &data, &dataType, &order),
+        "Error: rows is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseDnMatGet(x, &rows, nullptr, &ld, &data, &dataType, &order),
+        "Error: cols is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseDnMatGet(x, &rows, &cols, nullptr, &data, &dataType, &order),
+        "Error: ld is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseDnMatGet(x, &rows, &cols, &ld, nullptr, &dataType, &order),
+        "Error: data is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseDnMatGet(x, &rows, &cols, &ld, &data, nullptr, &order),
+        "Error: dataType is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseDnMatGet(x, &rows, &cols, &ld, &data, &dataType, nullptr),
+        "Error: order is nullptr");
 
     // hipsparseDnMatGetValues
     verify_hipsparse_status_invalid_pointer(hipsparseDnMatGetValues(nullptr, &data),
@@ -113,18 +123,18 @@ void testing_dnmat_descr_bad_arg(void)
     int64_t batch_stride = 100;
 
     // hipsparseDnMatSetStridedBatch
-    verify_hipsparse_status_invalid_pointer(hipsparseDnMatSetStridedBatch(nullptr, batch_count, batch_stride),
-                                            "Error: x is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseDnMatSetStridedBatch(nullptr, batch_count, batch_stride), "Error: x is nullptr");
     verify_hipsparse_status_invalid_pointer(hipsparseDnMatSetStridedBatch(x, -1, batch_stride),
                                             "Error: batch_count < 0");
     verify_hipsparse_status_invalid_pointer(hipsparseDnMatSetStridedBatch(x, batch_count, -1),
                                             "Error: batch_stride < 0");
 
     // hipsparseDnMatGetStridedBatch
-    verify_hipsparse_status_invalid_pointer(hipsparseDnMatGetStridedBatch(nullptr, &batch_count, &batch_stride),
-                                            "Error: x is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseDnMatGetStridedBatch(x, nullptr, &batch_stride),
-                                            "Error: batch_count is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseDnMatGetStridedBatch(nullptr, &batch_count, &batch_stride), "Error: x is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseDnMatGetStridedBatch(x, nullptr, &batch_stride), "Error: batch_count is nullptr");
     verify_hipsparse_status_invalid_pointer(hipsparseDnMatGetStridedBatch(x, &batch_count, nullptr),
                                             "Error: batch_stride is nullptr");
 
