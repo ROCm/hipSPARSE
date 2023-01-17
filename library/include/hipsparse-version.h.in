@@ -25,9 +25,8 @@
  * \brief hipsparse-version.h provides the configured version and settings
  */
 
-#pragma once
-#ifndef _HIPSPARSE_VERSION_H_
-#define _HIPSPARSE_VERSION_H_
+#ifndef HIPSPARSE_VERSION_H
+#define HIPSPARSE_VERSION_H
 
 // clang-format off
 #define hipsparseVersionMajor    @hipsparse_VERSION_MAJOR@
@@ -36,4 +35,4 @@
 #define hipsparseVersionTweak    @hipsparse_VERSION_TWEAK@
 // clang-format on
 
-#endif // _HIPSPARSE_VERSION_H_
+#endif /* HIPSPARSE_VERSION_H */

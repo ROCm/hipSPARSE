@@ -1,5 +1,5 @@
 /* ************************************************************************
-* Copyright (C) 2018-2022 Advanced Micro Devices, Inc. All rights Reserved.
+* Copyright (C) 2018-2023 Advanced Micro Devices, Inc. All rights Reserved.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -35,9 +35,8 @@
 // This is the master include file for hipSPARSE, wrapping around rocSPARSE and
 // cuSPARSE "version 2".
 
-#pragma once
-#ifndef _HIPSPARSE_H_
-#define _HIPSPARSE_H_
+#ifndef HIPSPARSE_H
+#define HIPSPARSE_H
 
 #include "hipsparse-export.h"
 #include "hipsparse-version.h"
@@ -458,7 +457,7 @@ hipsparseStatus_t hipsparseGetStream(hipsparseHandle_t handle, hipStream_t* stre
  *  \p hipsparseSetPointerMode specifies the pointer mode to be used by the hipSPARSE
  *  library context and all subsequent function calls. By default, all values are passed
  *  by reference on the host. Valid pointer modes are \ref HIPSPARSE_POINTER_MODE_HOST
- *  or \p HIPSPARSE_POINTER_MODE_DEVICE.
+ *  or \ref HIPSPARSE_POINTER_MODE_DEVICE.
  */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSetPointerMode(hipsparseHandle_t handle, hipsparsePointerMode_t mode);
@@ -10823,4 +10822,4 @@ hipsparseStatus_t hipsparseSpSM_solve(hipsparseHandle_t           handle,
 }
 #endif
 
-#endif // _HIPSPARSE_H_
+#endif // HIPSPARSE_H
