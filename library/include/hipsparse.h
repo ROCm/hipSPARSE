@@ -10757,17 +10757,17 @@ hipsparseStatus_t hipsparseSpGEMMreuse_copy(hipsparseHandle_t      handle,
 */
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseSDDMM_bufferSize(hipsparseHandle_t           handle,
-                                            hipsparseOperation_t        opA,
-                                            hipsparseOperation_t        opB,
-                                            const void*                 alpha,
-                                            hipsparseConstDnMatDescr_t  A,
-                                            hipsparseConstDnMatDescr_t  B,
-                                            const void*                 beta,
-                                            hipsparseSpMatDescr_t       C,
-                                            hipDataType                 computeType,
-                                            hipsparseSDDMMAlg_t         alg,
-                                            size_t*                     bufferSize);
+hipsparseStatus_t hipsparseSDDMM_bufferSize(hipsparseHandle_t          handle,
+                                            hipsparseOperation_t       opA,
+                                            hipsparseOperation_t       opB,
+                                            const void*                alpha,
+                                            hipsparseConstDnMatDescr_t A,
+                                            hipsparseConstDnMatDescr_t B,
+                                            const void*                beta,
+                                            hipsparseSpMatDescr_t      C,
+                                            hipDataType                computeType,
+                                            hipsparseSDDMMAlg_t        alg,
+                                            size_t*                    bufferSize);
 #elif(CUDART_VERSION >= 11022)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSDDMM_bufferSize(hipsparseHandle_t           handle,
@@ -10792,17 +10792,17 @@ hipsparseStatus_t hipsparseSDDMM_bufferSize(hipsparseHandle_t           handle,
 */
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseSDDMM_preprocess(hipsparseHandle_t           handle,
-                                            hipsparseOperation_t        opA,
-                                            hipsparseOperation_t        opB,
-                                            const void*                 alpha,
-                                            hipsparseConstDnMatDescr_t  A,
-                                            hipsparseConstDnMatDescr_t  B,
-                                            const void*                 beta,
-                                            hipsparseSpMatDescr_t       C,
-                                            hipDataType                 computeType,
-                                            hipsparseSDDMMAlg_t         alg,
-                                            void*                       tempBuffer);
+hipsparseStatus_t hipsparseSDDMM_preprocess(hipsparseHandle_t          handle,
+                                            hipsparseOperation_t       opA,
+                                            hipsparseOperation_t       opB,
+                                            const void*                alpha,
+                                            hipsparseConstDnMatDescr_t A,
+                                            hipsparseConstDnMatDescr_t B,
+                                            const void*                beta,
+                                            hipsparseSpMatDescr_t      C,
+                                            hipDataType                computeType,
+                                            hipsparseSDDMMAlg_t        alg,
+                                            void*                      tempBuffer);
 #elif(CUDART_VERSION >= 11022)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSDDMM_preprocess(hipsparseHandle_t           handle,
@@ -10858,17 +10858,17 @@ hipsparseStatus_t hipsparseSDDMM_preprocess(hipsparseHandle_t           handle,
 */
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseSDDMM(hipsparseHandle_t           handle,
-                                 hipsparseOperation_t        opA,
-                                 hipsparseOperation_t        opB,
-                                 const void*                 alpha,
-                                 hipsparseConstDnMatDescr_t  A,
-                                 hipsparseConstDnMatDescr_t  B,
-                                 const void*                 beta,
-                                 hipsparseSpMatDescr_t       C,
-                                 hipDataType                 computeType,
-                                 hipsparseSDDMMAlg_t         alg,
-                                 void*                       tempBuffer);
+hipsparseStatus_t hipsparseSDDMM(hipsparseHandle_t          handle,
+                                 hipsparseOperation_t       opA,
+                                 hipsparseOperation_t       opB,
+                                 const void*                alpha,
+                                 hipsparseConstDnMatDescr_t A,
+                                 hipsparseConstDnMatDescr_t B,
+                                 const void*                beta,
+                                 hipsparseSpMatDescr_t      C,
+                                 hipDataType                computeType,
+                                 hipsparseSDDMMAlg_t        alg,
+                                 void*                      tempBuffer);
 #elif(CUDART_VERSION >= 11022)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSDDMM(hipsparseHandle_t           handle,
