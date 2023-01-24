@@ -11859,11 +11859,11 @@ hipsparseStatus_t hipsparseDnMatSetStridedBatch(hipsparseDnMatDescr_t dnMatDescr
 #endif
 
 #if(CUDART_VERSION >= 12000)
-hipsparseStatus_t hipsparseAxpby(hipsparseHandle_t handle,
-                                 const void* alpha,
+hipsparseStatus_t hipsparseAxpby(hipsparseHandle_t          handle,
+                                 const void*                alpha,
                                  hipsparseConstSpVecDescr_t vecX,
-                                 const void* beta,
-                                 hipsparseDnVecDescr_t vecY)
+                                 const void*                beta,
+                                 hipsparseDnVecDescr_t      vecY)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseAxpby((cusparseHandle_t)handle,
                                                       alpha,
