@@ -14551,17 +14551,17 @@ hipsparseStatus_t hipsparseSpGEMMreuse_copy(hipsparseHandle_t          handle,
     return HIPSPARSE_STATUS_SUCCESS;
 }
 
-hipsparseStatus_t hipsparseSDDMM(hipsparseHandle_t           handle,
-                                 hipsparseOperation_t        opA,
-                                 hipsparseOperation_t        opB,
-                                 const void*                 alpha,
-                                 hipsparseConstDnMatDescr_t  matA,
-                                 hipsparseConstDnMatDescr_t  matB,
-                                 const void*                 beta,
-                                 hipsparseSpMatDescr_t       matC,
-                                 hipDataType                 computeType,
-                                 hipsparseSDDMMAlg_t         alg,
-                                 void*                       tempBuffer)
+hipsparseStatus_t hipsparseSDDMM(hipsparseHandle_t          handle,
+                                 hipsparseOperation_t       opA,
+                                 hipsparseOperation_t       opB,
+                                 const void*                alpha,
+                                 hipsparseConstDnMatDescr_t matA,
+                                 hipsparseConstDnMatDescr_t matB,
+                                 const void*                beta,
+                                 hipsparseSpMatDescr_t      matC,
+                                 hipDataType                computeType,
+                                 hipsparseSDDMMAlg_t        alg,
+                                 void*                      tempBuffer)
 {
     return rocSPARSEStatusToHIPStatus(rocsparse_sddmm((rocsparse_handle)handle,
                                                       hipOperationToHCCOperation(opA),
@@ -14576,17 +14576,17 @@ hipsparseStatus_t hipsparseSDDMM(hipsparseHandle_t           handle,
                                                       tempBuffer));
 }
 
-hipsparseStatus_t hipsparseSDDMM_bufferSize(hipsparseHandle_t           handle,
-                                            hipsparseOperation_t        opA,
-                                            hipsparseOperation_t        opB,
-                                            const void*                 alpha,
-                                            hipsparseConstDnMatDescr_t  matA,
-                                            hipsparseConstDnMatDescr_t  matB,
-                                            const void*                 beta,
-                                            hipsparseSpMatDescr_t       matC,
-                                            hipDataType                 computeType,
-                                            hipsparseSDDMMAlg_t         alg,
-                                            size_t*                     bufferSize)
+hipsparseStatus_t hipsparseSDDMM_bufferSize(hipsparseHandle_t          handle,
+                                            hipsparseOperation_t       opA,
+                                            hipsparseOperation_t       opB,
+                                            const void*                alpha,
+                                            hipsparseConstDnMatDescr_t matA,
+                                            hipsparseConstDnMatDescr_t matB,
+                                            const void*                beta,
+                                            hipsparseSpMatDescr_t      matC,
+                                            hipDataType                computeType,
+                                            hipsparseSDDMMAlg_t        alg,
+                                            size_t*                    bufferSize)
 {
     return rocSPARSEStatusToHIPStatus(
         rocsparse_sddmm_buffer_size((rocsparse_handle)handle,
@@ -14602,17 +14602,17 @@ hipsparseStatus_t hipsparseSDDMM_bufferSize(hipsparseHandle_t           handle,
                                     bufferSize));
 }
 
-hipsparseStatus_t hipsparseSDDMM_preprocess(hipsparseHandle_t           handle,
-                                            hipsparseOperation_t        opA,
-                                            hipsparseOperation_t        opB,
-                                            const void*                 alpha,
-                                            hipsparseConstDnMatDescr_t  matA,
-                                            hipsparseConstDnMatDescr_t  matB,
-                                            const void*                 beta,
-                                            hipsparseSpMatDescr_t       matC,
-                                            hipDataType                 computeType,
-                                            hipsparseSDDMMAlg_t         alg,
-                                            void*                       tempBuffer)
+hipsparseStatus_t hipsparseSDDMM_preprocess(hipsparseHandle_t          handle,
+                                            hipsparseOperation_t       opA,
+                                            hipsparseOperation_t       opB,
+                                            const void*                alpha,
+                                            hipsparseConstDnMatDescr_t matA,
+                                            hipsparseConstDnMatDescr_t matB,
+                                            const void*                beta,
+                                            hipsparseSpMatDescr_t      matC,
+                                            hipDataType                computeType,
+                                            hipsparseSDDMMAlg_t        alg,
+                                            void*                      tempBuffer)
 {
     return rocSPARSEStatusToHIPStatus(
         rocsparse_sddmm_preprocess((rocsparse_handle)handle,
