@@ -372,14 +372,14 @@ hipsparseStatus_t testing_bsr2csr(Arguments argus)
                                    dcsr_row_ptr,
                                    dcsr_col_ind);
 
-        if(mb < 0 || nb < 0 || block_dim < 0)
+        if(mb < 0 || nb < 0 || block_dim <= 0)
         {
             verify_hipsparse_status_invalid_size(status,
-                                                 "Error: mb < 0 || nb < 0 || block_dim < 0");
+                                                 "Error: mb < 0 || nb < 0 || block_dim <= 0");
         }
         else
         {
-            verify_hipsparse_status_success(status, "mb >= 0 && nb >= 0 && block_dim >= 0");
+            verify_hipsparse_status_success(status, "mb >= 0 && nb >= 0 && block_dim > 0");
         }
 
         return HIPSPARSE_STATUS_SUCCESS;

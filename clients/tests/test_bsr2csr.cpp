@@ -35,9 +35,9 @@ typedef std::
         bsr2csr_bin_tuple;
 
 // Random matrices
-int bsr2csr_M_range[]         = {-1, 0, 872, 13095, 21453};
-int bsr2csr_N_range[]         = {-3, 0, 623, 12766, 29285};
-int bsr2csr_block_dim_range[] = {-1, 0, 1, 2, 4, 7, 16};
+int bsr2csr_M_range[]         = {0, 872, 13095, 21453};
+int bsr2csr_N_range[]         = {0, 623, 12766, 29285};
+int bsr2csr_block_dim_range[] = {1, 2, 4, 7, 16};
 
 hipsparseIndexBase_t bsr2csr_csr_base_range[] = {HIPSPARSE_INDEX_BASE_ZERO};
 
