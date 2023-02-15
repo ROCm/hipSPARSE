@@ -10604,7 +10604,7 @@ cusparseSpMMAlg_t hipSpMMAlgToCudaSpMMAlg(hipsparseSpMMAlg_t alg)
 }
 #endif
 
-#if(CUDART_VERSION >= 11031)
+#if(CUDART_VERSION >= 12000)
 cusparseSpGEMMAlg_t hipSpGEMMAlgToCudaSpGEMMAlg(hipsparseSpGEMMAlg_t alg)
 {
     switch(alg)
@@ -10614,7 +10614,28 @@ cusparseSpGEMMAlg_t hipSpGEMMAlgToCudaSpGEMMAlg(hipsparseSpGEMMAlg_t alg)
     case HIPSPARSE_SPGEMM_CSR_ALG_NONDETERMINISTIC:
         return CUSPARSE_SPGEMM_CSR_ALG_NONDETERMINITIC;
     case HIPSPARSE_SPGEMM_CSR_ALG_DETERMINISTIC:
+        return CUSPARSE_SPGEMM_CSR_ALG_DETERMINITIC;
+    case HIPSPARSE_SPGEMM_ALG1:
+        return CUSPARSE_SPGEMM_ALG1;
+    case HIPSPARSE_SPGEMM_ALG2:
+        return CUSPARSE_SPGEMM_ALG2;
+    case HIPSPARSE_SPGEMM_ALG3:
+        return CUSPARSE_SPGEMM_ALG3;
+    default:
+        throw "Non existant cusparseSpGEMMAlg_t";
+    }
+}
+#elif(CUDART_VERSION >= 11031)
+cusparseSpGEMMAlg_t hipSpGEMMAlgToCudaSpGEMMAlg(hipsparseSpGEMMAlg_t alg)
+{
+    switch(alg)
+    {
+    case HIPSPARSE_SPGEMM_DEFAULT:
+        return CUSPARSE_SPGEMM_DEFAULT;
+    case HIPSPARSE_SPGEMM_CSR_ALG_NONDETERMINISTIC:
         return CUSPARSE_SPGEMM_CSR_ALG_NONDETERMINITIC;
+    case HIPSPARSE_SPGEMM_CSR_ALG_DETERMINISTIC:
+        return CUSPARSE_SPGEMM_CSR_ALG_DETERMINITIC;
     default:
         throw "Non existant cusparseSpGEMMAlg_t";
     }
