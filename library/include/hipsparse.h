@@ -9125,18 +9125,40 @@ typedef enum
  *  This is a list of the \ref hipsparseSpGEMMAlg_t types that are used by the hipSPARSE
  *  library.
  */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
+#if(!defined(CUDART_VERSION))
 typedef enum
 {
     HIPSPARSE_SPGEMM_DEFAULT                  = 0,
     HIPSPARSE_SPGEMM_CSR_ALG_DETERMINISTIC    = 1,
-    HIPSPARSE_SPGEMM_CSR_ALG_NONDETERMINISTIC = 2
+    HIPSPARSE_SPGEMM_CSR_ALG_NONDETERMINISTIC = 2,
+    HIPSPARSE_SPGEMM_ALG1                     = 3,
+    HIPSPARSE_SPGEMM_ALG2                     = 4,
+    HIPSPARSE_SPGEMM_ALG3                     = 5
 } hipsparseSpGEMMAlg_t;
-#elif(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
+#else
+#if(CUDART_VERSION >= 12000)
+typedef enum
+{
+    HIPSPARSE_SPGEMM_DEFAULT                  = 0,
+    HIPSPARSE_SPGEMM_CSR_ALG_DETERMINISTIC    = 1,
+    HIPSPARSE_SPGEMM_CSR_ALG_NONDETERMINISTIC = 2,
+    HIPSPARSE_SPGEMM_ALG1                     = 3,
+    HIPSPARSE_SPGEMM_ALG2                     = 4,
+    HIPSPARSE_SPGEMM_ALG3                     = 5
+} hipsparseSpGEMMAlg_t;
+#elif(CUDART_VERSION >= 11031 && CUDART_VERSION < 12000)
+typedef enum
+{
+    HIPSPARSE_SPGEMM_DEFAULT                  = 0,
+    HIPSPARSE_SPGEMM_CSR_ALG_DETERMINISTIC    = 1,
+    HIPSPARSE_SPGEMM_CSR_ALG_NONDETERMINISTIC = 2,
+} hipsparseSpGEMMAlg_t;
+#elif(CUDART_VERSION >= 11000)
 typedef enum
 {
     HIPSPARSE_SPGEMM_DEFAULT = 0
 } hipsparseSpGEMMAlg_t;
+#endif
 #endif
 
 /* Sparse vector API */

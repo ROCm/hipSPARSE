@@ -492,13 +492,13 @@ hipsparseStatus_t testing_csr2bsr(Arguments argus)
                                       dbsr_row_ptr,
                                       &bsr_nnzb);
 
-        if(m < 0 || n < 0 || block_dim < 0)
+        if(m < 0 || n < 0 || block_dim <= 0)
         {
-            verify_hipsparse_status_invalid_size(status, "Error: m < 0 || n < 0 || block_dim < 0");
+            verify_hipsparse_status_invalid_size(status, "Error: m < 0 || n < 0 || block_dim <= 0");
         }
         else
         {
-            verify_hipsparse_status_success(status, "m >= 0 && n >= 0 && block_dim >= 0");
+            verify_hipsparse_status_success(status, "m >= 0 && n >= 0 && block_dim > 0");
         }
 
         status = hipsparseXcsr2bsr(handle,
@@ -515,13 +515,13 @@ hipsparseStatus_t testing_csr2bsr(Arguments argus)
                                    dbsr_row_ptr,
                                    dbsr_col_ind);
 
-        if(m < 0 || n < 0 || block_dim < 0)
+        if(m < 0 || n < 0 || block_dim <= 0)
         {
-            verify_hipsparse_status_invalid_size(status, "Error: m < 0 || n < 0 || block_dim < 0");
+            verify_hipsparse_status_invalid_size(status, "Error: m < 0 || n < 0 || block_dim <= 0");
         }
         else
         {
-            verify_hipsparse_status_success(status, "m >= 0 && n >= 0 && block_dim >= 0");
+            verify_hipsparse_status_success(status, "m >= 0 && n >= 0 && block_dim > 0");
         }
 
         return HIPSPARSE_STATUS_SUCCESS;

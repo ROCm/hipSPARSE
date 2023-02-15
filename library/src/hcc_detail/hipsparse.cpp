@@ -549,10 +549,11 @@ rocsparse_spgemm_alg_ hipSpGEMMAlgToHCCSpGEMMAlg(hipsparseSpGEMMAlg_t alg)
     switch(alg)
     {
     case HIPSPARSE_SPGEMM_DEFAULT:
-        return rocsparse_spgemm_alg_default;
     case HIPSPARSE_SPGEMM_CSR_ALG_NONDETERMINISTIC:
-        return rocsparse_spgemm_alg_default;
     case HIPSPARSE_SPGEMM_CSR_ALG_DETERMINISTIC:
+    case HIPSPARSE_SPGEMM_ALG1:
+    case HIPSPARSE_SPGEMM_ALG2:
+    case HIPSPARSE_SPGEMM_ALG3:
         return rocsparse_spgemm_alg_default;
     default:
         throw "Non existent hipSpGEMMAlg_t";
