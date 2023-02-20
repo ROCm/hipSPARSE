@@ -536,7 +536,7 @@ hipsparseStatus_t testing_csr2gebsr(Arguments argus)
                                                 col_block_dim,
                                                 &buffer_size);
 
-        if(m < 0 || n < 0 || row_block_dim < 0 || col_block_dim < 0)
+        if(m < 0 || n < 0 || row_block_dim <= 0 || col_block_dim <= 0)
         {
             verify_hipsparse_status_invalid_size(
                 status, "Error: m < 0 || n < 0 || row_block_dim < 0 || col_block_dim < 0");
@@ -562,7 +562,7 @@ hipsparseStatus_t testing_csr2gebsr(Arguments argus)
                                         &bsr_nnzb,
                                         dbuffer);
 
-        if(m < 0 || n < 0 || row_block_dim < 0 || col_block_dim < 0)
+        if(m < 0 || n < 0 || row_block_dim <= 0 || col_block_dim <= 0)
         {
             verify_hipsparse_status_invalid_size(
                 status, "Error: m < 0 || n < 0 || row_block_dim < 0 || col_block_dim < 0");
@@ -589,7 +589,7 @@ hipsparseStatus_t testing_csr2gebsr(Arguments argus)
                                      col_block_dim,
                                      dbuffer);
 
-        if(m < 0 || n < 0 || row_block_dim < 0 || col_block_dim < 0)
+        if(m < 0 || n < 0 || row_block_dim <= 0 || col_block_dim <= 0)
         {
             verify_hipsparse_status_invalid_size(
                 status, "Error: m < 0 || n < 0 || row_block_dim < 0 || col_block_dim < 0");
