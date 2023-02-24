@@ -412,7 +412,7 @@ hipsparseStatus_t testing_csr2bsr(Arguments argus)
 
     // When in testing mode, M == N == -99 indicates that we are testing with a real
     // matrix from cise.ufl.edu
-    int safe_size = 100;
+    int safe_size = std::max(100, std::max(m, n));
     if(m == -99 && n == -99 && argus.timing == 0)
     {
         binfile = argus.filename;
@@ -450,13 +450,13 @@ hipsparseStatus_t testing_csr2bsr(Arguments argus)
         return HIPSPARSE_STATUS_SUCCESS;
 #endif
         auto dcsr_row_ptr_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+            = hipsparse_unique_ptr{device_malloc(sizeof(int) * (safe_size + 1)), device_free};
         auto dcsr_col_ind_managed
             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
         auto dcsr_val_managed
             = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
         auto dbsr_row_ptr_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+            = hipsparse_unique_ptr{device_malloc(sizeof(int) * (safe_size + 1)), device_free};
         auto dbsr_col_ind_managed
             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
         auto dbsr_val_managed
@@ -468,6 +468,9 @@ hipsparseStatus_t testing_csr2bsr(Arguments argus)
         int* dbsr_row_ptr = (int*)dbsr_row_ptr_managed.get();
         int* dbsr_col_ind = (int*)dbsr_col_ind_managed.get();
         T*   dbsr_val     = (T*)dbsr_val_managed.get();
+
+        // row pointer need to be valid
+        CHECK_HIP_ERROR(hipMemset(dcsr_row_ptr, 0, sizeof(int) * (safe_size + 1)));
 
         if(!dcsr_row_ptr || !dcsr_col_ind || !dcsr_val || !dbsr_row_ptr || !dbsr_col_ind
            || !dbsr_val)

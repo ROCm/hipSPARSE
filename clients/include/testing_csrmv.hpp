@@ -154,9 +154,9 @@ void testing_csrmv_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_csrmv(Arguments argus)
 {
-    int                  safe_size = 100;
     int                  nrow      = argus.M;
     int                  ncol      = argus.N;
+    int                  safe_size = std::max(100, std::max(nrow, ncol));
     T                    h_alpha   = make_DataType<T>(argus.alpha);
     T                    h_beta    = make_DataType<T>(argus.beta);
     hipsparseOperation_t transA    = argus.transA;
@@ -203,7 +203,7 @@ hipsparseStatus_t testing_csrmv(Arguments argus)
         return HIPSPARSE_STATUS_SUCCESS;
 #endif
         auto dptr_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+            = hipsparse_unique_ptr{device_malloc(sizeof(int) * (safe_size + 1)), device_free};
         auto dcol_managed
             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
         auto dval_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
@@ -215,6 +215,9 @@ hipsparseStatus_t testing_csrmv(Arguments argus)
         T*   dval = (T*)dval_managed.get();
         T*   dx   = (T*)dx_managed.get();
         T*   dy   = (T*)dy_managed.get();
+
+        // row pointer should be valid
+        CHECK_HIP_ERROR(hipMemset(dptr, 0, sizeof(int) * (safe_size + 1)));
 
         if(!dval || !dptr || !dcol || !dx || !dy)
         {
