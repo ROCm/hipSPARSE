@@ -151,7 +151,12 @@ void testing_spsv_coo_bad_arg(void)
     verify_hipsparse_status_invalid_pointer(
         hipsparseSpSV_solve(handle, transA, &alpha, A, x, nullptr, dataType, alg, descr),
         "Error: y is nullptr");
-    
+#if(!defined(CUDART_VERSION))
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseSpSV_solve(handle, transA, &alpha, A, x, y, dataType, alg, nullptr),
+        "Error: descr is nullptr");
+#endif
+
     // Destruct
     verify_hipsparse_status_success(hipsparseSpSV_destroyDescr(descr), "success");
     verify_hipsparse_status_success(hipsparseDestroySpMat(A), "success");

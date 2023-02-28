@@ -14264,11 +14264,9 @@ hipsparseStatus_t hipsparseSDDMM_preprocess(hipsparseHandle_t           handle,
                                    tempBuffer));
 }
 
-
-
 struct hipsparseSpSVDescr
 {
-    void*  externalBuffer{};
+    void* externalBuffer{};
 };
 
 hipsparseStatus_t hipsparseSpSV_createDescr(hipsparseSpSVDescr_t* descr)
@@ -14287,7 +14285,6 @@ hipsparseStatus_t hipsparseSpSV_destroyDescr(hipsparseSpSVDescr_t descr)
 
     return HIPSPARSE_STATUS_SUCCESS;
 }
-
 
 hipsparseStatus_t hipsparseSpSV_bufferSize(hipsparseHandle_t           handle,
                                            hipsparseOperation_t        opA,
@@ -14310,7 +14307,7 @@ hipsparseStatus_t hipsparseSpSV_bufferSize(hipsparseHandle_t           handle,
                                                      hipSpSVAlgToHCCSpSVAlg(alg),
                                                      rocsparse_spsv_stage_buffer_size,
                                                      bufferSize,
-                                                     nullptr));    
+                                                     nullptr));
 }
 
 hipsparseStatus_t hipsparseSpSV_analysis(hipsparseHandle_t           handle,
@@ -14324,25 +14321,24 @@ hipsparseStatus_t hipsparseSpSV_analysis(hipsparseHandle_t           handle,
                                          hipsparseSpSVDescr_t        spsvDescr,
                                          void*                       externalBuffer)
 {
-  
-  if(spsvDescr == nullptr)
+
+    if(spsvDescr == nullptr)
     {
         return HIPSPARSE_STATUS_INVALID_VALUE;
     }
-  RETURN_IF_ROCSPARSE_ERROR(rocsparse_spsv((rocsparse_handle)handle,
-					   hipOperationToHCCOperation(opA),
-					   alpha,
-					   (const rocsparse_spmat_descr)matA,
-					   (const rocsparse_dnvec_descr)x,
-					   (const rocsparse_dnvec_descr)y,
-					   hipDataTypeToHCCDataType(computeType),
-					   hipSpSVAlgToHCCSpSVAlg(alg),
-					   rocsparse_spsv_stage_preprocess,
-					   nullptr,
-					   externalBuffer));
-  spsvDescr->externalBuffer = externalBuffer;
-  return HIPSPARSE_STATUS_SUCCESS;
-  
+    RETURN_IF_ROCSPARSE_ERROR(rocsparse_spsv((rocsparse_handle)handle,
+                                             hipOperationToHCCOperation(opA),
+                                             alpha,
+                                             (const rocsparse_spmat_descr)matA,
+                                             (const rocsparse_dnvec_descr)x,
+                                             (const rocsparse_dnvec_descr)y,
+                                             hipDataTypeToHCCDataType(computeType),
+                                             hipSpSVAlgToHCCSpSVAlg(alg),
+                                             rocsparse_spsv_stage_preprocess,
+                                             nullptr,
+                                             externalBuffer));
+    spsvDescr->externalBuffer = externalBuffer;
+    return HIPSPARSE_STATUS_SUCCESS;
 }
 
 hipsparseStatus_t hipsparseSpSV_solve(hipsparseHandle_t           handle,
@@ -14355,7 +14351,7 @@ hipsparseStatus_t hipsparseSpSV_solve(hipsparseHandle_t           handle,
                                       hipsparseSpSVAlg_t          alg,
                                       hipsparseSpSVDescr_t        spsvDescr)
 {
-  if(spsvDescr == nullptr)
+    if(spsvDescr == nullptr)
     {
         return HIPSPARSE_STATUS_INVALID_VALUE;
     }
