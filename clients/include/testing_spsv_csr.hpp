@@ -300,12 +300,12 @@ hipsparseStatus_t testing_spsv_csr(void)
     // HIPSPARSE pointer mode host
     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
     CHECK_HIPSPARSE_ERROR(
-        hipsparseSpSV_solve(handle, transA, &h_alpha, A, x, y1, typeT, alg, descr, buffer));
+        hipsparseSpSV_solve(handle, transA, &h_alpha, A, x, y1, typeT, alg, descr));
 
     // HIPSPARSE pointer mode device
     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
     CHECK_HIPSPARSE_ERROR(
-        hipsparseSpSV_solve(handle, transA, d_alpha, A, x, y2, typeT, alg, descr, buffer));
+        hipsparseSpSV_solve(handle, transA, d_alpha, A, x, y2, typeT, alg, descr));
 
     // copy output from device to CPU
     CHECK_HIP_ERROR(hipMemcpy(hy_1.data(), dy_1, sizeof(T) * m, hipMemcpyDeviceToHost));
