@@ -1,6 +1,12 @@
 # Change Log for hipSPARSE
 
-## hipSPARSE 2.3.5
+## hipSPARSE 2.3.6
+### Added
+- Added SpGEMM algorithms
+### Changed
+- For hipsparseXbsr2csr and hipsparseXcsr2bsr, blockDim == 0 now returns HIPSPARSE_STATUS_INVALID_SIZE
+
+## hipSPARSE 2.3.5 for ROCm 5.5.0
 ### Improved
 - Fixed an issue, where the rocm folder was not removed on upgrade of meta packages
 - Fixed a compilation issue with cusparse backend

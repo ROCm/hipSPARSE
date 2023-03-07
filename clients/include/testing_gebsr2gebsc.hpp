@@ -479,7 +479,7 @@ hipsparseStatus_t testing_gebsr2gebsc(Arguments argus)
                                                      col_block_dim,
                                                      &buffer_size);
 
-        if(M < 0 || N < 0 || row_block_dim < 0 || col_block_dim < 0)
+        if(M < 0 || N < 0 || row_block_dim <= 0 || col_block_dim <= 0)
         {
             verify_hipsparse_status_invalid_size(
                 status, "Error: M < 0 || N < 0 || row_block_dim < 0 || col_block_dim < 0");
@@ -506,7 +506,7 @@ hipsparseStatus_t testing_gebsr2gebsc(Arguments argus)
                                           base,
                                           dbuffer);
 
-        if(M < 0 || N < 0 || row_block_dim < 0 || col_block_dim < 0)
+        if(M < 0 || N < 0 || row_block_dim <= 0 || col_block_dim <= 0)
         {
             verify_hipsparse_status_invalid_size(
                 status, "Error: M < 0 || N < 0 || row_block_dim < 0 || col_block_dim < 0");

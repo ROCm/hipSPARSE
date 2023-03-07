@@ -10457,22 +10457,18 @@ cusparseSpMVAlg_t hipSpMVAlgToCudaSpMVAlg(hipsparseSpMVAlg_t alg)
 {
     switch(alg)
     {
-    case HIPSPARSE_MV_ALG_DEFAULT:
-        return CUSPARSE_MV_ALG_DEFAULT;
+    // case HIPSPARSE_MV_ALG_DEFAULT:
     case HIPSPARSE_SPMV_ALG_DEFAULT:
         return CUSPARSE_SPMV_ALG_DEFAULT;
-    case HIPSPARSE_COOMV_ALG:
-        return CUSPARSE_COOMV_ALG;
+    // case HIPSPARSE_COOMV_ALG:
     case HIPSPARSE_SPMV_COO_ALG1:
         return CUSPARSE_SPMV_COO_ALG1;
     case HIPSPARSE_SPMV_COO_ALG2:
         return CUSPARSE_SPMV_COO_ALG2;
-    case HIPSPARSE_CSRMV_ALG1:
-        return CUSPARSE_CSRMV_ALG1;
+    // case HIPSPARSE_CSRMV_ALG1:
     case HIPSPARSE_SPMV_CSR_ALG1:
         return CUSPARSE_SPMV_CSR_ALG1;
-    case HIPSPARSE_CSRMV_ALG2:
-        return CUSPARSE_CSRMV_ALG2;
+    // case HIPSPARSE_CSRMV_ALG2:
     case HIPSPARSE_SPMV_CSR_ALG2:
         return CUSPARSE_SPMV_CSR_ALG2;
     default:
@@ -10530,26 +10526,21 @@ cusparseSpMMAlg_t hipSpMMAlgToCudaSpMMAlg(hipsparseSpMMAlg_t alg)
 {
     switch(alg)
     {
-    case HIPSPARSE_MM_ALG_DEFAULT:
-        return CUSPARSE_MM_ALG_DEFAULT;
-    case HIPSPARSE_COOMM_ALG1:
-        return CUSPARSE_COOMM_ALG1;
-    case HIPSPARSE_COOMM_ALG2:
-        return CUSPARSE_COOMM_ALG2;
-    case HIPSPARSE_COOMM_ALG3:
-        return CUSPARSE_COOMM_ALG3;
-    case HIPSPARSE_CSRMM_ALG1:
-        return CUSPARSE_CSRMM_ALG1;
+    // case HIPSPARSE_MM_ALG_DEFAULT:
     case HIPSPARSE_SPMM_ALG_DEFAULT:
         return CUSPARSE_SPMM_ALG_DEFAULT;
+    // case HIPSPARSE_COOMM_ALG1:
     case HIPSPARSE_SPMM_COO_ALG1:
         return CUSPARSE_SPMM_COO_ALG1;
+    // case HIPSPARSE_COOMM_ALG2:
     case HIPSPARSE_SPMM_COO_ALG2:
         return CUSPARSE_SPMM_COO_ALG2;
+    // case HIPSPARSE_COOMM_ALG3:
     case HIPSPARSE_SPMM_COO_ALG3:
         return CUSPARSE_SPMM_COO_ALG3;
     case HIPSPARSE_SPMM_COO_ALG4:
         return CUSPARSE_SPMM_COO_ALG4;
+    // case HIPSPARSE_CSRMM_ALG1:
     case HIPSPARSE_SPMM_CSR_ALG1:
         return CUSPARSE_SPMM_CSR_ALG1;
     case HIPSPARSE_SPMM_CSR_ALG2:
@@ -10567,26 +10558,21 @@ cusparseSpMMAlg_t hipSpMMAlgToCudaSpMMAlg(hipsparseSpMMAlg_t alg)
 {
     switch(alg)
     {
-    case HIPSPARSE_MM_ALG_DEFAULT:
-        return CUSPARSE_MM_ALG_DEFAULT;
-    case HIPSPARSE_COOMM_ALG1:
-        return CUSPARSE_COOMM_ALG1;
-    case HIPSPARSE_COOMM_ALG2:
-        return CUSPARSE_COOMM_ALG2;
-    case HIPSPARSE_COOMM_ALG3:
-        return CUSPARSE_COOMM_ALG3;
-    case HIPSPARSE_CSRMM_ALG1:
-        return CUSPARSE_CSRMM_ALG1;
+    // case HIPSPARSE_MM_ALG_DEFAULT:
     case HIPSPARSE_SPMM_ALG_DEFAULT:
         return CUSPARSE_SPMM_ALG_DEFAULT;
+    // case HIPSPARSE_COOMM_ALG1:
     case HIPSPARSE_SPMM_COO_ALG1:
         return CUSPARSE_SPMM_COO_ALG1;
+    // case HIPSPARSE_COOMM_ALG2:
     case HIPSPARSE_SPMM_COO_ALG2:
         return CUSPARSE_SPMM_COO_ALG2;
+    // case HIPSPARSE_COOMM_ALG3:
     case HIPSPARSE_SPMM_COO_ALG3:
         return CUSPARSE_SPMM_COO_ALG3;
     case HIPSPARSE_SPMM_COO_ALG4:
         return CUSPARSE_SPMM_COO_ALG4;
+    // case HIPSPARSE_CSRMM_ALG1:
     case HIPSPARSE_SPMM_CSR_ALG1:
         return CUSPARSE_SPMM_CSR_ALG1;
     case HIPSPARSE_SPMM_CSR_ALG2:
@@ -10618,7 +10604,7 @@ cusparseSpMMAlg_t hipSpMMAlgToCudaSpMMAlg(hipsparseSpMMAlg_t alg)
 }
 #endif
 
-#if(CUDART_VERSION >= 11031)
+#if(CUDART_VERSION >= 12000)
 cusparseSpGEMMAlg_t hipSpGEMMAlgToCudaSpGEMMAlg(hipsparseSpGEMMAlg_t alg)
 {
     switch(alg)
@@ -10628,7 +10614,28 @@ cusparseSpGEMMAlg_t hipSpGEMMAlgToCudaSpGEMMAlg(hipsparseSpGEMMAlg_t alg)
     case HIPSPARSE_SPGEMM_CSR_ALG_NONDETERMINISTIC:
         return CUSPARSE_SPGEMM_CSR_ALG_NONDETERMINITIC;
     case HIPSPARSE_SPGEMM_CSR_ALG_DETERMINISTIC:
+        return CUSPARSE_SPGEMM_CSR_ALG_DETERMINITIC;
+    case HIPSPARSE_SPGEMM_ALG1:
+        return CUSPARSE_SPGEMM_ALG1;
+    case HIPSPARSE_SPGEMM_ALG2:
+        return CUSPARSE_SPGEMM_ALG2;
+    case HIPSPARSE_SPGEMM_ALG3:
+        return CUSPARSE_SPGEMM_ALG3;
+    default:
+        throw "Non existant cusparseSpGEMMAlg_t";
+    }
+}
+#elif(CUDART_VERSION >= 11031)
+cusparseSpGEMMAlg_t hipSpGEMMAlgToCudaSpGEMMAlg(hipsparseSpGEMMAlg_t alg)
+{
+    switch(alg)
+    {
+    case HIPSPARSE_SPGEMM_DEFAULT:
+        return CUSPARSE_SPGEMM_DEFAULT;
+    case HIPSPARSE_SPGEMM_CSR_ALG_NONDETERMINISTIC:
         return CUSPARSE_SPGEMM_CSR_ALG_NONDETERMINITIC;
+    case HIPSPARSE_SPGEMM_CSR_ALG_DETERMINISTIC:
+        return CUSPARSE_SPGEMM_CSR_ALG_DETERMINITIC;
     default:
         throw "Non existant cusparseSpGEMMAlg_t";
     }
@@ -13158,8 +13165,7 @@ hipsparseStatus_t hipsparseSpSV_solve(hipsparseHandle_t           handle,
                                       const hipsparseDnVecDescr_t y,
                                       hipDataType                 computeType,
                                       hipsparseSpSVAlg_t          alg,
-                                      hipsparseSpSVDescr_t        spsvDescr,
-                                      void*                       externalBuffer)
+                                      hipsparseSpSVDescr_t        spsvDescr)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseSpSV_solve((cusparseHandle_t)handle,
                                                            hipOperationToCudaOperation(opA),

@@ -288,7 +288,7 @@ hipsparseStatus_t testing_bsr2csr(Arguments argus)
 
     // When in testing mode, M == N == -99 indicates that we are testing with a real
     // matrix from cise.ufl.edu
-    int safe_size = 100;
+    int safe_size = std::max(100, std::max(m, n));
     if(m == -99 && n == -99 && argus.timing == 0)
     {
         binfile = argus.filename;
@@ -330,13 +330,13 @@ hipsparseStatus_t testing_bsr2csr(Arguments argus)
     if(mb <= 0 || nb <= 0 || block_dim <= 0)
     {
         auto dbsr_row_ptr_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+            = hipsparse_unique_ptr{device_malloc(sizeof(int) * (safe_size + 1)), device_free};
         auto dbsr_col_ind_managed
             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
         auto dbsr_val_managed
             = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
         auto dcsr_row_ptr_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+            = hipsparse_unique_ptr{device_malloc(sizeof(int) * (safe_size + 1)), device_free};
         auto dcsr_col_ind_managed
             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
         auto dcsr_val_managed
@@ -348,6 +348,9 @@ hipsparseStatus_t testing_bsr2csr(Arguments argus)
         int* dcsr_row_ptr = (int*)dcsr_row_ptr_managed.get();
         int* dcsr_col_ind = (int*)dcsr_col_ind_managed.get();
         T*   dcsr_val     = (T*)dcsr_val_managed.get();
+
+        // row pointer array must be valid
+        CHECK_HIP_ERROR(hipMemset(dbsr_row_ptr, 0, sizeof(int) * (safe_size + 1)));
 
         if(!dbsr_row_ptr || !dbsr_col_ind || !dbsr_val || !dcsr_row_ptr || !dcsr_col_ind
            || !dcsr_val)
@@ -372,14 +375,14 @@ hipsparseStatus_t testing_bsr2csr(Arguments argus)
                                    dcsr_row_ptr,
                                    dcsr_col_ind);
 
-        if(mb < 0 || nb < 0 || block_dim < 0)
+        if(mb < 0 || nb < 0 || block_dim <= 0)
         {
             verify_hipsparse_status_invalid_size(status,
-                                                 "Error: mb < 0 || nb < 0 || block_dim < 0");
+                                                 "Error: mb < 0 || nb < 0 || block_dim <= 0");
         }
         else
         {
-            verify_hipsparse_status_success(status, "mb >= 0 && nb >= 0 && block_dim >= 0");
+            verify_hipsparse_status_success(status, "mb >= 0 && nb >= 0 && block_dim > 0");
         }
 
         return HIPSPARSE_STATUS_SUCCESS;
