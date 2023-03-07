@@ -11029,8 +11029,7 @@ hipsparseStatus_t hipsparseSpSV_solve(hipsparseHandle_t           handle,
                                       const hipsparseDnVecDescr_t y,
                                       hipDataType                 computeType,
                                       hipsparseSpSVAlg_t          alg,
-                                      hipsparseSpSVDescr_t        spsvDescr,
-                                      void*                       externalBuffer);
+                                      hipsparseSpSVDescr_t        spsvDescr);
 #elif(CUDART_VERSION >= 11030)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpSV_solve(hipsparseHandle_t           handle,
