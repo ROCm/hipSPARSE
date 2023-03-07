@@ -8782,6 +8782,13 @@ typedef void* hipsparseDnVecDescr_t;
 typedef void* hipsparseDnMatDescr_t;
 #endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+typedef void const* hipsparseConstSpVecDescr_t;
+typedef void const* hipsparseConstSpMatDescr_t;
+typedef void const* hipsparseConstDnVecDescr_t;
+typedef void const* hipsparseConstDnMatDescr_t;
+#endif
+
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
 struct hipsparseSpGEMMDescr;
 typedef struct hipsparseSpGEMMDescr* hipsparseSpGEMMDescr_t;
@@ -9168,7 +9175,7 @@ typedef enum
 *
 *  \details
 *  \p hipsparseCreateSpVec creates a sparse vector descriptor. It should be
-*  destroyed at the end using hipsparseDestroyMatDescr().
+*  destroyed at the end using hipsparseDestroySpVec().
 */
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
@@ -9183,13 +9190,35 @@ hipsparseStatus_t hipsparseCreateSpVec(hipsparseSpVecDescr_t* spVecDescr,
 #endif
 
 /*! \ingroup generic_module
+*  \brief Description: Create a const sparse vector.
+*
+*  \details
+*  \p hipsparseCreateConstSpVec creates a const sparse vector descriptor. It should be
+*  destroyed at the end using hipsparseDestroySpVec().
+*/
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCreateConstSpVec(hipsparseConstSpVecDescr_t* spVecDescr,
+                                            int64_t                     size,
+                                            int64_t                     nnz,
+                                            const void*                 indices,
+                                            const void*                 values,
+                                            hipsparseIndexType_t        idxType,
+                                            hipsparseIndexBase_t        idxBase,
+                                            hipDataType                 valueType);
+#endif
+
+/*! \ingroup generic_module
 *  \brief Description: Destroy a sparse vector.
 *
 *  \details
 *  \p hipsparseDestroySpVec destroys a sparse vector descriptor and releases all
 *  resources used by the descriptor.
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDestroySpVec(hipsparseConstSpVecDescr_t spVecDescr);
+#elif(CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroySpVec(hipsparseSpVecDescr_t spVecDescr);
 #endif
@@ -9213,9 +9242,31 @@ hipsparseStatus_t hipsparseSpVecGet(const hipsparseSpVecDescr_t spVecDescr,
 #endif
 
 /*! \ingroup generic_module
+*  \brief Description: Get the fields of the const sparse vector descriptor.
+*
+*  \details
+*  \p hipsparseConstSpVecGet gets the fields of the const sparse vector descriptor
+*/
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseConstSpVecGet(hipsparseConstSpVecDescr_t spVecDescr,
+                                         int64_t*                   size,
+                                         int64_t*                   nnz,
+                                         const void**               indices,
+                                         const void**               values,
+                                         hipsparseIndexType_t*      idxType,
+                                         hipsparseIndexBase_t*      idxBase,
+                                         hipDataType*               valueType);
+#endif
+
+/*! \ingroup generic_module
 *  \brief Description: Get index base of a sparse vector.
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpVecGetIndexBase(const hipsparseConstSpVecDescr_t spVecDescr,
+                                             hipsparseIndexBase_t*            idxBase);
+#elif(CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpVecGetIndexBase(const hipsparseSpVecDescr_t spVecDescr,
                                              hipsparseIndexBase_t*       idxBase);
@@ -9227,6 +9278,15 @@ hipsparseStatus_t hipsparseSpVecGetIndexBase(const hipsparseSpVecDescr_t spVecDe
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpVecGetValues(const hipsparseSpVecDescr_t spVecDescr, void** values);
+#endif
+
+/*! \ingroup generic_module
+*  \brief Description: Get pointer to a sparse vector data array.
+*/
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseConstSpVecGetValues(hipsparseConstSpVecDescr_t spVecDescr,
+                                               const void**               values);
 #endif
 
 /*! \ingroup generic_module
@@ -9257,6 +9317,26 @@ hipsparseStatus_t hipsparseCreateCoo(hipsparseSpMatDescr_t* spMatDescr,
                                      hipsparseIndexType_t   cooIdxType,
                                      hipsparseIndexBase_t   idxBase,
                                      hipDataType            valueType);
+#endif
+
+/*! \ingroup generic_module
+*  \brief Description: Create a sparse COO matrix descriptor
+*  \details
+*  \p hipsparseCreateConstCoo creates a sparse COO matrix descriptor. It should be
+*  destroyed at the end using \p hipsparseDestroySpMat.
+*/
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCreateConstCoo(hipsparseConstSpMatDescr_t* spMatDescr,
+                                          int64_t                     rows,
+                                          int64_t                     cols,
+                                          int64_t                     nnz,
+                                          const void*                 cooRowInd,
+                                          const void*                 cooColInd,
+                                          const void*                 cooValues,
+                                          hipsparseIndexType_t        cooIdxType,
+                                          hipsparseIndexBase_t        idxBase,
+                                          hipDataType                 valueType);
 #endif
 
 /*! \ingroup generic_module
@@ -9301,6 +9381,27 @@ hipsparseStatus_t hipsparseCreateCsr(hipsparseSpMatDescr_t* spMatDescr,
 #endif
 
 /*! \ingroup generic_module
+*  \brief Description: Create a sparse CSR matrix descriptor
+*  \details
+*  \p hipsparseCreateConstCsr creates a sparse CSR matrix descriptor. It should be
+*  destroyed at the end using \p hipsparseDestroySpMat.
+*/
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCreateConstCsr(hipsparseConstSpMatDescr_t* spMatDescr,
+                                          int64_t                     rows,
+                                          int64_t                     cols,
+                                          int64_t                     nnz,
+                                          const void*                 csrRowOffsets,
+                                          const void*                 csrColInd,
+                                          const void*                 csrValues,
+                                          hipsparseIndexType_t        csrRowOffsetsType,
+                                          hipsparseIndexType_t        csrColIndType,
+                                          hipsparseIndexBase_t        idxBase,
+                                          hipDataType                 valueType);
+#endif
+
+/*! \ingroup generic_module
 *  \brief Description: Create a sparse CSC matrix descriptor
 *  \details
 *  \p hipsparseCreateCsr creates a sparse CSC matrix descriptor. It should be
@@ -9319,6 +9420,27 @@ hipsparseStatus_t hipsparseCreateCsc(hipsparseSpMatDescr_t* spMatDescr,
                                      hipsparseIndexType_t   cscRowIndType,
                                      hipsparseIndexBase_t   idxBase,
                                      hipDataType            valueType);
+#endif
+
+/*! \ingroup generic_module
+*  \brief Description: Create a sparse CSC matrix descriptor
+*  \details
+*  \p hipsparseCreateConstCsc creates a sparse CSC matrix descriptor. It should be
+*  destroyed at the end using \p hipsparseDestroySpMat.
+*/
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCreateConstCsc(hipsparseConstSpMatDescr_t* spMatDescr,
+                                          int64_t                     rows,
+                                          int64_t                     cols,
+                                          int64_t                     nnz,
+                                          const void*                 cscColOffsets,
+                                          const void*                 cscRowInd,
+                                          const void*                 cscValues,
+                                          hipsparseIndexType_t        cscColOffsetsType,
+                                          hipsparseIndexType_t        cscRowIndType,
+                                          hipsparseIndexBase_t        idxBase,
+                                          hipDataType                 valueType);
 #endif
 
 /*! \ingroup generic_module
@@ -9342,12 +9464,35 @@ hipsparseStatus_t hipsparseCreateBlockedEll(hipsparseSpMatDescr_t* spMatDescr,
 #endif
 
 /*! \ingroup generic_module
+*  \brief Description: Create a sparse Blocked ELL matrix descriptor
+*  \details
+*  \p hipsparseCreateConstBlockedEll creates a sparse Blocked ELL matrix descriptor. It should be
+*  destroyed at the end using \p hipsparseDestroySpMat.
+*/
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCreateConstBlockedEll(hipsparseConstSpMatDescr_t* spMatDescr,
+                                                 int64_t                     rows,
+                                                 int64_t                     cols,
+                                                 int64_t                     ellBlockSize,
+                                                 int64_t                     ellCols,
+                                                 const void*                 ellColInd,
+                                                 const void*                 ellValue,
+                                                 hipsparseIndexType_t        ellIdxType,
+                                                 hipsparseIndexBase_t        idxBase,
+                                                 hipDataType                 valueType);
+#endif
+
+/*! \ingroup generic_module
 *  \brief Description: Destroy a sparse matrix descriptor
 *  \details
 *  \p hipsparseDestroySpMat destroys a sparse matrix descriptor and releases all
 *  resources used by the descriptor.
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDestroySpMat(hipsparseConstSpMatDescr_t spMatDescr);
+#elif(CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroySpMat(hipsparseSpMatDescr_t spMatDescr);
 #endif
@@ -9369,6 +9514,25 @@ hipsparseStatus_t hipsparseCooGet(const hipsparseSpMatDescr_t spMatDescr,
                                   hipsparseIndexType_t*       idxType,
                                   hipsparseIndexBase_t*       idxBase,
                                   hipDataType*                valueType);
+#endif
+
+/*! \ingroup generic_module
+*  \brief Description: Get pointers of a sparse COO matrix
+*  \details
+*  \p hipsparseConstCooGet gets the fields of the sparse COO matrix descriptor
+*/
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseConstCooGet(hipsparseConstSpMatDescr_t spMatDescr,
+                                       int64_t*                   rows,
+                                       int64_t*                   cols,
+                                       int64_t*                   nnz,
+                                       const void**               cooRowInd,
+                                       const void**               cooColInd,
+                                       const void**               cooValues,
+                                       hipsparseIndexType_t*      idxType,
+                                       hipsparseIndexBase_t*      idxBase,
+                                       hipDataType*               valueType);
 #endif
 
 /*! \ingroup generic_module
@@ -9411,6 +9575,26 @@ hipsparseStatus_t hipsparseCsrGet(const hipsparseSpMatDescr_t spMatDescr,
 #endif
 
 /*! \ingroup generic_module
+*  \brief Description: Get pointers of a sparse CSR matrix
+*  \details
+*  \p hipsparseConstCsrGet gets the fields of the sparse CSR matrix descriptor
+*/
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseConstCsrGet(hipsparseConstSpMatDescr_t spMatDescr,
+                                       int64_t*                   rows,
+                                       int64_t*                   cols,
+                                       int64_t*                   nnz,
+                                       const void**               csrRowOffsets,
+                                       const void**               csrColInd,
+                                       const void**               csrValues,
+                                       hipsparseIndexType_t*      csrRowOffsetsType,
+                                       hipsparseIndexType_t*      csrColIndType,
+                                       hipsparseIndexBase_t*      idxBase,
+                                       hipDataType*               valueType);
+#endif
+
+/*! \ingroup generic_module
 *  \brief Description: Get pointers of a sparse blocked ELL matrix
 *  \details
 *  \p hipsparseBlockedEllGet gets the fields of the sparse blocked ELL matrix descriptor
@@ -9427,6 +9611,25 @@ hipsparseStatus_t hipsparseBlockedEllGet(const hipsparseSpMatDescr_t spMatDescr,
                                          hipsparseIndexType_t*       ellIdxType,
                                          hipsparseIndexBase_t*       idxBase,
                                          hipDataType*                valueType);
+#endif
+
+/*! \ingroup generic_module
+*  \brief Description: Get pointers of a sparse blocked ELL matrix
+*  \details
+*  \p hipsparseConstBlockedEllGet gets the fields of the sparse blocked ELL matrix descriptor
+*/
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseConstBlockedEllGet(hipsparseConstSpMatDescr_t spMatDescr,
+                                              int64_t*                   rows,
+                                              int64_t*                   cols,
+                                              int64_t*                   ellBlockSize,
+                                              int64_t*                   ellCols,
+                                              const void**               ellColInd,
+                                              const void**               ellValue,
+                                              hipsparseIndexType_t*      ellIdxType,
+                                              hipsparseIndexBase_t*      idxBase,
+                                              hipDataType*               valueType);
 #endif
 
 /*! \ingroup generic_module
@@ -9471,7 +9674,13 @@ hipsparseStatus_t hipsparseCooSetPointers(hipsparseSpMatDescr_t spMatDescr,
 /*! \ingroup generic_module
 *  \brief Description: Get the sizes of a sparse matrix
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpMatGetSize(hipsparseConstSpMatDescr_t spMatDescr,
+                                        int64_t*                   rows,
+                                        int64_t*                   cols,
+                                        int64_t*                   nnz);
+#elif(CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpMatGetSize(hipsparseSpMatDescr_t spMatDescr,
                                         int64_t*              rows,
@@ -9482,7 +9691,11 @@ hipsparseStatus_t hipsparseSpMatGetSize(hipsparseSpMatDescr_t spMatDescr,
 /*! \ingroup generic_module
 *  \brief Description: Get the format of a sparse matrix
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpMatGetFormat(hipsparseConstSpMatDescr_t spMatDescr,
+                                          hipsparseFormat_t*         format);
+#elif(CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpMatGetFormat(const hipsparseSpMatDescr_t spMatDescr,
                                           hipsparseFormat_t*          format);
@@ -9491,7 +9704,11 @@ hipsparseStatus_t hipsparseSpMatGetFormat(const hipsparseSpMatDescr_t spMatDescr
 /*! \ingroup generic_module
 *  \brief Description: Get the index base of a sparse matrix
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpMatGetIndexBase(hipsparseConstSpMatDescr_t spMatDescr,
+                                             hipsparseIndexBase_t*      idxBase);
+#elif(CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpMatGetIndexBase(const hipsparseSpMatDescr_t spMatDescr,
                                              hipsparseIndexBase_t*       idxBase);
@@ -9506,6 +9723,15 @@ hipsparseStatus_t hipsparseSpMatGetValues(hipsparseSpMatDescr_t spMatDescr, void
 #endif
 
 /*! \ingroup generic_module
+*  \brief Description: Get the pointer of the values array of a sparse matrix
+*/
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseConstSpMatGetValues(hipsparseConstSpMatDescr_t spMatDescr,
+                                               const void**               values);
+#endif
+
+/*! \ingroup generic_module
 *  \brief Description: Set the pointer of the values array of a sparse matrix
 */
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
@@ -9516,7 +9742,11 @@ hipsparseStatus_t hipsparseSpMatSetValues(hipsparseSpMatDescr_t spMatDescr, void
 /*! \ingroup generic_module
 *  \brief Description: Get the batch count of the sparse matrix
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpMatGetStridedBatch(hipsparseConstSpMatDescr_t spMatDescr,
+                                                int*                       batchCount);
+#elif(CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpMatGetStridedBatch(hipsparseSpMatDescr_t spMatDescr, int* batchCount);
 #endif
@@ -9554,7 +9784,14 @@ hipsparseStatus_t hipsparseCsrSetStridedBatch(hipsparseSpMatDescr_t spMatDescr,
 /*! \ingroup generic_module
 *  \brief Description: Get attribute from sparse matrix descriptor
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpMatGetAttribute(hipsparseConstSpMatDescr_t spMatDescr,
+                                             hipsparseSpMatAttribute_t  attribute,
+                                             void*                      data,
+                                             size_t                     dataSize);
+#elif(CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpMatGetAttribute(hipsparseSpMatDescr_t     spMatDescr,
                                              hipsparseSpMatAttribute_t attribute,
@@ -9589,6 +9826,20 @@ hipsparseStatus_t hipsparseCreateDnVec(hipsparseDnVecDescr_t* dnVecDescr,
                                        hipDataType            valueType);
 #endif
 
+/*! \ingroup generic_module
+*  \brief Description: Create dense vector
+*  \details
+*  \p hipsparseCreateConstDnVec creates a dense vector descriptor. It should be
+*  destroyed at the end using hipsparseDestroyDnVec().
+*/
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCreateConstDnVec(hipsparseConstDnVecDescr_t* dnVecDescr,
+                                            int64_t                     size,
+                                            const void*                 values,
+                                            hipDataType                 valueType);
+#endif
+
 /* Description: Destroy dense vector */
 
 /*! \ingroup generic_module
@@ -9597,7 +9848,10 @@ hipsparseStatus_t hipsparseCreateDnVec(hipsparseDnVecDescr_t* dnVecDescr,
 *  \p hipsparseDestroyDnVec destroys a dense vector descriptor and releases all
 *  resources used by the descriptor.
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDestroyDnVec(hipsparseConstDnVecDescr_t dnVecDescr);
+#elif(CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroyDnVec(hipsparseDnVecDescr_t dnVecDescr);
 #endif
@@ -9616,6 +9870,19 @@ hipsparseStatus_t hipsparseDnVecGet(const hipsparseDnVecDescr_t dnVecDescr,
 #endif
 
 /*! \ingroup generic_module
+*  \brief Description: Get the fields from a dense vector
+*  \details
+*  \p hipsparseConstDnVecGet gets the fields of the dense vector descriptor
+*/
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseConstDnVecGet(hipsparseConstDnVecDescr_t dnVecDescr,
+                                         int64_t*                   size,
+                                         const void**               values,
+                                         hipDataType*               valueType);
+#endif
+
+/*! \ingroup generic_module
 *  \brief Description: Get value pointer from a dense vector
 *  \details
 *  \p hipsparseDnVecGetValues gets the fields of the dense vector descriptor
@@ -9623,6 +9890,17 @@ hipsparseStatus_t hipsparseDnVecGet(const hipsparseDnVecDescr_t dnVecDescr,
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDnVecGetValues(const hipsparseDnVecDescr_t dnVecDescr, void** values);
+#endif
+
+/*! \ingroup generic_module
+*  \brief Description: Get value pointer from a dense vector
+*  \details
+*  \p hipsparseConstDnVecGetValues gets the fields of the dense vector descriptor
+*/
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseConstDnVecGetValues(hipsparseConstDnVecDescr_t dnVecDescr,
+                                               const void**               values);
 #endif
 
 /*! \ingroup generic_module
@@ -9657,12 +9935,32 @@ hipsparseStatus_t hipsparseCreateDnMat(hipsparseDnMatDescr_t* dnMatDescr,
 #endif
 
 /*! \ingroup generic_module
+*  \brief Description: Create dense matrix
+*  \details
+*  \p hipsparseCreateConstDnMat creates a dense matrix descriptor. It should be
+*  destroyed at the end using hipsparseDestroyDnMat().
+*/
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCreateConstDnMat(hipsparseConstDnMatDescr_t* dnMatDescr,
+                                            int64_t                     rows,
+                                            int64_t                     cols,
+                                            int64_t                     ld,
+                                            const void*                 values,
+                                            hipDataType                 valueType,
+                                            hipsparseOrder_t            order);
+#endif
+
+/*! \ingroup generic_module
 *  \brief Description: Destroy dense matrix
 *  \details
 *  \p hipsparseDestroyDnMat destroys a dense matrix descriptor and releases all
 *  resources used by the descriptor.
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDestroyDnMat(hipsparseConstDnMatDescr_t dnMatDescr);
+#elif(CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroyDnMat(hipsparseDnMatDescr_t dnMatDescr);
 #endif
@@ -9682,11 +9980,34 @@ hipsparseStatus_t hipsparseDnMatGet(const hipsparseDnMatDescr_t dnMatDescr,
 #endif
 
 /*! \ingroup generic_module
+*  \brief Description: Get fields from a dense matrix
+*/
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseConstDnMatGet(hipsparseConstDnMatDescr_t dnMatDescr,
+                                         int64_t*                   rows,
+                                         int64_t*                   cols,
+                                         int64_t*                   ld,
+                                         const void**               values,
+                                         hipDataType*               valueType,
+                                         hipsparseOrder_t*          order);
+#endif
+
+/*! \ingroup generic_module
 *  \brief Description: Get value pointer from a dense matrix
 */
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDnMatGetValues(const hipsparseDnMatDescr_t dnMatDescr, void** values);
+#endif
+
+/*! \ingroup generic_module
+*  \brief Description: Get value pointer from a dense matrix
+*/
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseConstDnMatGetValues(hipsparseConstDnMatDescr_t dnMatDescr,
+                                               const void**               values);
 #endif
 
 /*! \ingroup generic_module
@@ -9700,7 +10021,12 @@ hipsparseStatus_t hipsparseDnMatSetValues(hipsparseDnMatDescr_t dnMatDescr, void
 /*! \ingroup generic_module
 *  \brief Description: Get the batch count and batch stride of the dense matrix
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDnMatGetStridedBatch(hipsparseConstDnMatDescr_t dnMatDescr,
+                                                int*                       batchCount,
+                                                int64_t*                   batchStride);
+#elif(CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDnMatGetStridedBatch(hipsparseDnMatDescr_t dnMatDescr,
                                                 int*                  batchCount,
@@ -9738,7 +10064,14 @@ hipsparseStatus_t hipsparseDnMatSetStridedBatch(hipsparseDnMatDescr_t dnMatDescr
 *      }
 *  \endcode
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseAxpby(hipsparseHandle_t          handle,
+                                 const void*                alpha,
+                                 hipsparseConstSpVecDescr_t vecX,
+                                 const void*                beta,
+                                 hipsparseDnVecDescr_t      vecY);
+#elif(CUDART_VERSION >= 11000)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseAxpby(hipsparseHandle_t     handle,
                                  const void*           alpha,
@@ -9761,7 +10094,12 @@ hipsparseStatus_t hipsparseAxpby(hipsparseHandle_t     handle,
 *      }
 *  \endcode
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseGather(hipsparseHandle_t          handle,
+                                  hipsparseConstDnVecDescr_t vecY,
+                                  hipsparseSpVecDescr_t      vecX);
+#elif(CUDART_VERSION >= 11000)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseGather(hipsparseHandle_t     handle,
                                   hipsparseDnVecDescr_t vecY,
@@ -9782,7 +10120,12 @@ hipsparseStatus_t hipsparseGather(hipsparseHandle_t     handle,
 *      }
 *  \endcode
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseScatter(hipsparseHandle_t          handle,
+                                   hipsparseConstSpVecDescr_t vecX,
+                                   hipsparseDnVecDescr_t      vecY);
+#elif(CUDART_VERSION >= 11000)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseScatter(hipsparseHandle_t     handle,
                                    hipsparseSpVecDescr_t vecX,
@@ -9826,7 +10169,14 @@ hipsparseStatus_t hipsparseRot(hipsparseHandle_t     handle,
 *  \p hipsparseSparseToDense_bufferSize computes the required user allocated buffer size needed when converting 
 *  a sparse matrix to a dense matrix.
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11020)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSparseToDense_bufferSize(hipsparseHandle_t           handle,
+                                                    hipsparseConstSpMatDescr_t  matA,
+                                                    hipsparseDnMatDescr_t       matB,
+                                                    hipsparseSparseToDenseAlg_t alg,
+                                                    size_t*                     bufferSize);
+#elif(CUDART_VERSION >= 11020)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSparseToDense_bufferSize(hipsparseHandle_t           handle,
                                                     hipsparseSpMatDescr_t       matA,
@@ -9842,7 +10192,14 @@ hipsparseStatus_t hipsparseSparseToDense_bufferSize(hipsparseHandle_t           
 *  \p hipsparseSparseToDense converts a sparse matrix to a dense matrix. This routine takes a user allocated buffer 
 *  whose size must first be computed by calling \p hipsparseSparseToDense_bufferSize
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11020)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSparseToDense(hipsparseHandle_t           handle,
+                                         hipsparseConstSpMatDescr_t  matA,
+                                         hipsparseDnMatDescr_t       matB,
+                                         hipsparseSparseToDenseAlg_t alg,
+                                         void*                       externalBuffer);
+#elif(CUDART_VERSION >= 11020)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSparseToDense(hipsparseHandle_t           handle,
                                          hipsparseSpMatDescr_t       matA,
@@ -9858,7 +10215,14 @@ hipsparseStatus_t hipsparseSparseToDense(hipsparseHandle_t           handle,
 *  \p hipsparseDenseToSparse_bufferSize computes the required user allocated buffer size needed when converting 
 *  a dense matrix to a sparse matrix.
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11020)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDenseToSparse_bufferSize(hipsparseHandle_t           handle,
+                                                    hipsparseConstDnMatDescr_t  matA,
+                                                    hipsparseSpMatDescr_t       matB,
+                                                    hipsparseDenseToSparseAlg_t alg,
+                                                    size_t*                     bufferSize);
+#elif(CUDART_VERSION >= 11020)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDenseToSparse_bufferSize(hipsparseHandle_t           handle,
                                                     hipsparseDnMatDescr_t       matA,
@@ -9875,7 +10239,14 @@ hipsparseStatus_t hipsparseDenseToSparse_bufferSize(hipsparseHandle_t           
 *  converting a dense matrix to sparse matrix. This routine takes a user allocated buffer whose size must first be computed 
 *  using \p hipsparseDenseToSparse_bufferSize.
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11020)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDenseToSparse_analysis(hipsparseHandle_t           handle,
+                                                  hipsparseConstDnMatDescr_t  matA,
+                                                  hipsparseSpMatDescr_t       matB,
+                                                  hipsparseDenseToSparseAlg_t alg,
+                                                  void*                       externalBuffer);
+#elif(CUDART_VERSION >= 11020)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDenseToSparse_analysis(hipsparseHandle_t           handle,
                                                   hipsparseDnMatDescr_t       matA,
@@ -9891,7 +10262,14 @@ hipsparseStatus_t hipsparseDenseToSparse_analysis(hipsparseHandle_t           ha
 *  \p hipsparseDenseToSparse_convert converts a dense matrix to a sparse matrix. This routine requires a user allocated buffer
 *  whose size must be determined by first calling \p hipsparseDenseToSparse_bufferSize.
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11020)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseDenseToSparse_convert(hipsparseHandle_t           handle,
+                                                 hipsparseConstDnMatDescr_t  matA,
+                                                 hipsparseSpMatDescr_t       matB,
+                                                 hipsparseDenseToSparseAlg_t alg,
+                                                 void*                       externalBuffer);
+#elif(CUDART_VERSION >= 11020)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDenseToSparse_convert(hipsparseHandle_t           handle,
                                                  hipsparseDnMatDescr_t       matA,
@@ -9907,7 +10285,16 @@ hipsparseStatus_t hipsparseDenseToSparse_convert(hipsparseHandle_t           han
 *  \p hipsparseSpVV_bufferSize computes the required user allocated buffer size needed when computing the 
 *  inner dot product of a sparse vector with a dense vector
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpVV_bufferSize(hipsparseHandle_t          handle,
+                                           hipsparseOperation_t       opX,
+                                           hipsparseConstSpVecDescr_t vecX,
+                                           hipsparseConstDnVecDescr_t vecY,
+                                           void*                      result,
+                                           hipDataType                computeType,
+                                           size_t*                    bufferSize);
+#elif(CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpVV_bufferSize(hipsparseHandle_t     handle,
                                            hipsparseOperation_t  opX,
@@ -9925,7 +10312,16 @@ hipsparseStatus_t hipsparseSpVV_bufferSize(hipsparseHandle_t     handle,
 *  \p hipsparseSpVV computes the inner dot product of a sparse vector with a dense vector. This routine takes a user 
 *  allocated buffer whose size must first be computed by calling \p hipsparseSpVV_bufferSize
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpVV(hipsparseHandle_t          handle,
+                                hipsparseOperation_t       opX,
+                                hipsparseConstSpVecDescr_t vecX,
+                                hipsparseConstDnVecDescr_t vecY,
+                                void*                      result,
+                                hipDataType                computeType,
+                                void*                      externalBuffer);
+#elif(CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpVV(hipsparseHandle_t     handle,
                                 hipsparseOperation_t  opX,
@@ -9943,7 +10339,19 @@ hipsparseStatus_t hipsparseSpVV(hipsparseHandle_t     handle,
 *  \p hipsparseSpMV_bufferSize computes the required user allocated buffer size needed when computing the 
 *  sparse matrix multiplication with a dense vector
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpMV_bufferSize(hipsparseHandle_t           handle,
+                                           hipsparseOperation_t        opA,
+                                           const void*                 alpha,
+                                           hipsparseConstSpMatDescr_t  matA,
+                                           hipsparseConstDnVecDescr_t  vecX,
+                                           const void*                 beta,
+                                           const hipsparseDnVecDescr_t vecY,
+                                           hipDataType                 computeType,
+                                           hipsparseSpMVAlg_t          alg,
+                                           size_t*                     bufferSize);
+#elif(CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpMV_bufferSize(hipsparseHandle_t           handle,
                                            hipsparseOperation_t        opA,
@@ -9964,7 +10372,19 @@ hipsparseStatus_t hipsparseSpMV_bufferSize(hipsparseHandle_t           handle,
 *  \p hipsparseSpMV_preprocess performs the optional preprocess used when computing the 
 *  sparse matrix multiplication with a dense vector
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpMV_preprocess(hipsparseHandle_t           handle,
+                                           hipsparseOperation_t        opA,
+                                           const void*                 alpha,
+                                           hipsparseConstSpMatDescr_t  matA,
+                                           hipsparseConstDnVecDescr_t  vecX,
+                                           const void*                 beta,
+                                           const hipsparseDnVecDescr_t vecY,
+                                           hipDataType                 computeType,
+                                           hipsparseSpMVAlg_t          alg,
+                                           void*                       externalBuffer);
+#elif(CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpMV_preprocess(hipsparseHandle_t           handle,
                                            hipsparseOperation_t        opA,
@@ -9984,7 +10404,19 @@ hipsparseStatus_t hipsparseSpMV_preprocess(hipsparseHandle_t           handle,
 *  \details
 *  \p hipsparseSpMV computes sparse matrix multiplication with a dense vector
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpMV(hipsparseHandle_t           handle,
+                                hipsparseOperation_t        opA,
+                                const void*                 alpha,
+                                hipsparseConstSpMatDescr_t  matA,
+                                hipsparseConstDnVecDescr_t  vecX,
+                                const void*                 beta,
+                                const hipsparseDnVecDescr_t vecY,
+                                hipDataType                 computeType,
+                                hipsparseSpMVAlg_t          alg,
+                                void*                       externalBuffer);
+#elif(CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpMV(hipsparseHandle_t           handle,
                                 hipsparseOperation_t        opA,
@@ -10005,7 +10437,20 @@ hipsparseStatus_t hipsparseSpMV(hipsparseHandle_t           handle,
 *  \p hipsparseSpMM_bufferSize computes the required user allocated buffer size needed when computing the 
 *  sparse matrix multiplication with a dense matrix
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpMM_bufferSize(hipsparseHandle_t           handle,
+                                           hipsparseOperation_t        opA,
+                                           hipsparseOperation_t        opB,
+                                           const void*                 alpha,
+                                           hipsparseConstSpMatDescr_t  matA,
+                                           hipsparseConstDnMatDescr_t  matB,
+                                           const void*                 beta,
+                                           const hipsparseDnMatDescr_t matC,
+                                           hipDataType                 computeType,
+                                           hipsparseSpMMAlg_t          alg,
+                                           size_t*                     bufferSize);
+#elif(CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpMM_bufferSize(hipsparseHandle_t           handle,
                                            hipsparseOperation_t        opA,
@@ -10027,7 +10472,20 @@ hipsparseStatus_t hipsparseSpMM_bufferSize(hipsparseHandle_t           handle,
 *  \p hipsparseSpMM_preprocess performs the required preprocessing used when computing the 
 *  sparse matrix multiplication with a dense matrix
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11021)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpMM_preprocess(hipsparseHandle_t           handle,
+                                           hipsparseOperation_t        opA,
+                                           hipsparseOperation_t        opB,
+                                           const void*                 alpha,
+                                           hipsparseConstSpMatDescr_t  matA,
+                                           hipsparseConstDnMatDescr_t  matB,
+                                           const void*                 beta,
+                                           const hipsparseDnMatDescr_t matC,
+                                           hipDataType                 computeType,
+                                           hipsparseSpMMAlg_t          alg,
+                                           void*                       externalBuffer);
+#elif(CUDART_VERSION >= 11021)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpMM_preprocess(hipsparseHandle_t           handle,
                                            hipsparseOperation_t        opA,
@@ -10048,7 +10506,20 @@ hipsparseStatus_t hipsparseSpMM_preprocess(hipsparseHandle_t           handle,
 *  \details
 *  \p hipsparseSpMM computes sparse matrix multiplication with a dense matrix
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpMM(hipsparseHandle_t           handle,
+                                hipsparseOperation_t        opA,
+                                hipsparseOperation_t        opB,
+                                const void*                 alpha,
+                                hipsparseConstSpMatDescr_t  matA,
+                                hipsparseConstDnMatDescr_t  matB,
+                                const void*                 beta,
+                                const hipsparseDnMatDescr_t matC,
+                                hipDataType                 computeType,
+                                hipsparseSpMMAlg_t          alg,
+                                void*                       externalBuffer);
+#elif(CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpMM(hipsparseHandle_t           handle,
                                 hipsparseOperation_t        opA,
@@ -10088,7 +10559,22 @@ hipsparseStatus_t hipsparseSpGEMM_destroyDescr(hipsparseSpGEMMDescr_t descr);
 /*! \ingroup generic_module
 *  \brief Description: Work estimation step of the sparse matrix sparse matrix product.
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpGEMM_workEstimation(hipsparseHandle_t          handle,
+                                                 hipsparseOperation_t       opA,
+                                                 hipsparseOperation_t       opB,
+                                                 const void*                alpha,
+                                                 hipsparseConstSpMatDescr_t matA,
+                                                 hipsparseConstSpMatDescr_t matB,
+                                                 const void*                beta,
+                                                 hipsparseSpMatDescr_t      matC,
+                                                 hipDataType                computeType,
+                                                 hipsparseSpGEMMAlg_t       alg,
+                                                 hipsparseSpGEMMDescr_t     spgemmDescr,
+                                                 size_t*                    bufferSize1,
+                                                 void*                      externalBuffer1);
+#elif(CUDART_VERSION >= 11000)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpGEMM_workEstimation(hipsparseHandle_t      handle,
                                                  hipsparseOperation_t   opA,
@@ -10108,7 +10594,22 @@ hipsparseStatus_t hipsparseSpGEMM_workEstimation(hipsparseHandle_t      handle,
 /*! \ingroup generic_module
 *  \brief Description: Compute step of the sparse matrix sparse matrix product.
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpGEMM_compute(hipsparseHandle_t          handle,
+                                          hipsparseOperation_t       opA,
+                                          hipsparseOperation_t       opB,
+                                          const void*                alpha,
+                                          hipsparseConstSpMatDescr_t matA,
+                                          hipsparseConstSpMatDescr_t matB,
+                                          const void*                beta,
+                                          hipsparseSpMatDescr_t      matC,
+                                          hipDataType                computeType,
+                                          hipsparseSpGEMMAlg_t       alg,
+                                          hipsparseSpGEMMDescr_t     spgemmDescr,
+                                          size_t*                    bufferSize2,
+                                          void*                      externalBuffer2);
+#elif(CUDART_VERSION >= 11000)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpGEMM_compute(hipsparseHandle_t      handle,
                                           hipsparseOperation_t   opA,
@@ -10125,7 +10626,20 @@ hipsparseStatus_t hipsparseSpGEMM_compute(hipsparseHandle_t      handle,
                                           void*                  externalBuffer2);
 #endif
 
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpGEMM_copy(hipsparseHandle_t          handle,
+                                       hipsparseOperation_t       opA,
+                                       hipsparseOperation_t       opB,
+                                       const void*                alpha,
+                                       hipsparseConstSpMatDescr_t matA,
+                                       hipsparseConstSpMatDescr_t matB,
+                                       const void*                beta,
+                                       hipsparseSpMatDescr_t      matC,
+                                       hipDataType                computeType,
+                                       hipsparseSpGEMMAlg_t       alg,
+                                       hipsparseSpGEMMDescr_t     spgemmDescr);
+#elif(CUDART_VERSION >= 11000)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpGEMM_copy(hipsparseHandle_t      handle,
                                        hipsparseOperation_t   opA,
@@ -10140,7 +10654,19 @@ hipsparseStatus_t hipsparseSpGEMM_copy(hipsparseHandle_t      handle,
                                        hipsparseSpGEMMDescr_t spgemmDescr);
 #endif
 
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpGEMMreuse_workEstimation(hipsparseHandle_t          handle,
+                                                      hipsparseOperation_t       opA,
+                                                      hipsparseOperation_t       opB,
+                                                      hipsparseConstSpMatDescr_t matA,
+                                                      hipsparseConstSpMatDescr_t matB,
+                                                      hipsparseSpMatDescr_t      matC,
+                                                      hipsparseSpGEMMAlg_t       alg,
+                                                      hipsparseSpGEMMDescr_t     spgemmDescr,
+                                                      size_t*                    bufferSize1,
+                                                      void*                      externalBuffer1);
+#elif(CUDART_VERSION >= 11031)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpGEMMreuse_workEstimation(hipsparseHandle_t      handle,
                                                       hipsparseOperation_t   opA,
@@ -10154,7 +10680,24 @@ hipsparseStatus_t hipsparseSpGEMMreuse_workEstimation(hipsparseHandle_t      han
                                                       void*                  externalBuffer1);
 #endif
 
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpGEMMreuse_nnz(hipsparseHandle_t          handle,
+                                           hipsparseOperation_t       opA,
+                                           hipsparseOperation_t       opB,
+                                           hipsparseConstSpMatDescr_t matA,
+                                           hipsparseConstSpMatDescr_t matB,
+                                           hipsparseSpMatDescr_t      matC,
+                                           hipsparseSpGEMMAlg_t       alg,
+                                           hipsparseSpGEMMDescr_t     spgemmDescr,
+                                           size_t*                    bufferSize2,
+                                           void*                      externalBuffer2,
+                                           size_t*                    bufferSize3,
+                                           void*                      externalBuffer3,
+                                           size_t*                    bufferSize4,
+                                           void*                      externalBuffer4);
+
+#elif(CUDART_VERSION >= 11031)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpGEMMreuse_nnz(hipsparseHandle_t      handle,
                                            hipsparseOperation_t   opA,
@@ -10173,7 +10716,20 @@ hipsparseStatus_t hipsparseSpGEMMreuse_nnz(hipsparseHandle_t      handle,
 
 #endif
 
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpGEMMreuse_compute(hipsparseHandle_t          handle,
+                                               hipsparseOperation_t       opA,
+                                               hipsparseOperation_t       opB,
+                                               const void*                alpha,
+                                               hipsparseConstSpMatDescr_t matA,
+                                               hipsparseConstSpMatDescr_t matB,
+                                               const void*                beta,
+                                               hipsparseSpMatDescr_t      matC,
+                                               hipDataType                computeType,
+                                               hipsparseSpGEMMAlg_t       alg,
+                                               hipsparseSpGEMMDescr_t     spgemmDescr);
+#elif(CUDART_VERSION >= 11031)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpGEMMreuse_compute(hipsparseHandle_t      handle,
                                                hipsparseOperation_t   opA,
@@ -10188,7 +10744,19 @@ hipsparseStatus_t hipsparseSpGEMMreuse_compute(hipsparseHandle_t      handle,
                                                hipsparseSpGEMMDescr_t spgemmDescr);
 #endif
 
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpGEMMreuse_copy(hipsparseHandle_t          handle,
+                                            hipsparseOperation_t       opA,
+                                            hipsparseOperation_t       opB,
+                                            hipsparseConstSpMatDescr_t matA,
+                                            hipsparseConstSpMatDescr_t matB,
+                                            hipsparseSpMatDescr_t      matC,
+                                            hipsparseSpGEMMAlg_t       alg,
+                                            hipsparseSpGEMMDescr_t     spgemmDescr,
+                                            size_t*                    bufferSize5,
+                                            void*                      externalBuffer5);
+#elif(CUDART_VERSION >= 11031)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpGEMMreuse_copy(hipsparseHandle_t      handle,
                                             hipsparseOperation_t   opA,
@@ -10202,7 +10770,6 @@ hipsparseStatus_t hipsparseSpGEMMreuse_copy(hipsparseHandle_t      handle,
                                             void*                  externalBuffer5);
 #endif
 
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11022)
 /*! \ingroup generic_module
 *  \brief Description: Calculate the buffer size required for the sampled dense dense matrix multiplication
 *
@@ -10210,6 +10777,20 @@ hipsparseStatus_t hipsparseSpGEMMreuse_copy(hipsparseHandle_t      handle,
 *  \p hipsparseSDDMM_bufferSize computes the required user allocated buffer size needed when computing the 
 *  sampled dense dense matrix multiplication
 */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSDDMM_bufferSize(hipsparseHandle_t          handle,
+                                            hipsparseOperation_t       opA,
+                                            hipsparseOperation_t       opB,
+                                            const void*                alpha,
+                                            hipsparseConstDnMatDescr_t A,
+                                            hipsparseConstDnMatDescr_t B,
+                                            const void*                beta,
+                                            hipsparseSpMatDescr_t      C,
+                                            hipDataType                computeType,
+                                            hipsparseSDDMMAlg_t        alg,
+                                            size_t*                    bufferSize);
+#elif(CUDART_VERSION >= 11022)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSDDMM_bufferSize(hipsparseHandle_t           handle,
                                             hipsparseOperation_t        opA,
@@ -10222,6 +10803,7 @@ hipsparseStatus_t hipsparseSDDMM_bufferSize(hipsparseHandle_t           handle,
                                             hipDataType                 computeType,
                                             hipsparseSDDMMAlg_t         alg,
                                             size_t*                     bufferSize);
+#endif
 
 /*! \ingroup generic_module
 *  \brief Description: Preprocess step of the sampled dense dense matrix multiplication.
@@ -10230,6 +10812,20 @@ hipsparseStatus_t hipsparseSDDMM_bufferSize(hipsparseHandle_t           handle,
 *  \p hipsparseSDDMM_preprocess performs the required preprocessing used when computing the 
 *  sampled dense dense matrix multiplication
 */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSDDMM_preprocess(hipsparseHandle_t          handle,
+                                            hipsparseOperation_t       opA,
+                                            hipsparseOperation_t       opB,
+                                            const void*                alpha,
+                                            hipsparseConstDnMatDescr_t A,
+                                            hipsparseConstDnMatDescr_t B,
+                                            const void*                beta,
+                                            hipsparseSpMatDescr_t      C,
+                                            hipDataType                computeType,
+                                            hipsparseSDDMMAlg_t        alg,
+                                            void*                      tempBuffer);
+#elif(CUDART_VERSION >= 11022)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSDDMM_preprocess(hipsparseHandle_t           handle,
                                             hipsparseOperation_t        opA,
@@ -10242,6 +10838,7 @@ hipsparseStatus_t hipsparseSDDMM_preprocess(hipsparseHandle_t           handle,
                                             hipDataType                 computeType,
                                             hipsparseSDDMMAlg_t         alg,
                                             void*                       tempBuffer);
+#endif
 
 /*! \ingroup generic_module
 *  \brief  Description: Sampled Dense-Dense Matrix Multiplication.
@@ -10281,6 +10878,20 @@ hipsparseStatus_t hipsparseSDDMM_preprocess(hipsparseHandle_t           handle,
 *    \right.
 *  \f]
 */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSDDMM(hipsparseHandle_t          handle,
+                                 hipsparseOperation_t       opA,
+                                 hipsparseOperation_t       opB,
+                                 const void*                alpha,
+                                 hipsparseConstDnMatDescr_t A,
+                                 hipsparseConstDnMatDescr_t B,
+                                 const void*                beta,
+                                 hipsparseSpMatDescr_t      C,
+                                 hipDataType                computeType,
+                                 hipsparseSDDMMAlg_t        alg,
+                                 void*                      tempBuffer);
+#elif(CUDART_VERSION >= 11022)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSDDMM(hipsparseHandle_t           handle,
                                  hipsparseOperation_t        opA,
@@ -10326,7 +10937,19 @@ hipsparseStatus_t hipsparseSpSV_destroyDescr(hipsparseSpSVDescr_t descr);
 *  solution of triangular linear system op(A) * Y = alpha * X, where A is a sparse matrix in CSR storage 
 *  format, x and Y are dense vectors.
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11030)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpSV_bufferSize(hipsparseHandle_t           handle,
+                                           hipsparseOperation_t        opA,
+                                           const void*                 alpha,
+                                           hipsparseConstSpMatDescr_t  matA,
+                                           hipsparseConstDnVecDescr_t  x,
+                                           const hipsparseDnVecDescr_t y,
+                                           hipDataType                 computeType,
+                                           hipsparseSpSVAlg_t          alg,
+                                           hipsparseSpSVDescr_t        spsvDescr,
+                                           size_t*                     bufferSize);
+#elif(CUDART_VERSION >= 11030)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpSV_bufferSize(hipsparseHandle_t           handle,
                                            hipsparseOperation_t        opA,
@@ -10349,7 +10972,19 @@ hipsparseStatus_t hipsparseSpSV_bufferSize(hipsparseHandle_t           handle,
 *  solution of triangular linear system op(A) * Y = alpha * X,
 *  where A is a sparse matrix in CSR storage format, x and Y are dense vectors.
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11030)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpSV_analysis(hipsparseHandle_t           handle,
+                                         hipsparseOperation_t        opA,
+                                         const void*                 alpha,
+                                         hipsparseConstSpMatDescr_t  matA,
+                                         hipsparseConstDnVecDescr_t  x,
+                                         const hipsparseDnVecDescr_t y,
+                                         hipDataType                 computeType,
+                                         hipsparseSpSVAlg_t          alg,
+                                         hipsparseSpSVDescr_t        spsvDescr,
+                                         void*                       externalBuffer);
+#elif(CUDART_VERSION >= 11030)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpSV_analysis(hipsparseHandle_t           handle,
                                          hipsparseOperation_t        opA,
@@ -10384,7 +11019,18 @@ hipsparseStatus_t hipsparseSpSV_analysis(hipsparseHandle_t           handle,
 *    \right.
 *  \f]
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11030)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpSV_solve(hipsparseHandle_t           handle,
+                                      hipsparseOperation_t        opA,
+                                      const void*                 alpha,
+                                      hipsparseConstSpMatDescr_t  matA,
+                                      hipsparseConstDnVecDescr_t  x,
+                                      const hipsparseDnVecDescr_t y,
+                                      hipDataType                 computeType,
+                                      hipsparseSpSVAlg_t          alg,
+                                      hipsparseSpSVDescr_t        spsvDescr);
+#elif(CUDART_VERSION >= 11030)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpSV_solve(hipsparseHandle_t           handle,
                                       hipsparseOperation_t        opA,
@@ -10428,7 +11074,20 @@ hipsparseStatus_t hipsparseSpSM_destroyDescr(hipsparseSpSMDescr_t descr);
 *  solution of triangular linear system op(A) * C = alpha * op(B), where A is a sparse matrix in CSR storage 
 *  format, B and C are dense matrices.
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpSM_bufferSize(hipsparseHandle_t           handle,
+                                           hipsparseOperation_t        opA,
+                                           hipsparseOperation_t        opB,
+                                           const void*                 alpha,
+                                           hipsparseConstSpMatDescr_t  matA,
+                                           hipsparseConstDnMatDescr_t  matB,
+                                           const hipsparseDnMatDescr_t matC,
+                                           hipDataType                 computeType,
+                                           hipsparseSpSMAlg_t          alg,
+                                           hipsparseSpSMDescr_t        spsmDescr,
+                                           size_t*                     bufferSize);
+#elif(CUDART_VERSION >= 11031)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpSM_bufferSize(hipsparseHandle_t           handle,
                                            hipsparseOperation_t        opA,
@@ -10452,7 +11111,20 @@ hipsparseStatus_t hipsparseSpSM_bufferSize(hipsparseHandle_t           handle,
 *  solution of triangular linear system op(A) * C = alpha * op(B),
 *  where A is a sparse matrix in CSR storage format, B and C are dense vectors.
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpSM_analysis(hipsparseHandle_t           handle,
+                                         hipsparseOperation_t        opA,
+                                         hipsparseOperation_t        opB,
+                                         const void*                 alpha,
+                                         hipsparseConstSpMatDescr_t  matA,
+                                         hipsparseConstDnMatDescr_t  matB,
+                                         const hipsparseDnMatDescr_t matC,
+                                         hipDataType                 computeType,
+                                         hipsparseSpSMAlg_t          alg,
+                                         hipsparseSpSMDescr_t        spsmDescr,
+                                         void*                       externalBuffer);
+#elif(CUDART_VERSION >= 11031)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpSM_analysis(hipsparseHandle_t           handle,
                                          hipsparseOperation_t        opA,
@@ -10498,7 +11170,20 @@ hipsparseStatus_t hipsparseSpSM_analysis(hipsparseHandle_t           handle,
 *    \right.
 *  \f]
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseSpSM_solve(hipsparseHandle_t           handle,
+                                      hipsparseOperation_t        opA,
+                                      hipsparseOperation_t        opB,
+                                      const void*                 alpha,
+                                      hipsparseConstSpMatDescr_t  matA,
+                                      hipsparseConstDnMatDescr_t  matB,
+                                      const hipsparseDnMatDescr_t matC,
+                                      hipDataType                 computeType,
+                                      hipsparseSpSMAlg_t          alg,
+                                      hipsparseSpSMDescr_t        spsmDescr,
+                                      void*                       externalBuffer);
+#elif(CUDART_VERSION >= 11031)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpSM_solve(hipsparseHandle_t           handle,
                                       hipsparseOperation_t        opA,
