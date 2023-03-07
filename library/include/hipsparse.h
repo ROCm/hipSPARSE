@@ -6966,8 +6966,8 @@ typedef enum
 #if(CUDART_VERSION >= 12000)
 typedef enum
 {
-    HIPSPARSE_CSR2CSC_ALG_DEFAULT = 1,
-    HIPSPARSE_CSR2CSC_ALG1        = 2
+    HIPSPARSE_CSR2CSC_ALG_DEFAULT = 0,
+    HIPSPARSE_CSR2CSC_ALG1        = 1
 } hipsparseCsr2CscAlg_t;
 #elif(CUDART_VERSION >= 10010 && CUDART_VERSION < 12000)
 typedef enum
@@ -8853,19 +8853,19 @@ typedef enum
 #if(!defined(CUDART_VERSION))
 typedef enum
 {
-    HIPSPARSE_ORDER_ROW = 0, /**< Row major */
     HIPSPARSE_ORDER_COLUMN HIPSPARSE_DEPRECATED_MSG("Please use HIPSPARSE_ORDER_COL instead")
     = 1, /**< Column major */
-    HIPSPARSE_ORDER_COL = 1 /**< Column major */
+    HIPSPARSE_ORDER_COL = 1, /**< Column major */
+    HIPSPARSE_ORDER_ROW = 2 /**< Row major */
 } hipsparseOrder_t;
 #else
 #if(CUDART_VERSION >= 11000)
 typedef enum
 {
-    HIPSPARSE_ORDER_ROW = 0, /**< Row major */
     HIPSPARSE_ORDER_COLUMN HIPSPARSE_DEPRECATED_MSG("Please use HIPSPARSE_ORDER_COL instead")
     = 1, /**< Column major */
-    HIPSPARSE_ORDER_COL = 1 /**< Column major */
+    HIPSPARSE_ORDER_COL = 1, /**< Column major */
+    HIPSPARSE_ORDER_ROW = 2 /**< Row major */
 } hipsparseOrder_t;
 #elif(CUDART_VERSION >= 10010)
 typedef enum
@@ -8907,21 +8907,21 @@ typedef enum
     HIPSPARSE_COOMV_ALG        = 1,
     HIPSPARSE_CSRMV_ALG1       = 2,
     HIPSPARSE_CSRMV_ALG2       = 3,
-    HIPSPARSE_SPMV_ALG_DEFAULT = 4,
-    HIPSPARSE_SPMV_COO_ALG1    = 5,
-    HIPSPARSE_SPMV_COO_ALG2    = 6,
-    HIPSPARSE_SPMV_CSR_ALG1    = 7,
-    HIPSPARSE_SPMV_CSR_ALG2    = 8
+    HIPSPARSE_SPMV_ALG_DEFAULT = 0,
+    HIPSPARSE_SPMV_COO_ALG1    = 1,
+    HIPSPARSE_SPMV_CSR_ALG1    = 2,
+    HIPSPARSE_SPMV_CSR_ALG2    = 3,
+    HIPSPARSE_SPMV_COO_ALG2    = 4
 } hipsparseSpMVAlg_t;
 #else
 #if(CUDART_VERSION >= 12000)
 typedef enum
 {
-    HIPSPARSE_SPMV_ALG_DEFAULT = 4,
-    HIPSPARSE_SPMV_COO_ALG1    = 5,
-    HIPSPARSE_SPMV_COO_ALG2    = 6,
-    HIPSPARSE_SPMV_CSR_ALG1    = 7,
-    HIPSPARSE_SPMV_CSR_ALG2    = 8
+    HIPSPARSE_SPMV_ALG_DEFAULT = 0,
+    HIPSPARSE_SPMV_COO_ALG1    = 1,
+    HIPSPARSE_SPMV_CSR_ALG1    = 2,
+    HIPSPARSE_SPMV_CSR_ALG2    = 3,
+    HIPSPARSE_SPMV_COO_ALG2    = 4
 } hipsparseSpMVAlg_t;
 #elif(CUDART_VERSION >= 11021 && CUDART_VERSION < 12000)
 typedef enum
@@ -8930,11 +8930,11 @@ typedef enum
     HIPSPARSE_COOMV_ALG        = 1,
     HIPSPARSE_CSRMV_ALG1       = 2,
     HIPSPARSE_CSRMV_ALG2       = 3,
-    HIPSPARSE_SPMV_ALG_DEFAULT = 4,
-    HIPSPARSE_SPMV_COO_ALG1    = 5,
-    HIPSPARSE_SPMV_COO_ALG2    = 6,
-    HIPSPARSE_SPMV_CSR_ALG1    = 7,
-    HIPSPARSE_SPMV_CSR_ALG2    = 8
+    HIPSPARSE_SPMV_ALG_DEFAULT = 0,
+    HIPSPARSE_SPMV_COO_ALG1    = 1,
+    HIPSPARSE_SPMV_CSR_ALG1    = 2,
+    HIPSPARSE_SPMV_CSR_ALG2    = 3,
+    HIPSPARSE_SPMV_COO_ALG2    = 4
 } hipsparseSpMVAlg_t;
 #elif(CUDART_VERSION >= 10010 && CUDART_VERSION < 11021)
 typedef enum
@@ -8962,29 +8962,29 @@ typedef enum
     HIPSPARSE_COOMM_ALG2            = 2,
     HIPSPARSE_COOMM_ALG3            = 3,
     HIPSPARSE_CSRMM_ALG1            = 4,
-    HIPSPARSE_SPMM_ALG_DEFAULT      = 5,
-    HIPSPARSE_SPMM_COO_ALG1         = 6,
-    HIPSPARSE_SPMM_COO_ALG2         = 7,
-    HIPSPARSE_SPMM_COO_ALG3         = 8,
-    HIPSPARSE_SPMM_COO_ALG4         = 9,
-    HIPSPARSE_SPMM_CSR_ALG1         = 10,
-    HIPSPARSE_SPMM_CSR_ALG2         = 11,
-    HIPSPARSE_SPMM_BLOCKED_ELL_ALG1 = 12,
-    HIPSPARSE_SPMM_CSR_ALG3         = 13
+    HIPSPARSE_SPMM_ALG_DEFAULT      = 0,
+    HIPSPARSE_SPMM_COO_ALG1         = 1,
+    HIPSPARSE_SPMM_COO_ALG2         = 2,
+    HIPSPARSE_SPMM_COO_ALG3         = 3,
+    HIPSPARSE_SPMM_COO_ALG4         = 5,
+    HIPSPARSE_SPMM_CSR_ALG1         = 4,
+    HIPSPARSE_SPMM_CSR_ALG2         = 6,
+    HIPSPARSE_SPMM_CSR_ALG3         = 12,
+    HIPSPARSE_SPMM_BLOCKED_ELL_ALG1 = 13
 } hipsparseSpMMAlg_t;
 #else
 #if(CUDART_VERSION >= 12000)
 typedef enum
 {
-    HIPSPARSE_SPMM_ALG_DEFAULT      = 5,
-    HIPSPARSE_SPMM_COO_ALG1         = 6,
-    HIPSPARSE_SPMM_COO_ALG2         = 7,
-    HIPSPARSE_SPMM_COO_ALG3         = 8,
-    HIPSPARSE_SPMM_COO_ALG4         = 9,
-    HIPSPARSE_SPMM_CSR_ALG1         = 10,
-    HIPSPARSE_SPMM_CSR_ALG2         = 11,
-    HIPSPARSE_SPMM_BLOCKED_ELL_ALG1 = 12,
-    HIPSPARSE_SPMM_CSR_ALG3         = 13
+    HIPSPARSE_SPMM_ALG_DEFAULT      = 0,
+    HIPSPARSE_SPMM_COO_ALG1         = 1,
+    HIPSPARSE_SPMM_COO_ALG2         = 2,
+    HIPSPARSE_SPMM_COO_ALG3         = 3,
+    HIPSPARSE_SPMM_COO_ALG4         = 5,
+    HIPSPARSE_SPMM_CSR_ALG1         = 4,
+    HIPSPARSE_SPMM_CSR_ALG2         = 6,
+    HIPSPARSE_SPMM_CSR_ALG3         = 12,
+    HIPSPARSE_SPMM_BLOCKED_ELL_ALG1 = 13
 } hipsparseSpMMAlg_t;
 #elif(CUDART_VERSION >= 11021 && CUDART_VERSION < 12000)
 typedef enum
@@ -8994,15 +8994,15 @@ typedef enum
     HIPSPARSE_COOMM_ALG2            = 2,
     HIPSPARSE_COOMM_ALG3            = 3,
     HIPSPARSE_CSRMM_ALG1            = 4,
-    HIPSPARSE_SPMM_ALG_DEFAULT      = 5,
-    HIPSPARSE_SPMM_COO_ALG1         = 6,
-    HIPSPARSE_SPMM_COO_ALG2         = 7,
-    HIPSPARSE_SPMM_COO_ALG3         = 8,
-    HIPSPARSE_SPMM_COO_ALG4         = 9,
-    HIPSPARSE_SPMM_CSR_ALG1         = 10,
-    HIPSPARSE_SPMM_CSR_ALG2         = 11,
-    HIPSPARSE_SPMM_BLOCKED_ELL_ALG1 = 12,
-    HIPSPARSE_SPMM_CSR_ALG3         = 13
+    HIPSPARSE_SPMM_ALG_DEFAULT      = 0,
+    HIPSPARSE_SPMM_COO_ALG1         = 1,
+    HIPSPARSE_SPMM_COO_ALG2         = 2,
+    HIPSPARSE_SPMM_COO_ALG3         = 3,
+    HIPSPARSE_SPMM_COO_ALG4         = 5,
+    HIPSPARSE_SPMM_CSR_ALG1         = 4,
+    HIPSPARSE_SPMM_CSR_ALG2         = 6,
+    HIPSPARSE_SPMM_CSR_ALG3         = 12,
+    HIPSPARSE_SPMM_BLOCKED_ELL_ALG1 = 13
 } hipsparseSpMMAlg_t;
 #elif(CUDART_VERSION >= 11003 && CUDART_VERSION < 11021)
 typedef enum
@@ -9012,14 +9012,14 @@ typedef enum
     HIPSPARSE_COOMM_ALG2            = 2,
     HIPSPARSE_COOMM_ALG3            = 3,
     HIPSPARSE_CSRMM_ALG1            = 4,
-    HIPSPARSE_SPMM_ALG_DEFAULT      = 5,
-    HIPSPARSE_SPMM_COO_ALG1         = 6,
-    HIPSPARSE_SPMM_COO_ALG2         = 7,
-    HIPSPARSE_SPMM_COO_ALG3         = 8,
-    HIPSPARSE_SPMM_COO_ALG4         = 9,
-    HIPSPARSE_SPMM_CSR_ALG1         = 10,
-    HIPSPARSE_SPMM_CSR_ALG2         = 11,
-    HIPSPARSE_SPMM_BLOCKED_ELL_ALG1 = 12
+    HIPSPARSE_SPMM_ALG_DEFAULT      = 0,
+    HIPSPARSE_SPMM_COO_ALG1         = 1,
+    HIPSPARSE_SPMM_COO_ALG2         = 2,
+    HIPSPARSE_SPMM_COO_ALG3         = 3,
+    HIPSPARSE_SPMM_COO_ALG4         = 5,
+    HIPSPARSE_SPMM_CSR_ALG1         = 4,
+    HIPSPARSE_SPMM_CSR_ALG2         = 6,
+    HIPSPARSE_SPMM_BLOCKED_ELL_ALG1 = 13
 } hipsparseSpMMAlg_t;
 #elif(CUDART_VERSION >= 10010 && CUDART_VERSION < 11003)
 typedef enum
@@ -9129,8 +9129,8 @@ typedef enum
 typedef enum
 {
     HIPSPARSE_SPGEMM_DEFAULT                  = 0,
-    HIPSPARSE_SPGEMM_CSR_ALG_NONDETERMINISTIC = 1,
-    HIPSPARSE_SPGEMM_CSR_ALG_DETERMINISTIC    = 2,
+    HIPSPARSE_SPGEMM_CSR_ALG_DETERMINISTIC    = 1,
+    HIPSPARSE_SPGEMM_CSR_ALG_NONDETERMINISTIC = 2,
     HIPSPARSE_SPGEMM_ALG1                     = 3,
     HIPSPARSE_SPGEMM_ALG2                     = 4,
     HIPSPARSE_SPGEMM_ALG3                     = 5
@@ -9140,8 +9140,8 @@ typedef enum
 typedef enum
 {
     HIPSPARSE_SPGEMM_DEFAULT                  = 0,
-    HIPSPARSE_SPGEMM_CSR_ALG_NONDETERMINISTIC = 1,
-    HIPSPARSE_SPGEMM_CSR_ALG_DETERMINISTIC    = 2,
+    HIPSPARSE_SPGEMM_CSR_ALG_DETERMINISTIC    = 1,
+    HIPSPARSE_SPGEMM_CSR_ALG_NONDETERMINISTIC = 2,
     HIPSPARSE_SPGEMM_ALG1                     = 3,
     HIPSPARSE_SPGEMM_ALG2                     = 4,
     HIPSPARSE_SPGEMM_ALG3                     = 5
@@ -9150,8 +9150,8 @@ typedef enum
 typedef enum
 {
     HIPSPARSE_SPGEMM_DEFAULT                  = 0,
-    HIPSPARSE_SPGEMM_CSR_ALG_NONDETERMINISTIC = 1,
-    HIPSPARSE_SPGEMM_CSR_ALG_DETERMINISTIC    = 2
+    HIPSPARSE_SPGEMM_CSR_ALG_DETERMINISTIC    = 1,
+    HIPSPARSE_SPGEMM_CSR_ALG_NONDETERMINISTIC = 2,
 } hipsparseSpGEMMAlg_t;
 #elif(CUDART_VERSION >= 11000)
 typedef enum
