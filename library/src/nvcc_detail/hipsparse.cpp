@@ -11084,29 +11084,31 @@ hipsparseStatus_t hipsparseBlockedEllGet(const hipsparseSpMatDescr_t spMatDescr,
 {
     // As of cusparse 11.4.1, this routine does not actually exist as a symbol in the cusparse
     // library (the documentation indicates that it should exist starting at cusparse 11.2.1).
-    // Uncomment once it has been added
-    // cusparseIndexType_t cuda_index_type;
-    // cusparseIndexBase_t cuda_index_base;
-    // cudaDataType        cuda_data_type;
+#if(CUDART_VERSION >= 11070)
+    cusparseIndexType_t cuda_index_type;
+    cusparseIndexBase_t cuda_index_base;
+    cudaDataType        cuda_data_type;
 
-    // RETURN_IF_CUSPARSE_ERROR(
-    //     cusparseBlockedEllGet((cusparseSpMatDescr_t)spMatDescr,
-    //                           rows,
-    //                           cols,
-    //                           ellBlockSize,
-    //                           ellCols,
-    //                           ellColInd,
-    //                           ellValue,
-    //                           ellIdxType != nullptr ? &cuda_index_type : nullptr,
-    //                           idxBase != nullptr ? &cuda_index_base : nullptr,
-    //                           valueType != nullptr ? &cuda_data_type : nullptr));
+    RETURN_IF_CUSPARSE_ERROR(
+        cusparseBlockedEllGet((cusparseSpMatDescr_t)spMatDescr,
+                              rows,
+                              cols,
+                              ellBlockSize,
+                              ellCols,
+                              ellColInd,
+                              ellValue,
+                              ellIdxType != nullptr ? &cuda_index_type : nullptr,
+                              idxBase != nullptr ? &cuda_index_base : nullptr,
+                              valueType != nullptr ? &cuda_data_type : nullptr));
 
-    // *ellIdxType = CudaIndexTypeToHIPIndexType(cuda_index_type);
-    // *idxBase    = CudaIndexBaseToHIPIndexBase(cuda_index_base);
-    // *valueType  = CudaDataTypeToHIPDataType(cuda_data_type);
+    *ellIdxType = CudaIndexTypeToHIPIndexType(cuda_index_type);
+    *idxBase    = CudaIndexBaseToHIPIndexBase(cuda_index_base);
+    *valueType  = CudaDataTypeToHIPDataType(cuda_data_type);
 
-    // return HIPSPARSE_STATUS_SUCCESS;
+    return HIPSPARSE_STATUS_SUCCESS;
+#else
     return HIPSPARSE_STATUS_NOT_SUPPORTED;
+#endif
 }
 #endif
 
