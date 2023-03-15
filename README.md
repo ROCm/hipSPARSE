@@ -1,6 +1,18 @@
 # hipSPARSE
 hipSPARSE is a SPARSE marshalling library, with multiple supported backends. It sits between the application and a 'worker' SPARSE library, marshalling inputs into the backend library and marshalling results back to the application. hipSPARSE exports an interface that does not require the client to change, regardless of the chosen backend. Currently, hipSPARSE supports [rocSPARSE](https://github.com/ROCmSoftwarePlatform/rocSPARSE) and [cuSPARSE](https://developer.nvidia.com/cusparse) as backends.
 
+## Documentation
+
+Run the steps below to build documentation locally.
+
+```
+cd docs
+
+pip3 install -r .sphinx/requirements.txt
+
+python3 -m sphinx -T -E -b html -d _build/doctrees -D language=en . _build/html
+```
+
 ## Installing pre-built packages
 Download pre-built packages either from [ROCm's package servers](https://rocm.github.io/install.html#installing-from-amd-rocm-repositories) or by clicking the github releases tab and manually downloading, which could be newer. Release notes are available for each release on the releases tab.
 * `sudo apt update && sudo apt install hipsparse`
