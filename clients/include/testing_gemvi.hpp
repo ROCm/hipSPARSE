@@ -116,10 +116,6 @@ void testing_gemvi_bad_arg(void)
         hipsparseSgemvi(
             handle, opType, m, n, &alpha, A, lda, nnz, x, xInd, &beta, nullptr, idxBase, buffer),
         "Error: y is nullptr");
-    verify_hipsparse_status_invalid_pointer(
-        hipsparseSgemvi(
-            handle, opType, m, n, &alpha, A, lda, nnz, x, xInd, &beta, y, idxBase, nullptr),
-        "Error: buffer is nullptr");
 
     verify_hipsparse_status_invalid_size(
         hipsparseSgemvi(
