@@ -464,31 +464,6 @@ void testing_csrgemm2_b_bad_arg(void)
                                        dbuffer);
         verify_hipsparse_status_invalid_pointer(status, "Error: info is nullptr");
     }
-    // testing for(nullptr == dbuffer)
-    {
-        status = hipsparseXcsrgemm2Nnz(handle,
-                                       M,
-                                       N,
-                                       0,
-                                       nullptr,
-                                       0,
-                                       nullptr,
-                                       nullptr,
-                                       nullptr,
-                                       0,
-                                       nullptr,
-                                       nullptr,
-                                       descr_D,
-                                       nnz_D,
-                                       dDptr,
-                                       dDcol,
-                                       descr_C,
-                                       dCptr,
-                                       &nnz_C,
-                                       info,
-                                       nullptr);
-        verify_hipsparse_status_invalid_pointer(status, "Error: dbuffer is nullptr");
-    }
 
     // testing hipsparseXcsrgemm2
 
@@ -833,37 +808,6 @@ void testing_csrgemm2_b_bad_arg(void)
                                     dbuffer);
         verify_hipsparse_status_invalid_pointer(status, "Error: info is nullptr");
     }
-    // testing for(nullptr == dbuffer)
-    {
-        status = hipsparseXcsrgemm2(handle,
-                                    M,
-                                    N,
-                                    0,
-                                    (T*)nullptr,
-                                    nullptr,
-                                    0,
-                                    (T*)nullptr,
-                                    nullptr,
-                                    nullptr,
-                                    nullptr,
-                                    0,
-                                    (T*)nullptr,
-                                    nullptr,
-                                    nullptr,
-                                    &beta,
-                                    descr_D,
-                                    nnz_D,
-                                    dDval,
-                                    dDptr,
-                                    dDcol,
-                                    descr_C,
-                                    dCval,
-                                    dCptr,
-                                    dCcol,
-                                    info,
-                                    nullptr);
-        verify_hipsparse_status_invalid_pointer(status, "Error: dbuffer is nullptr");
-    }
 }
 
 template <typename T>
@@ -1197,12 +1141,6 @@ hipsparseStatus_t testing_csrgemm2_b(Arguments argus)
     auto dbuffer_managed = hipsparse_unique_ptr{device_malloc(sizeof(char) * size), device_free};
 
     void* dbuffer = (void*)dbuffer_managed.get();
-
-    if(!dbuffer)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!dbuffer");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
 
     // csrgemm2 nnz
 

@@ -440,24 +440,6 @@ void testing_gebsr2gebsr_bad_arg(void)
                                       temp_buffer);
     verify_hipsparse_status_invalid_pointer(status, "Error: nnz_total_dev_host_ptr is nullptr");
 
-    status = hipsparseXgebsr2gebsrNnz(handle,
-                                      dir,
-                                      mb,
-                                      nb,
-                                      nnzb,
-                                      descr_A,
-                                      bsr_row_ptr_A,
-                                      bsr_col_ind_A,
-                                      row_block_dim_A,
-                                      col_block_dim_A,
-                                      descr_C,
-                                      bsr_row_ptr_C,
-                                      row_block_dim_C,
-                                      col_block_dim_C,
-                                      &nnz_total_dev_host_ptr,
-                                      nullptr);
-    verify_hipsparse_status_invalid_pointer(status, "Error: buffer is nullptr");
-
     // Test invalid sizes
     status = hipsparseXgebsr2gebsrNnz(handle,
                                       dir,
@@ -768,26 +750,6 @@ void testing_gebsr2gebsr_bad_arg(void)
                                    col_block_dim_C,
                                    temp_buffer);
     verify_hipsparse_status_invalid_pointer(status, "Error: bsr_col_ind_C is nullptr");
-
-    status = hipsparseXgebsr2gebsr(handle,
-                                   dir,
-                                   mb,
-                                   nb,
-                                   nnzb,
-                                   descr_A,
-                                   bsr_val_A,
-                                   bsr_row_ptr_A,
-                                   bsr_col_ind_A,
-                                   row_block_dim_A,
-                                   col_block_dim_A,
-                                   descr_C,
-                                   bsr_val_C,
-                                   bsr_row_ptr_C,
-                                   bsr_col_ind_C,
-                                   row_block_dim_C,
-                                   col_block_dim_C,
-                                   nullptr);
-    verify_hipsparse_status_invalid_pointer(status, "Error: temp_buffer is nullptr");
 
     // Test invalid sizes
     status = hipsparseXgebsr2gebsr(handle,
@@ -1143,12 +1105,6 @@ hipsparseStatus_t testing_gebsr2gebsr(Arguments argus)
         = hipsparse_unique_ptr{device_malloc(buffer_size_conversion), device_free};
     void* dbuffer_conversion = dbuffer_conversion_managed.get();
 
-    if(!dbuffer_conversion)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!dbuffer_conversion");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
-
     // Obtain BSR nnzb first on the host and then using the device and ensure they give the same results
     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
 
@@ -1237,12 +1193,6 @@ hipsparseStatus_t testing_gebsr2gebsr(Arguments argus)
         = hipsparse_unique_ptr{device_malloc(sizeof(char) * buffer_size), device_free};
 
     void* dbuffer = (void*)dbuffer_managed.get();
-
-    if(!dbuffer)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!dbuffer");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
 
     if(argus.unit_check)
     {

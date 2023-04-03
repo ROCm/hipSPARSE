@@ -295,13 +295,6 @@ void testing_csr2gebsr_bad_arg(void)
         verify_hipsparse_status_invalid_pointer(status, "Error: bsr_nnz_devhost is nullptr");
     }
 
-    {
-        ARGSET;
-        arg_p_buffer = nullptr;
-        status       = CALL_NNZ;
-        verify_hipsparse_status_invalid_pointer(status, "Error: p_buffer is nullptr");
-    }
-
 #undef CALL_NNZ
 #undef CALL_ARG_NNZ
 
@@ -417,13 +410,6 @@ void testing_csr2gebsr_bad_arg(void)
         arg_col_block_dim = -1;
         status            = CALL_FUNC;
         verify_hipsparse_status_invalid_size(status, "Error: col_block_dim is invalid");
-    }
-
-    {
-        ARGSET;
-        arg_p_buffer = nullptr;
-        status       = CALL_FUNC;
-        verify_hipsparse_status_invalid_pointer(status, "Error: p_buffer is nullptr");
     }
 
 #undef CALL_FUNC

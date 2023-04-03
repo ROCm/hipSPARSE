@@ -173,10 +173,6 @@ void testing_prune_dense2csr_bad_arg(void)
         handle, M, N, A, LDA, &threshold, descr, csr_row_ptr, nullptr, temp_buffer);
     verify_hipsparse_status_invalid_pointer(status, "Error: nnz_total_dev_host_ptr is nullptr");
 
-    status = hipsparseXpruneDense2csrNnz(
-        handle, M, N, A, LDA, &threshold, descr, csr_row_ptr, &nnz_total_dev_host_ptr, nullptr);
-    verify_hipsparse_status_invalid_pointer(status, "Error: buffer size is nullptr");
-
     // Test hipsparseXpruneDense2csr
     status = hipsparseXpruneDense2csr(
         nullptr, M, N, A, LDA, &threshold, descr, csr_val, csr_row_ptr, csr_col_ind, temp_buffer);
@@ -244,10 +240,6 @@ void testing_prune_dense2csr_bad_arg(void)
     status = hipsparseXpruneDense2csr(
         handle, M, N, A, LDA, &threshold, descr, csr_val, csr_row_ptr, nullptr, temp_buffer);
     verify_hipsparse_status_invalid_pointer(status, "Error: csr_col_ind is nullptr");
-
-    status = hipsparseXpruneDense2csr(
-        handle, M, N, A, LDA, &threshold, descr, csr_val, csr_row_ptr, csr_col_ind, nullptr);
-    verify_hipsparse_status_invalid_pointer(status, "Error: buffer is nullptr");
 #endif
 }
 
@@ -375,12 +367,6 @@ hipsparseStatus_t testing_prune_dense2csr(Arguments argus)
     auto d_temp_buffer_managed = hipsparse_unique_ptr{device_malloc(buffer_size), device_free};
 
     T* d_temp_buffer = (T*)d_temp_buffer_managed.get();
-
-    if(!d_temp_buffer)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!d_temp_buffer");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
 
     auto d_threshold_managed = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
 

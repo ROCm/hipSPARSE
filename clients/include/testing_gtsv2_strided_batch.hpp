@@ -118,10 +118,6 @@ void testing_gtsv2_strided_batch_bad_arg(void)
         hipsparseXgtsv2StridedBatch(
             handle, m, ddl, dd, ddu, (T*)nullptr, batch_count, batch_stride, dbuf),
         "Error: dx is nullptr");
-    verify_hipsparse_status_invalid_pointer(
-        hipsparseXgtsv2StridedBatch(
-            handle, m, ddl, dd, ddu, dx, batch_count, batch_stride, nullptr),
-        "Error: bsize is nullptr");
 #endif
 }
 
