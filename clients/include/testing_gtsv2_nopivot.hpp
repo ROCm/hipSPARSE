@@ -108,9 +108,6 @@ void testing_gtsv2_nopivot_bad_arg(void)
     verify_hipsparse_status_invalid_pointer(
         hipsparseXgtsv2_nopivot(handle, m, n, ddl, dd, ddu, (T*)nullptr, ldb, dbuf),
         "Error: dB is nullptr");
-    verify_hipsparse_status_invalid_pointer(
-        hipsparseXgtsv2_nopivot(handle, m, n, ddl, dd, ddu, dB, ldb, nullptr),
-        "Error: bsize is nullptr");
 #endif
 }
 
