@@ -75,7 +75,8 @@ target_include_directories(hipsparse
                                    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
 if(NOT USE_CUDA)
-  target_link_libraries(hipsparse PRIVATE roc::rocsparse hip::host)
+  target_link_libraries(hipsparse PUBLIC hip::host)
+  target_link_libraries(hipsparse PRIVATE roc::rocsparse)
 else()
   target_compile_definitions(hipsparse PRIVATE __HIP_PLATFORM_NVIDIA__)
   target_include_directories(hipsparse
