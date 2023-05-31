@@ -1,5 +1,9 @@
 # Change Log for hipSPARSE
 
+## hipSPARSE 2.3.7 for ROCm 5.7.0
+### Improved
+- Minor improvements
+
 ## hipSPARSE 2.3.6 for ROCm 5.6.0
 ### Added
 - Added SpGEMM algorithms
