@@ -40,8 +40,8 @@ std::vector<double> csr_alpha_range = {3.0};
 std::vector<double> csr_beta_range  = {1.0};
 
 trans csr_trans_range[]   = {HIPSPARSE_OPERATION_NON_TRANSPOSE,
-                           HIPSPARSE_OPERATION_TRANSPOSE,
-                           HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE};
+                             HIPSPARSE_OPERATION_TRANSPOSE,
+                             HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE};
 base  csr_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
 std::string csr_bin[] = {"nos1.bin",
@@ -100,7 +100,7 @@ Arguments setup_csrmv_arguments(csrmv_bin_tuple tup)
     std::string bin_file = std::get<4>(tup);
 
     // Matrices are stored at the same path in matrices directory
-    arg.filename = hipsparse_exepath() + "../matrices/" + bin_file;
+    arg.filename = get_filename(bin_file);
 
     return arg;
 }
