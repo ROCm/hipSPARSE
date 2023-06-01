@@ -1661,10 +1661,6 @@ hipsparseStatus_t hipsparseSbsrmv(hipsparseHandle_t         handle,
                                   const float*              beta,
                                   float*                    y)
 {
-#ifdef CUDART_10_1_UPDATE_VERSION
-    std::cout << "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" << std::endl;
-#endif
-
     return hipCUSPARSEStatusToHIPStatus(cusparseSbsrmv((cusparseHandle_t)handle,
                                                        hipDirectionToCudaDirection(dirA),
                                                        hipOperationToCudaOperation(transA),
