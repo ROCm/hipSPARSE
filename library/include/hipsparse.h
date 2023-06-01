@@ -8775,7 +8775,8 @@ hipsparseStatus_t hipsparseZcsrcolor(hipsparseHandle_t         handle,
 */
 
 /* Generic API opaque structures holding information */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
+#if(!defined(CUDART_VERSION) || CUDART_VERSION > 10010 \
+    || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
 typedef void* hipsparseSpVecDescr_t;
 typedef void* hipsparseDnVecDescr_t;
 #endif
@@ -9180,7 +9181,8 @@ typedef enum
 *  \p hipsparseCreateSpVec creates a sparse vector descriptor. It should be
 *  destroyed at the end using hipsparseDestroySpVec().
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
+#if(!defined(CUDART_VERSION) || CUDART_VERSION > 10010 \
+    || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreateSpVec(hipsparseSpVecDescr_t* spVecDescr,
                                        int64_t                size,
@@ -9232,7 +9234,8 @@ hipsparseStatus_t hipsparseDestroySpVec(hipsparseSpVecDescr_t spVecDescr);
 *  \details
 *  \p hipsparseSpVecGet gets the fields of the sparse vector descriptor
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
+#if(!defined(CUDART_VERSION) || CUDART_VERSION > 10010 \
+    || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpVecGet(const hipsparseSpVecDescr_t spVecDescr,
                                     int64_t*                    size,
@@ -9278,7 +9281,8 @@ hipsparseStatus_t hipsparseSpVecGetIndexBase(const hipsparseSpVecDescr_t spVecDe
 /*! \ingroup generic_module
 *  \brief Description: Get pointer to a sparse vector data array.
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
+#if(!defined(CUDART_VERSION) || CUDART_VERSION > 10010 \
+    || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpVecGetValues(const hipsparseSpVecDescr_t spVecDescr, void** values);
 #endif
@@ -9295,7 +9299,8 @@ hipsparseStatus_t hipsparseConstSpVecGetValues(hipsparseConstSpVecDescr_t spVecD
 /*! \ingroup generic_module
 *  \brief Description: Set pointer of a sparse vector data array.
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
+#if(!defined(CUDART_VERSION) || CUDART_VERSION > 10010 \
+    || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpVecSetValues(hipsparseSpVecDescr_t spVecDescr, void* values);
 #endif
@@ -9821,7 +9826,8 @@ hipsparseStatus_t hipsparseSpMatSetAttribute(hipsparseSpMatDescr_t     spMatDesc
 *  \p hipsparseCreateDnVec creates a dense vector descriptor. It should be
 *  destroyed at the end using hipsparseDestroyDnVec().
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
+#if(!defined(CUDART_VERSION) || CUDART_VERSION > 10010 \
+    || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreateDnVec(hipsparseDnVecDescr_t* dnVecDescr,
                                        int64_t                size,
@@ -9864,7 +9870,8 @@ hipsparseStatus_t hipsparseDestroyDnVec(hipsparseDnVecDescr_t dnVecDescr);
 *  \details
 *  \p hipsparseDnVecGet gets the fields of the dense vector descriptor
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
+#if(!defined(CUDART_VERSION) || CUDART_VERSION > 10010 \
+    || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDnVecGet(const hipsparseDnVecDescr_t dnVecDescr,
                                     int64_t*                    size,
@@ -9890,7 +9897,8 @@ hipsparseStatus_t hipsparseConstDnVecGet(hipsparseConstDnVecDescr_t dnVecDescr,
 *  \details
 *  \p hipsparseDnVecGetValues gets the fields of the dense vector descriptor
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
+#if(!defined(CUDART_VERSION) || CUDART_VERSION > 10010 \
+    || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDnVecGetValues(const hipsparseDnVecDescr_t dnVecDescr, void** values);
 #endif
@@ -9911,7 +9919,8 @@ hipsparseStatus_t hipsparseConstDnVecGetValues(hipsparseConstDnVecDescr_t dnVecD
 *  \details
 *  \p hipsparseDnVecSetValues sets the fields of the dense vector descriptor
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
+#if(!defined(CUDART_VERSION) || CUDART_VERSION > 10010 \
+    || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDnVecSetValues(hipsparseDnVecDescr_t dnVecDescr, void* values);
 #endif
