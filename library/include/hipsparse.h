@@ -8775,10 +8775,13 @@ hipsparseStatus_t hipsparseZcsrcolor(hipsparseHandle_t         handle,
 */
 
 /* Generic API opaque structures holding information */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
 typedef void* hipsparseSpVecDescr_t;
-typedef void* hipsparseSpMatDescr_t;
 typedef void* hipsparseDnVecDescr_t;
+#endif
+
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
+typedef void* hipsparseSpMatDescr_t;
 typedef void* hipsparseDnMatDescr_t;
 #endif
 
@@ -9177,7 +9180,7 @@ typedef enum
 *  \p hipsparseCreateSpVec creates a sparse vector descriptor. It should be
 *  destroyed at the end using hipsparseDestroySpVec().
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreateSpVec(hipsparseSpVecDescr_t* spVecDescr,
                                        int64_t                size,
@@ -9218,7 +9221,7 @@ hipsparseStatus_t hipsparseCreateConstSpVec(hipsparseConstSpVecDescr_t* spVecDes
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroySpVec(hipsparseConstSpVecDescr_t spVecDescr);
-#elif(CUDART_VERSION >= 10010)
+#elif(CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroySpVec(hipsparseSpVecDescr_t spVecDescr);
 #endif
@@ -9229,7 +9232,7 @@ hipsparseStatus_t hipsparseDestroySpVec(hipsparseSpVecDescr_t spVecDescr);
 *  \details
 *  \p hipsparseSpVecGet gets the fields of the sparse vector descriptor
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpVecGet(const hipsparseSpVecDescr_t spVecDescr,
                                     int64_t*                    size,
@@ -9266,7 +9269,7 @@ hipsparseStatus_t hipsparseConstSpVecGet(hipsparseConstSpVecDescr_t spVecDescr,
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpVecGetIndexBase(const hipsparseConstSpVecDescr_t spVecDescr,
                                              hipsparseIndexBase_t*            idxBase);
-#elif(CUDART_VERSION >= 10010)
+#elif(CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpVecGetIndexBase(const hipsparseSpVecDescr_t spVecDescr,
                                              hipsparseIndexBase_t*       idxBase);
@@ -9275,7 +9278,7 @@ hipsparseStatus_t hipsparseSpVecGetIndexBase(const hipsparseSpVecDescr_t spVecDe
 /*! \ingroup generic_module
 *  \brief Description: Get pointer to a sparse vector data array.
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpVecGetValues(const hipsparseSpVecDescr_t spVecDescr, void** values);
 #endif
@@ -9292,7 +9295,7 @@ hipsparseStatus_t hipsparseConstSpVecGetValues(hipsparseConstSpVecDescr_t spVecD
 /*! \ingroup generic_module
 *  \brief Description: Set pointer of a sparse vector data array.
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpVecSetValues(hipsparseSpVecDescr_t spVecDescr, void* values);
 #endif
@@ -9818,7 +9821,7 @@ hipsparseStatus_t hipsparseSpMatSetAttribute(hipsparseSpMatDescr_t     spMatDesc
 *  \p hipsparseCreateDnVec creates a dense vector descriptor. It should be
 *  destroyed at the end using hipsparseDestroyDnVec().
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreateDnVec(hipsparseDnVecDescr_t* dnVecDescr,
                                        int64_t                size,
@@ -9851,7 +9854,7 @@ hipsparseStatus_t hipsparseCreateConstDnVec(hipsparseConstDnVecDescr_t* dnVecDes
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroyDnVec(hipsparseConstDnVecDescr_t dnVecDescr);
-#elif(CUDART_VERSION >= 10010)
+#elif(CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroyDnVec(hipsparseDnVecDescr_t dnVecDescr);
 #endif
@@ -9861,7 +9864,7 @@ hipsparseStatus_t hipsparseDestroyDnVec(hipsparseDnVecDescr_t dnVecDescr);
 *  \details
 *  \p hipsparseDnVecGet gets the fields of the dense vector descriptor
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDnVecGet(const hipsparseDnVecDescr_t dnVecDescr,
                                     int64_t*                    size,
@@ -9887,7 +9890,7 @@ hipsparseStatus_t hipsparseConstDnVecGet(hipsparseConstDnVecDescr_t dnVecDescr,
 *  \details
 *  \p hipsparseDnVecGetValues gets the fields of the dense vector descriptor
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDnVecGetValues(const hipsparseDnVecDescr_t dnVecDescr, void** values);
 #endif
@@ -9908,7 +9911,7 @@ hipsparseStatus_t hipsparseConstDnVecGetValues(hipsparseConstDnVecDescr_t dnVecD
 *  \details
 *  \p hipsparseDnVecSetValues sets the fields of the dense vector descriptor
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDnVecSetValues(hipsparseDnVecDescr_t dnVecDescr, void* values);
 #endif
@@ -10294,7 +10297,7 @@ hipsparseStatus_t hipsparseSpVV_bufferSize(hipsparseHandle_t          handle,
                                            void*                      result,
                                            hipDataType                computeType,
                                            size_t*                    bufferSize);
-#elif(CUDART_VERSION >= 10010)
+#elif(CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpVV_bufferSize(hipsparseHandle_t     handle,
                                            hipsparseOperation_t  opX,
@@ -10321,7 +10324,7 @@ hipsparseStatus_t hipsparseSpVV(hipsparseHandle_t          handle,
                                 void*                      result,
                                 hipDataType                computeType,
                                 void*                      externalBuffer);
-#elif(CUDART_VERSION >= 10010)
+#elif(CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpVV(hipsparseHandle_t     handle,
                                 hipsparseOperation_t  opX,
@@ -10351,7 +10354,7 @@ hipsparseStatus_t hipsparseSpMV_bufferSize(hipsparseHandle_t           handle,
                                            hipDataType                 computeType,
                                            hipsparseSpMVAlg_t          alg,
                                            size_t*                     bufferSize);
-#elif(CUDART_VERSION >= 10010)
+#elif(CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpMV_bufferSize(hipsparseHandle_t           handle,
                                            hipsparseOperation_t        opA,
@@ -10416,7 +10419,7 @@ hipsparseStatus_t hipsparseSpMV(hipsparseHandle_t           handle,
                                 hipDataType                 computeType,
                                 hipsparseSpMVAlg_t          alg,
                                 void*                       externalBuffer);
-#elif(CUDART_VERSION >= 10010)
+#elif(CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpMV(hipsparseHandle_t           handle,
                                 hipsparseOperation_t        opA,
