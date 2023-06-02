@@ -90,7 +90,7 @@ else()
         COMMAND
         dumpbin /EXPORTS ${CUDA_cusparse_LIBRARY}
         COMMAND
-        find ${SEARCH_SYMBOL}
+        findstr ${SEARCH_SYMBOL}
         OUTPUT_VARIABLE SEARCH_RESULTS
         ERROR_VARIABLE ERR)
   else()
