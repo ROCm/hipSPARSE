@@ -1,6 +1,10 @@
 # Change Log for hipSPARSE
 
-## hipSPARSE 2.3.6
+## hipSPARSE 2.3.7
+### Improved
+- Fix compilation failures when using cusparse 10.1 (non-update versions) as backend
+
+## hipSPARSE 2.3.6 for ROCm 5.6.0
 ### Added
 - Added SpGEMM algorithms
 ### Changed
