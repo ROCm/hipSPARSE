@@ -115,7 +115,7 @@ Arguments setup_bsrmm_arguments(bsrmm_bin_tuple tup)
     std::string bin_file = std::get<8>(tup);
 
     // Matrices are stored at the same path in matrices directory
-    arg.filename = hipsparse_exepath() + "../matrices/" + bin_file;
+    arg.filename = get_filename(bin_file);
 
     return arg;
 }

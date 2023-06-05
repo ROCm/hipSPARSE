@@ -23,6 +23,8 @@ function display_help()
   echo "    [--cuda] build library for cuda backend"
   echo "    [--static] build static library"
   echo "    [--address-sanitizer] build with address sanitizer enabled. Uses hipcc to compile"
+  echo "    [--matrices-dir] existing client matrices directory"
+  echo "    [--matrices-dir-install] install client matrices directory"
   echo "    [--rm-legacy-include-dir] Remove legacy include dir Packaging added for file/folder reorg backward compatibility."
 }
 
@@ -263,7 +265,7 @@ compiler=${CXX}
 # check if we have a modern version of getopt that can handle whitespace and long parameters
 getopt -T
 if [[ $? -eq 4 ]]; then
-  GETOPT_PARSE=$(getopt --name "${0}" --longoptions help,install,clients,dependencies,debug,compiler:,cuda,static,relocatable,codecoverage,relwithdebinfo,address-sanitizer,rm-legacy-include-dir --options hicdgrk -- "$@")
+  GETOPT_PARSE=$(getopt --name "${0}" --longoptions help,install,clients,dependencies,debug,compiler:,cuda,static,relocatable,codecoverage,relwithdebinfo,address-sanitizer,matrices-dir:,matrices-dir-install:,rm-legacy-include-dir --options hicdgrk -- "$@")
 else
   echo "Need a new version of getopt"
   exit 1
@@ -320,6 +322,20 @@ while true; do
     --rm-legacy-include-dir)
         build_freorg_bkwdcomp=false
         shift ;;
+    --matrices-dir)
+        matrices_dir=${2}
+        if [[ "${matrices_dir}" == "" ]];then
+            echo "Missing argument from command line parameter --matrices-dir; aborting"
+            exit 1
+        fi
+        shift 2 ;;
+    --matrices-dir-install)
+        matrices_dir_install=${2}
+        if [[ "${matrices_dir_install}" == "" ]];then
+            echo "Missing argument from command line parameter --matrices-dir-install; aborting"
+            exit 1
+        fi
+        shift 2 ;;
     --prefix)
         install_prefix=${2}
         shift 2 ;;
@@ -346,6 +362,32 @@ if [[ "${build_relocatable}" == true ]]; then
         rocm_rpath=" -Wl,--enable-new-dtags -Wl,--rpath,${ROCM_RPATH}"
     fi
 fi
+
+
+#
+# If matrices_dir_install has been set up then install matrices dir and exit.
+#
+if ! [[ "${matrices_dir_install}" == "" ]];then
+    cmake -DCMAKE_CXX_COMPILER="${rocm_path}/bin/hipcc" -DCMAKE_C_COMPILER="${rocm_path}/bin/hipcc"  -DPROJECT_BINARY_DIR=${matrices_dir_install} -DCMAKE_MATRICES_DIR=${matrices_dir_install} -P ./cmake/ClientMatrices.cmake
+    exit 0
+fi
+
+#
+# If matrices_dir has been set up then check if it exists and it contains expected files.
+# If it doesn't contain expected file, it will create them.
+#
+if ! [[ "${matrices_dir}" == "" ]];then
+    if ! [ -e ${matrices_dir} ];then
+        echo "Invalid dir from command line parameter --matrices-dir: ${matrices_dir}; aborting";
+        exit 1
+    fi
+
+    # Let's 'reinstall' to the specified location to check if all good
+    # Will be fast if everything already exists as expected.
+    # This is to prevent any empty directory.
+    cmake -DCMAKE_CXX_COMPILER="${rocm_path}/bin/hipcc" -DCMAKE_C_COMPILER="${rocm_path}/bin/hipcc" -DPROJECT_BINARY_DIR=${matrices_dir} -DCMAKE_MATRICES_DIR=${matrices_dir} -P ./cmake/ClientMatrices.cmake
+fi
+
 
 build_dir=./build
 printf "\033[32mCreating project build directory in: \033[33m${build_dir}\033[0m\n"
@@ -447,6 +489,12 @@ pushd .
   # clients
   if [[ "${build_clients}" == true ]]; then
     cmake_client_options="${cmake_client_options} -DBUILD_CLIENTS_SAMPLES=ON -DBUILD_CLIENTS_TESTS=ON"
+    #
+    # Add matrices_dir if exists.
+    #
+    if ! [[ "${matrices_dir}" == "" ]];then
+        cmake_client_options="${cmake_client_options} -DCMAKE_MATRICES_DIR=${matrices_dir}"
+    fi
   fi
 
   # cpack
