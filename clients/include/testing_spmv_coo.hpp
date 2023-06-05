@@ -50,12 +50,12 @@ void testing_spmv_coo_bad_arg(void)
     hipDataType          dataType  = HIP_R_32F;
 
 #if(!defined(CUDART_VERSION))
-    hipsparseSpMVAlg_t   alg       = HIPSPARSE_MV_ALG_DEFAULT;
+    hipsparseSpMVAlg_t alg = HIPSPARSE_MV_ALG_DEFAULT;
 #else
 #if(CUDART_VERSION >= 12000)
-    hipsparseSpMVAlg_t   alg       = HIPSPARSE_SPMV_COO_ALG1;
+    hipsparseSpMVAlg_t alg = HIPSPARSE_SPMV_COO_ALG1;
 #elif(CUDART_VERSION >= 10010 && CUDART_VERSION < 12000)
-    hipsparseSpMVAlg_t   alg       = HIPSPARSE_MV_ALG_DEFAULT;
+    hipsparseSpMVAlg_t alg = HIPSPARSE_MV_ALG_DEFAULT;
 #endif
 #endif
 
@@ -158,12 +158,12 @@ hipsparseStatus_t testing_spmv_coo(void)
     hipsparseIndexBase_t idx_base = HIPSPARSE_INDEX_BASE_ZERO;
 
 #if(!defined(CUDART_VERSION))
-    hipsparseSpMVAlg_t   alg      = HIPSPARSE_COOMV_ALG;
+    hipsparseSpMVAlg_t alg = HIPSPARSE_COOMV_ALG;
 #else
 #if(CUDART_VERSION >= 12000)
-    hipsparseSpMVAlg_t   alg       = HIPSPARSE_SPMV_COO_ALG1;
+    hipsparseSpMVAlg_t alg = HIPSPARSE_SPMV_COO_ALG1;
 #elif(CUDART_VERSION >= 10010 && CUDART_VERSION < 12000)
-    hipsparseSpMVAlg_t   alg      = HIPSPARSE_COOMV_ALG;
+    hipsparseSpMVAlg_t alg = HIPSPARSE_COOMV_ALG;
 #endif
 #endif
 

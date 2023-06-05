@@ -50,12 +50,12 @@ void testing_spmv_coo_aos_bad_arg(void)
     hipDataType          dataType  = HIP_R_32F;
 
 #if(!defined(CUDART_VERSION))
-    hipsparseSpMVAlg_t   alg       = HIPSPARSE_MV_ALG_DEFAULT;
+    hipsparseSpMVAlg_t alg = HIPSPARSE_MV_ALG_DEFAULT;
 #else
 #if(CUDART_VERSION >= 12000)
-    hipsparseSpMVAlg_t   alg       = HIPSPARSE_SPMV_ALG_DEFAULT;
+    hipsparseSpMVAlg_t alg = HIPSPARSE_SPMV_ALG_DEFAULT;
 #elif(CUDART_VERSION >= 10010 && CUDART_VERSION < 12000)
-    hipsparseSpMVAlg_t   alg       = HIPSPARSE_MV_ALG_DEFAULT;
+    hipsparseSpMVAlg_t alg = HIPSPARSE_MV_ALG_DEFAULT;
 #endif
 #endif
 
