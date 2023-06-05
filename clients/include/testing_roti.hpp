@@ -38,10 +38,6 @@ using namespace hipsparse_test;
 template <typename T>
 void testing_roti_bad_arg(void)
 {
-    //#ifdef __HIP_PLATFORM_NVCC__
-    //    // do not test for bad args
-    //    return;
-    //#endif
     int nnz       = 100;
     int safe_size = 100;
     T   c         = 3.7;

@@ -40,10 +40,7 @@ using namespace hipsparse_test;
 template <typename T>
 void testing_csr2bsr_bad_arg(void)
 {
-#ifdef __HIP_PLATFORM_NVIDIA__
-    // do not test for bad args
-    return;
-#endif
+#if(!defined(CUDART_VERSION))
     int                  m            = 100;
     int                  n            = 100;
     int                  safe_size    = 100;
@@ -395,6 +392,7 @@ void testing_csr2bsr_bad_arg(void)
                                bsr_row_ptr,
                                bsr_col_ind);
     verify_hipsparse_status_invalid_size(status, "Error: block_dim is invalid");
+#endif
 }
 
 template <typename T>

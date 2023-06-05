@@ -39,10 +39,7 @@ using namespace hipsparse_test;
 template <typename T>
 void testing_csrgeam_bad_arg(void)
 {
-#ifdef __HIP_PLATFORM_NVIDIA__
-    // do not test for bad args
-    return;
-#endif
+#if(!defined(CUDART_VERSION))
     int safe_size = 100;
 
     T alpha = 1.0;
@@ -682,6 +679,7 @@ void testing_csrgeam_bad_arg(void)
                                                            dCptr,
                                                            dCcol),
                                          "Error: invalid nnz_B size");
+#endif
 }
 
 template <typename T>

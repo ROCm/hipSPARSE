@@ -39,10 +39,7 @@ using namespace hipsparse_test;
 
 void testing_cscsort_bad_arg(void)
 {
-#ifdef __HIP_PLATFORM_NVIDIA__
-    // do not test for bad args
-    return;
-#endif
+#if(!defined(CUDART_VERSION))
     int               m         = 100;
     int               n         = 100;
     int               nnz       = 100;
@@ -160,6 +157,7 @@ void testing_cscsort_bad_arg(void)
             handle_null, m, n, nnz, descr, csc_col_ptr, csc_row_ind, perm, buffer);
         verify_hipsparse_status_invalid_handle(status);
     }
+#endif
 }
 
 hipsparseStatus_t testing_cscsort(Arguments argus)

@@ -39,10 +39,7 @@ using namespace hipsparse_test;
 template <typename T>
 void testing_gemmi_bad_arg(void)
 {
-#ifdef __HIP_PLATFORM_NVIDIA__
-    // do not test for bad args
-    return;
-#endif
+#if(!defined(CUDART_VERSION))
     int safe_size = 100;
     T   alpha     = 0.6;
     T   beta      = 0.2;
@@ -277,6 +274,7 @@ void testing_gemmi_bad_arg(void)
                                                             dC,
                                                             -1),
                                          "Error: ldc is invalid");
+#endif
 }
 
 template <typename T>

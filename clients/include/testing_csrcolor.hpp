@@ -40,10 +40,7 @@ using namespace hipsparse_test;
 template <typename T>
 void testing_csrcolor_bad_arg(void)
 {
-#ifdef __HIP_PLATFORM_NVIDIA__
-    // do not test for bad args
-    return;
-#endif
+#if(!defined(CUDART_VERSION))
 
     static constexpr int M               = 10;
     static constexpr int NNZ             = 10;
@@ -228,6 +225,7 @@ void testing_csrcolor_bad_arg(void)
                                    d_reordering,
                                    colorInfo);
     verify_hipsparse_status_invalid_pointer(status, "Error: an invalid value must be detected.u");
+#endif
 }
 
 template <typename T>
