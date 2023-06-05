@@ -11002,8 +11002,8 @@ hipsparseStatus_t hipsparseCreateCsr(hipsparseSpMatDescr_t* spMatDescr,
 }
 #endif
 
-#if(CUDART_VERSION >= 12000)
-hipsparseStatus_t hipsparseConstCreateCsr(hipsparseConstSpMatDescr_t* spMatDescr,
+#if(CUDART_VERSION >= 12001)
+hipsparseStatus_t hipsparseCreateConstCsr(hipsparseConstSpMatDescr_t* spMatDescr,
                                           int64_t                     rows,
                                           int64_t                     cols,
                                           int64_t                     nnz,
@@ -11016,7 +11016,7 @@ hipsparseStatus_t hipsparseConstCreateCsr(hipsparseConstSpMatDescr_t* spMatDescr
                                           hipDataType                 valueType)
 {
     return hipCUSPARSEStatusToHIPStatus(
-        cusparseConstCreateCsr((cusparseConstSpMatDescr_t*)spMatDescr,
+        cusparseCreateConstCsr((cusparseConstSpMatDescr_t*)spMatDescr,
                                rows,
                                cols,
                                nnz,
@@ -11693,7 +11693,7 @@ hipsparseStatus_t hipsparseDnVecGetValues(const hipsparseDnVecDescr_t dnVecDescr
 }
 #endif
 
-#if(CUDART_VERSION >= 12000)
+#if(CUDART_VERSION >= 12001)
 hipsparseStatus_t hipsparseConstDnVecGetValues(hipsparseConstDnVecDescr_t dnVecDescr, void** values)
 {
     return hipCUSPARSEStatusToHIPStatus(
@@ -12242,7 +12242,7 @@ hipsparseStatus_t hipsparseSpMV_preprocess(hipsparseHandle_t           handle,
 
     return HIPSPARSE_STATUS_SUCCESS;
 }
-#elif(CUDART_VERSION >= 10010)
+#elif(CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
 hipsparseStatus_t hipsparseSpMV_preprocess(hipsparseHandle_t handle,
                                            hipsparseOperation_t opA,
                                            const void* alpha,

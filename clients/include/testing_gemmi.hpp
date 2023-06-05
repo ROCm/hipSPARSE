@@ -282,6 +282,7 @@ void testing_gemmi_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_gemmi(Arguments argus)
 {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     int               safe_size = 100;
     int               M         = argus.M;
     int               N         = argus.N;
@@ -563,6 +564,7 @@ hipsparseStatus_t testing_gemmi(Arguments argus)
         unit_check_near(M, N, ldc, hC_gold.data(), hC_1.data());
         unit_check_near(M, N, ldc, hC_gold.data(), hC_2.data());
     }
+#endif
 
     return HIPSPARSE_STATUS_SUCCESS;
 }

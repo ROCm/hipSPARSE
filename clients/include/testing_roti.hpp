@@ -94,6 +94,7 @@ void testing_roti_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_roti(Arguments argus)
 {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     int                  N         = argus.N;
     int                  nnz       = argus.nnz;
     T                    c         = argus.alpha;
@@ -235,6 +236,7 @@ hipsparseStatus_t testing_roti(Arguments argus)
         unit_check_general(1, N, 1, hy_gold.data(), hy_1.data());
         unit_check_general(1, N, 1, hy_gold.data(), hy_2.data());
     }
+#endif
 
     return HIPSPARSE_STATUS_SUCCESS;
 }

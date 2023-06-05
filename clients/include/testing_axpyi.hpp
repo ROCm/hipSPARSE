@@ -106,6 +106,7 @@ void testing_axpyi_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_axpyi(Arguments argus)
 {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     int                  N         = argus.N;
     int                  nnz       = argus.nnz;
     int                  safe_size = 100;
@@ -225,6 +226,7 @@ hipsparseStatus_t testing_axpyi(Arguments argus)
             unit_check_general(1, N, 1, hy_gold.data(), hy_2.data());
         }
     }
+#endif
 
     return HIPSPARSE_STATUS_SUCCESS;
 }

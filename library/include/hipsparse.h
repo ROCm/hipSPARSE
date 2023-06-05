@@ -9394,7 +9394,7 @@ hipsparseStatus_t hipsparseCreateCsr(hipsparseSpMatDescr_t* spMatDescr,
 *  \p hipsparseCreateConstCsr creates a sparse CSR matrix descriptor. It should be
 *  destroyed at the end using \p hipsparseDestroySpMat.
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12001)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreateConstCsr(hipsparseConstSpMatDescr_t* spMatDescr,
                                           int64_t                     rows,
@@ -9908,7 +9908,7 @@ hipsparseStatus_t hipsparseDnVecGetValues(const hipsparseDnVecDescr_t dnVecDescr
 *  \details
 *  \p hipsparseConstDnVecGetValues gets the fields of the dense vector descriptor
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12001)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseConstDnVecGetValues(hipsparseConstDnVecDescr_t dnVecDescr,
                                                const void**               values);
@@ -10396,7 +10396,7 @@ hipsparseStatus_t hipsparseSpMV_preprocess(hipsparseHandle_t           handle,
                                            hipDataType                 computeType,
                                            hipsparseSpMVAlg_t          alg,
                                            void*                       externalBuffer);
-#elif(CUDART_VERSION >= 10010)
+#elif(CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpMV_preprocess(hipsparseHandle_t           handle,
                                            hipsparseOperation_t        opA,

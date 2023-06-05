@@ -435,6 +435,7 @@ void testing_csrsv2_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_csrsv2(Arguments argus)
 {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     int                    safe_size = 100;
     int                    m         = argus.M;
     hipsparseIndexBase_t   idx_base  = argus.idx_base;
@@ -794,6 +795,7 @@ hipsparseStatus_t testing_csrsv2(Arguments argus)
         unit_check_near(1, m, 1, hy_gold.data(), hy_1.data());
         unit_check_near(1, m, 1, hy_gold.data(), hy_2.data());
     }
+#endif
 
     return HIPSPARSE_STATUS_SUCCESS;
 }

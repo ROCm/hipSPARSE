@@ -25,6 +25,8 @@
 
 #include <hipsparse.h>
 
+// Only run tests for CUDA 11.1 or greater
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(spmm_coo_bad_arg, spmm_coo_float)
 {
     testing_spmm_coo_bad_arg();
@@ -47,3 +49,4 @@ TEST(spmm_coo, spmm_coo_i64_hipComplex)
     hipsparseStatus_t status = testing_spmm_coo<int32_t, hipComplex>();
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+#endif
