@@ -233,7 +233,7 @@ hipsparseStatus_t testing_csrcolor()
 {
     // Determine absolute path of test matrix
     // Matrices are stored at the same path in matrices directory
-    std::string filename = hipsparse_exepath() + "../matrices/nos3.bin";
+    std::string filename = get_filename("nos3.bin");
 
     // hipSPARSE handle
     std::unique_ptr<handle_struct> test_handle(new handle_struct);

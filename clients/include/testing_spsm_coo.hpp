@@ -191,7 +191,7 @@ hipsparseStatus_t testing_spsm_coo(void)
     hipsparseOrder_t     order    = HIPSPARSE_ORDER_COL;
     hipsparseSpSMAlg_t   alg      = HIPSPARSE_SPSM_ALG_DEFAULT;
 
-    std::string filename = hipsparse_exepath() + "../matrices/nos3.bin";
+    std::string filename = get_filename("nos3.bin");
 
     // Index and data type
     hipsparseIndexType_t typeI
