@@ -111,7 +111,7 @@ Arguments setup_csr2bsr_arguments(csr2bsr_bin_tuple tup)
     std::string bin_file = std::get<4>(tup);
 
     // Matrices are stored at the same path in matrices directory
-    arg.filename = hipsparse_exepath() + "../matrices/" + bin_file;
+    arg.filename = get_filename(bin_file);
 
     return arg;
 }

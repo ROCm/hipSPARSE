@@ -176,7 +176,7 @@ hipsparseStatus_t testing_spsv_coo(void)
     hipsparseFillMode_t  uplo     = HIPSPARSE_FILL_MODE_LOWER;
     hipsparseSpSVAlg_t   alg      = HIPSPARSE_SPSV_ALG_DEFAULT;
 
-    std::string filename = hipsparse_exepath() + "../matrices/nos3.bin";
+    std::string filename = get_filename("nos3.bin");
 
     // Index and data type
     hipsparseIndexType_t typeI

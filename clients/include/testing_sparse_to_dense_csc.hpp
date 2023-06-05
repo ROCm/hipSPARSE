@@ -138,7 +138,7 @@ hipsparseStatus_t testing_sparse_to_dense_csc(void)
     hipsparseOrder_t            order    = HIPSPARSE_ORDER_COL;
 
     // Matrices are stored at the same path in matrices directory
-    std::string filename = hipsparse_exepath() + "../matrices/nos3.bin";
+    std::string filename = get_filename("nos3.bin");
 
     // Index and data type
     hipsparseIndexType_t typeI

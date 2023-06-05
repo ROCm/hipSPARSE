@@ -6043,4 +6043,24 @@ public:
     }
 };
 
+const char* get_hipsparse_clients_matrices_dir();
+
+inline std::string get_filename(const std::string& bin_file)
+{
+    const char* matrices_dir = get_hipsparse_clients_matrices_dir();
+    if(matrices_dir == nullptr)
+    {
+        matrices_dir = getenv("HIPSPARSE_CLIENTS_MATRICES_DIR");
+    }
+
+    if(matrices_dir != nullptr)
+    {
+        return matrices_dir + bin_file;
+    }
+    else
+    {
+        return hipsparse_exepath() + "../matrices/" + bin_file;
+    }
+}
+
 #endif // TESTING_UTILITY_HPP

@@ -215,7 +215,7 @@ hipsparseStatus_t testing_spmm_csr()
 #endif
 
     // Matrices are stored at the same path in matrices directory
-    std::string filename = hipsparse_exepath() + "../matrices/nos3.bin";
+    std::string filename = get_filename("nos3.bin");
 
     // Index and data type
     hipsparseIndexType_t typeI
