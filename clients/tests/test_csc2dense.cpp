@@ -54,8 +54,8 @@ Arguments setup_csc2dense_arguments(csc2dense_tuple tup)
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
+// Only run tests for CUDA 11.1 or greater (removed in cusparse 12.0.0)
+#if(!defined(CUDART_VERSION) || (CUDART_VERSION >= 11010 & CUDART_VERSION < 12000))
 TEST(csc2dense_bad_arg, csc2dense)
 {
     testing_csc2dense_bad_arg<float>();

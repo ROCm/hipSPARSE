@@ -37,7 +37,7 @@ using namespace hipsparse_test;
 
 void testing_const_spmat_descr_bad_arg(void)
 {
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12001)
     int64_t rows          = 100;
     int64_t cols          = 100;
     int64_t nnz           = 100;

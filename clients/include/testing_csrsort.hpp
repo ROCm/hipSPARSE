@@ -162,6 +162,7 @@ void testing_csrsort_bad_arg(void)
 
 hipsparseStatus_t testing_csrsort(Arguments argus)
 {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     int                  m         = argus.M;
     int                  n         = argus.N;
     int                  safe_size = 100;
@@ -434,6 +435,7 @@ hipsparseStatus_t testing_csrsort(Arguments argus)
             unit_check_general(1, nnz, 1, hcsr_val.data(), hcsr_val_unsorted.data());
         }
     }
+#endif
 
     return HIPSPARSE_STATUS_SUCCESS;
 }
