@@ -202,7 +202,7 @@ hipsparseStatus_t testing_sddmm_coo()
     hipsparseSDDMMAlg_t  alg      = HIPSPARSE_SDDMM_ALG_DEFAULT;
 
     // Matrices are stored at the same path in matrices directory
-    std::string filename = hipsparse_exepath() + "../matrices/nos3.bin";
+    std::string filename = get_filename("nos3.bin");
 
     // Index and data type
     hipsparseIndexType_t typeI
