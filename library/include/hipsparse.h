@@ -9121,7 +9121,7 @@ typedef enum
  *  This is a list of the \ref hipsparseSpMatAttribute_t types that are used by the hipSPARSE
  *  library.
  */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11030)
 typedef enum
 {
     HIPSPARSE_SPMAT_FILL_MODE = 0, /**< Fill mode attribute */
@@ -9799,7 +9799,7 @@ hipsparseStatus_t hipsparseSpMatGetAttribute(hipsparseConstSpMatDescr_t spMatDes
                                              hipsparseSpMatAttribute_t  attribute,
                                              void*                      data,
                                              size_t                     dataSize);
-#elif(CUDART_VERSION >= 10010)
+#elif(CUDART_VERSION >= 11030)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpMatGetAttribute(hipsparseSpMatDescr_t     spMatDescr,
                                              hipsparseSpMatAttribute_t attribute,
@@ -9810,7 +9810,7 @@ hipsparseStatus_t hipsparseSpMatGetAttribute(hipsparseSpMatDescr_t     spMatDesc
 /*! \ingroup generic_module
 *  \brief Description: Set attribute in sparse matrix descriptor
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11030)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpMatSetAttribute(hipsparseSpMatDescr_t     spMatDescr,
                                              hipsparseSpMatAttribute_t attribute,

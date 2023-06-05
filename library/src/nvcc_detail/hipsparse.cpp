@@ -11583,7 +11583,7 @@ hipsparseStatus_t hipsparseSpMatGetAttribute(hipsparseConstSpMatDescr_t spMatDes
                                   data,
                                   dataSize));
 }
-#elif(CUDART_VERSION >= 11031)
+#elif(CUDART_VERSION >= 11030)
 hipsparseStatus_t hipsparseSpMatGetAttribute(hipsparseSpMatDescr_t spMatDescr,
                                              hipsparseSpMatAttribute_t attribute,
                                              void* data,
@@ -11594,7 +11594,7 @@ hipsparseStatus_t hipsparseSpMatGetAttribute(hipsparseSpMatDescr_t spMatDescr,
 }
 #endif
 
-#if(CUDART_VERSION >= 11031)
+#if(CUDART_VERSION >= 11030)
 hipsparseStatus_t hipsparseSpMatSetAttribute(hipsparseSpMatDescr_t     spMatDescr,
                                              hipsparseSpMatAttribute_t attribute,
                                              const void*               data,
