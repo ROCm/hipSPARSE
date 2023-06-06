@@ -11686,7 +11686,7 @@ hipsparseStatus_t hipsparseConstDnVecGet(hipsparseConstDnVecDescr_t dnVecDescr,
 #endif
 
 #if(CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
-hipsparseStatus_t hipsparseDnVecGetValues(const hipsparseDnVecDescr_t dnVecDescr, void** values)
+hipsparseStatus_t hipsparseDnVecGetValues(const hipsparseDnVecDescr_t dnVecDescr, void**  values)
 {
     return hipCUSPARSEStatusToHIPStatus(
         cusparseDnVecGetValues((const cusparseDnVecDescr_t)dnVecDescr, values));
