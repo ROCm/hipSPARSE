@@ -11694,7 +11694,7 @@ hipsparseStatus_t hipsparseDnVecGetValues(const hipsparseDnVecDescr_t dnVecDescr
 #endif
 
 #if(CUDART_VERSION >= 12001)
-hipsparseStatus_t hipsparseConstDnVecGetValues(hipsparseConstDnVecDescr_t dnVecDescr, void** values)
+hipsparseStatus_t hipsparseConstDnVecGetValues(hipsparseConstDnVecDescr_t dnVecDescr, const void** values)
 {
     return hipCUSPARSEStatusToHIPStatus(
         cusparseConstDnVecGetValues((const cusparseConstDnVecDescr_t)dnVecDescr, values));
