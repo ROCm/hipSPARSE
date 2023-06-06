@@ -1,14 +1,13 @@
 
 if (DEFINED ENV{HIP_PATH})
-  file(TO_CMAKE_PATH "$ENV{HIP_PATH}" HIP_PATH)
-  set(rocm_bin "${HIP_PATH}/bin")
+  file(TO_CMAKE_PATH "$ENV{HIP_PATH}" HIP_DIR)
+  set(rocm_bin "${HIP_DIR}/bin")
+elseif (DEFINED ENV{HIP_DIR})
+  file(TO_CMAKE_PATH "$ENV{HIP_DIR}" HIP_DIR)
+  set(rocm_bin "${HIP_DIR}/bin")
 else()
-  set(HIP_PATH "C:/hip")
+  set(HIP_DIR "C:/hip")
   set(rocm_bin "C:/hip/bin")
-endif()
-
-if (DEFINED ENV{HIP_DIR})
-    file(TO_CMAKE_PATH "$ENV{HIP_DIR}" HIP_DIR)
 endif()
 
 set(CMAKE_CXX_COMPILER "${rocm_bin}/clang++.exe")
