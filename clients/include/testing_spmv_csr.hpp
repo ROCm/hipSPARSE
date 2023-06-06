@@ -48,7 +48,16 @@ void testing_spmv_csr_bad_arg(void)
     hipsparseIndexBase_t idxBase   = HIPSPARSE_INDEX_BASE_ZERO;
     hipsparseIndexType_t idxType   = HIPSPARSE_INDEX_32I;
     hipDataType          dataType  = HIP_R_32F;
-    hipsparseSpMVAlg_t   alg       = HIPSPARSE_MV_ALG_DEFAULT;
+
+#if(!defined(CUDART_VERSION))
+    hipsparseSpMVAlg_t alg = HIPSPARSE_MV_ALG_DEFAULT;
+#else
+#if(CUDART_VERSION >= 12000)
+    hipsparseSpMVAlg_t alg = HIPSPARSE_SPMV_ALG_DEFAULT;
+#elif(CUDART_VERSION >= 10010 && CUDART_VERSION < 12000)
+    hipsparseSpMVAlg_t alg = HIPSPARSE_MV_ALG_DEFAULT;
+#endif
+#endif
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -171,7 +180,16 @@ hipsparseStatus_t testing_spmv_csr(void)
     T                    h_beta   = make_DataType<T>(1.0);
     hipsparseOperation_t transA   = HIPSPARSE_OPERATION_NON_TRANSPOSE;
     hipsparseIndexBase_t idx_base = HIPSPARSE_INDEX_BASE_ZERO;
-    hipsparseSpMVAlg_t   alg      = HIPSPARSE_CSRMV_ALG2;
+
+#if(!defined(CUDART_VERSION))
+    hipsparseSpMVAlg_t alg = HIPSPARSE_CSRMV_ALG2;
+#else
+#if(CUDART_VERSION >= 12000)
+    hipsparseSpMVAlg_t alg = HIPSPARSE_SPMV_CSR_ALG2;
+#elif(CUDART_VERSION >= 10010 && CUDART_VERSION < 12000)
+    hipsparseSpMVAlg_t alg = HIPSPARSE_CSRMV_ALG2;
+#endif
+#endif
 
     // Matrices are stored at the same path in matrices directory
     std::string filename = get_filename("nos3.bin");

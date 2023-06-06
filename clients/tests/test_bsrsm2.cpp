@@ -25,6 +25,8 @@
 
 #include <hipsparse.h>
 
+// Only run tests for CUDA 11.1 or greater
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(bsrsm2_bad_arg, bsrsm2_float)
 {
     testing_bsrsm2_bad_arg();
@@ -53,3 +55,4 @@ TEST(bsrsm2, bsrsm2_hipDoubleComplex)
     hipsparseStatus_t status = testing_bsrsm2<hipDoubleComplex>();
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+#endif

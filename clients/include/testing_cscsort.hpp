@@ -39,10 +39,7 @@ using namespace hipsparse_test;
 
 void testing_cscsort_bad_arg(void)
 {
-#ifdef __HIP_PLATFORM_NVIDIA__
-    // do not test for bad args
-    return;
-#endif
+#if(!defined(CUDART_VERSION))
     int               m         = 100;
     int               n         = 100;
     int               nnz       = 100;
@@ -160,10 +157,12 @@ void testing_cscsort_bad_arg(void)
             handle_null, m, n, nnz, descr, csc_col_ptr, csc_row_ind, perm, buffer);
         verify_hipsparse_status_invalid_handle(status);
     }
+#endif
 }
 
 hipsparseStatus_t testing_cscsort(Arguments argus)
 {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     int                  m         = argus.M;
     int                  n         = argus.N;
     int                  safe_size = 100;
@@ -441,6 +440,7 @@ hipsparseStatus_t testing_cscsort(Arguments argus)
             unit_check_general(1, nnz, 1, hcsc_val.data(), hcsc_val_unsorted.data());
         }
     }
+#endif
 
     return HIPSPARSE_STATUS_SUCCESS;
 }

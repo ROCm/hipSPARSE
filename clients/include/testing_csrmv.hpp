@@ -40,10 +40,7 @@ using namespace hipsparse_test;
 template <typename T>
 void testing_csrmv_bad_arg(void)
 {
-#ifdef __HIP_PLATFORM_NVIDIA__
-    // do not test for bad args
-    return;
-#endif
+#if(!defined(CUDART_VERSION))
     int                  n         = 100;
     int                  m         = 100;
     int                  nnz       = 100;
@@ -149,6 +146,7 @@ void testing_csrmv_bad_arg(void)
             handle_null, transA, m, n, nnz, &alpha, descr, dval, dptr, dcol, dx, &beta, dy);
         verify_hipsparse_status_invalid_handle(status);
     }
+#endif
 }
 
 template <typename T>

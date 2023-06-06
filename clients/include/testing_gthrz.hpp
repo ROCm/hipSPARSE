@@ -96,6 +96,7 @@ void testing_gthrz_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_gthrz(Arguments argus)
 {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     int                  N         = argus.N;
     int                  nnz       = argus.nnz;
     int                  safe_size = 100;
@@ -195,6 +196,7 @@ hipsparseStatus_t testing_gthrz(Arguments argus)
         unit_check_general(1, nnz, 1, hx_val_gold.data(), hx_val.data());
         unit_check_general(1, N, 1, hy_gold.data(), hy.data());
     }
+#endif
 
     return HIPSPARSE_STATUS_SUCCESS;
 }
