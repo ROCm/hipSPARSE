@@ -1,32 +1,24 @@
 #!/usr/bin/python3
+"""Copyright (C) 2021-2023 Advanced Micro Devices, Inc. All rights reserved.
 
-# ########################################################################
-# Copyright (C) 2021 Advanced Micro Devices, Inc. All rights Reserved.
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-# THE SOFTWARE.
-#
-# ########################################################################
-#
-# Author: rocsparse-maintainer@amd.com
-#
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
 
-"""Copyright 2021 Advanced Micro Devices, Inc. All rights Reserved.
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
+
 Manage build and installation"""
 
 import re
@@ -116,25 +108,22 @@ def config_cmd():
     global args
     global OS_info
     cwd_path = os.getcwd()
-    cmake_executable = ""
+    cmake_executable = "cmake"
     cmake_options = []
     src_path = cmake_path(cwd_path)
     cmake_platform_opts = []
     if os.name == "nt":
-        # not really rocm path as none exist, HIP_DIR set in toolchain is more important
-        rocm_path = os.getenv( 'ROCM_CMAKE_PATH', "C:/github/rocm-cmake-master/share/rocm")
-        cmake_executable = "cmake"
-        #set CPACK_PACKAGING_INSTALL_PREFIX= defined as blank as it is appended to end of path for archive creation
-        cmake_platform_opts.append( f"-DCPACK_PACKAGING_INSTALL_PREFIX={rocm_path}" )
         generator = f"-G Ninja"
         cmake_options.append( generator )
+        # CMAKE_PREFIX_PATH set to rocm_path and HIP_PATH set BY SDK Installer
+        raw_rocm_path = cmake_path(os.getenv('HIP_PATH', "C:/hip"))
+        rocm_path = f'"{raw_rocm_path}"' # guard against spaces in path
+       
+        #set CPACK_PACKAGING_INSTALL_PREFIX= defined as blank as it is appended to end of path for archive creation
+        cmake_platform_opts.append( f"-DCPACK_PACKAGING_INSTALL_PREFIX={rocm_path}" )
         toolchain = os.path.join( src_path, "toolchain-windows.cmake" )
     else:
         rocm_path = os.getenv( 'ROCM_PATH', "/opt/rocm")
-        if (OS_info["ID"] in ['centos', 'rhel']):
-          cmake_executable = "cmake" # was cmake3 but now we built cmake
-        else:
-          cmake_executable = "cmake"
         cmake_platform_opts.append( f"-DROCM_DIR:PATH={rocm_path} -DCPACK_PACKAGING_INSTALL_PREFIX={rocm_path}" )
         cmake_platform_opts.append( f"-DCMAKE_INSTALL_PREFIX=\"hipsparse-install\"" )
         toolchain = "toolchain-linux.cmake"
