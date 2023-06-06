@@ -13595,7 +13595,7 @@ hipsparseStatus_t hipsparseDnVecGetValues(const hipsparseDnVecDescr_t dnVecDescr
 }
 
 hipsparseStatus_t hipsparseConstDnVecGetValues(hipsparseConstDnVecDescr_t dnVecDescr,
-                                               const void** values)
+                                               const void**               values)
 {
     return rocSPARSEStatusToHIPStatus(
         rocsparse_const_dnvec_get_values((const rocsparse_const_dnvec_descr)dnVecDescr, values));
