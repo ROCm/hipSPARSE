@@ -143,6 +143,7 @@ namespace hipsparse_test
         }
     };
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     struct csrsv2_struct
     {
         csrsv2Info_t info;
@@ -174,6 +175,7 @@ namespace hipsparse_test
             verify_hipsparse_status_success(status, "ERROR: csrsm2_struct destructor");
         }
     };
+#endif
 
     struct bsrilu02_struct
     {

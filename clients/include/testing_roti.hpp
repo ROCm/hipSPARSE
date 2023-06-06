@@ -38,10 +38,6 @@ using namespace hipsparse_test;
 template <typename T>
 void testing_roti_bad_arg(void)
 {
-    //#ifdef __HIP_PLATFORM_NVCC__
-    //    // do not test for bad args
-    //    return;
-    //#endif
     int nnz       = 100;
     int safe_size = 100;
     T   c         = 3.7;
@@ -94,6 +90,7 @@ void testing_roti_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_roti(Arguments argus)
 {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     int                  N         = argus.N;
     int                  nnz       = argus.nnz;
     T                    c         = argus.alpha;
@@ -235,6 +232,7 @@ hipsparseStatus_t testing_roti(Arguments argus)
         unit_check_general(1, N, 1, hy_gold.data(), hy_1.data());
         unit_check_general(1, N, 1, hy_gold.data(), hy_2.data());
     }
+#endif
 
     return HIPSPARSE_STATUS_SUCCESS;
 }

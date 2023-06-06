@@ -39,10 +39,7 @@ using namespace hipsparse_test;
 template <typename T>
 void testing_csrgemm2_a_bad_arg(void)
 {
-#ifdef __HIP_PLATFORM_NVIDIA__
-    // do not test for bad args
-    return;
-#endif
+#if(!defined(CUDART_VERSION))
     int M         = 100;
     int N         = 100;
     int K         = 100;
@@ -1223,11 +1220,13 @@ void testing_csrgemm2_a_bad_arg(void)
                                     dbuffer_null);
         verify_hipsparse_status_invalid_pointer(status, "Error: dbuffer is nullptr");
     }
+#endif
 }
 
 template <typename T>
 hipsparseStatus_t testing_csrgemm2_a(Arguments argus)
 {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     int                  safe_size  = 100;
     int                  M          = argus.M;
     int                  N          = argus.N;
@@ -1851,6 +1850,7 @@ hipsparseStatus_t testing_csrgemm2_a(Arguments argus)
         unit_check_near(1, nnz_C_gold, 1, hcsr_val_C_gold.data(), hcsr_val_C_2.data());
 #endif
     }
+#endif
 
     return HIPSPARSE_STATUS_SUCCESS;
 }

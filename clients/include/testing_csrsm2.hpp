@@ -42,10 +42,7 @@ using namespace hipsparse_test;
 template <typename T>
 void testing_csrsm2_bad_arg(void)
 {
-#ifdef __HIP_PLATFORM_NVIDIA__
-    // do not test for bad args
-    return;
-#endif
+#if(!defined(CUDART_VERSION))
     int                    m         = 100;
     int                    nrhs      = 100;
     int                    nnz       = 100;
@@ -739,11 +736,13 @@ void testing_csrsm2_bad_arg(void)
         status = hipsparseXcsrsm2_zeroPivot(handle_null, info, &position);
         verify_hipsparse_status_invalid_handle(status);
     }
+#endif
 }
 
 template <typename T>
 hipsparseStatus_t testing_csrsm2(Arguments argus)
 {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     int                    safe_size = 100;
     int                    m         = argus.M;
     int                    nrhs      = argus.N;
@@ -1224,6 +1223,7 @@ hipsparseStatus_t testing_csrsm2(Arguments argus)
             unit_check_near(1, m * nrhs, 1, hB_gold.data(), hB_2.data());
         }
     }
+#endif
 
     return HIPSPARSE_STATUS_SUCCESS;
 }

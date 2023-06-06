@@ -36,10 +36,7 @@ using namespace hipsparse_test;
 template <typename T>
 void testing_gebsr2gebsr_bad_arg(void)
 {
-#ifdef __HIP_PLATFORM_NVIDIA__
-    // do not test for bad args
-    return;
-#endif
+#if(!defined(CUDART_VERSION))
     int                  mb              = 100;
     int                  nb              = 100;
     int                  nnzb            = 100;
@@ -929,6 +926,7 @@ void testing_gebsr2gebsr_bad_arg(void)
                                    -1,
                                    temp_buffer);
     verify_hipsparse_status_invalid_size(status, "Error: col_block_dim_C is invalid");
+#endif
 }
 
 template <typename T>

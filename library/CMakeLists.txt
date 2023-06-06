@@ -82,6 +82,35 @@ else()
                                PUBLIC
                                  $<BUILD_INTERFACE:${CUDA_INCLUDE_DIRS}>
                                  $<BUILD_INTERFACE:${HIP_INCLUDE_DIRS}>)
+
+  SET(SEARCH_SYMBOL "cusparseCreateSpVec")
+  SET(SEARCH_RESULTS "")
+  if(WIN32)
+    EXECUTE_PROCESS(
+        COMMAND
+        dumpbin /EXPORTS ${CUDA_cusparse_LIBRARY}
+        COMMAND
+        findstr ${SEARCH_SYMBOL}
+        OUTPUT_VARIABLE SEARCH_RESULTS
+        ERROR_VARIABLE ERR)
+  else()
+    EXECUTE_PROCESS(
+        COMMAND
+        objdump -T ${CUDA_cusparse_LIBRARY}
+        COMMAND
+        grep ${SEARCH_SYMBOL}
+        OUTPUT_VARIABLE SEARCH_RESULTS
+        ERROR_VARIABLE ERR)
+  endif()
+
+  if(SEARCH_RESULTS STREQUAL "")
+    # symbol not found
+    target_compile_definitions(hipsparse PRIVATE CUDART_10_1_UPDATE_VERSION=0)
+  else()
+    # symbol found
+    target_compile_definitions(hipsparse PRIVATE CUDART_10_1_UPDATE_VERSION=1)
+  endif()
+
   target_link_libraries(hipsparse PRIVATE ${CUDA_cusparse_LIBRARY})
 endif()
 

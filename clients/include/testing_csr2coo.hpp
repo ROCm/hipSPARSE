@@ -39,10 +39,7 @@ using namespace hipsparse_test;
 
 void testing_csr2coo_bad_arg(void)
 {
-#ifdef __HIP_PLATFORM_NVIDIA__
-    // do not test for bad args
-    return;
-#endif
+#if(!defined(CUDART_VERSION))
     int               m         = 100;
     int               nnz       = 100;
     int               safe_size = 100;
@@ -89,6 +86,7 @@ void testing_csr2coo_bad_arg(void)
             handle_null, csr_row_ptr, nnz, m, coo_row_ind, HIPSPARSE_INDEX_BASE_ZERO);
         verify_hipsparse_status_invalid_handle(status);
     }
+#endif
 }
 
 hipsparseStatus_t testing_csr2coo(Arguments argus)
