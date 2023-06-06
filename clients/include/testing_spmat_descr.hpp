@@ -100,6 +100,7 @@ void testing_spmat_descr_bad_arg(void)
             &A, rows, cols, nnz, row_data, col_data, nullptr, rowType, idxBase, dataType),
         "Error: val_data is nullptr");
 
+#if(!defined(CUDART_VERSION) || (CUDART_VERSION >= 10010 && CUDART_VERSION < 12000))
     // hipsparseCreateCooAoS
     verify_hipsparse_status_invalid_pointer(
         hipsparseCreateCooAoS(
@@ -120,6 +121,7 @@ void testing_spmat_descr_bad_arg(void)
     verify_hipsparse_status_invalid_pointer(
         hipsparseCreateCooAoS(&A, rows, cols, nnz, ind_data, nullptr, cooType, idxBase, dataType),
         "Error: val_data is nullptr");
+#endif
 
     // hipsparseCreateCsr
     verify_hipsparse_status_invalid_pointer(hipsparseCreateCsr(nullptr,
@@ -235,10 +237,12 @@ void testing_spmat_descr_bad_arg(void)
         hipsparseCreateCoo(
             &coo, rows, cols, nnz, row_data, col_data, val_data, rowType, idxBase, dataType),
         "Success");
+#if(!defined(CUDART_VERSION) || (CUDART_VERSION >= 10010 && CUDART_VERSION < 12000))
     verify_hipsparse_status_success(
         hipsparseCreateCooAoS(
             &coo_aos, rows, cols, nnz, ind_data, val_data, cooType, idxBase, dataType),
         "Success");
+#endif
     verify_hipsparse_status_success(hipsparseCreateCsr(&csr,
                                                        rows,
                                                        cols,
@@ -325,7 +329,7 @@ void testing_spmat_descr_bad_arg(void)
             nullptr, &rows, &cols, &nnz, &ind_ptr, &val_ptr, &cooType, &idxBase, &dataType),
         "Error: A is nullptr");
 #endif
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
+#if(!defined(CUDART_VERSION) || (CUDART_VERSION >= 10010 && CUDART_VERSION < 12000))
     verify_hipsparse_status_invalid_pointer(
         hipsparseCooAoSGet(
             coo_aos, nullptr, &cols, &nnz, &ind_ptr, &val_ptr, &cooType, &idxBase, &dataType),
@@ -686,6 +690,7 @@ void testing_spmat_descr_bad_arg(void)
     verify_hipsparse_status_invalid_pointer(hipsparseSpMatGetStridedBatch(csr, nullptr),
                                             "Error: batch count is nullptr");
 
+#if(CUDART_VERSION < 12000)
     // hipsparseSpMatSetStridedBatch
     verify_hipsparse_status_invalid_pointer(hipsparseSpMatSetStridedBatch(nullptr, batch_count),
                                             "Error: A is nullptr");
@@ -693,6 +698,7 @@ void testing_spmat_descr_bad_arg(void)
                                          "Error: batch count is invalid");
     verify_hipsparse_status_invalid_size(hipsparseSpMatSetStridedBatch(csr, -1),
                                          "Error: batch count is invalid");
+#endif
 #endif
 
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)

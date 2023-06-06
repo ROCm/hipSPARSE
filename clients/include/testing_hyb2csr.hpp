@@ -55,10 +55,7 @@ struct test_hyb
 template <typename T>
 void testing_hyb2csr_bad_arg(void)
 {
-#ifdef __HIP_PLATFORM_NVIDIA__
-    // do not test for bad args
-    return;
-#endif
+#if(!defined(CUDART_VERSION))
     int               safe_size = 100;
     hipsparseStatus_t status;
 
@@ -143,6 +140,7 @@ void testing_hyb2csr_bad_arg(void)
         status = hipsparseXhyb2csr(handle_null, descr, hyb, csr_val, csr_row_ptr, csr_col_ind);
         verify_hipsparse_status_invalid_handle(status);
     }
+#endif
 }
 
 template <typename T>

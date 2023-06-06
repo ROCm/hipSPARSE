@@ -42,6 +42,7 @@ using namespace hipsparse_test;
 template <typename T>
 hipsparseStatus_t testing_csrilusv(Arguments argus)
 {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     hipsparseIndexBase_t idx_base = argus.idx_base;
 
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
@@ -480,6 +481,7 @@ hipsparseStatus_t testing_csrilusv(Arguments argus)
     // Check z
     unit_check_near(1, m, 1, hy_gold.data(), hy_1.data());
     unit_check_near(1, m, 1, hy_gold.data(), hy_2.data());
+#endif
 
     return HIPSPARSE_STATUS_SUCCESS;
 }

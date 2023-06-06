@@ -40,10 +40,7 @@ using namespace hipsparse_test;
 template <typename T>
 void testing_bsrilu02_bad_arg(void)
 {
-#ifdef __HIP_PLATFORM_NVIDIA__
-    // do not test for bad args
-    return;
-#endif
+#if(!defined(CUDART_VERSION))
     int                    mb        = 100;
     int                    nnzb      = 100;
     int                    block_dim = 4;
@@ -318,6 +315,7 @@ void testing_bsrilu02_bad_arg(void)
         status = hipsparseXbsrilu02_zeroPivot(handle_null, info, &position);
         verify_hipsparse_status_invalid_handle(status);
     }
+#endif
 }
 
 template <typename T>

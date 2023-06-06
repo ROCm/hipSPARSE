@@ -96,6 +96,7 @@ void testing_gthr_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_gthr(Arguments argus)
 {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     int                  N         = argus.N;
     int                  nnz       = argus.nnz;
     int                  safe_size = 100;
@@ -189,6 +190,7 @@ hipsparseStatus_t testing_gthr(Arguments argus)
         // unit check and norm check can not be interchanged their order
         unit_check_general(1, nnz, 1, hx_val_gold.data(), hx_val.data());
     }
+#endif
 
     return HIPSPARSE_STATUS_SUCCESS;
 }

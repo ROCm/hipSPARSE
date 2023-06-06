@@ -98,8 +98,8 @@ Arguments setup_csrgemm2_a_arguments(csrgemm2_a_bin_tuple tup)
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
+// Only run tests for CUDA 11.1 or greater (removed in cusparse 12.0.0)
+#if(!defined(CUDART_VERSION) || (CUDART_VERSION >= 11010 && CUDART_VERSION < 12000))
 TEST(csrgemm2_a_bad_arg, csrgemm2_a_float)
 {
     testing_csrgemm2_a_bad_arg<float>();

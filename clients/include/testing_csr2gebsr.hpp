@@ -40,11 +40,7 @@ using namespace hipsparse_test;
 template <typename T>
 void testing_csr2gebsr_bad_arg(void)
 {
-
-#ifdef __HIP_PLATFORM_NVIDIA__
-    // do not test for bad args
-    return;
-#endif
+#if(!defined(CUDART_VERSION))
 
     hipsparseStatus_t              status;
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
@@ -416,8 +412,8 @@ void testing_csr2gebsr_bad_arg(void)
 #undef CALL_ARG_FUNC
 
 #undef ARGSET
+#endif
 }
-#include <iostream>
 
 template <typename T>
 hipsparseStatus_t testing_csr2gebsr(Arguments argus)

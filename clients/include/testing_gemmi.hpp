@@ -39,10 +39,7 @@ using namespace hipsparse_test;
 template <typename T>
 void testing_gemmi_bad_arg(void)
 {
-#ifdef __HIP_PLATFORM_NVIDIA__
-    // do not test for bad args
-    return;
-#endif
+#if(!defined(CUDART_VERSION))
     int safe_size = 100;
     T   alpha     = 0.6;
     T   beta      = 0.2;
@@ -277,11 +274,13 @@ void testing_gemmi_bad_arg(void)
                                                             dC,
                                                             -1),
                                          "Error: ldc is invalid");
+#endif
 }
 
 template <typename T>
 hipsparseStatus_t testing_gemmi(Arguments argus)
 {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     int               safe_size = 100;
     int               M         = argus.M;
     int               N         = argus.N;
@@ -563,6 +562,7 @@ hipsparseStatus_t testing_gemmi(Arguments argus)
         unit_check_near(M, N, ldc, hC_gold.data(), hC_1.data());
         unit_check_near(M, N, ldc, hC_gold.data(), hC_2.data());
     }
+#endif
 
     return HIPSPARSE_STATUS_SUCCESS;
 }

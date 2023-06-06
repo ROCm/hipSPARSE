@@ -39,10 +39,7 @@ using namespace hipsparse_test;
 template <typename T>
 void testing_csrgemm_bad_arg(void)
 {
-#ifdef __HIP_PLATFORM_NVIDIA__
-    // do not test for bad args
-    return;
-#endif
+#if(!defined(CUDART_VERSION))
     int                  M         = 100;
     int                  N         = 100;
     int                  K         = 100;
@@ -665,6 +662,7 @@ void testing_csrgemm_bad_arg(void)
                                    dCcol);
         verify_hipsparse_status_invalid_handle(status);
     }
+#endif
 }
 
 static int csrgemm_nnz(int                  m,

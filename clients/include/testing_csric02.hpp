@@ -40,10 +40,7 @@ using namespace hipsparse_test;
 template <typename T>
 void testing_csric02_bad_arg(void)
 {
-#ifdef __HIP_PLATFORM_NVIDIA__
-    // do not test for bad args
-    return;
-#endif
+#if(!defined(CUDART_VERSION))
     int                    m         = 100;
     int                    nnz       = 100;
     int                    safe_size = 100;
@@ -278,6 +275,7 @@ void testing_csric02_bad_arg(void)
         status = hipsparseXcsric02_zeroPivot(handle_null, info, &position);
         verify_hipsparse_status_invalid_handle(status);
     }
+#endif
 }
 
 template <typename T>

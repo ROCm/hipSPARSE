@@ -41,11 +41,7 @@ using namespace hipsparse_test;
 template <hipsparseDirection_t DIRA, typename T, typename FUNC>
 void testing_csx2dense_bad_arg(FUNC& csx2dense)
 {
-
-#ifdef __HIP_PLATFORM_NVIDIA__
-    // do not test for bad args
-    return;
-#endif
+#if(!defined(CUDART_VERSION))
     static constexpr int M  = 10;
     static constexpr int N  = 10;
     static constexpr int LD = M;
@@ -127,6 +123,7 @@ void testing_csx2dense_bad_arg(FUNC& csx2dense)
     status = csx2dense(
         handle, M, -1, descr, d_csx_val, d_csx_row_col_ptr, d_csx_col_row_ind, d_dense_val, M - 1);
     verify_hipsparse_status_invalid_size(status, "Error: an invalid size must be detected.");
+#endif
 }
 
 template <hipsparseDirection_t DIRA, typename T, typename FUNC1, typename FUNC2>
