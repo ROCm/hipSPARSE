@@ -2,6 +2,7 @@
 
 ## hipSPARSE 2.3.7
 ### Improved
+- Fix compilation failures when using cusparse 12.0.0 backend
 - Fix compilation failures when using cusparse 10.1 (non-update versions) as backend
 
 ## hipSPARSE 2.3.6 for ROCm 5.6.0
