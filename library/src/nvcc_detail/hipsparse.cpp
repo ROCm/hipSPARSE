@@ -10915,18 +10915,17 @@ hipsparseStatus_t hipsparseCreateCsr(hipsparseSpMatDescr_t* spMatDescr,
 #endif
 
 #if(CUDART_VERSION >= 11020)
-    hipsparseStatus_t
-    hipsparseCreateCsc(hipsparseSpMatDescr_t* spMatDescr,
-                       int64_t                rows,
-                       int64_t                cols,
-                       int64_t                nnz,
-                       void*                  cscColOffsets,
-                       void*                  cscRowInd,
-                       void*                  cscValues,
-                       hipsparseIndexType_t   cscColOffsetsType,
-                       hipsparseIndexType_t   cscRowIndType,
-                       hipsparseIndexBase_t   idxBase,
-                       hipDataType            valueType)
+hipsparseStatus_t hipsparseCreateCsc(hipsparseSpMatDescr_t* spMatDescr,
+                                     int64_t                rows,
+                                     int64_t                cols,
+                                     int64_t                nnz,
+                                     void*                  cscColOffsets,
+                                     void*                  cscRowInd,
+                                     void*                  cscValues,
+                                     hipsparseIndexType_t   cscColOffsetsType,
+                                     hipsparseIndexType_t   cscRowIndType,
+                                     hipsparseIndexBase_t   idxBase,
+                                     hipDataType            valueType)
 {
     return hipCUSPARSEStatusToHIPStatus(
         cusparseCreateCsc((cusparseSpMatDescr_t*)spMatDescr,
