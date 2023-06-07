@@ -10917,17 +10917,18 @@ hipsparseStatus_t hipsparseCreateCsr(hipsparseSpMatDescr_t* spMatDescr,
 <<<<<<< HEAD
 =======
 #if(CUDART_VERSION >= 12001)
-hipsparseStatus_t hipsparseCreateConstCsr(hipsparseConstSpMatDescr_t* spMatDescr,
-                                          int64_t                     rows,
-                                          int64_t                     cols,
-                                          int64_t                     nnz,
-                                          const void*                 csrRowOffsets,
-                                          const void*                 csrColInd,
-                                          const void*                 csrValues,
-                                          hipsparseIndexType_t        csrRowOffsetsType,
-                                          hipsparseIndexType_t        csrColIndType,
-                                          hipsparseIndexBase_t        idxBase,
-                                          hipDataType                 valueType)
+    hipsparseStatus_t
+    hipsparseCreateConstCsr(hipsparseConstSpMatDescr_t* spMatDescr,
+                            int64_t                     rows,
+                            int64_t                     cols,
+                            int64_t                     nnz,
+                            const void*                 csrRowOffsets,
+                            const void*                 csrColInd,
+                            const void*                 csrValues,
+                            hipsparseIndexType_t        csrRowOffsetsType,
+                            hipsparseIndexType_t        csrColIndType,
+                            hipsparseIndexBase_t        idxBase,
+                            hipDataType                 valueType)
 {
     return hipCUSPARSEStatusToHIPStatus(
         cusparseCreateConstCsr((cusparseConstSpMatDescr_t*)spMatDescr,
@@ -10946,17 +10947,18 @@ hipsparseStatus_t hipsparseCreateConstCsr(hipsparseConstSpMatDescr_t* spMatDescr
 
 >>>>>>> ef28d22... Fix cusparse 10.1 update version issue (#335)
 #if(CUDART_VERSION >= 11020)
-hipsparseStatus_t hipsparseCreateCsc(hipsparseSpMatDescr_t* spMatDescr,
-                                     int64_t                rows,
-                                     int64_t                cols,
-                                     int64_t                nnz,
-                                     void*                  cscColOffsets,
-                                     void*                  cscRowInd,
-                                     void*                  cscValues,
-                                     hipsparseIndexType_t   cscColOffsetsType,
-                                     hipsparseIndexType_t   cscRowIndType,
-                                     hipsparseIndexBase_t   idxBase,
-                                     hipDataType            valueType)
+    hipsparseStatus_t
+    hipsparseCreateCsc(hipsparseSpMatDescr_t* spMatDescr,
+                       int64_t                rows,
+                       int64_t                cols,
+                       int64_t                nnz,
+                       void*                  cscColOffsets,
+                       void*                  cscRowInd,
+                       void*                  cscValues,
+                       hipsparseIndexType_t   cscColOffsetsType,
+                       hipsparseIndexType_t   cscRowIndType,
+                       hipsparseIndexBase_t   idxBase,
+                       hipDataType            valueType)
 {
     return hipCUSPARSEStatusToHIPStatus(
         cusparseCreateCsc((cusparseSpMatDescr_t*)spMatDescr,
@@ -11557,8 +11559,8 @@ hipsparseStatus_t hipsparseDenseToSparse_convert(hipsparseHandle_t           han
 #endif
 
 #if(CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
-hipsparseStatus_t hipsparseSpVV_bufferSize(hipsparseHandle_t handle,
-                                           hipsparseOperation_t opX,
+hipsparseStatus_t hipsparseSpVV_bufferSize(hipsparseHandle_t     handle,
+                                           hipsparseOperation_t  opX,
                                            hipsparseSpVecDescr_t vecX,
                                            hipsparseDnVecDescr_t vecY,
                                            void*                 result,
@@ -11577,8 +11579,8 @@ hipsparseStatus_t hipsparseSpVV_bufferSize(hipsparseHandle_t handle,
 #endif
 
 #if(CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
-hipsparseStatus_t hipsparseSpVV(hipsparseHandle_t handle,
-                                hipsparseOperation_t opX,
+hipsparseStatus_t hipsparseSpVV(hipsparseHandle_t     handle,
+                                hipsparseOperation_t  opX,
                                 hipsparseSpVecDescr_t vecX,
                                 hipsparseDnVecDescr_t vecY,
                                 void*                 result,
@@ -11596,16 +11598,16 @@ hipsparseStatus_t hipsparseSpVV(hipsparseHandle_t handle,
 #endif
 
 #if(CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
-hipsparseStatus_t hipsparseSpMV_bufferSize(hipsparseHandle_t handle,
-                                           hipsparseOperation_t opA,
-                                           const void* alpha,
+hipsparseStatus_t hipsparseSpMV_bufferSize(hipsparseHandle_t           handle,
+                                           hipsparseOperation_t        opA,
+                                           const void*                 alpha,
                                            const hipsparseSpMatDescr_t matA,
                                            const hipsparseDnVecDescr_t vecX,
-                                           const void* beta,
+                                           const void*                 beta,
                                            const hipsparseDnVecDescr_t vecY,
-                                           hipDataType computeType,
-                                           hipsparseSpMVAlg_t alg,
-                                           size_t* bufferSize)
+                                           hipDataType                 computeType,
+                                           hipsparseSpMVAlg_t          alg,
+                                           size_t*                     bufferSize)
 {
     return hipCUSPARSEStatusToHIPStatus(
         cusparseSpMV_bufferSize((cusparseHandle_t)handle,
@@ -11622,16 +11624,16 @@ hipsparseStatus_t hipsparseSpMV_bufferSize(hipsparseHandle_t handle,
 #endif
 
 #if(CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
-hipsparseStatus_t hipsparseSpMV_preprocess(hipsparseHandle_t handle,
-                                           hipsparseOperation_t opA,
-                                           const void* alpha,
+hipsparseStatus_t hipsparseSpMV_preprocess(hipsparseHandle_t           handle,
+                                           hipsparseOperation_t        opA,
+                                           const void*                 alpha,
                                            const hipsparseSpMatDescr_t matA,
                                            const hipsparseDnVecDescr_t vecX,
-                                           const void* beta,
+                                           const void*                 beta,
                                            const hipsparseDnVecDescr_t vecY,
-                                           hipDataType computeType,
-                                           hipsparseSpMVAlg_t alg,
-                                           void* externalBuffer)
+                                           hipDataType                 computeType,
+                                           hipsparseSpMVAlg_t          alg,
+                                           void*                       externalBuffer)
 {
     if(handle == nullptr)
     {
@@ -11649,16 +11651,16 @@ hipsparseStatus_t hipsparseSpMV_preprocess(hipsparseHandle_t handle,
 #endif
 
 #if(CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
-hipsparseStatus_t hipsparseSpMV(hipsparseHandle_t handle,
-                                hipsparseOperation_t opA,
-                                const void* alpha,
+hipsparseStatus_t hipsparseSpMV(hipsparseHandle_t           handle,
+                                hipsparseOperation_t        opA,
+                                const void*                 alpha,
                                 const hipsparseSpMatDescr_t matA,
                                 const hipsparseDnVecDescr_t vecX,
-                                const void* beta,
+                                const void*                 beta,
                                 const hipsparseDnVecDescr_t vecY,
-                                hipDataType computeType,
-                                hipsparseSpMVAlg_t alg,
-                                void* externalBuffer)
+                                hipDataType                 computeType,
+                                hipsparseSpMVAlg_t          alg,
+                                void*                       externalBuffer)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseSpMV((cusparseHandle_t)handle,
                                                      hipOperationToCudaOperation(opA),
