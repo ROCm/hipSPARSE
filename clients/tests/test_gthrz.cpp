@@ -54,8 +54,8 @@ Arguments setup_gthrz_arguments(gthrz_tuple tup)
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
+// Only run tests for CUDA 11.1 or greater (removed in cusparse 12.0.0)
+#if(!defined(CUDART_VERSION) || (CUDART_VERSION >= 11010 && CUDART_VERSION < 12000))
 TEST(gthrz_bad_arg, gthrz_float)
 {
     testing_gthrz_bad_arg<float>();

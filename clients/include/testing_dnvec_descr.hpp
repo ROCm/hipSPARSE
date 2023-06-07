@@ -35,7 +35,8 @@ using namespace hipsparse_test;
 
 void testing_dnvec_descr_bad_arg(void)
 {
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION > 10010 \
+    || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
     int64_t size = 100;
 
     hipDataType dataType = HIP_R_32F;

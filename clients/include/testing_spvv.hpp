@@ -36,7 +36,8 @@ using namespace hipsparse_test;
 
 void testing_spvv_bad_arg(void)
 {
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION > 10010 \
+    || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
     int64_t size = 100;
     int64_t nnz  = 100;
 
@@ -118,7 +119,8 @@ void testing_spvv_bad_arg(void)
 template <typename I, typename T>
 hipsparseStatus_t testing_spvv(void)
 {
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION > 10010 \
+    || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
     int64_t size = 15332;
     int64_t nnz  = 500;
 

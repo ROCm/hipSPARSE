@@ -40,11 +40,7 @@ using namespace hipsparse_test;
 template <typename T>
 void testing_gebsr2gebsc_bad_arg(void)
 {
-
-#ifdef __HIP_PLATFORM_NVIDIA__
-    // do not test for bad args
-    return;
-#endif
+#if(!defined(CUDART_VERSION))
 
     hipsparseStatus_t              status;
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
@@ -423,6 +419,7 @@ void testing_gebsr2gebsc_bad_arg(void)
                                       HIPSPARSE_INDEX_BASE_ZERO,
                                       nullptr);
     verify_hipsparse_status_invalid_pointer(status, "Error: buffer is invalid");
+#endif
 }
 
 #define DEVICE_ALLOC(TYPE, NAME, SIZE)                                                            \

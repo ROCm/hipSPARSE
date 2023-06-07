@@ -39,10 +39,7 @@ using namespace hipsparse_test;
 template <typename T>
 void testing_csrgeam2_bad_arg(void)
 {
-#ifdef __HIP_PLATFORM_NVIDIA__
-    // do not test for bad args
-    return;
-#endif
+#if(!defined(CUDART_VERSION))
     int safe_size = 100;
 
     T alpha = 1.0;
@@ -720,11 +717,13 @@ void testing_csrgeam2_bad_arg(void)
                                                             dCcol,
                                                             dbuffer),
                                          "Error: invalid nnz_B size");
+#endif
 }
 
 template <typename T>
 hipsparseStatus_t testing_csrgeam2(Arguments argus)
 {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     int                  safe_size  = 100;
     int                  M          = argus.M;
     int                  N          = argus.N;
@@ -1272,6 +1271,7 @@ hipsparseStatus_t testing_csrgeam2(Arguments argus)
         unit_check_near(1, nnz_C_gold, 1, hcsr_val_C_gold.data(), hcsr_val_C_1.data());
         unit_check_near(1, nnz_C_gold, 1, hcsr_val_C_gold.data(), hcsr_val_C_2.data());
     }
+#endif
 
     return HIPSPARSE_STATUS_SUCCESS;
 }

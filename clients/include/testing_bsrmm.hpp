@@ -40,10 +40,7 @@ using namespace hipsparse_test;
 template <typename T>
 void testing_bsrmm_bad_arg(void)
 {
-#ifdef __HIP_PLATFORM_NVIDIA__
-    // do not test for bad args
-    return;
-#endif
+#if(!defined(CUDART_VERSION))
     int                  mb        = 100;
     int                  n         = 100;
     int                  kb        = 100;
@@ -429,6 +426,7 @@ void testing_bsrmm_bad_arg(void)
                              ldc);
     verify_hipsparse_status_not_supported(status,
                                           "Error: Passed value for transB is not supported");
+#endif
 }
 
 template <typename T>

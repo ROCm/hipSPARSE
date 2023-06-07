@@ -41,10 +41,7 @@ using namespace hipsparse_test;
 template <typename T>
 void testing_csr2csr_compress_bad_arg(void)
 {
-#ifdef __HIP_PLATFORM_NVIDIA__
-    // do not test for bad args
-    return;
-#endif
+#if(!defined(CUDART_VERSION))
     int                  m            = 100;
     int                  n            = 100;
     int                  nnz_A        = 100;
@@ -333,6 +330,7 @@ void testing_csr2csr_compress_bad_arg(void)
                                         csr_row_ptr_C,
                                         static_cast<T>(-1));
     verify_hipsparse_status_invalid_value(status, "Error: Tolerance is invalid");
+#endif
 }
 
 template <typename T>

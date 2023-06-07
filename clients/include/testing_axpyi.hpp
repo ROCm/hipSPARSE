@@ -38,10 +38,7 @@ using namespace hipsparse_test;
 template <typename T>
 void testing_axpyi_bad_arg(void)
 {
-#ifdef __HIP_PLATFORM_NVIDIA__
-    // do not test for bad args
-    return;
-#endif
+#if(!defined(CUDART_VERSION))
     int nnz       = 100;
     int safe_size = 100;
     T   alpha     = 0.6;
@@ -101,11 +98,13 @@ void testing_axpyi_bad_arg(void)
         status = hipsparseXaxpyi(handle_null, nnz, &alpha, dxVal, dxInd, dy, idx_base);
         verify_hipsparse_status_invalid_handle(status);
     }
+#endif
 }
 
 template <typename T>
 hipsparseStatus_t testing_axpyi(Arguments argus)
 {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     int                  N         = argus.N;
     int                  nnz       = argus.nnz;
     int                  safe_size = 100;
@@ -225,6 +224,7 @@ hipsparseStatus_t testing_axpyi(Arguments argus)
             unit_check_general(1, N, 1, hy_gold.data(), hy_2.data());
         }
     }
+#endif
 
     return HIPSPARSE_STATUS_SUCCESS;
 }

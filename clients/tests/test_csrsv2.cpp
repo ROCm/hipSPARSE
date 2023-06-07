@@ -106,8 +106,8 @@ Arguments setup_csrsv2_arguments(csrsv2_bin_tuple tup)
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
+// Only run tests for CUDA 11.1 or greater (removed in cusparse 12.0.0)
+#if(!defined(CUDART_VERSION) || (CUDART_VERSION >= 11010 && CUDART_VERSION < 12000))
 TEST(csrsv2_bad_arg, csrsv2_float)
 {
     testing_csrsv2_bad_arg<float>();
