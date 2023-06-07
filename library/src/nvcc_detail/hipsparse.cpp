@@ -10914,38 +10914,6 @@ hipsparseStatus_t hipsparseCreateCsr(hipsparseSpMatDescr_t* spMatDescr,
 }
 #endif
 
-<<<<<<< HEAD
-=======
-#if(CUDART_VERSION >= 12001)
-    hipsparseStatus_t
-    hipsparseCreateConstCsr(hipsparseConstSpMatDescr_t* spMatDescr,
-                            int64_t                     rows,
-                            int64_t                     cols,
-                            int64_t                     nnz,
-                            const void*                 csrRowOffsets,
-                            const void*                 csrColInd,
-                            const void*                 csrValues,
-                            hipsparseIndexType_t        csrRowOffsetsType,
-                            hipsparseIndexType_t        csrColIndType,
-                            hipsparseIndexBase_t        idxBase,
-                            hipDataType                 valueType)
-{
-    return hipCUSPARSEStatusToHIPStatus(
-        cusparseCreateConstCsr((cusparseConstSpMatDescr_t*)spMatDescr,
-                               rows,
-                               cols,
-                               nnz,
-                               csrRowOffsets,
-                               csrColInd,
-                               csrValues,
-                               hipIndexTypeToCudaIndexType(csrRowOffsetsType),
-                               hipIndexTypeToCudaIndexType(csrColIndType),
-                               hipIndexBaseToCudaIndexBase(idxBase),
-                               hipDataTypeToCudaDataType(valueType)));
-}
-#endif
-
->>>>>>> ef28d22... Fix cusparse 10.1 update version issue (#335)
 #if(CUDART_VERSION >= 11020)
     hipsparseStatus_t
     hipsparseCreateCsc(hipsparseSpMatDescr_t* spMatDescr,
