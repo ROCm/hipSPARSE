@@ -713,7 +713,7 @@ namespace hipsparse
                                                        const int*                csrSortedRowPtrA,
                                                        const int*                csrSortedColIndA,
                                                        csrilu02Info_t            info,
-                                                       size_t*                   pBufferSizeInBytes);
+                                                       size_t* pBufferSizeInBytes);
 
     template <typename T>
     hipsparseStatus_t hipsparseXcsrilu02_analysis(hipsparseHandle_t         handle,

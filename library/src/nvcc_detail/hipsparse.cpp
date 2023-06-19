@@ -2375,32 +2375,68 @@ hipsparseStatus_t hipsparseZbsrsv2_solve(hipsparseHandle_t         handle,
                                                               pBuffer));
 }
 
-hipsparseStatus_t hipsparseSgemvi_bufferSize(
-    hipsparseHandle_t handle, hipsparseOperation_t transA, int m, int n, int nnz, int* pBufferSizeInBytes)
+hipsparseStatus_t hipsparseSgemvi_bufferSize(hipsparseHandle_t    handle,
+                                             hipsparseOperation_t transA,
+                                             int                  m,
+                                             int                  n,
+                                             int                  nnz,
+                                             int*                 pBufferSizeInBytes)
 {
-    return hipCUSPARSEStatusToHIPStatus(cusparseSgemvi_bufferSize(
-        (cusparseHandle_t)handle, hipOperationToCudaOperation(transA), m, n, nnz, pBufferSizeInBytes));
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseSgemvi_bufferSize((cusparseHandle_t)handle,
+                                  hipOperationToCudaOperation(transA),
+                                  m,
+                                  n,
+                                  nnz,
+                                  pBufferSizeInBytes));
 }
 
-hipsparseStatus_t hipsparseDgemvi_bufferSize(
-    hipsparseHandle_t handle, hipsparseOperation_t transA, int m, int n, int nnz, int* pBufferSizeInBytes)
+hipsparseStatus_t hipsparseDgemvi_bufferSize(hipsparseHandle_t    handle,
+                                             hipsparseOperation_t transA,
+                                             int                  m,
+                                             int                  n,
+                                             int                  nnz,
+                                             int*                 pBufferSizeInBytes)
 {
-    return hipCUSPARSEStatusToHIPStatus(cusparseDgemvi_bufferSize(
-        (cusparseHandle_t)handle, hipOperationToCudaOperation(transA), m, n, nnz, pBufferSizeInBytes));
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseDgemvi_bufferSize((cusparseHandle_t)handle,
+                                  hipOperationToCudaOperation(transA),
+                                  m,
+                                  n,
+                                  nnz,
+                                  pBufferSizeInBytes));
 }
 
-hipsparseStatus_t hipsparseCgemvi_bufferSize(
-    hipsparseHandle_t handle, hipsparseOperation_t transA, int m, int n, int nnz, int* pBufferSizeInBytes)
+hipsparseStatus_t hipsparseCgemvi_bufferSize(hipsparseHandle_t    handle,
+                                             hipsparseOperation_t transA,
+                                             int                  m,
+                                             int                  n,
+                                             int                  nnz,
+                                             int*                 pBufferSizeInBytes)
 {
-    return hipCUSPARSEStatusToHIPStatus(cusparseCgemvi_bufferSize(
-        (cusparseHandle_t)handle, hipOperationToCudaOperation(transA), m, n, nnz, pBufferSizeInBytes));
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseCgemvi_bufferSize((cusparseHandle_t)handle,
+                                  hipOperationToCudaOperation(transA),
+                                  m,
+                                  n,
+                                  nnz,
+                                  pBufferSizeInBytes));
 }
 
-hipsparseStatus_t hipsparseZgemvi_bufferSize(
-    hipsparseHandle_t handle, hipsparseOperation_t transA, int m, int n, int nnz, int* pBufferSizeInBytes)
+hipsparseStatus_t hipsparseZgemvi_bufferSize(hipsparseHandle_t    handle,
+                                             hipsparseOperation_t transA,
+                                             int                  m,
+                                             int                  n,
+                                             int                  nnz,
+                                             int*                 pBufferSizeInBytes)
 {
-    return hipCUSPARSEStatusToHIPStatus(cusparseZgemvi_bufferSize(
-        (cusparseHandle_t)handle, hipOperationToCudaOperation(transA), m, n, nnz, pBufferSizeInBytes));
+    return hipCUSPARSEStatusToHIPStatus(
+        cusparseZgemvi_bufferSize((cusparseHandle_t)handle,
+                                  hipOperationToCudaOperation(transA),
+                                  m,
+                                  n,
+                                  nnz,
+                                  pBufferSizeInBytes));
 }
 
 hipsparseStatus_t hipsparseSgemvi(hipsparseHandle_t    handle,

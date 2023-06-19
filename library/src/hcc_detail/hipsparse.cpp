@@ -2892,8 +2892,12 @@ hipsparseStatus_t hipsparseZbsrsv2_solve(hipsparseHandle_t         handle,
                                pBuffer));
 }
 
-hipsparseStatus_t hipsparseSgemvi_bufferSize(
-    hipsparseHandle_t handle, hipsparseOperation_t transA, int m, int n, int nnz, int* pBufferSizeInBytes)
+hipsparseStatus_t hipsparseSgemvi_bufferSize(hipsparseHandle_t    handle,
+                                             hipsparseOperation_t transA,
+                                             int                  m,
+                                             int                  n,
+                                             int                  nnz,
+                                             int*                 pBufferSizeInBytes)
 {
     if(pBufferSizeInBytes == nullptr)
     {
@@ -2910,8 +2914,12 @@ hipsparseStatus_t hipsparseSgemvi_bufferSize(
     return status;
 }
 
-hipsparseStatus_t hipsparseDgemvi_bufferSize(
-    hipsparseHandle_t handle, hipsparseOperation_t transA, int m, int n, int nnz, int* pBufferSizeInBytes)
+hipsparseStatus_t hipsparseDgemvi_bufferSize(hipsparseHandle_t    handle,
+                                             hipsparseOperation_t transA,
+                                             int                  m,
+                                             int                  n,
+                                             int                  nnz,
+                                             int*                 pBufferSizeInBytes)
 {
     if(pBufferSizeInBytes == nullptr)
     {
@@ -2928,8 +2936,12 @@ hipsparseStatus_t hipsparseDgemvi_bufferSize(
     return status;
 }
 
-hipsparseStatus_t hipsparseCgemvi_bufferSize(
-    hipsparseHandle_t handle, hipsparseOperation_t transA, int m, int n, int nnz, int* pBufferSizeInBytes)
+hipsparseStatus_t hipsparseCgemvi_bufferSize(hipsparseHandle_t    handle,
+                                             hipsparseOperation_t transA,
+                                             int                  m,
+                                             int                  n,
+                                             int                  nnz,
+                                             int*                 pBufferSizeInBytes)
 {
     if(pBufferSizeInBytes == nullptr)
     {
@@ -2946,8 +2958,12 @@ hipsparseStatus_t hipsparseCgemvi_bufferSize(
     return status;
 }
 
-hipsparseStatus_t hipsparseZgemvi_bufferSize(
-    hipsparseHandle_t handle, hipsparseOperation_t transA, int m, int n, int nnz, int* pBufferSizeInBytes)
+hipsparseStatus_t hipsparseZgemvi_bufferSize(hipsparseHandle_t    handle,
+                                             hipsparseOperation_t transA,
+                                             int                  m,
+                                             int                  n,
+                                             int                  nnz,
+                                             int*                 pBufferSizeInBytes)
 {
     if(pBufferSizeInBytes == nullptr)
     {

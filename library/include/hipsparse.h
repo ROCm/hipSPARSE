@@ -2321,20 +2321,36 @@ hipsparseStatus_t hipsparseZbsrsv2_solve(hipsparseHandle_t         handle,
  */
 /**@{*/
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseSgemvi_bufferSize(
-    hipsparseHandle_t handle, hipsparseOperation_t transA, int m, int n, int nnz, int* pBufferSizeInBytes);
+hipsparseStatus_t hipsparseSgemvi_bufferSize(hipsparseHandle_t    handle,
+                                             hipsparseOperation_t transA,
+                                             int                  m,
+                                             int                  n,
+                                             int                  nnz,
+                                             int*                 pBufferSizeInBytes);
 
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseDgemvi_bufferSize(
-    hipsparseHandle_t handle, hipsparseOperation_t transA, int m, int n, int nnz, int* pBufferSizeInBytes);
+hipsparseStatus_t hipsparseDgemvi_bufferSize(hipsparseHandle_t    handle,
+                                             hipsparseOperation_t transA,
+                                             int                  m,
+                                             int                  n,
+                                             int                  nnz,
+                                             int*                 pBufferSizeInBytes);
 
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseCgemvi_bufferSize(
-    hipsparseHandle_t handle, hipsparseOperation_t transA, int m, int n, int nnz, int* pBufferSizeInBytes);
+hipsparseStatus_t hipsparseCgemvi_bufferSize(hipsparseHandle_t    handle,
+                                             hipsparseOperation_t transA,
+                                             int                  m,
+                                             int                  n,
+                                             int                  nnz,
+                                             int*                 pBufferSizeInBytes);
 
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseZgemvi_bufferSize(
-    hipsparseHandle_t handle, hipsparseOperation_t transA, int m, int n, int nnz, int* pBufferSizeInBytes);
+hipsparseStatus_t hipsparseZgemvi_bufferSize(hipsparseHandle_t    handle,
+                                             hipsparseOperation_t transA,
+                                             int                  m,
+                                             int                  n,
+                                             int                  nnz,
+                                             int*                 pBufferSizeInBytes);
 /**@}*/
 
 /*! \ingroup level2_module

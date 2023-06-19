@@ -1694,7 +1694,7 @@ namespace hipsparse
                                                              int                  m,
                                                              int                  n,
                                                              int                  nnz,
-                                                             int*                 pBufferSizeInBytes)
+                                                             int* pBufferSizeInBytes)
     {
         return hipsparseCgemvi_bufferSize(handle, transA, m, n, nnz, pBufferSizeInBytes);
     }
@@ -1705,7 +1705,7 @@ namespace hipsparse
                                                                    int                  m,
                                                                    int                  n,
                                                                    int                  nnz,
-                                                                   int*                 pBufferSizeInBytes)
+                                                                   int* pBufferSizeInBytes)
     {
         return hipsparseZgemvi_bufferSize(handle, transA, m, n, nnz, pBufferSizeInBytes);
     }
