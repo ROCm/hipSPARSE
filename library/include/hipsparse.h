@@ -1403,8 +1403,8 @@ hipsparseStatus_t
 *  \brief Sparse triangular solve using CSR storage format
 *
 *  \details
-*  \p hipsparseXcsrsv2_bufferSize returns the size of the temporary storage buffer that
-*  is required by hipsparseScsrsv2_analysis(), hipsparseDcsrsv2_analysis(),
+*  \p hipsparseXcsrsv2_bufferSize returns the size of the temporary storage buffer in bytes 
+*  that is required by hipsparseScsrsv2_analysis(), hipsparseDcsrsv2_analysis(),
 *  hipsparseCcsrsv2_analysis(), hipsparseZcsrsv2_analysis(), hipsparseScsrsv2_solve(),
 *  hipsparseDcsrsv2_solve(), hipsparseCcsrsv2_solve() and hipsparseZcsrsv2_solve(). The
 *  temporary storage buffer must be allocated by the user.
@@ -1465,8 +1465,8 @@ hipsparseStatus_t hipsparseZcsrsv2_bufferSize(hipsparseHandle_t         handle,
 *  \brief Sparse triangular solve using CSR storage format
 *
 *  \details
-*  \p hipsparseXcsrsv2_bufferSizeExt returns the size of the temporary storage buffer that
-*  is required by hipsparseScsrsv2_analysis(), hipsparseDcsrsv2_analysis(),
+*  \p hipsparseXcsrsv2_bufferSizeExt returns the size of the temporary storage buffer in bytes 
+*  that is required by hipsparseScsrsv2_analysis(), hipsparseDcsrsv2_analysis(),
 *  hipsparseCcsrsv2_analysis(), hipsparseZcsrsv2_analysis(), hipsparseScsrsv2_solve(),
 *  hipsparseDcsrsv2_solve(), hipsparseCcsrsv2_solve() and hipsparseZcsrsv2_solve(). The
 *  temporary storage buffer must be allocated by the user.
@@ -1482,7 +1482,7 @@ hipsparseStatus_t hipsparseScsrsv2_bufferSizeExt(hipsparseHandle_t         handl
                                                  const int*                csrSortedRowPtrA,
                                                  const int*                csrSortedColIndA,
                                                  csrsv2Info_t              info,
-                                                 size_t*                   pBufferSize);
+                                                 size_t*                   pBufferSizeInBytes);
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDcsrsv2_bufferSizeExt(hipsparseHandle_t         handle,
                                                  hipsparseOperation_t      transA,
@@ -1493,7 +1493,7 @@ hipsparseStatus_t hipsparseDcsrsv2_bufferSizeExt(hipsparseHandle_t         handl
                                                  const int*                csrSortedRowPtrA,
                                                  const int*                csrSortedColIndA,
                                                  csrsv2Info_t              info,
-                                                 size_t*                   pBufferSize);
+                                                 size_t*                   pBufferSizeInBytes);
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCcsrsv2_bufferSizeExt(hipsparseHandle_t         handle,
                                                  hipsparseOperation_t      transA,
@@ -1504,7 +1504,7 @@ hipsparseStatus_t hipsparseCcsrsv2_bufferSizeExt(hipsparseHandle_t         handl
                                                  const int*                csrSortedRowPtrA,
                                                  const int*                csrSortedColIndA,
                                                  csrsv2Info_t              info,
-                                                 size_t*                   pBufferSize);
+                                                 size_t*                   pBufferSizeInBytes);
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseZcsrsv2_bufferSizeExt(hipsparseHandle_t         handle,
                                                  hipsparseOperation_t      transA,
@@ -1515,7 +1515,7 @@ hipsparseStatus_t hipsparseZcsrsv2_bufferSizeExt(hipsparseHandle_t         handl
                                                  const int*                csrSortedRowPtrA,
                                                  const int*                csrSortedColIndA,
                                                  csrsv2Info_t              info,
-                                                 size_t*                   pBufferSize);
+                                                 size_t*                   pBufferSizeInBytes);
 /**@}*/
 
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
@@ -2005,8 +2005,8 @@ hipsparseStatus_t
 *  \brief Sparse triangular solve using BSR storage format
 *
 *  \details
-*  \p hipsparseXbsrsv2_bufferSize returns the size of the temporary storage buffer that
-*  is required by hipsparseXbsrsv2_analysis() and hipsparseXbsrsv2_solve(). The
+*  \p hipsparseXbsrsv2_bufferSize returns the size of the temporary storage buffer in bytes 
+*  that is required by hipsparseXbsrsv2_analysis() and hipsparseXbsrsv2_solve(). The
 *  temporary storage buffer must be allocated by the user.
 */
 /**@{*/
@@ -2068,8 +2068,8 @@ hipsparseStatus_t hipsparseZbsrsv2_bufferSize(hipsparseHandle_t         handle,
 *  \brief Sparse triangular solve using BSR storage format
 *
 *  \details
-*  \p hipsparseXbsrsv2_bufferSizeExt returns the size of the temporary storage buffer that
-*  is required by hipsparseXbsrsv2_analysis() and hipsparseXbsrsv2_solve(). The
+*  \p hipsparseXbsrsv2_bufferSizeExt returns the size of the temporary storage buffer in bytes 
+*  that is required by hipsparseXbsrsv2_analysis() and hipsparseXbsrsv2_solve(). The
 *  temporary storage buffer must be allocated by the user.
 */
 /**@{*/
@@ -2085,7 +2085,7 @@ hipsparseStatus_t hipsparseSbsrsv2_bufferSizeExt(hipsparseHandle_t         handl
                                                  const int*                bsrSortedColIndA,
                                                  int                       blockDim,
                                                  bsrsv2Info_t              info,
-                                                 size_t*                   pBufferSize);
+                                                 size_t*                   pBufferSizeInBytes);
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDbsrsv2_bufferSizeExt(hipsparseHandle_t         handle,
                                                  hipsparseDirection_t      dirA,
@@ -2098,7 +2098,7 @@ hipsparseStatus_t hipsparseDbsrsv2_bufferSizeExt(hipsparseHandle_t         handl
                                                  const int*                bsrSortedColIndA,
                                                  int                       blockDim,
                                                  bsrsv2Info_t              info,
-                                                 size_t*                   pBufferSize);
+                                                 size_t*                   pBufferSizeInBytes);
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCbsrsv2_bufferSizeExt(hipsparseHandle_t         handle,
                                                  hipsparseDirection_t      dirA,
@@ -2111,7 +2111,7 @@ hipsparseStatus_t hipsparseCbsrsv2_bufferSizeExt(hipsparseHandle_t         handl
                                                  const int*                bsrSortedColIndA,
                                                  int                       blockDim,
                                                  bsrsv2Info_t              info,
-                                                 size_t*                   pBufferSize);
+                                                 size_t*                   pBufferSizeInBytes);
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseZbsrsv2_bufferSizeExt(hipsparseHandle_t         handle,
                                                  hipsparseDirection_t      dirA,
@@ -2124,7 +2124,7 @@ hipsparseStatus_t hipsparseZbsrsv2_bufferSizeExt(hipsparseHandle_t         handl
                                                  const int*                bsrSortedColIndA,
                                                  int                       blockDim,
                                                  bsrsv2Info_t              info,
-                                                 size_t*                   pBufferSize);
+                                                 size_t*                   pBufferSizeInBytes);
 /**@}*/
 
 /*! \ingroup level2_module
@@ -2315,26 +2315,26 @@ hipsparseStatus_t hipsparseZbsrsv2_solve(hipsparseHandle_t         handle,
  *  \brief Dense matrix sparse vector multiplication
  *
  *  \details
- *  \p hipsparseXgemvi_bufferSize returns the size of the temporary storage buffer
+ *  \p hipsparseXgemvi_bufferSize returns the size of the temporary storage buffer in bytes
  *  required by hipsparseXgemvi(). The temporary storage buffer must be allocated by the
  *  user.
  */
 /**@{*/
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSgemvi_bufferSize(
-    hipsparseHandle_t handle, hipsparseOperation_t transA, int m, int n, int nnz, int* pBufferSize);
+    hipsparseHandle_t handle, hipsparseOperation_t transA, int m, int n, int nnz, int* pBufferSizeInBytes);
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDgemvi_bufferSize(
-    hipsparseHandle_t handle, hipsparseOperation_t transA, int m, int n, int nnz, int* pBufferSize);
+    hipsparseHandle_t handle, hipsparseOperation_t transA, int m, int n, int nnz, int* pBufferSizeInBytes);
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCgemvi_bufferSize(
-    hipsparseHandle_t handle, hipsparseOperation_t transA, int m, int n, int nnz, int* pBufferSize);
+    hipsparseHandle_t handle, hipsparseOperation_t transA, int m, int n, int nnz, int* pBufferSizeInBytes);
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseZgemvi_bufferSize(
-    hipsparseHandle_t handle, hipsparseOperation_t transA, int m, int n, int nnz, int* pBufferSize);
+    hipsparseHandle_t handle, hipsparseOperation_t transA, int m, int n, int nnz, int* pBufferSizeInBytes);
 /**@}*/
 
 /*! \ingroup level2_module
@@ -2833,8 +2833,8 @@ hipsparseStatus_t
 *  \brief Sparse triangular system solve using BSR storage format
 *
 *  \details
-*  \p hipsparseXbsrsm2_buffer_size returns the size of the temporary storage buffer that
-*  is required by hipsparseXbsrsm2_analysis() and hipsparseXbsrsm2_solve(). The
+*  \p hipsparseXbsrsm2_buffer_size returns the size of the temporary storage buffer in bytes 
+*  that is required by hipsparseXbsrsm2_analysis() and hipsparseXbsrsm2_solve(). The
 *  temporary storage buffer must be allocated by the user.
 */
 /**@{*/
@@ -3157,8 +3157,8 @@ hipsparseStatus_t
 *
 *  \details
 *  \p hipsparseXcsrsm2_bufferSizeExt returns the size of the temporary storage buffer
-*  that is required by hipsparseXcsrsm2_analysis() and hipsparseXcsrsm2_solve(). The
-*  temporary storage buffer must be allocated by the user.
+*  in bytes that is required by hipsparseXcsrsm2_analysis() and hipsparseXcsrsm2_solve(). 
+*  The temporary storage buffer must be allocated by the user.
 */
 /**@{*/
 DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
@@ -3179,7 +3179,7 @@ hipsparseStatus_t hipsparseScsrsm2_bufferSizeExt(hipsparseHandle_t         handl
                                                  int                       ldb,
                                                  csrsm2Info_t              info,
                                                  hipsparseSolvePolicy_t    policy,
-                                                 size_t*                   pBufferSize);
+                                                 size_t*                   pBufferSizeInBytes);
 DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDcsrsm2_bufferSizeExt(hipsparseHandle_t         handle,
@@ -3198,7 +3198,7 @@ hipsparseStatus_t hipsparseDcsrsm2_bufferSizeExt(hipsparseHandle_t         handl
                                                  int                       ldb,
                                                  csrsm2Info_t              info,
                                                  hipsparseSolvePolicy_t    policy,
-                                                 size_t*                   pBufferSize);
+                                                 size_t*                   pBufferSizeInBytes);
 DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCcsrsm2_bufferSizeExt(hipsparseHandle_t         handle,
@@ -3217,7 +3217,7 @@ hipsparseStatus_t hipsparseCcsrsm2_bufferSizeExt(hipsparseHandle_t         handl
                                                  int                       ldb,
                                                  csrsm2Info_t              info,
                                                  hipsparseSolvePolicy_t    policy,
-                                                 size_t*                   pBufferSize);
+                                                 size_t*                   pBufferSizeInBytes);
 DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseZcsrsm2_bufferSizeExt(hipsparseHandle_t         handle,
@@ -3236,7 +3236,7 @@ hipsparseStatus_t hipsparseZcsrsm2_bufferSizeExt(hipsparseHandle_t         handl
                                                  int                       ldb,
                                                  csrsm2Info_t              info,
                                                  hipsparseSolvePolicy_t    policy,
-                                                 size_t*                   pBufferSize);
+                                                 size_t*                   pBufferSizeInBytes);
 /**@}*/
 #endif
 
@@ -3736,8 +3736,8 @@ hipsparseStatus_t hipsparseZcsrgeam(hipsparseHandle_t         handle,
 *
 *  \details
 *  \p hipsparseXcsrgeam2_bufferSizeExt returns the size of the temporary storage buffer
-*  that is required by hipsparseXcsrgeam2Nnz() and hipsparseXcsrgeam2(). The temporary
-*  storage buffer must be allocated by the user.
+*  in bytes that is required by hipsparseXcsrgeam2Nnz() and hipsparseXcsrgeam2(). The 
+*  temporary storage buffer must be allocated by the user.
 *
 *  \note
 *  Currently, only \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
@@ -4165,8 +4165,8 @@ hipsparseStatus_t hipsparseZcsrgemm(hipsparseHandle_t         handle,
 *
 *  \details
 *  \p hipsparseXcsrgemm2_bufferSizeExt returns the size of the temporary storage buffer
-*  that is required by hipsparseXcsrgemm2Nnz() and hipsparseXcsrgemm2(). The temporary
-*  storage buffer must be allocated by the user.
+*  in bytes that is required by hipsparseXcsrgemm2Nnz() and hipsparseXcsrgemm2(). The 
+*  temporary storage buffer must be allocated by the user.
 *
 *  \note
 *  Please note, that for matrix products with more than 4096 non-zero entries per row,
@@ -4549,7 +4549,7 @@ hipsparseStatus_t hipsparseZbsrilu02_numericBoost(hipsparseHandle_t handle,
  *
  *  \details
  *  \p hipsparseXbsrilu02_bufferSize returns the size of the temporary storage buffer
- *  that is required by hipsparseXbsrilu02_analysis() and hipsparseXbsrilu02_solve().
+ *  in bytes that is required by hipsparseXbsrilu02_analysis() and hipsparseXbsrilu02_solve().
  *  The temporary storage buffer must be allocated by the user.
 */
 /**@{*/
@@ -4824,8 +4824,8 @@ hipsparseStatus_t hipsparseZcsrilu02_numericBoost(hipsparseHandle_t handle,
 *
 *  \details
 *  \p hipsparseXcsrilu02_bufferSize returns the size of the temporary storage buffer
-*  that is required by hipsparseXcsrilu02_analysis() and hipsparseXcsrilu02_solve(). the
-*  temporary storage buffer must be allocated by the user.
+*  in bytes that is required by hipsparseXcsrilu02_analysis() and hipsparseXcsrilu02_solve(). 
+*  The temporary storage buffer must be allocated by the user.
 */
 /**@{*/
 HIPSPARSE_EXPORT
@@ -4876,8 +4876,8 @@ hipsparseStatus_t hipsparseZcsrilu02_bufferSize(hipsparseHandle_t         handle
 *
 *  \details
 *  \p hipsparseXcsrilu02_bufferSizeExt returns the size of the temporary storage buffer
-*  that is required by hipsparseXcsrilu02_analysis() and hipsparseXcsrilu02_solve(). the
-*  temporary storage buffer must be allocated by the user.
+*  in bytes that is required by hipsparseXcsrilu02_analysis() and hipsparseXcsrilu02_solve(). 
+*  The temporary storage buffer must be allocated by the user.
 */
 /**@{*/
 HIPSPARSE_EXPORT
@@ -4889,7 +4889,7 @@ hipsparseStatus_t hipsparseScsrilu02_bufferSizeExt(hipsparseHandle_t         han
                                                    const int*                csrSortedRowPtrA,
                                                    const int*                csrSortedColIndA,
                                                    csrilu02Info_t            info,
-                                                   size_t*                   pBufferSize);
+                                                   size_t*                   pBufferSizeInBytes);
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDcsrilu02_bufferSizeExt(hipsparseHandle_t         handle,
                                                    int                       m,
@@ -4899,7 +4899,7 @@ hipsparseStatus_t hipsparseDcsrilu02_bufferSizeExt(hipsparseHandle_t         han
                                                    const int*                csrSortedRowPtrA,
                                                    const int*                csrSortedColIndA,
                                                    csrilu02Info_t            info,
-                                                   size_t*                   pBufferSize);
+                                                   size_t*                   pBufferSizeInBytes);
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCcsrilu02_bufferSizeExt(hipsparseHandle_t         handle,
                                                    int                       m,
@@ -4909,7 +4909,7 @@ hipsparseStatus_t hipsparseCcsrilu02_bufferSizeExt(hipsparseHandle_t         han
                                                    const int*                csrSortedRowPtrA,
                                                    const int*                csrSortedColIndA,
                                                    csrilu02Info_t            info,
-                                                   size_t*                   pBufferSize);
+                                                   size_t*                   pBufferSizeInBytes);
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseZcsrilu02_bufferSizeExt(hipsparseHandle_t         handle,
                                                    int                       m,
@@ -4919,7 +4919,7 @@ hipsparseStatus_t hipsparseZcsrilu02_bufferSizeExt(hipsparseHandle_t         han
                                                    const int*                csrSortedRowPtrA,
                                                    const int*                csrSortedColIndA,
                                                    csrilu02Info_t            info,
-                                                   size_t*                   pBufferSize);
+                                                   size_t*                   pBufferSizeInBytes);
 /**@}*/
 
 /*! \ingroup precond_module
@@ -5094,8 +5094,8 @@ hipsparseStatus_t
  *
  *  \details
  *  \p hipsparseXbsric02_bufferSize returns the size of the temporary storage buffer
- *  that is required by hipsparseXbsric02_analysis() and hipsparseXbsric02(). The
- *  temporary storage buffer must be allocated by the user.
+ *  in bytes that is required by hipsparseXbsric02_analysis() and hipsparseXbsric02(). 
+ *  The temporary storage buffer must be allocated by the user.
  */
 /**@{*/
 HIPSPARSE_EXPORT
@@ -5318,7 +5318,7 @@ hipsparseStatus_t
 *  storage format
 *
 *  \details
-*  \p hipsparseXcsric02_bufferSize returns the size of the temporary storage buffer
+*  \p hipsparseXcsric02_bufferSize returns the size of the temporary storage buffer in bytes
 *  that is required by hipsparseXcsric02_analysis() and hipsparseXcsric02().
 */
 /**@{*/
@@ -5370,7 +5370,7 @@ hipsparseStatus_t hipsparseZcsric02_bufferSize(hipsparseHandle_t         handle,
 *
 *  \details
 *  \p hipsparseXcsric02_bufferSizeExt returns the size of the temporary storage buffer
-*  that is required by hipsparseXcsric02_analysis() and hipsparseXcsric02().
+*  in bytes that is required by hipsparseXcsric02_analysis() and hipsparseXcsric02().
 */
 /**@{*/
 HIPSPARSE_EXPORT
@@ -5382,7 +5382,7 @@ hipsparseStatus_t hipsparseScsric02_bufferSizeExt(hipsparseHandle_t         hand
                                                   const int*                csrSortedRowPtrA,
                                                   const int*                csrSortedColIndA,
                                                   csric02Info_t             info,
-                                                  size_t*                   pBufferSize);
+                                                  size_t*                   pBufferSizeInBytes);
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDcsric02_bufferSizeExt(hipsparseHandle_t         handle,
                                                   int                       m,
@@ -5392,7 +5392,7 @@ hipsparseStatus_t hipsparseDcsric02_bufferSizeExt(hipsparseHandle_t         hand
                                                   const int*                csrSortedRowPtrA,
                                                   const int*                csrSortedColIndA,
                                                   csric02Info_t             info,
-                                                  size_t*                   pBufferSize);
+                                                  size_t*                   pBufferSizeInBytes);
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCcsric02_bufferSizeExt(hipsparseHandle_t         handle,
                                                   int                       m,
@@ -5402,7 +5402,7 @@ hipsparseStatus_t hipsparseCcsric02_bufferSizeExt(hipsparseHandle_t         hand
                                                   const int*                csrSortedRowPtrA,
                                                   const int*                csrSortedColIndA,
                                                   csric02Info_t             info,
-                                                  size_t*                   pBufferSize);
+                                                  size_t*                   pBufferSizeInBytes);
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseZcsric02_bufferSizeExt(hipsparseHandle_t         handle,
                                                   int                       m,
@@ -5412,7 +5412,7 @@ hipsparseStatus_t hipsparseZcsric02_bufferSizeExt(hipsparseHandle_t         hand
                                                   const int*                csrSortedRowPtrA,
                                                   const int*                csrSortedColIndA,
                                                   csric02Info_t             info,
-                                                  size_t*                   pBufferSize);
+                                                  size_t*                   pBufferSizeInBytes);
 /**@}*/
 
 /*! \ingroup precond_module
@@ -5561,8 +5561,8 @@ hipsparseStatus_t hipsparseZcsric02(hipsparseHandle_t         handle,
 *
 *  \details
 *  \p hipsparseXgtsv2_bufferSize returns the size of the temporary storage buffer
-*  that is required by hipsparseXgtsv2(). The temporary storage buffer must be
-*  allocated by the user.
+*  in bytes that is required by hipsparseXgtsv2(). The temporary storage buffer must 
+*  be allocated by the user.
 */
 /**@{*/
 HIPSPARSE_EXPORT
@@ -5671,8 +5671,8 @@ hipsparseStatus_t hipsparseZgtsv2(hipsparseHandle_t       handle,
 *
 *  \details
 *  \p hipsparseXgtsv2_nopivot_bufferSizeExt returns the size of the temporary storage
-*  buffer that is required by hipsparseXgtsv2_nopivot(). The temporary storage buffer
-*  must be allocated by the user.
+*  buffer in bytes that is required by hipsparseXgtsv2_nopivot(). The temporary storage 
+*  buffer must be allocated by the user.
 */
 /**@{*/
 HIPSPARSE_EXPORT
@@ -5781,8 +5781,8 @@ hipsparseStatus_t hipsparseZgtsv2_nopivot(hipsparseHandle_t       handle,
 *
 *  \details
 *  \p hipsparseXgtsv2StridedBatch_bufferSizeExt returns the size of the temporary storage
-*  buffer that is required by hipsparseXgtsv2StridedBatch(). The temporary storage buffer
-*  must be allocated by the user.
+*  buffer in bytes that is required by hipsparseXgtsv2StridedBatch(). The temporary 
+*  storage buffer must be allocated by the user.
 */
 /**@{*/
 HIPSPARSE_EXPORT
@@ -5891,8 +5891,8 @@ hipsparseStatus_t hipsparseZgtsv2StridedBatch(hipsparseHandle_t       handle,
 *
 *  \details
 *  \p hipsparseXgtsvInterleavedBatch_bufferSizeExt returns the size of the temporary storage
-*  buffer that is required by hipsparseXgtsvInterleavedBatch(). The temporary storage buffer
-*  must be allocated by the user.
+*  buffer in bytes that is required by hipsparseXgtsvInterleavedBatch(). The temporary storage 
+*  buffer must be allocated by the user.
 */
 /**@{*/
 HIPSPARSE_EXPORT
@@ -6001,8 +6001,8 @@ hipsparseStatus_t hipsparseZgtsvInterleavedBatch(hipsparseHandle_t handle,
 *
 *  \details
 *  \p hipsparseXgpsvInterleavedBatch_bufferSizeExt returns the size of the temporary storage
-*  buffer that is required by hipsparseXgpsvInterleavedBatch(). The temporary storage buffer
-*  must be allocated by the user.
+*  buffer in bytes that is required by hipsparseXgpsvInterleavedBatch(). The temporary 
+*  storage buffer must be allocated by the user.
 */
 /**@{*/
 HIPSPARSE_EXPORT
@@ -8176,7 +8176,7 @@ hipsparseStatus_t hipsparseCreateIdentityPermutation(hipsparseHandle_t handle, i
 *
 *  \details
 *  \p hipsparseXcsrsort_bufferSizeExt returns the size of the temporary storage buffer
-*  required by hipsparseXcsrsort(). The temporary storage buffer must be allocated by
+*  in bytes required by hipsparseXcsrsort(). The temporary storage buffer must be allocated by
 *  the user.
 */
 HIPSPARSE_EXPORT
@@ -8222,8 +8222,8 @@ hipsparseStatus_t hipsparseXcsrsort(hipsparseHandle_t         handle,
 *
 *  \details
 *  \p hipsparseXcscsort_bufferSizeExt returns the size of the temporary storage buffer
-*  required by hipsparseXcscsort(). The temporary storage buffer must be allocated by
-*  the user.
+*  in bytes required by hipsparseXcscsort(). The temporary storage buffer must be 
+*  allocated by the user.
 */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseXcscsort_bufferSizeExt(hipsparseHandle_t handle,
@@ -8268,8 +8268,8 @@ hipsparseStatus_t hipsparseXcscsort(hipsparseHandle_t         handle,
 *
 *  \details
 *  \p hipsparseXcoosort_bufferSizeExt returns the size of the temporary storage buffer
-*  required by hipsparseXcoosort(). The temporary storage buffer must be allocated by
-*  the user.
+*  in bytes required by hipsparseXcoosort(). The temporary storage buffer must be 
+*  allocated by the user.
 */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseXcoosort_bufferSizeExt(hipsparseHandle_t handle,
@@ -8539,7 +8539,7 @@ hipsparseStatus_t hipsparseZgebsr2gebsr(hipsparseHandle_t         handle,
 
 /*! \ingroup conv_module
 *  \brief
-*  This function calculates the amount of temporary storage required for
+*  This function calculates the amount of temporary storage in bytes required for
 *  hipsparseXcsru2csr() and hipsparseXcsr2csru().
 */
 /**@{*/

@@ -505,7 +505,7 @@ namespace hipsparse
                                                      const int*                csrSortedRowPtrA,
                                                      const int*                csrSortedColIndA,
                                                      csrsv2Info_t              info,
-                                                     size_t*                   pBufferSize)
+                                                     size_t*                   pBufferSizeInBytes)
     {
         return hipsparseScsrsv2_bufferSizeExt(handle,
                                               transA,
@@ -516,7 +516,7 @@ namespace hipsparse
                                               csrSortedRowPtrA,
                                               csrSortedColIndA,
                                               info,
-                                              pBufferSize);
+                                              pBufferSizeInBytes);
     }
 
     template <>
@@ -529,7 +529,7 @@ namespace hipsparse
                                                      const int*                csrSortedRowPtrA,
                                                      const int*                csrSortedColIndA,
                                                      csrsv2Info_t              info,
-                                                     size_t*                   pBufferSize)
+                                                     size_t*                   pBufferSizeInBytes)
     {
         return hipsparseDcsrsv2_bufferSizeExt(handle,
                                               transA,
@@ -540,7 +540,7 @@ namespace hipsparse
                                               csrSortedRowPtrA,
                                               csrSortedColIndA,
                                               info,
-                                              pBufferSize);
+                                              pBufferSizeInBytes);
     }
 
     template <>
@@ -553,7 +553,7 @@ namespace hipsparse
                                                      const int*                csrSortedRowPtrA,
                                                      const int*                csrSortedColIndA,
                                                      csrsv2Info_t              info,
-                                                     size_t*                   pBufferSize)
+                                                     size_t*                   pBufferSizeInBytes)
     {
         return hipsparseCcsrsv2_bufferSizeExt(handle,
                                               transA,
@@ -564,7 +564,7 @@ namespace hipsparse
                                               csrSortedRowPtrA,
                                               csrSortedColIndA,
                                               info,
-                                              pBufferSize);
+                                              pBufferSizeInBytes);
     }
 
     template <>
@@ -577,7 +577,7 @@ namespace hipsparse
                                                      const int*                csrSortedRowPtrA,
                                                      const int*                csrSortedColIndA,
                                                      csrsv2Info_t              info,
-                                                     size_t*                   pBufferSize)
+                                                     size_t*                   pBufferSizeInBytes)
     {
         return hipsparseZcsrsv2_bufferSizeExt(handle,
                                               transA,
@@ -588,7 +588,7 @@ namespace hipsparse
                                               csrSortedRowPtrA,
                                               csrSortedColIndA,
                                               info,
-                                              pBufferSize);
+                                              pBufferSizeInBytes);
     }
 
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
@@ -1302,7 +1302,7 @@ namespace hipsparse
                                                      const int*                bsrSortedColIndA,
                                                      int                       blockDim,
                                                      bsrsv2Info_t              info,
-                                                     size_t*                   pBufferSize)
+                                                     size_t*                   pBufferSizeInBytes)
     {
         return hipsparseSbsrsv2_bufferSizeExt(handle,
                                               dir,
@@ -1315,7 +1315,7 @@ namespace hipsparse
                                               bsrSortedColIndA,
                                               blockDim,
                                               info,
-                                              pBufferSize);
+                                              pBufferSizeInBytes);
     }
 
     template <>
@@ -1330,7 +1330,7 @@ namespace hipsparse
                                                      const int*                bsrSortedColIndA,
                                                      int                       blockDim,
                                                      bsrsv2Info_t              info,
-                                                     size_t*                   pBufferSize)
+                                                     size_t*                   pBufferSizeInBytes)
     {
         return hipsparseDbsrsv2_bufferSizeExt(handle,
                                               dir,
@@ -1343,7 +1343,7 @@ namespace hipsparse
                                               bsrSortedColIndA,
                                               blockDim,
                                               info,
-                                              pBufferSize);
+                                              pBufferSizeInBytes);
     }
 
     template <>
@@ -1358,7 +1358,7 @@ namespace hipsparse
                                                      const int*                bsrSortedColIndA,
                                                      int                       blockDim,
                                                      bsrsv2Info_t              info,
-                                                     size_t*                   pBufferSize)
+                                                     size_t*                   pBufferSizeInBytes)
     {
         return hipsparseCbsrsv2_bufferSizeExt(handle,
                                               dir,
@@ -1371,7 +1371,7 @@ namespace hipsparse
                                               bsrSortedColIndA,
                                               blockDim,
                                               info,
-                                              pBufferSize);
+                                              pBufferSizeInBytes);
     }
 
     template <>
@@ -1386,7 +1386,7 @@ namespace hipsparse
                                                      const int*                bsrSortedColIndA,
                                                      int                       blockDim,
                                                      bsrsv2Info_t              info,
-                                                     size_t*                   pBufferSize)
+                                                     size_t*                   pBufferSizeInBytes)
     {
         return hipsparseZbsrsv2_bufferSizeExt(handle,
                                               dir,
@@ -1399,7 +1399,7 @@ namespace hipsparse
                                               bsrSortedColIndA,
                                               blockDim,
                                               info,
-                                              pBufferSize);
+                                              pBufferSizeInBytes);
     }
 
     template <>
@@ -1672,9 +1672,9 @@ namespace hipsparse
                                                         int                  m,
                                                         int                  n,
                                                         int                  nnz,
-                                                        int*                 pBufferSize)
+                                                        int*                 pBufferSizeInBytes)
     {
-        return hipsparseSgemvi_bufferSize(handle, transA, m, n, nnz, pBufferSize);
+        return hipsparseSgemvi_bufferSize(handle, transA, m, n, nnz, pBufferSizeInBytes);
     }
 
     template <>
@@ -1683,9 +1683,9 @@ namespace hipsparse
                                                          int                  m,
                                                          int                  n,
                                                          int                  nnz,
-                                                         int*                 pBufferSize)
+                                                         int*                 pBufferSizeInBytes)
     {
-        return hipsparseDgemvi_bufferSize(handle, transA, m, n, nnz, pBufferSize);
+        return hipsparseDgemvi_bufferSize(handle, transA, m, n, nnz, pBufferSizeInBytes);
     }
 
     template <>
@@ -1694,9 +1694,9 @@ namespace hipsparse
                                                              int                  m,
                                                              int                  n,
                                                              int                  nnz,
-                                                             int*                 pBufferSize)
+                                                             int*                 pBufferSizeInBytes)
     {
-        return hipsparseCgemvi_bufferSize(handle, transA, m, n, nnz, pBufferSize);
+        return hipsparseCgemvi_bufferSize(handle, transA, m, n, nnz, pBufferSizeInBytes);
     }
 
     template <>
@@ -1705,9 +1705,9 @@ namespace hipsparse
                                                                    int                  m,
                                                                    int                  n,
                                                                    int                  nnz,
-                                                                   int*                 pBufferSize)
+                                                                   int*                 pBufferSizeInBytes)
     {
-        return hipsparseZgemvi_bufferSize(handle, transA, m, n, nnz, pBufferSize);
+        return hipsparseZgemvi_bufferSize(handle, transA, m, n, nnz, pBufferSizeInBytes);
     }
 
     template <>
@@ -2570,7 +2570,7 @@ namespace hipsparse
                                                      int                       ldb,
                                                      csrsm2Info_t              info,
                                                      hipsparseSolvePolicy_t    policy,
-                                                     size_t*                   pBufferSize)
+                                                     size_t*                   pBufferSizeInBytes)
     {
         return hipsparseScsrsm2_bufferSizeExt(handle,
                                               algo,
@@ -2588,7 +2588,7 @@ namespace hipsparse
                                               ldb,
                                               info,
                                               policy,
-                                              pBufferSize);
+                                              pBufferSizeInBytes);
     }
 
     template <>
@@ -2608,7 +2608,7 @@ namespace hipsparse
                                                      int                       ldb,
                                                      csrsm2Info_t              info,
                                                      hipsparseSolvePolicy_t    policy,
-                                                     size_t*                   pBufferSize)
+                                                     size_t*                   pBufferSizeInBytes)
     {
         return hipsparseDcsrsm2_bufferSizeExt(handle,
                                               algo,
@@ -2626,7 +2626,7 @@ namespace hipsparse
                                               ldb,
                                               info,
                                               policy,
-                                              pBufferSize);
+                                              pBufferSizeInBytes);
     }
 
     template <>
@@ -2646,7 +2646,7 @@ namespace hipsparse
                                                      int                       ldb,
                                                      csrsm2Info_t              info,
                                                      hipsparseSolvePolicy_t    policy,
-                                                     size_t*                   pBufferSize)
+                                                     size_t*                   pBufferSizeInBytes)
     {
         return hipsparseCcsrsm2_bufferSizeExt(handle,
                                               algo,
@@ -2664,7 +2664,7 @@ namespace hipsparse
                                               ldb,
                                               info,
                                               policy,
-                                              pBufferSize);
+                                              pBufferSizeInBytes);
     }
 
     template <>
@@ -2684,7 +2684,7 @@ namespace hipsparse
                                                      int                       ldb,
                                                      csrsm2Info_t              info,
                                                      hipsparseSolvePolicy_t    policy,
-                                                     size_t*                   pBufferSize)
+                                                     size_t*                   pBufferSizeInBytes)
     {
         return hipsparseZcsrsm2_bufferSizeExt(handle,
                                               algo,
@@ -2702,7 +2702,7 @@ namespace hipsparse
                                               ldb,
                                               info,
                                               policy,
-                                              pBufferSize);
+                                              pBufferSizeInBytes);
     }
 
     template <>
@@ -4707,7 +4707,7 @@ namespace hipsparse
                                                        const int*                csrSortedRowPtrA,
                                                        const int*                csrSortedColIndA,
                                                        csrilu02Info_t            info,
-                                                       size_t*                   pBufferSize)
+                                                       size_t*                   pBufferSizeInBytes)
     {
         return hipsparseScsrilu02_bufferSizeExt(handle,
                                                 m,
@@ -4717,7 +4717,7 @@ namespace hipsparse
                                                 csrSortedRowPtrA,
                                                 csrSortedColIndA,
                                                 info,
-                                                pBufferSize);
+                                                pBufferSizeInBytes);
     }
 
     template <>
@@ -4729,7 +4729,7 @@ namespace hipsparse
                                                        const int*                csrSortedRowPtrA,
                                                        const int*                csrSortedColIndA,
                                                        csrilu02Info_t            info,
-                                                       size_t*                   pBufferSize)
+                                                       size_t*                   pBufferSizeInBytes)
     {
         return hipsparseDcsrilu02_bufferSizeExt(handle,
                                                 m,
@@ -4739,7 +4739,7 @@ namespace hipsparse
                                                 csrSortedRowPtrA,
                                                 csrSortedColIndA,
                                                 info,
-                                                pBufferSize);
+                                                pBufferSizeInBytes);
     }
 
     template <>
@@ -4751,7 +4751,7 @@ namespace hipsparse
                                                        const int*                csrSortedRowPtrA,
                                                        const int*                csrSortedColIndA,
                                                        csrilu02Info_t            info,
-                                                       size_t*                   pBufferSize)
+                                                       size_t*                   pBufferSizeInBytes)
     {
         return hipsparseCcsrilu02_bufferSizeExt(handle,
                                                 m,
@@ -4761,7 +4761,7 @@ namespace hipsparse
                                                 csrSortedRowPtrA,
                                                 csrSortedColIndA,
                                                 info,
-                                                pBufferSize);
+                                                pBufferSizeInBytes);
     }
 
     template <>
@@ -4773,7 +4773,7 @@ namespace hipsparse
                                                        const int*                csrSortedRowPtrA,
                                                        const int*                csrSortedColIndA,
                                                        csrilu02Info_t            info,
-                                                       size_t*                   pBufferSize)
+                                                       size_t*                   pBufferSizeInBytes)
     {
         return hipsparseZcsrilu02_bufferSizeExt(handle,
                                                 m,
@@ -4783,7 +4783,7 @@ namespace hipsparse
                                                 csrSortedRowPtrA,
                                                 csrSortedColIndA,
                                                 info,
-                                                pBufferSize);
+                                                pBufferSizeInBytes);
     }
 
     template <>
@@ -5411,7 +5411,7 @@ namespace hipsparse
                                                       const int*                csrSortedRowPtrA,
                                                       const int*                csrSortedColIndA,
                                                       csric02Info_t             info,
-                                                      size_t*                   pBufferSize)
+                                                      size_t*                   pBufferSizeInBytes)
     {
         return hipsparseScsric02_bufferSizeExt(handle,
                                                m,
@@ -5421,7 +5421,7 @@ namespace hipsparse
                                                csrSortedRowPtrA,
                                                csrSortedColIndA,
                                                info,
-                                               pBufferSize);
+                                               pBufferSizeInBytes);
     }
 
     template <>
@@ -5433,7 +5433,7 @@ namespace hipsparse
                                                       const int*                csrSortedRowPtrA,
                                                       const int*                csrSortedColIndA,
                                                       csric02Info_t             info,
-                                                      size_t*                   pBufferSize)
+                                                      size_t*                   pBufferSizeInBytes)
     {
         return hipsparseDcsric02_bufferSizeExt(handle,
                                                m,
@@ -5443,7 +5443,7 @@ namespace hipsparse
                                                csrSortedRowPtrA,
                                                csrSortedColIndA,
                                                info,
-                                               pBufferSize);
+                                               pBufferSizeInBytes);
     }
 
     template <>
@@ -5455,7 +5455,7 @@ namespace hipsparse
                                                       const int*                csrSortedRowPtrA,
                                                       const int*                csrSortedColIndA,
                                                       csric02Info_t             info,
-                                                      size_t*                   pBufferSize)
+                                                      size_t*                   pBufferSizeInBytes)
     {
         return hipsparseCcsric02_bufferSizeExt(handle,
                                                m,
@@ -5465,7 +5465,7 @@ namespace hipsparse
                                                csrSortedRowPtrA,
                                                csrSortedColIndA,
                                                info,
-                                               pBufferSize);
+                                               pBufferSizeInBytes);
     }
 
     template <>
@@ -5477,7 +5477,7 @@ namespace hipsparse
                                                       const int*                csrSortedRowPtrA,
                                                       const int*                csrSortedColIndA,
                                                       csric02Info_t             info,
-                                                      size_t*                   pBufferSize)
+                                                      size_t*                   pBufferSizeInBytes)
     {
         return hipsparseZcsric02_bufferSizeExt(handle,
                                                m,
@@ -5487,7 +5487,7 @@ namespace hipsparse
                                                csrSortedRowPtrA,
                                                csrSortedColIndA,
                                                info,
-                                               pBufferSize);
+                                               pBufferSizeInBytes);
     }
 
     template <>

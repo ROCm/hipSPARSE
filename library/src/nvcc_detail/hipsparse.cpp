@@ -1287,7 +1287,7 @@ hipsparseStatus_t hipsparseScsrsv2_bufferSizeExt(hipsparseHandle_t         handl
                                                  const int*                csrSortedRowPtrA,
                                                  const int*                csrSortedColIndA,
                                                  csrsv2Info_t              info,
-                                                 size_t*                   pBufferSize)
+                                                 size_t*                   pBufferSizeInBytes)
 {
     return HIPSPARSE_STATUS_INTERNAL_ERROR;
 }
@@ -1301,7 +1301,7 @@ hipsparseStatus_t hipsparseDcsrsv2_bufferSizeExt(hipsparseHandle_t         handl
                                                  const int*                csrSortedRowPtrA,
                                                  const int*                csrSortedColIndA,
                                                  csrsv2Info_t              info,
-                                                 size_t*                   pBufferSize)
+                                                 size_t*                   pBufferSizeInBytes)
 {
     return HIPSPARSE_STATUS_INTERNAL_ERROR;
 }
@@ -1315,7 +1315,7 @@ hipsparseStatus_t hipsparseCcsrsv2_bufferSizeExt(hipsparseHandle_t         handl
                                                  const int*                csrSortedRowPtrA,
                                                  const int*                csrSortedColIndA,
                                                  csrsv2Info_t              info,
-                                                 size_t*                   pBufferSize)
+                                                 size_t*                   pBufferSizeInBytes)
 {
     return HIPSPARSE_STATUS_INTERNAL_ERROR;
 }
@@ -1329,7 +1329,7 @@ hipsparseStatus_t hipsparseZcsrsv2_bufferSizeExt(hipsparseHandle_t         handl
                                                  const int*                csrSortedRowPtrA,
                                                  const int*                csrSortedColIndA,
                                                  csrsv2Info_t              info,
-                                                 size_t*                   pBufferSize)
+                                                 size_t*                   pBufferSizeInBytes)
 {
     return HIPSPARSE_STATUS_INTERNAL_ERROR;
 }
@@ -2062,7 +2062,7 @@ hipsparseStatus_t hipsparseSbsrsv2_bufferSizeExt(hipsparseHandle_t         handl
                                                  const int*                bsrSortedColIndA,
                                                  int                       blockDim,
                                                  bsrsv2Info_t              info,
-                                                 size_t*                   pBufferSize)
+                                                 size_t*                   pBufferSizeInBytes)
 {
     return HIPSPARSE_STATUS_INTERNAL_ERROR;
 }
@@ -2078,7 +2078,7 @@ hipsparseStatus_t hipsparseDbsrsv2_bufferSizeExt(hipsparseHandle_t         handl
                                                  const int*                bsrSortedColIndA,
                                                  int                       blockDim,
                                                  bsrsv2Info_t              info,
-                                                 size_t*                   pBufferSize)
+                                                 size_t*                   pBufferSizeInBytes)
 {
     return HIPSPARSE_STATUS_INTERNAL_ERROR;
 }
@@ -2094,7 +2094,7 @@ hipsparseStatus_t hipsparseCbsrsv2_bufferSizeExt(hipsparseHandle_t         handl
                                                  const int*                bsrSortedColIndA,
                                                  int                       blockDim,
                                                  bsrsv2Info_t              info,
-                                                 size_t*                   pBufferSize)
+                                                 size_t*                   pBufferSizeInBytes)
 {
     return HIPSPARSE_STATUS_INTERNAL_ERROR;
 }
@@ -2110,7 +2110,7 @@ hipsparseStatus_t hipsparseZbsrsv2_bufferSizeExt(hipsparseHandle_t         handl
                                                  const int*                bsrSortedColIndA,
                                                  int                       blockDim,
                                                  bsrsv2Info_t              info,
-                                                 size_t*                   pBufferSize)
+                                                 size_t*                   pBufferSizeInBytes)
 {
     return HIPSPARSE_STATUS_INTERNAL_ERROR;
 }
@@ -2376,31 +2376,31 @@ hipsparseStatus_t hipsparseZbsrsv2_solve(hipsparseHandle_t         handle,
 }
 
 hipsparseStatus_t hipsparseSgemvi_bufferSize(
-    hipsparseHandle_t handle, hipsparseOperation_t transA, int m, int n, int nnz, int* pBufferSize)
+    hipsparseHandle_t handle, hipsparseOperation_t transA, int m, int n, int nnz, int* pBufferSizeInBytes)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseSgemvi_bufferSize(
-        (cusparseHandle_t)handle, hipOperationToCudaOperation(transA), m, n, nnz, pBufferSize));
+        (cusparseHandle_t)handle, hipOperationToCudaOperation(transA), m, n, nnz, pBufferSizeInBytes));
 }
 
 hipsparseStatus_t hipsparseDgemvi_bufferSize(
-    hipsparseHandle_t handle, hipsparseOperation_t transA, int m, int n, int nnz, int* pBufferSize)
+    hipsparseHandle_t handle, hipsparseOperation_t transA, int m, int n, int nnz, int* pBufferSizeInBytes)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseDgemvi_bufferSize(
-        (cusparseHandle_t)handle, hipOperationToCudaOperation(transA), m, n, nnz, pBufferSize));
+        (cusparseHandle_t)handle, hipOperationToCudaOperation(transA), m, n, nnz, pBufferSizeInBytes));
 }
 
 hipsparseStatus_t hipsparseCgemvi_bufferSize(
-    hipsparseHandle_t handle, hipsparseOperation_t transA, int m, int n, int nnz, int* pBufferSize)
+    hipsparseHandle_t handle, hipsparseOperation_t transA, int m, int n, int nnz, int* pBufferSizeInBytes)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseCgemvi_bufferSize(
-        (cusparseHandle_t)handle, hipOperationToCudaOperation(transA), m, n, nnz, pBufferSize));
+        (cusparseHandle_t)handle, hipOperationToCudaOperation(transA), m, n, nnz, pBufferSizeInBytes));
 }
 
 hipsparseStatus_t hipsparseZgemvi_bufferSize(
-    hipsparseHandle_t handle, hipsparseOperation_t transA, int m, int n, int nnz, int* pBufferSize)
+    hipsparseHandle_t handle, hipsparseOperation_t transA, int m, int n, int nnz, int* pBufferSizeInBytes)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseZgemvi_bufferSize(
-        (cusparseHandle_t)handle, hipOperationToCudaOperation(transA), m, n, nnz, pBufferSize));
+        (cusparseHandle_t)handle, hipOperationToCudaOperation(transA), m, n, nnz, pBufferSizeInBytes));
 }
 
 hipsparseStatus_t hipsparseSgemvi(hipsparseHandle_t    handle,
@@ -3452,7 +3452,7 @@ hipsparseStatus_t hipsparseScsrsm2_bufferSizeExt(hipsparseHandle_t         handl
                                                  int                       ldb,
                                                  csrsm2Info_t              info,
                                                  hipsparseSolvePolicy_t    policy,
-                                                 size_t*                   pBufferSize)
+                                                 size_t*                   pBufferSizeInBytes)
 {
     return hipCUSPARSEStatusToHIPStatus(
         cusparseScsrsm2_bufferSizeExt((cusparseHandle_t)handle,
@@ -3471,7 +3471,7 @@ hipsparseStatus_t hipsparseScsrsm2_bufferSizeExt(hipsparseHandle_t         handl
                                       ldb,
                                       (csrsm2Info_t)info,
                                       hipPolicyToCudaPolicy(policy),
-                                      pBufferSize));
+                                      pBufferSizeInBytes));
 }
 
 hipsparseStatus_t hipsparseDcsrsm2_bufferSizeExt(hipsparseHandle_t         handle,
@@ -3490,7 +3490,7 @@ hipsparseStatus_t hipsparseDcsrsm2_bufferSizeExt(hipsparseHandle_t         handl
                                                  int                       ldb,
                                                  csrsm2Info_t              info,
                                                  hipsparseSolvePolicy_t    policy,
-                                                 size_t*                   pBufferSize)
+                                                 size_t*                   pBufferSizeInBytes)
 {
     return hipCUSPARSEStatusToHIPStatus(
         cusparseDcsrsm2_bufferSizeExt((cusparseHandle_t)handle,
@@ -3509,7 +3509,7 @@ hipsparseStatus_t hipsparseDcsrsm2_bufferSizeExt(hipsparseHandle_t         handl
                                       ldb,
                                       (csrsm2Info_t)info,
                                       hipPolicyToCudaPolicy(policy),
-                                      pBufferSize));
+                                      pBufferSizeInBytes));
 }
 
 hipsparseStatus_t hipsparseCcsrsm2_bufferSizeExt(hipsparseHandle_t         handle,
@@ -3528,7 +3528,7 @@ hipsparseStatus_t hipsparseCcsrsm2_bufferSizeExt(hipsparseHandle_t         handl
                                                  int                       ldb,
                                                  csrsm2Info_t              info,
                                                  hipsparseSolvePolicy_t    policy,
-                                                 size_t*                   pBufferSize)
+                                                 size_t*                   pBufferSizeInBytes)
 {
     return hipCUSPARSEStatusToHIPStatus(
         cusparseCcsrsm2_bufferSizeExt((cusparseHandle_t)handle,
@@ -3547,7 +3547,7 @@ hipsparseStatus_t hipsparseCcsrsm2_bufferSizeExt(hipsparseHandle_t         handl
                                       ldb,
                                       (csrsm2Info_t)info,
                                       hipPolicyToCudaPolicy(policy),
-                                      pBufferSize));
+                                      pBufferSizeInBytes));
 }
 
 hipsparseStatus_t hipsparseZcsrsm2_bufferSizeExt(hipsparseHandle_t         handle,
@@ -3566,7 +3566,7 @@ hipsparseStatus_t hipsparseZcsrsm2_bufferSizeExt(hipsparseHandle_t         handl
                                                  int                       ldb,
                                                  csrsm2Info_t              info,
                                                  hipsparseSolvePolicy_t    policy,
-                                                 size_t*                   pBufferSize)
+                                                 size_t*                   pBufferSizeInBytes)
 {
     return hipCUSPARSEStatusToHIPStatus(
         cusparseZcsrsm2_bufferSizeExt((cusparseHandle_t)handle,
@@ -3585,7 +3585,7 @@ hipsparseStatus_t hipsparseZcsrsm2_bufferSizeExt(hipsparseHandle_t         handl
                                       ldb,
                                       (csrsm2Info_t)info,
                                       hipPolicyToCudaPolicy(policy),
-                                      pBufferSize));
+                                      pBufferSizeInBytes));
 }
 #endif
 
@@ -5774,7 +5774,7 @@ hipsparseStatus_t hipsparseScsrilu02_bufferSizeExt(hipsparseHandle_t         han
                                                    const int*                csrSortedRowPtrA,
                                                    const int*                csrSortedColIndA,
                                                    csrilu02Info_t            info,
-                                                   size_t*                   pBufferSize)
+                                                   size_t*                   pBufferSizeInBytes)
 {
     return HIPSPARSE_STATUS_INTERNAL_ERROR;
 }
@@ -5787,7 +5787,7 @@ hipsparseStatus_t hipsparseDcsrilu02_bufferSizeExt(hipsparseHandle_t         han
                                                    const int*                csrSortedRowPtrA,
                                                    const int*                csrSortedColIndA,
                                                    csrilu02Info_t            info,
-                                                   size_t*                   pBufferSize)
+                                                   size_t*                   pBufferSizeInBytes)
 {
     return HIPSPARSE_STATUS_INTERNAL_ERROR;
 }
@@ -5800,7 +5800,7 @@ hipsparseStatus_t hipsparseCcsrilu02_bufferSizeExt(hipsparseHandle_t         han
                                                    const int*                csrSortedRowPtrA,
                                                    const int*                csrSortedColIndA,
                                                    csrilu02Info_t            info,
-                                                   size_t*                   pBufferSize)
+                                                   size_t*                   pBufferSizeInBytes)
 {
     return HIPSPARSE_STATUS_INTERNAL_ERROR;
 }
@@ -5813,7 +5813,7 @@ hipsparseStatus_t hipsparseZcsrilu02_bufferSizeExt(hipsparseHandle_t         han
                                                    const int*                csrSortedRowPtrA,
                                                    const int*                csrSortedColIndA,
                                                    csrilu02Info_t            info,
-                                                   size_t*                   pBufferSize)
+                                                   size_t*                   pBufferSizeInBytes)
 {
     return HIPSPARSE_STATUS_INTERNAL_ERROR;
 }
@@ -6437,7 +6437,7 @@ hipsparseStatus_t hipsparseScsric02_bufferSizeExt(hipsparseHandle_t         hand
                                                   const int*                csrSortedRowPtrA,
                                                   const int*                csrSortedColIndA,
                                                   csric02Info_t             info,
-                                                  size_t*                   pBufferSize)
+                                                  size_t*                   pBufferSizeInBytes)
 {
     return HIPSPARSE_STATUS_INTERNAL_ERROR;
 }
@@ -6450,7 +6450,7 @@ hipsparseStatus_t hipsparseDcsric02_bufferSizeExt(hipsparseHandle_t         hand
                                                   const int*                csrSortedRowPtrA,
                                                   const int*                csrSortedColIndA,
                                                   csric02Info_t             info,
-                                                  size_t*                   pBufferSize)
+                                                  size_t*                   pBufferSizeInBytes)
 {
     return HIPSPARSE_STATUS_INTERNAL_ERROR;
 }
@@ -6463,7 +6463,7 @@ hipsparseStatus_t hipsparseCcsric02_bufferSizeExt(hipsparseHandle_t         hand
                                                   const int*                csrSortedRowPtrA,
                                                   const int*                csrSortedColIndA,
                                                   csric02Info_t             info,
-                                                  size_t*                   pBufferSize)
+                                                  size_t*                   pBufferSizeInBytes)
 {
     return HIPSPARSE_STATUS_INTERNAL_ERROR;
 }
@@ -6476,7 +6476,7 @@ hipsparseStatus_t hipsparseZcsric02_bufferSizeExt(hipsparseHandle_t         hand
                                                   const int*                csrSortedRowPtrA,
                                                   const int*                csrSortedColIndA,
                                                   csric02Info_t             info,
-                                                  size_t*                   pBufferSize)
+                                                  size_t*                   pBufferSizeInBytes)
 {
     return HIPSPARSE_STATUS_INTERNAL_ERROR;
 }
