@@ -139,7 +139,7 @@ install_packages( )
   local library_dependencies_centos_7=( "epel-release" "make" "cmake3" "gcc-c++" "rpm-build" )
   local library_dependencies_centos_8=( "epel-release" "make" "cmake3" "gcc-c++" "rpm-build" )
   local library_dependencies_fedora=( "make" "cmake" "gcc-c++" "libcxx-devel" "rpm-build" "numactl-libs" )
-  local library_dependencies_sles=( "make" "cmake" "gcc-c++" "libcxxtools9" "rpm-build" "pkg-config" "dpkg" )
+  local library_dependencies_sles=( "make" "cmake" "gcc-c++" "libcxxtools10" "rpm-build" "pkg-config" "dpkg" )
 
   local client_dependencies_centos_6=( "gcc-gfortran" )
   local client_dependencies_centos_7=( "devtoolset-7-gcc-gfortran" )
