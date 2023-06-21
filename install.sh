@@ -139,7 +139,7 @@ install_packages( )
   local library_dependencies_centos_7=( "epel-release" "make" "cmake3" "gcc-c++" "rpm-build" )
   local library_dependencies_centos_8=( "epel-release" "make" "cmake3" "gcc-c++" "rpm-build" )
   local library_dependencies_fedora=( "make" "cmake" "gcc-c++" "libcxx-devel" "rpm-build" "numactl-libs" )
-  local library_dependencies_sles=( "make" "cmake" "gcc-c++" "libcxxtools10" "rpm-build" "pkg-config" "dpkg" )
+  local library_dependencies_sles=( "make" "cmake" "gcc-c++" "rpm-build" "pkg-config" "dpkg" )
 
   local client_dependencies_centos_6=( "gcc-gfortran" )
   local client_dependencies_centos_7=( "devtoolset-7-gcc-gfortran" )
@@ -153,6 +153,19 @@ install_packages( )
     else
       library_dependencies_centos_7+=( "numactl-libs" )
       library_dependencies_centos_8+=( "numactl-libs" )
+    fi
+  fi
+
+  if [[ ( "${ID}" == "sles" ) ]]; then
+    if [[ -f /etc/os-release ]]; then
+      . /etc/os-release
+
+      function version { echo "$@" | awk -F. '{ printf("%d%03d%03d%03d\n", $1,$2,$3,$4); }'; }
+      if [[ $(version $VERSION_ID) -ge $(version 15.4) ]]; then
+          library_dependencies_sles+=( "libcxxtools10" )
+      else
+          library_dependencies_sles+=( "libcxxtools9" )
+      fi
     fi
   fi
 
