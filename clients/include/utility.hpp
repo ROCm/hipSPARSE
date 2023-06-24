@@ -6055,7 +6055,7 @@ inline std::string get_filename(const std::string& bin_file)
 
     if(matrices_dir != nullptr)
     {
-        return matrices_dir + bin_file;
+       return std::string(matrices_dir) + "/" + bin_file;
     }
     else
     {
