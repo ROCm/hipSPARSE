@@ -57,6 +57,7 @@ std::string hipsparse_exepath();
 #define BSR_IND_R(j, bi, bj) (bsr_dim * bsr_dim * (j) + (bi)*bsr_dim + (bj))
 #define BSR_IND_C(j, bi, bj) (bsr_dim * bsr_dim * (j) + (bi) + (bj)*bsr_dim)
 
+
 #define CHECK_HIP_ERROR(error)                \
     if(error != hipSuccess)                   \
     {                                         \
