@@ -57,7 +57,6 @@ std::string hipsparse_exepath();
 #define BSR_IND_R(j, bi, bj) (bsr_dim * bsr_dim * (j) + (bi)*bsr_dim + (bj))
 #define BSR_IND_C(j, bi, bj) (bsr_dim * bsr_dim * (j) + (bi) + (bj)*bsr_dim)
 
-
 #define CHECK_HIP_ERROR(error)                \
     if(error != hipSuccess)                   \
     {                                         \
@@ -6063,6 +6062,5 @@ inline std::string get_filename(const std::string& bin_file)
         return hipsparse_exepath() + "../matrices/" + bin_file;
     }
 }
-
 
 #endif // TESTING_UTILITY_HPP
