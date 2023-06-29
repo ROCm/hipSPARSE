@@ -150,6 +150,12 @@ public:
       Main function:
 =================================================================== */
 
+static const char* s_hipsparse_clients_matrices_dir = nullptr;
+const char*        get_hipsparse_clients_matrices_dir()
+{
+    return s_hipsparse_clients_matrices_dir;
+}
+
 int main(int argc, char** argv)
 {
     // Print version
@@ -166,10 +172,34 @@ int main(int argc, char** argv)
             device_id = atoi(argv[i + 1]);
         }
 
+        if(strcmp(argv[i], "--matrices-dir") == 0)
+        {
+            if(argc > i + 1)
+            {
+                s_hipsparse_clients_matrices_dir = argv[i + 1];
+            }
+            else
+            {
+                fprintf(stderr, "missing argument from option --matrices-dir");
+                return -1;
+            }
+        }
+
         if(strcmp(argv[i], "--version") == 0)
         {
             printf("hipSPARSE version: %s\n", version);
-
+            return 0;
+        }
+        if(strcmp(argv[i], "--help") == 0)
+        {
+            fprintf(stderr,
+                    "Usage: %s [--matrices-dir <matrix directory path>] [--device <device id>]\n",
+                    argv[0]);
+            fprintf(stderr,
+                    "To specify the directory of matrix input files the user can export the "
+                    "environment variable HIPSPARSE_CLIENTS_MATRICES_DIR or uses the command line "
+                    "option '--matrices-dir'. If the command line option '--matrices-dir' is used "
+                    "then the environment variable HIPSPARSE_CLIENTS_MATRICES_DIR is ignored.\n");
             return 0;
         }
     }
