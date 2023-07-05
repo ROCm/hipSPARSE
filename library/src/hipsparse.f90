@@ -1435,7 +1435,7 @@ module hipsparse
             type(c_ptr), value :: y
         end function hipsparseZbsrxmv
       
-        function hipsparseSgemvi_bufferSize(handle, transA, m, n, nnz, pBufferSize) &
+        function hipsparseSgemvi_bufferSize(handle, transA, m, n, nnz, pBufferSizeInBytes) &
                 bind(c, name = 'hipsparseSgemvi_bufferSize')
             use hipsparse_enums
             use iso_c_binding
@@ -1446,10 +1446,10 @@ module hipsparse
             integer(c_int), value :: m
             integer(c_int), value :: n
             integer(c_int), value :: nnz
-            type(c_ptr), value :: pBufferSize
+            type(c_ptr), value :: pBufferSizeInBytes
         end function hipsparseSgemvi_bufferSize
 
-        function hipsparseDgemvi_bufferSize(handle, transA, m, n, nnz, pBufferSize) &
+        function hipsparseDgemvi_bufferSize(handle, transA, m, n, nnz, pBufferSizeInBytes) &
                 bind(c, name = 'hipsparseDgemvi_bufferSize')
             use hipsparse_enums
             use iso_c_binding
@@ -1460,10 +1460,10 @@ module hipsparse
             integer(c_int), value :: m
             integer(c_int), value :: n
             integer(c_int), value :: nnz
-            type(c_ptr), value :: pBufferSize
+            type(c_ptr), value :: pBufferSizeInBytes
         end function hipsparseDgemvi_bufferSize
 
-        function hipsparseCgemvi_bufferSize(handle, transA, m, n, nnz, pBufferSize) &
+        function hipsparseCgemvi_bufferSize(handle, transA, m, n, nnz, pBufferSizeInBytes) &
                 bind(c, name = 'hipsparseCgemvi_bufferSize')
             use hipsparse_enums
             use iso_c_binding
@@ -1474,10 +1474,10 @@ module hipsparse
             integer(c_int), value :: m
             integer(c_int), value :: n
             integer(c_int), value :: nnz
-            type(c_ptr), value :: pBufferSize
+            type(c_ptr), value :: pBufferSizeInBytes
         end function hipsparseCgemvi_bufferSize
 
-        function hipsparseZgemvi_bufferSize(handle, transA, m, n, nnz, pBufferSize) &
+        function hipsparseZgemvi_bufferSize(handle, transA, m, n, nnz, pBufferSizeInBytes) &
                 bind(c, name = 'hipsparseZgemvi_bufferSize')
             use hipsparse_enums
             use iso_c_binding
@@ -1488,7 +1488,7 @@ module hipsparse
             integer(c_int), value :: m
             integer(c_int), value :: n
             integer(c_int), value :: nnz
-            type(c_ptr), value :: pBufferSize
+            type(c_ptr), value :: pBufferSizeInBytes
         end function hipsparseZgemvi_bufferSize
 
         function hipsparseSgemvi(handle, transA, m, n, alpha, A, lda, nnz, x, xInd, &

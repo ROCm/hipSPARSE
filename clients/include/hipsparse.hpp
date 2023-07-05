@@ -165,7 +165,7 @@ namespace hipsparse
                                                      const int*                csrSortedRowPtrA,
                                                      const int*                csrSortedColIndA,
                                                      csrsv2Info_t              info,
-                                                     size_t*                   pBufferSize);
+                                                     size_t*                   pBufferSizeInBytes);
 
     template <typename T>
     hipsparseStatus_t hipsparseXcsrsv2_analysis(hipsparseHandle_t         handle,
@@ -269,7 +269,7 @@ namespace hipsparse
                                                      const int*                bsrSortedColIndA,
                                                      int                       blockDim,
                                                      bsrsv2Info_t              info,
-                                                     size_t*                   pBufferSize);
+                                                     size_t*                   pBufferSizeInBytes);
 
     template <typename T>
     hipsparseStatus_t hipsparseXbsrsv2_analysis(hipsparseHandle_t         handle,
@@ -310,7 +310,7 @@ namespace hipsparse
                                                  int                  m,
                                                  int                  n,
                                                  int                  nnz,
-                                                 int*                 pBufferSize);
+                                                 int*                 pBufferSizeInBytes);
 
     template <typename T>
     hipsparseStatus_t hipsparseXgemvi(hipsparseHandle_t    handle,
@@ -442,7 +442,7 @@ namespace hipsparse
                                                      int                       ldb,
                                                      csrsm2Info_t              info,
                                                      hipsparseSolvePolicy_t    policy,
-                                                     size_t*                   pBufferSize);
+                                                     size_t*                   pBufferSizeInBytes);
 
     template <typename T>
     hipsparseStatus_t hipsparseXcsrsm2_analysis(hipsparseHandle_t         handle,
@@ -713,7 +713,7 @@ namespace hipsparse
                                                        const int*                csrSortedRowPtrA,
                                                        const int*                csrSortedColIndA,
                                                        csrilu02Info_t            info,
-                                                       size_t*                   pBufferSize);
+                                                       size_t* pBufferSizeInBytes);
 
     template <typename T>
     hipsparseStatus_t hipsparseXcsrilu02_analysis(hipsparseHandle_t         handle,
@@ -802,7 +802,7 @@ namespace hipsparse
                                                       const int*                csrSortedRowPtrA,
                                                       const int*                csrSortedColIndA,
                                                       csric02Info_t             info,
-                                                      size_t*                   pBufferSize);
+                                                      size_t*                   pBufferSizeInBytes);
 
     template <typename T>
     hipsparseStatus_t hipsparseXcsric02_analysis(hipsparseHandle_t         handle,
