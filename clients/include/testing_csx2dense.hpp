@@ -155,7 +155,7 @@ hipsparseStatus_t testing_csx2dense(const Arguments& argus, FUNC1& csx2dense, FU
         verify_hipsparse_status(status,
                                 expected_status,
                                 (expected_status == HIPSPARSE_STATUS_SUCCESS)
-                                    ? "Error: call with zero sizes must be succesfull."
+                                    ? "Error: call with zero sizes must be successful."
                                     : "Error: An invalid size must be detected.");
 
         return HIPSPARSE_STATUS_SUCCESS;
