@@ -139,11 +139,10 @@ Supported Targets
 -----------------
 Currently, hipSPARSE is supported under the following operating systems
 
-- `Ubuntu 20.04 <https://ubuntu.com/>`_
-- `Ubuntu 22.04 <https://ubuntu.com/>`_
-- `CentOS 7 <https://www.centos.org/>`_
-- `CentOS 8 <https://www.centos.org/>`_
-- `CentOS 9 <https://www.centos.org/>`_
-- `SLES 15 <https://www.suse.com/solutions/enterprise-linux/>`_
+- Ubuntu 20.04
+- Ubuntu 22.04
+- RHEL 8
+- RHEL 9
+- SLES 15
 
 To compile and run hipSPARSE, `AMD ROCm Platform <https://github.com/RadeonOpenCompute/ROCm>`_ is required.
