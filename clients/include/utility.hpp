@@ -25,11 +25,11 @@
 #ifndef TESTING_UTILITY_HPP
 #define TESTING_UTILITY_HPP
 
-#include "hipsparse.h"
 #include <algorithm>
 #include <assert.h>
 #include <complex>
 #include <hip/hip_runtime_api.h>
+#include <hipsparse/hipsparse.h>
 #include <math.h>
 #include <sstream>
 #include <stdio.h>
