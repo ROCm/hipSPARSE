@@ -5,12 +5,12 @@ Building and Installing
 
 Prerequisites
 -------------
-hipSPARSE requires a ROCm enabled platform, more information `here <https://rocm.github.io/>`_.
+hipSPARSE requires a ROCm enabled platform.
 
 Installing pre-built packages
 -----------------------------
-hipSPARSE can be installed from `AMD ROCm repository <https://rocm.github.io/ROCmInstall.html#installing-from-amd-rocm-repositories>`_.
-For detailed instructions on how to set up ROCm on different platforms, see the `AMD ROCm Platform Installation Guide for Linux <https://rocm.github.io/ROCmInstall.html>`_.
+hipSPARSE can be installed from AMD ROCm repository.
+For detailed instructions on how to set up ROCm on different platforms, see the `AMD ROCm Platform Installation Guide for Linux <https://rocm.docs.amd.com/en/latest/deploy/linux/index.html>`_.
 
 hipSPARSE can be installed on e.g. Ubuntu using
 
@@ -139,10 +139,11 @@ Supported Targets
 -----------------
 Currently, hipSPARSE is supported under the following operating systems
 
-- `Ubuntu 18.04 <https://ubuntu.com/>`_
 - `Ubuntu 20.04 <https://ubuntu.com/>`_
+- `Ubuntu 22.04 <https://ubuntu.com/>`_
 - `CentOS 7 <https://www.centos.org/>`_
 - `CentOS 8 <https://www.centos.org/>`_
+- `CentOS 9 <https://www.centos.org/>`_
 - `SLES 15 <https://www.suse.com/solutions/enterprise-linux/>`_
 
 To compile and run hipSPARSE, `AMD ROCm Platform <https://github.com/RadeonOpenCompute/ROCm>`_ is required.
