@@ -14,7 +14,7 @@ python3 -m sphinx -T -E -b html -d _build/doctrees -D language=en . _build/html
 ```
 
 ## Installing pre-built packages
-Download pre-built packages either from [ROCm's package servers](https://rocm.github.io/install.html#installing-from-amd-rocm-repositories) or by clicking the github releases tab and manually downloading, which could be newer. Release notes are available for each release on the releases tab.
+Download pre-built packages either from [ROCm's package servers](https://rocm.docs.amd.com/en/latest/deploy/linux/index.html). Release notes are available for each release on the releases tab on GitHub.
 * `sudo apt update && sudo apt install hipsparse`
 
 ## Quickstart hipSPARSE build
