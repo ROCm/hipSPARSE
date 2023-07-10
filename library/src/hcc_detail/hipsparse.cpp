@@ -14247,7 +14247,7 @@ hipsparseStatus_t hipsparseSpGEMM_copy(hipsparseHandle_t          handle,
 
     // cuSPARSE API does not carry over the temporary storage buffer, therefore
     // we need to allocate additional memory. This will lead to lower performance
-    // and thus we highly recommand to use rocSPARSE API instead!!!
+    // and thus we highly recommend to use rocSPARSE API instead!!!
 
     // Query for required buffer size
     size_t bufferSize;

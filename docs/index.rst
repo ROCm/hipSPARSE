@@ -2,7 +2,7 @@
 hipSPARSE Documentation
 #######################
 
-hipSPARSE exposes a common interface that provides Basic Linear Algebra Subroutines for sparse computation implemented on top of AMD's Radeon Open Compute ROCm runtime and toolchains.
+hipSPARSE exposes a common interface that provides Basic Linear Algebra Subroutines for sparse computation implemented on top of the AMD ROCm runtime and toolchains.
 hipSPARSE is created using the HIP programming language and optimized for AMD's latest discrete GPUs.
 
 In the following, three separate chapters are available:
