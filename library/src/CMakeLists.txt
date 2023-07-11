@@ -24,10 +24,10 @@
 # hipSPARSE source
 if(NOT USE_CUDA)
   # hipSPARSE source
-  set(hipsparse_source src/hcc_detail/hipsparse.cpp)
+  set(hipsparse_source src/amd_detail/hipsparse.cpp)
 else()
   # hipSPARSE CUDA source
-  set(hipsparse_source src/nvcc_detail/hipsparse.cpp)
+  set(hipsparse_source src/nvidia_detail/hipsparse.cpp)
 endif()
 
 # hipSPARSE Fortran source
