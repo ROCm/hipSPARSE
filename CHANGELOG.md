@@ -1,15 +1,11 @@
 # Change Log for hipSPARSE
 
-## hipSPARSE 2.3.8 for ROCm 5.7.0
+## hipSPARSE 2.3.7 for ROCm 5.7.0
 ### Improved
 - Fix compilation failures when using cusparse 12.1.0 backend
 - Fix compilation failures when using cusparse 12.0.0 backend
 - Fix compilation failures when using cusparse 10.1 (non-update versions) as backend
 - Minor improvements
-
-## hipSPARSE 2.3.7 for ROCm 5.6.1
-### Bugfix
-- Reverted an undocumented API change in hipSPARSE 2.3.6 that affected hipsparseSpSV_solve function
 
 ## hipSPARSE 2.3.6 for ROCm 5.6.0
 ### Added
