@@ -14259,25 +14259,15 @@ hipsparseStatus_t hipsparseSDDMM_preprocess(hipsparseHandle_t           handle,
                                    tempBuffer));
 }
 
-struct hipsparseSpSVDescr
-{
-    void* externalBuffer{};
-};
-
 hipsparseStatus_t hipsparseSpSV_createDescr(hipsparseSpSVDescr_t* descr)
 {
-    *descr = new hipsparseSpSVDescr;
+    // Do nothing
     return HIPSPARSE_STATUS_SUCCESS;
 }
 
 hipsparseStatus_t hipsparseSpSV_destroyDescr(hipsparseSpSVDescr_t descr)
 {
-    if(descr != nullptr)
-    {
-        descr->externalBuffer = nullptr;
-        delete descr;
-    }
-
+    // Do nothing
     return HIPSPARSE_STATUS_SUCCESS;
 }
 
@@ -14316,24 +14306,17 @@ hipsparseStatus_t hipsparseSpSV_analysis(hipsparseHandle_t           handle,
                                          hipsparseSpSVDescr_t        spsvDescr,
                                          void*                       externalBuffer)
 {
-
-    if(spsvDescr == nullptr)
-    {
-        return HIPSPARSE_STATUS_INVALID_VALUE;
-    }
-    RETURN_IF_ROCSPARSE_ERROR(rocsparse_spsv((rocsparse_handle)handle,
-                                             hipOperationToHCCOperation(opA),
-                                             alpha,
-                                             (const rocsparse_spmat_descr)matA,
-                                             (const rocsparse_dnvec_descr)x,
-                                             (const rocsparse_dnvec_descr)y,
-                                             hipDataTypeToHCCDataType(computeType),
-                                             hipSpSVAlgToHCCSpSVAlg(alg),
-                                             rocsparse_spsv_stage_preprocess,
-                                             nullptr,
-                                             externalBuffer));
-    spsvDescr->externalBuffer = externalBuffer;
-    return HIPSPARSE_STATUS_SUCCESS;
+    return rocSPARSEStatusToHIPStatus(rocsparse_spsv((rocsparse_handle)handle,
+                                                     hipOperationToHCCOperation(opA),
+                                                     alpha,
+                                                     (const rocsparse_spmat_descr)matA,
+                                                     (const rocsparse_dnvec_descr)x,
+                                                     (const rocsparse_dnvec_descr)y,
+                                                     hipDataTypeToHCCDataType(computeType),
+                                                     hipSpSVAlgToHCCSpSVAlg(alg),
+                                                     rocsparse_spsv_stage_preprocess,
+                                                     nullptr,
+                                                     externalBuffer));
 }
 
 hipsparseStatus_t hipsparseSpSV_solve(hipsparseHandle_t           handle,
@@ -14344,12 +14327,9 @@ hipsparseStatus_t hipsparseSpSV_solve(hipsparseHandle_t           handle,
                                       const hipsparseDnVecDescr_t y,
                                       hipDataType                 computeType,
                                       hipsparseSpSVAlg_t          alg,
-                                      hipsparseSpSVDescr_t        spsvDescr)
+                                      hipsparseSpSVDescr_t        spsvDescr,
+                                      void*                       externalBuffer)
 {
-    if(spsvDescr == nullptr)
-    {
-        return HIPSPARSE_STATUS_INVALID_VALUE;
-    }
     return rocSPARSEStatusToHIPStatus(rocsparse_spsv((rocsparse_handle)handle,
                                                      hipOperationToHCCOperation(opA),
                                                      alpha,
@@ -14360,7 +14340,7 @@ hipsparseStatus_t hipsparseSpSV_solve(hipsparseHandle_t           handle,
                                                      hipSpSVAlgToHCCSpSVAlg(alg),
                                                      rocsparse_spsv_stage_compute,
                                                      nullptr,
-                                                     spsvDescr->externalBuffer));
+                                                     externalBuffer));
 }
 
 hipsparseStatus_t hipsparseSpSM_createDescr(hipsparseSpSMDescr_t* descr)

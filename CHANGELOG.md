@@ -1,5 +1,9 @@
 # Change Log for hipSPARSE
 
+## hipSPARSE 2.3.7 for ROCm 5.6.1
+### Bugfix
+- Reverted an undocumented API change in hipSPARSE 2.3.6 that affected hipsparseSpSV_solve function
+
 ## hipSPARSE 2.3.6 for ROCm 5.6.0
 ### Added
 - Added SpGEMM algorithms
