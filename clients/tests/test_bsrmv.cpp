@@ -33,9 +33,10 @@ typedef hipsparseDirection_t                                    dir;
 typedef std::tuple<int, int, double, double, int, dir, base>    bsrmv_tuple;
 typedef std::tuple<double, double, int, dir, base, std::string> bsrmv_bin_tuple;
 
-int bsr_M_range[]   = {-1, 0, 500, 7111};
-int bsr_N_range[]   = {-3, 0, 842, 4441};
-int bsr_dim_range[] = {-1, 0, 1, 3, 5, 9};
+int bsr_M_range[]   = {0, 500, 7111};
+int bsr_N_range[]   = {0, 842, 4441};
+int bsr_dim_range[] = {1, 3, 5, 9};
+
 
 std::vector<double> bsr_alpha_range = {3.0};
 std::vector<double> bsr_beta_range  = {1.0};

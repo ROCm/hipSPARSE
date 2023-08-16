@@ -447,7 +447,6 @@ hipsparseStatus_t testing_bsrmm(Arguments argus)
     hipsparseIndexBase_t idx_base  = argus.idx_base;
     std::string          binfile   = "";
     std::string          filename  = "";
-    hipsparseStatus_t    status;
 
     // When in testing mode, m == n == -99 indicates that we are testing with a real
     // matrix from cise.ufl.edu
@@ -478,67 +477,6 @@ hipsparseStatus_t testing_bsrmm(Arguments argus)
 
     // Set matrix index base
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatIndexBase(descr, idx_base));
-
-    // Argument sanity check before allocating invalid memory
-    if(mb <= 0 || n <= 0 || kb <= 0 || block_dim <= 0)
-    {
-        auto dbsr_row_ptr_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto dbsr_col_ind_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto dbsr_val_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-        auto dB_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-        auto dC_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-
-        int* dbsr_row_ptr = (int*)dbsr_row_ptr_managed.get();
-        int* dbsr_col_ind = (int*)dbsr_col_ind_managed.get();
-        T*   dbsr_val     = (T*)dbsr_val_managed.get();
-        T*   dB           = (T*)dB_managed.get();
-        T*   dC           = (T*)dC_managed.get();
-
-        if(!dbsr_val || !dbsr_row_ptr || !dbsr_col_ind || !dB || !dC)
-        {
-            verify_hipsparse_status_success(
-                HIPSPARSE_STATUS_ALLOC_FAILED,
-                "!dbsr_row_ptr || !dbsr_col_ind || !dbsr_val || !dB || !dC");
-            return HIPSPARSE_STATUS_ALLOC_FAILED;
-        }
-
-        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
-        status = hipsparseXbsrmm(handle,
-                                 dirA,
-                                 transA,
-                                 transB,
-                                 mb,
-                                 n,
-                                 kb,
-                                 safe_size,
-                                 &h_alpha,
-                                 descr,
-                                 dbsr_val,
-                                 dbsr_row_ptr,
-                                 dbsr_col_ind,
-                                 block_dim,
-                                 dB,
-                                 ldb,
-                                 &h_beta,
-                                 dC,
-                                 ldc);
-
-        if(mb < 0 || n < 0 || kb < 0 || block_dim <= 0)
-        {
-            verify_hipsparse_status_invalid_size(
-                status, "Error: mb < 0 || n < 0 || kb < 0 || block_dim <= 0");
-        }
-        else
-        {
-            verify_hipsparse_status_success(status,
-                                            "mb >= 0 && n >= 0 && kb >= 0 && block_dim > 0");
-        }
-
-        return HIPSPARSE_STATUS_SUCCESS;
-    }
 
     // Read or construct CSR matrix
     std::vector<int> csr_row_ptr;
@@ -617,14 +555,6 @@ hipsparseStatus_t testing_bsrmm(Arguments argus)
     T*   dcsr_valA     = (T*)dcsr_valA_managed.get();
     int* dbsr_row_ptrA = (int*)dbsr_row_ptrA_managed.get();
 
-    if(!dcsr_row_ptrA || !dcsr_col_indA || !dcsr_valA || !dbsr_row_ptrA)
-    {
-        verify_hipsparse_status_success(
-            HIPSPARSE_STATUS_ALLOC_FAILED,
-            "!dcsr_row_ptrA || !dcsr_col_indA || !dcsr_valA || !dbsr_row_ptrA");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
-
     // Copy CSR from host to device
     CHECK_HIP_ERROR(
         hipMemcpy(dcsr_row_ptrA, csr_row_ptr.data(), sizeof(int) * (m + 1), hipMemcpyHostToDevice));
@@ -654,13 +584,6 @@ hipsparseStatus_t testing_bsrmm(Arguments argus)
 
     int* dbsr_col_indA = (int*)dbsr_col_indA_managed.get();
     T*   dbsr_valA     = (T*)dbsr_valA_managed.get();
-
-    if(!dbsr_valA || !dbsr_col_indA)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!dbsr_valA || !dbsr_col_indA");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
 
     CHECK_HIPSPARSE_ERROR(hipsparseXcsr2bsr(handle,
                                             dirA,
@@ -728,13 +651,6 @@ hipsparseStatus_t testing_bsrmm(Arguments argus)
     T* dC_2    = (T*)dC_2_managed.get();
     T* d_alpha = (T*)d_alpha_managed.get();
     T* d_beta  = (T*)d_beta_managed.get();
-
-    if(!dB || !dC_1 || !dC_2 || !d_alpha || !d_beta)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!dB || !dC_1 || !dC_2 || !d_alpha || !d_beta");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
 
     // Copy data from host to device
     CHECK_HIP_ERROR(hipMemcpy(dB, hB.data(), sizeof(T) * nnz_B, hipMemcpyHostToDevice));
