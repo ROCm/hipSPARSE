@@ -37,7 +37,6 @@ int bsr_M_range[]   = {0, 500, 7111};
 int bsr_N_range[]   = {0, 842, 4441};
 int bsr_dim_range[] = {1, 3, 5, 9};
 
-
 std::vector<double> bsr_alpha_range = {3.0};
 std::vector<double> bsr_beta_range  = {1.0};
 
