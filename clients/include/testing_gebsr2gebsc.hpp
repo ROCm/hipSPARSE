@@ -46,10 +46,10 @@ void testing_gebsr2gebsc_bad_arg(void)
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
-    static const size_t safe_size = 100;
+    static const size_t safe_size = 1;
 
     auto bsr_row_ptr_managed
-        = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+      = hipsparse_unique_ptr{device_malloc(sizeof(int) * (safe_size+1) ), device_free};
     auto bsr_col_ind_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
     auto bsr_val_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
@@ -61,7 +61,7 @@ void testing_gebsr2gebsc_bad_arg(void)
     auto bsc_row_ind_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
     auto bsc_col_ptr_managed
-        = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+      = hipsparse_unique_ptr{device_malloc(sizeof(int) * (safe_size+1) ), device_free};
     auto bsc_val_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
 
     auto  buffer_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
@@ -76,6 +76,12 @@ void testing_gebsr2gebsc_bad_arg(void)
         PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
         return;
     }
+    { //
+      int local_ptr[2] = {0, 1};
+      CHECK_HIP_ERROR(hipMemcpy(bsr_row_ptr, local_ptr, sizeof(int) * (safe_size + 1), hipMemcpyHostToDevice));      
+      CHECK_HIP_ERROR(hipMemcpy(bsc_col_ptr, local_ptr, sizeof(int) * (safe_size + 1), hipMemcpyHostToDevice));      
+    } //
+
 
     size_t buffer_size;
     status = hipsparseXgebsr2gebsc_bufferSize<T>(nullptr,
