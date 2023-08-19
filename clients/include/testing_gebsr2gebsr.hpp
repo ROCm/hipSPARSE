@@ -61,13 +61,13 @@ void testing_gebsr2gebsr_bad_arg(void)
     hipsparseSetMatIndexBase(descr_C, idx_base_C);
 
     auto bsr_row_ptr_A_managed
-      = hipsparse_unique_ptr{device_malloc(sizeof(int) * (safe_size+1)), device_free};
+        = hipsparse_unique_ptr{device_malloc(sizeof(int) * (safe_size + 1)), device_free};
     auto bsr_col_ind_A_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
     auto bsr_val_A_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
     auto bsr_row_ptr_C_managed
-      = hipsparse_unique_ptr{device_malloc(sizeof(int) * (safe_size+1)), device_free};
+        = hipsparse_unique_ptr{device_malloc(sizeof(int) * (safe_size + 1)), device_free};
     auto bsr_col_ind_C_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
     auto bsr_val_C_managed
@@ -82,19 +82,21 @@ void testing_gebsr2gebsr_bad_arg(void)
     int* bsr_col_ind_C = (int*)bsr_col_ind_C_managed.get();
     T*   bsr_val_C     = (T*)bsr_val_C_managed.get();
     T*   temp_buffer   = (T*)temp_buffer_managed.get();
-    { //
-      int local_ptr[2] = {0, 1};
-      CHECK_HIP_ERROR(hipMemcpy(bsr_row_ptr_A, local_ptr, sizeof(int) * (safe_size + 1), hipMemcpyHostToDevice));      
-      CHECK_HIP_ERROR(hipMemcpy(bsr_row_ptr_C, local_ptr, sizeof(int) * (safe_size + 1), hipMemcpyHostToDevice));      
-    } //
 
-    
     if(!bsr_row_ptr_A || !bsr_col_ind_A || !bsr_val_A || !bsr_row_ptr_C || !bsr_col_ind_C
        || !bsr_val_C || !temp_buffer)
     {
         PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
         return;
     }
+
+    { //
+      int local_ptr[2] = {0, 1};
+      CHECK_HIP_ERROR(hipMemcpy(
+				bsr_row_ptr_A, local_ptr, sizeof(int) * (safe_size + 1), hipMemcpyHostToDevice));
+      CHECK_HIP_ERROR(hipMemcpy(
+				bsr_row_ptr_C, local_ptr, sizeof(int) * (safe_size + 1), hipMemcpyHostToDevice));
+    } //
 
     // Testing hipsparseXgebsr2gebsr_bufferSize()
 
@@ -816,7 +818,7 @@ void testing_gebsr2gebsr_bad_arg(void)
                                    temp_buffer);
     verify_hipsparse_status_invalid_size(status, "Error: nnzb is invalid");
 
-    status  = hipsparseXgebsr2gebsr(handle,
+    status = hipsparseXgebsr2gebsr(handle,
                                    dir,
                                    mb,
                                    nb,
@@ -836,7 +838,7 @@ void testing_gebsr2gebsr_bad_arg(void)
                                    temp_buffer);
     verify_hipsparse_status_invalid_size(status, "Error: row_block_dim_A is invalid");
 
-    status  = hipsparseXgebsr2gebsr(handle,
+    status = hipsparseXgebsr2gebsr(handle,
                                    dir,
                                    mb,
                                    nb,
@@ -856,7 +858,7 @@ void testing_gebsr2gebsr_bad_arg(void)
                                    temp_buffer);
     verify_hipsparse_status_invalid_size(status, "Error: col_block_dim_A is invalid");
 
-    status  = hipsparseXgebsr2gebsr(handle,
+    status = hipsparseXgebsr2gebsr(handle,
                                    dir,
                                    mb,
                                    nb,
@@ -876,7 +878,7 @@ void testing_gebsr2gebsr_bad_arg(void)
                                    temp_buffer);
     verify_hipsparse_status_invalid_size(status, "Error: row_block_dim_C is invalid");
 
-status  = hipsparseXgebsr2gebsr(handle,
+    status = hipsparseXgebsr2gebsr(handle,
                                    dir,
                                    mb,
                                    nb,
@@ -1335,7 +1337,6 @@ hipsparseStatus_t testing_gebsr2gebsr(Arguments argus)
                            1,
                            hbsr_val_C_gold.data(),
                            hbsr_val_C.data());
-
     }
 
     return HIPSPARSE_STATUS_SUCCESS;

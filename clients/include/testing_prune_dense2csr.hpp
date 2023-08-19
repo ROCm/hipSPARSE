@@ -42,8 +42,8 @@ void testing_prune_dense2csr_bad_arg(void)
 {
     size_t safe_size = 100;
 
-    int    M                      = 10;
-    int    N                      = 10;
+    int    M                      = 1;
+    int    N                      = 1;
     int    LDA                    = M;
     T      threshold              = static_cast<T>(1);
     int    nnz_total_dev_host_ptr = 100;
@@ -58,7 +58,7 @@ void testing_prune_dense2csr_bad_arg(void)
     hipsparseMatDescr_t           descr = unique_ptr_descr->descr;
 
     auto csr_row_ptr_managed
-        = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+      = hipsparse_unique_ptr{device_malloc(sizeof(int) * (safe_size+1)), device_free};
     auto csr_col_ind_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
     auto csr_val_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
@@ -72,11 +72,18 @@ void testing_prune_dense2csr_bad_arg(void)
     T*   A           = (T*)A_managed.get();
     T*   temp_buffer = (T*)temp_buffer_managed.get();
 
+    
     if(!csr_row_ptr || !csr_col_ind || !csr_val || !A || !temp_buffer)
     {
         PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
         return;
     }
+        { //
+      
+      int local_ptr[2] = {0, 1};
+      CHECK_HIP_ERROR(hipMemcpy(csr_row_ptr, local_ptr, sizeof(int) * (1 + 1), hipMemcpyHostToDevice));
+    } //
+
 
 #if(!defined(CUDART_VERSION))
     // Test hipsparseXpruneDense2csr_bufferSize
@@ -220,7 +227,7 @@ void testing_prune_dense2csr_bad_arg(void)
         handle, M, N, A, LDA, &threshold, nullptr, csr_val, csr_row_ptr, csr_col_ind, temp_buffer);
     verify_hipsparse_status_invalid_pointer(status, "Error: descr is nullptr");
 
-    status = hipsparseXpruneDense2csr(handle,
+status = hipsparseXpruneDense2csr(handle,
                                       M,
                                       N,
                                       A,
@@ -233,7 +240,7 @@ void testing_prune_dense2csr_bad_arg(void)
                                       temp_buffer);
     verify_hipsparse_status_invalid_pointer(status, "Error: csr_val is nullptr");
 
-    status = hipsparseXpruneDense2csr(
+status = hipsparseXpruneDense2csr(
         handle, M, N, A, LDA, &threshold, descr, csr_val, nullptr, csr_col_ind, temp_buffer);
     verify_hipsparse_status_invalid_pointer(status, "Error: csr_row_ptr is nullptr");
 
