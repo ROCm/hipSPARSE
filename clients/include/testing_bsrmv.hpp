@@ -358,20 +358,20 @@ hipsparseStatus_t testing_bsrmv(Arguments argus)
 
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
         hipsparseStatus_t status = hipsparseXbsrmv(handle,
-                                 dir,
-                                 transA,
-                                 mb,
-                                 nb,
-                                 safe_size,
-                                 &h_alpha,
-                                 descr,
-                                 dval,
-                                 dptr,
-                                 dcol,
-                                 block_dim,
-                                 dx,
-                                 &h_beta,
-                                 dy);
+                                                   dir,
+                                                   transA,
+                                                   mb,
+                                                   nb,
+                                                   safe_size,
+                                                   &h_alpha,
+                                                   descr,
+                                                   dval,
+                                                   dptr,
+                                                   dcol,
+                                                   block_dim,
+                                                   dx,
+                                                   &h_beta,
+                                                   dy);
 
         verify_hipsparse_status_success(status, "mb >= 0 && nb >= 0");
 
