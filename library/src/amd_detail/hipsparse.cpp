@@ -8705,6 +8705,27 @@ hipsparseStatus_t hipsparseCsr2cscEx2(hipsparseHandle_t     handle,
                                buffer));
     case HIP_R_16F:
     case HIP_C_16F:
+    case HIP_C_8I:
+    case HIP_R_8U:
+    case HIP_C_8U:
+    case HIP_R_32I:
+    case HIP_C_32I:
+    case HIP_R_32U:
+    case HIP_C_32U:
+    case HIP_R_16BF:
+    case HIP_C_16BF:
+    case HIP_R_4I:
+    case HIP_C_4I:
+    case HIP_R_4U:
+    case HIP_C_4U:
+    case HIP_R_16I:
+    case HIP_C_16I:
+    case HIP_R_16U:
+    case HIP_C_16U:
+    case HIP_R_64I:
+    case HIP_C_64I:
+    case HIP_R_64U:
+    case HIP_C_64U:
         return HIPSPARSE_STATUS_NOT_SUPPORTED;
     }
 
@@ -14206,20 +14227,61 @@ hipsparseStatus_t hipsparseSpGEMM_compute(hipsparseHandle_t          handle,
     const void* alpha_ptr = spgemm_get_ptr(mode, computeType, alpha);
     const void* beta_ptr  = spgemm_get_ptr(mode, computeType, beta);
 
-    return rocSPARSEStatusToHIPStatus(rocsparse_spgemm((rocsparse_handle)handle,
-                                                       hipOperationToHCCOperation(opA),
-                                                       hipOperationToHCCOperation(opB),
-                                                       alpha_ptr,
-                                                       (rocsparse_const_spmat_descr)matA,
-                                                       (rocsparse_const_spmat_descr)matB,
-                                                       beta_ptr,
-                                                       (rocsparse_spmat_descr)matC,
-                                                       (rocsparse_spmat_descr)matC,
-                                                       hipDataTypeToHCCDataType(computeType),
-                                                       hipSpGEMMAlgToHCCSpGEMMAlg(alg),
-                                                       rocsparse_spgemm_stage_auto,
-                                                       bufferSize2,
-                                                       externalBuffer2));
+    // get matrix C non-zero entries C_nnz1
+    int64_t C_num_rows1, C_num_cols1, C_nnz1;
+    RETURN_IF_HIPSPARSE_ERROR(hipsparseSpMatGetSize(matC, &C_num_rows1, &C_num_cols1, &C_nnz1))
+
+    if(externalBuffer2 == nullptr)
+    {
+        return rocSPARSEStatusToHIPStatus(rocsparse_spgemm((rocsparse_handle)handle,
+                                                           hipOperationToHCCOperation(opA),
+                                                           hipOperationToHCCOperation(opB),
+                                                           alpha_ptr,
+                                                           (rocsparse_const_spmat_descr)matA,
+                                                           (rocsparse_const_spmat_descr)matB,
+                                                           beta_ptr,
+                                                           (rocsparse_spmat_descr)matC,
+                                                           (rocsparse_spmat_descr)matC,
+                                                           hipDataTypeToHCCDataType(computeType),
+                                                           hipSpGEMMAlgToHCCSpGEMMAlg(alg),
+                                                           rocsparse_spgemm_stage_buffer_size,
+                                                           bufferSize2,
+                                                           externalBuffer2));
+    }
+    else if(C_nnz1 == 0)
+    {
+        return rocSPARSEStatusToHIPStatus(rocsparse_spgemm((rocsparse_handle)handle,
+                                                           hipOperationToHCCOperation(opA),
+                                                           hipOperationToHCCOperation(opB),
+                                                           alpha_ptr,
+                                                           (rocsparse_const_spmat_descr)matA,
+                                                           (rocsparse_const_spmat_descr)matB,
+                                                           beta_ptr,
+                                                           (rocsparse_spmat_descr)matC,
+                                                           (rocsparse_spmat_descr)matC,
+                                                           hipDataTypeToHCCDataType(computeType),
+                                                           hipSpGEMMAlgToHCCSpGEMMAlg(alg),
+                                                           rocsparse_spgemm_stage_nnz,
+                                                           bufferSize2,
+                                                           externalBuffer2));
+    }
+    else
+    {
+        return rocSPARSEStatusToHIPStatus(rocsparse_spgemm((rocsparse_handle)handle,
+                                                           hipOperationToHCCOperation(opA),
+                                                           hipOperationToHCCOperation(opB),
+                                                           alpha_ptr,
+                                                           (rocsparse_const_spmat_descr)matA,
+                                                           (rocsparse_const_spmat_descr)matB,
+                                                           beta_ptr,
+                                                           (rocsparse_spmat_descr)matC,
+                                                           (rocsparse_spmat_descr)matC,
+                                                           hipDataTypeToHCCDataType(computeType),
+                                                           hipSpGEMMAlgToHCCSpGEMMAlg(alg),
+                                                           rocsparse_spgemm_stage_compute,
+                                                           bufferSize2,
+                                                           externalBuffer2));
+    }
 }
 
 hipsparseStatus_t hipsparseSpGEMM_copy(hipsparseHandle_t          handle,

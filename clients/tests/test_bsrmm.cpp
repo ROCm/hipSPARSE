@@ -34,9 +34,9 @@ typedef std::tuple<int, int, int, int, double, double, direction, base, trans, t
 typedef std::tuple<int, int, double, double, direction, base, trans, trans, std::string>
     bsrmm_bin_tuple;
 
-int bsrmm_M_range[]         = {-1, 42, 2059};
-int bsrmm_N_range[]         = {-1, 7, 78};
-int bsrmm_K_range[]         = {-1, 50, 173, 1375};
+int bsrmm_M_range[]         = {42, 2059};
+int bsrmm_N_range[]         = {7, 78};
+int bsrmm_K_range[]         = {50, 173, 1375};
 int bsrmm_block_dim_range[] = {4, 7, 16};
 
 double bsrmm_alpha_range[] = {-0.5};

@@ -298,7 +298,6 @@ hipsparseStatus_t testing_bsrmv(Arguments argus)
     hipsparseDirection_t dir       = argus.dirA;
     std::string          binfile   = "";
     std::string          filename  = "";
-    hipsparseStatus_t    status;
 
     // When in testing mode, M == N == -99 indicates that we are testing with a real
     // matrix from cise.ufl.edu
@@ -322,8 +321,8 @@ hipsparseStatus_t testing_bsrmv(Arguments argus)
     // Set matrix index base
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatIndexBase(descr, idx_base));
 
-    int mb = (block_dim == 0) ? -1 : (m + block_dim - 1) / block_dim;
-    int nb = (block_dim == 0) ? -1 : (n + block_dim - 1) / block_dim;
+    int mb = (m + block_dim - 1) / block_dim;
+    int nb = (n + block_dim - 1) / block_dim;
 
     if(block_dim == 1)
     {
@@ -334,7 +333,7 @@ hipsparseStatus_t testing_bsrmv(Arguments argus)
     }
 
     // Argument sanity check before allocating invalid memory
-    if(mb <= 0 || nb <= 0 || m <= 0 || n <= 0 || block_dim <= 0)
+    if(mb == 0 || nb == 0)
     {
         auto dptr_managed
             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
@@ -358,31 +357,23 @@ hipsparseStatus_t testing_bsrmv(Arguments argus)
         }
 
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
-        status = hipsparseXbsrmv(handle,
-                                 dir,
-                                 transA,
-                                 mb,
-                                 nb,
-                                 safe_size,
-                                 &h_alpha,
-                                 descr,
-                                 dval,
-                                 dptr,
-                                 dcol,
-                                 block_dim,
-                                 dx,
-                                 &h_beta,
-                                 dy);
+        hipsparseStatus_t status = hipsparseXbsrmv(handle,
+                                                   dir,
+                                                   transA,
+                                                   mb,
+                                                   nb,
+                                                   safe_size,
+                                                   &h_alpha,
+                                                   descr,
+                                                   dval,
+                                                   dptr,
+                                                   dcol,
+                                                   block_dim,
+                                                   dx,
+                                                   &h_beta,
+                                                   dy);
 
-        if(mb < 0 || nb < 0 || block_dim <= 0)
-        {
-            verify_hipsparse_status_invalid_size(status,
-                                                 "Error: mb < 0 || nb < 0 || block_dim < 0");
-        }
-        else
-        {
-            verify_hipsparse_status_success(status, "mb >= 0 && nb >= 0 && block_dim >= 0");
-        }
+        verify_hipsparse_status_success(status, "mb >= 0 && nb >= 0");
 
         return HIPSPARSE_STATUS_SUCCESS;
     }
@@ -489,15 +480,6 @@ hipsparseStatus_t testing_bsrmv(Arguments argus)
     T*   d_alpha      = (T*)d_alpha_managed.get();
     T*   d_beta       = (T*)d_beta_managed.get();
 
-    if(!dcsr_val || !dcsr_row_ptr || !dcsr_col_ind || !dbsr_row_ptr || !dx || !dy_1 || !dy_2
-       || !d_alpha || !d_beta)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!dval || !dptr || !dcol || !dx || "
-                                        "!dy_1 || !dy_2 || !d_alpha || !d_beta");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
-
     // copy data from CPU to device
     CHECK_HIP_ERROR(
         hipMemcpy(dcsr_row_ptr, hcsr_row_ptr.data(), sizeof(int) * (m + 1), hipMemcpyHostToDevice));
@@ -530,13 +512,6 @@ hipsparseStatus_t testing_bsrmv(Arguments argus)
 
     int* dbsr_col_ind = (int*)dbsr_col_ind_managed.get();
     T*   dbsr_val     = (T*)dbsr_val_managed.get();
-
-    if(!dbsr_val || !dbsr_col_ind)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!dbsr_val || !dbsr_col_ind");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
 
     CHECK_HIPSPARSE_ERROR(hipsparseXcsr2bsr(handle,
                                             dir,
