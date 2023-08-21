@@ -332,6 +332,52 @@ hipsparseStatus_t testing_bsrmv(Arguments argus)
 #endif
     }
 
+    // Argument sanity check before allocating invalid memory
+    if(mb == 0 || nb == 0)
+    {
+        auto dptr_managed
+            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+        auto dcol_managed
+            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+        auto dval_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+        auto dx_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+        auto dy_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+
+        int* dptr = (int*)dptr_managed.get();
+        int* dcol = (int*)dcol_managed.get();
+        T*   dval = (T*)dval_managed.get();
+        T*   dx   = (T*)dx_managed.get();
+        T*   dy   = (T*)dy_managed.get();
+
+        if(!dval || !dptr || !dcol || !dx || !dy)
+        {
+            verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
+                                            "!dptr || !dcol || !dval || !dx || !dy");
+            return HIPSPARSE_STATUS_ALLOC_FAILED;
+        }
+
+        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
+        hipsparseStatus_t status = hipsparseXbsrmv(handle,
+                                 dir,
+                                 transA,
+                                 mb,
+                                 nb,
+                                 safe_size,
+                                 &h_alpha,
+                                 descr,
+                                 dval,
+                                 dptr,
+                                 dcol,
+                                 block_dim,
+                                 dx,
+                                 &h_beta,
+                                 dy);
+
+        verify_hipsparse_status_success(status, "mb >= 0 && nb >= 0");
+
+        return HIPSPARSE_STATUS_SUCCESS;
+    }
+
     // Host structures
     std::vector<int> hcsr_row_ptr;
     std::vector<int> hcsr_col_ind;
@@ -445,7 +491,6 @@ hipsparseStatus_t testing_bsrmv(Arguments argus)
     CHECK_HIP_ERROR(hipMemcpy(d_alpha, &h_alpha, sizeof(T), hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(d_beta, &h_beta, sizeof(T), hipMemcpyHostToDevice));
 
-    std::cout << "AAAA" << std::endl;
     // Convert to BSR
     int nnzb;
     CHECK_HIPSPARSE_ERROR(hipsparseXcsr2bsrNnz(handle,
@@ -468,7 +513,6 @@ hipsparseStatus_t testing_bsrmv(Arguments argus)
     int* dbsr_col_ind = (int*)dbsr_col_ind_managed.get();
     T*   dbsr_val     = (T*)dbsr_val_managed.get();
 
-    std::cout << "BBBB nnzb: " << nnzb << std::endl;
     CHECK_HIPSPARSE_ERROR(hipsparseXcsr2bsr(handle,
                                             dir,
                                             m,
@@ -482,8 +526,6 @@ hipsparseStatus_t testing_bsrmv(Arguments argus)
                                             dbsr_val,
                                             dbsr_row_ptr,
                                             dbsr_col_ind));
-
-    std::cout << "CCCC" << std::endl;
 
     if(argus.unit_check)
     {
@@ -507,8 +549,6 @@ hipsparseStatus_t testing_bsrmv(Arguments argus)
                                               &h_beta,
                                               dy_1));
 
-        std::cout << "DDDD" << std::endl;
-
         // ROCSPARSE pointer mode device
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
         CHECK_HIPSPARSE_ERROR(hipsparseXbsrmv(handle,
@@ -526,8 +566,6 @@ hipsparseStatus_t testing_bsrmv(Arguments argus)
                                               dx,
                                               d_beta,
                                               dy_2));
-
-        std::cout << "EEEE" << std::endl;
 
         // copy output from device to CPU
         CHECK_HIP_ERROR(hipMemcpy(hy_1.data(), dy_1, sizeof(T) * m, hipMemcpyDeviceToHost));
