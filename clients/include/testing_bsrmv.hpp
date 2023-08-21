@@ -445,6 +445,7 @@ hipsparseStatus_t testing_bsrmv(Arguments argus)
     CHECK_HIP_ERROR(hipMemcpy(d_alpha, &h_alpha, sizeof(T), hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(d_beta, &h_beta, sizeof(T), hipMemcpyHostToDevice));
 
+    std::cout << "AAAA" << std::endl;
     // Convert to BSR
     int nnzb;
     CHECK_HIPSPARSE_ERROR(hipsparseXcsr2bsrNnz(handle,
@@ -467,6 +468,7 @@ hipsparseStatus_t testing_bsrmv(Arguments argus)
     int* dbsr_col_ind = (int*)dbsr_col_ind_managed.get();
     T*   dbsr_val     = (T*)dbsr_val_managed.get();
 
+    std::cout << "BBBB nnzb: " << nnzb << std::endl;
     CHECK_HIPSPARSE_ERROR(hipsparseXcsr2bsr(handle,
                                             dir,
                                             m,
@@ -480,6 +482,8 @@ hipsparseStatus_t testing_bsrmv(Arguments argus)
                                             dbsr_val,
                                             dbsr_row_ptr,
                                             dbsr_col_ind));
+
+    std::cout << "CCCC" << std::endl;
 
     if(argus.unit_check)
     {
@@ -503,6 +507,8 @@ hipsparseStatus_t testing_bsrmv(Arguments argus)
                                               &h_beta,
                                               dy_1));
 
+        std::cout << "DDDD" << std::endl;
+
         // ROCSPARSE pointer mode device
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
         CHECK_HIPSPARSE_ERROR(hipsparseXbsrmv(handle,
@@ -520,6 +526,8 @@ hipsparseStatus_t testing_bsrmv(Arguments argus)
                                               dx,
                                               d_beta,
                                               dy_2));
+
+        std::cout << "EEEE" << std::endl;
 
         // copy output from device to CPU
         CHECK_HIP_ERROR(hipMemcpy(hy_1.data(), dy_1, sizeof(T) * m, hipMemcpyDeviceToHost));
