@@ -61,7 +61,7 @@ void testing_prune_dense2csr_by_percentage_bad_arg(void)
     pruneInfo_t                   info = unique_ptr_info->info;
 
     auto csr_row_ptr_managed
-      = hipsparse_unique_ptr{device_malloc(sizeof(int) * (safe_size+1)), device_free};
+        = hipsparse_unique_ptr{device_malloc(sizeof(int) * (safe_size + 1)), device_free};
     auto csr_col_ind_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
     auto csr_val_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
@@ -81,11 +81,11 @@ void testing_prune_dense2csr_by_percentage_bad_arg(void)
         return;
     }
     { //
-      
-      int local_ptr[2] = {0, 1};
-      CHECK_HIP_ERROR(hipMemcpy(csr_row_ptr, local_ptr, sizeof(int) * (1 + 1), hipMemcpyHostToDevice));
-    } //
 
+        int local_ptr[2] = {0, 1};
+        CHECK_HIP_ERROR(
+            hipMemcpy(csr_row_ptr, local_ptr, sizeof(int) * (1 + 1), hipMemcpyHostToDevice));
+    } //
 
 #if(!defined(CUDART_VERSION))
     // Test hipsparseXpruneDense2csrByPercentage_bufferSize

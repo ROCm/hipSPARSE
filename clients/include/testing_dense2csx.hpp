@@ -65,18 +65,14 @@ void testing_dense2csx_bad_arg(FUNC& dense2csx)
     int* d_csx_row_col_ptr = (int*)m_csx_row_col_ptr.get();
     int* d_csx_col_row_ind = (int*)m_csx_row_col_ind.get();
 
-    
     if(!d_dense_val || !d_nnzPerRowColumn || !d_csx_row_col_ptr || !d_csx_col_row_ind || !d_csx_val)
     {
         PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
         return;
     }
 
-
-    
-
     { //
-      
+
       int local_ptr[2] = {0, 1};
       CHECK_HIP_ERROR(hipMemcpy(d_csx_row_col_ptr, local_ptr, sizeof(int) * (1 + 1), hipMemcpyHostToDevice));
     } //

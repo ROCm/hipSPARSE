@@ -58,13 +58,13 @@ void testing_csr2csr_compress_bad_arg(void)
     hipsparseSetMatIndexBase(csr_descr, csr_idx_base);
 
     auto csr_row_ptr_A_managed
-        = hipsparse_unique_ptr{device_malloc(sizeof(int) * (safe_size+1)), device_free};
+      = hipsparse_unique_ptr{device_malloc(sizeof(int) * (safe_size+1)), device_free};
     auto csr_col_ind_A_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
     auto csr_val_A_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
     auto csr_row_ptr_C_managed
-        = hipsparse_unique_ptr{device_malloc(sizeof(int) * (safe_size+1)), device_free};
+        = hipsparse_unique_ptr{device_malloc(sizeof(int) * (safe_size + 1)), device_free};
     auto csr_col_ind_C_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
     auto csr_val_C_managed
@@ -89,21 +89,21 @@ void testing_csr2csr_compress_bad_arg(void)
         return;
     }
 
-    
     { //
-      
-      int local_ptr[2] = {0, 1};
-      CHECK_HIP_ERROR(hipMemcpy(csr_row_ptr_A, local_ptr, sizeof(int) * (1 + 1), hipMemcpyHostToDevice));
-      CHECK_HIP_ERROR(hipMemcpy(csr_row_ptr_C, local_ptr, sizeof(int) * (1 + 1), hipMemcpyHostToDevice));
-    } //
-    
-    { //
-      
-      int local_nnz[1] = {1};
-      CHECK_HIP_ERROR(hipMemcpy(nnz_per_row, local_nnz, sizeof(int), hipMemcpyHostToDevice));
+
+        int local_ptr[2] = {0, 1};
+        CHECK_HIP_ERROR(
+            hipMemcpy(csr_row_ptr_A, local_ptr, sizeof(int) * (1 + 1), hipMemcpyHostToDevice));
+        CHECK_HIP_ERROR(
+            hipMemcpy(csr_row_ptr_C, local_ptr, sizeof(int) * (1 + 1), hipMemcpyHostToDevice));
     } //
 
-    
+    { //
+
+        int local_nnz[1] = {1};
+        CHECK_HIP_ERROR(hipMemcpy(nnz_per_row, local_nnz, sizeof(int), hipMemcpyHostToDevice));
+    } //
+
     // Testing hipsparseXnnz_compress()
     // Test invalid handle
     status = hipsparseXnnz_compress(
@@ -140,7 +140,7 @@ void testing_csr2csr_compress_bad_arg(void)
 
     // Testing hipsparseXcsr2csr_compress()
 
-      // Test invalid handle
+    // Test invalid handle
     status = hipsparseXcsr2csr_compress(nullptr,
                                         m,
                                         n,
@@ -231,8 +231,8 @@ void testing_csr2csr_compress_bad_arg(void)
                                         tol);
     verify_hipsparse_status_invalid_pointer(status,
                                             "Error: Number of elements per row array is invalid");
-    
-status = hipsparseXcsr2csr_compress(handle,
+
+    status = hipsparseXcsr2csr_compress(handle,
                                         m,
                                         n,
                                         csr_descr,
@@ -247,7 +247,7 @@ status = hipsparseXcsr2csr_compress(handle,
                                         tol);
     verify_hipsparse_status_invalid_pointer(status, "Error: CSR matrix values array is invalid");
 
-      status = hipsparseXcsr2csr_compress(handle,
+    status = hipsparseXcsr2csr_compress(handle,
                                         m,
                                         n,
                                         csr_descr,

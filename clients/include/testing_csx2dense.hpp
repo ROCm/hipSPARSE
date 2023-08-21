@@ -59,7 +59,7 @@ void testing_csx2dense_bad_arg(FUNC& csx2dense)
     auto m_csx_ind = hipsparse_unique_ptr{device_malloc(sizeof(int) * 1), device_free};
 
     int* d_csx_row = (HIPSPARSE_DIRECTION_ROW == DIRA) ? ((int*)m_csx_ptr.get()) : ((int*)m_csx_ind.get());
-    int* d_csx_col = (HIPSPARSE_DIRECTION_ROW == DIRA) ? ((int*)m_csx_ind.get()) : ((int*)m_csx_ptr.get());    
+    int* d_csx_col = (HIPSPARSE_DIRECTION_ROW == DIRA) ? ((int*)m_csx_ind.get()) : ((int*)m_csx_ptr.get());
     T*   d_dense_val       = (T*)m_dense_val.get();
     T*   d_csx_val         = (T*)m_csx_val.get();
     int* d_nnzPerRowColumn = (int*)m_nnzPerRowColumn.get();
@@ -71,9 +71,9 @@ void testing_csx2dense_bad_arg(FUNC& csx2dense)
     }
 
     { //
-      
+
       int local_ptr[2] = {0, 1};
-      CHECK_HIP_ERROR(hipMemcpy(m_csx_ptr.get(), local_ptr, sizeof(int) * (1 + 1), hipMemcpyHostToDevice));
+      CHECK_HIP_ERROR(hipMemcpy(m_csx_ptr.get(), local_ptr, sizeof(int) * (1+1), hipMemcpyHostToDevice));
     } //
     //
     // Testing invalid handle.
@@ -84,18 +84,18 @@ void testing_csx2dense_bad_arg(FUNC& csx2dense)
     // Testing invalid pointers.
     //
     status = csx2dense(
-        handle, M, N, nullptr, d_csx_val, d_csx_row, d_csx_col, d_dense_val, LD);
+	handle, M, N, nullptr, d_csx_val, d_csx_row, d_csx_col, d_dense_val, LD);
     verify_hipsparse_status_invalid_pointer(status, "Error: an invalid pointer must be detected.");
 
     status = csx2dense(handle,
-                       M,
-                       N,
-                       descr,
-                       (const T*)nullptr,
-                       d_csx_row,
-                       d_csx_col,
-                       d_dense_val,
-                       LD);
+		       M,
+		       N,
+		       descr,
+		       (const T*)nullptr,
+		       d_csx_row,
+		       d_csx_col,
+		       d_dense_val, LD);
+    
     verify_hipsparse_status_invalid_pointer(status, "Error: an invalid pointer must be detected.");
 
     status = csx2dense(handle, M, N, descr, d_csx_val, nullptr, d_csx_col, d_dense_val, LD);
@@ -105,26 +105,26 @@ void testing_csx2dense_bad_arg(FUNC& csx2dense)
     verify_hipsparse_status_invalid_pointer(status, "Error: an invalid pointer must be detected.");
 
     status = csx2dense(
-        handle, M, N, descr, d_csx_val, d_csx_row, d_csx_col, (T*)nullptr, LD);
+	handle, M, N, descr, d_csx_val, d_csx_row, d_csx_col, (T*)nullptr, LD);
     verify_hipsparse_status_invalid_pointer(status, "Error: an invalid pointer must be detected.");
 
     //
     // Testing invalid size on M
     //
     status = csx2dense(
-        handle, -1, N, descr, d_csx_val, d_csx_row, d_csx_col, d_dense_val, LD);
+	handle, -1, N, descr, d_csx_val, d_csx_row, d_csx_col, d_dense_val, LD);
     verify_hipsparse_status_invalid_size(status, "Error: an invalid size must be detected.");
     //
     // Testing invalid size on N
     //
     status = csx2dense(
-        handle, M, -1, descr, d_csx_val, d_csx_row, d_csx_col, d_dense_val, LD);
+	handle, M, -1, descr, d_csx_val, d_csx_row, d_csx_col, d_dense_val, LD);
     verify_hipsparse_status_invalid_size(status, "Error: an invalid size must be detected.");
     //
     // Testing invalid size on LD
     //
     status = csx2dense(
-        handle, M, -1, descr, d_csx_val, d_csx_row, d_csx_col, d_dense_val, M - 1);
+	handle, M, -1, descr, d_csx_val, d_csx_row, d_csx_col, d_dense_val, M - 1);
     verify_hipsparse_status_invalid_size(status, "Error: an invalid size must be detected.");
 #endif
 }

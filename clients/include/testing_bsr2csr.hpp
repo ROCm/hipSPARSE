@@ -61,12 +61,12 @@ void testing_bsr2csr_bad_arg(void)
     hipsparseSetMatIndexBase(bsr_descr, bsr_idx_base);
 
     auto bsr_row_ptr_managed
-      = hipsparse_unique_ptr{device_malloc(sizeof(int) * (safe_size+1)), device_free};
+        = hipsparse_unique_ptr{device_malloc(sizeof(int) * (safe_size + 1)), device_free};
     auto bsr_col_ind_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
     auto bsr_val_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
     auto csr_row_ptr_managed
-      = hipsparse_unique_ptr{device_malloc(sizeof(int) * (safe_size+1)), device_free};
+        = hipsparse_unique_ptr{device_malloc(sizeof(int) * (safe_size + 1)), device_free};
     auto csr_col_ind_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
     auto csr_val_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
@@ -84,11 +84,11 @@ void testing_bsr2csr_bad_arg(void)
         return;
     }
 
-    
     { //
-      
-      int local_ptr[2] = {0, 1};
-      CHECK_HIP_ERROR(hipMemcpy(bsr_row_ptr, local_ptr, sizeof(int) * (1 + 1), hipMemcpyHostToDevice));
+
+        int local_ptr[2] = {0, 1};
+        CHECK_HIP_ERROR(
+            hipMemcpy(bsr_row_ptr, local_ptr, sizeof(int) * (1 + 1), hipMemcpyHostToDevice));
     } //
 
     // Testing hipsparseXbsr2csr()

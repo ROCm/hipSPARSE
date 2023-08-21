@@ -52,9 +52,9 @@ void testing_csr2gebsr_bad_arg(void)
     static const size_t safe_size = 1;
 
     auto csr_row_ptr_managed
-      = hipsparse_unique_ptr{device_malloc(sizeof(int) * (safe_size+1)), device_free};
+      = hipsparse_unique_ptr{device_malloc(sizeof(int) * (safe_size + 1)), device_free};
     auto csr_col_ind_managed
-        = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+      = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
     auto csr_val_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
 
     int* csr_row_ptr = (int*)csr_row_ptr_managed.get();
@@ -62,7 +62,7 @@ void testing_csr2gebsr_bad_arg(void)
     T*   csr_val     = (T*)csr_val_managed.get();
 
     auto bsr_row_ptr_managed
-      = hipsparse_unique_ptr{device_malloc(sizeof(int) * (safe_size+1)), device_free};
+        = hipsparse_unique_ptr{device_malloc(sizeof(int) * (safe_size + 1)), device_free};
     auto bsr_col_ind_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
     auto bsr_val_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
@@ -80,13 +80,11 @@ void testing_csr2gebsr_bad_arg(void)
         return;
     }
 
-
     
     { //
-      
       int local_ptr[2] = {0, 1};
-      CHECK_HIP_ERROR(hipMemcpy(csr_row_ptr, local_ptr, sizeof(int) * (1 + 1), hipMemcpyHostToDevice));
-      CHECK_HIP_ERROR(hipMemcpy(bsr_row_ptr, local_ptr, sizeof(int) * (1 + 1), hipMemcpyHostToDevice));
+      CHECK_HIP_ERROR(hipMemcpy(csr_row_ptr, local_ptr, sizeof(int) * (1+1), hipMemcpyHostToDevice));
+      CHECK_HIP_ERROR(hipMemcpy(bsr_row_ptr, local_ptr, sizeof(int) * (1+1), hipMemcpyHostToDevice));
     } //
 
     std::unique_ptr<descr_struct> unique_ptr_csr_descr(new descr_struct);
