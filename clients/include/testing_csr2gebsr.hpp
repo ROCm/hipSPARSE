@@ -40,6 +40,7 @@ using namespace hipsparse_test;
 template <typename T>
 void testing_csr2gebsr_bad_arg(void)
 {
+  //
 #if(!defined(CUDART_VERSION))
 
     hipsparseStatus_t              status;

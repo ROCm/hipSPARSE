@@ -41,6 +41,7 @@ using namespace hipsparse_test;
 template <typename T>
 void testing_csr2csr_compress_bad_arg(void)
 {
+  //
 #if(!defined(CUDART_VERSION))
     int                  m            = 1;
     int                  n            = 1;
