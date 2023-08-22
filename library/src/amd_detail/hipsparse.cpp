@@ -8705,6 +8705,7 @@ hipsparseStatus_t hipsparseCsr2cscEx2(hipsparseHandle_t     handle,
                                buffer));
     case HIP_R_16F:
     case HIP_C_16F:
+#if (HIP_VERSION >= 50600000)
     case HIP_C_8I:
     case HIP_R_8U:
     case HIP_C_8U:
@@ -8726,6 +8727,7 @@ hipsparseStatus_t hipsparseCsr2cscEx2(hipsparseHandle_t     handle,
     case HIP_C_64I:
     case HIP_R_64U:
     case HIP_C_64U:
+#endif
         return HIPSPARSE_STATUS_NOT_SUPPORTED;
     }
 
