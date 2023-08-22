@@ -41,7 +41,7 @@ using namespace hipsparse_test;
 template <hipsparseDirection_t DIRA, typename T, typename FUNC>
 void testing_dense2csx_bad_arg(FUNC& dense2csx)
 {
-  //
+    //
 #if(!defined(CUDART_VERSION))
     static constexpr int M  = 1;
     static constexpr int N  = 1;
@@ -56,7 +56,7 @@ void testing_dense2csx_bad_arg(FUNC& dense2csx)
 
     auto m_csx_val         = hipsparse_unique_ptr{device_malloc(sizeof(T) * 1), device_free};
     auto m_dense_val       = hipsparse_unique_ptr{device_malloc(sizeof(T) * 1), device_free};
-    auto m_nnzPerRowColumn = hipsparse_unique_ptr{device_malloc(sizeof(int) * 1), device_free};
+    auto m_nnzPerRowColumn = hipsparse_unique_ptr{device_malloc(sizeof(int) * 1), device_free};    
     auto m_csx_row_col_ptr = hipsparse_unique_ptr{device_malloc(sizeof(int) * (1+1)), device_free};
     auto m_csx_row_col_ind = hipsparse_unique_ptr{device_malloc(sizeof(int) * 1), device_free};
 
@@ -71,7 +71,7 @@ void testing_dense2csx_bad_arg(FUNC& dense2csx)
         PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
         return;
     }
-
+    
     { //
 
       int local_ptr[2] = {0, 1};
