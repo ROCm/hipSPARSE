@@ -91,11 +91,11 @@ void testing_gebsr2gebsr_bad_arg(void)
     }
 
     { // copy
-       int local_ptr[2] = {0, 1};
-       CHECK_HIP_ERROR(hipMemcpy(
- 				bsr_row_ptr_A, local_ptr, sizeof(int) * (safe_size + 1), hipMemcpyHostToDevice));
-       CHECK_HIP_ERROR(hipMemcpy(
- 				bsr_row_ptr_C, local_ptr, sizeof(int) * (safe_size + 1), hipMemcpyHostToDevice));
+        int local_ptr[2] = {0, 1};
+        CHECK_HIP_ERROR(hipMemcpy(
+            bsr_row_ptr_A, local_ptr, sizeof(int) * (safe_size + 1), hipMemcpyHostToDevice));
+        CHECK_HIP_ERROR(hipMemcpy(
+            bsr_row_ptr_C, local_ptr, sizeof(int) * (safe_size + 1), hipMemcpyHostToDevice));
     } //
 
     // Testing hipsparseXgebsr2gebsr_bufferSize()
