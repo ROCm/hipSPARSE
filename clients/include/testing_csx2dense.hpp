@@ -41,6 +41,7 @@ using namespace hipsparse_test;
 template <hipsparseDirection_t DIRA, typename T, typename FUNC>
 void testing_csx2dense_bad_arg(FUNC& csx2dense)
 {
+  // 
 #if(!defined(CUDART_VERSION))
     static constexpr int M  = 1;
     static constexpr int N  = 1;
