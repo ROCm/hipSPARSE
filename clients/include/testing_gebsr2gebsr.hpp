@@ -90,7 +90,7 @@ void testing_gebsr2gebsr_bad_arg(void)
         return;
     }
 
-    { //
+    { // copy
        int local_ptr[2] = {0, 1};
        CHECK_HIP_ERROR(hipMemcpy(
  				bsr_row_ptr_A, local_ptr, sizeof(int) * (safe_size + 1), hipMemcpyHostToDevice));
