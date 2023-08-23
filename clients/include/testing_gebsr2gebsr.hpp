@@ -37,10 +37,10 @@ template <typename T>
 void testing_gebsr2gebsr_bad_arg(void)
 {
 #if(!defined(CUDART_VERSION))
-    int                  mb              = 100;
-    int                  nb              = 100;
-    int                  nnzb            = 100;
-    int                  safe_size       = 100;
+    int                  mb              = 1;
+    int                  nb              = 1;
+    int                  nnzb            = 1;
+    int                  safe_size       = 1;
     int                  row_block_dim_A = 2;
     int                  col_block_dim_A = 2;
     int                  row_block_dim_C = 2;
@@ -61,21 +61,21 @@ void testing_gebsr2gebsr_bad_arg(void)
     hipsparseSetMatIndexBase(descr_C, idx_base_C);
 
     auto bsr_row_ptr_A_managed
-        = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+        = hipsparse_unique_ptr{device_malloc(sizeof(int) * (safe_size + 1)), device_free};
     auto bsr_col_ind_A_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
     auto bsr_val_A_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
     auto bsr_row_ptr_C_managed
-        = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+        = hipsparse_unique_ptr{device_malloc(sizeof(int) * (safe_size + 1)), device_free};
     auto bsr_col_ind_C_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
     auto bsr_val_C_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
     auto temp_buffer_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-
     int* bsr_row_ptr_A = (int*)bsr_row_ptr_A_managed.get();
+
     int* bsr_col_ind_A = (int*)bsr_col_ind_A_managed.get();
     T*   bsr_val_A     = (T*)bsr_val_A_managed.get();
     int* bsr_row_ptr_C = (int*)bsr_row_ptr_C_managed.get();
@@ -89,6 +89,14 @@ void testing_gebsr2gebsr_bad_arg(void)
         PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
         return;
     }
+
+    { // copy
+        int local_ptr[2] = {0, 1};
+        CHECK_HIP_ERROR(hipMemcpy(
+            bsr_row_ptr_A, local_ptr, sizeof(int) * (safe_size + 1), hipMemcpyHostToDevice));
+        CHECK_HIP_ERROR(hipMemcpy(
+            bsr_row_ptr_C, local_ptr, sizeof(int) * (safe_size + 1), hipMemcpyHostToDevice));
+    } //
 
     // Testing hipsparseXgebsr2gebsr_bufferSize()
 
@@ -706,6 +714,7 @@ void testing_gebsr2gebsr_bad_arg(void)
                                    row_block_dim_C,
                                    col_block_dim_C,
                                    temp_buffer);
+
     verify_hipsparse_status_invalid_pointer(status, "Error: bsr_val_C is nullptr");
 
     status = hipsparseXgebsr2gebsr(handle,
