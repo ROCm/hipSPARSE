@@ -41,7 +41,7 @@ using namespace hipsparse_test;
 template <typename T>
 void testing_csr2csr_compress_bad_arg(void)
 {
-  //
+    //
 #if(!defined(CUDART_VERSION))
     int                  m            = 1;
     int                  n            = 1;
@@ -59,7 +59,7 @@ void testing_csr2csr_compress_bad_arg(void)
     hipsparseSetMatIndexBase(csr_descr, csr_idx_base);
 
     auto csr_row_ptr_A_managed
-      = hipsparse_unique_ptr{device_malloc(sizeof(int) * (safe_size+1)), device_free};
+        = hipsparse_unique_ptr{device_malloc(sizeof(int) * (safe_size + 1)), device_free};
     auto csr_col_ind_A_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
     auto csr_val_A_managed
