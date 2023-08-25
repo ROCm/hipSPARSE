@@ -268,7 +268,7 @@ install_prefix=hipsparse-install
 rocm_path=/opt/rocm
 build_relocatable=false
 build_address_sanitizer=false
-build_freorg_bkwdcomp=true
+build_freorg_bkwdcomp=false
 compiler=${CXX}
 
 # #################################################
