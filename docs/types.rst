@@ -177,11 +177,6 @@ hipsparseSolvePolicy_t
 
 .. doxygenenum:: hipsparseSolvePolicy_t
 
-hipsparseSideMode_t
--------------------
-
-.. doxygenenum:: hipsparseSideMode_t
-
 hipsparseDirection_t
 --------------------
 
