@@ -457,6 +457,7 @@ typedef enum {
 } hipsparseSolvePolicy_t;
 
 /// \cond DO_NOT_DOCUMENT
+// Note: Add back to types.rst if we get documentation for this in the future
 typedef enum {
     HIPSPARSE_SIDE_LEFT  = 0,
     HIPSPARSE_SIDE_RIGHT = 1
