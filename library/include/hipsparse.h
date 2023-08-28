@@ -456,13 +456,12 @@ typedef enum {
     HIPSPARSE_SOLVE_POLICY_USE_LEVEL = 1  /**< Generate level information */
 } hipsparseSolvePolicy_t;
 
-/*! \ingroup types_module
- *  \brief Specify side mode.
- */
+/// \cond DO_NOT_DOCUMENT
 typedef enum {
     HIPSPARSE_SIDE_LEFT  = 0,
     HIPSPARSE_SIDE_RIGHT = 1
 } hipsparseSideMode_t;
+/// \endcond
 
 /*! \ingroup types_module
  *  \brief Specify the matrix direction.
