@@ -498,7 +498,7 @@ hipsparseStatus_t hipsparseDestroy(hipsparseHandle_t handle)
 }
 
 #if CUDART_VERSION > 10000
-const char* hipsparseGetErrorName(hipsparseStatus_t status);
+const char* hipsparseGetErrorName(hipsparseStatus_t status)
 {
     return cusparseGetErrorName(hipSPARSEStatusToCUSPARSEStatus(status));
 }
