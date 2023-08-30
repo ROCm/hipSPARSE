@@ -409,6 +409,28 @@ hipsparseStatus_t hipsparseCreate(hipsparseHandle_t* handle);
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroy(hipsparseHandle_t handle);
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION > 10000)
+/*! \ingroup aux_module
+ *  \brief Return the string representation of a hipSPARSE status code enum name
+ *
+ *  \details
+ *  \p hipsparseGetErrorName takes a hipSPARSE status as input and returns the string representation of this status.
+ *  If the status is not recognized, the function returns "Unrecognized status code".
+ */
+HIPSPARSE_EXPORT
+const char* hipsparseGetErrorName(hipsparseStatus_t status);
+
+/*! \ingroup aux_module
+ *  \brief Return the hipSPARSE status code description as a string
+ *
+ *  \details
+ *  \p hipsparseGetErrorString takes a hipSPARSE status as input and returns the string representation of this status.
+ *  If the status is not recognized, the function returns "Unrecognized status code".
+ */
+HIPSPARSE_EXPORT
+const char* hipsparseGetErrorString(hipsparseStatus_t status);
+#endif
+
 /*! \ingroup aux_module
  *  \brief Get hipSPARSE version
  *

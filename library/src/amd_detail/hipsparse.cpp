@@ -656,6 +656,16 @@ hipsparseStatus_t hipsparseDestroy(hipsparseHandle_t handle)
     return rocSPARSEStatusToHIPStatus(rocsparse_destroy_handle((rocsparse_handle)handle));
 }
 
+const char* hipsparseGetErrorName(hipsparseStatus_t status);
+{
+    return rocsparseGetStatusName(status);
+}
+
+const char* hipsparseGetErrorString(hipsparseStatus_t status)
+{
+    return rocsparseGetStatusString(status);
+}
+
 hipsparseStatus_t hipsparseGetVersion(hipsparseHandle_t handle, int* version)
 {
     if(handle == nullptr)

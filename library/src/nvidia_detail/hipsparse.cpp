@@ -433,6 +433,18 @@ hipsparseStatus_t hipsparseDestroy(hipsparseHandle_t handle)
     return hipCUSPARSEStatusToHIPStatus(cusparseDestroy((cusparseHandle_t)handle));
 }
 
+#if CUDART_VERSION > 10000
+const char* hipsparseGetErrorName(hipsparseStatus_t status);
+{
+    return cusparseGetStatusName(status);
+}
+
+const char* hipsparseGetErrorString(hipsparseStatus_t status)
+{
+    return cusparseGetStatusString(status);
+}
+#endif
+
 hipsparseStatus_t hipsparseGetVersion(hipsparseHandle_t handle, int* version)
 {
     if(handle == nullptr)
