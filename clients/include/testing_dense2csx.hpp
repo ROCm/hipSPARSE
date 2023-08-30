@@ -41,9 +41,10 @@ using namespace hipsparse_test;
 template <hipsparseDirection_t DIRA, typename T, typename FUNC>
 void testing_dense2csx_bad_arg(FUNC& dense2csx)
 {
+
 #if(!defined(CUDART_VERSION))
-    static constexpr int M  = 10;
-    static constexpr int N  = 10;
+    static constexpr int M  = 1;
+    static constexpr int N  = 1;
     static constexpr int LD = M;
     hipsparseStatus_t    status;
 
@@ -56,7 +57,8 @@ void testing_dense2csx_bad_arg(FUNC& dense2csx)
     auto m_csx_val         = hipsparse_unique_ptr{device_malloc(sizeof(T) * 1), device_free};
     auto m_dense_val       = hipsparse_unique_ptr{device_malloc(sizeof(T) * 1), device_free};
     auto m_nnzPerRowColumn = hipsparse_unique_ptr{device_malloc(sizeof(int) * 1), device_free};
-    auto m_csx_row_col_ptr = hipsparse_unique_ptr{device_malloc(sizeof(int) * 1), device_free};
+    auto m_csx_row_col_ptr
+        = hipsparse_unique_ptr{device_malloc(sizeof(int) * (1 + 1)), device_free};
     auto m_csx_row_col_ind = hipsparse_unique_ptr{device_malloc(sizeof(int) * 1), device_free};
 
     T*   d_dense_val       = (T*)m_dense_val.get();
@@ -70,6 +72,13 @@ void testing_dense2csx_bad_arg(FUNC& dense2csx)
         PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
         return;
     }
+
+    { //
+
+        int local_ptr[2] = {0, 1};
+        CHECK_HIP_ERROR(
+            hipMemcpy(d_csx_row_col_ptr, local_ptr, sizeof(int) * (1 + 1), hipMemcpyHostToDevice));
+    } //
 
     //
     // Testing invalid handle.

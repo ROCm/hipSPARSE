@@ -85,6 +85,21 @@
 #endif
 #endif
 
+/// \cond DO_NOT_DOCUMENT
+// Forward declarations
+struct bsrsv2Info;
+struct bsrsm2Info;
+struct bsrilu02Info;
+struct bsric02Info;
+struct csrsv2Info;
+struct csrsm2Info;
+struct csrilu02Info;
+struct csric02Info;
+struct csrgemm2Info;
+struct pruneInfo;
+struct csru2csrInfo;
+/// \endcond
+
 /*! \ingroup types_module
  *  \brief Handle to the hipSPARSE library context queue.
  *
@@ -119,7 +134,7 @@ typedef void* hipsparseMatDescr_t;
 typedef void* hipsparseHybMat_t;
 
 /*! \ingroup types_module
- *  \brief Coloring info.
+ *  \brief Pointer type to opaque structure holding coloring info.
  *
  *  \details
  *  The hipSPARSE ColorInfo structure holds the coloring information. It must be
@@ -130,59 +145,136 @@ typedef void* hipsparseHybMat_t;
 typedef void* hipsparseColorInfo_t;
 
 /*! \ingroup types_module
- *  \brief bsrsv2 info to hold collected meta information.
+ *  \brief Pointer type to opaque structure holding bsrsv2 info.
+ *
+ *  \details
+ *  The hipSPARSE bsrsv2 structure holds the information used by hipsparseXbsrsv2_zeroPivot(), 
+ *  hipsparseXbsrsv2_bufferSize(), hipsparseXbsrsv2_bufferSizeExt(), hipsparseXbsrsv2_analysis(), 
+ *  and hipsparseXbsrsv2_solve(). It must be initialized using hipsparseCreateBsrsv2Info() and 
+ *  the returned structure must be passed to all subsequent library calls that involve bsrsv2. 
+ *  It should be destroyed at the end using hipsparseDestroyBsrsv2Info().
  */
-struct bsrsv2Info;
 typedef struct bsrsv2Info* bsrsv2Info_t;
+
 /*! \ingroup types_module
- *  \brief bsrsn2 info to hold collected meta information.
+ *  \brief Pointer type to opaque structure holding bsrsm2 info.
+ *
+ *  \details
+ *  The hipSPARSE bsrsm2 structure holds the information used by hipsparseXbsrsm2_zeroPivot(), hipsparseXbsrsm2_bufferSize(), 
+ *  hipsparseXbsrsm2_analysis(), and hipsparseXbsrsm2_solve(). It must be initialized using 
+ *  hipsparseCreateBsrsm2Info() and the returned structure must be
+ *  passed to all subsequent library calls that involve bsrsm2. It should be
+ *  destroyed at the end using hipsparseDestroyBsrsm2Info().
  */
-struct bsrsm2Info;
 typedef struct bsrsm2Info* bsrsm2Info_t;
+
 /*! \ingroup types_module
- *  \brief bsrilu02 info to hold collected meta information.
+ *  \brief Pointer type to opaque structure holding bsrilu02 info.
+ *
+ *  \details
+ *  The hipSPARSE bsrilu02 structure holds the information used by hipsparseXbsrilu02_zeroPivot(), 
+ *  hipsparseXbsrilu02_numericBoost(), hipsparseXbsrilu02_bufferSize(), hipsparseXbsrilu02_analysis(), 
+ *  and hipsparseXbsrilu02(). It must be initialized using hipsparseCreateBsrilu02Info() and the 
+ *  returned structure must be passed to all subsequent library calls that involve bsrilu02. It should be
+ *  destroyed at the end using hipsparseDestroyBsrilu02Info().
  */
-struct bsrilu02Info;
 typedef struct bsrilu02Info* bsrilu02Info_t;
+
 /*! \ingroup types_module
- *  \brief bsric02 info to hold collected meta information.
+ *  \brief Pointer type to opaque structure holding bsric02 info.
+ *
+ *  \details
+ *  The hipSPARSE bsric02 structure holds the information used by hipsparseXbsric02_zeroPivot(), hipsparseXbsric02_bufferSize(), 
+ *  hipsparseXbsric02_analysis(), and hipsparseXbsric02(). It must be initialized using 
+ *  hipsparseCreateBsric02Info() and the returned structure must be
+ *  passed to all subsequent library calls that involve bsric02. It should be
+ *  destroyed at the end using hipsparseDestroyBsric02Info().
  */
-struct bsric02Info;
 typedef struct bsric02Info* bsric02Info_t;
+
 /*! \ingroup types_module
- *  \brief csrsv2 info to hold collected meta information.
+ *  \brief Pointer type to opaque structure holding csrsv2 info.
+ *
+ *  \details
+ *  The hipSPARSE csrsv2 structure holds the information used by hipsparseXcsrsv2_zeroPivot(), hipsparseXcsrsv2_bufferSize(), 
+ *  hipsparseXcsrsv2_analysis(), and hipsparseXcsrsv2(). It must be initialized using 
+ *  hipsparseCreateCsrsv2Info() and the returned structure must be
+ *  passed to all subsequent library calls that involve csrsv2. It should be
+ *  destroyed at the end using hipsparseDestroyCsrsv2Info().
  */
-struct csrsv2Info;
 typedef struct csrsv2Info* csrsv2Info_t;
+
 /*! \ingroup types_module
- *  \brief csrsm2 info to hold collected meta information.
+ *  \brief Pointer type to opaque structure holding csrsm2 info.
+ *
+ *  \details
+ *  The hipSPARSE csrsm2 structure holds the information used by hipsparseXcsrsm2_zeroPivot(), hipsparseXcsrsm2_bufferSize(), 
+ *  hipsparseXcsrsm2_analysis(), and hipsparseXcsrsm2(). It must be initialized using 
+ *  hipsparseCreateCsrsm2Info() and the returned structure must be
+ *  passed to all subsequent library calls that involve csrsm2. It should be
+ *  destroyed at the end using hipsparseDestroyCsrsm2Info().
  */
-struct csrsm2Info;
 typedef struct csrsm2Info* csrsm2Info_t;
+
 /*! \ingroup types_module
- *  \brief csrilu02 info to hold collected meta information.
+ *  \brief Pointer type to opaque structure holding csrilu02 info.
+ *
+ *  \details
+ *  The hipSPARSE csrilu02 structure holds the information used by hipsparseXcsrilu02_zeroPivot(), 
+ *  hipsparseXcsrilu02_numericBoost(), hipsparseXcsrilu02_bufferSize(), hipsparseXcsrilu02_analysis(), 
+ *  and hipsparseXcsrilu02(). It must be initialized using hipsparseCreateCsrilu02Info() and the 
+ *  returned structure must be passed to all subsequent library calls that involve csrilu02. It should be
+ *  destroyed at the end using hipsparseDestroyCsrilu02Info().
  */
-struct csrilu02Info;
 typedef struct csrilu02Info* csrilu02Info_t;
+
 /*! \ingroup types_module
- *  \brief csric02 info to hold collected meta information.
+ *  \brief Pointer type to opaque structure holding csric02 info.
+ *
+ *  \details
+ *  The hipSPARSE csric02 structure holds the information used by hipsparseXcsric02_zeroPivot(), 
+ *  hipsparseXcsric02_bufferSize(), hipsparseXcsric02_analysis(), and hipsparseXcsric02(). It must be 
+ *  initialized using hipsparseCreateCsric02Info() and the returned structure must be passed to all 
+ *  subsequent library calls that involve csric02. It should be destroyed at the end using 
+ *  hipsparseDestroyCsric02Info().
  */
-struct csric02Info;
 typedef struct csric02Info* csric02Info_t;
+
 /*! \ingroup types_module
- *  \brief csrgemm2 info to hold collected meta information.
+ *  \brief Pointer type to opaque structure holding csrgemm2 info.
+ *
+ *  \details
+ *  The hipSPARSE csrgemm2 structure holds the information used by hipsparseXcsrgemm2_bufferSizeExt(), 
+ *  hipsparseXcsrgemm2Nnz(), and hipsparseXcsrgemm2(). It must be initialized using 
+ *  hipsparseCreateCsrgemm2Info() and the returned structure must be passed to all subsequent 
+ *  library calls that involve csrgemm2. It should be destroyed at the end using 
+ *  hipsparseDestroyCsrgemm2Info().
  */
-struct csrgemm2Info;
 typedef struct csrgemm2Info* csrgemm2Info_t;
+
 /*! \ingroup types_module
- *  \brief prune info to hold collected meta information.
+ *  \brief Pointer type to opaque structure holding prune info.
+ *
+ *  \details
+ *  The hipSPARSE prune structure holds the information used by hipsparseXpruneDense2csrByPercentage_bufferSize(), 
+ *  hipsparseXpruneDense2csrByPercentage_bufferSizeExt(), hipsparseXpruneCsr2csrByPercentage_bufferSize(), 
+ *  hipsparseXpruneCsr2csrByPercentage_bufferSizeExt(), hipsparseXpruneDense2csrNnzByPercentage(), 
+ *  hipsparseXpruneCsr2csrNnzByPercentage(), hipsparseXpruneDense2csrByPercentage(), and 
+ *  hipsparseXpruneCsr2csrByPercentage(). It must be initialized using hipsparseCreatePruneInfo() and the 
+ *  returned structure must be passed to all subsequent library calls that involve prune. It should be 
+ *  destroyed at the end using hipsparseDestroyPruneInfo().
  */
-struct pruneInfo;
 typedef struct pruneInfo* pruneInfo_t;
+
 /*! \ingroup types_module
- *  \brief csru2csr info to hold collected meta information.
+ *  \brief Pointer type to opaque structure holding csru2csr info.
+ *
+ *  \details
+ *  The hipSPARSE csru2csr structure holds the information used by hipsparseXcsru2csr_bufferSizeExt(), 
+ *  hipsparseXcsru2csr(), and hipsparseXcsr2csru(). It must be initialized using hipsparseCreateCsru2csrInfo() 
+ *  and the returned structure must be passed to all subsequent library calls that involve csru2csr. It should be 
+ *  destroyed at the end using hipsparseDestroyCsru2csrInfo().
  */
-struct csru2csrInfo;
 typedef struct csru2csrInfo* csru2csrInfo_t;
 
 // clang-format off
@@ -364,10 +456,13 @@ typedef enum {
     HIPSPARSE_SOLVE_POLICY_USE_LEVEL = 1  /**< Generate level information */
 } hipsparseSolvePolicy_t;
 
+/// \cond DO_NOT_DOCUMENT
+// Note: Add back to types.rst if we get documentation for this in the future
 typedef enum {
     HIPSPARSE_SIDE_LEFT  = 0,
     HIPSPARSE_SIDE_RIGHT = 1
 } hipsparseSideMode_t;
+/// \endcond
 
 /*! \ingroup types_module
  *  \brief Specify the matrix direction.
@@ -4587,7 +4682,7 @@ hipsparseStatus_t hipsparseZbsrilu02_numericBoost(hipsparseHandle_t handle,
  *
  *  \details
  *  \p hipsparseXbsrilu02_bufferSize returns the size of the temporary storage buffer
- *  in bytes that is required by hipsparseXbsrilu02_analysis() and hipsparseXbsrilu02_solve().
+ *  in bytes that is required by hipsparseXbsrilu02_analysis() and hipsparseXbsrilu02().
  *  The temporary storage buffer must be allocated by the user.
 */
 /**@{*/
@@ -6993,6 +7088,13 @@ hipsparseStatus_t hipsparseZcsr2csc(hipsparseHandle_t       handle,
 /**@}*/
 #endif
 
+/*! \ingroup generic_module
+ *  \brief List of hipsparse csr2csc algorithms.
+ *
+ *  \details
+ *  This is a list of the \ref hipsparseCsr2CscAlg_t algorithms that can be used by the hipSPARSE
+ *  library routines \ref hipsparseCsr2cscEx2_bufferSize and \ref hipsparseCsr2cscEx2.
+ */
 #if(!defined(CUDART_VERSION))
 typedef enum
 {
@@ -7022,8 +7124,8 @@ typedef enum
 *  when converting a sparse CSR matrix into a sparse CSC matrix.
 *
 *  \details
-*  \p hipsparseXcsr2cscEx2_bufferSize calculates the required user allocated temporary buffer needed 
-*  by \p hipsparseXcsr2cscEx2 to convert a CSR matrix into a CSC matrix. \p hipsparseXcsr2cscEx2
+*  \p hipsparseCsr2cscEx2_bufferSize calculates the required user allocated temporary buffer needed 
+*  by \p hipsparseCsr2cscEx2 to convert a CSR matrix into a CSC matrix. \p hipsparseCsr2cscEx2
 *  can also be used to convert a CSC matrix into a CSR matrix. \p copy_values decides
 *  whether \p csc_val is being filled during conversion (\ref HIPSPARSE_ACTION_NUMERIC)
 *  or not (\ref HIPSPARSE_ACTION_SYMBOLIC).
@@ -7058,7 +7160,7 @@ hipsparseStatus_t hipsparseCsr2cscEx2_bufferSize(hipsparseHandle_t     handle,
 *  \brief Convert a sparse CSR matrix into a sparse CSC matrix
 *
 *  \details
-*  \p hipsparseXcsr2cscEx2 converts a CSR matrix into a CSC matrix. \p hipsparseXcsr2cscEx2
+*  \p hipsparseCsr2cscEx2 converts a CSR matrix into a CSC matrix. \p hipsparseCsr2cscEx2
 *  can also be used to convert a CSC matrix into a CSR matrix. \p copy_values decides
 *  whether \p csc_val is being filled during conversion (\ref HIPSPARSE_ACTION_NUMERIC)
 *  or not (\ref HIPSPARSE_ACTION_SYMBOLIC).
@@ -8812,37 +8914,154 @@ hipsparseStatus_t hipsparseZcsrcolor(hipsparseHandle_t         handle,
 * ===========================================================================
 */
 
-/* Generic API opaque structures holding information */
+/*! \ingroup types_module
+ *  \brief Generic API opaque structure holding information for a sparse vector
+ *
+ *  \details
+ *  The hipSPARSE descriptor is an opaque structure holding information for a sparse vector. It must
+ *  be initialized using hipsparseCreateSpVec() and the returned descriptor 
+ *  is used in hipSPARSE generic API's involving sparse vectors. It should be destroyed at the end using
+ *  hipsparseDestroySpVec().
+ */
 #if(!defined(CUDART_VERSION) || CUDART_VERSION > 10010 \
     || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
 typedef void* hipsparseSpVecDescr_t;
+#endif
+
+/*! \ingroup types_module
+ *  \brief Generic API opaque structure holding information for a dense vector
+ *
+ *  \details
+ *  The hipSPARSE descriptor is an opaque structure holding information for a dense vector. It must
+ *  be initialized using hipsparseCreateDnVec() and the returned descriptor 
+ *  is used in hipSPARSE generic API's involving dense vectors. It should be destroyed at the end using
+ *  hipsparseDestroyDnVec().
+ */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION > 10010 \
+    || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
 typedef void* hipsparseDnVecDescr_t;
 #endif
 
+/*! \ingroup types_module
+ *  \brief Generic API opaque structure holding information for a sparse matrix
+ *
+ *  \details
+ *  The hipSPARSE descriptor is an opaque structure holding information for a sparse matrix. It must
+ *  be initialized using hipsparseCreateSpMat() and the returned descriptor 
+ *  is used in hipSPARSE generic API's involving sparse matrices. It should be destroyed at the end using
+ *  hipsparseDestroySpMat().
+ */
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 typedef void* hipsparseSpMatDescr_t;
+#endif
+
+/*! \ingroup types_module
+ *  \brief Generic API opaque structure holding information for a dense matrix
+ *
+ *  \details
+ *  The hipSPARSE descriptor is an opaque structure holding information for a dense matrix. It must
+ *  be initialized using hipsparseCreateDnMat() and the returned descriptor 
+ *  is used in hipSPARSE generic API's involving dense matrices. It should be destroyed at the end using
+ *  hipsparseDestroyDnMat().
+ */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 typedef void* hipsparseDnMatDescr_t;
 #endif
 
+/*! \ingroup types_module
+ *  \brief Generic API opaque structure holding information for a sparse vector
+ *
+ *  \details
+ *  The hipSPARSE (const) descriptor is an opaque structure holding information for a sparse vector. It must
+ *  be initialized using hipsparseCreateConstSpVec() and the returned descriptor 
+ *  is used in hipSPARSE generic API's involving sparse vectors. It should be destroyed at the end using
+ *  hipsparseDestroySpVec().
+ */
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
 typedef void const* hipsparseConstSpVecDescr_t;
-typedef void const* hipsparseConstSpMatDescr_t;
+#endif
+
+/*! \ingroup types_module
+ *  \brief Generic API opaque structure holding information for a dense vector
+ *
+ *  \details
+ *  The hipSPARSE (const) descriptor is an opaque structure holding information for a dense vector. It must
+ *  be initialized using hipsparseCreateConstDnVec() and the returned descriptor 
+ *  is used in hipSPARSE generic API's involving dense vectors. It should be destroyed at the end using
+ *  hipsparseDestroyDnVec().
+ */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
 typedef void const* hipsparseConstDnVecDescr_t;
+#endif
+
+/*! \ingroup types_module
+ *  \brief Generic API opaque structure holding information for a sparse matrix
+ *
+ *  \details
+ *  The hipSPARSE (const) descriptor is an opaque structure holding information for a sparse matrix. It must
+ *  be initialized using hipsparseCreateConstSpMat() and the returned descriptor 
+ *  is used in hipSPARSE generic API's involving sparse matrices. It should be destroyed at the end using
+ *  hipsparseDestroySpMat().
+ */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+typedef void const* hipsparseConstSpMatDescr_t;
+#endif
+
+/*! \ingroup types_module
+ *  \brief Generic API opaque structure holding information for a dense matrix
+ *
+ *  \details
+ *  The hipSPARSE (const) descriptor is an opaque structure holding information for a dense matrix. It must
+ *  be initialized using hipsparseCreateConstDnMat() and the returned descriptor 
+ *  is used in hipSPARSE generic API's involving dense matrices. It should be destroyed at the end using
+ *  hipsparseDestroyDnMat().
+ */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
 typedef void const* hipsparseConstDnMatDescr_t;
 #endif
 
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
+/// \cond DO_NOT_DOCUMENT
+// Forward declarations
 struct hipsparseSpGEMMDescr;
+struct hipsparseSpSVDescr;
+struct hipsparseSpSMDescr;
+/// \endcond
+
+/*! \ingroup types_module
+ *  \brief Generic API opaque structure holding information for a SpGEMM calculations
+ *
+ *  \details
+ *  The hipSPARSE descriptor is an opaque structure holding information that is used in hipsparseSpGEMM_workEstimation(), 
+ *  hipsparseSpGEMMreuse_workEstimation(), hipsparseSpGEMMreuse_nnz(), hipsparseSpGEMM_compute(), 
+ *  hipsparseSpGEMMreuse_compute(), hipsparseSpGEMM_copy(), and hipsparseSpGEMMreuse_copy(). It must
+ *  be initialized using hipsparseSpGEMM_createDescr(). It should be destroyed at the end using
+ *  hipsparseSpGEMM_destroyDescr().
+ */
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
 typedef struct hipsparseSpGEMMDescr* hipsparseSpGEMMDescr_t;
 #endif
 
+/*! \ingroup types_module
+ *  \brief Generic API opaque structure holding information for a SpSV calculations
+ *
+ *  \details
+ *  The hipSPARSE descriptor is an opaque structure holding information that is used in hipsparseSpSV_bufferSize(), 
+ *  hipsparseSpSV_analysis(), and hipsparseSpSV_solve(). It must be initialized using hipsparseSpSV_createDescr(). 
+ *  It should be destroyed at the end using hipsparseSpSV_destroyDescr().
+ */
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11030)
-struct hipsparseSpSVDescr;
 typedef struct hipsparseSpSVDescr* hipsparseSpSVDescr_t;
 #endif
 
+/*! \ingroup types_module
+ *  \brief Generic API opaque structure holding information for a SpSM calculations
+ *
+ *  \details
+ *  The hipSPARSE descriptor is an opaque structure holding information that is used in hipsparseSpSM_bufferSize(), 
+ *  hipsparseSpSM_analysis(), and hipsparseSpSM_solve(). It must be initialized using hipsparseSpSM_createDescr(). 
+ *  It should be destroyed at the end using hipsparseSpSM_destroyDescr().
+ */
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
-struct hipsparseSpSMDescr;
 typedef struct hipsparseSpSMDescr* hipsparseSpSMDescr_t;
 #endif
 
@@ -10676,6 +10895,9 @@ hipsparseStatus_t hipsparseSpGEMM_compute(hipsparseHandle_t      handle,
                                           void*                  externalBuffer2);
 #endif
 
+/*! \ingroup generic_module
+*  \brief Description: Copy step of the sparse matrix sparse matrix product.
+*/
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpGEMM_copy(hipsparseHandle_t          handle,
@@ -10704,6 +10926,9 @@ hipsparseStatus_t hipsparseSpGEMM_copy(hipsparseHandle_t      handle,
                                        hipsparseSpGEMMDescr_t spgemmDescr);
 #endif
 
+/*! \ingroup generic_module
+*  \brief Description: Work estimation step of the sparse matrix sparse matrix product.
+*/
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpGEMMreuse_workEstimation(hipsparseHandle_t          handle,
@@ -10730,6 +10955,9 @@ hipsparseStatus_t hipsparseSpGEMMreuse_workEstimation(hipsparseHandle_t      han
                                                       void*                  externalBuffer1);
 #endif
 
+/*! \ingroup generic_module
+*  \brief Description: Nnz calculation step of the sparse matrix sparse matrix product.
+*/
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpGEMMreuse_nnz(hipsparseHandle_t          handle,
@@ -10766,6 +10994,9 @@ hipsparseStatus_t hipsparseSpGEMMreuse_nnz(hipsparseHandle_t      handle,
 
 #endif
 
+/*! \ingroup generic_module
+*  \brief Description: Compute step of the sparse matrix sparse matrix product.
+*/
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpGEMMreuse_compute(hipsparseHandle_t          handle,
@@ -10794,6 +11025,9 @@ hipsparseStatus_t hipsparseSpGEMMreuse_compute(hipsparseHandle_t      handle,
                                                hipsparseSpGEMMDescr_t spgemmDescr);
 #endif
 
+/*! \ingroup generic_module
+*  \brief Description: Copy step of the sparse matrix sparse matrix product.
+*/
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpGEMMreuse_copy(hipsparseHandle_t          handle,
