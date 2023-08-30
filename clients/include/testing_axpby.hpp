@@ -89,32 +89,55 @@ void testing_axpby_bad_arg(void)
     verify_hipsparse_status_success(hipsparseDestroyDnVec(y), "Success");
 #endif
 
+    std::cout << "hipsparseGetErrorName(HIPSPARSE_STATUS_SUCCESS): "
+              << hipsparseGetErrorName(HIPSPARSE_STATUS_SUCCESS) << std::endl;
+    std::cout << "hipsparseGetErrorName(HIPSPARSE_STATUS_NOT_INITIALIZED): "
+              << hipsparseGetErrorName(HIPSPARSE_STATUS_NOT_INITIALIZED) << std::endl;
+    std::cout << "hipsparseGetErrorName(HIPSPARSE_STATUS_ALLOC_FAILED): "
+              << hipsparseGetErrorName(HIPSPARSE_STATUS_ALLOC_FAILED) << std::endl;
+    std::cout << "hipsparseGetErrorName(HIPSPARSE_STATUS_INVALID_VALUE): "
+              << hipsparseGetErrorName(HIPSPARSE_STATUS_INVALID_VALUE) << std::endl;
+    std::cout << "hipsparseGetErrorName(HIPSPARSE_STATUS_ARCH_MISMATCH): "
+              << hipsparseGetErrorName(HIPSPARSE_STATUS_ARCH_MISMATCH) << std::endl;
+    std::cout << "hipsparseGetErrorName(HIPSPARSE_STATUS_MAPPING_ERROR): "
+              << hipsparseGetErrorName(HIPSPARSE_STATUS_MAPPING_ERROR) << std::endl;
+    std::cout << "hipsparseGetErrorName(HIPSPARSE_STATUS_EXECUTION_FAILED): "
+              << hipsparseGetErrorName(HIPSPARSE_STATUS_EXECUTION_FAILED) << std::endl;
+    std::cout << "hipsparseGetErrorName(HIPSPARSE_STATUS_INTERNAL_ERROR): "
+              << hipsparseGetErrorName(HIPSPARSE_STATUS_INTERNAL_ERROR) << std::endl;
+    std::cout << "hipsparseGetErrorName(HIPSPARSE_STATUS_MATRIX_TYPE_NOT_SUPPORTED): "
+              << hipsparseGetErrorName(HIPSPARSE_STATUS_MATRIX_TYPE_NOT_SUPPORTED) << std::endl;
+    std::cout << "hipsparseGetErrorName(HIPSPARSE_STATUS_ZERO_PIVOT): "
+              << hipsparseGetErrorName(HIPSPARSE_STATUS_ZERO_PIVOT) << std::endl;
+    std::cout << "hipsparseGetErrorName(HIPSPARSE_STATUS_NOT_SUPPORTED): "
+              << hipsparseGetErrorName(HIPSPARSE_STATUS_NOT_SUPPORTED) << std::endl;
+    std::cout << "hipsparseGetErrorName(HIPSPARSE_STATUS_INSUFFICIENT_RESOURCES): "
+              << hipsparseGetErrorName(HIPSPARSE_STATUS_INSUFFICIENT_RESOURCES) << std::endl;
 
-    std::cout << "hipsparseGetErrorName(HIPSPARSE_STATUS_SUCCESS): " << hipsparseGetErrorName(HIPSPARSE_STATUS_SUCCESS) << std::endl;
-    std::cout << "hipsparseGetErrorName(HIPSPARSE_STATUS_NOT_INITIALIZED): " << hipsparseGetErrorName(HIPSPARSE_STATUS_NOT_INITIALIZED) << std::endl;
-    std::cout << "hipsparseGetErrorName(HIPSPARSE_STATUS_ALLOC_FAILED): " << hipsparseGetErrorName(HIPSPARSE_STATUS_ALLOC_FAILED) << std::endl;
-    std::cout << "hipsparseGetErrorName(HIPSPARSE_STATUS_INVALID_VALUE): " << hipsparseGetErrorName(HIPSPARSE_STATUS_INVALID_VALUE) << std::endl;
-    std::cout << "hipsparseGetErrorName(HIPSPARSE_STATUS_ARCH_MISMATCH): " << hipsparseGetErrorName(HIPSPARSE_STATUS_ARCH_MISMATCH) << std::endl;
-    std::cout << "hipsparseGetErrorName(HIPSPARSE_STATUS_MAPPING_ERROR): " << hipsparseGetErrorName(HIPSPARSE_STATUS_MAPPING_ERROR) << std::endl;
-    std::cout << "hipsparseGetErrorName(HIPSPARSE_STATUS_EXECUTION_FAILED): " << hipsparseGetErrorName(HIPSPARSE_STATUS_EXECUTION_FAILED) << std::endl;
-    std::cout << "hipsparseGetErrorName(HIPSPARSE_STATUS_INTERNAL_ERROR): " << hipsparseGetErrorName(HIPSPARSE_STATUS_INTERNAL_ERROR) << std::endl;
-    std::cout << "hipsparseGetErrorName(HIPSPARSE_STATUS_MATRIX_TYPE_NOT_SUPPORTED): " << hipsparseGetErrorName(HIPSPARSE_STATUS_MATRIX_TYPE_NOT_SUPPORTED) << std::endl;
-    std::cout << "hipsparseGetErrorName(HIPSPARSE_STATUS_ZERO_PIVOT): " << hipsparseGetErrorName(HIPSPARSE_STATUS_ZERO_PIVOT) << std::endl;
-    std::cout << "hipsparseGetErrorName(HIPSPARSE_STATUS_NOT_SUPPORTED): " << hipsparseGetErrorName(HIPSPARSE_STATUS_NOT_SUPPORTED) << std::endl;
-    std::cout << "hipsparseGetErrorName(HIPSPARSE_STATUS_INSUFFICIENT_RESOURCES): " << hipsparseGetErrorName(HIPSPARSE_STATUS_INSUFFICIENT_RESOURCES) << std::endl;
-
-    std::cout << "hipsparseGetErrorString(HIPSPARSE_STATUS_SUCCESS): " << hipsparseGetErrorString(HIPSPARSE_STATUS_SUCCESS) << std::endl;
-    std::cout << "hipsparseGetErrorString(HIPSPARSE_STATUS_NOT_INITIALIZED): " << hipsparseGetErrorString(HIPSPARSE_STATUS_NOT_INITIALIZED) << std::endl;
-    std::cout << "hipsparseGetErrorString(HIPSPARSE_STATUS_ALLOC_FAILED): " << hipsparseGetErrorString(HIPSPARSE_STATUS_ALLOC_FAILED) << std::endl;
-    std::cout << "hipsparseGetErrorString(HIPSPARSE_STATUS_INVALID_VALUE): " << hipsparseGetErrorString(HIPSPARSE_STATUS_INVALID_VALUE) << std::endl;
-    std::cout << "hipsparseGetErrorString(HIPSPARSE_STATUS_ARCH_MISMATCH): " << hipsparseGetErrorString(HIPSPARSE_STATUS_ARCH_MISMATCH) << std::endl;
-    std::cout << "hipsparseGetErrorString(HIPSPARSE_STATUS_MAPPING_ERROR): " << hipsparseGetErrorString(HIPSPARSE_STATUS_MAPPING_ERROR) << std::endl;
-    std::cout << "hipsparseGetErrorString(HIPSPARSE_STATUS_EXECUTION_FAILED): " << hipsparseGetErrorString(HIPSPARSE_STATUS_EXECUTION_FAILED) << std::endl;
-    std::cout << "hipsparseGetErrorString(HIPSPARSE_STATUS_INTERNAL_ERROR): " << hipsparseGetErrorString(HIPSPARSE_STATUS_INTERNAL_ERROR) << std::endl;
-    std::cout << "hipsparseGetErrorString(HIPSPARSE_STATUS_MATRIX_TYPE_NOT_SUPPORTED): " << hipsparseGetErrorString(HIPSPARSE_STATUS_MATRIX_TYPE_NOT_SUPPORTED) << std::endl;
-    std::cout << "hipsparseGetErrorString(HIPSPARSE_STATUS_ZERO_PIVOT): " << hipsparseGetErrorString(HIPSPARSE_STATUS_ZERO_PIVOT) << std::endl;
-    std::cout << "hipsparseGetErrorString(HIPSPARSE_STATUS_NOT_SUPPORTED): " << hipsparseGetErrorString(HIPSPARSE_STATUS_NOT_SUPPORTED) << std::endl;
-    std::cout << "hipsparseGetErrorString(HIPSPARSE_STATUS_INSUFFICIENT_RESOURCES): " << hipsparseGetErrorString(HIPSPARSE_STATUS_INSUFFICIENT_RESOURCES) << std::endl;
+    std::cout << "hipsparseGetErrorString(HIPSPARSE_STATUS_SUCCESS): "
+              << hipsparseGetErrorString(HIPSPARSE_STATUS_SUCCESS) << std::endl;
+    std::cout << "hipsparseGetErrorString(HIPSPARSE_STATUS_NOT_INITIALIZED): "
+              << hipsparseGetErrorString(HIPSPARSE_STATUS_NOT_INITIALIZED) << std::endl;
+    std::cout << "hipsparseGetErrorString(HIPSPARSE_STATUS_ALLOC_FAILED): "
+              << hipsparseGetErrorString(HIPSPARSE_STATUS_ALLOC_FAILED) << std::endl;
+    std::cout << "hipsparseGetErrorString(HIPSPARSE_STATUS_INVALID_VALUE): "
+              << hipsparseGetErrorString(HIPSPARSE_STATUS_INVALID_VALUE) << std::endl;
+    std::cout << "hipsparseGetErrorString(HIPSPARSE_STATUS_ARCH_MISMATCH): "
+              << hipsparseGetErrorString(HIPSPARSE_STATUS_ARCH_MISMATCH) << std::endl;
+    std::cout << "hipsparseGetErrorString(HIPSPARSE_STATUS_MAPPING_ERROR): "
+              << hipsparseGetErrorString(HIPSPARSE_STATUS_MAPPING_ERROR) << std::endl;
+    std::cout << "hipsparseGetErrorString(HIPSPARSE_STATUS_EXECUTION_FAILED): "
+              << hipsparseGetErrorString(HIPSPARSE_STATUS_EXECUTION_FAILED) << std::endl;
+    std::cout << "hipsparseGetErrorString(HIPSPARSE_STATUS_INTERNAL_ERROR): "
+              << hipsparseGetErrorString(HIPSPARSE_STATUS_INTERNAL_ERROR) << std::endl;
+    std::cout << "hipsparseGetErrorString(HIPSPARSE_STATUS_MATRIX_TYPE_NOT_SUPPORTED): "
+              << hipsparseGetErrorString(HIPSPARSE_STATUS_MATRIX_TYPE_NOT_SUPPORTED) << std::endl;
+    std::cout << "hipsparseGetErrorString(HIPSPARSE_STATUS_ZERO_PIVOT): "
+              << hipsparseGetErrorString(HIPSPARSE_STATUS_ZERO_PIVOT) << std::endl;
+    std::cout << "hipsparseGetErrorString(HIPSPARSE_STATUS_NOT_SUPPORTED): "
+              << hipsparseGetErrorString(HIPSPARSE_STATUS_NOT_SUPPORTED) << std::endl;
+    std::cout << "hipsparseGetErrorString(HIPSPARSE_STATUS_INSUFFICIENT_RESOURCES): "
+              << hipsparseGetErrorString(HIPSPARSE_STATUS_INSUFFICIENT_RESOURCES) << std::endl;
 }
 
 template <typename I, typename T>
