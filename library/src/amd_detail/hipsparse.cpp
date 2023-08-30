@@ -120,8 +120,46 @@ hipsparseStatus_t rocSPARSEStatusToHIPStatus(rocsparse_status_ status)
         return HIPSPARSE_STATUS_ARCH_MISMATCH;
     case rocsparse_status_zero_pivot:
         return HIPSPARSE_STATUS_ZERO_PIVOT;
+    case rocsparse_status_not_initialized:
+        return HIPSPARSE_STATUS_NOT_INITIALIZED;
+    case rocsparse_status_type_mismatch:
+    case rocsparse_status_requires_sorted_storage:
+    case rocsparse_status_thrown_exception:
+        return HIPSPARSE_STATUS_INTERNAL_ERROR;
+    case rocsparse_status_continue:
+        return HIPSPARSE_STATUS_SUCCESS;
     default:
         throw "Non existent rocsparse_status";
+    }
+}
+
+rocsparse_status_ hipSPARSEStatusToRocSPARSEStatus(hipsparseStatus_t status)
+{
+    switch(status)
+    {
+    case HIPSPARSE_STATUS_SUCCESS:
+        return rocsparse_status_success;
+    case HIPSPARSE_STATUS_NOT_INITIALIZED:
+        return rocsparse_status_not_initialized;
+    case HIPSPARSE_STATUS_ALLOC_FAILED:
+        return rocsparse_status_memory_error;
+    case HIPSPARSE_STATUS_INVALID_VALUE:
+        return rocsparse_status_invalid_value;
+    case HIPSPARSE_STATUS_ARCH_MISMATCH:
+        return rocsparse_status_arch_mismatch;
+    case HIPSPARSE_STATUS_MAPPING_ERROR:
+    case HIPSPARSE_STATUS_EXECUTION_FAILED:
+    case HIPSPARSE_STATUS_INTERNAL_ERROR:
+    case HIPSPARSE_STATUS_MATRIX_TYPE_NOT_SUPPORTED:
+        return rocsparse_status_internal_error;
+    case HIPSPARSE_STATUS_ZERO_PIVOT:
+        return rocsparse_status_zero_pivot;
+    case HIPSPARSE_STATUS_NOT_SUPPORTED:
+        return rocsparse_status_not_implemented;
+    case HIPSPARSE_STATUS_INSUFFICIENT_RESOURCES:
+        return rocsparse_status_internal_error;
+    default:
+        throw "Non existent hipsparseStatus_t";
     }
 }
 
@@ -656,14 +694,14 @@ hipsparseStatus_t hipsparseDestroy(hipsparseHandle_t handle)
     return rocSPARSEStatusToHIPStatus(rocsparse_destroy_handle((rocsparse_handle)handle));
 }
 
-const char* hipsparseGetErrorName(hipsparseStatus_t status);
+const char* hipsparseGetErrorName(hipsparseStatus_t status)
 {
-    return rocsparse_get_status_name(status);
+    return rocsparse_get_status_name(hipSPARSEStatusToRocSPARSEStatus(status));
 }
 
 const char* hipsparseGetErrorString(hipsparseStatus_t status)
 {
-    return rocsparse_get_status_description(status);
+    return rocsparse_get_status_description(hipSPARSEStatusToRocSPARSEStatus(status));
 }
 
 hipsparseStatus_t hipsparseGetVersion(hipsparseHandle_t handle, int* version)

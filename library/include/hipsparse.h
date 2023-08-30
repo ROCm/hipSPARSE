@@ -44,6 +44,8 @@
 #include <hip/hip_complex.h>
 #include <hip/hip_runtime.h>
 
+#define INSTANTIATE_TEST_SUITE_P INSTANTIATE_TEST_CASE_P
+
 /// \cond DO_NOT_DOCUMENT
 #define DEPRECATED_CUDA_12000(warning)
 #define DEPRECATED_CUDA_11000(warning)
@@ -506,20 +508,26 @@ hipsparseStatus_t hipsparseDestroy(hipsparseHandle_t handle);
 
 #if(!defined(CUDART_VERSION) || CUDART_VERSION > 10000)
 /*! \ingroup aux_module
- *  \brief Return the string representation of a hipSPARSE status code enum name
+ *  \brief Return the string representation of a hipSPARSE status's matching backend status enum name
  *
  *  \details
- *  \p hipsparseGetErrorName takes a hipSPARSE status as input and returns the string representation of this status.
- *  If the status is not recognized, the function returns "Unrecognized status code".
+ *  \p hipsparseGetErrorName takes a hipSPARSE status as input and first converts it to the matching backend 
+ *  status (either rocsparse_status or cusparseStatus_t). It then returns the string representation of this status 
+ *  enum name. If the status is not recognized, the function returns "Unrecognized status code".
+ *
+ *  For example, hipsparseGetErrorName(HIPSPARSE_STATUS_SUCCESS) on a system with a rocSPARSE backend will 
+ *  return "rocsparse_status_success". On a system with a cuSPARSE backend this function would return 
+ *  "CUSPARSE_STATUS_SUCCESS".
  */
 HIPSPARSE_EXPORT
 const char* hipsparseGetErrorName(hipsparseStatus_t status);
 
 /*! \ingroup aux_module
- *  \brief Return the hipSPARSE status code description as a string
+ *  \brief Return the hipSPARSE status's matching backend status description as a string
  *
  *  \details
- *  \p hipsparseGetErrorString takes a hipSPARSE status as input and returns the string representation of this status.
+ *  \p hipsparseGetErrorString takes a hipSPARSE status as input and first converts it to the matching backend 
+ *  status (either rocsparse_status or cusparseStatus_t). It then returns the string description of this status.
  *  If the status is not recognized, the function returns "Unrecognized status code".
  */
 HIPSPARSE_EXPORT
