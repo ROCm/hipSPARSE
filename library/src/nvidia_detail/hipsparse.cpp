@@ -45,7 +45,6 @@ extern "C" {
 
 hipsparseStatus_t hipCUSPARSEStatusToHIPStatus(cusparseStatus_t cuStatus)
 {
-
 #if(CUDART_VERSION >= 11003)
     switch(cuStatus)
     {
@@ -111,7 +110,6 @@ hipsparseStatus_t hipCUSPARSEStatusToHIPStatus(cusparseStatus_t cuStatus)
 
 cusparseStatus_t hipSPARSEStatusToCUSPARSEStatus(hipsparseStatus_t hipStatus)
 {
-
 #if(CUDART_VERSION >= 11003)
     switch(hipStatus)
     {
