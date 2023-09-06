@@ -1,6 +1,13 @@
 # Change Log for hipSPARSE
 
-## hipSPARSE 2.4.0
+## hipSPARSE 3.0.0
+### Added
+- Added hipsparseGetErrorName and hipsparseGetErrorString
+### Improved
+- Documentation improved
+### Changed
+- Changed hipsparseSpSV_solve() API function to match cusparse API
+- Changed generic API functions to use const descriptors
 
 ## hipSPARSE 2.3.7 for ROCm 5.7.0
 ### Improved
