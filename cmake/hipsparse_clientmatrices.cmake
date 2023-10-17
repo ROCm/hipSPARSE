@@ -93,11 +93,11 @@ foreach(i RANGE 0 ${len1})
 
   # Download test matrices if not already downloaded
   if(NOT EXISTS "${CMAKE_MATRICES_DIR}/${mat}.bin")
-    if(NOT ROCSPARSE_MTX_DIR)
+    if(NOT HIPSPARSE_MTX_DIR)
       # First try user specified mirror, if available
-      if(DEFINED ENV{ROCSPARSE_TEST_MIRROR} AND NOT $ENV{ROCSPARSE_TEST_MIRROR} STREQUAL "")
-        message("-- Downloading and extracting test matrix ${m}.tar.gz from user specified test mirror: $ENV{ROCSPARSE_TEST_MIRROR}")
-        file(DOWNLOAD $ENV{ROCSPARSE_TEST_MIRROR}/${mat}.tar.gz ${CMAKE_MATRICES_DIR}/${mat}.tar.gz
+      if(DEFINED ENV{HIPSPARSE_TEST_MIRROR} AND NOT $ENV{HIPSPARSE_TEST_MIRROR} STREQUAL "")
+        message("-- Downloading and extracting test matrix ${m}.tar.gz from user specified test mirror: $ENV{HIPSPARSE_TEST_MIRROR}")
+        file(DOWNLOAD $ENV{HIPSPARSE_TEST_MIRROR}/${mat}.tar.gz ${CMAKE_MATRICES_DIR}/${mat}.tar.gz
              INACTIVITY_TIMEOUT 3
              STATUS DL)
 
@@ -149,7 +149,7 @@ foreach(i RANGE 0 ${len1})
 
       file(RENAME ${CMAKE_MATRICES_DIR}/${mat}/${mat}.mtx ${CMAKE_MATRICES_DIR}/${mat}.mtx)
     else()
-      file(RENAME ${ROCSPARSE_MTX_DIR}/${mat}/${mat}.mtx ${CMAKE_MATRICES_DIR}/${mat}.mtx)
+      file(RENAME ${HIPSPARSE_MTX_DIR}/${mat}/${mat}.mtx ${CMAKE_MATRICES_DIR}/${mat}.mtx)
     endif()
     execute_process(COMMAND ${HIPSPARSE_MTX2CSR} ${mat}.mtx ${mat}.bin
       RESULT_VARIABLE STATUS
