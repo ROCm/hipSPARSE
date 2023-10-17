@@ -79,4 +79,31 @@ endif()
 if(BUILD_CLIENTS_TESTS)
   enable_testing()
   add_subdirectory(tests)
+
+  
+  set(HIPSPARSE_CLIENTMATRICES "${CMAKE_SOURCE_DIR}/cmake/hipsparse_clientmatrices.cmake")
+  set(HIPSPARSE_CONVERT "${PROJECT_BINARY_DIR}/hipsparse_mtx2csr")
+
+  add_custom_command(OUTPUT "${HIPSPARSE_CONVERT}"
+    COMMAND ${CMAKE_COMMAND} -E copy "${PROJECT_BINARY_DIR}/mtx2csr.exe" "${HIPSPARSE_CONVERT}"
+    DEPENDS "${PROJECT_BINARY_DIR}/mtx2csr.exe"
+    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}")
+  
+  add_custom_target(hipsparse-common DEPENDS "${HIPSPARSE_CLIENTMATRICES}" "${HIPSPARSE_CONVERT}")
+  
+  rocm_install(
+    PROGRAMS "${HIPSPARSE_CONVERT}"
+    COMPONENT tests
+    DESTINATION ${CMAKE_INSTALL_BINDIR}
+    )
+  
+  rocm_install(
+    FILES "${HIPSPARSE_CLIENTMATRICES}"
+    COMPONENT tests
+    DESTINATION "${CMAKE_INSTALL_DATADIR}/hipsparse/test"
+    )
+  
+
+
+
 endif()

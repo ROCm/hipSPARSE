@@ -205,7 +205,11 @@ endif()
 
 set_target_properties(hipsparse-test PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/staging")
 
+add_dependencies(hipsparse-test hipsparse-common)
 rocm_install(TARGETS hipsparse-test COMPONENT tests)
+
+
+
 
 if (WIN32)
   # for now adding in all .dll as dependency chain is not cmake based on win32

@@ -6043,6 +6043,35 @@ public:
     }
 };
 
+inline void missing_file_error_message(const char* filename)
+{
+    std::cerr << "#" << std::endl;
+    std::cerr << "# error:" << std::endl;
+    std::cerr << "# cannot open file '" << filename << "'" << std::endl;
+    std::cerr << "#" << std::endl;
+    std::cerr << "# PLEASE READ CAREFULLY !" << std::endl;
+    std::cerr << "#" << std::endl;
+    std::cerr << "# What could be the reason of this error: " << std::endl;
+    std::cerr << "# You are running the testing application then it expects to find the file "
+                 "at the specified location. This means that either you did not download the test "
+                 "matrices or you did not specified the location of the folder containing your "
+                 "files. If you want to specify the location of the folder containing your files "
+                 "then you will find the needed information with 'hipsparse-test --help'."
+                 "If you need to download matrices, a cmake script "
+                 "'hipsparse_clientmatrices.cmake' is available from the hipsparse client package."
+              << std::endl;
+    std::cerr << "#" << std::endl;
+    std::cerr
+        << "# Examples: 'hipsparse_clientmatrices.cmake -DCMAKE_MATRICES_DIR=<path-of-your-folder>'"
+        << std::endl;
+    std::cerr << "#           'hipsparse-test --matrices-dir <path-of-your-folder>'" << std::endl;
+    std::cerr << "# (or        'export "
+                 "HIPSPARSE_CLIENTS_MATRICES_DIR=<path-of-your-folder>;hipsparse-test')"
+              << std::endl;
+    std::cerr << "#" << std::endl;
+}
+
+
 const char* get_hipsparse_clients_matrices_dir();
 
 inline std::string get_filename(const std::string& bin_file)
@@ -6053,14 +6082,30 @@ inline std::string get_filename(const std::string& bin_file)
         matrices_dir = getenv("HIPSPARSE_CLIENTS_MATRICES_DIR");
     }
 
+    std::string r;
     if(matrices_dir != nullptr)
     {
-        return std::string(matrices_dir) + "/" + bin_file;
+        r = std::string(matrices_dir) + "/" + bin_file;
     }
     else
     {
-        return hipsparse_exepath() + "../matrices/" + bin_file;
+        r = hipsparse_exepath() + "../matrices/" + bin_file;
     }
+
+    FILE * tmpf = fopen(r.c_str(),"r");    
+    if (!tmpf)
+      {
+	missing_file_error_message(r.c_str());
+	std::cerr << "exit(HIPSPARSE_STATUS_INTERNAL_ERROR)" << std::endl;
+	exit(HIPSPARSE_STATUS_INTERNAL_ERROR);
+      }
+    else
+      {
+	fclose(tmpf);
+      }
+    return r;
 }
+
+
 
 #endif // TESTING_UTILITY_HPP
