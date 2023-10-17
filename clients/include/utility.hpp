@@ -6052,9 +6052,9 @@ inline void missing_file_error_message(const char* filename)
     std::cerr << "# PLEASE READ CAREFULLY !" << std::endl;
     std::cerr << "#" << std::endl;
     std::cerr << "# What could be the reason of this error: " << std::endl;
-    std::cerr << "# You are running the testing application then it expects to find the file "
+    std::cerr << "# You are running the testing application and it expects to find the file "
                  "at the specified location. This means that either you did not download the test "
-                 "matrices or you did not specified the location of the folder containing your "
+                 "matrices, or you did not specify the location of the folder containing your "
                  "files. If you want to specify the location of the folder containing your files "
                  "then you will find the needed information with 'hipsparse-test --help'."
                  "If you need to download matrices, a cmake script "
