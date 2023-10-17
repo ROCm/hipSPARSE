@@ -6055,9 +6055,9 @@ inline void missing_file_error_message(const char* filename)
     std::cerr << "# You are running the testing application and it expects to find the file "
                  "at the specified location. This means that either you did not download the test "
                  "matrices, or you did not specify the location of the folder containing your "
-                 "files. If you want to specify the location of the folder containing your files "
+                 "files. If you want to specify the location of the folder containing your files, "
                  "then you will find the needed information with 'hipsparse-test --help'."
-                 "If you need to download matrices, a cmake script "
+                 "If you need to download matrices, then a cmake script "
                  "'hipsparse_clientmatrices.cmake' is available from the hipsparse client package."
               << std::endl;
     std::cerr << "#" << std::endl;
@@ -6070,7 +6070,6 @@ inline void missing_file_error_message(const char* filename)
               << std::endl;
     std::cerr << "#" << std::endl;
 }
-
 
 const char* get_hipsparse_clients_matrices_dir();
 
@@ -6092,20 +6091,18 @@ inline std::string get_filename(const std::string& bin_file)
         r = hipsparse_exepath() + "../matrices/" + bin_file;
     }
 
-    FILE * tmpf = fopen(r.c_str(),"r");    
-    if (!tmpf)
-      {
-	missing_file_error_message(r.c_str());
-	std::cerr << "exit(HIPSPARSE_STATUS_INTERNAL_ERROR)" << std::endl;
-	exit(HIPSPARSE_STATUS_INTERNAL_ERROR);
-      }
+    FILE* tmpf = fopen(r.c_str(), "r");
+    if(!tmpf)
+    {
+        missing_file_error_message(r.c_str());
+        std::cerr << "exit(HIPSPARSE_STATUS_INTERNAL_ERROR)" << std::endl;
+        exit(HIPSPARSE_STATUS_INTERNAL_ERROR);
+    }
     else
-      {
-	fclose(tmpf);
-      }
+    {
+        fclose(tmpf);
+    }
     return r;
 }
-
-
 
 #endif // TESTING_UTILITY_HPP
