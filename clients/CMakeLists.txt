@@ -80,6 +80,13 @@ if(BUILD_CLIENTS_TESTS)
   enable_testing()
   add_subdirectory(tests)
 
+  if(NOT CONVERT_SOURCE)
+    set(CONVERT_SOURCE ${CMAKE_SOURCE_DIR}/deps/convert.cpp)
+  endif()
+  execute_process(COMMAND ${CMAKE_CXX_COMPILER} ${CONVERT_SOURCE} -O3 -o ${PROJECT_BINARY_DIR}/mtx2csr.exe RESULT_VARIABLE STATUS)
+  if(STATUS AND NOT STATUS EQUAL 0)
+    message(FATAL_ERROR "mtx2csr.exe failed to build, aborting.")
+  endif()
   
   set(HIPSPARSE_CLIENTMATRICES "${CMAKE_SOURCE_DIR}/cmake/hipsparse_clientmatrices.cmake")
   set(HIPSPARSE_CONVERT "${PROJECT_BINARY_DIR}/hipsparse_mtx2csr")
