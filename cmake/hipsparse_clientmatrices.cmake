@@ -1,5 +1,5 @@
 # ########################################################################
-# Copyright (C) 2018-2023 Advanced Micro Devices, Inc. All rights Reserved.
+# Copyright (C) 2023 Advanced Micro Devices, Inc. All rights Reserved.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -20,6 +20,8 @@
 # THE SOFTWARE.
 #
 # ########################################################################
+
+find_program(HIPSPARSE_MTX2CSR hipsparse_mtx2csr PATHS /opt/rocm/bin ${ROCM_PATH}/bin)
 
 set(TEST_MATRICES
   SNAP/amazon0312
@@ -66,11 +68,8 @@ set(TEST_MD5HASH
 )
 
 if(NOT CMAKE_MATRICES_DIR)
-  message(FATAL_ERROR "Unspecified CMAKE_MATRICES_DIR")
-endif()
-
-if(NOT CONVERT_SOURCE)
-  set(CONVERT_SOURCE ${CMAKE_SOURCE_DIR}/deps/convert.cpp)
+  set(CMAKE_MATRICES_DIR "./")
+  message(WARNING "Unspecified CMAKE_MATRICES_DIR, the default value of CMAKE_MATRICES_DIR is set to './'")
 endif()
 
 # convert relative path to absolute
@@ -80,18 +79,6 @@ get_filename_component(CMAKE_MATRICES_DIR "${CMAKE_MATRICES_DIR}"
                        ABSOLUTE BASE_DIR "${CMAKE_SOURCE_DIR}")
 
 file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR})
-
-if(BUILD_ADDRESS_SANITIZER)
-  execute_process(COMMAND ${CMAKE_CXX_COMPILER} ${CONVERT_SOURCE} -O3 -fsanitize=address -shared-libasan -o ${PROJECT_BINARY_DIR}/mtx2csr.exe
-    RESULT_VARIABLE STATUS)
-else()
-  execute_process(COMMAND ${CMAKE_CXX_COMPILER} ${CONVERT_SOURCE} -O3 -o ${PROJECT_BINARY_DIR}/mtx2csr.exe
-    RESULT_VARIABLE STATUS)
-endif()
-
-if(STATUS AND NOT STATUS EQUAL 0)
-  message(FATAL_ERROR "mtx2csr.exe failed to build, aborting.")
-endif()
 
 list(LENGTH TEST_MATRICES len)
 math(EXPR len1 "${len} - 1")
@@ -164,11 +151,11 @@ foreach(i RANGE 0 ${len1})
     else()
       file(RENAME ${HIPSPARSE_MTX_DIR}/${mat}/${mat}.mtx ${CMAKE_MATRICES_DIR}/${mat}.mtx)
     endif()
-    execute_process(COMMAND ${PROJECT_BINARY_DIR}/mtx2csr.exe ${mat}.mtx ${mat}.bin
+    execute_process(COMMAND ${HIPSPARSE_MTX2CSR} ${mat}.mtx ${mat}.bin
       RESULT_VARIABLE STATUS
       WORKING_DIRECTORY ${CMAKE_MATRICES_DIR})
     if(STATUS AND NOT STATUS EQUAL 0)
-      message(FATAL_ERROR "mtx2csr.exe failed, aborting.")
+      message(FATAL_ERROR "${HIPSPARSE_MTX2CSR} failed, aborting.")
     else()
       message(STATUS "${mat} success.")
     endif()

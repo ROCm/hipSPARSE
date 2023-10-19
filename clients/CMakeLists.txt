@@ -79,4 +79,38 @@ endif()
 if(BUILD_CLIENTS_TESTS)
   enable_testing()
   add_subdirectory(tests)
+
+  if(NOT CONVERT_SOURCE)
+    set(CONVERT_SOURCE ${CMAKE_SOURCE_DIR}/deps/convert.cpp)
+  endif()
+  execute_process(COMMAND ${CMAKE_CXX_COMPILER} ${CONVERT_SOURCE} -O3 -o ${PROJECT_BINARY_DIR}/mtx2csr.exe RESULT_VARIABLE STATUS)
+  if(STATUS AND NOT STATUS EQUAL 0)
+    message(FATAL_ERROR "mtx2csr.exe failed to build, aborting.")
+  endif()
+  
+  set(HIPSPARSE_CLIENTMATRICES "${CMAKE_SOURCE_DIR}/cmake/hipsparse_clientmatrices.cmake")
+  set(HIPSPARSE_CONVERT "${PROJECT_BINARY_DIR}/hipsparse_mtx2csr")
+
+  add_custom_command(OUTPUT "${HIPSPARSE_CONVERT}"
+    COMMAND ${CMAKE_COMMAND} -E copy "${PROJECT_BINARY_DIR}/mtx2csr.exe" "${HIPSPARSE_CONVERT}"
+    DEPENDS "${PROJECT_BINARY_DIR}/mtx2csr.exe"
+    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}")
+  
+  add_custom_target(hipsparse-common DEPENDS "${HIPSPARSE_CLIENTMATRICES}" "${HIPSPARSE_CONVERT}")
+  
+  rocm_install(
+    PROGRAMS "${HIPSPARSE_CONVERT}"
+    COMPONENT tests
+    DESTINATION ${CMAKE_INSTALL_BINDIR}
+    )
+  
+  rocm_install(
+    FILES "${HIPSPARSE_CLIENTMATRICES}"
+    COMPONENT tests
+    DESTINATION "${CMAKE_INSTALL_DATADIR}/hipsparse/test"
+    )
+  
+
+
+
 endif()
