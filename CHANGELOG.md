@@ -115,7 +115,7 @@ Documentation for hipSPARSE is available at
 * Packaging has been split into a runtime package (`hipsparse`) and a development package
   (`hipsparse-devel`).
   
-  The development package depends on runtime. The runtime package suggests the development package for all supported operating systems (except CentOS 7) to aid in the transition. The suggests feature in packaging is introduced as a deprecated feature and will be removed in a future rocm release.
+  The development package depends on the runtime package. When installing the runtime package, the package manager will suggest the installation of the development package to aid users transitioning from the previous version's combined package. This suggestion by package manager is for all supported operating systems (except CentOS 7) to aid in the transition. The `suggestion` feature in the runtime package is introduced as a deprecated feature and will be removed in a future ROCm release.
                    
 * GTest dependency has been updated to v1.10.0
 
