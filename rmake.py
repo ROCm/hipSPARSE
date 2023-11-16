@@ -61,7 +61,7 @@ def parse_args():
     # rocsparse
     parser.add_argument('-b', '--rocsparse', dest='rocsparse_version', type=str, required=False, default="",
                         help='Set a specific rocSPARSE vesrion (optional)')
-    parser.add_argument('--rocsparse-path', dest='rocsparse_path', type=str, required=False, default="C:/hipSDK/rocsparse",
+    parser.add_argument('--rocsparse-path', dest='rocsparse_path', type=str, required=False, default="C:/hipSDK",
                         help='Set specific path to custom build rocSPARSE (optional)')
 
     return parser.parse_args()
