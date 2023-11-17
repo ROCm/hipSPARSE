@@ -38,6 +38,8 @@
 #ifndef HIPSPARSE_H
 #define HIPSPARSE_H
 
+#define INSTANTIATE_TEST_SUITE_P INSTANTIATE_TEST_CASE_P
+
 #include "hipsparse-export.h"
 #include "hipsparse-version.h"
 
@@ -9850,7 +9852,7 @@ hipsparseStatus_t hipsparseCsrGet(const hipsparseSpMatDescr_t spMatDescr,
 *  \details
 *  \p hipsparseConstCsrGet gets the fields of the sparse CSR matrix descriptor
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12001)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseConstCsrGet(hipsparseConstSpMatDescr_t spMatDescr,
                                        int64_t*                   rows,
@@ -9863,6 +9865,46 @@ hipsparseStatus_t hipsparseConstCsrGet(hipsparseConstSpMatDescr_t spMatDescr,
                                        hipsparseIndexType_t*      csrColIndType,
                                        hipsparseIndexBase_t*      idxBase,
                                        hipDataType*               valueType);
+#endif
+
+/*! \ingroup generic_module
+*  \brief Description: Get pointers of a sparse CSC matrix
+*  \details
+*  \p hipsparseCscGet gets the fields of the sparse CSC matrix descriptor
+*/
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12001)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseCscGet(const hipsparseSpMatDescr_t spMatDescr,
+                                  int64_t*                    rows,
+                                  int64_t*                    cols,
+                                  int64_t*                    nnz,
+                                  void**                      cscColOffsets,
+                                  void**                      cscRowInd,
+                                  void**                      cscValues,
+                                  hipsparseIndexType_t*       cscColOffsetsType,
+                                  hipsparseIndexType_t*       cscRowIndType,
+                                  hipsparseIndexBase_t*       idxBase,
+                                  hipDataType*                valueType);
+#endif
+
+/*! \ingroup generic_module
+*  \brief Description: Get pointers of a sparse CSC matrix
+*  \details
+*  \p hipsparseConstCscGet gets the fields of the sparse CSC matrix descriptor
+*/
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12001)
+HIPSPARSE_EXPORT
+hipsparseStatus_t hipsparseConstCscGet(hipsparseConstSpMatDescr_t spMatDescr,
+                                       int64_t*                    rows,
+                                       int64_t*                    cols,
+                                       int64_t*                    nnz,
+                                       const void**                      cscColOffsets,
+                                       const void**                      cscRowInd,
+                                       const void**                      cscValues,
+                                       hipsparseIndexType_t*       cscColOffsetsType,
+                                       hipsparseIndexType_t*       cscRowIndType,
+                                       hipsparseIndexBase_t*       idxBase,
+                                       hipDataType*                valueType);
 #endif
 
 /*! \ingroup generic_module

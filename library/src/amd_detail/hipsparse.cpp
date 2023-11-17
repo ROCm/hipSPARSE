@@ -13490,6 +13490,118 @@ hipsparseStatus_t hipsparseCsrSetPointers(hipsparseSpMatDescr_t spMatDescr,
         (rocsparse_spmat_descr)spMatDescr, csrRowOffsets, csrColInd, csrValues));
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+hipsparseStatus_t hipsparseCscGet(const hipsparseSpMatDescr_t spMatDescr,
+                                  int64_t*                    rows,
+                                  int64_t*                    cols,
+                                  int64_t*                    nnz,
+                                  void**                      cscColOffsets,
+                                  void**                      cscRowInd,
+                                  void**                      cscValues,
+                                  hipsparseIndexType_t*       cscColOffsetsType,
+                                  hipsparseIndexType_t*       cscRowIndType,
+                                  hipsparseIndexBase_t*       idxBase,
+                                  hipDataType*                valueType)
+{
+    rocsparse_indextype  hcc_col_index_type;
+    rocsparse_indextype  hcc_row_index_type;
+    rocsparse_index_base hcc_index_base;
+    rocsparse_datatype   hcc_data_type;
+
+    RETURN_IF_ROCSPARSE_ERROR(
+        rocsparse_csc_get((const rocsparse_spmat_descr)spMatDescr,
+                          rows,
+                          cols,
+                          nnz,
+                          cscColOffsets,
+                          cscRowInd,
+                          cscValues,
+                          cscColOffsetsType != nullptr ? &hcc_col_index_type : nullptr,
+                          cscRowIndType != nullptr ? &hcc_row_index_type : nullptr,
+                          idxBase != nullptr ? &hcc_index_base : nullptr,
+                          valueType != nullptr ? &hcc_data_type : nullptr));
+
+    *cscColOffsetsType = HCCIndexTypeToHIPIndexType(hcc_col_index_type);
+    *cscRowIndType     = HCCIndexTypeToHIPIndexType(hcc_row_index_type);
+    *idxBase           = HCCBaseToHIPBase(hcc_index_base);
+    *valueType         = HCCDataTypeToHIPDataType(hcc_data_type);
+
+    return HIPSPARSE_STATUS_SUCCESS;
+}
+
+hipsparseStatus_t hipsparseConstCscGet(hipsparseConstSpMatDescr_t spMatDescr,
+                                       int64_t*                    rows,
+                                       int64_t*                    cols,
+                                       int64_t*                    nnz,
+                                       const void**                      cscColOffsets,
+                                       const void**                      cscRowInd,
+                                       const void**                      cscValues,
+                                       hipsparseIndexType_t*       cscColOffsetsType,
+                                       hipsparseIndexType_t*       cscRowIndType,
+                                       hipsparseIndexBase_t*       idxBase,
+                                       hipDataType*                valueType)
+{
+    rocsparse_indextype  hcc_col_index_type;
+    rocsparse_indextype  hcc_row_index_type;
+    rocsparse_index_base hcc_index_base;
+    rocsparse_datatype   hcc_data_type;
+
+    RETURN_IF_ROCSPARSE_ERROR(
+        rocsparse_const_csc_get((const rocsparse_const_spmat_descr)spMatDescr,
+                                rows,
+                                cols,
+                                nnz,
+                                cscColOffsets,
+                                cscRowInd,
+                                cscValues,
+                                cscColOffsetsType != nullptr ? &hcc_col_index_type : nullptr,
+                                cscRowIndType != nullptr ? &hcc_row_index_type : nullptr,
+                                idxBase != nullptr ? &hcc_index_base : nullptr,
+                                valueType != nullptr ? &hcc_data_type : nullptr));
+
+    *cscColOffsetsType = HCCIndexTypeToHIPIndexType(hcc_col_index_type);
+    *cscRowIndType     = HCCIndexTypeToHIPIndexType(hcc_row_index_type);
+    *idxBase           = HCCBaseToHIPBase(hcc_index_base);
+    *valueType         = HCCDataTypeToHIPDataType(hcc_data_type);
+
+    return HIPSPARSE_STATUS_SUCCESS;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 hipsparseStatus_t hipsparseCscSetPointers(hipsparseSpMatDescr_t spMatDescr,
                                           void*                 cscColOffsets,
                                           void*                 cscRowInd,

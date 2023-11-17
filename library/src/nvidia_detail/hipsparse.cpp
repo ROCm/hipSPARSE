@@ -11446,6 +11446,86 @@ hipsparseStatus_t hipsparseConstCsrGet(hipsparseConstSpMatDescr_t spMatDescr,
 }
 #endif
 
+#if(CUDART_VERSION >= 12001)
+hipsparseStatus_t hipsparseCscGet(const hipsparseSpMatDescr_t spMatDescr,
+                                  int64_t*                    rows,
+                                  int64_t*                    cols,
+                                  int64_t*                    nnz,
+                                  void**                      cscColOffsets,
+                                  void**                      cscRowInd,
+                                  void**                      cscValues,
+                                  hipsparseIndexType_t*       cscColOffsetsType,
+                                  hipsparseIndexType_t*       cscRowIndType,
+                                  hipsparseIndexBase_t*       idxBase,
+                                  hipDataType*                valueType)
+{
+    cusparseIndexType_t cuda_col_index_type;
+    cusparseIndexType_t cuda_row_index_type;
+    cusparseIndexBase_t cuda_index_base;
+    cudaDataType        cuda_data_type;
+
+    RETURN_IF_CUSPARSE_ERROR(
+        cusparseCscGet((const cusparseSpMatDescr_t)spMatDescr,
+                       rows,
+                       cols,
+                       nnz,
+                       cscColOffsets,
+                       cscRowInd,
+                       cscValues,
+                       cscColOffsetsType != nullptr ? &cuda_col_index_type : nullptr,
+                       cscRowIndType != nullptr ? &cuda_row_index_type : nullptr,
+                       idxBase != nullptr ? &cuda_index_base : nullptr,
+                       valueType != nullptr ? &cuda_data_type : nullptr));
+
+    *cscColOffsetsType = CudaIndexTypeToHIPIndexType(cuda_col_index_type);
+    *cscRowIndType     = CudaIndexTypeToHIPIndexType(cuda_row_index_type);
+    *idxBase           = CudaIndexBaseToHIPIndexBase(cuda_index_base);
+    *valueType         = CudaDataTypeToHIPDataType(cuda_data_type);
+
+    return HIPSPARSE_STATUS_SUCCESS;
+}
+#endif
+
+#if(CUDART_VERSION >= 12001)
+hipsparseStatus_t hipsparseConstCscGet(hipsparseConstSpMatDescr_t spMatDescr,
+                                       int64_t*                    rows,
+                                       int64_t*                    cols,
+                                       int64_t*                    nnz,
+                                       const void**                      cscColOffsets,
+                                       const void**                      cscRowInd,
+                                       const void**                      cscValues,
+                                       hipsparseIndexType_t*       cscColOffsetsType,
+                                       hipsparseIndexType_t*       cscRowIndType,
+                                       hipsparseIndexBase_t*       idxBase,
+                                       hipDataType*                valueType)
+{
+    cusparseIndexType_t cuda_row_index_type;
+    cusparseIndexType_t cuda_col_index_type;
+    cusparseIndexBase_t cuda_index_base;
+    cudaDataType        cuda_data_type;
+
+    RETURN_IF_CUSPARSE_ERROR(
+        cusparseConstCsrGet((const cusparseConstSpMatDescr_t)spMatDescr,
+                            rows,
+                            cols,
+                            nnz,
+                            csrRowOffsets,
+                            csrColInd,
+                            csrValues,
+                            csrRowOffsetsType != nullptr ? &cuda_row_index_type : nullptr,
+                            csrColIndType != nullptr ? &cuda_col_index_type : nullptr,
+                            idxBase != nullptr ? &cuda_index_base : nullptr,
+                            valueType != nullptr ? &cuda_data_type : nullptr));
+
+    *csrRowOffsetsType = CudaIndexTypeToHIPIndexType(cuda_row_index_type);
+    *csrColIndType     = CudaIndexTypeToHIPIndexType(cuda_col_index_type);
+    *idxBase           = CudaIndexBaseToHIPIndexBase(cuda_index_base);
+    *valueType         = CudaDataTypeToHIPDataType(cuda_data_type);
+
+    return HIPSPARSE_STATUS_SUCCESS;
+}
+#endif
+
 #if(CUDART_VERSION >= 11021)
 hipsparseStatus_t hipsparseBlockedEllGet(const hipsparseSpMatDescr_t spMatDescr,
                                          int64_t*                    rows,
