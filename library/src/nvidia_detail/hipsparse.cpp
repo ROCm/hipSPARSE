@@ -11488,16 +11488,16 @@ hipsparseStatus_t hipsparseCscGet(const hipsparseSpMatDescr_t spMatDescr,
 
 #if(CUDART_VERSION >= 12001)
 hipsparseStatus_t hipsparseConstCscGet(hipsparseConstSpMatDescr_t spMatDescr,
-                                       int64_t*                    rows,
-                                       int64_t*                    cols,
-                                       int64_t*                    nnz,
-                                       const void**                      cscColOffsets,
-                                       const void**                      cscRowInd,
-                                       const void**                      cscValues,
-                                       hipsparseIndexType_t*       cscColOffsetsType,
-                                       hipsparseIndexType_t*       cscRowIndType,
-                                       hipsparseIndexBase_t*       idxBase,
-                                       hipDataType*                valueType)
+                                       int64_t*                   rows,
+                                       int64_t*                   cols,
+                                       int64_t*                   nnz,
+                                       const void**               cscColOffsets,
+                                       const void**               cscRowInd,
+                                       const void**               cscValues,
+                                       hipsparseIndexType_t*      cscColOffsetsType,
+                                       hipsparseIndexType_t*      cscRowIndType,
+                                       hipsparseIndexBase_t*      idxBase,
+                                       hipDataType*               valueType)
 {
     cusparseIndexType_t cuda_row_index_type;
     cusparseIndexType_t cuda_col_index_type;

@@ -13490,24 +13490,6 @@ hipsparseStatus_t hipsparseCsrSetPointers(hipsparseSpMatDescr_t spMatDescr,
         (rocsparse_spmat_descr)spMatDescr, csrRowOffsets, csrColInd, csrValues));
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 hipsparseStatus_t hipsparseCscGet(const hipsparseSpMatDescr_t spMatDescr,
                                   int64_t*                    rows,
                                   int64_t*                    cols,
@@ -13547,16 +13529,16 @@ hipsparseStatus_t hipsparseCscGet(const hipsparseSpMatDescr_t spMatDescr,
 }
 
 hipsparseStatus_t hipsparseConstCscGet(hipsparseConstSpMatDescr_t spMatDescr,
-                                       int64_t*                    rows,
-                                       int64_t*                    cols,
-                                       int64_t*                    nnz,
-                                       const void**                      cscColOffsets,
-                                       const void**                      cscRowInd,
-                                       const void**                      cscValues,
-                                       hipsparseIndexType_t*       cscColOffsetsType,
-                                       hipsparseIndexType_t*       cscRowIndType,
-                                       hipsparseIndexBase_t*       idxBase,
-                                       hipDataType*                valueType)
+                                       int64_t*                   rows,
+                                       int64_t*                   cols,
+                                       int64_t*                   nnz,
+                                       const void**               cscColOffsets,
+                                       const void**               cscRowInd,
+                                       const void**               cscValues,
+                                       hipsparseIndexType_t*      cscColOffsetsType,
+                                       hipsparseIndexType_t*      cscRowIndType,
+                                       hipsparseIndexBase_t*      idxBase,
+                                       hipDataType*               valueType)
 {
     rocsparse_indextype  hcc_col_index_type;
     rocsparse_indextype  hcc_row_index_type;
@@ -13583,24 +13565,6 @@ hipsparseStatus_t hipsparseConstCscGet(hipsparseConstSpMatDescr_t spMatDescr,
 
     return HIPSPARSE_STATUS_SUCCESS;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 hipsparseStatus_t hipsparseCscSetPointers(hipsparseSpMatDescr_t spMatDescr,
                                           void*                 cscColOffsets,
