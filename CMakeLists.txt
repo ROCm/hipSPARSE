@@ -64,7 +64,7 @@ if (NOT WIN32)
 endif( )
 
 # hipSPARSE project
-project(hipsparse LANGUAGES CXX Fortran)
+project(hipsparse LANGUAGES CXX ${fortran_language})
 
 # Build flags
 set(CMAKE_CXX_STANDARD 14)
