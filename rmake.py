@@ -61,7 +61,7 @@ def parse_args():
     # rocsparse
     parser.add_argument('-b', '--rocsparse', dest='rocsparse_version', type=str, required=False, default="",
                         help='Set a specific rocSPARSE vesrion (optional)')
-    parser.add_argument('--rocsparse-path', dest='rocsparse_path', type=str, required=False, default="C:/hipSDK",
+    parser.add_argument('--rocsparse-path', dest='rocsparse_path', type=str, required=False, default=None,
                         help='Set specific path to custom build rocSPARSE (optional)')
 
     return parser.parse_args()
@@ -176,6 +176,16 @@ def config_cmd():
     if args.build_clients:
         cmake_build_dir = cmake_path(build_dir)
         cmake_options.append( f"-DBUILD_CLIENTS_TESTS=ON -DBUILD_CLIENTS_BENCHMARKS=ON -DBUILD_CLIENTS_SAMPLES=ON -DBUILD_DIR={cmake_build_dir} " )
+
+    if args.rocsparse_path is not None:
+        # "Custom" rocsparse
+        raw_rocsparse_path = cmake_path(args.rocsparse_path)
+        rocsparse_path_cmake =  f'"{raw_rocsparse_path}"'
+        cmake_options.append( f"-DCUSTOM_ROCSPARSE={rocsparse_path_cmake}")
+    else:
+        args.rocsparse_path = "C:/hipSDK"
+        raw_rocsparse_path = cmake_path(args.rocsparse_path)
+        rocsparse_path_cmake =  f'"{raw_rocsparse_path}"'
 
     cmake_options.append( f"-DROCSPARSE_PATH={args.rocsparse_path}")
 
