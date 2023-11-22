@@ -40,10 +40,10 @@ template <typename T>
 void testing_csrgemm2_b_bad_arg(void)
 {
 #if(!defined(CUDART_VERSION))
-    int M         = 100;
-    int N         = 100;
-    int nnz_D     = 100;
-    int safe_size = 100;
+    int M         = 1;
+    int N         = 1;
+    int nnz_D     = 1;
+    int safe_size = 1;
 
     T beta = 1.0;
 
@@ -63,10 +63,10 @@ void testing_csrgemm2_b_bad_arg(void)
     std::unique_ptr<csrgemm2_struct> unique_ptr_csrgemm2(new csrgemm2_struct);
     csrgemm2Info_t                   info = unique_ptr_csrgemm2->info;
 
-    auto dDptr_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+    auto dDptr_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * (safe_size+1) ), device_free};
     auto dDcol_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
     auto dDval_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-    auto dCptr_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+    auto dCptr_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * (safe_size+1) ), device_free};
     auto dCcol_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
     auto dCval_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
     auto dbuffer_managed
@@ -79,6 +79,13 @@ void testing_csrgemm2_b_bad_arg(void)
     int*  dCcol   = (int*)dCcol_managed.get();
     T*    dCval   = (T*)dCval_managed.get();
     void* dbuffer = (void*)dbuffer_managed.get();
+
+    std::vector<int> hcsr_row_ptr_C(M+1);
+    hcsr_row_ptr_C[0] = 0;
+    hcsr_row_ptr_C[1] = 1;
+
+    CHECK_HIP_ERROR(
+		    hipMemcpy(dCptr, hcsr_row_ptr_C.data(), sizeof(int) * (M + 1), hipMemcpyHostToDevice));
 
     if(!dDval || !dDptr || !dDcol || !dCval || !dCptr || !dCcol || !dbuffer)
     {

@@ -36,6 +36,9 @@
 using namespace hipsparse;
 using namespace hipsparse_test;
 
+//
+//
+//
 template <typename T>
 void testing_csrgeam_bad_arg(void)
 {
