@@ -62,13 +62,16 @@ void testing_csrgemm_bad_arg(void)
     std::unique_ptr<descr_struct> unique_ptr_descr_C(new descr_struct);
     hipsparseMatDescr_t           descr_C = unique_ptr_descr_C->descr;
 
-    auto dAptr_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * (safe_size+1)), device_free};
+    auto dAptr_managed
+        = hipsparse_unique_ptr{device_malloc(sizeof(int) * (safe_size + 1)), device_free};
     auto dAcol_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
     auto dAval_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-    auto dBptr_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * (safe_size+1)), device_free};
+    auto dBptr_managed
+        = hipsparse_unique_ptr{device_malloc(sizeof(int) * (safe_size + 1)), device_free};
     auto dBcol_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
     auto dBval_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-    auto dCptr_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * (safe_size+1)), device_free};
+    auto dCptr_managed
+        = hipsparse_unique_ptr{device_malloc(sizeof(int) * (safe_size + 1)), device_free};
     auto dCcol_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
     auto dCval_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
 
@@ -88,13 +91,12 @@ void testing_csrgemm_bad_arg(void)
         return;
     }
 
-    std::vector<int> hcsr_row_ptr_C(M+1);
+    std::vector<int> hcsr_row_ptr_C(M + 1);
     hcsr_row_ptr_C[0] = 0;
     hcsr_row_ptr_C[1] = 1;
 
     CHECK_HIP_ERROR(
         hipMemcpy(dCptr, hcsr_row_ptr_C.data(), sizeof(int) * (M + 1), hipMemcpyHostToDevice));
-
 
     // testing hipsparseXcsrgemmNnz
     int nnz_C;
