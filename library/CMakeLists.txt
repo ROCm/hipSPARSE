@@ -66,6 +66,12 @@ add_library(roc::hipsparse ALIAS hipsparse)
 # Target compile options
 target_compile_options(hipsparse PRIVATE -Wno-unused-command-line-argument -Wall)
 
+# External header includes included as system files
+target_include_directories( hipsparse
+  SYSTEM PRIVATE
+    $<BUILD_INTERFACE:${ROCSPARSE_INCLUDE_DIRS}>
+)
+
 # Target include directories
 target_include_directories(hipsparse
                            PRIVATE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/include>
