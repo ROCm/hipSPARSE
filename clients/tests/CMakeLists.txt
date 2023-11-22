@@ -218,7 +218,7 @@ if (WIN32)
     CONFIGURE_DEPENDS
     $ENV{HIP_DIR}/bin/*.dll
     $ENV{HIP_DIR}/bin/hipinfo.exe
-    ${ROCSPARSE_PATH}/bin/librocsparse.dll
+    ${ROCSPARSE_PATH}/bin/rocsparse.dll
     ${CMAKE_SOURCE_DIR}/rtest.*
     C:/Windows/System32/libomp140*.dll
   )
