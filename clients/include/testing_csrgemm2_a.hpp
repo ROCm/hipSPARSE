@@ -40,12 +40,12 @@ template <typename T>
 void testing_csrgemm2_a_bad_arg(void)
 {
 #if(!defined(CUDART_VERSION))
-    int M         = 100;
-    int N         = 100;
-    int K         = 100;
-    int nnz_A     = 100;
-    int nnz_B     = 100;
-    int safe_size = 100;
+    int M         = 1;
+    int N         = 1;
+    int K         = 1;
+    int nnz_A     = 1;
+    int nnz_B     = 1;
+    int safe_size = 1;
 
     T alpha = 1.0;
 
@@ -68,13 +68,16 @@ void testing_csrgemm2_a_bad_arg(void)
     std::unique_ptr<csrgemm2_struct> unique_ptr_csrgemm2(new csrgemm2_struct);
     csrgemm2Info_t                   info = unique_ptr_csrgemm2->info;
 
-    auto dAptr_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+    auto dAptr_managed
+        = hipsparse_unique_ptr{device_malloc(sizeof(int) * (safe_size + 1)), device_free};
     auto dAcol_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
     auto dAval_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-    auto dBptr_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+    auto dBptr_managed
+        = hipsparse_unique_ptr{device_malloc(sizeof(int) * (safe_size + 1)), device_free};
     auto dBcol_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
     auto dBval_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-    auto dCptr_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+    auto dCptr_managed
+        = hipsparse_unique_ptr{device_malloc(sizeof(int) * (safe_size + 1)), device_free};
     auto dCcol_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
     auto dCval_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
     auto dbuffer_managed
@@ -97,6 +100,13 @@ void testing_csrgemm2_a_bad_arg(void)
         PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
         return;
     }
+
+    std::vector<int> hcsr_row_ptr_C(M + 1);
+    hcsr_row_ptr_C[0] = 0;
+    hcsr_row_ptr_C[1] = 1;
+
+    CHECK_HIP_ERROR(
+        hipMemcpy(dCptr, hcsr_row_ptr_C.data(), sizeof(int) * (M + 1), hipMemcpyHostToDevice));
 
     // Scenario: alpha != 0 and beta == 0
 
