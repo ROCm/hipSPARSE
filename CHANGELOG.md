@@ -3,7 +3,12 @@
 Documentation for hipSPARSE is available at
 [https://rocm.docs.amd.com/projects/hipSPARSE/en/latest/](https://rocm.docs.amd.com/projects/hipSPARSE/en/latest/).
 
-## hipSPARSE 3.0.0
+## hipSPARSE 3.0.1 for ROCm 6.1.0
+
+### Fixes
+* Fixes to the build chain
+
+## hipSPARSE 3.0.0 for ROCm 6.0.0
 
 ### Additions
 
