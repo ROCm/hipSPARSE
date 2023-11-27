@@ -18,7 +18,7 @@ def runCI =
     prj.paths.build_command = './install.sh -c --static'
     prj.compiler.compiler_name = 'hipcc'
     prj.compiler.compiler_path = '/opt/rocm/bin/hipcc'
-    prj.libraryDependencies = ['rocSPARSE', 'rocPRIM', 'rocBLAS']
+    prj.libraryDependencies = ['rocBLAS', 'rocSPARSE', 'rocPRIM']
     prj.defaults.ccache = false
 
     // Define test architectures, optional rocm version argument is available
