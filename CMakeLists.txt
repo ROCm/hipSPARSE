@@ -36,7 +36,7 @@ else()
 endif()
 
 # Pick up static and dynamic shared object files
-list( APPEND CMAKE_PREFIX_PATH /opt/rocm/llvm /opt/rocm /opt/rocm/hip )
+list( APPEND CMAKE_PREFIX_PATH ${ROCM_PATH}/lib/cmake/hip /opt/rocm /opt/rocm/llvm /opt/rocm/hip )
 
 # CMake modules
 list(APPEND CMAKE_MODULE_PATH
@@ -64,7 +64,7 @@ if (NOT WIN32)
 endif( )
 
 # hipSPARSE project
-project(hipsparse LANGUAGES CXX Fortran)
+project(hipsparse LANGUAGES CXX ${fortran_language})
 
 # Build flags
 set(CMAKE_CXX_STANDARD 14)
@@ -113,7 +113,7 @@ endif()
 
 
 # Setup version
-rocm_setup_version(VERSION 3.0.0)
+rocm_setup_version(VERSION 3.0.1)
 set(hipsparse_SOVERSION 1.0.0)
 
 # hipSPARSE library
