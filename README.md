@@ -22,6 +22,12 @@ pip3 install -r sphinx/requirements.txt
 python3 -m sphinx -T -E -b html -d _build/doctrees -D language=en . _build/html
 ```
 
+Alternatively, build with CMake:
+
+```bash
+cmake -DBUILD_DOCS=ON ...
+```
+
 ## Installing pre-built packages
 
 Download pre-built packages from
