@@ -313,6 +313,11 @@ hipsparseCsrGet()
 
 .. doxygenfunction:: hipsparseCsrGet
 
+hipsparseCscGet()
+-----------------
+
+.. doxygenfunction:: hipsparseCscGet
+
 hipsparseBlockedEllGet()
 ------------------------
 
