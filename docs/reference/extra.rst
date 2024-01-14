@@ -1,19 +1,24 @@
-.. _hipsparse_extra_functions_:
+.. meta::
+  :description: hipSPARSE documentation and API reference library
+  :keywords: hipSPARSE, rocSPARSE, ROCm, API, documentation
 
+.. _hipsparse_extra_functions:
+
+********************************************************************
 Sparse Extra Functions
-======================
+********************************************************************
 
 This module holds all sparse extra routines.
 
 The sparse extra routines describe operations that manipulate sparse matrices.
 
 hipsparseXcsrgeamNnz()
-----------------------
+======================
 
 .. doxygenfunction:: hipsparseXcsrgeamNnz
 
 hipsparseXcsrgeam()
--------------------
+======================
 
 .. doxygenfunction:: hipsparseScsrgeam
   :outline:
@@ -24,7 +29,7 @@ hipsparseXcsrgeam()
 .. doxygenfunction:: hipsparseZcsrgeam
 
 hipsparseXcsrgeam2_bufferSizeExt()
-----------------------------------
+======================
 
 .. doxygenfunction:: hipsparseScsrgeam2_bufferSizeExt
   :outline:
@@ -35,12 +40,12 @@ hipsparseXcsrgeam2_bufferSizeExt()
 .. doxygenfunction:: hipsparseZcsrgeam2_bufferSizeExt
 
 hipsparseXcsrgeam2Nnz()
------------------------
+======================
 
 .. doxygenfunction:: hipsparseXcsrgeam2Nnz
 
 hipsparseXcsrgeam2()
---------------------
+======================
 
 .. doxygenfunction:: hipsparseScsrgeam2
   :outline:
@@ -51,12 +56,12 @@ hipsparseXcsrgeam2()
 .. doxygenfunction:: hipsparseZcsrgeam2
 
 hipsparseXcsrgemmNnz()
-----------------------
+======================
 
 .. doxygenfunction:: hipsparseXcsrgemmNnz
 
 hipsparseXcsrgemm()
--------------------
+======================
 
 .. doxygenfunction:: hipsparseScsrgemm
   :outline:
@@ -67,7 +72,7 @@ hipsparseXcsrgemm()
 .. doxygenfunction:: hipsparseZcsrgemm
 
 hipsparseXcsrgemm2_bufferSizeExt()
-----------------------------------
+======================
 
 .. doxygenfunction:: hipsparseScsrgemm2_bufferSizeExt
   :outline:
@@ -78,12 +83,12 @@ hipsparseXcsrgemm2_bufferSizeExt()
 .. doxygenfunction:: hipsparseZcsrgemm2_bufferSizeExt
 
 hipsparseXcsrgemm2Nnz()
------------------------
+======================
 
 .. doxygenfunction:: hipsparseXcsrgemm2Nnz
 
 hipsparseXcsrgemm2()
---------------------
+======================
 
 .. doxygenfunction:: hipsparseScsrgemm2
   :outline:

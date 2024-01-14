@@ -1,14 +1,19 @@
-.. _hipsparse_level2_functions_:
+.. meta::
+  :description: hipSPARSE documentation and API reference library
+  :keywords: hipSPARSE, rocSPARSE, ROCm, API, documentation
 
+.. _hipsparse_level2_functions:
+
+********************************************************************
 Sparse Level 2 Functions
-========================
+********************************************************************
 
 This module holds all sparse level 2 routines.
 
 The sparse level 2 routines describe operations between a matrix in sparse format and a vector in dense format.
 
 hipsparseXcsrmv()
------------------
+===============
 
 .. doxygenfunction:: hipsparseScsrmv
   :outline:
@@ -19,12 +24,12 @@ hipsparseXcsrmv()
 .. doxygenfunction:: hipsparseZcsrmv
 
 hipsparseXcsrsv2_zeroPivot()
-----------------------------
+===========================
 
 .. doxygenfunction:: hipsparseXcsrsv2_zeroPivot
 
 hipsparseXcsrsv2_bufferSize()
------------------------------
+===========================
 
 .. doxygenfunction:: hipsparseScsrsv2_bufferSize
   :outline:
@@ -35,7 +40,7 @@ hipsparseXcsrsv2_bufferSize()
 .. doxygenfunction:: hipsparseZcsrsv2_bufferSize
 
 hipsparseXcsrsv2_bufferSizeExt()
---------------------------------
+==============================
 
 .. doxygenfunction:: hipsparseScsrsv2_bufferSizeExt
   :outline:
@@ -46,7 +51,7 @@ hipsparseXcsrsv2_bufferSizeExt()
 .. doxygenfunction:: hipsparseZcsrsv2_bufferSizeExt
 
 hipsparseXcsrsv2_analysis()
----------------------------
+===========================
 
 .. doxygenfunction:: hipsparseScsrsv2_analysis
   :outline:
@@ -57,7 +62,7 @@ hipsparseXcsrsv2_analysis()
 .. doxygenfunction:: hipsparseZcsrsv2_analysis
 
 hipsparseXcsrsv2_solve()
-------------------------
+========================
 
 .. doxygenfunction:: hipsparseScsrsv2_solve
   :outline:
@@ -68,7 +73,7 @@ hipsparseXcsrsv2_solve()
 .. doxygenfunction:: hipsparseZcsrsv2_solve
 
 hipsparseXhybmv()
------------------
+===============
 
 .. doxygenfunction:: hipsparseShybmv
   :outline:
@@ -79,7 +84,7 @@ hipsparseXhybmv()
 .. doxygenfunction:: hipsparseZhybmv
 
 hipsparseXbsrmv()
------------------
+===============
 
 .. doxygenfunction:: hipsparseSbsrmv
   :outline:
@@ -90,7 +95,7 @@ hipsparseXbsrmv()
 .. doxygenfunction:: hipsparseZbsrmv
 
 hipsparseXbsrxmv()
-------------------
+==================
 
 .. doxygenfunction:: hipsparseSbsrxmv
   :outline:
@@ -101,12 +106,12 @@ hipsparseXbsrxmv()
 .. doxygenfunction:: hipsparseZbsrxmv
 
 hipsparseXbsrsv2_zeroPivot()
-----------------------------
+===========================
 
 .. doxygenfunction:: hipsparseXbsrsv2_zeroPivot
 
 hipsparseXbsrsv2_bufferSize()
------------------------------
+===========================
 
 .. doxygenfunction:: hipsparseSbsrsv2_bufferSize
   :outline:
@@ -117,7 +122,7 @@ hipsparseXbsrsv2_bufferSize()
 .. doxygenfunction:: hipsparseZbsrsv2_bufferSize
 
 hipsparseXbsrsv2_bufferSizeExt()
---------------------------------
+==============================
 
 .. doxygenfunction:: hipsparseSbsrsv2_bufferSizeExt
   :outline:
@@ -128,7 +133,7 @@ hipsparseXbsrsv2_bufferSizeExt()
 .. doxygenfunction:: hipsparseZbsrsv2_bufferSizeExt
 
 hipsparseXbsrsv2_analysis()
----------------------------
+===========================
 
 .. doxygenfunction:: hipsparseSbsrsv2_analysis
   :outline:
@@ -139,7 +144,7 @@ hipsparseXbsrsv2_analysis()
 .. doxygenfunction:: hipsparseZbsrsv2_analysis
 
 hipsparseXbsrsv2_solve()
-------------------------
+========================
 
 .. doxygenfunction:: hipsparseSbsrsv2_solve
   :outline:
@@ -150,7 +155,7 @@ hipsparseXbsrsv2_solve()
 .. doxygenfunction:: hipsparseZbsrsv2_solve
 
 hipsparseXgemvi_bufferSize()
-----------------------------
+===========================
 
 .. doxygenfunction:: hipsparseSgemvi_bufferSize
   :outline:
@@ -161,7 +166,7 @@ hipsparseXgemvi_bufferSize()
 .. doxygenfunction:: hipsparseZgemvi_bufferSize
 
 hipsparseXgemvi()
------------------
+===============
 
 .. doxygenfunction:: hipsparseSgemvi
   :outline:
