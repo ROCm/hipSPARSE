@@ -1,18 +1,24 @@
+.. meta::
+  :description: hipSPARSE documentation and API reference library
+  :keywords: hipSPARSE, rocSPARSE, ROCm, API, documentation
+
 .. _hipsparse_building:
 
-Building and Installing
-=======================
+********************************************************************
+Installation
+********************************************************************
 
 Prerequisites
--------------
+=============
 hipSPARSE requires a ROCm enabled platform.
 
 Installing pre-built packages
------------------------------
+=============================
+
 hipSPARSE can be installed from AMD ROCm repository.
 For detailed instructions on how to set up ROCm on different platforms, see the `AMD ROCm Platform Installation Guide for Linux <https://rocm.docs.amd.com/en/latest/deploy/linux/index.html>`_.
 
-hipSPARSE can be installed on e.g. Ubuntu using
+hipSPARSE can be installed on Ubuntu using
 
 ::
 
@@ -23,7 +29,8 @@ Once installed, hipSPARSE can be used just like any other library with a C API.
 The header file will need to be included in the user code in order to make calls into hipSPARSE, and the hipSPARSE shared library will become link-time and run-time dependent for the user application.
 
 Building hipSPARSE from source
-------------------------------
+==============================
+
 Building from source is not necessary, as hipSPARSE can be used after installing the pre-built packages as described above.
 If desired, the following instructions can be used to build hipSPARSE from source.
 Furthermore, the following compile-time dependencies must be met
