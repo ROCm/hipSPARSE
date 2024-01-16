@@ -98,8 +98,13 @@ requests==2.31.0
     # via
     #   pygithub
     #   sphinx
+<<<<<<< HEAD
 rocm-docs-core==0.37.0
     # via -r docs/.sphinx/requirements.in
+=======
+rocm-docs-core==0.31.0
+    # via -r requirements.in
+>>>>>>> 9976f86 (Merge branch 'ROCm:develop' into doc_reorg)
 smmap==5.0.0
     # via gitdb
 snowballstemmer==2.2.0
