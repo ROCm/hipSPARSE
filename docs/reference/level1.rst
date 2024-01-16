@@ -22,7 +22,7 @@ hipsparseXaxpyi()
 .. doxygenfunction:: hipsparseZaxpyi
 
 hipsparseXdoti()
-===============
+=================
 
 .. doxygenfunction:: hipsparseSdoti
   :outline:
@@ -33,14 +33,14 @@ hipsparseXdoti()
 .. doxygenfunction:: hipsparseZdoti
 
 hipsparseXdotci()
-===============
+=================
 
 .. doxygenfunction:: hipsparseCdotci
   :outline:
 .. doxygenfunction:: hipsparseZdotci
 
 hipsparseXgthr()
-===============
+=================
 
 .. doxygenfunction:: hipsparseSgthr
   :outline:
@@ -51,7 +51,7 @@ hipsparseXgthr()
 .. doxygenfunction:: hipsparseZgthr
 
 hipsparseXgthrz()
-===============
+=================
 
 .. doxygenfunction:: hipsparseSgthrz
   :outline:
@@ -62,14 +62,14 @@ hipsparseXgthrz()
 .. doxygenfunction:: hipsparseZgthrz
 
 hipsparseXroti()
-===============
+=================
 
 .. doxygenfunction:: hipsparseSroti
   :outline:
 .. doxygenfunction:: hipsparseDroti
 
 hipsparseXsctr()
-===============
+=================
 
 .. doxygenfunction:: hipsparseSsctr
   :outline:

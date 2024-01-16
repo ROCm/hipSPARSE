@@ -93,17 +93,17 @@ hipsparseSpMM()
 .. doxygenfunction:: hipsparseSpMM
 
 hipsparseSpGEMM_createDescr()
-==========================
+=============================
 
 .. doxygenfunction:: hipsparseSpGEMM_createDescr
 
 hipsparseSpGEMM_destroyDescr()
-==========================
+==============================
 
 .. doxygenfunction:: hipsparseSpGEMM_destroyDescr
 
 hipsparseSpGEMM_workEstimation()
-==========================
+================================
 
 .. doxygenfunction:: hipsparseSpGEMM_workEstimation
 
@@ -118,12 +118,12 @@ hipsparseSpGEMM_copy()
 .. doxygenfunction:: hipsparseSpGEMM_copy
 
 hipsparseSDDMM_bufferSize()
-==========================
+===========================
 
 .. doxygenfunction:: hipsparseSDDMM_bufferSize
 
 hipsparseSDDMM_preprocess()
-==========================
+===========================
 
 .. doxygenfunction:: hipsparseSDDMM_preprocess
 
@@ -133,12 +133,12 @@ hipsparseSDDMM()
 .. doxygenfunction:: hipsparseSDDMM
 
 hipsparseSpSV_createDescr()
-==========================
+===========================
 
 .. doxygenfunction:: hipsparseSpSV_createDescr
 
 hipsparseSpSV_destroyDescr()
-==========================
+============================
 
 .. doxygenfunction:: hipsparseSpSV_destroyDescr
 
@@ -158,12 +158,12 @@ hipsparseSpSV_solve()
 .. doxygenfunction:: hipsparseSpSV_solve
 
 hipsparseSpSM_createDescr()
-==========================
+===========================
 
 .. doxygenfunction:: hipsparseSpSM_createDescr
 
 hipsparseSpSM_destroyDescr()
-==========================
+============================
 
 .. doxygenfunction:: hipsparseSpSM_destroyDescr
 
