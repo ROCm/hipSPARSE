@@ -29,7 +29,7 @@ hipsparseXcsrgeam()
 .. doxygenfunction:: hipsparseZcsrgeam
 
 hipsparseXcsrgeam2_bufferSizeExt()
-======================
+==================================
 
 .. doxygenfunction:: hipsparseScsrgeam2_bufferSizeExt
   :outline:
@@ -40,7 +40,7 @@ hipsparseXcsrgeam2_bufferSizeExt()
 .. doxygenfunction:: hipsparseZcsrgeam2_bufferSizeExt
 
 hipsparseXcsrgeam2Nnz()
-======================
+=======================
 
 .. doxygenfunction:: hipsparseXcsrgeam2Nnz
 
@@ -72,7 +72,7 @@ hipsparseXcsrgemm()
 .. doxygenfunction:: hipsparseZcsrgemm
 
 hipsparseXcsrgemm2_bufferSizeExt()
-======================
+==================================
 
 .. doxygenfunction:: hipsparseScsrgemm2_bufferSizeExt
   :outline:
@@ -83,7 +83,7 @@ hipsparseXcsrgemm2_bufferSizeExt()
 .. doxygenfunction:: hipsparseZcsrgemm2_bufferSizeExt
 
 hipsparseXcsrgemm2Nnz()
-======================
+=======================
 
 .. doxygenfunction:: hipsparseXcsrgemm2Nnz
 

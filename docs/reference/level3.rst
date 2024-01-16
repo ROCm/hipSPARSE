@@ -13,7 +13,7 @@ This module holds all sparse level 3 routines.
 The sparse level 3 routines describe operations between a matrix in sparse format and multiple vectors in dense format that can also be seen as a dense matrix.
 
 hipsparseXbsrmm()
-===============
+=================
 
 .. doxygenfunction:: hipsparseSbsrmm
   :outline:
@@ -24,7 +24,7 @@ hipsparseXbsrmm()
 .. doxygenfunction:: hipsparseZbsrmm
 
 hipsparseXcsrmm()
-===============
+=================
 
 .. doxygenfunction:: hipsparseScsrmm
   :outline:
@@ -46,12 +46,12 @@ hipsparseXcsrmm2()
 .. doxygenfunction:: hipsparseZcsrmm2
 
 hipsparseXbsrsm2_zeroPivot()
-===========================
+============================
 
 .. doxygenfunction:: hipsparseXbsrsm2_zeroPivot
 
 hipsparseXbsrsm2_bufferSize()
-===========================
+=============================
 
 .. doxygenfunction:: hipsparseSbsrsm2_bufferSize
   :outline:
@@ -84,12 +84,12 @@ hipsparseXbsrsm2_solve()
 .. doxygenfunction:: hipsparseZbsrsm2_solve
 
 hipsparseXcsrsm2_zeroPivot()
-===========================-
+=============================
 
 .. doxygenfunction:: hipsparseXcsrsm2_zeroPivot
 
 hipsparseXcsrsm2_bufferSizeExt()
-==============================
+================================
 
 .. doxygenfunction:: hipsparseScsrsm2_bufferSizeExt
   :outline:
@@ -122,7 +122,7 @@ hipsparseXcsrsm2_solve()
 .. doxygenfunction:: hipsparseZcsrsm2_solve
 
 hipsparseXgemmi()
-===============
+=================
 
 .. doxygenfunction:: hipsparseSgemmi
   :outline:

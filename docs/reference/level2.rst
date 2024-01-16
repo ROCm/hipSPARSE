@@ -13,7 +13,7 @@ This module holds all sparse level 2 routines.
 The sparse level 2 routines describe operations between a matrix in sparse format and a vector in dense format.
 
 hipsparseXcsrmv()
-===============
+==================
 
 .. doxygenfunction:: hipsparseScsrmv
   :outline:
@@ -24,12 +24,12 @@ hipsparseXcsrmv()
 .. doxygenfunction:: hipsparseZcsrmv
 
 hipsparseXcsrsv2_zeroPivot()
-===========================
+=============================
 
 .. doxygenfunction:: hipsparseXcsrsv2_zeroPivot
 
 hipsparseXcsrsv2_bufferSize()
-===========================
+=============================
 
 .. doxygenfunction:: hipsparseScsrsv2_bufferSize
   :outline:
@@ -40,7 +40,7 @@ hipsparseXcsrsv2_bufferSize()
 .. doxygenfunction:: hipsparseZcsrsv2_bufferSize
 
 hipsparseXcsrsv2_bufferSizeExt()
-==============================
+================================
 
 .. doxygenfunction:: hipsparseScsrsv2_bufferSizeExt
   :outline:
@@ -73,7 +73,7 @@ hipsparseXcsrsv2_solve()
 .. doxygenfunction:: hipsparseZcsrsv2_solve
 
 hipsparseXhybmv()
-===============
+=================
 
 .. doxygenfunction:: hipsparseShybmv
   :outline:
@@ -84,7 +84,7 @@ hipsparseXhybmv()
 .. doxygenfunction:: hipsparseZhybmv
 
 hipsparseXbsrmv()
-===============
+=================
 
 .. doxygenfunction:: hipsparseSbsrmv
   :outline:
@@ -106,12 +106,12 @@ hipsparseXbsrxmv()
 .. doxygenfunction:: hipsparseZbsrxmv
 
 hipsparseXbsrsv2_zeroPivot()
-===========================
+============================
 
 .. doxygenfunction:: hipsparseXbsrsv2_zeroPivot
 
 hipsparseXbsrsv2_bufferSize()
-===========================
+=============================
 
 .. doxygenfunction:: hipsparseSbsrsv2_bufferSize
   :outline:
@@ -122,7 +122,7 @@ hipsparseXbsrsv2_bufferSize()
 .. doxygenfunction:: hipsparseZbsrsv2_bufferSize
 
 hipsparseXbsrsv2_bufferSizeExt()
-==============================
+================================
 
 .. doxygenfunction:: hipsparseSbsrsv2_bufferSizeExt
   :outline:
@@ -155,7 +155,7 @@ hipsparseXbsrsv2_solve()
 .. doxygenfunction:: hipsparseZbsrsv2_solve
 
 hipsparseXgemvi_bufferSize()
-===========================
+============================
 
 .. doxygenfunction:: hipsparseSgemvi_bufferSize
   :outline:
@@ -166,7 +166,7 @@ hipsparseXgemvi_bufferSize()
 .. doxygenfunction:: hipsparseZgemvi_bufferSize
 
 hipsparseXgemvi()
-===============
+=================
 
 .. doxygenfunction:: hipsparseSgemvi
   :outline:
