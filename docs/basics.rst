@@ -43,7 +43,7 @@ Storage Formats
 The following describes supported matrix storage formats.  
 
 .. note::
-    The different storage formats support indexing from a base of 0 or 1 as described in :ref:`index_base`. To ensure proper performance, specify the indexing base used in your code. 
+    The different storage formats support indexing from a base of 0 or 1 as described in :ref:`index_base`. 
 
 COO storage format
 ------------------
