@@ -40,7 +40,10 @@ If a system has multiple HIP devices, you can run multiple hipSPARSE handles con
 Storage Formats
 ===============
 
-The following describes supported storage formats.  
+The following describes supported matrix storage formats.  
+
+.. note::
+    The different storage formats support indexing from a base of 0 or 1 as described in :ref:`index_base`. To ensure proper performance, specify the indexing base used in your code. 
 
 COO storage format
 ------------------
@@ -140,6 +143,40 @@ where
     \text{csr_val}[8] & = \{1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0\} \\
     \text{csr_row_ptr}[4] & = \{1, 4, 6, 9\} \\
     \text{csr_col_ind}[8] & = \{1, 2, 4, 2, 3, 1, 4, 5\}
+  \end{array}
+
+CSC storage format
+------------------
+The Compressed Sparse Column (CSC) storage format represents a :math:`m \times n` matrix by
+
+=========== =========================================================================
+m           number of rows (integer).
+n           number of columns (integer).
+nnz         number of non-zero elements (integer).
+csc_val     array of ``nnz`` elements containing the data (floating point).
+csc_col_ptr array of ``n+1`` elements that point to the start of every column (integer).
+csc_row_ind array of ``nnz`` elements containing the row indices (integer).
+=========== =========================================================================
+
+The CSC matrix is expected to be sorted by row indices within each column. Furthermore, each pair of indices should appear only once.
+Consider the following :math:`3 \times 5` matrix and the corresponding CSC structures, with :math:`m = 3, n = 5` and :math:`\text{nnz} = 8` using one based indexing:
+
+.. math::
+
+  A = \begin{pmatrix}
+        1.0 & 2.0 & 0.0 & 3.0 & 0.0 \\
+        0.0 & 4.0 & 5.0 & 0.0 & 0.0 \\
+        6.0 & 0.0 & 0.0 & 7.0 & 8.0 \\
+      \end{pmatrix}
+
+where
+
+.. math::
+
+  \begin{array}{ll}
+    \text{csc_val}[8] & = \{1.0, 6.0, 2.0, 4.0, 5.0, 3.0, 7.0, 8.0\} \\
+    \text{csc_col_ptr}[6] & = \{1, 3, 5, 6, 8, 9\} \\
+    \text{csc_row_ind}[8] & = \{1, 3, 1, 2, 2, 1, 3, 3\}
   \end{array}
 
 BSR storage format
@@ -328,6 +365,8 @@ coo_col_ind array of ``nnz`` elements containing the COO part column indices (in
 =========== =========================================================================================
 
 The HYB format is a combination of the ELL and COO sparse matrix formats. Typically, the regular part of the matrix is stored in ELL storage format, and the irregular part of the matrix is stored in COO storage format. Three different partitioning schemes can be applied when converting a CSR matrix to a matrix in HYB storage format. For further details on the partitioning schemes, see :ref:`hipsparse_hyb_partition_`.
+
+.. _index_base:
 
 Storage schemes and indexing base
 =================================
