@@ -15,28 +15,29 @@ The code is open and hosted here: https://github.com/ROCmSoftwarePlatform/hipSPA
 
 The hipSPARSE documentation is structured as follows:
 
-.. card:: Installation
+.. grid:: 2
 
-  * :ref:`hipsparse_building`
-
-.. card:: How-To
-
-  * :ref:`hipsparse-docs`
-
-.. card:: API reference
-
-  * :ref:`api`
-  * :ref:`hipsparse-types`
-  * :ref:`hipsparse_auxiliary_functions` required for subsequent library calls
-  * :ref:`hipsparse_level1_functions` between a vector in sparse format and a vector in dense format
-  * :ref:`hipsparse_level2_functions` between a matrix in sparse format and a vector in dense format
-  * :ref:`hipsparse_level3_functions` between a matrix in sparse format and multiple vectors (matrix) in dense format
-  * :ref:`hipsparse_extra_functions` for proposing linear algebra operations
-  * :ref:`hipsparse_precond_functions` on a matrix in sparse format to obtain a preconditioner
-  * :ref:`hipsparse_conversion_functions` to convert a matrix in sparse format to a different storage format
-  * :ref:`hipsparse_reordering_functions` for reordering sparse matrices
-  * :ref:`hipsparse_generic_functions` for manipulating sparse matrices 
-
+  .. grid-item-card:: Installation
+  
+    * :ref:`hipsparse_building`
+  
+  .. grid-item-card:: How-To
+  
+    * :ref:`hipsparse-docs`
+  
+  .. grid-item-card:: API reference
+  
+    * :ref:`api`
+    * :ref:`hipsparse-types`
+    * :ref:`hipsparse_auxiliary_functions` required for subsequent library calls
+    * :ref:`hipsparse_level1_functions` between a vector in sparse format and a vector in dense format
+    * :ref:`hipsparse_level2_functions` between a matrix in sparse format and a vector in dense format
+    * :ref:`hipsparse_level3_functions` between a matrix in sparse format and multiple vectors (matrix) in dense format
+    * :ref:`hipsparse_extra_functions` for proposing linear algebra operations
+    * :ref:`hipsparse_precond_functions` on a matrix in sparse format to obtain a preconditioner
+    * :ref:`hipsparse_conversion_functions` to convert a matrix in sparse format to a different storage format
+    * :ref:`hipsparse_reordering_functions` for reordering sparse matrices
+    * :ref:`hipsparse_generic_functions` for manipulating sparse matrices 
 
 .. note::
   hipSPARSE exports an interface that does not require the client to change, regardless of the chosen backend. hipSPARSE focuses on convenience and portability. If performance outweighs these factors, then using rocSPARSE itself is highly recommended. rocSPARSE can also be found on `GitHub <https://github.com/ROCmSoftwarePlatform/rocSPARSE/>`_.
