@@ -1,19 +1,24 @@
-.. _hipsparse_precond_functions_:
+.. meta::
+  :description: hipSPARSE documentation and API reference library
+  :keywords: hipSPARSE, rocSPARSE, ROCm, API, documentation
 
+.. _hipsparse_precond_functions:
+
+********************************************************************
 Preconditioner Functions
-========================
+********************************************************************
 
 This module holds all sparse preconditioners.
 
 The sparse preconditioners describe manipulations on a matrix in sparse format to obtain a sparse preconditioner matrix.
 
 hipsparseXbsrilu02_zeroPivot()
-------------------------------
+==============================
 
 .. doxygenfunction:: hipsparseXbsrilu02_zeroPivot
 
 hipsparseXbsrilu02_numericBoost()
----------------------------------
+=================================
 
 .. doxygenfunction:: hipsparseSbsrilu02_numericBoost
   :outline:
@@ -24,7 +29,7 @@ hipsparseXbsrilu02_numericBoost()
 .. doxygenfunction:: hipsparseZbsrilu02_numericBoost
 
 hipsparseXbsrilu02_bufferSize()
--------------------------------
+===============================
 
 .. doxygenfunction:: hipsparseSbsrilu02_bufferSize
   :outline:
@@ -35,7 +40,7 @@ hipsparseXbsrilu02_bufferSize()
 .. doxygenfunction:: hipsparseZbsrilu02_bufferSize
 
 hipsparseXbsrilu02_analysis()
------------------------------
+=============================
 
 .. doxygenfunction:: hipsparseSbsrilu02_analysis
   :outline:
@@ -46,7 +51,7 @@ hipsparseXbsrilu02_analysis()
 .. doxygenfunction:: hipsparseZbsrilu02_analysis
 
 hipsparseXbsrilu02()
---------------------
+====================
 
 .. doxygenfunction:: hipsparseSbsrilu02
   :outline:
@@ -57,12 +62,12 @@ hipsparseXbsrilu02()
 .. doxygenfunction:: hipsparseZbsrilu02
 
 hipsparseXcsrilu02_zeroPivot()
-------------------------------
+==============================
 
 .. doxygenfunction:: hipsparseXcsrilu02_zeroPivot
 
 hipsparseXcsrilu02_numericBoost()
----------------------------------
+=================================
 
 .. doxygenfunction:: hipsparseScsrilu02_numericBoost
   :outline:
@@ -73,7 +78,7 @@ hipsparseXcsrilu02_numericBoost()
 .. doxygenfunction:: hipsparseZcsrilu02_numericBoost
 
 hipsparseXcsrilu02_bufferSize()
--------------------------------
+================================
 
 .. doxygenfunction:: hipsparseScsrilu02_bufferSize
   :outline:
@@ -84,7 +89,7 @@ hipsparseXcsrilu02_bufferSize()
 .. doxygenfunction:: hipsparseZcsrilu02_bufferSize
 
 hipsparseXcsrilu02_bufferSizeExt()
-----------------------------------
+===================================
 
 .. doxygenfunction:: hipsparseScsrilu02_bufferSizeExt
   :outline:
@@ -95,7 +100,7 @@ hipsparseXcsrilu02_bufferSizeExt()
 .. doxygenfunction:: hipsparseZcsrilu02_bufferSizeExt
 
 hipsparseXcsrilu02_analysis()
------------------------------
+=============================
 
 .. doxygenfunction:: hipsparseScsrilu02_analysis
   :outline:
@@ -106,7 +111,7 @@ hipsparseXcsrilu02_analysis()
 .. doxygenfunction:: hipsparseZcsrilu02_analysis
 
 hipsparseXcsrilu02()
---------------------
+====================
 
 .. doxygenfunction:: hipsparseScsrilu02
   :outline:
@@ -117,12 +122,12 @@ hipsparseXcsrilu02()
 .. doxygenfunction:: hipsparseZcsrilu02
 
 hipsparseXbsric02_zeroPivot()
------------------------------
+=============================
 
 .. doxygenfunction:: hipsparseXbsric02_zeroPivot
 
 hipsparseXbsric02_bufferSize()
-------------------------------
+==============================
 
 .. doxygenfunction:: hipsparseSbsric02_bufferSize
   :outline:
@@ -133,7 +138,7 @@ hipsparseXbsric02_bufferSize()
 .. doxygenfunction:: hipsparseZbsric02_bufferSize
 
 hipsparseXbsric02_analysis()
-----------------------------
+=============================
 
 .. doxygenfunction:: hipsparseSbsric02_analysis
   :outline:
@@ -144,7 +149,7 @@ hipsparseXbsric02_analysis()
 .. doxygenfunction:: hipsparseZbsric02_analysis
 
 hipsparseXbsric02()
--------------------
+====================
 
 .. doxygenfunction:: hipsparseSbsric02
   :outline:
@@ -155,12 +160,12 @@ hipsparseXbsric02()
 .. doxygenfunction:: hipsparseZbsric02
 
 hipsparseXcsric02_zeroPivot()
------------------------------
+=============================
 
 .. doxygenfunction:: hipsparseXcsric02_zeroPivot
 
 hipsparseXcsric02_bufferSize()
-------------------------------
+==============================
 
 .. doxygenfunction:: hipsparseScsric02_bufferSize
   :outline:
@@ -171,7 +176,7 @@ hipsparseXcsric02_bufferSize()
 .. doxygenfunction:: hipsparseZcsric02_bufferSize
 
 hipsparseXcsric02_bufferSizeExt()
----------------------------------
+=================================
 
 .. doxygenfunction:: hipsparseScsric02_bufferSizeExt
   :outline:
@@ -182,7 +187,7 @@ hipsparseXcsric02_bufferSizeExt()
 .. doxygenfunction:: hipsparseZcsric02_bufferSizeExt
 
 hipsparseXcsric02_analysis()
-----------------------------
+============================
 
 .. doxygenfunction:: hipsparseScsric02_analysis
   :outline:
@@ -193,7 +198,7 @@ hipsparseXcsric02_analysis()
 .. doxygenfunction:: hipsparseZcsric02_analysis
 
 hipsparseXcsric02()
--------------------
+===================
 
 .. doxygenfunction:: hipsparseScsric02
   :outline:
@@ -204,7 +209,7 @@ hipsparseXcsric02()
 .. doxygenfunction:: hipsparseZcsric02
 
 hipsparseXgtsv2_bufferSizeExt()
--------------------------------
+===============================
 
 .. doxygenfunction:: hipsparseSgtsv2_bufferSizeExt
   :outline:
@@ -215,7 +220,7 @@ hipsparseXgtsv2_bufferSizeExt()
 .. doxygenfunction:: hipsparseZgtsv2_bufferSizeExt
 
 hipsparseXgtsv2()
------------------
+=================
 
 .. doxygenfunction:: hipsparseSgtsv2
   :outline:
@@ -226,7 +231,7 @@ hipsparseXgtsv2()
 .. doxygenfunction:: hipsparseZgtsv2
 
 hipsparseXgtsv2_nopivot_bufferSizeExt()
----------------------------------------
+=======================================
 
 .. doxygenfunction:: hipsparseSgtsv2_nopivot_bufferSizeExt
   :outline:
@@ -237,7 +242,7 @@ hipsparseXgtsv2_nopivot_bufferSizeExt()
 .. doxygenfunction:: hipsparseZgtsv2_nopivot_bufferSizeExt
 
 hipsparseXgtsv2_nopivot()
--------------------------
+=========================
 
 .. doxygenfunction:: hipsparseSgtsv2_nopivot
   :outline:
@@ -248,7 +253,7 @@ hipsparseXgtsv2_nopivot()
 .. doxygenfunction:: hipsparseZgtsv2_nopivot
 
 hipsparseXgtsv2StridedBatch_bufferSizeExt()
--------------------------------------------
+===========================================
 
 .. doxygenfunction:: hipsparseSgtsv2StridedBatch_bufferSizeExt
   :outline:
@@ -259,7 +264,7 @@ hipsparseXgtsv2StridedBatch_bufferSizeExt()
 .. doxygenfunction:: hipsparseZgtsv2StridedBatch_bufferSizeExt
 
 hipsparseXgtsv2StridedBatch()
------------------------------
+=============================
 
 .. doxygenfunction:: hipsparseSgtsv2StridedBatch
   :outline:
@@ -270,7 +275,7 @@ hipsparseXgtsv2StridedBatch()
 .. doxygenfunction:: hipsparseZgtsv2StridedBatch
 
 hipsparseXgtsvInterleavedBatch_bufferSizeExt()
-----------------------------------------------
+==============================================
 
 .. doxygenfunction:: hipsparseSgtsvInterleavedBatch_bufferSizeExt
   :outline:
@@ -281,7 +286,7 @@ hipsparseXgtsvInterleavedBatch_bufferSizeExt()
 .. doxygenfunction:: hipsparseZgtsvInterleavedBatch_bufferSizeExt
 
 hipsparseXgtsvInterleavedBatch()
---------------------------------
+================================
 
 .. doxygenfunction:: hipsparseSgtsvInterleavedBatch
   :outline:
@@ -292,7 +297,7 @@ hipsparseXgtsvInterleavedBatch()
 .. doxygenfunction:: hipsparseZgtsvInterleavedBatch
 
 hipsparseXgpsvInterleavedBatch_bufferSizeExt()
-----------------------------------------------
+==============================================
 
 .. doxygenfunction:: hipsparseSgpsvInterleavedBatch_bufferSizeExt
   :outline:
@@ -303,7 +308,7 @@ hipsparseXgpsvInterleavedBatch_bufferSizeExt()
 .. doxygenfunction:: hipsparseZgpsvInterleavedBatch_bufferSizeExt
 
 hipsparseXgpsvInterleavedBatch()
---------------------------------
+================================
 
 .. doxygenfunction:: hipsparseSgpsvInterleavedBatch
   :outline:
