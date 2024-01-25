@@ -1,14 +1,19 @@
-.. _hipsparse_conversion_functions_:
+.. meta::
+  :description: hipSPARSE documentation and API reference library
+  :keywords: hipSPARSE, rocSPARSE, ROCm, API, documentation
 
+.. _hipsparse_conversion_functions:
+
+********************************************************************
 Sparse Conversion Functions
-===========================
+********************************************************************
 
 This module holds all sparse conversion routines.
 
 The sparse conversion routines describe operations on a matrix in sparse format to obtain a matrix in a different sparse format.
 
 hipsparseXnnz()
----------------
+===============
 
 .. doxygenfunction:: hipsparseSnnz
   :outline:
@@ -19,7 +24,7 @@ hipsparseXnnz()
 .. doxygenfunction:: hipsparseZnnz
 
 hipsparseXdense2csr()
----------------------
+=====================
 
 .. doxygenfunction:: hipsparseSdense2csr
   :outline:
@@ -30,56 +35,56 @@ hipsparseXdense2csr()
 .. doxygenfunction:: hipsparseZdense2csr
 
 hipsparseXpruneDense2csr_bufferSize()
--------------------------------------
+=====================================
 
 .. doxygenfunction:: hipsparseSpruneDense2csr_bufferSize
   :outline:
 .. doxygenfunction:: hipsparseDpruneDense2csr_bufferSize
 
 hipsparseXpruneDense2csrNnz()
------------------------------
+=================================
 
 .. doxygenfunction:: hipsparseSpruneDense2csrNnz
   :outline:
 .. doxygenfunction:: hipsparseDpruneDense2csrNnz
 
 hipsparseXpruneDense2csr()
---------------------------
+=================================
 
 .. doxygenfunction:: hipsparseSpruneDense2csr
   :outline:
 .. doxygenfunction:: hipsparseDpruneDense2csr
 
 hipsparseXpruneDense2csrByPercentage_bufferSize()
--------------------------------------------------
+===================================================
 
 .. doxygenfunction:: hipsparseSpruneDense2csrByPercentage_bufferSize
   :outline:
 .. doxygenfunction:: hipsparseDpruneDense2csrByPercentage_bufferSize
 
 hipsparseXpruneDense2csrByPercentage_bufferSizeExt()
-----------------------------------------------------
+============================================================
 
 .. doxygenfunction:: hipsparseSpruneDense2csrByPercentage_bufferSizeExt
   :outline:
 .. doxygenfunction:: hipsparseDpruneDense2csrByPercentage_bufferSizeExt
 
 hipsparseXpruneDense2csrNnzByPercentage()
------------------------------------------
+==========================================
 
 .. doxygenfunction:: hipsparseSpruneDense2csrNnzByPercentage
   :outline:
 .. doxygenfunction:: hipsparseDpruneDense2csrNnzByPercentage
 
 hipsparseXpruneDense2csrByPercentage()
---------------------------------------
+==========================================
 
 .. doxygenfunction:: hipsparseSpruneDense2csrByPercentage
   :outline:
 .. doxygenfunction:: hipsparseDpruneDense2csrByPercentage
 
 hipsparseXdense2csc()
----------------------
+========================
 
 .. doxygenfunction:: hipsparseSdense2csc
   :outline:
@@ -90,7 +95,7 @@ hipsparseXdense2csc()
 .. doxygenfunction:: hipsparseZdense2csc
 
 hipsparseXcsr2dense()
----------------------
+========================
 
 .. doxygenfunction:: hipsparseScsr2dense
   :outline:
@@ -101,7 +106,7 @@ hipsparseXcsr2dense()
 .. doxygenfunction:: hipsparseZcsr2dense
 
 hipsparseXcsc2dense()
----------------------
+========================
 
 .. doxygenfunction:: hipsparseScsc2dense
   :outline:
@@ -112,12 +117,12 @@ hipsparseXcsc2dense()
 .. doxygenfunction:: hipsparseZcsc2dense
 
 hipsparseXcsr2bsrNnz()
-----------------------
+========================
 
 .. doxygenfunction:: hipsparseXcsr2bsrNnz
 
 hipsparseXcsr2bsr()
--------------------
+========================
 
 .. doxygenfunction:: hipsparseScsr2bsr
   :outline:
@@ -128,7 +133,7 @@ hipsparseXcsr2bsr()
 .. doxygenfunction:: hipsparseZcsr2bsr
 
 hipsparseXnnz_compress()
-------------------------
+========================
 
 .. doxygenfunction:: hipsparseSnnz_compress
   :outline:
@@ -139,12 +144,12 @@ hipsparseXnnz_compress()
 .. doxygenfunction:: hipsparseZnnz_compress
 
 hipsparseXcsr2coo()
--------------------
+========================
 
 .. doxygenfunction:: hipsparseXcsr2coo
 
 hipsparseXcsr2csc()
--------------------
+========================
 
 .. doxygenfunction:: hipsparseScsr2csc
   :outline:
@@ -155,17 +160,17 @@ hipsparseXcsr2csc()
 .. doxygenfunction:: hipsparseZcsr2csc
 
 hipsparseXcsr2cscEx2_bufferSize()
----------------------------------
+=================================
 
 .. doxygenfunction:: hipsparseCsr2cscEx2_bufferSize
 
 hipsparseXcsr2cscEx2()
-----------------------
+======================
 
 .. doxygenfunction:: hipsparseCsr2cscEx2
 
 hipsparseXcsr2hyb()
--------------------
+========================
 
 .. doxygenfunction:: hipsparseScsr2hyb
   :outline:
@@ -176,7 +181,7 @@ hipsparseXcsr2hyb()
 .. doxygenfunction:: hipsparseZcsr2hyb
 
 hipsparseXgebsr2gebsc_bufferSize()
-----------------------------------
+==================================
 
 .. doxygenfunction:: hipsparseSgebsr2gebsc_bufferSize
   :outline:
@@ -187,7 +192,7 @@ hipsparseXgebsr2gebsc_bufferSize()
 .. doxygenfunction:: hipsparseZgebsr2gebsc_bufferSize
 
 hipsparseXgebsr2gebsc()
------------------------
+========================
 
 .. doxygenfunction:: hipsparseSgebsr2gebsc
   :outline:
@@ -198,7 +203,7 @@ hipsparseXgebsr2gebsc()
 .. doxygenfunction:: hipsparseZgebsr2gebsc
 
 hipsparseXcsr2gebsr_bufferSize()
---------------------------------
+=================================
 
 .. doxygenfunction:: hipsparseScsr2gebsr_bufferSize
   :outline:
@@ -209,12 +214,12 @@ hipsparseXcsr2gebsr_bufferSize()
 .. doxygenfunction:: hipsparseZcsr2gebsr_bufferSize
 
 hipsparseXcsr2gebsrNnz()
-------------------------
+========================
 
 .. doxygenfunction:: hipsparseXcsr2gebsrNnz
 
 hipsparseXcsr2gebsr()
----------------------
+========================
 
 .. doxygenfunction:: hipsparseScsr2gebsr
   :outline:
@@ -225,7 +230,7 @@ hipsparseXcsr2gebsr()
 .. doxygenfunction:: hipsparseZcsr2gebsr
 
 hipsparseXbsr2csr()
--------------------
+========================
 
 .. doxygenfunction:: hipsparseSbsr2csr
   :outline:
@@ -236,7 +241,7 @@ hipsparseXbsr2csr()
 .. doxygenfunction:: hipsparseZbsr2csr
 
 hipsparseXgebsr2csr()
----------------------
+========================
 
 .. doxygenfunction:: hipsparseSgebsr2csr
   :outline:
@@ -247,7 +252,7 @@ hipsparseXgebsr2csr()
 .. doxygenfunction:: hipsparseZgebsr2csr
 
 hipsparseXcsr2csr_compress()
-----------------------------
+=============================
 
 .. doxygenfunction:: hipsparseScsr2csr_compress
   :outline:
@@ -258,63 +263,63 @@ hipsparseXcsr2csr_compress()
 .. doxygenfunction:: hipsparseZcsr2csr_compress
 
 hipsparseXpruneCsr2csr_bufferSize()
------------------------------------
+==========================================
 
 .. doxygenfunction:: hipsparseSpruneCsr2csr_bufferSize
   :outline:
 .. doxygenfunction:: hipsparseDpruneCsr2csr_bufferSize
 
 hipsparseXpruneCsr2csr_bufferSizeExt()
---------------------------------------
+==========================================
 
 .. doxygenfunction:: hipsparseSpruneCsr2csr_bufferSizeExt
   :outline:
 .. doxygenfunction:: hipsparseDpruneCsr2csr_bufferSizeExt
 
 hipsparseXpruneCsr2csrNnz()
----------------------------
+=================================
 
 .. doxygenfunction:: hipsparseSpruneCsr2csrNnz
   :outline:
 .. doxygenfunction:: hipsparseDpruneCsr2csrNnz
 
 hipsparseXpruneCsr2csr()
-------------------------
+========================
 
 .. doxygenfunction:: hipsparseSpruneCsr2csr
   :outline:
 .. doxygenfunction:: hipsparseDpruneCsr2csr
 
 hipsparseXpruneCsr2csrByPercentage_bufferSize()
------------------------------------------------
+===================================================
 
 .. doxygenfunction:: hipsparseSpruneCsr2csrByPercentage_bufferSize
   :outline:
 .. doxygenfunction:: hipsparseDpruneCsr2csrByPercentage_bufferSize
 
 hipsparseXpruneCsr2csrByPercentage_bufferSizeExt()
---------------------------------------------------
+===================================================
 
 .. doxygenfunction:: hipsparseSpruneCsr2csrByPercentage_bufferSizeExt
   :outline:
 .. doxygenfunction:: hipsparseDpruneCsr2csrByPercentage_bufferSizeExt
 
 hipsparseXpruneCsr2csrNnzByPercentage()
----------------------------------------
+=======================================
 
 .. doxygenfunction:: hipsparseSpruneCsr2csrNnzByPercentage
   :outline:
 .. doxygenfunction:: hipsparseDpruneCsr2csrNnzByPercentage
 
 hipsparseXpruneCsr2csrByPercentage()
-------------------------------------
+==========================================
 
 .. doxygenfunction:: hipsparseSpruneCsr2csrByPercentage
   :outline:
 .. doxygenfunction:: hipsparseDpruneCsr2csrByPercentage
 
 hipsparseXhyb2csr()
--------------------
+===================
 
 .. doxygenfunction:: hipsparseShyb2csr
   :outline:
@@ -325,52 +330,52 @@ hipsparseXhyb2csr()
 .. doxygenfunction:: hipsparseZhyb2csr
 
 hipsparseXcoo2csr()
--------------------
+========================
 
 .. doxygenfunction:: hipsparseXcoo2csr
 
 hipsparseCreateIdentityPermutation()
-------------------------------------
+==========================================
 
 .. doxygenfunction:: hipsparseCreateIdentityPermutation
 
 hipsparseXcsrsort_bufferSizeExt()
----------------------------------
+=================================
 
 .. doxygenfunction:: hipsparseXcsrsort_bufferSizeExt
 
 hipsparseXcsrsort()
--------------------
+========================
 
 .. doxygenfunction:: hipsparseXcsrsort
 
 hipsparseXcscsort_bufferSizeExt()
----------------------------------
+=================================
 
 .. doxygenfunction:: hipsparseXcscsort_bufferSizeExt
 
 hipsparseXcscsort()
--------------------
+========================
 
 .. doxygenfunction:: hipsparseXcscsort
 
 hipsparseXcoosort_bufferSizeExt()
----------------------------------
+=================================
 
 .. doxygenfunction:: hipsparseXcoosort_bufferSizeExt
 
 hipsparseXcoosortByRow()
-------------------------
+========================
 
 .. doxygenfunction:: hipsparseXcoosortByRow
 
 hipsparseXcoosortByColumn()
----------------------------
+=================================
 
 .. doxygenfunction:: hipsparseXcoosortByColumn
 
 hipsparseXgebsr2gebsr_bufferSize()
-----------------------------------
+==========================================
 
 .. doxygenfunction:: hipsparseSgebsr2gebsr_bufferSize
   :outline:
@@ -381,12 +386,12 @@ hipsparseXgebsr2gebsr_bufferSize()
 .. doxygenfunction:: hipsparseZgebsr2gebsr_bufferSize
 
 hipsparseXgebsr2gebsrNnz()
---------------------------
+=================================
 
 .. doxygenfunction:: hipsparseXgebsr2gebsrNnz
 
 hipsparseXgebsr2gebsr()
------------------------
+========================
 
 .. doxygenfunction:: hipsparseSgebsr2gebsr
   :outline:
@@ -397,7 +402,7 @@ hipsparseXgebsr2gebsr()
 .. doxygenfunction:: hipsparseZgebsr2gebsr
 
 hipsparseXcsru2csr_bufferSizeExt()
-----------------------------------
+==================================
 
 .. doxygenfunction:: hipsparseScsru2csr_bufferSizeExt
   :outline:
@@ -408,7 +413,7 @@ hipsparseXcsru2csr_bufferSizeExt()
 .. doxygenfunction:: hipsparseZcsru2csr_bufferSizeExt
 
 hipsparseXcsru2csr()
---------------------
+========================
 
 .. doxygenfunction:: hipsparseScsru2csr
   :outline:
@@ -419,7 +424,7 @@ hipsparseXcsru2csr()
 .. doxygenfunction:: hipsparseZcsru2csr
 
 hipsparseXcsr2csru()
---------------------
+========================
 
 .. doxygenfunction:: hipsparseScsr2csru
   :outline:

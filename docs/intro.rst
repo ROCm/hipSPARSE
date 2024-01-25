@@ -1,5 +1,12 @@
-Introduction
-============
+.. meta::
+  :description: hipSPARSE documentation and API reference library
+  :keywords: hipSPARSE, rocSPARSE, ROCm, API, documentation
+
+.. _hipsparse_intro:
+
+********************************************************************
+What is hipSPARSE
+********************************************************************
 
 hipSPARSE is a library that contains basic linear algebra subroutines for sparse matrices and vectors written in HIP for GPU devices.
 It is designed to be used from C and C++ code.
