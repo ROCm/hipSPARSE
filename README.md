@@ -1,11 +1,20 @@
 # hipSPARSE
-hipSPARSE is a SPARSE marshalling library, with multiple supported backends. It sits between the application and a 'worker' SPARSE library, marshalling inputs into the backend library and marshalling results back to the application. hipSPARSE exports an interface that does not require the client to change, regardless of the chosen backend. Currently, hipSPARSE supports [rocSPARSE](https://github.com/ROCmSoftwarePlatform/rocSPARSE) and [cuSPARSE](https://developer.nvidia.com/cusparse) as backends.
+
+hipSPARSE is a SPARSE marshalling library with multiple supported backends. It sits between your
+application and a 'worker' SPARSE library, where it marshals inputs to the backend library and marshals
+results to your application. hipSPARSE exports an interface that doesn't require the client to change,
+regardless of the chosen backend. Currently, hipSPARSE supports
+[rocSPARSE](https://github.com/ROCmSoftwarePlatform/rocSPARSE) and
+[cuSPARSE](https://developer.nvidia.com/cusparse) backends.
 
 ## Documentation
 
-Run the steps below to build documentation locally.
+Documentation for hipSPARSE is available at
+[https://rocm.docs.amd.com/projects/hipSPARSE/en/latest/](https://rocm.docs.amd.com/projects/hipSPARSE/en/latest/).
 
-```
+To build our documentation locally, run the following code:
+
+```bash
 cd docs
 
 pip3 install -r .sphinx/requirements.txt
@@ -14,24 +23,47 @@ python3 -m sphinx -T -E -b html -d _build/doctrees -D language=en . _build/html
 ```
 
 ## Installing pre-built packages
-Download pre-built packages either from [ROCm's package servers](https://rocm.docs.amd.com/en/latest/deploy/linux/index.html). Release notes are available for each release on the releases tab on GitHub.
-* `sudo apt update && sudo apt install hipsparse`
 
-## Quickstart hipSPARSE build
+Download pre-built packages from
+[ROCm's package servers](https://rocm.docs.amd.com/en/latest/deploy/linux/index.html) using the
+following code:
 
-#### Bash helper build script (Ubuntu only)
-The root of this repository has a helper bash script `install.sh` to build and install hipSPARSE on Ubuntu with a single command.  It does not take a lot of options and hard-codes configuration that can be specified through invoking cmake directly, but it's a great way to get started quickly and can serve as an example of how to build/install. A few commands in the script need sudo access, so it may prompt you for a password.
-*  `./install -h`  -- shows help
-*  `./install -id` -- build library, build dependencies and install (-d flag only needs to be passed once on a system)
+```bash
+`sudo apt update && sudo apt install hipsparse`
+```
 
-## Manual build (all supported platforms)
-If you use a distro other than Ubuntu, or would like more control over the build process, the [hipSPARSE build wiki](https://github.com/ROCmSoftwarePlatform/hipSPARSE/wiki/Build) has helpful information on how to configure cmake and manually build.
+## Build hipSPARSE
 
-### Functions supported
-A list of [exported functions](https://github.com/ROCmSoftwarePlatform/hipSPARSE/wiki/Exported-functions) from hipSPARSE can be found on the wiki.
+To build hipSPARSE, you can use our bash helper script (for Ubuntu only) or you can perform a manual
+build (for all supported platforms).
 
-## hipSPARSE interface examples
-The hipSPARSE interface is compatible with rocSPARSE and cuSPARSE-v2 APIs. Porting a CUDA application which originally calls the cuSPARSE API to an application calling hipSPARSE API should be relatively straightforward. For example, the hipSPARSE SCSRMV interface is
+* Bash helper script (`install.sh`):
+  This script, which is located in the root of this repository, builds and installs hipSPARSE on Ubuntu
+  with a single command. Note that this option doesn't allow much customization and hard-codes
+  configurations that can be specified through invoking CMake directly. Some commands in the script
+  require sudo access, so it may prompt you for a password.
+
+    ```bash
+    `./install -h`  # shows help
+    `./install -id` # builds library, dependencies, then installs (the `-d` flag only needs to be passed once on a system)
+    ```
+
+* Manual build:
+    If you use a distribution other than Ubuntu, or would like more control over the build process,
+    the [hipSPARSE build wiki](https://github.com/ROCmSoftwarePlatform/hipSPARSE/wiki/Build)
+    provides information on how to configure CMake and build hipSPARSE manually.
+
+### Supported functions
+
+You can find a list of
+[exported functions](https://github.com/ROCmSoftwarePlatform/hipSPARSE/wiki/Exported-functions)
+on our wiki.
+
+## Interface examples
+
+The hipSPARSE interface is compatible with rocSPARSE and cuSPARSE-v2 APIs. Porting a CUDA
+application that calls the cuSPARSE API to an application that calls the hipSPARSE API is relatively
+straightforward. For example, the hipSPARSE SCSRMV interface is:
 
 ### CSRMV API
 
@@ -47,4 +79,5 @@ hipsparseScsrmv(hipsparseHandle_t handle,
                 float *y);
 ```
 
-hipSPARSE assumes matrix A and vectors x, y are allocated in GPU memory space filled with data. Users are responsible for copying data from/to the host and device memory.
+hipSPARSE assumes matrix A and vectors x, y are allocated in GPU memory space filled with data. Users
+are responsible for copying data to and from the host and device memory.

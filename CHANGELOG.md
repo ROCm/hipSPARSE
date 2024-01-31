@@ -1,151 +1,214 @@
-# Change Log for hipSPARSE
+# Changelog for hipSPARSE
 
-## hipSPARSE 3.0.0 for ROCm 6.0.0
-### Added
-- Added hipsparseGetErrorName and hipsparseGetErrorString
-### Changed
-- Changed hipsparseSpSV_solve() API function to match cusparse API
-- Changed generic API functions to use const descriptors
-- Documentation improved
+Documentation for hipSPARSE is available at
+[https://rocm.docs.amd.com/projects/hipSPARSE/en/latest/](https://rocm.docs.amd.com/projects/hipSPARSE/en/latest/).
+
+## hipSPARSE 3.0.0
+
+### Additions
+
+* Added `hipsparseGetErrorName` and `hipsparseGetErrorString`
+
+### Changes
+
+* Changed the `hipsparseSpSV_solve()` API function to match the cuSPARSE API
+* Changed generic API functions to use const descriptors
+* Improved documentation
 
 ## hipSPARSE 2.3.8 for ROCm 5.7.0
-### Improved
-- Fix compilation failures when using cusparse 12.1.0 backend
-- Fix compilation failures when using cusparse 12.0.0 backend
-- Fix compilation failures when using cusparse 10.1 (non-update versions) as backend
-- Minor improvements
+
+### Fixes
+
+* Compilation failures when using the cuSPARSE 12.1.0 and 12.0.0 backends
+* Compilation failures when using the cuSPARSE 10.1 (non-update version) backend
 
 ## hipSPARSE 2.3.7 for ROCm 5.6.1
-### Bugfix
-- Reverted an undocumented API change in hipSPARSE 2.3.6 that affected hipsparseSpSV_solve function
+
+### Fixes
+
+* Reverted an undocumented API change in hipSPARSE 2.3.6 that affected the `hipsparseSpSV_solve`
+  function
 
 ## hipSPARSE 2.3.6 for ROCm 5.6.0
-### Added
-- Added SpGEMM algorithms
-### Changed
-- For hipsparseXbsr2csr and hipsparseXcsr2bsr, blockDim == 0 now returns HIPSPARSE_STATUS_INVALID_SIZE
+
+### Additions
+
+* Added SpGEMM algorithms
+
+### Changes
+
+* blockDim == 0 now returns `HIPSPARSE_STATUS_INVALID_SIZE` for `hipsparseXbsr2csr` and
+  `hipsparseXcsr2bsr`
 
 ## hipSPARSE 2.3.5 for ROCm 5.5.0
-### Improved
-- Fixed an issue, where the rocm folder was not removed on upgrade of meta packages
-- Fixed a compilation issue with cusparse backend
-- Added more detailed messages on unit test failures due to missing input data
-- Improved documentation
-- Fixed a bug with deprecation messages when using gcc9 (Thanks @Maetveis)
+
+### Fixes
+
+* Fixed an issue where the `rocm` folder was not removed after upgrading meta packages
+* Fixed a compilation issue with the cuSPARSE backend
+* Added more detailed messages for unit test failures due related to missing input data
+* Improved documentation
+* Fixed a bug with deprecation messages when using gcc9
 
 ## hipSPARSE 2.3.3 for ROCm 5.4.0
-### Added
-- Added hipsparseCsr2cscEx2_bufferSize and hipsparseCsr2cscEx2 routines
-### Changed
-- HIPSPARSE_ORDER_COLUMN has been renamed to HIPSPARSE_ORDER_COL to match cusparse
+
+### Additions
+
+* Added `hipsparseCsr2cscEx2_bufferSize` and `hipsparseCsr2cscEx2` routines
+
+### Changes
+
+* `HIPSPARSE_ORDER_COLUMN` has been renamed to `HIPSPARSE_ORDER_COL` in order to match
+    cuSPARSE
 
 ## hipSPARSE 2.3.1 for ROCm 5.3.0
-### Added
-- Add SpMM and SpMM batched for CSC format
+
+### Additions
+
+* Added SpMM and SpMM batched for CSC format
 
 ## hipSPARSE 2.2.0 for ROCm 5.2.0
-### Added
-- Packages for test and benchmark executables on all supported OSes using CPack.
+
+### Additions
+
+* New packages for test and benchmark executables on all supported operating systems using CPack
 
 ## hipSPARSE 2.1.0 for ROCm 5.1.0
-### Added
-- Added gtsv_interleaved_batch and gpsv_interleaved_batch routines
-- Add SpGEMM_reuse
-### Changed
-- Changed BUILD_CUDA with USE_CUDA in install script and cmake files
-- Update googletest to 11.1
-### Improved
-- Fixed a bug in SpMM Alg versioning
-### Known Issues
-- none
+
+### Additions
+
+* Added `gtsv_interleaved_batch` and `gpsv_interleaved_batch` routines
+* Added `SpGEMM_reuse`
+
+### Changes
+
+* Changed `BUILD_CUDA` with `USE_CUDA` in the install script and CMake files
+* Updated GoogleTest to 11.1
+
+### Fixes
+
+* Fixed a bug in SpMM Alg versioning
 
 ## hipSPARSE 2.0.0 for ROCm 5.0.0
-### Added
-- Added (conjugate) transpose support for csrmv, hybmv and spmv routines
+
+### Additions
+
+* Added (conjugate) transpose support for `csrmv`, `hybmv`, and `spmv` routines
 
 ## hipSPARSE 1.11.2 for ROCm 4.5.0
-### Added
-- Triangular solve for multiple right-hand sides using BSR format
-- SpMV for BSRX format
-- SpMM in CSR format enhanced to work with transposed A
-- Matrix coloring for CSR matrices
-- Added batched tridiagonal solve (gtsv\_strided\_batch)
-- SpMM for BLOCKED ELL format
-- Generic routines for SpSV and SpSM
-- Enabling beta support for Windows 10
-- Additional atomic based algorithms for SpMM in COO format
-- Additional algorithm for SpMM in CSR format
-### Changed
-- Packaging split into a runtime package called hipsparse and a development package called hipsparse-devel. The development package depends on runtime. The runtime package suggests the development package for all supported OSes except CentOS 7 to aid in the transition. The suggests feature in packaging is introduced as a deprecated feature and will be removed in a future rocm release.
-- GTest dependency updated to v1.10.0
-### Improved
-- Fixed a bug with gemvi on Navi21
-- Optimization for pivot based gtsv
-### Known Issues
-- none
+
+### Additions
+
+* Triangular solve for multiple right-hand sides using BSR format
+* SpMV for BSRX format
+* Enhanced SpMM in CSR format to work with transposed A
+* Matrix coloring for CSR matrices
+* Batched tridiagonal solve (`gtsv_strided_batch`)
+* SpMM for BLOCKED ELL format
+* Generic routines for SpSV and SpSM
+* Beta support for Windows 10
+* Additional atomic-based algorithms for SpMM in COO format
+* Additional algorithm for SpMM in CSR format
+
+### Changes
+
+* Packaging has been split into a runtime package (`hipsparse`) and a development package
+  (`hipsparse-devel`):
+  The development package depends on the runtime package. When installing the runtime package,
+  the package manager will suggest the installation of the development package to aid users
+  transitioning from the previous version's combined package. This suggestion by package manager is
+  for all supported operating systems (except CentOS 7) to aid in the transition. The `suggestion`
+  feature in the runtime package is introduced as a deprecated feature and will be removed in a future
+  ROCm release.
+
+* GTest dependency has been updated to v1.10.0
+
+### Fixes
+
+* Fixed a bug with `gemvi` on Navi21
+
+### Optimizations
+
+* Optimization for pivot-based GTSV
 
 ## hipSPARSE 1.10.7 for ROCm 4.3.0
-### Added
-- (batched) tridiagonal solve with and without pivoting
-- dense matrix sparse vector multiplication (gemvi)
-- sampled dense-dense matrix multiplication (sddmm)
+
+### Additions
+
+* Tridiagonal solve with and without pivoting (batched)
+* Dense matrix sparse vector multiplication (`gemvi`)
+* Sampled dense-dense matrix multiplication (`sddmm`)
 
 ## hipSPARSE 1.10.6 for ROCm 4.2.0
-### Added
-- Generic API support, including SpMM
+
+### Additions
+
+* Generic API support, including SpMM
 
 ## hipSPARSE 1.10.4 for ROCm 4.1.0
-### Added
-- Generic API support, including Axpby, Gather, Scatter, Rot, SpVV, SpMV, SparseToDense, DenseToSparse and SpGEMM
+
+### Additions
+
+* Generic API support, including Axpby, Gather, Scatter, Rot, SpVV, SpMV, SparseToDense,
+  DenseToSparse, and SpGEMM
 
 ## hipSPARSE 1.9.6 for ROCm 4.0.0
-### Added
-- changelog
-- csr2gebsr
-- gebsr2csr
-- gebsr2gebsc
-- gebsr2gebsr
-### Improved
-- Updates to debian package name.
+
+### Additions
+
+* Changelog file
+* `csr2gebsr`
+* `gebsr2csr`
+* `gebsr2gebsc`
+* `gebsr2gebsr`
+
+### Changes
+
+* Updates to Debian package name.
 
 ## hipSPARSE 1.9.4 for ROCm 3.9
-### Added
-- prune\_csr2csr, prune\_dense2csr\_percentage and prune\_csr2csr\_percentage
-- bsrilu0
-### Known Issues
-- none
+
+### Additions
+
+* `prune_csr2csr, prune_dense2csr_percentage` and `prune_csr2csr_percentage`
+* `bsrilu0`
 
 ## hipSPARSE 1.8.1 for ROCm 3.8
-### Added
-- bsric0 added.
-### Known Issues
-- none
+
+### Additions
+
+* `bsric0`
 
 ## hipSPARSE 1.7.1 for ROCm 3.7
-### Added
-- Fortran bindings
-- Triangular solve for BSR format (bsrsv)
-- CentOS 6 support.
-### Known Issues
-- none
+
+### Additions
+
+* Fortran bindings
+* Triangular solve for BSR format (bsrsv)
+* CentOS 6 support
 
 ## hipSPARSE 1.7.1 for ROCm 3.6
-### Added
-- Fortran bindings
-- Triangular solve for BSR format (bsrsv)
-- CentOS 6 support.
-### Known Issues
-- none
+
+### Additions
+
+* Fortran bindings
+* Triangular solve for BSR format (bsrsv)
+* CentOS 6 support
 
 ## hipSPARSE 1.6.5 for ROCm 3.5
-### Added
-- Switched to hip-clang as default compiler
-- csr2dense, csc2dense, csr2csr\_compress, nnz\_compress, bsr2csr, csr2bsr, bsrmv, csrgeam
-- static build
-- more examples
-### Optimized
-- dense2csr, dense2csc
-### Improved
-- Installation process
-### Known Issues
-- none
+
+### Additions
+
+* Switched to HIP-Clang as default compiler
+* `csr2dense`, `csc2dense`, `csr2csr_compress`, `nnz_compress`, `bsr2csr`, `csr2bsr`, `bsrmv`, and
+  `csrgeam`
+* static build
+* New examples
+
+### Optimizations
+
+* `dense2csr`, `dense2csc`
+
+### Fixes
+
+* Installation process
