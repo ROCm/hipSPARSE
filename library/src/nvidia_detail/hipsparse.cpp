@@ -11505,20 +11505,20 @@ hipsparseStatus_t hipsparseConstCscGet(hipsparseConstSpMatDescr_t spMatDescr,
     cudaDataType        cuda_data_type;
 
     RETURN_IF_CUSPARSE_ERROR(
-        cusparseConstCsrGet((const cusparseConstSpMatDescr_t)spMatDescr,
+        cusparseConstCscGet((const cusparseConstSpMatDescr_t)spMatDescr,
                             rows,
                             cols,
                             nnz,
-                            csrRowOffsets,
-                            csrColInd,
-                            csrValues,
-                            csrRowOffsetsType != nullptr ? &cuda_row_index_type : nullptr,
-                            csrColIndType != nullptr ? &cuda_col_index_type : nullptr,
+                            cscColOffsets,
+                            cscRowInd,
+                            cscValues,
+                            cscColOffsetsType != nullptr ? &cuda_row_index_type : nullptr,
+                            cscRowIndType != nullptr ? &cuda_col_index_type : nullptr,
                             idxBase != nullptr ? &cuda_index_base : nullptr,
                             valueType != nullptr ? &cuda_data_type : nullptr));
 
-    *csrRowOffsetsType = CudaIndexTypeToHIPIndexType(cuda_row_index_type);
-    *csrColIndType     = CudaIndexTypeToHIPIndexType(cuda_col_index_type);
+    *cscColOffsetsType = CudaIndexTypeToHIPIndexType(cuda_row_index_type);
+    *cscRowIndType     = CudaIndexTypeToHIPIndexType(cuda_col_index_type);
     *idxBase           = CudaIndexBaseToHIPIndexBase(cuda_index_base);
     *valueType         = CudaDataTypeToHIPDataType(cuda_data_type);
 
