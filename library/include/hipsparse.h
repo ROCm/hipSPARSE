@@ -729,6 +729,7 @@ HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroyHybMat(hipsparseHybMat_t hybA);
 #endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /* Info structures */
 /*! \ingroup aux_module
  *  \brief Create a bsrsv2 info structure
@@ -741,7 +742,9 @@ hipsparseStatus_t hipsparseDestroyHybMat(hipsparseHybMat_t hybA);
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreateBsrsv2Info(bsrsv2Info_t* info);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup aux_module
  *  \brief Destroy a bsrsv2 info structure
  *
@@ -751,7 +754,9 @@ hipsparseStatus_t hipsparseCreateBsrsv2Info(bsrsv2Info_t* info);
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroyBsrsv2Info(bsrsv2Info_t info);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /* Info structures */
 /*! \ingroup aux_module
  *  \brief Create a bsrsm2 info structure
@@ -764,7 +769,9 @@ hipsparseStatus_t hipsparseDestroyBsrsv2Info(bsrsv2Info_t info);
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreateBsrsm2Info(bsrsm2Info_t* info);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup aux_module
  *  \brief Destroy a bsrsm2 info structure
  *
@@ -774,7 +781,9 @@ hipsparseStatus_t hipsparseCreateBsrsm2Info(bsrsm2Info_t* info);
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroyBsrsm2Info(bsrsm2Info_t info);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /* Info structures */
 /*! \ingroup aux_module
  *  \brief Create a bsrilu02 info structure
@@ -787,7 +796,9 @@ hipsparseStatus_t hipsparseDestroyBsrsm2Info(bsrsm2Info_t info);
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreateBsrilu02Info(bsrilu02Info_t* info);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup aux_module
  *  \brief Destroy a bsrilu02 info structure
  *
@@ -797,7 +808,9 @@ hipsparseStatus_t hipsparseCreateBsrilu02Info(bsrilu02Info_t* info);
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroyBsrilu02Info(bsrilu02Info_t info);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /* Info structures */
 /*! \ingroup aux_module
  *  \brief Create a bsric02 info structure
@@ -810,7 +823,9 @@ hipsparseStatus_t hipsparseDestroyBsrilu02Info(bsrilu02Info_t info);
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreateBsric02Info(bsric02Info_t* info);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup aux_module
  *  \brief Destroy a bsric02 info structure
  *
@@ -820,6 +835,7 @@ hipsparseStatus_t hipsparseCreateBsric02Info(bsric02Info_t* info);
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroyBsric02Info(bsric02Info_t info);
+#endif
 
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 /* Info structures */
@@ -869,6 +885,7 @@ HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroyCsrsm2Info(csrsm2Info_t info);
 #endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /* Info structures */
 /*! \ingroup aux_module
  *  \brief Create a csrilu02 info structure
@@ -881,7 +898,9 @@ hipsparseStatus_t hipsparseDestroyCsrsm2Info(csrsm2Info_t info);
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreateCsrilu02Info(csrilu02Info_t* info);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup aux_module
  *  \brief Destroy a csrilu02 info structure
  *
@@ -891,7 +910,9 @@ hipsparseStatus_t hipsparseCreateCsrilu02Info(csrilu02Info_t* info);
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroyCsrilu02Info(csrilu02Info_t info);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /* Info structures */
 /*! \ingroup aux_module
  *  \brief Create a csric02 info structure
@@ -904,7 +925,9 @@ hipsparseStatus_t hipsparseDestroyCsrilu02Info(csrilu02Info_t info);
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreateCsric02Info(csric02Info_t* info);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup aux_module
  *  \brief Destroy a csric02 info structure
  *
@@ -914,6 +937,7 @@ hipsparseStatus_t hipsparseCreateCsric02Info(csric02Info_t* info);
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroyCsric02Info(csric02Info_t info);
+#endif
 
 /* Info structures */
 /*! \ingroup aux_module
@@ -936,6 +960,7 @@ hipsparseStatus_t hipsparseCreateCsru2csrInfo(csru2csrInfo_t* info);
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroyCsru2csrInfo(csru2csrInfo_t info);
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /* Info structures */
 /*! \ingroup aux_module
  *  \brief Create a color info structure
@@ -948,7 +973,9 @@ hipsparseStatus_t hipsparseDestroyCsru2csrInfo(csru2csrInfo_t info);
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreateColorInfo(hipsparseColorInfo_t* info);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup aux_module
  *  \brief Destroy a color info structure
  *
@@ -958,6 +985,7 @@ hipsparseStatus_t hipsparseCreateColorInfo(hipsparseColorInfo_t* info);
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroyColorInfo(hipsparseColorInfo_t info);
+#endif
 
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 /* Info structures */
@@ -984,6 +1012,7 @@ HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroyCsrgemm2Info(csrgemm2Info_t info);
 #endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /* Info structures */
 /*! \ingroup aux_module
  *  \brief Create a prune info structure
@@ -996,7 +1025,9 @@ hipsparseStatus_t hipsparseDestroyCsrgemm2Info(csrgemm2Info_t info);
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreatePruneInfo(pruneInfo_t* info);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup aux_module
  *  \brief Destroy a prune info structure
  *
@@ -1006,6 +1037,7 @@ hipsparseStatus_t hipsparseCreatePruneInfo(pruneInfo_t* info);
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroyPruneInfo(pruneInfo_t info);
+#endif
 
 /*
 * ===========================================================================
@@ -2007,6 +2039,7 @@ hipsparseStatus_t hipsparseZbsrmv(hipsparseHandle_t         handle,
                                   hipDoubleComplex*         y);
 /**@}*/
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup level2_module
 *  \brief Sparse matrix vector multiplication with mask operation using BSR storage format
 *
@@ -2124,7 +2157,9 @@ hipsparseStatus_t hipsparseZbsrxmv(hipsparseHandle_t         handle,
                                    const hipDoubleComplex*   beta,
                                    hipDoubleComplex*         y);
 /**@}*/
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup level2_module
 *  \brief Sparse triangular solve using BSR storage format
 *
@@ -2144,7 +2179,9 @@ DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
 hipsparseStatus_t
     hipsparseXbsrsv2_zeroPivot(hipsparseHandle_t handle, bsrsv2Info_t info, int* position);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup level2_module
 *  \brief Sparse triangular solve using BSR storage format
 *
@@ -2211,6 +2248,7 @@ hipsparseStatus_t hipsparseZbsrsv2_bufferSize(hipsparseHandle_t         handle,
                                               bsrsv2Info_t              info,
                                               int*                      pBufferSizeInBytes);
 /**@}*/
+#endif
 
 /*! \ingroup level2_module
 *  \brief Sparse triangular solve using BSR storage format
@@ -2275,6 +2313,7 @@ hipsparseStatus_t hipsparseZbsrsv2_bufferSizeExt(hipsparseHandle_t         handl
                                                  size_t*                   pBufferSizeInBytes);
 /**@}*/
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup level2_module
 *  \brief Sparse triangular solve using BSR storage format
 *
@@ -2350,7 +2389,9 @@ hipsparseStatus_t hipsparseZbsrsv2_analysis(hipsparseHandle_t         handle,
                                             hipsparseSolvePolicy_t    policy,
                                             void*                     pBuffer);
 /**@}*/
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup level2_module
 *  \brief Sparse triangular solve using BSR storage format
 *
@@ -2466,6 +2507,7 @@ hipsparseStatus_t hipsparseZbsrsv2_solve(hipsparseHandle_t         handle,
                                          hipsparseSolvePolicy_t    policy,
                                          void*                     pBuffer);
 /**@}*/
+#endif
 
 /*! \ingroup level2_module
  *  \brief Dense matrix sparse vector multiplication
@@ -2982,6 +3024,7 @@ hipsparseStatus_t hipsparseZcsrmm2(hipsparseHandle_t         handle,
 /**@}*/
 #endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup level3_module
 *  \brief Sparse triangular system solve using BSR storage format
 *
@@ -3001,7 +3044,9 @@ DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
 hipsparseStatus_t
     hipsparseXbsrsm2_zeroPivot(hipsparseHandle_t handle, bsrsm2Info_t info, int* position);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup level3_module
 *  \brief Sparse triangular system solve using BSR storage format
 *
@@ -3079,7 +3124,9 @@ hipsparseStatus_t hipsparseZbsrsm2_bufferSize(hipsparseHandle_t         handle,
                                               bsrsm2Info_t              info,
                                               int*                      pBufferSizeInBytes);
 /**@}*/
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup level3_module
 *  \brief Sparse triangular system solve using BSR storage format
 *
@@ -3166,7 +3213,9 @@ hipsparseStatus_t hipsparseZbsrsm2_analysis(hipsparseHandle_t         handle,
                                             hipsparseSolvePolicy_t    policy,
                                             void*                     pBuffer);
 /**@}*/
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup level3_module
 *  \brief Sparse triangular system solve using BSR storage format
 *
@@ -3313,6 +3362,7 @@ hipsparseStatus_t hipsparseZbsrsm2_solve(hipsparseHandle_t         handle,
                                          hipsparseSolvePolicy_t    policy,
                                          void*                     pBuffer);
 /**@}*/
+#endif
 
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 /*! \ingroup level3_module
@@ -4661,6 +4711,7 @@ hipsparseStatus_t hipsparseZcsrgemm2(hipsparseHandle_t         handle,
 * ===========================================================================
 */
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup precond_module
  *  \brief Incomplete LU factorization with 0 fill-ins and no pivoting using BSR storage
  *  format
@@ -4686,7 +4737,9 @@ DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
 hipsparseStatus_t
     hipsparseXbsrilu02_zeroPivot(hipsparseHandle_t handle, bsrilu02Info_t info, int* position);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup precond_module
  *  \brief Incomplete LU factorization with 0 fill-ins and no pivoting using BSR storage
  *  format
@@ -4732,7 +4785,9 @@ hipsparseStatus_t hipsparseZbsrilu02_numericBoost(hipsparseHandle_t handle,
                                                   double*           tol,
                                                   hipDoubleComplex* boost_val);
 /**@}*/
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup precond_module
  *  \brief Incomplete LU factorization with 0 fill-ins and no pivoting using BSR storage
  *  format
@@ -4796,7 +4851,9 @@ hipsparseStatus_t hipsparseZbsrilu02_bufferSize(hipsparseHandle_t         handle
                                                 bsrilu02Info_t            info,
                                                 int*                      pBufferSizeInBytes);
 /**@}*/
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup precond_module
  *  \brief Incomplete LU factorization with 0 fill-ins and no pivoting using BSR storage
  *  format
@@ -4869,7 +4926,9 @@ hipsparseStatus_t hipsparseZbsrilu02_analysis(hipsparseHandle_t         handle,
                                               hipsparseSolvePolicy_t    policy,
                                               void*                     pBuffer);
 /**@}*/
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup precond_module
  *  \brief Incomplete LU factorization with 0 fill-ins and no pivoting using BSR storage
  *  format
@@ -4957,7 +5016,9 @@ hipsparseStatus_t hipsparseZbsrilu02(hipsparseHandle_t         handle,
                                      hipsparseSolvePolicy_t policy,
                                      void*                  pBuffer);
 /**@}*/
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup precond_module
 *  \brief Incomplete LU factorization with 0 fill-ins and no pivoting using CSR
 *  storage format
@@ -4978,7 +5039,9 @@ DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
 hipsparseStatus_t
     hipsparseXcsrilu02_zeroPivot(hipsparseHandle_t handle, csrilu02Info_t info, int* position);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup precond_module
  *  \brief Incomplete LU factorization with 0 fill-ins and no pivoting using CSR storage
  *  format
@@ -5024,7 +5087,9 @@ hipsparseStatus_t hipsparseZcsrilu02_numericBoost(hipsparseHandle_t handle,
                                                   double*           tol,
                                                   hipDoubleComplex* boost_val);
 /**@}*/
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup precond_module
 *  \brief Incomplete LU factorization with 0 fill-ins and no pivoting using CSR
 *  storage format
@@ -5080,6 +5145,7 @@ hipsparseStatus_t hipsparseZcsrilu02_bufferSize(hipsparseHandle_t         handle
                                                 csrilu02Info_t            info,
                                                 int*                      pBufferSizeInBytes);
 /**@}*/
+#endif
 
 /*! \ingroup precond_module
 *  \brief Incomplete LU factorization with 0 fill-ins and no pivoting using CSR
@@ -5133,6 +5199,7 @@ hipsparseStatus_t hipsparseZcsrilu02_bufferSizeExt(hipsparseHandle_t         han
                                                    size_t*                   pBufferSizeInBytes);
 /**@}*/
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup precond_module
 *  \brief Incomplete LU factorization with 0 fill-ins and no pivoting using CSR
 *  storage format
@@ -5197,7 +5264,9 @@ hipsparseStatus_t hipsparseZcsrilu02_analysis(hipsparseHandle_t         handle,
                                               hipsparseSolvePolicy_t    policy,
                                               void*                     pBuffer);
 /**@}*/
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup precond_module
 *  \brief Incomplete LU factorization with 0 fill-ins and no pivoting using CSR
 *  storage format
@@ -5281,7 +5350,9 @@ hipsparseStatus_t hipsparseZcsrilu02(hipsparseHandle_t         handle,
                                      hipsparseSolvePolicy_t policy,
                                      void*                  pBuffer);
 /**@}*/
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup precond_module
  *  \brief Incomplete Cholesky factorization with 0 fill-ins and no pivoting using BSR
  *  storage format
@@ -5307,7 +5378,9 @@ DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
 hipsparseStatus_t
     hipsparseXbsric02_zeroPivot(hipsparseHandle_t handle, bsric02Info_t info, int* position);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup precond_module
  *  \brief Incomplete Cholesky factorization with 0 fill-ins and no pivoting using BSR
  *  storage format
@@ -5371,7 +5444,9 @@ hipsparseStatus_t hipsparseZbsric02_bufferSize(hipsparseHandle_t         handle,
                                                bsric02Info_t             info,
                                                int*                      pBufferSizeInBytes);
 /**@}*/
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup precond_module
  *  \brief Incomplete Cholesky factorization with 0 fill-ins and no pivoting using BSR
  *  storage format
@@ -5444,7 +5519,9 @@ hipsparseStatus_t hipsparseZbsric02_analysis(hipsparseHandle_t         handle,
                                              hipsparseSolvePolicy_t    policy,
                                              void*                     pBuffer);
 /**@}*/
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup precond_module
  *  \brief Incomplete Cholesky factorization with 0 fill-ins and no pivoting using BSR
  *  storage format
@@ -5524,7 +5601,9 @@ hipsparseStatus_t hipsparseZbsric02(hipsparseHandle_t         handle,
                                     hipsparseSolvePolicy_t    policy,
                                     void*                     pBuffer);
 /**@}*/
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup precond_module
 *  \brief Incomplete Cholesky factorization with 0 fill-ins and no pivoting using CSR
 *  storage format
@@ -5545,7 +5624,9 @@ DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
 hipsparseStatus_t
     hipsparseXcsric02_zeroPivot(hipsparseHandle_t handle, csric02Info_t info, int* position);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup precond_module
 *  \brief Incomplete Cholesky factorization with 0 fill-ins and no pivoting using CSR
 *  storage format
@@ -5600,6 +5681,7 @@ hipsparseStatus_t hipsparseZcsric02_bufferSize(hipsparseHandle_t         handle,
                                                csric02Info_t             info,
                                                int*                      pBufferSizeInBytes);
 /**@}*/
+#endif
 
 /*! \ingroup precond_module
 *  \brief Incomplete Cholesky factorization with 0 fill-ins and no pivoting using CSR
@@ -5652,6 +5734,7 @@ hipsparseStatus_t hipsparseZcsric02_bufferSizeExt(hipsparseHandle_t         hand
                                                   size_t*                   pBufferSizeInBytes);
 /**@}*/
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup precond_module
 *  \brief Incomplete Cholesky factorization with 0 fill-ins and no pivoting using CSR
 *  storage format
@@ -5716,7 +5799,9 @@ hipsparseStatus_t hipsparseZcsric02_analysis(hipsparseHandle_t         handle,
                                              hipsparseSolvePolicy_t    policy,
                                              void*                     pBuffer);
 /**@}*/
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup precond_module
 *  \brief Incomplete Cholesky factorization with 0 fill-ins and no pivoting using CSR
 *  storage format
@@ -5800,6 +5885,7 @@ hipsparseStatus_t hipsparseZcsric02(hipsparseHandle_t         handle,
                                     hipsparseSolvePolicy_t policy,
                                     void*                  pBuffer);
 /**@}*/
+#endif
 
 /*! \ingroup precond_module
 *  \brief Tridiagonal solver with pivoting
@@ -6487,6 +6573,7 @@ hipsparseStatus_t hipsparseZdense2csr(hipsparseHandle_t         handle,
                                       int*                      csr_col_ind);
 /**@}*/
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup conv_module
 *  \brief
 *  This function computes the the size of the user allocated temporary storage buffer used when converting and pruning
@@ -6498,6 +6585,7 @@ hipsparseStatus_t hipsparseZdense2csr(hipsparseHandle_t         handle,
 *  temporary storage buffer must be allocated by the user.
 */
 /**@{*/
+DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpruneDense2csr_bufferSize(hipsparseHandle_t         handle,
                                                       int                       m,
@@ -6510,7 +6598,7 @@ hipsparseStatus_t hipsparseSpruneDense2csr_bufferSize(hipsparseHandle_t         
                                                       const int*                csrRowPtr,
                                                       const int*                csrColInd,
                                                       size_t*                   bufferSize);
-
+DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDpruneDense2csr_bufferSize(hipsparseHandle_t         handle,
                                                       int                       m,
@@ -6552,7 +6640,9 @@ hipsparseStatus_t hipsparseDpruneDense2csr_bufferSizeExt(hipsparseHandle_t      
                                                          const int*                csrColInd,
                                                          size_t*                   bufferSize);
 /**@}*/
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup conv_module
 *  \brief
 *  This function computes the number of nonzero elements per row and the total number of
@@ -6589,7 +6679,9 @@ hipsparseStatus_t hipsparseDpruneDense2csrNnz(hipsparseHandle_t         handle,
                                               int*                      nnzTotalDevHostPtr,
                                               void*                     buffer);
 /**@}*/
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup conv_module
 *  \brief
 *  This function converts the matrix A in dense format into a sparse matrix in CSR format
@@ -6637,7 +6729,9 @@ hipsparseStatus_t hipsparseDpruneDense2csr(hipsparseHandle_t         handle,
                                            int*                      csrColInd,
                                            void*                     buffer);
 /**@}*/
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup conv_module
 *  \brief
 *  This function computes the size of the user allocated temporary storage buffer used
@@ -6667,6 +6761,7 @@ hipsparseStatus_t hipsparseDpruneDense2csr(hipsparseHandle_t         handle,
 *  ready.
 */
 /**@{*/
+DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpruneDense2csrByPercentage_bufferSize(hipsparseHandle_t handle,
                                                                   int               m,
@@ -6680,7 +6775,7 @@ hipsparseStatus_t hipsparseSpruneDense2csrByPercentage_bufferSize(hipsparseHandl
                                                                   const int*  csrColInd,
                                                                   pruneInfo_t info,
                                                                   size_t*     bufferSize);
-
+DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDpruneDense2csrByPercentage_bufferSize(hipsparseHandle_t handle,
                                                                   int               m,
@@ -6695,7 +6790,9 @@ hipsparseStatus_t hipsparseDpruneDense2csrByPercentage_bufferSize(hipsparseHandl
                                                                   pruneInfo_t info,
                                                                   size_t*     bufferSize);
 /**@}*/
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup conv_module
 *  \brief
 *  This function computes the size of the user allocated temporary storage buffer used
@@ -6757,7 +6854,9 @@ hipsparseStatus_t
                                                        pruneInfo_t               info,
                                                        size_t*                   bufferSize);
 /**@}*/
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup conv_module
 *  \brief
 *  This function computes the number of nonzero elements per row and the total number of
@@ -6815,7 +6914,9 @@ hipsparseStatus_t hipsparseDpruneDense2csrNnzByPercentage(hipsparseHandle_t     
                                                           pruneInfo_t info,
                                                           void*       buffer);
 /**@}*/
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup conv_module
 *  \brief
 *  This function computes the number of nonzero elements per row and the total number of
@@ -6875,6 +6976,7 @@ hipsparseStatus_t hipsparseDpruneDense2csrByPercentage(hipsparseHandle_t        
                                                        pruneInfo_t               info,
                                                        void*                     buffer);
 /**@}*/
+#endif
 
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 /*! \ingroup conv_module
@@ -7065,6 +7167,7 @@ hipsparseStatus_t hipsparseXcsr2bsrNnz(hipsparseHandle_t         handle,
                                        int*                      bsrRowPtrC,
                                        int*                      bsrNnzb);
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup conv_module
 *  Given a sparse CSR matrix and a non-negative tolerance, this function computes how many entries would be left
 *  in each row of the matrix if elements less than the tolerance were removed. It also computes the total number
@@ -7115,6 +7218,7 @@ hipsparseStatus_t hipsparseZnnz_compress(hipsparseHandle_t         handle,
                                          int*                      nnzC,
                                          hipDoubleComplex          tol);
 /**@}*/
+#endif
 
 /*! \ingroup conv_module
 *  \brief Convert a sparse CSR matrix into a sparse COO matrix
@@ -8033,6 +8137,7 @@ hipsparseStatus_t hipsparseDpruneCsr2csr_bufferSize(hipsparseHandle_t         ha
                                                     size_t*                   bufferSize);
 /**@}*/
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup conv_module
  *  \brief Convert and prune sparse CSR matrix into a sparse CSR matrix
  *
@@ -8076,7 +8181,9 @@ hipsparseStatus_t hipsparseDpruneCsr2csr_bufferSizeExt(hipsparseHandle_t        
                                                        const int*                csrColIndC,
                                                        size_t*                   bufferSize);
 /**@}*/
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup conv_module
  *  \brief Convert and prune sparse CSR matrix into a sparse CSR matrix
  *
@@ -8120,7 +8227,9 @@ hipsparseStatus_t hipsparseDpruneCsr2csrNnz(hipsparseHandle_t         handle,
                                             int*                      nnzTotalDevHostPtr,
                                             void*                     buffer);
 /**@}*/
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup conv_module
  *  \brief Convert and prune sparse CSR matrix into a sparse CSR matrix
  *
@@ -8170,7 +8279,9 @@ hipsparseStatus_t hipsparseDpruneCsr2csr(hipsparseHandle_t         handle,
                                          int*                      csrColIndC,
                                          void*                     buffer);
 /**@}*/
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup conv_module
  *  \brief Convert and prune by percentage a sparse CSR matrix into a sparse CSR matrix
  *
@@ -8180,6 +8291,7 @@ hipsparseStatus_t hipsparseDpruneCsr2csr(hipsparseHandle_t         handle,
  *  The temporary storage buffer must be allocated by the user.
  */
 /**@{*/
+DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpruneCsr2csrByPercentage_bufferSize(hipsparseHandle_t         handle,
                                                                 int                       m,
@@ -8196,7 +8308,7 @@ hipsparseStatus_t hipsparseSpruneCsr2csrByPercentage_bufferSize(hipsparseHandle_
                                                                 const int*  csrColIndC,
                                                                 pruneInfo_t info,
                                                                 size_t*     bufferSize);
-
+DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDpruneCsr2csrByPercentage_bufferSize(hipsparseHandle_t         handle,
                                                                 int                       m,
@@ -8214,7 +8326,9 @@ hipsparseStatus_t hipsparseDpruneCsr2csrByPercentage_bufferSize(hipsparseHandle_
                                                                 pruneInfo_t info,
                                                                 size_t*     bufferSize);
 /**@}*/
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup conv_module
  *  \brief Convert and prune by percentage a sparse CSR matrix into a sparse CSR matrix
  *
@@ -8260,7 +8374,9 @@ hipsparseStatus_t hipsparseDpruneCsr2csrByPercentage_bufferSizeExt(hipsparseHand
                                                                    pruneInfo_t   info,
                                                                    size_t*       bufferSize);
 /**@}*/
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup conv_module
  *  \brief Convert and prune by percentage a sparse CSR matrix into a sparse CSR matrix
  *
@@ -8306,7 +8422,9 @@ hipsparseStatus_t hipsparseDpruneCsr2csrNnzByPercentage(hipsparseHandle_t       
                                                         pruneInfo_t info,
                                                         void*       buffer);
 /**@}*/
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup conv_module
  *  \brief Convert and prune by percentage a sparse CSR matrix into a sparse CSR matrix
  *
@@ -8358,6 +8476,7 @@ hipsparseStatus_t hipsparseDpruneCsr2csrByPercentage(hipsparseHandle_t         h
                                                      pruneInfo_t               info,
                                                      void*                     buffer);
 /**@}*/
+#endif
 
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
 /*! \ingroup conv_module
@@ -8430,6 +8549,7 @@ hipsparseStatus_t hipsparseXcoo2csr(hipsparseHandle_t    handle,
                                     int*                 csrRowPtr,
                                     hipsparseIndexBase_t idxBase);
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup conv_module
 *  \brief Create the identity map
 *
@@ -8451,6 +8571,7 @@ hipsparseStatus_t hipsparseXcoo2csr(hipsparseHandle_t    handle,
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreateIdentityPermutation(hipsparseHandle_t handle, int n, int* p);
+#endif
 
 /*! \ingroup conv_module
 *  \brief Sort a sparse CSR matrix
@@ -8818,6 +8939,7 @@ hipsparseStatus_t hipsparseZgebsr2gebsr(hipsparseHandle_t         handle,
                                         void*                     buffer);
 /**@}*/
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup conv_module
 *  \brief
 *  This function calculates the amount of temporary storage in bytes required for
@@ -8872,7 +8994,9 @@ hipsparseStatus_t hipsparseZcsru2csr_bufferSizeExt(hipsparseHandle_t handle,
                                                    csru2csrInfo_t    info,
                                                    size_t*           pBufferSizeInBytes);
 /**@}*/
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup conv_module
 *  \brief
 *  This function converts unsorted CSR format to sorted CSR format. The required
@@ -8931,7 +9055,9 @@ hipsparseStatus_t hipsparseZcsru2csr(hipsparseHandle_t         handle,
                                      csru2csrInfo_t            info,
                                      void*                     pBuffer);
 /**@}*/
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup conv_module
 *  \brief
 *  This function converts sorted CSR format to unsorted CSR format. The required
@@ -8990,6 +9116,7 @@ hipsparseStatus_t hipsparseZcsr2csru(hipsparseHandle_t         handle,
                                      csru2csrInfo_t            info,
                                      void*                     pBuffer);
 /**@}*/
+#endif
 
 /*
 * ===========================================================================
@@ -8997,6 +9124,7 @@ hipsparseStatus_t hipsparseZcsr2csru(hipsparseHandle_t         handle,
 * ===========================================================================
 */
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup reordering_module
 *  \brief Coloring of the adjacency graph of the matrix \f$A\f$ stored in the CSR format.
 *
@@ -9064,6 +9192,7 @@ hipsparseStatus_t hipsparseZcsrcolor(hipsparseHandle_t         handle,
                                      int*                      reordering,
                                      hipsparseColorInfo_t      info);
 /**@}*/
+#endif
 
 /*
 * ===========================================================================
@@ -10619,7 +10748,7 @@ hipsparseStatus_t hipsparseScatter(hipsparseHandle_t     handle,
 *      }
 *  \endcode
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
+#if(!defined(CUDART_VERSION) || (CUDART_VERSION >= 11000 && CUDART_VERSION < 13000))
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseRot(hipsparseHandle_t     handle,
