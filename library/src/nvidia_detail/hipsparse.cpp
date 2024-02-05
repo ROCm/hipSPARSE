@@ -649,6 +649,7 @@ hipsparseStatus_t hipsparseDestroyHybMat(hipsparseHybMat_t hybA)
 }
 #endif
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t hipsparseCreateBsrsv2Info(bsrsv2Info_t* info)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseCreateBsrsv2Info((bsrsv2Info_t*)info));
@@ -658,7 +659,9 @@ hipsparseStatus_t hipsparseDestroyBsrsv2Info(bsrsv2Info_t info)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseDestroyBsrsv2Info((bsrsv2Info_t)info));
 }
+#endif
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t hipsparseCreateBsrsm2Info(bsrsm2Info_t* info)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseCreateBsrsm2Info((bsrsm2Info_t*)info));
@@ -668,7 +671,9 @@ hipsparseStatus_t hipsparseDestroyBsrsm2Info(bsrsm2Info_t info)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseDestroyBsrsm2Info((bsrsm2Info_t)info));
 }
+#endif
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t hipsparseCreateBsrilu02Info(bsrilu02Info_t* info)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseCreateBsrilu02Info((bsrilu02Info_t*)info));
@@ -678,6 +683,7 @@ hipsparseStatus_t hipsparseDestroyBsrilu02Info(bsrilu02Info_t info)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseDestroyBsrilu02Info((bsrilu02Info_t)info));
 }
+#endif
 
 #if CUDART_VERSION < 12000
 hipsparseStatus_t hipsparseCreateCsrsv2Info(csrsv2Info_t* info)
@@ -701,6 +707,7 @@ hipsparseStatus_t hipsparseDestroyCsrsm2Info(csrsm2Info_t info)
 }
 #endif
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t hipsparseCreateColorInfo(hipsparseColorInfo_t* info)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseCreateColorInfo((cusparseColorInfo_t*)info));
@@ -710,7 +717,9 @@ hipsparseStatus_t hipsparseDestroyColorInfo(hipsparseColorInfo_t info)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseDestroyColorInfo((cusparseColorInfo_t)info));
 }
+#endif
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t hipsparseCreateCsrilu02Info(csrilu02Info_t* info)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseCreateCsrilu02Info((csrilu02Info_t*)info));
@@ -720,7 +729,9 @@ hipsparseStatus_t hipsparseDestroyCsrilu02Info(csrilu02Info_t info)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseDestroyCsrilu02Info((csrilu02Info_t)info));
 }
+#endif
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t hipsparseCreateBsric02Info(bsric02Info_t* info)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseCreateBsric02Info((bsric02Info_t*)info));
@@ -730,7 +741,9 @@ hipsparseStatus_t hipsparseDestroyBsric02Info(bsric02Info_t info)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseDestroyBsric02Info((bsric02Info_t)info));
 }
+#endif
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t hipsparseCreateCsric02Info(csric02Info_t* info)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseCreateCsric02Info((csric02Info_t*)info));
@@ -740,6 +753,7 @@ hipsparseStatus_t hipsparseDestroyCsric02Info(csric02Info_t info)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseDestroyCsric02Info((csric02Info_t)info));
 }
+#endif
 
 #if CUDART_VERSION < 12000
 hipsparseStatus_t hipsparseCreateCsrgemm2Info(csrgemm2Info_t* info)
@@ -753,6 +767,7 @@ hipsparseStatus_t hipsparseDestroyCsrgemm2Info(csrgemm2Info_t info)
 }
 #endif
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t hipsparseCreatePruneInfo(pruneInfo_t* info)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseCreatePruneInfo((pruneInfo_t*)info));
@@ -762,6 +777,7 @@ hipsparseStatus_t hipsparseDestroyPruneInfo(pruneInfo_t info)
 {
     return hipCUSPARSEStatusToHIPStatus(cusparseDestroyPruneInfo((pruneInfo_t)info));
 }
+#endif
 
 hipsparseStatus_t hipsparseCreateCsru2csrInfo(csru2csrInfo_t* info)
 {
@@ -1852,6 +1868,7 @@ hipsparseStatus_t hipsparseZbsrmv(hipsparseHandle_t         handle,
                                                        (cuDoubleComplex*)y));
 }
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t hipsparseSbsrxmv(hipsparseHandle_t         handle,
                                    hipsparseDirection_t      dir,
                                    hipsparseOperation_t      trans,
@@ -2007,14 +2024,18 @@ hipsparseStatus_t hipsparseZbsrxmv(hipsparseHandle_t         handle,
                                                         (const cuDoubleComplex*)beta,
                                                         (cuDoubleComplex*)y));
 }
+#endif
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t
     hipsparseXbsrsv2_zeroPivot(hipsparseHandle_t handle, bsrsv2Info_t info, int* position)
 {
     return hipCUSPARSEStatusToHIPStatus(
         cusparseXbsrsv2_zeroPivot((cusparseHandle_t)handle, (bsrsv2Info_t)info, position));
 }
+#endif
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t hipsparseSbsrsv2_bufferSize(hipsparseHandle_t         handle,
                                               hipsparseDirection_t      dir,
                                               hipsparseOperation_t      transA,
@@ -2126,6 +2147,7 @@ hipsparseStatus_t hipsparseZbsrsv2_bufferSize(hipsparseHandle_t         handle,
                                    (bsrsv2Info_t)info,
                                    pBufferSizeInBytes));
 }
+#endif
 
 hipsparseStatus_t hipsparseSbsrsv2_bufferSizeExt(hipsparseHandle_t         handle,
                                                  hipsparseDirection_t      dir,
@@ -2191,6 +2213,7 @@ hipsparseStatus_t hipsparseZbsrsv2_bufferSizeExt(hipsparseHandle_t         handl
     return HIPSPARSE_STATUS_INTERNAL_ERROR;
 }
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t hipsparseSbsrsv2_analysis(hipsparseHandle_t         handle,
                                             hipsparseDirection_t      dir,
                                             hipsparseOperation_t      transA,
@@ -2310,7 +2333,9 @@ hipsparseStatus_t hipsparseZbsrsv2_analysis(hipsparseHandle_t         handle,
                                  hipPolicyToCudaPolicy(policy),
                                  pBuffer));
 }
+#endif
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t hipsparseSbsrsv2_solve(hipsparseHandle_t         handle,
                                          hipsparseDirection_t      dir,
                                          hipsparseOperation_t      transA,
@@ -2450,6 +2475,7 @@ hipsparseStatus_t hipsparseZbsrsv2_solve(hipsparseHandle_t         handle,
                                                               hipPolicyToCudaPolicy(policy),
                                                               pBuffer));
 }
+#endif
 
 hipsparseStatus_t hipsparseSgemvi_bufferSize(hipsparseHandle_t    handle,
                                              hipsparseOperation_t transA,
@@ -3095,13 +3121,16 @@ hipsparseStatus_t hipsparseZcsrmm2(hipsparseHandle_t         handle,
 }
 #endif
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t
     hipsparseXbsrsm2_zeroPivot(hipsparseHandle_t handle, bsrsm2Info_t info, int* position)
 {
     return hipCUSPARSEStatusToHIPStatus(
         cusparseXbsrsm2_zeroPivot((cusparseHandle_t)handle, (bsrsm2Info_t)info, position));
 }
+#endif
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t hipsparseSbsrsm2_bufferSize(hipsparseHandle_t         handle,
                                               hipsparseDirection_t      dirA,
                                               hipsparseOperation_t      transA,
@@ -3229,7 +3258,9 @@ hipsparseStatus_t hipsparseZbsrsm2_bufferSize(hipsparseHandle_t         handle,
                                    (bsrsm2Info_t)info,
                                    pBufferSizeInBytes));
 }
+#endif
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t hipsparseSbsrsm2_analysis(hipsparseHandle_t         handle,
                                             hipsparseDirection_t      dirA,
                                             hipsparseOperation_t      transA,
@@ -3365,7 +3396,9 @@ hipsparseStatus_t hipsparseZbsrsm2_analysis(hipsparseHandle_t         handle,
                                  hipPolicyToCudaPolicy(policy),
                                  pBuffer));
 }
+#endif
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t hipsparseSbsrsm2_solve(hipsparseHandle_t         handle,
                                          hipsparseDirection_t      dirA,
                                          hipsparseOperation_t      transA,
@@ -3537,6 +3570,7 @@ hipsparseStatus_t hipsparseZbsrsm2_solve(hipsparseHandle_t         handle,
                                                               hipPolicyToCudaPolicy(policy),
                                                               pBuffer));
 }
+#endif
 
 #if CUDART_VERSION < 12000
 hipsparseStatus_t
@@ -5371,13 +5405,16 @@ hipsparseStatus_t hipsparseZcsrgemm2(hipsparseHandle_t         handle,
 }
 #endif
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t
     hipsparseXbsrilu02_zeroPivot(hipsparseHandle_t handle, bsrilu02Info_t info, int* position)
 {
     return hipCUSPARSEStatusToHIPStatus(
         cusparseXbsrilu02_zeroPivot((cusparseHandle_t)handle, (bsrilu02Info_t)info, position));
 }
+#endif
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t hipsparseSbsrilu02_numericBoost(
     hipsparseHandle_t handle, bsrilu02Info_t info, int enable_boost, double* tol, float* boost_val)
 {
@@ -5415,7 +5452,9 @@ hipsparseStatus_t hipsparseZbsrilu02_numericBoost(hipsparseHandle_t handle,
                                        tol,
                                        (cuDoubleComplex*)boost_val));
 }
+#endif
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t hipsparseSbsrilu02_bufferSize(hipsparseHandle_t         handle,
                                                 hipsparseDirection_t      dirA,
                                                 int                       mb,
@@ -5519,7 +5558,9 @@ hipsparseStatus_t hipsparseZbsrilu02_bufferSize(hipsparseHandle_t         handle
                                      (bsrilu02Info_t)info,
                                      pBufferSizeInBytes));
 }
+#endif
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t hipsparseSbsrilu02_analysis(hipsparseHandle_t         handle,
                                               hipsparseDirection_t      dirA,
                                               int                       mb,
@@ -5631,7 +5672,9 @@ hipsparseStatus_t hipsparseZbsrilu02_analysis(hipsparseHandle_t         handle,
                                    hipPolicyToCudaPolicy(policy),
                                    pBuffer));
 }
+#endif
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t hipsparseSbsrilu02(hipsparseHandle_t         handle,
                                      hipsparseDirection_t      dirA,
                                      int                       mb,
@@ -5747,14 +5790,18 @@ hipsparseStatus_t hipsparseZbsrilu02(hipsparseHandle_t         handle,
                                                           hipPolicyToCudaPolicy(policy),
                                                           pBuffer));
 }
+#endif
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t
     hipsparseXcsrilu02_zeroPivot(hipsparseHandle_t handle, csrilu02Info_t info, int* position)
 {
     return hipCUSPARSEStatusToHIPStatus(
         cusparseXcsrilu02_zeroPivot((cusparseHandle_t)handle, (csrilu02Info_t)info, position));
 }
+#endif
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t hipsparseScsrilu02_numericBoost(
     hipsparseHandle_t handle, csrilu02Info_t info, int enable_boost, double* tol, float* boost_val)
 {
@@ -5792,7 +5839,9 @@ hipsparseStatus_t hipsparseZcsrilu02_numericBoost(hipsparseHandle_t handle,
                                        tol,
                                        (cuDoubleComplex*)boost_val));
 }
+#endif
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t hipsparseScsrilu02_bufferSize(hipsparseHandle_t         handle,
                                                 int                       m,
                                                 int                       nnz,
@@ -5877,6 +5926,7 @@ hipsparseStatus_t hipsparseZcsrilu02_bufferSize(hipsparseHandle_t         handle
                                      (csrilu02Info_t)info,
                                      pBufferSizeInBytes));
 }
+#endif
 
 hipsparseStatus_t hipsparseScsrilu02_bufferSizeExt(hipsparseHandle_t         handle,
                                                    int                       m,
@@ -5930,6 +5980,7 @@ hipsparseStatus_t hipsparseZcsrilu02_bufferSizeExt(hipsparseHandle_t         han
     return HIPSPARSE_STATUS_INTERNAL_ERROR;
 }
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t hipsparseScsrilu02_analysis(hipsparseHandle_t         handle,
                                               int                       m,
                                               int                       nnz,
@@ -6022,7 +6073,9 @@ hipsparseStatus_t hipsparseZcsrilu02_analysis(hipsparseHandle_t         handle,
                                    hipPolicyToCudaPolicy(policy),
                                    pBuffer));
 }
+#endif
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t hipsparseScsrilu02(hipsparseHandle_t         handle,
                                      int                       m,
                                      int                       nnz,
@@ -6122,14 +6175,18 @@ hipsparseStatus_t hipsparseZcsrilu02(hipsparseHandle_t         handle,
                                                           hipPolicyToCudaPolicy(policy),
                                                           pBuffer));
 }
+#endif
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t
     hipsparseXbsric02_zeroPivot(hipsparseHandle_t handle, bsric02Info_t info, int* position)
 {
     return hipCUSPARSEStatusToHIPStatus(
         cusparseXbsric02_zeroPivot((cusparseHandle_t)handle, (bsric02Info_t)info, position));
 }
+#endif
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t hipsparseSbsric02_bufferSize(hipsparseHandle_t         handle,
                                                hipsparseDirection_t      dirA,
                                                int                       mb,
@@ -6233,7 +6290,9 @@ hipsparseStatus_t hipsparseZbsric02_bufferSize(hipsparseHandle_t         handle,
                                     (bsric02Info_t)info,
                                     pBufferSizeInBytes));
 }
+#endif
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t hipsparseSbsric02_analysis(hipsparseHandle_t         handle,
                                              hipsparseDirection_t      dirA,
                                              int                       mb,
@@ -6341,7 +6400,9 @@ hipsparseStatus_t hipsparseZbsric02_analysis(hipsparseHandle_t         handle,
                                                                   hipPolicyToCudaPolicy(policy),
                                                                   pBuffer));
 }
+#endif
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t hipsparseSbsric02(hipsparseHandle_t         handle,
                                     hipsparseDirection_t      dirA,
                                     int                       mb,
@@ -6449,14 +6510,18 @@ hipsparseStatus_t hipsparseZbsric02(hipsparseHandle_t         handle,
                                                          hipPolicyToCudaPolicy(policy),
                                                          pBuffer));
 }
+#endif
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t
     hipsparseXcsric02_zeroPivot(hipsparseHandle_t handle, csric02Info_t info, int* position)
 {
     return hipCUSPARSEStatusToHIPStatus(
         cusparseXcsric02_zeroPivot((cusparseHandle_t)handle, (csric02Info_t)info, position));
 }
+#endif
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t hipsparseScsric02_bufferSize(hipsparseHandle_t         handle,
                                                int                       m,
                                                int                       nnz,
@@ -6540,6 +6605,7 @@ hipsparseStatus_t hipsparseZcsric02_bufferSize(hipsparseHandle_t         handle,
                                                                     (csric02Info_t)info,
                                                                     pBufferSizeInBytes));
 }
+#endif
 
 hipsparseStatus_t hipsparseScsric02_bufferSizeExt(hipsparseHandle_t         handle,
                                                   int                       m,
@@ -6593,6 +6659,7 @@ hipsparseStatus_t hipsparseZcsric02_bufferSizeExt(hipsparseHandle_t         hand
     return HIPSPARSE_STATUS_INTERNAL_ERROR;
 }
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t hipsparseScsric02_analysis(hipsparseHandle_t         handle,
                                              int                       m,
                                              int                       nnz,
@@ -6685,7 +6752,9 @@ hipsparseStatus_t hipsparseZcsric02_analysis(hipsparseHandle_t         handle,
                                   hipPolicyToCudaPolicy(policy),
                                   pBuffer));
 }
+#endif
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t hipsparseScsric02(hipsparseHandle_t         handle,
                                     int                       m,
                                     int                       nnz,
@@ -6785,6 +6854,7 @@ hipsparseStatus_t hipsparseZcsric02(hipsparseHandle_t         handle,
                                                          hipPolicyToCudaPolicy(policy),
                                                          pBuffer));
 }
+#endif
 
 hipsparseStatus_t hipsparseSnnz(hipsparseHandle_t         handle,
                                 hipsparseDirection_t      dirA,
@@ -6964,6 +7034,7 @@ hipsparseStatus_t hipsparseZdense2csr(hipsparseHandle_t         handle,
 }
 #endif
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t hipsparseSpruneDense2csr_bufferSize(hipsparseHandle_t         handle,
                                                       int                       m,
                                                       int                       n,
@@ -7067,7 +7138,9 @@ hipsparseStatus_t hipsparseDpruneDense2csr_bufferSizeExt(hipsparseHandle_t      
                                               csrColInd,
                                               bufferSize));
 }
+#endif
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t hipsparseSpruneDense2csrNnz(hipsparseHandle_t         handle,
                                               int                       m,
                                               int                       n,
@@ -7113,7 +7186,9 @@ hipsparseStatus_t hipsparseDpruneDense2csrNnz(hipsparseHandle_t         handle,
                                                                    nnzTotalDevHostPtr,
                                                                    buffer));
 }
+#endif
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t hipsparseSpruneDense2csr(hipsparseHandle_t         handle,
                                            int                       m,
                                            int                       n,
@@ -7163,7 +7238,9 @@ hipsparseStatus_t hipsparseDpruneDense2csr(hipsparseHandle_t         handle,
                                                                 csrColInd,
                                                                 buffer));
 }
+#endif
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t hipsparseSpruneDense2csrByPercentage_bufferSize(hipsparseHandle_t handle,
                                                                   int               m,
                                                                   int               n,
@@ -7219,7 +7296,9 @@ hipsparseStatus_t hipsparseDpruneDense2csrByPercentage_bufferSize(hipsparseHandl
                                                           (pruneInfo_t)info,
                                                           bufferSize));
 }
+#endif
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t
     hipsparseSpruneDense2csrByPercentage_bufferSizeExt(hipsparseHandle_t         handle,
                                                        int                       m,
@@ -7277,7 +7356,9 @@ hipsparseStatus_t
                                                           (pruneInfo_t)info,
                                                           bufferSize));
 }
+#endif
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t hipsparseSpruneDense2csrNnzByPercentage(hipsparseHandle_t         handle,
                                                           int                       m,
                                                           int                       n,
@@ -7329,7 +7410,9 @@ hipsparseStatus_t hipsparseDpruneDense2csrNnzByPercentage(hipsparseHandle_t     
                                                (pruneInfo_t)info,
                                                buffer));
 }
+#endif
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t hipsparseSpruneDense2csrByPercentage(hipsparseHandle_t         handle,
                                                        int                       m,
                                                        int                       n,
@@ -7385,6 +7468,7 @@ hipsparseStatus_t hipsparseDpruneDense2csrByPercentage(hipsparseHandle_t        
                                             (pruneInfo_t)info,
                                             buffer));
 }
+#endif
 
 #if CUDART_VERSION < 12000
 hipsparseStatus_t hipsparseSdense2csc(hipsparseHandle_t         handle,
@@ -8197,6 +8281,7 @@ hipsparseStatus_t hipsparseXcsr2bsrNnz(hipsparseHandle_t         handle,
                                                             bsrNnzb));
 }
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t hipsparseSnnz_compress(hipsparseHandle_t         handle,
                                          int                       m,
                                          const hipsparseMatDescr_t descrA,
@@ -8272,6 +8357,7 @@ hipsparseStatus_t hipsparseZnnz_compress(hipsparseHandle_t         handle,
                                                               nnzC,
                                                               {cuCreal(tol), cuCimag(tol)}));
 }
+#endif
 
 hipsparseStatus_t hipsparseXcsr2coo(hipsparseHandle_t    handle,
                                     const int*           csrRowPtr,
@@ -9129,6 +9215,7 @@ hipsparseStatus_t hipsparseDpruneCsr2csr_bufferSize(hipsparseHandle_t         ha
                                             bufferSize));
 }
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t hipsparseSpruneCsr2csr_bufferSizeExt(hipsparseHandle_t         handle,
                                                        int                       m,
                                                        int                       n,
@@ -9192,7 +9279,9 @@ hipsparseStatus_t hipsparseDpruneCsr2csr_bufferSizeExt(hipsparseHandle_t        
                                             csrColIndC,
                                             bufferSize));
 }
+#endif
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t hipsparseSpruneCsr2csrNnz(hipsparseHandle_t         handle,
                                             int                       m,
                                             int                       n,
@@ -9250,7 +9339,9 @@ hipsparseStatus_t hipsparseDpruneCsr2csrNnz(hipsparseHandle_t         handle,
                                                                  nnzTotalDevHostPtr,
                                                                  buffer));
 }
+#endif
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t hipsparseSpruneCsr2csr(hipsparseHandle_t         handle,
                                          int                       m,
                                          int                       n,
@@ -9312,7 +9403,9 @@ hipsparseStatus_t hipsparseDpruneCsr2csr(hipsparseHandle_t         handle,
                                                               csrColIndC,
                                                               buffer));
 }
+#endif
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t hipsparseSpruneCsr2csrByPercentage_bufferSize(hipsparseHandle_t         handle,
                                                                 int                       m,
                                                                 int                       n,
@@ -9380,7 +9473,9 @@ hipsparseStatus_t hipsparseDpruneCsr2csrByPercentage_bufferSize(hipsparseHandle_
                                                         (pruneInfo_t)info,
                                                         bufferSize));
 }
+#endif
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t hipsparseSpruneCsr2csrByPercentage_bufferSizeExt(hipsparseHandle_t         handle,
                                                                    int                       m,
                                                                    int                       n,
@@ -9448,7 +9543,9 @@ hipsparseStatus_t hipsparseDpruneCsr2csrByPercentage_bufferSizeExt(hipsparseHand
                                                         (pruneInfo_t)info,
                                                         bufferSize));
 }
+#endif
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t hipsparseSpruneCsr2csrNnzByPercentage(hipsparseHandle_t         handle,
                                                         int                       m,
                                                         int                       n,
@@ -9512,7 +9609,9 @@ hipsparseStatus_t hipsparseDpruneCsr2csrNnzByPercentage(hipsparseHandle_t       
                                              (pruneInfo_t)info,
                                              buffer));
 }
+#endif
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t hipsparseSpruneCsr2csrByPercentage(hipsparseHandle_t         handle,
                                                      int                       m,
                                                      int                       n,
@@ -9580,6 +9679,7 @@ hipsparseStatus_t hipsparseDpruneCsr2csrByPercentage(hipsparseHandle_t         h
                                           (pruneInfo_t)info,
                                           buffer));
 }
+#endif
 
 #if CUDART_VERSION < 11000
 hipsparseStatus_t hipsparseShyb2csr(hipsparseHandle_t         handle,
@@ -9658,11 +9758,13 @@ hipsparseStatus_t hipsparseXcoo2csr(hipsparseHandle_t    handle,
                                                          hipIndexBaseToCudaIndexBase(idxBase)));
 }
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t hipsparseCreateIdentityPermutation(hipsparseHandle_t handle, int n, int* p)
 {
     return hipCUSPARSEStatusToHIPStatus(
         cusparseCreateIdentityPermutation((cusparseHandle_t)handle, n, p));
 }
+#endif
 
 hipsparseStatus_t hipsparseXcsrsort_bufferSizeExt(hipsparseHandle_t handle,
                                                   int               m,
@@ -10087,6 +10189,7 @@ hipsparseStatus_t hipsparseZgebsr2gebsr(hipsparseHandle_t         handle,
                                                              buffer));
 }
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t hipsparseScsru2csr_bufferSizeExt(hipsparseHandle_t handle,
                                                    int               m,
                                                    int               n,
@@ -10170,7 +10273,9 @@ hipsparseStatus_t hipsparseZcsru2csr_bufferSizeExt(hipsparseHandle_t handle,
                                                                         info,
                                                                         pBufferSizeInBytes));
 }
+#endif
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t hipsparseScsru2csr(hipsparseHandle_t         handle,
                                      int                       m,
                                      int                       n,
@@ -10262,7 +10367,9 @@ hipsparseStatus_t hipsparseZcsru2csr(hipsparseHandle_t         handle,
                                                           info,
                                                           pBuffer));
 }
+#endif
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t hipsparseScsr2csru(hipsparseHandle_t         handle,
                                      int                       m,
                                      int                       n,
@@ -10354,6 +10461,7 @@ hipsparseStatus_t hipsparseZcsr2csru(hipsparseHandle_t         handle,
                                                           info,
                                                           pBuffer));
 }
+#endif
 
 /* Generic API */
 #if(CUDART_VERSION >= 12000)
@@ -11505,20 +11613,20 @@ hipsparseStatus_t hipsparseConstCscGet(hipsparseConstSpMatDescr_t spMatDescr,
     cudaDataType        cuda_data_type;
 
     RETURN_IF_CUSPARSE_ERROR(
-        cusparseConstCsrGet((const cusparseConstSpMatDescr_t)spMatDescr,
+        cusparseConstCscGet((const cusparseConstSpMatDescr_t)spMatDescr,
                             rows,
                             cols,
                             nnz,
-                            csrRowOffsets,
-                            csrColInd,
-                            csrValues,
-                            csrRowOffsetsType != nullptr ? &cuda_row_index_type : nullptr,
-                            csrColIndType != nullptr ? &cuda_col_index_type : nullptr,
+                            cscColOffsets,
+                            cscRowInd,
+                            cscValues,
+                            cscColOffsetsType != nullptr ? &cuda_row_index_type : nullptr,
+                            cscRowIndType != nullptr ? &cuda_col_index_type : nullptr,
                             idxBase != nullptr ? &cuda_index_base : nullptr,
                             valueType != nullptr ? &cuda_data_type : nullptr));
 
-    *csrRowOffsetsType = CudaIndexTypeToHIPIndexType(cuda_row_index_type);
-    *csrColIndType     = CudaIndexTypeToHIPIndexType(cuda_col_index_type);
+    *cscColOffsetsType = CudaIndexTypeToHIPIndexType(cuda_row_index_type);
+    *cscRowIndType     = CudaIndexTypeToHIPIndexType(cuda_col_index_type);
     *idxBase           = CudaIndexBaseToHIPIndexBase(cuda_index_base);
     *valueType         = CudaDataTypeToHIPDataType(cuda_data_type);
 
@@ -12123,7 +12231,7 @@ hipsparseStatus_t hipsparseScatter(hipsparseHandle_t handle,
 }
 #endif
 
-#if(CUDART_VERSION >= 11000)
+#if(CUDART_VERSION >= 11000 && CUDART_VERSION < 13000)
 hipsparseStatus_t hipsparseRot(hipsparseHandle_t     handle,
                                const void*           c_coeff,
                                const void*           s_coeff,
@@ -14273,6 +14381,7 @@ hipsparseStatus_t hipsparseZgpsvInterleavedBatch(hipsparseHandle_t handle,
         (cusparseHandle_t)handle, algo, m, ds, dl, d, du, dw, x, batchCount, pBuffer));
 }
 
+#if CUDART_VERSION < 13000
 hipsparseStatus_t hipsparseScsrcolor(hipsparseHandle_t         handle,
                                      int                       m,
                                      int                       nnz,
@@ -14380,6 +14489,7 @@ hipsparseStatus_t hipsparseZcsrcolor(hipsparseHandle_t         handle,
                                                           reordering,
                                                           (cusparseColorInfo_t)info));
 }
+#endif
 
 #ifdef __cplusplus
 }
