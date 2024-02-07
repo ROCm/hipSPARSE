@@ -172,6 +172,7 @@ endif()
 if(NOT USE_CUDA)
   rocm_export_targets(TARGETS roc::hipsparse
                       DEPENDS PACKAGE hip
+                      STATIC_DEPENDS PACKAGE rocsparse
                       NAMESPACE roc::)
 else()
   rocm_export_targets(TARGETS roc::hipsparse
