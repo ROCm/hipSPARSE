@@ -45,7 +45,7 @@ extern "C" {
 
 namespace hipsparse
 {
-    hipsparseStatus_t hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseStatus_t cuStatus)
+    hipsparseStatus_t hipCUSPARSEStatusToHIPStatus(cusparseStatus_t cuStatus)
     {
 #if(CUDART_VERSION >= 11003)
         switch(cuStatus)
