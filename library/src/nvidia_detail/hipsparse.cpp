@@ -34,20 +34,20 @@
 extern "C" {
 #endif
 
-#define RETURN_IF_CUSPARSE_ERROR(INPUT_STATUS_FOR_CHECK)                \
-    {                                                                   \
-        cusparseStatus_t TMP_STATUS_FOR_CHECK = INPUT_STATUS_FOR_CHECK; \
-        if(TMP_STATUS_FOR_CHECK != CUSPARSE_STATUS_SUCCESS)             \
-        {                                                               \
-            return hipsparse::hipCUSPARSEStatusToHIPStatus(TMP_STATUS_FOR_CHECK);  \
-        }                                                               \
+#define RETURN_IF_CUSPARSE_ERROR(INPUT_STATUS_FOR_CHECK)                          \
+    {                                                                             \
+        cusparseStatus_t TMP_STATUS_FOR_CHECK = INPUT_STATUS_FOR_CHECK;           \
+        if(TMP_STATUS_FOR_CHECK != CUSPARSE_STATUS_SUCCESS)                       \
+        {                                                                         \
+            return hipsparse::hipCUSPARSEStatusToHIPStatus(TMP_STATUS_FOR_CHECK); \
+        }                                                                         \
     }
 
 namespace hipsparse
 {
     hipsparseStatus_t hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseStatus_t cuStatus)
     {
-    #if(CUDART_VERSION >= 11003)
+#if(CUDART_VERSION >= 11003)
         switch(cuStatus)
         {
         case CUSPARSE_STATUS_SUCCESS:
@@ -77,7 +77,7 @@ namespace hipsparse
         default:
             throw "Non existent cusparseStatus_t";
         }
-    #elif(CUDART_VERSION >= 10010)
+#elif(CUDART_VERSION >= 10010)
         switch(cuStatus)
         {
         case CUSPARSE_STATUS_SUCCESS:
@@ -105,14 +105,14 @@ namespace hipsparse
         default:
             throw "Non existent cusparseStatus_t";
         }
-    #else
-    #error "CUDART_VERSION is not supported"
-    #endif
+#else
+#error "CUDART_VERSION is not supported"
+#endif
     }
 
     cusparseStatus_t hipSPARSEStatusToCUSPARSEStatus(hipsparseStatus_t hipStatus)
     {
-    #if(CUDART_VERSION >= 11003)
+#if(CUDART_VERSION >= 11003)
         switch(hipStatus)
         {
         case HIPSPARSE_STATUS_SUCCESS:
@@ -142,7 +142,7 @@ namespace hipsparse
         default:
             throw "Non existent hipsparseStatus_t";
         }
-    #elif(CUDART_VERSION >= 10010)
+#elif(CUDART_VERSION >= 10010)
         switch(hipStatus)
         {
         case HIPSPARSE_STATUS_SUCCESS:
@@ -170,9 +170,9 @@ namespace hipsparse
         default:
             throw "Non existent hipsparseStatus_t";
         }
-    #else
-    #error "CUDART_VERSION is not supported"
-    #endif
+#else
+#error "CUDART_VERSION is not supported"
+#endif
     }
 
     cusparsePointerMode_t hipPointerModeToCudaPointerMode(hipsparsePointerMode_t mode)
@@ -395,7 +395,7 @@ namespace hipsparse
         }
     }
 
-    #if CUDART_VERSION < 11000
+#if CUDART_VERSION < 11000
     cusparseHybPartition_t hipHybPartitionToCudaHybPartition(hipsparseHybPartition_t part)
     {
         switch(part)
@@ -410,7 +410,7 @@ namespace hipsparse
             throw "Non existent hipsparseHybPartition_t";
         }
     }
-    #endif
+#endif
 
     cusparseSolvePolicy_t hipPolicyToCudaPolicy(hipsparseSolvePolicy_t policy)
     {
@@ -425,7 +425,7 @@ namespace hipsparse
         }
     }
 
-    #if CUDART_VERSION < 11050
+#if CUDART_VERSION < 11050
     cusparseSideMode_t hipSideToCudaSide(hipsparseSideMode_t side)
     {
         switch(side)
@@ -451,9 +451,9 @@ namespace hipsparse
             throw "Non existent cusparseSideMode_t";
         }
     }
-    #endif
+#endif
 
-    #if CUDART_VERSION > 10000
+#if CUDART_VERSION > 10000
     cudaDataType hipDataTypeToCudaDataType(hipDataType datatype)
     {
         switch(datatype)
@@ -487,7 +487,7 @@ namespace hipsparse
             throw "Non existent cudaDataType";
         }
     }
-    #endif
+#endif
 }
 
 hipsparseStatus_t hipsparseCreate(hipsparseHandle_t* handle)
@@ -559,18 +559,20 @@ hipsparseStatus_t hipsparseGetGitRevision(hipsparseHandle_t handle, char* rev)
 
 hipsparseStatus_t hipsparseSetStream(hipsparseHandle_t handle, hipStream_t streamId)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSetStream((cusparseHandle_t)handle, streamId));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSetStream((cusparseHandle_t)handle, streamId));
 }
 
 hipsparseStatus_t hipsparseGetStream(hipsparseHandle_t handle, hipStream_t* streamId)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseGetStream((cusparseHandle_t)handle, streamId));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseGetStream((cusparseHandle_t)handle, streamId));
 }
 
 hipsparseStatus_t hipsparseSetPointerMode(hipsparseHandle_t handle, hipsparsePointerMode_t mode)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(
-        cusparseSetPointerMode((cusparseHandle_t)handle, hipsparse::hipPointerModeToCudaPointerMode(mode)));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSetPointerMode(
+        (cusparseHandle_t)handle, hipsparse::hipPointerModeToCudaPointerMode(mode)));
 }
 
 hipsparseStatus_t hipsparseGetPointerMode(hipsparseHandle_t handle, hipsparsePointerMode_t* mode)
@@ -583,12 +585,14 @@ hipsparseStatus_t hipsparseGetPointerMode(hipsparseHandle_t handle, hipsparsePoi
 
 hipsparseStatus_t hipsparseCreateMatDescr(hipsparseMatDescr_t* descrA)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCreateMatDescr((cusparseMatDescr_t*)descrA));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCreateMatDescr((cusparseMatDescr_t*)descrA));
 }
 
 hipsparseStatus_t hipsparseDestroyMatDescr(hipsparseMatDescr_t descrA)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDestroyMatDescr((cusparseMatDescr_t)descrA));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDestroyMatDescr((cusparseMatDescr_t)descrA));
 }
 
 hipsparseStatus_t hipsparseCopyMatDescr(hipsparseMatDescr_t dest, const hipsparseMatDescr_t src)
@@ -598,13 +602,14 @@ hipsparseStatus_t hipsparseCopyMatDescr(hipsparseMatDescr_t dest, const hipspars
 
 hipsparseStatus_t hipsparseSetMatType(hipsparseMatDescr_t descrA, hipsparseMatrixType_t type)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(
-        cusparseSetMatType((cusparseMatDescr_t)descrA, hipsparse::hipMatrixTypeToCudaMatrixType(type)));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSetMatType(
+        (cusparseMatDescr_t)descrA, hipsparse::hipMatrixTypeToCudaMatrixType(type)));
 }
 
 hipsparseMatrixType_t hipsparseGetMatType(const hipsparseMatDescr_t descrA)
 {
-    return hipsparse::CudaMatrixTypeToHIPMatrixType(cusparseGetMatType((const cusparseMatDescr_t)descrA));
+    return hipsparse::CudaMatrixTypeToHIPMatrixType(
+        cusparseGetMatType((const cusparseMatDescr_t)descrA));
 }
 
 hipsparseStatus_t hipsparseSetMatFillMode(hipsparseMatDescr_t descrA, hipsparseFillMode_t fillMode)
@@ -620,24 +625,26 @@ hipsparseFillMode_t hipsparseGetMatFillMode(const hipsparseMatDescr_t descrA)
 
 hipsparseStatus_t hipsparseSetMatDiagType(hipsparseMatDescr_t descrA, hipsparseDiagType_t diagType)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(
-        cusparseSetMatDiagType((cusparseMatDescr_t)descrA, hipsparse::hipDiagonalToCudaDiagonal(diagType)));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSetMatDiagType(
+        (cusparseMatDescr_t)descrA, hipsparse::hipDiagonalToCudaDiagonal(diagType)));
 }
 
 hipsparseDiagType_t hipsparseGetMatDiagType(const hipsparseMatDescr_t descrA)
 {
-    return hipsparse::CudaDiagonalToHIPDiagonal(cusparseGetMatDiagType((const cusparseMatDescr_t)descrA));
+    return hipsparse::CudaDiagonalToHIPDiagonal(
+        cusparseGetMatDiagType((const cusparseMatDescr_t)descrA));
 }
 
 hipsparseStatus_t hipsparseSetMatIndexBase(hipsparseMatDescr_t descrA, hipsparseIndexBase_t base)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(
-        cusparseSetMatIndexBase((cusparseMatDescr_t)descrA, hipsparse::hipIndexBaseToCudaIndexBase(base)));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSetMatIndexBase(
+        (cusparseMatDescr_t)descrA, hipsparse::hipIndexBaseToCudaIndexBase(base)));
 }
 
 hipsparseIndexBase_t hipsparseGetMatIndexBase(const hipsparseMatDescr_t descrA)
 {
-    return hipsparse::CudaIndexBaseToHIPIndexBase(cusparseGetMatIndexBase((const cusparseMatDescr_t)descrA));
+    return hipsparse::CudaIndexBaseToHIPIndexBase(
+        cusparseGetMatIndexBase((const cusparseMatDescr_t)descrA));
 }
 
 #if CUDART_VERSION < 11000
@@ -679,12 +686,14 @@ hipsparseStatus_t hipsparseDestroyBsrsm2Info(bsrsm2Info_t info)
 #if CUDART_VERSION < 13000
 hipsparseStatus_t hipsparseCreateBsrilu02Info(bsrilu02Info_t* info)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCreateBsrilu02Info((bsrilu02Info_t*)info));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCreateBsrilu02Info((bsrilu02Info_t*)info));
 }
 
 hipsparseStatus_t hipsparseDestroyBsrilu02Info(bsrilu02Info_t info)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDestroyBsrilu02Info((bsrilu02Info_t)info));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDestroyBsrilu02Info((bsrilu02Info_t)info));
 }
 #endif
 
@@ -713,24 +722,28 @@ hipsparseStatus_t hipsparseDestroyCsrsm2Info(csrsm2Info_t info)
 #if CUDART_VERSION < 13000
 hipsparseStatus_t hipsparseCreateColorInfo(hipsparseColorInfo_t* info)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCreateColorInfo((cusparseColorInfo_t*)info));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCreateColorInfo((cusparseColorInfo_t*)info));
 }
 
 hipsparseStatus_t hipsparseDestroyColorInfo(hipsparseColorInfo_t info)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDestroyColorInfo((cusparseColorInfo_t)info));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDestroyColorInfo((cusparseColorInfo_t)info));
 }
 #endif
 
 #if CUDART_VERSION < 13000
 hipsparseStatus_t hipsparseCreateCsrilu02Info(csrilu02Info_t* info)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCreateCsrilu02Info((csrilu02Info_t*)info));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCreateCsrilu02Info((csrilu02Info_t*)info));
 }
 
 hipsparseStatus_t hipsparseDestroyCsrilu02Info(csrilu02Info_t info)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDestroyCsrilu02Info((csrilu02Info_t)info));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDestroyCsrilu02Info((csrilu02Info_t)info));
 }
 #endif
 
@@ -761,12 +774,14 @@ hipsparseStatus_t hipsparseDestroyCsric02Info(csric02Info_t info)
 #if CUDART_VERSION < 12000
 hipsparseStatus_t hipsparseCreateCsrgemm2Info(csrgemm2Info_t* info)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCreateCsrgemm2Info((csrgemm2Info_t*)info));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCreateCsrgemm2Info((csrgemm2Info_t*)info));
 }
 
 hipsparseStatus_t hipsparseDestroyCsrgemm2Info(csrgemm2Info_t info)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDestroyCsrgemm2Info((csrgemm2Info_t)info));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDestroyCsrgemm2Info((csrgemm2Info_t)info));
 }
 #endif
 
@@ -801,8 +816,14 @@ hipsparseStatus_t hipsparseSaxpyi(hipsparseHandle_t    handle,
                                   float*               y,
                                   hipsparseIndexBase_t idxBase)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSaxpyi(
-        (cusparseHandle_t)handle, nnz, alpha, xVal, xInd, y, hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSaxpyi((cusparseHandle_t)handle,
+                       nnz,
+                       alpha,
+                       xVal,
+                       xInd,
+                       y,
+                       hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
 }
 
 hipsparseStatus_t hipsparseDaxpyi(hipsparseHandle_t    handle,
@@ -813,8 +834,14 @@ hipsparseStatus_t hipsparseDaxpyi(hipsparseHandle_t    handle,
                                   double*              y,
                                   hipsparseIndexBase_t idxBase)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDaxpyi(
-        (cusparseHandle_t)handle, nnz, alpha, xVal, xInd, y, hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDaxpyi((cusparseHandle_t)handle,
+                       nnz,
+                       alpha,
+                       xVal,
+                       xInd,
+                       y,
+                       hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
 }
 
 hipsparseStatus_t hipsparseCaxpyi(hipsparseHandle_t    handle,
@@ -825,13 +852,14 @@ hipsparseStatus_t hipsparseCaxpyi(hipsparseHandle_t    handle,
                                   hipComplex*          y,
                                   hipsparseIndexBase_t idxBase)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCaxpyi((cusparseHandle_t)handle,
-                                                       nnz,
-                                                       (const cuComplex*)alpha,
-                                                       (const cuComplex*)xVal,
-                                                       xInd,
-                                                       (cuComplex*)y,
-                                                       hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCaxpyi((cusparseHandle_t)handle,
+                       nnz,
+                       (const cuComplex*)alpha,
+                       (const cuComplex*)xVal,
+                       xInd,
+                       (cuComplex*)y,
+                       hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
 }
 
 hipsparseStatus_t hipsparseZaxpyi(hipsparseHandle_t       handle,
@@ -842,13 +870,14 @@ hipsparseStatus_t hipsparseZaxpyi(hipsparseHandle_t       handle,
                                   hipDoubleComplex*       y,
                                   hipsparseIndexBase_t    idxBase)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseZaxpyi((cusparseHandle_t)handle,
-                                                       nnz,
-                                                       (const cuDoubleComplex*)alpha,
-                                                       (const cuDoubleComplex*)xVal,
-                                                       xInd,
-                                                       (cuDoubleComplex*)y,
-                                                       hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseZaxpyi((cusparseHandle_t)handle,
+                       nnz,
+                       (const cuDoubleComplex*)alpha,
+                       (const cuDoubleComplex*)xVal,
+                       xInd,
+                       (cuDoubleComplex*)y,
+                       hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
 }
 #endif
 
@@ -861,13 +890,14 @@ hipsparseStatus_t hipsparseSdoti(hipsparseHandle_t    handle,
                                  float*               result,
                                  hipsparseIndexBase_t idxBase)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSdoti((cusparseHandle_t)handle,
-                                                      nnz,
-                                                      xVal,
-                                                      xInd,
-                                                      y,
-                                                      result,
-                                                      hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSdoti((cusparseHandle_t)handle,
+                      nnz,
+                      xVal,
+                      xInd,
+                      y,
+                      result,
+                      hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
 }
 
 hipsparseStatus_t hipsparseDdoti(hipsparseHandle_t    handle,
@@ -878,13 +908,14 @@ hipsparseStatus_t hipsparseDdoti(hipsparseHandle_t    handle,
                                  double*              result,
                                  hipsparseIndexBase_t idxBase)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDdoti((cusparseHandle_t)handle,
-                                                      nnz,
-                                                      xVal,
-                                                      xInd,
-                                                      y,
-                                                      result,
-                                                      hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDdoti((cusparseHandle_t)handle,
+                      nnz,
+                      xVal,
+                      xInd,
+                      y,
+                      result,
+                      hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
 }
 
 hipsparseStatus_t hipsparseCdoti(hipsparseHandle_t    handle,
@@ -895,13 +926,14 @@ hipsparseStatus_t hipsparseCdoti(hipsparseHandle_t    handle,
                                  hipComplex*          result,
                                  hipsparseIndexBase_t idxBase)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCdoti((cusparseHandle_t)handle,
-                                                      nnz,
-                                                      (const cuComplex*)xVal,
-                                                      xInd,
-                                                      (const cuComplex*)y,
-                                                      (cuComplex*)result,
-                                                      hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCdoti((cusparseHandle_t)handle,
+                      nnz,
+                      (const cuComplex*)xVal,
+                      xInd,
+                      (const cuComplex*)y,
+                      (cuComplex*)result,
+                      hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
 }
 
 hipsparseStatus_t hipsparseZdoti(hipsparseHandle_t       handle,
@@ -912,13 +944,14 @@ hipsparseStatus_t hipsparseZdoti(hipsparseHandle_t       handle,
                                  hipDoubleComplex*       result,
                                  hipsparseIndexBase_t    idxBase)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseZdoti((cusparseHandle_t)handle,
-                                                      nnz,
-                                                      (const cuDoubleComplex*)xVal,
-                                                      xInd,
-                                                      (const cuDoubleComplex*)y,
-                                                      (cuDoubleComplex*)result,
-                                                      hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseZdoti((cusparseHandle_t)handle,
+                      nnz,
+                      (const cuDoubleComplex*)xVal,
+                      xInd,
+                      (const cuDoubleComplex*)y,
+                      (cuDoubleComplex*)result,
+                      hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
 }
 #endif
 
@@ -931,13 +964,14 @@ hipsparseStatus_t hipsparseCdotci(hipsparseHandle_t    handle,
                                   hipComplex*          result,
                                   hipsparseIndexBase_t idxBase)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCdotci((cusparseHandle_t)handle,
-                                                       nnz,
-                                                       (const cuComplex*)xVal,
-                                                       xInd,
-                                                       (const cuComplex*)y,
-                                                       (cuComplex*)result,
-                                                       hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCdotci((cusparseHandle_t)handle,
+                       nnz,
+                       (const cuComplex*)xVal,
+                       xInd,
+                       (const cuComplex*)y,
+                       (cuComplex*)result,
+                       hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
 }
 
 hipsparseStatus_t hipsparseZdotci(hipsparseHandle_t       handle,
@@ -948,13 +982,14 @@ hipsparseStatus_t hipsparseZdotci(hipsparseHandle_t       handle,
                                   hipDoubleComplex*       result,
                                   hipsparseIndexBase_t    idxBase)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseZdotci((cusparseHandle_t)handle,
-                                                       nnz,
-                                                       (const cuDoubleComplex*)xVal,
-                                                       xInd,
-                                                       (const cuDoubleComplex*)y,
-                                                       (cuDoubleComplex*)result,
-                                                       hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseZdotci((cusparseHandle_t)handle,
+                       nnz,
+                       (const cuDoubleComplex*)xVal,
+                       xInd,
+                       (const cuDoubleComplex*)y,
+                       (cuDoubleComplex*)result,
+                       hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
 }
 #endif
 
@@ -966,8 +1001,13 @@ hipsparseStatus_t hipsparseSgthr(hipsparseHandle_t    handle,
                                  const int*           xInd,
                                  hipsparseIndexBase_t idxBase)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSgthr(
-        (cusparseHandle_t)handle, nnz, y, xVal, xInd, hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSgthr((cusparseHandle_t)handle,
+                      nnz,
+                      y,
+                      xVal,
+                      xInd,
+                      hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
 }
 
 hipsparseStatus_t hipsparseDgthr(hipsparseHandle_t    handle,
@@ -977,8 +1017,13 @@ hipsparseStatus_t hipsparseDgthr(hipsparseHandle_t    handle,
                                  const int*           xInd,
                                  hipsparseIndexBase_t idxBase)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDgthr(
-        (cusparseHandle_t)handle, nnz, y, xVal, xInd, hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDgthr((cusparseHandle_t)handle,
+                      nnz,
+                      y,
+                      xVal,
+                      xInd,
+                      hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
 }
 
 hipsparseStatus_t hipsparseCgthr(hipsparseHandle_t    handle,
@@ -988,12 +1033,13 @@ hipsparseStatus_t hipsparseCgthr(hipsparseHandle_t    handle,
                                  const int*           xInd,
                                  hipsparseIndexBase_t idxBase)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCgthr((cusparseHandle_t)handle,
-                                                      nnz,
-                                                      (const cuComplex*)y,
-                                                      (cuComplex*)xVal,
-                                                      xInd,
-                                                      hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCgthr((cusparseHandle_t)handle,
+                      nnz,
+                      (const cuComplex*)y,
+                      (cuComplex*)xVal,
+                      xInd,
+                      hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
 }
 
 hipsparseStatus_t hipsparseZgthr(hipsparseHandle_t       handle,
@@ -1003,12 +1049,13 @@ hipsparseStatus_t hipsparseZgthr(hipsparseHandle_t       handle,
                                  const int*              xInd,
                                  hipsparseIndexBase_t    idxBase)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseZgthr((cusparseHandle_t)handle,
-                                                      nnz,
-                                                      (const cuDoubleComplex*)y,
-                                                      (cuDoubleComplex*)xVal,
-                                                      xInd,
-                                                      hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseZgthr((cusparseHandle_t)handle,
+                      nnz,
+                      (const cuDoubleComplex*)y,
+                      (cuDoubleComplex*)xVal,
+                      xInd,
+                      hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
 }
 #endif
 
@@ -1020,8 +1067,13 @@ hipsparseStatus_t hipsparseSgthrz(hipsparseHandle_t    handle,
                                   const int*           xInd,
                                   hipsparseIndexBase_t idxBase)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSgthrz(
-        (cusparseHandle_t)handle, nnz, y, xVal, xInd, hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSgthrz((cusparseHandle_t)handle,
+                       nnz,
+                       y,
+                       xVal,
+                       xInd,
+                       hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
 }
 
 hipsparseStatus_t hipsparseDgthrz(hipsparseHandle_t    handle,
@@ -1031,8 +1083,13 @@ hipsparseStatus_t hipsparseDgthrz(hipsparseHandle_t    handle,
                                   const int*           xInd,
                                   hipsparseIndexBase_t idxBase)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDgthrz(
-        (cusparseHandle_t)handle, nnz, y, xVal, xInd, hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDgthrz((cusparseHandle_t)handle,
+                       nnz,
+                       y,
+                       xVal,
+                       xInd,
+                       hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
 }
 
 hipsparseStatus_t hipsparseCgthrz(hipsparseHandle_t    handle,
@@ -1042,12 +1099,13 @@ hipsparseStatus_t hipsparseCgthrz(hipsparseHandle_t    handle,
                                   const int*           xInd,
                                   hipsparseIndexBase_t idxBase)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCgthrz((cusparseHandle_t)handle,
-                                                       nnz,
-                                                       (cuComplex*)y,
-                                                       (cuComplex*)xVal,
-                                                       xInd,
-                                                       hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCgthrz((cusparseHandle_t)handle,
+                       nnz,
+                       (cuComplex*)y,
+                       (cuComplex*)xVal,
+                       xInd,
+                       hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
 }
 
 hipsparseStatus_t hipsparseZgthrz(hipsparseHandle_t    handle,
@@ -1057,12 +1115,13 @@ hipsparseStatus_t hipsparseZgthrz(hipsparseHandle_t    handle,
                                   const int*           xInd,
                                   hipsparseIndexBase_t idxBase)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseZgthrz((cusparseHandle_t)handle,
-                                                       nnz,
-                                                       (cuDoubleComplex*)y,
-                                                       (cuDoubleComplex*)xVal,
-                                                       xInd,
-                                                       hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseZgthrz((cusparseHandle_t)handle,
+                       nnz,
+                       (cuDoubleComplex*)y,
+                       (cuDoubleComplex*)xVal,
+                       xInd,
+                       hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
 }
 #endif
 
@@ -1076,8 +1135,15 @@ hipsparseStatus_t hipsparseSroti(hipsparseHandle_t    handle,
                                  const float*         s,
                                  hipsparseIndexBase_t idxBase)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSroti(
-        (cusparseHandle_t)handle, nnz, xVal, xInd, y, c, s, hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSroti((cusparseHandle_t)handle,
+                      nnz,
+                      xVal,
+                      xInd,
+                      y,
+                      c,
+                      s,
+                      hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
 }
 
 hipsparseStatus_t hipsparseDroti(hipsparseHandle_t    handle,
@@ -1089,8 +1155,15 @@ hipsparseStatus_t hipsparseDroti(hipsparseHandle_t    handle,
                                  const double*        s,
                                  hipsparseIndexBase_t idxBase)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDroti(
-        (cusparseHandle_t)handle, nnz, xVal, xInd, y, c, s, hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDroti((cusparseHandle_t)handle,
+                      nnz,
+                      xVal,
+                      xInd,
+                      y,
+                      c,
+                      s,
+                      hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
 }
 #endif
 
@@ -1102,8 +1175,13 @@ hipsparseStatus_t hipsparseSsctr(hipsparseHandle_t    handle,
                                  float*               y,
                                  hipsparseIndexBase_t idxBase)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSsctr(
-        (cusparseHandle_t)handle, nnz, xVal, xInd, y, hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSsctr((cusparseHandle_t)handle,
+                      nnz,
+                      xVal,
+                      xInd,
+                      y,
+                      hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
 }
 
 hipsparseStatus_t hipsparseDsctr(hipsparseHandle_t    handle,
@@ -1113,8 +1191,13 @@ hipsparseStatus_t hipsparseDsctr(hipsparseHandle_t    handle,
                                  double*              y,
                                  hipsparseIndexBase_t idxBase)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDsctr(
-        (cusparseHandle_t)handle, nnz, xVal, xInd, y, hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDsctr((cusparseHandle_t)handle,
+                      nnz,
+                      xVal,
+                      xInd,
+                      y,
+                      hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
 }
 
 hipsparseStatus_t hipsparseCsctr(hipsparseHandle_t    handle,
@@ -1124,12 +1207,13 @@ hipsparseStatus_t hipsparseCsctr(hipsparseHandle_t    handle,
                                  hipComplex*          y,
                                  hipsparseIndexBase_t idxBase)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCsctr((cusparseHandle_t)handle,
-                                                      nnz,
-                                                      (const cuComplex*)xVal,
-                                                      xInd,
-                                                      (cuComplex*)y,
-                                                      hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCsctr((cusparseHandle_t)handle,
+                      nnz,
+                      (const cuComplex*)xVal,
+                      xInd,
+                      (cuComplex*)y,
+                      hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
 }
 
 hipsparseStatus_t hipsparseZsctr(hipsparseHandle_t       handle,
@@ -1139,12 +1223,13 @@ hipsparseStatus_t hipsparseZsctr(hipsparseHandle_t       handle,
                                  hipDoubleComplex*       y,
                                  hipsparseIndexBase_t    idxBase)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseZsctr((cusparseHandle_t)handle,
-                                                      nnz,
-                                                      (const cuDoubleComplex*)xVal,
-                                                      xInd,
-                                                      (cuDoubleComplex*)y,
-                                                      hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseZsctr((cusparseHandle_t)handle,
+                      nnz,
+                      (const cuDoubleComplex*)xVal,
+                      xInd,
+                      (cuDoubleComplex*)y,
+                      hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
 }
 #endif
 
@@ -1163,19 +1248,20 @@ hipsparseStatus_t hipsparseScsrmv(hipsparseHandle_t         handle,
                                   const float*              beta,
                                   float*                    y)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseScsrmv((cusparseHandle_t)handle,
-                                                       hipsparse::hipOperationToCudaOperation(transA),
-                                                       m,
-                                                       n,
-                                                       nnz,
-                                                       alpha,
-                                                       (const cusparseMatDescr_t)descrA,
-                                                       csrSortedValA,
-                                                       csrSortedRowPtrA,
-                                                       csrSortedColIndA,
-                                                       x,
-                                                       beta,
-                                                       y));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseScsrmv((cusparseHandle_t)handle,
+                       hipsparse::hipOperationToCudaOperation(transA),
+                       m,
+                       n,
+                       nnz,
+                       alpha,
+                       (const cusparseMatDescr_t)descrA,
+                       csrSortedValA,
+                       csrSortedRowPtrA,
+                       csrSortedColIndA,
+                       x,
+                       beta,
+                       y));
 }
 
 hipsparseStatus_t hipsparseDcsrmv(hipsparseHandle_t         handle,
@@ -1192,19 +1278,20 @@ hipsparseStatus_t hipsparseDcsrmv(hipsparseHandle_t         handle,
                                   const double*             beta,
                                   double*                   y)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDcsrmv((cusparseHandle_t)handle,
-                                                       hipsparse::hipOperationToCudaOperation(transA),
-                                                       m,
-                                                       n,
-                                                       nnz,
-                                                       alpha,
-                                                       (const cusparseMatDescr_t)descrA,
-                                                       csrSortedValA,
-                                                       csrSortedRowPtrA,
-                                                       csrSortedColIndA,
-                                                       x,
-                                                       beta,
-                                                       y));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDcsrmv((cusparseHandle_t)handle,
+                       hipsparse::hipOperationToCudaOperation(transA),
+                       m,
+                       n,
+                       nnz,
+                       alpha,
+                       (const cusparseMatDescr_t)descrA,
+                       csrSortedValA,
+                       csrSortedRowPtrA,
+                       csrSortedColIndA,
+                       x,
+                       beta,
+                       y));
 }
 
 hipsparseStatus_t hipsparseCcsrmv(hipsparseHandle_t         handle,
@@ -1221,19 +1308,20 @@ hipsparseStatus_t hipsparseCcsrmv(hipsparseHandle_t         handle,
                                   const hipComplex*         beta,
                                   hipComplex*               y)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCcsrmv((cusparseHandle_t)handle,
-                                                       hipsparse::hipOperationToCudaOperation(transA),
-                                                       m,
-                                                       n,
-                                                       nnz,
-                                                       (const cuComplex*)alpha,
-                                                       (const cusparseMatDescr_t)descrA,
-                                                       (const cuComplex*)csrSortedValA,
-                                                       csrSortedRowPtrA,
-                                                       csrSortedColIndA,
-                                                       (const cuComplex*)x,
-                                                       (const cuComplex*)beta,
-                                                       (cuComplex*)y));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCcsrmv((cusparseHandle_t)handle,
+                       hipsparse::hipOperationToCudaOperation(transA),
+                       m,
+                       n,
+                       nnz,
+                       (const cuComplex*)alpha,
+                       (const cusparseMatDescr_t)descrA,
+                       (const cuComplex*)csrSortedValA,
+                       csrSortedRowPtrA,
+                       csrSortedColIndA,
+                       (const cuComplex*)x,
+                       (const cuComplex*)beta,
+                       (cuComplex*)y));
 }
 
 hipsparseStatus_t hipsparseZcsrmv(hipsparseHandle_t         handle,
@@ -1250,19 +1338,20 @@ hipsparseStatus_t hipsparseZcsrmv(hipsparseHandle_t         handle,
                                   const hipDoubleComplex*   beta,
                                   hipDoubleComplex*         y)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseZcsrmv((cusparseHandle_t)handle,
-                                                       hipsparse::hipOperationToCudaOperation(transA),
-                                                       m,
-                                                       n,
-                                                       nnz,
-                                                       (const cuDoubleComplex*)alpha,
-                                                       (const cusparseMatDescr_t)descrA,
-                                                       (const cuDoubleComplex*)csrSortedValA,
-                                                       csrSortedRowPtrA,
-                                                       csrSortedColIndA,
-                                                       (const cuDoubleComplex*)x,
-                                                       (const cuDoubleComplex*)beta,
-                                                       (cuDoubleComplex*)y));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseZcsrmv((cusparseHandle_t)handle,
+                       hipsparse::hipOperationToCudaOperation(transA),
+                       m,
+                       n,
+                       nnz,
+                       (const cuDoubleComplex*)alpha,
+                       (const cusparseMatDescr_t)descrA,
+                       (const cuDoubleComplex*)csrSortedValA,
+                       csrSortedRowPtrA,
+                       csrSortedColIndA,
+                       (const cuDoubleComplex*)x,
+                       (const cuDoubleComplex*)beta,
+                       (cuDoubleComplex*)y));
 }
 #endif
 
@@ -1551,20 +1640,21 @@ hipsparseStatus_t hipsparseScsrsv2_solve(hipsparseHandle_t         handle,
                                          hipsparseSolvePolicy_t    policy,
                                          void*                     pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseScsrsv2_solve((cusparseHandle_t)handle,
-                                                              hipsparse::hipOperationToCudaOperation(transA),
-                                                              m,
-                                                              nnz,
-                                                              alpha,
-                                                              (cusparseMatDescr_t)descrA,
-                                                              csrSortedValA,
-                                                              csrSortedRowPtrA,
-                                                              csrSortedColIndA,
-                                                              (csrsv2Info_t)info,
-                                                              f,
-                                                              x,
-                                                              hipsparse::hipPolicyToCudaPolicy(policy),
-                                                              pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseScsrsv2_solve((cusparseHandle_t)handle,
+                              hipsparse::hipOperationToCudaOperation(transA),
+                              m,
+                              nnz,
+                              alpha,
+                              (cusparseMatDescr_t)descrA,
+                              csrSortedValA,
+                              csrSortedRowPtrA,
+                              csrSortedColIndA,
+                              (csrsv2Info_t)info,
+                              f,
+                              x,
+                              hipsparse::hipPolicyToCudaPolicy(policy),
+                              pBuffer));
 }
 
 hipsparseStatus_t hipsparseDcsrsv2_solve(hipsparseHandle_t         handle,
@@ -1582,20 +1672,21 @@ hipsparseStatus_t hipsparseDcsrsv2_solve(hipsparseHandle_t         handle,
                                          hipsparseSolvePolicy_t    policy,
                                          void*                     pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDcsrsv2_solve((cusparseHandle_t)handle,
-                                                              hipsparse::hipOperationToCudaOperation(transA),
-                                                              m,
-                                                              nnz,
-                                                              alpha,
-                                                              (cusparseMatDescr_t)descrA,
-                                                              csrSortedValA,
-                                                              csrSortedRowPtrA,
-                                                              csrSortedColIndA,
-                                                              (csrsv2Info_t)info,
-                                                              f,
-                                                              x,
-                                                              hipsparse::hipPolicyToCudaPolicy(policy),
-                                                              pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDcsrsv2_solve((cusparseHandle_t)handle,
+                              hipsparse::hipOperationToCudaOperation(transA),
+                              m,
+                              nnz,
+                              alpha,
+                              (cusparseMatDescr_t)descrA,
+                              csrSortedValA,
+                              csrSortedRowPtrA,
+                              csrSortedColIndA,
+                              (csrsv2Info_t)info,
+                              f,
+                              x,
+                              hipsparse::hipPolicyToCudaPolicy(policy),
+                              pBuffer));
 }
 
 hipsparseStatus_t hipsparseCcsrsv2_solve(hipsparseHandle_t         handle,
@@ -1613,20 +1704,21 @@ hipsparseStatus_t hipsparseCcsrsv2_solve(hipsparseHandle_t         handle,
                                          hipsparseSolvePolicy_t    policy,
                                          void*                     pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCcsrsv2_solve((cusparseHandle_t)handle,
-                                                              hipsparse::hipOperationToCudaOperation(transA),
-                                                              m,
-                                                              nnz,
-                                                              (const cuComplex*)alpha,
-                                                              (cusparseMatDescr_t)descrA,
-                                                              (const cuComplex*)csrSortedValA,
-                                                              csrSortedRowPtrA,
-                                                              csrSortedColIndA,
-                                                              (csrsv2Info_t)info,
-                                                              (const cuComplex*)f,
-                                                              (cuComplex*)x,
-                                                              hipsparse::hipPolicyToCudaPolicy(policy),
-                                                              pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCcsrsv2_solve((cusparseHandle_t)handle,
+                              hipsparse::hipOperationToCudaOperation(transA),
+                              m,
+                              nnz,
+                              (const cuComplex*)alpha,
+                              (cusparseMatDescr_t)descrA,
+                              (const cuComplex*)csrSortedValA,
+                              csrSortedRowPtrA,
+                              csrSortedColIndA,
+                              (csrsv2Info_t)info,
+                              (const cuComplex*)f,
+                              (cuComplex*)x,
+                              hipsparse::hipPolicyToCudaPolicy(policy),
+                              pBuffer));
 }
 
 hipsparseStatus_t hipsparseZcsrsv2_solve(hipsparseHandle_t         handle,
@@ -1644,20 +1736,21 @@ hipsparseStatus_t hipsparseZcsrsv2_solve(hipsparseHandle_t         handle,
                                          hipsparseSolvePolicy_t    policy,
                                          void*                     pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseZcsrsv2_solve((cusparseHandle_t)handle,
-                                                              hipsparse::hipOperationToCudaOperation(transA),
-                                                              m,
-                                                              nnz,
-                                                              (const cuDoubleComplex*)alpha,
-                                                              (cusparseMatDescr_t)descrA,
-                                                              (const cuDoubleComplex*)csrSortedValA,
-                                                              csrSortedRowPtrA,
-                                                              csrSortedColIndA,
-                                                              (csrsv2Info_t)info,
-                                                              (const cuDoubleComplex*)f,
-                                                              (cuDoubleComplex*)x,
-                                                              hipsparse::hipPolicyToCudaPolicy(policy),
-                                                              pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseZcsrsv2_solve((cusparseHandle_t)handle,
+                              hipsparse::hipOperationToCudaOperation(transA),
+                              m,
+                              nnz,
+                              (const cuDoubleComplex*)alpha,
+                              (cusparseMatDescr_t)descrA,
+                              (const cuDoubleComplex*)csrSortedValA,
+                              csrSortedRowPtrA,
+                              csrSortedColIndA,
+                              (csrsv2Info_t)info,
+                              (const cuDoubleComplex*)f,
+                              (cuDoubleComplex*)x,
+                              hipsparse::hipPolicyToCudaPolicy(policy),
+                              pBuffer));
 }
 #endif
 
@@ -1671,14 +1764,15 @@ hipsparseStatus_t hipsparseShybmv(hipsparseHandle_t         handle,
                                   const float*              beta,
                                   float*                    y)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseShybmv((cusparseHandle_t)handle,
-                                                       hipsparse::hipOperationToCudaOperation(transA),
-                                                       alpha,
-                                                       (const cusparseMatDescr_t)descrA,
-                                                       (const cusparseHybMat_t)hybA,
-                                                       x,
-                                                       beta,
-                                                       y));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseShybmv((cusparseHandle_t)handle,
+                       hipsparse::hipOperationToCudaOperation(transA),
+                       alpha,
+                       (const cusparseMatDescr_t)descrA,
+                       (const cusparseHybMat_t)hybA,
+                       x,
+                       beta,
+                       y));
 }
 
 hipsparseStatus_t hipsparseDhybmv(hipsparseHandle_t         handle,
@@ -1690,14 +1784,15 @@ hipsparseStatus_t hipsparseDhybmv(hipsparseHandle_t         handle,
                                   const double*             beta,
                                   double*                   y)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDhybmv((cusparseHandle_t)handle,
-                                                       hipsparse::hipOperationToCudaOperation(transA),
-                                                       alpha,
-                                                       (const cusparseMatDescr_t)descrA,
-                                                       (const cusparseHybMat_t)hybA,
-                                                       x,
-                                                       beta,
-                                                       y));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDhybmv((cusparseHandle_t)handle,
+                       hipsparse::hipOperationToCudaOperation(transA),
+                       alpha,
+                       (const cusparseMatDescr_t)descrA,
+                       (const cusparseHybMat_t)hybA,
+                       x,
+                       beta,
+                       y));
 }
 
 hipsparseStatus_t hipsparseChybmv(hipsparseHandle_t         handle,
@@ -1709,14 +1804,15 @@ hipsparseStatus_t hipsparseChybmv(hipsparseHandle_t         handle,
                                   const hipComplex*         beta,
                                   hipComplex*               y)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseChybmv((cusparseHandle_t)handle,
-                                                       hipsparse::hipOperationToCudaOperation(transA),
-                                                       (const cuComplex*)alpha,
-                                                       (const cusparseMatDescr_t)descrA,
-                                                       (const cusparseHybMat_t)hybA,
-                                                       (const cuComplex*)x,
-                                                       (const cuComplex*)beta,
-                                                       (cuComplex*)y));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseChybmv((cusparseHandle_t)handle,
+                       hipsparse::hipOperationToCudaOperation(transA),
+                       (const cuComplex*)alpha,
+                       (const cusparseMatDescr_t)descrA,
+                       (const cusparseHybMat_t)hybA,
+                       (const cuComplex*)x,
+                       (const cuComplex*)beta,
+                       (cuComplex*)y));
 }
 
 hipsparseStatus_t hipsparseZhybmv(hipsparseHandle_t         handle,
@@ -1728,14 +1824,15 @@ hipsparseStatus_t hipsparseZhybmv(hipsparseHandle_t         handle,
                                   const hipDoubleComplex*   beta,
                                   hipDoubleComplex*         y)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseZhybmv((cusparseHandle_t)handle,
-                                                       hipsparse::hipOperationToCudaOperation(transA),
-                                                       (const cuDoubleComplex*)alpha,
-                                                       (const cusparseMatDescr_t)descrA,
-                                                       (const cusparseHybMat_t)hybA,
-                                                       (const cuDoubleComplex*)x,
-                                                       (const cuDoubleComplex*)beta,
-                                                       (cuDoubleComplex*)y));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseZhybmv((cusparseHandle_t)handle,
+                       hipsparse::hipOperationToCudaOperation(transA),
+                       (const cuDoubleComplex*)alpha,
+                       (const cusparseMatDescr_t)descrA,
+                       (const cusparseHybMat_t)hybA,
+                       (const cuDoubleComplex*)x,
+                       (const cuDoubleComplex*)beta,
+                       (cuDoubleComplex*)y));
 }
 #endif
 
@@ -1755,21 +1852,22 @@ hipsparseStatus_t hipsparseSbsrmv(hipsparseHandle_t         handle,
                                   const float*              beta,
                                   float*                    y)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSbsrmv((cusparseHandle_t)handle,
-                                                       hipsparse::hipDirectionToCudaDirection(dirA),
-                                                       hipsparse::hipOperationToCudaOperation(transA),
-                                                       mb,
-                                                       nb,
-                                                       nnzb,
-                                                       alpha,
-                                                       (const cusparseMatDescr_t)descrA,
-                                                       bsrSortedValA,
-                                                       bsrSortedRowPtrA,
-                                                       bsrSortedColIndA,
-                                                       blockDim,
-                                                       x,
-                                                       beta,
-                                                       y));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSbsrmv((cusparseHandle_t)handle,
+                       hipsparse::hipDirectionToCudaDirection(dirA),
+                       hipsparse::hipOperationToCudaOperation(transA),
+                       mb,
+                       nb,
+                       nnzb,
+                       alpha,
+                       (const cusparseMatDescr_t)descrA,
+                       bsrSortedValA,
+                       bsrSortedRowPtrA,
+                       bsrSortedColIndA,
+                       blockDim,
+                       x,
+                       beta,
+                       y));
 }
 
 hipsparseStatus_t hipsparseDbsrmv(hipsparseHandle_t         handle,
@@ -1788,21 +1886,22 @@ hipsparseStatus_t hipsparseDbsrmv(hipsparseHandle_t         handle,
                                   const double*             beta,
                                   double*                   y)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDbsrmv((cusparseHandle_t)handle,
-                                                       hipsparse::hipDirectionToCudaDirection(dirA),
-                                                       hipsparse::hipOperationToCudaOperation(transA),
-                                                       mb,
-                                                       nb,
-                                                       nnzb,
-                                                       alpha,
-                                                       (const cusparseMatDescr_t)descrA,
-                                                       bsrSortedValA,
-                                                       bsrSortedRowPtrA,
-                                                       bsrSortedColIndA,
-                                                       blockDim,
-                                                       x,
-                                                       beta,
-                                                       y));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDbsrmv((cusparseHandle_t)handle,
+                       hipsparse::hipDirectionToCudaDirection(dirA),
+                       hipsparse::hipOperationToCudaOperation(transA),
+                       mb,
+                       nb,
+                       nnzb,
+                       alpha,
+                       (const cusparseMatDescr_t)descrA,
+                       bsrSortedValA,
+                       bsrSortedRowPtrA,
+                       bsrSortedColIndA,
+                       blockDim,
+                       x,
+                       beta,
+                       y));
 }
 
 hipsparseStatus_t hipsparseCbsrmv(hipsparseHandle_t         handle,
@@ -1821,21 +1920,22 @@ hipsparseStatus_t hipsparseCbsrmv(hipsparseHandle_t         handle,
                                   const hipComplex*         beta,
                                   hipComplex*               y)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCbsrmv((cusparseHandle_t)handle,
-                                                       hipsparse::hipDirectionToCudaDirection(dirA),
-                                                       hipsparse::hipOperationToCudaOperation(transA),
-                                                       mb,
-                                                       nb,
-                                                       nnzb,
-                                                       (const cuComplex*)alpha,
-                                                       (const cusparseMatDescr_t)descrA,
-                                                       (const cuComplex*)bsrSortedValA,
-                                                       bsrSortedRowPtrA,
-                                                       bsrSortedColIndA,
-                                                       blockDim,
-                                                       (const cuComplex*)x,
-                                                       (const cuComplex*)beta,
-                                                       (cuComplex*)y));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCbsrmv((cusparseHandle_t)handle,
+                       hipsparse::hipDirectionToCudaDirection(dirA),
+                       hipsparse::hipOperationToCudaOperation(transA),
+                       mb,
+                       nb,
+                       nnzb,
+                       (const cuComplex*)alpha,
+                       (const cusparseMatDescr_t)descrA,
+                       (const cuComplex*)bsrSortedValA,
+                       bsrSortedRowPtrA,
+                       bsrSortedColIndA,
+                       blockDim,
+                       (const cuComplex*)x,
+                       (const cuComplex*)beta,
+                       (cuComplex*)y));
 }
 
 hipsparseStatus_t hipsparseZbsrmv(hipsparseHandle_t         handle,
@@ -1854,21 +1954,22 @@ hipsparseStatus_t hipsparseZbsrmv(hipsparseHandle_t         handle,
                                   const hipDoubleComplex*   beta,
                                   hipDoubleComplex*         y)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseZbsrmv((cusparseHandle_t)handle,
-                                                       hipsparse::hipDirectionToCudaDirection(dirA),
-                                                       hipsparse::hipOperationToCudaOperation(transA),
-                                                       mb,
-                                                       nb,
-                                                       nnzb,
-                                                       (const cuDoubleComplex*)alpha,
-                                                       (const cusparseMatDescr_t)descrA,
-                                                       (const cuDoubleComplex*)bsrSortedValA,
-                                                       bsrSortedRowPtrA,
-                                                       bsrSortedColIndA,
-                                                       blockDim,
-                                                       (const cuDoubleComplex*)x,
-                                                       (const cuDoubleComplex*)beta,
-                                                       (cuDoubleComplex*)y));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseZbsrmv((cusparseHandle_t)handle,
+                       hipsparse::hipDirectionToCudaDirection(dirA),
+                       hipsparse::hipOperationToCudaOperation(transA),
+                       mb,
+                       nb,
+                       nnzb,
+                       (const cuDoubleComplex*)alpha,
+                       (const cusparseMatDescr_t)descrA,
+                       (const cuDoubleComplex*)bsrSortedValA,
+                       bsrSortedRowPtrA,
+                       bsrSortedColIndA,
+                       blockDim,
+                       (const cuDoubleComplex*)x,
+                       (const cuDoubleComplex*)beta,
+                       (cuDoubleComplex*)y));
 }
 
 #if CUDART_VERSION < 13000
@@ -1891,24 +1992,25 @@ hipsparseStatus_t hipsparseSbsrxmv(hipsparseHandle_t         handle,
                                    const float*              beta,
                                    float*                    y)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSbsrxmv((cusparseHandle_t)handle,
-                                                        hipsparse::hipDirectionToCudaDirection(dir),
-                                                        hipsparse::hipOperationToCudaOperation(trans),
-                                                        sizeOfMask,
-                                                        mb,
-                                                        nb,
-                                                        nnzb,
-                                                        alpha,
-                                                        (const cusparseMatDescr_t)descr,
-                                                        bsrVal,
-                                                        bsrMaskPtr,
-                                                        bsrRowPtr,
-                                                        bsrEndPtr,
-                                                        bsrColInd,
-                                                        blockDim,
-                                                        x,
-                                                        beta,
-                                                        y));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSbsrxmv((cusparseHandle_t)handle,
+                        hipsparse::hipDirectionToCudaDirection(dir),
+                        hipsparse::hipOperationToCudaOperation(trans),
+                        sizeOfMask,
+                        mb,
+                        nb,
+                        nnzb,
+                        alpha,
+                        (const cusparseMatDescr_t)descr,
+                        bsrVal,
+                        bsrMaskPtr,
+                        bsrRowPtr,
+                        bsrEndPtr,
+                        bsrColInd,
+                        blockDim,
+                        x,
+                        beta,
+                        y));
 }
 
 hipsparseStatus_t hipsparseDbsrxmv(hipsparseHandle_t         handle,
@@ -1930,24 +2032,25 @@ hipsparseStatus_t hipsparseDbsrxmv(hipsparseHandle_t         handle,
                                    const double*             beta,
                                    double*                   y)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDbsrxmv((cusparseHandle_t)handle,
-                                                        hipsparse::hipDirectionToCudaDirection(dir),
-                                                        hipsparse::hipOperationToCudaOperation(trans),
-                                                        sizeOfMask,
-                                                        mb,
-                                                        nb,
-                                                        nnzb,
-                                                        alpha,
-                                                        (const cusparseMatDescr_t)descr,
-                                                        bsrVal,
-                                                        bsrMaskPtr,
-                                                        bsrRowPtr,
-                                                        bsrEndPtr,
-                                                        bsrColInd,
-                                                        blockDim,
-                                                        x,
-                                                        beta,
-                                                        y));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDbsrxmv((cusparseHandle_t)handle,
+                        hipsparse::hipDirectionToCudaDirection(dir),
+                        hipsparse::hipOperationToCudaOperation(trans),
+                        sizeOfMask,
+                        mb,
+                        nb,
+                        nnzb,
+                        alpha,
+                        (const cusparseMatDescr_t)descr,
+                        bsrVal,
+                        bsrMaskPtr,
+                        bsrRowPtr,
+                        bsrEndPtr,
+                        bsrColInd,
+                        blockDim,
+                        x,
+                        beta,
+                        y));
 }
 
 hipsparseStatus_t hipsparseCbsrxmv(hipsparseHandle_t         handle,
@@ -1969,24 +2072,25 @@ hipsparseStatus_t hipsparseCbsrxmv(hipsparseHandle_t         handle,
                                    const hipComplex*         beta,
                                    hipComplex*               y)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCbsrxmv((cusparseHandle_t)handle,
-                                                        hipsparse::hipDirectionToCudaDirection(dir),
-                                                        hipsparse::hipOperationToCudaOperation(trans),
-                                                        sizeOfMask,
-                                                        mb,
-                                                        nb,
-                                                        nnzb,
-                                                        (const cuComplex*)alpha,
-                                                        (const cusparseMatDescr_t)descr,
-                                                        (const cuComplex*)bsrVal,
-                                                        bsrMaskPtr,
-                                                        bsrRowPtr,
-                                                        bsrEndPtr,
-                                                        bsrColInd,
-                                                        blockDim,
-                                                        (const cuComplex*)x,
-                                                        (const cuComplex*)beta,
-                                                        (cuComplex*)y));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCbsrxmv((cusparseHandle_t)handle,
+                        hipsparse::hipDirectionToCudaDirection(dir),
+                        hipsparse::hipOperationToCudaOperation(trans),
+                        sizeOfMask,
+                        mb,
+                        nb,
+                        nnzb,
+                        (const cuComplex*)alpha,
+                        (const cusparseMatDescr_t)descr,
+                        (const cuComplex*)bsrVal,
+                        bsrMaskPtr,
+                        bsrRowPtr,
+                        bsrEndPtr,
+                        bsrColInd,
+                        blockDim,
+                        (const cuComplex*)x,
+                        (const cuComplex*)beta,
+                        (cuComplex*)y));
 }
 
 hipsparseStatus_t hipsparseZbsrxmv(hipsparseHandle_t         handle,
@@ -2008,24 +2112,25 @@ hipsparseStatus_t hipsparseZbsrxmv(hipsparseHandle_t         handle,
                                    const hipDoubleComplex*   beta,
                                    hipDoubleComplex*         y)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseZbsrxmv((cusparseHandle_t)handle,
-                                                        hipsparse::hipDirectionToCudaDirection(dir),
-                                                        hipsparse::hipOperationToCudaOperation(trans),
-                                                        sizeOfMask,
-                                                        mb,
-                                                        nb,
-                                                        nnzb,
-                                                        (const cuDoubleComplex*)alpha,
-                                                        (const cusparseMatDescr_t)descr,
-                                                        (const cuDoubleComplex*)bsrVal,
-                                                        bsrMaskPtr,
-                                                        bsrRowPtr,
-                                                        bsrEndPtr,
-                                                        bsrColInd,
-                                                        blockDim,
-                                                        (const cuDoubleComplex*)x,
-                                                        (const cuDoubleComplex*)beta,
-                                                        (cuDoubleComplex*)y));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseZbsrxmv((cusparseHandle_t)handle,
+                        hipsparse::hipDirectionToCudaDirection(dir),
+                        hipsparse::hipOperationToCudaOperation(trans),
+                        sizeOfMask,
+                        mb,
+                        nb,
+                        nnzb,
+                        (const cuDoubleComplex*)alpha,
+                        (const cusparseMatDescr_t)descr,
+                        (const cuDoubleComplex*)bsrVal,
+                        bsrMaskPtr,
+                        bsrRowPtr,
+                        bsrEndPtr,
+                        bsrColInd,
+                        blockDim,
+                        (const cuDoubleComplex*)x,
+                        (const cuDoubleComplex*)beta,
+                        (cuDoubleComplex*)y));
 }
 #endif
 
@@ -2356,22 +2461,23 @@ hipsparseStatus_t hipsparseSbsrsv2_solve(hipsparseHandle_t         handle,
                                          hipsparseSolvePolicy_t    policy,
                                          void*                     pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSbsrsv2_solve((cusparseHandle_t)handle,
-                                                              hipsparse::hipDirectionToCudaDirection(dir),
-                                                              hipsparse::hipOperationToCudaOperation(transA),
-                                                              mb,
-                                                              nnzb,
-                                                              alpha,
-                                                              (cusparseMatDescr_t)descrA,
-                                                              bsrSortedValA,
-                                                              bsrSortedRowPtrA,
-                                                              bsrSortedColIndA,
-                                                              blockDim,
-                                                              (bsrsv2Info_t)info,
-                                                              f,
-                                                              x,
-                                                              hipsparse::hipPolicyToCudaPolicy(policy),
-                                                              pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSbsrsv2_solve((cusparseHandle_t)handle,
+                              hipsparse::hipDirectionToCudaDirection(dir),
+                              hipsparse::hipOperationToCudaOperation(transA),
+                              mb,
+                              nnzb,
+                              alpha,
+                              (cusparseMatDescr_t)descrA,
+                              bsrSortedValA,
+                              bsrSortedRowPtrA,
+                              bsrSortedColIndA,
+                              blockDim,
+                              (bsrsv2Info_t)info,
+                              f,
+                              x,
+                              hipsparse::hipPolicyToCudaPolicy(policy),
+                              pBuffer));
 }
 
 hipsparseStatus_t hipsparseDbsrsv2_solve(hipsparseHandle_t         handle,
@@ -2391,22 +2497,23 @@ hipsparseStatus_t hipsparseDbsrsv2_solve(hipsparseHandle_t         handle,
                                          hipsparseSolvePolicy_t    policy,
                                          void*                     pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDbsrsv2_solve((cusparseHandle_t)handle,
-                                                              hipsparse::hipDirectionToCudaDirection(dir),
-                                                              hipsparse::hipOperationToCudaOperation(transA),
-                                                              mb,
-                                                              nnzb,
-                                                              alpha,
-                                                              (cusparseMatDescr_t)descrA,
-                                                              bsrSortedValA,
-                                                              bsrSortedRowPtrA,
-                                                              bsrSortedColIndA,
-                                                              blockDim,
-                                                              (bsrsv2Info_t)info,
-                                                              f,
-                                                              x,
-                                                              hipsparse::hipPolicyToCudaPolicy(policy),
-                                                              pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDbsrsv2_solve((cusparseHandle_t)handle,
+                              hipsparse::hipDirectionToCudaDirection(dir),
+                              hipsparse::hipOperationToCudaOperation(transA),
+                              mb,
+                              nnzb,
+                              alpha,
+                              (cusparseMatDescr_t)descrA,
+                              bsrSortedValA,
+                              bsrSortedRowPtrA,
+                              bsrSortedColIndA,
+                              blockDim,
+                              (bsrsv2Info_t)info,
+                              f,
+                              x,
+                              hipsparse::hipPolicyToCudaPolicy(policy),
+                              pBuffer));
 }
 
 hipsparseStatus_t hipsparseCbsrsv2_solve(hipsparseHandle_t         handle,
@@ -2426,22 +2533,23 @@ hipsparseStatus_t hipsparseCbsrsv2_solve(hipsparseHandle_t         handle,
                                          hipsparseSolvePolicy_t    policy,
                                          void*                     pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCbsrsv2_solve((cusparseHandle_t)handle,
-                                                              hipsparse::hipDirectionToCudaDirection(dir),
-                                                              hipsparse::hipOperationToCudaOperation(transA),
-                                                              mb,
-                                                              nnzb,
-                                                              (const cuComplex*)alpha,
-                                                              (cusparseMatDescr_t)descrA,
-                                                              (const cuComplex*)bsrSortedValA,
-                                                              bsrSortedRowPtrA,
-                                                              bsrSortedColIndA,
-                                                              blockDim,
-                                                              (bsrsv2Info_t)info,
-                                                              (const cuComplex*)f,
-                                                              (cuComplex*)x,
-                                                              hipsparse::hipPolicyToCudaPolicy(policy),
-                                                              pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCbsrsv2_solve((cusparseHandle_t)handle,
+                              hipsparse::hipDirectionToCudaDirection(dir),
+                              hipsparse::hipOperationToCudaOperation(transA),
+                              mb,
+                              nnzb,
+                              (const cuComplex*)alpha,
+                              (cusparseMatDescr_t)descrA,
+                              (const cuComplex*)bsrSortedValA,
+                              bsrSortedRowPtrA,
+                              bsrSortedColIndA,
+                              blockDim,
+                              (bsrsv2Info_t)info,
+                              (const cuComplex*)f,
+                              (cuComplex*)x,
+                              hipsparse::hipPolicyToCudaPolicy(policy),
+                              pBuffer));
 }
 
 hipsparseStatus_t hipsparseZbsrsv2_solve(hipsparseHandle_t         handle,
@@ -2461,22 +2569,23 @@ hipsparseStatus_t hipsparseZbsrsv2_solve(hipsparseHandle_t         handle,
                                          hipsparseSolvePolicy_t    policy,
                                          void*                     pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseZbsrsv2_solve((cusparseHandle_t)handle,
-                                                              hipsparse::hipDirectionToCudaDirection(dir),
-                                                              hipsparse::hipOperationToCudaOperation(transA),
-                                                              mb,
-                                                              nnzb,
-                                                              (const cuDoubleComplex*)alpha,
-                                                              (cusparseMatDescr_t)descrA,
-                                                              (const cuDoubleComplex*)bsrSortedValA,
-                                                              bsrSortedRowPtrA,
-                                                              bsrSortedColIndA,
-                                                              blockDim,
-                                                              (bsrsv2Info_t)info,
-                                                              (const cuDoubleComplex*)f,
-                                                              (cuDoubleComplex*)x,
-                                                              hipsparse::hipPolicyToCudaPolicy(policy),
-                                                              pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseZbsrsv2_solve((cusparseHandle_t)handle,
+                              hipsparse::hipDirectionToCudaDirection(dir),
+                              hipsparse::hipOperationToCudaOperation(transA),
+                              mb,
+                              nnzb,
+                              (const cuDoubleComplex*)alpha,
+                              (cusparseMatDescr_t)descrA,
+                              (const cuDoubleComplex*)bsrSortedValA,
+                              bsrSortedRowPtrA,
+                              bsrSortedColIndA,
+                              blockDim,
+                              (bsrsv2Info_t)info,
+                              (const cuDoubleComplex*)f,
+                              (cuDoubleComplex*)x,
+                              hipsparse::hipPolicyToCudaPolicy(policy),
+                              pBuffer));
 }
 #endif
 
@@ -2559,20 +2668,21 @@ hipsparseStatus_t hipsparseSgemvi(hipsparseHandle_t    handle,
                                   hipsparseIndexBase_t idxBase,
                                   void*                pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSgemvi((cusparseHandle_t)handle,
-                                                       hipsparse::hipOperationToCudaOperation(transA),
-                                                       m,
-                                                       n,
-                                                       alpha,
-                                                       A,
-                                                       lda,
-                                                       nnz,
-                                                       x,
-                                                       xInd,
-                                                       beta,
-                                                       y,
-                                                       hipsparse::hipIndexBaseToCudaIndexBase(idxBase),
-                                                       pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSgemvi((cusparseHandle_t)handle,
+                       hipsparse::hipOperationToCudaOperation(transA),
+                       m,
+                       n,
+                       alpha,
+                       A,
+                       lda,
+                       nnz,
+                       x,
+                       xInd,
+                       beta,
+                       y,
+                       hipsparse::hipIndexBaseToCudaIndexBase(idxBase),
+                       pBuffer));
 }
 
 hipsparseStatus_t hipsparseDgemvi(hipsparseHandle_t    handle,
@@ -2590,20 +2700,21 @@ hipsparseStatus_t hipsparseDgemvi(hipsparseHandle_t    handle,
                                   hipsparseIndexBase_t idxBase,
                                   void*                pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDgemvi((cusparseHandle_t)handle,
-                                                       hipsparse::hipOperationToCudaOperation(transA),
-                                                       m,
-                                                       n,
-                                                       alpha,
-                                                       A,
-                                                       lda,
-                                                       nnz,
-                                                       x,
-                                                       xInd,
-                                                       beta,
-                                                       y,
-                                                       hipsparse::hipIndexBaseToCudaIndexBase(idxBase),
-                                                       pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDgemvi((cusparseHandle_t)handle,
+                       hipsparse::hipOperationToCudaOperation(transA),
+                       m,
+                       n,
+                       alpha,
+                       A,
+                       lda,
+                       nnz,
+                       x,
+                       xInd,
+                       beta,
+                       y,
+                       hipsparse::hipIndexBaseToCudaIndexBase(idxBase),
+                       pBuffer));
 }
 
 hipsparseStatus_t hipsparseCgemvi(hipsparseHandle_t    handle,
@@ -2621,20 +2732,21 @@ hipsparseStatus_t hipsparseCgemvi(hipsparseHandle_t    handle,
                                   hipsparseIndexBase_t idxBase,
                                   void*                pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCgemvi((cusparseHandle_t)handle,
-                                                       hipsparse::hipOperationToCudaOperation(transA),
-                                                       m,
-                                                       n,
-                                                       (const cuComplex*)alpha,
-                                                       (const cuComplex*)A,
-                                                       lda,
-                                                       nnz,
-                                                       (const cuComplex*)x,
-                                                       xInd,
-                                                       (const cuComplex*)beta,
-                                                       (cuComplex*)y,
-                                                       hipsparse::hipIndexBaseToCudaIndexBase(idxBase),
-                                                       pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCgemvi((cusparseHandle_t)handle,
+                       hipsparse::hipOperationToCudaOperation(transA),
+                       m,
+                       n,
+                       (const cuComplex*)alpha,
+                       (const cuComplex*)A,
+                       lda,
+                       nnz,
+                       (const cuComplex*)x,
+                       xInd,
+                       (const cuComplex*)beta,
+                       (cuComplex*)y,
+                       hipsparse::hipIndexBaseToCudaIndexBase(idxBase),
+                       pBuffer));
 }
 
 hipsparseStatus_t hipsparseZgemvi(hipsparseHandle_t       handle,
@@ -2652,20 +2764,21 @@ hipsparseStatus_t hipsparseZgemvi(hipsparseHandle_t       handle,
                                   hipsparseIndexBase_t    idxBase,
                                   void*                   pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseZgemvi((cusparseHandle_t)handle,
-                                                       hipsparse::hipOperationToCudaOperation(transA),
-                                                       m,
-                                                       n,
-                                                       (const cuDoubleComplex*)alpha,
-                                                       (const cuDoubleComplex*)A,
-                                                       lda,
-                                                       nnz,
-                                                       (const cuDoubleComplex*)x,
-                                                       xInd,
-                                                       (const cuDoubleComplex*)beta,
-                                                       (cuDoubleComplex*)y,
-                                                       hipsparse::hipIndexBaseToCudaIndexBase(idxBase),
-                                                       pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseZgemvi((cusparseHandle_t)handle,
+                       hipsparse::hipOperationToCudaOperation(transA),
+                       m,
+                       n,
+                       (const cuDoubleComplex*)alpha,
+                       (const cuDoubleComplex*)A,
+                       lda,
+                       nnz,
+                       (const cuDoubleComplex*)x,
+                       xInd,
+                       (const cuDoubleComplex*)beta,
+                       (cuDoubleComplex*)y,
+                       hipsparse::hipIndexBaseToCudaIndexBase(idxBase),
+                       pBuffer));
 }
 
 hipsparseStatus_t hipsparseSbsrmm(hipsparseHandle_t         handle,
@@ -2688,25 +2801,26 @@ hipsparseStatus_t hipsparseSbsrmm(hipsparseHandle_t         handle,
                                   float*                    C,
                                   int                       ldc)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSbsrmm((cusparseHandle_t)handle,
-                                                       hipsparse::hipDirectionToCudaDirection(dirA),
-                                                       hipsparse::hipOperationToCudaOperation(transA),
-                                                       hipsparse::hipOperationToCudaOperation(transB),
-                                                       mb,
-                                                       n,
-                                                       kb,
-                                                       nnzb,
-                                                       alpha,
-                                                       (const cusparseMatDescr_t)descrA,
-                                                       bsrValA,
-                                                       bsrRowPtrA,
-                                                       bsrColIndA,
-                                                       blockDim,
-                                                       B,
-                                                       ldb,
-                                                       beta,
-                                                       C,
-                                                       ldc));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSbsrmm((cusparseHandle_t)handle,
+                       hipsparse::hipDirectionToCudaDirection(dirA),
+                       hipsparse::hipOperationToCudaOperation(transA),
+                       hipsparse::hipOperationToCudaOperation(transB),
+                       mb,
+                       n,
+                       kb,
+                       nnzb,
+                       alpha,
+                       (const cusparseMatDescr_t)descrA,
+                       bsrValA,
+                       bsrRowPtrA,
+                       bsrColIndA,
+                       blockDim,
+                       B,
+                       ldb,
+                       beta,
+                       C,
+                       ldc));
 }
 
 hipsparseStatus_t hipsparseDbsrmm(hipsparseHandle_t         handle,
@@ -2729,25 +2843,26 @@ hipsparseStatus_t hipsparseDbsrmm(hipsparseHandle_t         handle,
                                   double*                   C,
                                   int                       ldc)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDbsrmm((cusparseHandle_t)handle,
-                                                       hipsparse::hipDirectionToCudaDirection(dirA),
-                                                       hipsparse::hipOperationToCudaOperation(transA),
-                                                       hipsparse::hipOperationToCudaOperation(transB),
-                                                       mb,
-                                                       n,
-                                                       kb,
-                                                       nnzb,
-                                                       alpha,
-                                                       (const cusparseMatDescr_t)descrA,
-                                                       bsrValA,
-                                                       bsrRowPtrA,
-                                                       bsrColIndA,
-                                                       blockDim,
-                                                       B,
-                                                       ldb,
-                                                       beta,
-                                                       C,
-                                                       ldc));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDbsrmm((cusparseHandle_t)handle,
+                       hipsparse::hipDirectionToCudaDirection(dirA),
+                       hipsparse::hipOperationToCudaOperation(transA),
+                       hipsparse::hipOperationToCudaOperation(transB),
+                       mb,
+                       n,
+                       kb,
+                       nnzb,
+                       alpha,
+                       (const cusparseMatDescr_t)descrA,
+                       bsrValA,
+                       bsrRowPtrA,
+                       bsrColIndA,
+                       blockDim,
+                       B,
+                       ldb,
+                       beta,
+                       C,
+                       ldc));
 }
 
 hipsparseStatus_t hipsparseCbsrmm(hipsparseHandle_t         handle,
@@ -2770,25 +2885,26 @@ hipsparseStatus_t hipsparseCbsrmm(hipsparseHandle_t         handle,
                                   hipComplex*               C,
                                   int                       ldc)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCbsrmm((cusparseHandle_t)handle,
-                                                       hipsparse::hipDirectionToCudaDirection(dirA),
-                                                       hipsparse::hipOperationToCudaOperation(transA),
-                                                       hipsparse::hipOperationToCudaOperation(transB),
-                                                       mb,
-                                                       n,
-                                                       kb,
-                                                       nnzb,
-                                                       (const cuComplex*)alpha,
-                                                       (const cusparseMatDescr_t)descrA,
-                                                       (const cuComplex*)bsrValA,
-                                                       bsrRowPtrA,
-                                                       bsrColIndA,
-                                                       blockDim,
-                                                       (const cuComplex*)B,
-                                                       ldb,
-                                                       (const cuComplex*)beta,
-                                                       (cuComplex*)C,
-                                                       ldc));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCbsrmm((cusparseHandle_t)handle,
+                       hipsparse::hipDirectionToCudaDirection(dirA),
+                       hipsparse::hipOperationToCudaOperation(transA),
+                       hipsparse::hipOperationToCudaOperation(transB),
+                       mb,
+                       n,
+                       kb,
+                       nnzb,
+                       (const cuComplex*)alpha,
+                       (const cusparseMatDescr_t)descrA,
+                       (const cuComplex*)bsrValA,
+                       bsrRowPtrA,
+                       bsrColIndA,
+                       blockDim,
+                       (const cuComplex*)B,
+                       ldb,
+                       (const cuComplex*)beta,
+                       (cuComplex*)C,
+                       ldc));
 }
 
 hipsparseStatus_t hipsparseZbsrmm(hipsparseHandle_t         handle,
@@ -2811,25 +2927,26 @@ hipsparseStatus_t hipsparseZbsrmm(hipsparseHandle_t         handle,
                                   hipDoubleComplex*         C,
                                   int                       ldc)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseZbsrmm((cusparseHandle_t)handle,
-                                                       hipsparse::hipDirectionToCudaDirection(dirA),
-                                                       hipsparse::hipOperationToCudaOperation(transA),
-                                                       hipsparse::hipOperationToCudaOperation(transB),
-                                                       mb,
-                                                       n,
-                                                       kb,
-                                                       nnzb,
-                                                       (const cuDoubleComplex*)alpha,
-                                                       (const cusparseMatDescr_t)descrA,
-                                                       (const cuDoubleComplex*)bsrValA,
-                                                       bsrRowPtrA,
-                                                       bsrColIndA,
-                                                       blockDim,
-                                                       (const cuDoubleComplex*)B,
-                                                       ldb,
-                                                       (const cuDoubleComplex*)beta,
-                                                       (cuDoubleComplex*)C,
-                                                       ldc));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseZbsrmm((cusparseHandle_t)handle,
+                       hipsparse::hipDirectionToCudaDirection(dirA),
+                       hipsparse::hipOperationToCudaOperation(transA),
+                       hipsparse::hipOperationToCudaOperation(transB),
+                       mb,
+                       n,
+                       kb,
+                       nnzb,
+                       (const cuDoubleComplex*)alpha,
+                       (const cusparseMatDescr_t)descrA,
+                       (const cuDoubleComplex*)bsrValA,
+                       bsrRowPtrA,
+                       bsrColIndA,
+                       blockDim,
+                       (const cuDoubleComplex*)B,
+                       ldb,
+                       (const cuDoubleComplex*)beta,
+                       (cuDoubleComplex*)C,
+                       ldc));
 }
 
 #if CUDART_VERSION < 11000
@@ -2850,22 +2967,23 @@ hipsparseStatus_t hipsparseScsrmm(hipsparseHandle_t         handle,
                                   float*                    C,
                                   int                       ldc)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseScsrmm((cusparseHandle_t)handle,
-                                                       hipsparse::hipOperationToCudaOperation(transA),
-                                                       m,
-                                                       n,
-                                                       k,
-                                                       nnz,
-                                                       alpha,
-                                                       (cusparseMatDescr_t)descrA,
-                                                       csrSortedValA,
-                                                       csrSortedRowPtrA,
-                                                       csrSortedColIndA,
-                                                       B,
-                                                       ldb,
-                                                       beta,
-                                                       C,
-                                                       ldc));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseScsrmm((cusparseHandle_t)handle,
+                       hipsparse::hipOperationToCudaOperation(transA),
+                       m,
+                       n,
+                       k,
+                       nnz,
+                       alpha,
+                       (cusparseMatDescr_t)descrA,
+                       csrSortedValA,
+                       csrSortedRowPtrA,
+                       csrSortedColIndA,
+                       B,
+                       ldb,
+                       beta,
+                       C,
+                       ldc));
 }
 
 hipsparseStatus_t hipsparseDcsrmm(hipsparseHandle_t         handle,
@@ -2885,22 +3003,23 @@ hipsparseStatus_t hipsparseDcsrmm(hipsparseHandle_t         handle,
                                   double*                   C,
                                   int                       ldc)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDcsrmm((cusparseHandle_t)handle,
-                                                       hipsparse::hipOperationToCudaOperation(transA),
-                                                       m,
-                                                       n,
-                                                       k,
-                                                       nnz,
-                                                       alpha,
-                                                       (cusparseMatDescr_t)descrA,
-                                                       csrSortedValA,
-                                                       csrSortedRowPtrA,
-                                                       csrSortedColIndA,
-                                                       B,
-                                                       ldb,
-                                                       beta,
-                                                       C,
-                                                       ldc));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDcsrmm((cusparseHandle_t)handle,
+                       hipsparse::hipOperationToCudaOperation(transA),
+                       m,
+                       n,
+                       k,
+                       nnz,
+                       alpha,
+                       (cusparseMatDescr_t)descrA,
+                       csrSortedValA,
+                       csrSortedRowPtrA,
+                       csrSortedColIndA,
+                       B,
+                       ldb,
+                       beta,
+                       C,
+                       ldc));
 }
 
 hipsparseStatus_t hipsparseCcsrmm(hipsparseHandle_t         handle,
@@ -2920,22 +3039,23 @@ hipsparseStatus_t hipsparseCcsrmm(hipsparseHandle_t         handle,
                                   hipComplex*               C,
                                   int                       ldc)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCcsrmm((cusparseHandle_t)handle,
-                                                       hipsparse::hipOperationToCudaOperation(transA),
-                                                       m,
-                                                       n,
-                                                       k,
-                                                       nnz,
-                                                       (const cuComplex*)alpha,
-                                                       (cusparseMatDescr_t)descrA,
-                                                       (const cuComplex*)csrSortedValA,
-                                                       csrSortedRowPtrA,
-                                                       csrSortedColIndA,
-                                                       (const cuComplex*)B,
-                                                       ldb,
-                                                       (const cuComplex*)beta,
-                                                       (cuComplex*)C,
-                                                       ldc));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCcsrmm((cusparseHandle_t)handle,
+                       hipsparse::hipOperationToCudaOperation(transA),
+                       m,
+                       n,
+                       k,
+                       nnz,
+                       (const cuComplex*)alpha,
+                       (cusparseMatDescr_t)descrA,
+                       (const cuComplex*)csrSortedValA,
+                       csrSortedRowPtrA,
+                       csrSortedColIndA,
+                       (const cuComplex*)B,
+                       ldb,
+                       (const cuComplex*)beta,
+                       (cuComplex*)C,
+                       ldc));
 }
 
 hipsparseStatus_t hipsparseZcsrmm(hipsparseHandle_t         handle,
@@ -2955,22 +3075,23 @@ hipsparseStatus_t hipsparseZcsrmm(hipsparseHandle_t         handle,
                                   hipDoubleComplex*         C,
                                   int                       ldc)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseZcsrmm((cusparseHandle_t)handle,
-                                                       hipsparse::hipOperationToCudaOperation(transA),
-                                                       m,
-                                                       n,
-                                                       k,
-                                                       nnz,
-                                                       (const cuDoubleComplex*)alpha,
-                                                       (cusparseMatDescr_t)descrA,
-                                                       (const cuDoubleComplex*)csrSortedValA,
-                                                       csrSortedRowPtrA,
-                                                       csrSortedColIndA,
-                                                       (const cuDoubleComplex*)B,
-                                                       ldb,
-                                                       (const cuDoubleComplex*)beta,
-                                                       (cuDoubleComplex*)C,
-                                                       ldc));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseZcsrmm((cusparseHandle_t)handle,
+                       hipsparse::hipOperationToCudaOperation(transA),
+                       m,
+                       n,
+                       k,
+                       nnz,
+                       (const cuDoubleComplex*)alpha,
+                       (cusparseMatDescr_t)descrA,
+                       (const cuDoubleComplex*)csrSortedValA,
+                       csrSortedRowPtrA,
+                       csrSortedColIndA,
+                       (const cuDoubleComplex*)B,
+                       ldb,
+                       (const cuDoubleComplex*)beta,
+                       (cuDoubleComplex*)C,
+                       ldc));
 }
 #endif
 
@@ -2993,23 +3114,24 @@ hipsparseStatus_t hipsparseScsrmm2(hipsparseHandle_t         handle,
                                    float*                    C,
                                    int                       ldc)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseScsrmm2((cusparseHandle_t)handle,
-                                                        hipsparse::hipOperationToCudaOperation(transA),
-                                                        hipsparse::hipOperationToCudaOperation(transB),
-                                                        m,
-                                                        n,
-                                                        k,
-                                                        nnz,
-                                                        alpha,
-                                                        (cusparseMatDescr_t)descrA,
-                                                        csrSortedValA,
-                                                        csrSortedRowPtrA,
-                                                        csrSortedColIndA,
-                                                        B,
-                                                        ldb,
-                                                        beta,
-                                                        C,
-                                                        ldc));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseScsrmm2((cusparseHandle_t)handle,
+                        hipsparse::hipOperationToCudaOperation(transA),
+                        hipsparse::hipOperationToCudaOperation(transB),
+                        m,
+                        n,
+                        k,
+                        nnz,
+                        alpha,
+                        (cusparseMatDescr_t)descrA,
+                        csrSortedValA,
+                        csrSortedRowPtrA,
+                        csrSortedColIndA,
+                        B,
+                        ldb,
+                        beta,
+                        C,
+                        ldc));
 }
 
 hipsparseStatus_t hipsparseDcsrmm2(hipsparseHandle_t         handle,
@@ -3030,23 +3152,24 @@ hipsparseStatus_t hipsparseDcsrmm2(hipsparseHandle_t         handle,
                                    double*                   C,
                                    int                       ldc)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDcsrmm2((cusparseHandle_t)handle,
-                                                        hipsparse::hipOperationToCudaOperation(transA),
-                                                        hipsparse::hipOperationToCudaOperation(transB),
-                                                        m,
-                                                        n,
-                                                        k,
-                                                        nnz,
-                                                        alpha,
-                                                        (cusparseMatDescr_t)descrA,
-                                                        csrSortedValA,
-                                                        csrSortedRowPtrA,
-                                                        csrSortedColIndA,
-                                                        B,
-                                                        ldb,
-                                                        beta,
-                                                        C,
-                                                        ldc));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDcsrmm2((cusparseHandle_t)handle,
+                        hipsparse::hipOperationToCudaOperation(transA),
+                        hipsparse::hipOperationToCudaOperation(transB),
+                        m,
+                        n,
+                        k,
+                        nnz,
+                        alpha,
+                        (cusparseMatDescr_t)descrA,
+                        csrSortedValA,
+                        csrSortedRowPtrA,
+                        csrSortedColIndA,
+                        B,
+                        ldb,
+                        beta,
+                        C,
+                        ldc));
 }
 
 hipsparseStatus_t hipsparseCcsrmm2(hipsparseHandle_t         handle,
@@ -3067,23 +3190,24 @@ hipsparseStatus_t hipsparseCcsrmm2(hipsparseHandle_t         handle,
                                    hipComplex*               C,
                                    int                       ldc)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCcsrmm2((cusparseHandle_t)handle,
-                                                        hipsparse::hipOperationToCudaOperation(transA),
-                                                        hipsparse::hipOperationToCudaOperation(transB),
-                                                        m,
-                                                        n,
-                                                        k,
-                                                        nnz,
-                                                        (const cuComplex*)alpha,
-                                                        (cusparseMatDescr_t)descrA,
-                                                        (const cuComplex*)csrSortedValA,
-                                                        csrSortedRowPtrA,
-                                                        csrSortedColIndA,
-                                                        (const cuComplex*)B,
-                                                        ldb,
-                                                        (const cuComplex*)beta,
-                                                        (cuComplex*)C,
-                                                        ldc));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCcsrmm2((cusparseHandle_t)handle,
+                        hipsparse::hipOperationToCudaOperation(transA),
+                        hipsparse::hipOperationToCudaOperation(transB),
+                        m,
+                        n,
+                        k,
+                        nnz,
+                        (const cuComplex*)alpha,
+                        (cusparseMatDescr_t)descrA,
+                        (const cuComplex*)csrSortedValA,
+                        csrSortedRowPtrA,
+                        csrSortedColIndA,
+                        (const cuComplex*)B,
+                        ldb,
+                        (const cuComplex*)beta,
+                        (cuComplex*)C,
+                        ldc));
 }
 
 hipsparseStatus_t hipsparseZcsrmm2(hipsparseHandle_t         handle,
@@ -3104,23 +3228,24 @@ hipsparseStatus_t hipsparseZcsrmm2(hipsparseHandle_t         handle,
                                    hipDoubleComplex*         C,
                                    int                       ldc)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseZcsrmm2((cusparseHandle_t)handle,
-                                                        hipsparse::hipOperationToCudaOperation(transA),
-                                                        hipsparse::hipOperationToCudaOperation(transB),
-                                                        m,
-                                                        n,
-                                                        k,
-                                                        nnz,
-                                                        (const cuDoubleComplex*)alpha,
-                                                        (cusparseMatDescr_t)descrA,
-                                                        (const cuDoubleComplex*)csrSortedValA,
-                                                        csrSortedRowPtrA,
-                                                        csrSortedColIndA,
-                                                        (const cuDoubleComplex*)B,
-                                                        ldb,
-                                                        (const cuDoubleComplex*)beta,
-                                                        (cuDoubleComplex*)C,
-                                                        ldc));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseZcsrmm2((cusparseHandle_t)handle,
+                        hipsparse::hipOperationToCudaOperation(transA),
+                        hipsparse::hipOperationToCudaOperation(transB),
+                        m,
+                        n,
+                        k,
+                        nnz,
+                        (const cuDoubleComplex*)alpha,
+                        (cusparseMatDescr_t)descrA,
+                        (const cuDoubleComplex*)csrSortedValA,
+                        csrSortedRowPtrA,
+                        csrSortedColIndA,
+                        (const cuDoubleComplex*)B,
+                        ldb,
+                        (const cuDoubleComplex*)beta,
+                        (cuDoubleComplex*)C,
+                        ldc));
 }
 #endif
 
@@ -3423,26 +3548,27 @@ hipsparseStatus_t hipsparseSbsrsm2_solve(hipsparseHandle_t         handle,
                                          hipsparseSolvePolicy_t    policy,
                                          void*                     pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSbsrsm2_solve((cusparseHandle_t)handle,
-                                                              hipsparse::hipDirectionToCudaDirection(dirA),
-                                                              hipsparse::hipOperationToCudaOperation(transA),
-                                                              hipsparse::hipOperationToCudaOperation(transX),
-                                                              mb,
-                                                              nrhs,
-                                                              nnzb,
-                                                              alpha,
-                                                              (const cusparseMatDescr_t)descrA,
-                                                              bsrSortedValA,
-                                                              bsrSortedRowPtrA,
-                                                              bsrSortedColIndA,
-                                                              blockDim,
-                                                              (bsrsm2Info_t)info,
-                                                              B,
-                                                              ldb,
-                                                              X,
-                                                              ldx,
-                                                              hipsparse::hipPolicyToCudaPolicy(policy),
-                                                              pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSbsrsm2_solve((cusparseHandle_t)handle,
+                              hipsparse::hipDirectionToCudaDirection(dirA),
+                              hipsparse::hipOperationToCudaOperation(transA),
+                              hipsparse::hipOperationToCudaOperation(transX),
+                              mb,
+                              nrhs,
+                              nnzb,
+                              alpha,
+                              (const cusparseMatDescr_t)descrA,
+                              bsrSortedValA,
+                              bsrSortedRowPtrA,
+                              bsrSortedColIndA,
+                              blockDim,
+                              (bsrsm2Info_t)info,
+                              B,
+                              ldb,
+                              X,
+                              ldx,
+                              hipsparse::hipPolicyToCudaPolicy(policy),
+                              pBuffer));
 }
 
 hipsparseStatus_t hipsparseDbsrsm2_solve(hipsparseHandle_t         handle,
@@ -3466,26 +3592,27 @@ hipsparseStatus_t hipsparseDbsrsm2_solve(hipsparseHandle_t         handle,
                                          hipsparseSolvePolicy_t    policy,
                                          void*                     pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDbsrsm2_solve((cusparseHandle_t)handle,
-                                                              hipsparse::hipDirectionToCudaDirection(dirA),
-                                                              hipsparse::hipOperationToCudaOperation(transA),
-                                                              hipsparse::hipOperationToCudaOperation(transX),
-                                                              mb,
-                                                              nrhs,
-                                                              nnzb,
-                                                              alpha,
-                                                              (const cusparseMatDescr_t)descrA,
-                                                              bsrSortedValA,
-                                                              bsrSortedRowPtrA,
-                                                              bsrSortedColIndA,
-                                                              blockDim,
-                                                              (bsrsm2Info_t)info,
-                                                              B,
-                                                              ldb,
-                                                              X,
-                                                              ldx,
-                                                              hipsparse::hipPolicyToCudaPolicy(policy),
-                                                              pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDbsrsm2_solve((cusparseHandle_t)handle,
+                              hipsparse::hipDirectionToCudaDirection(dirA),
+                              hipsparse::hipOperationToCudaOperation(transA),
+                              hipsparse::hipOperationToCudaOperation(transX),
+                              mb,
+                              nrhs,
+                              nnzb,
+                              alpha,
+                              (const cusparseMatDescr_t)descrA,
+                              bsrSortedValA,
+                              bsrSortedRowPtrA,
+                              bsrSortedColIndA,
+                              blockDim,
+                              (bsrsm2Info_t)info,
+                              B,
+                              ldb,
+                              X,
+                              ldx,
+                              hipsparse::hipPolicyToCudaPolicy(policy),
+                              pBuffer));
 }
 
 hipsparseStatus_t hipsparseCbsrsm2_solve(hipsparseHandle_t         handle,
@@ -3509,26 +3636,27 @@ hipsparseStatus_t hipsparseCbsrsm2_solve(hipsparseHandle_t         handle,
                                          hipsparseSolvePolicy_t    policy,
                                          void*                     pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCbsrsm2_solve((cusparseHandle_t)handle,
-                                                              hipsparse::hipDirectionToCudaDirection(dirA),
-                                                              hipsparse::hipOperationToCudaOperation(transA),
-                                                              hipsparse::hipOperationToCudaOperation(transX),
-                                                              mb,
-                                                              nrhs,
-                                                              nnzb,
-                                                              (const cuComplex*)alpha,
-                                                              (const cusparseMatDescr_t)descrA,
-                                                              (const cuComplex*)bsrSortedValA,
-                                                              bsrSortedRowPtrA,
-                                                              bsrSortedColIndA,
-                                                              blockDim,
-                                                              (bsrsm2Info_t)info,
-                                                              (const cuComplex*)B,
-                                                              ldb,
-                                                              (cuComplex*)X,
-                                                              ldx,
-                                                              hipsparse::hipPolicyToCudaPolicy(policy),
-                                                              pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCbsrsm2_solve((cusparseHandle_t)handle,
+                              hipsparse::hipDirectionToCudaDirection(dirA),
+                              hipsparse::hipOperationToCudaOperation(transA),
+                              hipsparse::hipOperationToCudaOperation(transX),
+                              mb,
+                              nrhs,
+                              nnzb,
+                              (const cuComplex*)alpha,
+                              (const cusparseMatDescr_t)descrA,
+                              (const cuComplex*)bsrSortedValA,
+                              bsrSortedRowPtrA,
+                              bsrSortedColIndA,
+                              blockDim,
+                              (bsrsm2Info_t)info,
+                              (const cuComplex*)B,
+                              ldb,
+                              (cuComplex*)X,
+                              ldx,
+                              hipsparse::hipPolicyToCudaPolicy(policy),
+                              pBuffer));
 }
 
 hipsparseStatus_t hipsparseZbsrsm2_solve(hipsparseHandle_t         handle,
@@ -3552,26 +3680,27 @@ hipsparseStatus_t hipsparseZbsrsm2_solve(hipsparseHandle_t         handle,
                                          hipsparseSolvePolicy_t    policy,
                                          void*                     pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseZbsrsm2_solve((cusparseHandle_t)handle,
-                                                              hipsparse::hipDirectionToCudaDirection(dirA),
-                                                              hipsparse::hipOperationToCudaOperation(transA),
-                                                              hipsparse::hipOperationToCudaOperation(transX),
-                                                              mb,
-                                                              nrhs,
-                                                              nnzb,
-                                                              (const cuDoubleComplex*)alpha,
-                                                              (const cusparseMatDescr_t)descrA,
-                                                              (const cuDoubleComplex*)bsrSortedValA,
-                                                              bsrSortedRowPtrA,
-                                                              bsrSortedColIndA,
-                                                              blockDim,
-                                                              (bsrsm2Info_t)info,
-                                                              (const cuDoubleComplex*)B,
-                                                              ldb,
-                                                              (cuDoubleComplex*)X,
-                                                              ldx,
-                                                              hipsparse::hipPolicyToCudaPolicy(policy),
-                                                              pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseZbsrsm2_solve((cusparseHandle_t)handle,
+                              hipsparse::hipDirectionToCudaDirection(dirA),
+                              hipsparse::hipOperationToCudaOperation(transA),
+                              hipsparse::hipOperationToCudaOperation(transX),
+                              mb,
+                              nrhs,
+                              nnzb,
+                              (const cuDoubleComplex*)alpha,
+                              (const cusparseMatDescr_t)descrA,
+                              (const cuDoubleComplex*)bsrSortedValA,
+                              bsrSortedRowPtrA,
+                              bsrSortedColIndA,
+                              blockDim,
+                              (bsrsm2Info_t)info,
+                              (const cuDoubleComplex*)B,
+                              ldb,
+                              (cuDoubleComplex*)X,
+                              ldx,
+                              hipsparse::hipPolicyToCudaPolicy(policy),
+                              pBuffer));
 }
 #endif
 
@@ -3911,23 +4040,24 @@ hipsparseStatus_t hipsparseScsrsm2_solve(hipsparseHandle_t         handle,
                                          hipsparseSolvePolicy_t    policy,
                                          void*                     pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseScsrsm2_solve((cusparseHandle_t)handle,
-                                                              algo,
-                                                              hipsparse::hipOperationToCudaOperation(transA),
-                                                              hipsparse::hipOperationToCudaOperation(transB),
-                                                              m,
-                                                              nrhs,
-                                                              nnz,
-                                                              alpha,
-                                                              (const cusparseMatDescr_t)descrA,
-                                                              csrSortedValA,
-                                                              csrSortedRowPtrA,
-                                                              csrSortedColIndA,
-                                                              B,
-                                                              ldb,
-                                                              (csrsm2Info_t)info,
-                                                              hipsparse::hipPolicyToCudaPolicy(policy),
-                                                              pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseScsrsm2_solve((cusparseHandle_t)handle,
+                              algo,
+                              hipsparse::hipOperationToCudaOperation(transA),
+                              hipsparse::hipOperationToCudaOperation(transB),
+                              m,
+                              nrhs,
+                              nnz,
+                              alpha,
+                              (const cusparseMatDescr_t)descrA,
+                              csrSortedValA,
+                              csrSortedRowPtrA,
+                              csrSortedColIndA,
+                              B,
+                              ldb,
+                              (csrsm2Info_t)info,
+                              hipsparse::hipPolicyToCudaPolicy(policy),
+                              pBuffer));
 }
 
 hipsparseStatus_t hipsparseDcsrsm2_solve(hipsparseHandle_t         handle,
@@ -3948,23 +4078,24 @@ hipsparseStatus_t hipsparseDcsrsm2_solve(hipsparseHandle_t         handle,
                                          hipsparseSolvePolicy_t    policy,
                                          void*                     pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDcsrsm2_solve((cusparseHandle_t)handle,
-                                                              algo,
-                                                              hipsparse::hipOperationToCudaOperation(transA),
-                                                              hipsparse::hipOperationToCudaOperation(transB),
-                                                              m,
-                                                              nrhs,
-                                                              nnz,
-                                                              alpha,
-                                                              (const cusparseMatDescr_t)descrA,
-                                                              csrSortedValA,
-                                                              csrSortedRowPtrA,
-                                                              csrSortedColIndA,
-                                                              B,
-                                                              ldb,
-                                                              (csrsm2Info_t)info,
-                                                              hipsparse::hipPolicyToCudaPolicy(policy),
-                                                              pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDcsrsm2_solve((cusparseHandle_t)handle,
+                              algo,
+                              hipsparse::hipOperationToCudaOperation(transA),
+                              hipsparse::hipOperationToCudaOperation(transB),
+                              m,
+                              nrhs,
+                              nnz,
+                              alpha,
+                              (const cusparseMatDescr_t)descrA,
+                              csrSortedValA,
+                              csrSortedRowPtrA,
+                              csrSortedColIndA,
+                              B,
+                              ldb,
+                              (csrsm2Info_t)info,
+                              hipsparse::hipPolicyToCudaPolicy(policy),
+                              pBuffer));
 }
 
 hipsparseStatus_t hipsparseCcsrsm2_solve(hipsparseHandle_t         handle,
@@ -3985,23 +4116,24 @@ hipsparseStatus_t hipsparseCcsrsm2_solve(hipsparseHandle_t         handle,
                                          hipsparseSolvePolicy_t    policy,
                                          void*                     pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCcsrsm2_solve((cusparseHandle_t)handle,
-                                                              algo,
-                                                              hipsparse::hipOperationToCudaOperation(transA),
-                                                              hipsparse::hipOperationToCudaOperation(transB),
-                                                              m,
-                                                              nrhs,
-                                                              nnz,
-                                                              (const cuComplex*)alpha,
-                                                              (const cusparseMatDescr_t)descrA,
-                                                              (const cuComplex*)csrSortedValA,
-                                                              csrSortedRowPtrA,
-                                                              csrSortedColIndA,
-                                                              (cuComplex*)B,
-                                                              ldb,
-                                                              (csrsm2Info_t)info,
-                                                              hipsparse::hipPolicyToCudaPolicy(policy),
-                                                              pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCcsrsm2_solve((cusparseHandle_t)handle,
+                              algo,
+                              hipsparse::hipOperationToCudaOperation(transA),
+                              hipsparse::hipOperationToCudaOperation(transB),
+                              m,
+                              nrhs,
+                              nnz,
+                              (const cuComplex*)alpha,
+                              (const cusparseMatDescr_t)descrA,
+                              (const cuComplex*)csrSortedValA,
+                              csrSortedRowPtrA,
+                              csrSortedColIndA,
+                              (cuComplex*)B,
+                              ldb,
+                              (csrsm2Info_t)info,
+                              hipsparse::hipPolicyToCudaPolicy(policy),
+                              pBuffer));
 }
 
 hipsparseStatus_t hipsparseZcsrsm2_solve(hipsparseHandle_t         handle,
@@ -4022,23 +4154,24 @@ hipsparseStatus_t hipsparseZcsrsm2_solve(hipsparseHandle_t         handle,
                                          hipsparseSolvePolicy_t    policy,
                                          void*                     pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseZcsrsm2_solve((cusparseHandle_t)handle,
-                                                              algo,
-                                                              hipsparse::hipOperationToCudaOperation(transA),
-                                                              hipsparse::hipOperationToCudaOperation(transB),
-                                                              m,
-                                                              nrhs,
-                                                              nnz,
-                                                              (const cuDoubleComplex*)alpha,
-                                                              (const cusparseMatDescr_t)descrA,
-                                                              (const cuDoubleComplex*)csrSortedValA,
-                                                              csrSortedRowPtrA,
-                                                              csrSortedColIndA,
-                                                              (cuDoubleComplex*)B,
-                                                              ldb,
-                                                              (csrsm2Info_t)info,
-                                                              hipsparse::hipPolicyToCudaPolicy(policy),
-                                                              pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseZcsrsm2_solve((cusparseHandle_t)handle,
+                              algo,
+                              hipsparse::hipOperationToCudaOperation(transA),
+                              hipsparse::hipOperationToCudaOperation(transB),
+                              m,
+                              nrhs,
+                              nnz,
+                              (const cuDoubleComplex*)alpha,
+                              (const cusparseMatDescr_t)descrA,
+                              (const cuDoubleComplex*)csrSortedValA,
+                              csrSortedRowPtrA,
+                              csrSortedColIndA,
+                              (cuDoubleComplex*)B,
+                              ldb,
+                              (csrsm2Info_t)info,
+                              hipsparse::hipPolicyToCudaPolicy(policy),
+                              pBuffer));
 }
 #endif
 
@@ -4059,19 +4192,19 @@ hipsparseStatus_t hipsparseSgemmi(hipsparseHandle_t handle,
                                   int               ldc)
 {
     return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSgemmi((cusparseHandle_t)handle,
-                                                       m,
-                                                       n,
-                                                       k,
-                                                       nnz,
-                                                       alpha,
-                                                       A,
-                                                       lda,
-                                                       cscValB,
-                                                       cscColPtrB,
-                                                       cscRowIndB,
-                                                       beta,
-                                                       C,
-                                                       ldc));
+                                                                  m,
+                                                                  n,
+                                                                  k,
+                                                                  nnz,
+                                                                  alpha,
+                                                                  A,
+                                                                  lda,
+                                                                  cscValB,
+                                                                  cscColPtrB,
+                                                                  cscRowIndB,
+                                                                  beta,
+                                                                  C,
+                                                                  ldc));
 }
 
 hipsparseStatus_t hipsparseDgemmi(hipsparseHandle_t handle,
@@ -4090,19 +4223,19 @@ hipsparseStatus_t hipsparseDgemmi(hipsparseHandle_t handle,
                                   int               ldc)
 {
     return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDgemmi((cusparseHandle_t)handle,
-                                                       m,
-                                                       n,
-                                                       k,
-                                                       nnz,
-                                                       alpha,
-                                                       A,
-                                                       lda,
-                                                       cscValB,
-                                                       cscColPtrB,
-                                                       cscRowIndB,
-                                                       beta,
-                                                       C,
-                                                       ldc));
+                                                                  m,
+                                                                  n,
+                                                                  k,
+                                                                  nnz,
+                                                                  alpha,
+                                                                  A,
+                                                                  lda,
+                                                                  cscValB,
+                                                                  cscColPtrB,
+                                                                  cscRowIndB,
+                                                                  beta,
+                                                                  C,
+                                                                  ldc));
 }
 
 hipsparseStatus_t hipsparseCgemmi(hipsparseHandle_t handle,
@@ -4121,19 +4254,19 @@ hipsparseStatus_t hipsparseCgemmi(hipsparseHandle_t handle,
                                   int               ldc)
 {
     return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCgemmi((cusparseHandle_t)handle,
-                                                       m,
-                                                       n,
-                                                       k,
-                                                       nnz,
-                                                       (const cuComplex*)alpha,
-                                                       (const cuComplex*)A,
-                                                       lda,
-                                                       (const cuComplex*)cscValB,
-                                                       cscColPtrB,
-                                                       cscRowIndB,
-                                                       (const cuComplex*)beta,
-                                                       (cuComplex*)C,
-                                                       ldc));
+                                                                  m,
+                                                                  n,
+                                                                  k,
+                                                                  nnz,
+                                                                  (const cuComplex*)alpha,
+                                                                  (const cuComplex*)A,
+                                                                  lda,
+                                                                  (const cuComplex*)cscValB,
+                                                                  cscColPtrB,
+                                                                  cscRowIndB,
+                                                                  (const cuComplex*)beta,
+                                                                  (cuComplex*)C,
+                                                                  ldc));
 }
 
 hipsparseStatus_t hipsparseZgemmi(hipsparseHandle_t       handle,
@@ -4152,19 +4285,19 @@ hipsparseStatus_t hipsparseZgemmi(hipsparseHandle_t       handle,
                                   int                     ldc)
 {
     return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseZgemmi((cusparseHandle_t)handle,
-                                                       m,
-                                                       n,
-                                                       k,
-                                                       nnz,
-                                                       (const cuDoubleComplex*)alpha,
-                                                       (const cuDoubleComplex*)A,
-                                                       lda,
-                                                       (const cuDoubleComplex*)cscValB,
-                                                       cscColPtrB,
-                                                       cscRowIndB,
-                                                       (const cuDoubleComplex*)beta,
-                                                       (cuDoubleComplex*)C,
-                                                       ldc));
+                                                                  m,
+                                                                  n,
+                                                                  k,
+                                                                  nnz,
+                                                                  (const cuDoubleComplex*)alpha,
+                                                                  (const cuDoubleComplex*)A,
+                                                                  lda,
+                                                                  (const cuDoubleComplex*)cscValB,
+                                                                  cscColPtrB,
+                                                                  cscRowIndB,
+                                                                  (const cuDoubleComplex*)beta,
+                                                                  (cuDoubleComplex*)C,
+                                                                  ldc));
 }
 #endif
 
@@ -4184,20 +4317,21 @@ hipsparseStatus_t hipsparseXcsrgeamNnz(hipsparseHandle_t         handle,
                                        int*                      csrRowPtrC,
                                        int*                      nnzTotalDevHostPtr)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseXcsrgeamNnz((cusparseHandle_t)handle,
-                                                            m,
-                                                            n,
-                                                            (const cusparseMatDescr_t)descrA,
-                                                            nnzA,
-                                                            csrRowPtrA,
-                                                            csrColIndA,
-                                                            (const cusparseMatDescr_t)descrB,
-                                                            nnzB,
-                                                            csrRowPtrB,
-                                                            csrColIndB,
-                                                            (const cusparseMatDescr_t)descrC,
-                                                            csrRowPtrC,
-                                                            nnzTotalDevHostPtr));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseXcsrgeamNnz((cusparseHandle_t)handle,
+                            m,
+                            n,
+                            (const cusparseMatDescr_t)descrA,
+                            nnzA,
+                            csrRowPtrA,
+                            csrColIndA,
+                            (const cusparseMatDescr_t)descrB,
+                            nnzB,
+                            csrRowPtrB,
+                            csrColIndB,
+                            (const cusparseMatDescr_t)descrC,
+                            csrRowPtrC,
+                            nnzTotalDevHostPtr));
 }
 
 hipsparseStatus_t hipsparseScsrgeam(hipsparseHandle_t         handle,
@@ -4220,25 +4354,26 @@ hipsparseStatus_t hipsparseScsrgeam(hipsparseHandle_t         handle,
                                     int*                      csrRowPtrC,
                                     int*                      csrColIndC)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseScsrgeam((cusparseHandle_t)handle,
-                                                         m,
-                                                         n,
-                                                         alpha,
-                                                         (const cusparseMatDescr_t)descrA,
-                                                         nnzA,
-                                                         csrValA,
-                                                         csrRowPtrA,
-                                                         csrColIndA,
-                                                         beta,
-                                                         (const cusparseMatDescr_t)descrB,
-                                                         nnzB,
-                                                         csrValB,
-                                                         csrRowPtrB,
-                                                         csrColIndB,
-                                                         (const cusparseMatDescr_t)descrC,
-                                                         csrValC,
-                                                         csrRowPtrC,
-                                                         csrColIndC));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseScsrgeam((cusparseHandle_t)handle,
+                         m,
+                         n,
+                         alpha,
+                         (const cusparseMatDescr_t)descrA,
+                         nnzA,
+                         csrValA,
+                         csrRowPtrA,
+                         csrColIndA,
+                         beta,
+                         (const cusparseMatDescr_t)descrB,
+                         nnzB,
+                         csrValB,
+                         csrRowPtrB,
+                         csrColIndB,
+                         (const cusparseMatDescr_t)descrC,
+                         csrValC,
+                         csrRowPtrC,
+                         csrColIndC));
 }
 
 hipsparseStatus_t hipsparseDcsrgeam(hipsparseHandle_t         handle,
@@ -4261,25 +4396,26 @@ hipsparseStatus_t hipsparseDcsrgeam(hipsparseHandle_t         handle,
                                     int*                      csrRowPtrC,
                                     int*                      csrColIndC)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDcsrgeam((cusparseHandle_t)handle,
-                                                         m,
-                                                         n,
-                                                         alpha,
-                                                         (const cusparseMatDescr_t)descrA,
-                                                         nnzA,
-                                                         csrValA,
-                                                         csrRowPtrA,
-                                                         csrColIndA,
-                                                         beta,
-                                                         (const cusparseMatDescr_t)descrB,
-                                                         nnzB,
-                                                         csrValB,
-                                                         csrRowPtrB,
-                                                         csrColIndB,
-                                                         (const cusparseMatDescr_t)descrC,
-                                                         csrValC,
-                                                         csrRowPtrC,
-                                                         csrColIndC));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDcsrgeam((cusparseHandle_t)handle,
+                         m,
+                         n,
+                         alpha,
+                         (const cusparseMatDescr_t)descrA,
+                         nnzA,
+                         csrValA,
+                         csrRowPtrA,
+                         csrColIndA,
+                         beta,
+                         (const cusparseMatDescr_t)descrB,
+                         nnzB,
+                         csrValB,
+                         csrRowPtrB,
+                         csrColIndB,
+                         (const cusparseMatDescr_t)descrC,
+                         csrValC,
+                         csrRowPtrC,
+                         csrColIndC));
 }
 
 hipsparseStatus_t hipsparseCcsrgeam(hipsparseHandle_t         handle,
@@ -4302,25 +4438,26 @@ hipsparseStatus_t hipsparseCcsrgeam(hipsparseHandle_t         handle,
                                     int*                      csrRowPtrC,
                                     int*                      csrColIndC)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCcsrgeam((cusparseHandle_t)handle,
-                                                         m,
-                                                         n,
-                                                         (const cuComplex*)alpha,
-                                                         (const cusparseMatDescr_t)descrA,
-                                                         nnzA,
-                                                         (const cuComplex*)csrValA,
-                                                         csrRowPtrA,
-                                                         csrColIndA,
-                                                         (const cuComplex*)beta,
-                                                         (const cusparseMatDescr_t)descrB,
-                                                         nnzB,
-                                                         (const cuComplex*)csrValB,
-                                                         csrRowPtrB,
-                                                         csrColIndB,
-                                                         (const cusparseMatDescr_t)descrC,
-                                                         (cuComplex*)csrValC,
-                                                         csrRowPtrC,
-                                                         csrColIndC));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCcsrgeam((cusparseHandle_t)handle,
+                         m,
+                         n,
+                         (const cuComplex*)alpha,
+                         (const cusparseMatDescr_t)descrA,
+                         nnzA,
+                         (const cuComplex*)csrValA,
+                         csrRowPtrA,
+                         csrColIndA,
+                         (const cuComplex*)beta,
+                         (const cusparseMatDescr_t)descrB,
+                         nnzB,
+                         (const cuComplex*)csrValB,
+                         csrRowPtrB,
+                         csrColIndB,
+                         (const cusparseMatDescr_t)descrC,
+                         (cuComplex*)csrValC,
+                         csrRowPtrC,
+                         csrColIndC));
 }
 
 hipsparseStatus_t hipsparseZcsrgeam(hipsparseHandle_t         handle,
@@ -4343,25 +4480,26 @@ hipsparseStatus_t hipsparseZcsrgeam(hipsparseHandle_t         handle,
                                     int*                      csrRowPtrC,
                                     int*                      csrColIndC)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseZcsrgeam((cusparseHandle_t)handle,
-                                                         m,
-                                                         n,
-                                                         (const cuDoubleComplex*)alpha,
-                                                         (const cusparseMatDescr_t)descrA,
-                                                         nnzA,
-                                                         (const cuDoubleComplex*)csrValA,
-                                                         csrRowPtrA,
-                                                         csrColIndA,
-                                                         (const cuDoubleComplex*)beta,
-                                                         (const cusparseMatDescr_t)descrB,
-                                                         nnzB,
-                                                         (const cuDoubleComplex*)csrValB,
-                                                         csrRowPtrB,
-                                                         csrColIndB,
-                                                         (const cusparseMatDescr_t)descrC,
-                                                         (cuDoubleComplex*)csrValC,
-                                                         csrRowPtrC,
-                                                         csrColIndC));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseZcsrgeam((cusparseHandle_t)handle,
+                         m,
+                         n,
+                         (const cuDoubleComplex*)alpha,
+                         (const cusparseMatDescr_t)descrA,
+                         nnzA,
+                         (const cuDoubleComplex*)csrValA,
+                         csrRowPtrA,
+                         csrColIndA,
+                         (const cuDoubleComplex*)beta,
+                         (const cusparseMatDescr_t)descrB,
+                         nnzB,
+                         (const cuDoubleComplex*)csrValB,
+                         csrRowPtrB,
+                         csrColIndB,
+                         (const cusparseMatDescr_t)descrC,
+                         (cuDoubleComplex*)csrValC,
+                         csrRowPtrC,
+                         csrColIndC));
 }
 #endif
 
@@ -4557,21 +4695,22 @@ hipsparseStatus_t hipsparseXcsrgeam2Nnz(hipsparseHandle_t         handle,
                                         int*                      nnzTotalDevHostPtr,
                                         void*                     workspace)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseXcsrgeam2Nnz((cusparseHandle_t)handle,
-                                                             m,
-                                                             n,
-                                                             (const cusparseMatDescr_t)descrA,
-                                                             nnzA,
-                                                             csrSortedRowPtrA,
-                                                             csrSortedColIndA,
-                                                             (const cusparseMatDescr_t)descrB,
-                                                             nnzB,
-                                                             csrSortedRowPtrB,
-                                                             csrSortedColIndB,
-                                                             (const cusparseMatDescr_t)descrC,
-                                                             csrSortedRowPtrC,
-                                                             nnzTotalDevHostPtr,
-                                                             workspace));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseXcsrgeam2Nnz((cusparseHandle_t)handle,
+                             m,
+                             n,
+                             (const cusparseMatDescr_t)descrA,
+                             nnzA,
+                             csrSortedRowPtrA,
+                             csrSortedColIndA,
+                             (const cusparseMatDescr_t)descrB,
+                             nnzB,
+                             csrSortedRowPtrB,
+                             csrSortedColIndB,
+                             (const cusparseMatDescr_t)descrC,
+                             csrSortedRowPtrC,
+                             nnzTotalDevHostPtr,
+                             workspace));
 }
 
 hipsparseStatus_t hipsparseScsrgeam2(hipsparseHandle_t         handle,
@@ -4595,26 +4734,27 @@ hipsparseStatus_t hipsparseScsrgeam2(hipsparseHandle_t         handle,
                                      int*                      csrSortedColIndC,
                                      void*                     pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseScsrgeam2((cusparseHandle_t)handle,
-                                                          m,
-                                                          n,
-                                                          alpha,
-                                                          (const cusparseMatDescr_t)descrA,
-                                                          nnzA,
-                                                          csrSortedValA,
-                                                          csrSortedRowPtrA,
-                                                          csrSortedColIndA,
-                                                          beta,
-                                                          (const cusparseMatDescr_t)descrB,
-                                                          nnzB,
-                                                          csrSortedValB,
-                                                          csrSortedRowPtrB,
-                                                          csrSortedColIndB,
-                                                          (const cusparseMatDescr_t)descrC,
-                                                          csrSortedValC,
-                                                          csrSortedRowPtrC,
-                                                          csrSortedColIndC,
-                                                          pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseScsrgeam2((cusparseHandle_t)handle,
+                          m,
+                          n,
+                          alpha,
+                          (const cusparseMatDescr_t)descrA,
+                          nnzA,
+                          csrSortedValA,
+                          csrSortedRowPtrA,
+                          csrSortedColIndA,
+                          beta,
+                          (const cusparseMatDescr_t)descrB,
+                          nnzB,
+                          csrSortedValB,
+                          csrSortedRowPtrB,
+                          csrSortedColIndB,
+                          (const cusparseMatDescr_t)descrC,
+                          csrSortedValC,
+                          csrSortedRowPtrC,
+                          csrSortedColIndC,
+                          pBuffer));
 }
 
 hipsparseStatus_t hipsparseDcsrgeam2(hipsparseHandle_t         handle,
@@ -4638,26 +4778,27 @@ hipsparseStatus_t hipsparseDcsrgeam2(hipsparseHandle_t         handle,
                                      int*                      csrSortedColIndC,
                                      void*                     pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDcsrgeam2((cusparseHandle_t)handle,
-                                                          m,
-                                                          n,
-                                                          alpha,
-                                                          (const cusparseMatDescr_t)descrA,
-                                                          nnzA,
-                                                          csrSortedValA,
-                                                          csrSortedRowPtrA,
-                                                          csrSortedColIndA,
-                                                          beta,
-                                                          (const cusparseMatDescr_t)descrB,
-                                                          nnzB,
-                                                          csrSortedValB,
-                                                          csrSortedRowPtrB,
-                                                          csrSortedColIndB,
-                                                          (const cusparseMatDescr_t)descrC,
-                                                          csrSortedValC,
-                                                          csrSortedRowPtrC,
-                                                          csrSortedColIndC,
-                                                          pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDcsrgeam2((cusparseHandle_t)handle,
+                          m,
+                          n,
+                          alpha,
+                          (const cusparseMatDescr_t)descrA,
+                          nnzA,
+                          csrSortedValA,
+                          csrSortedRowPtrA,
+                          csrSortedColIndA,
+                          beta,
+                          (const cusparseMatDescr_t)descrB,
+                          nnzB,
+                          csrSortedValB,
+                          csrSortedRowPtrB,
+                          csrSortedColIndB,
+                          (const cusparseMatDescr_t)descrC,
+                          csrSortedValC,
+                          csrSortedRowPtrC,
+                          csrSortedColIndC,
+                          pBuffer));
 }
 
 hipsparseStatus_t hipsparseCcsrgeam2(hipsparseHandle_t         handle,
@@ -4681,26 +4822,27 @@ hipsparseStatus_t hipsparseCcsrgeam2(hipsparseHandle_t         handle,
                                      int*                      csrSortedColIndC,
                                      void*                     pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCcsrgeam2((cusparseHandle_t)handle,
-                                                          m,
-                                                          n,
-                                                          (const cuComplex*)alpha,
-                                                          (const cusparseMatDescr_t)descrA,
-                                                          nnzA,
-                                                          (const cuComplex*)csrSortedValA,
-                                                          csrSortedRowPtrA,
-                                                          csrSortedColIndA,
-                                                          (const cuComplex*)beta,
-                                                          (const cusparseMatDescr_t)descrB,
-                                                          nnzB,
-                                                          (const cuComplex*)csrSortedValB,
-                                                          csrSortedRowPtrB,
-                                                          csrSortedColIndB,
-                                                          (const cusparseMatDescr_t)descrC,
-                                                          (cuComplex*)csrSortedValC,
-                                                          csrSortedRowPtrC,
-                                                          csrSortedColIndC,
-                                                          pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCcsrgeam2((cusparseHandle_t)handle,
+                          m,
+                          n,
+                          (const cuComplex*)alpha,
+                          (const cusparseMatDescr_t)descrA,
+                          nnzA,
+                          (const cuComplex*)csrSortedValA,
+                          csrSortedRowPtrA,
+                          csrSortedColIndA,
+                          (const cuComplex*)beta,
+                          (const cusparseMatDescr_t)descrB,
+                          nnzB,
+                          (const cuComplex*)csrSortedValB,
+                          csrSortedRowPtrB,
+                          csrSortedColIndB,
+                          (const cusparseMatDescr_t)descrC,
+                          (cuComplex*)csrSortedValC,
+                          csrSortedRowPtrC,
+                          csrSortedColIndC,
+                          pBuffer));
 }
 
 hipsparseStatus_t hipsparseZcsrgeam2(hipsparseHandle_t         handle,
@@ -4724,26 +4866,27 @@ hipsparseStatus_t hipsparseZcsrgeam2(hipsparseHandle_t         handle,
                                      int*                      csrSortedColIndC,
                                      void*                     pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseZcsrgeam2((cusparseHandle_t)handle,
-                                                          m,
-                                                          n,
-                                                          (const cuDoubleComplex*)alpha,
-                                                          (const cusparseMatDescr_t)descrA,
-                                                          nnzA,
-                                                          (const cuDoubleComplex*)csrSortedValA,
-                                                          csrSortedRowPtrA,
-                                                          csrSortedColIndA,
-                                                          (const cuDoubleComplex*)beta,
-                                                          (const cusparseMatDescr_t)descrB,
-                                                          nnzB,
-                                                          (const cuDoubleComplex*)csrSortedValB,
-                                                          csrSortedRowPtrB,
-                                                          csrSortedColIndB,
-                                                          (const cusparseMatDescr_t)descrC,
-                                                          (cuDoubleComplex*)csrSortedValC,
-                                                          csrSortedRowPtrC,
-                                                          csrSortedColIndC,
-                                                          pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseZcsrgeam2((cusparseHandle_t)handle,
+                          m,
+                          n,
+                          (const cuDoubleComplex*)alpha,
+                          (const cusparseMatDescr_t)descrA,
+                          nnzA,
+                          (const cuDoubleComplex*)csrSortedValA,
+                          csrSortedRowPtrA,
+                          csrSortedColIndA,
+                          (const cuDoubleComplex*)beta,
+                          (const cusparseMatDescr_t)descrB,
+                          nnzB,
+                          (const cuDoubleComplex*)csrSortedValB,
+                          csrSortedRowPtrB,
+                          csrSortedColIndB,
+                          (const cusparseMatDescr_t)descrC,
+                          (cuDoubleComplex*)csrSortedValC,
+                          csrSortedRowPtrC,
+                          csrSortedColIndC,
+                          pBuffer));
 }
 
 #if CUDART_VERSION < 11000
@@ -4765,23 +4908,24 @@ hipsparseStatus_t hipsparseXcsrgemmNnz(hipsparseHandle_t         handle,
                                        int*                      csrRowPtrC,
                                        int*                      nnzTotalDevHostPtr)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseXcsrgemmNnz((cusparseHandle_t)handle,
-                                                            hipsparse::hipOperationToCudaOperation(transA),
-                                                            hipsparse::hipOperationToCudaOperation(transB),
-                                                            m,
-                                                            n,
-                                                            k,
-                                                            (const cusparseMatDescr_t)descrA,
-                                                            nnzA,
-                                                            csrRowPtrA,
-                                                            csrColIndA,
-                                                            (const cusparseMatDescr_t)descrB,
-                                                            nnzB,
-                                                            csrRowPtrB,
-                                                            csrColIndB,
-                                                            (const cusparseMatDescr_t)descrC,
-                                                            csrRowPtrC,
-                                                            nnzTotalDevHostPtr));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseXcsrgemmNnz((cusparseHandle_t)handle,
+                            hipsparse::hipOperationToCudaOperation(transA),
+                            hipsparse::hipOperationToCudaOperation(transB),
+                            m,
+                            n,
+                            k,
+                            (const cusparseMatDescr_t)descrA,
+                            nnzA,
+                            csrRowPtrA,
+                            csrColIndA,
+                            (const cusparseMatDescr_t)descrB,
+                            nnzB,
+                            csrRowPtrB,
+                            csrColIndB,
+                            (const cusparseMatDescr_t)descrC,
+                            csrRowPtrC,
+                            nnzTotalDevHostPtr));
 }
 
 hipsparseStatus_t hipsparseScsrgemm(hipsparseHandle_t         handle,
@@ -4805,26 +4949,27 @@ hipsparseStatus_t hipsparseScsrgemm(hipsparseHandle_t         handle,
                                     const int*                csrRowPtrC,
                                     int*                      csrColIndC)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseScsrgemm((cusparseHandle_t)handle,
-                                                         hipsparse::hipOperationToCudaOperation(transA),
-                                                         hipsparse::hipOperationToCudaOperation(transB),
-                                                         m,
-                                                         n,
-                                                         k,
-                                                         (const cusparseMatDescr_t)descrA,
-                                                         nnzA,
-                                                         csrValA,
-                                                         csrRowPtrA,
-                                                         csrColIndA,
-                                                         (const cusparseMatDescr_t)descrB,
-                                                         nnzB,
-                                                         csrValB,
-                                                         csrRowPtrB,
-                                                         csrColIndB,
-                                                         (const cusparseMatDescr_t)descrC,
-                                                         csrValC,
-                                                         csrRowPtrC,
-                                                         csrColIndC));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseScsrgemm((cusparseHandle_t)handle,
+                         hipsparse::hipOperationToCudaOperation(transA),
+                         hipsparse::hipOperationToCudaOperation(transB),
+                         m,
+                         n,
+                         k,
+                         (const cusparseMatDescr_t)descrA,
+                         nnzA,
+                         csrValA,
+                         csrRowPtrA,
+                         csrColIndA,
+                         (const cusparseMatDescr_t)descrB,
+                         nnzB,
+                         csrValB,
+                         csrRowPtrB,
+                         csrColIndB,
+                         (const cusparseMatDescr_t)descrC,
+                         csrValC,
+                         csrRowPtrC,
+                         csrColIndC));
 }
 
 hipsparseStatus_t hipsparseDcsrgemm(hipsparseHandle_t         handle,
@@ -4848,26 +4993,27 @@ hipsparseStatus_t hipsparseDcsrgemm(hipsparseHandle_t         handle,
                                     const int*                csrRowPtrC,
                                     int*                      csrColIndC)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDcsrgemm((cusparseHandle_t)handle,
-                                                         hipsparse::hipOperationToCudaOperation(transA),
-                                                         hipsparse::hipOperationToCudaOperation(transB),
-                                                         m,
-                                                         n,
-                                                         k,
-                                                         (const cusparseMatDescr_t)descrA,
-                                                         nnzA,
-                                                         csrValA,
-                                                         csrRowPtrA,
-                                                         csrColIndA,
-                                                         (const cusparseMatDescr_t)descrB,
-                                                         nnzB,
-                                                         csrValB,
-                                                         csrRowPtrB,
-                                                         csrColIndB,
-                                                         (const cusparseMatDescr_t)descrC,
-                                                         csrValC,
-                                                         csrRowPtrC,
-                                                         csrColIndC));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDcsrgemm((cusparseHandle_t)handle,
+                         hipsparse::hipOperationToCudaOperation(transA),
+                         hipsparse::hipOperationToCudaOperation(transB),
+                         m,
+                         n,
+                         k,
+                         (const cusparseMatDescr_t)descrA,
+                         nnzA,
+                         csrValA,
+                         csrRowPtrA,
+                         csrColIndA,
+                         (const cusparseMatDescr_t)descrB,
+                         nnzB,
+                         csrValB,
+                         csrRowPtrB,
+                         csrColIndB,
+                         (const cusparseMatDescr_t)descrC,
+                         csrValC,
+                         csrRowPtrC,
+                         csrColIndC));
 }
 
 hipsparseStatus_t hipsparseCcsrgemm(hipsparseHandle_t         handle,
@@ -4891,26 +5037,27 @@ hipsparseStatus_t hipsparseCcsrgemm(hipsparseHandle_t         handle,
                                     const int*                csrRowPtrC,
                                     int*                      csrColIndC)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCcsrgemm((cusparseHandle_t)handle,
-                                                         hipsparse::hipOperationToCudaOperation(transA),
-                                                         hipsparse::hipOperationToCudaOperation(transB),
-                                                         m,
-                                                         n,
-                                                         k,
-                                                         (const cusparseMatDescr_t)descrA,
-                                                         nnzA,
-                                                         (const cuComplex*)csrValA,
-                                                         csrRowPtrA,
-                                                         csrColIndA,
-                                                         (const cusparseMatDescr_t)descrB,
-                                                         nnzB,
-                                                         (const cuComplex*)csrValB,
-                                                         csrRowPtrB,
-                                                         csrColIndB,
-                                                         (const cusparseMatDescr_t)descrC,
-                                                         (cuComplex*)csrValC,
-                                                         csrRowPtrC,
-                                                         csrColIndC));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCcsrgemm((cusparseHandle_t)handle,
+                         hipsparse::hipOperationToCudaOperation(transA),
+                         hipsparse::hipOperationToCudaOperation(transB),
+                         m,
+                         n,
+                         k,
+                         (const cusparseMatDescr_t)descrA,
+                         nnzA,
+                         (const cuComplex*)csrValA,
+                         csrRowPtrA,
+                         csrColIndA,
+                         (const cusparseMatDescr_t)descrB,
+                         nnzB,
+                         (const cuComplex*)csrValB,
+                         csrRowPtrB,
+                         csrColIndB,
+                         (const cusparseMatDescr_t)descrC,
+                         (cuComplex*)csrValC,
+                         csrRowPtrC,
+                         csrColIndC));
 }
 
 hipsparseStatus_t hipsparseZcsrgemm(hipsparseHandle_t         handle,
@@ -4934,26 +5081,27 @@ hipsparseStatus_t hipsparseZcsrgemm(hipsparseHandle_t         handle,
                                     const int*                csrRowPtrC,
                                     int*                      csrColIndC)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseZcsrgemm((cusparseHandle_t)handle,
-                                                         hipsparse::hipOperationToCudaOperation(transA),
-                                                         hipsparse::hipOperationToCudaOperation(transB),
-                                                         m,
-                                                         n,
-                                                         k,
-                                                         (const cusparseMatDescr_t)descrA,
-                                                         nnzA,
-                                                         (const cuDoubleComplex*)csrValA,
-                                                         csrRowPtrA,
-                                                         csrColIndA,
-                                                         (const cusparseMatDescr_t)descrB,
-                                                         nnzB,
-                                                         (const cuDoubleComplex*)csrValB,
-                                                         csrRowPtrB,
-                                                         csrColIndB,
-                                                         (const cusparseMatDescr_t)descrC,
-                                                         (cuDoubleComplex*)csrValC,
-                                                         csrRowPtrC,
-                                                         csrColIndC));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseZcsrgemm((cusparseHandle_t)handle,
+                         hipsparse::hipOperationToCudaOperation(transA),
+                         hipsparse::hipOperationToCudaOperation(transB),
+                         m,
+                         n,
+                         k,
+                         (const cusparseMatDescr_t)descrA,
+                         nnzA,
+                         (const cuDoubleComplex*)csrValA,
+                         csrRowPtrA,
+                         csrColIndA,
+                         (const cusparseMatDescr_t)descrB,
+                         nnzB,
+                         (const cuDoubleComplex*)csrValB,
+                         csrRowPtrB,
+                         csrColIndB,
+                         (const cusparseMatDescr_t)descrC,
+                         (cuDoubleComplex*)csrValC,
+                         csrRowPtrC,
+                         csrColIndC));
 }
 #endif
 
@@ -5156,27 +5304,28 @@ hipsparseStatus_t hipsparseXcsrgemm2Nnz(hipsparseHandle_t         handle,
                                         const csrgemm2Info_t      info,
                                         void*                     pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseXcsrgemm2Nnz((cusparseHandle_t)handle,
-                                                             m,
-                                                             n,
-                                                             k,
-                                                             (const cusparseMatDescr_t)descrA,
-                                                             nnzA,
-                                                             csrRowPtrA,
-                                                             csrColIndA,
-                                                             (const cusparseMatDescr_t)descrB,
-                                                             nnzB,
-                                                             csrRowPtrB,
-                                                             csrColIndB,
-                                                             (const cusparseMatDescr_t)descrD,
-                                                             nnzD,
-                                                             csrRowPtrD,
-                                                             csrColIndD,
-                                                             (const cusparseMatDescr_t)descrC,
-                                                             csrRowPtrC,
-                                                             nnzTotalDevHostPtr,
-                                                             (const csrgemm2Info_t)info,
-                                                             pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseXcsrgemm2Nnz((cusparseHandle_t)handle,
+                             m,
+                             n,
+                             k,
+                             (const cusparseMatDescr_t)descrA,
+                             nnzA,
+                             csrRowPtrA,
+                             csrColIndA,
+                             (const cusparseMatDescr_t)descrB,
+                             nnzB,
+                             csrRowPtrB,
+                             csrColIndB,
+                             (const cusparseMatDescr_t)descrD,
+                             nnzD,
+                             csrRowPtrD,
+                             csrColIndD,
+                             (const cusparseMatDescr_t)descrC,
+                             csrRowPtrC,
+                             nnzTotalDevHostPtr,
+                             (const csrgemm2Info_t)info,
+                             pBuffer));
 }
 
 hipsparseStatus_t hipsparseScsrgemm2(hipsparseHandle_t         handle,
@@ -5207,33 +5356,34 @@ hipsparseStatus_t hipsparseScsrgemm2(hipsparseHandle_t         handle,
                                      const csrgemm2Info_t      info,
                                      void*                     pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseScsrgemm2((cusparseHandle_t)handle,
-                                                          m,
-                                                          n,
-                                                          k,
-                                                          alpha,
-                                                          (const cusparseMatDescr_t)descrA,
-                                                          nnzA,
-                                                          csrValA,
-                                                          csrRowPtrA,
-                                                          csrColIndA,
-                                                          (const cusparseMatDescr_t)descrB,
-                                                          nnzB,
-                                                          csrValB,
-                                                          csrRowPtrB,
-                                                          csrColIndB,
-                                                          beta,
-                                                          (const cusparseMatDescr_t)descrD,
-                                                          nnzD,
-                                                          csrValD,
-                                                          csrRowPtrD,
-                                                          csrColIndD,
-                                                          (const cusparseMatDescr_t)descrC,
-                                                          csrValC,
-                                                          csrRowPtrC,
-                                                          csrColIndC,
-                                                          (const csrgemm2Info_t)info,
-                                                          pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseScsrgemm2((cusparseHandle_t)handle,
+                          m,
+                          n,
+                          k,
+                          alpha,
+                          (const cusparseMatDescr_t)descrA,
+                          nnzA,
+                          csrValA,
+                          csrRowPtrA,
+                          csrColIndA,
+                          (const cusparseMatDescr_t)descrB,
+                          nnzB,
+                          csrValB,
+                          csrRowPtrB,
+                          csrColIndB,
+                          beta,
+                          (const cusparseMatDescr_t)descrD,
+                          nnzD,
+                          csrValD,
+                          csrRowPtrD,
+                          csrColIndD,
+                          (const cusparseMatDescr_t)descrC,
+                          csrValC,
+                          csrRowPtrC,
+                          csrColIndC,
+                          (const csrgemm2Info_t)info,
+                          pBuffer));
 }
 
 hipsparseStatus_t hipsparseDcsrgemm2(hipsparseHandle_t         handle,
@@ -5264,33 +5414,34 @@ hipsparseStatus_t hipsparseDcsrgemm2(hipsparseHandle_t         handle,
                                      const csrgemm2Info_t      info,
                                      void*                     pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDcsrgemm2((cusparseHandle_t)handle,
-                                                          m,
-                                                          n,
-                                                          k,
-                                                          alpha,
-                                                          (const cusparseMatDescr_t)descrA,
-                                                          nnzA,
-                                                          csrValA,
-                                                          csrRowPtrA,
-                                                          csrColIndA,
-                                                          (const cusparseMatDescr_t)descrB,
-                                                          nnzB,
-                                                          csrValB,
-                                                          csrRowPtrB,
-                                                          csrColIndB,
-                                                          beta,
-                                                          (const cusparseMatDescr_t)descrD,
-                                                          nnzD,
-                                                          csrValD,
-                                                          csrRowPtrD,
-                                                          csrColIndD,
-                                                          (const cusparseMatDescr_t)descrC,
-                                                          csrValC,
-                                                          csrRowPtrC,
-                                                          csrColIndC,
-                                                          (const csrgemm2Info_t)info,
-                                                          pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDcsrgemm2((cusparseHandle_t)handle,
+                          m,
+                          n,
+                          k,
+                          alpha,
+                          (const cusparseMatDescr_t)descrA,
+                          nnzA,
+                          csrValA,
+                          csrRowPtrA,
+                          csrColIndA,
+                          (const cusparseMatDescr_t)descrB,
+                          nnzB,
+                          csrValB,
+                          csrRowPtrB,
+                          csrColIndB,
+                          beta,
+                          (const cusparseMatDescr_t)descrD,
+                          nnzD,
+                          csrValD,
+                          csrRowPtrD,
+                          csrColIndD,
+                          (const cusparseMatDescr_t)descrC,
+                          csrValC,
+                          csrRowPtrC,
+                          csrColIndC,
+                          (const csrgemm2Info_t)info,
+                          pBuffer));
 }
 
 hipsparseStatus_t hipsparseCcsrgemm2(hipsparseHandle_t         handle,
@@ -5321,33 +5472,34 @@ hipsparseStatus_t hipsparseCcsrgemm2(hipsparseHandle_t         handle,
                                      const csrgemm2Info_t      info,
                                      void*                     pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCcsrgemm2((cusparseHandle_t)handle,
-                                                          m,
-                                                          n,
-                                                          k,
-                                                          (const cuComplex*)alpha,
-                                                          (const cusparseMatDescr_t)descrA,
-                                                          nnzA,
-                                                          (const cuComplex*)csrValA,
-                                                          csrRowPtrA,
-                                                          csrColIndA,
-                                                          (const cusparseMatDescr_t)descrB,
-                                                          nnzB,
-                                                          (const cuComplex*)csrValB,
-                                                          csrRowPtrB,
-                                                          csrColIndB,
-                                                          (const cuComplex*)beta,
-                                                          (const cusparseMatDescr_t)descrD,
-                                                          nnzD,
-                                                          (const cuComplex*)csrValD,
-                                                          csrRowPtrD,
-                                                          csrColIndD,
-                                                          (const cusparseMatDescr_t)descrC,
-                                                          (cuComplex*)csrValC,
-                                                          csrRowPtrC,
-                                                          csrColIndC,
-                                                          (const csrgemm2Info_t)info,
-                                                          pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCcsrgemm2((cusparseHandle_t)handle,
+                          m,
+                          n,
+                          k,
+                          (const cuComplex*)alpha,
+                          (const cusparseMatDescr_t)descrA,
+                          nnzA,
+                          (const cuComplex*)csrValA,
+                          csrRowPtrA,
+                          csrColIndA,
+                          (const cusparseMatDescr_t)descrB,
+                          nnzB,
+                          (const cuComplex*)csrValB,
+                          csrRowPtrB,
+                          csrColIndB,
+                          (const cuComplex*)beta,
+                          (const cusparseMatDescr_t)descrD,
+                          nnzD,
+                          (const cuComplex*)csrValD,
+                          csrRowPtrD,
+                          csrColIndD,
+                          (const cusparseMatDescr_t)descrC,
+                          (cuComplex*)csrValC,
+                          csrRowPtrC,
+                          csrColIndC,
+                          (const csrgemm2Info_t)info,
+                          pBuffer));
 }
 
 hipsparseStatus_t hipsparseZcsrgemm2(hipsparseHandle_t         handle,
@@ -5378,33 +5530,34 @@ hipsparseStatus_t hipsparseZcsrgemm2(hipsparseHandle_t         handle,
                                      const csrgemm2Info_t      info,
                                      void*                     pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseZcsrgemm2((cusparseHandle_t)handle,
-                                                          m,
-                                                          n,
-                                                          k,
-                                                          (const cuDoubleComplex*)alpha,
-                                                          (const cusparseMatDescr_t)descrA,
-                                                          nnzA,
-                                                          (const cuDoubleComplex*)csrValA,
-                                                          csrRowPtrA,
-                                                          csrColIndA,
-                                                          (const cusparseMatDescr_t)descrB,
-                                                          nnzB,
-                                                          (const cuDoubleComplex*)csrValB,
-                                                          csrRowPtrB,
-                                                          csrColIndB,
-                                                          (const cuDoubleComplex*)beta,
-                                                          (const cusparseMatDescr_t)descrD,
-                                                          nnzD,
-                                                          (const cuDoubleComplex*)csrValD,
-                                                          csrRowPtrD,
-                                                          csrColIndD,
-                                                          (const cusparseMatDescr_t)descrC,
-                                                          (cuDoubleComplex*)csrValC,
-                                                          csrRowPtrC,
-                                                          csrColIndC,
-                                                          (const csrgemm2Info_t)info,
-                                                          pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseZcsrgemm2((cusparseHandle_t)handle,
+                          m,
+                          n,
+                          k,
+                          (const cuDoubleComplex*)alpha,
+                          (const cusparseMatDescr_t)descrA,
+                          nnzA,
+                          (const cuDoubleComplex*)csrValA,
+                          csrRowPtrA,
+                          csrColIndA,
+                          (const cusparseMatDescr_t)descrB,
+                          nnzB,
+                          (const cuDoubleComplex*)csrValB,
+                          csrRowPtrB,
+                          csrColIndB,
+                          (const cuDoubleComplex*)beta,
+                          (const cusparseMatDescr_t)descrD,
+                          nnzD,
+                          (const cuDoubleComplex*)csrValD,
+                          csrRowPtrD,
+                          csrColIndD,
+                          (const cusparseMatDescr_t)descrC,
+                          (cuDoubleComplex*)csrValC,
+                          csrRowPtrC,
+                          csrColIndC,
+                          (const csrgemm2Info_t)info,
+                          pBuffer));
 }
 #endif
 
@@ -5693,18 +5846,19 @@ hipsparseStatus_t hipsparseSbsrilu02(hipsparseHandle_t         handle,
                                      hipsparseSolvePolicy_t policy,
                                      void*                  pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSbsrilu02((cusparseHandle_t)handle,
-                                                          hipsparse::hipDirectionToCudaDirection(dirA),
-                                                          mb,
-                                                          nnzb,
-                                                          (cusparseMatDescr_t)descrA,
-                                                          bsrSortedValA_valM,
-                                                          bsrSortedRowPtrA,
-                                                          bsrSortedColIndA,
-                                                          blockDim,
-                                                          (bsrilu02Info_t)info,
-                                                          hipsparse::hipPolicyToCudaPolicy(policy),
-                                                          pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSbsrilu02((cusparseHandle_t)handle,
+                          hipsparse::hipDirectionToCudaDirection(dirA),
+                          mb,
+                          nnzb,
+                          (cusparseMatDescr_t)descrA,
+                          bsrSortedValA_valM,
+                          bsrSortedRowPtrA,
+                          bsrSortedColIndA,
+                          blockDim,
+                          (bsrilu02Info_t)info,
+                          hipsparse::hipPolicyToCudaPolicy(policy),
+                          pBuffer));
 }
 
 hipsparseStatus_t hipsparseDbsrilu02(hipsparseHandle_t         handle,
@@ -5722,18 +5876,19 @@ hipsparseStatus_t hipsparseDbsrilu02(hipsparseHandle_t         handle,
                                      hipsparseSolvePolicy_t policy,
                                      void*                  pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDbsrilu02((cusparseHandle_t)handle,
-                                                          hipsparse::hipDirectionToCudaDirection(dirA),
-                                                          mb,
-                                                          nnzb,
-                                                          (cusparseMatDescr_t)descrA,
-                                                          bsrSortedValA_valM,
-                                                          bsrSortedRowPtrA,
-                                                          bsrSortedColIndA,
-                                                          blockDim,
-                                                          (bsrilu02Info_t)info,
-                                                          hipsparse::hipPolicyToCudaPolicy(policy),
-                                                          pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDbsrilu02((cusparseHandle_t)handle,
+                          hipsparse::hipDirectionToCudaDirection(dirA),
+                          mb,
+                          nnzb,
+                          (cusparseMatDescr_t)descrA,
+                          bsrSortedValA_valM,
+                          bsrSortedRowPtrA,
+                          bsrSortedColIndA,
+                          blockDim,
+                          (bsrilu02Info_t)info,
+                          hipsparse::hipPolicyToCudaPolicy(policy),
+                          pBuffer));
 }
 
 hipsparseStatus_t hipsparseCbsrilu02(hipsparseHandle_t         handle,
@@ -5751,18 +5906,19 @@ hipsparseStatus_t hipsparseCbsrilu02(hipsparseHandle_t         handle,
                                      hipsparseSolvePolicy_t policy,
                                      void*                  pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCbsrilu02((cusparseHandle_t)handle,
-                                                          hipsparse::hipDirectionToCudaDirection(dirA),
-                                                          mb,
-                                                          nnzb,
-                                                          (cusparseMatDescr_t)descrA,
-                                                          (cuComplex*)bsrSortedValA_valM,
-                                                          bsrSortedRowPtrA,
-                                                          bsrSortedColIndA,
-                                                          blockDim,
-                                                          (bsrilu02Info_t)info,
-                                                          hipsparse::hipPolicyToCudaPolicy(policy),
-                                                          pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCbsrilu02((cusparseHandle_t)handle,
+                          hipsparse::hipDirectionToCudaDirection(dirA),
+                          mb,
+                          nnzb,
+                          (cusparseMatDescr_t)descrA,
+                          (cuComplex*)bsrSortedValA_valM,
+                          bsrSortedRowPtrA,
+                          bsrSortedColIndA,
+                          blockDim,
+                          (bsrilu02Info_t)info,
+                          hipsparse::hipPolicyToCudaPolicy(policy),
+                          pBuffer));
 }
 
 hipsparseStatus_t hipsparseZbsrilu02(hipsparseHandle_t         handle,
@@ -5780,18 +5936,19 @@ hipsparseStatus_t hipsparseZbsrilu02(hipsparseHandle_t         handle,
                                      hipsparseSolvePolicy_t policy,
                                      void*                  pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseZbsrilu02((cusparseHandle_t)handle,
-                                                          hipsparse::hipDirectionToCudaDirection(dirA),
-                                                          mb,
-                                                          nnzb,
-                                                          (cusparseMatDescr_t)descrA,
-                                                          (cuDoubleComplex*)bsrSortedValA_valM,
-                                                          bsrSortedRowPtrA,
-                                                          bsrSortedColIndA,
-                                                          blockDim,
-                                                          (bsrilu02Info_t)info,
-                                                          hipsparse::hipPolicyToCudaPolicy(policy),
-                                                          pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseZbsrilu02((cusparseHandle_t)handle,
+                          hipsparse::hipDirectionToCudaDirection(dirA),
+                          mb,
+                          nnzb,
+                          (cusparseMatDescr_t)descrA,
+                          (cuDoubleComplex*)bsrSortedValA_valM,
+                          bsrSortedRowPtrA,
+                          bsrSortedColIndA,
+                          blockDim,
+                          (bsrilu02Info_t)info,
+                          hipsparse::hipPolicyToCudaPolicy(policy),
+                          pBuffer));
 }
 #endif
 
@@ -5855,15 +6012,16 @@ hipsparseStatus_t hipsparseScsrilu02_bufferSize(hipsparseHandle_t         handle
                                                 csrilu02Info_t            info,
                                                 int*                      pBufferSizeInBytes)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseScsrilu02_bufferSize((cusparseHandle_t)handle,
-                                                                     m,
-                                                                     nnz,
-                                                                     (cusparseMatDescr_t)descrA,
-                                                                     csrSortedValA,
-                                                                     csrSortedRowPtrA,
-                                                                     csrSortedColIndA,
-                                                                     (csrilu02Info_t)info,
-                                                                     pBufferSizeInBytes));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseScsrilu02_bufferSize((cusparseHandle_t)handle,
+                                     m,
+                                     nnz,
+                                     (cusparseMatDescr_t)descrA,
+                                     csrSortedValA,
+                                     csrSortedRowPtrA,
+                                     csrSortedColIndA,
+                                     (csrilu02Info_t)info,
+                                     pBufferSizeInBytes));
 }
 
 hipsparseStatus_t hipsparseDcsrilu02_bufferSize(hipsparseHandle_t         handle,
@@ -5876,15 +6034,16 @@ hipsparseStatus_t hipsparseDcsrilu02_bufferSize(hipsparseHandle_t         handle
                                                 csrilu02Info_t            info,
                                                 int*                      pBufferSizeInBytes)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDcsrilu02_bufferSize((cusparseHandle_t)handle,
-                                                                     m,
-                                                                     nnz,
-                                                                     (cusparseMatDescr_t)descrA,
-                                                                     csrSortedValA,
-                                                                     csrSortedRowPtrA,
-                                                                     csrSortedColIndA,
-                                                                     (csrilu02Info_t)info,
-                                                                     pBufferSizeInBytes));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDcsrilu02_bufferSize((cusparseHandle_t)handle,
+                                     m,
+                                     nnz,
+                                     (cusparseMatDescr_t)descrA,
+                                     csrSortedValA,
+                                     csrSortedRowPtrA,
+                                     csrSortedColIndA,
+                                     (csrilu02Info_t)info,
+                                     pBufferSizeInBytes));
 }
 
 hipsparseStatus_t hipsparseCcsrilu02_bufferSize(hipsparseHandle_t         handle,
@@ -5897,15 +6056,16 @@ hipsparseStatus_t hipsparseCcsrilu02_bufferSize(hipsparseHandle_t         handle
                                                 csrilu02Info_t            info,
                                                 int*                      pBufferSizeInBytes)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCcsrilu02_bufferSize((cusparseHandle_t)handle,
-                                                                     m,
-                                                                     nnz,
-                                                                     (cusparseMatDescr_t)descrA,
-                                                                     (cuComplex*)csrSortedValA,
-                                                                     csrSortedRowPtrA,
-                                                                     csrSortedColIndA,
-                                                                     (csrilu02Info_t)info,
-                                                                     pBufferSizeInBytes));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCcsrilu02_bufferSize((cusparseHandle_t)handle,
+                                     m,
+                                     nnz,
+                                     (cusparseMatDescr_t)descrA,
+                                     (cuComplex*)csrSortedValA,
+                                     csrSortedRowPtrA,
+                                     csrSortedColIndA,
+                                     (csrilu02Info_t)info,
+                                     pBufferSizeInBytes));
 }
 
 hipsparseStatus_t hipsparseZcsrilu02_bufferSize(hipsparseHandle_t         handle,
@@ -5995,16 +6155,17 @@ hipsparseStatus_t hipsparseScsrilu02_analysis(hipsparseHandle_t         handle,
                                               hipsparseSolvePolicy_t    policy,
                                               void*                     pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseScsrilu02_analysis((cusparseHandle_t)handle,
-                                                                   m,
-                                                                   nnz,
-                                                                   (cusparseMatDescr_t)descrA,
-                                                                   csrSortedValA,
-                                                                   csrSortedRowPtrA,
-                                                                   csrSortedColIndA,
-                                                                   (csrilu02Info_t)info,
-                                                                   hipsparse::hipPolicyToCudaPolicy(policy),
-                                                                   pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseScsrilu02_analysis((cusparseHandle_t)handle,
+                                   m,
+                                   nnz,
+                                   (cusparseMatDescr_t)descrA,
+                                   csrSortedValA,
+                                   csrSortedRowPtrA,
+                                   csrSortedColIndA,
+                                   (csrilu02Info_t)info,
+                                   hipsparse::hipPolicyToCudaPolicy(policy),
+                                   pBuffer));
 }
 
 hipsparseStatus_t hipsparseDcsrilu02_analysis(hipsparseHandle_t         handle,
@@ -6018,16 +6179,17 @@ hipsparseStatus_t hipsparseDcsrilu02_analysis(hipsparseHandle_t         handle,
                                               hipsparseSolvePolicy_t    policy,
                                               void*                     pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDcsrilu02_analysis((cusparseHandle_t)handle,
-                                                                   m,
-                                                                   nnz,
-                                                                   (cusparseMatDescr_t)descrA,
-                                                                   csrSortedValA,
-                                                                   csrSortedRowPtrA,
-                                                                   csrSortedColIndA,
-                                                                   (csrilu02Info_t)info,
-                                                                   hipsparse::hipPolicyToCudaPolicy(policy),
-                                                                   pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDcsrilu02_analysis((cusparseHandle_t)handle,
+                                   m,
+                                   nnz,
+                                   (cusparseMatDescr_t)descrA,
+                                   csrSortedValA,
+                                   csrSortedRowPtrA,
+                                   csrSortedColIndA,
+                                   (csrilu02Info_t)info,
+                                   hipsparse::hipPolicyToCudaPolicy(policy),
+                                   pBuffer));
 }
 
 hipsparseStatus_t hipsparseCcsrilu02_analysis(hipsparseHandle_t         handle,
@@ -6041,16 +6203,17 @@ hipsparseStatus_t hipsparseCcsrilu02_analysis(hipsparseHandle_t         handle,
                                               hipsparseSolvePolicy_t    policy,
                                               void*                     pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCcsrilu02_analysis((cusparseHandle_t)handle,
-                                                                   m,
-                                                                   nnz,
-                                                                   (cusparseMatDescr_t)descrA,
-                                                                   (const cuComplex*)csrSortedValA,
-                                                                   csrSortedRowPtrA,
-                                                                   csrSortedColIndA,
-                                                                   (csrilu02Info_t)info,
-                                                                   hipsparse::hipPolicyToCudaPolicy(policy),
-                                                                   pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCcsrilu02_analysis((cusparseHandle_t)handle,
+                                   m,
+                                   nnz,
+                                   (cusparseMatDescr_t)descrA,
+                                   (const cuComplex*)csrSortedValA,
+                                   csrSortedRowPtrA,
+                                   csrSortedColIndA,
+                                   (csrilu02Info_t)info,
+                                   hipsparse::hipPolicyToCudaPolicy(policy),
+                                   pBuffer));
 }
 
 hipsparseStatus_t hipsparseZcsrilu02_analysis(hipsparseHandle_t         handle,
@@ -6092,16 +6255,17 @@ hipsparseStatus_t hipsparseScsrilu02(hipsparseHandle_t         handle,
                                      hipsparseSolvePolicy_t policy,
                                      void*                  pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseScsrilu02((cusparseHandle_t)handle,
-                                                          m,
-                                                          nnz,
-                                                          (cusparseMatDescr_t)descrA,
-                                                          csrSortedValA_valM,
-                                                          csrSortedRowPtrA,
-                                                          csrSortedColIndA,
-                                                          (csrilu02Info_t)info,
-                                                          hipsparse::hipPolicyToCudaPolicy(policy),
-                                                          pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseScsrilu02((cusparseHandle_t)handle,
+                          m,
+                          nnz,
+                          (cusparseMatDescr_t)descrA,
+                          csrSortedValA_valM,
+                          csrSortedRowPtrA,
+                          csrSortedColIndA,
+                          (csrilu02Info_t)info,
+                          hipsparse::hipPolicyToCudaPolicy(policy),
+                          pBuffer));
 }
 
 hipsparseStatus_t hipsparseDcsrilu02(hipsparseHandle_t         handle,
@@ -6117,16 +6281,17 @@ hipsparseStatus_t hipsparseDcsrilu02(hipsparseHandle_t         handle,
                                      hipsparseSolvePolicy_t policy,
                                      void*                  pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDcsrilu02((cusparseHandle_t)handle,
-                                                          m,
-                                                          nnz,
-                                                          (cusparseMatDescr_t)descrA,
-                                                          csrSortedValA_valM,
-                                                          csrSortedRowPtrA,
-                                                          csrSortedColIndA,
-                                                          (csrilu02Info_t)info,
-                                                          hipsparse::hipPolicyToCudaPolicy(policy),
-                                                          pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDcsrilu02((cusparseHandle_t)handle,
+                          m,
+                          nnz,
+                          (cusparseMatDescr_t)descrA,
+                          csrSortedValA_valM,
+                          csrSortedRowPtrA,
+                          csrSortedColIndA,
+                          (csrilu02Info_t)info,
+                          hipsparse::hipPolicyToCudaPolicy(policy),
+                          pBuffer));
 }
 
 hipsparseStatus_t hipsparseCcsrilu02(hipsparseHandle_t         handle,
@@ -6142,16 +6307,17 @@ hipsparseStatus_t hipsparseCcsrilu02(hipsparseHandle_t         handle,
                                      hipsparseSolvePolicy_t policy,
                                      void*                  pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCcsrilu02((cusparseHandle_t)handle,
-                                                          m,
-                                                          nnz,
-                                                          (cusparseMatDescr_t)descrA,
-                                                          (cuComplex*)csrSortedValA_valM,
-                                                          csrSortedRowPtrA,
-                                                          csrSortedColIndA,
-                                                          (csrilu02Info_t)info,
-                                                          hipsparse::hipPolicyToCudaPolicy(policy),
-                                                          pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCcsrilu02((cusparseHandle_t)handle,
+                          m,
+                          nnz,
+                          (cusparseMatDescr_t)descrA,
+                          (cuComplex*)csrSortedValA_valM,
+                          csrSortedRowPtrA,
+                          csrSortedColIndA,
+                          (csrilu02Info_t)info,
+                          hipsparse::hipPolicyToCudaPolicy(policy),
+                          pBuffer));
 }
 
 hipsparseStatus_t hipsparseZcsrilu02(hipsparseHandle_t         handle,
@@ -6167,16 +6333,17 @@ hipsparseStatus_t hipsparseZcsrilu02(hipsparseHandle_t         handle,
                                      hipsparseSolvePolicy_t policy,
                                      void*                  pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseZcsrilu02((cusparseHandle_t)handle,
-                                                          m,
-                                                          nnz,
-                                                          (cusparseMatDescr_t)descrA,
-                                                          (cuDoubleComplex*)csrSortedValA_valM,
-                                                          csrSortedRowPtrA,
-                                                          csrSortedColIndA,
-                                                          (csrilu02Info_t)info,
-                                                          hipsparse::hipPolicyToCudaPolicy(policy),
-                                                          pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseZcsrilu02((cusparseHandle_t)handle,
+                          m,
+                          nnz,
+                          (cusparseMatDescr_t)descrA,
+                          (cuDoubleComplex*)csrSortedValA_valM,
+                          csrSortedRowPtrA,
+                          csrSortedColIndA,
+                          (csrilu02Info_t)info,
+                          hipsparse::hipPolicyToCudaPolicy(policy),
+                          pBuffer));
 }
 #endif
 
@@ -6309,18 +6476,19 @@ hipsparseStatus_t hipsparseSbsric02_analysis(hipsparseHandle_t         handle,
                                              hipsparseSolvePolicy_t    policy,
                                              void*                     pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSbsric02_analysis((cusparseHandle_t)handle,
-                                                                  hipsparse::hipDirectionToCudaDirection(dirA),
-                                                                  mb,
-                                                                  nnzb,
-                                                                  (cusparseMatDescr_t)descrA,
-                                                                  bsrValA,
-                                                                  bsrRowPtrA,
-                                                                  bsrColIndA,
-                                                                  blockDim,
-                                                                  (bsric02Info_t)info,
-                                                                  hipsparse::hipPolicyToCudaPolicy(policy),
-                                                                  pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSbsric02_analysis((cusparseHandle_t)handle,
+                                  hipsparse::hipDirectionToCudaDirection(dirA),
+                                  mb,
+                                  nnzb,
+                                  (cusparseMatDescr_t)descrA,
+                                  bsrValA,
+                                  bsrRowPtrA,
+                                  bsrColIndA,
+                                  blockDim,
+                                  (bsric02Info_t)info,
+                                  hipsparse::hipPolicyToCudaPolicy(policy),
+                                  pBuffer));
 }
 
 hipsparseStatus_t hipsparseDbsric02_analysis(hipsparseHandle_t         handle,
@@ -6336,18 +6504,19 @@ hipsparseStatus_t hipsparseDbsric02_analysis(hipsparseHandle_t         handle,
                                              hipsparseSolvePolicy_t    policy,
                                              void*                     pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDbsric02_analysis((cusparseHandle_t)handle,
-                                                                  hipsparse::hipDirectionToCudaDirection(dirA),
-                                                                  mb,
-                                                                  nnzb,
-                                                                  (cusparseMatDescr_t)descrA,
-                                                                  bsrValA,
-                                                                  bsrRowPtrA,
-                                                                  bsrColIndA,
-                                                                  blockDim,
-                                                                  (bsric02Info_t)info,
-                                                                  hipsparse::hipPolicyToCudaPolicy(policy),
-                                                                  pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDbsric02_analysis((cusparseHandle_t)handle,
+                                  hipsparse::hipDirectionToCudaDirection(dirA),
+                                  mb,
+                                  nnzb,
+                                  (cusparseMatDescr_t)descrA,
+                                  bsrValA,
+                                  bsrRowPtrA,
+                                  bsrColIndA,
+                                  blockDim,
+                                  (bsric02Info_t)info,
+                                  hipsparse::hipPolicyToCudaPolicy(policy),
+                                  pBuffer));
 }
 
 hipsparseStatus_t hipsparseCbsric02_analysis(hipsparseHandle_t         handle,
@@ -6363,18 +6532,19 @@ hipsparseStatus_t hipsparseCbsric02_analysis(hipsparseHandle_t         handle,
                                              hipsparseSolvePolicy_t    policy,
                                              void*                     pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCbsric02_analysis((cusparseHandle_t)handle,
-                                                                  hipsparse::hipDirectionToCudaDirection(dirA),
-                                                                  mb,
-                                                                  nnzb,
-                                                                  (cusparseMatDescr_t)descrA,
-                                                                  (const cuComplex*)bsrValA,
-                                                                  bsrRowPtrA,
-                                                                  bsrColIndA,
-                                                                  blockDim,
-                                                                  (bsric02Info_t)info,
-                                                                  hipsparse::hipPolicyToCudaPolicy(policy),
-                                                                  pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCbsric02_analysis((cusparseHandle_t)handle,
+                                  hipsparse::hipDirectionToCudaDirection(dirA),
+                                  mb,
+                                  nnzb,
+                                  (cusparseMatDescr_t)descrA,
+                                  (const cuComplex*)bsrValA,
+                                  bsrRowPtrA,
+                                  bsrColIndA,
+                                  blockDim,
+                                  (bsric02Info_t)info,
+                                  hipsparse::hipPolicyToCudaPolicy(policy),
+                                  pBuffer));
 }
 
 hipsparseStatus_t hipsparseZbsric02_analysis(hipsparseHandle_t         handle,
@@ -6390,18 +6560,19 @@ hipsparseStatus_t hipsparseZbsric02_analysis(hipsparseHandle_t         handle,
                                              hipsparseSolvePolicy_t    policy,
                                              void*                     pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseZbsric02_analysis((cusparseHandle_t)handle,
-                                                                  hipsparse::hipDirectionToCudaDirection(dirA),
-                                                                  mb,
-                                                                  nnzb,
-                                                                  (cusparseMatDescr_t)descrA,
-                                                                  (const cuDoubleComplex*)bsrValA,
-                                                                  bsrRowPtrA,
-                                                                  bsrColIndA,
-                                                                  blockDim,
-                                                                  (bsric02Info_t)info,
-                                                                  hipsparse::hipPolicyToCudaPolicy(policy),
-                                                                  pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseZbsric02_analysis((cusparseHandle_t)handle,
+                                  hipsparse::hipDirectionToCudaDirection(dirA),
+                                  mb,
+                                  nnzb,
+                                  (cusparseMatDescr_t)descrA,
+                                  (const cuDoubleComplex*)bsrValA,
+                                  bsrRowPtrA,
+                                  bsrColIndA,
+                                  blockDim,
+                                  (bsric02Info_t)info,
+                                  hipsparse::hipPolicyToCudaPolicy(policy),
+                                  pBuffer));
 }
 #endif
 
@@ -6419,18 +6590,19 @@ hipsparseStatus_t hipsparseSbsric02(hipsparseHandle_t         handle,
                                     hipsparseSolvePolicy_t    policy,
                                     void*                     pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSbsric02((cusparseHandle_t)handle,
-                                                         hipsparse::hipDirectionToCudaDirection(dirA),
-                                                         mb,
-                                                         nnzb,
-                                                         (cusparseMatDescr_t)descrA,
-                                                         bsrValA,
-                                                         bsrRowPtrA,
-                                                         bsrColIndA,
-                                                         blockDim,
-                                                         (bsric02Info_t)info,
-                                                         hipsparse::hipPolicyToCudaPolicy(policy),
-                                                         pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSbsric02((cusparseHandle_t)handle,
+                         hipsparse::hipDirectionToCudaDirection(dirA),
+                         mb,
+                         nnzb,
+                         (cusparseMatDescr_t)descrA,
+                         bsrValA,
+                         bsrRowPtrA,
+                         bsrColIndA,
+                         blockDim,
+                         (bsric02Info_t)info,
+                         hipsparse::hipPolicyToCudaPolicy(policy),
+                         pBuffer));
 }
 
 hipsparseStatus_t hipsparseDbsric02(hipsparseHandle_t         handle,
@@ -6446,18 +6618,19 @@ hipsparseStatus_t hipsparseDbsric02(hipsparseHandle_t         handle,
                                     hipsparseSolvePolicy_t    policy,
                                     void*                     pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDbsric02((cusparseHandle_t)handle,
-                                                         hipsparse::hipDirectionToCudaDirection(dirA),
-                                                         mb,
-                                                         nnzb,
-                                                         (cusparseMatDescr_t)descrA,
-                                                         bsrValA,
-                                                         bsrRowPtrA,
-                                                         bsrColIndA,
-                                                         blockDim,
-                                                         (bsric02Info_t)info,
-                                                         hipsparse::hipPolicyToCudaPolicy(policy),
-                                                         pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDbsric02((cusparseHandle_t)handle,
+                         hipsparse::hipDirectionToCudaDirection(dirA),
+                         mb,
+                         nnzb,
+                         (cusparseMatDescr_t)descrA,
+                         bsrValA,
+                         bsrRowPtrA,
+                         bsrColIndA,
+                         blockDim,
+                         (bsric02Info_t)info,
+                         hipsparse::hipPolicyToCudaPolicy(policy),
+                         pBuffer));
 }
 
 hipsparseStatus_t hipsparseCbsric02(hipsparseHandle_t         handle,
@@ -6473,18 +6646,19 @@ hipsparseStatus_t hipsparseCbsric02(hipsparseHandle_t         handle,
                                     hipsparseSolvePolicy_t    policy,
                                     void*                     pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCbsric02((cusparseHandle_t)handle,
-                                                         hipsparse::hipDirectionToCudaDirection(dirA),
-                                                         mb,
-                                                         nnzb,
-                                                         (cusparseMatDescr_t)descrA,
-                                                         (cuComplex*)bsrValA,
-                                                         bsrRowPtrA,
-                                                         bsrColIndA,
-                                                         blockDim,
-                                                         (bsric02Info_t)info,
-                                                         hipsparse::hipPolicyToCudaPolicy(policy),
-                                                         pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCbsric02((cusparseHandle_t)handle,
+                         hipsparse::hipDirectionToCudaDirection(dirA),
+                         mb,
+                         nnzb,
+                         (cusparseMatDescr_t)descrA,
+                         (cuComplex*)bsrValA,
+                         bsrRowPtrA,
+                         bsrColIndA,
+                         blockDim,
+                         (bsric02Info_t)info,
+                         hipsparse::hipPolicyToCudaPolicy(policy),
+                         pBuffer));
 }
 
 hipsparseStatus_t hipsparseZbsric02(hipsparseHandle_t         handle,
@@ -6500,18 +6674,19 @@ hipsparseStatus_t hipsparseZbsric02(hipsparseHandle_t         handle,
                                     hipsparseSolvePolicy_t    policy,
                                     void*                     pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseZbsric02((cusparseHandle_t)handle,
-                                                         hipsparse::hipDirectionToCudaDirection(dirA),
-                                                         mb,
-                                                         nnzb,
-                                                         (cusparseMatDescr_t)descrA,
-                                                         (cuDoubleComplex*)bsrValA,
-                                                         bsrRowPtrA,
-                                                         bsrColIndA,
-                                                         blockDim,
-                                                         (bsric02Info_t)info,
-                                                         hipsparse::hipPolicyToCudaPolicy(policy),
-                                                         pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseZbsric02((cusparseHandle_t)handle,
+                         hipsparse::hipDirectionToCudaDirection(dirA),
+                         mb,
+                         nnzb,
+                         (cusparseMatDescr_t)descrA,
+                         (cuDoubleComplex*)bsrValA,
+                         bsrRowPtrA,
+                         bsrColIndA,
+                         blockDim,
+                         (bsric02Info_t)info,
+                         hipsparse::hipPolicyToCudaPolicy(policy),
+                         pBuffer));
 }
 #endif
 
@@ -6535,15 +6710,16 @@ hipsparseStatus_t hipsparseScsric02_bufferSize(hipsparseHandle_t         handle,
                                                csric02Info_t             info,
                                                int*                      pBufferSizeInBytes)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseScsric02_bufferSize((cusparseHandle_t)handle,
-                                                                    m,
-                                                                    nnz,
-                                                                    (cusparseMatDescr_t)descrA,
-                                                                    csrSortedValA,
-                                                                    csrSortedRowPtrA,
-                                                                    csrSortedColIndA,
-                                                                    (csric02Info_t)info,
-                                                                    pBufferSizeInBytes));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseScsric02_bufferSize((cusparseHandle_t)handle,
+                                    m,
+                                    nnz,
+                                    (cusparseMatDescr_t)descrA,
+                                    csrSortedValA,
+                                    csrSortedRowPtrA,
+                                    csrSortedColIndA,
+                                    (csric02Info_t)info,
+                                    pBufferSizeInBytes));
 }
 
 hipsparseStatus_t hipsparseDcsric02_bufferSize(hipsparseHandle_t         handle,
@@ -6556,15 +6732,16 @@ hipsparseStatus_t hipsparseDcsric02_bufferSize(hipsparseHandle_t         handle,
                                                csric02Info_t             info,
                                                int*                      pBufferSizeInBytes)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDcsric02_bufferSize((cusparseHandle_t)handle,
-                                                                    m,
-                                                                    nnz,
-                                                                    (cusparseMatDescr_t)descrA,
-                                                                    csrSortedValA,
-                                                                    csrSortedRowPtrA,
-                                                                    csrSortedColIndA,
-                                                                    (csric02Info_t)info,
-                                                                    pBufferSizeInBytes));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDcsric02_bufferSize((cusparseHandle_t)handle,
+                                    m,
+                                    nnz,
+                                    (cusparseMatDescr_t)descrA,
+                                    csrSortedValA,
+                                    csrSortedRowPtrA,
+                                    csrSortedColIndA,
+                                    (csric02Info_t)info,
+                                    pBufferSizeInBytes));
 }
 
 hipsparseStatus_t hipsparseCcsric02_bufferSize(hipsparseHandle_t         handle,
@@ -6577,15 +6754,16 @@ hipsparseStatus_t hipsparseCcsric02_bufferSize(hipsparseHandle_t         handle,
                                                csric02Info_t             info,
                                                int*                      pBufferSizeInBytes)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCcsric02_bufferSize((cusparseHandle_t)handle,
-                                                                    m,
-                                                                    nnz,
-                                                                    (cusparseMatDescr_t)descrA,
-                                                                    (cuComplex*)csrSortedValA,
-                                                                    csrSortedRowPtrA,
-                                                                    csrSortedColIndA,
-                                                                    (csric02Info_t)info,
-                                                                    pBufferSizeInBytes));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCcsric02_bufferSize((cusparseHandle_t)handle,
+                                    m,
+                                    nnz,
+                                    (cusparseMatDescr_t)descrA,
+                                    (cuComplex*)csrSortedValA,
+                                    csrSortedRowPtrA,
+                                    csrSortedColIndA,
+                                    (csric02Info_t)info,
+                                    pBufferSizeInBytes));
 }
 
 hipsparseStatus_t hipsparseZcsric02_bufferSize(hipsparseHandle_t         handle,
@@ -6598,15 +6776,16 @@ hipsparseStatus_t hipsparseZcsric02_bufferSize(hipsparseHandle_t         handle,
                                                csric02Info_t             info,
                                                int*                      pBufferSizeInBytes)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseZcsric02_bufferSize((cusparseHandle_t)handle,
-                                                                    m,
-                                                                    nnz,
-                                                                    (cusparseMatDescr_t)descrA,
-                                                                    (cuDoubleComplex*)csrSortedValA,
-                                                                    csrSortedRowPtrA,
-                                                                    csrSortedColIndA,
-                                                                    (csric02Info_t)info,
-                                                                    pBufferSizeInBytes));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseZcsric02_bufferSize((cusparseHandle_t)handle,
+                                    m,
+                                    nnz,
+                                    (cusparseMatDescr_t)descrA,
+                                    (cuDoubleComplex*)csrSortedValA,
+                                    csrSortedRowPtrA,
+                                    csrSortedColIndA,
+                                    (csric02Info_t)info,
+                                    pBufferSizeInBytes));
 }
 #endif
 
@@ -6674,16 +6853,17 @@ hipsparseStatus_t hipsparseScsric02_analysis(hipsparseHandle_t         handle,
                                              hipsparseSolvePolicy_t    policy,
                                              void*                     pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseScsric02_analysis((cusparseHandle_t)handle,
-                                                                  m,
-                                                                  nnz,
-                                                                  (cusparseMatDescr_t)descrA,
-                                                                  csrSortedValA,
-                                                                  csrSortedRowPtrA,
-                                                                  csrSortedColIndA,
-                                                                  (csric02Info_t)info,
-                                                                  hipsparse::hipPolicyToCudaPolicy(policy),
-                                                                  pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseScsric02_analysis((cusparseHandle_t)handle,
+                                  m,
+                                  nnz,
+                                  (cusparseMatDescr_t)descrA,
+                                  csrSortedValA,
+                                  csrSortedRowPtrA,
+                                  csrSortedColIndA,
+                                  (csric02Info_t)info,
+                                  hipsparse::hipPolicyToCudaPolicy(policy),
+                                  pBuffer));
 }
 
 hipsparseStatus_t hipsparseDcsric02_analysis(hipsparseHandle_t         handle,
@@ -6697,16 +6877,17 @@ hipsparseStatus_t hipsparseDcsric02_analysis(hipsparseHandle_t         handle,
                                              hipsparseSolvePolicy_t    policy,
                                              void*                     pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDcsric02_analysis((cusparseHandle_t)handle,
-                                                                  m,
-                                                                  nnz,
-                                                                  (cusparseMatDescr_t)descrA,
-                                                                  csrSortedValA,
-                                                                  csrSortedRowPtrA,
-                                                                  csrSortedColIndA,
-                                                                  (csric02Info_t)info,
-                                                                  hipsparse::hipPolicyToCudaPolicy(policy),
-                                                                  pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDcsric02_analysis((cusparseHandle_t)handle,
+                                  m,
+                                  nnz,
+                                  (cusparseMatDescr_t)descrA,
+                                  csrSortedValA,
+                                  csrSortedRowPtrA,
+                                  csrSortedColIndA,
+                                  (csric02Info_t)info,
+                                  hipsparse::hipPolicyToCudaPolicy(policy),
+                                  pBuffer));
 }
 
 hipsparseStatus_t hipsparseCcsric02_analysis(hipsparseHandle_t         handle,
@@ -6720,16 +6901,17 @@ hipsparseStatus_t hipsparseCcsric02_analysis(hipsparseHandle_t         handle,
                                              hipsparseSolvePolicy_t    policy,
                                              void*                     pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCcsric02_analysis((cusparseHandle_t)handle,
-                                                                  m,
-                                                                  nnz,
-                                                                  (cusparseMatDescr_t)descrA,
-                                                                  (const cuComplex*)csrSortedValA,
-                                                                  csrSortedRowPtrA,
-                                                                  csrSortedColIndA,
-                                                                  (csric02Info_t)info,
-                                                                  hipsparse::hipPolicyToCudaPolicy(policy),
-                                                                  pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCcsric02_analysis((cusparseHandle_t)handle,
+                                  m,
+                                  nnz,
+                                  (cusparseMatDescr_t)descrA,
+                                  (const cuComplex*)csrSortedValA,
+                                  csrSortedRowPtrA,
+                                  csrSortedColIndA,
+                                  (csric02Info_t)info,
+                                  hipsparse::hipPolicyToCudaPolicy(policy),
+                                  pBuffer));
 }
 
 hipsparseStatus_t hipsparseZcsric02_analysis(hipsparseHandle_t         handle,
@@ -6771,16 +6953,17 @@ hipsparseStatus_t hipsparseScsric02(hipsparseHandle_t         handle,
                                     hipsparseSolvePolicy_t policy,
                                     void*                  pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseScsric02((cusparseHandle_t)handle,
-                                                         m,
-                                                         nnz,
-                                                         (cusparseMatDescr_t)descrA,
-                                                         csrSortedValA_valM,
-                                                         csrSortedRowPtrA,
-                                                         csrSortedColIndA,
-                                                         (csric02Info_t)info,
-                                                         hipsparse::hipPolicyToCudaPolicy(policy),
-                                                         pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseScsric02((cusparseHandle_t)handle,
+                         m,
+                         nnz,
+                         (cusparseMatDescr_t)descrA,
+                         csrSortedValA_valM,
+                         csrSortedRowPtrA,
+                         csrSortedColIndA,
+                         (csric02Info_t)info,
+                         hipsparse::hipPolicyToCudaPolicy(policy),
+                         pBuffer));
 }
 
 hipsparseStatus_t hipsparseDcsric02(hipsparseHandle_t         handle,
@@ -6796,16 +6979,17 @@ hipsparseStatus_t hipsparseDcsric02(hipsparseHandle_t         handle,
                                     hipsparseSolvePolicy_t policy,
                                     void*                  pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDcsric02((cusparseHandle_t)handle,
-                                                         m,
-                                                         nnz,
-                                                         (cusparseMatDescr_t)descrA,
-                                                         csrSortedValA_valM,
-                                                         csrSortedRowPtrA,
-                                                         csrSortedColIndA,
-                                                         (csric02Info_t)info,
-                                                         hipsparse::hipPolicyToCudaPolicy(policy),
-                                                         pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDcsric02((cusparseHandle_t)handle,
+                         m,
+                         nnz,
+                         (cusparseMatDescr_t)descrA,
+                         csrSortedValA_valM,
+                         csrSortedRowPtrA,
+                         csrSortedColIndA,
+                         (csric02Info_t)info,
+                         hipsparse::hipPolicyToCudaPolicy(policy),
+                         pBuffer));
 }
 
 hipsparseStatus_t hipsparseCcsric02(hipsparseHandle_t         handle,
@@ -6821,16 +7005,17 @@ hipsparseStatus_t hipsparseCcsric02(hipsparseHandle_t         handle,
                                     hipsparseSolvePolicy_t policy,
                                     void*                  pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCcsric02((cusparseHandle_t)handle,
-                                                         m,
-                                                         nnz,
-                                                         (cusparseMatDescr_t)descrA,
-                                                         (cuComplex*)csrSortedValA_valM,
-                                                         csrSortedRowPtrA,
-                                                         csrSortedColIndA,
-                                                         (csric02Info_t)info,
-                                                         hipsparse::hipPolicyToCudaPolicy(policy),
-                                                         pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCcsric02((cusparseHandle_t)handle,
+                         m,
+                         nnz,
+                         (cusparseMatDescr_t)descrA,
+                         (cuComplex*)csrSortedValA_valM,
+                         csrSortedRowPtrA,
+                         csrSortedColIndA,
+                         (csric02Info_t)info,
+                         hipsparse::hipPolicyToCudaPolicy(policy),
+                         pBuffer));
 }
 
 hipsparseStatus_t hipsparseZcsric02(hipsparseHandle_t         handle,
@@ -6846,16 +7031,17 @@ hipsparseStatus_t hipsparseZcsric02(hipsparseHandle_t         handle,
                                     hipsparseSolvePolicy_t policy,
                                     void*                  pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseZcsric02((cusparseHandle_t)handle,
-                                                         m,
-                                                         nnz,
-                                                         (cusparseMatDescr_t)descrA,
-                                                         (cuDoubleComplex*)csrSortedValA_valM,
-                                                         csrSortedRowPtrA,
-                                                         csrSortedColIndA,
-                                                         (csric02Info_t)info,
-                                                         hipsparse::hipPolicyToCudaPolicy(policy),
-                                                         pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseZcsric02((cusparseHandle_t)handle,
+                         m,
+                         nnz,
+                         (cusparseMatDescr_t)descrA,
+                         (cuDoubleComplex*)csrSortedValA_valM,
+                         csrSortedRowPtrA,
+                         csrSortedColIndA,
+                         (csric02Info_t)info,
+                         hipsparse::hipPolicyToCudaPolicy(policy),
+                         pBuffer));
 }
 #endif
 
@@ -6869,15 +7055,16 @@ hipsparseStatus_t hipsparseSnnz(hipsparseHandle_t         handle,
                                 int*                      nnzPerRowColumn,
                                 int*                      nnzTotalDevHostPtr)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSnnz((cusparseHandle_t)handle,
-                                                     hipsparse::hipDirectionToCudaDirection(dirA),
-                                                     m,
-                                                     n,
-                                                     (const cusparseMatDescr_t)descrA,
-                                                     A,
-                                                     lda,
-                                                     nnzPerRowColumn,
-                                                     nnzTotalDevHostPtr));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSnnz((cusparseHandle_t)handle,
+                     hipsparse::hipDirectionToCudaDirection(dirA),
+                     m,
+                     n,
+                     (const cusparseMatDescr_t)descrA,
+                     A,
+                     lda,
+                     nnzPerRowColumn,
+                     nnzTotalDevHostPtr));
 }
 
 hipsparseStatus_t hipsparseDnnz(hipsparseHandle_t         handle,
@@ -6890,15 +7077,16 @@ hipsparseStatus_t hipsparseDnnz(hipsparseHandle_t         handle,
                                 int*                      nnzPerRowColumn,
                                 int*                      nnzTotalDevHostPtr)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDnnz((cusparseHandle_t)handle,
-                                                     hipsparse::hipDirectionToCudaDirection(dirA),
-                                                     m,
-                                                     n,
-                                                     (const cusparseMatDescr_t)descrA,
-                                                     A,
-                                                     lda,
-                                                     nnzPerRowColumn,
-                                                     nnzTotalDevHostPtr));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDnnz((cusparseHandle_t)handle,
+                     hipsparse::hipDirectionToCudaDirection(dirA),
+                     m,
+                     n,
+                     (const cusparseMatDescr_t)descrA,
+                     A,
+                     lda,
+                     nnzPerRowColumn,
+                     nnzTotalDevHostPtr));
 }
 
 hipsparseStatus_t hipsparseCnnz(hipsparseHandle_t         handle,
@@ -6911,15 +7099,16 @@ hipsparseStatus_t hipsparseCnnz(hipsparseHandle_t         handle,
                                 int*                      nnzPerRowColumn,
                                 int*                      nnzTotalDevHostPtr)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCnnz((cusparseHandle_t)handle,
-                                                     hipsparse::hipDirectionToCudaDirection(dirA),
-                                                     m,
-                                                     n,
-                                                     (const cusparseMatDescr_t)descrA,
-                                                     (const cuComplex*)A,
-                                                     lda,
-                                                     nnzPerRowColumn,
-                                                     nnzTotalDevHostPtr));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCnnz((cusparseHandle_t)handle,
+                     hipsparse::hipDirectionToCudaDirection(dirA),
+                     m,
+                     n,
+                     (const cusparseMatDescr_t)descrA,
+                     (const cuComplex*)A,
+                     lda,
+                     nnzPerRowColumn,
+                     nnzTotalDevHostPtr));
 }
 
 hipsparseStatus_t hipsparseZnnz(hipsparseHandle_t         handle,
@@ -6932,15 +7121,16 @@ hipsparseStatus_t hipsparseZnnz(hipsparseHandle_t         handle,
                                 int*                      nnzPerRowColumn,
                                 int*                      nnzTotalDevHostPtr)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseZnnz((cusparseHandle_t)handle,
-                                                     hipsparse::hipDirectionToCudaDirection(dirA),
-                                                     m,
-                                                     n,
-                                                     (const cusparseMatDescr_t)descrA,
-                                                     (const cuDoubleComplex*)A,
-                                                     lda,
-                                                     nnzPerRowColumn,
-                                                     nnzTotalDevHostPtr));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseZnnz((cusparseHandle_t)handle,
+                     hipsparse::hipDirectionToCudaDirection(dirA),
+                     m,
+                     n,
+                     (const cusparseMatDescr_t)descrA,
+                     (const cuDoubleComplex*)A,
+                     lda,
+                     nnzPerRowColumn,
+                     nnzTotalDevHostPtr));
 }
 
 #if CUDART_VERSION < 12000
@@ -6955,16 +7145,17 @@ hipsparseStatus_t hipsparseSdense2csr(hipsparseHandle_t         handle,
                                       int*                      csrRowPtr,
                                       int*                      csrColInd)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSdense2csr((cusparseHandle_t)handle,
-                                                           m,
-                                                           n,
-                                                           (const cusparseMatDescr_t)descr,
-                                                           A,
-                                                           ld,
-                                                           nnzPerRow,
-                                                           csrVal,
-                                                           csrRowPtr,
-                                                           csrColInd));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSdense2csr((cusparseHandle_t)handle,
+                           m,
+                           n,
+                           (const cusparseMatDescr_t)descr,
+                           A,
+                           ld,
+                           nnzPerRow,
+                           csrVal,
+                           csrRowPtr,
+                           csrColInd));
 }
 
 hipsparseStatus_t hipsparseDdense2csr(hipsparseHandle_t         handle,
@@ -6978,16 +7169,17 @@ hipsparseStatus_t hipsparseDdense2csr(hipsparseHandle_t         handle,
                                       int*                      csrRowPtr,
                                       int*                      csrColInd)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDdense2csr((cusparseHandle_t)handle,
-                                                           m,
-                                                           n,
-                                                           (const cusparseMatDescr_t)descr,
-                                                           A,
-                                                           ld,
-                                                           nnzPerRow,
-                                                           csrVal,
-                                                           csrRowPtr,
-                                                           csrColInd));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDdense2csr((cusparseHandle_t)handle,
+                           m,
+                           n,
+                           (const cusparseMatDescr_t)descr,
+                           A,
+                           ld,
+                           nnzPerRow,
+                           csrVal,
+                           csrRowPtr,
+                           csrColInd));
 }
 
 hipsparseStatus_t hipsparseCdense2csr(hipsparseHandle_t         handle,
@@ -7001,16 +7193,17 @@ hipsparseStatus_t hipsparseCdense2csr(hipsparseHandle_t         handle,
                                       int*                      csrRowPtr,
                                       int*                      csrColInd)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCdense2csr((cusparseHandle_t)handle,
-                                                           m,
-                                                           n,
-                                                           (const cusparseMatDescr_t)descr,
-                                                           (const cuComplex*)A,
-                                                           ld,
-                                                           nnzPerRow,
-                                                           (cuComplex*)csrVal,
-                                                           csrRowPtr,
-                                                           csrColInd));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCdense2csr((cusparseHandle_t)handle,
+                           m,
+                           n,
+                           (const cusparseMatDescr_t)descr,
+                           (const cuComplex*)A,
+                           ld,
+                           nnzPerRow,
+                           (cuComplex*)csrVal,
+                           csrRowPtr,
+                           csrColInd));
 }
 
 hipsparseStatus_t hipsparseZdense2csr(hipsparseHandle_t         handle,
@@ -7024,16 +7217,17 @@ hipsparseStatus_t hipsparseZdense2csr(hipsparseHandle_t         handle,
                                       int*                      csrRowPtr,
                                       int*                      csrColInd)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseZdense2csr((cusparseHandle_t)handle,
-                                                           m,
-                                                           n,
-                                                           (const cusparseMatDescr_t)descr,
-                                                           (const cuDoubleComplex*)A,
-                                                           ld,
-                                                           nnzPerRow,
-                                                           (cuDoubleComplex*)csrVal,
-                                                           csrRowPtr,
-                                                           csrColInd));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseZdense2csr((cusparseHandle_t)handle,
+                           m,
+                           n,
+                           (const cusparseMatDescr_t)descr,
+                           (const cuDoubleComplex*)A,
+                           ld,
+                           nnzPerRow,
+                           (cuDoubleComplex*)csrVal,
+                           csrRowPtr,
+                           csrColInd));
 }
 #endif
 
@@ -7155,16 +7349,17 @@ hipsparseStatus_t hipsparseSpruneDense2csrNnz(hipsparseHandle_t         handle,
                                               int*                      nnzTotalDevHostPtr,
                                               void*                     buffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSpruneDense2csrNnz((cusparseHandle_t)handle,
-                                                                   m,
-                                                                   n,
-                                                                   A,
-                                                                   lda,
-                                                                   threshold,
-                                                                   (const cusparseMatDescr_t)descr,
-                                                                   csrRowPtr,
-                                                                   nnzTotalDevHostPtr,
-                                                                   buffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSpruneDense2csrNnz((cusparseHandle_t)handle,
+                                   m,
+                                   n,
+                                   A,
+                                   lda,
+                                   threshold,
+                                   (const cusparseMatDescr_t)descr,
+                                   csrRowPtr,
+                                   nnzTotalDevHostPtr,
+                                   buffer));
 }
 
 hipsparseStatus_t hipsparseDpruneDense2csrNnz(hipsparseHandle_t         handle,
@@ -7178,16 +7373,17 @@ hipsparseStatus_t hipsparseDpruneDense2csrNnz(hipsparseHandle_t         handle,
                                               int*                      nnzTotalDevHostPtr,
                                               void*                     buffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDpruneDense2csrNnz((cusparseHandle_t)handle,
-                                                                   m,
-                                                                   n,
-                                                                   A,
-                                                                   lda,
-                                                                   threshold,
-                                                                   (const cusparseMatDescr_t)descr,
-                                                                   csrRowPtr,
-                                                                   nnzTotalDevHostPtr,
-                                                                   buffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDpruneDense2csrNnz((cusparseHandle_t)handle,
+                                   m,
+                                   n,
+                                   A,
+                                   lda,
+                                   threshold,
+                                   (const cusparseMatDescr_t)descr,
+                                   csrRowPtr,
+                                   nnzTotalDevHostPtr,
+                                   buffer));
 }
 #endif
 
@@ -7204,17 +7400,18 @@ hipsparseStatus_t hipsparseSpruneDense2csr(hipsparseHandle_t         handle,
                                            int*                      csrColInd,
                                            void*                     buffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSpruneDense2csr((cusparseHandle_t)handle,
-                                                                m,
-                                                                n,
-                                                                A,
-                                                                lda,
-                                                                threshold,
-                                                                (const cusparseMatDescr_t)descr,
-                                                                csrVal,
-                                                                csrRowPtr,
-                                                                csrColInd,
-                                                                buffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSpruneDense2csr((cusparseHandle_t)handle,
+                                m,
+                                n,
+                                A,
+                                lda,
+                                threshold,
+                                (const cusparseMatDescr_t)descr,
+                                csrVal,
+                                csrRowPtr,
+                                csrColInd,
+                                buffer));
 }
 
 hipsparseStatus_t hipsparseDpruneDense2csr(hipsparseHandle_t         handle,
@@ -7229,17 +7426,18 @@ hipsparseStatus_t hipsparseDpruneDense2csr(hipsparseHandle_t         handle,
                                            int*                      csrColInd,
                                            void*                     buffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDpruneDense2csr((cusparseHandle_t)handle,
-                                                                m,
-                                                                n,
-                                                                A,
-                                                                lda,
-                                                                threshold,
-                                                                (const cusparseMatDescr_t)descr,
-                                                                csrVal,
-                                                                csrRowPtr,
-                                                                csrColInd,
-                                                                buffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDpruneDense2csr((cusparseHandle_t)handle,
+                                m,
+                                n,
+                                A,
+                                lda,
+                                threshold,
+                                (const cusparseMatDescr_t)descr,
+                                csrVal,
+                                csrRowPtr,
+                                csrColInd,
+                                buffer));
 }
 #endif
 
@@ -7485,16 +7683,17 @@ hipsparseStatus_t hipsparseSdense2csc(hipsparseHandle_t         handle,
                                       int*                      cscRowInd,
                                       int*                      cscColPtr)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSdense2csc((cusparseHandle_t)handle,
-                                                           m,
-                                                           n,
-                                                           (const cusparseMatDescr_t)descr,
-                                                           A,
-                                                           ld,
-                                                           nnzPerColumn,
-                                                           cscVal,
-                                                           cscRowInd,
-                                                           cscColPtr));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSdense2csc((cusparseHandle_t)handle,
+                           m,
+                           n,
+                           (const cusparseMatDescr_t)descr,
+                           A,
+                           ld,
+                           nnzPerColumn,
+                           cscVal,
+                           cscRowInd,
+                           cscColPtr));
 }
 
 hipsparseStatus_t hipsparseDdense2csc(hipsparseHandle_t         handle,
@@ -7508,16 +7707,17 @@ hipsparseStatus_t hipsparseDdense2csc(hipsparseHandle_t         handle,
                                       int*                      cscRowInd,
                                       int*                      cscColPtr)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDdense2csc((cusparseHandle_t)handle,
-                                                           m,
-                                                           n,
-                                                           (const cusparseMatDescr_t)descr,
-                                                           A,
-                                                           ld,
-                                                           nnzPerColumn,
-                                                           cscVal,
-                                                           cscRowInd,
-                                                           cscColPtr));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDdense2csc((cusparseHandle_t)handle,
+                           m,
+                           n,
+                           (const cusparseMatDescr_t)descr,
+                           A,
+                           ld,
+                           nnzPerColumn,
+                           cscVal,
+                           cscRowInd,
+                           cscColPtr));
 }
 
 hipsparseStatus_t hipsparseCdense2csc(hipsparseHandle_t         handle,
@@ -7531,16 +7731,17 @@ hipsparseStatus_t hipsparseCdense2csc(hipsparseHandle_t         handle,
                                       int*                      cscRowInd,
                                       int*                      cscColPtr)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCdense2csc((cusparseHandle_t)handle,
-                                                           m,
-                                                           n,
-                                                           (const cusparseMatDescr_t)descr,
-                                                           (const cuComplex*)A,
-                                                           ld,
-                                                           nnzPerColumn,
-                                                           (cuComplex*)cscVal,
-                                                           cscRowInd,
-                                                           cscColPtr));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCdense2csc((cusparseHandle_t)handle,
+                           m,
+                           n,
+                           (const cusparseMatDescr_t)descr,
+                           (const cuComplex*)A,
+                           ld,
+                           nnzPerColumn,
+                           (cuComplex*)cscVal,
+                           cscRowInd,
+                           cscColPtr));
 }
 
 hipsparseStatus_t hipsparseZdense2csc(hipsparseHandle_t         handle,
@@ -7554,16 +7755,17 @@ hipsparseStatus_t hipsparseZdense2csc(hipsparseHandle_t         handle,
                                       int*                      cscRowInd,
                                       int*                      cscColPtr)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseZdense2csc((cusparseHandle_t)handle,
-                                                           m,
-                                                           n,
-                                                           (const cusparseMatDescr_t)descr,
-                                                           (const cuDoubleComplex*)A,
-                                                           ld,
-                                                           nnzPerColumn,
-                                                           (cuDoubleComplex*)cscVal,
-                                                           cscRowInd,
-                                                           cscColPtr));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseZdense2csc((cusparseHandle_t)handle,
+                           m,
+                           n,
+                           (const cusparseMatDescr_t)descr,
+                           (const cuDoubleComplex*)A,
+                           ld,
+                           nnzPerColumn,
+                           (cuDoubleComplex*)cscVal,
+                           cscRowInd,
+                           cscColPtr));
 }
 #endif
 
@@ -7578,15 +7780,16 @@ hipsparseStatus_t hipsparseScsr2dense(hipsparseHandle_t         handle,
                                       float*                    A,
                                       int                       ld)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseScsr2dense((cusparseHandle_t)handle,
-                                                           m,
-                                                           n,
-                                                           (const cusparseMatDescr_t)descr,
-                                                           csrVal,
-                                                           csrRowPtr,
-                                                           csrColInd,
-                                                           A,
-                                                           ld));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseScsr2dense((cusparseHandle_t)handle,
+                           m,
+                           n,
+                           (const cusparseMatDescr_t)descr,
+                           csrVal,
+                           csrRowPtr,
+                           csrColInd,
+                           A,
+                           ld));
 }
 
 hipsparseStatus_t hipsparseDcsr2dense(hipsparseHandle_t         handle,
@@ -7599,15 +7802,16 @@ hipsparseStatus_t hipsparseDcsr2dense(hipsparseHandle_t         handle,
                                       double*                   A,
                                       int                       ld)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDcsr2dense((cusparseHandle_t)handle,
-                                                           m,
-                                                           n,
-                                                           (const cusparseMatDescr_t)descr,
-                                                           csrVal,
-                                                           csrRowPtr,
-                                                           csrColInd,
-                                                           A,
-                                                           ld));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDcsr2dense((cusparseHandle_t)handle,
+                           m,
+                           n,
+                           (const cusparseMatDescr_t)descr,
+                           csrVal,
+                           csrRowPtr,
+                           csrColInd,
+                           A,
+                           ld));
 }
 
 hipsparseStatus_t hipsparseCcsr2dense(hipsparseHandle_t         handle,
@@ -7620,15 +7824,16 @@ hipsparseStatus_t hipsparseCcsr2dense(hipsparseHandle_t         handle,
                                       hipComplex*               A,
                                       int                       ld)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCcsr2dense((cusparseHandle_t)handle,
-                                                           m,
-                                                           n,
-                                                           (const cusparseMatDescr_t)descr,
-                                                           (const hipComplex*)csrVal,
-                                                           csrRowPtr,
-                                                           csrColInd,
-                                                           (hipComplex*)A,
-                                                           ld));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCcsr2dense((cusparseHandle_t)handle,
+                           m,
+                           n,
+                           (const cusparseMatDescr_t)descr,
+                           (const hipComplex*)csrVal,
+                           csrRowPtr,
+                           csrColInd,
+                           (hipComplex*)A,
+                           ld));
 }
 
 hipsparseStatus_t hipsparseZcsr2dense(hipsparseHandle_t         handle,
@@ -7641,15 +7846,16 @@ hipsparseStatus_t hipsparseZcsr2dense(hipsparseHandle_t         handle,
                                       hipDoubleComplex*         A,
                                       int                       ld)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseZcsr2dense((cusparseHandle_t)handle,
-                                                           m,
-                                                           n,
-                                                           (const cusparseMatDescr_t)descr,
-                                                           (const cuDoubleComplex*)csrVal,
-                                                           csrRowPtr,
-                                                           csrColInd,
-                                                           (cuDoubleComplex*)A,
-                                                           ld));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseZcsr2dense((cusparseHandle_t)handle,
+                           m,
+                           n,
+                           (const cusparseMatDescr_t)descr,
+                           (const cuDoubleComplex*)csrVal,
+                           csrRowPtr,
+                           csrColInd,
+                           (cuDoubleComplex*)A,
+                           ld));
 }
 #endif
 
@@ -7664,15 +7870,16 @@ hipsparseStatus_t hipsparseScsc2dense(hipsparseHandle_t         handle,
                                       float*                    A,
                                       int                       ld)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseScsc2dense((cusparseHandle_t)handle,
-                                                           m,
-                                                           n,
-                                                           (const cusparseMatDescr_t)descr,
-                                                           cscVal,
-                                                           cscRowInd,
-                                                           cscColPtr,
-                                                           A,
-                                                           ld));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseScsc2dense((cusparseHandle_t)handle,
+                           m,
+                           n,
+                           (const cusparseMatDescr_t)descr,
+                           cscVal,
+                           cscRowInd,
+                           cscColPtr,
+                           A,
+                           ld));
 }
 
 hipsparseStatus_t hipsparseDcsc2dense(hipsparseHandle_t         handle,
@@ -7685,15 +7892,16 @@ hipsparseStatus_t hipsparseDcsc2dense(hipsparseHandle_t         handle,
                                       double*                   A,
                                       int                       ld)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDcsc2dense((cusparseHandle_t)handle,
-                                                           m,
-                                                           n,
-                                                           (const cusparseMatDescr_t)descr,
-                                                           cscVal,
-                                                           cscRowInd,
-                                                           cscColPtr,
-                                                           A,
-                                                           ld));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDcsc2dense((cusparseHandle_t)handle,
+                           m,
+                           n,
+                           (const cusparseMatDescr_t)descr,
+                           cscVal,
+                           cscRowInd,
+                           cscColPtr,
+                           A,
+                           ld));
 }
 
 hipsparseStatus_t hipsparseCcsc2dense(hipsparseHandle_t         handle,
@@ -7706,15 +7914,16 @@ hipsparseStatus_t hipsparseCcsc2dense(hipsparseHandle_t         handle,
                                       hipComplex*               A,
                                       int                       ld)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCcsc2dense((cusparseHandle_t)handle,
-                                                           m,
-                                                           n,
-                                                           (const cusparseMatDescr_t)descr,
-                                                           (const cuComplex*)cscVal,
-                                                           cscRowInd,
-                                                           cscColPtr,
-                                                           (cuComplex*)A,
-                                                           ld));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCcsc2dense((cusparseHandle_t)handle,
+                           m,
+                           n,
+                           (const cusparseMatDescr_t)descr,
+                           (const cuComplex*)cscVal,
+                           cscRowInd,
+                           cscColPtr,
+                           (cuComplex*)A,
+                           ld));
 }
 
 hipsparseStatus_t hipsparseZcsc2dense(hipsparseHandle_t         handle,
@@ -7727,15 +7936,16 @@ hipsparseStatus_t hipsparseZcsc2dense(hipsparseHandle_t         handle,
                                       hipDoubleComplex*         A,
                                       int                       ld)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseZcsc2dense((cusparseHandle_t)handle,
-                                                           m,
-                                                           n,
-                                                           (const cusparseMatDescr_t)descr,
-                                                           (const cuDoubleComplex*)cscVal,
-                                                           cscRowInd,
-                                                           cscColPtr,
-                                                           (cuDoubleComplex*)A,
-                                                           ld));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseZcsc2dense((cusparseHandle_t)handle,
+                           m,
+                           n,
+                           (const cusparseMatDescr_t)descr,
+                           (const cuDoubleComplex*)cscVal,
+                           cscRowInd,
+                           cscColPtr,
+                           (cuDoubleComplex*)A,
+                           ld));
 }
 #endif
 
@@ -7751,17 +7961,17 @@ hipsparseStatus_t hipsparseSgebsr2gebsc_bufferSize(hipsparseHandle_t handle,
                                                    size_t*           p_buffer_size)
 {
     int               cu_buffer_size;
-    hipsparseStatus_t status
-        = hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSgebsr2gebsc_bufferSize((cusparseHandle_t)handle,
-                                                                       mb,
-                                                                       nb,
-                                                                       nnzb,
-                                                                       bsr_val,
-                                                                       bsr_row_ptr,
-                                                                       bsr_col_ind,
-                                                                       row_block_dim,
-                                                                       col_block_dim,
-                                                                       &cu_buffer_size));
+    hipsparseStatus_t status = hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSgebsr2gebsc_bufferSize((cusparseHandle_t)handle,
+                                        mb,
+                                        nb,
+                                        nnzb,
+                                        bsr_val,
+                                        bsr_row_ptr,
+                                        bsr_col_ind,
+                                        row_block_dim,
+                                        col_block_dim,
+                                        &cu_buffer_size));
     p_buffer_size[0] = cu_buffer_size;
     return status;
 }
@@ -7778,17 +7988,17 @@ hipsparseStatus_t hipsparseDgebsr2gebsc_bufferSize(hipsparseHandle_t handle,
                                                    size_t*           p_buffer_size)
 {
     int               cu_buffer_size;
-    hipsparseStatus_t status
-        = hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDgebsr2gebsc_bufferSize((cusparseHandle_t)handle,
-                                                                       mb,
-                                                                       nb,
-                                                                       nnzb,
-                                                                       bsr_val,
-                                                                       bsr_row_ptr,
-                                                                       bsr_col_ind,
-                                                                       row_block_dim,
-                                                                       col_block_dim,
-                                                                       &cu_buffer_size));
+    hipsparseStatus_t status = hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDgebsr2gebsc_bufferSize((cusparseHandle_t)handle,
+                                        mb,
+                                        nb,
+                                        nnzb,
+                                        bsr_val,
+                                        bsr_row_ptr,
+                                        bsr_col_ind,
+                                        row_block_dim,
+                                        col_block_dim,
+                                        &cu_buffer_size));
     p_buffer_size[0] = cu_buffer_size;
     return status;
 }
@@ -7805,17 +8015,17 @@ hipsparseStatus_t hipsparseCgebsr2gebsc_bufferSize(hipsparseHandle_t handle,
                                                    size_t*           p_buffer_size)
 {
     int               cu_buffer_size;
-    hipsparseStatus_t status
-        = hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCgebsr2gebsc_bufferSize((cusparseHandle_t)handle,
-                                                                       mb,
-                                                                       nb,
-                                                                       nnzb,
-                                                                       (const cuComplex*)bsr_val,
-                                                                       bsr_row_ptr,
-                                                                       bsr_col_ind,
-                                                                       row_block_dim,
-                                                                       col_block_dim,
-                                                                       &cu_buffer_size));
+    hipsparseStatus_t status = hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCgebsr2gebsc_bufferSize((cusparseHandle_t)handle,
+                                        mb,
+                                        nb,
+                                        nnzb,
+                                        (const cuComplex*)bsr_val,
+                                        bsr_row_ptr,
+                                        bsr_col_ind,
+                                        row_block_dim,
+                                        col_block_dim,
+                                        &cu_buffer_size));
     p_buffer_size[0] = cu_buffer_size;
     return status;
 }
@@ -7863,21 +8073,22 @@ hipsparseStatus_t hipsparseSgebsr2gebsc(hipsparseHandle_t    handle,
                                         hipsparseIndexBase_t idx_base,
                                         void*                temp_buffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSgebsr2gebsc((cusparseHandle_t)handle,
-                                                             mb,
-                                                             nb,
-                                                             nnzb,
-                                                             bsr_val,
-                                                             bsr_row_ptr,
-                                                             bsr_col_ind,
-                                                             row_block_dim,
-                                                             col_block_dim,
-                                                             bsc_val,
-                                                             bsc_row_ind,
-                                                             bsc_col_ptr,
-                                                             hipsparse::hipActionToCudaAction(copy_values),
-                                                             hipsparse::hipIndexBaseToCudaIndexBase(idx_base),
-                                                             temp_buffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSgebsr2gebsc((cusparseHandle_t)handle,
+                             mb,
+                             nb,
+                             nnzb,
+                             bsr_val,
+                             bsr_row_ptr,
+                             bsr_col_ind,
+                             row_block_dim,
+                             col_block_dim,
+                             bsc_val,
+                             bsc_row_ind,
+                             bsc_col_ptr,
+                             hipsparse::hipActionToCudaAction(copy_values),
+                             hipsparse::hipIndexBaseToCudaIndexBase(idx_base),
+                             temp_buffer));
 }
 
 hipsparseStatus_t hipsparseDgebsr2gebsc(hipsparseHandle_t    handle,
@@ -7897,21 +8108,22 @@ hipsparseStatus_t hipsparseDgebsr2gebsc(hipsparseHandle_t    handle,
                                         void*                temp_buffer)
 {
 
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDgebsr2gebsc((cusparseHandle_t)handle,
-                                                             mb,
-                                                             nb,
-                                                             nnzb,
-                                                             bsr_val,
-                                                             bsr_row_ptr,
-                                                             bsr_col_ind,
-                                                             row_block_dim,
-                                                             col_block_dim,
-                                                             bsc_val,
-                                                             bsc_row_ind,
-                                                             bsc_col_ptr,
-                                                             hipsparse::hipActionToCudaAction(copy_values),
-                                                             hipsparse::hipIndexBaseToCudaIndexBase(idx_base),
-                                                             temp_buffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDgebsr2gebsc((cusparseHandle_t)handle,
+                             mb,
+                             nb,
+                             nnzb,
+                             bsr_val,
+                             bsr_row_ptr,
+                             bsr_col_ind,
+                             row_block_dim,
+                             col_block_dim,
+                             bsc_val,
+                             bsc_row_ind,
+                             bsc_col_ptr,
+                             hipsparse::hipActionToCudaAction(copy_values),
+                             hipsparse::hipIndexBaseToCudaIndexBase(idx_base),
+                             temp_buffer));
 }
 
 hipsparseStatus_t hipsparseCgebsr2gebsc(hipsparseHandle_t    handle,
@@ -7930,21 +8142,22 @@ hipsparseStatus_t hipsparseCgebsr2gebsc(hipsparseHandle_t    handle,
                                         hipsparseIndexBase_t idx_base,
                                         void*                temp_buffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCgebsr2gebsc((cusparseHandle_t)handle,
-                                                             mb,
-                                                             nb,
-                                                             nnzb,
-                                                             (const cuComplex*)bsr_val,
-                                                             bsr_row_ptr,
-                                                             bsr_col_ind,
-                                                             row_block_dim,
-                                                             col_block_dim,
-                                                             (cuComplex*)bsc_val,
-                                                             bsc_row_ind,
-                                                             bsc_col_ptr,
-                                                             hipsparse::hipActionToCudaAction(copy_values),
-                                                             hipsparse::hipIndexBaseToCudaIndexBase(idx_base),
-                                                             temp_buffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCgebsr2gebsc((cusparseHandle_t)handle,
+                             mb,
+                             nb,
+                             nnzb,
+                             (const cuComplex*)bsr_val,
+                             bsr_row_ptr,
+                             bsr_col_ind,
+                             row_block_dim,
+                             col_block_dim,
+                             (cuComplex*)bsc_val,
+                             bsc_row_ind,
+                             bsc_col_ptr,
+                             hipsparse::hipActionToCudaAction(copy_values),
+                             hipsparse::hipIndexBaseToCudaIndexBase(idx_base),
+                             temp_buffer));
 }
 
 hipsparseStatus_t hipsparseZgebsr2gebsc(hipsparseHandle_t       handle,
@@ -7963,21 +8176,22 @@ hipsparseStatus_t hipsparseZgebsr2gebsc(hipsparseHandle_t       handle,
                                         hipsparseIndexBase_t    idx_base,
                                         void*                   temp_buffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseZgebsr2gebsc((cusparseHandle_t)handle,
-                                                             mb,
-                                                             nb,
-                                                             nnzb,
-                                                             (const cuDoubleComplex*)bsr_val,
-                                                             bsr_row_ptr,
-                                                             bsr_col_ind,
-                                                             row_block_dim,
-                                                             col_block_dim,
-                                                             (cuDoubleComplex*)bsc_val,
-                                                             bsc_row_ind,
-                                                             bsc_col_ptr,
-                                                             hipsparse::hipActionToCudaAction(copy_values),
-                                                             hipsparse::hipIndexBaseToCudaIndexBase(idx_base),
-                                                             temp_buffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseZgebsr2gebsc((cusparseHandle_t)handle,
+                             mb,
+                             nb,
+                             nnzb,
+                             (const cuDoubleComplex*)bsr_val,
+                             bsr_row_ptr,
+                             bsr_col_ind,
+                             row_block_dim,
+                             col_block_dim,
+                             (cuDoubleComplex*)bsc_val,
+                             bsc_row_ind,
+                             bsc_col_ptr,
+                             hipsparse::hipActionToCudaAction(copy_values),
+                             hipsparse::hipIndexBaseToCudaIndexBase(idx_base),
+                             temp_buffer));
 }
 
 hipsparseStatus_t hipsparseScsr2gebsr_bufferSize(hipsparseHandle_t         handle,
@@ -8112,19 +8326,20 @@ hipsparseStatus_t hipsparseXcsr2gebsrNnz(hipsparseHandle_t         handle,
                                          void*                     p_buffer)
 {
 
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseXcsr2gebsrNnz((cusparseHandle_t)handle,
-                                                              hipsparse::hipDirectionToCudaDirection(dir),
-                                                              m,
-                                                              n,
-                                                              (const cusparseMatDescr_t)csr_descr,
-                                                              csr_row_ptr,
-                                                              csr_col_ind,
-                                                              (const cusparseMatDescr_t)bsr_descr,
-                                                              bsr_row_ptr,
-                                                              row_block_dim,
-                                                              col_block_dim,
-                                                              bsr_nnz_devhost,
-                                                              p_buffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseXcsr2gebsrNnz((cusparseHandle_t)handle,
+                              hipsparse::hipDirectionToCudaDirection(dir),
+                              m,
+                              n,
+                              (const cusparseMatDescr_t)csr_descr,
+                              csr_row_ptr,
+                              csr_col_ind,
+                              (const cusparseMatDescr_t)bsr_descr,
+                              bsr_row_ptr,
+                              row_block_dim,
+                              col_block_dim,
+                              bsr_nnz_devhost,
+                              p_buffer));
 }
 
 hipsparseStatus_t hipsparseScsr2gebsr(hipsparseHandle_t         handle,
@@ -8143,21 +8358,22 @@ hipsparseStatus_t hipsparseScsr2gebsr(hipsparseHandle_t         handle,
                                       int                       col_block_dim,
                                       void*                     p_buffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseScsr2gebsr((cusparseHandle_t)handle,
-                                                           hipsparse::hipDirectionToCudaDirection(dir),
-                                                           m,
-                                                           n,
-                                                           (const cusparseMatDescr_t)csr_descr,
-                                                           csr_val,
-                                                           csr_row_ptr,
-                                                           csr_col_ind,
-                                                           (const cusparseMatDescr_t)bsr_descr,
-                                                           bsr_val,
-                                                           bsr_row_ptr,
-                                                           bsr_col_ind,
-                                                           row_block_dim,
-                                                           col_block_dim,
-                                                           p_buffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseScsr2gebsr((cusparseHandle_t)handle,
+                           hipsparse::hipDirectionToCudaDirection(dir),
+                           m,
+                           n,
+                           (const cusparseMatDescr_t)csr_descr,
+                           csr_val,
+                           csr_row_ptr,
+                           csr_col_ind,
+                           (const cusparseMatDescr_t)bsr_descr,
+                           bsr_val,
+                           bsr_row_ptr,
+                           bsr_col_ind,
+                           row_block_dim,
+                           col_block_dim,
+                           p_buffer));
 }
 
 hipsparseStatus_t hipsparseDcsr2gebsr(hipsparseHandle_t         handle,
@@ -8176,21 +8392,22 @@ hipsparseStatus_t hipsparseDcsr2gebsr(hipsparseHandle_t         handle,
                                       int                       col_block_dim,
                                       void*                     p_buffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDcsr2gebsr((cusparseHandle_t)handle,
-                                                           hipsparse::hipDirectionToCudaDirection(dir),
-                                                           m,
-                                                           n,
-                                                           (const cusparseMatDescr_t)csr_descr,
-                                                           csr_val,
-                                                           csr_row_ptr,
-                                                           csr_col_ind,
-                                                           (const cusparseMatDescr_t)bsr_descr,
-                                                           bsr_val,
-                                                           bsr_row_ptr,
-                                                           bsr_col_ind,
-                                                           row_block_dim,
-                                                           col_block_dim,
-                                                           p_buffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDcsr2gebsr((cusparseHandle_t)handle,
+                           hipsparse::hipDirectionToCudaDirection(dir),
+                           m,
+                           n,
+                           (const cusparseMatDescr_t)csr_descr,
+                           csr_val,
+                           csr_row_ptr,
+                           csr_col_ind,
+                           (const cusparseMatDescr_t)bsr_descr,
+                           bsr_val,
+                           bsr_row_ptr,
+                           bsr_col_ind,
+                           row_block_dim,
+                           col_block_dim,
+                           p_buffer));
 }
 
 hipsparseStatus_t hipsparseCcsr2gebsr(hipsparseHandle_t         handle,
@@ -8209,21 +8426,22 @@ hipsparseStatus_t hipsparseCcsr2gebsr(hipsparseHandle_t         handle,
                                       int                       col_block_dim,
                                       void*                     p_buffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCcsr2gebsr((cusparseHandle_t)handle,
-                                                           hipsparse::hipDirectionToCudaDirection(dir),
-                                                           m,
-                                                           n,
-                                                           (const cusparseMatDescr_t)csr_descr,
-                                                           (const cuComplex*)csr_val,
-                                                           csr_row_ptr,
-                                                           csr_col_ind,
-                                                           (const cusparseMatDescr_t)bsr_descr,
-                                                           (cuComplex*)bsr_val,
-                                                           bsr_row_ptr,
-                                                           bsr_col_ind,
-                                                           row_block_dim,
-                                                           col_block_dim,
-                                                           p_buffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCcsr2gebsr((cusparseHandle_t)handle,
+                           hipsparse::hipDirectionToCudaDirection(dir),
+                           m,
+                           n,
+                           (const cusparseMatDescr_t)csr_descr,
+                           (const cuComplex*)csr_val,
+                           csr_row_ptr,
+                           csr_col_ind,
+                           (const cusparseMatDescr_t)bsr_descr,
+                           (cuComplex*)bsr_val,
+                           bsr_row_ptr,
+                           bsr_col_ind,
+                           row_block_dim,
+                           col_block_dim,
+                           p_buffer));
 }
 
 hipsparseStatus_t hipsparseZcsr2gebsr(hipsparseHandle_t         handle,
@@ -8242,21 +8460,22 @@ hipsparseStatus_t hipsparseZcsr2gebsr(hipsparseHandle_t         handle,
                                       int                       col_block_dim,
                                       void*                     p_buffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseZcsr2gebsr((cusparseHandle_t)handle,
-                                                           hipsparse::hipDirectionToCudaDirection(dir),
-                                                           m,
-                                                           n,
-                                                           (const cusparseMatDescr_t)csr_descr,
-                                                           (const cuDoubleComplex*)csr_val,
-                                                           csr_row_ptr,
-                                                           csr_col_ind,
-                                                           (const cusparseMatDescr_t)bsr_descr,
-                                                           (cuDoubleComplex*)bsr_val,
-                                                           bsr_row_ptr,
-                                                           bsr_col_ind,
-                                                           row_block_dim,
-                                                           col_block_dim,
-                                                           p_buffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseZcsr2gebsr((cusparseHandle_t)handle,
+                           hipsparse::hipDirectionToCudaDirection(dir),
+                           m,
+                           n,
+                           (const cusparseMatDescr_t)csr_descr,
+                           (const cuDoubleComplex*)csr_val,
+                           csr_row_ptr,
+                           csr_col_ind,
+                           (const cusparseMatDescr_t)bsr_descr,
+                           (cuDoubleComplex*)bsr_val,
+                           bsr_row_ptr,
+                           bsr_col_ind,
+                           row_block_dim,
+                           col_block_dim,
+                           p_buffer));
 }
 
 hipsparseStatus_t hipsparseXcsr2bsrNnz(hipsparseHandle_t         handle,
@@ -8271,17 +8490,18 @@ hipsparseStatus_t hipsparseXcsr2bsrNnz(hipsparseHandle_t         handle,
                                        int*                      bsrRowPtrC,
                                        int*                      bsrNnzb)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseXcsr2bsrNnz((cusparseHandle_t)handle,
-                                                            hipsparse::hipDirectionToCudaDirection(dirA),
-                                                            m,
-                                                            n,
-                                                            (const cusparseMatDescr_t)descrA,
-                                                            csrRowPtrA,
-                                                            csrColIndA,
-                                                            blockDim,
-                                                            (const cusparseMatDescr_t)descrC,
-                                                            bsrRowPtrC,
-                                                            bsrNnzb));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseXcsr2bsrNnz((cusparseHandle_t)handle,
+                            hipsparse::hipDirectionToCudaDirection(dirA),
+                            m,
+                            n,
+                            (const cusparseMatDescr_t)descrA,
+                            csrRowPtrA,
+                            csrColIndA,
+                            blockDim,
+                            (const cusparseMatDescr_t)descrC,
+                            bsrRowPtrC,
+                            bsrNnzb));
 }
 
 #if CUDART_VERSION < 13000
@@ -8294,14 +8514,15 @@ hipsparseStatus_t hipsparseSnnz_compress(hipsparseHandle_t         handle,
                                          int*                      nnzC,
                                          float                     tol)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSnnz_compress((cusparseHandle_t)handle,
-                                                              m,
-                                                              (const cusparseMatDescr_t)descrA,
-                                                              csrValA,
-                                                              csrRowPtrA,
-                                                              nnzPerRow,
-                                                              nnzC,
-                                                              tol));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSnnz_compress((cusparseHandle_t)handle,
+                              m,
+                              (const cusparseMatDescr_t)descrA,
+                              csrValA,
+                              csrRowPtrA,
+                              nnzPerRow,
+                              nnzC,
+                              tol));
 }
 
 hipsparseStatus_t hipsparseDnnz_compress(hipsparseHandle_t         handle,
@@ -8313,14 +8534,15 @@ hipsparseStatus_t hipsparseDnnz_compress(hipsparseHandle_t         handle,
                                          int*                      nnzC,
                                          double                    tol)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDnnz_compress((cusparseHandle_t)handle,
-                                                              m,
-                                                              (const cusparseMatDescr_t)descrA,
-                                                              csrValA,
-                                                              csrRowPtrA,
-                                                              nnzPerRow,
-                                                              nnzC,
-                                                              tol));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDnnz_compress((cusparseHandle_t)handle,
+                              m,
+                              (const cusparseMatDescr_t)descrA,
+                              csrValA,
+                              csrRowPtrA,
+                              nnzPerRow,
+                              nnzC,
+                              tol));
 }
 
 hipsparseStatus_t hipsparseCnnz_compress(hipsparseHandle_t         handle,
@@ -8332,14 +8554,15 @@ hipsparseStatus_t hipsparseCnnz_compress(hipsparseHandle_t         handle,
                                          int*                      nnzC,
                                          hipComplex                tol)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCnnz_compress((cusparseHandle_t)handle,
-                                                              m,
-                                                              (const cusparseMatDescr_t)descrA,
-                                                              (const cuComplex*)csrValA,
-                                                              csrRowPtrA,
-                                                              nnzPerRow,
-                                                              nnzC,
-                                                              {cuCrealf(tol), cuCimagf(tol)}));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCnnz_compress((cusparseHandle_t)handle,
+                              m,
+                              (const cusparseMatDescr_t)descrA,
+                              (const cuComplex*)csrValA,
+                              csrRowPtrA,
+                              nnzPerRow,
+                              nnzC,
+                              {cuCrealf(tol), cuCimagf(tol)}));
 }
 
 hipsparseStatus_t hipsparseZnnz_compress(hipsparseHandle_t         handle,
@@ -8351,14 +8574,15 @@ hipsparseStatus_t hipsparseZnnz_compress(hipsparseHandle_t         handle,
                                          int*                      nnzC,
                                          hipDoubleComplex          tol)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseZnnz_compress((cusparseHandle_t)handle,
-                                                              m,
-                                                              (const cusparseMatDescr_t)descrA,
-                                                              (const cuDoubleComplex*)csrValA,
-                                                              csrRowPtrA,
-                                                              nnzPerRow,
-                                                              nnzC,
-                                                              {cuCreal(tol), cuCimag(tol)}));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseZnnz_compress((cusparseHandle_t)handle,
+                              m,
+                              (const cusparseMatDescr_t)descrA,
+                              (const cuDoubleComplex*)csrValA,
+                              csrRowPtrA,
+                              nnzPerRow,
+                              nnzC,
+                              {cuCreal(tol), cuCimag(tol)}));
 }
 #endif
 
@@ -8369,12 +8593,13 @@ hipsparseStatus_t hipsparseXcsr2coo(hipsparseHandle_t    handle,
                                     int*                 cooRowInd,
                                     hipsparseIndexBase_t idxBase)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseXcsr2coo((cusparseHandle_t)handle,
-                                                         csrRowPtr,
-                                                         nnz,
-                                                         m,
-                                                         cooRowInd,
-                                                         hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseXcsr2coo((cusparseHandle_t)handle,
+                         csrRowPtr,
+                         nnz,
+                         m,
+                         cooRowInd,
+                         hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
 }
 
 #if CUDART_VERSION < 11000
@@ -8391,18 +8616,19 @@ hipsparseStatus_t hipsparseScsr2csc(hipsparseHandle_t    handle,
                                     hipsparseAction_t    copyValues,
                                     hipsparseIndexBase_t idxBase)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseScsr2csc((cusparseHandle_t)handle,
-                                                         m,
-                                                         n,
-                                                         nnz,
-                                                         csrSortedVal,
-                                                         csrSortedRowPtr,
-                                                         csrSortedColInd,
-                                                         cscSortedVal,
-                                                         cscSortedRowInd,
-                                                         cscSortedColPtr,
-                                                         hipsparse::hipActionToCudaAction(copyValues),
-                                                         hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseScsr2csc((cusparseHandle_t)handle,
+                         m,
+                         n,
+                         nnz,
+                         csrSortedVal,
+                         csrSortedRowPtr,
+                         csrSortedColInd,
+                         cscSortedVal,
+                         cscSortedRowInd,
+                         cscSortedColPtr,
+                         hipsparse::hipActionToCudaAction(copyValues),
+                         hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
 }
 
 hipsparseStatus_t hipsparseDcsr2csc(hipsparseHandle_t    handle,
@@ -8418,18 +8644,19 @@ hipsparseStatus_t hipsparseDcsr2csc(hipsparseHandle_t    handle,
                                     hipsparseAction_t    copyValues,
                                     hipsparseIndexBase_t idxBase)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDcsr2csc((cusparseHandle_t)handle,
-                                                         m,
-                                                         n,
-                                                         nnz,
-                                                         csrSortedVal,
-                                                         csrSortedRowPtr,
-                                                         csrSortedColInd,
-                                                         cscSortedVal,
-                                                         cscSortedRowInd,
-                                                         cscSortedColPtr,
-                                                         hipsparse::hipActionToCudaAction(copyValues),
-                                                         hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDcsr2csc((cusparseHandle_t)handle,
+                         m,
+                         n,
+                         nnz,
+                         csrSortedVal,
+                         csrSortedRowPtr,
+                         csrSortedColInd,
+                         cscSortedVal,
+                         cscSortedRowInd,
+                         cscSortedColPtr,
+                         hipsparse::hipActionToCudaAction(copyValues),
+                         hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
 }
 
 hipsparseStatus_t hipsparseCcsr2csc(hipsparseHandle_t    handle,
@@ -8445,18 +8672,19 @@ hipsparseStatus_t hipsparseCcsr2csc(hipsparseHandle_t    handle,
                                     hipsparseAction_t    copyValues,
                                     hipsparseIndexBase_t idxBase)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCcsr2csc((cusparseHandle_t)handle,
-                                                         m,
-                                                         n,
-                                                         nnz,
-                                                         (const cuComplex*)csrSortedVal,
-                                                         csrSortedRowPtr,
-                                                         csrSortedColInd,
-                                                         (cuComplex*)cscSortedVal,
-                                                         cscSortedRowInd,
-                                                         cscSortedColPtr,
-                                                         hipsparse::hipActionToCudaAction(copyValues),
-                                                         hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCcsr2csc((cusparseHandle_t)handle,
+                         m,
+                         n,
+                         nnz,
+                         (const cuComplex*)csrSortedVal,
+                         csrSortedRowPtr,
+                         csrSortedColInd,
+                         (cuComplex*)cscSortedVal,
+                         cscSortedRowInd,
+                         cscSortedColPtr,
+                         hipsparse::hipActionToCudaAction(copyValues),
+                         hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
 }
 
 hipsparseStatus_t hipsparseZcsr2csc(hipsparseHandle_t       handle,
@@ -8472,18 +8700,19 @@ hipsparseStatus_t hipsparseZcsr2csc(hipsparseHandle_t       handle,
                                     hipsparseAction_t       copyValues,
                                     hipsparseIndexBase_t    idxBase)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseZcsr2csc((cusparseHandle_t)handle,
-                                                         m,
-                                                         n,
-                                                         nnz,
-                                                         (const cuDoubleComplex*)csrSortedVal,
-                                                         csrSortedRowPtr,
-                                                         csrSortedColInd,
-                                                         (cuDoubleComplex*)cscSortedVal,
-                                                         cscSortedRowInd,
-                                                         cscSortedColPtr,
-                                                         hipsparse::hipActionToCudaAction(copyValues),
-                                                         hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseZcsr2csc((cusparseHandle_t)handle,
+                         m,
+                         n,
+                         nnz,
+                         (const cuDoubleComplex*)csrSortedVal,
+                         csrSortedRowPtr,
+                         csrSortedColInd,
+                         (cuDoubleComplex*)cscSortedVal,
+                         cscSortedRowInd,
+                         cscSortedColPtr,
+                         hipsparse::hipActionToCudaAction(copyValues),
+                         hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
 }
 #endif
 
@@ -8566,21 +8795,22 @@ hipsparseStatus_t hipsparseCsr2cscEx2(hipsparseHandle_t     handle,
                                       hipsparseCsr2CscAlg_t alg,
                                       void*                 buffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCsr2cscEx2((cusparseHandle_t)handle,
-                                                           m,
-                                                           n,
-                                                           nnz,
-                                                           csrVal,
-                                                           csrRowPtr,
-                                                           csrColInd,
-                                                           cscVal,
-                                                           cscColPtr,
-                                                           cscRowInd,
-                                                           hipsparse::hipDataTypeToCudaDataType(valType),
-                                                           hipsparse::hipActionToCudaAction(copyValues),
-                                                           hipsparse::hipIndexBaseToCudaIndexBase(idxBase),
-                                                           hipCsr2CscAlgToCudaCsr2CscAlg(alg),
-                                                           buffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCsr2cscEx2((cusparseHandle_t)handle,
+                           m,
+                           n,
+                           nnz,
+                           csrVal,
+                           csrRowPtr,
+                           csrColInd,
+                           cscVal,
+                           cscColPtr,
+                           cscRowInd,
+                           hipsparse::hipDataTypeToCudaDataType(valType),
+                           hipsparse::hipActionToCudaAction(copyValues),
+                           hipsparse::hipIndexBaseToCudaIndexBase(idxBase),
+                           hipCsr2CscAlgToCudaCsr2CscAlg(alg),
+                           buffer));
 }
 #endif
 
@@ -8696,19 +8926,20 @@ hipsparseStatus_t hipsparseScsr2bsr(hipsparseHandle_t         handle,
                                     int*                      bsrRowPtrC,
                                     int*                      bsrColIndC)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseScsr2bsr((cusparseHandle_t)handle,
-                                                         hipsparse::hipDirectionToCudaDirection(dirA),
-                                                         m,
-                                                         n,
-                                                         (const cusparseMatDescr_t)descrA,
-                                                         csrValA,
-                                                         csrRowPtrA,
-                                                         csrColIndA,
-                                                         blockDim,
-                                                         (const cusparseMatDescr_t)descrC,
-                                                         bsrValC,
-                                                         bsrRowPtrC,
-                                                         bsrColIndC));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseScsr2bsr((cusparseHandle_t)handle,
+                         hipsparse::hipDirectionToCudaDirection(dirA),
+                         m,
+                         n,
+                         (const cusparseMatDescr_t)descrA,
+                         csrValA,
+                         csrRowPtrA,
+                         csrColIndA,
+                         blockDim,
+                         (const cusparseMatDescr_t)descrC,
+                         bsrValC,
+                         bsrRowPtrC,
+                         bsrColIndC));
 }
 
 hipsparseStatus_t hipsparseDcsr2bsr(hipsparseHandle_t         handle,
@@ -8725,19 +8956,20 @@ hipsparseStatus_t hipsparseDcsr2bsr(hipsparseHandle_t         handle,
                                     int*                      bsrRowPtrC,
                                     int*                      bsrColIndC)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDcsr2bsr((cusparseHandle_t)handle,
-                                                         hipsparse::hipDirectionToCudaDirection(dirA),
-                                                         m,
-                                                         n,
-                                                         (const cusparseMatDescr_t)descrA,
-                                                         csrValA,
-                                                         csrRowPtrA,
-                                                         csrColIndA,
-                                                         blockDim,
-                                                         (const cusparseMatDescr_t)descrC,
-                                                         bsrValC,
-                                                         bsrRowPtrC,
-                                                         bsrColIndC));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDcsr2bsr((cusparseHandle_t)handle,
+                         hipsparse::hipDirectionToCudaDirection(dirA),
+                         m,
+                         n,
+                         (const cusparseMatDescr_t)descrA,
+                         csrValA,
+                         csrRowPtrA,
+                         csrColIndA,
+                         blockDim,
+                         (const cusparseMatDescr_t)descrC,
+                         bsrValC,
+                         bsrRowPtrC,
+                         bsrColIndC));
 }
 
 hipsparseStatus_t hipsparseCcsr2bsr(hipsparseHandle_t         handle,
@@ -8754,19 +8986,20 @@ hipsparseStatus_t hipsparseCcsr2bsr(hipsparseHandle_t         handle,
                                     int*                      bsrRowPtrC,
                                     int*                      bsrColIndC)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCcsr2bsr((cusparseHandle_t)handle,
-                                                         hipsparse::hipDirectionToCudaDirection(dirA),
-                                                         m,
-                                                         n,
-                                                         (const cusparseMatDescr_t)descrA,
-                                                         (const cuComplex*)csrValA,
-                                                         csrRowPtrA,
-                                                         csrColIndA,
-                                                         blockDim,
-                                                         (const cusparseMatDescr_t)descrC,
-                                                         (cuComplex*)bsrValC,
-                                                         bsrRowPtrC,
-                                                         bsrColIndC));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCcsr2bsr((cusparseHandle_t)handle,
+                         hipsparse::hipDirectionToCudaDirection(dirA),
+                         m,
+                         n,
+                         (const cusparseMatDescr_t)descrA,
+                         (const cuComplex*)csrValA,
+                         csrRowPtrA,
+                         csrColIndA,
+                         blockDim,
+                         (const cusparseMatDescr_t)descrC,
+                         (cuComplex*)bsrValC,
+                         bsrRowPtrC,
+                         bsrColIndC));
 }
 
 hipsparseStatus_t hipsparseZcsr2bsr(hipsparseHandle_t         handle,
@@ -8783,19 +9016,20 @@ hipsparseStatus_t hipsparseZcsr2bsr(hipsparseHandle_t         handle,
                                     int*                      bsrRowPtrC,
                                     int*                      bsrColIndC)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseZcsr2bsr((cusparseHandle_t)handle,
-                                                         hipsparse::hipDirectionToCudaDirection(dirA),
-                                                         m,
-                                                         n,
-                                                         (const cusparseMatDescr_t)descrA,
-                                                         (const cuDoubleComplex*)csrValA,
-                                                         csrRowPtrA,
-                                                         csrColIndA,
-                                                         blockDim,
-                                                         (const cusparseMatDescr_t)descrC,
-                                                         (cuDoubleComplex*)bsrValC,
-                                                         bsrRowPtrC,
-                                                         bsrColIndC));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseZcsr2bsr((cusparseHandle_t)handle,
+                         hipsparse::hipDirectionToCudaDirection(dirA),
+                         m,
+                         n,
+                         (const cusparseMatDescr_t)descrA,
+                         (const cuDoubleComplex*)csrValA,
+                         csrRowPtrA,
+                         csrColIndA,
+                         blockDim,
+                         (const cusparseMatDescr_t)descrC,
+                         (cuDoubleComplex*)bsrValC,
+                         bsrRowPtrC,
+                         bsrColIndC));
 }
 
 hipsparseStatus_t hipsparseSbsr2csr(hipsparseHandle_t         handle,
@@ -8812,19 +9046,20 @@ hipsparseStatus_t hipsparseSbsr2csr(hipsparseHandle_t         handle,
                                     int*                      csrRowPtrC,
                                     int*                      csrColIndC)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSbsr2csr((cusparseHandle_t)handle,
-                                                         hipsparse::hipDirectionToCudaDirection(dirA),
-                                                         mb,
-                                                         nb,
-                                                         (const cusparseMatDescr_t)descrA,
-                                                         bsrValA,
-                                                         bsrRowPtrA,
-                                                         bsrColIndA,
-                                                         blockDim,
-                                                         (const cusparseMatDescr_t)descrC,
-                                                         csrValC,
-                                                         csrRowPtrC,
-                                                         csrColIndC));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSbsr2csr((cusparseHandle_t)handle,
+                         hipsparse::hipDirectionToCudaDirection(dirA),
+                         mb,
+                         nb,
+                         (const cusparseMatDescr_t)descrA,
+                         bsrValA,
+                         bsrRowPtrA,
+                         bsrColIndA,
+                         blockDim,
+                         (const cusparseMatDescr_t)descrC,
+                         csrValC,
+                         csrRowPtrC,
+                         csrColIndC));
 }
 
 hipsparseStatus_t hipsparseDbsr2csr(hipsparseHandle_t         handle,
@@ -8841,19 +9076,20 @@ hipsparseStatus_t hipsparseDbsr2csr(hipsparseHandle_t         handle,
                                     int*                      csrRowPtrC,
                                     int*                      csrColIndC)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDbsr2csr((cusparseHandle_t)handle,
-                                                         hipsparse::hipDirectionToCudaDirection(dirA),
-                                                         mb,
-                                                         nb,
-                                                         (const cusparseMatDescr_t)descrA,
-                                                         bsrValA,
-                                                         bsrRowPtrA,
-                                                         bsrColIndA,
-                                                         blockDim,
-                                                         (const cusparseMatDescr_t)descrC,
-                                                         csrValC,
-                                                         csrRowPtrC,
-                                                         csrColIndC));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDbsr2csr((cusparseHandle_t)handle,
+                         hipsparse::hipDirectionToCudaDirection(dirA),
+                         mb,
+                         nb,
+                         (const cusparseMatDescr_t)descrA,
+                         bsrValA,
+                         bsrRowPtrA,
+                         bsrColIndA,
+                         blockDim,
+                         (const cusparseMatDescr_t)descrC,
+                         csrValC,
+                         csrRowPtrC,
+                         csrColIndC));
 }
 
 hipsparseStatus_t hipsparseCbsr2csr(hipsparseHandle_t         handle,
@@ -8870,19 +9106,20 @@ hipsparseStatus_t hipsparseCbsr2csr(hipsparseHandle_t         handle,
                                     int*                      csrRowPtrC,
                                     int*                      csrColIndC)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCbsr2csr((cusparseHandle_t)handle,
-                                                         hipsparse::hipDirectionToCudaDirection(dirA),
-                                                         mb,
-                                                         nb,
-                                                         (const cusparseMatDescr_t)descrA,
-                                                         (const cuComplex*)bsrValA,
-                                                         bsrRowPtrA,
-                                                         bsrColIndA,
-                                                         blockDim,
-                                                         (const cusparseMatDescr_t)descrC,
-                                                         (cuComplex*)csrValC,
-                                                         csrRowPtrC,
-                                                         csrColIndC));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCbsr2csr((cusparseHandle_t)handle,
+                         hipsparse::hipDirectionToCudaDirection(dirA),
+                         mb,
+                         nb,
+                         (const cusparseMatDescr_t)descrA,
+                         (const cuComplex*)bsrValA,
+                         bsrRowPtrA,
+                         bsrColIndA,
+                         blockDim,
+                         (const cusparseMatDescr_t)descrC,
+                         (cuComplex*)csrValC,
+                         csrRowPtrC,
+                         csrColIndC));
 }
 
 hipsparseStatus_t hipsparseZbsr2csr(hipsparseHandle_t         handle,
@@ -8899,19 +9136,20 @@ hipsparseStatus_t hipsparseZbsr2csr(hipsparseHandle_t         handle,
                                     int*                      csrRowPtrC,
                                     int*                      csrColIndC)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseZbsr2csr((cusparseHandle_t)handle,
-                                                         hipsparse::hipDirectionToCudaDirection(dirA),
-                                                         mb,
-                                                         nb,
-                                                         (const cusparseMatDescr_t)descrA,
-                                                         (const cuDoubleComplex*)bsrValA,
-                                                         bsrRowPtrA,
-                                                         bsrColIndA,
-                                                         blockDim,
-                                                         (const cusparseMatDescr_t)descrC,
-                                                         (cuDoubleComplex*)csrValC,
-                                                         csrRowPtrC,
-                                                         csrColIndC));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseZbsr2csr((cusparseHandle_t)handle,
+                         hipsparse::hipDirectionToCudaDirection(dirA),
+                         mb,
+                         nb,
+                         (const cusparseMatDescr_t)descrA,
+                         (const cuDoubleComplex*)bsrValA,
+                         bsrRowPtrA,
+                         bsrColIndA,
+                         blockDim,
+                         (const cusparseMatDescr_t)descrC,
+                         (cuDoubleComplex*)csrValC,
+                         csrRowPtrC,
+                         csrColIndC));
 }
 
 hipsparseStatus_t hipsparseSgebsr2csr(hipsparseHandle_t         handle,
@@ -8929,20 +9167,21 @@ hipsparseStatus_t hipsparseSgebsr2csr(hipsparseHandle_t         handle,
                                       int*                      csrRowPtrC,
                                       int*                      csrColIndC)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSgebsr2csr((cusparseHandle_t)handle,
-                                                           hipsparse::hipDirectionToCudaDirection(dirA),
-                                                           mb,
-                                                           nb,
-                                                           (const cusparseMatDescr_t)descrA,
-                                                           bsrValA,
-                                                           bsrRowPtrA,
-                                                           bsrColIndA,
-                                                           rowBlockDim,
-                                                           colBlockDim,
-                                                           (const cusparseMatDescr_t)descrC,
-                                                           csrValC,
-                                                           csrRowPtrC,
-                                                           csrColIndC));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSgebsr2csr((cusparseHandle_t)handle,
+                           hipsparse::hipDirectionToCudaDirection(dirA),
+                           mb,
+                           nb,
+                           (const cusparseMatDescr_t)descrA,
+                           bsrValA,
+                           bsrRowPtrA,
+                           bsrColIndA,
+                           rowBlockDim,
+                           colBlockDim,
+                           (const cusparseMatDescr_t)descrC,
+                           csrValC,
+                           csrRowPtrC,
+                           csrColIndC));
 }
 
 hipsparseStatus_t hipsparseDgebsr2csr(hipsparseHandle_t         handle,
@@ -8960,20 +9199,21 @@ hipsparseStatus_t hipsparseDgebsr2csr(hipsparseHandle_t         handle,
                                       int*                      csrRowPtrC,
                                       int*                      csrColIndC)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDgebsr2csr((cusparseHandle_t)handle,
-                                                           hipsparse::hipDirectionToCudaDirection(dirA),
-                                                           mb,
-                                                           nb,
-                                                           (const cusparseMatDescr_t)descrA,
-                                                           bsrValA,
-                                                           bsrRowPtrA,
-                                                           bsrColIndA,
-                                                           rowBlockDim,
-                                                           colBlockDim,
-                                                           (const cusparseMatDescr_t)descrC,
-                                                           csrValC,
-                                                           csrRowPtrC,
-                                                           csrColIndC));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDgebsr2csr((cusparseHandle_t)handle,
+                           hipsparse::hipDirectionToCudaDirection(dirA),
+                           mb,
+                           nb,
+                           (const cusparseMatDescr_t)descrA,
+                           bsrValA,
+                           bsrRowPtrA,
+                           bsrColIndA,
+                           rowBlockDim,
+                           colBlockDim,
+                           (const cusparseMatDescr_t)descrC,
+                           csrValC,
+                           csrRowPtrC,
+                           csrColIndC));
 }
 
 hipsparseStatus_t hipsparseCgebsr2csr(hipsparseHandle_t         handle,
@@ -8991,20 +9231,21 @@ hipsparseStatus_t hipsparseCgebsr2csr(hipsparseHandle_t         handle,
                                       int*                      csrRowPtrC,
                                       int*                      csrColIndC)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCgebsr2csr((cusparseHandle_t)handle,
-                                                           hipsparse::hipDirectionToCudaDirection(dirA),
-                                                           mb,
-                                                           nb,
-                                                           (const cusparseMatDescr_t)descrA,
-                                                           (const cuComplex*)bsrValA,
-                                                           bsrRowPtrA,
-                                                           bsrColIndA,
-                                                           rowBlockDim,
-                                                           colBlockDim,
-                                                           (const cusparseMatDescr_t)descrC,
-                                                           (cuComplex*)csrValC,
-                                                           csrRowPtrC,
-                                                           csrColIndC));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCgebsr2csr((cusparseHandle_t)handle,
+                           hipsparse::hipDirectionToCudaDirection(dirA),
+                           mb,
+                           nb,
+                           (const cusparseMatDescr_t)descrA,
+                           (const cuComplex*)bsrValA,
+                           bsrRowPtrA,
+                           bsrColIndA,
+                           rowBlockDim,
+                           colBlockDim,
+                           (const cusparseMatDescr_t)descrC,
+                           (cuComplex*)csrValC,
+                           csrRowPtrC,
+                           csrColIndC));
 }
 
 hipsparseStatus_t hipsparseZgebsr2csr(hipsparseHandle_t         handle,
@@ -9022,20 +9263,21 @@ hipsparseStatus_t hipsparseZgebsr2csr(hipsparseHandle_t         handle,
                                       int*                      csrRowPtrC,
                                       int*                      csrColIndC)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseZgebsr2csr((cusparseHandle_t)handle,
-                                                           hipsparse::hipDirectionToCudaDirection(dirA),
-                                                           mb,
-                                                           nb,
-                                                           (const cusparseMatDescr_t)descrA,
-                                                           (const cuDoubleComplex*)bsrValA,
-                                                           bsrRowPtrA,
-                                                           bsrColIndA,
-                                                           rowBlockDim,
-                                                           colBlockDim,
-                                                           (const cusparseMatDescr_t)descrC,
-                                                           (cuDoubleComplex*)csrValC,
-                                                           csrRowPtrC,
-                                                           csrColIndC));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseZgebsr2csr((cusparseHandle_t)handle,
+                           hipsparse::hipDirectionToCudaDirection(dirA),
+                           mb,
+                           nb,
+                           (const cusparseMatDescr_t)descrA,
+                           (const cuDoubleComplex*)bsrValA,
+                           bsrRowPtrA,
+                           bsrColIndA,
+                           rowBlockDim,
+                           colBlockDim,
+                           (const cusparseMatDescr_t)descrC,
+                           (cuDoubleComplex*)csrValC,
+                           csrRowPtrC,
+                           csrColIndC));
 }
 
 hipsparseStatus_t hipsparseScsr2csr_compress(hipsparseHandle_t         handle,
@@ -9052,19 +9294,20 @@ hipsparseStatus_t hipsparseScsr2csr_compress(hipsparseHandle_t         handle,
                                              int*                      csrRowPtrC,
                                              float                     tol)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseScsr2csr_compress((cusparseHandle_t)handle,
-                                                                  m,
-                                                                  n,
-                                                                  (const cusparseMatDescr_t)descrA,
-                                                                  csrValA,
-                                                                  csrColIndA,
-                                                                  csrRowPtrA,
-                                                                  nnzA,
-                                                                  nnzPerRow,
-                                                                  csrValC,
-                                                                  csrColIndC,
-                                                                  csrRowPtrC,
-                                                                  tol));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseScsr2csr_compress((cusparseHandle_t)handle,
+                                  m,
+                                  n,
+                                  (const cusparseMatDescr_t)descrA,
+                                  csrValA,
+                                  csrColIndA,
+                                  csrRowPtrA,
+                                  nnzA,
+                                  nnzPerRow,
+                                  csrValC,
+                                  csrColIndC,
+                                  csrRowPtrC,
+                                  tol));
 }
 
 hipsparseStatus_t hipsparseDcsr2csr_compress(hipsparseHandle_t         handle,
@@ -9081,19 +9324,20 @@ hipsparseStatus_t hipsparseDcsr2csr_compress(hipsparseHandle_t         handle,
                                              int*                      csrRowPtrC,
                                              double                    tol)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDcsr2csr_compress((cusparseHandle_t)handle,
-                                                                  m,
-                                                                  n,
-                                                                  (const cusparseMatDescr_t)descrA,
-                                                                  csrValA,
-                                                                  csrColIndA,
-                                                                  csrRowPtrA,
-                                                                  nnzA,
-                                                                  nnzPerRow,
-                                                                  csrValC,
-                                                                  csrColIndC,
-                                                                  csrRowPtrC,
-                                                                  tol));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDcsr2csr_compress((cusparseHandle_t)handle,
+                                  m,
+                                  n,
+                                  (const cusparseMatDescr_t)descrA,
+                                  csrValA,
+                                  csrColIndA,
+                                  csrRowPtrA,
+                                  nnzA,
+                                  nnzPerRow,
+                                  csrValC,
+                                  csrColIndC,
+                                  csrRowPtrC,
+                                  tol));
 }
 
 hipsparseStatus_t hipsparseCcsr2csr_compress(hipsparseHandle_t         handle,
@@ -9110,19 +9354,20 @@ hipsparseStatus_t hipsparseCcsr2csr_compress(hipsparseHandle_t         handle,
                                              int*                      csrRowPtrC,
                                              hipComplex                tol)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCcsr2csr_compress((cusparseHandle_t)handle,
-                                                                  m,
-                                                                  n,
-                                                                  (const cusparseMatDescr_t)descrA,
-                                                                  (const cuComplex*)csrValA,
-                                                                  csrColIndA,
-                                                                  csrRowPtrA,
-                                                                  nnzA,
-                                                                  nnzPerRow,
-                                                                  (cuComplex*)csrValC,
-                                                                  csrColIndC,
-                                                                  csrRowPtrC,
-                                                                  {cuCrealf(tol), cuCimagf(tol)}));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCcsr2csr_compress((cusparseHandle_t)handle,
+                                  m,
+                                  n,
+                                  (const cusparseMatDescr_t)descrA,
+                                  (const cuComplex*)csrValA,
+                                  csrColIndA,
+                                  csrRowPtrA,
+                                  nnzA,
+                                  nnzPerRow,
+                                  (cuComplex*)csrValC,
+                                  csrColIndC,
+                                  csrRowPtrC,
+                                  {cuCrealf(tol), cuCimagf(tol)}));
 }
 
 hipsparseStatus_t hipsparseZcsr2csr_compress(hipsparseHandle_t         handle,
@@ -9139,19 +9384,20 @@ hipsparseStatus_t hipsparseZcsr2csr_compress(hipsparseHandle_t         handle,
                                              int*                      csrRowPtrC,
                                              hipDoubleComplex          tol)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseZcsr2csr_compress((cusparseHandle_t)handle,
-                                                                  m,
-                                                                  n,
-                                                                  (const cusparseMatDescr_t)descrA,
-                                                                  (const cuDoubleComplex*)csrValA,
-                                                                  csrColIndA,
-                                                                  csrRowPtrA,
-                                                                  nnzA,
-                                                                  nnzPerRow,
-                                                                  (cuDoubleComplex*)csrValC,
-                                                                  csrColIndC,
-                                                                  csrRowPtrC,
-                                                                  {cuCreal(tol), cuCimag(tol)}));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseZcsr2csr_compress((cusparseHandle_t)handle,
+                                  m,
+                                  n,
+                                  (const cusparseMatDescr_t)descrA,
+                                  (const cuDoubleComplex*)csrValA,
+                                  csrColIndA,
+                                  csrRowPtrA,
+                                  nnzA,
+                                  nnzPerRow,
+                                  (cuDoubleComplex*)csrValC,
+                                  csrColIndC,
+                                  csrRowPtrC,
+                                  {cuCreal(tol), cuCimag(tol)}));
 }
 
 hipsparseStatus_t hipsparseSpruneCsr2csr_bufferSize(hipsparseHandle_t         handle,
@@ -9299,19 +9545,20 @@ hipsparseStatus_t hipsparseSpruneCsr2csrNnz(hipsparseHandle_t         handle,
                                             int*                      nnzTotalDevHostPtr,
                                             void*                     buffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSpruneCsr2csrNnz((cusparseHandle_t)handle,
-                                                                 m,
-                                                                 n,
-                                                                 nnzA,
-                                                                 (const cusparseMatDescr_t)descrA,
-                                                                 csrValA,
-                                                                 csrRowPtrA,
-                                                                 csrColIndA,
-                                                                 threshold,
-                                                                 (const cusparseMatDescr_t)descrC,
-                                                                 csrRowPtrC,
-                                                                 nnzTotalDevHostPtr,
-                                                                 buffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSpruneCsr2csrNnz((cusparseHandle_t)handle,
+                                 m,
+                                 n,
+                                 nnzA,
+                                 (const cusparseMatDescr_t)descrA,
+                                 csrValA,
+                                 csrRowPtrA,
+                                 csrColIndA,
+                                 threshold,
+                                 (const cusparseMatDescr_t)descrC,
+                                 csrRowPtrC,
+                                 nnzTotalDevHostPtr,
+                                 buffer));
 }
 
 hipsparseStatus_t hipsparseDpruneCsr2csrNnz(hipsparseHandle_t         handle,
@@ -9328,19 +9575,20 @@ hipsparseStatus_t hipsparseDpruneCsr2csrNnz(hipsparseHandle_t         handle,
                                             int*                      nnzTotalDevHostPtr,
                                             void*                     buffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDpruneCsr2csrNnz((cusparseHandle_t)handle,
-                                                                 m,
-                                                                 n,
-                                                                 nnzA,
-                                                                 (const cusparseMatDescr_t)descrA,
-                                                                 csrValA,
-                                                                 csrRowPtrA,
-                                                                 csrColIndA,
-                                                                 threshold,
-                                                                 (const cusparseMatDescr_t)descrC,
-                                                                 csrRowPtrC,
-                                                                 nnzTotalDevHostPtr,
-                                                                 buffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDpruneCsr2csrNnz((cusparseHandle_t)handle,
+                                 m,
+                                 n,
+                                 nnzA,
+                                 (const cusparseMatDescr_t)descrA,
+                                 csrValA,
+                                 csrRowPtrA,
+                                 csrColIndA,
+                                 threshold,
+                                 (const cusparseMatDescr_t)descrC,
+                                 csrRowPtrC,
+                                 nnzTotalDevHostPtr,
+                                 buffer));
 }
 #endif
 
@@ -9360,20 +9608,21 @@ hipsparseStatus_t hipsparseSpruneCsr2csr(hipsparseHandle_t         handle,
                                          int*                      csrColIndC,
                                          void*                     buffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSpruneCsr2csr((cusparseHandle_t)handle,
-                                                              m,
-                                                              n,
-                                                              nnzA,
-                                                              (const cusparseMatDescr_t)descrA,
-                                                              csrValA,
-                                                              csrRowPtrA,
-                                                              csrColIndA,
-                                                              threshold,
-                                                              (const cusparseMatDescr_t)descrC,
-                                                              csrValC,
-                                                              csrRowPtrC,
-                                                              csrColIndC,
-                                                              buffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSpruneCsr2csr((cusparseHandle_t)handle,
+                              m,
+                              n,
+                              nnzA,
+                              (const cusparseMatDescr_t)descrA,
+                              csrValA,
+                              csrRowPtrA,
+                              csrColIndA,
+                              threshold,
+                              (const cusparseMatDescr_t)descrC,
+                              csrValC,
+                              csrRowPtrC,
+                              csrColIndC,
+                              buffer));
 }
 
 hipsparseStatus_t hipsparseDpruneCsr2csr(hipsparseHandle_t         handle,
@@ -9391,20 +9640,21 @@ hipsparseStatus_t hipsparseDpruneCsr2csr(hipsparseHandle_t         handle,
                                          int*                      csrColIndC,
                                          void*                     buffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDpruneCsr2csr((cusparseHandle_t)handle,
-                                                              m,
-                                                              n,
-                                                              nnzA,
-                                                              (const cusparseMatDescr_t)descrA,
-                                                              csrValA,
-                                                              csrRowPtrA,
-                                                              csrColIndA,
-                                                              threshold,
-                                                              (const cusparseMatDescr_t)descrC,
-                                                              csrValC,
-                                                              csrRowPtrC,
-                                                              csrColIndC,
-                                                              buffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDpruneCsr2csr((cusparseHandle_t)handle,
+                              m,
+                              n,
+                              nnzA,
+                              (const cusparseMatDescr_t)descrA,
+                              csrValA,
+                              csrRowPtrA,
+                              csrColIndA,
+                              threshold,
+                              (const cusparseMatDescr_t)descrC,
+                              csrValC,
+                              csrRowPtrC,
+                              csrColIndC,
+                              buffer));
 }
 #endif
 
@@ -9692,12 +9942,13 @@ hipsparseStatus_t hipsparseShyb2csr(hipsparseHandle_t         handle,
                                     int*                      csrSortedRowPtrA,
                                     int*                      csrSortedColIndA)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseShyb2csr((cusparseHandle_t)handle,
-                                                         (const cusparseMatDescr_t)descrA,
-                                                         (const cusparseHybMat_t)hybA,
-                                                         csrSortedValA,
-                                                         csrSortedRowPtrA,
-                                                         csrSortedColIndA));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseShyb2csr((cusparseHandle_t)handle,
+                         (const cusparseMatDescr_t)descrA,
+                         (const cusparseHybMat_t)hybA,
+                         csrSortedValA,
+                         csrSortedRowPtrA,
+                         csrSortedColIndA));
 }
 
 hipsparseStatus_t hipsparseDhyb2csr(hipsparseHandle_t         handle,
@@ -9707,12 +9958,13 @@ hipsparseStatus_t hipsparseDhyb2csr(hipsparseHandle_t         handle,
                                     int*                      csrSortedRowPtrA,
                                     int*                      csrSortedColIndA)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDhyb2csr((cusparseHandle_t)handle,
-                                                         (const cusparseMatDescr_t)descrA,
-                                                         (const cusparseHybMat_t)hybA,
-                                                         csrSortedValA,
-                                                         csrSortedRowPtrA,
-                                                         csrSortedColIndA));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDhyb2csr((cusparseHandle_t)handle,
+                         (const cusparseMatDescr_t)descrA,
+                         (const cusparseHybMat_t)hybA,
+                         csrSortedValA,
+                         csrSortedRowPtrA,
+                         csrSortedColIndA));
 }
 
 hipsparseStatus_t hipsparseChyb2csr(hipsparseHandle_t         handle,
@@ -9722,12 +9974,13 @@ hipsparseStatus_t hipsparseChyb2csr(hipsparseHandle_t         handle,
                                     int*                      csrSortedRowPtrA,
                                     int*                      csrSortedColIndA)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseChyb2csr((cusparseHandle_t)handle,
-                                                         (const cusparseMatDescr_t)descrA,
-                                                         (const cusparseHybMat_t)hybA,
-                                                         csrSortedValA,
-                                                         csrSortedRowPtrA,
-                                                         csrSortedColIndA));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseChyb2csr((cusparseHandle_t)handle,
+                         (const cusparseMatDescr_t)descrA,
+                         (const cusparseHybMat_t)hybA,
+                         csrSortedValA,
+                         csrSortedRowPtrA,
+                         csrSortedColIndA));
 }
 
 hipsparseStatus_t hipsparseZhyb2csr(hipsparseHandle_t         handle,
@@ -9737,12 +9990,13 @@ hipsparseStatus_t hipsparseZhyb2csr(hipsparseHandle_t         handle,
                                     int*                      csrSortedRowPtrA,
                                     int*                      csrSortedColIndA)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseZhyb2csr((cusparseHandle_t)handle,
-                                                         (const cusparseMatDescr_t)descrA,
-                                                         (const cusparseHybMat_t)hybA,
-                                                         csrSortedValA,
-                                                         csrSortedRowPtrA,
-                                                         csrSortedColIndA));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseZhyb2csr((cusparseHandle_t)handle,
+                         (const cusparseMatDescr_t)descrA,
+                         (const cusparseHybMat_t)hybA,
+                         csrSortedValA,
+                         csrSortedRowPtrA,
+                         csrSortedColIndA));
 }
 #endif
 
@@ -9753,12 +10007,13 @@ hipsparseStatus_t hipsparseXcoo2csr(hipsparseHandle_t    handle,
                                     int*                 csrRowPtr,
                                     hipsparseIndexBase_t idxBase)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseXcoo2csr((cusparseHandle_t)handle,
-                                                         cooRowInd,
-                                                         nnz,
-                                                         m,
-                                                         csrRowPtr,
-                                                         hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseXcoo2csr((cusparseHandle_t)handle,
+                         cooRowInd,
+                         nnz,
+                         m,
+                         csrRowPtr,
+                         hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
 }
 
 #if CUDART_VERSION < 13000
@@ -9791,15 +10046,16 @@ hipsparseStatus_t hipsparseXcsrsort(hipsparseHandle_t         handle,
                                     int*                      P,
                                     void*                     pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseXcsrsort((cusparseHandle_t)handle,
-                                                         m,
-                                                         n,
-                                                         nnz,
-                                                         (const cusparseMatDescr_t)descrA,
-                                                         csrRowPtr,
-                                                         csrColInd,
-                                                         P,
-                                                         pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseXcsrsort((cusparseHandle_t)handle,
+                         m,
+                         n,
+                         nnz,
+                         (const cusparseMatDescr_t)descrA,
+                         csrRowPtr,
+                         csrColInd,
+                         P,
+                         pBuffer));
 }
 
 hipsparseStatus_t hipsparseXcscsort_bufferSizeExt(hipsparseHandle_t handle,
@@ -9824,15 +10080,16 @@ hipsparseStatus_t hipsparseXcscsort(hipsparseHandle_t         handle,
                                     int*                      P,
                                     void*                     pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseXcscsort((cusparseHandle_t)handle,
-                                                         m,
-                                                         n,
-                                                         nnz,
-                                                         (const cusparseMatDescr_t)descrA,
-                                                         cscColPtr,
-                                                         cscRowInd,
-                                                         P,
-                                                         pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseXcscsort((cusparseHandle_t)handle,
+                         m,
+                         n,
+                         nnz,
+                         (const cusparseMatDescr_t)descrA,
+                         cscColPtr,
+                         cscRowInd,
+                         P,
+                         pBuffer));
 }
 
 hipsparseStatus_t hipsparseXcoosort_bufferSizeExt(hipsparseHandle_t handle,
@@ -10018,22 +10275,23 @@ hipsparseStatus_t hipsparseXgebsr2gebsrNnz(hipsparseHandle_t         handle,
                                            int*                      nnzTotalDevHostPtr,
                                            void*                     buffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseXgebsr2gebsrNnz((cusparseHandle_t)handle,
-                                                                hipsparse::hipDirectionToCudaDirection(dirA),
-                                                                mb,
-                                                                nb,
-                                                                nnzb,
-                                                                (const cusparseMatDescr_t)descrA,
-                                                                bsrRowPtrA,
-                                                                bsrColIndA,
-                                                                rowBlockDimA,
-                                                                colBlockDimA,
-                                                                (cusparseMatDescr_t)descrC,
-                                                                bsrRowPtrC,
-                                                                rowBlockDimC,
-                                                                colBlockDimC,
-                                                                nnzTotalDevHostPtr,
-                                                                buffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseXgebsr2gebsrNnz((cusparseHandle_t)handle,
+                                hipsparse::hipDirectionToCudaDirection(dirA),
+                                mb,
+                                nb,
+                                nnzb,
+                                (const cusparseMatDescr_t)descrA,
+                                bsrRowPtrA,
+                                bsrColIndA,
+                                rowBlockDimA,
+                                colBlockDimA,
+                                (cusparseMatDescr_t)descrC,
+                                bsrRowPtrC,
+                                rowBlockDimC,
+                                colBlockDimC,
+                                nnzTotalDevHostPtr,
+                                buffer));
 }
 
 hipsparseStatus_t hipsparseSgebsr2gebsr(hipsparseHandle_t         handle,
@@ -10055,24 +10313,25 @@ hipsparseStatus_t hipsparseSgebsr2gebsr(hipsparseHandle_t         handle,
                                         int                       colBlockDimC,
                                         void*                     buffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSgebsr2gebsr((cusparseHandle_t)handle,
-                                                             hipsparse::hipDirectionToCudaDirection(dirA),
-                                                             mb,
-                                                             nb,
-                                                             nnzb,
-                                                             (const cusparseMatDescr_t)descrA,
-                                                             bsrValA,
-                                                             bsrRowPtrA,
-                                                             bsrColIndA,
-                                                             rowBlockDimA,
-                                                             colBlockDimA,
-                                                             (const cusparseMatDescr_t)descrC,
-                                                             bsrValC,
-                                                             bsrRowPtrC,
-                                                             bsrColIndC,
-                                                             rowBlockDimC,
-                                                             colBlockDimC,
-                                                             buffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSgebsr2gebsr((cusparseHandle_t)handle,
+                             hipsparse::hipDirectionToCudaDirection(dirA),
+                             mb,
+                             nb,
+                             nnzb,
+                             (const cusparseMatDescr_t)descrA,
+                             bsrValA,
+                             bsrRowPtrA,
+                             bsrColIndA,
+                             rowBlockDimA,
+                             colBlockDimA,
+                             (const cusparseMatDescr_t)descrC,
+                             bsrValC,
+                             bsrRowPtrC,
+                             bsrColIndC,
+                             rowBlockDimC,
+                             colBlockDimC,
+                             buffer));
 }
 
 hipsparseStatus_t hipsparseDgebsr2gebsr(hipsparseHandle_t         handle,
@@ -10094,24 +10353,25 @@ hipsparseStatus_t hipsparseDgebsr2gebsr(hipsparseHandle_t         handle,
                                         int                       colBlockDimC,
                                         void*                     buffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDgebsr2gebsr((cusparseHandle_t)handle,
-                                                             hipsparse::hipDirectionToCudaDirection(dirA),
-                                                             mb,
-                                                             nb,
-                                                             nnzb,
-                                                             (const cusparseMatDescr_t)descrA,
-                                                             bsrValA,
-                                                             bsrRowPtrA,
-                                                             bsrColIndA,
-                                                             rowBlockDimA,
-                                                             colBlockDimA,
-                                                             (const cusparseMatDescr_t)descrC,
-                                                             bsrValC,
-                                                             bsrRowPtrC,
-                                                             bsrColIndC,
-                                                             rowBlockDimC,
-                                                             colBlockDimC,
-                                                             buffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDgebsr2gebsr((cusparseHandle_t)handle,
+                             hipsparse::hipDirectionToCudaDirection(dirA),
+                             mb,
+                             nb,
+                             nnzb,
+                             (const cusparseMatDescr_t)descrA,
+                             bsrValA,
+                             bsrRowPtrA,
+                             bsrColIndA,
+                             rowBlockDimA,
+                             colBlockDimA,
+                             (const cusparseMatDescr_t)descrC,
+                             bsrValC,
+                             bsrRowPtrC,
+                             bsrColIndC,
+                             rowBlockDimC,
+                             colBlockDimC,
+                             buffer));
 }
 
 hipsparseStatus_t hipsparseCgebsr2gebsr(hipsparseHandle_t         handle,
@@ -10133,24 +10393,25 @@ hipsparseStatus_t hipsparseCgebsr2gebsr(hipsparseHandle_t         handle,
                                         int                       colBlockDimC,
                                         void*                     buffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCgebsr2gebsr((cusparseHandle_t)handle,
-                                                             hipsparse::hipDirectionToCudaDirection(dirA),
-                                                             mb,
-                                                             nb,
-                                                             nnzb,
-                                                             (const cusparseMatDescr_t)descrA,
-                                                             (const cuComplex*)bsrValA,
-                                                             bsrRowPtrA,
-                                                             bsrColIndA,
-                                                             rowBlockDimA,
-                                                             colBlockDimA,
-                                                             (const cusparseMatDescr_t)descrC,
-                                                             (cuComplex*)bsrValC,
-                                                             bsrRowPtrC,
-                                                             bsrColIndC,
-                                                             rowBlockDimC,
-                                                             colBlockDimC,
-                                                             buffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCgebsr2gebsr((cusparseHandle_t)handle,
+                             hipsparse::hipDirectionToCudaDirection(dirA),
+                             mb,
+                             nb,
+                             nnzb,
+                             (const cusparseMatDescr_t)descrA,
+                             (const cuComplex*)bsrValA,
+                             bsrRowPtrA,
+                             bsrColIndA,
+                             rowBlockDimA,
+                             colBlockDimA,
+                             (const cusparseMatDescr_t)descrC,
+                             (cuComplex*)bsrValC,
+                             bsrRowPtrC,
+                             bsrColIndC,
+                             rowBlockDimC,
+                             colBlockDimC,
+                             buffer));
 }
 
 hipsparseStatus_t hipsparseZgebsr2gebsr(hipsparseHandle_t         handle,
@@ -10172,24 +10433,25 @@ hipsparseStatus_t hipsparseZgebsr2gebsr(hipsparseHandle_t         handle,
                                         int                       colBlockDimC,
                                         void*                     buffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseZgebsr2gebsr((cusparseHandle_t)handle,
-                                                             hipsparse::hipDirectionToCudaDirection(dirA),
-                                                             mb,
-                                                             nb,
-                                                             nnzb,
-                                                             (const cusparseMatDescr_t)descrA,
-                                                             (const cuDoubleComplex*)bsrValA,
-                                                             bsrRowPtrA,
-                                                             bsrColIndA,
-                                                             rowBlockDimA,
-                                                             colBlockDimA,
-                                                             (const cusparseMatDescr_t)descrC,
-                                                             (cuDoubleComplex*)bsrValC,
-                                                             bsrRowPtrC,
-                                                             bsrColIndC,
-                                                             rowBlockDimC,
-                                                             colBlockDimC,
-                                                             buffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseZgebsr2gebsr((cusparseHandle_t)handle,
+                             hipsparse::hipDirectionToCudaDirection(dirA),
+                             mb,
+                             nb,
+                             nnzb,
+                             (const cusparseMatDescr_t)descrA,
+                             (const cuDoubleComplex*)bsrValA,
+                             bsrRowPtrA,
+                             bsrColIndA,
+                             rowBlockDimA,
+                             colBlockDimA,
+                             (const cusparseMatDescr_t)descrC,
+                             (cuDoubleComplex*)bsrValC,
+                             bsrRowPtrC,
+                             bsrColIndC,
+                             rowBlockDimC,
+                             colBlockDimC,
+                             buffer));
 }
 
 #if CUDART_VERSION < 13000
@@ -10203,15 +10465,16 @@ hipsparseStatus_t hipsparseScsru2csr_bufferSizeExt(hipsparseHandle_t handle,
                                                    csru2csrInfo_t    info,
                                                    size_t*           pBufferSizeInBytes)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseScsru2csr_bufferSizeExt((cusparseHandle_t)handle,
-                                                                        m,
-                                                                        n,
-                                                                        nnz,
-                                                                        csrVal,
-                                                                        csrRowPtr,
-                                                                        csrColInd,
-                                                                        info,
-                                                                        pBufferSizeInBytes));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseScsru2csr_bufferSizeExt((cusparseHandle_t)handle,
+                                        m,
+                                        n,
+                                        nnz,
+                                        csrVal,
+                                        csrRowPtr,
+                                        csrColInd,
+                                        info,
+                                        pBufferSizeInBytes));
 }
 
 hipsparseStatus_t hipsparseDcsru2csr_bufferSizeExt(hipsparseHandle_t handle,
@@ -10224,15 +10487,16 @@ hipsparseStatus_t hipsparseDcsru2csr_bufferSizeExt(hipsparseHandle_t handle,
                                                    csru2csrInfo_t    info,
                                                    size_t*           pBufferSizeInBytes)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDcsru2csr_bufferSizeExt((cusparseHandle_t)handle,
-                                                                        m,
-                                                                        n,
-                                                                        nnz,
-                                                                        csrVal,
-                                                                        csrRowPtr,
-                                                                        csrColInd,
-                                                                        info,
-                                                                        pBufferSizeInBytes));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDcsru2csr_bufferSizeExt((cusparseHandle_t)handle,
+                                        m,
+                                        n,
+                                        nnz,
+                                        csrVal,
+                                        csrRowPtr,
+                                        csrColInd,
+                                        info,
+                                        pBufferSizeInBytes));
 }
 
 hipsparseStatus_t hipsparseCcsru2csr_bufferSizeExt(hipsparseHandle_t handle,
@@ -10245,15 +10509,16 @@ hipsparseStatus_t hipsparseCcsru2csr_bufferSizeExt(hipsparseHandle_t handle,
                                                    csru2csrInfo_t    info,
                                                    size_t*           pBufferSizeInBytes)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCcsru2csr_bufferSizeExt((cusparseHandle_t)handle,
-                                                                        m,
-                                                                        n,
-                                                                        nnz,
-                                                                        (cuComplex*)csrVal,
-                                                                        csrRowPtr,
-                                                                        csrColInd,
-                                                                        info,
-                                                                        pBufferSizeInBytes));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCcsru2csr_bufferSizeExt((cusparseHandle_t)handle,
+                                        m,
+                                        n,
+                                        nnz,
+                                        (cuComplex*)csrVal,
+                                        csrRowPtr,
+                                        csrColInd,
+                                        info,
+                                        pBufferSizeInBytes));
 }
 
 hipsparseStatus_t hipsparseZcsru2csr_bufferSizeExt(hipsparseHandle_t handle,
@@ -10266,15 +10531,16 @@ hipsparseStatus_t hipsparseZcsru2csr_bufferSizeExt(hipsparseHandle_t handle,
                                                    csru2csrInfo_t    info,
                                                    size_t*           pBufferSizeInBytes)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseZcsru2csr_bufferSizeExt((cusparseHandle_t)handle,
-                                                                        m,
-                                                                        n,
-                                                                        nnz,
-                                                                        (cuDoubleComplex*)csrVal,
-                                                                        csrRowPtr,
-                                                                        csrColInd,
-                                                                        info,
-                                                                        pBufferSizeInBytes));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseZcsru2csr_bufferSizeExt((cusparseHandle_t)handle,
+                                        m,
+                                        n,
+                                        nnz,
+                                        (cuDoubleComplex*)csrVal,
+                                        csrRowPtr,
+                                        csrColInd,
+                                        info,
+                                        pBufferSizeInBytes));
 }
 #endif
 
@@ -10290,16 +10556,17 @@ hipsparseStatus_t hipsparseScsru2csr(hipsparseHandle_t         handle,
                                      csru2csrInfo_t            info,
                                      void*                     pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseScsru2csr((cusparseHandle_t)handle,
-                                                          m,
-                                                          n,
-                                                          nnz,
-                                                          (const cusparseMatDescr_t)descrA,
-                                                          csrVal,
-                                                          csrRowPtr,
-                                                          csrColInd,
-                                                          info,
-                                                          pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseScsru2csr((cusparseHandle_t)handle,
+                          m,
+                          n,
+                          nnz,
+                          (const cusparseMatDescr_t)descrA,
+                          csrVal,
+                          csrRowPtr,
+                          csrColInd,
+                          info,
+                          pBuffer));
 }
 
 hipsparseStatus_t hipsparseDcsru2csr(hipsparseHandle_t         handle,
@@ -10313,16 +10580,17 @@ hipsparseStatus_t hipsparseDcsru2csr(hipsparseHandle_t         handle,
                                      csru2csrInfo_t            info,
                                      void*                     pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDcsru2csr((cusparseHandle_t)handle,
-                                                          m,
-                                                          n,
-                                                          nnz,
-                                                          (const cusparseMatDescr_t)descrA,
-                                                          csrVal,
-                                                          csrRowPtr,
-                                                          csrColInd,
-                                                          info,
-                                                          pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDcsru2csr((cusparseHandle_t)handle,
+                          m,
+                          n,
+                          nnz,
+                          (const cusparseMatDescr_t)descrA,
+                          csrVal,
+                          csrRowPtr,
+                          csrColInd,
+                          info,
+                          pBuffer));
 }
 
 hipsparseStatus_t hipsparseCcsru2csr(hipsparseHandle_t         handle,
@@ -10336,16 +10604,17 @@ hipsparseStatus_t hipsparseCcsru2csr(hipsparseHandle_t         handle,
                                      csru2csrInfo_t            info,
                                      void*                     pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCcsru2csr((cusparseHandle_t)handle,
-                                                          m,
-                                                          n,
-                                                          nnz,
-                                                          (const cusparseMatDescr_t)descrA,
-                                                          (cuComplex*)csrVal,
-                                                          csrRowPtr,
-                                                          csrColInd,
-                                                          info,
-                                                          pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCcsru2csr((cusparseHandle_t)handle,
+                          m,
+                          n,
+                          nnz,
+                          (const cusparseMatDescr_t)descrA,
+                          (cuComplex*)csrVal,
+                          csrRowPtr,
+                          csrColInd,
+                          info,
+                          pBuffer));
 }
 
 hipsparseStatus_t hipsparseZcsru2csr(hipsparseHandle_t         handle,
@@ -10359,16 +10628,17 @@ hipsparseStatus_t hipsparseZcsru2csr(hipsparseHandle_t         handle,
                                      csru2csrInfo_t            info,
                                      void*                     pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseZcsru2csr((cusparseHandle_t)handle,
-                                                          m,
-                                                          n,
-                                                          nnz,
-                                                          (const cusparseMatDescr_t)descrA,
-                                                          (cuDoubleComplex*)csrVal,
-                                                          csrRowPtr,
-                                                          csrColInd,
-                                                          info,
-                                                          pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseZcsru2csr((cusparseHandle_t)handle,
+                          m,
+                          n,
+                          nnz,
+                          (const cusparseMatDescr_t)descrA,
+                          (cuDoubleComplex*)csrVal,
+                          csrRowPtr,
+                          csrColInd,
+                          info,
+                          pBuffer));
 }
 #endif
 
@@ -10384,16 +10654,17 @@ hipsparseStatus_t hipsparseScsr2csru(hipsparseHandle_t         handle,
                                      csru2csrInfo_t            info,
                                      void*                     pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseScsr2csru((cusparseHandle_t)handle,
-                                                          m,
-                                                          n,
-                                                          nnz,
-                                                          (const cusparseMatDescr_t)descrA,
-                                                          csrVal,
-                                                          csrRowPtr,
-                                                          csrColInd,
-                                                          info,
-                                                          pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseScsr2csru((cusparseHandle_t)handle,
+                          m,
+                          n,
+                          nnz,
+                          (const cusparseMatDescr_t)descrA,
+                          csrVal,
+                          csrRowPtr,
+                          csrColInd,
+                          info,
+                          pBuffer));
 }
 
 hipsparseStatus_t hipsparseDcsr2csru(hipsparseHandle_t         handle,
@@ -10407,16 +10678,17 @@ hipsparseStatus_t hipsparseDcsr2csru(hipsparseHandle_t         handle,
                                      csru2csrInfo_t            info,
                                      void*                     pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDcsr2csru((cusparseHandle_t)handle,
-                                                          m,
-                                                          n,
-                                                          nnz,
-                                                          (const cusparseMatDescr_t)descrA,
-                                                          csrVal,
-                                                          csrRowPtr,
-                                                          csrColInd,
-                                                          info,
-                                                          pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDcsr2csru((cusparseHandle_t)handle,
+                          m,
+                          n,
+                          nnz,
+                          (const cusparseMatDescr_t)descrA,
+                          csrVal,
+                          csrRowPtr,
+                          csrColInd,
+                          info,
+                          pBuffer));
 }
 
 hipsparseStatus_t hipsparseCcsr2csru(hipsparseHandle_t         handle,
@@ -10430,16 +10702,17 @@ hipsparseStatus_t hipsparseCcsr2csru(hipsparseHandle_t         handle,
                                      csru2csrInfo_t            info,
                                      void*                     pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCcsr2csru((cusparseHandle_t)handle,
-                                                          m,
-                                                          n,
-                                                          nnz,
-                                                          (const cusparseMatDescr_t)descrA,
-                                                          (cuComplex*)csrVal,
-                                                          csrRowPtr,
-                                                          csrColInd,
-                                                          info,
-                                                          pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCcsr2csru((cusparseHandle_t)handle,
+                          m,
+                          n,
+                          nnz,
+                          (const cusparseMatDescr_t)descrA,
+                          (cuComplex*)csrVal,
+                          csrRowPtr,
+                          csrColInd,
+                          info,
+                          pBuffer));
 }
 
 hipsparseStatus_t hipsparseZcsr2csru(hipsparseHandle_t         handle,
@@ -10453,23 +10726,24 @@ hipsparseStatus_t hipsparseZcsr2csru(hipsparseHandle_t         handle,
                                      csru2csrInfo_t            info,
                                      void*                     pBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseZcsr2csru((cusparseHandle_t)handle,
-                                                          m,
-                                                          n,
-                                                          nnz,
-                                                          (const cusparseMatDescr_t)descrA,
-                                                          (cuDoubleComplex*)csrVal,
-                                                          csrRowPtr,
-                                                          csrColInd,
-                                                          info,
-                                                          pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseZcsr2csru((cusparseHandle_t)handle,
+                          m,
+                          n,
+                          nnz,
+                          (const cusparseMatDescr_t)descrA,
+                          (cuDoubleComplex*)csrVal,
+                          csrRowPtr,
+                          csrColInd,
+                          info,
+                          pBuffer));
 }
 #endif
 
 namespace hipsparse
 {
-    /* Generic API */
-    #if(CUDART_VERSION >= 12000)
+/* Generic API */
+#if(CUDART_VERSION >= 12000)
     cusparseFormat_t hipFormatToCudaFormat(hipsparseFormat_t format)
     {
         switch(format)
@@ -10486,7 +10760,7 @@ namespace hipsparse
             throw "Non existent hipsparseFormat_t";
         }
     }
-    #elif(CUDART_VERSION >= 11021 && CUDART_VERSION < 12000)
+#elif(CUDART_VERSION >= 11021 && CUDART_VERSION < 12000)
     cusparseFormat_t hipFormatToCudaFormat(hipsparseFormat_t format)
     {
         switch(format)
@@ -10505,7 +10779,7 @@ namespace hipsparse
             throw "Non existent hipsparseFormat_t";
         }
     }
-    #elif(CUDART_VERSION >= 10010 && CUDART_VERSION < 11021)
+#elif(CUDART_VERSION >= 10010 && CUDART_VERSION < 11021)
     cusparseFormat_t hipFormatToCudaFormat(hipsparseFormat_t format)
     {
         switch(format)
@@ -10520,9 +10794,9 @@ namespace hipsparse
             throw "Non existent hipsparseFormat_t";
         }
     }
-    #endif
+#endif
 
-    #if(CUDART_VERSION >= 12000)
+#if(CUDART_VERSION >= 12000)
     hipsparseFormat_t CudaFormatToHIPFormat(cusparseFormat_t format)
     {
         switch(format)
@@ -10539,7 +10813,7 @@ namespace hipsparse
             throw "Non existent cusparseFormat_t";
         }
     }
-    #elif(CUDART_VERSION >= 11021 && CUDART_VERSION < 12000)
+#elif(CUDART_VERSION >= 11021 && CUDART_VERSION < 12000)
     hipsparseFormat_t CudaFormatToHIPFormat(cusparseFormat_t format)
     {
         switch(format)
@@ -10558,7 +10832,7 @@ namespace hipsparse
             throw "Non existent cusparseFormat_t";
         }
     }
-    #elif(CUDART_VERSION >= 10010 && CUDART_VERSION < 11021)
+#elif(CUDART_VERSION >= 10010 && CUDART_VERSION < 11021)
     hipsparseFormat_t CudaFormatToHIPFormat(cusparseFormat_t format)
     {
         switch(format)
@@ -10573,9 +10847,9 @@ namespace hipsparse
             throw "Non existent cusparseFormat_t";
         }
     }
-    #endif
+#endif
 
-    #if(CUDART_VERSION >= 11000)
+#if(CUDART_VERSION >= 11000)
     cusparseOrder_t hipOrderToCudaOrder(hipsparseOrder_t op)
     {
         switch(op)
@@ -10601,7 +10875,7 @@ namespace hipsparse
             throw "Non existent cusparseOrder_t";
         }
     }
-    #elif(CUDART_VERSION >= 10010)
+#elif(CUDART_VERSION >= 10010)
     cusparseOrder_t hipOrderToCudaOrder(hipsparseOrder_t op)
     {
         switch(op)
@@ -10623,9 +10897,9 @@ namespace hipsparse
             throw "Non existent cusparseOrder_t";
         }
     }
-    #endif
+#endif
 
-    #if(CUDART_VERSION >= 10010)
+#if(CUDART_VERSION >= 10010)
     cusparseIndexType_t hipIndexTypeToCudaIndexType(hipsparseIndexType_t type)
     {
         switch(type)
@@ -10655,9 +10929,9 @@ namespace hipsparse
             throw "Non existant cusparseIndexType_t";
         }
     }
-    #endif
+#endif
 
-    #if(CUDART_VERSION >= 12000)
+#if(CUDART_VERSION >= 12000)
     cusparseSpMVAlg_t hipSpMVAlgToCudaSpMVAlg(hipsparseSpMVAlg_t alg)
     {
         switch(alg)
@@ -10676,7 +10950,7 @@ namespace hipsparse
             throw "Non existant hipsparseSpMVAlg_t";
         }
     }
-    #elif(CUDART_VERSION >= 11021 && CUDART_VERSION < 12000)
+#elif(CUDART_VERSION >= 11021 && CUDART_VERSION < 12000)
     cusparseSpMVAlg_t hipSpMVAlgToCudaSpMVAlg(hipsparseSpMVAlg_t alg)
     {
         switch(alg)
@@ -10699,7 +10973,7 @@ namespace hipsparse
             throw "Non existant hipsparseSpMVAlg_t";
         }
     }
-    #elif(CUDART_VERSION >= 10010 && CUDART_VERSION < 11021)
+#elif(CUDART_VERSION >= 10010 && CUDART_VERSION < 11021)
     cusparseSpMVAlg_t hipSpMVAlgToCudaSpMVAlg(hipsparseSpMVAlg_t alg)
     {
         switch(alg)
@@ -10716,9 +10990,9 @@ namespace hipsparse
             throw "Non existant hipsparseSpMVAlg_t";
         }
     }
-    #endif
+#endif
 
-    #if(CUDART_VERSION >= 12000)
+#if(CUDART_VERSION >= 12000)
     cusparseSpMMAlg_t hipSpMMAlgToCudaSpMMAlg(hipsparseSpMMAlg_t alg)
     {
         switch(alg)
@@ -10745,7 +11019,7 @@ namespace hipsparse
             throw "Non existant hipsparseSpMMAlg_t";
         }
     }
-    #elif(CUDART_VERSION >= 11021 && CUDART_VERSION < 12000)
+#elif(CUDART_VERSION >= 11021 && CUDART_VERSION < 12000)
     cusparseSpMMAlg_t hipSpMMAlgToCudaSpMMAlg(hipsparseSpMMAlg_t alg)
     {
         switch(alg)
@@ -10777,7 +11051,7 @@ namespace hipsparse
             throw "Non existant hipsparseSpMMAlg_t";
         }
     }
-    #elif(CUDART_VERSION >= 11003 && CUDART_VERSION < 11021)
+#elif(CUDART_VERSION >= 11003 && CUDART_VERSION < 11021)
     cusparseSpMMAlg_t hipSpMMAlgToCudaSpMMAlg(hipsparseSpMMAlg_t alg)
     {
         switch(alg)
@@ -10807,7 +11081,7 @@ namespace hipsparse
             throw "Non existant hipsparseSpMMAlg_t";
         }
     }
-    #elif(CUDART_VERSION >= 10010 && CUDART_VERSION < 11003)
+#elif(CUDART_VERSION >= 10010 && CUDART_VERSION < 11003)
     cusparseSpMMAlg_t hipSpMMAlgToCudaSpMMAlg(hipsparseSpMMAlg_t alg)
     {
         switch(alg)
@@ -10826,9 +11100,9 @@ namespace hipsparse
             throw "Non existant hipsparseSpMMAlg_t";
         }
     }
-    #endif
+#endif
 
-    #if(CUDART_VERSION >= 12000)
+#if(CUDART_VERSION >= 12000)
     cusparseSpGEMMAlg_t hipSpGEMMAlgToCudaSpGEMMAlg(hipsparseSpGEMMAlg_t alg)
     {
         switch(alg)
@@ -10849,7 +11123,7 @@ namespace hipsparse
             throw "Non existant cusparseSpGEMMAlg_t";
         }
     }
-    #elif(CUDART_VERSION >= 11031)
+#elif(CUDART_VERSION >= 11031)
     cusparseSpGEMMAlg_t hipSpGEMMAlgToCudaSpGEMMAlg(hipsparseSpGEMMAlg_t alg)
     {
         switch(alg)
@@ -10864,7 +11138,7 @@ namespace hipsparse
             throw "Non existant cusparseSpGEMMAlg_t";
         }
     }
-    #elif(CUDART_VERSION >= 11000)
+#elif(CUDART_VERSION >= 11000)
     cusparseSpGEMMAlg_t hipSpGEMMAlgToCudaSpGEMMAlg(hipsparseSpGEMMAlg_t alg)
     {
         switch(alg)
@@ -10875,9 +11149,9 @@ namespace hipsparse
             throw "Non existant cusparseSpGEMMAlg_t";
         }
     }
-    #endif
+#endif
 
-    #if(CUDART_VERSION >= 11020)
+#if(CUDART_VERSION >= 11020)
     cusparseSparseToDenseAlg_t hipSpToDnAlgToCudaSpToDnAlg(hipsparseSparseToDenseAlg_t alg)
     {
         switch(alg)
@@ -10899,9 +11173,9 @@ namespace hipsparse
             throw "Non existent cusparseSparseToDenseAlg_t";
         }
     }
-    #endif
+#endif
 
-    #if(CUDART_VERSION >= 11020)
+#if(CUDART_VERSION >= 11020)
     cusparseDenseToSparseAlg_t hipDnToSpAlgToCudaDnToSpAlg(hipsparseDenseToSparseAlg_t alg)
     {
         switch(alg)
@@ -10923,9 +11197,9 @@ namespace hipsparse
             throw "Non existent cusparseDenseToSparseAlg_t";
         }
     }
-    #endif
+#endif
 
-    #if(CUDART_VERSION >= 11022)
+#if(CUDART_VERSION >= 11022)
     cusparseSDDMMAlg_t hipSDDMMAlgToCudaSDDMMAlg(hipsparseSDDMMAlg_t alg)
     {
         switch(alg)
@@ -10936,9 +11210,9 @@ namespace hipsparse
             throw "Non existant cusparseSDDMMAlg_t";
         }
     }
-    #endif
+#endif
 
-    #if(CUDART_VERSION >= 11030)
+#if(CUDART_VERSION >= 11030)
     cusparseSpSVAlg_t hipSpSVAlgToCudaSpSVAlg(hipsparseSpSVAlg_t alg)
     {
         switch(alg)
@@ -10949,9 +11223,9 @@ namespace hipsparse
             throw "Non existant cusparseSpSVAlg_t";
         }
     }
-    #endif
+#endif
 
-    #if(CUDART_VERSION >= 11031)
+#if(CUDART_VERSION >= 11031)
     cusparseSpSMAlg_t hipSpSMAlgToCudaSpSMAlg(hipsparseSpSMAlg_t alg)
     {
         switch(alg)
@@ -10962,7 +11236,7 @@ namespace hipsparse
             throw "Non existant cusparseSpSMAlg_t";
         }
     }
-    #endif
+#endif
 }
 
 #if(CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
@@ -10975,14 +11249,15 @@ hipsparseStatus_t hipsparseCreateSpVec(hipsparseSpVecDescr_t* spVecDescr,
                                        hipsparseIndexBase_t   idxBase,
                                        hipDataType            valueType)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCreateSpVec((cusparseSpVecDescr_t*)spVecDescr,
-                                                            size,
-                                                            nnz,
-                                                            indices,
-                                                            values,
-                                                            hipsparse::hipIndexTypeToCudaIndexType(idxType),
-                                                            hipsparse::hipIndexBaseToCudaIndexBase(idxBase),
-                                                            hipsparse::hipDataTypeToCudaDataType(valueType)));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCreateSpVec((cusparseSpVecDescr_t*)spVecDescr,
+                            size,
+                            nnz,
+                            indices,
+                            values,
+                            hipsparse::hipIndexTypeToCudaIndexType(idxType),
+                            hipsparse::hipIndexBaseToCudaIndexBase(idxBase),
+                            hipsparse::hipDataTypeToCudaDataType(valueType)));
 }
 #endif
 
@@ -11017,7 +11292,8 @@ hipsparseStatus_t hipsparseDestroySpVec(hipsparseConstSpVecDescr_t spVecDescr)
 #elif(CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
 hipsparseStatus_t hipsparseDestroySpVec(hipsparseSpVecDescr_t spVecDescr)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDestroySpVec((cusparseSpVecDescr_t)spVecDescr));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDestroySpVec((cusparseSpVecDescr_t)spVecDescr));
 }
 #endif
 
@@ -11137,16 +11413,17 @@ hipsparseStatus_t hipsparseCreateCoo(hipsparseSpMatDescr_t* spMatDescr,
                                      hipsparseIndexBase_t   idxBase,
                                      hipDataType            valueType)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCreateCoo((cusparseSpMatDescr_t*)spMatDescr,
-                                                          rows,
-                                                          cols,
-                                                          nnz,
-                                                          cooRowInd,
-                                                          cooColInd,
-                                                          cooValues,
-                                                          hipsparse::hipIndexTypeToCudaIndexType(cooIdxType),
-                                                          hipsparse::hipIndexBaseToCudaIndexBase(idxBase),
-                                                          hipsparse::hipDataTypeToCudaDataType(valueType)));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCreateCoo((cusparseSpMatDescr_t*)spMatDescr,
+                          rows,
+                          cols,
+                          nnz,
+                          cooRowInd,
+                          cooColInd,
+                          cooValues,
+                          hipsparse::hipIndexTypeToCudaIndexType(cooIdxType),
+                          hipsparse::hipIndexBaseToCudaIndexBase(idxBase),
+                          hipsparse::hipDataTypeToCudaDataType(valueType)));
 }
 #endif
 
@@ -11373,7 +11650,8 @@ hipsparseStatus_t hipsparseDestroySpMat(hipsparseConstSpMatDescr_t spMatDescr)
 #elif(CUDART_VERSION >= 10010)
 hipsparseStatus_t hipsparseDestroySpMat(hipsparseSpMatDescr_t spMatDescr)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDestroySpMat((cusparseSpMatDescr_t)spMatDescr));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDestroySpMat((cusparseSpMatDescr_t)spMatDescr));
 }
 #endif
 
@@ -11870,10 +12148,11 @@ hipsparseStatus_t hipsparseCsrSetStridedBatch(hipsparseSpMatDescr_t spMatDescr,
                                               int64_t               offsetsBatchStride,
                                               int64_t               columnsValuesBatchStride)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCsrSetStridedBatch((cusparseSpMatDescr_t)spMatDescr,
-                                                                   batchCount,
-                                                                   offsetsBatchStride,
-                                                                   columnsValuesBatchStride));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCsrSetStridedBatch((cusparseSpMatDescr_t)spMatDescr,
+                                   batchCount,
+                                   offsetsBatchStride,
+                                   columnsValuesBatchStride));
 }
 #endif
 
@@ -11920,8 +12199,11 @@ hipsparseStatus_t hipsparseCreateDnVec(hipsparseDnVecDescr_t* dnVecDescr,
                                        void*                  values,
                                        hipDataType            valueType)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCreateDnVec(
-        (cusparseDnVecDescr_t*)dnVecDescr, size, values, hipsparse::hipDataTypeToCudaDataType(valueType)));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCreateDnVec((cusparseDnVecDescr_t*)dnVecDescr,
+                            size,
+                            values,
+                            hipsparse::hipDataTypeToCudaDataType(valueType)));
 }
 #endif
 
@@ -11948,7 +12230,8 @@ hipsparseStatus_t hipsparseDestroyDnVec(hipsparseConstDnVecDescr_t dnVecDescr)
 #elif(CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
 hipsparseStatus_t hipsparseDestroyDnVec(hipsparseDnVecDescr_t dnVecDescr)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDestroyDnVec((cusparseDnVecDescr_t)dnVecDescr));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDestroyDnVec((cusparseDnVecDescr_t)dnVecDescr));
 }
 #endif
 
@@ -12025,13 +12308,14 @@ hipsparseStatus_t hipsparseCreateDnMat(hipsparseDnMatDescr_t* dnMatDescr,
                                        hipDataType            valueType,
                                        hipsparseOrder_t       order)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCreateDnMat((cusparseDnMatDescr_t*)dnMatDescr,
-                                                            rows,
-                                                            cols,
-                                                            ld,
-                                                            values,
-                                                            hipsparse::hipDataTypeToCudaDataType(valueType),
-                                                            hipsparse::hipOrderToCudaOrder(order)));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCreateDnMat((cusparseDnMatDescr_t*)dnMatDescr,
+                            rows,
+                            cols,
+                            ld,
+                            values,
+                            hipsparse::hipDataTypeToCudaDataType(valueType),
+                            hipsparse::hipOrderToCudaOrder(order)));
 }
 #endif
 
@@ -12064,7 +12348,8 @@ hipsparseStatus_t hipsparseDestroyDnMat(hipsparseConstDnMatDescr_t dnMatDescr)
 #elif(CUDART_VERSION >= 10010)
 hipsparseStatus_t hipsparseDestroyDnMat(hipsparseDnMatDescr_t dnMatDescr)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDestroyDnMat((cusparseDnMatDescr_t)dnMatDescr));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDestroyDnMat((cusparseDnMatDescr_t)dnMatDescr));
 }
 #endif
 
@@ -12181,10 +12466,10 @@ hipsparseStatus_t hipsparseAxpby(hipsparseHandle_t          handle,
                                  hipsparseDnVecDescr_t      vecY)
 {
     return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseAxpby((cusparseHandle_t)handle,
-                                                      alpha,
-                                                      (cusparseConstSpVecDescr_t)vecX,
-                                                      beta,
-                                                      (cusparseDnVecDescr_t)vecY));
+                                                                 alpha,
+                                                                 (cusparseConstSpVecDescr_t)vecX,
+                                                                 beta,
+                                                                 (cusparseDnVecDescr_t)vecY));
 }
 #elif(CUDART_VERSION >= 11000)
 hipsparseStatus_t hipsparseAxpby(hipsparseHandle_t handle,
@@ -12194,10 +12479,10 @@ hipsparseStatus_t hipsparseAxpby(hipsparseHandle_t handle,
                                  hipsparseDnVecDescr_t vecY)
 {
     return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseAxpby((cusparseHandle_t)handle,
-                                                      alpha,
-                                                      (cusparseSpVecDescr_t)vecX,
-                                                      beta,
-                                                      (cusparseDnVecDescr_t)vecY));
+                                                                 alpha,
+                                                                 (cusparseSpVecDescr_t)vecX,
+                                                                 beta,
+                                                                 (cusparseDnVecDescr_t)vecY));
 }
 #endif
 
@@ -12245,10 +12530,10 @@ hipsparseStatus_t hipsparseRot(hipsparseHandle_t     handle,
                                hipsparseDnVecDescr_t vecY)
 {
     return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseRot((cusparseHandle_t)handle,
-                                                    c_coeff,
-                                                    s_coeff,
-                                                    (cusparseSpVecDescr_t)vecX,
-                                                    (cusparseDnVecDescr_t)vecY));
+                                                               c_coeff,
+                                                               s_coeff,
+                                                               (cusparseSpVecDescr_t)vecX,
+                                                               (cusparseDnVecDescr_t)vecY));
 }
 #endif
 
@@ -12289,11 +12574,12 @@ hipsparseStatus_t hipsparseSparseToDense(hipsparseHandle_t           handle,
                                          hipsparseSparseToDenseAlg_t alg,
                                          void*                       externalBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSparseToDense((cusparseHandle_t)handle,
-                                                              (cusparseConstSpMatDescr_t)matA,
-                                                              (cusparseDnMatDescr_t)matB,
-                                                              hipsparse::hipSpToDnAlgToCudaSpToDnAlg(alg),
-                                                              externalBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSparseToDense((cusparseHandle_t)handle,
+                              (cusparseConstSpMatDescr_t)matA,
+                              (cusparseDnMatDescr_t)matB,
+                              hipsparse::hipSpToDnAlgToCudaSpToDnAlg(alg),
+                              externalBuffer));
 }
 #elif(CUDART_VERSION >= 11020)
 hipsparseStatus_t hipsparseSparseToDense(hipsparseHandle_t handle,
@@ -12302,11 +12588,12 @@ hipsparseStatus_t hipsparseSparseToDense(hipsparseHandle_t handle,
                                          hipsparseSparseToDenseAlg_t alg,
                                          void* externalBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSparseToDense((cusparseHandle_t)handle,
-                                                              (cusparseSpMatDescr_t)matA,
-                                                              (cusparseDnMatDescr_t)matB,
-                                                              hipsparse::hipSpToDnAlgToCudaSpToDnAlg(alg),
-                                                              externalBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSparseToDense((cusparseHandle_t)handle,
+                              (cusparseSpMatDescr_t)matA,
+                              (cusparseDnMatDescr_t)matB,
+                              hipsparse::hipSpToDnAlgToCudaSpToDnAlg(alg),
+                              externalBuffer));
 }
 #endif
 
@@ -12447,13 +12734,14 @@ hipsparseStatus_t hipsparseSpVV(hipsparseHandle_t          handle,
                                 hipDataType                computeType,
                                 void*                      externalBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSpVV((cusparseHandle_t)handle,
-                                                     hipsparse::hipOperationToCudaOperation(opX),
-                                                     (cusparseConstSpVecDescr_t)vecX,
-                                                     (cusparseConstDnVecDescr_t)vecY,
-                                                     result,
-                                                     hipsparse::hipDataTypeToCudaDataType(computeType),
-                                                     externalBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSpVV((cusparseHandle_t)handle,
+                     hipsparse::hipOperationToCudaOperation(opX),
+                     (cusparseConstSpVecDescr_t)vecX,
+                     (cusparseConstDnVecDescr_t)vecY,
+                     result,
+                     hipsparse::hipDataTypeToCudaDataType(computeType),
+                     externalBuffer));
 }
 #elif(CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
 hipsparseStatus_t hipsparseSpVV(hipsparseHandle_t handle,
@@ -12464,13 +12752,14 @@ hipsparseStatus_t hipsparseSpVV(hipsparseHandle_t handle,
                                 hipDataType computeType,
                                 void* externalBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSpVV((cusparseHandle_t)handle,
-                                                     hipsparse::hipOperationToCudaOperation(opX),
-                                                     (cusparseSpVecDescr_t)vecX,
-                                                     (cusparseDnVecDescr_t)vecY,
-                                                     result,
-                                                     hipsparse::hipDataTypeToCudaDataType(computeType),
-                                                     externalBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSpVV((cusparseHandle_t)handle,
+                     hipsparse::hipOperationToCudaOperation(opX),
+                     (cusparseSpVecDescr_t)vecX,
+                     (cusparseDnVecDescr_t)vecY,
+                     result,
+                     hipsparse::hipDataTypeToCudaDataType(computeType),
+                     externalBuffer));
 }
 #endif
 
@@ -12588,16 +12877,17 @@ hipsparseStatus_t hipsparseSpMV(hipsparseHandle_t           handle,
                                 hipsparseSpMVAlg_t          alg,
                                 void*                       externalBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSpMV((cusparseHandle_t)handle,
-                                                     hipsparse::hipOperationToCudaOperation(opA),
-                                                     alpha,
-                                                     (cusparseConstSpMatDescr_t)matA,
-                                                     (cusparseConstDnVecDescr_t)vecX,
-                                                     beta,
-                                                     (const cusparseDnVecDescr_t)vecY,
-                                                     hipsparse::hipDataTypeToCudaDataType(computeType),
-                                                     hipsparse::hipSpMVAlgToCudaSpMVAlg(alg),
-                                                     externalBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSpMV((cusparseHandle_t)handle,
+                     hipsparse::hipOperationToCudaOperation(opA),
+                     alpha,
+                     (cusparseConstSpMatDescr_t)matA,
+                     (cusparseConstDnVecDescr_t)vecX,
+                     beta,
+                     (const cusparseDnVecDescr_t)vecY,
+                     hipsparse::hipDataTypeToCudaDataType(computeType),
+                     hipsparse::hipSpMVAlgToCudaSpMVAlg(alg),
+                     externalBuffer));
 }
 #elif(CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
 hipsparseStatus_t hipsparseSpMV(hipsparseHandle_t handle,
@@ -12611,16 +12901,17 @@ hipsparseStatus_t hipsparseSpMV(hipsparseHandle_t handle,
                                 hipsparseSpMVAlg_t alg,
                                 void* externalBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSpMV((cusparseHandle_t)handle,
-                                                     hipsparse::hipOperationToCudaOperation(opA),
-                                                     alpha,
-                                                     (const cusparseSpMatDescr_t)matA,
-                                                     (const cusparseDnVecDescr_t)vecX,
-                                                     beta,
-                                                     (const cusparseDnVecDescr_t)vecY,
-                                                     hipsparse::hipDataTypeToCudaDataType(computeType),
-                                                     hipsparse::hipSpMVAlgToCudaSpMVAlg(alg),
-                                                     externalBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSpMV((cusparseHandle_t)handle,
+                     hipsparse::hipOperationToCudaOperation(opA),
+                     alpha,
+                     (const cusparseSpMatDescr_t)matA,
+                     (const cusparseDnVecDescr_t)vecX,
+                     beta,
+                     (const cusparseDnVecDescr_t)vecY,
+                     hipsparse::hipDataTypeToCudaDataType(computeType),
+                     hipsparse::hipSpMVAlgToCudaSpMVAlg(alg),
+                     externalBuffer));
 }
 #endif
 
@@ -12745,17 +13036,18 @@ hipsparseStatus_t hipsparseSpMM(hipsparseHandle_t           handle,
                                 hipsparseSpMMAlg_t          alg,
                                 void*                       externalBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSpMM((cusparseHandle_t)handle,
-                                                     hipsparse::hipOperationToCudaOperation(opA),
-                                                     hipsparse::hipOperationToCudaOperation(opB),
-                                                     alpha,
-                                                     (cusparseConstSpMatDescr_t)matA,
-                                                     (cusparseConstDnMatDescr_t)matB,
-                                                     beta,
-                                                     (const cusparseDnMatDescr_t)matC,
-                                                     hipsparse::hipDataTypeToCudaDataType(computeType),
-                                                     hipsparse::hipSpMMAlgToCudaSpMMAlg(alg),
-                                                     externalBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSpMM((cusparseHandle_t)handle,
+                     hipsparse::hipOperationToCudaOperation(opA),
+                     hipsparse::hipOperationToCudaOperation(opB),
+                     alpha,
+                     (cusparseConstSpMatDescr_t)matA,
+                     (cusparseConstDnMatDescr_t)matB,
+                     beta,
+                     (const cusparseDnMatDescr_t)matC,
+                     hipsparse::hipDataTypeToCudaDataType(computeType),
+                     hipsparse::hipSpMMAlgToCudaSpMMAlg(alg),
+                     externalBuffer));
 }
 #elif(CUDART_VERSION >= 10010)
 hipsparseStatus_t hipsparseSpMM(hipsparseHandle_t handle,
@@ -12770,31 +13062,34 @@ hipsparseStatus_t hipsparseSpMM(hipsparseHandle_t handle,
                                 hipsparseSpMMAlg_t alg,
                                 void* externalBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSpMM((cusparseHandle_t)handle,
-                                                     hipsparse::hipOperationToCudaOperation(opA),
-                                                     hipsparse::hipOperationToCudaOperation(opB),
-                                                     alpha,
-                                                     (const cusparseSpMatDescr_t)matA,
-                                                     (const cusparseDnMatDescr_t)matB,
-                                                     beta,
-                                                     (const cusparseDnMatDescr_t)matC,
-                                                     hipsparse::hipDataTypeToCudaDataType(computeType),
-                                                     hipsparse::hipSpMMAlgToCudaSpMMAlg(alg),
-                                                     externalBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSpMM((cusparseHandle_t)handle,
+                     hipsparse::hipOperationToCudaOperation(opA),
+                     hipsparse::hipOperationToCudaOperation(opB),
+                     alpha,
+                     (const cusparseSpMatDescr_t)matA,
+                     (const cusparseDnMatDescr_t)matB,
+                     beta,
+                     (const cusparseDnMatDescr_t)matC,
+                     hipsparse::hipDataTypeToCudaDataType(computeType),
+                     hipsparse::hipSpMMAlgToCudaSpMMAlg(alg),
+                     externalBuffer));
 }
 #endif
 
 #if(CUDART_VERSION >= 11000)
 hipsparseStatus_t hipsparseSpGEMM_createDescr(hipsparseSpGEMMDescr_t* descr)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSpGEMM_createDescr((cusparseSpGEMMDescr_t*)descr));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSpGEMM_createDescr((cusparseSpGEMMDescr_t*)descr));
 }
 #endif
 
 #if(CUDART_VERSION >= 11000)
 hipsparseStatus_t hipsparseSpGEMM_destroyDescr(hipsparseSpGEMMDescr_t descr)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSpGEMM_destroyDescr((cusparseSpGEMMDescr_t)descr));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSpGEMM_destroyDescr((cusparseSpGEMMDescr_t)descr));
 }
 #endif
 
@@ -12875,19 +13170,20 @@ hipsparseStatus_t hipsparseSpGEMM_compute(hipsparseHandle_t          handle,
                                           size_t*                    bufferSize2,
                                           void*                      externalBuffer2)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSpGEMM_compute((cusparseHandle_t)handle,
-                                                               hipsparse::hipOperationToCudaOperation(opA),
-                                                               hipsparse::hipOperationToCudaOperation(opB),
-                                                               alpha,
-                                                               (cusparseConstSpMatDescr_t)matA,
-                                                               (cusparseConstSpMatDescr_t)matB,
-                                                               beta,
-                                                               (cusparseSpMatDescr_t)matC,
-                                                               computeType,
-                                                               hipsparse::hipSpGEMMAlgToCudaSpGEMMAlg(alg),
-                                                               (cusparseSpGEMMDescr_t)spgemmDescr,
-                                                               bufferSize2,
-                                                               externalBuffer2));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSpGEMM_compute((cusparseHandle_t)handle,
+                               hipsparse::hipOperationToCudaOperation(opA),
+                               hipsparse::hipOperationToCudaOperation(opB),
+                               alpha,
+                               (cusparseConstSpMatDescr_t)matA,
+                               (cusparseConstSpMatDescr_t)matB,
+                               beta,
+                               (cusparseSpMatDescr_t)matC,
+                               computeType,
+                               hipsparse::hipSpGEMMAlgToCudaSpGEMMAlg(alg),
+                               (cusparseSpGEMMDescr_t)spgemmDescr,
+                               bufferSize2,
+                               externalBuffer2));
 }
 #elif(CUDART_VERSION >= 11000)
 hipsparseStatus_t hipsparseSpGEMM_compute(hipsparseHandle_t handle,
@@ -12904,19 +13200,20 @@ hipsparseStatus_t hipsparseSpGEMM_compute(hipsparseHandle_t handle,
                                           size_t* bufferSize2,
                                           void* externalBuffer2)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSpGEMM_compute((cusparseHandle_t)handle,
-                                                               hipsparse::hipOperationToCudaOperation(opA),
-                                                               hipsparse::hipOperationToCudaOperation(opB),
-                                                               alpha,
-                                                               (cusparseSpMatDescr_t)matA,
-                                                               (cusparseSpMatDescr_t)matB,
-                                                               beta,
-                                                               (cusparseSpMatDescr_t)matC,
-                                                               computeType,
-                                                               hipsparse::hipSpGEMMAlgToCudaSpGEMMAlg(alg),
-                                                               (cusparseSpGEMMDescr_t)spgemmDescr,
-                                                               bufferSize2,
-                                                               externalBuffer2));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSpGEMM_compute((cusparseHandle_t)handle,
+                               hipsparse::hipOperationToCudaOperation(opA),
+                               hipsparse::hipOperationToCudaOperation(opB),
+                               alpha,
+                               (cusparseSpMatDescr_t)matA,
+                               (cusparseSpMatDescr_t)matB,
+                               beta,
+                               (cusparseSpMatDescr_t)matC,
+                               computeType,
+                               hipsparse::hipSpGEMMAlgToCudaSpGEMMAlg(alg),
+                               (cusparseSpGEMMDescr_t)spgemmDescr,
+                               bufferSize2,
+                               externalBuffer2));
 }
 #endif
 
@@ -12933,17 +13230,18 @@ hipsparseStatus_t hipsparseSpGEMM_copy(hipsparseHandle_t          handle,
                                        hipsparseSpGEMMAlg_t       alg,
                                        hipsparseSpGEMMDescr_t     spgemmDescr)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSpGEMM_copy((cusparseHandle_t)handle,
-                                                            hipsparse::hipOperationToCudaOperation(opA),
-                                                            hipsparse::hipOperationToCudaOperation(opB),
-                                                            alpha,
-                                                            (cusparseConstSpMatDescr_t)matA,
-                                                            (cusparseConstSpMatDescr_t)matB,
-                                                            beta,
-                                                            (cusparseSpMatDescr_t)matC,
-                                                            computeType,
-                                                            hipsparse::hipSpGEMMAlgToCudaSpGEMMAlg(alg),
-                                                            (cusparseSpGEMMDescr_t)spgemmDescr));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSpGEMM_copy((cusparseHandle_t)handle,
+                            hipsparse::hipOperationToCudaOperation(opA),
+                            hipsparse::hipOperationToCudaOperation(opB),
+                            alpha,
+                            (cusparseConstSpMatDescr_t)matA,
+                            (cusparseConstSpMatDescr_t)matB,
+                            beta,
+                            (cusparseSpMatDescr_t)matC,
+                            computeType,
+                            hipsparse::hipSpGEMMAlgToCudaSpGEMMAlg(alg),
+                            (cusparseSpGEMMDescr_t)spgemmDescr));
 }
 #elif(CUDART_VERSION >= 11000)
 hipsparseStatus_t hipsparseSpGEMM_copy(hipsparseHandle_t handle,
@@ -12958,17 +13256,18 @@ hipsparseStatus_t hipsparseSpGEMM_copy(hipsparseHandle_t handle,
                                        hipsparseSpGEMMAlg_t alg,
                                        hipsparseSpGEMMDescr_t spgemmDescr)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSpGEMM_copy((cusparseHandle_t)handle,
-                                                            hipsparse::hipOperationToCudaOperation(opA),
-                                                            hipsparse::hipOperationToCudaOperation(opB),
-                                                            alpha,
-                                                            (cusparseSpMatDescr_t)matA,
-                                                            (cusparseSpMatDescr_t)matB,
-                                                            beta,
-                                                            (cusparseSpMatDescr_t)matC,
-                                                            computeType,
-                                                            hipsparse::hipSpGEMMAlgToCudaSpGEMMAlg(alg),
-                                                            (cusparseSpGEMMDescr_t)spgemmDescr));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSpGEMM_copy((cusparseHandle_t)handle,
+                            hipsparse::hipOperationToCudaOperation(opA),
+                            hipsparse::hipOperationToCudaOperation(opB),
+                            alpha,
+                            (cusparseSpMatDescr_t)matA,
+                            (cusparseSpMatDescr_t)matB,
+                            beta,
+                            (cusparseSpMatDescr_t)matC,
+                            computeType,
+                            hipsparse::hipSpGEMMAlgToCudaSpGEMMAlg(alg),
+                            (cusparseSpGEMMDescr_t)spgemmDescr));
 }
 #endif
 
@@ -13038,20 +13337,21 @@ hipsparseStatus_t hipsparseSpGEMMreuse_nnz(hipsparseHandle_t          handle,
                                            size_t*                    bufferSize4,
                                            void*                      externalBuffer4)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSpGEMMreuse_nnz((cusparseHandle_t)handle,
-                                                                hipsparse::hipOperationToCudaOperation(opA),
-                                                                hipsparse::hipOperationToCudaOperation(opB),
-                                                                (cusparseConstSpMatDescr_t)matA,
-                                                                (cusparseConstSpMatDescr_t)matB,
-                                                                (cusparseSpMatDescr_t)matC,
-                                                                hipsparse::hipSpGEMMAlgToCudaSpGEMMAlg(alg),
-                                                                (cusparseSpGEMMDescr_t)spgemmDescr,
-                                                                bufferSize2,
-                                                                externalBuffer2,
-                                                                bufferSize3,
-                                                                externalBuffer3,
-                                                                bufferSize4,
-                                                                externalBuffer4));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSpGEMMreuse_nnz((cusparseHandle_t)handle,
+                                hipsparse::hipOperationToCudaOperation(opA),
+                                hipsparse::hipOperationToCudaOperation(opB),
+                                (cusparseConstSpMatDescr_t)matA,
+                                (cusparseConstSpMatDescr_t)matB,
+                                (cusparseSpMatDescr_t)matC,
+                                hipsparse::hipSpGEMMAlgToCudaSpGEMMAlg(alg),
+                                (cusparseSpGEMMDescr_t)spgemmDescr,
+                                bufferSize2,
+                                externalBuffer2,
+                                bufferSize3,
+                                externalBuffer3,
+                                bufferSize4,
+                                externalBuffer4));
 }
 #elif(CUDART_VERSION >= 11031)
 hipsparseStatus_t hipsparseSpGEMMreuse_nnz(hipsparseHandle_t handle,
@@ -13069,20 +13369,21 @@ hipsparseStatus_t hipsparseSpGEMMreuse_nnz(hipsparseHandle_t handle,
                                            size_t* bufferSize4,
                                            void* externalBuffer4)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSpGEMMreuse_nnz((cusparseHandle_t)handle,
-                                                                hipsparse::hipOperationToCudaOperation(opA),
-                                                                hipsparse::hipOperationToCudaOperation(opB),
-                                                                (cusparseSpMatDescr_t)matA,
-                                                                (cusparseSpMatDescr_t)matB,
-                                                                (cusparseSpMatDescr_t)matC,
-                                                                hipsparse::hipSpGEMMAlgToCudaSpGEMMAlg(alg),
-                                                                (cusparseSpGEMMDescr_t)spgemmDescr,
-                                                                bufferSize2,
-                                                                externalBuffer2,
-                                                                bufferSize3,
-                                                                externalBuffer3,
-                                                                bufferSize4,
-                                                                externalBuffer4));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSpGEMMreuse_nnz((cusparseHandle_t)handle,
+                                hipsparse::hipOperationToCudaOperation(opA),
+                                hipsparse::hipOperationToCudaOperation(opB),
+                                (cusparseSpMatDescr_t)matA,
+                                (cusparseSpMatDescr_t)matB,
+                                (cusparseSpMatDescr_t)matC,
+                                hipsparse::hipSpGEMMAlgToCudaSpGEMMAlg(alg),
+                                (cusparseSpGEMMDescr_t)spgemmDescr,
+                                bufferSize2,
+                                externalBuffer2,
+                                bufferSize3,
+                                externalBuffer3,
+                                bufferSize4,
+                                externalBuffer4));
 }
 
 #endif
@@ -13153,16 +13454,17 @@ hipsparseStatus_t hipsparseSpGEMMreuse_copy(hipsparseHandle_t          handle,
                                             size_t*                    bufferSize5,
                                             void*                      externalBuffer5)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSpGEMMreuse_copy((cusparseHandle_t)handle,
-                                                                 hipsparse::hipOperationToCudaOperation(opA),
-                                                                 hipsparse::hipOperationToCudaOperation(opB),
-                                                                 (cusparseConstSpMatDescr_t)matA,
-                                                                 (cusparseConstSpMatDescr_t)matB,
-                                                                 (cusparseSpMatDescr_t)matC,
-                                                                 hipsparse::hipSpGEMMAlgToCudaSpGEMMAlg(alg),
-                                                                 (cusparseSpGEMMDescr_t)spgemmDescr,
-                                                                 bufferSize5,
-                                                                 externalBuffer5));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSpGEMMreuse_copy((cusparseHandle_t)handle,
+                                 hipsparse::hipOperationToCudaOperation(opA),
+                                 hipsparse::hipOperationToCudaOperation(opB),
+                                 (cusparseConstSpMatDescr_t)matA,
+                                 (cusparseConstSpMatDescr_t)matB,
+                                 (cusparseSpMatDescr_t)matC,
+                                 hipsparse::hipSpGEMMAlgToCudaSpGEMMAlg(alg),
+                                 (cusparseSpGEMMDescr_t)spgemmDescr,
+                                 bufferSize5,
+                                 externalBuffer5));
 }
 #elif(CUDART_VERSION >= 11031)
 hipsparseStatus_t hipsparseSpGEMMreuse_copy(hipsparseHandle_t handle,
@@ -13176,16 +13478,17 @@ hipsparseStatus_t hipsparseSpGEMMreuse_copy(hipsparseHandle_t handle,
                                             size_t* bufferSize5,
                                             void* externalBuffer5)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSpGEMMreuse_copy((cusparseHandle_t)handle,
-                                                                 hipsparse::hipOperationToCudaOperation(opA),
-                                                                 hipsparse::hipOperationToCudaOperation(opB),
-                                                                 (cusparseSpMatDescr_t)matA,
-                                                                 (cusparseSpMatDescr_t)matB,
-                                                                 (cusparseSpMatDescr_t)matC,
-                                                                 hipsparse::hipSpGEMMAlgToCudaSpGEMMAlg(alg),
-                                                                 (cusparseSpGEMMDescr_t)spgemmDescr,
-                                                                 bufferSize5,
-                                                                 externalBuffer5));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSpGEMMreuse_copy((cusparseHandle_t)handle,
+                                 hipsparse::hipOperationToCudaOperation(opA),
+                                 hipsparse::hipOperationToCudaOperation(opB),
+                                 (cusparseSpMatDescr_t)matA,
+                                 (cusparseSpMatDescr_t)matB,
+                                 (cusparseSpMatDescr_t)matC,
+                                 hipsparse::hipSpGEMMAlgToCudaSpGEMMAlg(alg),
+                                 (cusparseSpGEMMDescr_t)spgemmDescr,
+                                 bufferSize5,
+                                 externalBuffer5));
 }
 
 #endif
@@ -13203,17 +13506,18 @@ hipsparseStatus_t hipsparseSDDMM(hipsparseHandle_t          handle,
                                  hipsparseSDDMMAlg_t        alg,
                                  void*                      tempBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSDDMM((cusparseHandle_t)handle,
-                                                      hipsparse::hipOperationToCudaOperation(opA),
-                                                      hipsparse::hipOperationToCudaOperation(opB),
-                                                      alpha,
-                                                      (cusparseConstDnMatDescr_t)matA,
-                                                      (cusparseConstDnMatDescr_t)matB,
-                                                      beta,
-                                                      (cusparseSpMatDescr_t)matC,
-                                                      hipsparse::hipDataTypeToCudaDataType(computeType),
-                                                      hipsparse::hipSDDMMAlgToCudaSDDMMAlg(alg),
-                                                      tempBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSDDMM((cusparseHandle_t)handle,
+                      hipsparse::hipOperationToCudaOperation(opA),
+                      hipsparse::hipOperationToCudaOperation(opB),
+                      alpha,
+                      (cusparseConstDnMatDescr_t)matA,
+                      (cusparseConstDnMatDescr_t)matB,
+                      beta,
+                      (cusparseSpMatDescr_t)matC,
+                      hipsparse::hipDataTypeToCudaDataType(computeType),
+                      hipsparse::hipSDDMMAlgToCudaSDDMMAlg(alg),
+                      tempBuffer));
 }
 #elif(CUDART_VERSION >= 11022)
 hipsparseStatus_t hipsparseSDDMM(hipsparseHandle_t handle,
@@ -13228,17 +13532,18 @@ hipsparseStatus_t hipsparseSDDMM(hipsparseHandle_t handle,
                                  hipsparseSDDMMAlg_t alg,
                                  void* tempBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSDDMM((cusparseHandle_t)handle,
-                                                      hipsparse::hipOperationToCudaOperation(opA),
-                                                      hipsparse::hipOperationToCudaOperation(opB),
-                                                      alpha,
-                                                      (const cusparseDnMatDescr_t)matA,
-                                                      (const cusparseDnMatDescr_t)matB,
-                                                      beta,
-                                                      (cusparseSpMatDescr_t)matC,
-                                                      hipsparse::hipDataTypeToCudaDataType(computeType),
-                                                      hipsparse::hipSDDMMAlgToCudaSDDMMAlg(alg),
-                                                      tempBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSDDMM((cusparseHandle_t)handle,
+                      hipsparse::hipOperationToCudaOperation(opA),
+                      hipsparse::hipOperationToCudaOperation(opB),
+                      alpha,
+                      (const cusparseDnMatDescr_t)matA,
+                      (const cusparseDnMatDescr_t)matB,
+                      beta,
+                      (cusparseSpMatDescr_t)matC,
+                      hipsparse::hipDataTypeToCudaDataType(computeType),
+                      hipsparse::hipSDDMMAlgToCudaSDDMMAlg(alg),
+                      tempBuffer));
 }
 #endif
 
@@ -13353,14 +13658,16 @@ hipsparseStatus_t hipsparseSDDMM_preprocess(hipsparseHandle_t handle,
 #if(CUDART_VERSION >= 11030)
 hipsparseStatus_t hipsparseSpSV_createDescr(hipsparseSpSVDescr_t* descr)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSpSV_createDescr((cusparseSpSVDescr_t*)descr));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSpSV_createDescr((cusparseSpSVDescr_t*)descr));
 }
 #endif
 
 #if(CUDART_VERSION >= 11030)
 hipsparseStatus_t hipsparseSpSV_destroyDescr(hipsparseSpSVDescr_t descr)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSpSV_destroyDescr((cusparseSpSVDescr_t)descr));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSpSV_destroyDescr((cusparseSpSVDescr_t)descr));
 }
 #endif
 
@@ -13475,15 +13782,16 @@ hipsparseStatus_t hipsparseSpSV_solve(hipsparseHandle_t           handle,
                                       hipsparseSpSVAlg_t          alg,
                                       hipsparseSpSVDescr_t        spsvDescr)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSpSV_solve((cusparseHandle_t)handle,
-                                                           hipsparse::hipOperationToCudaOperation(opA),
-                                                           alpha,
-                                                           (cusparseConstSpMatDescr_t)matA,
-                                                           (cusparseConstDnVecDescr_t)x,
-                                                           (const cusparseDnVecDescr_t)y,
-                                                           hipsparse::hipDataTypeToCudaDataType(computeType),
-                                                           hipsparse::hipSpSVAlgToCudaSpSVAlg(alg),
-                                                           (cusparseSpSVDescr_t)spsvDescr));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSpSV_solve((cusparseHandle_t)handle,
+                           hipsparse::hipOperationToCudaOperation(opA),
+                           alpha,
+                           (cusparseConstSpMatDescr_t)matA,
+                           (cusparseConstDnVecDescr_t)x,
+                           (const cusparseDnVecDescr_t)y,
+                           hipsparse::hipDataTypeToCudaDataType(computeType),
+                           hipsparse::hipSpSVAlgToCudaSpSVAlg(alg),
+                           (cusparseSpSVDescr_t)spsvDescr));
 }
 #elif(CUDART_VERSION >= 11030)
 hipsparseStatus_t hipsparseSpSV_solve(hipsparseHandle_t handle,
@@ -13496,29 +13804,32 @@ hipsparseStatus_t hipsparseSpSV_solve(hipsparseHandle_t handle,
                                       hipsparseSpSVAlg_t alg,
                                       hipsparseSpSVDescr_t spsvDescr)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSpSV_solve((cusparseHandle_t)handle,
-                                                           hipsparse::hipOperationToCudaOperation(opA),
-                                                           alpha,
-                                                           (const cusparseSpMatDescr_t)matA,
-                                                           (const cusparseDnVecDescr_t)x,
-                                                           (const cusparseDnVecDescr_t)y,
-                                                           hipsparse::hipDataTypeToCudaDataType(computeType),
-                                                           hipsparse::hipSpSVAlgToCudaSpSVAlg(alg),
-                                                           (cusparseSpSVDescr_t)spsvDescr));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSpSV_solve((cusparseHandle_t)handle,
+                           hipsparse::hipOperationToCudaOperation(opA),
+                           alpha,
+                           (const cusparseSpMatDescr_t)matA,
+                           (const cusparseDnVecDescr_t)x,
+                           (const cusparseDnVecDescr_t)y,
+                           hipsparse::hipDataTypeToCudaDataType(computeType),
+                           hipsparse::hipSpSVAlgToCudaSpSVAlg(alg),
+                           (cusparseSpSVDescr_t)spsvDescr));
 }
 #endif
 
 #if(CUDART_VERSION >= 11031)
 hipsparseStatus_t hipsparseSpSM_createDescr(hipsparseSpSMDescr_t* descr)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSpSM_createDescr((cusparseSpSMDescr_t*)descr));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSpSM_createDescr((cusparseSpSMDescr_t*)descr));
 }
 #endif
 
 #if(CUDART_VERSION >= 11031)
 hipsparseStatus_t hipsparseSpSM_destroyDescr(hipsparseSpSMDescr_t descr)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSpSM_destroyDescr((cusparseSpSMDescr_t)descr));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSpSM_destroyDescr((cusparseSpSMDescr_t)descr));
 }
 #endif
 
@@ -13643,16 +13954,17 @@ hipsparseStatus_t hipsparseSpSM_solve(hipsparseHandle_t           handle,
                                       hipsparseSpSMDescr_t        spsmDescr,
                                       void*                       externalBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSpSM_solve((cusparseHandle_t)handle,
-                                                           hipsparse::hipOperationToCudaOperation(opA),
-                                                           hipsparse::hipOperationToCudaOperation(opB),
-                                                           alpha,
-                                                           (cusparseConstSpMatDescr_t)matA,
-                                                           (cusparseConstDnMatDescr_t)matB,
-                                                           (const cusparseDnMatDescr_t)matC,
-                                                           hipsparse::hipDataTypeToCudaDataType(computeType),
-                                                           hipsparse::hipSpSMAlgToCudaSpSMAlg(alg),
-                                                           (cusparseSpSMDescr_t)spsmDescr));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSpSM_solve((cusparseHandle_t)handle,
+                           hipsparse::hipOperationToCudaOperation(opA),
+                           hipsparse::hipOperationToCudaOperation(opB),
+                           alpha,
+                           (cusparseConstSpMatDescr_t)matA,
+                           (cusparseConstDnMatDescr_t)matB,
+                           (const cusparseDnMatDescr_t)matC,
+                           hipsparse::hipDataTypeToCudaDataType(computeType),
+                           hipsparse::hipSpSMAlgToCudaSpSMAlg(alg),
+                           (cusparseSpSMDescr_t)spsmDescr));
 }
 #elif(CUDART_VERSION >= 11031)
 hipsparseStatus_t hipsparseSpSM_solve(hipsparseHandle_t handle,
@@ -13667,16 +13979,17 @@ hipsparseStatus_t hipsparseSpSM_solve(hipsparseHandle_t handle,
                                       hipsparseSpSMDescr_t spsmDescr,
                                       void* externalBuffer)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSpSM_solve((cusparseHandle_t)handle,
-                                                           hipsparse::hipOperationToCudaOperation(opA),
-                                                           hipsparse::hipOperationToCudaOperation(opB),
-                                                           alpha,
-                                                           (const cusparseSpMatDescr_t)matA,
-                                                           (const cusparseDnMatDescr_t)matB,
-                                                           (const cusparseDnMatDescr_t)matC,
-                                                           hipsparse::hipDataTypeToCudaDataType(computeType),
-                                                           hipsparse::hipSpSMAlgToCudaSpSMAlg(alg),
-                                                           (cusparseSpSMDescr_t)spsmDescr));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseSpSM_solve((cusparseHandle_t)handle,
+                           hipsparse::hipOperationToCudaOperation(opA),
+                           hipsparse::hipOperationToCudaOperation(opB),
+                           alpha,
+                           (const cusparseSpMatDescr_t)matA,
+                           (const cusparseDnMatDescr_t)matB,
+                           (const cusparseDnMatDescr_t)matC,
+                           hipsparse::hipDataTypeToCudaDataType(computeType),
+                           hipsparse::hipSpSMAlgToCudaSpSMAlg(alg),
+                           (cusparseSpSMDescr_t)spsmDescr));
 }
 #endif
 
@@ -13792,15 +14105,16 @@ hipsparseStatus_t hipsparseCgtsv2StridedBatch(hipsparseHandle_t handle,
                                               void*             pBuffer)
 
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCgtsv2StridedBatch((cusparseHandle_t)handle,
-                                                                   m,
-                                                                   (const cuComplex*)dl,
-                                                                   (const cuComplex*)d,
-                                                                   (const cuComplex*)du,
-                                                                   (cuComplex*)x,
-                                                                   batchCount,
-                                                                   batchStride,
-                                                                   pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCgtsv2StridedBatch((cusparseHandle_t)handle,
+                                   m,
+                                   (const cuComplex*)dl,
+                                   (const cuComplex*)d,
+                                   (const cuComplex*)du,
+                                   (cuComplex*)x,
+                                   batchCount,
+                                   batchStride,
+                                   pBuffer));
 }
 
 hipsparseStatus_t hipsparseZgtsv2StridedBatch(hipsparseHandle_t       handle,
@@ -13814,15 +14128,16 @@ hipsparseStatus_t hipsparseZgtsv2StridedBatch(hipsparseHandle_t       handle,
                                               void*                   pBuffer)
 
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseZgtsv2StridedBatch((cusparseHandle_t)handle,
-                                                                   m,
-                                                                   (const cuDoubleComplex*)dl,
-                                                                   (const cuDoubleComplex*)d,
-                                                                   (const cuDoubleComplex*)du,
-                                                                   (cuDoubleComplex*)x,
-                                                                   batchCount,
-                                                                   batchStride,
-                                                                   pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseZgtsv2StridedBatch((cusparseHandle_t)handle,
+                                   m,
+                                   (const cuDoubleComplex*)dl,
+                                   (const cuDoubleComplex*)d,
+                                   (const cuDoubleComplex*)du,
+                                   (cuDoubleComplex*)x,
+                                   batchCount,
+                                   batchStride,
+                                   pBuffer));
 }
 
 hipsparseStatus_t hipsparseSgtsv2_bufferSizeExt(hipsparseHandle_t handle,
@@ -13863,15 +14178,16 @@ hipsparseStatus_t hipsparseCgtsv2_bufferSizeExt(hipsparseHandle_t handle,
                                                 int               ldb,
                                                 size_t*           pBufferSizeInBytes)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCgtsv2_bufferSizeExt((cusparseHandle_t)handle,
-                                                                     m,
-                                                                     n,
-                                                                     (const cuComplex*)dl,
-                                                                     (const cuComplex*)d,
-                                                                     (const cuComplex*)du,
-                                                                     (const cuComplex*)B,
-                                                                     ldb,
-                                                                     pBufferSizeInBytes));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCgtsv2_bufferSizeExt((cusparseHandle_t)handle,
+                                     m,
+                                     n,
+                                     (const cuComplex*)dl,
+                                     (const cuComplex*)d,
+                                     (const cuComplex*)du,
+                                     (const cuComplex*)B,
+                                     ldb,
+                                     pBufferSizeInBytes));
 }
 
 hipsparseStatus_t hipsparseZgtsv2_bufferSizeExt(hipsparseHandle_t       handle,
@@ -13884,15 +14200,16 @@ hipsparseStatus_t hipsparseZgtsv2_bufferSizeExt(hipsparseHandle_t       handle,
                                                 int                     ldb,
                                                 size_t*                 pBufferSizeInBytes)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseZgtsv2_bufferSizeExt((cusparseHandle_t)handle,
-                                                                     m,
-                                                                     n,
-                                                                     (const cuDoubleComplex*)dl,
-                                                                     (const cuDoubleComplex*)d,
-                                                                     (const cuDoubleComplex*)du,
-                                                                     (const cuDoubleComplex*)B,
-                                                                     ldb,
-                                                                     pBufferSizeInBytes));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseZgtsv2_bufferSizeExt((cusparseHandle_t)handle,
+                                     m,
+                                     n,
+                                     (const cuDoubleComplex*)dl,
+                                     (const cuDoubleComplex*)d,
+                                     (const cuDoubleComplex*)du,
+                                     (const cuDoubleComplex*)B,
+                                     ldb,
+                                     pBufferSizeInBytes));
 }
 
 hipsparseStatus_t hipsparseSgtsv2(hipsparseHandle_t handle,
@@ -13936,14 +14253,14 @@ hipsparseStatus_t hipsparseCgtsv2(hipsparseHandle_t handle,
 
 {
     return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCgtsv2((cusparseHandle_t)handle,
-                                                       m,
-                                                       n,
-                                                       (const cuComplex*)dl,
-                                                       (const cuComplex*)d,
-                                                       (const cuComplex*)du,
-                                                       (cuComplex*)B,
-                                                       ldb,
-                                                       pBuffer));
+                                                                  m,
+                                                                  n,
+                                                                  (const cuComplex*)dl,
+                                                                  (const cuComplex*)d,
+                                                                  (const cuComplex*)du,
+                                                                  (cuComplex*)B,
+                                                                  ldb,
+                                                                  pBuffer));
 }
 
 hipsparseStatus_t hipsparseZgtsv2(hipsparseHandle_t       handle,
@@ -13958,14 +14275,14 @@ hipsparseStatus_t hipsparseZgtsv2(hipsparseHandle_t       handle,
 
 {
     return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseZgtsv2((cusparseHandle_t)handle,
-                                                       m,
-                                                       n,
-                                                       (const cuDoubleComplex*)dl,
-                                                       (const cuDoubleComplex*)d,
-                                                       (const cuDoubleComplex*)du,
-                                                       (cuDoubleComplex*)B,
-                                                       ldb,
-                                                       pBuffer));
+                                                                  m,
+                                                                  n,
+                                                                  (const cuDoubleComplex*)dl,
+                                                                  (const cuDoubleComplex*)d,
+                                                                  (const cuDoubleComplex*)du,
+                                                                  (cuDoubleComplex*)B,
+                                                                  ldb,
+                                                                  pBuffer));
 }
 
 hipsparseStatus_t hipsparseSgtsv2_nopivot_bufferSizeExt(hipsparseHandle_t handle,
@@ -14082,14 +14399,14 @@ hipsparseStatus_t hipsparseCgtsv2_nopivot(hipsparseHandle_t handle,
 
 {
     return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCgtsv2_nopivot((cusparseHandle_t)handle,
-                                                               m,
-                                                               n,
-                                                               (const cuComplex*)dl,
-                                                               (const cuComplex*)d,
-                                                               (const cuComplex*)du,
-                                                               (cuComplex*)B,
-                                                               ldb,
-                                                               pBuffer));
+                                                                          m,
+                                                                          n,
+                                                                          (const cuComplex*)dl,
+                                                                          (const cuComplex*)d,
+                                                                          (const cuComplex*)du,
+                                                                          (cuComplex*)B,
+                                                                          ldb,
+                                                                          pBuffer));
 }
 
 hipsparseStatus_t hipsparseZgtsv2_nopivot(hipsparseHandle_t       handle,
@@ -14103,15 +14420,16 @@ hipsparseStatus_t hipsparseZgtsv2_nopivot(hipsparseHandle_t       handle,
                                           void*                   pBuffer)
 
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseZgtsv2_nopivot((cusparseHandle_t)handle,
-                                                               m,
-                                                               n,
-                                                               (const cuDoubleComplex*)dl,
-                                                               (const cuDoubleComplex*)d,
-                                                               (const cuDoubleComplex*)du,
-                                                               (cuDoubleComplex*)B,
-                                                               ldb,
-                                                               pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseZgtsv2_nopivot((cusparseHandle_t)handle,
+                               m,
+                               n,
+                               (const cuDoubleComplex*)dl,
+                               (const cuDoubleComplex*)d,
+                               (const cuDoubleComplex*)du,
+                               (cuDoubleComplex*)B,
+                               ldb,
+                               pBuffer));
 }
 
 hipsparseStatus_t hipsparseSgtsvInterleavedBatch_bufferSizeExt(hipsparseHandle_t handle,
@@ -14226,15 +14544,16 @@ hipsparseStatus_t hipsparseCgtsvInterleavedBatch(hipsparseHandle_t handle,
                                                  void*             pBuffer)
 
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCgtsvInterleavedBatch((cusparseHandle_t)handle,
-                                                                      algo,
-                                                                      m,
-                                                                      (cuComplex*)dl,
-                                                                      (cuComplex*)d,
-                                                                      (cuComplex*)du,
-                                                                      (cuComplex*)x,
-                                                                      batchCount,
-                                                                      pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCgtsvInterleavedBatch((cusparseHandle_t)handle,
+                                      algo,
+                                      m,
+                                      (cuComplex*)dl,
+                                      (cuComplex*)d,
+                                      (cuComplex*)du,
+                                      (cuComplex*)x,
+                                      batchCount,
+                                      pBuffer));
 }
 
 hipsparseStatus_t hipsparseZgtsvInterleavedBatch(hipsparseHandle_t handle,
@@ -14248,15 +14567,16 @@ hipsparseStatus_t hipsparseZgtsvInterleavedBatch(hipsparseHandle_t handle,
                                                  void*             pBuffer)
 
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseZgtsvInterleavedBatch((cusparseHandle_t)handle,
-                                                                      algo,
-                                                                      m,
-                                                                      (cuDoubleComplex*)dl,
-                                                                      (cuDoubleComplex*)d,
-                                                                      (cuDoubleComplex*)du,
-                                                                      (cuDoubleComplex*)x,
-                                                                      batchCount,
-                                                                      pBuffer));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseZgtsvInterleavedBatch((cusparseHandle_t)handle,
+                                      algo,
+                                      m,
+                                      (cuDoubleComplex*)dl,
+                                      (cuDoubleComplex*)d,
+                                      (cuDoubleComplex*)du,
+                                      (cuDoubleComplex*)x,
+                                      batchCount,
+                                      pBuffer));
 }
 
 hipsparseStatus_t hipsparseSgpsvInterleavedBatch_bufferSizeExt(hipsparseHandle_t handle,
@@ -14401,18 +14721,19 @@ hipsparseStatus_t hipsparseScsrcolor(hipsparseHandle_t         handle,
                                      int*                      reordering,
                                      hipsparseColorInfo_t      info)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseScsrcolor((cusparseHandle_t)handle,
-                                                          m,
-                                                          nnz,
-                                                          (const cusparseMatDescr_t)descrA,
-                                                          csrValA,
-                                                          csrRowPtrA,
-                                                          csrColIndA,
-                                                          fractionToColor,
-                                                          ncolors,
-                                                          coloring,
-                                                          reordering,
-                                                          (cusparseColorInfo_t)info));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseScsrcolor((cusparseHandle_t)handle,
+                          m,
+                          nnz,
+                          (const cusparseMatDescr_t)descrA,
+                          csrValA,
+                          csrRowPtrA,
+                          csrColIndA,
+                          fractionToColor,
+                          ncolors,
+                          coloring,
+                          reordering,
+                          (cusparseColorInfo_t)info));
 }
 
 hipsparseStatus_t hipsparseDcsrcolor(hipsparseHandle_t         handle,
@@ -14428,18 +14749,19 @@ hipsparseStatus_t hipsparseDcsrcolor(hipsparseHandle_t         handle,
                                      int*                      reordering,
                                      hipsparseColorInfo_t      info)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDcsrcolor((cusparseHandle_t)handle,
-                                                          m,
-                                                          nnz,
-                                                          (const cusparseMatDescr_t)descrA,
-                                                          csrValA,
-                                                          csrRowPtrA,
-                                                          csrColIndA,
-                                                          fractionToColor,
-                                                          ncolors,
-                                                          coloring,
-                                                          reordering,
-                                                          (cusparseColorInfo_t)info));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseDcsrcolor((cusparseHandle_t)handle,
+                          m,
+                          nnz,
+                          (const cusparseMatDescr_t)descrA,
+                          csrValA,
+                          csrRowPtrA,
+                          csrColIndA,
+                          fractionToColor,
+                          ncolors,
+                          coloring,
+                          reordering,
+                          (cusparseColorInfo_t)info));
 }
 
 hipsparseStatus_t hipsparseCcsrcolor(hipsparseHandle_t         handle,
@@ -14455,18 +14777,19 @@ hipsparseStatus_t hipsparseCcsrcolor(hipsparseHandle_t         handle,
                                      int*                      reordering,
                                      hipsparseColorInfo_t      info)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseCcsrcolor((cusparseHandle_t)handle,
-                                                          m,
-                                                          nnz,
-                                                          (const cusparseMatDescr_t)descrA,
-                                                          (const cuComplex*)csrValA,
-                                                          csrRowPtrA,
-                                                          csrColIndA,
-                                                          fractionToColor,
-                                                          ncolors,
-                                                          coloring,
-                                                          reordering,
-                                                          (cusparseColorInfo_t)info));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseCcsrcolor((cusparseHandle_t)handle,
+                          m,
+                          nnz,
+                          (const cusparseMatDescr_t)descrA,
+                          (const cuComplex*)csrValA,
+                          csrRowPtrA,
+                          csrColIndA,
+                          fractionToColor,
+                          ncolors,
+                          coloring,
+                          reordering,
+                          (cusparseColorInfo_t)info));
 }
 
 hipsparseStatus_t hipsparseZcsrcolor(hipsparseHandle_t         handle,
@@ -14482,18 +14805,19 @@ hipsparseStatus_t hipsparseZcsrcolor(hipsparseHandle_t         handle,
                                      int*                      reordering,
                                      hipsparseColorInfo_t      info)
 {
-    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseZcsrcolor((cusparseHandle_t)handle,
-                                                          m,
-                                                          nnz,
-                                                          (const cusparseMatDescr_t)descrA,
-                                                          (const cuDoubleComplex*)csrValA,
-                                                          csrRowPtrA,
-                                                          csrColIndA,
-                                                          fractionToColor,
-                                                          ncolors,
-                                                          coloring,
-                                                          reordering,
-                                                          (cusparseColorInfo_t)info));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseZcsrcolor((cusparseHandle_t)handle,
+                          m,
+                          nnz,
+                          (const cusparseMatDescr_t)descrA,
+                          (const cuDoubleComplex*)csrValA,
+                          csrRowPtrA,
+                          csrColIndA,
+                          fractionToColor,
+                          ncolors,
+                          coloring,
+                          reordering,
+                          (cusparseColorInfo_t)info));
 }
 #endif
 
