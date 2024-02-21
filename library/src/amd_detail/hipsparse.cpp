@@ -34,10 +34,6 @@
 #define TO_STR2(x) #x
 #define TO_STR(x) TO_STR2(x)
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #define RETURN_IF_HIP_ERROR(INPUT_STATUS_FOR_CHECK)                            \
     {                                                                          \
         hipError_t TMP_STATUS_FOR_CHECK = INPUT_STATUS_FOR_CHECK;              \
@@ -16324,7 +16320,3 @@ hipsparseStatus_t hipsparseZcsrcolor(hipsparseHandle_t         handle,
                             reordering,
                             (rocsparse_mat_info)info));
 }
-
-#ifdef __cplusplus
-}
-#endif

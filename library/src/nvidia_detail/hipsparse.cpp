@@ -30,10 +30,6 @@
 #define TO_STR2(x) #x
 #define TO_STR(x) TO_STR2(x)
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #define RETURN_IF_CUSPARSE_ERROR(INPUT_STATUS_FOR_CHECK)                          \
     {                                                                             \
         cusparseStatus_t TMP_STATUS_FOR_CHECK = INPUT_STATUS_FOR_CHECK;           \
@@ -14818,9 +14814,5 @@ hipsparseStatus_t hipsparseZcsrcolor(hipsparseHandle_t         handle,
                           coloring,
                           reordering,
                           (cusparseColorInfo_t)info));
-}
-#endif
-
-#ifdef __cplusplus
 }
 #endif
