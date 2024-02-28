@@ -16,8 +16,8 @@ def runCI =
     def prj = new rocProject('hipSPARSE', 'static')
 
     prj.paths.build_command = './install.sh -c --static'
-    prj.compiler.compiler_name = 'hipcc'
-    prj.compiler.compiler_path = '/opt/rocm/bin/hipcc'
+    prj.compiler.compiler_name = 'amdclang++'
+    prj.compiler.compiler_path = '/opt/rocm/bin/amdclang++'
     prj.libraryDependencies = ['rocBLAS', 'rocSPARSE', 'rocPRIM']
     prj.defaults.ccache = false
 
