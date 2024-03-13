@@ -120,7 +120,7 @@ See existing tests for guidance when adding your own.
 
 7. Ensure code builds successfully. This includes making sure that the code can compile, that the code is properly formatted, and that all tests pass.
 
-Because hipSPARSE is just a wrapper around both rocSPARSE (on AMD GPU systems) and cuSPARSE (in NVIDIA GPU systems), please ensure that your code compiles and runs on both an AMD GPU system using the rocSPARSE backend and a NVIDIA GPU system using the cuSPARSE backend. Please be mindful that routines often become deprecated in rocSPARSE/cuSPARSE and that this must be properly accounted for in hipSPARSE to ensure successful compilation depending on which version of rocSPARSE/cuSPARSE you are using. In hipSPARSE this is currently accomplished using the pre-processor for condition compilation. See existing code for guidance.
+Because hipSPARSE is just a wrapper around both rocSPARSE (on AMD GPU systems) and cuSPARSE (on NVIDIA GPU systems), please ensure that your code compiles and runs on both an AMD GPU system using the rocSPARSE backend and a NVIDIA GPU system using the cuSPARSE backend. Please be mindful that routines often become deprecated in rocSPARSE/cuSPARSE and that this must be properly accounted for in hipSPARSE to ensure successful compilation depending on which version of rocSPARSE/cuSPARSE you are using. In hipSPARSE this is currently accomplished using the pre-processor for condition compilation. See existing code for guidance.
 
 8. Do not break existing test cases
 
