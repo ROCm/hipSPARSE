@@ -105,7 +105,7 @@ When raising a PR in hipSPARSE here are some important things to include:
 *
 * ************************************************************************ */
 ```
-and adjust the date to the current year. When simply modifying a file, the date should automatically be updated when using the pre-commit script.
+and adjust the date to the current year. When simply modifying a file, the date should automatically be updated pre-commit as long as the githook has been installed (./.githooks/install).
 
 2. When adding a new routine, please make sure you are also adding appropriate testing code. These new unit tests should integrate within the existing [googletest framework](https://github.com/google/googletest/blob/master/googletest/docs/primer.md). This typically involves adding the following files:
 
