@@ -14640,7 +14640,7 @@ hipsparseStatus_t hipsparseSpGEMM_workEstimation(hipsparseHandle_t          hand
     }
 
     // Set original data back in C matrix so that matC is unchanged after this function
-    RETURN_IF_HIPSPARSE_ERROR(hipsparseCsrSetPointers(matC, csrRowOffsets, csrColInd, csrValues));
+    //RETURN_IF_HIPSPARSE_ERROR(hipsparseCsrSetPointers(matC, csrRowOffsets, csrColInd, csrValues));
 
     return HIPSPARSE_STATUS_SUCCESS;
 }
@@ -14914,7 +14914,7 @@ hipsparseStatus_t hipsparseSpGEMM_compute(hipsparseHandle_t          handle,
     }
 
     // Set original data back in C matrix so that matC is unchanged after this function
-    RETURN_IF_HIPSPARSE_ERROR(hipsparseCsrSetPointers(matC, csrRowOffsets, csrColInd, csrValues));
+    //RETURN_IF_HIPSPARSE_ERROR(hipsparseCsrSetPointers(matC, csrRowOffsets, csrColInd, csrValues));
 
     return HIPSPARSE_STATUS_SUCCESS;
 }
