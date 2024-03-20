@@ -18,7 +18,7 @@ def runCI =
     prj.paths.build_command = './install.sh -c'
     prj.compiler.compiler_name = 'c++'
     prj.compiler.compiler_path = 'c++'
-    prj.libraryDependencies = ['rocSPARSE', 'rocPRIM']
+    prj.libraryDependencies = ['rocBLAS', 'rocSPARSE', 'rocPRIM']
     prj.defaults.ccache = true
 
     // Define test architectures, optional rocm version argument is available
@@ -93,4 +93,3 @@ ci: {
         runCI([ubuntu18:['gfx906']], urlJobName)       
     }
 }
-

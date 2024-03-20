@@ -1,5 +1,5 @@
 # ########################################################################
-# Copyright (C) 2018-2022 Advanced Micro Devices, Inc. All rights Reserved.
+# Copyright (C) 2018-2023 Advanced Micro Devices, Inc. All rights Reserved.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -36,7 +36,7 @@ else()
 endif()
 
 # Pick up static and dynamic shared object files
-list( APPEND CMAKE_PREFIX_PATH /opt/rocm/llvm /opt/rocm /opt/rocm/hip )
+list( APPEND CMAKE_PREFIX_PATH ${ROCM_PATH}/lib/cmake/hip /opt/rocm /opt/rocm/llvm /opt/rocm/hip )
 
 # CMake modules
 list(APPEND CMAKE_MODULE_PATH
@@ -64,7 +64,7 @@ if (NOT WIN32)
 endif( )
 
 # hipSPARSE project
-project(hipsparse LANGUAGES CXX Fortran)
+project(hipsparse LANGUAGES CXX ${fortran_language})
 
 # Build flags
 set(CMAKE_CXX_STANDARD 14)
@@ -80,6 +80,7 @@ option(USE_CUDA "Build hipSPARSE using CUDA backend" OFF)
 option(BUILD_CUDA "Build hipSPARSE using CUDA backend" OFF)
 option(BUILD_CODE_COVERAGE "Build with code coverage enabled" OFF)
 option(BUILD_ADDRESS_SANITIZER "Build with address sanitizer enabled" OFF)
+option(BUILD_DOCS "Build documentation" OFF)
 
 if(BUILD_CUDA)
   message(DEPRECATION "Using BUILD_CUDA is deprecated and will be removed as an option in a future release. Instead use USE_CUDA")
@@ -113,7 +114,7 @@ endif()
 
 
 # Setup version
-rocm_setup_version(VERSION 3.0.0)
+rocm_setup_version(VERSION 3.0.1)
 set(hipsparse_SOVERSION 1.0.0)
 
 # hipSPARSE library
@@ -192,6 +193,10 @@ rocm_create_package(
   LDCONFIG
   LDCONFIG_DIR ${HIPSPARSE_CONFIG_DIR})
 
+# Build docs
+if(BUILD_DOCS)
+add_subdirectory(docs)
+endif()
 
 #
 # ADDITIONAL TARGETS FOR CODE COVERAGE

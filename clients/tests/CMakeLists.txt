@@ -205,7 +205,11 @@ endif()
 
 set_target_properties(hipsparse-test PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/staging")
 
+add_dependencies(hipsparse-test hipsparse-common)
 rocm_install(TARGETS hipsparse-test COMPONENT tests)
+
+
+
 
 if (WIN32)
   # for now adding in all .dll as dependency chain is not cmake based on win32
@@ -214,7 +218,7 @@ if (WIN32)
     CONFIGURE_DEPENDS
     $ENV{HIP_DIR}/bin/*.dll
     $ENV{HIP_DIR}/bin/hipinfo.exe
-    ${ROCSPARSE_PATH}/bin/librocsparse.dll
+    ${ROCSPARSE_PATH}/bin/rocsparse.dll
     ${CMAKE_SOURCE_DIR}/rtest.*
     C:/Windows/System32/libomp140*.dll
   )
