@@ -14729,7 +14729,8 @@ hipsparseStatus_t hipsparseSpGEMM_compute(hipsparseHandle_t          handle,
     }
     }
 
-    std::cout << "rows: " << rows << " cols: " << cols << " nnz: " << nnz << " nnz_C: " << nnz_C << std::endl;
+    std::cout << "rows: " << rows << " cols: " << cols << " nnz: " << nnz << " nnz_C: " << nnz_C
+              << std::endl;
 
     if(externalBuffer2 == nullptr)
     {
