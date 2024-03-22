@@ -14686,8 +14686,7 @@ hipsparseStatus_t hipsparseSpGEMM_compute(hipsparseHandle_t          handle,
                                               &idxBaseC,
                                               &valueTypeC));
 
-    std::cout << "rowsC: " << rowsC << " colsC: " << colsC << " nnzC: " << nnzC
-              << std::endl;
+    std::cout << "rowsC: " << rowsC << " colsC: " << colsC << " nnzC: " << nnzC << std::endl;
 
     if(externalBuffer2 == nullptr)
     {
@@ -14936,25 +14935,28 @@ hipsparseStatus_t hipsparseSpGEMM_copy(hipsparseHandle_t          handle,
     case HIPSPARSE_INDEX_16U:
     {
         RETURN_IF_HIP_ERROR(hipMemcpyAsync(csrRowOffsetsC,
-                  spgemmDescr->externalBuffer1,
-                  sizeof(uint16_t) * (rowsC + 1),
-                  hipMemcpyDeviceToDevice, stream));
+                                           spgemmDescr->externalBuffer1,
+                                           sizeof(uint16_t) * (rowsC + 1),
+                                           hipMemcpyDeviceToDevice,
+                                           stream));
         break;
     }
     case HIPSPARSE_INDEX_32I:
     {
         RETURN_IF_HIP_ERROR(hipMemcpyAsync(csrRowOffsetsC,
-                  spgemmDescr->externalBuffer1,
-                  sizeof(int32_t) * (rowsC + 1),
-                  hipMemcpyDeviceToDevice, stream));
+                                           spgemmDescr->externalBuffer1,
+                                           sizeof(int32_t) * (rowsC + 1),
+                                           hipMemcpyDeviceToDevice,
+                                           stream));
         break;
     }
     case HIPSPARSE_INDEX_64I:
     {
         RETURN_IF_HIP_ERROR(hipMemcpyAsync(csrRowOffsetsC,
-                  spgemmDescr->externalBuffer1,
-                  sizeof(int64_t) * (rowsC + 1),
-                  hipMemcpyDeviceToDevice, stream));
+                                           spgemmDescr->externalBuffer1,
+                                           sizeof(int64_t) * (rowsC + 1),
+                                           hipMemcpyDeviceToDevice,
+                                           stream));
         break;
     }
     }
@@ -14967,27 +14969,30 @@ hipsparseStatus_t hipsparseSpGEMM_copy(hipsparseHandle_t          handle,
     case HIPSPARSE_INDEX_16U:
     {
         RETURN_IF_HIP_ERROR(hipMemcpyAsync(csrColIndC,
-                  spgemmDescr->externalBuffer2,
-                  sizeof(uint16_t) * nnzC,
-                  hipMemcpyDeviceToDevice, stream));
+                                           spgemmDescr->externalBuffer2,
+                                           sizeof(uint16_t) * nnzC,
+                                           hipMemcpyDeviceToDevice,
+                                           stream));
         byteOffset += ((sizeof(uint16_t) * nnzC - 1) / 256 + 1) * 256;
         break;
     }
     case HIPSPARSE_INDEX_32I:
     {
         RETURN_IF_HIP_ERROR(hipMemcpyAsync(csrColIndC,
-                  spgemmDescr->externalBuffer2,
-                  sizeof(uint32_t) * nnzC,
-                  hipMemcpyDeviceToDevice, stream));
+                                           spgemmDescr->externalBuffer2,
+                                           sizeof(uint32_t) * nnzC,
+                                           hipMemcpyDeviceToDevice,
+                                           stream));
         byteOffset += ((sizeof(int32_t) * nnzC - 1) / 256 + 1) * 256;
         break;
     }
     case HIPSPARSE_INDEX_64I:
     {
         RETURN_IF_HIP_ERROR(hipMemcpyAsync(csrColIndC,
-                  spgemmDescr->externalBuffer2,
-                  sizeof(int64_t) * nnzC,
-                  hipMemcpyDeviceToDevice, stream));
+                                           spgemmDescr->externalBuffer2,
+                                           sizeof(int64_t) * nnzC,
+                                           hipMemcpyDeviceToDevice,
+                                           stream));
         byteOffset += ((sizeof(int64_t) * nnzC - 1) / 256 + 1) * 256;
         break;
     }
@@ -14998,34 +15003,42 @@ hipsparseStatus_t hipsparseSpGEMM_copy(hipsparseHandle_t          handle,
     {
     case HIP_R_32F:
     {
-        RETURN_IF_HIP_ERROR(hipMemcpyAsync(csrValuesC,
-                  (static_cast<char*>(spgemmDescr->externalBuffer2) + byteOffset),
-                  sizeof(float) * nnzC,
-                  hipMemcpyDeviceToDevice, stream));
+        RETURN_IF_HIP_ERROR(
+            hipMemcpyAsync(csrValuesC,
+                           (static_cast<char*>(spgemmDescr->externalBuffer2) + byteOffset),
+                           sizeof(float) * nnzC,
+                           hipMemcpyDeviceToDevice,
+                           stream));
         break;
     }
     case HIP_R_64F:
     {
-        RETURN_IF_HIP_ERROR(hipMemcpyAsync(csrValuesC,
-                  (static_cast<char*>(spgemmDescr->externalBuffer2) + byteOffset),
-                  sizeof(double) * nnzC,
-                  hipMemcpyDeviceToDevice, stream));
+        RETURN_IF_HIP_ERROR(
+            hipMemcpyAsync(csrValuesC,
+                           (static_cast<char*>(spgemmDescr->externalBuffer2) + byteOffset),
+                           sizeof(double) * nnzC,
+                           hipMemcpyDeviceToDevice,
+                           stream));
         break;
     }
     case HIP_C_32F:
     {
-        RETURN_IF_HIP_ERROR(hipMemcpyAsync(csrValuesC,
-                  (static_cast<char*>(spgemmDescr->externalBuffer2) + byteOffset),
-                  sizeof(hipComplex) * nnzC,
-                  hipMemcpyDeviceToDevice, stream));
+        RETURN_IF_HIP_ERROR(
+            hipMemcpyAsync(csrValuesC,
+                           (static_cast<char*>(spgemmDescr->externalBuffer2) + byteOffset),
+                           sizeof(hipComplex) * nnzC,
+                           hipMemcpyDeviceToDevice,
+                           stream));
         break;
     }
     case HIP_C_64F:
     {
-        RETURN_IF_HIP_ERROR(hipMemcpyAsync(csrValuesC,
-                  (static_cast<char*>(spgemmDescr->externalBuffer2) + byteOffset),
-                  sizeof(hipDoubleComplex) * nnzC,
-                  hipMemcpyDeviceToDevice, stream));
+        RETURN_IF_HIP_ERROR(
+            hipMemcpyAsync(csrValuesC,
+                           (static_cast<char*>(spgemmDescr->externalBuffer2) + byteOffset),
+                           sizeof(hipDoubleComplex) * nnzC,
+                           hipMemcpyDeviceToDevice,
+                           stream));
         break;
     }
     case HIP_R_16F:
@@ -15066,7 +15079,8 @@ hipsparseStatus_t hipsparseSpGEMM_copy(hipsparseHandle_t          handle,
     // std::cout << "" << std::endl;
 
     // Finally, update C matrix with copied arrays
-    RETURN_IF_HIPSPARSE_ERROR(hipsparseCsrSetPointers(matC, csrRowOffsetsC, csrColIndC, csrValuesC));
+    RETURN_IF_HIPSPARSE_ERROR(
+        hipsparseCsrSetPointers(matC, csrRowOffsetsC, csrColIndC, csrValuesC));
 
     return HIPSPARSE_STATUS_SUCCESS;
 }
