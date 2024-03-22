@@ -345,7 +345,7 @@ hipsparseStatus_t testing_spgemm_csr(void)
 {
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
     T                    h_alpha  = make_DataType<T>(2.0);
-    T                    h_beta   = make_DataType<T>(0.0);
+    T                    h_beta   = make_DataType<T>(1.0);
     hipsparseOperation_t transA   = HIPSPARSE_OPERATION_NON_TRANSPOSE;
     hipsparseOperation_t transB   = HIPSPARSE_OPERATION_NON_TRANSPOSE;
     hipsparseIndexBase_t idxBaseA = HIPSPARSE_INDEX_BASE_ZERO;
@@ -354,7 +354,7 @@ hipsparseStatus_t testing_spgemm_csr(void)
     hipsparseSpGEMMAlg_t alg      = HIPSPARSE_SPGEMM_DEFAULT;
 
     // Matrices are stored at the same path in matrices directory
-    std::string filename = get_filename("nos6.bin");
+    std::string filename = get_filename("nos4.bin");
 
     // Index and data type
     hipsparseIndexType_t typeI
