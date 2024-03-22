@@ -14507,19 +14507,16 @@ hipsparseStatus_t hipsparseSpGEMM_workEstimation(hipsparseHandle_t          hand
 
     const void* alpha_ptr = hipsparse::spgemm_get_ptr(mode, computeType, alpha);
     const void* beta_ptr  = hipsparse::spgemm_get_ptr(mode, computeType, beta);
-    
+
     printf("hipsparseSpGEMM_workEstimation alpha: %p\n", alpha);
     printf("hipsparseSpGEMM_workEstimation alpha_ptr: %p\n", alpha_ptr);
 
     printf("hipsparseSpGEMM_workEstimation beta: %p\n", beta);
     printf("hipsparseSpGEMM_workEstimation beta_ptr: %p\n", beta_ptr);
-    
-    
+
     hipStream_t stream;
     RETURN_IF_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
     RETURN_IF_HIP_ERROR(hipStreamSynchronize(stream));
-
-
 
     // Get data stored in C matrix
     int64_t              rowsC, colsC, nnzC;
@@ -14663,7 +14660,6 @@ hipsparseStatus_t hipsparseSpGEMM_compute(hipsparseHandle_t          handle,
 
     printf("hipsparseSpGEMM_compute beta: %p\n", beta);
     printf("hipsparseSpGEMM_compute beta_ptr: %p\n", beta_ptr);
-    
 
     hipStream_t stream;
     RETURN_IF_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
