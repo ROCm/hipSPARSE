@@ -14542,7 +14542,10 @@ static hipsparseStatus_t getDataTypeSize(hipDataType dataType, size_t& size)
     return HIPSPARSE_STATUS_INVALID_VALUE;
 }
 
-static void* spgemm_get_one_ptr(hipsparsePointerMode_t mode, hipStream_t stream, hipDataType computeType, void* device_one)
+static void* spgemm_get_one_ptr(hipsparsePointerMode_t mode,
+                                hipStream_t            stream,
+                                hipDataType            computeType,
+                                void*                  device_one)
 {
     float            host_sone = 1.0f;
     double           host_done = 1.0f;
@@ -14565,14 +14568,12 @@ static void* spgemm_get_one_ptr(hipsparsePointerMode_t mode, hipStream_t stream,
     {
         if(computeType == HIP_R_32F)
         {
-            hipMemcpyAsync(
-                device_one, &host_sone, sizeof(float), hipMemcpyHostToDevice, stream);
+            hipMemcpyAsync(device_one, &host_sone, sizeof(float), hipMemcpyHostToDevice, stream);
             one = device_one;
         }
         if(computeType == HIP_R_64F)
         {
-            hipMemcpyAsync(
-                device_one, &host_done, sizeof(double), hipMemcpyHostToDevice, stream);
+            hipMemcpyAsync(device_one, &host_done, sizeof(double), hipMemcpyHostToDevice, stream);
             one = device_one;
         }
         if(computeType == HIP_C_32F)
