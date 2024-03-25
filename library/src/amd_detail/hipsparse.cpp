@@ -14541,57 +14541,6 @@ static hipsparseStatus_t getDataTypeSize(hipDataType dataType, size_t& size)
     return HIPSPARSE_STATUS_INVALID_VALUE;
 }
 
-static void* spgemm_get_one_ptr(hipsparsePointerMode_t mode,
-                                hipStream_t            stream,
-                                hipDataType            computeType,
-                                void*                  device_one)
-{
-    float            host_sone = 1.0f;
-    double           host_done = 1.0f;
-    hipComplex       host_cone = make_hipComplex(1.0f, 0.0f);
-    hipDoubleComplex host_zone = make_hipDoubleComplex(1.0, 0.0);
-
-    void* one = nullptr;
-    if(mode == HIPSPARSE_POINTER_MODE_HOST)
-    {
-        if(computeType == HIP_R_32F)
-            one = &host_sone;
-        if(computeType == HIP_R_64F)
-            one = &host_done;
-        if(computeType == HIP_C_32F)
-            one = &host_cone;
-        if(computeType == HIP_C_64F)
-            one = &host_zone;
-    }
-    else
-    {
-        if(computeType == HIP_R_32F)
-        {
-            hipMemcpyAsync(device_one, &host_sone, sizeof(float), hipMemcpyHostToDevice, stream);
-            one = device_one;
-        }
-        if(computeType == HIP_R_64F)
-        {
-            hipMemcpyAsync(device_one, &host_done, sizeof(double), hipMemcpyHostToDevice, stream);
-            one = device_one;
-        }
-        if(computeType == HIP_C_32F)
-        {
-            hipMemcpyAsync(
-                device_one, &host_cone, sizeof(hipComplex), hipMemcpyHostToDevice, stream);
-            one = device_one;
-        }
-        if(computeType == HIP_C_64F)
-        {
-            hipMemcpyAsync(
-                device_one, &host_zone, sizeof(hipDoubleComplex), hipMemcpyHostToDevice, stream);
-            one = device_one;
-        }
-    }
-
-    return one;
-}
-
 hipsparseStatus_t hipsparseSpGEMM_workEstimation(hipsparseHandle_t          handle,
                                                  hipsparseOperation_t       opA,
                                                  hipsparseOperation_t       opB,
@@ -14879,7 +14828,48 @@ hipsparseStatus_t hipsparseSpGEMM_copy(hipsparseHandle_t          handle,
     hipStream_t stream;
     RETURN_IF_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
 
-    void* one = spgemm_get_one_ptr(pointer_mode, stream, computeType, device_one);
+    float            host_sone = 1.0f;
+    double           host_done = 1.0f;
+    hipComplex       host_cone = make_hipComplex(1.0f, 0.0f);
+    hipDoubleComplex host_zone = make_hipDoubleComplex(1.0, 0.0);
+
+    void* one = nullptr;
+    if(pointer_mode == HIPSPARSE_POINTER_MODE_HOST)
+    {
+        if(computeType == HIP_R_32F)
+            one = &host_sone;
+        if(computeType == HIP_R_64F)
+            one = &host_done;
+        if(computeType == HIP_C_32F)
+            one = &host_cone;
+        if(computeType == HIP_C_64F)
+            one = &host_zone;
+    }
+    else
+    {
+        if(computeType == HIP_R_32F)
+        {
+            hipMemcpyAsync(device_one, &host_sone, sizeof(float), hipMemcpyHostToDevice, stream);
+            one = device_one;
+        }
+        if(computeType == HIP_R_64F)
+        {
+            hipMemcpyAsync(device_one, &host_done, sizeof(double), hipMemcpyHostToDevice, stream);
+            one = device_one;
+        }
+        if(computeType == HIP_C_32F)
+        {
+            hipMemcpyAsync(
+                device_one, &host_cone, sizeof(hipComplex), hipMemcpyHostToDevice, stream);
+            one = device_one;
+        }
+        if(computeType == HIP_C_64F)
+        {
+            hipMemcpyAsync(
+                device_one, &host_zone, sizeof(hipDoubleComplex), hipMemcpyHostToDevice, stream);
+            one = device_one;
+        }
+    }
 
     if(csrColIndTypeC == HIPSPARSE_INDEX_32I)
     {
