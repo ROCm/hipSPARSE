@@ -345,7 +345,7 @@ hipsparseStatus_t testing_spgemm_csr(void)
 {
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
     T                    h_alpha  = make_DataType<T>(2.0);
-    T                    h_beta   = make_DataType<T>(1.0);
+    T                    h_beta   = make_DataType<T>(0.0);
     hipsparseOperation_t transA   = HIPSPARSE_OPERATION_NON_TRANSPOSE;
     hipsparseOperation_t transB   = HIPSPARSE_OPERATION_NON_TRANSPOSE;
     hipsparseIndexBase_t idxBaseA = HIPSPARSE_INDEX_BASE_ZERO;
