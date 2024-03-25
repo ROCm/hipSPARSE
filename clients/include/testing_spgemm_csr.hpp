@@ -354,7 +354,7 @@ hipsparseStatus_t testing_spgemm_csr(void)
     hipsparseSpGEMMAlg_t alg      = HIPSPARSE_SPGEMM_DEFAULT;
 
     // Matrices are stored at the same path in matrices directory
-    std::string filename = get_filename("nos4.bin");
+    std::string filename = get_filename("nos6.bin");
 
     // Index and data type
     hipsparseIndexType_t typeI
