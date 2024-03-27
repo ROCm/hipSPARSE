@@ -564,9 +564,6 @@ hipsparseStatus_t testing_spgemm_csr(void)
                                                          &bufferSize1,
                                                          externalBuffer1));
 
-    // We can already free buffer1
-    CHECK_HIP_ERROR(hipFree(externalBuffer1));
-
     // Query SpGEMM compute buffer
     size_t bufferSize2;
     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
@@ -630,9 +627,6 @@ hipsparseStatus_t testing_spgemm_csr(void)
                                                   descr,
                                                   &bufferSize2,
                                                   externalBuffer2));
-
-    // We can already free buffer2
-    CHECK_HIP_ERROR(hipFree(externalBuffer2));
 
     // Get nnz of C
     int64_t rows_C, cols_C, nnz_C_1, nnz_C_2;
@@ -756,6 +750,10 @@ hipsparseStatus_t testing_spgemm_csr(void)
     unit_check_general(1, nnz_C_gold, 1, hcsr_col_ind_C_gold.data(), hcsr_col_ind_C_2.data());
     unit_check_general(1, nnz_C_gold, 1, hcsr_val_C_gold.data(), hcsr_val_C_1.data());
     unit_check_general(1, nnz_C_gold, 1, hcsr_val_C_gold.data(), hcsr_val_C_2.data());
+
+    // Free buffers
+    CHECK_HIP_ERROR(hipFree(externalBuffer1));
+    CHECK_HIP_ERROR(hipFree(externalBuffer2));
 
     // Clean up
     CHECK_HIPSPARSE_ERROR(hipsparseDestroySpMat(A));
