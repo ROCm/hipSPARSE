@@ -13329,18 +13329,18 @@ hipsparseStatus_t hipsparseCreateCsr(hipsparseSpMatDescr_t* spMatDescr,
                                      hipsparseIndexBase_t   idxBase,
                                      hipDataType            valueType)
 {
-    return hipsparse::rocSPARSEStatusToHIPStatus(
-        rocsparse_create_csr_descr_SWDEV_453599((rocsparse_spmat_descr*)spMatDescr,
-                                   rows,
-                                   cols,
-                                   nnz,
-                                   csrRowOffsets,
-                                   csrColInd,
-                                   csrValues,
-                                   hipsparse::hipIndexTypeToHCCIndexType(csrRowOffsetsType),
-                                   hipsparse::hipIndexTypeToHCCIndexType(csrColIndType),
-                                   hipsparse::hipBaseToHCCBase(idxBase),
-                                   hipsparse::hipDataTypeToHCCDataType(valueType)));
+    return hipsparse::rocSPARSEStatusToHIPStatus(rocsparse_create_csr_descr_SWDEV_453599(
+        (rocsparse_spmat_descr*)spMatDescr,
+        rows,
+        cols,
+        nnz,
+        csrRowOffsets,
+        csrColInd,
+        csrValues,
+        hipsparse::hipIndexTypeToHCCIndexType(csrRowOffsetsType),
+        hipsparse::hipIndexTypeToHCCIndexType(csrColIndType),
+        hipsparse::hipBaseToHCCBase(idxBase),
+        hipsparse::hipDataTypeToHCCDataType(valueType)));
 }
 
 hipsparseStatus_t hipsparseCreateConstCsr(hipsparseConstSpMatDescr_t* spMatDescr,
@@ -14894,17 +14894,17 @@ hipsparseStatus_t hipsparseSpGEMM_copy(hipsparseHandle_t          handle,
     {
         RETURN_IF_ROCSPARSE_ERROR(
             rocsparse_set_identity_permutation((rocsparse_handle)handle,
-                                                  nnzC,
-                                                  rocsparse_indextype_i32,
-                                                  static_cast<int32_t*>(indicesArray)));
+                                               nnzC,
+                                               rocsparse_indextype_i32,
+                                               static_cast<int32_t*>(indicesArray)));
     }
     else if(csrColIndTypeC == HIPSPARSE_INDEX_64I)
     {
         RETURN_IF_ROCSPARSE_ERROR(
             rocsparse_set_identity_permutation((rocsparse_handle)handle,
-                                                  nnzC,
-                                                  rocsparse_indextype_i64,
-                                                  static_cast<int64_t*>(indicesArray)));
+                                               nnzC,
+                                               rocsparse_indextype_i64,
+                                               static_cast<int64_t*>(indicesArray)));
     }
     else
     {
