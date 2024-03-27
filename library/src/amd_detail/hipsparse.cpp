@@ -14873,13 +14873,17 @@ hipsparseStatus_t hipsparseSpGEMM_copy(hipsparseHandle_t          handle,
 
     if(csrColIndTypeC == HIPSPARSE_INDEX_32I)
     {
-        RETURN_IF_ROCSPARSE_ERROR(rocsparse_create_identity(
-            (rocsparse_handle)handle, nnzC, rocsparse_indextype_i32, static_cast<int32_t*>(indicesArray)));
+        RETURN_IF_ROCSPARSE_ERROR(rocsparse_create_identity((rocsparse_handle)handle,
+                                                            nnzC,
+                                                            rocsparse_indextype_i32,
+                                                            static_cast<int32_t*>(indicesArray)));
     }
     else if(csrColIndTypeC == HIPSPARSE_INDEX_64I)
     {
-        RETURN_IF_ROCSPARSE_ERROR(rocsparse_create_identity(
-            (rocsparse_handle)handle, nnzC, rocsparse_indextype_i64, static_cast<int64_t*>(indicesArray)));
+        RETURN_IF_ROCSPARSE_ERROR(rocsparse_create_identity((rocsparse_handle)handle,
+                                                            nnzC,
+                                                            rocsparse_indextype_i64,
+                                                            static_cast<int64_t*>(indicesArray)));
     }
     else
     {
