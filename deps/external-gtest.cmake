@@ -35,7 +35,7 @@ set( gtest_git_tag "release-1.11.0" CACHE STRING "URL to download gtest from" )
 if( MSVC )
   list( APPEND gtest_cmake_args -Dgtest_force_shared_crt=ON -DCMAKE_DEBUG_POSTFIX=d )
 # else( )
-  # GTEST_USE_OWN_TR1_TUPLE necessary to compile with hipcc
+  # GTEST_USE_OWN_TR1_TUPLE necessary to compile with hip-clang
   # list( APPEND gtest_cmake_args -DGTEST_USE_OWN_TR1_TUPLE=1 )
 endif( )
 

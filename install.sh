@@ -22,7 +22,7 @@ function display_help()
   echo "    [--compiler] specify host compiler"
   echo "    [--cuda] build library for cuda backend"
   echo "    [--static] build static library"
-  echo "    [--address-sanitizer] build with address sanitizer enabled. Uses hipcc to compile"
+  echo "    [--address-sanitizer] build with address sanitizer enabled. Uses hip-clang to compile"
   echo "    [--matrices-dir] existing client matrices directory"
   echo "    [--matrices-dir-install] install client matrices directory"
   echo "    [--rm-legacy-include-dir] Remove legacy include dir Packaging added for file/folder reorg backward compatibility."
@@ -330,7 +330,7 @@ while true; do
         shift ;;
     --address-sanitizer)
         build_address_sanitizer=true
-        compiler=hipcc
+        compiler=amdclang++
         shift ;;
     --rm-legacy-include-dir)
         build_freorg_bkwdcomp=false
@@ -381,7 +381,7 @@ fi
 # If matrices_dir_install has been set up then install matrices dir and exit.
 #
 if ! [[ "${matrices_dir_install}" == "" ]];then
-    cmake -DCMAKE_CXX_COMPILER="${rocm_path}/bin/hipcc" -DCMAKE_C_COMPILER="${rocm_path}/bin/hipcc"  -DPROJECT_BINARY_DIR=${matrices_dir_install} -DCMAKE_MATRICES_DIR=${matrices_dir_install} -P ./cmake/ClientMatrices.cmake
+    cmake -DCMAKE_CXX_COMPILER="${rocm_path}/bin/amdclang++" -DCMAKE_C_COMPILER="${rocm_path}/bin/amdclang"  -DPROJECT_BINARY_DIR=${matrices_dir_install} -DCMAKE_MATRICES_DIR=${matrices_dir_install} -P ./cmake/ClientMatrices.cmake
     exit 0
 fi
 
@@ -398,7 +398,7 @@ if ! [[ "${matrices_dir}" == "" ]];then
     # Let's 'reinstall' to the specified location to check if all good
     # Will be fast if everything already exists as expected.
     # This is to prevent any empty directory.
-    cmake -DCMAKE_CXX_COMPILER="${rocm_path}/bin/hipcc" -DCMAKE_C_COMPILER="${rocm_path}/bin/hipcc" -DPROJECT_BINARY_DIR=${matrices_dir} -DCMAKE_MATRICES_DIR=${matrices_dir} -P ./cmake/ClientMatrices.cmake
+    cmake -DCMAKE_CXX_COMPILER="${rocm_path}/bin/amdclang++" -DCMAKE_C_COMPILER="${rocm_path}/bin/amdclang" -DPROJECT_BINARY_DIR=${matrices_dir} -DCMAKE_MATRICES_DIR=${matrices_dir} -P ./cmake/ClientMatrices.cmake
 fi
 
 
