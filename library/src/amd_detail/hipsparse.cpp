@@ -13298,6 +13298,25 @@ hipsparseStatus_t hipsparseCreateCooAoS(hipsparseSpMatDescr_t* spMatDescr,
                                        hipsparse::hipDataTypeToHCCDataType(valueType)));
 }
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+ROCSPARSE_EXPORT
+rocsparse_status rocsparse_create_csr_descr_SWDEV_453599(rocsparse_spmat_descr* descr,
+                                                         int64_t                rows,
+                                                         int64_t                cols,
+                                                         int64_t                nnz,
+                                                         void*                  csr_row_ptr,
+                                                         void*                  csr_col_ind,
+                                                         void*                  csr_val,
+                                                         rocsparse_indextype    row_ptr_type,
+                                                         rocsparse_indextype    col_ind_type,
+                                                         rocsparse_index_base   idx_base,
+                                                         rocsparse_datatype     data_type);
+#ifdef __cplusplus
+}
+#endif
+
 hipsparseStatus_t hipsparseCreateCsr(hipsparseSpMatDescr_t* spMatDescr,
                                      int64_t                rows,
                                      int64_t                cols,
@@ -13311,7 +13330,7 @@ hipsparseStatus_t hipsparseCreateCsr(hipsparseSpMatDescr_t* spMatDescr,
                                      hipDataType            valueType)
 {
     return hipsparse::rocSPARSEStatusToHIPStatus(
-        rocsparse_create_csr_descr((rocsparse_spmat_descr*)spMatDescr,
+        rocsparse_create_csr_descr_SWDEV_453599((rocsparse_spmat_descr*)spMatDescr,
                                    rows,
                                    cols,
                                    nnz,
@@ -14874,7 +14893,7 @@ hipsparseStatus_t hipsparseSpGEMM_copy(hipsparseHandle_t          handle,
     if(csrColIndTypeC == HIPSPARSE_INDEX_32I)
     {
         RETURN_IF_ROCSPARSE_ERROR(
-            rocsparse_create_identity_permutation((rocsparse_handle)handle,
+            rocsparse_set_identity_permutation((rocsparse_handle)handle,
                                                   nnzC,
                                                   rocsparse_indextype_i32,
                                                   static_cast<int32_t*>(indicesArray)));
@@ -14882,7 +14901,7 @@ hipsparseStatus_t hipsparseSpGEMM_copy(hipsparseHandle_t          handle,
     else if(csrColIndTypeC == HIPSPARSE_INDEX_64I)
     {
         RETURN_IF_ROCSPARSE_ERROR(
-            rocsparse_create_identity_permutation((rocsparse_handle)handle,
+            rocsparse_set_identity_permutation((rocsparse_handle)handle,
                                                   nnzC,
                                                   rocsparse_indextype_i64,
                                                   static_cast<int64_t*>(indicesArray)));
