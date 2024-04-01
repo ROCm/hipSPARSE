@@ -915,105 +915,214 @@ void testing_spmat_descr_bad_arg(void)
 hipsparseStatus_t testing_spmat_descr(void)
 {
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
-    int m = 2;
-    int n = 2;
+    int m    = 2;
+    int n    = 2;
     int nnzC = 4;
 
     // C
-    std::vector<int> hcsr_row_ptrC = { 0, 2, 4 };
-    std::vector<int> hcsr_col_indC = { 0, 2, 0, 1 };
-    std::vector<float> hcsr_valC = { 5.0f , 6.0f, 7.0f, 8.0f, 1.0f, 2.0f };
+    std::vector<int>   hcsr_row_ptrC = {0, 2, 4};
+    std::vector<int>   hcsr_col_indC = {0, 2, 0, 1};
+    std::vector<float> hcsr_valC     = {5.0f, 6.0f, 7.0f, 8.0f, 1.0f, 2.0f};
 
-    int* dcsr_row_ptrC = NULL;
-    int* dcsr_col_indC = NULL;
-    float* dcsr_valC = NULL;
+    int*   dcsr_row_ptrC = NULL;
+    int*   dcsr_col_indC = NULL;
+    float* dcsr_valC     = NULL;
     CHECK_HIP_ERROR(hipMalloc((void**)&dcsr_row_ptrC, (m + 1) * sizeof(int)));
     CHECK_HIP_ERROR(hipMalloc((void**)&dcsr_col_indC, nnzC * sizeof(int)));
     CHECK_HIP_ERROR(hipMalloc((void**)&dcsr_valC, nnzC * sizeof(float)));
 
-    CHECK_HIP_ERROR(hipMemcpy(dcsr_row_ptrC, hcsr_row_ptrC.data(), (m + 1) * sizeof(int), hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(hipMemcpy(dcsr_col_indC, hcsr_col_indC.data(), nnzC * sizeof(int), hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(hipMemcpy(dcsr_valC, hcsr_valC.data(), nnzC * sizeof(float), hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(
+        dcsr_row_ptrC, hcsr_row_ptrC.data(), (m + 1) * sizeof(int), hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(
+        hipMemcpy(dcsr_col_indC, hcsr_col_indC.data(), nnzC * sizeof(int), hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(
+        hipMemcpy(dcsr_valC, hcsr_valC.data(), nnzC * sizeof(float), hipMemcpyHostToDevice));
 
     hipsparseHandle_t     handle = NULL;
-    hipsparseSpMatDescr_t matA, matB, matC, matD, matE, matF, matG, matH, matI, matJ, matK, matL, matM, matN, matO;
+    hipsparseSpMatDescr_t matA, matB, matC, matD, matE, matF, matG, matH, matI, matJ, matK, matL,
+        matM, matN, matO;
 
     CHECK_HIPSPARSE_ERROR(hipsparseCreate(&handle));
 
-    CHECK_HIPSPARSE_ERROR(hipsparseCreateCsr(&matA, 0, 0, 0,
-        NULL, NULL, NULL,
-        HIPSPARSE_INDEX_32I, HIPSPARSE_INDEX_32I,
-        HIPSPARSE_INDEX_BASE_ZERO, HIP_R_32F));
+    CHECK_HIPSPARSE_ERROR(hipsparseCreateCsr(&matA,
+                                             0,
+                                             0,
+                                             0,
+                                             NULL,
+                                             NULL,
+                                             NULL,
+                                             HIPSPARSE_INDEX_32I,
+                                             HIPSPARSE_INDEX_32I,
+                                             HIPSPARSE_INDEX_BASE_ZERO,
+                                             HIP_R_32F));
 
-    CHECK_HIPSPARSE_ERROR(hipsparseCreateCsr(&matB, m, n, 0,
-        NULL, NULL, NULL,
-        HIPSPARSE_INDEX_32I, HIPSPARSE_INDEX_32I,
-        HIPSPARSE_INDEX_BASE_ZERO, HIP_R_32F));
+    CHECK_HIPSPARSE_ERROR(hipsparseCreateCsr(&matB,
+                                             m,
+                                             n,
+                                             0,
+                                             NULL,
+                                             NULL,
+                                             NULL,
+                                             HIPSPARSE_INDEX_32I,
+                                             HIPSPARSE_INDEX_32I,
+                                             HIPSPARSE_INDEX_BASE_ZERO,
+                                             HIP_R_32F));
 
-    CHECK_HIPSPARSE_ERROR(hipsparseCreateCsr(&matC, 0, 0, 0,
-        dcsr_row_ptrC, NULL, NULL,
-        HIPSPARSE_INDEX_32I, HIPSPARSE_INDEX_32I,
-        HIPSPARSE_INDEX_BASE_ZERO, HIP_R_32F));
+    CHECK_HIPSPARSE_ERROR(hipsparseCreateCsr(&matC,
+                                             0,
+                                             0,
+                                             0,
+                                             dcsr_row_ptrC,
+                                             NULL,
+                                             NULL,
+                                             HIPSPARSE_INDEX_32I,
+                                             HIPSPARSE_INDEX_32I,
+                                             HIPSPARSE_INDEX_BASE_ZERO,
+                                             HIP_R_32F));
 
-    CHECK_HIPSPARSE_ERROR(hipsparseCreateCsr(&matD, m, n, 0,
-        dcsr_row_ptrC, NULL, NULL,
-        HIPSPARSE_INDEX_32I, HIPSPARSE_INDEX_32I,
-        HIPSPARSE_INDEX_BASE_ZERO, HIP_R_32F));
+    CHECK_HIPSPARSE_ERROR(hipsparseCreateCsr(&matD,
+                                             m,
+                                             n,
+                                             0,
+                                             dcsr_row_ptrC,
+                                             NULL,
+                                             NULL,
+                                             HIPSPARSE_INDEX_32I,
+                                             HIPSPARSE_INDEX_32I,
+                                             HIPSPARSE_INDEX_BASE_ZERO,
+                                             HIP_R_32F));
 
-    CHECK_HIPSPARSE_ERROR(hipsparseCreateCsr(&matE, m, n, nnzC,
-        dcsr_row_ptrC, dcsr_col_indC, dcsr_valC,
-        HIPSPARSE_INDEX_32I, HIPSPARSE_INDEX_32I,
-        HIPSPARSE_INDEX_BASE_ZERO, HIP_R_32F));
+    CHECK_HIPSPARSE_ERROR(hipsparseCreateCsr(&matE,
+                                             m,
+                                             n,
+                                             nnzC,
+                                             dcsr_row_ptrC,
+                                             dcsr_col_indC,
+                                             dcsr_valC,
+                                             HIPSPARSE_INDEX_32I,
+                                             HIPSPARSE_INDEX_32I,
+                                             HIPSPARSE_INDEX_BASE_ZERO,
+                                             HIP_R_32F));
 
-    CHECK_HIPSPARSE_ERROR(hipsparseCreateCsr(&matF, m, n, 0, 
-        NULL, dcsr_col_indC, dcsr_valC,
-        HIPSPARSE_INDEX_32I, HIPSPARSE_INDEX_32I,
-        HIPSPARSE_INDEX_BASE_ZERO, HIP_R_32F));
-    
-    CHECK_HIPSPARSE_ERROR(hipsparseCreateCsr(&matG, 0, 0, 0,
-        NULL, dcsr_col_indC, dcsr_valC,
-        HIPSPARSE_INDEX_32I, HIPSPARSE_INDEX_32I,
-        HIPSPARSE_INDEX_BASE_ZERO, HIP_R_32F));
+    CHECK_HIPSPARSE_ERROR(hipsparseCreateCsr(&matF,
+                                             m,
+                                             n,
+                                             0,
+                                             NULL,
+                                             dcsr_col_indC,
+                                             dcsr_valC,
+                                             HIPSPARSE_INDEX_32I,
+                                             HIPSPARSE_INDEX_32I,
+                                             HIPSPARSE_INDEX_BASE_ZERO,
+                                             HIP_R_32F));
 
-    CHECK_HIPSPARSE_ERROR(hipsparseCreateCsr(&matH, m, n, 0,
-        NULL, NULL, dcsr_valC,
-        HIPSPARSE_INDEX_32I, HIPSPARSE_INDEX_32I,
-        HIPSPARSE_INDEX_BASE_ZERO, HIP_R_32F));
+    CHECK_HIPSPARSE_ERROR(hipsparseCreateCsr(&matG,
+                                             0,
+                                             0,
+                                             0,
+                                             NULL,
+                                             dcsr_col_indC,
+                                             dcsr_valC,
+                                             HIPSPARSE_INDEX_32I,
+                                             HIPSPARSE_INDEX_32I,
+                                             HIPSPARSE_INDEX_BASE_ZERO,
+                                             HIP_R_32F));
 
-    CHECK_HIPSPARSE_ERROR(hipsparseCreateCsr(&matI, 0, 0, 0,
-        NULL, NULL, dcsr_valC,
-        HIPSPARSE_INDEX_32I, HIPSPARSE_INDEX_32I,
-        HIPSPARSE_INDEX_BASE_ZERO, HIP_R_32F));
+    CHECK_HIPSPARSE_ERROR(hipsparseCreateCsr(&matH,
+                                             m,
+                                             n,
+                                             0,
+                                             NULL,
+                                             NULL,
+                                             dcsr_valC,
+                                             HIPSPARSE_INDEX_32I,
+                                             HIPSPARSE_INDEX_32I,
+                                             HIPSPARSE_INDEX_BASE_ZERO,
+                                             HIP_R_32F));
 
-    CHECK_HIPSPARSE_ERROR(hipsparseCreateCsr(&matJ, m, n, 0,
-        NULL, dcsr_col_indC, NULL,
-        HIPSPARSE_INDEX_32I, HIPSPARSE_INDEX_32I,
-        HIPSPARSE_INDEX_BASE_ZERO, HIP_R_32F));
+    CHECK_HIPSPARSE_ERROR(hipsparseCreateCsr(&matI,
+                                             0,
+                                             0,
+                                             0,
+                                             NULL,
+                                             NULL,
+                                             dcsr_valC,
+                                             HIPSPARSE_INDEX_32I,
+                                             HIPSPARSE_INDEX_32I,
+                                             HIPSPARSE_INDEX_BASE_ZERO,
+                                             HIP_R_32F));
 
-    CHECK_HIPSPARSE_ERROR(hipsparseCreateCsr(&matK, 0, 0, 0,
-        NULL, dcsr_col_indC, NULL,
-        HIPSPARSE_INDEX_32I, HIPSPARSE_INDEX_32I,
-        HIPSPARSE_INDEX_BASE_ZERO, HIP_R_32F));
+    CHECK_HIPSPARSE_ERROR(hipsparseCreateCsr(&matJ,
+                                             m,
+                                             n,
+                                             0,
+                                             NULL,
+                                             dcsr_col_indC,
+                                             NULL,
+                                             HIPSPARSE_INDEX_32I,
+                                             HIPSPARSE_INDEX_32I,
+                                             HIPSPARSE_INDEX_BASE_ZERO,
+                                             HIP_R_32F));
 
-    CHECK_HIPSPARSE_ERROR(hipsparseCreateCsr(&matL, m, n, 0,
-        dcsr_row_ptrC, dcsr_col_indC, NULL,
-        HIPSPARSE_INDEX_32I, HIPSPARSE_INDEX_32I,
-        HIPSPARSE_INDEX_BASE_ZERO, HIP_R_32F));
+    CHECK_HIPSPARSE_ERROR(hipsparseCreateCsr(&matK,
+                                             0,
+                                             0,
+                                             0,
+                                             NULL,
+                                             dcsr_col_indC,
+                                             NULL,
+                                             HIPSPARSE_INDEX_32I,
+                                             HIPSPARSE_INDEX_32I,
+                                             HIPSPARSE_INDEX_BASE_ZERO,
+                                             HIP_R_32F));
 
-    CHECK_HIPSPARSE_ERROR(hipsparseCreateCsr(&matM, 0, 0, 0,
-        dcsr_row_ptrC, dcsr_col_indC, NULL,
-        HIPSPARSE_INDEX_32I, HIPSPARSE_INDEX_32I,
-        HIPSPARSE_INDEX_BASE_ZERO, HIP_R_32F));
+    CHECK_HIPSPARSE_ERROR(hipsparseCreateCsr(&matL,
+                                             m,
+                                             n,
+                                             0,
+                                             dcsr_row_ptrC,
+                                             dcsr_col_indC,
+                                             NULL,
+                                             HIPSPARSE_INDEX_32I,
+                                             HIPSPARSE_INDEX_32I,
+                                             HIPSPARSE_INDEX_BASE_ZERO,
+                                             HIP_R_32F));
 
-    CHECK_HIPSPARSE_ERROR(hipsparseCreateCsr(&matN, m, n, 0,
-        dcsr_row_ptrC, NULL, dcsr_valC,
-        HIPSPARSE_INDEX_32I, HIPSPARSE_INDEX_32I,
-        HIPSPARSE_INDEX_BASE_ZERO, HIP_R_32F));
+    CHECK_HIPSPARSE_ERROR(hipsparseCreateCsr(&matM,
+                                             0,
+                                             0,
+                                             0,
+                                             dcsr_row_ptrC,
+                                             dcsr_col_indC,
+                                             NULL,
+                                             HIPSPARSE_INDEX_32I,
+                                             HIPSPARSE_INDEX_32I,
+                                             HIPSPARSE_INDEX_BASE_ZERO,
+                                             HIP_R_32F));
 
-    CHECK_HIPSPARSE_ERROR(hipsparseCreateCsr(&matO, 0, 0, 0,
-        dcsr_row_ptrC, NULL, dcsr_valC,
-        HIPSPARSE_INDEX_32I, HIPSPARSE_INDEX_32I,
-        HIPSPARSE_INDEX_BASE_ZERO, HIP_R_32F));
+    CHECK_HIPSPARSE_ERROR(hipsparseCreateCsr(&matN,
+                                             m,
+                                             n,
+                                             0,
+                                             dcsr_row_ptrC,
+                                             NULL,
+                                             dcsr_valC,
+                                             HIPSPARSE_INDEX_32I,
+                                             HIPSPARSE_INDEX_32I,
+                                             HIPSPARSE_INDEX_BASE_ZERO,
+                                             HIP_R_32F));
+
+    CHECK_HIPSPARSE_ERROR(hipsparseCreateCsr(&matO,
+                                             0,
+                                             0,
+                                             0,
+                                             dcsr_row_ptrC,
+                                             NULL,
+                                             dcsr_valC,
+                                             HIPSPARSE_INDEX_32I,
+                                             HIPSPARSE_INDEX_32I,
+                                             HIPSPARSE_INDEX_BASE_ZERO,
+                                             HIP_R_32F));
 
     // destroy matrix/vector descriptors
     CHECK_HIPSPARSE_ERROR(hipsparseDestroySpMat(matA));

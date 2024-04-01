@@ -14890,10 +14890,8 @@ hipsparseStatus_t hipsparseSpGEMM_copy(hipsparseHandle_t          handle,
         }
     }
 
-    rocsparse_status rocsparse_set_identity_permutation(rocsparse_handle    handle,
-                                                    int64_t             n,
-                                                    void*               p,
-                                                    rocsparse_indextype indextype);
+    rocsparse_status rocsparse_set_identity_permutation(
+        rocsparse_handle handle, int64_t n, void* p, rocsparse_indextype indextype);
 
     if(csrColIndTypeC == HIPSPARSE_INDEX_32I)
     {
