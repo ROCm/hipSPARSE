@@ -14716,6 +14716,8 @@ hipsparseStatus_t hipsparseSpGEMM_compute(hipsparseHandle_t          handle,
 
     if(externalBuffer2 == nullptr)
     {
+        *bufferSize2 = 0;
+        
         // Need to store temporary space for C matrix column indices and values arrays
         *bufferSize2 += ((csrColIndTypeSizeC * nnzC - 1) / 256 + 1) * 256;
         *bufferSize2 += ((csrValueTypeSizeC * nnzC - 1) / 256 + 1) * 256;
