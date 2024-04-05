@@ -14428,8 +14428,8 @@ struct hipsparseSpGEMMDescr
 
     size_t bufferSize1{};
     size_t bufferSize2{};
-    void* externalBuffer1{};
-    void* externalBuffer2{};
+    void*  externalBuffer1{};
+    void*  externalBuffer2{};
 };
 
 hipsparseStatus_t hipsparseSpGEMM_createDescr(hipsparseSpGEMMDescr_t* descr)
