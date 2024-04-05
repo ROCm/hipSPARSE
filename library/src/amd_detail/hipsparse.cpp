@@ -14745,7 +14745,7 @@ hipsparseStatus_t hipsparseSpGEMM_compute(hipsparseHandle_t          handle,
 
         // Need to store temporary space for host/device 1 value used in hipsparseSpGEMM_copy Axpby
         *bufferSize2 += ((computeTypeSize - 1) / 256 + 1) * 256;
-    
+
         spgemmDescr->bufferSize2 = bufferSize2;
     }
     else
@@ -15276,9 +15276,6 @@ hipsparseStatus_t hipsparseSpGEMMreuse_compute(hipsparseHandle_t          handle
     }
     std::cout << "" << std::endl;
 
-
-
-
     int64_t              C_num_rows2, C_num_cols2, C_nnz2;
     hipsparseIndexBase_t indexBaseC;
     hipsparseIndexType_t rowIndexTypeC;
@@ -15329,9 +15326,6 @@ hipsparseStatus_t hipsparseSpGEMMreuse_compute(hipsparseHandle_t          handle
         std::cout << hcsrValuesC[i] << " ";
     }
     std::cout << "" << std::endl;
-
-
-
 
     return hipsparse::rocSPARSEStatusToHIPStatus(
         rocsparse_spgemm((rocsparse_handle)handle,
