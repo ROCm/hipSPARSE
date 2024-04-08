@@ -15008,8 +15008,10 @@ hipsparseStatus_t hipsparseSpGEMMreuse_nnz(hipsparseHandle_t          handle,
     }
 
     // If any external buffer is nullptr, they must all be nullptr.
-    bool allBuffersNull = (externalBuffer2 == nullptr) & (externalBuffer3 == nullptr) & (externalBuffer4 == nullptr);
-    bool anyBuffersNull = (externalBuffer2 == nullptr) | (externalBuffer3 == nullptr) | (externalBuffer4 == nullptr);
+    bool allBuffersNull = (externalBuffer2 == nullptr) & (externalBuffer3 == nullptr)
+                          & (externalBuffer4 == nullptr);
+    bool anyBuffersNull = (externalBuffer2 == nullptr) | (externalBuffer3 == nullptr)
+                          | (externalBuffer4 == nullptr);
     if(anyBuffersNull && !allBuffersNull)
     {
         return HIPSPARSE_STATUS_INVALID_VALUE;
@@ -15066,13 +15068,15 @@ hipsparseStatus_t hipsparseSpGEMMreuse_nnz(hipsparseHandle_t          handle,
     }
     else
     {
-        std::cout << "bufferSize3: " << *bufferSize3 << " bufferSize4: " << *bufferSize4 << std::endl;
+        std::cout << "bufferSize3: " << *bufferSize3 << " bufferSize4: " << *bufferSize4
+                  << std::endl;
         hipStream_t stream;
         RETURN_IF_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
 
         spgemmDescr->externalBuffer2 = externalBuffer2;
         spgemmDescr->externalBuffer3 = externalBuffer3; // stores C column indices and values
-        spgemmDescr->externalBuffer4 = externalBuffer4; // stores C row pointers array + rocsparse_spgemm buffer
+        spgemmDescr->externalBuffer4
+            = externalBuffer4; // stores C row pointers array + rocsparse_spgemm buffer
 
         size_t byteOffset3 = ((csrColIndTypeSizeC * nnzC - 1) / 256 + 1) * 256;
         size_t byteOffset4 = ((csrRowOffsetsTypeSizeC * (rowsC + 1) - 1) / 256 + 1) * 256;
@@ -15093,20 +15097,21 @@ hipsparseStatus_t hipsparseSpGEMMreuse_nnz(hipsparseHandle_t          handle,
             static_cast<char*>(spgemmDescr->externalBuffer3) + byteOffset3));
 
         size_t bufferSize = (spgemmDescr->bufferSize4 - byteOffset4);
-        RETURN_IF_ROCSPARSE_ERROR(rocsparse_spgemm((rocsparse_handle)handle,
-                                                   hipsparse::hipOperationToHCCOperation(opA),
-                                                   hipsparse::hipOperationToHCCOperation(opB),
-                                                   alpha,
-                                                   (rocsparse_const_spmat_descr)matA,
-                                                   (rocsparse_const_spmat_descr)matB,
-                                                   nullptr,
-                                                   (rocsparse_const_spmat_descr)matC,
-                                                   (rocsparse_spmat_descr)matC,
-                                                   hipsparse::hipDataTypeToHCCDataType(computeType),
-                                                   hipsparse::hipSpGEMMAlgToHCCSpGEMMAlg(alg),
-                                                   rocsparse_spgemm_stage_symbolic,
-                                                   &bufferSize,
-                                                   static_cast<char*>(spgemmDescr->externalBuffer4) + byteOffset4));
+        RETURN_IF_ROCSPARSE_ERROR(
+            rocsparse_spgemm((rocsparse_handle)handle,
+                             hipsparse::hipOperationToHCCOperation(opA),
+                             hipsparse::hipOperationToHCCOperation(opB),
+                             alpha,
+                             (rocsparse_const_spmat_descr)matA,
+                             (rocsparse_const_spmat_descr)matB,
+                             nullptr,
+                             (rocsparse_const_spmat_descr)matC,
+                             (rocsparse_spmat_descr)matC,
+                             hipsparse::hipDataTypeToHCCDataType(computeType),
+                             hipsparse::hipSpGEMMAlgToHCCSpGEMMAlg(alg),
+                             rocsparse_spgemm_stage_symbolic,
+                             &bufferSize,
+                             static_cast<char*>(spgemmDescr->externalBuffer4) + byteOffset4));
     }
 
     return HIPSPARSE_STATUS_SUCCESS;
@@ -15285,7 +15290,6 @@ hipsparseStatus_t hipsparseSpGEMMreuse_compute(hipsparseHandle_t          handle
     // }
     // std::cout << "" << std::endl;
 
-
     size_t csrRowOffsetsTypeSizeC;
     size_t csrColIndTypeSizeC;
     size_t csrValueTypeSizeC;
@@ -15304,26 +15308,27 @@ hipsparseStatus_t hipsparseSpGEMMreuse_compute(hipsparseHandle_t          handle
 
     void* device_one = (static_cast<char*>(spgemmDescr->externalBuffer5) + byteOffset5);
 
-    // Use external buffer for values array as the original values array may have data in it 
+    // Use external buffer for values array as the original values array may have data in it
     // that must be accounted for when multiplying by beta. See below.
     RETURN_IF_HIPSPARSE_ERROR(
         hipsparseCsrSetPointers(matC, csrRowOffsetsC, csrColIndC, csrValuesCFromBuffer5));
 
     size_t bufferSize = (spgemmDescr->bufferSize4 - byteOffset4);
-    RETURN_IF_ROCSPARSE_ERROR(rocsparse_spgemm((rocsparse_handle)handle,
-                            hipsparse::hipOperationToHCCOperation(opA),
-                            hipsparse::hipOperationToHCCOperation(opB),
-                            alpha,
-                            (rocsparse_const_spmat_descr)matA,
-                            (rocsparse_const_spmat_descr)matB,
-                            nullptr,
-                            (rocsparse_const_spmat_descr)matC,
-                            (rocsparse_spmat_descr)matC,
-                            hipsparse::hipDataTypeToHCCDataType(computeType),
-                            hipsparse::hipSpGEMMAlgToHCCSpGEMMAlg(alg),
-                            rocsparse_spgemm_stage_numeric,
-                            &bufferSize,
-                            static_cast<char*>(spgemmDescr->externalBuffer4) + byteOffset4));
+    RETURN_IF_ROCSPARSE_ERROR(
+        rocsparse_spgemm((rocsparse_handle)handle,
+                         hipsparse::hipOperationToHCCOperation(opA),
+                         hipsparse::hipOperationToHCCOperation(opB),
+                         alpha,
+                         (rocsparse_const_spmat_descr)matA,
+                         (rocsparse_const_spmat_descr)matB,
+                         nullptr,
+                         (rocsparse_const_spmat_descr)matC,
+                         (rocsparse_spmat_descr)matC,
+                         hipsparse::hipDataTypeToHCCDataType(computeType),
+                         hipsparse::hipSpGEMMAlgToHCCSpGEMMAlg(alg),
+                         rocsparse_spgemm_stage_numeric,
+                         &bufferSize,
+                         static_cast<char*>(spgemmDescr->externalBuffer4) + byteOffset4));
 
     // Get pointer mode
     hipsparsePointerMode_t pointer_mode;
