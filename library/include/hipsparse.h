@@ -11984,6 +11984,79 @@ hipsparseStatus_t hipsparseDnMatSetStridedBatch(hipsparseDnMatDescr_t dnMatDescr
 *          y[x_ind[i]] = alpha * x_val[i] + beta * y[x_ind[i]]
 *      }
 *  \endcode
+*
+*  \par Example
+*  \code{.c}
+*    // Number of non-zeros of the sparse vector
+*    int nnz = 3;
+*
+*    // Size of sparse and dense vector
+*    int size = 9;
+*
+*    // Sparse index vector
+*    std::vector<int> hx_ind = {0, 3, 5};
+*
+*    // Sparse value vector
+*    std::vector<float> hx_val = {1.0f, 2.0f, 3.0f};
+*
+*    // Dense vector
+*    std::vector<float> hy = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f};
+*
+*    // Scalar alpha
+*    float alpha = 3.7f;
+*
+*    // Scalar beta
+*    float beta = 1.2f;
+*
+*    // Offload data to device
+*    int* dx_ind;
+*    float* dx_val;
+*    float* dy;
+*    hipMalloc((void**)&dx_ind, sizeof(int) * nnz);
+*    hipMalloc((void**)&dx_val, sizeof(float) * nnz);
+*    hipMalloc((void**)&dy, sizeof(float) * size);
+*
+*    hipMemcpy(dx_ind, hx_ind.data(), sizeof(int) * nnz, hipMemcpyHostToDevice);
+*    hipMemcpy(dx_val, hx_val.data(), sizeof(float) * nnz, hipMemcpyHostToDevice);
+*    hipMemcpy(dy, hy.data(), sizeof(float) * size, hipMemcpyHostToDevice);
+*
+*    hipsparseHandle_t handle;
+*    hipsparseCreate(&handle);
+*
+*    // Create sparse vector X
+*    hipsparseSpVecDescr_t vecX;
+*    hipsparseCreateSpVec(&vecX,
+*                        size,
+*                        nnz,
+*                        dx_ind,
+*                        dx_val,
+*                        HIPSPARSE_INDEX_32I,
+*                        HIPSPARSE_INDEX_BASE_ZERO,
+*                        HIP_R_32F);
+*
+*    // Create dense vector Y
+*    hipsparseDnVecDescr_t vecY;
+*    hipsparseCreateDnVec(&vecY, size, dy, HIP_R_32F);
+*
+*    // Call axpby to perform y = beta * y + alpha * x
+*    hipsparseAxpby(handle, &alpha, vecX, &beta, vecY);
+*
+*    hipsparseDnVecGetValues(vecY, (void**)&dy);
+*
+*    // Copy result back to host
+*    hipMemcpy(hy.data(), dy, sizeof(float) * size, hipMemcpyDeviceToHost);
+*
+*
+*    // Clear hipSPARSE
+*    hipsparseDestroySpVec(vecX);
+*    hipsparseDestroyDnVec(vecY);
+*    hipsparseDestroy(handle);
+*
+*    // Clear device memory
+*    hipFree(dx_ind);
+*    hipFree(dx_val);
+*    hipFree(dy);
+*  \endcode
 */
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
 HIPSPARSE_EXPORT
@@ -12014,6 +12087,69 @@ hipsparseStatus_t hipsparseAxpby(hipsparseHandle_t     handle,
 *          x_val[i] = y[x_ind[i]];
 *      }
 *  \endcode
+*
+*  \par Example
+*  \code{.c}
+*    // Number of non-zeros of the sparse vector
+*    int nnz = 3;
+*
+*    // Size of sparse and dense vector
+*    int size = 9;
+*
+*    // Sparse index vector
+*    std::vector<int> hx_ind = {0, 3, 5};
+*
+*    // Dense vector
+*    std::vector<float> hy = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f};
+*
+*    // Offload data to device
+*    int* dx_ind;
+*    float* dx_val;
+*    float* dy;
+*    hipMalloc((void**)&dx_ind, sizeof(int) * nnz);
+*    hipMalloc((void**)&dx_val, sizeof(float) * nnz);
+*    hipMalloc((void**)&dy, sizeof(float) * size);
+*
+*    hipMemcpy(dx_ind, hx_ind.data(), sizeof(int) * nnz, hipMemcpyHostToDevice);
+*    hipMemcpy(dy, hy.data(), sizeof(float) * size, hipMemcpyHostToDevice);
+*
+*    hipsparseHandle_t handle;
+*    hipsparseCreate(&handle);
+*
+*    // Create sparse vector X
+*    hipsparseSpVecDescr_t vecX;
+*    hipsparseCreateSpVec(&vecX,
+*                         size,
+*                         nnz,
+*                         dx_ind,
+*                         dx_val,
+*                         HIPSPARSE_INDEX_32I,
+*                         HIPSPARSE_INDEX_BASE_ZERO,
+*                         HIP_R_32F);
+*
+*    // Create dense vector Y
+*    hipsparseDnVecDescr_t vecY;
+*    hipsparseCreateDnVec(&vecY, size, dy, HIP_R_32F);
+*
+*    // Perform gather
+*    hipsparseGather(handle, vecY, vecX);
+*
+*    hipsparseSpVecGetValues(vecX, (void**)&dx_val);
+*
+*    // Copy result back to host
+*    std::vector<float> hx_val(nnz, 0.0f);
+*    hipMemcpy(hx_val.data(), dx_val, sizeof(float) * nnz, hipMemcpyDeviceToHost);
+*
+*    // Clear hipSPARSE
+*    hipsparseDestroySpVec(vecX);
+*    hipsparseDestroyDnVec(vecY);
+*    hipsparseDestroy(handle);
+*
+*    // Clear device memory
+*    hipFree(dx_ind);
+*    hipFree(dx_val);
+*    hipFree(dy);
+*  \endcode
 */
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
 HIPSPARSE_EXPORT
@@ -12039,6 +12175,72 @@ hipsparseStatus_t hipsparseGather(hipsparseHandle_t     handle,
 *      {
 *          y[x_ind[i]] = x_val[i];
 *      }
+*  \endcode
+*
+*  \par Example
+*  \code{.c}
+*    // Number of non-zeros of the sparse vector
+*    int nnz = 3;
+*
+*    // Size of sparse and dense vector
+*    int size = 9;
+*
+*    // Sparse index vector
+*    std::vector<int> hx_ind = {0, 3, 5};
+*
+*    // Sparse value vector
+*    std::vector<float> hx_val = {1.0f, 2.0f, 3.0f};
+*
+*    // Dense vector
+*    std::vector<float> hy = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f};
+*
+*    // Offload data to device
+*    int* dx_ind;
+*    float* dx_val;
+*    float* dy;
+*    hipMalloc((void**)&dx_ind, sizeof(int) * nnz);
+*    hipMalloc((void**)&dx_val, sizeof(float) * nnz);
+*    hipMalloc((void**)&dy, sizeof(float) * size);
+*
+*    hipMemcpy(dx_ind, hx_ind.data(), sizeof(int) * nnz, hipMemcpyHostToDevice);
+*    hipMemcpy(dx_val, hx_val.data(), sizeof(float) * nnz, hipMemcpyHostToDevice);
+*    hipMemcpy(dy, hy.data(), sizeof(float) * size, hipMemcpyHostToDevice);
+*
+*    hipsparseHandle_t handle;
+*    hipsparseCreate(&handle);
+*
+*    // Create sparse vector X
+*    hipsparseSpVecDescr_t vecX;
+*    hipsparseCreateSpVec(&vecX,
+*                                size,
+*                                nnz,
+*                                dx_ind,
+*                                dx_val,
+*                                HIPSPARSE_INDEX_32I,
+*                                HIPSPARSE_INDEX_BASE_ZERO,
+*                                HIP_R_32F);
+*
+*    // Create dense vector Y
+*    hipsparseDnVecDescr_t vecY;
+*    hipsparseCreateDnVec(&vecY, size, dy, HIP_R_32F);
+*
+*    // Perform scatter
+*    hipsparseScatter(handle, vecX, vecY);
+*
+*    hipsparseDnVecGetValues(vecY, (void**)&dy);
+*
+*    // Copy result back to host
+*    hipMemcpy(hy.data(), dy, sizeof(float) * size, hipMemcpyDeviceToHost);
+*
+*    // Clear hipSPARSE
+*    hipsparseDestroySpVec(vecX);
+*    hipsparseDestroyDnVec(vecY);
+*    hipsparseDestroy(handle);
+*
+*    // Clear device memory
+*    hipFree(dx_ind);
+*    hipFree(dx_val);
+*    hipFree(dy);
 *  \endcode
 */
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
@@ -12072,6 +12274,80 @@ hipsparseStatus_t hipsparseScatter(hipsparseHandle_t     handle,
 *          x_val[i]    = c * x_tmp + s * y_tmp;
 *          y[x_ind[i]] = c * y_tmp - s * x_tmp;
 *      }
+*  \endcode
+*
+*  \par Example
+*  \code{.c}
+*    // Number of non-zeros of the sparse vector
+*    int nnz = 3;
+*
+*    // Size of sparse and dense vector
+*    int size = 9;
+*
+*    // Sparse index vector
+*    std::vector<int> hx_ind = {0, 3, 5};
+*
+*    // Sparse value vector
+*    std::vector<float> hx_val = {1.0f, 2.0f, 3.0f};
+*
+*    // Dense vector
+*    std::vector<float> hy = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f};
+*
+*    // Scalar c
+*    float c = 3.7f;
+*
+*    // Scalar s
+*    float s = 1.2f;
+*
+*    // Offload data to device
+*    int* dx_ind;
+*    float* dx_val;
+*    float* dy;
+*    hipMalloc((void**)&dx_ind, sizeof(int) * nnz);
+*    hipMalloc((void**)&dx_val, sizeof(float) * nnz);
+*    hipMalloc((void**)&dy, sizeof(float) * size);
+*
+*    hipMemcpy(dx_ind, hx_ind.data(), sizeof(int) * nnz, hipMemcpyHostToDevice);
+*    hipMemcpy(dx_val, hx_val.data(), sizeof(float) * nnz, hipMemcpyHostToDevice);
+*    hipMemcpy(dy, hy.data(), sizeof(float) * size, hipMemcpyHostToDevice);
+*
+*    hipsparseHandle_t handle;
+*    hipsparseCreate(&handle);
+*
+*    // Create sparse vector X
+*    hipsparseSpVecDescr_t vecX;
+*    hipsparseCreateSpVec(&vecX,
+*                                size,
+*                                nnz,
+*                                dx_ind,
+*                                dx_val,
+*                                HIPSPARSE_INDEX_32I,
+*                                HIPSPARSE_INDEX_BASE_ZERO,
+*                                HIP_R_32F);
+*
+*    // Create dense vector Y
+*    hipsparseDnVecDescr_t vecY;
+*    hipsparseCreateDnVec(&vecY, size, dy, HIP_R_32F);
+*
+*    // Call rot
+*    hipsparseRot(handle, (void*)&c, (void*)&s, vecX, vecY);
+*
+*    hipsparseSpVecGetValues(vecX, (void**)&dx_val);
+*    hipsparseDnVecGetValues(vecY, (void**)&dy);
+*
+*    // Copy result back to host
+*    hipMemcpy(hx_val.data(), dx_val, sizeof(float) * nnz, hipMemcpyDeviceToHost);
+*    hipMemcpy(hy.data(), dy, sizeof(float) * size, hipMemcpyDeviceToHost);
+*
+*    // Clear hipSPARSE
+*    hipsparseDestroySpVec(vecX);
+*    hipsparseDestroyDnVec(vecY);
+*    hipsparseDestroy(handle);
+*
+*    // Clear device memory
+*    hipFree(dx_ind);
+*    hipFree(dx_val);
+*    hipFree(dy);
 *  \endcode
 */
 #if(!defined(CUDART_VERSION) || (CUDART_VERSION >= 11000 && CUDART_VERSION < 13000))
@@ -12206,6 +12482,8 @@ hipsparseStatus_t hipsparseDenseToSparse_convert(hipsparseHandle_t           han
 *  \details
 *  \p hipsparseSpVV_bufferSize computes the required user allocated buffer size needed when computing the 
 *  inner dot product of a sparse vector with a dense vector
+*
+*  See full example below
 */
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
 HIPSPARSE_EXPORT
@@ -12233,6 +12511,92 @@ hipsparseStatus_t hipsparseSpVV_bufferSize(hipsparseHandle_t     handle,
 *  \details
 *  \p hipsparseSpVV computes the inner dot product of a sparse vector with a dense vector. This routine takes a user 
 *  allocated buffer whose size must first be computed by calling \p hipsparseSpVV_bufferSize
+*
+*  \par Example
+*  \code{.c}
+*    // Number of non-zeros of the sparse vector
+*    int nnz = 3;
+*
+*    // Size of sparse and dense vector
+*    int size = 9;
+*
+*    // Sparse index vector
+*    std::vector<int> hx_ind = {0, 3, 5};
+*
+*    // Sparse value vector
+*    std::vector<float> hx_val = {1.0f, 2.0f, 3.0f};
+*
+*    // Dense vector
+*    std::vector<float> hy = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f};
+*
+*    // Offload data to device
+*    int* dx_ind;
+*    float* dx_val;
+*    float* dy;
+*    hipMalloc((void**)&dx_ind, sizeof(int) * nnz);
+*    hipMalloc((void**)&dx_val, sizeof(float) * nnz);
+*    hipMalloc((void**)&dy, sizeof(float) * size);
+*
+*    hipMemcpy(dx_ind, hx_ind.data(), sizeof(int) * nnz, hipMemcpyHostToDevice);
+*    hipMemcpy(dx_val, hx_val.data(), sizeof(float) * nnz, hipMemcpyHostToDevice);
+*    hipMemcpy(dy, hy.data(), sizeof(float) * size, hipMemcpyHostToDevice);
+*
+*    hipsparseHandle_t handle;
+*    hipsparseCreate(&handle);
+*
+*    // Create sparse vector X
+*    hipsparseSpVecDescr_t vecX;
+*    hipsparseCreateSpVec(&vecX,
+*                        size,
+*                        nnz,
+*                        dx_ind,
+*                        dx_val,
+*                        HIPSPARSE_INDEX_32I,
+*                        HIPSPARSE_INDEX_BASE_ZERO,
+*                        HIP_R_32F);
+*
+*    // Create dense vector Y
+*    hipsparseDnVecDescr_t vecY;
+*    hipsparseCreateDnVec(&vecY, size, dy, HIP_R_32F);
+*
+*    // Obtain buffer size
+*    float hresult = 0.0f;
+*    size_t buffer_size;
+*    hipsparseSpVV_bufferSize(handle,
+*                HIPSPARSE_OPERATION_NON_TRANSPOSE,
+*                vecX,
+*                vecY,
+*                &hresult,
+*                HIP_R_32F,
+*                &buffer_size);
+*
+*    void* temp_buffer;
+*    hipMalloc(&temp_buffer, buffer_size);
+*
+*    // SpVV
+*    hipsparseSpVV(handle,
+*                HIPSPARSE_OPERATION_NON_TRANSPOSE,
+*                vecX,
+*                vecY,
+*                &hresult,
+*                HIP_R_32F,
+*                temp_buffer);
+*
+*    hipDeviceSynchronize();
+*
+*    std::cout << "hresult: " << hresult << std::endl;
+*
+*    // Clear hipSPARSE
+*    hipsparseDestroySpVec(vecX);
+*    hipsparseDestroyDnVec(vecY);
+*    hipsparseDestroy(handle);
+*
+*    // Clear device memory
+*    hipFree(dx_ind);
+*    hipFree(dx_val);
+*    hipFree(dy);
+*    hipFree(temp_buffer);
+*  \endcode
 */
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
 HIPSPARSE_EXPORT
@@ -12260,6 +12624,8 @@ hipsparseStatus_t hipsparseSpVV(hipsparseHandle_t     handle,
 *  \details
 *  \p hipsparseSpMV_bufferSize computes the required user allocated buffer size needed when computing the 
 *  sparse matrix multiplication with a dense vector
+*
+*  See full example below
 */
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
 HIPSPARSE_EXPORT
@@ -12292,7 +12658,10 @@ hipsparseStatus_t hipsparseSpMV_bufferSize(hipsparseHandle_t           handle,
 *
 *  \details
 *  \p hipsparseSpMV_preprocess performs the optional preprocess used when computing the 
-*  sparse matrix multiplication with a dense vector
+*  sparse matrix multiplication with a dense vector. This step is optional but if used may 
+*  results in better performance.
+*
+*  See full example below
 */
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
 HIPSPARSE_EXPORT
@@ -12325,6 +12694,117 @@ hipsparseStatus_t hipsparseSpMV_preprocess(hipsparseHandle_t           handle,
 *
 *  \details
 *  \p hipsparseSpMV computes sparse matrix multiplication with a dense vector
+*
+*  \par Example
+*  \code{.c}
+*    // A, x, and y are m×k, k×1, and m×1
+*    int m = 3, k = 4;
+*    int nnz_A = 8;
+*    hipsparseOperation_t transA = HIPSPARSE_OPERATION_NON_TRANSPOSE;
+*
+*    // alpha and beta
+*    float alpha = 0.5f;
+*    float beta  = 0.25f;
+*
+*    std::vector<int> hcsr_row_ptr = {0, 3, 5, 8};
+*    std::vector<int> hcsr_col_ind = {0, 1, 3, 1, 2, 0, 2, 3}; 
+*    std::vector<float> hcsr_val     = {1, 2, 3, 4, 5, 6, 7, 8}; 
+*
+*    std::vector<float> hx(k, 1.0f);
+*    std::vector<float> hy(m, 1.0f);
+*
+*    int *dcsr_row_ptr;
+*    int *dcsr_col_ind;
+*    float *dcsr_val;
+*    hipMalloc((void**)&dcsr_row_ptr, sizeof(int) * (m + 1));
+*    hipMalloc((void**)&dcsr_col_ind, sizeof(int) * nnz_A);
+*    hipMalloc((void**)&dcsr_val, sizeof(float) * nnz_A);
+*
+*    hipMemcpy(dcsr_row_ptr, hcsr_row_ptr.data(), sizeof(int) * (m + 1), hipMemcpyHostToDevice);
+*    hipMemcpy(dcsr_col_ind, hcsr_col_ind.data(), sizeof(int) * nnz_A, hipMemcpyHostToDevice);
+*    hipMemcpy(dcsr_val, hcsr_val.data(), sizeof(float) * nnz_A, hipMemcpyHostToDevice);
+*
+*    hipsparseHandle_t handle;
+*    hipsparseCreate(&handle);
+*
+*    hipsparseSpMatDescr_t matA;
+*    hipsparseCreateCsr(&matA, m, k, nnz_A,
+*                        dcsr_row_ptr, dcsr_col_ind, dcsr_val,
+*                        HIPSPARSE_INDEX_32I, HIPSPARSE_INDEX_32I,
+*                        HIPSPARSE_INDEX_BASE_ZERO, HIP_R_32F);
+*
+*    // Allocate memory for the vector x
+*    float* dx;
+*    hipMalloc((void**)&dx, sizeof(float) * k);
+*    hipMemcpy(dx, hx.data(), sizeof(float) * k, hipMemcpyHostToDevice);
+*
+*    hipsparseDnVecDescr_t vecX;
+*    hipsparseCreateDnVec(&vecX, k, dx, HIP_R_32F);
+*
+*    // Allocate memory for the resulting vector y
+*    float* dy;
+*    hipMalloc((void**)&dy, sizeof(float) * m);
+*    hipMemcpy(dy, hy.data(), sizeof(float) * m, hipMemcpyHostToDevice);
+*
+*    hipsparseDnMatDescr_t vecY;
+*    hipsparseCreateDnVec(&vecY, m, dy, HIP_R_32F);
+*
+*    // Compute buffersize
+*    size_t bufferSize;
+*    hipsparseSpMV_bufferSize(handle,
+*                             transA,
+*                             &alpha,
+*                             matA,
+*                             vecX,
+*                             &beta,
+*                             vecY,
+*                             HIP_R_32F,
+*                             HIPSPARSE_MV_ALG_DEFAULT,
+*                             &bufferSize);
+*
+*    void* buffer;
+*    hipMalloc(&buffer, bufferSize);
+*
+*    // Preprocess operation (Optional)
+*    hipsparseSpMV_preprocess(handle,
+*                            transA,
+*                            &alpha,
+*                            matA,
+*                            vecX,
+*                            &beta,
+*                            vecY,
+*                            HIP_R_32F,
+*                            HIPSPARSE_MV_ALG_DEFAULT,
+*                            &buffer);
+*
+*    // Perform operation
+*    hipsparseSpMV(handle,
+*                 transA,
+*                 &alpha,
+*                 matA,
+*                 vecX,
+*                 &beta,
+*                 vecY,
+*                 HIP_R_32F,
+*                 HIPSPARSE_MV_ALG_DEFAULT,
+*                 &buffer);
+*
+*    // Copy device to host
+*    hipMemcpy(hy.data(), dy, sizeof(float) * m, hipMemcpyDeviceToHost);
+*
+*    // Destroy matrix descriptors and handles
+*    hipsparseDestroySpMat(matA);
+*    hipsparseDestroyDnVec(vecX);
+*    hipsparseDestroyDnVec(vecY);
+*    hipsparseDestroy(handle);
+*
+*    hipFree(buffer);
+*    hipFree(dcsr_row_ptr);
+*    hipFree(dcsr_col_ind);
+*    hipFree(dcsr_val);
+*    hipFree(dx);
+*    hipFree(dy);
+*  \endcode
 */
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
 HIPSPARSE_EXPORT
@@ -12358,6 +12838,8 @@ hipsparseStatus_t hipsparseSpMV(hipsparseHandle_t           handle,
 *  \details
 *  \p hipsparseSpMM_bufferSize computes the required user allocated buffer size needed when computing the 
 *  sparse matrix multiplication with a dense matrix
+*
+*  See full example below
 */
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
 HIPSPARSE_EXPORT
@@ -12393,6 +12875,8 @@ hipsparseStatus_t hipsparseSpMM_bufferSize(hipsparseHandle_t           handle,
 *  \details
 *  \p hipsparseSpMM_preprocess performs the required preprocessing used when computing the 
 *  sparse matrix multiplication with a dense matrix
+*
+*  See full example below
 */
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
 HIPSPARSE_EXPORT
@@ -12427,6 +12911,124 @@ hipsparseStatus_t hipsparseSpMM_preprocess(hipsparseHandle_t           handle,
 *
 *  \details
 *  \p hipsparseSpMM computes sparse matrix multiplication with a dense matrix
+*
+*  \par Example
+*  \code{.c}
+*    // A, B, and C are m×k, k×n, and m×n
+*    int m = 3, n = 5, k = 4;
+*    int ldb = n, ldc = n;
+*    int nnz_A = 8, nnz_B = 20, nnz_C = 15;
+*    hipsparseOperation_t transA = HIPSPARSE_OPERATION_NON_TRANSPOSE;
+*    hipsparseOperation_t transB = HIPSPARSE_OPERATION_NON_TRANSPOSE;
+*    hipsparseOperation_t transC = HIPSPARSE_OPERATION_NON_TRANSPOSE;
+*    hipsparseOrder_t order = HIPSPARSE_ORDER_ROW;
+*
+*    // alpha and beta
+*    float alpha = 0.5f;
+*    float beta  = 0.25f;
+*
+*    std::vector<int> hcsr_row_ptr = {0, 3, 5, 8};
+*    std::vector<int> hcsr_col_ind = {0, 1, 3, 1, 2, 0, 2, 3}; 
+*    std::vector<float> hcsr_val     = {1, 2, 3, 4, 5, 6, 7, 8}; 
+*
+*    std::vector<float> hB(nnz_B, 1.0f);
+*    std::vector<float> hC(nnz_C, 1.0f);
+*
+*    int *dcsr_row_ptr;
+*    int *dcsr_col_ind;
+*    float *dcsr_val;
+*    hipMalloc((void**)&dcsr_row_ptr, sizeof(int) * (m + 1));
+*    hipMalloc((void**)&dcsr_col_ind, sizeof(int) * nnz_A);
+*    hipMalloc((void**)&dcsr_val, sizeof(float) * nnz_A);
+*
+*    hipMemcpy(dcsr_row_ptr, hcsr_row_ptr.data(), sizeof(int) * (m + 1), hipMemcpyHostToDevice);
+*    hipMemcpy(dcsr_col_ind, hcsr_col_ind.data(), sizeof(int) * nnz_A, hipMemcpyHostToDevice);
+*    hipMemcpy(dcsr_val, hcsr_val.data(), sizeof(float) * nnz_A, hipMemcpyHostToDevice);
+*
+*    hipsparseHandle_t handle;
+*    hipsparseCreate(&handle);
+*
+*    hipsparseSpMatDescr_t matA;
+*    hipsparseCreateCsr(&matA, m, k, nnz_A,
+*                        dcsr_row_ptr, dcsr_col_ind, dcsr_val,
+*                        HIPSPARSE_INDEX_32I, HIPSPARSE_INDEX_32I,
+*                        HIPSPARSE_INDEX_BASE_ZERO, HIP_R_32F);
+*
+*    // Allocate memory for the matrix B
+*    float* dB;
+*    hipMalloc((void**)&dB, sizeof(float) * nnz_B);
+*    hipMemcpy(dB, hB.data(), sizeof(float) * nnz_B, hipMemcpyHostToDevice);
+*
+*    hipsparseDnMatDescr_t matB;
+*    hipsparseCreateDnMat(&matB, k, n, ldb, dB, HIP_R_32F, order);
+*
+*    // Allocate memory for the resulting matrix C
+*    float* dC;
+*    hipMalloc((void**)&dC, sizeof(float) * nnz_C);
+*    hipMemcpy(dC, hC.data(), sizeof(float) * nnz_C, hipMemcpyHostToDevice);
+*
+*    hipsparseDnMatDescr_t matC;
+*    hipsparseCreateDnMat(&matC, m, n, ldc, dC, HIP_R_32F, HIPSPARSE_ORDER_ROW);
+*
+*    // Compute buffersize
+*    size_t bufferSize;
+*    hipsparseSpMM_bufferSize(handle,
+*                             transA,
+*                             transB,
+*                             &alpha,
+*                             matA,
+*                             matB,
+*                             &beta,
+*                             matC,
+*                             HIP_R_32F,
+*                             HIPSPARSE_MM_ALG_DEFAULT,
+*                             &bufferSize);
+*
+*    void* buffer;
+*    hipMalloc(&buffer, bufferSize);
+*
+*    // Preprocess operation (Optional)
+*    hipsparseSpMM_preprocess(handle,
+*                            transA,
+*                            transB,
+*                            &alpha,
+*                            matA,
+*                            matB,
+*                            &beta,
+*                            matC,
+*                            HIP_R_32F,
+*                            HIPSPARSE_MM_ALG_DEFAULT,
+*                            &buffer);
+*
+*    // Perform operation
+*    hipsparseSpMM(handle,
+*                 transA,
+*                 transB,
+*                 &alpha,
+*                 matA,
+*                 matB,
+*                 &beta,
+*                 matC,
+*                 HIP_R_32F,
+*                 HIPSPARSE_MM_ALG_DEFAULT,
+*                 &buffer);
+*
+*    // Copy device to host
+*    hipMemcpy(hC.data(), dC, sizeof(float) * nnz_C, hipMemcpyDeviceToHost);
+*
+*    // Destroy matrix descriptors and handles
+*    hipsparseDestroySpMat(matA);
+*    hipsparseDestroyDnMat(matB);
+*    hipsparseDestroyDnMat(matC);
+*    hipsparseDestroy(handle);
+*
+*    hipFree(buffer);
+*    hipFree(dcsr_row_ptr);
+*    hipFree(dcsr_col_ind);
+*    hipFree(dcsr_val);
+*    hipFree(dB);
+*    hipFree(dC);
+*  \endcode
 */
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
 HIPSPARSE_EXPORT
