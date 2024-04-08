@@ -14456,115 +14456,66 @@ hipsparseStatus_t hipsparseSpGEMM_destroyDescr(hipsparseSpGEMMDescr_t descr)
 
 namespace hipsparse
 {
-    /*static const void*
-        spgemm_get_ptr(hipsparsePointerMode_t mode, hipDataType computeType, const void* ptr)
+    static hipsparseStatus_t getIndexTypeSize(hipsparseIndexType_t indexType, size_t& size)
     {
-        const void* cast_ptr = nullptr;
-
-        if(mode == HIPSPARSE_POINTER_MODE_HOST)
+        switch(indexType)
         {
-            if(computeType == HIP_R_32F)
-                cast_ptr = (*(const float*)ptr != 0.0f) ? ptr : nullptr;
-            if(computeType == HIP_R_64F)
-                cast_ptr = (*(const double*)ptr != 0.0) ? ptr : nullptr;
-            if(computeType == HIP_C_32F)
-                cast_ptr = (*(const hipComplex*)ptr != make_hipComplex(0.0f, 0.0f)) ? ptr : nullptr;
-            if(computeType == HIP_C_64F)
-                cast_ptr = (*(const hipDoubleComplex*)ptr != make_hipDoubleComplex(0.0, 0.0))
-                               ? ptr
-                               : nullptr;
+        case HIPSPARSE_INDEX_16U:
+        {
+            size = sizeof(uint16_t);
+            return HIPSPARSE_STATUS_SUCCESS;
         }
-        else
+        case HIPSPARSE_INDEX_32I:
         {
-            if(computeType == HIP_R_32F)
-            {
-                float host;
-                hipMemcpy(&host, ptr, sizeof(float), hipMemcpyDeviceToHost);
-                cast_ptr = (host != 0.0f) ? ptr : nullptr;
-            }
-            if(computeType == HIP_R_64F)
-            {
-                double host;
-                hipMemcpy(&host, ptr, sizeof(double), hipMemcpyDeviceToHost);
-                cast_ptr = (host != 0.0) ? ptr : nullptr;
-            }
-            if(computeType == HIP_C_32F)
-            {
-                hipComplex host;
-                hipMemcpy(&host, ptr, sizeof(hipComplex), hipMemcpyDeviceToHost);
-                cast_ptr = (host != make_hipComplex(0.0f, 0.0f)) ? ptr : nullptr;
-            }
-            if(computeType == HIP_C_64F)
-            {
-                hipDoubleComplex host;
-                hipMemcpy(&host, ptr, sizeof(hipDoubleComplex), hipMemcpyDeviceToHost);
-                cast_ptr = (host != make_hipDoubleComplex(0.0, 0.0)) ? ptr : nullptr;
-            }
+            size = sizeof(int32_t);
+            return HIPSPARSE_STATUS_SUCCESS;
+        }
+        case HIPSPARSE_INDEX_64I:
+        {
+            size = sizeof(int64_t);
+            return HIPSPARSE_STATUS_SUCCESS;
+        }
         }
 
-        return cast_ptr;
-    }*/
-}
-
-static hipsparseStatus_t getIndexTypeSize(hipsparseIndexType_t indexType, size_t& size)
-{
-    switch(indexType)
-    {
-    case HIPSPARSE_INDEX_16U:
-    {
-        size = sizeof(uint16_t);
-        return HIPSPARSE_STATUS_SUCCESS;
-    }
-    case HIPSPARSE_INDEX_32I:
-    {
-        size = sizeof(int32_t);
-        return HIPSPARSE_STATUS_SUCCESS;
-    }
-    case HIPSPARSE_INDEX_64I:
-    {
-        size = sizeof(int64_t);
-        return HIPSPARSE_STATUS_SUCCESS;
-    }
-    }
-
-    size = 0;
-    return HIPSPARSE_STATUS_INVALID_VALUE;
-}
-
-static hipsparseStatus_t getDataTypeSize(hipDataType dataType, size_t& size)
-{
-    switch(dataType)
-    {
-    case HIP_R_32F:
-    {
-        size = sizeof(float);
-        return HIPSPARSE_STATUS_SUCCESS;
-    }
-    case HIP_R_64F:
-    {
-        size = sizeof(double);
-        return HIPSPARSE_STATUS_SUCCESS;
-    }
-    case HIP_C_32F:
-    {
-        size = sizeof(hipComplex);
-        return HIPSPARSE_STATUS_SUCCESS;
-    }
-    case HIP_C_64F:
-    {
-        size = sizeof(hipDoubleComplex);
-        return HIPSPARSE_STATUS_SUCCESS;
-    }
-    case HIP_R_16F:
-    case HIP_C_16F:
-    {
         size = 0;
         return HIPSPARSE_STATUS_INVALID_VALUE;
     }
-    }
 
-    size = 0;
-    return HIPSPARSE_STATUS_INVALID_VALUE;
+    static hipsparseStatus_t getDataTypeSize(hipDataType dataType, size_t& size)
+    {
+        switch(dataType)
+        {
+        case HIP_R_32F:
+        {
+            size = sizeof(float);
+            return HIPSPARSE_STATUS_SUCCESS;
+        }
+        case HIP_R_64F:
+        {
+            size = sizeof(double);
+            return HIPSPARSE_STATUS_SUCCESS;
+        }
+        case HIP_C_32F:
+        {
+            size = sizeof(hipComplex);
+            return HIPSPARSE_STATUS_SUCCESS;
+        }
+        case HIP_C_64F:
+        {
+            size = sizeof(hipDoubleComplex);
+            return HIPSPARSE_STATUS_SUCCESS;
+        }
+        case HIP_R_16F:
+        case HIP_C_16F:
+        {
+            size = 0;
+            return HIPSPARSE_STATUS_INVALID_VALUE;
+        }
+        }
+
+        size = 0;
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
 }
 
 hipsparseStatus_t hipsparseSpGEMM_workEstimation(hipsparseHandle_t          handle,
@@ -14610,7 +14561,7 @@ hipsparseStatus_t hipsparseSpGEMM_workEstimation(hipsparseHandle_t          hand
                                               &csrValueTypeC));
 
     size_t csrRowOffsetsTypeSizeC;
-    RETURN_IF_HIPSPARSE_ERROR(getIndexTypeSize(csrRowOffsetsTypeC, csrRowOffsetsTypeSizeC));
+    RETURN_IF_HIPSPARSE_ERROR(hipsparse::getIndexTypeSize(csrRowOffsetsTypeC, csrRowOffsetsTypeSizeC));
 
     if(externalBuffer1 == nullptr)
     {
@@ -14648,7 +14599,6 @@ hipsparseStatus_t hipsparseSpGEMM_workEstimation(hipsparseHandle_t          hand
 
         // Compute number of non-zeros in C matrix
         size_t bufferSize = (spgemmDescr->bufferSize1 - byteOffset1);
-        std::cout << "bufferSize: " << bufferSize << std::endl;
         RETURN_IF_ROCSPARSE_ERROR(
             rocsparse_spgemm((rocsparse_handle)handle,
                              hipsparse::hipOperationToHCCOperation(opA),
@@ -14713,12 +14663,12 @@ hipsparseStatus_t hipsparseSpGEMM_compute(hipsparseHandle_t          handle,
     size_t csrRowOffsetsTypeSizeC;
     size_t csrColIndTypeSizeC;
     size_t csrValueTypeSizeC;
-    RETURN_IF_HIPSPARSE_ERROR(getIndexTypeSize(csrRowOffsetsTypeC, csrRowOffsetsTypeSizeC));
-    RETURN_IF_HIPSPARSE_ERROR(getIndexTypeSize(csrColIndTypeC, csrColIndTypeSizeC));
-    RETURN_IF_HIPSPARSE_ERROR(getDataTypeSize(csrValueTypeC, csrValueTypeSizeC));
+    RETURN_IF_HIPSPARSE_ERROR(hipsparse::getIndexTypeSize(csrRowOffsetsTypeC, csrRowOffsetsTypeSizeC));
+    RETURN_IF_HIPSPARSE_ERROR(hipsparse::getIndexTypeSize(csrColIndTypeC, csrColIndTypeSizeC));
+    RETURN_IF_HIPSPARSE_ERROR(hipsparse::getDataTypeSize(csrValueTypeC, csrValueTypeSizeC));
 
     size_t computeTypeSize;
-    RETURN_IF_HIPSPARSE_ERROR(getDataTypeSize(computeType, computeTypeSize));
+    RETURN_IF_HIPSPARSE_ERROR(hipsparse::getDataTypeSize(computeType, computeTypeSize));
 
     if(externalBuffer2 == nullptr)
     {
@@ -14820,9 +14770,9 @@ hipsparseStatus_t hipsparseSpGEMM_copy(hipsparseHandle_t          handle,
     size_t csrRowOffsetsTypeSizeC;
     size_t csrColIndTypeSizeC;
     size_t csrValueTypeSizeC;
-    RETURN_IF_HIPSPARSE_ERROR(getIndexTypeSize(csrRowOffsetsTypeC, csrRowOffsetsTypeSizeC));
-    RETURN_IF_HIPSPARSE_ERROR(getIndexTypeSize(csrColIndTypeC, csrColIndTypeSizeC));
-    RETURN_IF_HIPSPARSE_ERROR(getDataTypeSize(csrValueTypeC, csrValueTypeSizeC));
+    RETURN_IF_HIPSPARSE_ERROR(hipsparse::getIndexTypeSize(csrRowOffsetsTypeC, csrRowOffsetsTypeSizeC));
+    RETURN_IF_HIPSPARSE_ERROR(hipsparse::getIndexTypeSize(csrColIndTypeC, csrColIndTypeSizeC));
+    RETURN_IF_HIPSPARSE_ERROR(hipsparse::getDataTypeSize(csrValueTypeC, csrValueTypeSizeC));
 
     size_t byteOffset2 = 0;
 
@@ -14967,7 +14917,28 @@ hipsparseStatus_t hipsparseSpGEMMreuse_workEstimation(hipsparseHandle_t         
     const void* alpha = (const void*)0x4;
     const void* beta  = (const void*)0x4;
 
-    hipDataType computeType = HIP_R_32F;
+    // Get data stored in C matrix
+    int64_t              rowsC, colsC, nnzC;
+    void*                csrRowOffsetsC;
+    void*                csrColIndC;
+    void*                csrValuesC;
+    hipsparseIndexType_t csrRowOffsetsTypeC;
+    hipsparseIndexType_t csrColIndTypeC;
+    hipsparseIndexBase_t idxBaseC;
+    hipDataType          csrValueTypeC;
+    RETURN_IF_HIPSPARSE_ERROR(hipsparseCsrGet(matC,
+                                              &rowsC,
+                                              &colsC,
+                                              &nnzC,
+                                              &csrRowOffsetsC,
+                                              &csrColIndC,
+                                              &csrValuesC,
+                                              &csrRowOffsetsTypeC,
+                                              &csrColIndTypeC,
+                                              &idxBaseC,
+                                              &csrValueTypeC));
+
+    hipDataType computeType = csrValueTypeC;
 
     return hipsparseSpGEMM_workEstimation(handle,
                                           opA,
@@ -15019,8 +14990,6 @@ hipsparseStatus_t hipsparseSpGEMMreuse_nnz(hipsparseHandle_t          handle,
 
     const void* alpha = (const void*)0x4;
 
-    hipDataType computeType = HIP_R_32F;
-
     // Get data stored in C matrix
     int64_t              rowsC, colsC, nnzC;
     void*                csrRowOffsetsC;
@@ -15042,12 +15011,14 @@ hipsparseStatus_t hipsparseSpGEMMreuse_nnz(hipsparseHandle_t          handle,
                                               &idxBaseC,
                                               &csrValueTypeC));
 
+    hipDataType computeType = csrValueTypeC;
+
     size_t csrRowOffsetsTypeSizeC;
     size_t csrColIndTypeSizeC;
     size_t csrValueTypeSizeC;
-    RETURN_IF_HIPSPARSE_ERROR(getIndexTypeSize(csrRowOffsetsTypeC, csrRowOffsetsTypeSizeC));
-    RETURN_IF_HIPSPARSE_ERROR(getIndexTypeSize(csrColIndTypeC, csrColIndTypeSizeC));
-    RETURN_IF_HIPSPARSE_ERROR(getDataTypeSize(csrValueTypeC, csrValueTypeSizeC));
+    RETURN_IF_HIPSPARSE_ERROR(hipsparse::getIndexTypeSize(csrRowOffsetsTypeC, csrRowOffsetsTypeSizeC));
+    RETURN_IF_HIPSPARSE_ERROR(hipsparse::getIndexTypeSize(csrColIndTypeC, csrColIndTypeSizeC));
+    RETURN_IF_HIPSPARSE_ERROR(hipsparse::getDataTypeSize(csrValueTypeC, csrValueTypeSizeC));
 
     if(allBuffersNull)
     {
@@ -15061,22 +15032,15 @@ hipsparseStatus_t hipsparseSpGEMMreuse_nnz(hipsparseHandle_t          handle,
         spgemmDescr->bufferSize2 = *bufferSize2;
         spgemmDescr->bufferSize3 = *bufferSize3;
         spgemmDescr->bufferSize4 = *bufferSize4;
-
-        std::cout << "hipsparseSpGEMMreuse_nnz bufferSize2: " << *bufferSize2
-                  << " bufferSize3: " << *bufferSize3 << " bufferSize4: " << *bufferSize4
-                  << std::endl;
     }
     else
     {
-        std::cout << "bufferSize3: " << *bufferSize3 << " bufferSize4: " << *bufferSize4
-                  << std::endl;
         hipStream_t stream;
         RETURN_IF_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
 
         spgemmDescr->externalBuffer2 = externalBuffer2;
         spgemmDescr->externalBuffer3 = externalBuffer3; // stores C column indices and values
-        spgemmDescr->externalBuffer4
-            = externalBuffer4; // stores C row pointers array + rocsparse_spgemm buffer
+        spgemmDescr->externalBuffer4 = externalBuffer4; // stores C row pointers array + spgemm buffer
 
         size_t byteOffset3 = ((csrColIndTypeSizeC * nnzC - 1) / 256 + 1) * 256;
         size_t byteOffset4 = ((csrRowOffsetsTypeSizeC * (rowsC + 1) - 1) / 256 + 1) * 256;
@@ -15133,8 +15097,6 @@ hipsparseStatus_t hipsparseSpGEMMreuse_compute(hipsparseHandle_t          handle
     {
         return HIPSPARSE_STATUS_INVALID_VALUE;
     }
-
-    std::cout << "hipsparseSpGEMMreuse_compute" << std::endl;
 
     // int64_t              A_num_rows2, A_num_cols2, A_nnz2;
     // hipsparseIndexBase_t indexBaseA;
@@ -15293,9 +15255,9 @@ hipsparseStatus_t hipsparseSpGEMMreuse_compute(hipsparseHandle_t          handle
     size_t csrRowOffsetsTypeSizeC;
     size_t csrColIndTypeSizeC;
     size_t csrValueTypeSizeC;
-    RETURN_IF_HIPSPARSE_ERROR(getIndexTypeSize(csrRowOffsetsTypeC, csrRowOffsetsTypeSizeC));
-    RETURN_IF_HIPSPARSE_ERROR(getIndexTypeSize(csrColIndTypeC, csrColIndTypeSizeC));
-    RETURN_IF_HIPSPARSE_ERROR(getDataTypeSize(csrValueTypeC, csrValueTypeSizeC));
+    RETURN_IF_HIPSPARSE_ERROR(hipsparse::getIndexTypeSize(csrRowOffsetsTypeC, csrRowOffsetsTypeSizeC));
+    RETURN_IF_HIPSPARSE_ERROR(hipsparse::getIndexTypeSize(csrColIndTypeC, csrColIndTypeSizeC));
+    RETURN_IF_HIPSPARSE_ERROR(hipsparse::getDataTypeSize(csrValueTypeC, csrValueTypeSizeC));
 
     size_t byteOffset4 = ((csrRowOffsetsTypeSizeC * (rowsC + 1) - 1) / 256 + 1) * 256;
     size_t byteOffset5 = 0;
@@ -15469,9 +15431,9 @@ hipsparseStatus_t hipsparseSpGEMMreuse_copy(hipsparseHandle_t          handle,
     size_t csrRowOffsetsTypeSizeC;
     size_t csrColIndTypeSizeC;
     size_t csrValueTypeSizeC;
-    RETURN_IF_HIPSPARSE_ERROR(getIndexTypeSize(csrRowOffsetsTypeC, csrRowOffsetsTypeSizeC));
-    RETURN_IF_HIPSPARSE_ERROR(getIndexTypeSize(csrColIndTypeC, csrColIndTypeSizeC));
-    RETURN_IF_HIPSPARSE_ERROR(getDataTypeSize(csrValueTypeC, csrValueTypeSizeC));
+    RETURN_IF_HIPSPARSE_ERROR(hipsparse::getIndexTypeSize(csrRowOffsetsTypeC, csrRowOffsetsTypeSizeC));
+    RETURN_IF_HIPSPARSE_ERROR(hipsparse::getIndexTypeSize(csrColIndTypeC, csrColIndTypeSizeC));
+    RETURN_IF_HIPSPARSE_ERROR(hipsparse::getDataTypeSize(csrValueTypeC, csrValueTypeSizeC));
 
     if(externalBuffer5 == nullptr)
     {
@@ -15531,285 +15493,6 @@ hipsparseStatus_t hipsparseSpGEMMreuse_copy(hipsparseHandle_t          handle,
 
     return HIPSPARSE_STATUS_SUCCESS;
 }
-
-// hipsparseStatus_t hipsparseSpGEMMreuse_workEstimation(hipsparseHandle_t          handle,
-//                                                       hipsparseOperation_t       opA,
-//                                                       hipsparseOperation_t       opB,
-//                                                       hipsparseConstSpMatDescr_t matA,
-//                                                       hipsparseConstSpMatDescr_t matB,
-//                                                       hipsparseSpMatDescr_t      matC,
-//                                                       hipsparseSpGEMMAlg_t       alg,
-//                                                       hipsparseSpGEMMDescr_t     spgemmDescr,
-//                                                       size_t*                    bufferSize1,
-//                                                       void*                      externalBuffer1)
-// {
-//     // Match cusparse error handling
-//     if(handle == nullptr)
-//     {
-//         return HIPSPARSE_STATUS_INVALID_VALUE;
-//     }
-
-//     if(matA == nullptr || matB == nullptr || matC == nullptr)
-//     {
-//         return HIPSPARSE_STATUS_INVALID_VALUE;
-//     }
-
-//     if(bufferSize1 == nullptr)
-//     {
-//         return HIPSPARSE_STATUS_INVALID_VALUE;
-//     }
-
-//     // spgemmDescr can be nullptr
-
-//     // Do nothing
-//     *bufferSize1 = 4;
-
-//     return HIPSPARSE_STATUS_SUCCESS;
-// }
-
-// hipsparseStatus_t hipsparseSpGEMMreuse_nnz(hipsparseHandle_t          handle,
-//                                            hipsparseOperation_t       opA,
-//                                            hipsparseOperation_t       opB,
-//                                            hipsparseConstSpMatDescr_t matA,
-//                                            hipsparseConstSpMatDescr_t matB,
-//                                            hipsparseSpMatDescr_t      matC,
-//                                            hipsparseSpGEMMAlg_t       alg,
-//                                            hipsparseSpGEMMDescr_t     spgemmDescr,
-//                                            size_t*                    bufferSize2,
-//                                            void*                      externalBuffer2,
-//                                            size_t*                    bufferSize3,
-//                                            void*                      externalBuffer3,
-//                                            size_t*                    bufferSize4,
-//                                            void*                      externalBuffer4)
-// {
-//     // Match cusparse error handling
-//     if(handle == nullptr)
-//     {
-//         return HIPSPARSE_STATUS_INVALID_VALUE;
-//     }
-
-//     if(matA == nullptr || matB == nullptr || matC == nullptr)
-//     {
-//         return HIPSPARSE_STATUS_INVALID_VALUE;
-//     }
-
-//     if(bufferSize2 == nullptr)
-//     {
-//         return HIPSPARSE_STATUS_INVALID_VALUE;
-//     }
-//     if(bufferSize3 == nullptr)
-//     {
-//         return HIPSPARSE_STATUS_INVALID_VALUE;
-//     }
-//     if(bufferSize4 == nullptr)
-//     {
-//         return HIPSPARSE_STATUS_INVALID_VALUE;
-//     }
-
-//     // spgemmDescr can be nullptr
-
-//     // Do nothing for 3 and 4.
-
-//     *bufferSize2 = 4;
-//     *bufferSize3 = 4;
-
-//     //
-//     // On symbolic parts, it only checks if the pointers are null
-//     // But being null or not is important to drive the algorithm.
-//     // Then, trick:
-//     //
-
-//     char        alpha[128]{}, beta[128]{};
-//     const void* alpha_ptr = (const void*)&alpha;
-//     const void* beta_ptr  = (const void*)&beta;
-
-//     int64_t              tmp_rows;
-//     int64_t              tmp_cols;
-//     int64_t              tmp_nnz;
-//     void*                tmp_csr_row_ptr;
-//     void*                tmp_csr_col_ind;
-//     void*                tmp_csr_val;
-//     rocsparse_indextype  tmp_row_ptr_type;
-//     rocsparse_indextype  tmp_col_ind_type;
-//     rocsparse_index_base tmp_idx_base;
-//     rocsparse_datatype   tmp_data_type;
-//     RETURN_IF_ROCSPARSE_ERROR(rocsparse_csr_get((rocsparse_spmat_descr)matC,
-//                                                 &tmp_rows,
-//                                                 &tmp_cols,
-//                                                 &tmp_nnz,
-//                                                 &tmp_csr_row_ptr,
-//                                                 &tmp_csr_col_ind,
-//                                                 &tmp_csr_val,
-//                                                 &tmp_row_ptr_type,
-//                                                 &tmp_col_ind_type,
-//                                                 &tmp_idx_base,
-//                                                 &tmp_data_type));
-
-//     // Query for required buffer size
-//     RETURN_IF_ROCSPARSE_ERROR(rocsparse_spgemm((rocsparse_handle)handle,
-//                                                hipsparse::hipOperationToHCCOperation(opA),
-//                                                hipsparse::hipOperationToHCCOperation(opB),
-//                                                alpha_ptr,
-//                                                (rocsparse_const_spmat_descr)matA,
-//                                                (rocsparse_const_spmat_descr)matB,
-//                                                beta_ptr,
-//                                                (rocsparse_spmat_descr)matC,
-//                                                (rocsparse_spmat_descr)matC,
-//                                                tmp_data_type,
-//                                                hipsparse::hipSpGEMMAlgToHCCSpGEMMAlg(alg),
-//                                                (externalBuffer4 == nullptr)
-//                                                    ? rocsparse_spgemm_stage_buffer_size
-//                                                    : rocsparse_spgemm_stage_nnz,
-//                                                bufferSize4,
-//                                                externalBuffer4));
-
-//     if(externalBuffer4 != nullptr)
-//     {
-//         spgemmDescr->externalBuffer = externalBuffer4;
-//     }
-//     else
-//     {
-//         spgemmDescr->bufferSize = *bufferSize4;
-//     }
-
-//     return HIPSPARSE_STATUS_SUCCESS;
-// }
-
-// hipsparseStatus_t hipsparseSpGEMMreuse_compute(hipsparseHandle_t          handle,
-//                                                hipsparseOperation_t       opA,
-//                                                hipsparseOperation_t       opB,
-//                                                const void*                alpha,
-//                                                hipsparseConstSpMatDescr_t matA,
-//                                                hipsparseConstSpMatDescr_t matB,
-//                                                const void*                beta,
-//                                                hipsparseSpMatDescr_t      matC,
-//                                                hipDataType                computeType,
-//                                                hipsparseSpGEMMAlg_t       alg,
-//                                                hipsparseSpGEMMDescr_t     spgemmDescr)
-// {
-//     if(handle == nullptr || alpha == nullptr || beta == nullptr || spgemmDescr == nullptr)
-//     {
-//         return HIPSPARSE_STATUS_INVALID_VALUE;
-//     }
-//     hipsparsePointerMode_t mode;
-//     RETURN_IF_HIPSPARSE_ERROR(hipsparseGetPointerMode(handle, &mode));
-
-//     const void* alpha_ptr = hipsparse::spgemm_get_ptr(mode, computeType, alpha);
-//     const void* beta_ptr  = hipsparse::spgemm_get_ptr(mode, computeType, beta);
-
-//     return hipsparse::rocSPARSEStatusToHIPStatus(
-//         rocsparse_spgemm((rocsparse_handle)handle,
-//                          hipsparse::hipOperationToHCCOperation(opA),
-//                          hipsparse::hipOperationToHCCOperation(opB),
-//                          alpha_ptr,
-//                          (rocsparse_const_spmat_descr)matA,
-//                          (rocsparse_const_spmat_descr)matB,
-//                          beta_ptr,
-//                          (rocsparse_spmat_descr)matC,
-//                          (rocsparse_spmat_descr)matC,
-//                          hipsparse::hipDataTypeToHCCDataType(computeType),
-//                          hipsparse::hipSpGEMMAlgToHCCSpGEMMAlg(alg),
-//                          rocsparse_spgemm_stage_numeric,
-//                          &spgemmDescr->bufferSize,
-//                          spgemmDescr->externalBuffer));
-// }
-
-// hipsparseStatus_t hipsparseSpGEMMreuse_copy(hipsparseHandle_t          handle,
-//                                             hipsparseOperation_t       opA,
-//                                             hipsparseOperation_t       opB,
-//                                             hipsparseConstSpMatDescr_t matA,
-//                                             hipsparseConstSpMatDescr_t matB,
-//                                             hipsparseSpMatDescr_t      matC,
-//                                             hipsparseSpGEMMAlg_t       alg,
-//                                             hipsparseSpGEMMDescr_t     spgemmDescr,
-//                                             size_t*                    bufferSize5,
-//                                             void*                      externalBuffer5)
-// {
-//     //
-//     // This routine performs the symbolic calculation..
-//     //
-//     if(handle == nullptr)
-//     {
-//         return HIPSPARSE_STATUS_INVALID_VALUE;
-//     }
-//     if(matA == nullptr || matB == nullptr || matC == nullptr)
-//     {
-//         return HIPSPARSE_STATUS_INVALID_VALUE;
-//     }
-
-//     if(bufferSize5 == nullptr)
-//     {
-//         return HIPSPARSE_STATUS_INVALID_VALUE;
-//     }
-
-//     if(spgemmDescr == nullptr)
-//     {
-//         return HIPSPARSE_STATUS_INVALID_VALUE;
-//     }
-
-//     if(externalBuffer5 == nullptr)
-//     {
-//         *bufferSize5 = 4;
-//         return HIPSPARSE_STATUS_SUCCESS;
-//     }
-
-//     //
-//     // On symbolic parts, it only checks if the pointers are null
-//     // But being null or not is important to drive the algorithm.
-//     // Then, trick:
-//     //
-//     char        alpha[128]{}, beta[128]{};
-//     const void* alpha_ptr = (const void*)&alpha;
-//     const void* beta_ptr  = (const void*)&beta;
-
-//     //
-//     // Moreover computeType is not important.
-//     //
-//     rocsparse_datatype tmp_data_type;
-
-//     //
-//     //
-//     //
-//     {
-//         int64_t              tmp_rows;
-//         int64_t              tmp_cols;
-//         int64_t              tmp_nnz;
-//         void*                tmp_csr_row_ptr;
-//         void*                tmp_csr_col_ind;
-//         void*                tmp_csr_val;
-//         rocsparse_indextype  tmp_row_ptr_type;
-//         rocsparse_indextype  tmp_col_ind_type;
-//         rocsparse_index_base tmp_idx_base;
-
-//         RETURN_IF_ROCSPARSE_ERROR(rocsparse_csr_get((rocsparse_spmat_descr)matC,
-//                                                     &tmp_rows,
-//                                                     &tmp_cols,
-//                                                     &tmp_nnz,
-//                                                     &tmp_csr_row_ptr,
-//                                                     &tmp_csr_col_ind,
-//                                                     &tmp_csr_val,
-//                                                     &tmp_row_ptr_type,
-//                                                     &tmp_col_ind_type,
-//                                                     &tmp_idx_base,
-//                                                     &tmp_data_type));
-//     }
-
-//     RETURN_IF_ROCSPARSE_ERROR(rocsparse_spgemm((rocsparse_handle)handle,
-//                                                hipsparse::hipOperationToHCCOperation(opA),
-//                                                hipsparse::hipOperationToHCCOperation(opB),
-//                                                alpha_ptr,
-//                                                (rocsparse_const_spmat_descr)matA,
-//                                                (rocsparse_const_spmat_descr)matB,
-//                                                beta_ptr,
-//                                                (rocsparse_spmat_descr)matC,
-//                                                (rocsparse_spmat_descr)matC,
-//                                                tmp_data_type,
-//                                                hipsparse::hipSpGEMMAlgToHCCSpGEMMAlg(alg),
-//                                                rocsparse_spgemm_stage_symbolic,
-//                                                &spgemmDescr->bufferSize,
-//                                                spgemmDescr->externalBuffer));
-//     return HIPSPARSE_STATUS_SUCCESS;
-// }
 
 hipsparseStatus_t hipsparseSDDMM(hipsparseHandle_t          handle,
                                  hipsparseOperation_t       opA,
