@@ -15103,108 +15103,6 @@ hipsparseStatus_t hipsparseSpGEMMreuse_compute(hipsparseHandle_t          handle
         return HIPSPARSE_STATUS_INVALID_VALUE;
     }
 
-    // int64_t              A_num_rows2, A_num_cols2, A_nnz2;
-    // hipsparseIndexBase_t indexBaseA;
-    // hipsparseIndexType_t rowIndexTypeA;
-    // hipsparseIndexType_t columnIndexTypeA;
-    // hipDataType          valueTypeA;
-    // int*                 csrRowOffsetsA = nullptr;
-    // int*                 csrColIndA     = nullptr;
-    // float*               csrValuesA     = nullptr;
-    // RETURN_IF_HIPSPARSE_ERROR(hipsparseConstCsrGet(matA,
-    //                                                &A_num_rows2,
-    //                                                &A_num_cols2,
-    //                                                &A_nnz2,
-    //                                                (const void**)&csrRowOffsetsA,
-    //                                                (const void**)&csrColIndA,
-    //                                                (const void**)&csrValuesA,
-    //                                                &rowIndexTypeA,
-    //                                                &columnIndexTypeA,
-    //                                                &indexBaseA,
-    //                                                &valueTypeA));
-
-    // std::vector<int>   hcsrRowOffsetsA(A_num_rows2 + 1, 0);
-    // std::vector<int>   hcsrColIndA(A_nnz2, 0);
-    // std::vector<float> hcsrValuesA(A_nnz2, 0.0f);
-    // hipMemcpy(hcsrRowOffsetsA.data(),
-    //           csrRowOffsetsA,
-    //           sizeof(int) * (A_num_rows2 + 1),
-    //           hipMemcpyDeviceToHost);
-    // hipMemcpy(hcsrColIndA.data(), csrColIndA, sizeof(int) * A_nnz2, hipMemcpyDeviceToHost);
-    // hipMemcpy(hcsrValuesA.data(), csrValuesA, sizeof(float) * A_nnz2, hipMemcpyDeviceToHost);
-
-    // std::cout << "hcsrRowOffsetsA" << std::endl;
-    // for(size_t i = 0; i < hcsrRowOffsetsA.size(); i++)
-    // {
-    //     std::cout << hcsrRowOffsetsA[i] << " ";
-    // }
-    // std::cout << "" << std::endl;
-
-    // std::cout << "hcsrColIndA" << std::endl;
-    // for(size_t i = 0; i < hcsrColIndA.size(); i++)
-    // {
-    //     std::cout << hcsrColIndA[i] << " ";
-    // }
-    // std::cout << "" << std::endl;
-
-    // std::cout << "hcsrValuesA" << std::endl;
-    // for(size_t i = 0; i < hcsrValuesA.size(); i++)
-    // {
-    //     std::cout << hcsrValuesA[i] << " ";
-    // }
-    // std::cout << "" << std::endl;
-
-    // int64_t              B_num_rows2, B_num_cols2, B_nnz2;
-    // hipsparseIndexBase_t indexBaseB;
-    // hipsparseIndexType_t rowIndexTypeB;
-    // hipsparseIndexType_t columnIndexTypeB;
-    // hipDataType          valueTypeB;
-    // int*                 csrRowOffsetsB = nullptr;
-    // int*                 csrColIndB     = nullptr;
-    // float*               csrValuesB     = nullptr;
-    // RETURN_IF_HIPSPARSE_ERROR(hipsparseConstCsrGet(matB,
-    //                                                &B_num_rows2,
-    //                                                &B_num_cols2,
-    //                                                &B_nnz2,
-    //                                                (const void**)&csrRowOffsetsB,
-    //                                                (const void**)&csrColIndB,
-    //                                                (const void**)&csrValuesB,
-    //                                                &rowIndexTypeB,
-    //                                                &columnIndexTypeB,
-    //                                                &indexBaseB,
-    //                                                &valueTypeB));
-
-    // std::vector<int>   hcsrRowOffsetsB(B_num_rows2 + 1, 0);
-    // std::vector<int>   hcsrColIndB(B_nnz2, 0);
-    // std::vector<float> hcsrValuesB(B_nnz2, 0.0f);
-    // hipMemcpy(hcsrRowOffsetsB.data(),
-    //           csrRowOffsetsB,
-    //           sizeof(int) * (B_num_rows2 + 1),
-    //           hipMemcpyDeviceToHost);
-    // hipMemcpy(hcsrColIndB.data(), csrColIndB, sizeof(int) * B_nnz2, hipMemcpyDeviceToHost);
-    // hipMemcpy(hcsrValuesB.data(), csrValuesB, sizeof(float) * B_nnz2, hipMemcpyDeviceToHost);
-
-    // std::cout << "hcsrRowOffsetsB" << std::endl;
-    // for(size_t i = 0; i < hcsrRowOffsetsB.size(); i++)
-    // {
-    //     std::cout << hcsrRowOffsetsB[i] << " ";
-    // }
-    // std::cout << "" << std::endl;
-
-    // std::cout << "hcsrColIndB" << std::endl;
-    // for(size_t i = 0; i < hcsrColIndB.size(); i++)
-    // {
-    //     std::cout << hcsrColIndB[i] << " ";
-    // }
-    // std::cout << "" << std::endl;
-
-    // std::cout << "hcsrValuesB" << std::endl;
-    // for(size_t i = 0; i < hcsrValuesB.size(); i++)
-    // {
-    //     std::cout << hcsrValuesB[i] << " ";
-    // }
-    // std::cout << "" << std::endl;
-
     // Get data stored in C matrix
     int64_t              rowsC, colsC, nnzC;
     void*                csrRowOffsetsC;
@@ -15225,37 +15123,6 @@ hipsparseStatus_t hipsparseSpGEMMreuse_compute(hipsparseHandle_t          handle
                                               &csrColIndTypeC,
                                               &idxBaseC,
                                               &csrValueTypeC));
-
-    // std::vector<int>   hcsrRowOffsetsC(rowsC + 1, 0);
-    // std::vector<int>   hcsrColIndC(nnzC, 0);
-    // std::vector<float> hcsrValuesC(nnzC, 0.0f);
-    // hipMemcpy(hcsrRowOffsetsC.data(),
-    //           csrRowOffsetsC,
-    //           sizeof(int) * (rowsC + 1),
-    //           hipMemcpyDeviceToHost);
-    // hipMemcpy(hcsrColIndC.data(), csrColIndC, sizeof(int) * nnzC, hipMemcpyDeviceToHost);
-    // hipMemcpy(hcsrValuesC.data(), csrValuesC, sizeof(float) * nnzC, hipMemcpyDeviceToHost);
-
-    // std::cout << "hcsrRowOffsetsC" << std::endl;
-    // for(size_t i = 0; i < hcsrRowOffsetsC.size(); i++)
-    // {
-    //     std::cout << hcsrRowOffsetsC[i] << " ";
-    // }
-    // std::cout << "" << std::endl;
-
-    // std::cout << "hcsrColIndC" << std::endl;
-    // for(size_t i = 0; i < hcsrColIndC.size(); i++)
-    // {
-    //     std::cout << hcsrColIndC[i] << " ";
-    // }
-    // std::cout << "" << std::endl;
-
-    // std::cout << "hcsrValuesC" << std::endl;
-    // for(size_t i = 0; i < hcsrValuesC.size(); i++)
-    // {
-    //     std::cout << hcsrValuesC[i] << " ";
-    // }
-    // std::cout << "" << std::endl;
 
     size_t csrRowOffsetsTypeSizeC;
     size_t csrColIndTypeSizeC;
@@ -15463,25 +15330,6 @@ hipsparseStatus_t hipsparseSpGEMMreuse_copy(hipsparseHandle_t          handle,
 
         hipStream_t stream;
         RETURN_IF_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
-
-        // std::vector<int> hcsr_row_ptr(rowsC + 1, 0);
-        // std::vector<int> hcsr_col_ind(nnzC, 0);
-        // RETURN_IF_HIP_ERROR(hipMemcpy(hcsr_row_ptr.data(), spgemmDescr->externalBuffer4, sizeof(int) * (rowsC + 1), hipMemcpyDeviceToHost));
-        // RETURN_IF_HIP_ERROR(hipMemcpy(hcsr_col_ind.data(), spgemmDescr->externalBuffer3, sizeof(int) * nnzC, hipMemcpyDeviceToHost));
-
-        // std::cout << "hipsparseSpGEMMreuse_copy hcsr_row_ptr" << std::endl;
-        // for(size_t i = 0; i < hcsr_row_ptr.size(); i++)
-        // {
-        //     std::cout << hcsr_row_ptr[i] << " ";
-        // }
-        // std::cout << "" << std::endl;
-
-        // std::cout << "hipsparseSpGEMMreuse_copy hcsr_col_ind" << std::endl;
-        // for(size_t i = 0; i < hcsr_col_ind.size(); i++)
-        // {
-        //     std::cout << hcsr_col_ind[i] << " ";
-        // }
-        // std::cout << "" << std::endl;
 
         RETURN_IF_HIP_ERROR(hipMemcpyAsync(csrRowOffsetsC,
                                            spgemmDescr->externalBuffer4,
