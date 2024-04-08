@@ -30,7 +30,6 @@
 #include <stdlib.h>
 
 #include <iostream>
-#include <vector>
 
 #define TO_STR2(x) #x
 #define TO_STR(x) TO_STR2(x)
