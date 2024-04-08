@@ -14499,67 +14499,67 @@ namespace hipsparse
 
         return cast_ptr;
     }
-}
 
-static hipsparseStatus_t getIndexTypeSize(hipsparseIndexType_t indexType, size_t& size)
-{
-    switch(indexType)
+    static hipsparseStatus_t getIndexTypeSize(hipsparseIndexType_t indexType, size_t& size)
     {
-    case HIPSPARSE_INDEX_16U:
-    {
-        size = sizeof(uint16_t);
-        return HIPSPARSE_STATUS_SUCCESS;
-    }
-    case HIPSPARSE_INDEX_32I:
-    {
-        size = sizeof(int32_t);
-        return HIPSPARSE_STATUS_SUCCESS;
-    }
-    case HIPSPARSE_INDEX_64I:
-    {
-        size = sizeof(int64_t);
-        return HIPSPARSE_STATUS_SUCCESS;
-    }
-    }
+        switch(indexType)
+        {
+        case HIPSPARSE_INDEX_16U:
+        {
+            size = sizeof(uint16_t);
+            return HIPSPARSE_STATUS_SUCCESS;
+        }
+        case HIPSPARSE_INDEX_32I:
+        {
+            size = sizeof(int32_t);
+            return HIPSPARSE_STATUS_SUCCESS;
+        }
+        case HIPSPARSE_INDEX_64I:
+        {
+            size = sizeof(int64_t);
+            return HIPSPARSE_STATUS_SUCCESS;
+        }
+        }
 
-    size = 0;
-    return HIPSPARSE_STATUS_INVALID_VALUE;
-}
-
-static hipsparseStatus_t getDataTypeSize(hipDataType dataType, size_t& size)
-{
-    switch(dataType)
-    {
-    case HIP_R_32F:
-    {
-        size = sizeof(float);
-        return HIPSPARSE_STATUS_SUCCESS;
-    }
-    case HIP_R_64F:
-    {
-        size = sizeof(double);
-        return HIPSPARSE_STATUS_SUCCESS;
-    }
-    case HIP_C_32F:
-    {
-        size = sizeof(hipComplex);
-        return HIPSPARSE_STATUS_SUCCESS;
-    }
-    case HIP_C_64F:
-    {
-        size = sizeof(hipDoubleComplex);
-        return HIPSPARSE_STATUS_SUCCESS;
-    }
-    case HIP_R_16F:
-    case HIP_C_16F:
-    {
         size = 0;
         return HIPSPARSE_STATUS_INVALID_VALUE;
     }
-    }
 
-    size = 0;
-    return HIPSPARSE_STATUS_INVALID_VALUE;
+    static hipsparseStatus_t getDataTypeSize(hipDataType dataType, size_t& size)
+    {
+        switch(dataType)
+        {
+        case HIP_R_32F:
+        {
+            size = sizeof(float);
+            return HIPSPARSE_STATUS_SUCCESS;
+        }
+        case HIP_R_64F:
+        {
+            size = sizeof(double);
+            return HIPSPARSE_STATUS_SUCCESS;
+        }
+        case HIP_C_32F:
+        {
+            size = sizeof(hipComplex);
+            return HIPSPARSE_STATUS_SUCCESS;
+        }
+        case HIP_C_64F:
+        {
+            size = sizeof(hipDoubleComplex);
+            return HIPSPARSE_STATUS_SUCCESS;
+        }
+        case HIP_R_16F:
+        case HIP_C_16F:
+        {
+            size = 0;
+            return HIPSPARSE_STATUS_INVALID_VALUE;
+        }
+        }
+
+        size = 0;
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
 }
 
 hipsparseStatus_t hipsparseSpGEMM_workEstimation(hipsparseHandle_t          handle,
@@ -14605,7 +14605,7 @@ hipsparseStatus_t hipsparseSpGEMM_workEstimation(hipsparseHandle_t          hand
                                               &csrValueTypeC));
 
     size_t csrRowOffsetsTypeSizeC;
-    RETURN_IF_HIPSPARSE_ERROR(getIndexTypeSize(csrRowOffsetsTypeC, csrRowOffsetsTypeSizeC));
+    RETURN_IF_HIPSPARSE_ERROR(hipsparse::getIndexTypeSize(csrRowOffsetsTypeC, csrRowOffsetsTypeSizeC));
 
     if(externalBuffer1 == nullptr)
     {
@@ -14707,12 +14707,12 @@ hipsparseStatus_t hipsparseSpGEMM_compute(hipsparseHandle_t          handle,
     size_t csrRowOffsetsTypeSizeC;
     size_t csrColIndTypeSizeC;
     size_t csrValueTypeSizeC;
-    RETURN_IF_HIPSPARSE_ERROR(getIndexTypeSize(csrRowOffsetsTypeC, csrRowOffsetsTypeSizeC));
-    RETURN_IF_HIPSPARSE_ERROR(getIndexTypeSize(csrColIndTypeC, csrColIndTypeSizeC));
-    RETURN_IF_HIPSPARSE_ERROR(getDataTypeSize(csrValueTypeC, csrValueTypeSizeC));
+    RETURN_IF_HIPSPARSE_ERROR(hipsparse::getIndexTypeSize(csrRowOffsetsTypeC, csrRowOffsetsTypeSizeC));
+    RETURN_IF_HIPSPARSE_ERROR(hipsparse::getIndexTypeSize(csrColIndTypeC, csrColIndTypeSizeC));
+    RETURN_IF_HIPSPARSE_ERROR(hipsparse::getDataTypeSize(csrValueTypeC, csrValueTypeSizeC));
 
     size_t computeTypeSize;
-    RETURN_IF_HIPSPARSE_ERROR(getDataTypeSize(computeType, computeTypeSize));
+    RETURN_IF_HIPSPARSE_ERROR(hipsparse::getDataTypeSize(computeType, computeTypeSize));
 
     if(externalBuffer2 == nullptr)
     {
@@ -14814,9 +14814,9 @@ hipsparseStatus_t hipsparseSpGEMM_copy(hipsparseHandle_t          handle,
     size_t csrRowOffsetsTypeSizeC;
     size_t csrColIndTypeSizeC;
     size_t csrValueTypeSizeC;
-    RETURN_IF_HIPSPARSE_ERROR(getIndexTypeSize(csrRowOffsetsTypeC, csrRowOffsetsTypeSizeC));
-    RETURN_IF_HIPSPARSE_ERROR(getIndexTypeSize(csrColIndTypeC, csrColIndTypeSizeC));
-    RETURN_IF_HIPSPARSE_ERROR(getDataTypeSize(csrValueTypeC, csrValueTypeSizeC));
+    RETURN_IF_HIPSPARSE_ERROR(hipsparse::getIndexTypeSize(csrRowOffsetsTypeC, csrRowOffsetsTypeSizeC));
+    RETURN_IF_HIPSPARSE_ERROR(hipsparse::getIndexTypeSize(csrColIndTypeC, csrColIndTypeSizeC));
+    RETURN_IF_HIPSPARSE_ERROR(hipsparse::getDataTypeSize(csrValueTypeC, csrValueTypeSizeC));
 
     size_t byteOffset2 = 0;
 
@@ -14881,9 +14881,6 @@ hipsparseStatus_t hipsparseSpGEMM_copy(hipsparseHandle_t          handle,
             one = device_one;
         }
     }
-
-    rocsparse_status rocsparse_set_identity_permutation(
-        rocsparse_handle handle, int64_t n, void* p, rocsparse_indextype indextype);
 
     if(csrColIndTypeC == HIPSPARSE_INDEX_32I)
     {
