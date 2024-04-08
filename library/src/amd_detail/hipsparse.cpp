@@ -14561,7 +14561,8 @@ hipsparseStatus_t hipsparseSpGEMM_workEstimation(hipsparseHandle_t          hand
                                               &csrValueTypeC));
 
     size_t csrRowOffsetsTypeSizeC;
-    RETURN_IF_HIPSPARSE_ERROR(hipsparse::getIndexTypeSize(csrRowOffsetsTypeC, csrRowOffsetsTypeSizeC));
+    RETURN_IF_HIPSPARSE_ERROR(
+        hipsparse::getIndexTypeSize(csrRowOffsetsTypeC, csrRowOffsetsTypeSizeC));
 
     if(externalBuffer1 == nullptr)
     {
@@ -14663,7 +14664,8 @@ hipsparseStatus_t hipsparseSpGEMM_compute(hipsparseHandle_t          handle,
     size_t csrRowOffsetsTypeSizeC;
     size_t csrColIndTypeSizeC;
     size_t csrValueTypeSizeC;
-    RETURN_IF_HIPSPARSE_ERROR(hipsparse::getIndexTypeSize(csrRowOffsetsTypeC, csrRowOffsetsTypeSizeC));
+    RETURN_IF_HIPSPARSE_ERROR(
+        hipsparse::getIndexTypeSize(csrRowOffsetsTypeC, csrRowOffsetsTypeSizeC));
     RETURN_IF_HIPSPARSE_ERROR(hipsparse::getIndexTypeSize(csrColIndTypeC, csrColIndTypeSizeC));
     RETURN_IF_HIPSPARSE_ERROR(hipsparse::getDataTypeSize(csrValueTypeC, csrValueTypeSizeC));
 
@@ -14770,7 +14772,8 @@ hipsparseStatus_t hipsparseSpGEMM_copy(hipsparseHandle_t          handle,
     size_t csrRowOffsetsTypeSizeC;
     size_t csrColIndTypeSizeC;
     size_t csrValueTypeSizeC;
-    RETURN_IF_HIPSPARSE_ERROR(hipsparse::getIndexTypeSize(csrRowOffsetsTypeC, csrRowOffsetsTypeSizeC));
+    RETURN_IF_HIPSPARSE_ERROR(
+        hipsparse::getIndexTypeSize(csrRowOffsetsTypeC, csrRowOffsetsTypeSizeC));
     RETURN_IF_HIPSPARSE_ERROR(hipsparse::getIndexTypeSize(csrColIndTypeC, csrColIndTypeSizeC));
     RETURN_IF_HIPSPARSE_ERROR(hipsparse::getDataTypeSize(csrValueTypeC, csrValueTypeSizeC));
 
@@ -15016,7 +15019,8 @@ hipsparseStatus_t hipsparseSpGEMMreuse_nnz(hipsparseHandle_t          handle,
     size_t csrRowOffsetsTypeSizeC;
     size_t csrColIndTypeSizeC;
     size_t csrValueTypeSizeC;
-    RETURN_IF_HIPSPARSE_ERROR(hipsparse::getIndexTypeSize(csrRowOffsetsTypeC, csrRowOffsetsTypeSizeC));
+    RETURN_IF_HIPSPARSE_ERROR(
+        hipsparse::getIndexTypeSize(csrRowOffsetsTypeC, csrRowOffsetsTypeSizeC));
     RETURN_IF_HIPSPARSE_ERROR(hipsparse::getIndexTypeSize(csrColIndTypeC, csrColIndTypeSizeC));
     RETURN_IF_HIPSPARSE_ERROR(hipsparse::getDataTypeSize(csrValueTypeC, csrValueTypeSizeC));
 
@@ -15040,7 +15044,8 @@ hipsparseStatus_t hipsparseSpGEMMreuse_nnz(hipsparseHandle_t          handle,
 
         spgemmDescr->externalBuffer2 = externalBuffer2;
         spgemmDescr->externalBuffer3 = externalBuffer3; // stores C column indices and values
-        spgemmDescr->externalBuffer4 = externalBuffer4; // stores C row pointers array + spgemm buffer
+        spgemmDescr->externalBuffer4
+            = externalBuffer4; // stores C row pointers array + spgemm buffer
 
         size_t byteOffset3 = ((csrColIndTypeSizeC * nnzC - 1) / 256 + 1) * 256;
         size_t byteOffset4 = ((csrRowOffsetsTypeSizeC * (rowsC + 1) - 1) / 256 + 1) * 256;
@@ -15255,7 +15260,8 @@ hipsparseStatus_t hipsparseSpGEMMreuse_compute(hipsparseHandle_t          handle
     size_t csrRowOffsetsTypeSizeC;
     size_t csrColIndTypeSizeC;
     size_t csrValueTypeSizeC;
-    RETURN_IF_HIPSPARSE_ERROR(hipsparse::getIndexTypeSize(csrRowOffsetsTypeC, csrRowOffsetsTypeSizeC));
+    RETURN_IF_HIPSPARSE_ERROR(
+        hipsparse::getIndexTypeSize(csrRowOffsetsTypeC, csrRowOffsetsTypeSizeC));
     RETURN_IF_HIPSPARSE_ERROR(hipsparse::getIndexTypeSize(csrColIndTypeC, csrColIndTypeSizeC));
     RETURN_IF_HIPSPARSE_ERROR(hipsparse::getDataTypeSize(csrValueTypeC, csrValueTypeSizeC));
 
@@ -15431,7 +15437,8 @@ hipsparseStatus_t hipsparseSpGEMMreuse_copy(hipsparseHandle_t          handle,
     size_t csrRowOffsetsTypeSizeC;
     size_t csrColIndTypeSizeC;
     size_t csrValueTypeSizeC;
-    RETURN_IF_HIPSPARSE_ERROR(hipsparse::getIndexTypeSize(csrRowOffsetsTypeC, csrRowOffsetsTypeSizeC));
+    RETURN_IF_HIPSPARSE_ERROR(
+        hipsparse::getIndexTypeSize(csrRowOffsetsTypeC, csrRowOffsetsTypeSizeC));
     RETURN_IF_HIPSPARSE_ERROR(hipsparse::getIndexTypeSize(csrColIndTypeC, csrColIndTypeSizeC));
     RETURN_IF_HIPSPARSE_ERROR(hipsparse::getDataTypeSize(csrValueTypeC, csrValueTypeSizeC));
 
