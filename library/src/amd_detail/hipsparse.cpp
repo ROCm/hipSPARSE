@@ -14426,8 +14426,10 @@ struct hipsparseSpGEMMDescr
     size_t bufferSize{};
     void*  externalBuffer{};
 
-    void* externalBuffer1{};
-    void* externalBuffer2{};
+    size_t bufferSize1{};
+    size_t bufferSize2{};
+    void*  externalBuffer1{};
+    void*  externalBuffer2{};
 };
 
 hipsparseStatus_t hipsparseSpGEMM_createDescr(hipsparseSpGEMMDescr_t* descr)
@@ -14625,6 +14627,8 @@ hipsparseStatus_t hipsparseSpGEMM_workEstimation(hipsparseHandle_t          hand
 
         // Add space for storing matC row ptr array
         *bufferSize1 += ((csrRowOffsetsTypeSizeC * (rowsC + 1) - 1) / 256 + 1) * 256;
+
+        spgemmDescr->bufferSize1 = *bufferSize1;
     }
     else
     {
@@ -14638,6 +14642,7 @@ hipsparseStatus_t hipsparseSpGEMM_workEstimation(hipsparseHandle_t          hand
             hipsparseCsrSetPointers(matC, csrRowOffsetsCFromBuffer1, csrColIndC, csrValuesC));
 
         // Compute number of non-zeros in C matrix
+        size_t bufferSize = (spgemmDescr->bufferSize1 - byteOffset1);
         RETURN_IF_ROCSPARSE_ERROR(
             rocsparse_spgemm((rocsparse_handle)handle,
                              hipsparse::hipOperationToHCCOperation(opA),
@@ -14651,7 +14656,7 @@ hipsparseStatus_t hipsparseSpGEMM_workEstimation(hipsparseHandle_t          hand
                              hipsparse::hipDataTypeToHCCDataType(computeType),
                              hipsparse::hipSpGEMMAlgToHCCSpGEMMAlg(alg),
                              rocsparse_spgemm_stage_nnz,
-                             bufferSize1,
+                             &bufferSize,
                              (static_cast<char*>(spgemmDescr->externalBuffer1) + byteOffset1)));
     }
 
@@ -14711,20 +14716,7 @@ hipsparseStatus_t hipsparseSpGEMM_compute(hipsparseHandle_t          handle,
 
     if(externalBuffer2 == nullptr)
     {
-        RETURN_IF_ROCSPARSE_ERROR(rocsparse_spgemm((rocsparse_handle)handle,
-                                                   hipsparse::hipOperationToHCCOperation(opA),
-                                                   hipsparse::hipOperationToHCCOperation(opB),
-                                                   alpha,
-                                                   (rocsparse_const_spmat_descr)matA,
-                                                   (rocsparse_const_spmat_descr)matB,
-                                                   nullptr,
-                                                   (rocsparse_const_spmat_descr)matC,
-                                                   (rocsparse_spmat_descr)matC,
-                                                   hipsparse::hipDataTypeToHCCDataType(computeType),
-                                                   hipsparse::hipSpGEMMAlgToHCCSpGEMMAlg(alg),
-                                                   rocsparse_spgemm_stage_buffer_size,
-                                                   bufferSize2,
-                                                   nullptr));
+        *bufferSize2 = 0;
 
         // Need to store temporary space for C matrix column indices and values arrays
         *bufferSize2 += ((csrColIndTypeSizeC * nnzC - 1) / 256 + 1) * 256;
@@ -14735,6 +14727,8 @@ hipsparseStatus_t hipsparseSpGEMM_compute(hipsparseHandle_t          handle,
 
         // Need to store temporary space for host/device 1 value used in hipsparseSpGEMM_copy Axpby
         *bufferSize2 += ((computeTypeSize - 1) / 256 + 1) * 256;
+
+        spgemmDescr->bufferSize2 = *bufferSize2;
     }
     else
     {
@@ -14751,15 +14745,13 @@ hipsparseStatus_t hipsparseSpGEMM_compute(hipsparseHandle_t          handle,
 
         void* csrValuesCFromBuffer2
             = (static_cast<char*>(spgemmDescr->externalBuffer2) + byteOffset2);
-        byteOffset2 += ((csrValueTypeSizeC * nnzC - 1) / 256 + 1) * 256;
-        byteOffset2 += ((csrColIndTypeSizeC * nnzC - 1) / 256 + 1) * 256;
-        byteOffset2 += ((computeTypeSize - 1) / 256 + 1) * 256;
 
         // Set pointers (which now point to the external buffers) so that we can perform the computation and have the results
         // temporarily stored in the external buffers. The data will then be copied to the final output arrays in hipsparseSpGEMM_copy.
         RETURN_IF_HIPSPARSE_ERROR(hipsparseCsrSetPointers(
             matC, csrRowOffsetsCFromBuffer1, csrColIndCFromBuffer2, csrValuesCFromBuffer2));
 
+        size_t bufferSize = (spgemmDescr->bufferSize1 - byteOffset1);
         RETURN_IF_ROCSPARSE_ERROR(
             rocsparse_spgemm((rocsparse_handle)handle,
                              hipsparse::hipOperationToHCCOperation(opA),
@@ -14773,8 +14765,8 @@ hipsparseStatus_t hipsparseSpGEMM_compute(hipsparseHandle_t          handle,
                              hipsparse::hipDataTypeToHCCDataType(computeType),
                              hipsparse::hipSpGEMMAlgToHCCSpGEMMAlg(alg),
                              rocsparse_spgemm_stage_compute,
-                             bufferSize2,
-                             (static_cast<char*>(spgemmDescr->externalBuffer2) + byteOffset2)));
+                             &bufferSize,
+                             (static_cast<char*>(spgemmDescr->externalBuffer1) + byteOffset1)));
     }
 
     return HIPSPARSE_STATUS_SUCCESS;
