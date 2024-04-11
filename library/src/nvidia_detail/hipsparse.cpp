@@ -13947,8 +13947,7 @@ hipsparseStatus_t hipsparseSpSM_solve(hipsparseHandle_t           handle,
                                       const hipsparseDnMatDescr_t matC,
                                       hipDataType                 computeType,
                                       hipsparseSpSMAlg_t          alg,
-                                      hipsparseSpSMDescr_t        spsmDescr,
-                                      void*                       externalBuffer)
+                                      hipsparseSpSMDescr_t        spsmDescr)
 {
     return hipsparse::hipCUSPARSEStatusToHIPStatus(
         cusparseSpSM_solve((cusparseHandle_t)handle,
@@ -13972,8 +13971,7 @@ hipsparseStatus_t hipsparseSpSM_solve(hipsparseHandle_t handle,
                                       const hipsparseDnMatDescr_t matC,
                                       hipDataType computeType,
                                       hipsparseSpSMAlg_t alg,
-                                      hipsparseSpSMDescr_t spsmDescr,
-                                      void* externalBuffer)
+                                      hipsparseSpSMDescr_t spsmDescr)
 {
     return hipsparse::hipCUSPARSEStatusToHIPStatus(
         cusparseSpSM_solve((cusparseHandle_t)handle,
