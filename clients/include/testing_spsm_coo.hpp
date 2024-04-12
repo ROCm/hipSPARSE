@@ -154,7 +154,6 @@ void testing_spsm_coo_bad_arg(void)
             handle, transA, transB, &alpha, A, B, C, dataType, alg, descr, nullptr),
         "Error: dbuf is nullptr");
 
-
     // SpSM solve
     verify_hipsparse_status_invalid_handle(
         hipsparseSpSM_solve(nullptr, transA, transB, &alpha, A, B, C, dataType, alg, descr, dbuf));
