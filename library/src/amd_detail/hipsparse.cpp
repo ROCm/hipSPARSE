@@ -15610,7 +15610,7 @@ hipsparseStatus_t hipsparseSpSM_analysis(hipsparseHandle_t           handle,
     }
 
     RETURN_IF_ROCSPARSE_ERROR(rocsparse_spsm((rocsparse_handle)handle,
-                        hipsparse::hipOperationToHCCOperation(opA),
+                         hipsparse::hipOperationToHCCOperation(opA),
                         hipsparse::hipOperationToHCCOperation(opB),
                         alpha,
                         (rocsparse_const_spmat_descr)matA,
