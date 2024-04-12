@@ -156,24 +156,24 @@ void testing_spsm_coo_bad_arg(void)
 
     // SpSM solve
     verify_hipsparse_status_invalid_handle(
-        hipsparseSpSM_solve(nullptr, transA, transB, &alpha, A, B, C, dataType, alg, descr));
+        hipsparseSpSM_solve(nullptr, transA, transB, &alpha, A, B, C, dataType, alg, descr, dbuf));
     verify_hipsparse_status_invalid_pointer(
-        hipsparseSpSM_solve(handle, transA, transB, nullptr, A, B, C, dataType, alg, descr),
+        hipsparseSpSM_solve(handle, transA, transB, nullptr, A, B, C, dataType, alg, descr, dbuf),
         "Error: alpha is nullptr");
     verify_hipsparse_status_invalid_pointer(
         hipsparseSpSM_solve(
-            handle, transA, transB, &alpha, nullptr, B, C, dataType, alg, descr),
+            handle, transA, transB, &alpha, nullptr, B, C, dataType, alg, descr, dbuf),
         "Error: A is nullptr");
     verify_hipsparse_status_invalid_pointer(
         hipsparseSpSM_solve(
-            handle, transA, transB, &alpha, A, nullptr, C, dataType, alg, descr),
+            handle, transA, transB, &alpha, A, nullptr, C, dataType, alg, descr, dbuf),
         "Error: B is nullptr");
     verify_hipsparse_status_invalid_pointer(
         hipsparseSpSM_solve(
-            handle, transA, transB, &alpha, A, B, nullptr, dataType, alg, descr),
+            handle, transA, transB, &alpha, A, B, nullptr, dataType, alg, descr, dbuf),
         "Error: C is nullptr");
     verify_hipsparse_status_invalid_pointer(
-        hipsparseSpSM_solve(handle, transA, transB, &alpha, A, B, C, dataType, alg, nullptr),
+        hipsparseSpSM_solve(handle, transA, transB, &alpha, A, B, C, dataType, alg, nullptr, dbuf),
         "Error: descr is nullptr");
 
     // Destruct
@@ -328,12 +328,12 @@ hipsparseStatus_t testing_spsm_coo(void)
     // HIPSPARSE pointer mode host
     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
     CHECK_HIPSPARSE_ERROR(
-        hipsparseSpSM_solve(handle, transA, transB, &h_alpha, A, B, C1, typeT, alg, descr));
+        hipsparseSpSM_solve(handle, transA, transB, &h_alpha, A, B, C1, typeT, alg, descr, buffer));
 
     // HIPSPARSE pointer mode device
     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
     CHECK_HIPSPARSE_ERROR(
-        hipsparseSpSM_solve(handle, transA, transB, d_alpha, A, B, C2, typeT, alg, descr));
+        hipsparseSpSM_solve(handle, transA, transB, d_alpha, A, B, C2, typeT, alg, descr, buffer));
 
     // copy output from device to CPU
     CHECK_HIP_ERROR(hipMemcpy(hC_1.data(), dC_1, sizeof(T) * m * k, hipMemcpyDeviceToHost));

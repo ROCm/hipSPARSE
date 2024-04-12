@@ -15636,7 +15636,8 @@ hipsparseStatus_t hipsparseSpSM_solve(hipsparseHandle_t           handle,
                                       const hipsparseDnMatDescr_t matC,
                                       hipDataType                 computeType,
                                       hipsparseSpSMAlg_t          alg,
-                                      hipsparseSpSMDescr_t        spsmDescr)
+                                      hipsparseSpSMDescr_t        spsmDescr,
+                                      void*                       externalBuffer)
 {
     if(spsmDescr == nullptr)
     {
