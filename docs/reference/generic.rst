@@ -117,6 +117,26 @@ hipsparseSpGEMM_copy()
 
 .. doxygenfunction:: hipsparseSpGEMM_copy
 
+hipsparseSpGEMMreuse_workEstimation()
+=====================================
+
+.. doxygenfunction:: hipsparseSpGEMMreuse_workEstimation
+
+hipsparseSpGEMMreuse_nnz()
+==========================
+
+.. doxygenfunction:: hipsparseSpGEMMreuse_nnz
+
+hipsparseSpGEMMreuse_copy()
+===========================
+
+.. doxygenfunction:: hipsparseSpGEMMreuse_copy
+
+hipsparseSpGEMMreuse_compute()
+==============================
+
+.. doxygenfunction:: hipsparseSpGEMMreuse_compute
+
 hipsparseSDDMM_bufferSize()
 ===========================
 

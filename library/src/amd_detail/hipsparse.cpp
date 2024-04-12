@@ -14621,6 +14621,92 @@ hipsparseStatus_t hipsparseSpGEMMreuse_nnz(hipsparseHandle_t          handle,
     return HIPSPARSE_STATUS_SUCCESS;
 }
 
+hipsparseStatus_t hipsparseSpGEMMreuse_copy(hipsparseHandle_t          handle,
+                                            hipsparseOperation_t       opA,
+                                            hipsparseOperation_t       opB,
+                                            hipsparseConstSpMatDescr_t matA,
+                                            hipsparseConstSpMatDescr_t matB,
+                                            hipsparseSpMatDescr_t      matC,
+                                            hipsparseSpGEMMAlg_t       alg,
+                                            hipsparseSpGEMMDescr_t     spgemmDescr,
+                                            size_t*                    bufferSize5,
+                                            void*                      externalBuffer5)
+{
+    if(handle == nullptr || matA == nullptr || matB == nullptr || matC == nullptr
+       || bufferSize5 == nullptr || spgemmDescr == nullptr)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
+
+    // Get data stored in C matrix
+    int64_t              rowsC, colsC, nnzC;
+    void*                csrRowOffsetsC;
+    void*                csrColIndC;
+    void*                csrValuesC;
+    hipsparseIndexType_t csrRowOffsetsTypeC;
+    hipsparseIndexType_t csrColIndTypeC;
+    hipsparseIndexBase_t idxBaseC;
+    hipDataType          csrValueTypeC;
+    RETURN_IF_HIPSPARSE_ERROR(hipsparseCsrGet(matC,
+                                              &rowsC,
+                                              &colsC,
+                                              &nnzC,
+                                              &csrRowOffsetsC,
+                                              &csrColIndC,
+                                              &csrValuesC,
+                                              &csrRowOffsetsTypeC,
+                                              &csrColIndTypeC,
+                                              &idxBaseC,
+                                              &csrValueTypeC));
+
+    size_t csrRowOffsetsTypeSizeC;
+    size_t csrColIndTypeSizeC;
+    size_t csrValueTypeSizeC;
+    RETURN_IF_HIPSPARSE_ERROR(
+        hipsparse::getIndexTypeSize(csrRowOffsetsTypeC, csrRowOffsetsTypeSizeC));
+    RETURN_IF_HIPSPARSE_ERROR(hipsparse::getIndexTypeSize(csrColIndTypeC, csrColIndTypeSizeC));
+    RETURN_IF_HIPSPARSE_ERROR(hipsparse::getDataTypeSize(csrValueTypeC, csrValueTypeSizeC));
+
+    if(externalBuffer5 == nullptr)
+    {
+        *bufferSize5 = 0;
+
+        // Need to store temporary space for values array
+        *bufferSize5 += ((csrValueTypeSizeC * nnzC - 1) / 256 + 1) * 256;
+
+        // Need to store temporary space for indices array used in hipsparseSpGEMM_copy Axpby
+        *bufferSize5 += ((csrColIndTypeSizeC * nnzC - 1) / 256 + 1) * 256;
+
+        // Need to store temporary space for host/device 1 value used in hipsparseSpGEMM_copy Axpby
+        *bufferSize5 += ((16 - 1) / 256 + 1) * 256;
+
+        spgemmDescr->bufferSize5 = *bufferSize5;
+    }
+    else
+    {
+        spgemmDescr->externalBuffer5 = externalBuffer5;
+
+        hipStream_t stream;
+        RETURN_IF_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
+
+        RETURN_IF_HIP_ERROR(hipMemcpyAsync(csrRowOffsetsC,
+                                           spgemmDescr->externalBuffer4,
+                                           csrRowOffsetsTypeSizeC * (rowsC + 1),
+                                           hipMemcpyDeviceToDevice,
+                                           stream));
+        RETURN_IF_HIP_ERROR(hipMemcpyAsync(csrColIndC,
+                                           spgemmDescr->externalBuffer3,
+                                           csrColIndTypeSizeC * nnzC,
+                                           hipMemcpyDeviceToDevice,
+                                           stream));
+
+        RETURN_IF_HIPSPARSE_ERROR(
+            hipsparseCsrSetPointers(matC, csrRowOffsetsC, csrColIndC, csrValuesC));
+    }
+
+    return HIPSPARSE_STATUS_SUCCESS;
+}
+
 hipsparseStatus_t hipsparseSpGEMMreuse_compute(hipsparseHandle_t          handle,
                                                hipsparseOperation_t       opA,
                                                hipsparseOperation_t       opB,
@@ -14657,103 +14743,6 @@ hipsparseStatus_t hipsparseSpGEMMreuse_compute(hipsparseHandle_t          handle
                                                        rocsparse_spgemm_stage_numeric,
                                                        &spgemmDescr->bufferSize,
                                                        spgemmDescr->externalBuffer));
-}
-
-hipsparseStatus_t hipsparseSpGEMMreuse_copy(hipsparseHandle_t          handle,
-                                            hipsparseOperation_t       opA,
-                                            hipsparseOperation_t       opB,
-                                            hipsparseConstSpMatDescr_t matA,
-                                            hipsparseConstSpMatDescr_t matB,
-                                            hipsparseSpMatDescr_t      matC,
-                                            hipsparseSpGEMMAlg_t       alg,
-                                            hipsparseSpGEMMDescr_t     spgemmDescr,
-                                            size_t*                    bufferSize5,
-                                            void*                      externalBuffer5)
-{
-    //
-    // This routine performs the symbolic calculation..
-    //
-    if(handle == nullptr)
-    {
-        return HIPSPARSE_STATUS_INVALID_VALUE;
-    }
-    if(matA == nullptr || matB == nullptr || matC == nullptr)
-    {
-        return HIPSPARSE_STATUS_INVALID_VALUE;
-    }
-
-    if(bufferSize5 == nullptr)
-    {
-        return HIPSPARSE_STATUS_INVALID_VALUE;
-    }
-
-    if(spgemmDescr == nullptr)
-    {
-        return HIPSPARSE_STATUS_INVALID_VALUE;
-    }
-
-    if(externalBuffer5 == nullptr)
-    {
-        *bufferSize5 = 4;
-        return HIPSPARSE_STATUS_SUCCESS;
-    }
-
-    //
-    // On symbolic parts, it only checks if the pointers are null
-    // But being null or not is important to drive the algorithm.
-    // Then, trick:
-    //
-    char        alpha[128]{}, beta[128]{};
-    const void* alpha_ptr = (const void*)&alpha;
-    const void* beta_ptr  = (const void*)&beta;
-
-    //
-    // Moreover computeType is not important.
-    //
-    rocsparse_datatype tmp_data_type;
-
-    //
-    //
-    //
-    {
-        int64_t              tmp_rows;
-        int64_t              tmp_cols;
-        int64_t              tmp_nnz;
-        void*                tmp_csr_row_ptr;
-        void*                tmp_csr_col_ind;
-        void*                tmp_csr_val;
-        rocsparse_indextype  tmp_row_ptr_type;
-        rocsparse_indextype  tmp_col_ind_type;
-        rocsparse_index_base tmp_idx_base;
-
-        RETURN_IF_ROCSPARSE_ERROR(rocsparse_csr_get((rocsparse_spmat_descr)matC,
-                                                    &tmp_rows,
-                                                    &tmp_cols,
-                                                    &tmp_nnz,
-                                                    &tmp_csr_row_ptr,
-                                                    &tmp_csr_col_ind,
-                                                    &tmp_csr_val,
-                                                    &tmp_row_ptr_type,
-                                                    &tmp_col_ind_type,
-                                                    &tmp_idx_base,
-                                                    &tmp_data_type));
-    }
-
-    RETURN_IF_ROCSPARSE_ERROR(rocsparse_spgemm((rocsparse_handle)handle,
-                                               hipOperationToHCCOperation(opA),
-                                               hipOperationToHCCOperation(opB),
-                                               alpha_ptr,
-                                               (rocsparse_const_spmat_descr)matA,
-                                               (rocsparse_const_spmat_descr)matB,
-                                               beta_ptr,
-                                               (rocsparse_spmat_descr)matC,
-                                               (rocsparse_spmat_descr)matC,
-                                               tmp_data_type,
-                                               hipSpGEMMAlgToHCCSpGEMMAlg(alg),
-                                               rocsparse_spgemm_stage_symbolic,
-                                               &spgemmDescr->bufferSize,
-                                               spgemmDescr->externalBuffer));
-    return HIPSPARSE_STATUS_SUCCESS;
 }
 
 hipsparseStatus_t hipsparseSDDMM(hipsparseHandle_t          handle,
