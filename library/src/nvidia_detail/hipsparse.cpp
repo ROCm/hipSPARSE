@@ -13973,7 +13973,7 @@ hipsparseStatus_t hipsparseSpSM_solve(hipsparseHandle_t handle,
                                       hipDataType computeType,
                                       hipsparseSpSMAlg_t alg,
                                       hipsparseSpSMDescr_t spsmDescr,
-                                      void*                      externalBuffer)
+                                      void* externalBuffer)
 {
     return hipsparse::hipCUSPARSEStatusToHIPStatus(
         cusparseSpSM_solve((cusparseHandle_t)handle,
