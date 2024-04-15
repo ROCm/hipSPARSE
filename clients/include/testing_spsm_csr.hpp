@@ -120,6 +120,10 @@ void testing_spsm_csr_bad_arg(void)
         "Error: C is nullptr");
     verify_hipsparse_status_invalid_pointer(
         hipsparseSpSM_bufferSize(
+            handle, transA, transB, &alpha, A, B, C, dataType, alg, nullptr, &bsize),
+        "Error: descr is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseSpSM_bufferSize(
             handle, transA, transB, &alpha, A, B, C, dataType, alg, descr, nullptr),
         "Error: bsize is nullptr");
 
@@ -144,6 +148,10 @@ void testing_spsm_csr_bad_arg(void)
         "Error: C is nullptr");
     verify_hipsparse_status_invalid_pointer(
         hipsparseSpSM_analysis(
+            handle, transA, transB, &alpha, A, B, C, dataType, alg, nullptr, dbuf),
+        "Error: descr is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseSpSM_analysis(
             handle, transA, transB, &alpha, A, B, C, dataType, alg, descr, nullptr),
         "Error: dbuf is nullptr");
 
@@ -165,11 +173,9 @@ void testing_spsm_csr_bad_arg(void)
         hipsparseSpSM_solve(
             handle, transA, transB, &alpha, A, B, nullptr, dataType, alg, descr, dbuf),
         "Error: C is nullptr");
-#if(!defined(CUDART_VERSION))
     verify_hipsparse_status_invalid_pointer(
-        hipsparseSpSM_solve(handle, transA, transB, &alpha, A, B, C, dataType, alg, descr, nullptr),
-        "Error: dbuf is nullptr");
-#endif
+        hipsparseSpSM_solve(handle, transA, transB, &alpha, A, B, C, dataType, alg, nullptr, dbuf),
+        "Error: descr is nullptr");
 
     // Destruct
     verify_hipsparse_status_success(hipsparseSpSM_destroyDescr(descr), "success");
