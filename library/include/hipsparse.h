@@ -86,6 +86,7 @@
 #endif
 
 #include "hipsparse_types.h"
+
 #include "hipsparse_auxiliary.h"
 
 /*
