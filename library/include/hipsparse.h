@@ -217,3 +217,4 @@
 #include "generic/hipsparse_spsm.h"
 
 #endif // HIPSPARSE_H
+
