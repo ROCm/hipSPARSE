@@ -56,9 +56,6 @@ hipsparseStatus_t hipsparseSpVV_bufferSize(hipsparseHandle_t     handle,
                                            size_t*               bufferSize);
 #endif
 
-
-
-
 /*! \ingroup generic_module
 *  \brief Description: Compute the inner dot product of a sparse vector with a dense vector
 *

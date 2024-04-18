@@ -85,8 +85,8 @@
 #endif
 #endif
 
-#include "hipsparse_types.h"
 #include "hipsparse_auxiliary.h"
+#include "hipsparse_types.h"
 
 /*
 * ===========================================================================
@@ -95,8 +95,8 @@
 */
 
 #include "level1/hipsparse_axpyi.h"
-#include "level1/hipsparse_doti.h"
 #include "level1/hipsparse_dotci.h"
+#include "level1/hipsparse_doti.h"
 #include "level1/hipsparse_gthr.h"
 #include "level1/hipsparse_gthrz.h"
 #include "level1/hipsparse_roti.h"
@@ -107,13 +107,13 @@
 *    level 2 SPARSE
 * ===========================================================================
 */
+#include "level2/hipsparse_bsrmv.h"
+#include "level2/hipsparse_bsrsv.h"
+#include "level2/hipsparse_bsrxmv.h"
 #include "level2/hipsparse_csrmv.h"
 #include "level2/hipsparse_csrsv.h"
-#include "level2/hipsparse_hybmv.h"
-#include "level2/hipsparse_bsrmv.h"
-#include "level2/hipsparse_bsrxmv.h"
-#include "level2/hipsparse_bsrsv.h"
 #include "level2/hipsparse_gemvi.h"
+#include "level2/hipsparse_hybmv.h"
 
 /*
 * ===========================================================================
@@ -121,8 +121,8 @@
 * ===========================================================================
 */
 #include "level3/hipsparse_bsrmm.h"
-#include "level3/hipsparse_csrmm.h"
 #include "level3/hipsparse_bsrsm.h"
+#include "level3/hipsparse_csrmm.h"
 #include "level3/hipsparse_csrsm.h"
 #include "level3/hipsparse_gemmi.h"
 
@@ -139,49 +139,49 @@
 *    preconditioner SPARSE
 * ===========================================================================
 */
-#include "precond/hipsparse_bsrilu0.h"
-#include "precond/hipsparse_csrilu0.h"
 #include "precond/hipsparse_bsric0.h"
+#include "precond/hipsparse_bsrilu0.h"
 #include "precond/hipsparse_csric0.h"
+#include "precond/hipsparse_csrilu0.h"
+#include "precond/hipsparse_gpsv_interleaved_batch.h"
 #include "precond/hipsparse_gtsv.h"
+#include "precond/hipsparse_gtsv_interleaved_batch.h"
 #include "precond/hipsparse_gtsv_nopivot.h"
 #include "precond/hipsparse_gtsv_strided_batch.h"
-#include "precond/hipsparse_gtsv_interleaved_batch.h"
-#include "precond/hipsparse_gpsv_interleaved_batch.h"
 
 /*
 * ===========================================================================
 *    Sparse Format Conversions
 * ===========================================================================
 */
-#include "conversion/hipsparse_nnz.h"
-#include "conversion/hipsparse_dense2csr.h"
-#include "conversion/hipsparse_prune_dense2csr.h"
-#include "conversion/hipsparse_prune_dense2csr_by_percentage.h"
-#include "conversion/hipsparse_dense2csc.h"
-#include "conversion/hipsparse_csr2dense.h"
+#include "conversion/hipsparse_bsr2csr.h"
+#include "conversion/hipsparse_coo2csr.h"
+#include "conversion/hipsparse_coosort.h"
+#include "conversion/hipsparse_create_identity_permutation.h"
 #include "conversion/hipsparse_csc2dense.h"
-#include "conversion/hipsparse_nnz_compress.h"
+#include "conversion/hipsparse_cscsort.h"
+#include "conversion/hipsparse_csr2bsr.h"
 #include "conversion/hipsparse_csr2coo.h"
 #include "conversion/hipsparse_csr2csc.h"
-#include "conversion/hipsparse_csr2hyb.h"
-#include "conversion/hipsparse_gebsr2gebsc.h"
-#include "conversion/hipsparse_csr2gebsr.h"
-#include "conversion/hipsparse_csr2bsr.h"
-#include "conversion/hipsparse_bsr2csr.h"
-#include "conversion/hipsparse_gebsr2csr.h"
 #include "conversion/hipsparse_csr2csr_compress.h"
+#include "conversion/hipsparse_csr2csru.h"
+#include "conversion/hipsparse_csr2dense.h"
+#include "conversion/hipsparse_csr2gebsr.h"
+#include "conversion/hipsparse_csr2hyb.h"
+#include "conversion/hipsparse_csrsort.h"
+#include "conversion/hipsparse_csru2csr.h"
+#include "conversion/hipsparse_dense2csc.h"
+#include "conversion/hipsparse_dense2csr.h"
+#include "conversion/hipsparse_gebsr2csr.h"
+#include "conversion/hipsparse_gebsr2gebsc.h"
+#include "conversion/hipsparse_gebsr2gebsr.h"
+#include "conversion/hipsparse_hyb2csr.h"
+#include "conversion/hipsparse_nnz.h"
+#include "conversion/hipsparse_nnz_compress.h"
 #include "conversion/hipsparse_prune_csr2csr.h"
 #include "conversion/hipsparse_prune_csr2csr_by_percentage.h"
-#include "conversion/hipsparse_hyb2csr.h"
-#include "conversion/hipsparse_coo2csr.h"
-#include "conversion/hipsparse_create_identity_permutation.h"
-#include "conversion/hipsparse_csrsort.h"
-#include "conversion/hipsparse_cscsort.h"
-#include "conversion/hipsparse_coosort.h"
-#include "conversion/hipsparse_gebsr2gebsr.h"
-#include "conversion/hipsparse_csru2csr.h"
-#include "conversion/hipsparse_csr2csru.h"
+#include "conversion/hipsparse_prune_dense2csr.h"
+#include "conversion/hipsparse_prune_dense2csr_by_percentage.h"
 
 /*
 * ===========================================================================
@@ -202,18 +202,18 @@
 
 /* Generic API functions */
 #include "generic/hipsparse_axpby.h"
-#include "generic/hipsparse_gather.h"
-#include "generic/hipsparse_scatter.h"
-#include "generic/hipsparse_rot.h"
-#include "generic/hipsparse_sparse2dense.h"
 #include "generic/hipsparse_dense2sparse.h"
-#include "generic/hipsparse_spvv.h"
-#include "generic/hipsparse_spmv.h"
-#include "generic/hipsparse_spmm.h"
+#include "generic/hipsparse_gather.h"
+#include "generic/hipsparse_rot.h"
+#include "generic/hipsparse_scatter.h"
+#include "generic/hipsparse_sddmm.h"
+#include "generic/hipsparse_sparse2dense.h"
 #include "generic/hipsparse_spgemm.h"
 #include "generic/hipsparse_spgemm_reuse.h"
-#include "generic/hipsparse_sddmm.h"
-#include "generic/hipsparse_spsv.h"
+#include "generic/hipsparse_spmm.h"
+#include "generic/hipsparse_spmv.h"
 #include "generic/hipsparse_spsm.h"
+#include "generic/hipsparse_spsv.h"
+#include "generic/hipsparse_spvv.h"
 
 #endif // HIPSPARSE_H

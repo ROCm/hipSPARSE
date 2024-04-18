@@ -181,7 +181,6 @@ hipsparseStatus_t hipsparseZbsrsv2_bufferSizeExt(hipsparseHandle_t         handl
                                                  size_t*                   pBufferSizeInBytes);
 /**@}*/
 
-
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup level2_module
 *  \brief Sparse triangular solve using BSR storage format

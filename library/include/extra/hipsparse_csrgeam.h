@@ -304,7 +304,6 @@ hipsparseStatus_t hipsparseXcsrgeam2Nnz(hipsparseHandle_t         handle,
                                         int*                      nnzTotalDevHostPtr,
                                         void*                     workspace);
 
-
 /*! \ingroup extra_module
 *  \brief Sparse matrix sparse matrix addition using CSR storage format
 *

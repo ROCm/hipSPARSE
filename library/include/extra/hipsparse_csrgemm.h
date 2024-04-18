@@ -72,8 +72,6 @@ hipsparseStatus_t hipsparseXcsrgemmNnz(hipsparseHandle_t         handle,
                                        int*                      csrRowPtrC,
                                        int*                      nnzTotalDevHostPtr);
 
-
-
 /*! \ingroup extra_module
 *  \brief Sparse matrix sparse matrix multiplication using CSR storage format
 *
@@ -210,9 +208,6 @@ hipsparseStatus_t hipsparseZcsrgemm(hipsparseHandle_t         handle,
                                     int*                      csrColIndC);
 /**@}*/
 #endif
-
-
-
 
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 /*! \ingroup extra_module
