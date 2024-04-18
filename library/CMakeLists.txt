@@ -35,8 +35,7 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/include/hipsparse-version.h.in"
                "${PROJECT_BINARY_DIR}/include/hipsparse/hipsparse-version.h")
 
 # Copy Header files to build directory
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/include/hipsparse.h"
-               "${PROJECT_BINARY_DIR}/include/hipsparse/hipsparse.h" COPYONLY)
+execute_process(COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/include" "${PROJECT_BINARY_DIR}/include/hipsparse")
 
 # Public hipSPARSE headers
 set(hipsparse_headers_public
