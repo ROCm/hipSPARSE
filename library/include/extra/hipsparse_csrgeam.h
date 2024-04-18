@@ -23,7 +23,6 @@
  * ************************************************************************ */
 #pragma once
 
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -304,7 +303,6 @@ hipsparseStatus_t hipsparseXcsrgeam2Nnz(hipsparseHandle_t         handle,
                                         int*                      csrSortedRowPtrC,
                                         int*                      nnzTotalDevHostPtr,
                                         void*                     workspace);
-
 
 /*! \ingroup extra_module
 *  \brief Sparse matrix sparse matrix addition using CSR storage format

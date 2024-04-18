@@ -23,7 +23,6 @@
  * ************************************************************************ */
 #pragma once
 
-
 /// \cond DO_NOT_DOCUMENT
 // Forward declarations
 struct bsrsv2Info;

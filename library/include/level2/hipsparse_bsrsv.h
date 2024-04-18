@@ -23,7 +23,6 @@
  * ************************************************************************ */
 #pragma once
 
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -181,7 +180,6 @@ hipsparseStatus_t hipsparseZbsrsv2_bufferSizeExt(hipsparseHandle_t         handl
                                                  bsrsv2Info_t              info,
                                                  size_t*                   pBufferSizeInBytes);
 /**@}*/
-
 
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup level2_module

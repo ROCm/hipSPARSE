@@ -23,11 +23,9 @@
  * ************************************************************************ */
 #pragma once
 
-
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup conv_module

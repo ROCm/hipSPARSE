@@ -23,7 +23,6 @@
  * ************************************************************************ */
 #pragma once
 
-
 /*! \ingroup types_module
  *  \brief Generic API opaque structure holding information for a sparse vector
  *

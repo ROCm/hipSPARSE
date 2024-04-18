@@ -23,7 +23,6 @@
  * ************************************************************************ */
 #pragma once
 
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -228,7 +227,6 @@ hipsparseStatus_t hipsparseZcsrmm(hipsparseHandle_t         handle,
                                   int                       ldc);
 /**@}*/
 #endif
-
 
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
 /*! \ingroup level3_module
