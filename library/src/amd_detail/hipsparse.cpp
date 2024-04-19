@@ -14624,6 +14624,53 @@ hipsparseStatus_t hipsparseSpGEMM_workEstimation(hipsparseHandle_t          hand
     return HIPSPARSE_STATUS_SUCCESS;
 }
 
+hipsparseStatus_t hipsparseSpGEMM_estimateMemory(hipsparseHandle_t          handle,
+                                                 hipsparseOperation_t       opA,
+                                                 hipsparseOperation_t       opB,
+                                                 const void*                alpha,
+                                                 hipsparseConstSpMatDescr_t matA,
+                                                 hipsparseConstSpMatDescr_t matB,
+                                                 const void*                beta,
+                                                 hipsparseSpMatDescr_t      matC,
+                                                 hipDataType                computeType,
+                                                 hipsparseSpGEMMAlg_t       alg,
+                                                 hipsparseSpGEMMDescr_t     spgemmDescr,
+                                                 float                      chunk_fraction,
+                                                 size_t*                    bufferSize3,
+                                                 void*                      externalBuffer3,
+                                                 size_t*                    bufferSize2)
+{
+    if(handle == nullptr || alpha == nullptr || beta == nullptr || matA == nullptr
+       || matB == nullptr || matC == nullptr || bufferSize3 == nullptr)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
+
+    if(externalBuffer3 == nullptr)
+    {
+        *bufferSize3 = 4;
+        return HIPSPARSE_STATUS_SUCCESS;
+    }
+    else
+    {
+        return hipsparseSpGEMM_compute(handle,
+                                       opA,
+                                       opB,
+                                       alpha,
+                                       matA,
+                                       matB,
+                                       beta,
+                                       matC,
+                                       computeType,
+                                       alg,
+                                       spgemmDescr,
+                                       bufferSize2,
+                                       nullptr);
+    }
+
+    return HIPSPARSE_STATUS_SUCCESS;
+}
+
 hipsparseStatus_t hipsparseSpGEMM_compute(hipsparseHandle_t          handle,
                                           hipsparseOperation_t       opA,
                                           hipsparseOperation_t       opB,
