@@ -13169,20 +13169,20 @@ hipsparseStatus_t hipsparseSpGEMM_estimateMemory(hipsparseHandle_t          hand
                                                  size_t*                    bufferSize2)
 {
     return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSpGEMM_estimateMemory(handle,
-                                                                                opA,
-                                                                                opB,
-                                                                                alpha,
-                                                                                matA,
-                                                                                matB,
-                                                                                beta,
-                                                                                matC,
-                                                                                computeType,
-                                                                                alg,
-                                                                                spgemmDescr,
-                                                                                chunk_fraction,
-                                                                                bufferSize3,
-                                                                                externalBuffer3,
-                                                                                bufferSize2));
+                                                                                 opA,
+                                                                                 opB,
+                                                                                 alpha,
+                                                                                 matA,
+                                                                                 matB,
+                                                                                 beta,
+                                                                                 matC,
+                                                                                 computeType,
+                                                                                 alg,
+                                                                                 spgemmDescr,
+                                                                                 chunk_fraction,
+                                                                                 bufferSize3,
+                                                                                 externalBuffer3,
+                                                                                 bufferSize2));
 }
 #endif
 
