@@ -21,7 +21,8 @@
  * THE SOFTWARE.
  *
  * ************************************************************************ */
-#pragma once
+#ifndef HIPSPARSE_EXTRA_HIPSPARSE_CSRGEAM_H
+#define HIPSPARSE_EXTRA_HIPSPARSE_CSRGEAM_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -420,3 +421,5 @@ hipsparseStatus_t hipsparseZcsrgeam2(hipsparseHandle_t         handle,
 #ifdef __cplusplus
 }
 #endif
+
+#endif /* HIPSPARSE_EXTRA_HIPSPARSE_CSRGEAM_H */

@@ -21,7 +21,8 @@
  * THE SOFTWARE.
  *
  * ************************************************************************ */
-#pragma once
+#ifndef HIPSPARSE_PRECOND_HIPSPARSE_GTSV_INTERLEAVED_BATCH_H
+#define HIPSPARSE_PRECOND_HIPSPARSE_GTSV_INTERLEAVED_BATCH_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -140,3 +141,5 @@ hipsparseStatus_t hipsparseZgtsvInterleavedBatch(hipsparseHandle_t handle,
 #ifdef __cplusplus
 }
 #endif
+
+#endif /* HIPSPARSE_PRECOND_HIPSPARSE_GTSV_INTERLEAVED_BATCH_H */

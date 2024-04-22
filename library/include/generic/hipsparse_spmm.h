@@ -21,7 +21,8 @@
  * THE SOFTWARE.
  *
  * ************************************************************************ */
-#pragma once
+#ifndef HIPSPARSE_GENERIC_HIPSPARSE_SPMM_H
+#define HIPSPARSE_GENERIC_HIPSPARSE_SPMM_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -256,3 +257,5 @@ hipsparseStatus_t hipsparseSpMM(hipsparseHandle_t           handle,
 #ifdef __cplusplus
 }
 #endif
+
+#endif /* HIPSPARSE_GENERIC_HIPSPARSE_SPMM_H */

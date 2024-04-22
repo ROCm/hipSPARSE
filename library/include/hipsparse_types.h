@@ -21,7 +21,8 @@
  * THE SOFTWARE.
  *
  * ************************************************************************ */
-#pragma once
+#ifndef HIPSPARSE_HIPSPARSE_TYPES_H
+#define HIPSPARSE_HIPSPARSE_TYPES_H
 
 /// \cond DO_NOT_DOCUMENT
 // Forward declarations
@@ -415,3 +416,5 @@ typedef enum {
 } hipsparseDirection_t;
 
 // clang-format on
+
+#endif /* HIPSPARSE_HIPSPARSE_TYPES_H */

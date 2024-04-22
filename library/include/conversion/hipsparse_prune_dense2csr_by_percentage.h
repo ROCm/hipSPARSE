@@ -21,7 +21,8 @@
  * THE SOFTWARE.
  *
  * ************************************************************************ */
-#pragma once
+#ifndef HIPSPARSE_CONVERSION_HIPSPARSE_PRUNE_DENSE2CSR_BY_PERCENTAGE_H
+#define HIPSPARSE_CONVERSION_HIPSPARSE_PRUNE_DENSE2CSR_BY_PERCENTAGE_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -277,3 +278,5 @@ hipsparseStatus_t hipsparseDpruneDense2csrByPercentage(hipsparseHandle_t        
 #ifdef __cplusplus
 }
 #endif
+
+#endif /* HIPSPARSE_CONVERSION_HIPSPARSE_PRUNE_DENSE2CSR_BY_PERCENTAGE_H */

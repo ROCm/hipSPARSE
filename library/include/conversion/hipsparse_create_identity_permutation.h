@@ -21,7 +21,8 @@
  * THE SOFTWARE.
  *
  * ************************************************************************ */
-#pragma once
+#ifndef HIPSPARSE_CONVERSION_HIPSPARSE_CREATE_IDENTITY_PERMUTATION_H
+#define HIPSPARSE_CONVERSION_HIPSPARSE_CREATE_IDENTITY_PERMUTATION_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -54,3 +55,5 @@ hipsparseStatus_t hipsparseCreateIdentityPermutation(hipsparseHandle_t handle, i
 #ifdef __cplusplus
 }
 #endif
+
+#endif /* HIPSPARSE_CONVERSION_HIPSPARSE_CREATE_IDENTITY_PERMUTATION_H */

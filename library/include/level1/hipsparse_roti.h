@@ -21,7 +21,8 @@
  * THE SOFTWARE.
  *
  * ************************************************************************ */
-#pragma once
+#ifndef HIPSPARSE_LEVEL1_HIPSPARSE_ROTI_H
+#define HIPSPARSE_LEVEL1_HIPSPARSE_ROTI_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -134,3 +135,5 @@ hipsparseStatus_t hipsparseDroti(hipsparseHandle_t    handle,
 #ifdef __cplusplus
 }
 #endif
+
+#endif /* HIPSPARSE_LEVEL1_HIPSPARSE_ROTI_H */

@@ -21,7 +21,8 @@
  * THE SOFTWARE.
  *
  * ************************************************************************ */
-#pragma once
+#ifndef HIPSPARSE_LEVEL2_HIPSPARSE_GEMVI_H
+#define HIPSPARSE_LEVEL2_HIPSPARSE_GEMVI_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -169,3 +170,5 @@ hipsparseStatus_t hipsparseZgemvi(hipsparseHandle_t       handle,
 #ifdef __cplusplus
 }
 #endif
+
+#endif /* HIPSPARSE_LEVEL2_HIPSPARSE_GEMVI_H */

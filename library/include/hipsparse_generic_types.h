@@ -21,7 +21,8 @@
  * THE SOFTWARE.
  *
  * ************************************************************************ */
-#pragma once
+#ifndef HIPSPARSE_HIPSPARSE_GENERIC_TYPES_H
+#define HIPSPARSE_HIPSPARSE_GENERIC_TYPES_H
 
 /*! \ingroup types_module
  *  \brief Generic API opaque structure holding information for a sparse vector
@@ -537,3 +538,5 @@ typedef enum
 } hipsparseSpGEMMAlg_t;
 #endif
 #endif
+
+#endif /* HIPSPARSE_HIPSPARSE_GENERIC_TYPES_H */

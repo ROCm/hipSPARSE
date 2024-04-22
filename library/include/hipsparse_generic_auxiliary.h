@@ -21,7 +21,8 @@
  * THE SOFTWARE.
  *
  * ************************************************************************ */
-#pragma once
+#ifndef HIPSPARSE_HIPSPARSE_GENERIC_AUXILIARY_H
+#define HIPSPARSE_HIPSPARSE_GENERIC_AUXILIARY_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -951,3 +952,5 @@ hipsparseStatus_t hipsparseDnMatSetStridedBatch(hipsparseDnMatDescr_t dnMatDescr
 #ifdef __cplusplus
 }
 #endif
+
+#endif /* HIPSPARSE_HIPSPARSE_GENERIC_AUXILIARY_H */

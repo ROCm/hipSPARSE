@@ -21,7 +21,8 @@
  * THE SOFTWARE.
  *
  * ************************************************************************ */
-#pragma once
+#ifndef HIPSPARSE_CONVERSION_HIPSPARSE_GEBSR2GEBSC_H
+#define HIPSPARSE_CONVERSION_HIPSPARSE_GEBSR2GEBSC_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -175,3 +176,5 @@ hipsparseStatus_t hipsparseZgebsr2gebsc(hipsparseHandle_t       handle,
 #ifdef __cplusplus
 }
 #endif
+
+#endif /* HIPSPARSE_CONVERSION_HIPSPARSE_GEBSR2GEBSC_H */
