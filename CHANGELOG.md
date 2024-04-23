@@ -12,6 +12,7 @@ Documentation for hipSPARSE is available at
 ### Changes
 
 * All internal hipSPARSE functions now exist inside a namespace
+* Match deprecations found in cusparse 12.x.x when using cusparse backend.
 
 ### Fixes
 
