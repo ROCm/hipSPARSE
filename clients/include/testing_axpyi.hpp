@@ -29,6 +29,7 @@
 #include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
+#include "hipsparse_arguments.hpp"
 
 #include <hipsparse.h>
 
@@ -104,12 +105,19 @@ void testing_axpyi_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_axpyi(Arguments argus)
 {
+    std::cout << "testing_axpyi called" << std::endl;
+
+    std::cout << "argus.N: " << argus.N << std::endl;
+    std::cout << "argus.nnz: " << argus.nnz << std::endl;
+    std::cout << "argus.baseA: " << argus.baseA << std::endl;
+    std::cout << "argus.unit_check: " << argus.unit_check << std::endl;
+
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     int                  N         = argus.N;
     int                  nnz       = argus.nnz;
     int                  safe_size = 100;
     T                    h_alpha   = make_DataType<T>(argus.alpha);
-    hipsparseIndexBase_t idx_base  = argus.idx_base;
+    hipsparseIndexBase_t idx_base  = argus.baseA;
     hipsparseStatus_t    status;
 
     std::unique_ptr<handle_struct> test_handle(new handle_struct);

@@ -74,6 +74,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Build options
 option(BUILD_SHARED_LIBS "Build hipSPARSE as a shared library" ON)
 option(BUILD_CLIENTS_TESTS "Build tests (requires googletest)" OFF)
+option(BUILD_CLIENTS_BENCHMARKS "Build benchmarks" ON)
 option(BUILD_CLIENTS_SAMPLES "Build examples" ON)
 option(BUILD_VERBOSE "Output additional build information" OFF)
 option(USE_CUDA "Build hipSPARSE using CUDA backend" OFF)
@@ -139,6 +140,15 @@ if(BUILD_CLIENTS_SAMPLES OR BUILD_CLIENTS_TESTS)
   rocm_package_setup_component(clients)
   if(BUILD_CLIENTS_TESTS)
     rocm_package_setup_client_component(tests)
+  endif()
+  if( BUILD_CLIENTS_BENCHMARKS )
+  rocm_package_setup_client_component(
+    benchmarks
+    DEPENDS
+      COMPONENT clients-common
+      DEB "${OPENMP_DEB}"
+      RPM "${OPENMP_RPM}"
+  )
   endif()
   if(NOT WIN32)
     rocm_package_add_rpm_dependencies(COMPONENT tests DEPENDS "${GFORTRAN_PKG}")

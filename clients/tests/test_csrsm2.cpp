@@ -73,7 +73,7 @@ Arguments setup_csrsm2_arguments(csrsm2_tuple tup)
     arg.M         = std::get<0>(tup);
     arg.N         = std::get<1>(tup);
     arg.alpha     = std::get<2>(tup);
-    arg.idx_base  = std::get<3>(tup);
+    arg.baseA  = std::get<3>(tup);
     arg.transA    = std::get<4>(tup);
     arg.transB    = std::get<5>(tup);
     arg.diag_type = std::get<6>(tup);
@@ -88,7 +88,7 @@ Arguments setup_csrsm2_arguments(csrsm2_bin_tuple tup)
     arg.M         = -99;
     arg.N         = std::get<0>(tup);
     arg.alpha     = std::get<1>(tup);
-    arg.idx_base  = std::get<2>(tup);
+    arg.baseA  = std::get<2>(tup);
     arg.transA    = std::get<3>(tup);
     arg.transB    = std::get<4>(tup);
     arg.diag_type = std::get<5>(tup);

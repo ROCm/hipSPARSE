@@ -22,13 +22,14 @@
  * ************************************************************************ */
 
 #pragma once
-#ifndef TESTING_BSRSV2_HPP
-#define TESTING_BSRSV2_HPP
+#ifndef TESTING_BSRSM2_HPP
+#define TESTING_BSRSM2_HPP
 
 #include "hipsparse.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
+#include "hipsparse_arguments.hpp"
 
 #include <string>
 
@@ -516,7 +517,7 @@ void testing_bsrsm2_bad_arg(void)
 }
 
 template <typename T>
-hipsparseStatus_t testing_bsrsm2(void)
+hipsparseStatus_t testing_bsrsm2(Arguments argus)
 {
     T   h_alpha = make_DataType<T>(2.0);
     int nrhs    = 15;

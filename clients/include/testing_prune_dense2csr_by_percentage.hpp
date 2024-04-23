@@ -29,6 +29,7 @@
 #include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
+#include "hipsparse_arguments.hpp"
 
 #include <algorithm>
 #include <hipsparse.h>
@@ -379,8 +380,8 @@ hipsparseStatus_t testing_prune_dense2csr_by_percentage(Arguments argus)
     int                  M          = argus.M;
     int                  N          = argus.N;
     int                  LDA        = argus.lda;
-    T                    percentage = static_cast<T>(argus.percentage);
-    hipsparseIndexBase_t idx_base   = argus.idx_base;
+    T                    percentage = argus.get_percentage<T>();
+    hipsparseIndexBase_t idx_base   = argus.baseA;
     hipsparseStatus_t    status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
@@ -394,68 +395,6 @@ hipsparseStatus_t testing_prune_dense2csr_by_percentage(Arguments argus)
 
     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatIndexBase(descr, idx_base));
-
-    // Argument sanity check before allocating invalid memory
-    if(M <= 0 || N <= 0 || LDA < M || percentage < 0.0 || percentage > 100.0)
-    {
-        // cusparse does not seem to check LDA < M
-#if(defined(CUDART_VERSION))
-        if(LDA < M)
-        {
-            return HIPSPARSE_STATUS_SUCCESS;
-        }
-#endif
-        size_t safe_size = 100;
-
-        auto csr_row_ptr_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto csr_col_ind_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto csr_val_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-        auto A_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-        auto temp_buffer_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-
-        int* csr_row_ptr = (int*)csr_row_ptr_managed.get();
-        int* csr_col_ind = (int*)csr_col_ind_managed.get();
-        T*   csr_val     = (T*)csr_val_managed.get();
-        T*   A           = (T*)A_managed.get();
-        T*   temp_buffer = (T*)temp_buffer_managed.get();
-
-        if(!csr_row_ptr || !csr_col_ind || !csr_val || !A || !temp_buffer)
-        {
-            PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-            return HIPSPARSE_STATUS_ALLOC_FAILED;
-        }
-
-        status = hipsparseXpruneDense2csrByPercentage(handle,
-                                                      M,
-                                                      N,
-                                                      A,
-                                                      LDA,
-                                                      percentage,
-                                                      descr,
-                                                      csr_val,
-                                                      csr_row_ptr,
-                                                      csr_col_ind,
-                                                      info,
-                                                      temp_buffer);
-
-        if(M < 0 || N < 0 || LDA < M || percentage < 0.0 || percentage > 100.0)
-        {
-            verify_hipsparse_status_invalid_size(
-                status,
-                "Error: m < 0 || n < 0 || lda < m || percentage < 0.0 || percentage > 100.0");
-        }
-        else
-        {
-            verify_hipsparse_status_success(
-                status, "m >= 0 && n >= 0 && lda >= m && percentage >= 0.0 && percentage <= 100.0");
-        }
-
-        return HIPSPARSE_STATUS_SUCCESS;
-    }
 
     // Allocate host memory
     std::vector<T>   h_A(LDA * N);

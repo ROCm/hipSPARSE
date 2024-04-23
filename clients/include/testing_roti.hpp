@@ -29,6 +29,7 @@
 #include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
+#include "hipsparse_arguments.hpp"
 
 #include <hipsparse.h>
 
@@ -90,13 +91,22 @@ void testing_roti_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_roti(Arguments argus)
 {
+    std::cout << "testing_roti called" << std::endl;
+
+    std::cout << "argus.N: " << argus.N << std::endl;
+    std::cout << "argus.nnz: " << argus.nnz << std::endl;
+    std::cout << "argus.alpha: " << argus.alpha << std::endl;
+    std::cout << "argus.beta: " << argus.beta << std::endl;
+    std::cout << "argus.baseA: " << argus.baseA << std::endl;
+    std::cout << "argus.unit_check: " << argus.unit_check << std::endl;
+
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     int                  N         = argus.N;
     int                  nnz       = argus.nnz;
-    T                    c         = argus.alpha;
-    T                    s         = argus.beta;
+    T                    c         = argus.get_alpha<T>();
+    T                    s         = argus.get_beta<T>();
     int                  safe_size = 100;
-    hipsparseIndexBase_t idx_base  = argus.idx_base;
+    hipsparseIndexBase_t idx_base  = argus.baseA;
     hipsparseStatus_t    status;
 
     std::unique_ptr<handle_struct> test_handle(new handle_struct);

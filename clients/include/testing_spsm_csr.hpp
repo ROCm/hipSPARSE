@@ -28,6 +28,7 @@
 #include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
+#include "hipsparse_arguments.hpp"
 
 #include <hipsparse.h>
 #include <string>
@@ -186,7 +187,7 @@ void testing_spsm_csr_bad_arg(void)
 }
 
 template <typename I, typename J, typename T>
-hipsparseStatus_t testing_spsm_csr(void)
+hipsparseStatus_t testing_spsm_csr(Arguments argus)
 {
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
     T                    h_alpha  = make_DataType<T>(2.3);

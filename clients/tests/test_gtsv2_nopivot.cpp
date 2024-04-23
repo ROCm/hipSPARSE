@@ -22,6 +22,7 @@
  * ************************************************************************ */
 
 #include "testing_gtsv2_nopivot.hpp"
+#include "hipsparse_arguments.hpp"
 
 #include <hipsparse.h>
 
@@ -34,19 +35,22 @@ TEST(gtsv2_nopivot_bad_arg, gtsv2_nopivot_float)
 
 TEST(gtsv2_nopivot, gtsv2_nopivot_float)
 {
-    hipsparseStatus_t status = testing_gtsv2_nopivot<float>();
+    Arguments arg;
+    hipsparseStatus_t status = testing_gtsv2_nopivot<float>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
 TEST(gtsv2_nopivot, gtsv2_nopivot_double)
 {
-    hipsparseStatus_t status = testing_gtsv2_nopivot<double>();
+    Arguments arg;
+    hipsparseStatus_t status = testing_gtsv2_nopivot<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
 TEST(gtsv2_nopivot, gtsv2_nopivot_hipComplex)
 {
-    hipsparseStatus_t status = testing_gtsv2_nopivot<hipComplex>();
+    Arguments arg;
+    hipsparseStatus_t status = testing_gtsv2_nopivot<hipComplex>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 #endif

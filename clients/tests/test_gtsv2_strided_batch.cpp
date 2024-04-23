@@ -22,6 +22,7 @@
  * ************************************************************************ */
 
 #include "testing_gtsv2_strided_batch.hpp"
+#include "hipsparse_arguments.hpp"
 
 #include <hipsparse.h>
 
@@ -34,19 +35,22 @@ TEST(gtsv2_strided_batch_bad_arg, gtsv2_strided_batch_float)
 
 TEST(gtsv2_strided_batch, gtsv2_strided_batch_float)
 {
-    hipsparseStatus_t status = testing_gtsv2_strided_batch<float>();
+    Arguments arg;
+    hipsparseStatus_t status = testing_gtsv2_strided_batch<float>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
 TEST(gtsv2_strided_batch, gtsv2_strided_batch_double)
 {
-    hipsparseStatus_t status = testing_gtsv2_strided_batch<double>();
+    Arguments arg;
+    hipsparseStatus_t status = testing_gtsv2_strided_batch<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
 TEST(gtsv2_strided_batch, gtsv2_strided_batch_hipComplex)
 {
-    hipsparseStatus_t status = testing_gtsv2_strided_batch<hipComplex>();
+    Arguments arg;
+    hipsparseStatus_t status = testing_gtsv2_strided_batch<hipComplex>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 #endif

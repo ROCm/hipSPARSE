@@ -34,13 +34,15 @@ TEST(sparse_to_dense_coo_bad_arg, sparse_to_dense_coo_float)
 
 TEST(sparse_to_dense_coo, sparse_to_dense_coo_i32_i32_float)
 {
-    hipsparseStatus_t status = testing_sparse_to_dense_coo<int32_t, float>();
+    Arguments arg;
+    hipsparseStatus_t status = testing_sparse_to_dense_coo<int32_t, float>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
 TEST(sparse_to_dense_coo, sparse_to_dense_coo_i64_i64_hipComplex)
 {
-    hipsparseStatus_t status = testing_sparse_to_dense_coo<int64_t, hipComplex>();
+    Arguments arg;
+    hipsparseStatus_t status = testing_sparse_to_dense_coo<int64_t, hipComplex>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 #endif

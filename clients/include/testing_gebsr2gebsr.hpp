@@ -29,6 +29,7 @@
 #include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
+#include "hipsparse_arguments.hpp"
 
 using namespace hipsparse;
 using namespace hipsparse_test;
@@ -909,8 +910,8 @@ hipsparseStatus_t testing_gebsr2gebsr(Arguments argus)
     int                  col_block_dim_A = argus.col_block_dimA;
     int                  row_block_dim_C = argus.row_block_dimB;
     int                  col_block_dim_C = argus.col_block_dimB;
-    hipsparseIndexBase_t idx_base_A      = argus.idx_base;
-    hipsparseIndexBase_t idx_base_C      = argus.idx_base2;
+    hipsparseIndexBase_t idx_base_A      = argus.baseA;
+    hipsparseIndexBase_t idx_base_C      = argus.baseB;
     hipsparseDirection_t dir             = argus.dirA;
     std::string          binfile         = "";
     std::string          filename        = "";
@@ -1018,11 +1019,6 @@ hipsparseStatus_t testing_gebsr2gebsr(Arguments argus)
             fprintf(stderr, "Cannot open [read] %s\n", binfile.c_str());
             return HIPSPARSE_STATUS_INTERNAL_ERROR;
         }
-    }
-    else if(argus.laplacian)
-    {
-        m = n = gen_2d_laplacian(argus.laplacian, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base_A);
-        nnz   = hcsr_row_ptr[m];
     }
     else
     {

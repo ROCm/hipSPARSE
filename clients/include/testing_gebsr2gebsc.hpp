@@ -29,6 +29,7 @@
 #include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
+#include "hipsparse_arguments.hpp"
 
 #include <algorithm>
 #include <hipsparse.h>
@@ -442,7 +443,7 @@ hipsparseStatus_t testing_gebsr2gebsc(Arguments argus)
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
     hipsparseAction_t    action = argus.action;
-    hipsparseIndexBase_t base   = argus.idx_base;
+    hipsparseIndexBase_t base   = argus.baseA;
 
     // Argument sanity check before allocating invalid memory
     if((argus.M <= 0 && argus.M != -99) || (argus.N <= 0 && argus.M != -99)
@@ -574,11 +575,6 @@ hipsparseStatus_t testing_gebsr2gebsc(Arguments argus)
                 fprintf(stderr, "Cannot open [read] %s\n", binfile.c_str());
                 return HIPSPARSE_STATUS_INTERNAL_ERROR;
             }
-        }
-        else if(argus.laplacian)
-        {
-            m = n = gen_2d_laplacian(argus.laplacian, hcsr_row_ptr, hcsr_col_ind, hcsr_val, base);
-            nnz   = hcsr_row_ptr[m];
         }
         else
         {

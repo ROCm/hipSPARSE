@@ -65,7 +65,7 @@ Arguments setup_bsric02_arguments(bsric02_tuple tup)
     arg.M         = std::get<0>(tup);
     arg.block_dim = std::get<1>(tup);
     arg.dirA      = std::get<2>(tup);
-    arg.idx_base  = std::get<3>(tup);
+    arg.baseA  = std::get<3>(tup);
     arg.timing    = 0;
     return arg;
 }
@@ -76,7 +76,7 @@ Arguments setup_bsric02_arguments(bsric02_bin_tuple tup)
     arg.M         = -99;
     arg.block_dim = std::get<0>(tup);
     arg.dirA      = std::get<1>(tup);
-    arg.idx_base  = std::get<2>(tup);
+    arg.baseA  = std::get<2>(tup);
     arg.timing    = 0;
 
     // Determine absolute path of test matrix

@@ -75,7 +75,7 @@ Arguments setup_csrmm_arguments(csrmm_tuple tup)
     arg.K        = std::get<2>(tup);
     arg.alpha    = std::get<3>(tup);
     arg.beta     = std::get<4>(tup);
-    arg.idx_base = std::get<5>(tup);
+    arg.baseA = std::get<5>(tup);
     arg.transA   = std::get<6>(tup);
     arg.transB   = std::get<7>(tup);
     arg.timing   = 0;
@@ -90,7 +90,7 @@ Arguments setup_csrmm_arguments(csrmm_bin_tuple tup)
     arg.K        = -99;
     arg.alpha    = std::get<1>(tup);
     arg.beta     = std::get<2>(tup);
-    arg.idx_base = std::get<3>(tup);
+    arg.baseA = std::get<3>(tup);
     arg.transA   = std::get<4>(tup);
     arg.transB   = std::get<5>(tup);
     arg.timing   = 0;

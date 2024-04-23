@@ -29,6 +29,7 @@
 #include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
+#include "hipsparse_arguments.hpp"
 
 #include <hipsparse.h>
 #include <iostream>
@@ -444,7 +445,7 @@ hipsparseStatus_t testing_bsrmm(Arguments argus)
     hipsparseDirection_t dirA      = argus.dirA;
     hipsparseOperation_t transA    = argus.transA;
     hipsparseOperation_t transB    = argus.transB;
-    hipsparseIndexBase_t idx_base  = argus.idx_base;
+    hipsparseIndexBase_t idx_base  = argus.baseA;
     std::string          binfile   = "";
     std::string          filename  = "";
 
@@ -492,11 +493,6 @@ hipsparseStatus_t testing_bsrmm(Arguments argus)
             fprintf(stderr, "Cannot open [read] %s\n", binfile.c_str());
             return HIPSPARSE_STATUS_INTERNAL_ERROR;
         }
-    }
-    else if(argus.laplacian)
-    {
-        m = k = gen_2d_laplacian(argus.laplacian, csr_row_ptr, csr_col_ind, csr_val, idx_base);
-        nnz   = csr_row_ptr[m];
     }
     else
     {

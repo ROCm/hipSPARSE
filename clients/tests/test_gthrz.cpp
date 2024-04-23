@@ -49,7 +49,7 @@ Arguments setup_gthrz_arguments(gthrz_tuple tup)
     Arguments arg;
     arg.N        = std::get<0>(tup);
     arg.nnz      = std::get<1>(tup);
-    arg.idx_base = std::get<2>(tup);
+    arg.baseA = std::get<2>(tup);
     arg.timing   = 0;
     return arg;
 }

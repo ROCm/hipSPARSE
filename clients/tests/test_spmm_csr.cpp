@@ -22,6 +22,7 @@
  * ************************************************************************ */
 
 #include "testing_spmm_csr.hpp"
+#include "hipsparse_arguments.hpp"
 
 #include <hipsparse.h>
 
@@ -34,19 +35,22 @@ TEST(spmm_csr_bad_arg, spmm_csr_float)
 
 TEST(spmm_csr, spmm_csr_i32_i32_float)
 {
-    hipsparseStatus_t status = testing_spmm_csr<int32_t, int32_t, float>();
+    Arguments arg;
+    hipsparseStatus_t status = testing_spmm_csr<int32_t, int32_t, float>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
 TEST(spmm_csr, spmm_csr_i32_i32_double)
 {
-    hipsparseStatus_t status = testing_spmm_csr<int32_t, int32_t, double>();
+    Arguments arg;
+    hipsparseStatus_t status = testing_spmm_csr<int32_t, int32_t, double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
 TEST(spmm_csr, spmm_csr_i32_i32_hipComplex)
 {
-    hipsparseStatus_t status = testing_spmm_csr<int32_t, int32_t, hipComplex>();
+    Arguments arg;
+    hipsparseStatus_t status = testing_spmm_csr<int32_t, int32_t, hipComplex>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 #endif

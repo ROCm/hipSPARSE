@@ -34,27 +34,31 @@ TEST(sparse_to_dense_csc_bad_arg, sparse_to_dense_csc_float)
 
 TEST(sparse_to_dense_csc, sparse_to_dense_csc_i32_i32_float)
 {
-    hipsparseStatus_t status = testing_sparse_to_dense_csc<int32_t, int32_t, float>();
+    Arguments arg;
+    hipsparseStatus_t status = testing_sparse_to_dense_csc<int32_t, int32_t, float>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
 #if(!defined(CUDART_VERSION))
 TEST(sparse_to_dense_csc, sparse_to_dense_csc_i64_i32_double)
 {
-    hipsparseStatus_t status = testing_sparse_to_dense_csc<int64_t, int32_t, double>();
+    Arguments arg;
+    hipsparseStatus_t status = testing_sparse_to_dense_csc<int64_t, int32_t, double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 #else
 TEST(sparse_to_dense_csc, sparse_to_dense_csc_i64_i64_double)
 {
-    hipsparseStatus_t status = testing_sparse_to_dense_csc<int64_t, int64_t, double>();
+    Arguments arg;
+    hipsparseStatus_t status = testing_sparse_to_dense_csc<int64_t, int64_t, double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 #endif
 
 TEST(sparse_to_dense_csc, sparse_to_dense_csc_i64_i64_hipComplex)
 {
-    hipsparseStatus_t status = testing_sparse_to_dense_csc<int64_t, int64_t, hipComplex>();
+    Arguments arg;
+    hipsparseStatus_t status = testing_sparse_to_dense_csc<int64_t, int64_t, hipComplex>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 #endif

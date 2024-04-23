@@ -81,9 +81,9 @@ Arguments setup_csrgemm_arguments(csrgemm_tuple tup)
     arg.M         = std::get<0>(tup);
     arg.N         = std::get<1>(tup);
     arg.K         = std::get<2>(tup);
-    arg.idx_base  = std::get<3>(tup);
-    arg.idx_base2 = std::get<4>(tup);
-    arg.idx_base3 = std::get<5>(tup);
+    arg.baseA  = std::get<3>(tup);
+    arg.baseB = std::get<4>(tup);
+    arg.baseC = std::get<5>(tup);
     arg.transA    = std::get<6>(tup);
     arg.transB    = std::get<7>(tup);
     arg.timing    = 0;
@@ -96,9 +96,9 @@ Arguments setup_csrgemm_arguments(csrgemm_bin_tuple tup)
     arg.M         = -99;
     arg.N         = -99;
     arg.K         = -99;
-    arg.idx_base  = std::get<0>(tup);
-    arg.idx_base2 = std::get<1>(tup);
-    arg.idx_base3 = std::get<2>(tup);
+    arg.baseA  = std::get<0>(tup);
+    arg.baseB = std::get<1>(tup);
+    arg.baseC = std::get<2>(tup);
     arg.transA    = std::get<3>(tup);
     arg.transB    = std::get<4>(tup);
     arg.timing    = 0;

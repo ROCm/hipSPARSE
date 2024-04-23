@@ -34,19 +34,22 @@ TEST(spmm_coo_bad_arg, spmm_coo_float)
 
 TEST(spmm_coo, spmm_coo_i32_float)
 {
-    hipsparseStatus_t status = testing_spmm_coo<int32_t, float>();
+    Arguments arg;
+    hipsparseStatus_t status = testing_spmm_coo<int32_t, float>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
 TEST(spmm_coo, spmm_coo_i64_double)
 {
-    hipsparseStatus_t status = testing_spmm_coo<int32_t, double>();
+    Arguments arg;
+    hipsparseStatus_t status = testing_spmm_coo<int32_t, double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
 TEST(spmm_coo, spmm_coo_i64_hipComplex)
 {
-    hipsparseStatus_t status = testing_spmm_coo<int32_t, hipComplex>();
+    Arguments arg;
+    hipsparseStatus_t status = testing_spmm_coo<int32_t, hipComplex>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 #endif

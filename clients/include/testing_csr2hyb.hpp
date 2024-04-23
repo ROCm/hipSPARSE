@@ -29,6 +29,7 @@
 #include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
+#include "hipsparse_arguments.hpp"
 
 #include <algorithm>
 #include <hipsparse.h>
@@ -41,20 +42,20 @@ using namespace hipsparse_test;
 #define ELL_IND_EL(i, el, m, width) (el) + (width) * (i)
 #define ELL_IND(i, el, m, width) ELL_IND_ROW(i, el, m, width)
 
-struct test_hyb
-{
-    int                     m;
-    int                     n;
-    hipsparseHybPartition_t partition;
-    int                     ell_nnz;
-    int                     ell_width;
-    int*                    ell_col_ind;
-    void*                   ell_val;
-    int                     coo_nnz;
-    int*                    coo_row_ind;
-    int*                    coo_col_ind;
-    void*                   coo_val;
-};
+// struct test_hyb
+// {
+//     int                     m;
+//     int                     n;
+//     hipsparseHybPartition_t partition;
+//     int                     ell_nnz;
+//     int                     ell_width;
+//     int*                    ell_col_ind;
+//     void*                   ell_val;
+//     int                     coo_nnz;
+//     int*                    coo_row_ind;
+//     int*                    coo_col_ind;
+//     void*                   coo_val;
+// };
 
 template <typename T>
 void testing_csr2hyb_bad_arg(void)
@@ -161,7 +162,7 @@ hipsparseStatus_t testing_csr2hyb(Arguments argus)
     int                     m              = argus.M;
     int                     n              = argus.N;
     int                     safe_size      = 100;
-    hipsparseIndexBase_t    idx_base       = argus.idx_base;
+    hipsparseIndexBase_t    idx_base       = argus.baseA;
     hipsparseHybPartition_t part           = argus.part;
     int                     user_ell_width = argus.ell_width;
     std::string             binfile        = "";
@@ -255,11 +256,6 @@ hipsparseStatus_t testing_csr2hyb(Arguments argus)
             fprintf(stderr, "Cannot open [read] %s\n", binfile.c_str());
             return HIPSPARSE_STATUS_INTERNAL_ERROR;
         }
-    }
-    else if(argus.laplacian)
-    {
-        m = n = gen_2d_laplacian(argus.laplacian, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base);
-        nnz   = hcsr_row_ptr[m];
     }
     else
     {

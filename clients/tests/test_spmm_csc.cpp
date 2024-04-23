@@ -34,19 +34,22 @@ TEST(spmm_csc_bad_arg, spmm_csc_float)
 
 TEST(spmm_csc, spmm_csc_i32_i32_float)
 {
-    hipsparseStatus_t status = testing_spmm_csc<int32_t, int32_t, float>();
+    Arguments arg;
+    hipsparseStatus_t status = testing_spmm_csc<int32_t, int32_t, float>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
 TEST(spmm_csc, spmm_csc_i32_i32_double)
 {
-    hipsparseStatus_t status = testing_spmm_csc<int32_t, int32_t, double>();
+    Arguments arg;
+    hipsparseStatus_t status = testing_spmm_csc<int32_t, int32_t, double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
 TEST(spmm_csc, spmm_csc_i32_i32_hipComplex)
 {
-    hipsparseStatus_t status = testing_spmm_csc<int32_t, int32_t, hipComplex>();
+    Arguments arg;
+    hipsparseStatus_t status = testing_spmm_csc<int32_t, int32_t, hipComplex>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 #endif

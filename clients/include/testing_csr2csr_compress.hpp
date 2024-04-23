@@ -29,6 +29,7 @@
 #include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
+#include "hipsparse_arguments.hpp"
 
 #include <algorithm>
 #include <hipsparse.h>
@@ -350,7 +351,7 @@ hipsparseStatus_t testing_csr2csr_compress(Arguments argus)
     T   tol = make_DataType<T>(argus.alpha);
 
     int                  safe_size = 100;
-    hipsparseIndexBase_t idx_base  = argus.idx_base;
+    hipsparseIndexBase_t idx_base  = argus.baseA;
     std::string          binfile   = "";
     std::string          filename  = "";
     hipsparseStatus_t    status;
@@ -466,12 +467,6 @@ hipsparseStatus_t testing_csr2csr_compress(Arguments argus)
             fprintf(stderr, "Cannot open [read] %s\n", binfile.c_str());
             return HIPSPARSE_STATUS_INTERNAL_ERROR;
         }
-    }
-    else if(argus.laplacian)
-    {
-        m = n = gen_2d_laplacian(
-            argus.laplacian, hcsr_row_ptr_A, hcsr_col_ind_A, hcsr_val_A, idx_base);
-        hnnz_A = hcsr_row_ptr_A[m];
     }
     else
     {

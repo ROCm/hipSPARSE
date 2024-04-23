@@ -22,6 +22,7 @@
  * ************************************************************************ */
 
 #include "testing_spmv_coo.hpp"
+#include "hipsparse_arguments.hpp"
 
 #include <hipsparse.h>
 
@@ -34,13 +35,15 @@ TEST(spmv_coo_bad_arg, spmv_coo_float)
 
 TEST(spmv_coo, spmv_coo_i32_float)
 {
-    hipsparseStatus_t status = testing_spmv_coo<int32_t, float>();
+    Arguments arg;
+    hipsparseStatus_t status = testing_spmv_coo<int32_t, float>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
 TEST(spmv_coo, spmv_coo_i64_double)
 {
-    hipsparseStatus_t status = testing_spmv_coo<int64_t, double>();
+    Arguments arg;
+    hipsparseStatus_t status = testing_spmv_coo<int64_t, double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 #endif

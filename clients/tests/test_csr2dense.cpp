@@ -50,7 +50,7 @@ Arguments setup_csr2dense_arguments(csr2dense_tuple tup)
     arg.M        = std::get<0>(tup);
     arg.N        = std::get<1>(tup);
     arg.lda      = std::get<2>(tup);
-    arg.idx_base = std::get<3>(tup);
+    arg.baseA = std::get<3>(tup);
     return arg;
 }
 

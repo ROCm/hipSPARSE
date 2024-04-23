@@ -22,6 +22,7 @@
  * ************************************************************************ */
 
 #include "testing_gemvi.hpp"
+#include "hipsparse_arguments.hpp"
 
 #include <hipsparse.h>
 
@@ -32,24 +33,28 @@ TEST(gemvi_bad_arg, gemvi_float)
 
 TEST(gemvi, gemvi_float)
 {
-    hipsparseStatus_t status = testing_gemvi<float>();
+    Arguments arg;
+    hipsparseStatus_t status = testing_gemvi<float>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
 TEST(gemvi, gemvi_double)
 {
-    hipsparseStatus_t status = testing_gemvi<double>();
+    Arguments arg;
+    hipsparseStatus_t status = testing_gemvi<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
 TEST(gemvi, gemvi_hipFloatComplex)
 {
-    hipsparseStatus_t status = testing_gemvi<hipComplex>();
+    Arguments arg;
+    hipsparseStatus_t status = testing_gemvi<hipComplex>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
 TEST(gemvi, gemvi_hipDoubleComplex)
 {
-    hipsparseStatus_t status = testing_gemvi<hipDoubleComplex>();
+    Arguments arg;
+    hipsparseStatus_t status = testing_gemvi<hipDoubleComplex>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }

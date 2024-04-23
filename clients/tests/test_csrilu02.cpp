@@ -78,7 +78,7 @@ Arguments setup_csrilu02_arguments(csrilu02_tuple tup)
     arg.boosttol     = std::get<2>(tup);
     arg.boostval     = std::get<3>(tup);
     arg.boostvali    = std::get<4>(tup);
-    arg.idx_base     = std::get<5>(tup);
+    arg.baseA     = std::get<5>(tup);
     arg.timing       = 0;
     return arg;
 }
@@ -91,7 +91,7 @@ Arguments setup_csrilu02_arguments(csrilu02_bin_tuple tup)
     arg.boosttol     = std::get<1>(tup);
     arg.boostval     = std::get<2>(tup);
     arg.boostvali    = std::get<3>(tup);
-    arg.idx_base     = std::get<4>(tup);
+    arg.baseA     = std::get<4>(tup);
     arg.timing       = 0;
 
     // Determine absolute path of test matrix

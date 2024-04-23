@@ -73,7 +73,7 @@ Arguments setup_bsrsv2_arguments(bsrsv2_tuple tup)
     Arguments arg;
     arg.M         = std::get<0>(tup);
     arg.alpha     = std::get<1>(tup);
-    arg.idx_base  = std::get<2>(tup);
+    arg.baseA  = std::get<2>(tup);
     arg.block_dim = std::get<3>(tup);
     arg.dirA      = std::get<4>(tup);
     arg.transA    = std::get<5>(tup);
@@ -88,7 +88,7 @@ Arguments setup_bsrsv2_arguments(bsrsv2_bin_tuple tup)
     Arguments arg;
     arg.M         = -99;
     arg.alpha     = std::get<0>(tup);
-    arg.idx_base  = std::get<1>(tup);
+    arg.baseA  = std::get<1>(tup);
     arg.block_dim = std::get<2>(tup);
     arg.dirA      = std::get<3>(tup);
     arg.transA    = std::get<4>(tup);

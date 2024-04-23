@@ -80,7 +80,7 @@ Arguments setup_csr2coo_arguments(csr2coo_tuple tup)
     Arguments arg;
     arg.M        = std::get<0>(tup);
     arg.N        = std::get<1>(tup);
-    arg.idx_base = std::get<2>(tup);
+    arg.baseA = std::get<2>(tup);
     arg.timing   = 0;
     return arg;
 }
@@ -90,7 +90,7 @@ Arguments setup_csr2coo_arguments(csr2coo_bin_tuple tup)
     Arguments arg;
     arg.M        = -99;
     arg.N        = -99;
-    arg.idx_base = std::get<0>(tup);
+    arg.baseA = std::get<0>(tup);
     arg.timing   = 0;
 
     // Determine absolute path of test matrix
@@ -109,19 +109,19 @@ TEST(csr2coo_bad_arg, csr2coo)
     testing_csr2coo_bad_arg();
 }
 
-TEST_P(parameterized_csr2coo, csr2coo)
+TEST_P(parameterized_csr2coo, csr2coo_float)
 {
     Arguments arg = setup_csr2coo_arguments(GetParam());
 
-    hipsparseStatus_t status = testing_csr2coo(arg);
+    hipsparseStatus_t status = testing_csr2coo<float>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-TEST_P(parameterized_csr2coo_bin, csr2coo_bin)
+TEST_P(parameterized_csr2coo_bin, csr2coo_bin_float)
 {
     Arguments arg = setup_csr2coo_arguments(GetParam());
 
-    hipsparseStatus_t status = testing_csr2coo(arg);
+    hipsparseStatus_t status = testing_csr2coo<float>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 #endif

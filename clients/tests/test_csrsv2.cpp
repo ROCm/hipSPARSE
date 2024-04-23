@@ -78,7 +78,7 @@ Arguments setup_csrsv2_arguments(csrsv2_tuple tup)
     Arguments arg;
     arg.M         = std::get<0>(tup);
     arg.alpha     = std::get<1>(tup);
-    arg.idx_base  = std::get<2>(tup);
+    arg.baseA  = std::get<2>(tup);
     arg.transA    = std::get<3>(tup);
     arg.diag_type = std::get<4>(tup);
     arg.fill_mode = std::get<5>(tup);
@@ -91,7 +91,7 @@ Arguments setup_csrsv2_arguments(csrsv2_bin_tuple tup)
     Arguments arg;
     arg.M         = -99;
     arg.alpha     = std::get<0>(tup);
-    arg.idx_base  = std::get<1>(tup);
+    arg.baseA  = std::get<1>(tup);
     arg.transA    = std::get<2>(tup);
     arg.diag_type = std::get<3>(tup);
     arg.fill_mode = std::get<4>(tup);

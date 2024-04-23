@@ -28,6 +28,7 @@
 #include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
+#include "hipsparse_arguments.hpp"
 
 #include <hipsparse.h>
 #include <string>
@@ -149,7 +150,7 @@ void testing_spmv_coo_aos_bad_arg(void)
 }
 
 template <typename I, typename T>
-hipsparseStatus_t testing_spmv_coo_aos(void)
+hipsparseStatus_t testing_spmv_coo_aos(Arguments argus)
 {
 #if(!defined(CUDART_VERSION) || (CUDART_VERSION >= 10010 && CUDART_VERSION < 12000))
     T                    h_alpha  = make_DataType<T>(2.0);

@@ -22,6 +22,7 @@
  * ************************************************************************ */
 
 #include "testing_gtsv.hpp"
+#include "hipsparse_arguments.hpp"
 
 #include <hipsparse.h>
 
@@ -34,19 +35,22 @@ TEST(gtsv2_bad_arg, gtsv2_float)
 
 TEST(gtsv2, gtsv2_float)
 {
-    hipsparseStatus_t status = testing_gtsv2<float>();
+    Arguments arg;
+    hipsparseStatus_t status = testing_gtsv2<float>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
 TEST(gtsv2, gtsv2_double)
 {
-    hipsparseStatus_t status = testing_gtsv2<double>();
+    Arguments arg;
+    hipsparseStatus_t status = testing_gtsv2<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
 TEST(gtsv2, gtsv2_hipComplex)
 {
-    hipsparseStatus_t status = testing_gtsv2<hipComplex>();
+    Arguments arg;
+    hipsparseStatus_t status = testing_gtsv2<hipComplex>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 #endif

@@ -29,6 +29,7 @@
 #include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
+#include "hipsparse_arguments.hpp"
 
 #include <hipsparse.h>
 #include <string>
@@ -122,7 +123,7 @@ void testing_gtsv2_strided_batch_bad_arg(void)
 }
 
 template <typename T>
-hipsparseStatus_t testing_gtsv2_strided_batch(void)
+hipsparseStatus_t testing_gtsv2_strided_batch(Arguments argus)
 {
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 

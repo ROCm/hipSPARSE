@@ -29,6 +29,7 @@
 #include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
+#include "hipsparse_arguments.hpp"
 
 #include <cmath>
 #include <hipsparse.h>
@@ -158,7 +159,7 @@ hipsparseStatus_t testing_csrmv(Arguments argus)
     T                    h_alpha   = make_DataType<T>(argus.alpha);
     T                    h_beta    = make_DataType<T>(argus.beta);
     hipsparseOperation_t transA    = argus.transA;
-    hipsparseIndexBase_t idx_base  = argus.idx_base;
+    hipsparseIndexBase_t idx_base  = argus.baseA;
     std::string          binfile   = "";
     std::string          filename  = "";
     hipsparseStatus_t    status;
@@ -257,11 +258,6 @@ hipsparseStatus_t testing_csrmv(Arguments argus)
             return HIPSPARSE_STATUS_INTERNAL_ERROR;
         }
     }
-    else if(argus.laplacian)
-    {
-        nrow = ncol = gen_2d_laplacian(argus.laplacian, hcsr_row_ptr, hcol_ind, hval, idx_base);
-        nnz         = hcsr_row_ptr[nrow];
-    }
     else
     {
         if(filename != "")
@@ -280,19 +276,16 @@ hipsparseStatus_t testing_csrmv(Arguments argus)
         }
 
         // Convert COO to CSR
-        if(!argus.laplacian)
+        hcsr_row_ptr.resize(nrow + 1, 0);
+        for(int i = 0; i < nnz; ++i)
         {
-            hcsr_row_ptr.resize(nrow + 1, 0);
-            for(int i = 0; i < nnz; ++i)
-            {
-                ++hcsr_row_ptr[hcoo_row_ind[i] + 1 - idx_base];
-            }
+            ++hcsr_row_ptr[hcoo_row_ind[i] + 1 - idx_base];
+        }
 
-            hcsr_row_ptr[0] = idx_base;
-            for(int i = 0; i < nrow; ++i)
-            {
-                hcsr_row_ptr[i + 1] += hcsr_row_ptr[i];
-            }
+        hcsr_row_ptr[0] = idx_base;
+        for(int i = 0; i < nrow; ++i)
+        {
+            hcsr_row_ptr[i + 1] += hcsr_row_ptr[i];
         }
     }
 

@@ -65,7 +65,7 @@ Arguments setup_csr2csr_compress_arguments(csr2csr_compress_tuple tup)
     arg.M        = std::get<0>(tup);
     arg.N        = std::get<1>(tup);
     arg.alpha    = std::get<2>(tup);
-    arg.idx_base = std::get<3>(tup);
+    arg.baseA = std::get<3>(tup);
     arg.timing   = 0;
     return arg;
 }
@@ -76,7 +76,7 @@ Arguments setup_csr2csr_compress_arguments(csr2csr_compress_bin_tuple tup)
     arg.M        = -99;
     arg.N        = -99;
     arg.alpha    = std::get<0>(tup);
-    arg.idx_base = std::get<1>(tup);
+    arg.baseA = std::get<1>(tup);
     arg.timing   = 0;
 
     // Determine absolute path of test matrix

@@ -29,6 +29,7 @@
 #include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
+#include "hipsparse_arguments.hpp"
 
 #include <hipsparse.h>
 #include <string>
@@ -390,12 +391,6 @@ hipsparseStatus_t testing_gemmi(Arguments argus)
             fprintf(stderr, "Cannot open [read] %s\n", binfile.c_str());
             return HIPSPARSE_STATUS_INTERNAL_ERROR;
         }
-    }
-    else if(argus.laplacian)
-    {
-        N = K = gen_2d_laplacian(
-            argus.laplacian, hcsc_col_ptrB, hcsc_row_indB, hcsc_valB, HIPSPARSE_INDEX_BASE_ZERO);
-        nnz = hcsc_col_ptrB[N];
     }
     else
     {

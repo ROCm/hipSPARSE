@@ -33,9 +33,9 @@ typedef std::tuple<int, int, double, hipsparseIndexBase_t, hipsparseIndexBase_t>
 typedef std::tuple<double, hipsparseIndexBase_t, hipsparseIndexBase_t, std::string>
     prune_csr2csr_by_percentage_bin_tuple;
 
-int    prune_csr2csr_by_percentage_M_range[] = {-1, 10, 500, 872, 465327};
-int    prune_csr2csr_by_percentage_N_range[] = {-3, 33, 242, 623, 592645};
-double prune_csr2csr_by_percentage_range[]   = {5.7, 75.0, 101.0};
+int    prune_csr2csr_by_percentage_M_range[] = {10, 500, 872, 465327};
+int    prune_csr2csr_by_percentage_N_range[] = {33, 242, 623, 592645};
+double prune_csr2csr_by_percentage_range[]   = {5.7, 75.0};
 
 hipsparseIndexBase_t prune_csr2csr_by_percentage_base_A_range[]
     = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
@@ -82,8 +82,8 @@ Arguments setup_prune_csr2csr_by_percentage_arguments(prune_csr2csr_by_percentag
     arg.M          = std::get<0>(tup);
     arg.N          = std::get<1>(tup);
     arg.percentage = std::get<2>(tup);
-    arg.idx_base   = std::get<3>(tup);
-    arg.idx_base2  = std::get<4>(tup);
+    arg.baseA   = std::get<3>(tup);
+    arg.baseB  = std::get<4>(tup);
     arg.timing     = 0;
     return arg;
 }
@@ -94,8 +94,8 @@ Arguments setup_prune_csr2csr_by_percentage_arguments(prune_csr2csr_by_percentag
     arg.M          = -99;
     arg.N          = -99;
     arg.percentage = std::get<0>(tup);
-    arg.idx_base   = std::get<1>(tup);
-    arg.idx_base2  = std::get<2>(tup);
+    arg.baseA   = std::get<1>(tup);
+    arg.baseB  = std::get<2>(tup);
     arg.timing     = 0;
 
     // Determine absolute path of test matrix

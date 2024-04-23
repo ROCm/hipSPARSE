@@ -82,8 +82,8 @@ Arguments setup_bsr2csr_arguments(bsr2csr_tuple tup)
     arg.M         = std::get<0>(tup);
     arg.N         = std::get<1>(tup);
     arg.block_dim = std::get<2>(tup);
-    arg.idx_base  = std::get<3>(tup);
-    arg.idx_base2 = std::get<4>(tup);
+    arg.baseA  = std::get<3>(tup);
+    arg.baseB = std::get<4>(tup);
     arg.dirA      = std::get<5>(tup);
     arg.timing    = 0;
     return arg;
@@ -95,8 +95,8 @@ Arguments setup_bsr2csr_arguments(bsr2csr_bin_tuple tup)
     arg.M         = -99;
     arg.N         = -99;
     arg.block_dim = std::get<0>(tup);
-    arg.idx_base  = std::get<1>(tup);
-    arg.idx_base2 = std::get<2>(tup);
+    arg.baseA  = std::get<1>(tup);
+    arg.baseB = std::get<2>(tup);
     arg.dirA      = std::get<3>(tup);
     arg.timing    = 0;
 

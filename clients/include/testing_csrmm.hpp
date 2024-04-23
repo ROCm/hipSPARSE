@@ -29,6 +29,7 @@
 #include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
+#include "hipsparse_arguments.hpp"
 
 #include <hipsparse.h>
 #include <string>
@@ -300,7 +301,7 @@ hipsparseStatus_t testing_csrmm(Arguments argus)
     T                    h_beta    = make_DataType<T>(argus.beta);
     hipsparseOperation_t transA    = argus.transA;
     hipsparseOperation_t transB    = argus.transB;
-    hipsparseIndexBase_t idx_base  = argus.idx_base;
+    hipsparseIndexBase_t idx_base  = argus.baseA;
     std::string          binfile   = "";
     std::string          filename  = "";
     hipsparseStatus_t    status;

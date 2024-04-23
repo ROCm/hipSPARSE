@@ -29,6 +29,7 @@
 #include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
+#include "hipsparse_arguments.hpp"
 
 #include <algorithm>
 #include <hipsparse.h>
@@ -623,9 +624,9 @@ hipsparseStatus_t testing_prune_csr2csr_by_percentage(Arguments argus)
 {
     int                  M              = argus.M;
     int                  N              = argus.N;
-    T                    percentage     = static_cast<T>(argus.percentage);
-    hipsparseIndexBase_t csr_idx_base_A = argus.idx_base;
-    hipsparseIndexBase_t csr_idx_base_C = argus.idx_base2;
+    T                    percentage     = argus.get_percentage<T>();
+    hipsparseIndexBase_t csr_idx_base_A = argus.baseA;
+    hipsparseIndexBase_t csr_idx_base_C = argus.baseB;
     std::string          binfile        = "";
     std::string          filename       = "";
     hipsparseStatus_t    status;
@@ -660,71 +661,6 @@ hipsparseStatus_t testing_prune_csr2csr_by_percentage(Arguments argus)
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatIndexBase(descr_A, csr_idx_base_A));
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatIndexBase(descr_C, csr_idx_base_C));
 
-    // Argument sanity check before allocating invalid memory
-    if(M <= 0 || N <= 0 || percentage < static_cast<T>(0) || percentage > static_cast<T>(100))
-    {
-        size_t safe_size = 100;
-
-        auto csr_row_ptr_A_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto csr_col_ind_A_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto csr_val_A_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-        auto csr_row_ptr_C_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto csr_col_ind_C_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto csr_val_C_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-        auto temp_buffer_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-
-        int* csr_row_ptr_A = (int*)csr_row_ptr_A_managed.get();
-        int* csr_col_ind_A = (int*)csr_col_ind_A_managed.get();
-        T*   csr_val_A     = (T*)csr_val_A_managed.get();
-        int* csr_row_ptr_C = (int*)csr_row_ptr_C_managed.get();
-        int* csr_col_ind_C = (int*)csr_col_ind_C_managed.get();
-        T*   csr_val_C     = (T*)csr_val_C_managed.get();
-        T*   temp_buffer   = (T*)temp_buffer_managed.get();
-
-        if(!csr_row_ptr_A || !csr_col_ind_A || !csr_val_A || !csr_row_ptr_C || !csr_col_ind_C
-           || !csr_val_C || !temp_buffer)
-        {
-            PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-            return HIPSPARSE_STATUS_ALLOC_FAILED;
-        }
-
-        status = hipsparseXpruneCsr2csrByPercentage(handle,
-                                                    M,
-                                                    N,
-                                                    safe_size,
-                                                    descr_A,
-                                                    csr_val_A,
-                                                    csr_row_ptr_A,
-                                                    csr_col_ind_A,
-                                                    percentage,
-                                                    descr_C,
-                                                    csr_val_C,
-                                                    csr_row_ptr_C,
-                                                    csr_col_ind_C,
-                                                    info,
-                                                    temp_buffer);
-
-        if(M < 0 || N < 0 || percentage < static_cast<T>(0) || percentage > static_cast<T>(100))
-        {
-            verify_hipsparse_status_invalid_size(
-                status, "Error: m < 0 || n < 0 || percentage < 0 || percentage > 100");
-        }
-        else
-        {
-            verify_hipsparse_status_success(
-                status, "m >= 0 && n >= 0 && percentage >= 0 || percentage <= 100");
-        }
-
-        return HIPSPARSE_STATUS_SUCCESS;
-    }
-
     // Read or construct CSR matrix
     std::vector<int> h_nnz_total_dev_host_ptr(1);
     std::vector<int> h_csr_row_ptr_A;
@@ -747,12 +683,6 @@ hipsparseStatus_t testing_prune_csr2csr_by_percentage(Arguments argus)
             fprintf(stderr, "Cannot open [read] %s\n", binfile.c_str());
             return HIPSPARSE_STATUS_INTERNAL_ERROR;
         }
-    }
-    else if(argus.laplacian)
-    {
-        M = N = gen_2d_laplacian(
-            argus.laplacian, h_csr_row_ptr_A, h_csr_col_ind_A, h_csr_val_A, csr_idx_base_A);
-        nnz_A = h_csr_row_ptr_A[M];
     }
     else
     {

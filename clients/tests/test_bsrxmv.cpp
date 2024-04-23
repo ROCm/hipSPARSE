@@ -22,6 +22,7 @@
  * ************************************************************************ */
 
 #include "testing_bsrxmv.hpp"
+#include "hipsparse_arguments.hpp"
 
 #include <hipsparse.h>
 
@@ -49,19 +50,22 @@ TEST(bsrxmv_bad_arg, bsrxmv_bad_arg_double_complex)
 
 TEST(bsrxmv, bsrxmv_float)
 {
-    hipsparseStatus_t status = testing_bsrxmv<float>();
+    Arguments arg;
+    hipsparseStatus_t status = testing_bsrxmv<float>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
 TEST(bsrxmv, bsrxmv_double)
 {
-    hipsparseStatus_t status = testing_bsrxmv<double>();
+    Arguments arg;
+    hipsparseStatus_t status = testing_bsrxmv<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
 TEST(bsrxmv, bsrxmv_hipComplex)
 {
-    hipsparseStatus_t status = testing_bsrxmv<hipComplex>();
+    Arguments arg;
+    hipsparseStatus_t status = testing_bsrxmv<hipComplex>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 #endif

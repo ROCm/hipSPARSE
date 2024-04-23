@@ -29,6 +29,7 @@
 #include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
+#include "hipsparse_arguments.hpp"
 
 #include <algorithm>
 #include <hipsparse.h>
@@ -89,12 +90,13 @@ void testing_csr2coo_bad_arg(void)
 #endif
 }
 
+template <typename T>
 hipsparseStatus_t testing_csr2coo(Arguments argus)
 {
     int                  m         = argus.M;
     int                  n         = argus.N;
     int                  safe_size = 100;
-    hipsparseIndexBase_t idx_base  = argus.idx_base;
+    hipsparseIndexBase_t idx_base  = argus.baseA;
     std::string          binfile   = "";
     std::string          filename  = "";
     hipsparseStatus_t    status;
@@ -162,7 +164,7 @@ hipsparseStatus_t testing_csr2coo(Arguments argus)
     std::vector<int>   hcsr_row_ptr;
     std::vector<int>   hcoo_row_ind;
     std::vector<int>   hcol_ind;
-    std::vector<float> hval(nnz);
+    std::vector<T> hval(nnz);
 
     // Initial data on CPU
     srand(12345ULL);
@@ -173,11 +175,6 @@ hipsparseStatus_t testing_csr2coo(Arguments argus)
             fprintf(stderr, "Cannot open [read] %s\n", binfile.c_str());
             return HIPSPARSE_STATUS_INTERNAL_ERROR;
         }
-    }
-    else if(argus.laplacian)
-    {
-        m = n = gen_2d_laplacian(argus.laplacian, hcsr_row_ptr, hcol_ind, hval, idx_base);
-        nnz   = hcsr_row_ptr[m];
     }
     else
     {

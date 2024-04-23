@@ -32,6 +32,7 @@
 #include <hipsparse.h>
 
 #include "utility.hpp"
+#include "hipsparse_arguments.hpp"
 
 #include <iostream>
 

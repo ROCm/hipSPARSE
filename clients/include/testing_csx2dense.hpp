@@ -29,6 +29,7 @@
 #include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
+#include "hipsparse_arguments.hpp"
 
 #include <algorithm>
 #include <hipsparse.h>
@@ -129,7 +130,7 @@ hipsparseStatus_t testing_csx2dense(const Arguments& argus, FUNC1& csx2dense, FU
     int                  M        = argus.M;
     int                  N        = argus.N;
     int                  LD       = argus.lda;
-    hipsparseIndexBase_t idx_base = argus.idx_base;
+    hipsparseIndexBase_t idx_base = argus.baseA;
 
     hipsparseStatus_t              status;
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);

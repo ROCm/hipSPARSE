@@ -29,6 +29,7 @@
 #include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
+#include "hipsparse_arguments.hpp"
 
 #include <algorithm>
 #include <hipsparse.h>
@@ -37,20 +38,20 @@
 using namespace hipsparse;
 using namespace hipsparse_test;
 
-struct test_hyb
-{
-    int                     m;
-    int                     n;
-    hipsparseHybPartition_t partition;
-    int                     ell_nnz;
-    int                     ell_width;
-    int*                    ell_col_ind;
-    void*                   ell_val;
-    int                     coo_nnz;
-    int*                    coo_row_ind;
-    int*                    coo_col_ind;
-    void*                   coo_val;
-};
+// struct test_hyb
+// {
+//     int                     m;
+//     int                     n;
+//     hipsparseHybPartition_t partition;
+//     int                     ell_nnz;
+//     int                     ell_width;
+//     int*                    ell_col_ind;
+//     void*                   ell_val;
+//     int                     coo_nnz;
+//     int*                    coo_row_ind;
+//     int*                    coo_col_ind;
+//     void*                   coo_val;
+// };
 
 template <typename T>
 void testing_hyb2csr_bad_arg(void)
@@ -149,7 +150,7 @@ hipsparseStatus_t testing_hyb2csr(Arguments argus)
     int                  m         = argus.M;
     int                  n         = argus.N;
     int                  safe_size = 100;
-    hipsparseIndexBase_t idx_base  = argus.idx_base;
+    hipsparseIndexBase_t idx_base  = argus.baseA;
     std::string          binfile   = "";
     std::string          filename  = "";
     hipsparseStatus_t    status;
@@ -253,12 +254,6 @@ hipsparseStatus_t testing_hyb2csr(Arguments argus)
             fprintf(stderr, "Cannot open [read] %s\n", binfile.c_str());
             return HIPSPARSE_STATUS_INTERNAL_ERROR;
         }
-    }
-    else if(argus.laplacian)
-    {
-        m = n = gen_2d_laplacian(
-            argus.laplacian, hcsr_row_ptr_gold, hcsr_col_ind_gold, hcsr_val_gold, idx_base);
-        nnz = hcsr_row_ptr_gold[m];
     }
     else
     {

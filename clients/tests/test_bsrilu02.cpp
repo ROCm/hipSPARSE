@@ -74,7 +74,7 @@ Arguments setup_bsrilu02_arguments(bsrilu02_tuple tup)
     arg.boostval     = std::get<4>(tup);
     arg.boostvali    = std::get<5>(tup);
     arg.dirA         = std::get<6>(tup);
-    arg.idx_base     = std::get<7>(tup);
+    arg.baseA     = std::get<7>(tup);
     arg.timing       = 0;
     return arg;
 }
@@ -89,7 +89,7 @@ Arguments setup_bsrilu02_arguments(bsrilu02_bin_tuple tup)
     arg.boostval     = std::get<3>(tup);
     arg.boostvali    = std::get<4>(tup);
     arg.dirA         = std::get<5>(tup);
-    arg.idx_base     = std::get<6>(tup);
+    arg.baseA     = std::get<6>(tup);
     arg.timing       = 0;
 
     // Determine absolute path of test matrix

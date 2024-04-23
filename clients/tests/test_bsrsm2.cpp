@@ -22,6 +22,7 @@
  * ************************************************************************ */
 
 #include "testing_bsrsm2.hpp"
+#include "hipsparse_arguments.hpp"
 
 #include <hipsparse.h>
 
@@ -34,25 +35,29 @@ TEST(bsrsm2_bad_arg, bsrsm2_float)
 
 TEST(bsrsm2, bsrsm2_float)
 {
-    hipsparseStatus_t status = testing_bsrsm2<float>();
+    Arguments arg;
+    hipsparseStatus_t status = testing_bsrsm2<float>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
 TEST(bsrsm2, bsrsm2_double)
 {
-    hipsparseStatus_t status = testing_bsrsm2<double>();
+    Arguments arg;
+    hipsparseStatus_t status = testing_bsrsm2<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
 TEST(bsrsm2, bsrsm2_hipComplex)
 {
-    hipsparseStatus_t status = testing_bsrsm2<hipComplex>();
+    Arguments arg;
+    hipsparseStatus_t status = testing_bsrsm2<hipComplex>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
 TEST(bsrsm2, bsrsm2_hipDoubleComplex)
 {
-    hipsparseStatus_t status = testing_bsrsm2<hipDoubleComplex>();
+    Arguments arg;
+    hipsparseStatus_t status = testing_bsrsm2<hipDoubleComplex>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 #endif

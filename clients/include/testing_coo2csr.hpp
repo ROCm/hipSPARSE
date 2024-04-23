@@ -29,6 +29,7 @@
 #include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
+#include "hipsparse_arguments.hpp"
 
 #include <algorithm>
 #include <hipsparse.h>
@@ -89,12 +90,13 @@ void testing_coo2csr_bad_arg(void)
 #endif
 }
 
+template<typename T>
 hipsparseStatus_t testing_coo2csr(Arguments argus)
 {
     int                  m         = argus.M;
     int                  n         = argus.N;
     int                  safe_size = 100;
-    hipsparseIndexBase_t idx_base  = argus.idx_base;
+    hipsparseIndexBase_t idx_base  = argus.baseA;
     std::string          binfile   = "";
     std::string          filename  = "";
     hipsparseStatus_t    status;
@@ -161,7 +163,7 @@ hipsparseStatus_t testing_coo2csr(Arguments argus)
     // Host structures
     std::vector<int>   hcoo_row_ind;
     std::vector<int>   hcoo_col_ind;
-    std::vector<float> hcoo_val;
+    std::vector<T> hcoo_val;
 
     // Sample initial COO matrix on CPU
     srand(12345ULL);
@@ -174,22 +176,6 @@ hipsparseStatus_t testing_coo2csr(Arguments argus)
             return HIPSPARSE_STATUS_INTERNAL_ERROR;
         }
 
-        hcoo_row_ind.resize(nnz);
-
-        // Convert to COO
-        for(int i = 0; i < m; ++i)
-        {
-            for(int j = hptr[i]; j < hptr[i + 1]; ++j)
-            {
-                hcoo_row_ind[j - idx_base] = i + idx_base;
-            }
-        }
-    }
-    else if(argus.laplacian)
-    {
-        std::vector<int> hptr(m + 1);
-        m = n = gen_2d_laplacian(argus.laplacian, hptr, hcoo_col_ind, hcoo_val, idx_base);
-        nnz   = hptr[m];
         hcoo_row_ind.resize(nnz);
 
         // Convert to COO

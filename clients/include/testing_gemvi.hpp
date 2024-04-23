@@ -29,6 +29,7 @@
 #include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
+#include "hipsparse_arguments.hpp"
 
 #include <typeinfo>
 
@@ -143,7 +144,7 @@ void testing_gemvi_bad_arg(void)
 }
 
 template <typename T>
-hipsparseStatus_t testing_gemvi(void)
+hipsparseStatus_t testing_gemvi(Arguments argus)
 {
     int m   = 1291;
     int n   = 724;

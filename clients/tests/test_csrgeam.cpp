@@ -81,14 +81,14 @@ Arguments setup_csrgeam_arguments(csrgeam_tuple tup)
     arg.N        = std::get<1>(tup);
     arg.alpha    = std::get<2>(tup);
     arg.beta     = std::get<3>(tup);
-    arg.idx_base = std::get<4>(tup);
+    arg.baseA = std::get<4>(tup);
 #ifdef __HIP_PLATFORM_NVIDIA__
     // There is a bug with index base in cusparse
-    arg.idx_base2 = std::get<4>(tup);
-    arg.idx_base3 = std::get<4>(tup);
+    arg.baseB = std::get<4>(tup);
+    arg.baseC = std::get<4>(tup);
 #else
-    arg.idx_base2 = std::get<5>(tup);
-    arg.idx_base3 = std::get<6>(tup);
+    arg.baseB = std::get<5>(tup);
+    arg.baseC = std::get<6>(tup);
 #endif
     arg.timing = 0;
     return arg;
@@ -101,14 +101,14 @@ Arguments setup_csrgeam_arguments(csrgeam_bin_tuple tup)
     arg.N        = -99;
     arg.alpha    = std::get<0>(tup);
     arg.beta     = std::get<1>(tup);
-    arg.idx_base = std::get<2>(tup);
+    arg.baseA = std::get<2>(tup);
 #ifdef __HIP_PLATFORM_NVIDIA__
     // There is a bug with index base in cusparse
-    arg.idx_base2 = std::get<2>(tup);
-    arg.idx_base3 = std::get<2>(tup);
+    arg.baseB = std::get<2>(tup);
+    arg.baseC = std::get<2>(tup);
 #else
-    arg.idx_base2 = std::get<3>(tup);
-    arg.idx_base3 = std::get<4>(tup);
+    arg.baseB = std::get<3>(tup);
+    arg.baseC = std::get<4>(tup);
 #endif
     arg.timing = 0;
 

@@ -67,8 +67,8 @@ Arguments setup_csrgemm2_b_arguments(csrgemm2_b_tuple tup)
     arg.M         = std::get<0>(tup);
     arg.N         = std::get<1>(tup);
     arg.beta      = std::get<2>(tup);
-    arg.idx_base3 = std::get<3>(tup);
-    arg.idx_base4 = std::get<4>(tup);
+    arg.baseC = std::get<3>(tup);
+    arg.baseD = std::get<4>(tup);
     arg.timing    = 0;
     return arg;
 }
@@ -79,8 +79,8 @@ Arguments setup_csrgemm2_b_arguments(csrgemm2_b_bin_tuple tup)
     arg.M         = -99;
     arg.N         = -99;
     arg.beta      = std::get<0>(tup);
-    arg.idx_base3 = std::get<1>(tup);
-    arg.idx_base4 = std::get<2>(tup);
+    arg.baseC = std::get<1>(tup);
+    arg.baseD = std::get<2>(tup);
     arg.timing    = 0;
 
     // Determine absolute path of test matrix

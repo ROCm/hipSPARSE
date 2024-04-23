@@ -29,6 +29,7 @@
 #include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
+#include "hipsparse_arguments.hpp"
 
 #include <cmath>
 #include <hipsparse.h>
@@ -389,7 +390,7 @@ void testing_bsrxmv_bad_arg(void)
 }
 
 template <typename T>
-hipsparseStatus_t testing_bsrxmv()
+hipsparseStatus_t testing_bsrxmv(Arguments argus)
 {
     hipsparseDirection_t dir          = HIPSPARSE_DIRECTION_COLUMN;
     hipsparseOperation_t trans        = HIPSPARSE_OPERATION_NON_TRANSPOSE;

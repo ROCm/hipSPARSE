@@ -28,6 +28,7 @@
 #include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
+#include "hipsparse_arguments.hpp"
 
 #include <hipsparse.h>
 #include <string>
@@ -144,7 +145,7 @@ void testing_dense_to_sparse_csc_bad_arg(void)
 }
 
 template <typename I, typename J, typename T>
-hipsparseStatus_t testing_dense_to_sparse_csc(void)
+hipsparseStatus_t testing_dense_to_sparse_csc(Arguments argus)
 {
 #if(!defined(CUDART_VERSION))
     hipsparseIndexBase_t        idx_base = HIPSPARSE_INDEX_BASE_ZERO;

@@ -80,7 +80,7 @@ Arguments setup_coo2csr_arguments(coo2csr_tuple tup)
     Arguments arg;
     arg.M        = std::get<0>(tup);
     arg.N        = std::get<1>(tup);
-    arg.idx_base = std::get<2>(tup);
+    arg.baseA = std::get<2>(tup);
     arg.timing   = 0;
     return arg;
 }
@@ -90,7 +90,7 @@ Arguments setup_coo2csr_arguments(coo2csr_bin_tuple tup)
     Arguments arg;
     arg.M                = -99;
     arg.N                = -99;
-    arg.idx_base         = std::get<0>(tup);
+    arg.baseA         = std::get<0>(tup);
     arg.timing           = 0;
     std::string bin_file = std::get<1>(tup);
 
@@ -106,19 +106,19 @@ TEST(coo2csr_bad_arg, coo2csr)
     testing_coo2csr_bad_arg();
 }
 
-TEST_P(parameterized_coo2csr, coo2csr)
+TEST_P(parameterized_coo2csr, coo2csr_float)
 {
     Arguments arg = setup_coo2csr_arguments(GetParam());
 
-    hipsparseStatus_t status = testing_coo2csr(arg);
+    hipsparseStatus_t status = testing_coo2csr<float>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-TEST_P(parameterized_coo2csr_bin, coo2csr_bin)
+TEST_P(parameterized_coo2csr_bin, coo2csr_bin_float)
 {
     Arguments arg = setup_coo2csr_arguments(GetParam());
 
-    hipsparseStatus_t status = testing_coo2csr(arg);
+    hipsparseStatus_t status = testing_coo2csr<float>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 #endif

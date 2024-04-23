@@ -5936,7 +5936,7 @@ double get_time_us_sync(hipStream_t stream);
 // has to compile with option "-std=c++11", and this hipsparse library uses c++11 everywhere
 // c++11 allows intilization of member of a struct
 
-class Arguments
+/*class Arguments
 {
 public:
     int M              = 128;
@@ -6041,7 +6041,7 @@ public:
 
         return *this;
     }
-};
+};*/
 
 inline void missing_file_error_message(const char* filename)
 {
@@ -6071,7 +6071,12 @@ inline void missing_file_error_message(const char* filename)
     std::cerr << "#" << std::endl;
 }
 
-const char* get_hipsparse_clients_matrices_dir();
+static const char* s_hipsparse_clients_matrices_dir = nullptr;
+
+inline const char*        get_hipsparse_clients_matrices_dir()
+{
+    return s_hipsparse_clients_matrices_dir;
+}
 
 inline std::string get_filename(const std::string& bin_file)
 {
@@ -6104,5 +6109,20 @@ inline std::string get_filename(const std::string& bin_file)
     }
     return r;
 }
+
+struct test_hyb
+{
+    int                     m;
+    int                     n;
+    hipsparseHybPartition_t partition;
+    int                     ell_nnz;
+    int                     ell_width;
+    int*                    ell_col_ind;
+    void*                   ell_val;
+    int                     coo_nnz;
+    int*                    coo_row_ind;
+    int*                    coo_col_ind;
+    void*                   coo_val;
+};
 
 #endif // TESTING_UTILITY_HPP
