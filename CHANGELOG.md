@@ -15,7 +15,7 @@ Documentation for hipSPARSE is available at
 
 ### Fixes
 
-* Fixed `SpGEMM` and `SpGEMM_reuse` routines which were not matching cuSPARSE behaviour
+* Fixed SpGEMM and SpGEMM_reuse routines which were not matching cuSPARSE behaviour
 
 ### Optimizations
 
