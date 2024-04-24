@@ -332,7 +332,7 @@ hipsparseStatus_t testing_bsrilu02(Arguments argus)
     hipsparseSolvePolicy_t policy    = HIPSPARSE_SOLVE_POLICY_USE_LEVEL;
     std::string            binfile   = "";
     std::string            filename  = "";
-    hipsparseStatus_t      status;
+    //hipsparseStatus_t      status;
     int                    size;
 
     // When in testing mode, M == -99 indicates that we are testing with a real
@@ -608,6 +608,14 @@ hipsparseStatus_t testing_bsrilu02(Arguments argus)
                               sizeof(T) * nnzb * block_dim * block_dim,
                               hipMemcpyDeviceToHost));
 
+    // std::cout << "hbsr_val" << std::endl;
+    // for(size_t i = 0; i < hbsr_val.size(); i++)
+    // {
+    //     std::cout << hbsr_val[i] << " ";
+    // }
+    // std::cout << "" << std::endl;
+
+
     // Obtain bsrilu02 buffer size
     CHECK_HIPSPARSE_ERROR(hipsparseXbsrilu02_bufferSize(handle,
                                                         dir,
@@ -757,6 +765,7 @@ hipsparseStatus_t testing_bsrilu02(Arguments argus)
                                   dbsr_val_2,
                                   sizeof(T) * block_dim * block_dim * nnzb,
                                   hipMemcpyDeviceToHost));
+
         CHECK_HIP_ERROR(
             hipMemcpy(&h_analysis_pivot_2, d_analysis_pivot_2, sizeof(int), hipMemcpyDeviceToHost));
         CHECK_HIP_ERROR(
@@ -777,7 +786,7 @@ hipsparseStatus_t testing_bsrilu02(Arguments argus)
                          boost,
                          boost_tol,
                          boost_val);
-
+        
         h_analysis_pivot_gold = structural_pivot;
 
         // Solve pivot gives the first numerical or structural non-invertible block

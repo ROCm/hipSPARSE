@@ -3192,7 +3192,10 @@ inline void host_bsrilu02(hipsparseDirection_t    dir,
     std::vector<int> nnz_entries(mb, -1);
 
     // First diagonal block is index 0
-    diag_offset[0] = 0;
+    if(mb > 0)
+    {
+        diag_offset[0] = 0;
+    }
 
     // Loop over all BSR rows
     for(int i = 0; i < mb; ++i)
