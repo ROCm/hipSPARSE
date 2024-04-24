@@ -190,12 +190,12 @@ hipsparseStatus_t testing_gemvi(void)
     T*   dy     = (T*)dy_managed.get();
     T*   dA     = (T*)dA_managed.get();
 
-    if(!dx_ind || !dx_val || !dy || !dA)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!dx_ind || !dx_val || !dy || !dA");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!dx_ind || !dx_val || !dy || !dA)
+    //{
+    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
+    //                                    "!dx_ind || !dx_val || !dy || !dA");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     // copy data from CPU to device
     CHECK_HIP_ERROR(hipMemcpy(dx_ind, hx_ind.data(), sizeof(int) * nnz, hipMemcpyHostToDevice));

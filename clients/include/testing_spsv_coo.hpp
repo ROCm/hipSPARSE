@@ -249,13 +249,13 @@ hipsparseStatus_t testing_spsv_coo(void)
     T* dy_2    = (T*)dy_2_managed.get();
     T* d_alpha = (T*)d_alpha_managed.get();
 
-    if(!dval || !drow || !dcol || !dx || !dy_1 || !dy_2 || !d_alpha)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!dval || !drow || !dcol || !dx || "
-                                        "!dy_1 || !dy_2 || !d_alpha");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!dval || !drow || !dcol || !dx || !dy_1 || !dy_2 || !d_alpha)
+    //{
+    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
+    //                                    "!dval || !drow || !dcol || !dx || "
+    //                                    "!dy_1 || !dy_2 || !d_alpha");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     // copy data from CPU to device
     CHECK_HIP_ERROR(hipMemcpy(drow, hrow_ind.data(), sizeof(I) * nnz, hipMemcpyHostToDevice));

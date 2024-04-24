@@ -535,13 +535,13 @@ hipsparseStatus_t testing_csr2csr_compress(Arguments argus)
     int* dcsr_row_ptr_C = (int*)dcsr_row_ptr_C_managed.get();
     int* dnnz_per_row   = (int*)dnnz_per_row_managed.get();
 
-    if(!dcsr_row_ptr_A || !dcsr_col_ind_A || !dcsr_val_A || !dcsr_row_ptr_C || !dnnz_per_row)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!dcsr_row_ptr_A || !dcsr_col_ind_A || !dcsr_val_A || "
-                                        "!dcsr_row_ptr_C || !dnnz_per_row");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!dcsr_row_ptr_A || !dcsr_col_ind_A || !dcsr_val_A || !dcsr_row_ptr_C || !dnnz_per_row)
+    //{
+    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
+    //                                    "!dcsr_row_ptr_A || !dcsr_col_ind_A || !dcsr_val_A || "
+    //                                    "!dcsr_row_ptr_C || !dnnz_per_row");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     // Copy data from host to device
     CHECK_HIP_ERROR(hipMemcpy(
@@ -587,12 +587,12 @@ hipsparseStatus_t testing_csr2csr_compress(Arguments argus)
         int* dcsr_col_ind_C = (int*)dcsr_col_ind_C_managed.get();
         T*   dcsr_val_C     = (T*)dcsr_val_C_managed.get();
 
-        if(!dcsr_col_ind_C || !dcsr_val_C)
-        {
-            verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                            "!dcsr_col_ind_C || !dcsr_val_C");
-            return HIPSPARSE_STATUS_ALLOC_FAILED;
-        }
+        //if(!dcsr_col_ind_C || !dcsr_val_C)
+        //{
+        //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
+        //                                    "!dcsr_col_ind_C || !dcsr_val_C");
+        //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+        //}
 
         CHECK_HIPSPARSE_ERROR(hipsparseXcsr2csr_compress(handle,
                                                          m,

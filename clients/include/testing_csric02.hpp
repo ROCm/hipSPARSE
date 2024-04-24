@@ -468,13 +468,13 @@ hipsparseStatus_t testing_csric02(Arguments argus)
     int* d_analysis_pivot_2 = (int*)d_analysis_pivot_2_managed.get();
     int* d_solve_pivot_2    = (int*)d_solve_pivot_2_managed.get();
 
-    if(!dval_1 || !dval_2 || !dptr || !dcol || !d_analysis_pivot_2 || !d_solve_pivot_2)
-    {
-        verify_hipsparse_status_success(
-            HIPSPARSE_STATUS_ALLOC_FAILED,
-            "!dval_1 || !dval_2 || !dptr || !dcol || !d_analysis_pivot_2 || !d_solve_pivot_2");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!dval_1 || !dval_2 || !dptr || !dcol || !d_analysis_pivot_2 || !d_solve_pivot_2)
+    //{
+    //    verify_hipsparse_status_success(
+    //        HIPSPARSE_STATUS_ALLOC_FAILED,
+    //        "!dval_1 || !dval_2 || !dptr || !dcol || !d_analysis_pivot_2 || !d_solve_pivot_2");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     // copy data from CPU to device
     CHECK_HIP_ERROR(
@@ -491,11 +491,11 @@ hipsparseStatus_t testing_csric02(Arguments argus)
 
     void* dbuffer = (void*)dbuffer_managed.get();
 
-    if(!dbuffer)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!dbuffer");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!dbuffer)
+    //{
+    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!dbuffer");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     int h_analysis_pivot_gold;
     int h_analysis_pivot_1;

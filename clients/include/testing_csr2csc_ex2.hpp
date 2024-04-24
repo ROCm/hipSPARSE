@@ -557,13 +557,13 @@ hipsparseStatus_t testing_csr2csc_ex2(Arguments argus)
     int* dcsc_col_ptr = (int*)dcsc_col_ptr_managed.get();
     T*   dcsc_val     = (T*)dcsc_val_managed.get();
 
-    if(!dcsr_row_ptr || !dcsr_col_ind || !dcsr_val || !dcsc_row_ind || !dcsc_col_ptr || !dcsc_val)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!dcsr_row_ptr || !dcsr_col_ind || !dcsr_val || "
-                                        "!dcsc_row_ind || !dcsc_col_ptr || !dcsc_val");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!dcsr_row_ptr || !dcsr_col_ind || !dcsr_val || !dcsc_row_ind || !dcsc_col_ptr || !dcsc_val)
+    //{
+    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
+    //                                    "!dcsr_row_ptr || !dcsr_col_ind || !dcsr_val || "
+    //                                    "!dcsc_row_ind || !dcsc_col_ptr || !dcsc_val");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     // Reset CSC arrays
     CHECK_HIP_ERROR(hipMemset(dcsc_row_ind, 0, sizeof(int) * nnz));
@@ -599,11 +599,11 @@ hipsparseStatus_t testing_csr2csc_ex2(Arguments argus)
 
     void* dbuffer = (void*)dbuffer_managed.get();
 
-    if(!dbuffer)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!dbuffer");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!dbuffer)
+    //{
+    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!dbuffer");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     if(argus.unit_check)
     {

@@ -257,12 +257,12 @@ hipsparseStatus_t testing_nnz(Arguments argus)
     T*   d_A                  = (T*)A_managed.get();
     int* d_nnzPerRowColumn    = (int*)nnzPerRowColumn_managed.get();
     int* d_nnzTotalDevHostPtr = (int*)nnzTotalDevHostPtr_managed.get();
-    if(!d_nnzPerRowColumn || !d_nnzTotalDevHostPtr || !d_A)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!h_nnzPerRowColumn || !d_nnzPerRowColumn || !d_A");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!d_nnzPerRowColumn || !d_nnzTotalDevHostPtr || !d_A)
+    //{
+    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
+    //                                    "!h_nnzPerRowColumn || !d_nnzPerRowColumn || !d_A");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     std::vector<T>   h_A(lda * N);
     std::vector<int> h_nnzPerRowColumn(MN);

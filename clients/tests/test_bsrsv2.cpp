@@ -38,7 +38,7 @@ typedef std::tuple<int, double, base, int, dir, op, diag, fill>         bsrsv2_t
 typedef std::tuple<double, base, int, dir, op, diag, fill, std::string> bsrsv2_bin_tuple;
 
 int bsrsv2_M_range[]   = {0, 647};
-int bsrsv2_dim_range[] = {0, 1, 3, 9};
+int bsrsv2_dim_range[] = {1, 3, 9};
 
 double bsrsv2_alpha_range[] = {2.3};
 

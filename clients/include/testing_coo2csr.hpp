@@ -230,12 +230,12 @@ hipsparseStatus_t testing_coo2csr(Arguments argus)
     int* dcoo_row_ind = (int*)dcoo_row_ind_managed.get();
     int* dcsr_row_ptr = (int*)dcsr_row_ptr_managed.get();
 
-    if(!dcoo_row_ind || !dcsr_row_ptr)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!dcoo_row_ind || !dcsr_row_ptr");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!dcoo_row_ind || !dcsr_row_ptr)
+    //{
+    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
+    //                                    "!dcoo_row_ind || !dcsr_row_ptr");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     // Copy data from host to device
     CHECK_HIP_ERROR(

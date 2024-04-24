@@ -112,11 +112,11 @@ hipsparseStatus_t testing_identity(Arguments argus)
 
     int* dp = (int*)dp_managed.get();
 
-    if(!dp)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!p");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!dp)
+    //{
+    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!p");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     if(argus.unit_check)
     {

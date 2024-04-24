@@ -512,13 +512,13 @@ hipsparseStatus_t testing_csrilu02(Arguments argus)
     double* dboost_tol = (double*)boost_tol_managed.get();
     T*      dboost_val = (T*)boost_val_managed.get();
 
-    if(!dval1 || !dval2 || !dptr || !dcol || !d_position || !dboost_tol || !dboost_val)
-    {
-        verify_hipsparse_status_success(
-            HIPSPARSE_STATUS_ALLOC_FAILED,
-            "!dval1 || !dval2|| !dptr || !dcol || !d_position || !dboost_tol || !dboost_val");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!dval1 || !dval2 || !dptr || !dcol || !d_position || !dboost_tol || !dboost_val)
+    //{
+    //    verify_hipsparse_status_success(
+    //        HIPSPARSE_STATUS_ALLOC_FAILED,
+    //        "!dval1 || !dval2|| !dptr || !dcol || !d_position || !dboost_tol || !dboost_val");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     // copy data from CPU to device
     CHECK_HIP_ERROR(
@@ -536,11 +536,11 @@ hipsparseStatus_t testing_csrilu02(Arguments argus)
 
     void* dbuffer = (void*)dbuffer_managed.get();
 
-    if(!dbuffer)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!dbuffer");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!dbuffer)
+    //{
+    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!dbuffer");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     if(argus.unit_check)
     {

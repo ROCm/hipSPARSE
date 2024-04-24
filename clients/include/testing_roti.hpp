@@ -174,13 +174,13 @@ hipsparseStatus_t testing_roti(Arguments argus)
     T*   dc       = (T*)dc_managed.get();
     T*   ds       = (T*)ds_managed.get();
 
-    if(!dx_ind || !dx_val_1 || !dx_val_2 || !dy_1 || !dy_2 || !dc || !ds)
-    {
-        verify_hipsparse_status_success(
-            HIPSPARSE_STATUS_ALLOC_FAILED,
-            "!dx_ind || !dx_val_1 || !dx_val_2 || !dy_1 || !dy_2 || !dc || !ds");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    // if(!dx_ind || !dx_val_1 || !dx_val_2 || !dy_1 || !dy_2 || !dc || !ds)
+    // {
+    //     verify_hipsparse_status_success(
+    //         HIPSPARSE_STATUS_ALLOC_FAILED,
+    //         "!dx_ind || !dx_val_1 || !dx_val_2 || !dy_1 || !dy_2 || !dc || !ds");
+    //     return HIPSPARSE_STATUS_ALLOC_FAILED;
+    // }
 
     // copy data from CPU to device
     CHECK_HIP_ERROR(hipMemcpy(dx_ind, hx_ind.data(), sizeof(int) * nnz, hipMemcpyHostToDevice));

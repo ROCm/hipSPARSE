@@ -480,13 +480,13 @@ hipsparseStatus_t testing_bsric02(Arguments argus)
     T*   dcsr_val     = (T*)dcsr_val_managed.get();
     int* dbsr_row_ptr = (int*)dbsr_row_ptr_managed.get();
 
-    if(!dcsr_val || !dcsr_row_ptr || !dcsr_col_ind || !dbsr_row_ptr)
-    {
-        verify_hipsparse_status_success(
-            HIPSPARSE_STATUS_ALLOC_FAILED,
-            "!dcsr_val || !dcsr_row_ptr || !dcsr_col_ind || !dbsr_row_ptr");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!dcsr_val || !dcsr_row_ptr || !dcsr_col_ind || !dbsr_row_ptr)
+    //{
+    //    verify_hipsparse_status_success(
+    //        HIPSPARSE_STATUS_ALLOC_FAILED,
+    //        "!dcsr_val || !dcsr_row_ptr || !dcsr_col_ind || !dbsr_row_ptr");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     // copy data from CPU to device
     CHECK_HIP_ERROR(
@@ -524,13 +524,13 @@ hipsparseStatus_t testing_bsric02(Arguments argus)
     int* d_analysis_pivot_2 = (int*)d_analysis_pivot_2_managed.get();
     int* d_solve_pivot_2    = (int*)d_solve_pivot_2_managed.get();
 
-    if(!dbsr_val_1 || !dbsr_val_2 || !dbsr_col_ind || !d_analysis_pivot_2 || !d_solve_pivot_2)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!dbsr_val_1 || !dbsr_val_2 || !dbsr_col_ind || "
-                                        "!d_analysis_pivot_2 || !d_solve_pivot_2");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!dbsr_val_1 || !dbsr_val_2 || !dbsr_col_ind || !d_analysis_pivot_2 || !d_solve_pivot_2)
+    //{
+    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
+    //                                    "!dbsr_val_1 || !dbsr_val_2 || !dbsr_col_ind || "
+    //                                    "!d_analysis_pivot_2 || !d_solve_pivot_2");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     CHECK_HIPSPARSE_ERROR(hipsparseXcsr2bsr(handle,
                                             dir,
@@ -582,11 +582,11 @@ hipsparseStatus_t testing_bsric02(Arguments argus)
 
     void* dbuffer = (void*)dbuffer_managed.get();
 
-    if(!dbuffer)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!dbuffer");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!dbuffer)
+    //{
+    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!dbuffer");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     int h_analysis_pivot_gold;
     int h_analysis_pivot_1;

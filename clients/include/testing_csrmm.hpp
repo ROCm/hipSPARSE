@@ -501,13 +501,13 @@ hipsparseStatus_t testing_csrmm(Arguments argus)
     T*   d_alpha       = (T*)d_alpha_managed.get();
     T*   d_beta        = (T*)d_beta_managed.get();
 
-    if(!dcsr_valA || !dcsr_row_ptrA || !dcsr_col_indA || !dB || !dC_1 || !d_alpha || !d_beta)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!dcsr_valA || !dcsr_row_ptrA || !dcsr_col_indA || !dB || "
-                                        "!dC_1 || !d_alpha || !d_beta");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!dcsr_valA || !dcsr_row_ptrA || !dcsr_col_indA || !dB || !dC_1 || !d_alpha || !d_beta)
+    //{
+    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
+    //                                    "!dcsr_valA || !dcsr_row_ptrA || !dcsr_col_indA || !dB || "
+    //                                    "!dC_1 || !d_alpha || !d_beta");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     // copy data from CPU to device
     CHECK_HIP_ERROR(hipMemcpy(

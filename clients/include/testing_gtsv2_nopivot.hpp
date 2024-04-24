@@ -146,12 +146,12 @@ hipsparseStatus_t testing_gtsv2_nopivot(void)
     T* ddu = (T*)ddu_managed.get();
     T* dB  = (T*)dB_managed.get();
 
-    if(!ddl || !dd || !ddu || !dB)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!ddl || !dd || !ddu || !dB");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!ddl || !dd || !ddu || !dB)
+    //{
+    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
+    //                                    "!ddl || !dd || !ddu || !dB");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     // copy data from CPU to device
     CHECK_HIP_ERROR(hipMemcpy(ddl, hdl.data(), sizeof(T) * m, hipMemcpyHostToDevice));

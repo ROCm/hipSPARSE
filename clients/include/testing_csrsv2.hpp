@@ -444,7 +444,7 @@ hipsparseStatus_t testing_csrsv2(Arguments argus)
     T                      h_alpha   = make_DataType<T>(argus.alpha);
     std::string            binfile   = "";
     std::string            filename  = "";
-    hipsparseStatus_t      status;
+    //hipsparseStatus_t      status;
     int                    size;
 
     // When in testing mode, M == N == -99 indicates that we are testing with a real
@@ -651,13 +651,13 @@ hipsparseStatus_t testing_csrsv2(Arguments argus)
     T*   d_alpha    = (T*)d_alpha_managed.get();
     int* d_position = (int*)d_position_managed.get();
 
-    if(!dval || !dptr || !dcol || !dx || !dy_1 || !dy_2 || !d_alpha || !d_position)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!dval || !dptr || !dcol || !dx || "
-                                        "!dy_1 || !dy_2 || !d_alpha || !d_position");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!dval || !dptr || !dcol || !dx || !dy_1 || !dy_2 || !d_alpha || !d_position)
+    //{
+    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
+    //                                    "!dval || !dptr || !dcol || !dx || "
+    //                                    "!dy_1 || !dy_2 || !d_alpha || !d_position");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     // copy data from CPU to device
     CHECK_HIP_ERROR(
@@ -677,11 +677,11 @@ hipsparseStatus_t testing_csrsv2(Arguments argus)
 
     void* dbuffer = (void*)dbuffer_managed.get();
 
-    if(!dbuffer)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!dbuffer");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!dbuffer)
+    //{
+    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!dbuffer");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     // csrsv2 analysis
     CHECK_HIPSPARSE_ERROR(hipsparseXcsrsv2_analysis(

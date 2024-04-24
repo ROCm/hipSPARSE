@@ -1040,15 +1040,15 @@ hipsparseStatus_t testing_csrgeam2(Arguments argus)
     T*   dalpha  = (T*)dalpha_managed.get();
     T*   dbeta   = (T*)dbeta_managed.get();
 
-    if(!dAval || !dAptr || !dAcol || !dBval || !dBptr || !dBcol || !dCptr_1 || !dCptr_2 || !dalpha
-       || !dbeta)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!dAval || !dAptr || !dAcol || "
-                                        "!dBval || !dBptr || !dBcol || "
-                                        "!dCptr_1 || !dCptr_2 || !dalpha || !dbeta");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!dAval || !dAptr || !dAcol || !dBval || !dBptr || !dBcol || !dCptr_1 || !dCptr_2 || !dalpha
+    //   || !dbeta)
+    //{
+    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
+    //                                    "!dAval || !dAptr || !dAcol || "
+    //                                    "!dBval || !dBptr || !dBcol || "
+    //                                    "!dCptr_1 || !dCptr_2 || !dalpha || !dbeta");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     // copy data from CPU to device
     CHECK_HIP_ERROR(
@@ -1090,11 +1090,11 @@ hipsparseStatus_t testing_csrgeam2(Arguments argus)
 
     void* dbuffer = (void*)dbuffer_managed.get();
 
-    if(!dbuffer)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!dbuffer");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!dbuffer)
+    //{
+    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!dbuffer");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     // csrgeam2 nnz
 
@@ -1125,11 +1125,11 @@ hipsparseStatus_t testing_csrgeam2(Arguments argus)
     dCcol_1 = (int*)dCcol_1_managed.get();
     dCval_1 = (T*)dCval_1_managed.get();
 
-    if(!dCval_1 || !dCcol_1)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!dCval || !dCcol");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!dCval_1 || !dCcol_1)
+    //{
+    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!dCval || !dCcol");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     if(argus.unit_check)
     {

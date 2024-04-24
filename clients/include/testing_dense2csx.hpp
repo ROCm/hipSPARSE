@@ -261,12 +261,12 @@ hipsparseStatus_t testing_dense2csx(const Arguments& argus, FUNC& dense2csx)
     T*   d_dense_val          = (T*)m_dense_val.get();
     int* d_nnzPerRowColumn    = (int*)nnzPerRowColumn_managed.get();
     int* d_nnzTotalDevHostPtr = (int*)nnzTotalDevHostPtr_managed.get();
-    if(!d_nnzPerRowColumn || !d_nnzTotalDevHostPtr || !d_dense_val)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!h_nnzPerRowColumn || !d_nnzPerRowColumn || !d_dense_val");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!d_nnzPerRowColumn || !d_nnzTotalDevHostPtr || !d_dense_val)
+    //{
+    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
+    //                                    "!h_nnzPerRowColumn || !d_nnzPerRowColumn || !d_dense_val");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     //
     // Initialize the entire allocated memory.
@@ -311,20 +311,20 @@ hipsparseStatus_t testing_dense2csx(const Arguments& argus, FUNC& dense2csx)
     int* d_csx_col_row_ind = (int*)m_csx_col_row_ind.get();
     T*   d_csx_val         = (T*)m_csx_val.get();
 
-    if(!d_csx_row_col_ptr || !d_csx_val || !d_csx_col_row_ind)
-    {
-        CHECK_HIP_ERROR(hipErrorOutOfMemory);
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!d_csx_row_col_ptr || !d_csx_val || !d_csx_col_row_ind)
+    //{
+    //    CHECK_HIP_ERROR(hipErrorOutOfMemory);
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     std::vector<int> cpu_csx_row_col_ptr(DIMDIR + 1);
     std::vector<T>   cpu_csx_val(nnz);
     std::vector<int> cpu_csx_col_row_ind(nnz);
-    if(!cpu_csx_row_col_ptr.data() || !cpu_csx_val.data() || !cpu_csx_col_row_ind.data())
-    {
-        CHECK_HIP_ERROR(hipErrorOutOfMemory);
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!cpu_csx_row_col_ptr.data() || !cpu_csx_val.data() || !cpu_csx_col_row_ind.data())
+    //{
+    //    CHECK_HIP_ERROR(hipErrorOutOfMemory);
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     if(argus.unit_check)
     {

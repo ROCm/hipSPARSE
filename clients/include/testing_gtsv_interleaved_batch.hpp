@@ -156,12 +156,12 @@ hipsparseStatus_t testing_gtsv_interleaved_batch(void)
     T* ddu = (T*)ddu_managed.get();
     T* dx  = (T*)dx_managed.get();
 
-    if(!ddl || !dd || !ddu || !dx)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!ddl || !dd || !ddu || !dx");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!ddl || !dd || !ddu || !dx)
+    //{
+    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
+    //                                    "!ddl || !dd || !ddu || !dx");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     // copy data from CPU to device
     CHECK_HIP_ERROR(hipMemcpy(ddl, hdl.data(), sizeof(T) * m * batch_count, hipMemcpyHostToDevice));

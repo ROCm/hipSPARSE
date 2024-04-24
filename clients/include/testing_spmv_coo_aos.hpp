@@ -233,13 +233,13 @@ hipsparseStatus_t testing_spmv_coo_aos(void)
     T* d_alpha = (T*)d_alpha_managed.get();
     T* d_beta  = (T*)d_beta_managed.get();
 
-    if(!dval || !dind || !dx || !dy_1 || !dy_2 || !d_alpha || !d_beta)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!dval || !dind || !dx || "
-                                        "!dy_1 || !dy_2 || !d_alpha || !d_beta");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!dval || !dind || !dx || !dy_1 || !dy_2 || !d_alpha || !d_beta)
+    //{
+    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
+    //                                    "!dval || !dind || !dx || "
+    //                                    "!dy_1 || !dy_2 || !d_alpha || !d_beta");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     // copy data from CPU to device
     CHECK_HIP_ERROR(hipMemcpy(dind, hind.data(), sizeof(I) * 2 * nnz, hipMemcpyHostToDevice));

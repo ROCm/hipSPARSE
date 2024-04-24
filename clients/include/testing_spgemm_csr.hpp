@@ -444,16 +444,16 @@ hipsparseStatus_t testing_spgemm_csr(void)
     T* d_alpha          = (T*)d_alpha_managed.get();
     T* d_beta           = (T*)d_beta_managed.get();
 
-    if(!dcsr_row_ptr_A || !dcsr_col_ind_A || !dcsr_val_A || !dcsr_row_ptr_B || !dcsr_col_ind_B
-       || !dcsr_val_B || !dcsr_row_ptr_C_1 || !dcsr_row_ptr_C_2 || !d_alpha || !d_beta)
-    {
-        verify_hipsparse_status_success(
-            HIPSPARSE_STATUS_ALLOC_FAILED,
-            "!dcsr_row_ptr_A || !dcsr_col_ind_A || !dcsr_val_A || "
-            "!dcsr_row_ptr_B || !dcsr_col_ind_B || !dcsr_val_B || "
-            "!dcsr_row_ptr_C_1 || !dcsr_row_ptr_C_2 || !d_alpha || !d_beta");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!dcsr_row_ptr_A || !dcsr_col_ind_A || !dcsr_val_A || !dcsr_row_ptr_B || !dcsr_col_ind_B
+    //   || !dcsr_val_B || !dcsr_row_ptr_C_1 || !dcsr_row_ptr_C_2 || !d_alpha || !d_beta)
+    //{
+    //    verify_hipsparse_status_success(
+    //        HIPSPARSE_STATUS_ALLOC_FAILED,
+    //        "!dcsr_row_ptr_A || !dcsr_col_ind_A || !dcsr_val_A || "
+    //        "!dcsr_row_ptr_B || !dcsr_col_ind_B || !dcsr_val_B || "
+    //        "!dcsr_row_ptr_C_1 || !dcsr_row_ptr_C_2 || !d_alpha || !d_beta");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     // copy data from CPU to device
     CHECK_HIP_ERROR(hipMemcpy(
@@ -650,13 +650,13 @@ hipsparseStatus_t testing_spgemm_csr(void)
     J* dcsr_col_ind_C_2 = (J*)dcsr_col_ind_C_2_managed.get();
     T* dcsr_val_C_2     = (T*)dcsr_val_C_2_managed.get();
 
-    if(!dcsr_col_ind_C_1 || !dcsr_val_C_1 || !dcsr_col_ind_C_2 || !dcsr_val_C_2)
-    {
-        verify_hipsparse_status_success(
-            HIPSPARSE_STATUS_ALLOC_FAILED,
-            "!dcsr_col_ind_C_1 || !dcsr_val_C_1 || !dcsr_col_ind_C_2 || !dcsr_val_C_2");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!dcsr_col_ind_C_1 || !dcsr_val_C_1 || !dcsr_col_ind_C_2 || !dcsr_val_C_2)
+    //{
+    //    verify_hipsparse_status_success(
+    //        HIPSPARSE_STATUS_ALLOC_FAILED,
+    //        "!dcsr_col_ind_C_1 || !dcsr_val_C_1 || !dcsr_col_ind_C_2 || !dcsr_val_C_2");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     // Set C pointers
     CHECK_HIPSPARSE_ERROR(

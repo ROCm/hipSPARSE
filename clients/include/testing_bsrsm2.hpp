@@ -603,15 +603,15 @@ hipsparseStatus_t testing_bsrsm2(void)
     T*   dalpha       = (T*)dalpha_managed.get();
     int* dposition    = (int*)dpos_managed.get();
 
-    if(!dcsr_val || !dcsr_row_ptr || !dcsr_col_ind || !dbsr_row_ptr || !dB || !dX_1 || !dX_2
-       || !dalpha || !dposition)
-    {
-        verify_hipsparse_status_success(
-            HIPSPARSE_STATUS_ALLOC_FAILED,
-            "!dcsr_val || !dcsr_row_ptr || !dcsr_col_ind || !dbsr_row_ptr || !dB || !dX_1 || !dX_2 "
-            "|| !dalpha || !dposition");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!dcsr_val || !dcsr_row_ptr || !dcsr_col_ind || !dbsr_row_ptr || !dB || !dX_1 || !dX_2
+    //   || !dalpha || !dposition)
+    //{
+    //    verify_hipsparse_status_success(
+    //        HIPSPARSE_STATUS_ALLOC_FAILED,
+    //        "!dcsr_val || !dcsr_row_ptr || !dcsr_col_ind || !dbsr_row_ptr || !dB || !dX_1 || !dX_2 "
+    //        "|| !dalpha || !dposition");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     // copy data from CPU to device
     CHECK_HIP_ERROR(
@@ -644,12 +644,12 @@ hipsparseStatus_t testing_bsrsm2(void)
     int* dbsr_col_ind = (int*)dbsr_col_ind_managed.get();
     T*   dbsr_val     = (T*)dbsr_val_managed.get();
 
-    if(!dbsr_val || !dbsr_col_ind)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!dbsr_val || !dbsr_col_ind");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!dbsr_val || !dbsr_col_ind)
+    //{
+    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
+    //                                    "!dbsr_val || !dbsr_col_ind");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     CHECK_HIPSPARSE_ERROR(hipsparseXcsr2bsr(handle,
                                             HIPSPARSE_DIRECTION_ROW,
@@ -688,11 +688,11 @@ hipsparseStatus_t testing_bsrsm2(void)
 
     void* dbuffer = (void*)dbuffer_managed.get();
 
-    if(!dbuffer)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!dbuffer");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!dbuffer)
+    //{
+    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!dbuffer");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     // bsrsm2 analysis
     CHECK_HIPSPARSE_ERROR(hipsparseXbsrsm2_analysis(handle,

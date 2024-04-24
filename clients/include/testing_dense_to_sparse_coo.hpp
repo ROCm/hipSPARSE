@@ -178,11 +178,11 @@ hipsparseStatus_t testing_dense_to_sparse_coo(void)
 
     T* ddense = (T*)ddense_managed.get();
 
-    if(!ddense)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!ddense");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!ddense)
+    //{
+    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!ddense");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     // Copy host dense matrix to device
     CHECK_HIP_ERROR(
@@ -217,11 +217,11 @@ hipsparseStatus_t testing_dense_to_sparse_coo(void)
     I* dcol = (I*)dcol_managed.get();
     T* dval = (T*)dval_managed.get();
 
-    if(!drow || !dcol || !dval)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!drow || !dcol || !dval");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!drow || !dcol || !dval)
+    //{
+    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!drow || !dcol || !dval");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     CHECK_HIPSPARSE_ERROR(hipsparseCooSetPointers(matB, drow, dcol, dval));
 

@@ -125,11 +125,11 @@ hipsparseStatus_t testing_gather(void)
     T* dx_val = (T*)dx_val_managed.get();
     T* dy     = (T*)dy_managed.get();
 
-    if(!dx_ind || !dx_val || !dy)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!dx_ind || !dx_val || !dy");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!dx_ind || !dx_val || !dy)
+    //{
+    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!dx_ind || !dx_val || !dy");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     // copy data from CPU to device
     CHECK_HIP_ERROR(hipMemcpy(dx_ind, hx_ind.data(), sizeof(I) * nnz, hipMemcpyHostToDevice));

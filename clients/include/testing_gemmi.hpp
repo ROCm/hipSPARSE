@@ -291,7 +291,7 @@ hipsparseStatus_t testing_gemmi(Arguments argus)
     T                 h_beta    = make_DataType<T>(argus.beta);
     std::string       binfile   = "";
     std::string       filename  = "";
-    hipsparseStatus_t status;
+    //hipsparseStatus_t status;
 
     // When in testing mode, M == N == -99 indicates that we are testing with a real
     // matrix from cise.ufl.edu
@@ -474,13 +474,13 @@ hipsparseStatus_t testing_gemmi(Arguments argus)
     T*   d_alpha       = (T*)d_alpha_managed.get();
     T*   d_beta        = (T*)d_beta_managed.get();
 
-    if(!dcsc_valB || !dcsc_col_ptrB || !dcsc_row_indB || !dA || !dC_1 || !d_alpha || !d_beta)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!dcsc_valB || !dcsc_col_ptrB || !dcsc_row_indB || !dA || "
-                                        "!dC_1 || !d_alpha || !d_beta");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!dcsc_valB || !dcsc_col_ptrB || !dcsc_row_indB || !dA || !dC_1 || !d_alpha || !d_beta)
+    //{
+    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
+    //                                    "!dcsc_valB || !dcsc_col_ptrB || !dcsc_row_indB || !dA || "
+    //                                    "!dC_1 || !d_alpha || !d_beta");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     // copy data from CPU to device
     CHECK_HIP_ERROR(hipMemcpy(

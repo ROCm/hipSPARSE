@@ -322,15 +322,15 @@ hipsparseStatus_t testing_spmm_bell()
     I* dbell_ind = (I*)dbell_ind_managed.get();
     T* dbell_val = (T*)dbell_val_managed.get();
 
-    if(!dval || !drow_ptr || !dcol_ind || !dB || !dC_1 || !dC_2 || !d_alpha || !d_beta || !dbell_ind
-       || !dbell_val)
-    {
-        verify_hipsparse_status_success(
-            HIPSPARSE_STATUS_ALLOC_FAILED,
-            "!dval || !drow_ptr || !dcol_ind || !dB || "
-            "!dC_1 || !dC_2 || !d_alpha || !d_beta  || !dbell_ind || !dbell_val");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!dval || !drow_ptr || !dcol_ind || !dB || !dC_1 || !dC_2 || !d_alpha || !d_beta || !dbell_ind
+    //   || !dbell_val)
+    //{
+    //    verify_hipsparse_status_success(
+    //        HIPSPARSE_STATUS_ALLOC_FAILED,
+    //        "!dval || !drow_ptr || !dcol_ind || !dB || "
+    //        "!dC_1 || !dC_2 || !d_alpha || !d_beta  || !dbell_ind || !dbell_val");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     // copy data from CPU to device
     CHECK_HIP_ERROR(

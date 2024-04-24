@@ -227,12 +227,12 @@ hipsparseStatus_t testing_sparse_to_dense_csc(void)
     T* dval   = (T*)dval_managed.get();
     T* ddense = (T*)ddense_managed.get();
 
-    if(!dval || !dptr || !drow || !ddense)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!dval || !dptr || !drow || !ddense");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!dval || !dptr || !drow || !ddense)
+    //{
+    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
+    //                                    "!dval || !dptr || !drow || !ddense");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     // Dense matrix
     std::vector<T> hdense(ld * n);

@@ -472,12 +472,12 @@ hipsparseStatus_t testing_prune_dense2csr_by_percentage(Arguments argus)
     int* d_nnz_total_dev_host_ptr = (int*)d_nnz_total_dev_host_ptr_managed.get();
     int* d_csr_row_ptr            = (int*)d_csr_row_ptr_managed.get();
 
-    if(!d_A || !d_nnz_total_dev_host_ptr || !d_csr_row_ptr)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!d_A || !d_nnz_total_dev_host_ptr || !d_csr_row_ptr");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!d_A || !d_nnz_total_dev_host_ptr || !d_csr_row_ptr)
+    //{
+    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
+    //                                    "!d_A || !d_nnz_total_dev_host_ptr || !d_csr_row_ptr");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     // Initialize the entire allocated memory.
     for(int i = 0; i < LDA; ++i)
@@ -513,11 +513,11 @@ hipsparseStatus_t testing_prune_dense2csr_by_percentage(Arguments argus)
 
     T* d_temp_buffer = (T*)d_temp_buffer_managed.get();
 
-    if(!d_temp_buffer)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!d_temp_buffer");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!d_temp_buffer)
+    //{
+    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!d_temp_buffer");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
     CHECK_HIPSPARSE_ERROR(hipsparseXpruneDense2csrNnzByPercentage(handle,
@@ -568,12 +568,12 @@ hipsparseStatus_t testing_prune_dense2csr_by_percentage(Arguments argus)
             int* d_csr_col_ind = (int*)d_csr_col_ind_managed.get();
             T*   d_csr_val     = (T*)d_csr_val_managed.get();
 
-            if(!d_csr_col_ind || !d_csr_val)
-            {
-                verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                                "!d_csr_col_ind || !d_csr_val");
-                return HIPSPARSE_STATUS_ALLOC_FAILED;
-            }
+            //if(!d_csr_col_ind || !d_csr_val)
+            //{
+            //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
+            //                                    "!d_csr_col_ind || !d_csr_val");
+            //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+            //}
 
             CHECK_HIPSPARSE_ERROR(hipsparseXpruneDense2csrByPercentage(handle,
                                                                        M,

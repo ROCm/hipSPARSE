@@ -364,13 +364,13 @@ hipsparseStatus_t testing_csrsort(Arguments argus)
     // Set permutation vector, if asked for
     int* dperm = permute ? (int*)dperm_managed.get() : nullptr;
 
-    if(!dcsr_row_ptr || !dcsr_col_ind || !dcsr_val || !dcsr_val_sorted || (permute && !dperm))
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!dcsr_row_ptr || !dcsr_col_ind || !dcsr_val || "
-                                        "!dcsr_val_sorted || (permute && !dperm)");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!dcsr_row_ptr || !dcsr_col_ind || !dcsr_val || !dcsr_val_sorted || (permute && !dperm))
+    //{
+    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
+    //                                    "!dcsr_row_ptr || !dcsr_col_ind || !dcsr_val || "
+    //                                    "!dcsr_val_sorted || (permute && !dperm)");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     // Copy data from host to device
     CHECK_HIP_ERROR(
@@ -392,11 +392,11 @@ hipsparseStatus_t testing_csrsort(Arguments argus)
 
         void* dbuffer = (void*)dbuffer_managed.get();
 
-        if(!dbuffer)
-        {
-            verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!dbuffer");
-            return HIPSPARSE_STATUS_ALLOC_FAILED;
-        }
+        //if(!dbuffer)
+        //{
+        //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!dbuffer");
+        //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+        //}
 
         if(permute)
         {

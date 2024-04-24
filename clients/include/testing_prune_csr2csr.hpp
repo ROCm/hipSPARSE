@@ -714,14 +714,14 @@ hipsparseStatus_t testing_prune_csr2csr(Arguments argus)
     int* d_csr_col_ind_A          = (int*)d_csr_col_ind_A_managed.get();
     T*   d_csr_val_A              = (T*)d_csr_val_A_managed.get();
 
-    if(!d_nnz_total_dev_host_ptr || !d_csr_row_ptr_C || !d_csr_row_ptr_A || !d_csr_col_ind_A
-       || !d_csr_val_A)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!d_nnz_total_dev_host_ptr || !d_csr_row_ptr_C || "
-                                        "!d_csr_row_ptr_A || !d_csr_col_ind_A || !d_csr_val_A");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!d_nnz_total_dev_host_ptr || !d_csr_row_ptr_C || !d_csr_row_ptr_A || !d_csr_col_ind_A
+    //   || !d_csr_val_A)
+    //{
+    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
+    //                                    "!d_nnz_total_dev_host_ptr || !d_csr_row_ptr_C || "
+    //                                    "!d_csr_row_ptr_A || !d_csr_col_ind_A || !d_csr_val_A");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     // Transfer.
     CHECK_HIP_ERROR(hipMemcpy(
@@ -755,11 +755,11 @@ hipsparseStatus_t testing_prune_csr2csr(Arguments argus)
 
     T* d_threshold = (T*)d_threshold_managed.get();
 
-    if(!d_threshold)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!d_threshold");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!d_threshold)
+    //{
+    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!d_threshold");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     CHECK_HIP_ERROR(hipMemcpy(d_threshold, &threshold, sizeof(T), hipMemcpyHostToDevice));
 
@@ -816,12 +816,12 @@ hipsparseStatus_t testing_prune_csr2csr(Arguments argus)
             int* d_csr_col_ind_C = (int*)d_csr_col_ind_C_managed.get();
             T*   d_csr_val_C     = (T*)d_csr_val_C_managed.get();
 
-            if(!d_csr_col_ind_C || !d_csr_val_C)
-            {
-                verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                                "!d_csr_col_ind_C || !d_csr_val_C");
-                return HIPSPARSE_STATUS_ALLOC_FAILED;
-            }
+            //if(!d_csr_col_ind_C || !d_csr_val_C)
+            //{
+            //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
+            //                                    "!d_csr_col_ind_C || !d_csr_val_C");
+            //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+            //}
 
             CHECK_HIPSPARSE_ERROR(hipsparseXpruneCsr2csr(handle,
                                                          M,

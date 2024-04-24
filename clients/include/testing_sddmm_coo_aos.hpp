@@ -277,13 +277,13 @@ hipsparseStatus_t testing_sddmm_coo_aos()
     T* d_alpha = (T*)d_alpha_managed.get();
     T* d_beta  = (T*)d_beta_managed.get();
 
-    if(!dval1 || !dval2 || !drowcol || !dB || !dA || !d_alpha || !d_beta)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!dval1 || !dval2 || !drow || !dcol || !dA || "
-                                        "!dB || !d_alpha || !d_beta");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!dval1 || !dval2 || !drowcol || !dB || !dA || !d_alpha || !d_beta)
+    //{
+    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
+    //                                    "!dval1 || !dval2 || !drow || !dcol || !dA || "
+    //                                    "!dB || !d_alpha || !d_beta");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     // copy data from CPU to device
     CHECK_HIP_ERROR(

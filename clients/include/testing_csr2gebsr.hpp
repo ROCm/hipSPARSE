@@ -671,13 +671,13 @@ hipsparseStatus_t testing_csr2gebsr(Arguments argus)
     T*   dcsr_val     = (T*)dcsr_val_managed.get();
     int* dbsr_row_ptr = (int*)dbsr_row_ptr_managed.get();
 
-    if(!dcsr_row_ptr || !dcsr_col_ind || !dcsr_val || !dbsr_row_ptr)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!dcsr_row_ptr || !dcsr_col_ind || !dcsr_val || "
-                                        "!dbsr_row_ptr");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!dcsr_row_ptr || !dcsr_col_ind || !dcsr_val || !dbsr_row_ptr)
+    //{
+    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
+    //                                    "!dcsr_row_ptr || !dcsr_col_ind || !dcsr_val || "
+    //                                    "!dbsr_row_ptr");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     // Copy data from host to device
     CHECK_HIP_ERROR(
@@ -755,12 +755,12 @@ hipsparseStatus_t testing_csr2gebsr(Arguments argus)
         int* dbsr_col_ind = (int*)dbsr_col_ind_managed.get();
         T*   dbsr_val     = (T*)dbsr_val_managed.get();
 
-        if(!dbsr_col_ind || !dbsr_val)
-        {
-            verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                            "!bsr_col_ind || !bsr_val");
-            return HIPSPARSE_STATUS_ALLOC_FAILED;
-        }
+        //if(!dbsr_col_ind || !dbsr_val)
+        //{
+        //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
+        //                                    "!bsr_col_ind || !bsr_val");
+        //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+        //}
 
         CHECK_HIPSPARSE_ERROR(hipsparseXcsr2gebsr(handle,
                                                   dir,

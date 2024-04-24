@@ -302,12 +302,12 @@ hipsparseStatus_t testing_csr2hyb(Arguments argus)
     int* dcsr_col_ind = (int*)dcsr_col_ind_managed.get();
     T*   dcsr_val     = (T*)dcsr_val_managed.get();
 
-    if(!dcsr_row_ptr || !dcsr_col_ind || !dcsr_val)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!dcsr_row_ptr || !dcsr_col_ind || !dcsr_val");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!dcsr_row_ptr || !dcsr_col_ind || !dcsr_val)
+    //{
+    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
+    //                                    "!dcsr_row_ptr || !dcsr_col_ind || !dcsr_val");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     // Copy data from host to device
     CHECK_HIP_ERROR(

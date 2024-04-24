@@ -262,13 +262,13 @@ hipsparseStatus_t testing_spsm_csr(void)
     T* dC_2    = (T*)dC_2_managed.get();
     T* d_alpha = (T*)d_alpha_managed.get();
 
-    if(!dval || !dptr || !dcol || !dB || !dC_1 || !dC_2 || !d_alpha)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!dval || !dptr || !dcol || !dB || "
-                                        "!dC_1 || !dC_2 || !d_alpha");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!dval || !dptr || !dcol || !dB || !dC_1 || !dC_2 || !d_alpha)
+    //{
+    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
+    //                                    "!dval || !dptr || !dcol || !dB || "
+    //                                    "!dC_1 || !dC_2 || !d_alpha");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     // copy data from CPU to device
     CHECK_HIP_ERROR(

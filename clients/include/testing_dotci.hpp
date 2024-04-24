@@ -185,12 +185,12 @@ hipsparseStatus_t testing_dotci(Arguments argus)
     T*   dy        = (T*)dy_managed.get();
     T*   dresult_2 = (T*)dresult_2_managed.get();
 
-    if(!dx_ind || !dx_val || !dy || !dresult_2)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!dx_ind || !dx_val || !dy || !dresult_2");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!dx_ind || !dx_val || !dy || !dresult_2)
+    //{
+    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
+    //                                    "!dx_ind || !dx_val || !dy || !dresult_2");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     // copy data from CPU to device
     CHECK_HIP_ERROR(hipMemcpy(dx_ind, hx_ind.data(), sizeof(int) * nnz, hipMemcpyHostToDevice));

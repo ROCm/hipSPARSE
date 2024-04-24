@@ -755,7 +755,7 @@ hipsparseStatus_t testing_csrsm2(Arguments argus)
     T                      h_alpha   = make_DataType<T>(argus.alpha);
     std::string            binfile   = "";
     std::string            filename  = "";
-    hipsparseStatus_t      status;
+    //hipsparseStatus_t      status;
     size_t                 size;
 
     // When in testing mode, M == N == -99 indicates that we are testing with a real
@@ -1015,15 +1015,15 @@ hipsparseStatus_t testing_csrsm2(Arguments argus)
     int* d_analysis_pivot_2 = (int*)d_analysis_pivot_2_managed.get();
     int* d_solve_pivot_2    = (int*)d_solve_pivot_2_managed.get();
 
-    if(!dval || !dptr || !dcol || !dB_1 || !dB_2 || !d_alpha || !d_analysis_pivot_2
-       || !d_solve_pivot_2)
-    {
-        verify_hipsparse_status_success(
-            HIPSPARSE_STATUS_ALLOC_FAILED,
-            "!dval || !dptr || !dcol || "
-            "!dB_1 || !dB_2 || !d_alpha || !d_analysis_pivot_2 || !d_solve_pivot_2");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!dval || !dptr || !dcol || !dB_1 || !dB_2 || !d_alpha || !d_analysis_pivot_2
+    //   || !d_solve_pivot_2)
+    //{
+    //    verify_hipsparse_status_success(
+    //        HIPSPARSE_STATUS_ALLOC_FAILED,
+    //        "!dval || !dptr || !dcol || "
+    //        "!dB_1 || !dB_2 || !d_alpha || !d_analysis_pivot_2 || !d_solve_pivot_2");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     // copy data from CPU to device
     CHECK_HIP_ERROR(
@@ -1057,11 +1057,11 @@ hipsparseStatus_t testing_csrsm2(Arguments argus)
 
     void* dbuffer = (void*)dbuffer_managed.get();
 
-    if(!dbuffer)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!dbuffer");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!dbuffer)
+    //{
+    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!dbuffer");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     if(argus.unit_check)
     {

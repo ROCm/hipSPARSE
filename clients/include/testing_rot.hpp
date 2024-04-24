@@ -152,13 +152,13 @@ hipsparseStatus_t testing_rot(void)
     T* dc_coeff = (T*)dc_coeff_managed.get();
     T* ds_coeff = (T*)ds_coeff_managed.get();
 
-    if(!dx_ind || !dx_val_1 || !dx_val_2 || !dy_1 || !dy_2 || !dc_coeff || !ds_coeff)
-    {
-        verify_hipsparse_status_success(
-            HIPSPARSE_STATUS_ALLOC_FAILED,
-            "!dx_ind || !dx_val_1 || !dx_val_2 || !dy_1 || !dy_2 || !dc_coeff || !ds_coeff");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!dx_ind || !dx_val_1 || !dx_val_2 || !dy_1 || !dy_2 || !dc_coeff || !ds_coeff)
+    //{
+    //    verify_hipsparse_status_success(
+    //        HIPSPARSE_STATUS_ALLOC_FAILED,
+    //        "!dx_ind || !dx_val_1 || !dx_val_2 || !dy_1 || !dy_2 || !dc_coeff || !ds_coeff");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     // copy data from CPU to device
     CHECK_HIP_ERROR(hipMemcpy(dx_ind, hx_ind.data(), sizeof(I) * nnz, hipMemcpyHostToDevice));
