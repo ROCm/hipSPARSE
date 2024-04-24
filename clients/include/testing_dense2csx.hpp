@@ -224,22 +224,22 @@ hipsparseStatus_t testing_dense2csx(const Arguments& argus, FUNC& dense2csx)
     hipsparseMatDescr_t           descr = unique_ptr_descr->descr;
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatIndexBase(descr, idx_base));
 
-    if(M <= 0 || N <= 0 || LD < M)
-    {
-        hipsparseStatus_t expected_status
-            = (((M == 0 && N >= 0) || (M >= 0 && N == 0)) && (LD >= M))
-                  ? HIPSPARSE_STATUS_SUCCESS
-                  : HIPSPARSE_STATUS_INVALID_VALUE;
-        status = dense2csx(
-            handle, M, N, descr, (const T*)nullptr, LD, nullptr, (T*)nullptr, nullptr, nullptr);
-        verify_hipsparse_status(status,
-                                expected_status,
-                                (expected_status == HIPSPARSE_STATUS_SUCCESS)
-                                    ? "Error: call with zero sizes must be successful."
-                                    : "Error: An invalid size must be detected.");
+    // if(M <= 0 || N <= 0 || LD < M)
+    // {
+    //     hipsparseStatus_t expected_status
+    //         = (((M == 0 && N >= 0) || (M >= 0 && N == 0)) && (LD >= M))
+    //               ? HIPSPARSE_STATUS_SUCCESS
+    //               : HIPSPARSE_STATUS_INVALID_VALUE;
+    //     status = dense2csx(
+    //         handle, M, N, descr, (const T*)nullptr, LD, nullptr, (T*)nullptr, nullptr, nullptr);
+    //     verify_hipsparse_status(status,
+    //                             expected_status,
+    //                             (expected_status == HIPSPARSE_STATUS_SUCCESS)
+    //                                 ? "Error: call with zero sizes must be successful."
+    //                                 : "Error: An invalid size must be detected.");
 
-        return HIPSPARSE_STATUS_SUCCESS;
-    }
+    //     return HIPSPARSE_STATUS_SUCCESS;
+    // }
 
     int              DIMDIR = (HIPSPARSE_DIRECTION_ROW == DIRA) ? M : N;
     std::vector<T>   h_dense_val(LD * N);

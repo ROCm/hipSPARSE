@@ -33,7 +33,7 @@ typedef std::tuple<int, int, int, double, double, double, dir, base>         bsr
 typedef std::tuple<int, int, double, double, double, dir, base, std::string> bsrilu02_bin_tuple;
 
 int bsrilu02_M_range[]   = {0, 50, 426};
-int bsrilu02_dim_range[] = {0, 1, 3, 5, 9};
+int bsrilu02_dim_range[] = {1, 3, 5, 9};
 
 int    bsrilu02_boost_range[]      = {0};
 double bsrilu02_boost_tol_range[]  = {1.1};

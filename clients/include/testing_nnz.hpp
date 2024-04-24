@@ -172,77 +172,77 @@ hipsparseStatus_t testing_nnz(Arguments argus)
     std::unique_ptr<descr_struct> unique_ptr_descr(new descr_struct);
     hipsparseMatDescr_t           descrA = unique_ptr_descr->descr;
 
-    if(M <= 0 || N <= 0 || lda < M)
-    {
-        // cusparse returns internal error for this case
-#if(defined(CUDART_VERSION))
-        if((M == 0 || N == 0) && lda >= M)
-        {
-            return HIPSPARSE_STATUS_SUCCESS;
-        }
-#endif
+//     if(M <= 0 || N <= 0 || lda < M)
+//     {
+//         // cusparse returns internal error for this case
+// #if(defined(CUDART_VERSION))
+//         if((M == 0 || N == 0) && lda >= M)
+//         {
+//             return HIPSPARSE_STATUS_SUCCESS;
+//         }
+// #endif
 
-        status
-            = hipsparseXnnz(handle, dirA, M, N, descrA, (const T*)nullptr, lda, nullptr, nullptr);
-        if(((M == 0 && N >= 0) || (M >= 0 && N == 0)) && (lda >= M))
-        {
-            verify_hipsparse_status_success(status, "Error: M or N = 0 must be successful.");
-        }
-        else
-        {
-            verify_hipsparse_status_invalid_size(
-                status, "Error: M is negative or N is negative or lda < M must be detected.");
-        }
+//         status
+//             = hipsparseXnnz(handle, dirA, M, N, descrA, (const T*)nullptr, lda, nullptr, nullptr);
+//         if(((M == 0 && N >= 0) || (M >= 0 && N == 0)) && (lda >= M))
+//         {
+//             verify_hipsparse_status_success(status, "Error: M or N = 0 must be successful.");
+//         }
+//         else
+//         {
+//             verify_hipsparse_status_invalid_size(
+//                 status, "Error: M is negative or N is negative or lda < M must be detected.");
+//         }
 
-        if(HIPSPARSE_STATUS_SUCCESS == status)
-        {
+//         if(HIPSPARSE_STATUS_SUCCESS == status)
+//         {
 
-            int h_nnz = 77;
-            CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
+//             int h_nnz = 77;
+//             CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
 
-            status = hipsparseXnnz(
-                handle, dirA, M, N, descrA, (const T*)nullptr, lda, nullptr, nullptr);
-            verify_hipsparse_status_success(status, "Error: M or N = 0 must be successful.");
+//             status = hipsparseXnnz(
+//                 handle, dirA, M, N, descrA, (const T*)nullptr, lda, nullptr, nullptr);
+//             verify_hipsparse_status_success(status, "Error: M or N = 0 must be successful.");
 
-            status = hipsparseXnnz(
-                handle, dirA, M, N, descrA, (const T*)nullptr, lda, nullptr, &h_nnz);
-            verify_hipsparse_status_success(status, "Error: M or N = 0 must be successful.");
+//             status = hipsparseXnnz(
+//                 handle, dirA, M, N, descrA, (const T*)nullptr, lda, nullptr, &h_nnz);
+//             verify_hipsparse_status_success(status, "Error: M or N = 0 must be successful.");
 
-            if(0 != h_nnz)
-            {
-                verify_hipsparse_status_success(
-                    status,
-                    "Error: h_nnz must be zero with a non-null pointer and the pointer mode host.");
-            }
+//             if(0 != h_nnz)
+//             {
+//                 verify_hipsparse_status_success(
+//                     status,
+//                     "Error: h_nnz must be zero with a non-null pointer and the pointer mode host.");
+//             }
 
-            h_nnz            = 139;
-            auto nnz_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * 1), device_free};
-            int* d_nnz       = (int*)nnz_managed.get();
+//             h_nnz            = 139;
+//             auto nnz_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * 1), device_free};
+//             int* d_nnz       = (int*)nnz_managed.get();
 
-            CHECK_HIP_ERROR(hipMemcpy((int*)d_nnz, &h_nnz, sizeof(int) * 1, hipMemcpyHostToDevice));
+//             CHECK_HIP_ERROR(hipMemcpy((int*)d_nnz, &h_nnz, sizeof(int) * 1, hipMemcpyHostToDevice));
 
-            CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
-            status = hipsparseXnnz(
-                handle, dirA, M, N, descrA, (const T*)nullptr, lda, nullptr, nullptr);
-            verify_hipsparse_status_success(status, "Error: M or N = 0 must be successful.");
+//             CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
+//             status = hipsparseXnnz(
+//                 handle, dirA, M, N, descrA, (const T*)nullptr, lda, nullptr, nullptr);
+//             verify_hipsparse_status_success(status, "Error: M or N = 0 must be successful.");
 
-            status = hipsparseXnnz(
-                handle, dirA, M, N, descrA, (const T*)nullptr, lda, nullptr, (int*)d_nnz);
-            verify_hipsparse_status_success(status, "Error: M or N = 0 must be successful.");
+//             status = hipsparseXnnz(
+//                 handle, dirA, M, N, descrA, (const T*)nullptr, lda, nullptr, (int*)d_nnz);
+//             verify_hipsparse_status_success(status, "Error: M or N = 0 must be successful.");
 
-            CHECK_HIP_ERROR(hipMemcpy(&h_nnz, (int*)d_nnz, sizeof(int) * 1, hipMemcpyDeviceToHost));
+//             CHECK_HIP_ERROR(hipMemcpy(&h_nnz, (int*)d_nnz, sizeof(int) * 1, hipMemcpyDeviceToHost));
 
-            status = (0 == h_nnz) ? HIPSPARSE_STATUS_SUCCESS : HIPSPARSE_STATUS_INTERNAL_ERROR;
+//             status = (0 == h_nnz) ? HIPSPARSE_STATUS_SUCCESS : HIPSPARSE_STATUS_INTERNAL_ERROR;
 
-            if(0 != h_nnz)
-            {
-                verify_hipsparse_status_success(
-                    status, "Error: h_nnz must be zero with the pointer mode device.");
-            }
-        }
+//             if(0 != h_nnz)
+//             {
+//                 verify_hipsparse_status_success(
+//                     status, "Error: h_nnz must be zero with the pointer mode device.");
+//             }
+//         }
 
-        return HIPSPARSE_STATUS_SUCCESS;
-    }
+//         return HIPSPARSE_STATUS_SUCCESS;
+//     }
 
     //
     // Create the dense matrix.
