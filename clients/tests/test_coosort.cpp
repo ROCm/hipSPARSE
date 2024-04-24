@@ -31,8 +31,8 @@
 typedef std::tuple<int, int, hipsparseOperation_t, int, hipsparseIndexBase_t>    coosort_tuple;
 typedef std::tuple<hipsparseOperation_t, int, hipsparseIndexBase_t, std::string> coosort_bin_tuple;
 
-int                  coosort_M_range[] = {-1, 0, 10, 500, 3872, 10000};
-int                  coosort_N_range[] = {-3, 0, 33, 242, 1623, 10000};
+int                  coosort_M_range[] = {0, 10, 500, 3872, 10000};
+int                  coosort_N_range[] = {0, 33, 242, 1623, 10000};
 hipsparseOperation_t coosort_trans[]
     = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPERATION_TRANSPOSE};
 

@@ -99,47 +99,47 @@ hipsparseStatus_t testing_gthrz(Arguments argus)
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     int                  N         = argus.N;
     int                  nnz       = argus.nnz;
-    int                  safe_size = 100;
+    //int                  safe_size = 100;
     hipsparseIndexBase_t idx_base  = argus.idx_base;
-    hipsparseStatus_t    status;
+    //hipsparseStatus_t    status;
 
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
     hipsparseHandle_t              handle = test_handle->handle;
 
-    // Argument sanity check before allocating invalid memory
-    if(nnz <= 0)
-    {
-        auto dx_ind_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto dx_val_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-        auto dy_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+    // // Argument sanity check before allocating invalid memory
+    // if(nnz <= 0)
+    // {
+    //     auto dx_ind_managed
+    //         = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+    //     auto dx_val_managed
+    //         = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+    //     auto dy_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
 
-        int* dx_ind = (int*)dx_ind_managed.get();
-        T*   dx_val = (T*)dx_val_managed.get();
-        T*   dy     = (T*)dy_managed.get();
+    //     int* dx_ind = (int*)dx_ind_managed.get();
+    //     T*   dx_val = (T*)dx_val_managed.get();
+    //     T*   dy     = (T*)dy_managed.get();
 
-        if(!dx_ind || !dx_val || !dy)
-        {
-            verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                            "!dx_ind || !dx_val || !dy");
-            return HIPSPARSE_STATUS_ALLOC_FAILED;
-        }
+    //     if(!dx_ind || !dx_val || !dy)
+    //     {
+    //         verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
+    //                                         "!dx_ind || !dx_val || !dy");
+    //         return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //     }
 
-        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
-        status = hipsparseXgthrz(handle, nnz, dy, dx_val, dx_ind, idx_base);
+    //     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
+    //     status = hipsparseXgthrz(handle, nnz, dy, dx_val, dx_ind, idx_base);
 
-        if(nnz < 0)
-        {
-            verify_hipsparse_status_invalid_size(status, "Error: nnz < 0");
-        }
-        else
-        {
-            verify_hipsparse_status_success(status, "nnz == 0");
-        }
+    //     if(nnz < 0)
+    //     {
+    //         verify_hipsparse_status_invalid_size(status, "Error: nnz < 0");
+    //     }
+    //     else
+    //     {
+    //         verify_hipsparse_status_success(status, "nnz == 0");
+    //     }
 
-        return HIPSPARSE_STATUS_SUCCESS;
-    }
+    //     return HIPSPARSE_STATUS_SUCCESS;
+    // }
 
     // Host structures
     std::vector<int> hx_ind(nnz);

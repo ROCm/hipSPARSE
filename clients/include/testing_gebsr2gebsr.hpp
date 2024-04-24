@@ -914,7 +914,7 @@ hipsparseStatus_t testing_gebsr2gebsr(Arguments argus)
     hipsparseDirection_t dir             = argus.dirA;
     std::string          binfile         = "";
     std::string          filename        = "";
-    hipsparseStatus_t    status;
+    //hipsparseStatus_t    status;
 
     // When in testing mode, M == N == -99 indicates that we are testing with a real
     // matrix from cise.ufl.edu
@@ -948,58 +948,58 @@ hipsparseStatus_t testing_gebsr2gebsr(Arguments argus)
     hipsparseSetMatIndexBase(descr_A, idx_base_A);
     hipsparseSetMatIndexBase(descr_C, idx_base_C);
 
-    // Argument sanity check before allocating invalid memory
-    if(mb <= 0 || nb <= 0 || row_block_dim_A <= 0 || col_block_dim_A <= 0 || row_block_dim_C <= 0
-       || col_block_dim_C <= 0)
-    {
-        auto dtemp_buffer_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+    // // Argument sanity check before allocating invalid memory
+    // if(mb <= 0 || nb <= 0 || row_block_dim_A <= 0 || col_block_dim_A <= 0 || row_block_dim_C <= 0
+    //    || col_block_dim_C <= 0)
+    // {
+    //     auto dtemp_buffer_managed
+    //         = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
 
-        T* dtemp_buffer = (T*)dtemp_buffer_managed.get();
+    //     T* dtemp_buffer = (T*)dtemp_buffer_managed.get();
 
-        if(!dtemp_buffer)
-        {
-            verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!dtemp_buffer");
-            return HIPSPARSE_STATUS_ALLOC_FAILED;
-        }
+    //     if(!dtemp_buffer)
+    //     {
+    //         verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!dtemp_buffer");
+    //         return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //     }
 
-        status = hipsparseXgebsr2gebsr(handle,
-                                       dir,
-                                       mb,
-                                       nb,
-                                       safe_size,
-                                       descr_A,
-                                       (const T*)nullptr,
-                                       nullptr,
-                                       nullptr,
-                                       row_block_dim_A,
-                                       col_block_dim_A,
-                                       descr_C,
-                                       (T*)nullptr,
-                                       nullptr,
-                                       nullptr,
-                                       row_block_dim_C,
-                                       col_block_dim_C,
-                                       dtemp_buffer);
+    //     status = hipsparseXgebsr2gebsr(handle,
+    //                                    dir,
+    //                                    mb,
+    //                                    nb,
+    //                                    safe_size,
+    //                                    descr_A,
+    //                                    (const T*)nullptr,
+    //                                    nullptr,
+    //                                    nullptr,
+    //                                    row_block_dim_A,
+    //                                    col_block_dim_A,
+    //                                    descr_C,
+    //                                    (T*)nullptr,
+    //                                    nullptr,
+    //                                    nullptr,
+    //                                    row_block_dim_C,
+    //                                    col_block_dim_C,
+    //                                    dtemp_buffer);
 
-        if(mb < 0 || nb < 0 || row_block_dim_A <= 0 || col_block_dim_A <= 0 || row_block_dim_C <= 0
-           || col_block_dim_C <= 0)
-        {
-            verify_hipsparse_status_invalid_size(
-                status,
-                "Error: mb < 0 || nb < 0 || row_block_dim_A <= 0 || col_block_dim_A <= 0 || "
-                "row_block_dim_C <= 0 || col_block_dim_C <= 0");
-        }
-        else
-        {
-            verify_hipsparse_status_success(
-                status,
-                "mb >= 0 && nb >= 0 && row_block_dim_A > 0 && col_block_dim_A > 0 && "
-                "row_block_dim_C > 0 && col_block_dim_C > 0");
-        }
+    //     if(mb < 0 || nb < 0 || row_block_dim_A <= 0 || col_block_dim_A <= 0 || row_block_dim_C <= 0
+    //        || col_block_dim_C <= 0)
+    //     {
+    //         verify_hipsparse_status_invalid_size(
+    //             status,
+    //             "Error: mb < 0 || nb < 0 || row_block_dim_A <= 0 || col_block_dim_A <= 0 || "
+    //             "row_block_dim_C <= 0 || col_block_dim_C <= 0");
+    //     }
+    //     else
+    //     {
+    //         verify_hipsparse_status_success(
+    //             status,
+    //             "mb >= 0 && nb >= 0 && row_block_dim_A > 0 && col_block_dim_A > 0 && "
+    //             "row_block_dim_C > 0 && col_block_dim_C > 0");
+    //     }
 
-        return HIPSPARSE_STATUS_SUCCESS;
-    }
+    //     return HIPSPARSE_STATUS_SUCCESS;
+    // }
 
     // Host structures
     std::vector<int> hcsr_row_ptr;

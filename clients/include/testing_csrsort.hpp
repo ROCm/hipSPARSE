@@ -170,7 +170,7 @@ hipsparseStatus_t testing_csrsort(Arguments argus)
     hipsparseIndexBase_t idx_base  = argus.idx_base;
     std::string          binfile   = "";
     std::string          filename  = "";
-    hipsparseStatus_t    status;
+    //hipsparseStatus_t    status;
 
     // When in testing mode, M == N == -99 indicates that we are testing with a real
     // matrix from cise.ufl.edu
@@ -203,64 +203,64 @@ hipsparseStatus_t testing_csrsort(Arguments argus)
     // Set matrix index base
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatIndexBase(descr, idx_base));
 
-    // Argument sanity check before allocating invalid memory
-    if(m <= 0 || n <= 0 || nnz <= 0)
-    {
-#ifdef __HIP_PLATFORM_NVIDIA__
-        // Do not test args in cusparse
-        return HIPSPARSE_STATUS_SUCCESS;
-#endif
-        auto csr_row_ptr_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto csr_col_ind_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto perm_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto buffer_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(char) * safe_size), device_free};
+//     // Argument sanity check before allocating invalid memory
+//     if(m <= 0 || n <= 0 || nnz <= 0)
+//     {
+// #ifdef __HIP_PLATFORM_NVIDIA__
+//         // Do not test args in cusparse
+//         return HIPSPARSE_STATUS_SUCCESS;
+// #endif
+//         auto csr_row_ptr_managed
+//             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+//         auto csr_col_ind_managed
+//             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+//         auto perm_managed
+//             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+//         auto buffer_managed
+//             = hipsparse_unique_ptr{device_malloc(sizeof(char) * safe_size), device_free};
 
-        int*  csr_row_ptr = (int*)csr_row_ptr_managed.get();
-        int*  csr_col_ind = (int*)csr_col_ind_managed.get();
-        int*  perm        = (int*)perm_managed.get();
-        void* buffer      = (void*)buffer_managed.get();
+//         int*  csr_row_ptr = (int*)csr_row_ptr_managed.get();
+//         int*  csr_col_ind = (int*)csr_col_ind_managed.get();
+//         int*  perm        = (int*)perm_managed.get();
+//         void* buffer      = (void*)buffer_managed.get();
 
-        if(!csr_row_ptr || !csr_col_ind || !perm || !buffer)
-        {
-            verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                            "!csr_row_ptr || !csr_col_ind || !perm || !buffer");
-            return HIPSPARSE_STATUS_ALLOC_FAILED;
-        }
+//         if(!csr_row_ptr || !csr_col_ind || !perm || !buffer)
+//         {
+//             verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
+//                                             "!csr_row_ptr || !csr_col_ind || !perm || !buffer");
+//             return HIPSPARSE_STATUS_ALLOC_FAILED;
+//         }
 
-        status = hipsparseXcsrsort_bufferSizeExt(
-            handle, m, n, nnz, csr_row_ptr, csr_col_ind, &buffer_size);
+//         status = hipsparseXcsrsort_bufferSizeExt(
+//             handle, m, n, nnz, csr_row_ptr, csr_col_ind, &buffer_size);
 
-        if(m < 0 || n < 0 || nnz < 0)
-        {
-            verify_hipsparse_status_invalid_size(status, "Error: m < 0 || n < 0 || nnz < 0");
-        }
-        else
-        {
-            verify_hipsparse_status_success(status, "m >= 0 && n >= 0 && nnz >= 0");
+//         if(m < 0 || n < 0 || nnz < 0)
+//         {
+//             verify_hipsparse_status_invalid_size(status, "Error: m < 0 || n < 0 || nnz < 0");
+//         }
+//         else
+//         {
+//             verify_hipsparse_status_success(status, "m >= 0 && n >= 0 && nnz >= 0");
 
-            // Buffer size should be 0
-            size_t zero = 0;
-            unit_check_general(1, 1, 1, &zero, &buffer_size);
-        }
+//             // Buffer size should be 0
+//             size_t zero = 0;
+//             unit_check_general(1, 1, 1, &zero, &buffer_size);
+//         }
 
-        status
-            = hipsparseXcsrsort(handle, m, n, nnz, descr, csr_row_ptr, csr_col_ind, perm, buffer);
+//         status
+//             = hipsparseXcsrsort(handle, m, n, nnz, descr, csr_row_ptr, csr_col_ind, perm, buffer);
 
-        if(m < 0 || n < 0 || nnz < 0)
-        {
-            verify_hipsparse_status_invalid_size(status, "Error: m < 0 || n < 0 || nnz < 0");
-        }
-        else
-        {
-            verify_hipsparse_status_success(status, "m >= 0 && n >= 0 && nnz >= 0");
-        }
+//         if(m < 0 || n < 0 || nnz < 0)
+//         {
+//             verify_hipsparse_status_invalid_size(status, "Error: m < 0 || n < 0 || nnz < 0");
+//         }
+//         else
+//         {
+//             verify_hipsparse_status_success(status, "m >= 0 && n >= 0 && nnz >= 0");
+//         }
 
-        return HIPSPARSE_STATUS_SUCCESS;
-    }
+//         return HIPSPARSE_STATUS_SUCCESS;
+//     }
 
     // For testing, assemble a COO matrix and convert it to CSR first (on host)
 

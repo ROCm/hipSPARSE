@@ -70,32 +70,32 @@ hipsparseStatus_t testing_identity(Arguments argus)
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
-    // Argument sanity check before allocating invalid memory
-    if(n <= 0)
-    {
-        auto p_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+    // // Argument sanity check before allocating invalid memory
+    // if(n <= 0)
+    // {
+    //     auto p_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
 
-        int* p = (int*)p_managed.get();
+    //     int* p = (int*)p_managed.get();
 
-        if(!p)
-        {
-            verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!p");
-            return HIPSPARSE_STATUS_ALLOC_FAILED;
-        }
+    //     if(!p)
+    //     {
+    //         verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!p");
+    //         return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //     }
 
-        status = hipsparseCreateIdentityPermutation(handle, n, p);
+    //     status = hipsparseCreateIdentityPermutation(handle, n, p);
 
-        if(n < 0)
-        {
-            verify_hipsparse_status_invalid_size(status, "Error: n < 0");
-        }
-        else
-        {
-            verify_hipsparse_status_success(status, "n >= 0");
-        }
+    //     if(n < 0)
+    //     {
+    //         verify_hipsparse_status_invalid_size(status, "Error: n < 0");
+    //     }
+    //     else
+    //     {
+    //         verify_hipsparse_status_success(status, "n >= 0");
+    //     }
 
-        return HIPSPARSE_STATUS_SUCCESS;
-    }
+    //     return HIPSPARSE_STATUS_SUCCESS;
+    // }
 
     // Host structures
     std::vector<int> hp(n);

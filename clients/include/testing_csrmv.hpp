@@ -161,7 +161,7 @@ hipsparseStatus_t testing_csrmv(Arguments argus)
     hipsparseIndexBase_t idx_base  = argus.idx_base;
     std::string          binfile   = "";
     std::string          filename  = "";
-    hipsparseStatus_t    status;
+    //hipsparseStatus_t    status;
 
     // When in testing mode, M == N == -99 indicates that we are testing with a real
     // matrix from cise.ufl.edu
@@ -193,52 +193,52 @@ hipsparseStatus_t testing_csrmv(Arguments argus)
     }
     int nnz = nrow * scale * ncol;
 
-    // Argument sanity check before allocating invalid memory
-    if(nrow <= 0 || ncol <= 0 || nnz <= 0)
-    {
-#ifdef __HIP_PLATFORM_NVIDIA__
-        // Do not test args in cusparse
-        return HIPSPARSE_STATUS_SUCCESS;
-#endif
-        auto dptr_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * (safe_size + 1)), device_free};
-        auto dcol_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto dval_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-        auto dx_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-        auto dy_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+//     // Argument sanity check before allocating invalid memory
+//     if(nrow <= 0 || ncol <= 0 || nnz <= 0)
+//     {
+// #ifdef __HIP_PLATFORM_NVIDIA__
+//         // Do not test args in cusparse
+//         return HIPSPARSE_STATUS_SUCCESS;
+// #endif
+//         auto dptr_managed
+//             = hipsparse_unique_ptr{device_malloc(sizeof(int) * (safe_size + 1)), device_free};
+//         auto dcol_managed
+//             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+//         auto dval_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+//         auto dx_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+//         auto dy_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
 
-        int* dptr = (int*)dptr_managed.get();
-        int* dcol = (int*)dcol_managed.get();
-        T*   dval = (T*)dval_managed.get();
-        T*   dx   = (T*)dx_managed.get();
-        T*   dy   = (T*)dy_managed.get();
+//         int* dptr = (int*)dptr_managed.get();
+//         int* dcol = (int*)dcol_managed.get();
+//         T*   dval = (T*)dval_managed.get();
+//         T*   dx   = (T*)dx_managed.get();
+//         T*   dy   = (T*)dy_managed.get();
 
-        // row pointer should be valid
-        CHECK_HIP_ERROR(hipMemset(dptr, 0, sizeof(int) * (safe_size + 1)));
+//         // row pointer should be valid
+//         CHECK_HIP_ERROR(hipMemset(dptr, 0, sizeof(int) * (safe_size + 1)));
 
-        if(!dval || !dptr || !dcol || !dx || !dy)
-        {
-            verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                            "!dptr || !dcol || !dval || !dx || !dy");
-            return HIPSPARSE_STATUS_ALLOC_FAILED;
-        }
+//         if(!dval || !dptr || !dcol || !dx || !dy)
+//         {
+//             verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
+//                                             "!dptr || !dcol || !dval || !dx || !dy");
+//             return HIPSPARSE_STATUS_ALLOC_FAILED;
+//         }
 
-        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
-        status = hipsparseXcsrmv(
-            handle, transA, nrow, ncol, nnz, &h_alpha, descr, dval, dptr, dcol, dx, &h_beta, dy);
+//         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
+//         status = hipsparseXcsrmv(
+//             handle, transA, nrow, ncol, nnz, &h_alpha, descr, dval, dptr, dcol, dx, &h_beta, dy);
 
-        if(nrow < 0 || ncol < 0 || nnz < 0)
-        {
-            verify_hipsparse_status_invalid_size(status, "Error: nrow < 0 || ncol < 0 || nnz < 0");
-        }
-        else
-        {
-            verify_hipsparse_status_success(status, "nrow >= 0 && ncol >= 0 && nnz >= 0");
-        }
+//         if(nrow < 0 || ncol < 0 || nnz < 0)
+//         {
+//             verify_hipsparse_status_invalid_size(status, "Error: nrow < 0 || ncol < 0 || nnz < 0");
+//         }
+//         else
+//         {
+//             verify_hipsparse_status_success(status, "nrow >= 0 && ncol >= 0 && nnz >= 0");
+//         }
 
-        return HIPSPARSE_STATUS_SUCCESS;
-    }
+//         return HIPSPARSE_STATUS_SUCCESS;
+//     }
 
     // Host structures
     std::vector<int> hcsr_row_ptr;

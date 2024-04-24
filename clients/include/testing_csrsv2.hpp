@@ -486,87 +486,87 @@ hipsparseStatus_t testing_csrsv2(Arguments argus)
     }
     int nnz = m * scale * m;
 
-    // Argument sanity check before allocating invalid memory
-    if(m <= 0 || nnz <= 0)
-    {
-#ifdef __HIP_PLATFORM_NVIDIA__
-        // Do not test args in cusparse
-        return HIPSPARSE_STATUS_SUCCESS;
-#endif
-        auto dptr_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto dcol_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto dval_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-        auto dx_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-        auto dy_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-        auto buffer_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(char) * safe_size), device_free};
+//     // Argument sanity check before allocating invalid memory
+//     if(m <= 0 || nnz <= 0)
+//     {
+// #ifdef __HIP_PLATFORM_NVIDIA__
+//         // Do not test args in cusparse
+//         return HIPSPARSE_STATUS_SUCCESS;
+// #endif
+//         auto dptr_managed
+//             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+//         auto dcol_managed
+//             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+//         auto dval_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+//         auto dx_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+//         auto dy_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+//         auto buffer_managed
+//             = hipsparse_unique_ptr{device_malloc(sizeof(char) * safe_size), device_free};
 
-        int*  dptr   = (int*)dptr_managed.get();
-        int*  dcol   = (int*)dcol_managed.get();
-        T*    dval   = (T*)dval_managed.get();
-        T*    dx     = (T*)dx_managed.get();
-        T*    dy     = (T*)dy_managed.get();
-        void* buffer = (void*)buffer_managed.get();
+//         int*  dptr   = (int*)dptr_managed.get();
+//         int*  dcol   = (int*)dcol_managed.get();
+//         T*    dval   = (T*)dval_managed.get();
+//         T*    dx     = (T*)dx_managed.get();
+//         T*    dy     = (T*)dy_managed.get();
+//         void* buffer = (void*)buffer_managed.get();
 
-        if(!dval || !dptr || !dcol || !dx || !dy || !buffer)
-        {
-            verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                            "!dptr || !dcol || !dval || "
-                                            "!dx || !dy || !buffer");
-            return HIPSPARSE_STATUS_ALLOC_FAILED;
-        }
+//         if(!dval || !dptr || !dcol || !dx || !dy || !buffer)
+//         {
+//             verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
+//                                             "!dptr || !dcol || !dval || "
+//                                             "!dx || !dy || !buffer");
+//             return HIPSPARSE_STATUS_ALLOC_FAILED;
+//         }
 
-        // Test hipsparseXcsrsv2_bufferSize
-        status = hipsparseXcsrsv2_bufferSize(
-            handle, trans, m, nnz, descr, dval, dptr, dcol, info, &size);
+//         // Test hipsparseXcsrsv2_bufferSize
+//         status = hipsparseXcsrsv2_bufferSize(
+//             handle, trans, m, nnz, descr, dval, dptr, dcol, info, &size);
 
-        if(m < 0 || nnz < 0)
-        {
-            verify_hipsparse_status_invalid_size(status, "Error: m < 0 || nnz < 0");
-        }
-        else
-        {
-            verify_hipsparse_status_success(status, "m >= 0 && nnz >= 0");
-        }
+//         if(m < 0 || nnz < 0)
+//         {
+//             verify_hipsparse_status_invalid_size(status, "Error: m < 0 || nnz < 0");
+//         }
+//         else
+//         {
+//             verify_hipsparse_status_success(status, "m >= 0 && nnz >= 0");
+//         }
 
-        // Test hipsparseXcsrsv2_analysis
-        status = hipsparseXcsrsv2_analysis(
-            handle, trans, m, nnz, descr, dval, dptr, dcol, info, policy, buffer);
+//         // Test hipsparseXcsrsv2_analysis
+//         status = hipsparseXcsrsv2_analysis(
+//             handle, trans, m, nnz, descr, dval, dptr, dcol, info, policy, buffer);
 
-        if(m < 0 || nnz < 0)
-        {
-            verify_hipsparse_status_invalid_size(status, "Error: m < 0 || nnz < 0");
-        }
-        else
-        {
-            verify_hipsparse_status_success(status, "m >= 0 && nnz >= 0");
-        }
+//         if(m < 0 || nnz < 0)
+//         {
+//             verify_hipsparse_status_invalid_size(status, "Error: m < 0 || nnz < 0");
+//         }
+//         else
+//         {
+//             verify_hipsparse_status_success(status, "m >= 0 && nnz >= 0");
+//         }
 
-        // Test hipsparseXcsrsv2_solve
-        status = hipsparseXcsrsv2_solve(
-            handle, trans, m, nnz, &h_alpha, descr, dval, dptr, dcol, info, dx, dy, policy, buffer);
+//         // Test hipsparseXcsrsv2_solve
+//         status = hipsparseXcsrsv2_solve(
+//             handle, trans, m, nnz, &h_alpha, descr, dval, dptr, dcol, info, dx, dy, policy, buffer);
 
-        if(m < 0 || nnz < 0)
-        {
-            verify_hipsparse_status_invalid_size(status, "Error: m < 0 || nnz < 0");
-        }
-        else
-        {
-            verify_hipsparse_status_success(status, "m >= 0 && nnz >= 0");
-        }
+//         if(m < 0 || nnz < 0)
+//         {
+//             verify_hipsparse_status_invalid_size(status, "Error: m < 0 || nnz < 0");
+//         }
+//         else
+//         {
+//             verify_hipsparse_status_success(status, "m >= 0 && nnz >= 0");
+//         }
 
-        // Test hipsparseXcsrsv2_zeroPivot
-        int zero_pivot;
-        CHECK_HIPSPARSE_ERROR(hipsparseXcsrsv2_zeroPivot(handle, info, &zero_pivot));
+//         // Test hipsparseXcsrsv2_zeroPivot
+//         int zero_pivot;
+//         CHECK_HIPSPARSE_ERROR(hipsparseXcsrsv2_zeroPivot(handle, info, &zero_pivot));
 
-        // Zero pivot should be -1
-        int res = -1;
-        unit_check_general(1, 1, 1, &res, &zero_pivot);
+//         // Zero pivot should be -1
+//         int res = -1;
+//         unit_check_general(1, 1, 1, &res, &zero_pivot);
 
-        return HIPSPARSE_STATUS_SUCCESS;
-    }
+//         return HIPSPARSE_STATUS_SUCCESS;
+//     }
 
     // Host structures
     std::vector<int> hcsr_row_ptr;

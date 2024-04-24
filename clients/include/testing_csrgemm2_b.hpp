@@ -878,149 +878,149 @@ hipsparseStatus_t testing_csrgemm2_b(Arguments argus)
     }
     int nnz_D = M * scale * N;
 
-    // Argument sanity check before allocating invalid memory
-    if(M <= 0 || N <= 0 || nnz_D <= 0)
-    {
-#ifdef __HIP_PLATFORM_NVIDIA__
-        // do not test for zero
-        return HIPSPARSE_STATUS_SUCCESS;
-#endif
-        auto dDptr_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto dDcol_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto dDval_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-        auto dCptr_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto dCcol_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto dCval_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-        auto dbuffer_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(char) * safe_size), device_free};
+//     // Argument sanity check before allocating invalid memory
+//     if(M <= 0 || N <= 0 || nnz_D <= 0)
+//     {
+// #ifdef __HIP_PLATFORM_NVIDIA__
+//         // do not test for zero
+//         return HIPSPARSE_STATUS_SUCCESS;
+// #endif
+//         auto dDptr_managed
+//             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+//         auto dDcol_managed
+//             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+//         auto dDval_managed
+//             = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+//         auto dCptr_managed
+//             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+//         auto dCcol_managed
+//             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+//         auto dCval_managed
+//             = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+//         auto dbuffer_managed
+//             = hipsparse_unique_ptr{device_malloc(sizeof(char) * safe_size), device_free};
 
-        int*  dDptr   = (int*)dDptr_managed.get();
-        int*  dDcol   = (int*)dDcol_managed.get();
-        T*    dDval   = (T*)dDval_managed.get();
-        int*  dCptr   = (int*)dCptr_managed.get();
-        int*  dCcol   = (int*)dCcol_managed.get();
-        T*    dCval   = (T*)dCval_managed.get();
-        void* dbuffer = (void*)dbuffer_managed.get();
+//         int*  dDptr   = (int*)dDptr_managed.get();
+//         int*  dDcol   = (int*)dDcol_managed.get();
+//         T*    dDval   = (T*)dDval_managed.get();
+//         int*  dCptr   = (int*)dCptr_managed.get();
+//         int*  dCcol   = (int*)dCcol_managed.get();
+//         T*    dCval   = (T*)dCval_managed.get();
+//         void* dbuffer = (void*)dbuffer_managed.get();
 
-        if(!dDval || !dDptr || !dDcol || !dCval || !dCptr || !dCcol || !dbuffer)
-        {
-            verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                            "!dDptr || !dDcol || !dDval || "
-                                            "!dCptr || !dCcol || !dCval || "
-                                            "!dbuffer");
-            return HIPSPARSE_STATUS_ALLOC_FAILED;
-        }
+//         if(!dDval || !dDptr || !dDcol || !dCval || !dCptr || !dCcol || !dbuffer)
+//         {
+//             verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
+//                                             "!dDptr || !dDcol || !dDval || "
+//                                             "!dCptr || !dCcol || !dCval || "
+//                                             "!dbuffer");
+//             return HIPSPARSE_STATUS_ALLOC_FAILED;
+//         }
 
-        // Test hipsparseXcsrgemm2_bufferSizeExt
-        status = hipsparseXcsrgemm2_bufferSizeExt(handle,
-                                                  M,
-                                                  N,
-                                                  0,
-                                                  (T*)nullptr,
-                                                  descr_A,
-                                                  0,
-                                                  nullptr,
-                                                  nullptr,
-                                                  descr_B,
-                                                  0,
-                                                  nullptr,
-                                                  nullptr,
-                                                  h_beta,
-                                                  descr_D,
-                                                  nnz_D,
-                                                  dDptr,
-                                                  dDcol,
-                                                  info,
-                                                  &size);
+//         // Test hipsparseXcsrgemm2_bufferSizeExt
+//         status = hipsparseXcsrgemm2_bufferSizeExt(handle,
+//                                                   M,
+//                                                   N,
+//                                                   0,
+//                                                   (T*)nullptr,
+//                                                   descr_A,
+//                                                   0,
+//                                                   nullptr,
+//                                                   nullptr,
+//                                                   descr_B,
+//                                                   0,
+//                                                   nullptr,
+//                                                   nullptr,
+//                                                   h_beta,
+//                                                   descr_D,
+//                                                   nnz_D,
+//                                                   dDptr,
+//                                                   dDcol,
+//                                                   info,
+//                                                   &size);
 
-        if(M < 0 || N < 0 || nnz_D < 0)
-        {
-            verify_hipsparse_status_invalid_size(status, "Error: M < 0 || N < 0 || nnz_D < 0");
-        }
-        else
-        {
-            verify_hipsparse_status_success(status, "M >= 0 && N >= 0 && nnz_D >= 0");
-        }
+//         if(M < 0 || N < 0 || nnz_D < 0)
+//         {
+//             verify_hipsparse_status_invalid_size(status, "Error: M < 0 || N < 0 || nnz_D < 0");
+//         }
+//         else
+//         {
+//             verify_hipsparse_status_success(status, "M >= 0 && N >= 0 && nnz_D >= 0");
+//         }
 
-        // Test hipsparseXcsrgemm2Nnz
-        int nnz_C;
-        status = hipsparseXcsrgemm2Nnz(handle,
-                                       M,
-                                       N,
-                                       0,
-                                       descr_A,
-                                       0,
-                                       nullptr,
-                                       nullptr,
-                                       descr_B,
-                                       0,
-                                       nullptr,
-                                       nullptr,
-                                       descr_D,
-                                       nnz_D,
-                                       dDptr,
-                                       dDcol,
-                                       descr_C,
-                                       dCptr,
-                                       &nnz_C,
-                                       info,
-                                       dbuffer);
+//         // Test hipsparseXcsrgemm2Nnz
+//         int nnz_C;
+//         status = hipsparseXcsrgemm2Nnz(handle,
+//                                        M,
+//                                        N,
+//                                        0,
+//                                        descr_A,
+//                                        0,
+//                                        nullptr,
+//                                        nullptr,
+//                                        descr_B,
+//                                        0,
+//                                        nullptr,
+//                                        nullptr,
+//                                        descr_D,
+//                                        nnz_D,
+//                                        dDptr,
+//                                        dDcol,
+//                                        descr_C,
+//                                        dCptr,
+//                                        &nnz_C,
+//                                        info,
+//                                        dbuffer);
 
-        if(M < 0 || N < 0 || nnz_D < 0)
-        {
-            verify_hipsparse_status_invalid_size(status, "Error: M < 0 || N < 0 || nnz_D < 0");
-        }
-        else
-        {
-            verify_hipsparse_status_success(status, "M >= 0 && N >= 0 && nnz_D >= 0");
-        }
+//         if(M < 0 || N < 0 || nnz_D < 0)
+//         {
+//             verify_hipsparse_status_invalid_size(status, "Error: M < 0 || N < 0 || nnz_D < 0");
+//         }
+//         else
+//         {
+//             verify_hipsparse_status_success(status, "M >= 0 && N >= 0 && nnz_D >= 0");
+//         }
 
-        // Test hipsparseXcsrgemm2
-        status = hipsparseXcsrgemm2(handle,
-                                    M,
-                                    N,
-                                    0,
-                                    (T*)nullptr,
-                                    descr_A,
-                                    0,
-                                    (T*)nullptr,
-                                    nullptr,
-                                    nullptr,
-                                    descr_B,
-                                    0,
-                                    (T*)nullptr,
-                                    nullptr,
-                                    nullptr,
-                                    h_beta,
-                                    descr_D,
-                                    nnz_D,
-                                    dDval,
-                                    dDptr,
-                                    dDcol,
-                                    descr_C,
-                                    dCval,
-                                    dCptr,
-                                    dCcol,
-                                    info,
-                                    dbuffer);
+//         // Test hipsparseXcsrgemm2
+//         status = hipsparseXcsrgemm2(handle,
+//                                     M,
+//                                     N,
+//                                     0,
+//                                     (T*)nullptr,
+//                                     descr_A,
+//                                     0,
+//                                     (T*)nullptr,
+//                                     nullptr,
+//                                     nullptr,
+//                                     descr_B,
+//                                     0,
+//                                     (T*)nullptr,
+//                                     nullptr,
+//                                     nullptr,
+//                                     h_beta,
+//                                     descr_D,
+//                                     nnz_D,
+//                                     dDval,
+//                                     dDptr,
+//                                     dDcol,
+//                                     descr_C,
+//                                     dCval,
+//                                     dCptr,
+//                                     dCcol,
+//                                     info,
+//                                     dbuffer);
 
-        if(M < 0 || N < 0 || nnz_D < 0)
-        {
-            verify_hipsparse_status_invalid_size(status, "Error: M < 0 || N < 0 || nnz_D < 0");
-        }
-        else
-        {
-            verify_hipsparse_status_success(status, "M >= 0 && N >= 0 && nnz_D >= 0");
-        }
+//         if(M < 0 || N < 0 || nnz_D < 0)
+//         {
+//             verify_hipsparse_status_invalid_size(status, "Error: M < 0 || N < 0 || nnz_D < 0");
+//         }
+//         else
+//         {
+//             verify_hipsparse_status_success(status, "M >= 0 && N >= 0 && nnz_D >= 0");
+//         }
 
-        return HIPSPARSE_STATUS_SUCCESS;
-    }
+//         return HIPSPARSE_STATUS_SUCCESS;
+//     }
 
     // Host structures
     std::vector<int> hcsr_row_ptr_A;

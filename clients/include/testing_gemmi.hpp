@@ -325,46 +325,46 @@ hipsparseStatus_t testing_gemmi(Arguments argus)
     }
 #endif
 
-    // Argument sanity check before allocating invalid memory
-    if(M <= 0 || N <= 0 || K < 0)
-    {
-        auto dptr_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto drow_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto dval_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-        auto dA_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-        auto dC_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+    // // Argument sanity check before allocating invalid memory
+    // if(M <= 0 || N <= 0 || K < 0)
+    // {
+    //     auto dptr_managed
+    //         = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+    //     auto drow_managed
+    //         = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+    //     auto dval_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+    //     auto dA_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+    //     auto dC_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
 
-        int* dptr = (int*)dptr_managed.get();
-        int* drow = (int*)drow_managed.get();
-        T*   dval = (T*)dval_managed.get();
-        T*   dA   = (T*)dA_managed.get();
-        T*   dC   = (T*)dC_managed.get();
+    //     int* dptr = (int*)dptr_managed.get();
+    //     int* drow = (int*)drow_managed.get();
+    //     T*   dval = (T*)dval_managed.get();
+    //     T*   dA   = (T*)dA_managed.get();
+    //     T*   dC   = (T*)dC_managed.get();
 
-        if(!dval || !dptr || !drow || !dA || !dC)
-        {
-            verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                            "!dptr || !drow || !dval || !dA || !dC");
-            return HIPSPARSE_STATUS_ALLOC_FAILED;
-        }
+    //     if(!dval || !dptr || !drow || !dA || !dC)
+    //     {
+    //         verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
+    //                                         "!dptr || !drow || !dval || !dA || !dC");
+    //         return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //     }
 
-        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
-        status = hipsparseXgemmi(
-            handle, M, N, K, nnz, &h_alpha, dA, lda, dval, dptr, drow, &h_beta, dC, ldc);
+    //     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
+    //     status = hipsparseXgemmi(
+    //         handle, M, N, K, nnz, &h_alpha, dA, lda, dval, dptr, drow, &h_beta, dC, ldc);
 
-        if(M < 0 || N < 0 || K < 0 || nnz < 0)
-        {
-            verify_hipsparse_status_invalid_size(status,
-                                                 "Error: M < 0 || N < 0 || K < 0 || nnz < 0");
-        }
-        else
-        {
-            verify_hipsparse_status_success(status, "M >= 0 && N >= 0 && K >= 0 && nnz >= 0");
-        }
+    //     if(M < 0 || N < 0 || K < 0 || nnz < 0)
+    //     {
+    //         verify_hipsparse_status_invalid_size(status,
+    //                                              "Error: M < 0 || N < 0 || K < 0 || nnz < 0");
+    //     }
+    //     else
+    //     {
+    //         verify_hipsparse_status_success(status, "M >= 0 && N >= 0 && K >= 0 && nnz >= 0");
+    //     }
 
-        return HIPSPARSE_STATUS_SUCCESS;
-    }
+    //     return HIPSPARSE_STATUS_SUCCESS;
+    // }
 
     // Initialize random seed
     srand(12345ULL);

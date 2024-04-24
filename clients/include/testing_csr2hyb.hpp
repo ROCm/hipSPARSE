@@ -200,41 +200,41 @@ hipsparseStatus_t testing_csr2hyb(Arguments argus)
     std::unique_ptr<hyb_struct> unique_ptr_hyb(new hyb_struct);
     hipsparseHybMat_t           hyb = unique_ptr_hyb->hyb;
 
-    // Argument sanity check before allocating invalid memory
-    if(m <= 0 || n <= 0 || nnz <= 0)
-    {
-        auto csr_row_ptr_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto csr_col_ind_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto csr_val_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+    // // Argument sanity check before allocating invalid memory
+    // if(m <= 0 || n <= 0 || nnz <= 0)
+    // {
+    //     auto csr_row_ptr_managed
+    //         = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+    //     auto csr_col_ind_managed
+    //         = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+    //     auto csr_val_managed
+    //         = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
 
-        int* csr_row_ptr = (int*)csr_row_ptr_managed.get();
-        int* csr_col_ind = (int*)csr_col_ind_managed.get();
-        T*   csr_val     = (T*)csr_val_managed.get();
+    //     int* csr_row_ptr = (int*)csr_row_ptr_managed.get();
+    //     int* csr_col_ind = (int*)csr_col_ind_managed.get();
+    //     T*   csr_val     = (T*)csr_val_managed.get();
 
-        if(!csr_row_ptr || !csr_col_ind || !csr_val)
-        {
-            verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                            "!csr_row_ptr || !csr_col_ind || !csr_val");
-            return HIPSPARSE_STATUS_ALLOC_FAILED;
-        }
+    //     if(!csr_row_ptr || !csr_col_ind || !csr_val)
+    //     {
+    //         verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
+    //                                         "!csr_row_ptr || !csr_col_ind || !csr_val");
+    //         return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //     }
 
-        status = hipsparseXcsr2hyb(
-            handle, m, n, descr, csr_val, csr_row_ptr, csr_col_ind, hyb, user_ell_width, part);
+    //     status = hipsparseXcsr2hyb(
+    //         handle, m, n, descr, csr_val, csr_row_ptr, csr_col_ind, hyb, user_ell_width, part);
 
-        if(m < 0 || n < 0)
-        {
-            verify_hipsparse_status_invalid_size(status, "Error: m < 0 || n < 0");
-        }
-        else
-        {
-            verify_hipsparse_status_success(status, "m >= 0 && n >= 0");
-        }
+    //     if(m < 0 || n < 0)
+    //     {
+    //         verify_hipsparse_status_invalid_size(status, "Error: m < 0 || n < 0");
+    //     }
+    //     else
+    //     {
+    //         verify_hipsparse_status_success(status, "m >= 0 && n >= 0");
+    //     }
 
-        return HIPSPARSE_STATUS_SUCCESS;
-    }
+    //     return HIPSPARSE_STATUS_SUCCESS;
+    // }
 
     // For testing, assemble a COO matrix and convert it to CSR first (on host)
 

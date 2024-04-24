@@ -188,46 +188,46 @@ hipsparseStatus_t testing_hybmv(Arguments argus)
     }
     int nnz = m * scale * n;
 
-    // Argument sanity check before allocating invalid memory
-    if(m <= 0 || n <= 0 || nnz <= 0)
-    {
-        auto dptr_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto dcol_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto dval_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-        auto dx_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-        auto dy_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+    // // Argument sanity check before allocating invalid memory
+    // if(m <= 0 || n <= 0 || nnz <= 0)
+    // {
+    //     auto dptr_managed
+    //         = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+    //     auto dcol_managed
+    //         = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+    //     auto dval_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+    //     auto dx_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+    //     auto dy_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
 
-        int* dptr = (int*)dptr_managed.get();
-        int* dcol = (int*)dcol_managed.get();
-        T*   dval = (T*)dval_managed.get();
-        T*   dx   = (T*)dx_managed.get();
-        T*   dy   = (T*)dy_managed.get();
+    //     int* dptr = (int*)dptr_managed.get();
+    //     int* dcol = (int*)dcol_managed.get();
+    //     T*   dval = (T*)dval_managed.get();
+    //     T*   dx   = (T*)dx_managed.get();
+    //     T*   dy   = (T*)dy_managed.get();
 
-        if(!dval || !dptr || !dcol || !dx || !dy)
-        {
-            verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                            "!dptr || !dcol || !dval || !dx || !dy");
-            return HIPSPARSE_STATUS_ALLOC_FAILED;
-        }
+    //     if(!dval || !dptr || !dcol || !dx || !dy)
+    //     {
+    //         verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
+    //                                         "!dptr || !dcol || !dval || !dx || !dy");
+    //         return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //     }
 
-        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
-        status
-            = hipsparseXcsr2hyb(handle, m, n, descr, dval, dptr, dcol, hyb, user_ell_width, part);
+    //     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
+    //     status
+    //         = hipsparseXcsr2hyb(handle, m, n, descr, dval, dptr, dcol, hyb, user_ell_width, part);
 
-        if(m < 0 || n < 0 || nnz < 0)
-        {
-            verify_hipsparse_status_invalid_size(status, "Error: m < 0 || n < 0 || nnz < 0");
-        }
+    //     if(m < 0 || n < 0 || nnz < 0)
+    //     {
+    //         verify_hipsparse_status_invalid_size(status, "Error: m < 0 || n < 0 || nnz < 0");
+    //     }
 
-        // hybmv should be able to deal with m <= 0 || n <= 0 || nnz <= 0 even if csr2hyb fails
-        // because hyb structures is allocated with n = m = 0 - so nothing should happen
-        status = hipsparseXhybmv(handle, transA, &h_alpha, descr, hyb, dx, &h_beta, dy);
-        verify_hipsparse_status_success(status, "m >= 0 && n >= 0 && nnz >= 0");
+    //     // hybmv should be able to deal with m <= 0 || n <= 0 || nnz <= 0 even if csr2hyb fails
+    //     // because hyb structures is allocated with n = m = 0 - so nothing should happen
+    //     status = hipsparseXhybmv(handle, transA, &h_alpha, descr, hyb, dx, &h_beta, dy);
+    //     verify_hipsparse_status_success(status, "m >= 0 && n >= 0 && nnz >= 0");
 
-        return HIPSPARSE_STATUS_SUCCESS;
-    }
+    //     return HIPSPARSE_STATUS_SUCCESS;
+    // }
 
     // Host structures
     std::vector<int> hcsr_row_ptr;

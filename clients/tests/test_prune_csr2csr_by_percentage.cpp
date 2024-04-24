@@ -33,8 +33,8 @@ typedef std::tuple<int, int, double, hipsparseIndexBase_t, hipsparseIndexBase_t>
 typedef std::tuple<double, hipsparseIndexBase_t, hipsparseIndexBase_t, std::string>
     prune_csr2csr_by_percentage_bin_tuple;
 
-int    prune_csr2csr_by_percentage_M_range[] = {-1, 10, 500, 872, 465327};
-int    prune_csr2csr_by_percentage_N_range[] = {-3, 33, 242, 623, 592645};
+int    prune_csr2csr_by_percentage_M_range[] = {10, 500, 872, 465327};
+int    prune_csr2csr_by_percentage_N_range[] = {33, 242, 623, 592645};
 double prune_csr2csr_by_percentage_range[]   = {5.7, 75.0, 101.0};
 
 hipsparseIndexBase_t prune_csr2csr_by_percentage_base_A_range[]

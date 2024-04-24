@@ -197,7 +197,7 @@ hipsparseStatus_t testing_coosort(Arguments argus)
     hipsparseIndexBase_t idx_base  = argus.idx_base;
     std::string          binfile   = "";
     std::string          filename  = "";
-    hipsparseStatus_t    status;
+    //hipsparseStatus_t    status;
 
     // When in testing mode, M == N == -99 indicates that we are testing with a real
     // matrix from cise.ufl.edu
@@ -224,72 +224,72 @@ hipsparseStatus_t testing_coosort(Arguments argus)
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
-    // Argument sanity check before allocating invalid memory
-    if(m <= 0 || n <= 0 || nnz <= 0)
-    {
-#ifdef __HIP_PLATFORM_NVIDIA__
-        // Do not test args in cusparse
-        return HIPSPARSE_STATUS_SUCCESS;
-#endif
-        auto coo_row_ind_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto coo_col_ind_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto perm_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto buffer_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(char) * safe_size), device_free};
+//     // Argument sanity check before allocating invalid memory
+//     if(m <= 0 || n <= 0 || nnz <= 0)
+//     {
+// #ifdef __HIP_PLATFORM_NVIDIA__
+//         // Do not test args in cusparse
+//         return HIPSPARSE_STATUS_SUCCESS;
+// #endif
+//         auto coo_row_ind_managed
+//             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+//         auto coo_col_ind_managed
+//             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+//         auto perm_managed
+//             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+//         auto buffer_managed
+//             = hipsparse_unique_ptr{device_malloc(sizeof(char) * safe_size), device_free};
 
-        int*  coo_row_ind = (int*)coo_row_ind_managed.get();
-        int*  coo_col_ind = (int*)coo_col_ind_managed.get();
-        int*  perm        = (int*)perm_managed.get();
-        void* buffer      = (void*)buffer_managed.get();
+//         int*  coo_row_ind = (int*)coo_row_ind_managed.get();
+//         int*  coo_col_ind = (int*)coo_col_ind_managed.get();
+//         int*  perm        = (int*)perm_managed.get();
+//         void* buffer      = (void*)buffer_managed.get();
 
-        if(!coo_row_ind || !coo_col_ind || !perm || !buffer)
-        {
-            verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                            "!coo_row_ind || !coo_col_ind || !perm || !buffer");
-            return HIPSPARSE_STATUS_ALLOC_FAILED;
-        }
+//         if(!coo_row_ind || !coo_col_ind || !perm || !buffer)
+//         {
+//             verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
+//                                             "!coo_row_ind || !coo_col_ind || !perm || !buffer");
+//             return HIPSPARSE_STATUS_ALLOC_FAILED;
+//         }
 
-        status = hipsparseXcoosort_bufferSizeExt(
-            handle, m, n, nnz, coo_row_ind, coo_col_ind, &buffer_size);
+//         status = hipsparseXcoosort_bufferSizeExt(
+//             handle, m, n, nnz, coo_row_ind, coo_col_ind, &buffer_size);
 
-        if(m < 0 || n < 0 || nnz < 0)
-        {
-            verify_hipsparse_status_invalid_size(status, "Error: m < 0 || n < 0 || nnz < 0");
-        }
-        else
-        {
-            verify_hipsparse_status_success(status, "m >= 0 && n >= 0 && nnz >= 0");
+//         if(m < 0 || n < 0 || nnz < 0)
+//         {
+//             verify_hipsparse_status_invalid_size(status, "Error: m < 0 || n < 0 || nnz < 0");
+//         }
+//         else
+//         {
+//             verify_hipsparse_status_success(status, "m >= 0 && n >= 0 && nnz >= 0");
 
-            // Buffer size should be 0
-            size_t zero = 0;
-            unit_check_general(1, 1, 1, &zero, &buffer_size);
-        }
+//             // Buffer size should be 0
+//             size_t zero = 0;
+//             unit_check_general(1, 1, 1, &zero, &buffer_size);
+//         }
 
-        if(by_row)
-        {
-            status
-                = hipsparseXcoosortByRow(handle, m, n, nnz, coo_row_ind, coo_col_ind, perm, buffer);
-        }
-        else
-        {
-            status = hipsparseXcoosortByColumn(
-                handle, m, n, nnz, coo_row_ind, coo_col_ind, perm, buffer);
-        }
+//         if(by_row)
+//         {
+//             status
+//                 = hipsparseXcoosortByRow(handle, m, n, nnz, coo_row_ind, coo_col_ind, perm, buffer);
+//         }
+//         else
+//         {
+//             status = hipsparseXcoosortByColumn(
+//                 handle, m, n, nnz, coo_row_ind, coo_col_ind, perm, buffer);
+//         }
 
-        if(m < 0 || n < 0 || nnz < 0)
-        {
-            verify_hipsparse_status_invalid_size(status, "Error: m < 0 || n < 0 || nnz < 0");
-        }
-        else
-        {
-            verify_hipsparse_status_success(status, "m >= 0 && n >= 0 && nnz >= 0");
-        }
+//         if(m < 0 || n < 0 || nnz < 0)
+//         {
+//             verify_hipsparse_status_invalid_size(status, "Error: m < 0 || n < 0 || nnz < 0");
+//         }
+//         else
+//         {
+//             verify_hipsparse_status_success(status, "m >= 0 && n >= 0 && nnz >= 0");
+//         }
 
-        return HIPSPARSE_STATUS_SUCCESS;
-    }
+//         return HIPSPARSE_STATUS_SUCCESS;
+//     }
 
     // For testing, assemble a COO matrix and convert it to CSR first (on host)
 

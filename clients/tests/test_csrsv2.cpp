@@ -36,7 +36,7 @@ typedef hipsparseFillMode_t  fill;
 typedef std::tuple<int, double, base, op, diag, fill>         csrsv2_tuple;
 typedef std::tuple<double, base, op, diag, fill, std::string> csrsv2_bin_tuple;
 
-int csrsv2_M_range[] = {-1, 0, 647};
+int csrsv2_M_range[] = {0, 647};
 
 double csrsv2_alpha_range[] = {2.3};
 

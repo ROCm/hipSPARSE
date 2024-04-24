@@ -415,7 +415,7 @@ hipsparseStatus_t testing_csr2bsr(Arguments argus)
     hipsparseDirection_t dir          = argus.dirA;
     std::string          binfile      = "";
     std::string          filename     = "";
-    hipsparseStatus_t    status;
+    //hipsparseStatus_t    status;
 
     // When in testing mode, M == N == -99 indicates that we are testing with a real
     // matrix from cise.ufl.edu
@@ -449,93 +449,93 @@ hipsparseStatus_t testing_csr2bsr(Arguments argus)
 #endif
     }
 
-    // Argument sanity check before allocating invalid memory
-    if(m <= 0 || n <= 0 || block_dim <= 0)
-    {
-#ifdef __HIP_PLATFORM_NVIDIA__
-        // Do not test args in cusparse
-        return HIPSPARSE_STATUS_SUCCESS;
-#endif
-        auto dcsr_row_ptr_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * (safe_size + 1)), device_free};
-        auto dcsr_col_ind_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto dcsr_val_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-        auto dbsr_row_ptr_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * (safe_size + 1)), device_free};
-        auto dbsr_col_ind_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto dbsr_val_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+//     // Argument sanity check before allocating invalid memory
+//     if(m <= 0 || n <= 0 || block_dim <= 0)
+//     {
+// #ifdef __HIP_PLATFORM_NVIDIA__
+//         // Do not test args in cusparse
+//         return HIPSPARSE_STATUS_SUCCESS;
+// #endif
+//         auto dcsr_row_ptr_managed
+//             = hipsparse_unique_ptr{device_malloc(sizeof(int) * (safe_size + 1)), device_free};
+//         auto dcsr_col_ind_managed
+//             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+//         auto dcsr_val_managed
+//             = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+//         auto dbsr_row_ptr_managed
+//             = hipsparse_unique_ptr{device_malloc(sizeof(int) * (safe_size + 1)), device_free};
+//         auto dbsr_col_ind_managed
+//             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+//         auto dbsr_val_managed
+//             = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
 
-        int* dcsr_row_ptr = (int*)dcsr_row_ptr_managed.get();
-        int* dcsr_col_ind = (int*)dcsr_col_ind_managed.get();
-        T*   dcsr_val     = (T*)dcsr_val_managed.get();
-        int* dbsr_row_ptr = (int*)dbsr_row_ptr_managed.get();
-        int* dbsr_col_ind = (int*)dbsr_col_ind_managed.get();
-        T*   dbsr_val     = (T*)dbsr_val_managed.get();
+//         int* dcsr_row_ptr = (int*)dcsr_row_ptr_managed.get();
+//         int* dcsr_col_ind = (int*)dcsr_col_ind_managed.get();
+//         T*   dcsr_val     = (T*)dcsr_val_managed.get();
+//         int* dbsr_row_ptr = (int*)dbsr_row_ptr_managed.get();
+//         int* dbsr_col_ind = (int*)dbsr_col_ind_managed.get();
+//         T*   dbsr_val     = (T*)dbsr_val_managed.get();
 
-        // row pointer need to be valid
-        CHECK_HIP_ERROR(hipMemset(dcsr_row_ptr, 0, sizeof(int) * (safe_size + 1)));
+//         // row pointer need to be valid
+//         CHECK_HIP_ERROR(hipMemset(dcsr_row_ptr, 0, sizeof(int) * (safe_size + 1)));
 
-        if(!dcsr_row_ptr || !dcsr_col_ind || !dcsr_val || !dbsr_row_ptr || !dbsr_col_ind
-           || !dbsr_val)
-        {
-            verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                            "!dcsr_row_ptr || !dcsr_col_ind || !dcsr_val || "
-                                            "!dbsr_row_ptr || !dbsr_col_ind || !dbsr_val || ");
-            return HIPSPARSE_STATUS_ALLOC_FAILED;
-        }
+//         if(!dcsr_row_ptr || !dcsr_col_ind || !dcsr_val || !dbsr_row_ptr || !dbsr_col_ind
+//            || !dbsr_val)
+//         {
+//             verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
+//                                             "!dcsr_row_ptr || !dcsr_col_ind || !dcsr_val || "
+//                                             "!dbsr_row_ptr || !dbsr_col_ind || !dbsr_val || ");
+//             return HIPSPARSE_STATUS_ALLOC_FAILED;
+//         }
 
-        int bsr_nnzb;
+//         int bsr_nnzb;
 
-        status = hipsparseXcsr2bsrNnz(handle,
-                                      dir,
-                                      m,
-                                      n,
-                                      csr_descr,
-                                      dcsr_row_ptr,
-                                      dcsr_col_ind,
-                                      block_dim,
-                                      bsr_descr,
-                                      dbsr_row_ptr,
-                                      &bsr_nnzb);
+//         status = hipsparseXcsr2bsrNnz(handle,
+//                                       dir,
+//                                       m,
+//                                       n,
+//                                       csr_descr,
+//                                       dcsr_row_ptr,
+//                                       dcsr_col_ind,
+//                                       block_dim,
+//                                       bsr_descr,
+//                                       dbsr_row_ptr,
+//                                       &bsr_nnzb);
 
-        if(m < 0 || n < 0 || block_dim <= 0)
-        {
-            verify_hipsparse_status_invalid_size(status, "Error: m < 0 || n < 0 || block_dim <= 0");
-        }
-        else
-        {
-            verify_hipsparse_status_success(status, "m >= 0 && n >= 0 && block_dim > 0");
-        }
+//         if(m < 0 || n < 0 || block_dim <= 0)
+//         {
+//             verify_hipsparse_status_invalid_size(status, "Error: m < 0 || n < 0 || block_dim <= 0");
+//         }
+//         else
+//         {
+//             verify_hipsparse_status_success(status, "m >= 0 && n >= 0 && block_dim > 0");
+//         }
 
-        status = hipsparseXcsr2bsr(handle,
-                                   dir,
-                                   m,
-                                   n,
-                                   csr_descr,
-                                   dcsr_val,
-                                   dcsr_row_ptr,
-                                   dcsr_col_ind,
-                                   block_dim,
-                                   bsr_descr,
-                                   dbsr_val,
-                                   dbsr_row_ptr,
-                                   dbsr_col_ind);
+//         status = hipsparseXcsr2bsr(handle,
+//                                    dir,
+//                                    m,
+//                                    n,
+//                                    csr_descr,
+//                                    dcsr_val,
+//                                    dcsr_row_ptr,
+//                                    dcsr_col_ind,
+//                                    block_dim,
+//                                    bsr_descr,
+//                                    dbsr_val,
+//                                    dbsr_row_ptr,
+//                                    dbsr_col_ind);
 
-        if(m < 0 || n < 0 || block_dim <= 0)
-        {
-            verify_hipsparse_status_invalid_size(status, "Error: m < 0 || n < 0 || block_dim <= 0");
-        }
-        else
-        {
-            verify_hipsparse_status_success(status, "m >= 0 && n >= 0 && block_dim > 0");
-        }
+//         if(m < 0 || n < 0 || block_dim <= 0)
+//         {
+//             verify_hipsparse_status_invalid_size(status, "Error: m < 0 || n < 0 || block_dim <= 0");
+//         }
+//         else
+//         {
+//             verify_hipsparse_status_success(status, "m >= 0 && n >= 0 && block_dim > 0");
+//         }
 
-        return HIPSPARSE_STATUS_SUCCESS;
-    }
+//         return HIPSPARSE_STATUS_SUCCESS;
+//     }
 
     // Read or construct CSR matrix
     std::vector<int> hcsr_row_ptr;

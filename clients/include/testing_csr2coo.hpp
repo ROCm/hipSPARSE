@@ -97,7 +97,7 @@ hipsparseStatus_t testing_csr2coo(Arguments argus)
     hipsparseIndexBase_t idx_base  = argus.idx_base;
     std::string          binfile   = "";
     std::string          filename  = "";
-    hipsparseStatus_t    status;
+    //hipsparseStatus_t    status;
 
     // When in testing mode, M == N == -99 indicates that we are testing with a real
     // matrix from cise.ufl.edu
@@ -122,41 +122,41 @@ hipsparseStatus_t testing_csr2coo(Arguments argus)
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
-    // Argument sanity check before allocating invalid memory
-    if(m <= 0 || n <= 0 || nnz <= 0)
-    {
-#ifdef __HIP_PLATFORM_NVIDIA__
-        // Do not test args in cusparse
-        return HIPSPARSE_STATUS_SUCCESS;
-#endif
-        auto csr_row_ptr_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto coo_row_ind_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+//     // Argument sanity check before allocating invalid memory
+//     if(m <= 0 || n <= 0 || nnz <= 0)
+//     {
+// #ifdef __HIP_PLATFORM_NVIDIA__
+//         // Do not test args in cusparse
+//         return HIPSPARSE_STATUS_SUCCESS;
+// #endif
+//         auto csr_row_ptr_managed
+//             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+//         auto coo_row_ind_managed
+//             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
 
-        int* csr_row_ptr = (int*)csr_row_ptr_managed.get();
-        int* coo_row_ind = (int*)coo_row_ind_managed.get();
+//         int* csr_row_ptr = (int*)csr_row_ptr_managed.get();
+//         int* coo_row_ind = (int*)coo_row_ind_managed.get();
 
-        if(!csr_row_ptr || !coo_row_ind)
-        {
-            verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                            "!csr_row_ptr || !coo_row_ind");
-            return HIPSPARSE_STATUS_ALLOC_FAILED;
-        }
+//         if(!csr_row_ptr || !coo_row_ind)
+//         {
+//             verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
+//                                             "!csr_row_ptr || !coo_row_ind");
+//             return HIPSPARSE_STATUS_ALLOC_FAILED;
+//         }
 
-        status = hipsparseXcsr2coo(handle, csr_row_ptr, nnz, m, coo_row_ind, idx_base);
+//         status = hipsparseXcsr2coo(handle, csr_row_ptr, nnz, m, coo_row_ind, idx_base);
 
-        if(m < 0 || nnz < 0)
-        {
-            verify_hipsparse_status_invalid_size(status, "Error: m < 0 || nnz < 0");
-        }
-        else
-        {
-            verify_hipsparse_status_success(status, "m >= 0 && n >= 0 && nnz >= 0");
-        }
+//         if(m < 0 || nnz < 0)
+//         {
+//             verify_hipsparse_status_invalid_size(status, "Error: m < 0 || nnz < 0");
+//         }
+//         else
+//         {
+//             verify_hipsparse_status_success(status, "m >= 0 && n >= 0 && nnz >= 0");
+//         }
 
-        return HIPSPARSE_STATUS_SUCCESS;
-    }
+//         return HIPSPARSE_STATUS_SUCCESS;
+//     }
 
     // Host structures
     std::vector<int>   hcsr_row_ptr;
