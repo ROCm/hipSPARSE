@@ -21,7 +21,6 @@
  *
  * ************************************************************************ */
 
-
 #pragma once
 #ifndef TESTING_CSRMM_HPP
 #define TESTING_CSRMM_HPP
@@ -65,11 +64,11 @@ void testing_csrmm_bad_arg(void)
     auto dval_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
     auto dB_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
     auto dC_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-    int* dptr = (int*)dptr_managed.get();
-    int* dcol = (int*)dcol_managed.get();
-    T*   dval = (T*)dval_managed.get();
-    T*   dB   = (T*)dB_managed.get();
-    T*   dC   = (T*)dC_managed.get();
+    int* dptr         = (int*)dptr_managed.get();
+    int* dcol         = (int*)dcol_managed.get();
+    T*   dval         = (T*)dval_managed.get();
+    T*   dB           = (T*)dB_managed.get();
+    T*   dC           = (T*)dC_managed.get();
 
     // testing for M = -1
     {
