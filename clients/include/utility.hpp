@@ -2400,6 +2400,111 @@ inline void host_bsrmv(hipsparseDirection_t dir,
     }
 }
 
+template <typename I, typename J, typename T>
+inline void host_csrmv(hipsparseOperation_t trans,
+                J                    M,
+                J                    N,
+                I                    nnz,
+                T                    alpha,
+                const I*             csr_row_ptr,
+                const J*             csr_col_ind,
+                const T*             csr_val,
+                const T*             x,
+                T                    beta,
+                T*                   y,
+                hipsparseIndexBase_t base)
+{
+    if(trans == HIPSPARSE_OPERATION_NON_TRANSPOSE)
+    {
+        // Get device properties
+        int             dev;
+        hipDeviceProp_t prop;
+
+        hipGetDevice(&dev);
+        hipGetDeviceProperties(&prop, dev);
+
+        int WF_SIZE;
+        J   nnz_per_row = (M == 0) ? 0 : (nnz / M);
+
+        if(nnz_per_row < 4)
+            WF_SIZE = 2;
+        else if(nnz_per_row < 8)
+            WF_SIZE = 4;
+        else if(nnz_per_row < 16)
+            WF_SIZE = 8;
+        else if(nnz_per_row < 32)
+            WF_SIZE = 16;
+        else if(nnz_per_row < 64 || prop.warpSize == 32)
+            WF_SIZE = 32;
+        else
+            WF_SIZE = 64;
+
+        for(J i = 0; i < M; ++i)
+        {
+            I row_begin = csr_row_ptr[i] - base;
+            I row_end   = csr_row_ptr[i + 1] - base;
+
+            std::vector<T> sum(WF_SIZE, static_cast<T>(0));
+
+            for(I j = row_begin; j < row_end; j += WF_SIZE)
+            {
+                for(int k = 0; k < WF_SIZE; ++k)
+                {
+                    if(j + k < row_end)
+                    {
+                        sum[k] = testing_fma(testing_mult(alpha, csr_val[j + k]),
+                                                 x[csr_col_ind[j + k] - base],
+                                                 sum[k]);
+                    }
+                }
+            }
+
+            for(int j = 1; j < WF_SIZE; j <<= 1)
+            {
+                for(int k = 0; k < WF_SIZE - j; ++k)
+                {
+                    sum[k] += sum[k + j];
+                }
+            }
+
+            if(beta == make_DataType<T>(0.0))
+            {
+                y[i] = sum[0];
+            }
+            else
+            {
+                y[i] = testing_fma(beta, y[i], sum[0]);
+            }
+        }
+    }
+    else
+    {
+        // Scale y with beta
+        for(J i = 0; i < N; ++i)
+        {
+            y[i] = testing_mult(y[i], beta);
+        }
+
+        // Transposed SpMV
+        for(J i = 0; i < M; ++i)
+        {
+            I row_begin = csr_row_ptr[i] - base;
+            I row_end   = csr_row_ptr[i + 1] - base;
+            T row_val   = testing_mult(alpha, x[i]);
+
+            for(I j = row_begin; j < row_end; ++j)
+            {
+                J col  = csr_col_ind[j] - base;
+                T   val = (trans == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE)
+                                  ? testing_conj(csr_val[j])
+                                  : csr_val[j];
+
+                y[col] = testing_fma(val, row_val, y[col]);
+            }
+        }
+    }
+}
+
 template <typename T>
 inline void host_bsrmm(int                     Mb,
                        int                     N,

@@ -366,8 +366,22 @@ hipsparseStatus_t testing_csrmv(Arguments argus)
         CHECK_HIP_ERROR(hipMemcpy(hy_1.data(), dy_1, sizeof(T) * m, hipMemcpyDeviceToHost));
         CHECK_HIP_ERROR(hipMemcpy(hy_2.data(), dy_2, sizeof(T) * m, hipMemcpyDeviceToHost));
 
+        host_csrmv(transA,
+                    m,
+                    n,
+                    nnz,
+                    h_alpha,
+                    hcsr_row_ptr.data(),
+                    hcol_ind.data(),
+                    hval.data(),
+                    hx.data(),
+                    h_beta,
+                    hy_gold.data(),
+                    idx_base);
+
+
         // CPU - do the csrmv row reduction in the same order as the GPU
-        if(transA == HIPSPARSE_OPERATION_NON_TRANSPOSE)
+        /*if(transA == HIPSPARSE_OPERATION_NON_TRANSPOSE)
         {
             // Query for warpSize
             hipDeviceProp_t prop;
@@ -470,7 +484,7 @@ hipsparseStatus_t testing_csrmv(Arguments argus)
                     hy_gold[col] = testing_fma(val, row_val, hy_gold[col]);
                 }
             }
-        }
+        }*/
 
         unit_check_near(1, m, 1, hy_gold.data(), hy_1.data());
         unit_check_near(1, m, 1, hy_gold.data(), hy_2.data());
