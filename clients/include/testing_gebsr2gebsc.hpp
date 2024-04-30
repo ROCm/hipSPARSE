@@ -602,7 +602,6 @@ hipsparseStatus_t testing_gebsr2gebsc(Arguments argus)
                     scale = 2.0 / std::max(m, n);
                 }
                 nnz = m * scale * n;
-                nnz = std::max(nnz, 1);
                 gen_matrix_coo(m, n, nnz, coo_row_ind, hcsr_col_ind, hcsr_val, base);
             }
 

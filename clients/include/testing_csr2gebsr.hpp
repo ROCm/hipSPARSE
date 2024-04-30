@@ -427,7 +427,7 @@ void testing_csr2gebsr_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_csr2gebsr(Arguments argus)
 {
-
+    
     int                  m             = argus.M;
     int                  n             = argus.N;
     hipsparseIndexBase_t csr_idx_base  = argus.idx_base;
@@ -638,7 +638,6 @@ hipsparseStatus_t testing_csr2gebsr(Arguments argus)
                 scale = 2.0 / std::max(m, n);
             }
             nnz = m * scale * n;
-            nnz = std::max(nnz, 1);
             gen_matrix_coo(m, n, nnz, coo_row_ind, hcsr_col_ind, hcsr_val, csr_idx_base);
         }
 
