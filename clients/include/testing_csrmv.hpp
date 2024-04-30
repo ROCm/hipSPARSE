@@ -367,8 +367,8 @@ hipsparseStatus_t testing_csrmv(Arguments argus)
         CHECK_HIP_ERROR(hipMemcpy(hy_2.data(), dy_2, sizeof(T) * m, hipMemcpyDeviceToHost));
 
         host_csrmv(transA,
-                    m,
-                    n,
+                    nrow,
+                    ncol,
                     nnz,
                     h_alpha,
                     hcsr_row_ptr.data(),
