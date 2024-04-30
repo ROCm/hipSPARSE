@@ -3,6 +3,30 @@
 Documentation for hipSPARSE is available at
 [https://rocm.docs.amd.com/projects/hipSPARSE/en/latest/](https://rocm.docs.amd.com/projects/hipSPARSE/en/latest/).
 
+## hipSPARSE 3.1.1 for ROCm 6.2.0
+
+### Additions
+
+* Added missing `hipsparseCscGet()` routine
+
+### Changes
+
+* All internal hipSPARSE functions now exist inside a namespace
+* Match deprecations found in cusparse 12.x.x when using cusparse backend.
+
+### Fixes
+
+* Fixed SpGEMM and SpGEMM_reuse routines which were not matching cuSPARSE behaviour
+
+### Optimizations
+
+* Improved user manual 
+* Improved contribution guidelines
+
+### Known issues
+
+* In `hipsparseSpSM_solve()`, we currently pass the external buffer as a parameter. This does not match the cuSPARSE API and this extra external buffer parameter will be removed in a future release. For now this extra parameter can be ignored and nullptr passed as it is unused internally by `hipsparseSpSM_solve()`.
+
 ## hipSPARSE 3.0.1 for ROCm 6.1.0
 
 ### Fixes
