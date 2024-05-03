@@ -5039,40 +5039,91 @@ hipsparseStatus_t hipsparseZcsrsm2_solve(hipsparseHandle_t         handle,
 
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 /*! \ingroup level3_module
-*  \brief Dense matrix sparse matrix multiplication using CSR storage format
+*  \brief Dense matrix sparse matrix multiplication using CSC storage format
 *
 *  \details
 *  \p hipsparseXgemmi multiplies the scalar \f$\alpha\f$ with a dense \f$m \times k\f$
-*  matrix \f$A\f$ and the sparse \f$k \times n\f$ matrix \f$B\f$, defined in CSR
+*  matrix \f$A\f$ and the sparse \f$k \times n\f$ matrix \f$B\f$, defined in CSC
 *  storage format and adds the result to the dense \f$m \times n\f$ matrix \f$C\f$ that
 *  is multiplied by the scalar \f$\beta\f$, such that
 *  \f[
-*    C := \alpha \cdot op(A) \cdot op(B) + \beta \cdot C
-*  \f]
-*  with
-*  \f[
-*    op(A) = \left\{
-*    \begin{array}{ll}
-*        A,   & \text{if trans_A == HIPSPARSE_OPERATION_NON_TRANSPOSE} \\
-*        A^T, & \text{if trans_A == HIPSPARSE_OPERATION_TRANSPOSE} \\
-*        A^H, & \text{if trans_A == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE}
-*    \end{array}
-*    \right.
-*  \f]
-*  and
-*  \f[
-*    op(B) = \left\{
-*    \begin{array}{ll}
-*        B,   & \text{if trans_B == HIPSPARSE_OPERATION_NON_TRANSPOSE} \\
-*        B^T, & \text{if trans_B == HIPSPARSE_OPERATION_TRANSPOSE} \\
-*        B^H, & \text{if trans_B == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE}
-*    \end{array}
-*    \right.
+*    C := \alpha \cdot A \cdot B + \beta \cdot C
 *  \f]
 *
 *  \note
 *  This function is non blocking and executed asynchronously with respect to the host.
 *  It may return before the actual computation has finished.
+*
+*  \par Example
+*  \code{.c}
+*    // A, B, and C are m×k, k×n, and m×n
+*    int m = 3, n = 5, k = 4;
+*    int lda = m, ldc = m;
+*    int nnz_A = m * k, nnz_B = 10, nnz_C = m * n;
+*
+*    // alpha and beta
+*    float alpha = 0.5f;
+*    float beta  = 0.25f;
+*
+*    std::vector<int> hcsc_col_ptr = {0, 2, 5, 7, 8, 10};
+*    std::vector<int> hcsc_row_ind = {0, 2, 0, 1, 3, 1, 3, 2, 0, 2}; 
+*    std::vector<float> hcsc_val     = {1, 6, 2, 4, 9, 5, 2, 7, 3, 8}; 
+*
+*    std::vector<float> hA(nnz_A, 1.0f);
+*    std::vector<float> hC(nnz_C, 1.0f);
+*
+*    int *dcsc_col_ptr;
+*    int *dcsc_row_ind;
+*    float *dcsc_val;
+*    hipMalloc((void**)&dcsc_col_ptr, sizeof(int) * (n + 1));
+*    hipMalloc((void**)&dcsc_row_ind, sizeof(int) * nnz_B);
+*    hipMalloc((void**)&dcsc_val, sizeof(float) * nnz_B);
+*
+*    hipMemcpy(dcsc_col_ptr, hcsc_col_ptr.data(), sizeof(int) * (n + 1), hipMemcpyHostToDevice);
+*    hipMemcpy(dcsc_row_ind, hcsc_row_ind.data(), sizeof(int) * nnz_B, hipMemcpyHostToDevice);
+*    hipMemcpy(dcsc_val, hcsc_val.data(), sizeof(float) * nnz_B, hipMemcpyHostToDevice);
+*
+*    hipsparseHandle_t handle;
+*    hipsparseCreate(&handle);
+*
+*    // Allocate memory for the matrix A
+*    float* dA;
+*    hipMalloc((void**)&dA, sizeof(float) * nnz_A);
+*    hipMemcpy(dA, hA.data(), sizeof(float) * nnz_A, hipMemcpyHostToDevice);
+*
+*    // Allocate memory for the resulting matrix C
+*    float* dC;
+*    hipMalloc((void**)&dC, sizeof(float) * nnz_C);
+*    hipMemcpy(dC, hC.data(), sizeof(float) * nnz_C, hipMemcpyHostToDevice);
+*
+*    // Perform operation
+*    hipsparseSgemmi(handle, 
+*                    m, 
+*                    n, 
+*                    k, 
+*                    nnz_B, 
+*                    &alpha, 
+*                    dA, 
+*                    lda, 
+*                    dcsc_val, 
+*                    dcsc_col_ptr, 
+*                    dcsc_row_ind, 
+*                    &beta, 
+*                    dC, 
+*                    ldc);
+*
+*    // Copy device to host
+*    hipMemcpy(hC.data(), dC, sizeof(float) * nnz_C, hipMemcpyDeviceToHost);
+*
+*    // Destroy matrix descriptors and handles
+*    hipsparseDestroy(handle);
+*
+*    hipFree(dcsc_col_ptr);
+*    hipFree(dcsc_row_ind);
+*    hipFree(dcsc_val);
+*    hipFree(dA);
+*    hipFree(dC);
+*  \endcode
 */
 /**@{*/
 DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
