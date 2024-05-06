@@ -830,7 +830,7 @@ hipsparseStatus_t testing_csrgemm2_b(Arguments argus)
     std::string          filename   = "";
     T                    beta       = make_DataType<T>(argus.beta);
 
-    hipsparseStatus_t status;
+//    hipsparseStatus_t status;
     size_t            size;
 
     T* h_beta = &beta;

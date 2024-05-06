@@ -215,7 +215,7 @@ hipsparseStatus_t testing_dense2csx(const Arguments& argus, FUNC& dense2csx)
     int                  LD       = argus.lda;
     hipsparseIndexBase_t idx_base = argus.idx_base;
 
-    hipsparseStatus_t status;
+    // hipsparseStatus_t status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -244,9 +244,9 @@ hipsparseStatus_t testing_dense2csx(const Arguments& argus, FUNC& dense2csx)
     int              DIMDIR = (HIPSPARSE_DIRECTION_ROW == DIRA) ? M : N;
     std::vector<T>   h_dense_val(LD * N);
     std::vector<int> h_nnzPerRowColumn(DIMDIR);
-    std::vector<int> hd_nnzPerRowColumn(DIMDIR);
-    std::vector<int> h_nnzTotalDevHostPtr(1);
-    std::vector<int> hd_nnzTotalDevHostPtr(1);
+    //std::vector<int> hd_nnzPerRowColumn(DIMDIR);
+    //std::vector<int> h_nnzTotalDevHostPtr(1);
+    //std::vector<int> hd_nnzTotalDevHostPtr(1);
 
     //
     // Create the dense matrix.
@@ -260,7 +260,7 @@ hipsparseStatus_t testing_dense2csx(const Arguments& argus, FUNC& dense2csx)
 
     T*   d_dense_val          = (T*)m_dense_val.get();
     int* d_nnzPerRowColumn    = (int*)nnzPerRowColumn_managed.get();
-    int* d_nnzTotalDevHostPtr = (int*)nnzTotalDevHostPtr_managed.get();
+    //int* d_nnzTotalDevHostPtr = (int*)nnzTotalDevHostPtr_managed.get();
     //if(!d_nnzPerRowColumn || !d_nnzTotalDevHostPtr || !d_dense_val)
     //{
     //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,

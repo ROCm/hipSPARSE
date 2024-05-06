@@ -1248,7 +1248,7 @@ hipsparseStatus_t testing_csrgemm2_a(Arguments argus)
     std::string          filename   = "";
     T                    alpha      = make_DataType<T>(argus.alpha);
 
-    hipsparseStatus_t status;
+//    hipsparseStatus_t status;
     size_t            size;
 
     T* h_alpha = &alpha;

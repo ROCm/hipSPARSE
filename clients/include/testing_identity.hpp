@@ -64,8 +64,8 @@ void testing_identity_bad_arg(void)
 hipsparseStatus_t testing_identity(Arguments argus)
 {
     int               n         = argus.N;
-    int               safe_size = 100;
-    hipsparseStatus_t status;
+    // int               safe_size = 100;
+    // hipsparseStatus_t status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;

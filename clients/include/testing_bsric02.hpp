@@ -292,7 +292,7 @@ hipsparseStatus_t testing_bsric02(Arguments argus)
     hipsparseSolvePolicy_t policy    = HIPSPARSE_SOLVE_POLICY_USE_LEVEL;
     std::string            binfile   = "";
     std::string            filename  = "";
-    hipsparseStatus_t      status;
+    //hipsparseStatus_t      status;
     int                    size;
 
     // When in testing mode, M == -99 indicates that we are testing with a real

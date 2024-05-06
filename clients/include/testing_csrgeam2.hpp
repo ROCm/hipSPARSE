@@ -749,7 +749,7 @@ hipsparseStatus_t testing_csrgeam2(Arguments argus)
     T                    h_alpha    = make_DataType<T>(argus.alpha);
     T                    h_beta     = make_DataType<T>(argus.beta);
 
-    hipsparseStatus_t status;
+//    hipsparseStatus_t status;
     size_t            size;
 
     // When in testing mode, M == N == -99 indicates that we are testing with a real

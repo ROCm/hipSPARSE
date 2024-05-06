@@ -436,7 +436,7 @@ void testing_gebsr2gebsc_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_gebsr2gebsc(Arguments argus)
 {
-    hipsparseStatus_t status;
+//    hipsparseStatus_t status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;

@@ -164,7 +164,7 @@ hipsparseStatus_t testing_nnz(Arguments argus)
     int                  lda  = argus.lda;
     hipsparseDirection_t dirA = argus.dirA;
 
-    hipsparseStatus_t status;
+//    hipsparseStatus_t status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
