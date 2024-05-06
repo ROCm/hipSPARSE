@@ -63,7 +63,7 @@ void testing_identity_bad_arg(void)
 
 hipsparseStatus_t testing_identity(Arguments argus)
 {
-    int               n         = argus.N;
+    int n = argus.N;
     // int               safe_size = 100;
     // hipsparseStatus_t status;
 

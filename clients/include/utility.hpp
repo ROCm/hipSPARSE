@@ -2402,17 +2402,17 @@ inline void host_bsrmv(hipsparseDirection_t dir,
 
 template <typename I, typename J, typename T>
 inline void host_csrmv(hipsparseOperation_t trans,
-                J                    M,
-                J                    N,
-                I                    nnz,
-                T                    alpha,
-                const I*             csr_row_ptr,
-                const J*             csr_col_ind,
-                const T*             csr_val,
-                const T*             x,
-                T                    beta,
-                T*                   y,
-                hipsparseIndexBase_t base)
+                       J                    M,
+                       J                    N,
+                       I                    nnz,
+                       T                    alpha,
+                       const I*             csr_row_ptr,
+                       const J*             csr_col_ind,
+                       const T*             csr_val,
+                       const T*             x,
+                       T                    beta,
+                       T*                   y,
+                       hipsparseIndexBase_t base)
 {
     if(trans == HIPSPARSE_OPERATION_NON_TRANSPOSE)
     {
@@ -2453,8 +2453,8 @@ inline void host_csrmv(hipsparseOperation_t trans,
                     if(j + k < row_end)
                     {
                         sum[k] = testing_fma(testing_mult(alpha, csr_val[j + k]),
-                                                 x[csr_col_ind[j + k] - base],
-                                                 sum[k]);
+                                             x[csr_col_ind[j + k] - base],
+                                             sum[k]);
                     }
                 }
             }
@@ -2494,10 +2494,10 @@ inline void host_csrmv(hipsparseOperation_t trans,
 
             for(I j = row_begin; j < row_end; ++j)
             {
-                J col  = csr_col_ind[j] - base;
-                T   val = (trans == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE)
-                                  ? testing_conj(csr_val[j])
-                                  : csr_val[j];
+                J col = csr_col_ind[j] - base;
+                T val = (trans == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE)
+                            ? testing_conj(csr_val[j])
+                            : csr_val[j];
 
                 y[col] = testing_fma(val, row_val, y[col]);
             }

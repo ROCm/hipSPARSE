@@ -436,7 +436,7 @@ void testing_gebsr2gebsc_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_gebsr2gebsc(Arguments argus)
 {
-//    hipsparseStatus_t status;
+    //    hipsparseStatus_t status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -444,85 +444,85 @@ hipsparseStatus_t testing_gebsr2gebsc(Arguments argus)
     hipsparseAction_t    action = argus.action;
     hipsparseIndexBase_t base   = argus.idx_base;
 
-//     // Argument sanity check before allocating invalid memory
-//     if((argus.M <= 0 && argus.M != -99) || (argus.N <= 0 && argus.M != -99)
-//        || argus.row_block_dimA <= 0 || argus.col_block_dimA <= 0)
-//     {
-// #if(defined(CUDART_VERSION))
-//         if(argus.row_block_dimA == 0 || argus.col_block_dimA == 0)
-//         {
-//             return HIPSPARSE_STATUS_SUCCESS;
-//         }
-// #endif
+    //     // Argument sanity check before allocating invalid memory
+    //     if((argus.M <= 0 && argus.M != -99) || (argus.N <= 0 && argus.M != -99)
+    //        || argus.row_block_dimA <= 0 || argus.col_block_dimA <= 0)
+    //     {
+    // #if(defined(CUDART_VERSION))
+    //         if(argus.row_block_dimA == 0 || argus.col_block_dimA == 0)
+    //         {
+    //             return HIPSPARSE_STATUS_SUCCESS;
+    //         }
+    // #endif
 
-//         int M             = argus.M;
-//         int N             = argus.N;
-//         int row_block_dim = argus.row_block_dimA;
-//         int col_block_dim = argus.col_block_dimA;
+    //         int M             = argus.M;
+    //         int N             = argus.N;
+    //         int row_block_dim = argus.row_block_dimA;
+    //         int col_block_dim = argus.col_block_dimA;
 
-//         static const size_t safe_size = 100;
+    //         static const size_t safe_size = 100;
 
-//         // Allocate memory on device
-//         DEVICE_ALLOC(T, dbuffer, safe_size);
+    //         // Allocate memory on device
+    //         DEVICE_ALLOC(T, dbuffer, safe_size);
 
-//         if(!dbuffer)
-//         {
-//             return HIPSPARSE_STATUS_ALLOC_FAILED;
-//         }
+    //         if(!dbuffer)
+    //         {
+    //             return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //         }
 
-//         size_t buffer_size;
+    //         size_t buffer_size;
 
-//         status = hipsparseXgebsr2gebsc_bufferSize<T>(handle,
-//                                                      M,
-//                                                      N,
-//                                                      safe_size,
-//                                                      (const T*)nullptr,
-//                                                      nullptr,
-//                                                      nullptr,
-//                                                      row_block_dim,
-//                                                      col_block_dim,
-//                                                      &buffer_size);
+    //         status = hipsparseXgebsr2gebsc_bufferSize<T>(handle,
+    //                                                      M,
+    //                                                      N,
+    //                                                      safe_size,
+    //                                                      (const T*)nullptr,
+    //                                                      nullptr,
+    //                                                      nullptr,
+    //                                                      row_block_dim,
+    //                                                      col_block_dim,
+    //                                                      &buffer_size);
 
-//         if(M < 0 || N < 0 || row_block_dim <= 0 || col_block_dim <= 0)
-//         {
-//             verify_hipsparse_status_invalid_size(
-//                 status, "Error: M < 0 || N < 0 || row_block_dim < 0 || col_block_dim < 0");
-//         }
-//         else
-//         {
-//             verify_hipsparse_status_success(
-//                 status, "NOT(M < 0 || N < 0 || row_block_dim < 0 || col_block_dim < 0)");
-//         }
+    //         if(M < 0 || N < 0 || row_block_dim <= 0 || col_block_dim <= 0)
+    //         {
+    //             verify_hipsparse_status_invalid_size(
+    //                 status, "Error: M < 0 || N < 0 || row_block_dim < 0 || col_block_dim < 0");
+    //         }
+    //         else
+    //         {
+    //             verify_hipsparse_status_success(
+    //                 status, "NOT(M < 0 || N < 0 || row_block_dim < 0 || col_block_dim < 0)");
+    //         }
 
-//         status = hipsparseXgebsr2gebsc<T>(handle,
-//                                           M,
-//                                           N,
-//                                           safe_size,
-//                                           (const T*)nullptr,
-//                                           nullptr,
-//                                           nullptr,
-//                                           row_block_dim,
-//                                           col_block_dim,
-//                                           (T*)nullptr,
-//                                           nullptr,
-//                                           nullptr,
-//                                           action,
-//                                           base,
-//                                           dbuffer);
+    //         status = hipsparseXgebsr2gebsc<T>(handle,
+    //                                           M,
+    //                                           N,
+    //                                           safe_size,
+    //                                           (const T*)nullptr,
+    //                                           nullptr,
+    //                                           nullptr,
+    //                                           row_block_dim,
+    //                                           col_block_dim,
+    //                                           (T*)nullptr,
+    //                                           nullptr,
+    //                                           nullptr,
+    //                                           action,
+    //                                           base,
+    //                                           dbuffer);
 
-//         if(M < 0 || N < 0 || row_block_dim <= 0 || col_block_dim <= 0)
-//         {
-//             verify_hipsparse_status_invalid_size(
-//                 status, "Error: M < 0 || N < 0 || row_block_dim < 0 || col_block_dim < 0");
-//         }
-//         else
-//         {
-//             verify_hipsparse_status_success(
-//                 status, "NOT(M < 0 || N < 0 || row_block_dim < 0 || col_block_dim < 0)");
-//         }
+    //         if(M < 0 || N < 0 || row_block_dim <= 0 || col_block_dim <= 0)
+    //         {
+    //             verify_hipsparse_status_invalid_size(
+    //                 status, "Error: M < 0 || N < 0 || row_block_dim < 0 || col_block_dim < 0");
+    //         }
+    //         else
+    //         {
+    //             verify_hipsparse_status_success(
+    //                 status, "NOT(M < 0 || N < 0 || row_block_dim < 0 || col_block_dim < 0)");
+    //         }
 
-//         return HIPSPARSE_STATUS_SUCCESS;
-//     }
+    //         return HIPSPARSE_STATUS_SUCCESS;
+    //     }
 
     //
     // Build the gebsr matrix.

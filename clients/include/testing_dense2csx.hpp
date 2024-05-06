@@ -258,8 +258,8 @@ hipsparseStatus_t testing_dense2csx(const Arguments& argus, FUNC& dense2csx)
     auto nnzTotalDevHostPtr_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(int) * 1), device_free};
 
-    T*   d_dense_val          = (T*)m_dense_val.get();
-    int* d_nnzPerRowColumn    = (int*)nnzPerRowColumn_managed.get();
+    T*   d_dense_val       = (T*)m_dense_val.get();
+    int* d_nnzPerRowColumn = (int*)nnzPerRowColumn_managed.get();
     //int* d_nnzTotalDevHostPtr = (int*)nnzTotalDevHostPtr_managed.get();
     //if(!d_nnzPerRowColumn || !d_nnzTotalDevHostPtr || !d_dense_val)
     //{

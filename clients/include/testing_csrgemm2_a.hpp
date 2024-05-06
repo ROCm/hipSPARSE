@@ -1248,8 +1248,8 @@ hipsparseStatus_t testing_csrgemm2_a(Arguments argus)
     std::string          filename   = "";
     T                    alpha      = make_DataType<T>(argus.alpha);
 
-//    hipsparseStatus_t status;
-    size_t            size;
+    //    hipsparseStatus_t status;
+    size_t size;
 
     T* h_alpha = &alpha;
 
@@ -1304,166 +1304,166 @@ hipsparseStatus_t testing_csrgemm2_a(Arguments argus)
     }
     int nnz_B = K * scale * N;
 
-//     // Argument sanity check before allocating invalid memory
-//     if(M <= 0 || N <= 0 || K <= 0 || nnz_A <= 0 || nnz_B <= 0)
-//     {
-// #ifdef __HIP_PLATFORM_NVIDIA__
-//         // do not test for zero
-//         return HIPSPARSE_STATUS_SUCCESS;
-// #endif
-//         auto dAptr_managed
-//             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-//         auto dAcol_managed
-//             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-//         auto dAval_managed
-//             = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-//         auto dBptr_managed
-//             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-//         auto dBcol_managed
-//             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-//         auto dBval_managed
-//             = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-//         auto dCptr_managed
-//             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-//         auto dCcol_managed
-//             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-//         auto dCval_managed
-//             = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-//         auto dbuffer_managed
-//             = hipsparse_unique_ptr{device_malloc(sizeof(char) * safe_size), device_free};
+    //     // Argument sanity check before allocating invalid memory
+    //     if(M <= 0 || N <= 0 || K <= 0 || nnz_A <= 0 || nnz_B <= 0)
+    //     {
+    // #ifdef __HIP_PLATFORM_NVIDIA__
+    //         // do not test for zero
+    //         return HIPSPARSE_STATUS_SUCCESS;
+    // #endif
+    //         auto dAptr_managed
+    //             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+    //         auto dAcol_managed
+    //             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+    //         auto dAval_managed
+    //             = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+    //         auto dBptr_managed
+    //             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+    //         auto dBcol_managed
+    //             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+    //         auto dBval_managed
+    //             = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+    //         auto dCptr_managed
+    //             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+    //         auto dCcol_managed
+    //             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+    //         auto dCval_managed
+    //             = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+    //         auto dbuffer_managed
+    //             = hipsparse_unique_ptr{device_malloc(sizeof(char) * safe_size), device_free};
 
-//         int*  dAptr   = (int*)dAptr_managed.get();
-//         int*  dAcol   = (int*)dAcol_managed.get();
-//         T*    dAval   = (T*)dAval_managed.get();
-//         int*  dBptr   = (int*)dBptr_managed.get();
-//         int*  dBcol   = (int*)dBcol_managed.get();
-//         T*    dBval   = (T*)dBval_managed.get();
-//         int*  dCptr   = (int*)dCptr_managed.get();
-//         int*  dCcol   = (int*)dCcol_managed.get();
-//         T*    dCval   = (T*)dCval_managed.get();
-//         void* dbuffer = (void*)dbuffer_managed.get();
+    //         int*  dAptr   = (int*)dAptr_managed.get();
+    //         int*  dAcol   = (int*)dAcol_managed.get();
+    //         T*    dAval   = (T*)dAval_managed.get();
+    //         int*  dBptr   = (int*)dBptr_managed.get();
+    //         int*  dBcol   = (int*)dBcol_managed.get();
+    //         T*    dBval   = (T*)dBval_managed.get();
+    //         int*  dCptr   = (int*)dCptr_managed.get();
+    //         int*  dCcol   = (int*)dCcol_managed.get();
+    //         T*    dCval   = (T*)dCval_managed.get();
+    //         void* dbuffer = (void*)dbuffer_managed.get();
 
-//         if(!dAval || !dAptr || !dAcol || !dBval || !dBptr || !dBcol || !dCval || !dCptr || !dCcol
-//            || !dbuffer)
-//         {
-//             verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-//                                             "!dAptr || !dAcol || !dAval || "
-//                                             "!dBptr || !dBcol || !dBval || "
-//                                             "!dCptr || !dCcol || !dCval || "
-//                                             "!dbuffer");
-//             return HIPSPARSE_STATUS_ALLOC_FAILED;
-//         }
+    //         if(!dAval || !dAptr || !dAcol || !dBval || !dBptr || !dBcol || !dCval || !dCptr || !dCcol
+    //            || !dbuffer)
+    //         {
+    //             verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
+    //                                             "!dAptr || !dAcol || !dAval || "
+    //                                             "!dBptr || !dBcol || !dBval || "
+    //                                             "!dCptr || !dCcol || !dCval || "
+    //                                             "!dbuffer");
+    //             return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //         }
 
-//         // Test hipsparseXcsrgemm2_bufferSizeExt
-//         status = hipsparseXcsrgemm2_bufferSizeExt(handle,
-//                                                   M,
-//                                                   N,
-//                                                   K,
-//                                                   h_alpha,
-//                                                   descr_A,
-//                                                   nnz_A,
-//                                                   dAptr,
-//                                                   dAcol,
-//                                                   descr_B,
-//                                                   nnz_B,
-//                                                   dBptr,
-//                                                   dBcol,
-//                                                   (T*)nullptr,
-//                                                   descr_D,
-//                                                   0,
-//                                                   nullptr,
-//                                                   nullptr,
-//                                                   info,
-//                                                   &size);
+    //         // Test hipsparseXcsrgemm2_bufferSizeExt
+    //         status = hipsparseXcsrgemm2_bufferSizeExt(handle,
+    //                                                   M,
+    //                                                   N,
+    //                                                   K,
+    //                                                   h_alpha,
+    //                                                   descr_A,
+    //                                                   nnz_A,
+    //                                                   dAptr,
+    //                                                   dAcol,
+    //                                                   descr_B,
+    //                                                   nnz_B,
+    //                                                   dBptr,
+    //                                                   dBcol,
+    //                                                   (T*)nullptr,
+    //                                                   descr_D,
+    //                                                   0,
+    //                                                   nullptr,
+    //                                                   nullptr,
+    //                                                   info,
+    //                                                   &size);
 
-//         if(M < 0 || N < 0 || K < 0 || nnz_A < 0 || nnz_B < 0)
-//         {
-//             verify_hipsparse_status_invalid_size(
-//                 status, "Error: M < 0 || N < 0 || K < 0 || nnz_A < 0 || nnz_B < 0");
-//         }
-//         else
-//         {
-//             verify_hipsparse_status_success(
-//                 status, "M >= 0 && N >= 0 && K >= 0 && nnz_A >= 0 && nnz_B >= 0");
-//         }
+    //         if(M < 0 || N < 0 || K < 0 || nnz_A < 0 || nnz_B < 0)
+    //         {
+    //             verify_hipsparse_status_invalid_size(
+    //                 status, "Error: M < 0 || N < 0 || K < 0 || nnz_A < 0 || nnz_B < 0");
+    //         }
+    //         else
+    //         {
+    //             verify_hipsparse_status_success(
+    //                 status, "M >= 0 && N >= 0 && K >= 0 && nnz_A >= 0 && nnz_B >= 0");
+    //         }
 
-//         // Test hipsparseXcsrgemm2Nnz
-//         int nnz_C;
-//         status = hipsparseXcsrgemm2Nnz(handle,
-//                                        M,
-//                                        N,
-//                                        K,
-//                                        descr_A,
-//                                        nnz_A,
-//                                        dAptr,
-//                                        dAcol,
-//                                        descr_B,
-//                                        nnz_B,
-//                                        dBptr,
-//                                        dBcol,
-//                                        descr_D,
-//                                        0,
-//                                        nullptr,
-//                                        nullptr,
-//                                        descr_C,
-//                                        dCptr,
-//                                        &nnz_C,
-//                                        info,
-//                                        dbuffer);
+    //         // Test hipsparseXcsrgemm2Nnz
+    //         int nnz_C;
+    //         status = hipsparseXcsrgemm2Nnz(handle,
+    //                                        M,
+    //                                        N,
+    //                                        K,
+    //                                        descr_A,
+    //                                        nnz_A,
+    //                                        dAptr,
+    //                                        dAcol,
+    //                                        descr_B,
+    //                                        nnz_B,
+    //                                        dBptr,
+    //                                        dBcol,
+    //                                        descr_D,
+    //                                        0,
+    //                                        nullptr,
+    //                                        nullptr,
+    //                                        descr_C,
+    //                                        dCptr,
+    //                                        &nnz_C,
+    //                                        info,
+    //                                        dbuffer);
 
-//         if(M < 0 || N < 0 || K < 0 || nnz_A < 0 || nnz_B < 0)
-//         {
-//             verify_hipsparse_status_invalid_size(
-//                 status, "Error: M < 0 || N < 0 || K < 0 || nnz_A < 0 || nnz_B < 0");
-//         }
-//         else
-//         {
-//             verify_hipsparse_status_success(
-//                 status, "M >= 0 && N >= 0 && K >= 0 && nnz_A >= 0 && nnz_B >= 0");
-//         }
+    //         if(M < 0 || N < 0 || K < 0 || nnz_A < 0 || nnz_B < 0)
+    //         {
+    //             verify_hipsparse_status_invalid_size(
+    //                 status, "Error: M < 0 || N < 0 || K < 0 || nnz_A < 0 || nnz_B < 0");
+    //         }
+    //         else
+    //         {
+    //             verify_hipsparse_status_success(
+    //                 status, "M >= 0 && N >= 0 && K >= 0 && nnz_A >= 0 && nnz_B >= 0");
+    //         }
 
-//         // Test hipsparseXcsrgemm2
-//         status = hipsparseXcsrgemm2(handle,
-//                                     M,
-//                                     N,
-//                                     K,
-//                                     h_alpha,
-//                                     descr_A,
-//                                     nnz_A,
-//                                     dAval,
-//                                     dAptr,
-//                                     dAcol,
-//                                     descr_B,
-//                                     nnz_B,
-//                                     dBval,
-//                                     dBptr,
-//                                     dBcol,
-//                                     (T*)nullptr,
-//                                     descr_D,
-//                                     0,
-//                                     (T*)nullptr,
-//                                     nullptr,
-//                                     nullptr,
-//                                     descr_C,
-//                                     dCval,
-//                                     dCptr,
-//                                     dCcol,
-//                                     info,
-//                                     dbuffer);
+    //         // Test hipsparseXcsrgemm2
+    //         status = hipsparseXcsrgemm2(handle,
+    //                                     M,
+    //                                     N,
+    //                                     K,
+    //                                     h_alpha,
+    //                                     descr_A,
+    //                                     nnz_A,
+    //                                     dAval,
+    //                                     dAptr,
+    //                                     dAcol,
+    //                                     descr_B,
+    //                                     nnz_B,
+    //                                     dBval,
+    //                                     dBptr,
+    //                                     dBcol,
+    //                                     (T*)nullptr,
+    //                                     descr_D,
+    //                                     0,
+    //                                     (T*)nullptr,
+    //                                     nullptr,
+    //                                     nullptr,
+    //                                     descr_C,
+    //                                     dCval,
+    //                                     dCptr,
+    //                                     dCcol,
+    //                                     info,
+    //                                     dbuffer);
 
-//         if(M < 0 || N < 0 || K < 0 || nnz_A < 0 || nnz_B < 0)
-//         {
-//             verify_hipsparse_status_invalid_size(
-//                 status, "Error: M < 0 || N < 0 || K < 0 || nnz_A < 0 || nnz_B < 0");
-//         }
-//         else
-//         {
-//             verify_hipsparse_status_success(
-//                 status, "M >= 0 && N >= 0 && K >= 0 && nnz_A >= 0 && nnz_B >= 0");
-//         }
+    //         if(M < 0 || N < 0 || K < 0 || nnz_A < 0 || nnz_B < 0)
+    //         {
+    //             verify_hipsparse_status_invalid_size(
+    //                 status, "Error: M < 0 || N < 0 || K < 0 || nnz_A < 0 || nnz_B < 0");
+    //         }
+    //         else
+    //         {
+    //             verify_hipsparse_status_success(
+    //                 status, "M >= 0 && N >= 0 && K >= 0 && nnz_A >= 0 && nnz_B >= 0");
+    //         }
 
-//         return HIPSPARSE_STATUS_SUCCESS;
-//     }
+    //         return HIPSPARSE_STATUS_SUCCESS;
+    //     }
 
     // Host structures
     std::vector<int> hcsr_row_ptr_A;
