@@ -51,8 +51,8 @@ int    bsrsm2_N_range[]     = {15};
 int    bsrsm2_dim_range[]   = {3};
 double bsrsm2_alpha_range[] = {2.0};
 
-hipsparseIndexBase_t bsrsm2_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO};
-hipsparseDirection_t bsrsm2_dir_range[]     = {HIPSPARSE_DIRECTION_ROW};
+hipsparseIndexBase_t bsrsm2_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+hipsparseDirection_t bsrsm2_dir_range[]     = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COLUMN};
 hipsparseOperation_t bsrsm2_transA_range[]
     = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPERATION_TRANSPOSE};
 hipsparseOperation_t bsrsm2_transB_range[]

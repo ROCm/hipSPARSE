@@ -555,10 +555,6 @@ hipsparseStatus_t testing_bsrsm2(Arguments argus)
         return HIPSPARSE_STATUS_INTERNAL_ERROR;
     }
 
-    std::cout << "m: " << m << " nrhs: " << nrhs << " block_dim: " << block_dim
-              << " transA: " << transA << " transX: " << transX << " dir: " << dir
-              << " idx_base: " << idx_base << std::endl;
-
     int mb = (m + block_dim - 1) / block_dim;
 
     int ldb = (transX == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? m : nrhs;
@@ -622,8 +618,6 @@ hipsparseStatus_t testing_bsrsm2(Arguments argus)
                                                descr,
                                                dbsr_row_ptr,
                                                &nnzb));
-
-    std::cout << "nnzb: " << nnzb << std::endl;
 
     auto dbsr_col_ind_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnzb), device_free};

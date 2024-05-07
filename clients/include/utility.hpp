@@ -1034,7 +1034,7 @@ int read_bin_matrix(const char*          filename,
 }
 
 /* ============================================================================================ */
-/*! \brief  Generate CSR matrix from file. File can be either mtx or bin. */
+/*! \brief  Generate CSR matrix from file. File can be either mtx or bin. If filename is empty, a random matrix is generated*/
 template <typename I, typename J, typename T>
 bool generate_csr_matrix(const std::string    filename,
                          J&                   nrow,
@@ -1103,6 +1103,71 @@ bool generate_csr_matrix(const std::string    filename,
                     csr_row_ptr[i + 1] += csr_row_ptr[i];
                 }
 
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+/* ============================================================================================ */
+/*! \brief  Generate COO matrix from file. File can be either mtx or bin. If filename is empty, a random matrix is generated*/
+template <typename I, typename T>
+bool generate_coo_matrix(const std::string    filename,
+                         I&                   nrow,
+                         I&                   ncol,
+                         I&                   nnz,
+                         std::vector<I>&      coo_row_ind,
+                         std::vector<I>&      coo_col_ind,
+                         std::vector<T>&      coo_val,
+                         hipsparseIndexBase_t idx_base)
+{
+    // If no filename passed, generate matrix
+    if(filename == "")
+    {
+        double scale = 0.02;
+        if(nrow > 1000 || ncol > 1000)
+        {
+            scale = 2.0 / std::max(nrow, ncol);
+        }
+        nnz = nrow * scale * ncol;
+
+        gen_matrix_coo(nrow, ncol, nnz, coo_row_ind, coo_col_ind, coo_val, idx_base);
+
+        return true;
+    }
+    else
+    {
+        std::string extension = filename.substr(filename.find_last_of(".") + 1);
+        if(extension == "bin")
+        {
+            std::vector<I> csr_row_ptr;
+            if(read_bin_matrix(
+                   filename.c_str(), nrow, ncol, nnz, csr_row_ptr, coo_col_ind, coo_val, idx_base)
+               == 0)
+            {
+                coo_row_ind.resize(nnz);
+                for(I i = 0; i < nrow; ++i)
+                {
+                    I row_begin = csr_row_ptr[i] - idx_base;
+                    I row_end   = csr_row_ptr[i + 1] - idx_base;
+
+                    for(I j = row_begin; j < row_end; ++j)
+                    {
+                        coo_row_ind[j] = i + idx_base;
+                    }
+                }
+
+                return true;
+            }
+        }
+        else if(extension == "mtx")
+        {
+            if(read_mtx_matrix(
+                   filename.c_str(), nrow, ncol, nnz, coo_row_ind, coo_col_ind, coo_val, idx_base)
+               == 0)
+            {
                 return true;
             }
         }

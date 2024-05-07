@@ -93,130 +93,25 @@ hipsparseStatus_t testing_coo2csr(Arguments argus)
 {
     int                  m         = argus.M;
     int                  n         = argus.N;
-    int                  safe_size = 100;
     hipsparseIndexBase_t idx_base  = argus.idx_base;
-    std::string          binfile   = "";
-    std::string          filename  = "";
-    //hipsparseStatus_t    status;
-
-    // When in testing mode, M == N == -99 indicates that we are testing with a real
-    // matrix from cise.ufl.edu
-    if(m == -99 && n == -99 && argus.timing == 0)
-    {
-        binfile = argus.filename;
-        m = n = safe_size;
-    }
-
-    if(argus.timing == 1)
-    {
-        filename = argus.filename;
-    }
-
-    double scale = 0.02;
-    if(m > 1000 || n > 1000)
-    {
-        scale = 2.0 / std::max(m, n);
-    }
-    int nnz = m * scale * n;
+    std::string          filename  = argus.filename;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
-//     // Argument sanity check before allocating invalid memory
-//     if(m <= 0 || n <= 0 || nnz <= 0)
-//     {
-// #ifdef __HIP_PLATFORM_NVIDIA__
-//         // Do not test args in cusparse
-//         return HIPSPARSE_STATUS_SUCCESS;
-// #endif
-//         auto coo_row_ind_managed
-//             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-//         auto csr_row_ptr_managed
-//             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-
-//         int* coo_row_ind = (int*)coo_row_ind_managed.get();
-//         int* csr_row_ptr = (int*)csr_row_ptr_managed.get();
-
-//         if(!coo_row_ind || !csr_row_ptr)
-//         {
-//             verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-//                                             "!coo_row_ind || !csr_row_ptr");
-//             return HIPSPARSE_STATUS_ALLOC_FAILED;
-//         }
-
-//         status = hipsparseXcoo2csr(handle, coo_row_ind, nnz, m, csr_row_ptr, idx_base);
-
-//         if(m < 0 || nnz < 0)
-//         {
-//             verify_hipsparse_status_invalid_size(status, "Error: m < 0 || nnz < 0");
-//         }
-//         else
-//         {
-//             verify_hipsparse_status_success(status, "m >= 0 && n >= 0 && nnz >= 0");
-//         }
-
-//         return HIPSPARSE_STATUS_SUCCESS;
-//     }
+    srand(12345ULL);
 
     // Host structures
     std::vector<int>   hcoo_row_ind;
     std::vector<int>   hcoo_col_ind;
     std::vector<float> hcoo_val;
 
-    // Sample initial COO matrix on CPU
-    srand(12345ULL);
-    if(binfile != "")
+    // Read or construct CSR matrix
+    int nnz = 0;
+    if(!generate_coo_matrix(filename, m, n, nnz, hcoo_row_ind, hcoo_col_ind, hcoo_val, idx_base))
     {
-        std::vector<int> hptr(m + 1);
-        if(read_bin_matrix(binfile.c_str(), m, n, nnz, hptr, hcoo_col_ind, hcoo_val, idx_base) != 0)
-        {
-            fprintf(stderr, "Cannot open [read] %s\n", binfile.c_str());
-            return HIPSPARSE_STATUS_INTERNAL_ERROR;
-        }
-
-        hcoo_row_ind.resize(nnz);
-
-        // Convert to COO
-        for(int i = 0; i < m; ++i)
-        {
-            for(int j = hptr[i]; j < hptr[i + 1]; ++j)
-            {
-                hcoo_row_ind[j - idx_base] = i + idx_base;
-            }
-        }
-    }
-    else if(argus.laplacian)
-    {
-        std::vector<int> hptr(m + 1);
-        m = n = gen_2d_laplacian(argus.laplacian, hptr, hcoo_col_ind, hcoo_val, idx_base);
-        nnz   = hptr[m];
-        hcoo_row_ind.resize(nnz);
-
-        // Convert to COO
-        for(int i = 0; i < m; ++i)
-        {
-            for(int j = hptr[i]; j < hptr[i + 1]; ++j)
-            {
-                hcoo_row_ind[j - idx_base] = i + idx_base;
-            }
-        }
-    }
-    else
-    {
-        if(filename != "")
-        {
-            if(read_mtx_matrix(
-                   filename.c_str(), m, n, nnz, hcoo_row_ind, hcoo_col_ind, hcoo_val, idx_base)
-               != 0)
-            {
-                fprintf(stderr, "Cannot open [read] %s\n", filename.c_str());
-                return HIPSPARSE_STATUS_INTERNAL_ERROR;
-            }
-        }
-        else
-        {
-            gen_matrix_coo(m, n, nnz, hcoo_row_ind, hcoo_col_ind, hcoo_val, idx_base);
-        }
+        fprintf(stderr, "Cannot open [read] %s\ncol", filename.c_str());
+        return HIPSPARSE_STATUS_INTERNAL_ERROR;
     }
 
     std::vector<int> hcsr_row_ptr(m + 1);
@@ -229,13 +124,6 @@ hipsparseStatus_t testing_coo2csr(Arguments argus)
 
     int* dcoo_row_ind = (int*)dcoo_row_ind_managed.get();
     int* dcsr_row_ptr = (int*)dcsr_row_ptr_managed.get();
-
-    //if(!dcoo_row_ind || !dcsr_row_ptr)
-    //{
-    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-    //                                    "!dcoo_row_ind || !dcsr_row_ptr");
-    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
-    //}
 
     // Copy data from host to device
     CHECK_HIP_ERROR(
