@@ -682,17 +682,20 @@ void gen_matrix_coo(I                    m,
 
 /* ============================================================================================ */
 /*! \brief  Read matrix from mtx file in COO format */
-static inline void read_mtx_value(std::istringstream& is, int& row, int& col, float& val)
+template<typename I>
+static void read_mtx_value(std::istringstream& is, I& row, I& col, float& val)
 {
     is >> row >> col >> val;
 }
 
-static inline void read_mtx_value(std::istringstream& is, int& row, int& col, double& val)
+template<typename I>
+static void read_mtx_value(std::istringstream& is, I& row, I& col, double& val)
 {
     is >> row >> col >> val;
 }
 
-static inline void read_mtx_value(std::istringstream& is, int& row, int& col, hipComplex& val)
+template<typename I>
+static void read_mtx_value(std::istringstream& is, I& row, I& col, hipComplex& val)
 {
     float real;
     float imag;
@@ -702,7 +705,8 @@ static inline void read_mtx_value(std::istringstream& is, int& row, int& col, hi
     val = make_DataType<hipComplex>(real, imag);
 }
 
-static inline void read_mtx_value(std::istringstream& is, int& row, int& col, hipDoubleComplex& val)
+template<typename I>
+static void read_mtx_value(std::istringstream& is, I& row, I& col, hipDoubleComplex& val)
 {
     double real;
     double imag;
@@ -712,13 +716,32 @@ static inline void read_mtx_value(std::istringstream& is, int& row, int& col, hi
     val = make_DataType<hipDoubleComplex>(real, imag);
 }
 
-template <typename T>
+template<typename I>
+static void sort(std::vector<I>& perm, std::vector<I>& unsorted_row, std::vector<I>& unsorted_col)
+{
+    std::sort(perm.begin(), perm.end(), [&](const I& a, const I& b) {
+        if(unsorted_row[a] < unsorted_row[b])
+        {
+            return true;
+        }
+        else if(unsorted_row[a] == unsorted_row[b])
+        {
+            return (unsorted_col[a] < unsorted_col[b]);
+        }
+        else
+        {
+            return false;
+        }
+    });
+}
+
+template <typename I, typename T>
 int read_mtx_matrix(const char*          filename,
-                    int&                 nrow,
-                    int&                 ncol,
-                    int&                 nnz,
-                    std::vector<int>&    row,
-                    std::vector<int>&    col,
+                    I&                 nrow,
+                    I&                 ncol,
+                    I&                 nnz,
+                    std::vector<I>&    row,
+                    std::vector<I>&    col,
                     std::vector<T>&      val,
                     hipsparseIndexBase_t idx_base)
 {
@@ -812,26 +835,26 @@ int read_mtx_matrix(const char*          filename,
     }
 
     // Read dimensions
-    int snnz;
+    I snnz;
 
     sscanf(line, "%d %d %d", &nrow, &ncol, &snnz);
     nnz = symm ? (snnz - nrow) * 2 + nrow : snnz;
 
-    std::vector<int> unsorted_row(nnz);
-    std::vector<int> unsorted_col(nnz);
+    std::vector<I> unsorted_row(nnz);
+    std::vector<I> unsorted_col(nnz);
     std::vector<T>   unsorted_val(nnz);
 
     // Read entries
-    int idx = 0;
+    I idx = 0;
     while(fgets(line, 1024, f))
     {
         if(idx >= nnz)
         {
-            return true;
+            return 1;
         }
 
-        int irow;
-        int icol;
+        I irow;
+        I icol;
         T   ival;
 
         std::istringstream ss(line);
@@ -862,7 +885,7 @@ int read_mtx_matrix(const char*          filename,
         {
             if(idx >= nnz)
             {
-                return true;
+                return 1;
             }
 
             unsorted_row[idx] = icol;
@@ -878,28 +901,30 @@ int read_mtx_matrix(const char*          filename,
     val.resize(nnz);
 
     // Sort by row and column index
-    std::vector<int> perm(nnz);
-    for(int i = 0; i < nnz; ++i)
+    std::vector<I> perm(nnz);
+    for(I i = 0; i < nnz; ++i)
     {
         perm[i] = i;
     }
 
-    std::sort(perm.begin(), perm.end(), [&](const int& a, const int& b) {
-        if(unsorted_row[a] < unsorted_row[b])
-        {
-            return true;
-        }
-        else if(unsorted_row[a] == unsorted_row[b])
-        {
-            return (unsorted_col[a] < unsorted_col[b]);
-        }
-        else
-        {
-            return false;
-        }
-    });
+    sort(perm, unsorted_row, unsorted_col);
 
-    for(int i = 0; i < nnz; ++i)
+    // std::sort(perm.begin(), perm.end(), [&](const int& a, const int& b) {
+    //     if(unsorted_row[a] < unsorted_row[b])
+    //     {
+    //         return true;
+    //     }
+    //     else if(unsorted_row[a] == unsorted_row[b])
+    //     {
+    //         return (unsorted_col[a] < unsorted_col[b]);
+    //     }
+    //     else
+    //     {
+    //         return false;
+    //     }
+    // });
+
+    for(I i = 0; i < nnz; ++i)
     {
         row[i] = unsorted_row[perm[i]];
         col[i] = unsorted_col[perm[i]];
@@ -1008,30 +1033,79 @@ int read_bin_matrix(const char*          filename,
     return 0;
 }
 
-// template <typename T>
-// int read_mtx_matrix(const char*          filename,
-//                     int&                 nrow,
-//                     int&                 ncol,
-//                     int&                 nnz,
-//                     std::vector<int>&    row,
-//                     std::vector<int>&    col,
-//                     std::vector<T>&      val,
-//                     hipsparseIndexBase_t idx_base)
-
 /* ============================================================================================ */
-/*! \brief  Read matrix from file in CSR format. File can be either mtx or bin. */
-// template <typename I, typename J, typename T>
-// int read_matrix(const char*          filename,
-//                     J&                   nrow,
-//                     J&                   ncol,
-//                     I&                   nnz,
-//                     std::vector<I>&      ptr,
-//                     std::vector<J>&      col,
-//                     std::vector<T>&      val,
-//                     hipsparseIndexBase_t idx_base)
-// {
+/*! \brief  Generate CSR matrix from file. File can be either mtx or bin. */
+template <typename I, typename J, typename T>
+bool generate_csr_matrix(const std::string filename,
+                        J&                   nrow,
+                        J&                   ncol,
+                        I&                   nnz,
+                        std::vector<I>&      csr_row_ptr,
+                        std::vector<J>&      csr_col_ind,
+                        std::vector<T>&      csr_val,
+                        hipsparseIndexBase_t idx_base)
+{
+    // If no filename passed, generate matrix
+    if(filename == "")
+    {
+        double scale = 0.02;
+        if(nrow > 1000 || ncol > 1000)
+        {
+            scale = 2.0 / std::max(nrow, ncol);
+        }
+        nnz = nrow * scale * ncol;
 
-// }
+        std::vector<J> coo_row_ind;
+        gen_matrix_coo(nrow, ncol, nnz, coo_row_ind, csr_col_ind, csr_val, idx_base);
+
+        csr_row_ptr.resize(nrow + 1, 0);
+        for(int i = 0; i < nnz; ++i)
+        {
+            ++csr_row_ptr[coo_row_ind[i] + 1 - idx_base];
+        }
+
+        csr_row_ptr[0] = idx_base;
+        for(int i = 0; i < nrow; ++i)
+        {
+            csr_row_ptr[i + 1] += csr_row_ptr[i];
+        }
+
+        return true;
+    }
+    else
+    {
+        std::string extension = filename.substr(filename.find_last_of(".") + 1);
+        if(extension == "bin") 
+        {
+            if(read_bin_matrix(filename.c_str(), nrow, ncol, nnz, csr_row_ptr, csr_col_ind, csr_val, idx_base) == 0)
+            {
+                return true;
+            }
+        }
+        else if(extension == "mtx")
+        {
+            std::vector<J> coo_row_ind;
+            if(read_mtx_matrix(filename.c_str(), nrow, ncol, nnz, coo_row_ind, csr_col_ind, csr_val, idx_base) == 0)
+            {
+                csr_row_ptr.resize(nrow + 1, 0);
+                for(int i = 0; i < nnz; ++i)
+                {
+                    ++csr_row_ptr[coo_row_ind[i] + 1 - idx_base];
+                }
+
+                csr_row_ptr[0] = idx_base;
+                for(int i = 0; i < nrow; ++i)
+                {
+                    csr_row_ptr[i + 1] += csr_row_ptr[i];
+                }
+
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
 
 /* ============================================================================================ */
 /*! \brief  Compute incomplete LU factorization without fill-ins and no pivoting using CSR
