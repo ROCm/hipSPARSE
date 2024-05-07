@@ -163,11 +163,11 @@ void testing_cscsort_bad_arg(void)
 hipsparseStatus_t testing_cscsort(Arguments argus)
 {
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
-    int                  m         = argus.M;
-    int                  n         = argus.N;
-    int                  permute   = argus.temp;
-    hipsparseIndexBase_t idx_base  = argus.idx_base;
-    std::string          filename  = argus.filename;
+    int                  m        = argus.M;
+    int                  n        = argus.N;
+    int                  permute  = argus.temp;
+    hipsparseIndexBase_t idx_base = argus.idx_base;
+    std::string          filename = argus.filename;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -181,8 +181,8 @@ hipsparseStatus_t testing_cscsort(Arguments argus)
     srand(12345ULL);
 
     // Host structures
-    std::vector<int> hcsc_col_ptr;
-    std::vector<int> hcsc_row_ind;
+    std::vector<int>   hcsc_col_ptr;
+    std::vector<int>   hcsc_row_ind;
     std::vector<float> hcsc_val;
 
     // Read or construct CSC matrix

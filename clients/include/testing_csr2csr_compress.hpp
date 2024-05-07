@@ -345,11 +345,11 @@ void testing_csr2csr_compress_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_csr2csr_compress(Arguments argus)
 {
-    int m   = argus.M;
-    int n   = argus.N;
-    T   tol = make_DataType<T>(argus.alpha);
-    hipsparseIndexBase_t idx_base  = argus.idx_base;
-    std::string          filename  = argus.filename;
+    int                  m        = argus.M;
+    int                  n        = argus.N;
+    T                    tol      = make_DataType<T>(argus.alpha);
+    hipsparseIndexBase_t idx_base = argus.idx_base;
+    std::string          filename = argus.filename;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -365,11 +365,12 @@ hipsparseStatus_t testing_csr2csr_compress(Arguments argus)
     // Host structures
     std::vector<int> hcsr_row_ptr_A;
     std::vector<int> hcsr_col_ind_A;
-    std::vector<T> hcsr_val_A;
+    std::vector<T>   hcsr_val_A;
 
     // Read or construct CSR matrix
     int hnnz_A = 0;
-    if(!generate_csr_matrix(filename, m, n, hnnz_A, hcsr_row_ptr_A, hcsr_col_ind_A, hcsr_val_A, idx_base))
+    if(!generate_csr_matrix(
+           filename, m, n, hnnz_A, hcsr_row_ptr_A, hcsr_col_ind_A, hcsr_val_A, idx_base))
     {
         fprintf(stderr, "Cannot open [read] %s\ncol", filename.c_str());
         return HIPSPARSE_STATUS_INTERNAL_ERROR;

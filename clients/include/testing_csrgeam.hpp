@@ -730,18 +730,19 @@ hipsparseStatus_t testing_csrgeam(Arguments argus)
     // Host structures
     std::vector<int> hcsr_row_ptr_A;
     std::vector<int> hcsr_col_ind_A;
-    std::vector<T> hcsr_val_A;
+    std::vector<T>   hcsr_val_A;
 
     // Read or construct CSR matrix
     int nnz_A = 0;
-    if(!generate_csr_matrix(filename, M, N, nnz_A, hcsr_row_ptr_A, hcsr_col_ind_A, hcsr_val_A, idx_base_A))
+    if(!generate_csr_matrix(
+           filename, M, N, nnz_A, hcsr_row_ptr_A, hcsr_col_ind_A, hcsr_val_A, idx_base_A))
     {
         fprintf(stderr, "Cannot open [read] %s\ncol", filename.c_str());
         return HIPSPARSE_STATUS_INTERNAL_ERROR;
     }
 
     // B = A
-    int nnz_B = nnz_A;
+    int              nnz_B = nnz_A;
     std::vector<int> hcsr_row_ptr_B(M + 1, 0);
     std::vector<int> hcsr_col_ind_B(nnz_B);
     std::vector<T>   hcsr_val_B(nnz_B);

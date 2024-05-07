@@ -384,7 +384,8 @@ hipsparseStatus_t testing_csrilu02(Arguments argus)
         hipsparseXcsrilu02_bufferSize(handle, m, nnz, descr, dval1, dptr, dcol, info, &bufferSize));
 
     // Allocate buffer on the device
-    auto dbuffer_managed = hipsparse_unique_ptr{device_malloc(sizeof(char) * bufferSize), device_free};
+    auto dbuffer_managed
+        = hipsparse_unique_ptr{device_malloc(sizeof(char) * bufferSize), device_free};
 
     void* dbuffer = (void*)dbuffer_managed.get();
 

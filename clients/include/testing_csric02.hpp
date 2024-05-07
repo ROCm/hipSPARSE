@@ -281,10 +281,10 @@ void testing_csric02_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_csric02(Arguments argus)
 {
-    int                    m         = argus.M;
-    hipsparseIndexBase_t   idx_base  = argus.idx_base;
-    hipsparseSolvePolicy_t policy    = HIPSPARSE_SOLVE_POLICY_USE_LEVEL;
-    std::string            filename  = argus.filename;
+    int                    m        = argus.M;
+    hipsparseIndexBase_t   idx_base = argus.idx_base;
+    hipsparseSolvePolicy_t policy   = HIPSPARSE_SOLVE_POLICY_USE_LEVEL;
+    std::string            filename = argus.filename;
 
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
     hipsparseHandle_t              handle = test_handle->handle;
@@ -335,12 +335,13 @@ hipsparseStatus_t testing_csric02(Arguments argus)
     CHECK_HIP_ERROR(hipMemcpy(dval_1, hcsr_val.data(), sizeof(T) * nnz, hipMemcpyHostToDevice));
 
     // Obtain csric02 buffer size
-    int bufferSize; 
+    int bufferSize;
     CHECK_HIPSPARSE_ERROR(
         hipsparseXcsric02_bufferSize(handle, m, nnz, descr, dval_1, dptr, dcol, info, &bufferSize));
 
     // Allocate buffer on the device
-    auto dbuffer_managed = hipsparse_unique_ptr{device_malloc(sizeof(char) * bufferSize), device_free};
+    auto dbuffer_managed
+        = hipsparse_unique_ptr{device_malloc(sizeof(char) * bufferSize), device_free};
 
     void* dbuffer = (void*)dbuffer_managed.get();
 

@@ -182,7 +182,7 @@ hipsparseStatus_t testing_csr2hyb(Arguments argus)
     // Host structures
     std::vector<int> hcsr_row_ptr;
     std::vector<int> hcsr_col_ind;
-    std::vector<T> hcsr_val;
+    std::vector<T>   hcsr_val;
 
     // Read or construct CSR matrix
     int nnz = 0;

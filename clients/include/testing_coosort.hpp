@@ -189,12 +189,12 @@ void testing_coosort_bad_arg(void)
 hipsparseStatus_t testing_coosort(Arguments argus)
 {
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
-    int                  m         = argus.M;
-    int                  n         = argus.N;
-    int                  by_row    = argus.transA == HIPSPARSE_OPERATION_NON_TRANSPOSE;
-    int                  permute   = argus.temp;
-    hipsparseIndexBase_t idx_base  = argus.idx_base;
-    std::string          filename  = argus.filename;
+    int                  m        = argus.M;
+    int                  n        = argus.N;
+    int                  by_row   = argus.transA == HIPSPARSE_OPERATION_NON_TRANSPOSE;
+    int                  permute  = argus.temp;
+    hipsparseIndexBase_t idx_base = argus.idx_base;
+    std::string          filename = argus.filename;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;

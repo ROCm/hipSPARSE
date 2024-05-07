@@ -352,12 +352,12 @@ void testing_csr2csc_ex2_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_csr2csc_ex2(Arguments argus)
 {
-    int                  m           = argus.M;
-    int                  n           = argus.N;
-    hipsparseIndexBase_t idx_base    = argus.idx_base;
-    hipsparseAction_t    action      = argus.action;
-    std::string          filename    = argus.filename;
-    hipsparseCsr2CscAlg_t alg = HIPSPARSE_CSR2CSC_ALG1;
+    int                   m        = argus.M;
+    int                   n        = argus.N;
+    hipsparseIndexBase_t  idx_base = argus.idx_base;
+    hipsparseAction_t     action   = argus.action;
+    std::string           filename = argus.filename;
+    hipsparseCsr2CscAlg_t alg      = HIPSPARSE_CSR2CSC_ALG1;
 
     hipDataType dataType = getDataType<T>();
 
@@ -369,7 +369,7 @@ hipsparseStatus_t testing_csr2csc_ex2(Arguments argus)
     // Host structures
     std::vector<int> hcsr_row_ptr;
     std::vector<int> hcsr_col_ind;
-    std::vector<T> hcsr_val;
+    std::vector<T>   hcsr_val;
 
     // Read or construct CSR matrix
     int nnz = 0;

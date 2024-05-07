@@ -290,17 +290,17 @@ void testing_csrmm_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_csrmm(Arguments argus)
 {
-    int                  M         = argus.M;
-    int                  N         = argus.N;
-    int                  K         = argus.K;
-    int                  ldb       = argus.ldb;
-    int                  ldc       = argus.ldc;
-    T                    h_alpha   = make_DataType<T>(argus.alpha);
-    T                    h_beta    = make_DataType<T>(argus.beta);
-    hipsparseOperation_t transA    = argus.transA;
-    hipsparseOperation_t transB    = argus.transB;
-    hipsparseIndexBase_t idx_base  = argus.idx_base;
-    std::string          filename  = argus.filename;
+    int                  M        = argus.M;
+    int                  N        = argus.N;
+    int                  K        = argus.K;
+    int                  ldb      = argus.ldb;
+    int                  ldc      = argus.ldc;
+    T                    h_alpha  = make_DataType<T>(argus.alpha);
+    T                    h_beta   = make_DataType<T>(argus.beta);
+    hipsparseOperation_t transA   = argus.transA;
+    hipsparseOperation_t transB   = argus.transB;
+    hipsparseIndexBase_t idx_base = argus.idx_base;
+    std::string          filename = argus.filename;
 
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
     hipsparseHandle_t              handle = test_handle->handle;
