@@ -127,14 +127,16 @@ hipsparseStatus_t testing_spvv(void)
     hipsparseIndexBase_t idxBase = HIPSPARSE_INDEX_BASE_ZERO;
 
     // Index and data type
-    hipsparseIndexType_t idxType
-        = (typeid(I) == typeid(int32_t)) ? HIPSPARSE_INDEX_32I : HIPSPARSE_INDEX_64I;
-    hipDataType dataType
-        = (typeid(T) == typeid(float))
-              ? HIP_R_32F
-              : ((typeid(T) == typeid(double))
-                     ? HIP_R_64F
-                     : ((typeid(T) == typeid(hipComplex) ? HIP_C_32F : HIP_C_64F)));
+    hipsparseIndexType_t idxType = getIndexType<I>();
+    hipDataType dataType = getDataType<T>();
+    //hipsparseIndexType_t idxType
+    //    = (typeid(I) == typeid(int32_t)) ? HIPSPARSE_INDEX_32I : HIPSPARSE_INDEX_64I;
+    //hipDataType dataType
+    //    = (typeid(T) == typeid(float))
+    //          ? HIP_R_32F
+    //          : ((typeid(T) == typeid(double))
+    //                 ? HIP_R_64F
+    //                 : ((typeid(T) == typeid(hipComplex) ? HIP_C_32F : HIP_C_64F)));
 
     // hipSPARSE handle
     std::unique_ptr<handle_struct> test_handle(new handle_struct);

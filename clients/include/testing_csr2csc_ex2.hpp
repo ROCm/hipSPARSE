@@ -360,7 +360,7 @@ hipsparseStatus_t testing_csr2csc_ex2(Arguments argus)
     std::string           binfile     = "";
     std::string           filename    = "";
     size_t                buffer_size = 0;
-    hipsparseStatus_t     status;
+    //hipsparseStatus_t     status;
     hipsparseCsr2CscAlg_t alg = HIPSPARSE_CSR2CSC_ALG1;
 
     hipDataType dataType

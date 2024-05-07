@@ -1008,6 +1008,63 @@ int read_bin_matrix(const char*          filename,
     return 0;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// template <typename T>
+// int read_mtx_matrix(const char*          filename,
+//                     int&                 nrow,
+//                     int&                 ncol,
+//                     int&                 nnz,
+//                     std::vector<int>&    row,
+//                     std::vector<int>&    col,
+//                     std::vector<T>&      val,
+//                     hipsparseIndexBase_t idx_base)
+
+/* ============================================================================================ */
+/*! \brief  Read matrix from file in CSR format. File can be either mtx or bin. */
+// template <typename I, typename J, typename T>
+// int read_matrix(const char*          filename,
+//                     J&                   nrow,
+//                     J&                   ncol,
+//                     I&                   nnz,
+//                     std::vector<I>&      ptr,
+//                     std::vector<J>&      col,
+//                     std::vector<T>&      val,
+//                     hipsparseIndexBase_t idx_base)
+// {
+
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* ============================================================================================ */
 /*! \brief  Compute incomplete LU factorization without fill-ins and no pivoting using CSR
  *  matrix storage format.
@@ -6212,5 +6269,22 @@ inline std::string get_filename(const std::string& bin_file)
     }
     return r;
 }
+
+template <typename I>
+hipsparseIndexType_t getIndexType()
+{
+    return (typeid(I) == typeid(int32_t)) ? HIPSPARSE_INDEX_32I : HIPSPARSE_INDEX_64I;
+}
+
+template<typename T>
+hipDataType getDataType()
+{
+    return (typeid(T) == typeid(float))
+              ? HIP_R_32F
+              : ((typeid(T) == typeid(double))
+                     ? HIP_R_64F
+                     : ((typeid(T) == typeid(hipComplex) ? HIP_C_32F : HIP_C_64F)));
+}
+
 
 #endif // TESTING_UTILITY_HPP

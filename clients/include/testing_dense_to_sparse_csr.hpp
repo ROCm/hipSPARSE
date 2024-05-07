@@ -152,15 +152,18 @@ hipsparseStatus_t testing_dense_to_sparse_csr(void)
     hipsparseOrder_t            order    = HIPSPARSE_ORDER_COL;
 
     // Index and data type
-    hipsparseIndexType_t typeI
-        = (typeid(I) == typeid(int32_t)) ? HIPSPARSE_INDEX_32I : HIPSPARSE_INDEX_64I;
-    hipsparseIndexType_t typeJ
-        = (typeid(J) == typeid(int32_t)) ? HIPSPARSE_INDEX_32I : HIPSPARSE_INDEX_64I;
-    hipDataType typeT = (typeid(T) == typeid(float))
-                            ? HIP_R_32F
-                            : ((typeid(T) == typeid(double))
-                                   ? HIP_R_64F
-                                   : ((typeid(T) == typeid(hipComplex) ? HIP_C_32F : HIP_C_64F)));
+    hipsparseIndexType_t typeI = getIndexType<I>();
+    hipsparseIndexType_t typeJ = getIndexType<J>();
+    hipDataType typeT = getDataType<T>();
+    //hipsparseIndexType_t typeI
+    //    = (typeid(I) == typeid(int32_t)) ? HIPSPARSE_INDEX_32I : HIPSPARSE_INDEX_64I;
+    //hipsparseIndexType_t typeJ
+    //    = (typeid(J) == typeid(int32_t)) ? HIPSPARSE_INDEX_32I : HIPSPARSE_INDEX_64I;
+    //hipDataType typeT = (typeid(T) == typeid(float))
+    //                        ? HIP_R_32F
+    //                        : ((typeid(T) == typeid(double))
+    //                               ? HIP_R_64F
+    //                               : ((typeid(T) == typeid(hipComplex) ? HIP_C_32F : HIP_C_64F)));
 
     // hipSPARSE handle
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
