@@ -152,13 +152,13 @@ void testing_csrmv_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_csrmv(Arguments argus)
 {
-    int                  nrow      = argus.M;
-    int                  ncol      = argus.N;
-    T                    h_alpha   = make_DataType<T>(argus.alpha);
-    T                    h_beta    = make_DataType<T>(argus.beta);
-    hipsparseOperation_t transA    = argus.transA;
-    hipsparseIndexBase_t idx_base  = argus.idx_base;
-    std::string          filename  = argus.filename;
+    int                  nrow     = argus.M;
+    int                  ncol     = argus.N;
+    T                    h_alpha  = make_DataType<T>(argus.alpha);
+    T                    h_beta   = make_DataType<T>(argus.beta);
+    hipsparseOperation_t transA   = argus.transA;
+    hipsparseIndexBase_t idx_base = argus.idx_base;
+    std::string          filename = argus.filename;
 
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
     hipsparseHandle_t              handle = test_handle->handle;
@@ -178,7 +178,8 @@ hipsparseStatus_t testing_csrmv(Arguments argus)
 
     // Read or construct CSR matrix
     int nnz = 0;
-    if(!generate_csr_matrix(filename, nrow, ncol, nnz, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base))
+    if(!generate_csr_matrix(
+           filename, nrow, ncol, nnz, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base))
     {
         fprintf(stderr, "Cannot open [read] %s\ncol", filename.c_str());
         return HIPSPARSE_STATUS_INTERNAL_ERROR;
@@ -267,17 +268,17 @@ hipsparseStatus_t testing_csrmv(Arguments argus)
         CHECK_HIP_ERROR(hipMemcpy(hy_2.data(), dy_2, sizeof(T) * m, hipMemcpyDeviceToHost));
 
         host_csrmv(transA,
-                    nrow,
-                    ncol,
-                    nnz,
-                    h_alpha,
-                    hcsr_row_ptr.data(),
-                    hcsr_col_ind.data(),
-                    hcsr_val.data(),
-                    hx.data(),
-                    h_beta,
-                    hy_gold.data(),
-                    idx_base);
+                   nrow,
+                   ncol,
+                   nnz,
+                   h_alpha,
+                   hcsr_row_ptr.data(),
+                   hcsr_col_ind.data(),
+                   hcsr_val.data(),
+                   hx.data(),
+                   h_beta,
+                   hy_gold.data(),
+                   idx_base);
 
         unit_check_near(1, m, 1, hy_gold.data(), hy_1.data());
         unit_check_near(1, m, 1, hy_gold.data(), hy_2.data());

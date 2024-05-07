@@ -461,7 +461,8 @@ hipsparseStatus_t testing_bsrilu02(Arguments argus)
                                                         &bufferSize));
 
     // Allocate buffer on the device
-    auto dbuffer_managed = hipsparse_unique_ptr{device_malloc(sizeof(char) * bufferSize), device_free};
+    auto dbuffer_managed
+        = hipsparse_unique_ptr{device_malloc(sizeof(char) * bufferSize), device_free};
 
     void* dbuffer = (void*)dbuffer_managed.get();
 
@@ -611,7 +612,7 @@ hipsparseStatus_t testing_bsrilu02(Arguments argus)
                          boost,
                          boost_tol,
                          boost_val);
-        
+
         h_analysis_pivot_gold = structural_pivot;
 
         // Solve pivot gives the first numerical or structural non-invertible block

@@ -682,19 +682,19 @@ void gen_matrix_coo(I                    m,
 
 /* ============================================================================================ */
 /*! \brief  Read matrix from mtx file in COO format */
-template<typename I>
+template <typename I>
 static void read_mtx_value(std::istringstream& is, I& row, I& col, float& val)
 {
     is >> row >> col >> val;
 }
 
-template<typename I>
+template <typename I>
 static void read_mtx_value(std::istringstream& is, I& row, I& col, double& val)
 {
     is >> row >> col >> val;
 }
 
-template<typename I>
+template <typename I>
 static void read_mtx_value(std::istringstream& is, I& row, I& col, hipComplex& val)
 {
     float real;
@@ -705,7 +705,7 @@ static void read_mtx_value(std::istringstream& is, I& row, I& col, hipComplex& v
     val = make_DataType<hipComplex>(real, imag);
 }
 
-template<typename I>
+template <typename I>
 static void read_mtx_value(std::istringstream& is, I& row, I& col, hipDoubleComplex& val)
 {
     double real;
@@ -716,7 +716,7 @@ static void read_mtx_value(std::istringstream& is, I& row, I& col, hipDoubleComp
     val = make_DataType<hipDoubleComplex>(real, imag);
 }
 
-template<typename I>
+template <typename I>
 static void sort(std::vector<I>& perm, std::vector<I>& unsorted_row, std::vector<I>& unsorted_col)
 {
     std::sort(perm.begin(), perm.end(), [&](const I& a, const I& b) {
@@ -737,11 +737,11 @@ static void sort(std::vector<I>& perm, std::vector<I>& unsorted_row, std::vector
 
 template <typename I, typename T>
 int read_mtx_matrix(const char*          filename,
-                    I&                 nrow,
-                    I&                 ncol,
-                    I&                 nnz,
-                    std::vector<I>&    row,
-                    std::vector<I>&    col,
+                    I&                   nrow,
+                    I&                   ncol,
+                    I&                   nnz,
+                    std::vector<I>&      row,
+                    std::vector<I>&      col,
                     std::vector<T>&      val,
                     hipsparseIndexBase_t idx_base)
 {
@@ -842,7 +842,7 @@ int read_mtx_matrix(const char*          filename,
 
     std::vector<I> unsorted_row(nnz);
     std::vector<I> unsorted_col(nnz);
-    std::vector<T>   unsorted_val(nnz);
+    std::vector<T> unsorted_val(nnz);
 
     // Read entries
     I idx = 0;
@@ -855,7 +855,7 @@ int read_mtx_matrix(const char*          filename,
 
         I irow;
         I icol;
-        T   ival;
+        T ival;
 
         std::istringstream ss(line);
 
@@ -1036,14 +1036,14 @@ int read_bin_matrix(const char*          filename,
 /* ============================================================================================ */
 /*! \brief  Generate CSR matrix from file. File can be either mtx or bin. */
 template <typename I, typename J, typename T>
-bool generate_csr_matrix(const std::string filename,
-                        J&                   nrow,
-                        J&                   ncol,
-                        I&                   nnz,
-                        std::vector<I>&      csr_row_ptr,
-                        std::vector<J>&      csr_col_ind,
-                        std::vector<T>&      csr_val,
-                        hipsparseIndexBase_t idx_base)
+bool generate_csr_matrix(const std::string    filename,
+                         J&                   nrow,
+                         J&                   ncol,
+                         I&                   nnz,
+                         std::vector<I>&      csr_row_ptr,
+                         std::vector<J>&      csr_col_ind,
+                         std::vector<T>&      csr_val,
+                         hipsparseIndexBase_t idx_base)
 {
     // If no filename passed, generate matrix
     if(filename == "")
@@ -1075,9 +1075,11 @@ bool generate_csr_matrix(const std::string filename,
     else
     {
         std::string extension = filename.substr(filename.find_last_of(".") + 1);
-        if(extension == "bin") 
+        if(extension == "bin")
         {
-            if(read_bin_matrix(filename.c_str(), nrow, ncol, nnz, csr_row_ptr, csr_col_ind, csr_val, idx_base) == 0)
+            if(read_bin_matrix(
+                   filename.c_str(), nrow, ncol, nnz, csr_row_ptr, csr_col_ind, csr_val, idx_base)
+               == 0)
             {
                 return true;
             }
@@ -1085,7 +1087,9 @@ bool generate_csr_matrix(const std::string filename,
         else if(extension == "mtx")
         {
             std::vector<J> coo_row_ind;
-            if(read_mtx_matrix(filename.c_str(), nrow, ncol, nnz, coo_row_ind, csr_col_ind, csr_val, idx_base) == 0)
+            if(read_mtx_matrix(
+                   filename.c_str(), nrow, ncol, nnz, coo_row_ind, csr_col_ind, csr_val, idx_base)
+               == 0)
             {
                 csr_row_ptr.resize(nrow + 1, 0);
                 for(int i = 0; i < nnz; ++i)
