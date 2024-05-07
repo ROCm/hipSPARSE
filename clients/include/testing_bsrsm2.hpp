@@ -584,12 +584,9 @@ hipsparseStatus_t testing_bsrsm2(Arguments argus)
     auto dcsr_val_managed     = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
     auto dbsr_row_ptr_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(int) * (mb + 1)), device_free};
-    auto dB_managed
-        = hipsparse_unique_ptr{device_malloc(sizeof(T) * nrowB * ncolB), device_free};
-    auto dX_1_managed
-        = hipsparse_unique_ptr{device_malloc(sizeof(T) * nrowX * ncolX), device_free};
-    auto dX_2_managed
-        = hipsparse_unique_ptr{device_malloc(sizeof(T) * nrowX * ncolX), device_free};
+    auto dB_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * nrowB * ncolB), device_free};
+    auto dX_1_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * nrowX * ncolX), device_free};
+    auto dX_2_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * nrowX * ncolX), device_free};
     auto dalpha_managed = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
     auto dpos_managed   = hipsparse_unique_ptr{device_malloc(sizeof(int)), device_free};
 
