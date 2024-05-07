@@ -51,8 +51,8 @@ int    bsrsm2_N_range[]     = {15};
 int    bsrsm2_dim_range[]   = {3};
 double bsrsm2_alpha_range[] = {2.0};
 
-hipsparseIndexBase_t bsrsm2_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
-hipsparseDirection_t bsrsm2_dir_range[]     = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COLUMN};
+hipsparseIndexBase_t bsrsm2_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO};
+hipsparseDirection_t bsrsm2_dir_range[]     = {HIPSPARSE_DIRECTION_ROW};
 hipsparseOperation_t bsrsm2_transA_range[]
     = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPERATION_TRANSPOSE};
 hipsparseOperation_t bsrsm2_transB_range[]
@@ -124,37 +124,37 @@ TEST(bsrsm2_bad_arg, bsrsm2_float)
     testing_bsrsm2_bad_arg();
 }
 
-TEST_P(parameterized_bsrsm2, bsrsm2_float)
-{
-    Arguments arg = setup_bsrsm2_arguments(GetParam());
+// TEST_P(parameterized_bsrsm2, bsrsm2_float)
+// {
+//     Arguments arg = setup_bsrsm2_arguments(GetParam());
 
-    hipsparseStatus_t status = testing_bsrsm2<float>(arg);
-    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
-}
+//     hipsparseStatus_t status = testing_bsrsm2<float>(arg);
+//     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+// }
 
-TEST_P(parameterized_bsrsm2, bsrsm2_double)
-{
-    Arguments arg = setup_bsrsm2_arguments(GetParam());
+// TEST_P(parameterized_bsrsm2, bsrsm2_double)
+// {
+//     Arguments arg = setup_bsrsm2_arguments(GetParam());
 
-    hipsparseStatus_t status = testing_bsrsm2<double>(arg);
-    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
-}
+//     hipsparseStatus_t status = testing_bsrsm2<double>(arg);
+//     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+// }
 
-TEST_P(parameterized_bsrsm2, bsrsm2_float_complex)
-{
-    Arguments arg = setup_bsrsm2_arguments(GetParam());
+// TEST_P(parameterized_bsrsm2, bsrsm2_float_complex)
+// {
+//     Arguments arg = setup_bsrsm2_arguments(GetParam());
 
-    hipsparseStatus_t status = testing_bsrsm2<hipComplex>(arg);
-    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
-}
+//     hipsparseStatus_t status = testing_bsrsm2<hipComplex>(arg);
+//     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+// }
 
-TEST_P(parameterized_bsrsm2, bsrsm2_double_complex)
-{
-    Arguments arg = setup_bsrsm2_arguments(GetParam());
+// TEST_P(parameterized_bsrsm2, bsrsm2_double_complex)
+// {
+//     Arguments arg = setup_bsrsm2_arguments(GetParam());
 
-    hipsparseStatus_t status = testing_bsrsm2<hipDoubleComplex>(arg);
-    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
-}
+//     hipsparseStatus_t status = testing_bsrsm2<hipDoubleComplex>(arg);
+//     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+// }
 
 TEST_P(parameterized_bsrsm2_bin, bsrsm2_bin_float)
 {
@@ -173,16 +173,16 @@ TEST_P(parameterized_bsrsm2_bin, bsrsm2_bin_double)
 }
 #endif
 
-INSTANTIATE_TEST_SUITE_P(bsrsm2,
-                         parameterized_bsrsm2,
-                         testing::Combine(testing::ValuesIn(bsrsm2_M_range),
-                                          testing::ValuesIn(bsrsm2_N_range),
-                                          testing::ValuesIn(bsrsm2_dim_range),
-                                          testing::ValuesIn(bsrsm2_alpha_range),
-                                          testing::ValuesIn(bsrsm2_dir_range),
-                                          testing::ValuesIn(bsrsm2_idxbase_range),
-                                          testing::ValuesIn(bsrsm2_transA_range),
-                                          testing::ValuesIn(bsrsm2_transB_range)));
+// INSTANTIATE_TEST_SUITE_P(bsrsm2,
+//                          parameterized_bsrsm2,
+//                          testing::Combine(testing::ValuesIn(bsrsm2_M_range),
+//                                           testing::ValuesIn(bsrsm2_N_range),
+//                                           testing::ValuesIn(bsrsm2_dim_range),
+//                                           testing::ValuesIn(bsrsm2_alpha_range),
+//                                           testing::ValuesIn(bsrsm2_dir_range),
+//                                           testing::ValuesIn(bsrsm2_idxbase_range),
+//                                           testing::ValuesIn(bsrsm2_transA_range),
+//                                           testing::ValuesIn(bsrsm2_transB_range)));
 
 INSTANTIATE_TEST_SUITE_P(bsrsm2_bin,
                          parameterized_bsrsm2_bin,

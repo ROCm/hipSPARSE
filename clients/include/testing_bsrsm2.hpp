@@ -561,15 +561,21 @@ hipsparseStatus_t testing_bsrsm2(Arguments argus)
 
     int mb = (m + block_dim - 1) / block_dim;
 
-    int ldb = m;
-    int ldx = m;
+    int ldb = (transX == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? m : nrhs;
+    int ldx = (transX == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? m : nrhs;
 
-    std::vector<T> hB(mb * block_dim * nrhs);
-    std::vector<T> hX_1(mb * block_dim * nrhs);
-    std::vector<T> hX_2(mb * block_dim * nrhs);
-    std::vector<T> hX_gold(mb * block_dim * nrhs);
+    int64_t nrowB = (transX == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? m : nrhs;
+    int64_t ncolB = (transX == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? nrhs : m;
 
-    hipsparseInit<T>(hB, m, nrhs);
+    int64_t nrowX = nrowB;
+    int64_t ncolX = ncolB;
+
+    std::vector<T> hB(nrowB * ncolB);
+    std::vector<T> hX_1(nrowX * ncolX);
+    std::vector<T> hX_2(nrowX * ncolX);
+    std::vector<T> hX_gold(nrowX * ncolX);
+
+    hipsparseInit<T>(hB, nrowB, ncolB);
 
     // Allocate memory on device
     auto dcsr_row_ptr_managed
@@ -579,11 +585,11 @@ hipsparseStatus_t testing_bsrsm2(Arguments argus)
     auto dbsr_row_ptr_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(int) * (mb + 1)), device_free};
     auto dB_managed
-        = hipsparse_unique_ptr{device_malloc(sizeof(T) * mb * block_dim * nrhs), device_free};
+        = hipsparse_unique_ptr{device_malloc(sizeof(T) * nrowB * ncolB), device_free};
     auto dX_1_managed
-        = hipsparse_unique_ptr{device_malloc(sizeof(T) * mb * block_dim * nrhs), device_free};
+        = hipsparse_unique_ptr{device_malloc(sizeof(T) * nrowX * ncolX), device_free};
     auto dX_2_managed
-        = hipsparse_unique_ptr{device_malloc(sizeof(T) * mb * block_dim * nrhs), device_free};
+        = hipsparse_unique_ptr{device_malloc(sizeof(T) * nrowX * ncolX), device_free};
     auto dalpha_managed = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
     auto dpos_managed   = hipsparse_unique_ptr{device_malloc(sizeof(int)), device_free};
 
@@ -603,7 +609,7 @@ hipsparseStatus_t testing_bsrsm2(Arguments argus)
     CHECK_HIP_ERROR(
         hipMemcpy(dcsr_col_ind, hcsr_col_ind.data(), sizeof(int) * nnz, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dcsr_val, hcsr_val.data(), sizeof(T) * nnz, hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(hipMemcpy(dB, hB.data(), sizeof(T) * m * nrhs, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(dB, hB.data(), sizeof(T) * nrowB * ncolB, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dalpha, &h_alpha, sizeof(T), hipMemcpyHostToDevice));
 
     // Convert to BSR
@@ -644,26 +650,6 @@ hipsparseStatus_t testing_bsrsm2(Arguments argus)
                                             dbsr_row_ptr,
                                             dbsr_col_ind));
 
-    std::vector<int> hptr(mb + 1, 0);
-    std::vector<int> hind(nnzb, 0);
-
-    hipMemcpy(hptr.data(), dbsr_row_ptr, sizeof(int) * (mb + 1), hipMemcpyDeviceToHost);
-    hipMemcpy(hind.data(), dbsr_col_ind, sizeof(int) * nnzb, hipMemcpyDeviceToHost);
-
-    std::cout << "hptr" << std::endl;
-    for(size_t i = 0; i < hptr.size(); i++)
-    {
-        std::cout << hptr[i] << " ";
-    }
-    std::cout << "" << std::endl;
-
-    std::cout << "hind" << std::endl;
-    for(size_t i = 0; i < hind.size(); i++)
-    {
-        std::cout << hind[i] << " ";
-    }
-    std::cout << "" << std::endl;
-
     // Obtain bsrsm2 buffer size
     int bufferSize;
     CHECK_HIPSPARSE_ERROR(hipsparseXbsrsm2_bufferSize(handle,
@@ -680,8 +666,6 @@ hipsparseStatus_t testing_bsrsm2(Arguments argus)
                                                       block_dim,
                                                       info,
                                                       &bufferSize));
-
-    std::cout << "bufferSize: " << bufferSize << std::endl;
 
     // Allocate buffer on the device
     auto dbuffer_managed
@@ -706,12 +690,8 @@ hipsparseStatus_t testing_bsrsm2(Arguments argus)
                                                     HIPSPARSE_SOLVE_POLICY_USE_LEVEL,
                                                     dbuffer));
 
-    std::cout << "AAAA" << std::endl;
-
     int pos_analysis;
     hipsparseXbsrsm2_zeroPivot(handle, info, &pos_analysis);
-
-    std::cout << "pos_analysis: " << pos_analysis << std::endl;
 
     // HIPSPARSE pointer mode host
     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
@@ -736,12 +716,8 @@ hipsparseStatus_t testing_bsrsm2(Arguments argus)
                                                  HIPSPARSE_SOLVE_POLICY_USE_LEVEL,
                                                  dbuffer));
 
-    std::cout << "BBBB" << std::endl;
-
     int               hposition_1;
     hipsparseStatus_t pivot_status_1 = hipsparseXbsrsm2_zeroPivot(handle, info, &hposition_1);
-
-    std::cout << "hposition_1: " << hposition_1 << std::endl;
 
     // HIPSPARSE pointer mode device
     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
@@ -770,11 +746,9 @@ hipsparseStatus_t testing_bsrsm2(Arguments argus)
 
     // Copy output from device to CPU
     int hposition_2;
-    CHECK_HIP_ERROR(hipMemcpy(hX_1.data(), dX_1, sizeof(T) * m * nrhs, hipMemcpyDeviceToHost));
-    CHECK_HIP_ERROR(hipMemcpy(hX_2.data(), dX_2, sizeof(T) * m * nrhs, hipMemcpyDeviceToHost));
+    CHECK_HIP_ERROR(hipMemcpy(hX_1.data(), dX_1, sizeof(T) * nrowX * ncolX, hipMemcpyDeviceToHost));
+    CHECK_HIP_ERROR(hipMemcpy(hX_2.data(), dX_2, sizeof(T) * nrowX * ncolX, hipMemcpyDeviceToHost));
     CHECK_HIP_ERROR(hipMemcpy(&hposition_2, dposition, sizeof(int), hipMemcpyDeviceToHost));
-
-    std::cout << "hposition_2: " << hposition_2 << std::endl;
 
     // Host bsrsm2
     std::vector<int> hbsr_row_ptr(mb + 1);
@@ -830,8 +804,8 @@ hipsparseStatus_t testing_bsrsm2(Arguments argus)
         return HIPSPARSE_STATUS_SUCCESS;
     }
 
-    unit_check_near(m, nrhs, ldx, hX_gold.data(), hX_1.data());
-    unit_check_near(m, nrhs, ldx, hX_gold.data(), hX_2.data());
+    unit_check_near(nrowX, ncolX, ldx, hX_gold.data(), hX_1.data());
+    unit_check_near(nrowX, ncolX, ldx, hX_gold.data(), hX_2.data());
 
     return HIPSPARSE_STATUS_SUCCESS;
 }
