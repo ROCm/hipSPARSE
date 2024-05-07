@@ -516,19 +516,18 @@ void testing_bsrsm2_bad_arg(void)
 }
 
 template <typename T>
-hipsparseStatus_t testing_bsrsm2(void)
+hipsparseStatus_t testing_bsrsm2(Arguments argus)
 {
-    T   h_alpha = make_DataType<T>(2.0);
-    int nrhs    = 15;
+    int                    m         = argus.M;
+    int                    nrhs      = argus.N;
+    int                    block_dim = argus.block_dim;
+    T                      h_alpha   = make_DataType<T>(argus.alpha);
+    hipsparseDirection_t   dir       = argus.dirA;
+    hipsparseIndexBase_t   idx_base  = argus.idx_base;
+    hipsparseOperation_t   transA    = argus.transA;
+    hipsparseOperation_t   transX    = argus.transB;
+    std::string            filename  = argus.filename;
 
-    // Determine absolute path of test matrix
-
-    // Get current executables absolute path
-
-    // Matrices are stored at the same path in matrices directory
-    std::string filename = get_filename("nos3.bin");
-
-    // hipSPARSE handle and opaque structs
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
     hipsparseHandle_t              handle = test_handle->handle;
 
@@ -538,34 +537,29 @@ hipsparseStatus_t testing_bsrsm2(void)
     std::unique_ptr<bsrsm2_struct> unique_ptr_bsrsm2_info(new bsrsm2_struct);
     bsrsm2Info_t                   info = unique_ptr_bsrsm2_info->info;
 
+    // Set matrix index base
+    CHECK_HIPSPARSE_ERROR(hipsparseSetMatIndexBase(descr, idx_base));
+
+    srand(12345ULL);
+
     // Host structures
     std::vector<int> hcsr_row_ptr;
     std::vector<int> hcsr_col_ind;
     std::vector<T>   hcsr_val;
 
-    // Initial Data on CPU
-    srand(12345ULL);
-
-    int m;
-    int n;
-    int nnz;
-
-    if(read_bin_matrix(filename.c_str(),
-                       m,
-                       n,
-                       nnz,
-                       hcsr_row_ptr,
-                       hcsr_col_ind,
-                       hcsr_val,
-                       HIPSPARSE_INDEX_BASE_ZERO)
-       != 0)
+    // Read or construct CSR matrix
+    int nnz = 0;
+    if(!generate_csr_matrix(filename, m, m, nnz, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base))
     {
-        fprintf(stderr, "Cannot open [read] %s\n", filename.c_str());
+        fprintf(stderr, "Cannot open [read] %s\ncol", filename.c_str());
         return HIPSPARSE_STATUS_INTERNAL_ERROR;
     }
 
-    int block_dim = 3;
-    int mb        = (m + block_dim - 1) / block_dim;
+    std::cout << "m: " << m << " nrhs: " << nrhs << " block_dim: " << block_dim << " transA: " << transA << " transX: " << transX << " dir: " << dir << " idx_base: " << idx_base << std::endl;
+
+
+
+    int mb  = (m + block_dim - 1) / block_dim;
 
     int ldb = m;
     int ldx = m;
@@ -603,16 +597,6 @@ hipsparseStatus_t testing_bsrsm2(void)
     T*   dalpha       = (T*)dalpha_managed.get();
     int* dposition    = (int*)dpos_managed.get();
 
-    //if(!dcsr_val || !dcsr_row_ptr || !dcsr_col_ind || !dbsr_row_ptr || !dB || !dX_1 || !dX_2
-    //   || !dalpha || !dposition)
-    //{
-    //    verify_hipsparse_status_success(
-    //        HIPSPARSE_STATUS_ALLOC_FAILED,
-    //        "!dcsr_val || !dcsr_row_ptr || !dcsr_col_ind || !dbsr_row_ptr || !dB || !dX_1 || !dX_2 "
-    //        "|| !dalpha || !dposition");
-    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
-    //}
-
     // copy data from CPU to device
     CHECK_HIP_ERROR(
         hipMemcpy(dcsr_row_ptr, hcsr_row_ptr.data(), sizeof(int) * (m + 1), hipMemcpyHostToDevice));
@@ -625,7 +609,7 @@ hipsparseStatus_t testing_bsrsm2(void)
     // Convert to BSR
     int nnzb;
     CHECK_HIPSPARSE_ERROR(hipsparseXcsr2bsrNnz(handle,
-                                               HIPSPARSE_DIRECTION_ROW,
+                                               dir,
                                                m,
                                                m,
                                                descr,
@@ -636,6 +620,8 @@ hipsparseStatus_t testing_bsrsm2(void)
                                                dbsr_row_ptr,
                                                &nnzb));
 
+    std::cout << "nnzb: " << nnzb << std::endl;
+
     auto dbsr_col_ind_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnzb), device_free};
     auto dbsr_val_managed = hipsparse_unique_ptr{
@@ -644,15 +630,8 @@ hipsparseStatus_t testing_bsrsm2(void)
     int* dbsr_col_ind = (int*)dbsr_col_ind_managed.get();
     T*   dbsr_val     = (T*)dbsr_val_managed.get();
 
-    //if(!dbsr_val || !dbsr_col_ind)
-    //{
-    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-    //                                    "!dbsr_val || !dbsr_col_ind");
-    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
-    //}
-
     CHECK_HIPSPARSE_ERROR(hipsparseXcsr2bsr(handle,
-                                            HIPSPARSE_DIRECTION_ROW,
+                                            dir,
                                             m,
                                             m,
                                             descr,
@@ -665,13 +644,36 @@ hipsparseStatus_t testing_bsrsm2(void)
                                             dbsr_row_ptr,
                                             dbsr_col_ind));
 
-    // Obtain bsrsm2 buffer size
-    int size;
 
+
+    std::vector<int> hptr(mb + 1, 0);
+    std::vector<int> hind(nnzb, 0);
+
+    hipMemcpy(hptr.data(), dbsr_row_ptr, sizeof(int) * (mb + 1), hipMemcpyDeviceToHost);
+    hipMemcpy(hind.data(), dbsr_col_ind, sizeof(int) * nnzb, hipMemcpyDeviceToHost);
+
+    std::cout << "hptr" << std::endl;
+    for(size_t i = 0; i < hptr.size(); i++)
+    {
+        std::cout << hptr[i] << " ";
+    }
+    std::cout << "" << std::endl;
+
+    std::cout << "hind" << std::endl;
+    for(size_t i = 0; i < hind.size(); i++)
+    {
+        std::cout << hind[i] << " ";
+    }
+    std::cout << "" << std::endl;
+
+
+
+    // Obtain bsrsm2 buffer size
+    int bufferSize;
     CHECK_HIPSPARSE_ERROR(hipsparseXbsrsm2_bufferSize(handle,
-                                                      HIPSPARSE_DIRECTION_ROW,
-                                                      HIPSPARSE_OPERATION_NON_TRANSPOSE,
-                                                      HIPSPARSE_OPERATION_NON_TRANSPOSE,
+                                                      dir,
+                                                      transA,
+                                                      transX,
                                                       mb,
                                                       nrhs,
                                                       nnzb,
@@ -681,24 +683,20 @@ hipsparseStatus_t testing_bsrsm2(void)
                                                       dbsr_col_ind,
                                                       block_dim,
                                                       info,
-                                                      &size));
+                                                      &bufferSize));
+
+    std::cout << "bufferSize: " << bufferSize << std::endl;
 
     // Allocate buffer on the device
-    auto dbuffer_managed = hipsparse_unique_ptr{device_malloc(sizeof(char) * size), device_free};
+    auto dbuffer_managed = hipsparse_unique_ptr{device_malloc(sizeof(char) * bufferSize), device_free};
 
     void* dbuffer = (void*)dbuffer_managed.get();
 
-    //if(!dbuffer)
-    //{
-    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!dbuffer");
-    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
-    //}
-
     // bsrsm2 analysis
     CHECK_HIPSPARSE_ERROR(hipsparseXbsrsm2_analysis(handle,
-                                                    HIPSPARSE_DIRECTION_ROW,
-                                                    HIPSPARSE_OPERATION_NON_TRANSPOSE,
-                                                    HIPSPARSE_OPERATION_NON_TRANSPOSE,
+                                                    dir,
+                                                    transA,
+                                                    transX,
                                                     mb,
                                                     nrhs,
                                                     nnzb,
@@ -711,15 +709,19 @@ hipsparseStatus_t testing_bsrsm2(void)
                                                     HIPSPARSE_SOLVE_POLICY_USE_LEVEL,
                                                     dbuffer));
 
+    std::cout << "AAAA" << std::endl;
+
     int pos_analysis;
     hipsparseXbsrsm2_zeroPivot(handle, info, &pos_analysis);
+
+    std::cout << "pos_analysis: " << pos_analysis << std::endl;
 
     // HIPSPARSE pointer mode host
     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
     CHECK_HIPSPARSE_ERROR(hipsparseXbsrsm2_solve(handle,
-                                                 HIPSPARSE_DIRECTION_ROW,
-                                                 HIPSPARSE_OPERATION_NON_TRANSPOSE,
-                                                 HIPSPARSE_OPERATION_NON_TRANSPOSE,
+                                                 dir,
+                                                 transA,
+                                                 transX,
                                                  mb,
                                                  nrhs,
                                                  nnzb,
@@ -737,15 +739,19 @@ hipsparseStatus_t testing_bsrsm2(void)
                                                  HIPSPARSE_SOLVE_POLICY_USE_LEVEL,
                                                  dbuffer));
 
+    std::cout << "BBBB" << std::endl;
+
     int               hposition_1;
     hipsparseStatus_t pivot_status_1 = hipsparseXbsrsm2_zeroPivot(handle, info, &hposition_1);
+
+    std::cout << "hposition_1: " << hposition_1 << std::endl;
 
     // HIPSPARSE pointer mode device
     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
     CHECK_HIPSPARSE_ERROR(hipsparseXbsrsm2_solve(handle,
-                                                 HIPSPARSE_DIRECTION_ROW,
-                                                 HIPSPARSE_OPERATION_NON_TRANSPOSE,
-                                                 HIPSPARSE_OPERATION_NON_TRANSPOSE,
+                                                 dir,
+                                                 transA,
+                                                 transX,
                                                  mb,
                                                  nrhs,
                                                  nnzb,
@@ -771,6 +777,8 @@ hipsparseStatus_t testing_bsrsm2(void)
     CHECK_HIP_ERROR(hipMemcpy(hX_2.data(), dX_2, sizeof(T) * m * nrhs, hipMemcpyDeviceToHost));
     CHECK_HIP_ERROR(hipMemcpy(&hposition_2, dposition, sizeof(int), hipMemcpyDeviceToHost));
 
+    std::cout << "hposition_2: " << hposition_2 << std::endl;
+
     // Host bsrsm2
     std::vector<int> hbsr_row_ptr(mb + 1);
     std::vector<int> hbsr_col_ind(nnzb);
@@ -791,9 +799,9 @@ hipsparseStatus_t testing_bsrsm2(void)
     bsrsm(mb,
           nrhs,
           nnzb,
-          HIPSPARSE_DIRECTION_ROW,
-          HIPSPARSE_OPERATION_NON_TRANSPOSE,
-          HIPSPARSE_OPERATION_NON_TRANSPOSE,
+          dir,
+          transA,
+          transX,
           h_alpha,
           hbsr_row_ptr.data(),
           hbsr_col_ind.data(),
@@ -805,7 +813,7 @@ hipsparseStatus_t testing_bsrsm2(void)
           ldx,
           HIPSPARSE_DIAG_TYPE_NON_UNIT,
           HIPSPARSE_FILL_MODE_LOWER,
-          HIPSPARSE_INDEX_BASE_ZERO,
+          idx_base,
           &struct_position_gold,
           &numeric_position_gold);
 
