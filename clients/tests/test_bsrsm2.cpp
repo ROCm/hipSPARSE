@@ -21,25 +21,42 @@
  *
  * ************************************************************************ */
 
-
 #include "testing_bsrsm2.hpp"
 
 #include <hipsparse.h>
 #include <string>
 #include <vector>
 
-typedef std::tuple<int, int, int, double, hipsparseDirection_t, hipsparseIndexBase_t, hipsparseOperation_t, hipsparseOperation_t>         bsrsm2_tuple;
-typedef std::tuple<int, int, double, hipsparseDirection_t, hipsparseIndexBase_t, hipsparseOperation_t, hipsparseOperation_t, std::string> bsrsm2_bin_tuple;
+typedef std::tuple<int,
+                   int,
+                   int,
+                   double,
+                   hipsparseDirection_t,
+                   hipsparseIndexBase_t,
+                   hipsparseOperation_t,
+                   hipsparseOperation_t>
+    bsrsm2_tuple;
+typedef std::tuple<int,
+                   int,
+                   double,
+                   hipsparseDirection_t,
+                   hipsparseIndexBase_t,
+                   hipsparseOperation_t,
+                   hipsparseOperation_t,
+                   std::string>
+    bsrsm2_bin_tuple;
 
-int bsrsm2_M_range[]   = {50};
-int bsrsm2_N_range[]   = {15};
-int bsrsm2_dim_range[] = {3};
+int    bsrsm2_M_range[]     = {50};
+int    bsrsm2_N_range[]     = {15};
+int    bsrsm2_dim_range[]   = {3};
 double bsrsm2_alpha_range[] = {2.0};
 
 hipsparseIndexBase_t bsrsm2_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 hipsparseDirection_t bsrsm2_dir_range[]     = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COLUMN};
-hipsparseOperation_t bsrsm2_transA_range[]  = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPERATION_TRANSPOSE};
-hipsparseOperation_t bsrsm2_transB_range[]  = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPERATION_TRANSPOSE};
+hipsparseOperation_t bsrsm2_transA_range[]
+    = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPERATION_TRANSPOSE};
+hipsparseOperation_t bsrsm2_transB_range[]
+    = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPERATION_TRANSPOSE};
 
 std::string bsrsm2_bin[] = {"nos3.bin"};
 

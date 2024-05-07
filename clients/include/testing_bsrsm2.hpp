@@ -518,15 +518,15 @@ void testing_bsrsm2_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_bsrsm2(Arguments argus)
 {
-    int                    m         = argus.M;
-    int                    nrhs      = argus.N;
-    int                    block_dim = argus.block_dim;
-    T                      h_alpha   = make_DataType<T>(argus.alpha);
-    hipsparseDirection_t   dir       = argus.dirA;
-    hipsparseIndexBase_t   idx_base  = argus.idx_base;
-    hipsparseOperation_t   transA    = argus.transA;
-    hipsparseOperation_t   transX    = argus.transB;
-    std::string            filename  = argus.filename;
+    int                  m         = argus.M;
+    int                  nrhs      = argus.N;
+    int                  block_dim = argus.block_dim;
+    T                    h_alpha   = make_DataType<T>(argus.alpha);
+    hipsparseDirection_t dir       = argus.dirA;
+    hipsparseIndexBase_t idx_base  = argus.idx_base;
+    hipsparseOperation_t transA    = argus.transA;
+    hipsparseOperation_t transX    = argus.transB;
+    std::string          filename  = argus.filename;
 
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
     hipsparseHandle_t              handle = test_handle->handle;
@@ -555,11 +555,11 @@ hipsparseStatus_t testing_bsrsm2(Arguments argus)
         return HIPSPARSE_STATUS_INTERNAL_ERROR;
     }
 
-    std::cout << "m: " << m << " nrhs: " << nrhs << " block_dim: " << block_dim << " transA: " << transA << " transX: " << transX << " dir: " << dir << " idx_base: " << idx_base << std::endl;
+    std::cout << "m: " << m << " nrhs: " << nrhs << " block_dim: " << block_dim
+              << " transA: " << transA << " transX: " << transX << " dir: " << dir
+              << " idx_base: " << idx_base << std::endl;
 
-
-
-    int mb  = (m + block_dim - 1) / block_dim;
+    int mb = (m + block_dim - 1) / block_dim;
 
     int ldb = m;
     int ldx = m;
@@ -644,8 +644,6 @@ hipsparseStatus_t testing_bsrsm2(Arguments argus)
                                             dbsr_row_ptr,
                                             dbsr_col_ind));
 
-
-
     std::vector<int> hptr(mb + 1, 0);
     std::vector<int> hind(nnzb, 0);
 
@@ -665,8 +663,6 @@ hipsparseStatus_t testing_bsrsm2(Arguments argus)
         std::cout << hind[i] << " ";
     }
     std::cout << "" << std::endl;
-
-
 
     // Obtain bsrsm2 buffer size
     int bufferSize;
@@ -688,7 +684,8 @@ hipsparseStatus_t testing_bsrsm2(Arguments argus)
     std::cout << "bufferSize: " << bufferSize << std::endl;
 
     // Allocate buffer on the device
-    auto dbuffer_managed = hipsparse_unique_ptr{device_malloc(sizeof(char) * bufferSize), device_free};
+    auto dbuffer_managed
+        = hipsparse_unique_ptr{device_malloc(sizeof(char) * bufferSize), device_free};
 
     void* dbuffer = (void*)dbuffer_managed.get();
 
