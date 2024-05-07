@@ -102,8 +102,8 @@ hipsparseStatus_t testing_rot(void)
     hipsparseIndexBase_t idxBase = HIPSPARSE_INDEX_BASE_ZERO;
 
     // Index and data type
-    hipsparseIndexType_t idxType = getIndexType<I>();
-    hipDataType dataType = getDataType<T>();
+    hipsparseIndexType_t idxType  = getIndexType<I>();
+    hipDataType          dataType = getDataType<T>();
     //hipsparseIndexType_t idxType
     //    = (typeid(I) == typeid(int32_t)) ? HIPSPARSE_INDEX_32I : HIPSPARSE_INDEX_64I;
     //hipDataType dataType

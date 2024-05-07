@@ -143,7 +143,7 @@ hipsparseStatus_t testing_sparse_to_dense_csc(void)
     // Index and data type
     hipsparseIndexType_t typeI = getIndexType<I>();
     hipsparseIndexType_t typeJ = getIndexType<J>();
-    hipDataType typeT = getDataType<T>();
+    hipDataType          typeT = getDataType<T>();
     //hipsparseIndexType_t typeI
     //    = (typeid(I) == typeid(int32_t)) ? HIPSPARSE_INDEX_32I : HIPSPARSE_INDEX_64I;
     //hipsparseIndexType_t typeJ

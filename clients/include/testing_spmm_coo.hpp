@@ -217,7 +217,7 @@ hipsparseStatus_t testing_spmm_coo()
 
     // Index and data type
     hipsparseIndexType_t typeI = getIndexType<I>();
-    hipDataType typeT = getDataType<T>();
+    hipDataType          typeT = getDataType<T>();
     //hipsparseIndexType_t typeI
     //    = (typeid(I) == typeid(int32_t)) ? HIPSPARSE_INDEX_32I : HIPSPARSE_INDEX_64I;
     //hipDataType typeT = (typeid(T) == typeid(float))

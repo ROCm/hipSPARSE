@@ -1008,20 +1008,6 @@ int read_bin_matrix(const char*          filename,
     return 0;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // template <typename T>
 // int read_mtx_matrix(const char*          filename,
 //                     int&                 nrow,
@@ -1046,24 +1032,6 @@ int read_bin_matrix(const char*          filename,
 // {
 
 // }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /* ============================================================================================ */
 /*! \brief  Compute incomplete LU factorization without fill-ins and no pivoting using CSR
@@ -6276,15 +6244,14 @@ hipsparseIndexType_t getIndexType()
     return (typeid(I) == typeid(int32_t)) ? HIPSPARSE_INDEX_32I : HIPSPARSE_INDEX_64I;
 }
 
-template<typename T>
+template <typename T>
 hipDataType getDataType()
 {
     return (typeid(T) == typeid(float))
-              ? HIP_R_32F
-              : ((typeid(T) == typeid(double))
-                     ? HIP_R_64F
-                     : ((typeid(T) == typeid(hipComplex) ? HIP_C_32F : HIP_C_64F)));
+               ? HIP_R_32F
+               : ((typeid(T) == typeid(double))
+                      ? HIP_R_64F
+                      : ((typeid(T) == typeid(hipComplex) ? HIP_C_32F : HIP_C_64F)));
 }
-
 
 #endif // TESTING_UTILITY_HPP

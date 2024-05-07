@@ -352,14 +352,14 @@ void testing_csr2csc_ex2_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_csr2csc_ex2(Arguments argus)
 {
-    int                   m           = argus.M;
-    int                   n           = argus.N;
-    int                   safe_size   = 100;
-    hipsparseIndexBase_t  idx_base    = argus.idx_base;
-    hipsparseAction_t     action      = argus.action;
-    std::string           binfile     = "";
-    std::string           filename    = "";
-    size_t                buffer_size = 0;
+    int                  m           = argus.M;
+    int                  n           = argus.N;
+    int                  safe_size   = 100;
+    hipsparseIndexBase_t idx_base    = argus.idx_base;
+    hipsparseAction_t    action      = argus.action;
+    std::string          binfile     = "";
+    std::string          filename    = "";
+    size_t               buffer_size = 0;
     //hipsparseStatus_t     status;
     hipsparseCsr2CscAlg_t alg = HIPSPARSE_CSR2CSC_ALG1;
 
@@ -393,97 +393,97 @@ hipsparseStatus_t testing_csr2csc_ex2(Arguments argus)
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
-//     // Argument sanity check before allocating invalid memory
-//     if(m <= 0 || n <= 0 || nnz <= 0)
-//     {
-// #ifdef __HIP_PLATFORM_NVIDIA__
-//         // Do not test args in cusparse
-//         return HIPSPARSE_STATUS_SUCCESS;
-// #endif
-//         auto csr_row_ptr_managed
-//             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-//         auto csr_col_ind_managed
-//             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-//         auto csr_val_managed
-//             = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-//         auto csc_row_ind_managed
-//             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-//         auto csc_col_ptr_managed
-//             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-//         auto csc_val_managed
-//             = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-//         auto buffer_managed
-//             = hipsparse_unique_ptr{device_malloc(sizeof(char) * safe_size), device_free};
+    //     // Argument sanity check before allocating invalid memory
+    //     if(m <= 0 || n <= 0 || nnz <= 0)
+    //     {
+    // #ifdef __HIP_PLATFORM_NVIDIA__
+    //         // Do not test args in cusparse
+    //         return HIPSPARSE_STATUS_SUCCESS;
+    // #endif
+    //         auto csr_row_ptr_managed
+    //             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+    //         auto csr_col_ind_managed
+    //             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+    //         auto csr_val_managed
+    //             = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+    //         auto csc_row_ind_managed
+    //             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+    //         auto csc_col_ptr_managed
+    //             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
+    //         auto csc_val_managed
+    //             = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+    //         auto buffer_managed
+    //             = hipsparse_unique_ptr{device_malloc(sizeof(char) * safe_size), device_free};
 
-//         int*  csr_row_ptr = (int*)csr_row_ptr_managed.get();
-//         int*  csr_col_ind = (int*)csr_col_ind_managed.get();
-//         T*    csr_val     = (T*)csr_val_managed.get();
-//         int*  csc_row_ind = (int*)csc_row_ind_managed.get();
-//         int*  csc_col_ptr = (int*)csc_col_ptr_managed.get();
-//         T*    csc_val     = (T*)csc_val_managed.get();
-//         void* buffer      = (void*)buffer_managed.get();
+    //         int*  csr_row_ptr = (int*)csr_row_ptr_managed.get();
+    //         int*  csr_col_ind = (int*)csr_col_ind_managed.get();
+    //         T*    csr_val     = (T*)csr_val_managed.get();
+    //         int*  csc_row_ind = (int*)csc_row_ind_managed.get();
+    //         int*  csc_col_ptr = (int*)csc_col_ptr_managed.get();
+    //         T*    csc_val     = (T*)csc_val_managed.get();
+    //         void* buffer      = (void*)buffer_managed.get();
 
-//         if(!csr_row_ptr || !csr_col_ind || !csr_val || !csc_row_ind || !csc_col_ptr || !csc_val
-//            || !buffer)
-//         {
-//             verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-//                                             "!csr_row_ptr || !csr_col_ind || !csr_val || "
-//                                             "!csc_row_ind || !csc_col_ptr || !csc_val || !buffer");
-//             return HIPSPARSE_STATUS_ALLOC_FAILED;
-//         }
+    //         if(!csr_row_ptr || !csr_col_ind || !csr_val || !csc_row_ind || !csc_col_ptr || !csc_val
+    //            || !buffer)
+    //         {
+    //             verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
+    //                                             "!csr_row_ptr || !csr_col_ind || !csr_val || "
+    //                                             "!csc_row_ind || !csc_col_ptr || !csc_val || !buffer");
+    //             return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //         }
 
-//         status = hipsparseCsr2cscEx2_bufferSize(handle,
-//                                                 m,
-//                                                 n,
-//                                                 nnz,
-//                                                 csr_val,
-//                                                 csr_row_ptr,
-//                                                 csr_col_ind,
-//                                                 csc_val,
-//                                                 csc_col_ptr,
-//                                                 csc_row_ind,
-//                                                 dataType,
-//                                                 action,
-//                                                 idx_base,
-//                                                 alg,
-//                                                 &buffer_size);
+    //         status = hipsparseCsr2cscEx2_bufferSize(handle,
+    //                                                 m,
+    //                                                 n,
+    //                                                 nnz,
+    //                                                 csr_val,
+    //                                                 csr_row_ptr,
+    //                                                 csr_col_ind,
+    //                                                 csc_val,
+    //                                                 csc_col_ptr,
+    //                                                 csc_row_ind,
+    //                                                 dataType,
+    //                                                 action,
+    //                                                 idx_base,
+    //                                                 alg,
+    //                                                 &buffer_size);
 
-//         if(m < 0 || n < 0 || nnz < 0)
-//         {
-//             verify_hipsparse_status_invalid_size(status, "Error: m < 0 || n < 0 || nnz < 0");
-//         }
-//         else
-//         {
-//             verify_hipsparse_status_success(status, "m >= 0 && n >= 0 && nnz >= 0");
-//         }
+    //         if(m < 0 || n < 0 || nnz < 0)
+    //         {
+    //             verify_hipsparse_status_invalid_size(status, "Error: m < 0 || n < 0 || nnz < 0");
+    //         }
+    //         else
+    //         {
+    //             verify_hipsparse_status_success(status, "m >= 0 && n >= 0 && nnz >= 0");
+    //         }
 
-//         status = hipsparseCsr2cscEx2(handle,
-//                                      m,
-//                                      n,
-//                                      nnz,
-//                                      csr_val,
-//                                      csr_row_ptr,
-//                                      csr_col_ind,
-//                                      csc_val,
-//                                      csc_col_ptr,
-//                                      csc_row_ind,
-//                                      dataType,
-//                                      action,
-//                                      idx_base,
-//                                      alg,
-//                                      buffer);
+    //         status = hipsparseCsr2cscEx2(handle,
+    //                                      m,
+    //                                      n,
+    //                                      nnz,
+    //                                      csr_val,
+    //                                      csr_row_ptr,
+    //                                      csr_col_ind,
+    //                                      csc_val,
+    //                                      csc_col_ptr,
+    //                                      csc_row_ind,
+    //                                      dataType,
+    //                                      action,
+    //                                      idx_base,
+    //                                      alg,
+    //                                      buffer);
 
-//         if(m < 0 || n < 0 || nnz < 0)
-//         {
-//             verify_hipsparse_status_invalid_size(status, "Error: m < 0 || n < 0 || nnz < 0");
-//         }
-//         else
-//         {
-//             verify_hipsparse_status_success(status, "m >= 0 && n >= 0 && nnz >= 0");
-//         }
+    //         if(m < 0 || n < 0 || nnz < 0)
+    //         {
+    //             verify_hipsparse_status_invalid_size(status, "Error: m < 0 || n < 0 || nnz < 0");
+    //         }
+    //         else
+    //         {
+    //             verify_hipsparse_status_success(status, "m >= 0 && n >= 0 && nnz >= 0");
+    //         }
 
-//         return HIPSPARSE_STATUS_SUCCESS;
-//     }
+    //         return HIPSPARSE_STATUS_SUCCESS;
+    //     }
 
     // Host structures
     std::vector<int> hcsr_row_ptr;
