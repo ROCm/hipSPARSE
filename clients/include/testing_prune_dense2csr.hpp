@@ -257,7 +257,7 @@ hipsparseStatus_t testing_prune_dense2csr(Arguments argus)
     int                  LDA       = argus.lda;
     T                    threshold = static_cast<T>(argus.threshold);
     hipsparseIndexBase_t idx_base  = argus.idx_base;
-    
+
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
 

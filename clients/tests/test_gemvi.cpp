@@ -27,7 +27,7 @@
 #include <hipsparse.h>
 #include <string>
 
-typedef std::tuple<int, int, int, double, double, hipsparseIndexBase_t>    gemvi_tuple;
+typedef std::tuple<int, int, int, double, double, hipsparseIndexBase_t> gemvi_tuple;
 
 int gemvi_M_range[]   = {1291};
 int gemvi_N_range[]   = {724};

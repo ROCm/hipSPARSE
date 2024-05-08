@@ -136,9 +136,9 @@ template <typename T>
 hipsparseStatus_t testing_gpsv_interleaved_batch(Arguments argus)
 {
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
-    int m = argus.M;
+    int m           = argus.M;
     int batch_count = argus.batch_count;
-    int algo = argus.algo;
+    int algo        = argus.algo;
 
     // hipSPARSE handle
     std::unique_ptr<handle_struct> test_handle(new handle_struct);

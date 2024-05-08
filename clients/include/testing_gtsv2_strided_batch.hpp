@@ -125,7 +125,7 @@ template <typename T>
 hipsparseStatus_t testing_gtsv2_strided_batch(Arguments argus)
 {
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
-    int m = argus.M;
+    int m           = argus.M;
     int batch_count = argus.batch_count;
 
     // hipSPARSE handle

@@ -27,7 +27,7 @@
 #include <hipsparse.h>
 #include <string>
 
-typedef std::tuple<int, int>    gtsv2_nopivot_tuple;
+typedef std::tuple<int, int> gtsv2_nopivot_tuple;
 
 int gtsv2_nopivot_M_range[] = {512};
 int gtsv2_nopivot_N_range[] = {512};

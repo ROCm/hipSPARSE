@@ -27,7 +27,7 @@
 #include <hipsparse.h>
 #include <string>
 
-typedef std::tuple<int, int>    gtsv_tuple;
+typedef std::tuple<int, int> gtsv_tuple;
 
 int gtsv_M_range[] = {512};
 int gtsv_N_range[] = {512};

@@ -27,13 +27,14 @@
 #include <hipsparse.h>
 #include <string>
 
-typedef std::tuple<int, int, int>    gpsv_interleaved_batch_tuple;
+typedef std::tuple<int, int, int> gpsv_interleaved_batch_tuple;
 
 int gpsv_interleaved_batch_M_range[]           = {512};
 int gpsv_interleaved_batch_batch_count_range[] = {512};
 int gpsv_interleaved_batch_algo_range[]        = {0};
 
-class parameterized_gpsv_interleaved_batch : public testing::TestWithParam<gpsv_interleaved_batch_tuple>
+class parameterized_gpsv_interleaved_batch
+    : public testing::TestWithParam<gpsv_interleaved_batch_tuple>
 {
 protected:
     parameterized_gpsv_interleaved_batch() {}
@@ -93,8 +94,9 @@ TEST_P(parameterized_gpsv_interleaved_batch, gpsv_interleaved_batch_double_compl
 
 #endif
 
-INSTANTIATE_TEST_SUITE_P(gpsv_interleaved_batch,
-                         parameterized_gpsv_interleaved_batch,
-                         testing::Combine(testing::ValuesIn(gpsv_interleaved_batch_M_range),
-                                          testing::ValuesIn(gpsv_interleaved_batch_batch_count_range),
-                                          testing::ValuesIn(gpsv_interleaved_batch_algo_range)));
+INSTANTIATE_TEST_SUITE_P(
+    gpsv_interleaved_batch,
+    parameterized_gpsv_interleaved_batch,
+    testing::Combine(testing::ValuesIn(gpsv_interleaved_batch_M_range),
+                     testing::ValuesIn(gpsv_interleaved_batch_batch_count_range),
+                     testing::ValuesIn(gpsv_interleaved_batch_algo_range)));

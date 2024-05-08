@@ -27,7 +27,7 @@
 #include <hipsparse.h>
 #include <string>
 
-typedef std::tuple<int, int>    gtsv2_strided_batch_tuple;
+typedef std::tuple<int, int> gtsv2_strided_batch_tuple;
 
 int gtsv2_strided_batch_M_range[]           = {512};
 int gtsv2_strided_batch_batch_count_range[] = {512};
@@ -91,7 +91,8 @@ TEST_P(parameterized_gtsv2_strided_batch, gtsv2_strided_batch_double_complex)
 
 #endif
 
-INSTANTIATE_TEST_SUITE_P(gtsv2_strided_batch,
-                         parameterized_gtsv2_strided_batch,
-                         testing::Combine(testing::ValuesIn(gtsv2_strided_batch_M_range),
-                                          testing::ValuesIn(gtsv2_strided_batch_batch_count_range)));
+INSTANTIATE_TEST_SUITE_P(
+    gtsv2_strided_batch,
+    parameterized_gtsv2_strided_batch,
+    testing::Combine(testing::ValuesIn(gtsv2_strided_batch_M_range),
+                     testing::ValuesIn(gtsv2_strided_batch_batch_count_range)));

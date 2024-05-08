@@ -173,8 +173,7 @@ hipsparseStatus_t testing_hybmv(Arguments argus)
 
     // Read or construct CSR matrix
     int nnz = 0;
-    if(!generate_csr_matrix(
-           filename, m, n, nnz, hcsr_row_ptr, hcol_ind, hval, idx_base))
+    if(!generate_csr_matrix(filename, m, n, nnz, hcsr_row_ptr, hcol_ind, hval, idx_base))
     {
         fprintf(stderr, "Cannot open [read] %s\ncol", filename.c_str());
         return HIPSPARSE_STATUS_INTERNAL_ERROR;
@@ -232,7 +231,8 @@ hipsparseStatus_t testing_hybmv(Arguments argus)
     }
 
     // Convert CSR to HYB
-    hipsparseStatus_t status = hipsparseXcsr2hyb(handle, m, n, descr, dval, dptr, dcol, hyb, user_ell_width, part);
+    hipsparseStatus_t status
+        = hipsparseXcsr2hyb(handle, m, n, descr, dval, dptr, dcol, hyb, user_ell_width, part);
 
     if(part == HIPSPARSE_HYB_PARTITION_MAX)
     {

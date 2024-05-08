@@ -6297,7 +6297,7 @@ public:
         this->col_block_dimA = rhs.col_block_dimA;
         this->col_block_dimB = rhs.col_block_dimB;
 
-        this->batch_count    = rhs.batch_count;
+        this->batch_count = rhs.batch_count;
 
         this->lda = rhs.lda;
         this->ldb = rhs.ldb;
