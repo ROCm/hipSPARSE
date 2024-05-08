@@ -83,25 +83,16 @@ void testing_gather_bad_arg(void)
 }
 
 template <typename I, typename T>
-hipsparseStatus_t testing_gather(void)
+hipsparseStatus_t testing_gather(Arguments argus)
 {
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
     int64_t size = 15332;
     int64_t nnz  = 500;
-
     hipsparseIndexBase_t idxBase = HIPSPARSE_INDEX_BASE_ZERO;
 
     // Index and data type
     hipsparseIndexType_t idxType  = getIndexType<I>();
     hipDataType          dataType = getDataType<T>();
-    //hipsparseIndexType_t idxType
-    //    = (typeid(I) == typeid(int32_t)) ? HIPSPARSE_INDEX_32I : HIPSPARSE_INDEX_64I;
-    //hipDataType dataType
-    //    = (typeid(T) == typeid(float))
-    //          ? HIP_R_32F
-    //          : ((typeid(T) == typeid(double))
-    //                 ? HIP_R_64F
-    //                 : ((typeid(T) == typeid(hipComplex) ? HIP_C_32F : HIP_C_64F)));
 
     // hipSPARSE handle
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
@@ -126,12 +117,6 @@ hipsparseStatus_t testing_gather(void)
     I* dx_ind = (I*)dx_ind_managed.get();
     T* dx_val = (T*)dx_val_managed.get();
     T* dy     = (T*)dy_managed.get();
-
-    //if(!dx_ind || !dx_val || !dy)
-    //{
-    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!dx_ind || !dx_val || !dy");
-    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
-    //}
 
     // copy data from CPU to device
     CHECK_HIP_ERROR(hipMemcpy(dx_ind, hx_ind.data(), sizeof(I) * nnz, hipMemcpyHostToDevice));

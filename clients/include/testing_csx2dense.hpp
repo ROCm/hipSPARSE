@@ -194,7 +194,7 @@ hipsparseStatus_t testing_csx2dense(const Arguments& argus, FUNC1& csx2dense, FU
     // Initialize a random dense matrix.
     //
     srand(0);
-    gen_dense_random_sparsity_pattern(M, N, h_dense_val_ref.data(), LD, 0.2);
+    gen_dense_random_sparsity_pattern(M, N, h_dense_val_ref.data(), LD, HIPSPARSE_ORDER_COL, 0.2);
 
     //
     // Transfer.

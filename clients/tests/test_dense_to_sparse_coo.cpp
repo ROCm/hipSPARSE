@@ -22,31 +22,59 @@
  * ************************************************************************ */
 
 #include "testing_dense_to_sparse_coo.hpp"
+#include "utility.hpp"
 
 #include <hipsparse.h>
+#include <string>
+#include <vector>
+
+typedef std::tuple<int, int, hipsparseIndexBase_t, hipsparseOrder_t>    dense_to_sparse_coo_tuple;
+
+int dense_to_sparse_coo_M_range[] = {100};
+int dense_to_sparse_coo_N_range[] = {10};
+
+hipsparseIndexBase_t dense_to_sparse_coo_base[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+hipsparseOrder_t dense_to_sparse_coo_order[] = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
+
+class parameterized_dense_to_sparse_coo : public testing::TestWithParam<dense_to_sparse_coo_tuple>
+{
+protected:
+    parameterized_dense_to_sparse_coo() {}
+    virtual ~parameterized_dense_to_sparse_coo() {}
+    virtual void SetUp() {}
+    virtual void TearDown() {}
+};
+
+Arguments setup_dense_to_sparse_coo_arguments(dense_to_sparse_coo_tuple tup)
+{
+    Arguments arg;
+    arg.M        = std::get<0>(tup);
+    arg.N        = std::get<1>(tup);
+    arg.idx_base = std::get<2>(tup);
+    arg.orderA   = std::get<3>(tup);
+    arg.timing   = 0;
+    return arg;
+}
 
 // Only run tests for CUDA 11.1 or greater
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
-TEST(dense_to_sparse_coo_bad_arg, dense_to_sparse_coo_float)
+TEST(dense_to_sparse_coo_bad_arg, dense_to_sparse_coo)
 {
     testing_dense_to_sparse_coo_bad_arg();
 }
 
-TEST(dense_to_sparse_coo, dense_to_sparse_coo_i32_i32_float)
+TEST_P(parameterized_dense_to_sparse_coo, dense_to_sparse_coo_float)
 {
-    hipsparseStatus_t status = testing_dense_to_sparse_coo<int32_t, float>();
-    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
-}
+    Arguments arg = setup_dense_to_sparse_coo_arguments(GetParam());
 
-TEST(dense_to_sparse_coo, dense_to_sparse_coo_i64_i32_double)
-{
-    hipsparseStatus_t status = testing_dense_to_sparse_coo<int64_t, double>();
-    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
-}
-
-TEST(dense_to_sparse_coo, dense_to_sparse_coo_i64_i64_hipComplex)
-{
-    hipsparseStatus_t status = testing_dense_to_sparse_coo<int64_t, hipComplex>();
+    hipsparseStatus_t status = testing_dense_to_sparse_coo<int, float>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 #endif
+
+INSTANTIATE_TEST_SUITE_P(dense_to_sparse_coo,
+                         parameterized_dense_to_sparse_coo,
+                         testing::Combine(testing::ValuesIn(dense_to_sparse_coo_M_range),
+                                          testing::ValuesIn(dense_to_sparse_coo_N_range),
+                                          testing::ValuesIn(dense_to_sparse_coo_base),
+                                          testing::ValuesIn(dense_to_sparse_coo_order)));

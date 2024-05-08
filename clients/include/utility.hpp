@@ -559,16 +559,32 @@ J gen_2d_laplacian(int                  ndim,
 /* ============================================================================================ */
 /*! \brief  Generate a random sparsity pattern with a dense format, generated floating point values of type T are positive and normalized. */
 template <typename T>
-void gen_dense_random_sparsity_pattern(int m, int n, T* A, int lda, float sparsity_ratio = 0.3)
+void gen_dense_random_sparsity_pattern(int m, int n, T* A, int lda, hipsparseOrder_t order, float sparsity_ratio = 0.3)
 {
-    for(int j = 0; j < n; ++j)
+    if(order == HIPSPARSE_ORDER_COL)
     {
-        for(int i = 0; i < m; ++i)
+        for(int j = 0; j < n; ++j)
         {
-            const float d  = ((float)rand()) / ((float)RAND_MAX);
-            A[j * lda + i] = (d < sparsity_ratio)
-                                 ? testing_div(make_DataType<T>(rand()), make_DataType<T>(RAND_MAX))
-                                 : make_DataType<T>(0);
+            for(int i = 0; i < m; ++i)
+            {
+                const float d  = ((float)rand()) / ((float)RAND_MAX);
+                A[j * lda + i] = (d < sparsity_ratio)
+                                    ? testing_div(make_DataType<T>(rand()), make_DataType<T>(RAND_MAX))
+                                    : make_DataType<T>(0);
+            }
+        }
+    }
+    else
+    {
+        for(int j = 0; j < m; ++j)
+        {
+            for(int i = 0; i < n; ++i)
+            {
+                const float d  = ((float)rand()) / ((float)RAND_MAX);
+                A[j * lda + i] = (d < sparsity_ratio)
+                                    ? testing_div(make_DataType<T>(rand()), make_DataType<T>(RAND_MAX))
+                                    : make_DataType<T>(0);
+            }
         }
     }
 }
@@ -6247,6 +6263,7 @@ public:
     hipsparseDiagType_t     diag_type = HIPSPARSE_DIAG_TYPE_NON_UNIT;
     hipsparseFillMode_t     fill_mode = HIPSPARSE_FILL_MODE_LOWER;
     hipsparseDirection_t    dirA      = HIPSPARSE_DIRECTION_ROW;
+    hipsparseOrder_t        orderA    = HIPSPARSE_ORDER_COL;
 
     int norm_check = 0;
     int unit_check = 1;

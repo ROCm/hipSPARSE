@@ -285,7 +285,7 @@ hipsparseStatus_t testing_nnz(Arguments argus)
     // Initialize a random dense matrix.
     //
     srand(0);
-    gen_dense_random_sparsity_pattern(M, N, h_A.data(), lda, 0.2);
+    gen_dense_random_sparsity_pattern(M, N, h_A.data(), lda, HIPSPARSE_ORDER_COL, 0.2);
 
     //
     // Transfer.

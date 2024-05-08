@@ -22,37 +22,98 @@
  * ************************************************************************ */
 
 #include "testing_csru2csr.hpp"
+#include "utility.hpp"
 
 #include <hipsparse.h>
+#include <string>
+#include <vector>
+
+typedef std::tuple<int, int, hipsparseIndexBase_t>    csru2csr_tuple;
+typedef std::tuple<hipsparseIndexBase_t, std::string> csru2csr_bin_tuple;
+
+int csru2csr_M_range[] = {51314};
+int csru2csr_N_range[] = {12963};
+
+hipsparseIndexBase_t csru2csr_base[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+
+std::string csru2csr_bin[] = {"nos3.bin"};
+
+class parameterized_csru2csr : public testing::TestWithParam<csru2csr_tuple>
+{
+protected:
+    parameterized_csru2csr() {}
+    virtual ~parameterized_csru2csr() {}
+    virtual void SetUp() {}
+    virtual void TearDown() {}
+};
+
+class parameterized_csru2csr_bin : public testing::TestWithParam<csru2csr_bin_tuple>
+{
+protected:
+    parameterized_csru2csr_bin() {}
+    virtual ~parameterized_csru2csr_bin() {}
+    virtual void SetUp() {}
+    virtual void TearDown() {}
+};
+
+Arguments setup_csru2csr_arguments(csru2csr_tuple tup)
+{
+    Arguments arg;
+    arg.M        = std::get<0>(tup);
+    arg.N        = std::get<1>(tup);
+    arg.idx_base = std::get<2>(tup);
+    arg.timing   = 0;
+    return arg;
+}
+
+Arguments setup_csru2csr_arguments(csru2csr_bin_tuple tup)
+{
+    Arguments arg;
+    arg.M        = -99;
+    arg.N        = -99;
+    arg.idx_base = std::get<0>(tup);
+    arg.timing   = 0;
+
+    // Determine absolute path of test matrix
+    std::string bin_file = std::get<1>(tup);
+
+    // Matrices are stored at the same path in matrices directory
+    arg.filename = get_filename(bin_file);
+
+    return arg;
+}
 
 // Only run tests for CUDA 11.1 or greater
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
-TEST(csru2csr_bad_arg, csru2csr_float)
+TEST(csru2csr_bad_arg, csru2csr)
 {
     testing_csru2csr_bad_arg();
 }
 
-TEST(csru2csr, csru2csr_float)
+TEST_P(parameterized_csru2csr, csru2csr_float)
 {
-    hipsparseStatus_t status = testing_csru2csr<float>();
+    Arguments arg = setup_csru2csr_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_csru2csr<float>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-TEST(csru2csr, csru2csr_double)
+TEST_P(parameterized_csru2csr_bin, csru2csr_bin_float)
 {
-    hipsparseStatus_t status = testing_csru2csr<double>();
-    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
-}
+    Arguments arg = setup_csru2csr_arguments(GetParam());
 
-TEST(csru2csr, csru2csr_hipComplex)
-{
-    hipsparseStatus_t status = testing_csru2csr<hipComplex>();
-    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
-}
-
-TEST(csru2csr, csru2csr_hipDoubleComplex)
-{
-    hipsparseStatus_t status = testing_csru2csr<hipDoubleComplex>();
+    hipsparseStatus_t status = testing_csru2csr<float>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 #endif
+
+INSTANTIATE_TEST_SUITE_P(csru2csr,
+                         parameterized_csru2csr,
+                         testing::Combine(testing::ValuesIn(csru2csr_M_range),
+                                          testing::ValuesIn(csru2csr_N_range),
+                                          testing::ValuesIn(csru2csr_base)));
+
+INSTANTIATE_TEST_SUITE_P(csru2csr_bin,
+                         parameterized_csru2csr_bin,
+                         testing::Combine(testing::ValuesIn(csru2csr_base),
+                                          testing::ValuesIn(csru2csr_bin)));

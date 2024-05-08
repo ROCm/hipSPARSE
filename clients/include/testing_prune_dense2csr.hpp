@@ -352,7 +352,7 @@ hipsparseStatus_t testing_prune_dense2csr(Arguments argus)
 
     // Initialize a random dense matrix.
     srand(0);
-    gen_dense_random_sparsity_pattern(M, N, h_A.data(), LDA, 0.2);
+    gen_dense_random_sparsity_pattern(M, N, h_A.data(), LDA, HIPSPARSE_ORDER_COL, 0.2);
 
     // Transfer.
     CHECK_HIP_ERROR(hipMemcpy(d_A, h_A.data(), sizeof(T) * LDA * N, hipMemcpyHostToDevice));
