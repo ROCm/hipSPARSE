@@ -470,8 +470,7 @@ hipsparseStatus_t testing_csrsv2(Arguments argus)
 
     // Read or construct CSR matrix
     int nnz = 0;
-    if(!generate_csr_matrix(
-           filename, m, m, nnz, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base))
+    if(!generate_csr_matrix(filename, m, m, nnz, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base))
     {
         fprintf(stderr, "Cannot open [read] %s\ncol", filename.c_str());
         return HIPSPARSE_STATUS_INTERNAL_ERROR;
@@ -514,11 +513,12 @@ hipsparseStatus_t testing_csrsv2(Arguments argus)
 
     // Obtain csrsv2 buffer size
     int bufferSize;
-    CHECK_HIPSPARSE_ERROR(
-        hipsparseXcsrsv2_bufferSize(handle, trans, m, nnz, descr, dval, dptr, dcol, info, &bufferSize));
+    CHECK_HIPSPARSE_ERROR(hipsparseXcsrsv2_bufferSize(
+        handle, trans, m, nnz, descr, dval, dptr, dcol, info, &bufferSize));
 
     // Allocate buffer on the device
-    auto dbuffer_managed = hipsparse_unique_ptr{device_malloc(sizeof(char) * bufferSize), device_free};
+    auto dbuffer_managed
+        = hipsparse_unique_ptr{device_malloc(sizeof(char) * bufferSize), device_free};
 
     void* dbuffer = (void*)dbuffer_managed.get();
 

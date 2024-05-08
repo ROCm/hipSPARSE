@@ -163,11 +163,11 @@ void testing_csrsort_bad_arg(void)
 hipsparseStatus_t testing_csrsort(Arguments argus)
 {
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
-    int                  m         = argus.M;
-    int                  n         = argus.N;
-    int                  permute   = argus.temp;
-    hipsparseIndexBase_t idx_base  = argus.idx_base;
-    std::string          filename  = argus.filename;
+    int                  m        = argus.M;
+    int                  n        = argus.N;
+    int                  permute  = argus.temp;
+    hipsparseIndexBase_t idx_base = argus.idx_base;
+    std::string          filename = argus.filename;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -181,14 +181,13 @@ hipsparseStatus_t testing_csrsort(Arguments argus)
     srand(12345ULL);
 
     // Host structures
-    std::vector<int> hcsr_row_ptr;
-    std::vector<int> hcsr_col_ind;
-    std::vector<float>   hcsr_val;
+    std::vector<int>   hcsr_row_ptr;
+    std::vector<int>   hcsr_col_ind;
+    std::vector<float> hcsr_val;
 
     // Read or construct CSR matrix
     int nnz = 0;
-    if(!generate_csr_matrix(
-           filename, m, n, nnz, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base))
+    if(!generate_csr_matrix(filename, m, n, nnz, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base))
     {
         fprintf(stderr, "Cannot open [read] %s\ncol", filename.c_str());
         return HIPSPARSE_STATUS_INTERNAL_ERROR;

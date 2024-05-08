@@ -145,15 +145,15 @@ void testing_gemvi_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_gemvi(Arguments argus)
 {
-    static constexpr hipsparseOperation_t opType  = HIPSPARSE_OPERATION_NON_TRANSPOSE;
+    static constexpr hipsparseOperation_t opType = HIPSPARSE_OPERATION_NON_TRANSPOSE;
 
-    int m = argus.M;
-    int n = argus.N;
-    int nnz = argus.nnz;
-    T                 alpha   = make_DataType<T>(argus.alpha);
-    T                 beta    = make_DataType<T>(argus.beta);
-    hipsparseIndexBase_t idxBase = argus.idx_base;
-    std::string       filename  = argus.filename;
+    int                  m        = argus.M;
+    int                  n        = argus.N;
+    int                  nnz      = argus.nnz;
+    T                    alpha    = make_DataType<T>(argus.alpha);
+    T                    beta     = make_DataType<T>(argus.beta);
+    hipsparseIndexBase_t idxBase  = argus.idx_base;
+    std::string          filename = argus.filename;
 
     int lda = m;
 

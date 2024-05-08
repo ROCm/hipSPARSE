@@ -281,14 +281,14 @@ template <typename T>
 hipsparseStatus_t testing_gemmi(Arguments argus)
 {
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
-    int               M         = argus.M;
-    int               N         = argus.N;
-    int               K         = argus.K;
-    int               lda       = argus.lda;
-    int               ldc       = argus.ldc;
-    T                 h_alpha   = make_DataType<T>(argus.alpha);
-    T                 h_beta    = make_DataType<T>(argus.beta);
-    std::string       filename  = argus.filename;
+    int         M        = argus.M;
+    int         N        = argus.N;
+    int         K        = argus.K;
+    int         lda      = argus.lda;
+    int         ldc      = argus.ldc;
+    T           h_alpha  = make_DataType<T>(argus.alpha);
+    T           h_beta   = make_DataType<T>(argus.beta);
+    std::string filename = argus.filename;
 
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
     hipsparseHandle_t              handle = test_handle->handle;

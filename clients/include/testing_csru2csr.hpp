@@ -249,10 +249,10 @@ template <typename T>
 hipsparseStatus_t testing_csru2csr(Arguments argus)
 {
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
-    int m = argus.M;
-    int n = argus.N;
+    int                  m        = argus.M;
+    int                  n        = argus.N;
     hipsparseIndexBase_t idx_base = argus.idx_base;
-    std::string filename = argus.filename;
+    std::string          filename = argus.filename;
 
     // hipSPARSE handle
     std::unique_ptr<handle_struct> test_handle(new handle_struct);

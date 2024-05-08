@@ -30,8 +30,8 @@
 typedef std::tuple<int, int, int, double, double, hipsparseIndexBase_t>    gemvi_tuple;
 typedef std::tuple<int, double, double, hipsparseIndexBase_t, std::string> gemvi_bin_tuple;
 
-int gemvi_M_range[] = {1291};
-int gemvi_N_range[] = {724};
+int gemvi_M_range[]   = {1291};
+int gemvi_N_range[]   = {724};
 int gemvi_nnz_range[] = {237};
 
 double gemvi_alpha_range[] = {-0.5, 2.0};
@@ -68,7 +68,7 @@ Arguments setup_gemvi_arguments(gemvi_tuple tup)
     arg.alpha    = std::get<3>(tup);
     arg.beta     = std::get<4>(tup);
     arg.idx_base = std::get<5>(tup);
-    arg.timing = 0;
+    arg.timing   = 0;
     return arg;
 }
 
@@ -81,7 +81,7 @@ Arguments setup_gemvi_arguments(gemvi_bin_tuple tup)
     arg.alpha    = std::get<1>(tup);
     arg.beta     = std::get<2>(tup);
     arg.idx_base = std::get<3>(tup);
-    arg.timing = 0;
+    arg.timing   = 0;
 
     // Determine absolute path of test matrix
     std::string bin_file = std::get<4>(tup);

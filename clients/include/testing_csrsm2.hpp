@@ -743,16 +743,16 @@ template <typename T>
 hipsparseStatus_t testing_csrsm2(Arguments argus)
 {
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
-    int                    m         = argus.M;
-    int                    nrhs      = argus.N;
-    hipsparseIndexBase_t   idx_base  = argus.idx_base;
-    hipsparseOperation_t   transA    = argus.transA;
-    hipsparseOperation_t   transB    = argus.transB;
-    hipsparseDiagType_t    diag      = argus.diag_type;
-    hipsparseFillMode_t    uplo      = argus.fill_mode;
-    hipsparseSolvePolicy_t policy    = HIPSPARSE_SOLVE_POLICY_USE_LEVEL;
-    T                      h_alpha   = make_DataType<T>(argus.alpha);
-    std::string            filename  = argus.filename;
+    int                    m        = argus.M;
+    int                    nrhs     = argus.N;
+    hipsparseIndexBase_t   idx_base = argus.idx_base;
+    hipsparseOperation_t   transA   = argus.transA;
+    hipsparseOperation_t   transB   = argus.transB;
+    hipsparseDiagType_t    diag     = argus.diag_type;
+    hipsparseFillMode_t    uplo     = argus.fill_mode;
+    hipsparseSolvePolicy_t policy   = HIPSPARSE_SOLVE_POLICY_USE_LEVEL;
+    T                      h_alpha  = make_DataType<T>(argus.alpha);
+    std::string            filename = argus.filename;
 
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
     hipsparseHandle_t              handle = test_handle->handle;
@@ -781,8 +781,7 @@ hipsparseStatus_t testing_csrsm2(Arguments argus)
 
     // Read or construct CSR matrix
     int nnz = 0;
-    if(!generate_csr_matrix(
-           filename, m, m, nnz, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base))
+    if(!generate_csr_matrix(filename, m, m, nnz, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base))
     {
         fprintf(stderr, "Cannot open [read] %s\ncol", filename.c_str());
         return HIPSPARSE_STATUS_INTERNAL_ERROR;
@@ -853,7 +852,8 @@ hipsparseStatus_t testing_csrsm2(Arguments argus)
                                                          &bufferSize));
 
     // Allocate buffer on the device
-    auto dbuffer_managed = hipsparse_unique_ptr{device_malloc(sizeof(char) * bufferSize), device_free};
+    auto dbuffer_managed
+        = hipsparse_unique_ptr{device_malloc(sizeof(char) * bufferSize), device_free};
 
     void* dbuffer = (void*)dbuffer_managed.get();
 

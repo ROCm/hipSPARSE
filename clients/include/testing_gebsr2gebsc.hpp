@@ -436,13 +436,13 @@ void testing_gebsr2gebsc_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_gebsr2gebsc(Arguments argus)
 {
-    int m             = argus.M;
-    int n             = argus.N;
-    int row_block_dim = argus.row_block_dimA;
-    int col_block_dim = argus.col_block_dimA;
-    hipsparseAction_t    action = argus.action;
-    hipsparseIndexBase_t base   = argus.idx_base;
-    std::string filename = argus.filename;
+    int                  m             = argus.M;
+    int                  n             = argus.N;
+    int                  row_block_dim = argus.row_block_dimA;
+    int                  col_block_dim = argus.col_block_dimA;
+    hipsparseAction_t    action        = argus.action;
+    hipsparseIndexBase_t base          = argus.idx_base;
+    std::string          filename      = argus.filename;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -459,17 +459,16 @@ hipsparseStatus_t testing_gebsr2gebsc(Arguments argus)
 
     // Read or construct CSR matrix
     int nnzb = 0;
-    if(!generate_csr_matrix(
-           filename, mb, nb, nnzb, hbsr_row_ptr, hbsr_col_ind, hbsr_val, base))
+    if(!generate_csr_matrix(filename, mb, nb, nnzb, hbsr_row_ptr, hbsr_col_ind, hbsr_val, base))
     {
         fprintf(stderr, "Cannot open [read] %s\ncol", filename.c_str());
         return HIPSPARSE_STATUS_INTERNAL_ERROR;
     }
 
-    m       = mb * row_block_dim;
-    n       = nb * col_block_dim;
+    m          = mb * row_block_dim;
+    n          = nb * col_block_dim;
     size_t nnz = nnzb * row_block_dim * col_block_dim;
-    
+
     // Now use the csr matrix as the symbolic for the gebsr matrix.
     hbsr_val.resize(nnz);
     for(size_t i = 0; i < nnz; ++i)
@@ -484,8 +483,8 @@ hipsparseStatus_t testing_gebsr2gebsc(Arguments argus)
     // Copy data from host to device
     CHECK_HIP_ERROR(hipMemcpy(
         dbsr_row_ptr, hbsr_row_ptr.data(), sizeof(int) * (mb + 1), hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(hipMemcpy(
-        dbsr_col_ind, hbsr_col_ind.data(), sizeof(int) * nnzb, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(
+        hipMemcpy(dbsr_col_ind, hbsr_col_ind.data(), sizeof(int) * nnzb, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dbsr_val,
                               hbsr_val.data(),
                               sizeof(T) * nnzb * row_block_dim * col_block_dim,

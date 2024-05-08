@@ -86,8 +86,8 @@ template <typename I, typename T>
 hipsparseStatus_t testing_gather(Arguments argus)
 {
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
-    int64_t size = 15332;
-    int64_t nnz  = 500;
+    int64_t              size    = 15332;
+    int64_t              nnz     = 500;
     hipsparseIndexBase_t idxBase = HIPSPARSE_INDEX_BASE_ZERO;
 
     // Index and data type

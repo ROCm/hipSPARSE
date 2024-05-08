@@ -933,16 +933,15 @@ hipsparseStatus_t testing_gebsr2gebsr(Arguments argus)
 
     // Read or construct CSR matrix
     int nnz = 0;
-    if(!generate_csr_matrix(
-           filename, m, n, nnz, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base_A))
+    if(!generate_csr_matrix(filename, m, n, nnz, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base_A))
     {
         fprintf(stderr, "Cannot open [read] %s\ncol", filename.c_str());
         return HIPSPARSE_STATUS_INTERNAL_ERROR;
     }
 
     // mb and nb can be modified if reading from a file
-    int mb       = (m + row_block_dim_A - 1) / row_block_dim_A;
-    int nb       = (n + col_block_dim_A - 1) / col_block_dim_A;
+    int mb   = (m + row_block_dim_A - 1) / row_block_dim_A;
+    int nb   = (n + col_block_dim_A - 1) / col_block_dim_A;
     int mb_C = (mb * row_block_dim_A + row_block_dim_C - 1) / row_block_dim_C;
 
     // allocate memory on device

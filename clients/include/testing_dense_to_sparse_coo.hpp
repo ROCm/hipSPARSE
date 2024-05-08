@@ -138,8 +138,8 @@ template <typename I, typename T>
 hipsparseStatus_t testing_dense_to_sparse_coo(Arguments argus)
 {
 #if(!defined(CUDART_VERSION))
-    I m                                  = argus.M;
-    I n                                  = argus.N;
+    I                           m        = argus.M;
+    I                           n        = argus.N;
     hipsparseIndexBase_t        idx_base = argus.idx_base;
     hipsparseDenseToSparseAlg_t alg      = HIPSPARSE_DENSETOSPARSE_ALG_DEFAULT;
     hipsparseOrder_t            order    = argus.orderA;
@@ -155,8 +155,8 @@ hipsparseStatus_t testing_dense_to_sparse_coo(Arguments argus)
     I ld = (order == HIPSPARSE_ORDER_COL) ? m : n;
 
     // Host structures
-    I nrow = (order == HIPSPARSE_ORDER_COL) ? ld : m;
-    I ncol = (order == HIPSPARSE_ORDER_COL) ? n : ld;
+    I              nrow = (order == HIPSPARSE_ORDER_COL) ? ld : m;
+    I              ncol = (order == HIPSPARSE_ORDER_COL) ? n : ld;
     std::vector<T> hdense_val(nrow * ncol);
 
     if(order == HIPSPARSE_ORDER_COL)

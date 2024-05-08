@@ -28,12 +28,13 @@
 #include <string>
 #include <vector>
 
-typedef std::tuple<int, int, hipsparseIndexBase_t, hipsparseOrder_t>    dense_to_sparse_csc_tuple;
+typedef std::tuple<int, int, hipsparseIndexBase_t, hipsparseOrder_t> dense_to_sparse_csc_tuple;
 
 int dense_to_sparse_csc_M_range[] = {100};
 int dense_to_sparse_csc_N_range[] = {10};
 
-hipsparseIndexBase_t dense_to_sparse_csc_base[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+hipsparseIndexBase_t dense_to_sparse_csc_base[]
+    = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 hipsparseOrder_t dense_to_sparse_csc_order[] = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
 
 class parameterized_dense_to_sparse_csc : public testing::TestWithParam<dense_to_sparse_csc_tuple>

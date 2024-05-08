@@ -349,10 +349,10 @@ hipsparseStatus_t testing_gebsr2csr(Arguments argus)
         return HIPSPARSE_STATUS_INTERNAL_ERROR;
     }
 
-    m       = mb * row_block_dim;
-    n       = nb * col_block_dim;
+    m          = mb * row_block_dim;
+    n          = nb * col_block_dim;
     size_t nnz = nnzb * row_block_dim * col_block_dim;
-    
+
     // Now use the csr matrix as the symbolic for the gebsr matrix.
     bsr_val.resize(nnz);
     int idx = 0;

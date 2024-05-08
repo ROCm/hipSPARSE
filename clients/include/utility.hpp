@@ -559,7 +559,8 @@ J gen_2d_laplacian(int                  ndim,
 /* ============================================================================================ */
 /*! \brief  Generate a random sparsity pattern with a dense format, generated floating point values of type T are positive and normalized. */
 template <typename T>
-void gen_dense_random_sparsity_pattern(int m, int n, T* A, int lda, hipsparseOrder_t order, float sparsity_ratio = 0.3)
+void gen_dense_random_sparsity_pattern(
+    int m, int n, T* A, int lda, hipsparseOrder_t order, float sparsity_ratio = 0.3)
 {
     if(order == HIPSPARSE_ORDER_COL)
     {
@@ -568,9 +569,9 @@ void gen_dense_random_sparsity_pattern(int m, int n, T* A, int lda, hipsparseOrd
             for(int i = 0; i < m; ++i)
             {
                 const float d  = ((float)rand()) / ((float)RAND_MAX);
-                A[j * lda + i] = (d < sparsity_ratio)
-                                    ? testing_div(make_DataType<T>(rand()), make_DataType<T>(RAND_MAX))
-                                    : make_DataType<T>(0);
+                A[j * lda + i] = (d < sparsity_ratio) ? testing_div(make_DataType<T>(rand()),
+                                                                    make_DataType<T>(RAND_MAX))
+                                                      : make_DataType<T>(0);
             }
         }
     }
@@ -581,9 +582,9 @@ void gen_dense_random_sparsity_pattern(int m, int n, T* A, int lda, hipsparseOrd
             for(int i = 0; i < n; ++i)
             {
                 const float d  = ((float)rand()) / ((float)RAND_MAX);
-                A[j * lda + i] = (d < sparsity_ratio)
-                                    ? testing_div(make_DataType<T>(rand()), make_DataType<T>(RAND_MAX))
-                                    : make_DataType<T>(0);
+                A[j * lda + i] = (d < sparsity_ratio) ? testing_div(make_DataType<T>(rand()),
+                                                                    make_DataType<T>(RAND_MAX))
+                                                      : make_DataType<T>(0);
             }
         }
     }

@@ -28,9 +28,9 @@
 #include <string>
 #include <vector>
 
-typedef std::tuple<int, int, hipsparseIndexBase_t>    gather_tuple;
+typedef std::tuple<int, int, hipsparseIndexBase_t> gather_tuple;
 
-int gather_N_range[] = {15332};
+int gather_N_range[]   = {15332};
 int gather_nnz_range[] = {500};
 
 hipsparseIndexBase_t gather_base[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
