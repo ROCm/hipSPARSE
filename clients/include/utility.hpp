@@ -6242,6 +6242,8 @@ public:
     int col_block_dimA = 1;
     int col_block_dimB = 1;
 
+    int batch_count = 1;
+
     int lda{};
     int ldb{};
     int ldc{};
@@ -6274,6 +6276,7 @@ public:
     int laplacian = 0;
     int ell_width = 0;
     int temp      = 0;
+    int algo      = 0;
 
     int    numericboost{};
     double boosttol{};
@@ -6293,6 +6296,8 @@ public:
         this->row_block_dimB = rhs.row_block_dimB;
         this->col_block_dimA = rhs.col_block_dimA;
         this->col_block_dimB = rhs.col_block_dimB;
+
+        this->batch_count    = rhs.batch_count;
 
         this->lda = rhs.lda;
         this->ldb = rhs.ldb;
@@ -6316,6 +6321,7 @@ public:
         this->diag_type = rhs.diag_type;
         this->fill_mode = rhs.fill_mode;
         this->dirA      = rhs.dirA;
+        this->orderA    = rhs.orderA;
 
         this->norm_check = rhs.norm_check;
         this->unit_check = rhs.unit_check;
@@ -6325,6 +6331,7 @@ public:
         this->laplacian = rhs.laplacian;
         this->ell_width = rhs.ell_width;
         this->temp      = rhs.temp;
+        this->algo      = rhs.algo;
 
         this->numericboost = rhs.numericboost;
         this->boosttol     = rhs.boosttol;

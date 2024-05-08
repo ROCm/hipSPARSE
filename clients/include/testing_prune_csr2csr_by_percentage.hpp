@@ -626,23 +626,7 @@ hipsparseStatus_t testing_prune_csr2csr_by_percentage(Arguments argus)
     T                    percentage     = static_cast<T>(argus.percentage);
     hipsparseIndexBase_t csr_idx_base_A = argus.idx_base;
     hipsparseIndexBase_t csr_idx_base_C = argus.idx_base2;
-    std::string          binfile        = "";
-    std::string          filename       = "";
-    //hipsparseStatus_t    status;
-
-    // When in testing mode, M == N == -99 indicates that we are testing with a real
-    // matrix from cise.ufl.edu
-    if(M == -99 && N == -99 && argus.timing == 0)
-    {
-        int safe_size = 100;
-        binfile       = argus.filename;
-        M = N = safe_size;
-    }
-
-    if(argus.timing == 1)
-    {
-        filename = argus.filename;
-    }
+    std::string          filename       = argus.filename;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -660,143 +644,20 @@ hipsparseStatus_t testing_prune_csr2csr_by_percentage(Arguments argus)
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatIndexBase(descr_A, csr_idx_base_A));
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatIndexBase(descr_C, csr_idx_base_C));
 
-    // // Argument sanity check before allocating invalid memory
-    // if(M <= 0 || N <= 0 || percentage < static_cast<T>(0) || percentage > static_cast<T>(100))
-    // {
-    //     size_t safe_size = 100;
+    srand(12345ULL);
 
-    //     auto csr_row_ptr_A_managed
-    //         = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-    //     auto csr_col_ind_A_managed
-    //         = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-    //     auto csr_val_A_managed
-    //         = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-    //     auto csr_row_ptr_C_managed
-    //         = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-    //     auto csr_col_ind_C_managed
-    //         = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-    //     auto csr_val_C_managed
-    //         = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-    //     auto temp_buffer_managed
-    //         = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-
-    //     int* csr_row_ptr_A = (int*)csr_row_ptr_A_managed.get();
-    //     int* csr_col_ind_A = (int*)csr_col_ind_A_managed.get();
-    //     T*   csr_val_A     = (T*)csr_val_A_managed.get();
-    //     int* csr_row_ptr_C = (int*)csr_row_ptr_C_managed.get();
-    //     int* csr_col_ind_C = (int*)csr_col_ind_C_managed.get();
-    //     T*   csr_val_C     = (T*)csr_val_C_managed.get();
-    //     T*   temp_buffer   = (T*)temp_buffer_managed.get();
-
-    //     if(!csr_row_ptr_A || !csr_col_ind_A || !csr_val_A || !csr_row_ptr_C || !csr_col_ind_C
-    //        || !csr_val_C || !temp_buffer)
-    //     {
-    //         PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-    //         return HIPSPARSE_STATUS_ALLOC_FAILED;
-    //     }
-
-    //     status = hipsparseXpruneCsr2csrByPercentage(handle,
-    //                                                 M,
-    //                                                 N,
-    //                                                 safe_size,
-    //                                                 descr_A,
-    //                                                 csr_val_A,
-    //                                                 csr_row_ptr_A,
-    //                                                 csr_col_ind_A,
-    //                                                 percentage,
-    //                                                 descr_C,
-    //                                                 csr_val_C,
-    //                                                 csr_row_ptr_C,
-    //                                                 csr_col_ind_C,
-    //                                                 info,
-    //                                                 temp_buffer);
-
-    //     if(M < 0 || N < 0 || percentage < static_cast<T>(0) || percentage > static_cast<T>(100))
-    //     {
-    //         verify_hipsparse_status_invalid_size(
-    //             status, "Error: m < 0 || n < 0 || percentage < 0 || percentage > 100");
-    //     }
-    //     else
-    //     {
-    //         verify_hipsparse_status_success(
-    //             status, "m >= 0 && n >= 0 && percentage >= 0 || percentage <= 100");
-    //     }
-
-    //     return HIPSPARSE_STATUS_SUCCESS;
-    // }
-
-    // Read or construct CSR matrix
-    std::vector<int> h_nnz_total_dev_host_ptr(1);
+    // Host structures
     std::vector<int> h_csr_row_ptr_A;
     std::vector<int> h_csr_col_ind_A;
     std::vector<T>   h_csr_val_A;
-    int              nnz_A;
-    srand(12345ULL);
-    if(binfile != "")
-    {
-        if(read_bin_matrix(binfile.c_str(),
-                           M,
-                           N,
-                           nnz_A,
-                           h_csr_row_ptr_A,
-                           h_csr_col_ind_A,
-                           h_csr_val_A,
-                           csr_idx_base_A)
-           != 0)
-        {
-            fprintf(stderr, "Cannot open [read] %s\n", binfile.c_str());
-            return HIPSPARSE_STATUS_INTERNAL_ERROR;
-        }
-    }
-    else if(argus.laplacian)
-    {
-        M = N = gen_2d_laplacian(
-            argus.laplacian, h_csr_row_ptr_A, h_csr_col_ind_A, h_csr_val_A, csr_idx_base_A);
-        nnz_A = h_csr_row_ptr_A[M];
-    }
-    else
-    {
-        std::vector<int> coo_row_ind;
 
-        if(filename != "")
-        {
-            if(read_mtx_matrix(filename.c_str(),
-                               M,
-                               N,
-                               nnz_A,
-                               coo_row_ind,
-                               h_csr_col_ind_A,
-                               h_csr_val_A,
-                               csr_idx_base_A)
-               != 0)
-            {
-                fprintf(stderr, "Cannot open [read] %s\n", filename.c_str());
-                return HIPSPARSE_STATUS_INTERNAL_ERROR;
-            }
-        }
-        else
-        {
-            double scale = 0.02;
-            if(M > 1000 || N > 1000)
-            {
-                scale = 2.0 / std::max(M, N);
-            }
-            nnz_A = M * scale * N;
-            gen_matrix_coo(M, N, nnz_A, coo_row_ind, h_csr_col_ind_A, h_csr_val_A, csr_idx_base_A);
-        }
-
-        // Convert COO to CSR
-        h_csr_row_ptr_A.resize(M + 1, 0);
-        for(int i = 0; i < nnz_A; ++i)
-        {
-            ++h_csr_row_ptr_A[coo_row_ind[i] + 1 - csr_idx_base_A];
-        }
-
-        h_csr_row_ptr_A[0] = csr_idx_base_A;
-        for(int i = 0; i < M; ++i)
-        {
-            h_csr_row_ptr_A[i + 1] += h_csr_row_ptr_A[i];
-        }
+    // Read or construct CSR matrix
+    int nnz_A = 0;
+    if(!generate_csr_matrix(
+           filename, M, N, nnz_A, h_csr_row_ptr_A, h_csr_col_ind_A, h_csr_val_A, csr_idx_base_A))
+    {
+        fprintf(stderr, "Cannot open [read] %s\ncol", filename.c_str());
+        return HIPSPARSE_STATUS_INTERNAL_ERROR;
     }
 
     // Allocate device memory
@@ -815,15 +676,6 @@ hipsparseStatus_t testing_prune_csr2csr_by_percentage(Arguments argus)
     int* d_csr_row_ptr_A          = (int*)d_csr_row_ptr_A_managed.get();
     int* d_csr_col_ind_A          = (int*)d_csr_col_ind_A_managed.get();
     T*   d_csr_val_A              = (T*)d_csr_val_A_managed.get();
-
-    //if(!d_nnz_total_dev_host_ptr || !d_csr_row_ptr_C || !d_csr_row_ptr_A || !d_csr_col_ind_A
-    //   || !d_csr_val_A)
-    //{
-    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-    //                                    "!d_nnz_total_dev_host_ptr || !d_csr_row_ptr_C || "
-    //                                    "!d_csr_row_ptr_A || !d_csr_col_ind_A || !d_csr_val_A");
-    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
-    //}
 
     // Transfer.
     CHECK_HIP_ERROR(hipMemcpy(
@@ -854,12 +706,7 @@ hipsparseStatus_t testing_prune_csr2csr_by_percentage(Arguments argus)
 
     T* d_temp_buffer = (T*)d_temp_buffer_managed.get();
 
-    //if(!d_temp_buffer)
-    //{
-    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!d_temp_buffer");
-    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
-    //}
-
+    std::vector<int> h_nnz_total_dev_host_ptr(1);
     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
     CHECK_HIPSPARSE_ERROR(hipsparseXpruneCsr2csrNnzByPercentage(handle,
                                                                 M,
@@ -914,13 +761,6 @@ hipsparseStatus_t testing_prune_csr2csr_by_percentage(Arguments argus)
 
             int* d_csr_col_ind_C = (int*)d_csr_col_ind_C_managed.get();
             T*   d_csr_val_C     = (T*)d_csr_val_C_managed.get();
-
-            //if(!d_csr_col_ind_C || !d_csr_val_C)
-            //{
-            //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-            //                                    "!d_csr_col_ind_C || !d_csr_val_C");
-            //    return HIPSPARSE_STATUS_ALLOC_FAILED;
-            //}
 
             CHECK_HIPSPARSE_ERROR(hipsparseXpruneCsr2csrByPercentage(handle,
                                                                      M,

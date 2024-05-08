@@ -381,7 +381,6 @@ hipsparseStatus_t testing_prune_dense2csr_by_percentage(Arguments argus)
     int                  LDA        = argus.lda;
     T                    percentage = static_cast<T>(argus.percentage);
     hipsparseIndexBase_t idx_base   = argus.idx_base;
-    //hipsparseStatus_t    status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -394,68 +393,6 @@ hipsparseStatus_t testing_prune_dense2csr_by_percentage(Arguments argus)
 
     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatIndexBase(descr, idx_base));
-
-    //     // Argument sanity check before allocating invalid memory
-    //     if(M <= 0 || N <= 0 || LDA < M || percentage < 0.0 || percentage > 100.0)
-    //     {
-    //         // cusparse does not seem to check LDA < M
-    // #if(defined(CUDART_VERSION))
-    //         if(LDA < M)
-    //         {
-    //             return HIPSPARSE_STATUS_SUCCESS;
-    //         }
-    // #endif
-    //         size_t safe_size = 100;
-
-    //         auto csr_row_ptr_managed
-    //             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-    //         auto csr_col_ind_managed
-    //             = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-    //         auto csr_val_managed
-    //             = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-    //         auto A_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-    //         auto temp_buffer_managed
-    //             = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-
-    //         int* csr_row_ptr = (int*)csr_row_ptr_managed.get();
-    //         int* csr_col_ind = (int*)csr_col_ind_managed.get();
-    //         T*   csr_val     = (T*)csr_val_managed.get();
-    //         T*   A           = (T*)A_managed.get();
-    //         T*   temp_buffer = (T*)temp_buffer_managed.get();
-
-    //         if(!csr_row_ptr || !csr_col_ind || !csr_val || !A || !temp_buffer)
-    //         {
-    //             PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-    //             return HIPSPARSE_STATUS_ALLOC_FAILED;
-    //         }
-
-    //         status = hipsparseXpruneDense2csrByPercentage(handle,
-    //                                                       M,
-    //                                                       N,
-    //                                                       A,
-    //                                                       LDA,
-    //                                                       percentage,
-    //                                                       descr,
-    //                                                       csr_val,
-    //                                                       csr_row_ptr,
-    //                                                       csr_col_ind,
-    //                                                       info,
-    //                                                       temp_buffer);
-
-    //         if(M < 0 || N < 0 || LDA < M || percentage < 0.0 || percentage > 100.0)
-    //         {
-    //             verify_hipsparse_status_invalid_size(
-    //                 status,
-    //                 "Error: m < 0 || n < 0 || lda < m || percentage < 0.0 || percentage > 100.0");
-    //         }
-    //         else
-    //         {
-    //             verify_hipsparse_status_success(
-    //                 status, "m >= 0 && n >= 0 && lda >= m && percentage >= 0.0 && percentage <= 100.0");
-    //         }
-
-    //         return HIPSPARSE_STATUS_SUCCESS;
-    //     }
 
     // Allocate host memory
     std::vector<T>   h_A(LDA * N);
@@ -471,13 +408,6 @@ hipsparseStatus_t testing_prune_dense2csr_by_percentage(Arguments argus)
     T*   d_A                      = (T*)d_A_managed.get();
     int* d_nnz_total_dev_host_ptr = (int*)d_nnz_total_dev_host_ptr_managed.get();
     int* d_csr_row_ptr            = (int*)d_csr_row_ptr_managed.get();
-
-    //if(!d_A || !d_nnz_total_dev_host_ptr || !d_csr_row_ptr)
-    //{
-    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-    //                                    "!d_A || !d_nnz_total_dev_host_ptr || !d_csr_row_ptr");
-    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
-    //}
 
     // Initialize the entire allocated memory.
     for(int i = 0; i < LDA; ++i)
@@ -512,12 +442,6 @@ hipsparseStatus_t testing_prune_dense2csr_by_percentage(Arguments argus)
     auto d_temp_buffer_managed = hipsparse_unique_ptr{device_malloc(buffer_size), device_free};
 
     T* d_temp_buffer = (T*)d_temp_buffer_managed.get();
-
-    //if(!d_temp_buffer)
-    //{
-    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!d_temp_buffer");
-    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
-    //}
 
     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
     CHECK_HIPSPARSE_ERROR(hipsparseXpruneDense2csrNnzByPercentage(handle,
@@ -567,13 +491,6 @@ hipsparseStatus_t testing_prune_dense2csr_by_percentage(Arguments argus)
 
             int* d_csr_col_ind = (int*)d_csr_col_ind_managed.get();
             T*   d_csr_val     = (T*)d_csr_val_managed.get();
-
-            //if(!d_csr_col_ind || !d_csr_val)
-            //{
-            //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-            //                                    "!d_csr_col_ind || !d_csr_val");
-            //    return HIPSPARSE_STATUS_ALLOC_FAILED;
-            //}
 
             CHECK_HIPSPARSE_ERROR(hipsparseXpruneDense2csrByPercentage(handle,
                                                                        M,

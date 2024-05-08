@@ -28,7 +28,6 @@
 #include <string>
 
 typedef std::tuple<int, int, int, double, double, hipsparseIndexBase_t>    gemvi_tuple;
-typedef std::tuple<int, double, double, hipsparseIndexBase_t, std::string> gemvi_bin_tuple;
 
 int gemvi_M_range[]   = {1291};
 int gemvi_N_range[]   = {724};
@@ -39,22 +38,11 @@ double gemvi_beta_range[]  = {0.5, 0.0};
 
 hipsparseIndexBase_t gemvi_idx_base_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
-std::string gemvi_bin[] = {"nos1.bin", "nos3.bin", "nos5.bin", "nos7.bin"};
-
 class parameterized_gemvi : public testing::TestWithParam<gemvi_tuple>
 {
 protected:
     parameterized_gemvi() {}
     virtual ~parameterized_gemvi() {}
-    virtual void SetUp() {}
-    virtual void TearDown() {}
-};
-
-class parameterized_gemvi_bin : public testing::TestWithParam<gemvi_bin_tuple>
-{
-protected:
-    parameterized_gemvi_bin() {}
-    virtual ~parameterized_gemvi_bin() {}
     virtual void SetUp() {}
     virtual void TearDown() {}
 };
@@ -69,26 +57,6 @@ Arguments setup_gemvi_arguments(gemvi_tuple tup)
     arg.beta     = std::get<4>(tup);
     arg.idx_base = std::get<5>(tup);
     arg.timing   = 0;
-    return arg;
-}
-
-Arguments setup_gemvi_arguments(gemvi_bin_tuple tup)
-{
-    Arguments arg;
-    arg.M        = std::get<0>(tup);
-    arg.N        = -99;
-    arg.nnz      = -99;
-    arg.alpha    = std::get<1>(tup);
-    arg.beta     = std::get<2>(tup);
-    arg.idx_base = std::get<3>(tup);
-    arg.timing   = 0;
-
-    // Determine absolute path of test matrix
-    std::string bin_file = std::get<4>(tup);
-
-    // Matrices are stored at the same path in matrices directory
-    arg.filename = get_filename(bin_file);
-
     return arg;
 }
 
@@ -131,21 +99,6 @@ TEST_P(parameterized_gemvi, gemvi_double_complex)
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-TEST_P(parameterized_gemvi_bin, gemvi_bin_float)
-{
-    Arguments arg = setup_gemvi_arguments(GetParam());
-
-    hipsparseStatus_t status = testing_gemvi<float>(arg);
-    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
-}
-
-TEST_P(parameterized_gemvi_bin, gemvi_bin_double)
-{
-    Arguments arg = setup_gemvi_arguments(GetParam());
-
-    hipsparseStatus_t status = testing_gemvi<double>(arg);
-    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
-}
 #endif
 
 INSTANTIATE_TEST_SUITE_P(gemvi,
@@ -156,11 +109,3 @@ INSTANTIATE_TEST_SUITE_P(gemvi,
                                           testing::ValuesIn(gemvi_alpha_range),
                                           testing::ValuesIn(gemvi_beta_range),
                                           testing::ValuesIn(gemvi_idx_base_range)));
-
-INSTANTIATE_TEST_SUITE_P(gemvi_bin,
-                         parameterized_gemvi_bin,
-                         testing::Combine(testing::ValuesIn(gemvi_M_range),
-                                          testing::ValuesIn(gemvi_alpha_range),
-                                          testing::ValuesIn(gemvi_beta_range),
-                                          testing::ValuesIn(gemvi_idx_base_range),
-                                          testing::ValuesIn(gemvi_bin)));

@@ -22,31 +22,76 @@
  * ************************************************************************ */
 
 #include "testing_gtsv.hpp"
+#include "utility.hpp"
 
 #include <hipsparse.h>
+#include <string>
 
-// Only run tests for CUDA 11.1 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
-TEST(gtsv2_bad_arg, gtsv2_float)
+typedef std::tuple<int, int>    gtsv_tuple;
+
+int gtsv_M_range[] = {512};
+int gtsv_N_range[] = {512};
+
+class parameterized_gtsv : public testing::TestWithParam<gtsv_tuple>
+{
+protected:
+    parameterized_gtsv() {}
+    virtual ~parameterized_gtsv() {}
+    virtual void SetUp() {}
+    virtual void TearDown() {}
+};
+
+Arguments setup_gtsv_arguments(gtsv_tuple tup)
+{
+    Arguments arg;
+    arg.M      = std::get<0>(tup);
+    arg.N      = std::get<1>(tup);
+    arg.timing = 0;
+    return arg;
+}
+
+// Only run tests for CUDA 11.1 or greater (removed in cusparse 12.0.0)
+#if(!defined(CUDART_VERSION) || (CUDART_VERSION >= 11010 && CUDART_VERSION < 12000))
+TEST(gtsv_bad_arg, gtsv_float)
 {
     testing_gtsv2_bad_arg<float>();
 }
 
-TEST(gtsv2, gtsv2_float)
+TEST_P(parameterized_gtsv, gtsv_float)
 {
-    hipsparseStatus_t status = testing_gtsv2<float>();
+    Arguments arg = setup_gtsv_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_gtsv2<float>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-TEST(gtsv2, gtsv2_double)
+TEST_P(parameterized_gtsv, gtsv_double)
 {
-    hipsparseStatus_t status = testing_gtsv2<double>();
+    Arguments arg = setup_gtsv_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_gtsv2<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-TEST(gtsv2, gtsv2_hipComplex)
+TEST_P(parameterized_gtsv, gtsv_float_complex)
 {
-    hipsparseStatus_t status = testing_gtsv2<hipComplex>();
+    Arguments arg = setup_gtsv_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_gtsv2<hipComplex>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+
+TEST_P(parameterized_gtsv, gtsv_double_complex)
+{
+    Arguments arg = setup_gtsv_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_gtsv2<hipDoubleComplex>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+
 #endif
+
+INSTANTIATE_TEST_SUITE_P(gtsv,
+                         parameterized_gtsv,
+                         testing::Combine(testing::ValuesIn(gtsv_M_range),
+                                          testing::ValuesIn(gtsv_N_range)));

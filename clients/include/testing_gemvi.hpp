@@ -228,7 +228,7 @@ hipsparseStatus_t testing_gemvi(Arguments argus)
 
         for(int j = 0; j < nnz; ++j)
         {
-            sum = testing_fma(hx_val[j], hA[hx_ind[j] * lda + i], sum);
+            sum = testing_fma(hx_val[j], hA[(hx_ind[j] - idxBase) * lda + i], sum);
         }
 
         hy_gold[i] = testing_fma(alpha, sum, testing_mult(beta, hy_gold[i]));

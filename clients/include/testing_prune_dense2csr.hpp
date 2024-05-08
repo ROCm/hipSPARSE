@@ -257,8 +257,7 @@ hipsparseStatus_t testing_prune_dense2csr(Arguments argus)
     int                  LDA       = argus.lda;
     T                    threshold = static_cast<T>(argus.threshold);
     hipsparseIndexBase_t idx_base  = argus.idx_base;
-    //hipsparseStatus_t    status;
-
+    
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
@@ -267,57 +266,6 @@ hipsparseStatus_t testing_prune_dense2csr(Arguments argus)
 
     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatIndexBase(descr, idx_base));
-
-    // // Argument sanity check before allocating invalid memory
-    // if(M <= 0 || N <= 0 || LDA < M)
-    // {
-    //     size_t safe_size = 100;
-
-    //     auto csr_row_ptr_managed
-    //         = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-    //     auto csr_col_ind_managed
-    //         = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-    //     auto csr_val_managed
-    //         = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-    //     auto A_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-    //     auto temp_buffer_managed
-    //         = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-
-    //     int* csr_row_ptr = (int*)csr_row_ptr_managed.get();
-    //     int* csr_col_ind = (int*)csr_col_ind_managed.get();
-    //     T*   csr_val     = (T*)csr_val_managed.get();
-    //     T*   A           = (T*)A_managed.get();
-    //     T*   temp_buffer = (T*)temp_buffer_managed.get();
-
-    //     if(!csr_row_ptr || !csr_col_ind || !csr_val || !A || !temp_buffer)
-    //     {
-    //         PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-    //         return HIPSPARSE_STATUS_ALLOC_FAILED;
-    //     }
-
-    //     status = hipsparseXpruneDense2csr(handle,
-    //                                       M,
-    //                                       N,
-    //                                       A,
-    //                                       LDA,
-    //                                       &threshold,
-    //                                       descr,
-    //                                       csr_val,
-    //                                       csr_row_ptr,
-    //                                       csr_col_ind,
-    //                                       temp_buffer);
-
-    //     if(M < 0 || N < 0 || LDA < M)
-    //     {
-    //         verify_hipsparse_status_invalid_size(status, "Error: m < 0 || n < 0 || lda < m");
-    //     }
-    //     else
-    //     {
-    //         verify_hipsparse_status_success(status, "m >= 0 && n >= 0 && lda >= m");
-    //     }
-
-    //     return HIPSPARSE_STATUS_SUCCESS;
-    // }
 
     // Allocate host memory
     std::vector<T>   h_A(LDA * N);
@@ -333,13 +281,6 @@ hipsparseStatus_t testing_prune_dense2csr(Arguments argus)
     T*   d_A                      = (T*)d_A_managed.get();
     int* d_nnz_total_dev_host_ptr = (int*)d_nnz_total_dev_host_ptr_managed.get();
     int* d_csr_row_ptr            = (int*)d_csr_row_ptr_managed.get();
-
-    //if(!d_A || !d_nnz_total_dev_host_ptr || !d_csr_row_ptr)
-    //{
-    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-    //                                    "!d_A || !d_nnz_total_dev_host_ptr || !d_csr_row_ptr");
-    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
-    //}
 
     // Initialize the entire allocated memory.
     for(int i = 0; i < LDA; ++i)
@@ -377,12 +318,6 @@ hipsparseStatus_t testing_prune_dense2csr(Arguments argus)
     auto d_threshold_managed = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
 
     T* d_threshold = (T*)d_threshold_managed.get();
-
-    //if(!d_threshold)
-    //{
-    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!d_threshold");
-    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
-    //}
 
     CHECK_HIP_ERROR(hipMemcpy(d_threshold, &threshold, sizeof(T), hipMemcpyHostToDevice));
 
@@ -432,13 +367,6 @@ hipsparseStatus_t testing_prune_dense2csr(Arguments argus)
 
             int* d_csr_col_ind = (int*)d_csr_col_ind_managed.get();
             T*   d_csr_val     = (T*)d_csr_val_managed.get();
-
-            //if(!d_csr_col_ind || !d_csr_val)
-            //{
-            //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-            //                                    "!d_csr_col_ind || !d_csr_val");
-            //    return HIPSPARSE_STATUS_ALLOC_FAILED;
-            //}
 
             CHECK_HIPSPARSE_ERROR(hipsparseXpruneDense2csr(handle,
                                                            M,
