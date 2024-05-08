@@ -187,7 +187,10 @@ endif()
 
 # Package specific CPACK vars
 if(NOT USE_CUDA)
-  rocm_package_add_dependencies(DEPENDS "rocsparse >= 1.12.10")
+  set(ROCSPARSE_MINIMUM "1.12.10")
+  rocm_package_add_dependencies(SHARED_DEPENDS "rocsparse >= ${ROCSPARSE_MINIMUM}")
+  rocm_package_add_deb_dependencies(STATIC_DEPENDS "rocsparse-static-dev >= ${ROCSPARSE_MINIMUM}")
+  rocm_package_add_rpm_dependencies(STATIC_DEPENDS "rocsparse-static-devel >= ${ROCSPARSE_MINIMUM}")
 endif()
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.md")
 set(CPACK_RPM_PACKAGE_LICENSE "MIT")
