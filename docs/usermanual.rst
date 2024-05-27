@@ -11,13 +11,13 @@ User Manual
    intro
    install
    basics
-   types
-   auxiliary
-   level1
-   level2
-   level3
-   extra
-   precond
-   conversion
-   reorder
-   generic
+   reference/types
+   reference/auxiliary
+   reference/level1
+   reference/level2
+   reference/level3
+   reference/extra
+   reference/precond
+   reference/conversion
+   reference/reorder
+   reference/generic
