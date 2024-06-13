@@ -74,8 +74,8 @@ void testing_hybmv_bad_arg(void)
     hipsparseHybMat_t           hyb = unique_ptr_hyb->hyb;
 
     testhyb* dhyb = (testhyb*)hyb;
-    dhyb->m = safe_size;
-    dhyb->n = safe_size;
+    dhyb->m       = safe_size;
+    dhyb->n       = safe_size;
     dhyb->ell_nnz = safe_size;
     dhyb->coo_nnz = safe_size;
 
