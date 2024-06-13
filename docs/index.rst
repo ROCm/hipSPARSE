@@ -11,7 +11,7 @@ hipSPARSE documentation
 hipSPARSE exposes a common interface that provides basic linear algebra subroutines for sparse computation implemented on top of the AMD ROCm runtime and toolchains. hipSPARSE is a SPARSE marshalling library supporting both rocSPARSE and cuSPARSE as backends.
 It sits between the application and a `worker` SPARSE library, marshalling inputs into the backend library and marshalling results back to the application. hipSPARSE is created using the HIP programming language and optimized for AMD's latest discrete GPUs.
 
-The code is open and hosted here: https://github.com/ROCmSoftwarePlatform/hipSPARSE
+The code is open and hosted here: `<https://github.com/ROCmSoftwarePlatform/hipSPARSE>`__
 
 The hipSPARSE documentation is structured as follows:
 
@@ -21,7 +21,7 @@ The hipSPARSE documentation is structured as follows:
   
     * :ref:`hipsparse_building`
   
-  .. grid-item-card:: How-To
+  .. grid-item-card:: How to
   
     * :ref:`hipsparse-docs`
   
@@ -40,10 +40,10 @@ The hipSPARSE documentation is structured as follows:
     * :ref:`hipsparse_generic_functions` for manipulating sparse matrices 
 
 .. note::
-  hipSPARSE exports an interface that does not require the client to change, regardless of the chosen backend. hipSPARSE focuses on convenience and portability. If performance outweighs these factors, then using rocSPARSE itself is highly recommended. rocSPARSE can also be found on `GitHub <https://github.com/ROCmSoftwarePlatform/rocSPARSE/>`_.
+  hipSPARSE exports an interface that does not require the client to change, regardless of the chosen backend. hipSPARSE focuses on convenience and portability. If performance outweighs these factors, then using rocSPARSE itself is highly recommended. rocSPARSE can also be found on `GitHub <https://github.com/ROCm/rocSPARSE/>`_.
 
-To contribute to the documentation refer to `Contributing to ROCm  <https://rocm.docs.amd.com/en/latest/contribute/contributing.html>`_.
+To contribute to the documentation refer to :doc:`Contributing to ROCm <rocm:contribute/contributing>`.
 
-You can find licensing information on the `Licensing <https://rocm.docs.amd.com/en/latest/about/license.html>`_ page.
+You can find licensing information on the :doc:`Licensing <rocm:about/license>` page.
 
 
