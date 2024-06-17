@@ -261,6 +261,8 @@ hipsparseStatus_t testing_csru2csr(Arguments argus)
     std::unique_ptr<descr_struct> test_descr(new descr_struct);
     hipsparseMatDescr_t           descr = test_descr->descr;
 
+    hipsparseSetMatIndexBase(descr, idx_base);
+
     std::unique_ptr<csru2csr_struct> test_info(new csru2csr_struct);
     csru2csrInfo_t                   info = test_info->info;
 
@@ -290,21 +292,21 @@ hipsparseStatus_t testing_csru2csr(Arguments argus)
 
     for(int i = 0; i < m; ++i)
     {
-        int row_begin = hcsr_row_ptr[i];
-        int row_end   = hcsr_row_ptr[i + 1];
+        int row_begin = hcsr_row_ptr[i] - idx_base;
+        int row_end   = hcsr_row_ptr[i + 1] - idx_base;
         int row_nnz   = row_end - row_begin;
 
         for(int j = row_begin; j < row_end; ++j)
         {
             int rng = row_begin + rand() % row_nnz;
 
-            int temp_col = hcsr_col_ind_unsorted_gold[j];
+            int temp_col = hcsr_col_ind_unsorted_gold[j] - idx_base;
             T   temp_val = hcsr_val_unsorted_gold[j];
 
             hcsr_col_ind_unsorted_gold[j] = hcsr_col_ind_unsorted_gold[rng];
             hcsr_val_unsorted_gold[j]     = hcsr_val_unsorted_gold[rng];
 
-            hcsr_col_ind_unsorted_gold[rng] = temp_col;
+            hcsr_col_ind_unsorted_gold[rng] = temp_col + idx_base;
             hcsr_val_unsorted_gold[rng]     = temp_val;
         }
     }

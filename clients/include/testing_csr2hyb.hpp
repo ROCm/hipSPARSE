@@ -192,6 +192,11 @@ hipsparseStatus_t testing_csr2hyb(Arguments argus)
         return HIPSPARSE_STATUS_INTERNAL_ERROR;
     }
 
+    if(m == 0 || n == 0)
+    {
+	return HIPSPARSE_STATUS_SUCCESS;
+    }
+
     // Allocate memory on the device
     auto dcsr_row_ptr_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(int) * (m + 1)), device_free};
