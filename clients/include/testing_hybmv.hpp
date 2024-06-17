@@ -73,6 +73,12 @@ void testing_hybmv_bad_arg(void)
     std::unique_ptr<hyb_struct> unique_ptr_hyb(new hyb_struct);
     hipsparseHybMat_t           hyb = unique_ptr_hyb->hyb;
 
+    testhyb* dhyb = (testhyb*)hyb;
+    dhyb->m       = safe_size;
+    dhyb->n       = safe_size;
+    dhyb->ell_nnz = safe_size;
+    dhyb->coo_nnz = safe_size;
+
     auto dx_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
     auto dy_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
 
