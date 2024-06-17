@@ -64,17 +64,76 @@ void testing_csrmm_bad_arg(void)
     auto dval_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
     auto dB_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
     auto dC_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
+    int* dptr         = (int*)dptr_managed.get();
+    int* dcol         = (int*)dcol_managed.get();
+    T*   dval         = (T*)dval_managed.get();
+    T*   dB           = (T*)dB_managed.get();
+    T*   dC           = (T*)dC_managed.get();
 
-    int* dptr = (int*)dptr_managed.get();
-    int* dcol = (int*)dcol_managed.get();
-    T*   dval = (T*)dval_managed.get();
-    T*   dB   = (T*)dB_managed.get();
-    T*   dC   = (T*)dC_managed.get();
-
-    if(!dval || !dptr || !dcol || !dB || !dC)
+    // testing for M = -1
     {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
+        status = hipsparseXcsrmm2(handle,
+                                  transA,
+                                  transB,
+                                  -1,
+                                  N,
+                                  K,
+                                  nnz,
+                                  &alpha,
+                                  descr,
+                                  dval,
+                                  dptr,
+                                  dcol,
+                                  dB,
+                                  ldb,
+                                  &beta,
+                                  dC,
+                                  ldc);
+        verify_hipsparse_status_invalid_size(status, "Error: M < 0");
+    }
+
+    // testing for N = -1
+    {
+        status = hipsparseXcsrmm2(handle,
+                                  transA,
+                                  transB,
+                                  M,
+                                  -1,
+                                  K,
+                                  nnz,
+                                  &alpha,
+                                  descr,
+                                  dval,
+                                  dptr,
+                                  dcol,
+                                  dB,
+                                  ldb,
+                                  &beta,
+                                  dC,
+                                  ldc);
+        verify_hipsparse_status_invalid_size(status, "Error: N < 0");
+    }
+
+    // testing for K = -1
+    {
+        status = hipsparseXcsrmm2(handle,
+                                  transA,
+                                  transB,
+                                  M,
+                                  N,
+                                  -1,
+                                  nnz,
+                                  &alpha,
+                                  descr,
+                                  dval,
+                                  dptr,
+                                  dcol,
+                                  dB,
+                                  ldb,
+                                  &beta,
+                                  dC,
+                                  ldc);
+        verify_hipsparse_status_invalid_size(status, "Error: K < 0");
     }
 
     // testing for(nullptr == dptr)
