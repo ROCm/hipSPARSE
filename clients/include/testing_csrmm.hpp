@@ -394,8 +394,8 @@ hipsparseStatus_t testing_csrmm(Arguments argus)
 
     int C_m   = (transA == HIPSPARSE_OPERATION_NON_TRANSPOSE ? M : K);
     int C_n   = N;
-    int ldb       = B_m;
-    int ldc       = C_m;
+    int ldb   = B_m;
+    int ldc   = C_m;
     int nrowB = ldb;
     int ncolB = B_n;
     int nrowC = ldc;
