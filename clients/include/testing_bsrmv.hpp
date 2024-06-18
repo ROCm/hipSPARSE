@@ -306,7 +306,10 @@ hipsparseStatus_t testing_bsrmv(Arguments argus)
     // Set matrix index base
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatIndexBase(descr, idx_base));
 
-    if(block_dim == 1)
+    int mb = (m + block_dim - 1) / block_dim;
+    int nb = (n + block_dim - 1) / block_dim;
+
+    if(block_dim == 1 || mb == 0 || nb == 0)
     {
 #ifdef __HIP_PLATFORM_NVIDIA__
         // cusparse only accepts block_dim > 1
@@ -329,8 +332,8 @@ hipsparseStatus_t testing_bsrmv(Arguments argus)
         return HIPSPARSE_STATUS_INTERNAL_ERROR;
     }
 
-    int mb = (m + block_dim - 1) / block_dim;
-    int nb = (n + block_dim - 1) / block_dim;
+    mb = (m + block_dim - 1) / block_dim;
+    nb = (n + block_dim - 1) / block_dim;
 
     std::vector<T> hx(nb * block_dim);
     std::vector<T> hy_1(mb * block_dim);
