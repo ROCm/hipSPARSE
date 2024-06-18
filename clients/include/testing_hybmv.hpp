@@ -338,7 +338,7 @@ hipsparseStatus_t testing_hybmv(Arguments argus)
         }
 
         // COO part
-        if(coo_nnz > 0)
+        if(coo_nnz >= 0)
         {
             T coo_beta = (ell_nnz > 0) ? one : h_beta;
 
