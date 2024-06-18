@@ -290,15 +290,15 @@ hipsparseStatus_t testing_csru2csr(Arguments argus)
 
     for(int i = 0; i < m; ++i)
     {
-        int row_begin = hcsr_row_ptr[i];
-        int row_end   = hcsr_row_ptr[i + 1];
+        int row_begin = hcsr_row_ptr[i] - idx_base;
+        int row_end   = hcsr_row_ptr[i + 1] - idx_base;
         int row_nnz   = row_end - row_begin;
 
         for(int j = row_begin; j < row_end; ++j)
         {
             int rng = row_begin + rand() % row_nnz;
 
-            int temp_col = hcsr_col_ind_unsorted_gold[j];
+            int temp_col = hcsr_col_ind_unsorted_gold[j] - idx_base;
             T   temp_val = hcsr_val_unsorted_gold[j];
 
             hcsr_col_ind_unsorted_gold[j] = hcsr_col_ind_unsorted_gold[rng];

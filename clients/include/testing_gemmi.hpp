@@ -284,8 +284,6 @@ hipsparseStatus_t testing_gemmi(Arguments argus)
     int         M        = argus.M;
     int         N        = argus.N;
     int         K        = argus.K;
-    int         lda      = argus.lda;
-    int         ldc      = argus.ldc;
     T           h_alpha  = make_DataType<T>(argus.alpha);
     T           h_beta   = make_DataType<T>(argus.beta);
     std::string filename = argus.filename;
@@ -309,8 +307,8 @@ hipsparseStatus_t testing_gemmi(Arguments argus)
         return HIPSPARSE_STATUS_INTERNAL_ERROR;
     }
 
-    lda = std::max(1, M);
-    ldc = std::max(1, M);
+    int lda = std::max(1, M);
+    int ldc = std::max(1, M);
 
     int Annz = lda * K;
     int Cnnz = ldc * N;

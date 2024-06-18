@@ -436,8 +436,6 @@ hipsparseStatus_t testing_bsrmm(Arguments argus)
     int                  n         = argus.N;
     int                  k         = argus.K;
     int                  block_dim = argus.block_dim;
-    int                  ldb       = argus.ldb;
-    int                  ldc       = argus.ldc;
     T                    h_alpha   = make_DataType<T>(argus.alpha);
     T                    h_beta    = make_DataType<T>(argus.beta);
     hipsparseDirection_t dirA      = argus.dirA;
@@ -551,8 +549,8 @@ hipsparseStatus_t testing_bsrmm(Arguments argus)
     k = kb * block_dim;
 
     // Some matrix properties
-    ldb = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? k : n;
-    ldc = m;
+    int ldb = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? k : n;
+    int ldc = m;
 
     int ncol_B = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE ? n : k);
     int nnz_B  = ldb * ncol_B;

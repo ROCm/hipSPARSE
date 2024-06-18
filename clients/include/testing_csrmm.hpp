@@ -352,8 +352,6 @@ hipsparseStatus_t testing_csrmm(Arguments argus)
     int                  M        = argus.M;
     int                  N        = argus.N;
     int                  K        = argus.K;
-    int                  ldb      = argus.ldb;
-    int                  ldc      = argus.ldc;
     T                    h_alpha  = make_DataType<T>(argus.alpha);
     T                    h_beta   = make_DataType<T>(argus.beta);
     hipsparseOperation_t transA   = argus.transA;
@@ -396,8 +394,8 @@ hipsparseStatus_t testing_csrmm(Arguments argus)
 
     int C_m   = (transA == HIPSPARSE_OPERATION_NON_TRANSPOSE ? M : K);
     int C_n   = N;
-    ldb       = B_m;
-    ldc       = C_m;
+    int ldb       = B_m;
+    int ldc       = C_m;
     int nrowB = ldb;
     int ncolB = B_n;
     int nrowC = ldc;

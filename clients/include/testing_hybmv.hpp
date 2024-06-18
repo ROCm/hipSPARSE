@@ -227,12 +227,12 @@ hipsparseStatus_t testing_hybmv(Arguments argus)
     CHECK_HIP_ERROR(hipMemcpy(d_beta, &h_beta, sizeof(T), hipMemcpyHostToDevice));
 
     // ELL width limit
-    int width_limit = (2 * nnz - 1) / m + 1;
+    int width_limit = (m > 0) ? ((2 * nnz - 1) / m + 1) : 0;
 
     // Limit ELL user width
     if(part == HIPSPARSE_HYB_PARTITION_USER)
     {
-        user_ell_width = user_ell_width * nnz / m;
+        user_ell_width = (m > 0) ? (user_ell_width * nnz / m) : 0;
         user_ell_width = std::min(width_limit, user_ell_width);
     }
 
