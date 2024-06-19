@@ -91,11 +91,11 @@ template <typename T>
 hipsparseStatus_t testing_roti(Arguments argus)
 {
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
-    int                  N         = argus.N;
-    int                  nnz       = argus.nnz;
-    T                    c         = argus.alpha;
-    T                    s         = argus.beta;
-    hipsparseIndexBase_t idx_base  = argus.idx_base;
+    int                  N        = argus.N;
+    int                  nnz      = argus.nnz;
+    T                    c        = argus.alpha;
+    T                    s        = argus.beta;
+    hipsparseIndexBase_t idx_base = argus.idx_base;
 
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
     hipsparseHandle_t              handle = test_handle->handle;
