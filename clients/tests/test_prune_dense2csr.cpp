@@ -28,6 +28,7 @@
 #include <string>
 #include <vector>
 
+
 typedef hipsparseIndexBase_t                    base;
 typedef std::tuple<int, int, int, double, base> prune_dense2csr_tuple;
 int    prune_dense2csr_M_range[]         = {0, 10, 500, 872, 1000};

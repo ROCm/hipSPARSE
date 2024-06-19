@@ -117,4 +117,3 @@ INSTANTIATE_TEST_SUITE_P(csru2csr_bin,
                          parameterized_csru2csr_bin,
                          testing::Combine(testing::ValuesIn(csru2csr_base),
                                           testing::ValuesIn(csru2csr_bin)));
-

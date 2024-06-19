@@ -194,7 +194,7 @@ hipsparseStatus_t testing_csr2hyb(Arguments argus)
 
     if(m == 0 || n == 0)
     {
-	return HIPSPARSE_STATUS_SUCCESS;
+	    return HIPSPARSE_STATUS_SUCCESS;
     }
 
     // Allocate memory on the device
