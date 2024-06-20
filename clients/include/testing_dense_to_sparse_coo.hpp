@@ -59,7 +59,7 @@ void testing_dense_to_sparse_coo_bad_arg(void)
     auto ddense_val_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(float) * safe_size), device_free};
     auto dcoo_row_ind_managed
-        = hipsparse_unique_ptr{device_malloc(sizeof(int64_t) * safe_size), device_free};
+        = hipsparse_unique_ptr{device_malloc(sizeof(int32_t) * safe_size), device_free};
     auto dcoo_col_ind_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(int32_t) * safe_size), device_free};
     auto dcoo_val_managed
@@ -67,7 +67,7 @@ void testing_dense_to_sparse_coo_bad_arg(void)
     auto dbuf_managed = hipsparse_unique_ptr{device_malloc(sizeof(char) * safe_size), device_free};
 
     float*   ddense_val   = (float*)ddense_val_managed.get();
-    int64_t* dcoo_row_ind = (int64_t*)dcoo_row_ind_managed.get();
+    int32_t* dcoo_row_ind = (int32_t*)dcoo_row_ind_managed.get();
     int32_t* dcoo_col_ind = (int32_t*)dcoo_col_ind_managed.get();
     float*   dcoo_val     = (float*)dcoo_val_managed.get();
     void*    dbuf         = (void*)dbuf_managed.get();

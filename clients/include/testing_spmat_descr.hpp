@@ -39,7 +39,7 @@ using namespace hipsparse_test;
 
 void testing_spmat_descr_bad_arg(void)
 {
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
+#if(!defined(CUDART_VERSION))
     int64_t rows          = 100;
     int64_t cols          = 100;
     int64_t nnz           = 100;
@@ -89,6 +89,7 @@ void testing_spmat_descr_bad_arg(void)
         hipsparseCreateCoo(
             &A, rows, cols, -1, row_data, col_data, val_data, rowType, idxBase, dataType),
         "Error: nnz is < 0");
+#if(!defined(CUDART_VERSION))    
     verify_hipsparse_status_invalid_pointer(
         hipsparseCreateCoo(
             &A, rows, cols, nnz, nullptr, col_data, val_data, rowType, idxBase, dataType),
@@ -101,6 +102,7 @@ void testing_spmat_descr_bad_arg(void)
         hipsparseCreateCoo(
             &A, rows, cols, nnz, row_data, col_data, nullptr, rowType, idxBase, dataType),
         "Error: val_data is nullptr");
+#endif
 
 #if(!defined(CUDART_VERSION) || (CUDART_VERSION >= 10010 && CUDART_VERSION < 12000))
     // hipsparseCreateCooAoS
@@ -150,6 +152,7 @@ void testing_spmat_descr_bad_arg(void)
         hipsparseCreateCsr(
             &A, rows, cols, -1, row_data, col_data, val_data, rowType, colType, idxBase, dataType),
         "Error: nnz is < 0");
+#if(!defined(CUDART_VERSION))      
     verify_hipsparse_status_invalid_pointer(
         hipsparseCreateCsr(
             &A, rows, cols, nnz, nullptr, col_data, val_data, rowType, colType, idxBase, dataType),
@@ -162,6 +165,7 @@ void testing_spmat_descr_bad_arg(void)
         hipsparseCreateCsr(
             &A, rows, cols, nnz, row_data, col_data, nullptr, rowType, colType, idxBase, dataType),
         "Error: val_data is nullptr");
+#endif
 
     // hipsparseCreateBlockedEll
 #if(!defined(CUDART_VERSION))
@@ -197,7 +201,7 @@ void testing_spmat_descr_bad_arg(void)
         hipsparseCreateBlockedEll(
             &A, rows, cols, ell_blocksize, -1, col_data, val_data, colType, idxBase, dataType),
         "Error: ell_cols is < 0");
-
+#if(!defined(CUDART_VERSION))  
     verify_hipsparse_status_invalid_pointer(
         hipsparseCreateBlockedEll(
             &A, rows, cols, ell_blocksize, ell_cols, nullptr, val_data, colType, idxBase, dataType),
@@ -207,6 +211,7 @@ void testing_spmat_descr_bad_arg(void)
         hipsparseCreateBlockedEll(
             &A, rows, cols, ell_blocksize, ell_cols, col_data, nullptr, colType, idxBase, dataType),
         "Error: ellValue is nullptr");
+#endif
 #endif
 
     // hipsparseDestroySpMat

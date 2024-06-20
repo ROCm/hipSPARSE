@@ -35,7 +35,7 @@ using namespace hipsparse_test;
 
 void testing_const_spvec_descr_bad_arg(void)
 {
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+#if(!defined(CUDART_VERSION))
     int64_t size = 100;
     int64_t nnz  = 100;
 
