@@ -273,7 +273,7 @@ hipsparseStatus_t testing_prune_dense2csr(Arguments argus)
         return HIPSPARSE_STATUS_SUCCESS;
 #endif
     }
-    
+
     // Allocate host memory
     std::vector<T>   h_A(LDA * N);
     std::vector<int> h_nnz_total_dev_host_ptr(1);
