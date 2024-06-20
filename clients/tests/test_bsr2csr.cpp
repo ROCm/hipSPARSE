@@ -163,7 +163,6 @@ TEST_P(parameterized_bsr2csr_bin, bsr2csr_bin_double)
     hipsparseStatus_t status = testing_bsr2csr<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-#endif
 
 INSTANTIATE_TEST_SUITE_P(bsr2csr,
                          parameterized_bsr2csr,
@@ -181,3 +180,4 @@ INSTANTIATE_TEST_SUITE_P(bsr2csr_bin,
                                           testing::ValuesIn(bsr2csr_csr_base_range_bin),
                                           testing::ValuesIn(bsr2csr_dir_range_bin),
                                           testing::ValuesIn(bsr2csr_bin)));
+#endif

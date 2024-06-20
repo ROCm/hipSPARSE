@@ -174,7 +174,6 @@ TEST_P(parameterized_bsrmm_bin, bsrmm_bin_double)
     hipsparseStatus_t status = testing_bsrmm<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-#endif
 
 INSTANTIATE_TEST_SUITE_P(bsrmm,
                          parameterized_bsrmm,
@@ -200,3 +199,4 @@ INSTANTIATE_TEST_SUITE_P(bsrmm_bin,
                                           testing::ValuesIn(bsrmm_transA_range_bin),
                                           testing::ValuesIn(bsrmm_transB_range_bin),
                                           testing::ValuesIn(bsrmm_bin)));
+#endif

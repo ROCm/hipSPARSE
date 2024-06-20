@@ -145,7 +145,6 @@ TEST_P(parameterized_prune_csr2csr_by_percentage_bin, prune_csr2csr_percentage_b
     hipsparseStatus_t status = testing_prune_csr2csr_by_percentage<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-#endif
 
 INSTANTIATE_TEST_SUITE_P(
     prune_csr2csr_by_percentage,
@@ -163,3 +162,4 @@ INSTANTIATE_TEST_SUITE_P(
                      testing::ValuesIn(prune_csr2csr_by_percentage_base_A_range),
                      testing::ValuesIn(prune_csr2csr_by_percentage_base_C_range),
                      testing::ValuesIn(prune_csr2csr_by_percentage_bin)));
+#endif

@@ -142,7 +142,6 @@ TEST_P(parameterized_gemmi_bin, gemmi_bin_double)
     hipsparseStatus_t status = testing_gemmi<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-#endif
 
 INSTANTIATE_TEST_SUITE_P(gemmi,
                          parameterized_gemmi,
@@ -158,3 +157,4 @@ INSTANTIATE_TEST_SUITE_P(gemmi_bin,
                                           testing::ValuesIn(gemmi_alpha_range),
                                           testing::ValuesIn(gemmi_beta_range),
                                           testing::ValuesIn(gemmi_bin)));
+#endif

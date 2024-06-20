@@ -159,7 +159,6 @@ TEST_P(parameterized_csrmv_bin, csrmv_bin_double)
     hipsparseStatus_t status = testing_csrmv<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-#endif
 
 INSTANTIATE_TEST_SUITE_P(csrmv,
                          parameterized_csrmv,
@@ -177,3 +176,4 @@ INSTANTIATE_TEST_SUITE_P(csrmv_bin,
                                           testing::ValuesIn(csr_trans_range),
                                           testing::ValuesIn(csr_idxbase_range),
                                           testing::ValuesIn(csr_bin)));
+#endif

@@ -166,7 +166,6 @@ TEST_P(parameterized_csrgemm_bin, csrgemm_bin_double)
     hipsparseStatus_t status = testing_csrgemm<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-#endif
 
 INSTANTIATE_TEST_SUITE_P(csrgemm,
                          parameterized_csrgemm,
@@ -187,3 +186,4 @@ INSTANTIATE_TEST_SUITE_P(csrgemm_bin,
                                           testing::ValuesIn(csrgemm_transA_range),
                                           testing::ValuesIn(csrgemm_transB_range),
                                           testing::ValuesIn(csrgemm_bin)));
+#endif

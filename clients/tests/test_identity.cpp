@@ -60,6 +60,6 @@ TEST_P(parameterized_identity, identity)
     hipsparseStatus_t status = testing_identity(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-#endif
 
 INSTANTIATE_TEST_SUITE_P(identity, parameterized_identity, testing::ValuesIn(identity_N_range));
+#endif

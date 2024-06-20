@@ -78,7 +78,6 @@ TEST_P(parameterized_prune_dense2csr, prune_dense2csr_double)
     hipsparseStatus_t status = testing_prune_dense2csr<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-#endif
 
 INSTANTIATE_TEST_SUITE_P(prune_dense2csr,
                          parameterized_prune_dense2csr,
@@ -87,3 +86,4 @@ INSTANTIATE_TEST_SUITE_P(prune_dense2csr,
                                           testing::ValuesIn(prune_dense2csr_LD_range),
                                           testing::ValuesIn(prune_dense2csr_threshold_range),
                                           testing::ValuesIn(prune_dense2csr_idx_base_range)));
+#endif

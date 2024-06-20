@@ -142,7 +142,6 @@ TEST_P(parameterized_csr2csr_compress_bin, csr2csr_compress_bin_double)
     hipsparseStatus_t status = testing_csr2csr_compress<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-#endif
 
 INSTANTIATE_TEST_SUITE_P(csr2csr_compress,
                          parameterized_csr2csr_compress,
@@ -156,3 +155,4 @@ INSTANTIATE_TEST_SUITE_P(csr2csr_compress_bin,
                          testing::Combine(testing::ValuesIn(csr2csr_compress_alpha_range),
                                           testing::ValuesIn(csr2csr_compress_base_range),
                                           testing::ValuesIn(csr2csr_compress_bin)));
+#endif
