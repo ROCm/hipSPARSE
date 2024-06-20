@@ -75,4 +75,3 @@ INSTANTIATE_TEST_SUITE_P(gather,
                                           testing::ValuesIn(gather_nnz_range),
                                           testing::ValuesIn(gather_base)));
 #endif
-
