@@ -92,10 +92,10 @@ TEST_P(parameterized_gthr, gthr_double_complex)
     hipsparseStatus_t status = testing_gthr<hipDoubleComplex>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-#endif
 
 INSTANTIATE_TEST_SUITE_P(gthr,
                          parameterized_gthr,
                          testing::Combine(testing::ValuesIn(gthr_N_range),
                                           testing::ValuesIn(gthr_nnz_range),
                                           testing::ValuesIn(gthr_idx_base_range)));
+#endif
