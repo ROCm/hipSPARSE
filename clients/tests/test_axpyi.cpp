@@ -95,7 +95,6 @@ TEST_P(parameterized_axpyi, axpyi_double_complex)
     hipsparseStatus_t status = testing_axpyi<hipDoubleComplex>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-#endif
 
 INSTANTIATE_TEST_SUITE_P(axpyi,
                          parameterized_axpyi,
@@ -103,3 +102,4 @@ INSTANTIATE_TEST_SUITE_P(axpyi,
                                           testing::ValuesIn(axpyi_nnz_range),
                                           testing::ValuesIn(axpyi_alpha_range),
                                           testing::ValuesIn(axpyi_idx_base_range)));
+#endif
