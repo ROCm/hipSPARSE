@@ -92,11 +92,10 @@ TEST_P(parameterized_gtsv_interleaved_batch, gtsv_interleaved_batch_double_compl
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-#endif
-
 INSTANTIATE_TEST_SUITE_P(
     gtsv_interleaved_batch,
     parameterized_gtsv_interleaved_batch,
     testing::Combine(testing::ValuesIn(gtsv_interleaved_batch_M_range),
                      testing::ValuesIn(gtsv_interleaved_batch_batch_count_range),
                      testing::ValuesIn(gtsv_interleaved_batch_algo_range)));
+#endif

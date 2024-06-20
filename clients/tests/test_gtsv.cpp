@@ -89,9 +89,8 @@ TEST_P(parameterized_gtsv, gtsv_double_complex)
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-#endif
-
 INSTANTIATE_TEST_SUITE_P(gtsv,
                          parameterized_gtsv,
                          testing::Combine(testing::ValuesIn(gtsv_M_range),
                                           testing::ValuesIn(gtsv_N_range)));
+#endif

@@ -71,7 +71,6 @@ TEST_P(parameterized_dense_to_sparse_csr, dense_to_sparse_csr_float)
     hipsparseStatus_t status = testing_dense_to_sparse_csr<int, int, float>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-#endif
 
 INSTANTIATE_TEST_SUITE_P(dense_to_sparse_csr,
                          parameterized_dense_to_sparse_csr,
@@ -79,3 +78,4 @@ INSTANTIATE_TEST_SUITE_P(dense_to_sparse_csr,
                                           testing::ValuesIn(dense_to_sparse_csr_N_range),
                                           testing::ValuesIn(dense_to_sparse_csr_base),
                                           testing::ValuesIn(dense_to_sparse_csr_order)));
+#endif

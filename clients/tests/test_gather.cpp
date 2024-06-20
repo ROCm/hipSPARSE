@@ -68,10 +68,11 @@ TEST_P(parameterized_gather, gather_float)
     hipsparseStatus_t status = testing_gather<int, float>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-#endif
 
 INSTANTIATE_TEST_SUITE_P(gather,
                          parameterized_gather,
                          testing::Combine(testing::ValuesIn(gather_N_range),
                                           testing::ValuesIn(gather_nnz_range),
                                           testing::ValuesIn(gather_base)));
+#endif
+

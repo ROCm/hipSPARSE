@@ -105,7 +105,6 @@ TEST_P(parameterized_csru2csr_bin, csru2csr_bin_float)
     hipsparseStatus_t status = testing_csru2csr<float>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-#endif
 
 INSTANTIATE_TEST_SUITE_P(csru2csr,
                          parameterized_csru2csr,
@@ -117,3 +116,4 @@ INSTANTIATE_TEST_SUITE_P(csru2csr_bin,
                          parameterized_csru2csr_bin,
                          testing::Combine(testing::ValuesIn(csru2csr_base),
                                           testing::ValuesIn(csru2csr_bin)));
+#endif

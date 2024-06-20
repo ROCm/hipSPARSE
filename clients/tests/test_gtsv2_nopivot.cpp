@@ -89,9 +89,8 @@ TEST_P(parameterized_gtsv2_nopivot, gtsv2_nopivot_double_complex)
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-#endif
-
 INSTANTIATE_TEST_SUITE_P(gtsv2_nopivot,
                          parameterized_gtsv2_nopivot,
                          testing::Combine(testing::ValuesIn(gtsv2_nopivot_M_range),
                                           testing::ValuesIn(gtsv2_nopivot_N_range)));
+#endif

@@ -99,8 +99,6 @@ TEST_P(parameterized_gemvi, gemvi_double_complex)
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-#endif
-
 INSTANTIATE_TEST_SUITE_P(gemvi,
                          parameterized_gemvi,
                          testing::Combine(testing::ValuesIn(gemvi_M_range),
@@ -109,3 +107,4 @@ INSTANTIATE_TEST_SUITE_P(gemvi,
                                           testing::ValuesIn(gemvi_alpha_range),
                                           testing::ValuesIn(gemvi_beta_range),
                                           testing::ValuesIn(gemvi_idx_base_range)));
+#endif

@@ -89,10 +89,9 @@ TEST_P(parameterized_gtsv2_strided_batch, gtsv2_strided_batch_double_complex)
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-#endif
-
 INSTANTIATE_TEST_SUITE_P(
     gtsv2_strided_batch,
     parameterized_gtsv2_strided_batch,
     testing::Combine(testing::ValuesIn(gtsv2_strided_batch_M_range),
                      testing::ValuesIn(gtsv2_strided_batch_batch_count_range)));
+#endif

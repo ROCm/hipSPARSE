@@ -71,7 +71,6 @@ TEST_P(parameterized_dense_to_sparse_csc, dense_to_sparse_csc_float)
     hipsparseStatus_t status = testing_dense_to_sparse_csc<int, int, float>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-#endif
 
 INSTANTIATE_TEST_SUITE_P(dense_to_sparse_csc,
                          parameterized_dense_to_sparse_csc,
@@ -79,3 +78,4 @@ INSTANTIATE_TEST_SUITE_P(dense_to_sparse_csc,
                                           testing::ValuesIn(dense_to_sparse_csc_N_range),
                                           testing::ValuesIn(dense_to_sparse_csc_base),
                                           testing::ValuesIn(dense_to_sparse_csc_order)));
+#endif
