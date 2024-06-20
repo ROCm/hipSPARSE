@@ -49,7 +49,7 @@ void testing_dense_to_sparse_csr_bad_arg(void)
     hipsparseOrder_t            order   = HIPSPARSE_ORDER_COL;
 
     // Index and data type
-    hipsparseIndexType_t iType    = HIPSPARSE_INDEX_64I;
+    hipsparseIndexType_t iType    = HIPSPARSE_INDEX_32I;
     hipsparseIndexType_t jType    = HIPSPARSE_INDEX_32I;
     hipDataType          dataType = HIP_R_32F;
 
