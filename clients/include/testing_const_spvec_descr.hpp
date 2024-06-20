@@ -78,7 +78,6 @@ void testing_const_spvec_descr_bad_arg(void)
 
     // hipsparseDestroySpVec
     verify_hipsparse_status_invalid_pointer(hipsparseDestroySpVec(nullptr), "Error: x is nullptr");
-    verify_hipsparse_status_success(hipsparseDestroySpVec(nullptr), "Success");
 
     // Create valid descriptor
     verify_hipsparse_status_success(

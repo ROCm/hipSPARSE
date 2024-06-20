@@ -73,7 +73,6 @@ void testing_dnmat_descr_bad_arg(void)
 
     // hipsparseDestroyDnVec
     verify_hipsparse_status_invalid_pointer(hipsparseDestroyDnMat(nullptr), "Error: x is nullptr");
-    verify_hipsparse_status_success(hipsparseDestroyDnMat(nullptr), "Success");
 
     // Create valid descriptor
     verify_hipsparse_status_success(
