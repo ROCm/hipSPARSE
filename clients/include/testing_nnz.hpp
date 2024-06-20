@@ -170,7 +170,7 @@ hipsparseStatus_t testing_nnz(Arguments argus)
     std::unique_ptr<descr_struct> unique_ptr_descr(new descr_struct);
     hipsparseMatDescr_t           descrA = unique_ptr_descr->descr;
 
-    if(m == 0)
+    if(M == 0)
     {
 #ifdef __HIP_PLATFORM_NVIDIA__
         // cusparse only accepts m > 1
