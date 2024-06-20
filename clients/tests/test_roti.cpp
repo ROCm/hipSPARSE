@@ -81,7 +81,6 @@ TEST_P(parameterized_roti, roti_double)
     hipsparseStatus_t status = testing_roti<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-#endif
 
 INSTANTIATE_TEST_SUITE_P(roti,
                          parameterized_roti,
@@ -90,3 +89,4 @@ INSTANTIATE_TEST_SUITE_P(roti,
                                           testing::ValuesIn(roti_c_range),
                                           testing::ValuesIn(roti_s_range),
                                           testing::ValuesIn(roti_idx_base_range)));
+#endif

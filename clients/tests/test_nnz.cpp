@@ -90,10 +90,10 @@ TEST_P(parameterized_nnz, nnz_double_complex)
     hipsparseStatus_t status = testing_nnz<hipDoubleComplex>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-#endif
 
 INSTANTIATE_TEST_SUITE_P(nnz,
                          parameterized_nnz,
                          testing::Combine(testing::ValuesIn(nnz_M_range),
                                           testing::ValuesIn(nnz_N_range),
                                           testing::ValuesIn(nnz_LD_range)));
+#endif

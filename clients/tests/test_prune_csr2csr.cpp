@@ -133,7 +133,6 @@ TEST_P(parameterized_prune_csr2csr_bin, prune_csr2csr_bin_double)
     hipsparseStatus_t status = testing_prune_csr2csr<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-#endif
 
 INSTANTIATE_TEST_SUITE_P(prune_csr2csr,
                          parameterized_prune_csr2csr,
@@ -149,3 +148,4 @@ INSTANTIATE_TEST_SUITE_P(prune_csr2csr_bin,
                                           testing::ValuesIn(prune_csr2csr_base_A_range),
                                           testing::ValuesIn(prune_csr2csr_base_C_range),
                                           testing::ValuesIn(prune_csr2csr_bin)));
+#endif

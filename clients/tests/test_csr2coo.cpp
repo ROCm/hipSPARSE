@@ -124,7 +124,6 @@ TEST_P(parameterized_csr2coo_bin, csr2coo_bin)
     hipsparseStatus_t status = testing_csr2coo(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-#endif
 
 INSTANTIATE_TEST_SUITE_P(csr2coo,
                          parameterized_csr2coo,
@@ -136,3 +135,4 @@ INSTANTIATE_TEST_SUITE_P(csr2coo_bin,
                          parameterized_csr2coo_bin,
                          testing::Combine(testing::ValuesIn(csr2coo_idx_base_range),
                                           testing::ValuesIn(csr2coo_bin)));
+#endif

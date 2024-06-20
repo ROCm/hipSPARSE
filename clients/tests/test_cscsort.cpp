@@ -125,7 +125,6 @@ TEST_P(parameterized_cscsort_bin, cscsort_bin)
     hipsparseStatus_t status = testing_cscsort(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-#endif
 
 INSTANTIATE_TEST_SUITE_P(cscsort,
                          parameterized_cscsort,
@@ -139,3 +138,4 @@ INSTANTIATE_TEST_SUITE_P(cscsort_bin,
                          testing::Combine(testing::ValuesIn(cscsort_perm),
                                           testing::ValuesIn(cscsort_base),
                                           testing::ValuesIn(cscsort_bin)));
+#endif

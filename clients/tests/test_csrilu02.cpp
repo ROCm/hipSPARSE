@@ -157,7 +157,6 @@ TEST_P(parameterized_csrilu02_bin, csrilu02_bin_double)
     hipsparseStatus_t status = testing_csrilu02<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-#endif
 
 INSTANTIATE_TEST_SUITE_P(csrilu02,
                          parameterized_csrilu02,
@@ -176,3 +175,4 @@ INSTANTIATE_TEST_SUITE_P(csrilu02_bin,
                                           testing::ValuesIn(csrilu02_boost_vali_range),
                                           testing::ValuesIn(csrilu02_idxbase_range),
                                           testing::ValuesIn(csrilu02_bin)));
+#endif
