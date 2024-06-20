@@ -127,7 +127,6 @@ TEST_P(parameterized_coosort_bin, coosort_bin)
     hipsparseStatus_t status = testing_coosort(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-#endif
 
 INSTANTIATE_TEST_SUITE_P(coosort,
                          parameterized_coosort,
@@ -143,3 +142,4 @@ INSTANTIATE_TEST_SUITE_P(coosort_bin,
                                           testing::ValuesIn(coosort_perm),
                                           testing::ValuesIn(coosort_base),
                                           testing::ValuesIn(coosort_bin)));
+#endif

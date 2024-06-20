@@ -92,10 +92,10 @@ TEST_P(parameterized_sctr, sctr_double_complex)
     hipsparseStatus_t status = testing_sctr<hipDoubleComplex>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-#endif
 
 INSTANTIATE_TEST_SUITE_P(sctr,
                          parameterized_sctr,
                          testing::Combine(testing::ValuesIn(sctr_N_range),
                                           testing::ValuesIn(sctr_nnz_range),
                                           testing::ValuesIn(sctr_idx_base_range)));
+#endif

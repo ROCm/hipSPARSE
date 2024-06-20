@@ -156,7 +156,6 @@ TEST_P(parameterized_hybmv_bin, hybmv_bin_double)
     hipsparseStatus_t status = testing_hybmv<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-#endif
 
 INSTANTIATE_TEST_SUITE_P(hybmv,
                          parameterized_hybmv,
@@ -176,3 +175,4 @@ INSTANTIATE_TEST_SUITE_P(hybmv_bin,
                                           testing::ValuesIn(hyb_partition),
                                           testing::ValuesIn(hyb_ELL_range),
                                           testing::ValuesIn(hyb_bin)));
+#endif
