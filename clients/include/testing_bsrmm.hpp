@@ -453,6 +453,14 @@ hipsparseStatus_t testing_bsrmm(Arguments argus)
     // Set matrix index base
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatIndexBase(descr, idx_base));
 
+    if(m == 0)
+    {
+#ifdef __HIP_PLATFORM_NVIDIA__
+        // cusparse does not support m == 0 for csr2bsr
+        return HIPSPARSE_STATUS_SUCCESS;
+#endif
+    }
+
     srand(12345ULL);
 
     // Host structures

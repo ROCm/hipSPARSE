@@ -466,6 +466,15 @@ hipsparseStatus_t testing_bsrsv2(Arguments argus)
     // Set matrix fill mode
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatFillMode(descr, fill_mode));
 
+    if(m == 0 || block_dim == 1)
+    {
+#ifdef __HIP_PLATFORM_NVIDIA__
+        // cusparse does not support m == 0 for csr2bsr
+        // cusparse does not support asynchronous execution if block_dim == 1
+        return HIPSPARSE_STATUS_SUCCESS;
+#endif
+    }
+
     srand(12345ULL);
 
     // Host structures
