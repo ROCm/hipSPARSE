@@ -75,11 +75,8 @@ void testing_const_dnmat_descr_bad_arg(void)
         "Error: val_data is nullptr");
 
     // hipsparseDestroyDnVec
-#if(!defined(CUDART_VERSION))
     verify_hipsparse_status_invalid_pointer(hipsparseDestroyDnMat(nullptr), "Error: x is nullptr");
-#else
     verify_hipsparse_status_success(hipsparseDestroyDnMat(nullptr), "Success");
-#endif
 
     // Create valid descriptor
     verify_hipsparse_status_success(
