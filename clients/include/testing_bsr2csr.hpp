@@ -299,9 +299,10 @@ hipsparseStatus_t testing_bsr2csr(Arguments argus)
     hipsparseSetMatIndexBase(csr_descr, csr_idx_base);
     hipsparseSetMatIndexBase(bsr_descr, bsr_idx_base);
 
-    if(block_dim == 1)
+    if(m == 0 || n == 0 || block_dim == 1)
     {
 #ifdef __HIP_PLATFORM_NVIDIA__
+        // cusparse does not support m == 0 or n == 0 for bsr2csr
         // cusparse does not support asynchronous execution if block_dim == 1
         return HIPSPARSE_STATUS_SUCCESS;
 #endif

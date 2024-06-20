@@ -545,6 +545,13 @@ hipsparseStatus_t testing_prune_csr2csr(Arguments argus)
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatIndexBase(descr_A, csr_idx_base_A));
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatIndexBase(descr_C, csr_idx_base_C));
 
+    if(M == 0 || N == 0)
+    {
+#ifdef __HIP_PLATFORM_NVIDIA__
+        return HIPSPARSE_STATUS_SUCCESS;
+#endif
+    }
+
     srand(12345ULL);
 
     // Host structures
