@@ -170,6 +170,14 @@ hipsparseStatus_t testing_nnz(Arguments argus)
     std::unique_ptr<descr_struct> unique_ptr_descr(new descr_struct);
     hipsparseMatDescr_t           descrA = unique_ptr_descr->descr;
 
+    if(m == 0)
+    {
+#ifdef __HIP_PLATFORM_NVIDIA__
+        // cusparse only accepts m > 1
+        return HIPSPARSE_STATUS_SUCCESS;
+#endif
+    }
+
     // Create the dense matrix.
     int  MN        = (dirA == HIPSPARSE_DIRECTION_ROW) ? M : N;
     auto A_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * lda * N), device_free};
