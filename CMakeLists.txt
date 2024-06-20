@@ -155,6 +155,13 @@ if(BUILD_CLIENTS_SAMPLES OR BUILD_CLIENTS_TESTS)
         COMPONENT clients-common
         DEB "${GFORTRAN_DEB}"
         RPM "${GFORTRAN_RPM}")
+    rocm_package_setup_client_component(
+      tests
+      DEPENDS
+        COMPONENT clients-common
+        DEB "${OPENMP_DEB}"
+        RPM "${OPENMP_RPM}"
+    )
   endif()
   if(BUILD_CLIENTS_SAMPLES)
     rocm_package_setup_client_component(
@@ -169,14 +176,12 @@ if(BUILD_CLIENTS_SAMPLES OR BUILD_CLIENTS_TESTS)
   if(NOT WIN32)
     rocm_package_add_rpm_dependencies(COMPONENT tests DEPENDS "${GFORTRAN_RPM}")
     rocm_package_add_deb_dependencies(COMPONENT tests DEPENDS "${GFORTRAN_DEB}")
-    #rocm_package_add_rpm_dependencies(COMPONENT benchmarks DEPENDS "${GFORTRAN_RPM}")
-    #rocm_package_add_deb_dependencies(COMPONENT benchmarks DEPENDS "${GFORTRAN_DEB}")
+    rocm_package_add_rpm_dependencies(COMPONENT samples DEPENDS "${GFORTRAN_RPM}")
+    rocm_package_add_deb_dependencies(COMPONENT samples DEPENDS "${GFORTRAN_DEB}")
   endif()
   if(TARGET OpenMP::OpenMP_CXX)
     rocm_package_add_rpm_dependencies(COMPONENT tests DEPENDS "${OPENMP_RPM}")
     rocm_package_add_deb_dependencies(COMPONENT tests DEPENDS "${OPENMP_DEB}")
-    #rocm_package_add_rpm_dependencies(COMPONENT benchmarks DEPENDS "${OPENMP_RPM}")
-    #rocm_package_add_deb_dependencies(COMPONENT benchmarks DEPENDS "${OPENMP_DEB}")
   endif()
 
 # Package specific CPACK vars
