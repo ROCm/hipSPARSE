@@ -204,8 +204,7 @@ void testing_spmat_descr_bad_arg(void)
 
     // hipsparseDestroySpMat
     verify_hipsparse_status_invalid_pointer(hipsparseDestroySpMat(nullptr), "Error: A is nullptr");
-    verify_hipsparse_status_success(hipsparseDestroySpMat(nullptr), "Success");
-
+    
     // Create valid descriptors
     hipsparseSpMatDescr_t coo;
     hipsparseSpMatDescr_t coo_aos;
