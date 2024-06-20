@@ -63,7 +63,6 @@ void testing_const_dnvec_descr_bad_arg(void)
 
     // hipsparseDestroyDnVec
     verify_hipsparse_status_invalid_pointer(hipsparseDestroyDnVec(nullptr), "Error: x is nullptr");
-    verify_hipsparse_status_success(hipsparseDestroyDnVec(nullptr), "Success");
 
     // Create valid descriptor
     verify_hipsparse_status_success(hipsparseCreateConstDnVec(&x, size, val_data, dataType),
