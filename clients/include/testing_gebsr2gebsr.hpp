@@ -924,6 +924,14 @@ hipsparseStatus_t testing_gebsr2gebsr(Arguments argus)
     hipsparseSetMatIndexBase(descr_A, idx_base_A);
     hipsparseSetMatIndexBase(descr_C, idx_base_C);
 
+    if(m == 0 || n == 0)
+    {
+#ifdef __HIP_PLATFORM_NVIDIA__
+        // cusparse does not support m == 0 for csr2bsr
+        return HIPSPARSE_STATUS_SUCCESS;
+#endif
+    }
+
     srand(12345ULL);
 
     // Host structures

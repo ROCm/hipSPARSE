@@ -371,9 +371,9 @@ hipsparseStatus_t testing_csru2csr(Arguments argus)
     unit_check_general(1, nnz, 1, hcsr_val.data(), hcsr_val_gold.data());
     unit_check_general(1, nnz, 1, hcsr_col_ind_unsorted.data(), hcsr_col_ind_unsorted_gold.data());
     unit_check_general(1, nnz, 1, hcsr_val_unsorted.data(), hcsr_val_unsorted_gold.data());
+#endif
 
     return HIPSPARSE_STATUS_SUCCESS;
-#endif
 }
 
 #endif // TESTING_CSRU2CSR_HPP

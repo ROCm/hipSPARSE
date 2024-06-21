@@ -234,15 +234,6 @@ hipsparseStatus_t testing_spgemmreuse_csr(void)
     hipsparseIndexType_t typeI = getIndexType<I>();
     hipsparseIndexType_t typeJ = getIndexType<J>();
     hipDataType          typeT = getDataType<T>();
-    //hipsparseIndexType_t typeI
-    //    = (typeid(I) == typeid(int32_t)) ? HIPSPARSE_INDEX_32I : HIPSPARSE_INDEX_64I;
-    //hipsparseIndexType_t typeJ
-    //    = (typeid(J) == typeid(int32_t)) ? HIPSPARSE_INDEX_32I : HIPSPARSE_INDEX_64I;
-    //hipDataType typeT = (typeid(T) == typeid(float))
-    //                        ? HIP_R_32F
-    //                        : ((typeid(T) == typeid(double))
-    //                               ? HIP_R_64F
-    //                               : ((typeid(T) == typeid(hipComplex) ? HIP_C_32F : HIP_C_64F)));
 
     // hipSPARSE handles
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
@@ -320,17 +311,6 @@ hipsparseStatus_t testing_spgemmreuse_csr(void)
     I* dcsr_row_ptr_C_2 = (I*)dcsr_row_ptr_C_2_managed.get();
     T* d_alpha          = (T*)d_alpha_managed.get();
     T* d_beta           = (T*)d_beta_managed.get();
-
-    //if(!dcsr_row_ptr_A || !dcsr_col_ind_A || !dcsr_val_A || !dcsr_row_ptr_B || !dcsr_col_ind_B
-    //   || !dcsr_val_B || !dcsr_row_ptr_C_1 || !dcsr_row_ptr_C_2 || !d_alpha || !d_beta)
-    //{
-    //    verify_hipsparse_status_success(
-    //        HIPSPARSE_STATUS_ALLOC_FAILED,
-    //        "!dcsr_row_ptr_A || !dcsr_col_ind_A || !dcsr_val_A || "
-    //        "!dcsr_row_ptr_B || !dcsr_col_ind_B || !dcsr_val_B || "
-    //        "!dcsr_row_ptr_C_1 || !dcsr_row_ptr_C_2 || !d_alpha || !d_beta");
-    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
-    //}
 
     // copy data from CPU to device
     CHECK_HIP_ERROR(hipMemcpy(
@@ -461,13 +441,6 @@ hipsparseStatus_t testing_spgemmreuse_csr(void)
     T* dcsr_val_C_1     = (T*)dcsr_val_C_1_managed.get();
     J* dcsr_col_ind_C_2 = (J*)dcsr_col_ind_C_2_managed.get();
     T* dcsr_val_C_2     = (T*)dcsr_val_C_2_managed.get();
-    //if(!dcsr_col_ind_C_1 || !dcsr_val_C_1 || !dcsr_col_ind_C_2 || !dcsr_val_C_2)
-    //{
-    //    verify_hipsparse_status_success(
-    //        HIPSPARSE_STATUS_ALLOC_FAILED,
-    //        "!dcsr_col_ind_C_1 || !dcsr_val_C_1 || !dcsr_col_ind_C_2 || !dcsr_val_C_2");
-    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
-    //}
 
     // Set C pointers
     CHECK_HIPSPARSE_ERROR(
@@ -606,9 +579,9 @@ hipsparseStatus_t testing_spgemmreuse_csr(void)
     CHECK_HIPSPARSE_ERROR(hipsparseDestroySpMat(B));
     CHECK_HIPSPARSE_ERROR(hipsparseDestroySpMat(C1));
     CHECK_HIPSPARSE_ERROR(hipsparseDestroySpMat(C2));
+#endif
 
     return HIPSPARSE_STATUS_SUCCESS;
-#endif
 }
 
 #endif // TESTING_SPGEMM_CSR_HPP

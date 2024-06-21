@@ -144,15 +144,6 @@ hipsparseStatus_t testing_sparse_to_dense_csc(void)
     hipsparseIndexType_t typeI = getIndexType<I>();
     hipsparseIndexType_t typeJ = getIndexType<J>();
     hipDataType          typeT = getDataType<T>();
-    //hipsparseIndexType_t typeI
-    //    = (typeid(I) == typeid(int32_t)) ? HIPSPARSE_INDEX_32I : HIPSPARSE_INDEX_64I;
-    //hipsparseIndexType_t typeJ
-    //    = (typeid(J) == typeid(int32_t)) ? HIPSPARSE_INDEX_32I : HIPSPARSE_INDEX_64I;
-    //hipDataType typeT = (typeid(T) == typeid(float))
-    //                        ? HIP_R_32F
-    //                        : ((typeid(T) == typeid(double))
-    //                               ? HIP_R_64F
-    //                               : ((typeid(T) == typeid(hipComplex) ? HIP_C_32F : HIP_C_64F)));
 
     // hipSPARSE handle
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
@@ -229,14 +220,7 @@ hipsparseStatus_t testing_sparse_to_dense_csc(void)
     J* drow   = (J*)drow_managed.get();
     T* dval   = (T*)dval_managed.get();
     T* ddense = (T*)ddense_managed.get();
-
-    //if(!dval || !dptr || !drow || !ddense)
-    //{
-    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-    //                                    "!dval || !dptr || !drow || !ddense");
-    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
-    //}
-
+    
     // Dense matrix
     std::vector<T> hdense(ld * n);
 

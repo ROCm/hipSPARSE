@@ -205,13 +205,6 @@ hipsparseStatus_t testing_sddmm_coo_aos()
     // Index and data type
     hipsparseIndexType_t typeI = getIndexType<I>();
     hipDataType          typeT = getDataType<T>();
-    //hipsparseIndexType_t typeI
-    //    = (typeid(I) == typeid(int32_t)) ? HIPSPARSE_INDEX_32I : HIPSPARSE_INDEX_64I;
-    //hipDataType typeT = (typeid(T) == typeid(float))
-    //                        ? HIP_R_32F
-    //                        : ((typeid(T) == typeid(double))
-    //                               ? HIP_R_64F
-    //                               : ((typeid(T) == typeid(hipComplex) ? HIP_C_32F : HIP_C_64F)));
 
     // hipSPARSE handle
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
@@ -278,14 +271,6 @@ hipsparseStatus_t testing_sddmm_coo_aos()
     T* dB      = (T*)dB_managed.get();
     T* d_alpha = (T*)d_alpha_managed.get();
     T* d_beta  = (T*)d_beta_managed.get();
-
-    //if(!dval1 || !dval2 || !drowcol || !dB || !dA || !d_alpha || !d_beta)
-    //{
-    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-    //                                    "!dval1 || !dval2 || !drow || !dcol || !dA || "
-    //                                    "!dB || !d_alpha || !d_beta");
-    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
-    //}
 
     // copy data from CPU to device
     CHECK_HIP_ERROR(
