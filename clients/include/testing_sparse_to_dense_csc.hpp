@@ -220,7 +220,7 @@ hipsparseStatus_t testing_sparse_to_dense_csc(void)
     J* drow   = (J*)drow_managed.get();
     T* dval   = (T*)dval_managed.get();
     T* ddense = (T*)ddense_managed.get();
-    
+
     // Dense matrix
     std::vector<T> hdense(ld * n);
 
