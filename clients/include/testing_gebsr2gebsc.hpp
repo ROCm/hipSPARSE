@@ -447,6 +447,14 @@ hipsparseStatus_t testing_gebsr2gebsc(Arguments argus)
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
+    if(m == 0 || n == 0)
+    {
+#ifdef __HIP_PLATFORM_NVIDIA__
+        // cusparse does not support m == 0 for csr2bsr
+        return HIPSPARSE_STATUS_SUCCESS;
+#endif
+    }
+
     int mb = m * row_block_dim;
     int nb = n * col_block_dim;
 
