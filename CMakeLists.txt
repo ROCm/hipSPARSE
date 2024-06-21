@@ -183,6 +183,7 @@ if(BUILD_CLIENTS_SAMPLES OR BUILD_CLIENTS_TESTS)
     rocm_package_add_rpm_dependencies(COMPONENT tests DEPENDS "${OPENMP_RPM}")
     rocm_package_add_deb_dependencies(COMPONENT tests DEPENDS "${OPENMP_DEB}")
   endif()
+endif()
 
 # Package specific CPACK vars
 if(NOT USE_CUDA)
