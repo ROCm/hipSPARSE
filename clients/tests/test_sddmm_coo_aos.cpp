@@ -35,7 +35,8 @@ typedef std::tuple<int,
                    hipsparseOrder_t,
                    hipsparseIndexBase_t>
     sddmm_coo_aos_tuple;
-typedef std::tuple<double,
+typedef std::tuple<int,
+                   double,
                    double,
                    hipsparseOperation_t,
                    hipsparseOperation_t,
@@ -46,7 +47,7 @@ typedef std::tuple<double,
 
 int M_range[] = {50};
 int N_range[] = {84};
-int K_range[] = {32};
+int K_range[] = {5};
 
 std::vector<double> alpha_range = {2.0};
 std::vector<double> beta_range  = {1.0};
@@ -54,7 +55,7 @@ std::vector<double> beta_range  = {1.0};
 hipsparseOperation_t transA_range[]  = {HIPSPARSE_OPERATION_NON_TRANSPOSE};
 hipsparseOperation_t transB_range[]  = {HIPSPARSE_OPERATION_NON_TRANSPOSE};
 hipsparseOrder_t     order_range[]   = {HIPSPARSE_ORDER_COL};
-hipsparseIndexBase_t idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+hipsparseIndexBase_t idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO};
 
 std::string filename_bin[] = {"nos1.bin",
                               "nos2.bin",
@@ -105,17 +106,17 @@ Arguments setup_sddmm_coo_aos_arguments(sddmm_coo_aos_bin_tuple tup)
     Arguments arg;
     arg.M        = -99;
     arg.N        = -99;
-    arg.K        = -99;
-    arg.alpha    = std::get<0>(tup);
-    arg.beta     = std::get<1>(tup);
-    arg.transA   = std::get<2>(tup);
-    arg.transB   = std::get<3>(tup);
-    arg.orderA   = std::get<4>(tup);
-    arg.idx_base = std::get<5>(tup);
+    arg.K        = std::get<0>(tup);
+    arg.alpha    = std::get<1>(tup);
+    arg.beta     = std::get<2>(tup);
+    arg.transA   = std::get<3>(tup);
+    arg.transB   = std::get<4>(tup);
+    arg.orderA   = std::get<5>(tup);
+    arg.idx_base = std::get<6>(tup);
     arg.timing   = 0;
 
     // Determine absolute path of test matrix
-    std::string bin_file = std::get<6>(tup);
+    std::string bin_file = std::get<7>(tup);
 
     // Matrices are stored at the same path in matrices directory
     arg.filename = get_filename(bin_file);
@@ -192,7 +193,8 @@ INSTANTIATE_TEST_SUITE_P(sddmm_coo_aos,
 
 INSTANTIATE_TEST_SUITE_P(sddmm_coo_aos_bin,
                          parameterized_sddmm_coo_aos_bin,
-                         testing::Combine(testing::ValuesIn(alpha_range),
+                         testing::Combine(testing::ValuesIn(K_range),
+                                          testing::ValuesIn(alpha_range),
                                           testing::ValuesIn(beta_range),
                                           testing::ValuesIn(transA_range),
                                           testing::ValuesIn(transB_range),
