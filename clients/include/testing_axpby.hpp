@@ -91,16 +91,14 @@ void testing_axpby_bad_arg(void)
 }
 
 template <typename I, typename T>
-hipsparseStatus_t testing_axpby(void)
+hipsparseStatus_t testing_axpby(Arguments argus)
 {
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
-    int64_t size = 15332;
-    int64_t nnz  = 500;
-
-    T alpha = make_DataType<T>(1.5);
-    T beta  = make_DataType<T>(0.5);
-
-    hipsparseIndexBase_t idxBase = HIPSPARSE_INDEX_BASE_ZERO;
+    int64_t size = argus.N;
+    int64_t nnz  = argus.nnz;
+    T alpha = make_DataType<T>(argus.alpha);
+    T beta  = make_DataType<T>(argus.beta);
+    hipsparseIndexBase_t idxBase = argus.idx_base;
 
     // Index and data type
     hipsparseIndexType_t idxType  = getIndexType<I>();

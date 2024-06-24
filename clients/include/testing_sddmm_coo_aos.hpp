@@ -186,21 +186,23 @@ void testing_sddmm_coo_aos_bad_arg(void)
 }
 
 template <typename I, typename T>
-hipsparseStatus_t testing_sddmm_coo_aos()
+hipsparseStatus_t testing_sddmm_coo_aos(Arguments argus)
 {
 // only csr format supported when using cusparse backend
 #if(!defined(CUDART_VERSION) || (CUDART_VERSION >= 11022 && CUDART_VERSION < 12000))
-
-    T                    h_alpha  = make_DataType<T>(2.0);
-    T                    h_beta   = make_DataType<T>(1.0);
-    hipsparseOperation_t transA   = HIPSPARSE_OPERATION_NON_TRANSPOSE;
-    hipsparseOperation_t transB   = HIPSPARSE_OPERATION_NON_TRANSPOSE;
-    hipsparseOrder_t     order    = HIPSPARSE_ORDER_COL;
-    hipsparseIndexBase_t idx_base = HIPSPARSE_INDEX_BASE_ZERO;
+    I                    m        = argus.M;
+    I                    n        = argus.N;
+    I                    k        = argus.K;
+    T                    h_alpha  = make_DataType<T>(argus.alpha);
+    T                    h_beta   = make_DataType<T>(argus.beta);
+    hipsparseOperation_t transA   = argus.transA;
+    hipsparseOperation_t transB   = argus.transB;
+    hipsparseOrder_t     order    = argus.orderA;
+    hipsparseIndexBase_t idx_base = argus.idx_base;
     hipsparseSDDMMAlg_t  alg      = HIPSPARSE_SDDMM_ALG_DEFAULT;
+    std::string          filename = argus.filename;
 
-    // Matrices are stored at the same path in matrices directory
-    std::string filename = get_filename("nos3.bin");
+    std::cout << "m: " << m << " n: " << n << " filename: " << filename << std::endl;
 
     // Index and data type
     hipsparseIndexType_t typeI = getIndexType<I>();
@@ -218,18 +220,44 @@ hipsparseStatus_t testing_sddmm_coo_aos()
     // Initial Data on CPU
     srand(12345ULL);
 
-    I m;
-    I n;
-    I nnz;
-
-    if(read_bin_matrix(filename.c_str(), m, n, nnz, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base)
-       != 0)
+    // Read or construct CSR matrix
+    I nnz = 0;
+    if(!generate_csr_matrix(
+           filename, m, n, nnz, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base))
     {
-        fprintf(stderr, "Cannot open [read] %s\n", filename.c_str());
+        fprintf(stderr, "Cannot open [read] %s\ncol", filename.c_str());
         return HIPSPARSE_STATUS_INTERNAL_ERROR;
     }
 
-    I k   = 5;
+    // std::cout << "A" << std::endl;
+    // for(int i = 0; i < m; i++)
+    // {
+    //     int start = hcsr_row_ptr[i] - idx_base;
+    //     int end = hcsr_row_ptr[i + 1] - idx_base;
+
+    //     std::vector<float> temp(n, 0.0f);
+    //     for(int j = start; j < end; j++)
+    //     {
+    //         temp[hcsr_col_ind[j] - idx_base] = 1;
+    //     }
+
+    //     for(int j = 0; j < n; j++)
+    //     {
+    //         std::cout << temp[j] << " ";
+    //     }
+    //     std::cout << "" << std::endl;
+    // }
+    // std::cout << "" << std::endl;
+
+
+    // std::cout << "m: " << m << " n: " << n << " nnz: " << nnz << std::endl;
+    // std::cout << "hcsr_row_ptr" << std::endl;
+    // for(size_t i = 0; i < hcsr_row_ptr.size(); i++)
+    // {
+    //     std::cout << hcsr_row_ptr[i] << " ";
+    // }
+    // std::cout << "" << std::endl;
+
     I lda = m;
     I ldb = k;
 

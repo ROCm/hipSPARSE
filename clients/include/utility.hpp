@@ -752,6 +752,18 @@ static void sort(std::vector<I>& perm, std::vector<I>& unsorted_row, std::vector
     });
 }
 
+template<typename I>
+inline void scan(const char *line, I* nrow, I* ncol, I* nnz)
+{
+    sscanf(line, "%d %d %d", nrow, ncol, nnz);
+}
+
+template <>
+inline void scan<int64_t>(const char *line, int64_t* nrow, int64_t* ncol, int64_t* nnz)
+{
+    sscanf(line, "%ld %ld %ld", nrow, ncol, nnz);
+}
+
 template <typename I, typename T>
 int read_mtx_matrix(const char*          filename,
                     I&                   nrow,
@@ -854,7 +866,7 @@ int read_mtx_matrix(const char*          filename,
     // Read dimensions
     I snnz;
 
-    sscanf(line, "%d %d %d", &nrow, &ncol, &snnz);
+    scan<I>(line, &nrow, &ncol, &snnz);
     nnz = symm ? (snnz - nrow) * 2 + nrow : snnz;
 
     std::vector<I> unsorted_row(nnz);
