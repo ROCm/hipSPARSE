@@ -25,8 +25,24 @@
 
 #include <hipsparse.h>
 
-typedef std::tuple<int, int, int, double, double, hipsparseOperation_t, hipsparseOperation_t, hipsparseOrder_t, hipsparseIndexBase_t>    sddmm_coo_aos_tuple;
-typedef std::tuple<double, double, hipsparseOperation_t, hipsparseOperation_t, hipsparseOrder_t, hipsparseIndexBase_t, std::string> sddmm_coo_aos_bin_tuple;
+typedef std::tuple<int,
+                   int,
+                   int,
+                   double,
+                   double,
+                   hipsparseOperation_t,
+                   hipsparseOperation_t,
+                   hipsparseOrder_t,
+                   hipsparseIndexBase_t>
+    sddmm_coo_aos_tuple;
+typedef std::tuple<double,
+                   double,
+                   hipsparseOperation_t,
+                   hipsparseOperation_t,
+                   hipsparseOrder_t,
+                   hipsparseIndexBase_t,
+                   std::string>
+    sddmm_coo_aos_bin_tuple;
 
 int M_range[] = {50};
 int N_range[] = {84};
@@ -35,20 +51,20 @@ int K_range[] = {32};
 std::vector<double> alpha_range = {2.0};
 std::vector<double> beta_range  = {1.0};
 
-hipsparseOperation_t transA_range[]   = {HIPSPARSE_OPERATION_NON_TRANSPOSE};
-hipsparseOperation_t transB_range[]   = {HIPSPARSE_OPERATION_NON_TRANSPOSE};
-hipsparseOrder_t order_range[] = {HIPSPARSE_ORDER_COL};
-hipsparseIndexBase_t  idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+hipsparseOperation_t transA_range[]  = {HIPSPARSE_OPERATION_NON_TRANSPOSE};
+hipsparseOperation_t transB_range[]  = {HIPSPARSE_OPERATION_NON_TRANSPOSE};
+hipsparseOrder_t     order_range[]   = {HIPSPARSE_ORDER_COL};
+hipsparseIndexBase_t idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
 std::string filename_bin[] = {"nos1.bin",
-                         "nos2.bin",
-                         "nos3.bin",
-                         "nos4.bin",
-                         "nos5.bin",
-                         "nos6.bin",
-                         "nos7.bin",
-                         "Chebyshev4.bin",
-                         "shipsec1.bin"};
+                              "nos2.bin",
+                              "nos3.bin",
+                              "nos4.bin",
+                              "nos5.bin",
+                              "nos6.bin",
+                              "nos7.bin",
+                              "Chebyshev4.bin",
+                              "shipsec1.bin"};
 
 class parameterized_sddmm_coo_aos : public testing::TestWithParam<sddmm_coo_aos_tuple>
 {

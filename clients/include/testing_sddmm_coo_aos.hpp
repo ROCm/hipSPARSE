@@ -222,8 +222,7 @@ hipsparseStatus_t testing_sddmm_coo_aos(Arguments argus)
 
     // Read or construct CSR matrix
     I nnz = 0;
-    if(!generate_csr_matrix(
-           filename, m, n, nnz, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base))
+    if(!generate_csr_matrix(filename, m, n, nnz, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base))
     {
         fprintf(stderr, "Cannot open [read] %s\ncol", filename.c_str());
         return HIPSPARSE_STATUS_INTERNAL_ERROR;
@@ -248,7 +247,6 @@ hipsparseStatus_t testing_sddmm_coo_aos(Arguments argus)
     //     std::cout << "" << std::endl;
     // }
     // std::cout << "" << std::endl;
-
 
     // std::cout << "m: " << m << " n: " << n << " nnz: " << nnz << std::endl;
     // std::cout << "hcsr_row_ptr" << std::endl;

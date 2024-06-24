@@ -94,10 +94,10 @@ template <typename I, typename T>
 hipsparseStatus_t testing_axpby(Arguments argus)
 {
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
-    int64_t size = argus.N;
-    int64_t nnz  = argus.nnz;
-    T alpha = make_DataType<T>(argus.alpha);
-    T beta  = make_DataType<T>(argus.beta);
+    int64_t              size    = argus.N;
+    int64_t              nnz     = argus.nnz;
+    T                    alpha   = make_DataType<T>(argus.alpha);
+    T                    beta    = make_DataType<T>(argus.beta);
     hipsparseIndexBase_t idxBase = argus.idx_base;
 
     // Index and data type
