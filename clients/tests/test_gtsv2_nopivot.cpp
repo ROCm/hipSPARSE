@@ -22,31 +22,75 @@
  * ************************************************************************ */
 
 #include "testing_gtsv2_nopivot.hpp"
+#include "utility.hpp"
 
 #include <hipsparse.h>
+#include <string>
 
-// Only run tests for CUDA 11.1 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
+typedef std::tuple<int, int> gtsv2_nopivot_tuple;
+
+int gtsv2_nopivot_M_range[] = {512};
+int gtsv2_nopivot_N_range[] = {512};
+
+class parameterized_gtsv2_nopivot : public testing::TestWithParam<gtsv2_nopivot_tuple>
+{
+protected:
+    parameterized_gtsv2_nopivot() {}
+    virtual ~parameterized_gtsv2_nopivot() {}
+    virtual void SetUp() {}
+    virtual void TearDown() {}
+};
+
+Arguments setup_gtsv2_nopivot_arguments(gtsv2_nopivot_tuple tup)
+{
+    Arguments arg;
+    arg.M      = std::get<0>(tup);
+    arg.N      = std::get<1>(tup);
+    arg.timing = 0;
+    return arg;
+}
+
+// Only run tests for CUDA 11.1 or greater (removed in cusparse 12.0.0)
+#if(!defined(CUDART_VERSION) || (CUDART_VERSION >= 11010 && CUDART_VERSION < 12000))
 TEST(gtsv2_nopivot_bad_arg, gtsv2_nopivot_float)
 {
     testing_gtsv2_nopivot_bad_arg<float>();
 }
 
-TEST(gtsv2_nopivot, gtsv2_nopivot_float)
+TEST_P(parameterized_gtsv2_nopivot, gtsv2_nopivot_float)
 {
-    hipsparseStatus_t status = testing_gtsv2_nopivot<float>();
+    Arguments arg = setup_gtsv2_nopivot_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_gtsv2_nopivot<float>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-TEST(gtsv2_nopivot, gtsv2_nopivot_double)
+TEST_P(parameterized_gtsv2_nopivot, gtsv2_nopivot_double)
 {
-    hipsparseStatus_t status = testing_gtsv2_nopivot<double>();
+    Arguments arg = setup_gtsv2_nopivot_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_gtsv2_nopivot<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-TEST(gtsv2_nopivot, gtsv2_nopivot_hipComplex)
+TEST_P(parameterized_gtsv2_nopivot, gtsv2_nopivot_float_complex)
 {
-    hipsparseStatus_t status = testing_gtsv2_nopivot<hipComplex>();
+    Arguments arg = setup_gtsv2_nopivot_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_gtsv2_nopivot<hipComplex>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+
+TEST_P(parameterized_gtsv2_nopivot, gtsv2_nopivot_double_complex)
+{
+    Arguments arg = setup_gtsv2_nopivot_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_gtsv2_nopivot<hipDoubleComplex>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+
+INSTANTIATE_TEST_SUITE_P(gtsv2_nopivot,
+                         parameterized_gtsv2_nopivot,
+                         testing::Combine(testing::ValuesIn(gtsv2_nopivot_M_range),
+                                          testing::ValuesIn(gtsv2_nopivot_N_range)));
 #endif

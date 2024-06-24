@@ -311,7 +311,6 @@ void testing_gebsr2csr_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_gebsr2csr(Arguments argus)
 {
-
     int                  m             = argus.M;
     int                  n             = argus.N;
     int                  row_block_dim = argus.row_block_dimA;
@@ -319,31 +318,7 @@ hipsparseStatus_t testing_gebsr2csr(Arguments argus)
     hipsparseIndexBase_t csr_idx_base  = argus.idx_base;
     hipsparseIndexBase_t bsr_idx_base  = argus.idx_base2;
     hipsparseDirection_t dir           = argus.dirA;
-    std::string          binfile       = "";
-    std::string          filename      = "";
-    hipsparseStatus_t    status;
-
-    // When in testing mode, M == N == -99 indicates that we are testing with a real
-    // matrix from cise.ufl.edu
-    int safe_size = std::max(100, std::max(m, n));
-    if(m == -99 && n == -99 && argus.timing == 0)
-    {
-        binfile = argus.filename;
-        m = n = safe_size;
-    }
-
-    if(argus.timing == 1)
-    {
-        filename = argus.filename;
-    }
-
-    int mb = -1;
-    int nb = -1;
-    if(row_block_dim > 0 && col_block_dim > 0)
-    {
-        mb = m * row_block_dim;
-        nb = n * col_block_dim;
-    }
+    std::string          filename      = argus.filename;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -355,134 +330,37 @@ hipsparseStatus_t testing_gebsr2csr(Arguments argus)
     hipsparseSetMatIndexBase(csr_descr, csr_idx_base);
     hipsparseSetMatIndexBase(bsr_descr, bsr_idx_base);
 
-    // Argument sanity check before allocating invalid memory
-    if(mb <= 0 || nb <= 0 || row_block_dim <= 0 || col_block_dim <= 0)
+    if(m == 0 || n == 0)
     {
-        auto dbsr_row_ptr_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * (safe_size + 1)), device_free};
-        auto dbsr_col_ind_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto dbsr_val_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-        auto dcsr_row_ptr_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * (safe_size + 1)), device_free};
-        auto dcsr_col_ind_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto dcsr_val_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-
-        int* dbsr_row_ptr = (int*)dbsr_row_ptr_managed.get();
-        int* dbsr_col_ind = (int*)dbsr_col_ind_managed.get();
-        T*   dbsr_val     = (T*)dbsr_val_managed.get();
-        int* dcsr_row_ptr = (int*)dcsr_row_ptr_managed.get();
-        int* dcsr_col_ind = (int*)dcsr_col_ind_managed.get();
-        T*   dcsr_val     = (T*)dcsr_val_managed.get();
-
-        // row pointer must be valid
-        CHECK_HIP_ERROR(hipMemset(dbsr_row_ptr, 0, sizeof(int) * (safe_size + 1)));
-
-        if(!dbsr_row_ptr || !dbsr_col_ind || !dbsr_val || !dcsr_row_ptr || !dcsr_col_ind
-           || !dcsr_val)
-        {
-            verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                            "!dbsr_row_ptr || !dbsr_col_ind || !dbsr_val || "
-                                            "!dcsr_row_ptr || !dcsr_col_ind || !dcsr_val");
-            return HIPSPARSE_STATUS_ALLOC_FAILED;
-        }
-
-        status = hipsparseXgebsr2csr(handle,
-                                     dir,
-                                     mb,
-                                     nb,
-                                     bsr_descr,
-                                     dbsr_val,
-                                     dbsr_row_ptr,
-                                     dbsr_col_ind,
-                                     row_block_dim,
-                                     col_block_dim,
-                                     csr_descr,
-                                     dcsr_val,
-                                     dcsr_row_ptr,
-                                     dcsr_col_ind);
-
-        if(mb < 0 || nb < 0 || row_block_dim < 0 || col_block_dim < 0)
-        {
-            verify_hipsparse_status_invalid_size(
-                status, "Error: mb < 0 || nb < 0 || row_block_dim < 0 || col_block_dim < 0");
-        }
-        else
-        {
-            verify_hipsparse_status_success(
-                status, "mb >= 0 && nb >= 0 && row_block_dim >= 0 && col_block_dim >= 0");
-        }
-
+#ifdef __HIP_PLATFORM_NVIDIA__
+        // cusparse does not support m == 0 for csr2bsr
         return HIPSPARSE_STATUS_SUCCESS;
+#endif
     }
 
-    // Read or construct CSR matrix
+    int mb = m * row_block_dim;
+    int nb = n * col_block_dim;
+
+    srand(12345ULL);
+
+    // Host structures
     std::vector<int> bsr_row_ptr;
     std::vector<int> bsr_col_ind;
     std::vector<T>   bsr_val;
-    int              nnzb;
-    srand(12345ULL);
-    if(binfile != "")
-    {
-        if(read_bin_matrix(
-               binfile.c_str(), mb, nb, nnzb, bsr_row_ptr, bsr_col_ind, bsr_val, bsr_idx_base)
-           != 0)
-        {
-            fprintf(stderr, "Cannot open [read] %s\n", binfile.c_str());
-            return HIPSPARSE_STATUS_INTERNAL_ERROR;
-        }
-    }
-    else if(argus.laplacian)
-    {
-        mb = nb
-            = gen_2d_laplacian(argus.laplacian, bsr_row_ptr, bsr_col_ind, bsr_val, bsr_idx_base);
-        nnzb = bsr_row_ptr[m];
-    }
-    else
-    {
-        std::vector<int> coo_row_ind;
 
-        if(filename != "")
-        {
-            if(read_mtx_matrix(
-                   filename.c_str(), mb, nb, nnzb, coo_row_ind, bsr_col_ind, bsr_val, bsr_idx_base)
-               != 0)
-            {
-                fprintf(stderr, "Cannot open [read] %s\n", filename.c_str());
-                return HIPSPARSE_STATUS_INTERNAL_ERROR;
-            }
-        }
-        else
-        {
-            double scale = 0.02;
-            if(m > 1000 || n > 1000)
-            {
-                scale = 2.0 / std::max(mb, nb);
-            }
-            nnzb = mb * scale * nb;
-            gen_matrix_coo(mb, nb, nnzb, coo_row_ind, bsr_col_ind, bsr_val, bsr_idx_base);
-        }
-
-        // Convert COO to CSR
-        bsr_row_ptr.resize(mb + 1, 0);
-        for(int i = 0; i < nnzb; ++i)
-        {
-            ++bsr_row_ptr[coo_row_ind[i] + 1 - bsr_idx_base];
-        }
-
-        bsr_row_ptr[0] = bsr_idx_base;
-        for(int i = 0; i < mb; ++i)
-        {
-            bsr_row_ptr[i + 1] += bsr_row_ptr[i];
-        }
+    // Read or construct CSR matrix
+    int nnzb = 0;
+    if(!generate_csr_matrix(
+           filename, mb, nb, nnzb, bsr_row_ptr, bsr_col_ind, bsr_val, bsr_idx_base))
+    {
+        fprintf(stderr, "Cannot open [read] %s\ncol", filename.c_str());
+        return HIPSPARSE_STATUS_INTERNAL_ERROR;
     }
 
-    m       = mb * row_block_dim;
-    n       = nb * col_block_dim;
-    int nnz = nnzb * row_block_dim * col_block_dim;
+    m          = mb * row_block_dim;
+    n          = nb * col_block_dim;
+    size_t nnz = nnzb * row_block_dim * col_block_dim;
+
     // Now use the csr matrix as the symbolic for the gebsr matrix.
     bsr_val.resize(nnz);
     int idx = 0;
@@ -547,14 +425,6 @@ hipsparseStatus_t testing_gebsr2csr(Arguments argus)
     int* dcsr_row_ptr = (int*)dcsr_row_ptr_managed.get();
     int* dcsr_col_ind = (int*)dcsr_col_ind_managed.get();
     T*   dcsr_val     = (T*)dcsr_val_managed.get();
-
-    if(!dbsr_row_ptr || !dbsr_col_ind || !dbsr_val || !dcsr_row_ptr || !dcsr_col_ind || !dcsr_val)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!dbsr_row_ptr || !dbsr_col_ind || !dbsr_val || "
-                                        "!dcsr_row_ptr || !dcsr_col_ind || !dcsr_val");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
 
     // Copy data from host to device
     CHECK_HIP_ERROR(

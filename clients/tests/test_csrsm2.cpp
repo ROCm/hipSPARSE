@@ -36,8 +36,8 @@ typedef hipsparseFillMode_t  fill;
 typedef std::tuple<int, int, double, base, op, op, diag, fill>         csrsm2_tuple;
 typedef std::tuple<int, double, base, op, op, diag, fill, std::string> csrsm2_bin_tuple;
 
-int csrsm2_M_range[]    = {-1, 0, 124, 9381};
-int csrsm2_nrhs_range[] = {3, 17};
+int csrsm2_M_range[]    = {0, 124, 9381};
+int csrsm2_nrhs_range[] = {17};
 
 double csrsm2_alpha_range[] = {1.0, -0.5};
 

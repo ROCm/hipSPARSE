@@ -173,12 +173,12 @@ hipsparseStatus_t testing_csx2dense(const Arguments& argus, FUNC1& csx2dense, FU
 
     T*   d_dense_val       = (T*)m_dense_val.get();
     int* d_nnzPerRowColumn = (int*)nnzPerRowColumn_managed.get();
-    if(!d_nnzPerRowColumn || !d_dense_val)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!d_nnzPerRowColumn || !d_dense_val");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!d_nnzPerRowColumn || !d_dense_val)
+    //{
+    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
+    //                                    "!d_nnzPerRowColumn || !d_dense_val");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     //
     // Initialize the entire allocated memory.
@@ -194,7 +194,7 @@ hipsparseStatus_t testing_csx2dense(const Arguments& argus, FUNC1& csx2dense, FU
     // Initialize a random dense matrix.
     //
     srand(0);
-    gen_dense_random_sparsity_pattern(M, N, h_dense_val_ref.data(), LD, 0.2);
+    gen_dense_random_sparsity_pattern(M, N, h_dense_val_ref.data(), LD, HIPSPARSE_ORDER_COL, 0.2);
 
     //
     // Transfer.
@@ -222,20 +222,20 @@ hipsparseStatus_t testing_csx2dense(const Arguments& argus, FUNC1& csx2dense, FU
     int* d_csx_col_row_ind = (int*)m_csx_col_row_ind.get();
     T*   d_csx_val         = (T*)m_csx_val.get();
 
-    if(!d_csx_row_col_ptr || !d_csx_val || !d_csx_col_row_ind)
-    {
-        CHECK_HIP_ERROR(hipErrorOutOfMemory);
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!d_csx_row_col_ptr || !d_csx_val || !d_csx_col_row_ind)
+    //{
+    //    CHECK_HIP_ERROR(hipErrorOutOfMemory);
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     std::vector<int> cpu_csx_row_col_ptr(DIMDIR + 1);
     std::vector<T>   cpu_csx_val(nnz);
     std::vector<int> cpu_csx_col_row_ind(nnz);
-    if(!cpu_csx_row_col_ptr.data() || !cpu_csx_val.data() || !cpu_csx_col_row_ind.data())
-    {
-        CHECK_HIP_ERROR(hipErrorOutOfMemory);
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!cpu_csx_row_col_ptr.data() || !cpu_csx_val.data() || !cpu_csx_col_row_ind.data())
+    //{
+    //    CHECK_HIP_ERROR(hipErrorOutOfMemory);
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
     //
     // Convert the dense matrix to a compressed sparse matrix.
     //

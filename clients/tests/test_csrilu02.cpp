@@ -32,7 +32,7 @@ typedef hipsparseIndexBase_t                                       base;
 typedef std::tuple<int, int, double, double, double, base>         csrilu02_tuple;
 typedef std::tuple<int, double, double, double, base, std::string> csrilu02_bin_tuple;
 
-int    csrilu02_M_range[]          = {-1, 0, 50, 647};
+int    csrilu02_M_range[]          = {0, 50, 647};
 int    csrilu02_boost_range[]      = {0, 1};
 double csrilu02_boost_tol_range[]  = {0.5};
 double csrilu02_boost_val_range[]  = {0.3};

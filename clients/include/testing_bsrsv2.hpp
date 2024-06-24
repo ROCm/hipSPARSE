@@ -437,7 +437,6 @@ void testing_bsrsv2_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_bsrsv2(Arguments argus)
 {
-    int                    safe_size = 100;
     int                    m         = argus.M;
     int                    block_dim = argus.block_dim;
     hipsparseIndexBase_t   idx_base  = argus.idx_base;
@@ -447,23 +446,7 @@ hipsparseStatus_t testing_bsrsv2(Arguments argus)
     hipsparseFillMode_t    fill_mode = argus.fill_mode;
     hipsparseSolvePolicy_t policy    = HIPSPARSE_SOLVE_POLICY_USE_LEVEL;
     T                      h_alpha   = make_DataType<T>(argus.alpha);
-    std::string            binfile   = "";
-    std::string            filename  = "";
-    hipsparseStatus_t      status;
-    int                    size;
-
-    // When in testing mode, M == N == -99 indicates that we are testing with a real
-    // matrix from cise.ufl.edu
-    if(m == -99 && argus.timing == 0)
-    {
-        binfile = argus.filename;
-        m       = safe_size;
-    }
-
-    if(argus.timing == 1)
-    {
-        filename = argus.filename;
-    }
+    std::string            filename  = argus.filename;
 
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
     hipsparseHandle_t              handle = test_handle->handle;
@@ -483,195 +466,31 @@ hipsparseStatus_t testing_bsrsv2(Arguments argus)
     // Set matrix fill mode
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatFillMode(descr, fill_mode));
 
-    int mb = (block_dim < 1) ? -1 : (m + block_dim - 1) / block_dim;
-
-    // Argument sanity check before allocating invalid memory
-    if(mb <= 0 || m <= 0 || block_dim <= 0)
+    if(m == 0 || block_dim == 1)
     {
 #ifdef __HIP_PLATFORM_NVIDIA__
-        // Do not test args in cusparse
+        // cusparse does not support m == 0 for csr2bsr
+        // cusparse does not support asynchronous execution if block_dim == 1
         return HIPSPARSE_STATUS_SUCCESS;
 #endif
-
-        auto dptr_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto dcol_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto dval_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-        auto dx_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-        auto dy_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-        auto buffer_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(char) * safe_size), device_free};
-
-        int*  dptr   = (int*)dptr_managed.get();
-        int*  dcol   = (int*)dcol_managed.get();
-        T*    dval   = (T*)dval_managed.get();
-        T*    dx     = (T*)dx_managed.get();
-        T*    dy     = (T*)dy_managed.get();
-        void* buffer = (void*)buffer_managed.get();
-
-        if(!dval || !dptr || !dcol || !dx || !dy || !buffer)
-        {
-            verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                            "!dptr || !dcol || !dval || "
-                                            "!dx || !dy || !buffer");
-            return HIPSPARSE_STATUS_ALLOC_FAILED;
-        }
-
-        // Test hipsparseXbsrsv2_bufferSize
-        {
-            size_t lsize;
-            status = hipsparseXbsrsv2_bufferSizeExt(handle,
-                                                    dir,
-                                                    trans,
-                                                    mb,
-                                                    safe_size,
-                                                    descr,
-                                                    dval,
-                                                    dptr,
-                                                    dcol,
-                                                    block_dim,
-                                                    info,
-                                                    &lsize);
-        }
-
-        if(mb < 0 || block_dim < 0)
-        {
-            verify_hipsparse_status_invalid_size(status, "Error: mb < 0 || block_dim < 0");
-        }
-        else
-        {
-            verify_hipsparse_status_success(status, "mb >= 0 && block_dim >= 0");
-        }
-
-        // Test hipsparseXbsrsv2_analysis
-        status = hipsparseXbsrsv2_analysis(handle,
-                                           dir,
-                                           trans,
-                                           mb,
-                                           safe_size,
-                                           descr,
-                                           dval,
-                                           dptr,
-                                           dcol,
-                                           block_dim,
-                                           info,
-                                           policy,
-                                           buffer);
-
-        if(mb < 0 || block_dim < 0)
-        {
-            verify_hipsparse_status_invalid_size(status, "Error: mb < 0 || block_dim < 0");
-        }
-        else
-        {
-            verify_hipsparse_status_success(status, "mb >= 0 && block_dim >= 0");
-        }
-
-        // Test hipsparseXbsrsv2_solve
-        status = hipsparseXbsrsv2_solve(handle,
-                                        dir,
-                                        trans,
-                                        mb,
-                                        safe_size,
-                                        &h_alpha,
-                                        descr,
-                                        dval,
-                                        dptr,
-                                        dcol,
-                                        block_dim,
-                                        info,
-                                        dx,
-                                        dy,
-                                        policy,
-                                        buffer);
-
-        if(mb < 0 || block_dim < 0)
-        {
-            verify_hipsparse_status_invalid_size(status, "Error: mb < 0 || block_dim < 0");
-        }
-        else
-        {
-            verify_hipsparse_status_success(status, "mb >= 0 && block_dim >= 0");
-        }
-
-        // Test hipsparseXbsrsv2_zeroPivot
-        int zero_pivot;
-        CHECK_HIPSPARSE_ERROR(hipsparseXbsrsv2_zeroPivot(handle, info, &zero_pivot));
-
-        // Zero pivot should be -1
-        int res = -1;
-        unit_check_general(1, 1, 1, &res, &zero_pivot);
-
-        return HIPSPARSE_STATUS_SUCCESS;
     }
+
+    srand(12345ULL);
 
     // Host structures
     std::vector<int> hcsr_row_ptr;
     std::vector<int> hcsr_col_ind;
     std::vector<T>   hcsr_val;
-    int              nnz;
 
-    // Initial Data on CPU
-    srand(12345ULL);
-    if(binfile != "")
+    // Read or construct CSR matrix
+    int nnz = 0;
+    if(!generate_csr_matrix(filename, m, m, nnz, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base))
     {
-        int n;
-        if(read_bin_matrix(
-               binfile.c_str(), m, n, nnz, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base)
-           != 0)
-        {
-            fprintf(stderr, "Cannot open [read] %s\n", binfile.c_str());
-            return HIPSPARSE_STATUS_INTERNAL_ERROR;
-        }
-    }
-    else if(argus.laplacian)
-    {
-        m   = gen_2d_laplacian(argus.laplacian, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base);
-        nnz = hcsr_row_ptr[m];
-    }
-    else
-    {
-        std::vector<int> hcoo_row_ind;
-
-        if(filename != "")
-        {
-            int n;
-            if(read_mtx_matrix(
-                   filename.c_str(), m, n, nnz, hcoo_row_ind, hcsr_col_ind, hcsr_val, idx_base)
-               != 0)
-            {
-                fprintf(stderr, "Cannot open [read] %s\n", filename.c_str());
-                return HIPSPARSE_STATUS_INTERNAL_ERROR;
-            }
-        }
-        else
-        {
-            double scale = 0.02;
-            if(m > 1000)
-            {
-                scale = 2.0 / m;
-            }
-            nnz = m * scale * m;
-
-            gen_matrix_coo(m, m, nnz, hcoo_row_ind, hcsr_col_ind, hcsr_val, idx_base);
-        }
-
-        // Convert COO to CSR
-        hcsr_row_ptr.resize(m + 1, 0);
-        for(int i = 0; i < nnz; ++i)
-        {
-            ++hcsr_row_ptr[hcoo_row_ind[i] + 1 - idx_base];
-        }
-
-        hcsr_row_ptr[0] = idx_base;
-        for(int i = 0; i < m; ++i)
-        {
-            hcsr_row_ptr[i + 1] += hcsr_row_ptr[i];
-        }
+        fprintf(stderr, "Cannot open [read] %s\ncol", filename.c_str());
+        return HIPSPARSE_STATUS_INTERNAL_ERROR;
     }
 
-    mb = (m + block_dim - 1) / block_dim;
+    int mb = (m + block_dim - 1) / block_dim;
 
     std::vector<T> hx(mb * block_dim);
     std::vector<T> hy_1(mb * block_dim);
@@ -705,15 +524,6 @@ hipsparseStatus_t testing_bsrsv2(Arguments argus)
     T*   d_alpha      = (T*)d_alpha_managed.get();
     int* d_position   = (int*)d_position_managed.get();
 
-    if(!dcsr_val || !dcsr_row_ptr || !dcsr_col_ind || !dbsr_row_ptr || !dx || !dy_1 || !dy_2
-       || !d_alpha || !d_position)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!dval || !dptr || !dcol || !dx || "
-                                        "!dy_1 || !dy_2 || !d_alpha || !d_position");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
-
     // copy data from CPU to device
     CHECK_HIP_ERROR(
         hipMemcpy(dcsr_row_ptr, hcsr_row_ptr.data(), sizeof(int) * (m + 1), hipMemcpyHostToDevice));
@@ -746,13 +556,6 @@ hipsparseStatus_t testing_bsrsv2(Arguments argus)
     int* dbsr_col_ind = (int*)dbsr_col_ind_managed.get();
     T*   dbsr_val     = (T*)dbsr_val_managed.get();
 
-    if(!dbsr_val || !dbsr_col_ind)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!dbsr_val || !dbsr_col_ind");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
-
     CHECK_HIPSPARSE_ERROR(hipsparseXcsr2bsr(handle,
                                             dir,
                                             m,
@@ -768,6 +571,7 @@ hipsparseStatus_t testing_bsrsv2(Arguments argus)
                                             dbsr_col_ind));
 
     // Obtain bsrsv2 buffer size
+    int bufferSize;
     CHECK_HIPSPARSE_ERROR(hipsparseXbsrsv2_bufferSize(handle,
                                                       dir,
                                                       trans,
@@ -779,18 +583,13 @@ hipsparseStatus_t testing_bsrsv2(Arguments argus)
                                                       dbsr_col_ind,
                                                       block_dim,
                                                       info,
-                                                      &size));
+                                                      &bufferSize));
 
     // Allocate buffer on the device
-    auto dbuffer_managed = hipsparse_unique_ptr{device_malloc(sizeof(char) * size), device_free};
+    auto dbuffer_managed
+        = hipsparse_unique_ptr{device_malloc(sizeof(char) * bufferSize), device_free};
 
     void* dbuffer = (void*)dbuffer_managed.get();
-
-    if(!dbuffer)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!dbuffer");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
 
     // bsrsv2 analysis
     CHECK_HIPSPARSE_ERROR(hipsparseXbsrsv2_analysis(handle,

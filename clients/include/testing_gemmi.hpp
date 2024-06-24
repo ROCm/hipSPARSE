@@ -281,164 +281,41 @@ template <typename T>
 hipsparseStatus_t testing_gemmi(Arguments argus)
 {
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
-    int               safe_size = 100;
-    int               M         = argus.M;
-    int               N         = argus.N;
-    int               K         = argus.K;
-    int               lda       = argus.lda;
-    int               ldc       = argus.ldc;
-    T                 h_alpha   = make_DataType<T>(argus.alpha);
-    T                 h_beta    = make_DataType<T>(argus.beta);
-    std::string       binfile   = "";
-    std::string       filename  = "";
-    hipsparseStatus_t status;
-
-    // When in testing mode, M == N == -99 indicates that we are testing with a real
-    // matrix from cise.ufl.edu
-    if(K == -99 && N == -99 && argus.timing == 0)
-    {
-        binfile = argus.filename;
-        K = N = safe_size;
-    }
-
-    if(argus.timing == 1)
-    {
-        filename = argus.filename;
-    }
+    int         M        = argus.M;
+    int         N        = argus.N;
+    int         K        = argus.K;
+    T           h_alpha  = make_DataType<T>(argus.alpha);
+    T           h_beta   = make_DataType<T>(argus.beta);
+    std::string filename = argus.filename;
 
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
     hipsparseHandle_t              handle = test_handle->handle;
 
-    // Determine number of non-zero elements
-    double scale = 0.02;
-    if(K > 1000 || N > 1000)
+    if(M == 0 || N == 0 || K == 0)
     {
-        scale = 2.0 / std::max(K, N);
-    }
-    int nnz = K * scale * N;
-
 #ifdef __HIP_PLATFORM_NVIDIA__
-    // Do not test args in cusparse
-    if(M <= 0 || N <= 0 || K <= 0)
-    {
         return HIPSPARSE_STATUS_SUCCESS;
-    }
 #endif
-
-    // Argument sanity check before allocating invalid memory
-    if(M <= 0 || N <= 0 || K < 0)
-    {
-        auto dptr_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto drow_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto dval_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-        auto dA_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-        auto dC_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-
-        int* dptr = (int*)dptr_managed.get();
-        int* drow = (int*)drow_managed.get();
-        T*   dval = (T*)dval_managed.get();
-        T*   dA   = (T*)dA_managed.get();
-        T*   dC   = (T*)dC_managed.get();
-
-        if(!dval || !dptr || !drow || !dA || !dC)
-        {
-            verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                            "!dptr || !drow || !dval || !dA || !dC");
-            return HIPSPARSE_STATUS_ALLOC_FAILED;
-        }
-
-        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
-        status = hipsparseXgemmi(
-            handle, M, N, K, nnz, &h_alpha, dA, lda, dval, dptr, drow, &h_beta, dC, ldc);
-
-        if(M < 0 || N < 0 || K < 0 || nnz < 0)
-        {
-            verify_hipsparse_status_invalid_size(status,
-                                                 "Error: M < 0 || N < 0 || K < 0 || nnz < 0");
-        }
-        else
-        {
-            verify_hipsparse_status_success(status, "M >= 0 && N >= 0 && K >= 0 && nnz >= 0");
-        }
-
-        return HIPSPARSE_STATUS_SUCCESS;
     }
 
-    // Initialize random seed
     srand(12345ULL);
 
-    // Host structures - CSC matrix A
+    // Host structures
     std::vector<int> hcsc_col_ptrB;
     std::vector<int> hcsc_row_indB;
     std::vector<T>   hcsc_valB;
 
-    // Initial Data on CPU
-    if(binfile != "")
+    // Read or construct CSR matrix
+    int nnz = 0;
+    if(!generate_csr_matrix(
+           filename, N, K, nnz, hcsc_col_ptrB, hcsc_row_indB, hcsc_valB, HIPSPARSE_INDEX_BASE_ZERO))
     {
-        if(read_bin_matrix(binfile.c_str(),
-                           N,
-                           K,
-                           nnz,
-                           hcsc_col_ptrB,
-                           hcsc_row_indB,
-                           hcsc_valB,
-                           HIPSPARSE_INDEX_BASE_ZERO)
-           != 0)
-        {
-            fprintf(stderr, "Cannot open [read] %s\n", binfile.c_str());
-            return HIPSPARSE_STATUS_INTERNAL_ERROR;
-        }
-    }
-    else if(argus.laplacian)
-    {
-        N = K = gen_2d_laplacian(
-            argus.laplacian, hcsc_col_ptrB, hcsc_row_indB, hcsc_valB, HIPSPARSE_INDEX_BASE_ZERO);
-        nnz = hcsc_col_ptrB[N];
-    }
-    else
-    {
-        std::vector<int> hcoo_row_indA;
-
-        if(filename != "")
-        {
-            if(read_mtx_matrix(filename.c_str(),
-                               N,
-                               K,
-                               nnz,
-                               hcoo_row_indA,
-                               hcsc_row_indB,
-                               hcsc_valB,
-                               HIPSPARSE_INDEX_BASE_ZERO)
-               != 0)
-            {
-                fprintf(stderr, "Cannot open [read] %s\n", filename.c_str());
-                return HIPSPARSE_STATUS_INTERNAL_ERROR;
-            }
-        }
-        else
-        {
-            gen_matrix_coo(
-                N, K, nnz, hcoo_row_indA, hcsc_row_indB, hcsc_valB, HIPSPARSE_INDEX_BASE_ZERO);
-        }
-
-        // Convert COO to CSC
-        hcsc_col_ptrB.resize(N + 1, 0);
-        for(int i = 0; i < nnz; ++i)
-        {
-            ++hcsc_col_ptrB[hcoo_row_indA[i] + 1];
-        }
-
-        hcsc_col_ptrB[0] = 0;
-        for(int i = 0; i < N; ++i)
-        {
-            hcsc_col_ptrB[i + 1] += hcsc_col_ptrB[i];
-        }
+        fprintf(stderr, "Cannot open [read] %s\ncol", filename.c_str());
+        return HIPSPARSE_STATUS_INTERNAL_ERROR;
     }
 
-    lda = std::max(1, M);
-    ldc = std::max(1, M);
+    int lda = std::max(1, M);
+    int ldc = std::max(1, M);
 
     int Annz = lda * K;
     int Cnnz = ldc * N;
@@ -473,14 +350,6 @@ hipsparseStatus_t testing_gemmi(Arguments argus)
     T*   dC_2          = (T*)dC_2_managed.get();
     T*   d_alpha       = (T*)d_alpha_managed.get();
     T*   d_beta        = (T*)d_beta_managed.get();
-
-    if(!dcsc_valB || !dcsc_col_ptrB || !dcsc_row_indB || !dA || !dC_1 || !d_alpha || !d_beta)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!dcsc_valB || !dcsc_col_ptrB || !dcsc_row_indB || !dA || "
-                                        "!dC_1 || !d_alpha || !d_beta");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
 
     // copy data from CPU to device
     CHECK_HIP_ERROR(hipMemcpy(

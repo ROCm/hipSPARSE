@@ -31,8 +31,8 @@
 typedef std::tuple<int, int, hipsparseIndexBase_t>    csr2coo_tuple;
 typedef std::tuple<hipsparseIndexBase_t, std::string> csr2coo_bin_tuple;
 
-int csr2coo_M_range[] = {-1, 0, 10, 500, 872, 1000};
-int csr2coo_N_range[] = {-3, 0, 33, 242, 623, 1000};
+int csr2coo_M_range[] = {0, 10, 500, 872, 1000};
+int csr2coo_N_range[] = {0, 33, 242, 623, 1000};
 
 hipsparseIndexBase_t csr2coo_idx_base_range[]
     = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};

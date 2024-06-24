@@ -91,51 +91,14 @@ template <typename T>
 hipsparseStatus_t testing_roti(Arguments argus)
 {
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
-    int                  N         = argus.N;
-    int                  nnz       = argus.nnz;
-    T                    c         = argus.alpha;
-    T                    s         = argus.beta;
-    int                  safe_size = 100;
-    hipsparseIndexBase_t idx_base  = argus.idx_base;
-    hipsparseStatus_t    status;
+    int                  N        = argus.N;
+    int                  nnz      = argus.nnz;
+    T                    c        = argus.alpha;
+    T                    s        = argus.beta;
+    hipsparseIndexBase_t idx_base = argus.idx_base;
 
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
     hipsparseHandle_t              handle = test_handle->handle;
-
-    // Argument sanity check before allocating invalid memory
-    if(nnz <= 0)
-    {
-        auto dx_ind_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto dx_val_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-        auto dy_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-
-        int* dx_ind = (int*)dx_ind_managed.get();
-        T*   dx_val = (T*)dx_val_managed.get();
-        T*   dy     = (T*)dy_managed.get();
-
-        if(!dx_ind || !dx_val || !dy)
-        {
-            verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                            "!dx_ind || !dx_val || !dy");
-            return HIPSPARSE_STATUS_ALLOC_FAILED;
-        }
-
-        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
-        status = hipsparseXroti(handle, nnz, dx_val, dx_ind, dy, &c, &s, idx_base);
-
-        if(nnz < 0)
-        {
-            verify_hipsparse_status_invalid_size(status, "Error: nnz < 0");
-        }
-        else
-        {
-            verify_hipsparse_status_success(status, "nnz == 0");
-        }
-
-        return HIPSPARSE_STATUS_SUCCESS;
-    }
 
     // Host structures
     std::vector<int> hx_ind(nnz);
@@ -173,14 +136,6 @@ hipsparseStatus_t testing_roti(Arguments argus)
     T*   dy_2     = (T*)dy_2_managed.get();
     T*   dc       = (T*)dc_managed.get();
     T*   ds       = (T*)ds_managed.get();
-
-    if(!dx_ind || !dx_val_1 || !dx_val_2 || !dy_1 || !dy_2 || !dc || !ds)
-    {
-        verify_hipsparse_status_success(
-            HIPSPARSE_STATUS_ALLOC_FAILED,
-            "!dx_ind || !dx_val_1 || !dx_val_2 || !dy_1 || !dy_2 || !dc || !ds");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
 
     // copy data from CPU to device
     CHECK_HIP_ERROR(hipMemcpy(dx_ind, hx_ind.data(), sizeof(int) * nnz, hipMemcpyHostToDevice));

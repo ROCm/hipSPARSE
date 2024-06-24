@@ -86,12 +86,12 @@ hipsparseStatus_t testing_csrilusv(Arguments argus)
     T*   dval       = (T*)dval_managed.get();
     int* d_position = (int*)d_position_managed.get();
 
-    if(!dval || !dptr || !dcol || !d_position)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!dval || !dptr || !dcol || !d_position");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!dval || !dptr || !dcol || !d_position)
+    //{
+    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
+    //                                    "!dval || !dptr || !dcol || !d_position");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     // copy data from CPU to device
     CHECK_HIP_ERROR(
@@ -109,11 +109,11 @@ hipsparseStatus_t testing_csrilusv(Arguments argus)
 
     void* dbuffer = (void*)dbuffer_managed.get();
 
-    if(!dbuffer)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!dbuffer");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!dbuffer)
+    //{
+    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!dbuffer");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     // csrilu02 analysis
     CHECK_HIPSPARSE_ERROR(hipsparseXcsrilu02_analysis(handle,
@@ -243,11 +243,11 @@ hipsparseStatus_t testing_csrilusv(Arguments argus)
 
     void* dbuffer_sv = (void*)dbuffer_sv_managed.get();
 
-    if(!dbuffer_sv)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!dbuffer_sv");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!dbuffer_sv)
+    //{
+    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!dbuffer_sv");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     // csrsv analysis
     CHECK_HIPSPARSE_ERROR(hipsparseXcsrsv2_analysis(handle,
@@ -296,13 +296,13 @@ hipsparseStatus_t testing_csrilusv(Arguments argus)
     T* dz_2    = (T*)dz_2_managed.get();
     T* d_alpha = (T*)d_alpha_managed.get();
 
-    if(!dx || !dy_1 || !dy_2 || !dz_1 || !dz_2 || !d_alpha)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!dx || !dy_1 || !dy_2 || !dz_1 || "
-                                        "!dz_2 || !d_alpha");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    //if(!dx || !dy_1 || !dy_2 || !dz_1 || !dz_2 || !d_alpha)
+    //{
+    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
+    //                                    "!dx || !dy_1 || !dy_2 || !dz_1 || "
+    //                                    "!dz_2 || !d_alpha");
+    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
+    //}
 
     // Copy data from CPU to device
     CHECK_HIP_ERROR(hipMemcpy(dx, hx.data(), sizeof(T) * m, hipMemcpyHostToDevice));

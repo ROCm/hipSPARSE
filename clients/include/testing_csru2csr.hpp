@@ -246,8 +246,14 @@ void testing_csru2csr_bad_arg(void)
 }
 
 template <typename T>
-hipsparseStatus_t testing_csru2csr(void)
+hipsparseStatus_t testing_csru2csr(Arguments argus)
 {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
+    int                  m        = argus.M;
+    int                  n        = argus.N;
+    hipsparseIndexBase_t idx_base = argus.idx_base;
+    std::string          filename = argus.filename;
+
     // hipSPARSE handle
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
     hipsparseHandle_t              handle = test_handle->handle;
@@ -255,35 +261,25 @@ hipsparseStatus_t testing_csru2csr(void)
     std::unique_ptr<descr_struct> test_descr(new descr_struct);
     hipsparseMatDescr_t           descr = test_descr->descr;
 
+    hipsparseSetMatIndexBase(descr, idx_base);
+
     std::unique_ptr<csru2csr_struct> test_info(new csru2csr_struct);
     csru2csrInfo_t                   info = test_info->info;
 
-    // Sample test matrix
     srand(12345ULL);
 
-    int m   = 51314;
-    int n   = 12963;
-    int nnz = 309274;
-
-    // Sample random COO matrix
-    std::vector<int> hcoo_row_ind;
-    std::vector<int> hcsr_row_ptr(m + 1, 0);
+    // Host structures
+    std::vector<int> hcsr_row_ptr;
     std::vector<int> hcsr_col_ind_gold;
     std::vector<T>   hcsr_val_gold;
 
-    gen_matrix_coo(
-        m, n, nnz, hcoo_row_ind, hcsr_col_ind_gold, hcsr_val_gold, HIPSPARSE_INDEX_BASE_ZERO);
-
-    // Convert COO to CSR
-    for(int i = 0; i < nnz; ++i)
+    // Read or construct CSR matrix
+    int nnz = 0;
+    if(!generate_csr_matrix(
+           filename, m, n, nnz, hcsr_row_ptr, hcsr_col_ind_gold, hcsr_val_gold, idx_base))
     {
-        ++hcsr_row_ptr[hcoo_row_ind[i] + 1];
-    }
-
-    hcsr_row_ptr[0] = 0;
-    for(int i = 0; i < m; ++i)
-    {
-        hcsr_row_ptr[i + 1] += hcsr_row_ptr[i];
+        fprintf(stderr, "Cannot open [read] %s\ncol", filename.c_str());
+        return HIPSPARSE_STATUS_INTERNAL_ERROR;
     }
 
     // Unsort CSR columns
@@ -296,21 +292,21 @@ hipsparseStatus_t testing_csru2csr(void)
 
     for(int i = 0; i < m; ++i)
     {
-        int row_begin = hcsr_row_ptr[i];
-        int row_end   = hcsr_row_ptr[i + 1];
+        int row_begin = hcsr_row_ptr[i] - idx_base;
+        int row_end   = hcsr_row_ptr[i + 1] - idx_base;
         int row_nnz   = row_end - row_begin;
 
         for(int j = row_begin; j < row_end; ++j)
         {
             int rng = row_begin + rand() % row_nnz;
 
-            int temp_col = hcsr_col_ind_unsorted_gold[j];
+            int temp_col = hcsr_col_ind_unsorted_gold[j] - idx_base;
             T   temp_val = hcsr_val_unsorted_gold[j];
 
             hcsr_col_ind_unsorted_gold[j] = hcsr_col_ind_unsorted_gold[rng];
             hcsr_val_unsorted_gold[j]     = hcsr_val_unsorted_gold[rng];
 
-            hcsr_col_ind_unsorted_gold[rng] = temp_col;
+            hcsr_col_ind_unsorted_gold[rng] = temp_col + idx_base;
             hcsr_val_unsorted_gold[rng]     = temp_val;
         }
     }
@@ -324,13 +320,6 @@ hipsparseStatus_t testing_csru2csr(void)
     int* dcsr_row_ptr = (int*)dcsr_row_ptr_managed.get();
     int* dcsr_col_ind = (int*)dcsr_col_ind_managed.get();
     T*   dcsr_val     = (T*)dcsr_val_managed.get();
-
-    if(!dcsr_row_ptr || !dcsr_col_ind || !dcsr_val)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!dcsr_row_ptr || !dcsr_col_ind || !dcsr_val");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
 
     // Copy data from host to device
     CHECK_HIP_ERROR(
@@ -351,12 +340,6 @@ hipsparseStatus_t testing_csru2csr(void)
         = hipsparse_unique_ptr{device_malloc(sizeof(char) * buffer_size), device_free};
 
     void* dbuffer = (void*)dbuffer_managed.get();
-
-    if(!dbuffer)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!dbuffer");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
 
     // Sort CSR columns
     CHECK_HIPSPARSE_ERROR(hipsparseXcsru2csr(
@@ -388,6 +371,7 @@ hipsparseStatus_t testing_csru2csr(void)
     unit_check_general(1, nnz, 1, hcsr_val.data(), hcsr_val_gold.data());
     unit_check_general(1, nnz, 1, hcsr_col_ind_unsorted.data(), hcsr_col_ind_unsorted_gold.data());
     unit_check_general(1, nnz, 1, hcsr_val_unsorted.data(), hcsr_val_unsorted_gold.data());
+#endif
 
     return HIPSPARSE_STATUS_SUCCESS;
 }

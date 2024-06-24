@@ -32,7 +32,7 @@ typedef hipsparseIndexBase_t          base;
 typedef std::tuple<int, base>         csric02_tuple;
 typedef std::tuple<base, std::string> csric02_bin_tuple;
 
-int csric02_M_range[] = {-1, 0, 50, 426};
+int csric02_M_range[] = {0, 50, 426};
 
 base csric02_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 

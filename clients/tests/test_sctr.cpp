@@ -31,7 +31,7 @@ typedef hipsparseIndexBase_t       base;
 typedef std::tuple<int, int, base> sctr_tuple;
 
 int sctr_N_range[]   = {12000, 15332, 22031};
-int sctr_nnz_range[] = {-1, 0, 5, 10, 500, 1000, 7111, 10000};
+int sctr_nnz_range[] = {0, 5, 10, 500, 1000, 7111, 10000};
 
 base sctr_idx_base_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 

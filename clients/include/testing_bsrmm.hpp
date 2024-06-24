@@ -432,42 +432,17 @@ void testing_bsrmm_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_bsrmm(Arguments argus)
 {
-    int                  safe_size = 100;
     int                  m         = argus.M;
     int                  n         = argus.N;
     int                  k         = argus.K;
     int                  block_dim = argus.block_dim;
-    int                  ldb       = argus.ldb;
-    int                  ldc       = argus.ldc;
     T                    h_alpha   = make_DataType<T>(argus.alpha);
     T                    h_beta    = make_DataType<T>(argus.beta);
     hipsparseDirection_t dirA      = argus.dirA;
     hipsparseOperation_t transA    = argus.transA;
     hipsparseOperation_t transB    = argus.transB;
     hipsparseIndexBase_t idx_base  = argus.idx_base;
-    std::string          binfile   = "";
-    std::string          filename  = "";
-
-    // When in testing mode, m == n == -99 indicates that we are testing with a real
-    // matrix from cise.ufl.edu
-    if(m == -99 && k == -99 && argus.timing == 0)
-    {
-        binfile = argus.filename;
-        m = k = safe_size;
-    }
-
-    if(argus.timing == 1)
-    {
-        filename = argus.filename;
-    }
-
-    int mb = -1;
-    int kb = -1;
-    if(block_dim > 0)
-    {
-        mb = (m + block_dim - 1) / block_dim;
-        kb = (k + block_dim - 1) / block_dim;
-    }
+    std::string          filename  = argus.filename;
 
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
     hipsparseHandle_t              handle = test_handle->handle;
@@ -478,68 +453,32 @@ hipsparseStatus_t testing_bsrmm(Arguments argus)
     // Set matrix index base
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatIndexBase(descr, idx_base));
 
-    // Read or construct CSR matrix
+    if(m == 0)
+    {
+#ifdef __HIP_PLATFORM_NVIDIA__
+        // cusparse does not support m == 0 for csr2bsr
+        return HIPSPARSE_STATUS_SUCCESS;
+#endif
+    }
+
+    srand(12345ULL);
+
+    // Host structures
     std::vector<int> csr_row_ptr;
     std::vector<int> csr_col_ind;
     std::vector<T>   csr_val;
-    int              nnz;
-    srand(12345ULL);
-    if(binfile != "")
-    {
-        if(read_bin_matrix(binfile.c_str(), m, k, nnz, csr_row_ptr, csr_col_ind, csr_val, idx_base)
-           != 0)
-        {
-            fprintf(stderr, "Cannot open [read] %s\n", binfile.c_str());
-            return HIPSPARSE_STATUS_INTERNAL_ERROR;
-        }
-    }
-    else if(argus.laplacian)
-    {
-        m = k = gen_2d_laplacian(argus.laplacian, csr_row_ptr, csr_col_ind, csr_val, idx_base);
-        nnz   = csr_row_ptr[m];
-    }
-    else
-    {
-        std::vector<int> coo_row_ind;
 
-        if(filename != "")
-        {
-            if(read_mtx_matrix(
-                   filename.c_str(), m, k, nnz, coo_row_ind, csr_col_ind, csr_val, idx_base)
-               != 0)
-            {
-                fprintf(stderr, "Cannot open [read] %s\n", filename.c_str());
-                return HIPSPARSE_STATUS_INTERNAL_ERROR;
-            }
-        }
-        else
-        {
-            double scale = 0.02;
-            if(m > 1000 || k > 1000)
-            {
-                scale = 2.0 / std::max(m, k);
-            }
-            nnz = m * scale * k;
-            gen_matrix_coo(m, k, nnz, coo_row_ind, csr_col_ind, csr_val, idx_base);
-        }
-
-        // Convert COO to CSR
-        csr_row_ptr.resize(m + 1, 0);
-        for(int i = 0; i < nnz; ++i)
-        {
-            ++csr_row_ptr[coo_row_ind[i] + 1 - idx_base];
-        }
-
-        csr_row_ptr[0] = idx_base;
-        for(int i = 0; i < m; ++i)
-        {
-            csr_row_ptr[i + 1] += csr_row_ptr[i];
-        }
+    // Read or construct CSR matrix
+    int nnz = 0;
+    if(!generate_csr_matrix(filename, m, k, nnz, csr_row_ptr, csr_col_ind, csr_val, idx_base))
+    {
+        fprintf(stderr, "Cannot open [read] %s\ncol", filename.c_str());
+        return HIPSPARSE_STATUS_INTERNAL_ERROR;
     }
 
     // m and k can be modifed if we read in a matrix from a file
-    mb = (m + block_dim - 1) / block_dim;
-    kb = (k + block_dim - 1) / block_dim;
+    int mb = (m + block_dim - 1) / block_dim;
+    int kb = (k + block_dim - 1) / block_dim;
 
     // Allocate memory on device for CSR matrix and BSR row pointer array
     auto dcsr_row_ptrA_managed
@@ -618,8 +557,8 @@ hipsparseStatus_t testing_bsrmm(Arguments argus)
     k = kb * block_dim;
 
     // Some matrix properties
-    ldb = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? k : n;
-    ldc = m;
+    int ldb = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? k : n;
+    int ldc = m;
 
     int ncol_B = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE ? n : k);
     int nnz_B  = ldb * ncol_B;
