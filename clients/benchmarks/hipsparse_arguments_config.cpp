@@ -46,6 +46,8 @@ hipsparse_arguments_config::hipsparse_arguments_config()
         this->lda  = 0;
         this->ldb  = 0;
         this->ldc  = 0;
+
+        this->batch_count = 1;
         
         this->filename = "";
         this->function_name = "";
@@ -74,7 +76,7 @@ hipsparse_arguments_config::hipsparse_arguments_config()
         this->fill_mode       = HIPSPARSE_FILL_MODE_LOWER;
 
         this->dirA            = HIPSPARSE_DIRECTION_ROW;
-        this->order           = HIPSPARSE_ORDER_ROW;
+        this->orderA          = HIPSPARSE_ORDER_ROW;
         this->orderB          = HIPSPARSE_ORDER_ROW;
         this->orderC          = HIPSPARSE_ORDER_ROW;
         this->formatA         = HIPSPARSE_FORMAT_CSR;
@@ -147,6 +149,10 @@ void hipsparse_arguments_config::set_description(options_description& desc)
     ("ldc",
      value<int>(&this->ldc)->default_value(2),
      "Leading dimension (default: 2)")
+
+    ("batch_count",
+     value<int>(&this->batch_count)->default_value(1),
+     "Batch count (default: 1)")
 
     ("file",
      value<std::string>(&this->filename)->default_value(""),
@@ -239,8 +245,8 @@ void hipsparse_arguments_config::set_description(options_description& desc)
      value<int>(&this->b_dir)->default_value(HIPSPARSE_DIRECTION_ROW),
      "Indicates whether BSR blocks should be laid out in row-major storage or by column-major storage: row-major storage = 0, column-major storage = 1 (default: 0)")
 
-    ("order",
-     value<int>(&this->b_order)->default_value(HIPSPARSE_ORDER_COL),
+    ("orderA",
+     value<int>(&this->b_orderA)->default_value(HIPSPARSE_ORDER_COL),
      "Indicates whether a dense matrix is laid out in column-major storage: 1, or row-major storage 0 (default: 1)")
 
     ("orderB",
@@ -290,9 +296,9 @@ int hipsparse_arguments_config::parse(int&argc,char**&argv, options_description&
         return -1;
     }
 
-    if(this->b_order != HIPSPARSE_ORDER_ROW && this->b_order != HIPSPARSE_ORDER_COL)
+    if(this->b_orderA != HIPSPARSE_ORDER_ROW && this->b_orderA != HIPSPARSE_ORDER_COL)
     {
-        std::cerr << "Invalid value for --order" << std::endl;
+        std::cerr << "Invalid value for --orderA" << std::endl;
         return -1;
     }
 
@@ -389,7 +395,7 @@ int hipsparse_arguments_config::parse(int&argc,char**&argv, options_description&
 
 
     this->dirA = (this->b_dir == 0) ? HIPSPARSE_DIRECTION_ROW : HIPSPARSE_DIRECTION_COLUMN;
-    this->order  = (this->b_order == 0) ? HIPSPARSE_ORDER_ROW : HIPSPARSE_ORDER_COL;
+    this->orderA  = (this->b_orderA == 0) ? HIPSPARSE_ORDER_ROW : HIPSPARSE_ORDER_COL;
     this->orderB  = (this->b_orderB == 0) ? HIPSPARSE_ORDER_ROW : HIPSPARSE_ORDER_COL;
     this->orderC  = (this->b_orderC == 0) ? HIPSPARSE_ORDER_ROW : HIPSPARSE_ORDER_COL;
     this->formatA = (hipsparseFormat_t)this->b_formatA;

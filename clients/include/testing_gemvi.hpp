@@ -146,16 +146,17 @@ void testing_gemvi_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_gemvi(Arguments argus)
 {
-    int m   = 1291;
-    int n   = 724;
-    int nnz = 237;
+    static constexpr hipsparseOperation_t opType = HIPSPARSE_OPERATION_NON_TRANSPOSE;
 
-    static constexpr hipsparseOperation_t opType  = HIPSPARSE_OPERATION_NON_TRANSPOSE;
-    int                                   lda     = m;
-    hipsparseIndexBase_t                  idxBase = HIPSPARSE_INDEX_BASE_ZERO;
+    int                  m        = argus.M;
+    int                  n        = argus.N;
+    int                  nnz      = argus.nnz;
+    T                    alpha    = make_DataType<T>(argus.alpha);
+    T                    beta     = make_DataType<T>(argus.beta);
+    hipsparseIndexBase_t idxBase  = argus.baseA;
+    std::string          filename = argus.filename;
 
-    T alpha = make_DataType<T>(0.6);
-    T beta  = make_DataType<T>(3.2);
+    int lda = m;
 
     // hipSPARSE handle
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
@@ -190,13 +191,6 @@ hipsparseStatus_t testing_gemvi(Arguments argus)
     T*   dx_val = (T*)dx_val_managed.get();
     T*   dy     = (T*)dy_managed.get();
     T*   dA     = (T*)dA_managed.get();
-
-    if(!dx_ind || !dx_val || !dy || !dA)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!dx_ind || !dx_val || !dy || !dA");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
 
     // copy data from CPU to device
     CHECK_HIP_ERROR(hipMemcpy(dx_ind, hx_ind.data(), sizeof(int) * nnz, hipMemcpyHostToDevice));
@@ -235,7 +229,7 @@ hipsparseStatus_t testing_gemvi(Arguments argus)
 
         for(int j = 0; j < nnz; ++j)
         {
-            sum = testing_fma(hx_val[j], hA[hx_ind[j] * lda + i], sum);
+            sum = testing_fma(hx_val[j], hA[(hx_ind[j] - idxBase) * lda + i], sum);
         }
 
         hy_gold[i] = testing_fma(alpha, sum, testing_mult(beta, hy_gold[i]));

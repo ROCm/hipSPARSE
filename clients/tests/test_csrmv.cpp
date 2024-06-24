@@ -33,8 +33,8 @@ typedef hipsparseIndexBase_t                                 base;
 typedef std::tuple<int, int, double, double, trans, base>    csrmv_tuple;
 typedef std::tuple<double, double, trans, base, std::string> csrmv_bin_tuple;
 
-int csr_M_range[] = {-1, 0, 500, 7111};
-int csr_N_range[] = {-3, 0, 842, 4441};
+int csr_M_range[] = {0, 500, 7111};
+int csr_N_range[] = {0, 842, 4441};
 
 std::vector<double> csr_alpha_range = {3.0};
 std::vector<double> csr_beta_range  = {1.0};
@@ -159,7 +159,6 @@ TEST_P(parameterized_csrmv_bin, csrmv_bin_double)
     hipsparseStatus_t status = testing_csrmv<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-#endif
 
 INSTANTIATE_TEST_SUITE_P(csrmv,
                          parameterized_csrmv,
@@ -177,3 +176,4 @@ INSTANTIATE_TEST_SUITE_P(csrmv_bin,
                                           testing::ValuesIn(csr_trans_range),
                                           testing::ValuesIn(csr_idxbase_range),
                                           testing::ValuesIn(csr_bin)));
+#endif

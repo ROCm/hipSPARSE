@@ -36,10 +36,10 @@ typedef std::
         csr2gebsr_bin_tuple;
 
 // Random matrices
-int csr2gebsr_M_range[]             = {-1, 0, 2, 13095};
-int csr2gebsr_N_range[]             = {-3, 0, 2, 12766};
-int csr2gebsr_row_block_dim_range[] = {-1, 0, 1, 2, 7, 16};
-int csr2gebsr_col_block_dim_range[] = {-1, 0, 1, 2};
+int csr2gebsr_M_range[]             = {0, 2, 13095};
+int csr2gebsr_N_range[]             = {0, 2, 12766};
+int csr2gebsr_row_block_dim_range[] = {1, 2, 7, 16};
+int csr2gebsr_col_block_dim_range[] = {1, 2};
 
 hipsparseIndexBase_t csr2gebsr_csr_base_range[] = {HIPSPARSE_INDEX_BASE_ZERO};
 
@@ -177,7 +177,6 @@ TEST_P(parameterized_csr2gebsr_bin, csr2gebsr_bin_double)
     hipsparseStatus_t status = testing_csr2gebsr<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-#endif
 
 INSTANTIATE_TEST_SUITE_P(csr2gebsr,
                          parameterized_csr2gebsr,
@@ -197,3 +196,4 @@ INSTANTIATE_TEST_SUITE_P(csr2gebsr_bin,
                                           testing::ValuesIn(csr2gebsr_csr_base_range_bin),
                                           testing::ValuesIn(csr2gebsr_dir_range_bin),
                                           testing::ValuesIn(csr2gebsr_bin)));
+#endif

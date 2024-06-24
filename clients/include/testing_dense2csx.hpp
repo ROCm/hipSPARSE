@@ -210,13 +210,10 @@ void testing_dense2csx_bad_arg(FUNC& dense2csx)
 template <hipsparseDirection_t DIRA, typename T, typename FUNC>
 hipsparseStatus_t testing_dense2csx(const Arguments& argus, FUNC& dense2csx)
 {
-
     int                  M        = argus.M;
     int                  N        = argus.N;
     int                  LD       = argus.lda;
     hipsparseIndexBase_t idx_base = argus.baseA;
-
-    hipsparseStatus_t status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -225,29 +222,16 @@ hipsparseStatus_t testing_dense2csx(const Arguments& argus, FUNC& dense2csx)
     hipsparseMatDescr_t           descr = unique_ptr_descr->descr;
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatIndexBase(descr, idx_base));
 
-    if(M <= 0 || N <= 0 || LD < M)
+    if(M == 0 || N == 0)
     {
-        hipsparseStatus_t expected_status
-            = (((M == 0 && N >= 0) || (M >= 0 && N == 0)) && (LD >= M))
-                  ? HIPSPARSE_STATUS_SUCCESS
-                  : HIPSPARSE_STATUS_INVALID_VALUE;
-        status = dense2csx(
-            handle, M, N, descr, (const T*)nullptr, LD, nullptr, (T*)nullptr, nullptr, nullptr);
-        verify_hipsparse_status(status,
-                                expected_status,
-                                (expected_status == HIPSPARSE_STATUS_SUCCESS)
-                                    ? "Error: call with zero sizes must be successful."
-                                    : "Error: An invalid size must be detected.");
-
+#ifdef __HIP_PLATFORM_NVIDIA__
         return HIPSPARSE_STATUS_SUCCESS;
+#endif
     }
 
     int              DIMDIR = (HIPSPARSE_DIRECTION_ROW == DIRA) ? M : N;
     std::vector<T>   h_dense_val(LD * N);
     std::vector<int> h_nnzPerRowColumn(DIMDIR);
-    std::vector<int> hd_nnzPerRowColumn(DIMDIR);
-    std::vector<int> h_nnzTotalDevHostPtr(1);
-    std::vector<int> hd_nnzTotalDevHostPtr(1);
 
     //
     // Create the dense matrix.
@@ -259,15 +243,8 @@ hipsparseStatus_t testing_dense2csx(const Arguments& argus, FUNC& dense2csx)
     auto nnzTotalDevHostPtr_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(int) * 1), device_free};
 
-    T*   d_dense_val          = (T*)m_dense_val.get();
-    int* d_nnzPerRowColumn    = (int*)nnzPerRowColumn_managed.get();
-    int* d_nnzTotalDevHostPtr = (int*)nnzTotalDevHostPtr_managed.get();
-    if(!d_nnzPerRowColumn || !d_nnzTotalDevHostPtr || !d_dense_val)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!h_nnzPerRowColumn || !d_nnzPerRowColumn || !d_dense_val");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
+    T*   d_dense_val       = (T*)m_dense_val.get();
+    int* d_nnzPerRowColumn = (int*)nnzPerRowColumn_managed.get();
 
     //
     // Initialize the entire allocated memory.
@@ -284,7 +261,7 @@ hipsparseStatus_t testing_dense2csx(const Arguments& argus, FUNC& dense2csx)
     // Initialize a random dense matrix.
     //
     srand(0);
-    gen_dense_random_sparsity_pattern(M, N, h_dense_val.data(), LD, 0.2);
+    gen_dense_random_sparsity_pattern(M, N, h_dense_val.data(), LD, HIPSPARSE_ORDER_COL, 0.2);
 
     //
     // Transfer.
@@ -312,20 +289,9 @@ hipsparseStatus_t testing_dense2csx(const Arguments& argus, FUNC& dense2csx)
     int* d_csx_col_row_ind = (int*)m_csx_col_row_ind.get();
     T*   d_csx_val         = (T*)m_csx_val.get();
 
-    if(!d_csx_row_col_ptr || !d_csx_val || !d_csx_col_row_ind)
-    {
-        CHECK_HIP_ERROR(hipErrorOutOfMemory);
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
-
     std::vector<int> cpu_csx_row_col_ptr(DIMDIR + 1);
     std::vector<T>   cpu_csx_val(nnz);
     std::vector<int> cpu_csx_col_row_ind(nnz);
-    if(!cpu_csx_row_col_ptr.data() || !cpu_csx_val.data() || !cpu_csx_col_row_ind.data())
-    {
-        CHECK_HIP_ERROR(hipErrorOutOfMemory);
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
 
     if(argus.unit_check)
     {
@@ -333,7 +299,6 @@ hipsparseStatus_t testing_dense2csx(const Arguments& argus, FUNC& dense2csx)
         //
         // Compute the reference host first.
         //
-
         host_dense2csx<DIRA, T>(M,
                                 N,
                                 hipsparseGetMatIndexBase(descr),

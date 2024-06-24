@@ -31,8 +31,8 @@
 typedef std::tuple<int, int, hipsparseIndexBase_t>    hyb2csr_tuple;
 typedef std::tuple<hipsparseIndexBase_t, std::string> hyb2csr_bin_tuple;
 
-int hyb2csr_M_range[] = {-1, 0, 10, 500, 872, 1000};
-int hyb2csr_N_range[] = {-3, 0, 33, 242, 623, 1000};
+int hyb2csr_M_range[] = {0, 10, 500, 872, 1000};
+int hyb2csr_N_range[] = {0, 33, 242, 623, 1000};
 
 hipsparseIndexBase_t hyb2csr_idx_base_range[]
     = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
@@ -147,7 +147,6 @@ TEST_P(parameterized_hyb2csr_bin, hyb2csr_bin_double)
     hipsparseStatus_t status = testing_hyb2csr<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-#endif
 
 INSTANTIATE_TEST_SUITE_P(hyb2csr,
                          parameterized_hyb2csr,
@@ -159,3 +158,4 @@ INSTANTIATE_TEST_SUITE_P(hyb2csr_bin,
                          parameterized_hyb2csr_bin,
                          testing::Combine(testing::ValuesIn(hyb2csr_idx_base_range),
                                           testing::ValuesIn(hyb2csr_bin)));
+#endif

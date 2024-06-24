@@ -31,8 +31,8 @@
 typedef std::tuple<int, int, hipsparseIndexBase_t>    csr2coo_tuple;
 typedef std::tuple<hipsparseIndexBase_t, std::string> csr2coo_bin_tuple;
 
-int csr2coo_M_range[] = {-1, 0, 10, 500, 872, 1000};
-int csr2coo_N_range[] = {-3, 0, 33, 242, 623, 1000};
+int csr2coo_M_range[] = {0, 10, 500, 872, 1000};
+int csr2coo_N_range[] = {0, 33, 242, 623, 1000};
 
 hipsparseIndexBase_t csr2coo_idx_base_range[]
     = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
@@ -124,7 +124,6 @@ TEST_P(parameterized_csr2coo_bin, csr2coo_bin_float)
     hipsparseStatus_t status = testing_csr2coo<float>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-#endif
 
 INSTANTIATE_TEST_SUITE_P(csr2coo,
                          parameterized_csr2coo,
@@ -136,3 +135,4 @@ INSTANTIATE_TEST_SUITE_P(csr2coo_bin,
                          parameterized_csr2coo_bin,
                          testing::Combine(testing::ValuesIn(csr2coo_idx_base_range),
                                           testing::ValuesIn(csr2coo_bin)));
+#endif

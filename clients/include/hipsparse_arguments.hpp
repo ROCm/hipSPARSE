@@ -71,6 +71,8 @@ struct Arguments
     int ldb;
     int ldc;
 
+    int batch_count;
+
     hipsparseIndexType_t index_type_I;
     hipsparseIndexType_t index_type_J;
     hipDataType compute_type;
@@ -95,7 +97,7 @@ struct Arguments
     hipsparseFillMode_t     fill_mode;
 
     hipsparseDirection_t dirA;
-    hipsparseOrder_t     order;
+    hipsparseOrder_t     orderA;
     hipsparseOrder_t     orderB;
     hipsparseOrder_t     orderC;
     hipsparseFormat_t    formatA;
@@ -165,6 +167,8 @@ struct Arguments
         ROCSPARSE_FORMAT_CHECK(ldb);
         ROCSPARSE_FORMAT_CHECK(ldc);
 
+        ROCSPARSE_FORMAT_CHECK(batch_count);
+
         ROCSPARSE_FORMAT_CHECK(index_type_I);
         ROCSPARSE_FORMAT_CHECK(index_type_J);
         ROCSPARSE_FORMAT_CHECK(compute_type);
@@ -185,7 +189,7 @@ struct Arguments
         ROCSPARSE_FORMAT_CHECK(diag_type);
         ROCSPARSE_FORMAT_CHECK(fill_mode);
         ROCSPARSE_FORMAT_CHECK(dirA);
-        ROCSPARSE_FORMAT_CHECK(order);
+        ROCSPARSE_FORMAT_CHECK(orderA);
         ROCSPARSE_FORMAT_CHECK(orderB);
         ROCSPARSE_FORMAT_CHECK(orderC);
         ROCSPARSE_FORMAT_CHECK(formatA);
@@ -318,6 +322,8 @@ private:
         print("ldb", arg.ldb);
         print("ldc", arg.ldc);
 
+        print("batch_count", arg.batch_count);
+
         print("alpha", arg.alpha);
         print("alphai", arg.alphai);
         print("beta", arg.beta);
@@ -331,7 +337,7 @@ private:
         print("fill_mode", hipsparse_fillmode2string(arg.fill_mode));
 
         print("dirA", hipsparse_direction2string(arg.dirA));
-        print("order", hipsparse_order2string(arg.order));
+        print("orderA", hipsparse_order2string(arg.orderA));
         print("orderB", hipsparse_order2string(arg.orderB));
         print("orderC", hipsparse_order2string(arg.orderC));
         print("formatA", hipsparse_format2string(arg.formatA));

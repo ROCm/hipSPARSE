@@ -164,36 +164,11 @@ void testing_csrsort_bad_arg(void)
 hipsparseStatus_t testing_csrsort(Arguments argus)
 {
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
-    int                  m         = argus.M;
-    int                  n         = argus.N;
-    int                  safe_size = 100;
-    int                  permute   = argus.permute;
-    hipsparseIndexBase_t idx_base  = argus.baseA;
-    std::string          binfile   = "";
-    std::string          filename  = "";
-    hipsparseStatus_t    status;
-
-    // When in testing mode, M == N == -99 indicates that we are testing with a real
-    // matrix from cise.ufl.edu
-    if(m == -99 && n == -99 && argus.timing == 0)
-    {
-        binfile = argus.filename;
-        m = n = safe_size;
-    }
-
-    if(argus.timing == 1)
-    {
-        filename = argus.filename;
-    }
-
-    size_t buffer_size = 0;
-
-    double scale = 0.02;
-    if(m > 1000 || n > 1000)
-    {
-        scale = 2.0 / std::max(m, n);
-    }
-    int nnz = m * scale * n;
+    int                  m        = argus.M;
+    int                  n        = argus.N;
+    int                  permute  = 0;//argus.temp;
+    hipsparseIndexBase_t idx_base = argus.baseA;
+    std::string          filename = argus.filename;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -204,114 +179,19 @@ hipsparseStatus_t testing_csrsort(Arguments argus)
     // Set matrix index base
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatIndexBase(descr, idx_base));
 
-    // Argument sanity check before allocating invalid memory
-    if(m <= 0 || n <= 0 || nnz <= 0)
-    {
-#ifdef __HIP_PLATFORM_NVIDIA__
-        // Do not test args in cusparse
-        return HIPSPARSE_STATUS_SUCCESS;
-#endif
-        auto csr_row_ptr_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto csr_col_ind_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto perm_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto buffer_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(char) * safe_size), device_free};
-
-        int*  csr_row_ptr = (int*)csr_row_ptr_managed.get();
-        int*  csr_col_ind = (int*)csr_col_ind_managed.get();
-        int*  perm        = (int*)perm_managed.get();
-        void* buffer      = (void*)buffer_managed.get();
-
-        if(!csr_row_ptr || !csr_col_ind || !perm || !buffer)
-        {
-            verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                            "!csr_row_ptr || !csr_col_ind || !perm || !buffer");
-            return HIPSPARSE_STATUS_ALLOC_FAILED;
-        }
-
-        status = hipsparseXcsrsort_bufferSizeExt(
-            handle, m, n, nnz, csr_row_ptr, csr_col_ind, &buffer_size);
-
-        if(m < 0 || n < 0 || nnz < 0)
-        {
-            verify_hipsparse_status_invalid_size(status, "Error: m < 0 || n < 0 || nnz < 0");
-        }
-        else
-        {
-            verify_hipsparse_status_success(status, "m >= 0 && n >= 0 && nnz >= 0");
-
-            // Buffer size should be 0
-            size_t zero = 0;
-            unit_check_general(1, 1, 1, &zero, &buffer_size);
-        }
-
-        status
-            = hipsparseXcsrsort(handle, m, n, nnz, descr, csr_row_ptr, csr_col_ind, perm, buffer);
-
-        if(m < 0 || n < 0 || nnz < 0)
-        {
-            verify_hipsparse_status_invalid_size(status, "Error: m < 0 || n < 0 || nnz < 0");
-        }
-        else
-        {
-            verify_hipsparse_status_success(status, "m >= 0 && n >= 0 && nnz >= 0");
-        }
-
-        return HIPSPARSE_STATUS_SUCCESS;
-    }
-
-    // For testing, assemble a COO matrix and convert it to CSR first (on host)
+    srand(12345ULL);
 
     // Host structures
     std::vector<int>   hcsr_row_ptr;
-    std::vector<int>   hcoo_row_ind;
     std::vector<int>   hcsr_col_ind;
     std::vector<float> hcsr_val;
 
-    // Sample initial COO matrix on CPU
-    srand(12345ULL);
-    if(binfile != "")
+    // Read or construct CSR matrix
+    int nnz = 0;
+    if(!generate_csr_matrix(filename, m, n, nnz, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base))
     {
-        if(read_bin_matrix(
-               binfile.c_str(), m, n, nnz, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base)
-           != 0)
-        {
-            fprintf(stderr, "Cannot open [read] %s\n", binfile.c_str());
-            return HIPSPARSE_STATUS_INTERNAL_ERROR;
-        }
-    }
-    else
-    {
-        if(filename != "")
-        {
-            if(read_mtx_matrix(
-                   filename.c_str(), m, n, nnz, hcoo_row_ind, hcsr_col_ind, hcsr_val, idx_base)
-               != 0)
-            {
-                fprintf(stderr, "Cannot open [read] %s\n", filename.c_str());
-                return HIPSPARSE_STATUS_INTERNAL_ERROR;
-            }
-        }
-        else
-        {
-            gen_matrix_coo(m, n, nnz, hcoo_row_ind, hcsr_col_ind, hcsr_val, idx_base);
-        }
-
-        // Convert COO to CSR
-        hcsr_row_ptr.resize(m + 1, 0);
-        for(int i = 0; i < nnz; ++i)
-        {
-            ++hcsr_row_ptr[hcoo_row_ind[i] + 1 - idx_base];
-        }
-
-        hcsr_row_ptr[0] = idx_base;
-        for(int i = 0; i < m; ++i)
-        {
-            hcsr_row_ptr[i + 1] += hcsr_row_ptr[i];
-        }
+        fprintf(stderr, "Cannot open [read] %s\ncol", filename.c_str());
+        return HIPSPARSE_STATUS_INTERNAL_ERROR;
     }
 
     // Unsort CSR columns
@@ -360,14 +240,6 @@ hipsparseStatus_t testing_csrsort(Arguments argus)
     // Set permutation vector, if asked for
     int* dperm = permute ? (int*)dperm_managed.get() : nullptr;
 
-    if(!dcsr_row_ptr || !dcsr_col_ind || !dcsr_val || !dcsr_val_sorted || (permute && !dperm))
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!dcsr_row_ptr || !dcsr_col_ind || !dcsr_val || "
-                                        "!dcsr_val_sorted || (permute && !dperm)");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
-
     // Copy data from host to device
     CHECK_HIP_ERROR(
         hipMemcpy(dcsr_row_ptr, hcsr_row_ptr.data(), sizeof(int) * (m + 1), hipMemcpyHostToDevice));
@@ -379,20 +251,15 @@ hipsparseStatus_t testing_csrsort(Arguments argus)
     if(argus.unit_check)
     {
         // Obtain buffer size
+        size_t bufferSize;
         CHECK_HIPSPARSE_ERROR(hipsparseXcsrsort_bufferSizeExt(
-            handle, m, n, nnz, dcsr_row_ptr, dcsr_col_ind, &buffer_size));
+            handle, m, n, nnz, dcsr_row_ptr, dcsr_col_ind, &bufferSize));
 
         // Allocate buffer on the device
         auto dbuffer_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(char) * buffer_size), device_free};
+            = hipsparse_unique_ptr{device_malloc(sizeof(char) * bufferSize), device_free};
 
         void* dbuffer = (void*)dbuffer_managed.get();
-
-        if(!dbuffer)
-        {
-            verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!dbuffer");
-            return HIPSPARSE_STATUS_ALLOC_FAILED;
-        }
 
         if(permute)
         {

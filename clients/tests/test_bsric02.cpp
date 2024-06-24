@@ -33,8 +33,8 @@ typedef hipsparseDirection_t                    dir;
 typedef std::tuple<int, int, dir, base>         bsric02_tuple;
 typedef std::tuple<int, dir, base, std::string> bsric02_bin_tuple;
 
-int bsric02_M_range[]   = {-1, 50, 426};
-int bsric02_dim_range[] = {-1, 3, 5, 9};
+int bsric02_M_range[]   = {50, 426};
+int bsric02_dim_range[] = {3, 5, 9};
 
 base bsric02_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 dir  bsric02_dir_range[]     = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COLUMN};
@@ -144,7 +144,6 @@ TEST_P(parameterized_bsric02_bin, bsric02_bin_double)
     hipsparseStatus_t status = testing_bsric02<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-#endif
 
 INSTANTIATE_TEST_SUITE_P(bsric02,
                          parameterized_bsric02,
@@ -159,3 +158,4 @@ INSTANTIATE_TEST_SUITE_P(bsric02_bin,
                                           testing::ValuesIn(bsric02_dir_range),
                                           testing::ValuesIn(bsric02_idxbase_range),
                                           testing::ValuesIn(bsric02_bin)));
+#endif

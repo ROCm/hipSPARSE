@@ -134,16 +134,16 @@ void testing_gpsv_interleaved_batch_bad_arg(void)
 }
 
 template <typename T>
-hipsparseStatus_t testing_gpsv_interleaved_batch(Arguments arg)
+hipsparseStatus_t testing_gpsv_interleaved_batch(Arguments argus)
 {
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
+    int m           = argus.M;
+    int batch_count = argus.batch_count;
+    int algo        = 0;//argus.algo;
+
     // hipSPARSE handle
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
     hipsparseHandle_t              handle = test_handle->handle;
-
-    int algo        = 0;
-    int m           = 512;
-    int batch_count = 512;
 
     // Host structures
     std::vector<T> hds(m * batch_count, make_DataType<T>(1));
@@ -183,13 +183,6 @@ hipsparseStatus_t testing_gpsv_interleaved_batch(Arguments arg)
     T* ddu = (T*)ddu_managed.get();
     T* ddw = (T*)ddw_managed.get();
     T* dx  = (T*)dx_managed.get();
-
-    if(!dds || !ddl || !dd || !ddu || !ddw || !dx)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!dds || !ddl || !dd || !ddu || !ddw || !dx");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
 
     // copy data from CPU to device
     CHECK_HIP_ERROR(hipMemcpy(dds, hds.data(), sizeof(T) * m * batch_count, hipMemcpyHostToDevice));

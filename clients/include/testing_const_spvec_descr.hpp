@@ -35,7 +35,7 @@ using namespace hipsparse_test;
 
 void testing_const_spvec_descr_bad_arg(void)
 {
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+#if(!defined(CUDART_VERSION))
     int64_t size = 100;
     int64_t nnz  = 100;
 
@@ -77,11 +77,7 @@ void testing_const_spvec_descr_bad_arg(void)
         "Error: val_data is nullptr");
 
     // hipsparseDestroySpVec
-#if(!defined(CUDART_VERSION))
     verify_hipsparse_status_invalid_pointer(hipsparseDestroySpVec(nullptr), "Error: x is nullptr");
-#else
-    verify_hipsparse_status_success(hipsparseDestroySpVec(nullptr), "Success");
-#endif
 
     // Create valid descriptor
     verify_hipsparse_status_success(

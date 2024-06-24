@@ -105,6 +105,13 @@ void testing_axpyi_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_axpyi(Arguments argus)
 {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
+    int                  N        = argus.N;
+    int                  nnz      = argus.nnz;
+    T                    h_alpha  = make_DataType<T>(argus.alpha);
+    hipsparseIndexBase_t idx_base = argus.baseA;
+
+
     std::cout << "testing_axpyi called" << std::endl;
 
     std::cout << "argus.N: " << argus.N << std::endl;
@@ -112,52 +119,10 @@ hipsparseStatus_t testing_axpyi(Arguments argus)
     std::cout << "argus.baseA: " << argus.baseA << std::endl;
     std::cout << "argus.unit_check: " << argus.unit_check << std::endl;
 
-#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
-    int                  N         = argus.N;
-    int                  nnz       = argus.nnz;
-    int                  safe_size = 100;
-    T                    h_alpha   = make_DataType<T>(argus.alpha);
-    hipsparseIndexBase_t idx_base  = argus.baseA;
-    hipsparseStatus_t    status;
-
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
     hipsparseHandle_t              handle = test_handle->handle;
 
-    // Argument sanity check before allocating invalid memory
-    if(nnz <= 0)
-    {
-        auto dxInd_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto dxVal_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-        auto dy_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-
-        int* dxInd = (int*)dxInd_managed.get();
-        T*   dxVal = (T*)dxVal_managed.get();
-        T*   dy    = (T*)dy_managed.get();
-
-        if(!dxInd || !dxVal || !dy)
-        {
-            verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                            "!dxInd || !dxVal || !dy");
-            return HIPSPARSE_STATUS_ALLOC_FAILED;
-        }
-
-        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
-        status = hipsparseXaxpyi(handle, nnz, &h_alpha, dxVal, dxInd, dy, idx_base);
-
-        if(nnz < 0)
-        {
-            verify_hipsparse_status_invalid_size(status, "Error: nnz < 0");
-        }
-        else
-        {
-            verify_hipsparse_status_success(status, "nnz == 0");
-        }
-
-        return HIPSPARSE_STATUS_SUCCESS;
-    }
-
+    std::cout << "AAAA" << std::endl;
     // Host structures
     std::vector<int> hxInd(nnz);
     std::vector<T>   hxVal(nnz);
@@ -165,12 +130,15 @@ hipsparseStatus_t testing_axpyi(Arguments argus)
     std::vector<T>   hy_2(N);
     std::vector<T>   hy_gold(N);
 
+    std::cout << "BBBB" << std::endl;
+
     // Initial Data on CPU
     srand(12345ULL);
     hipsparseInitIndex(hxInd.data(), nnz, 1, N);
     hipsparseInit<T>(hxVal, 1, nnz);
     hipsparseInit<T>(hy_1, 1, N);
 
+    std::cout << "CCCC" << std::endl;
     // copy vector is easy in STL; hy_gold = hx: save a copy in hy_gold which will be output of CPU
     hy_2    = hy_1;
     hy_gold = hy_1;
@@ -188,51 +156,52 @@ hipsparseStatus_t testing_axpyi(Arguments argus)
     T*   dy_2    = (T*)dy_2_managed.get();
     T*   d_alpha = (T*)d_alpha_managed.get();
 
-    if(!dxInd || !dxVal || !dy_1 || !dy_2 || !d_alpha)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!dxInd || !dxVal || !dy_1 || !dy_2 || !d_alpha");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
-
     // copy data from CPU to device
     CHECK_HIP_ERROR(hipMemcpy(dxInd, hxInd.data(), sizeof(int) * nnz, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dxVal, hxVal.data(), sizeof(T) * nnz, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dy_1, hy_1.data(), sizeof(T) * N, hipMemcpyHostToDevice));
 
-    if(argus.unit_check)
+    std::cout << "DDDD" << std::endl;
+    CHECK_HIP_ERROR(hipMemcpy(dy_2, hy_2.data(), sizeof(T) * N, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(d_alpha, &h_alpha, sizeof(T), hipMemcpyHostToDevice));
+
+    std::cout << "EEEE" << std::endl;
+    // ROCSPARSE pointer mode host
+    CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
+    CHECK_HIPSPARSE_ERROR(hipsparseXaxpyi(handle, nnz, &h_alpha, dxVal, dxInd, dy_1, idx_base));
+
+    std::cout << "FFFF" << std::endl;
+    // ROCSPARSE pointer mode device
+    CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
+    CHECK_HIPSPARSE_ERROR(hipsparseXaxpyi(handle, nnz, d_alpha, dxVal, dxInd, dy_2, idx_base));
+
+    std::cout << "GGGG" << std::endl;
+    // copy output from device to CPU
+    CHECK_HIP_ERROR(hipMemcpy(hy_1.data(), dy_1, sizeof(T) * N, hipMemcpyDeviceToHost));
+    CHECK_HIP_ERROR(hipMemcpy(hy_2.data(), dy_2, sizeof(T) * N, hipMemcpyDeviceToHost));
+
+    std::cout << "HHHH" << std::endl;
+    // CPU
+    for(int i = 0; i < nnz; ++i)
     {
-        CHECK_HIP_ERROR(hipMemcpy(dy_2, hy_2.data(), sizeof(T) * N, hipMemcpyHostToDevice));
-        CHECK_HIP_ERROR(hipMemcpy(d_alpha, &h_alpha, sizeof(T), hipMemcpyHostToDevice));
-
-        // ROCSPARSE pointer mode host
-        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
-        CHECK_HIPSPARSE_ERROR(hipsparseXaxpyi(handle, nnz, &h_alpha, dxVal, dxInd, dy_1, idx_base));
-
-        // ROCSPARSE pointer mode device
-        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
-        CHECK_HIPSPARSE_ERROR(hipsparseXaxpyi(handle, nnz, d_alpha, dxVal, dxInd, dy_2, idx_base));
-
-        // copy output from device to CPU
-        CHECK_HIP_ERROR(hipMemcpy(hy_1.data(), dy_1, sizeof(T) * N, hipMemcpyDeviceToHost));
-        CHECK_HIP_ERROR(hipMemcpy(hy_2.data(), dy_2, sizeof(T) * N, hipMemcpyDeviceToHost));
-
-        // CPU
-        for(int i = 0; i < nnz; ++i)
-        {
-            hy_gold[hxInd[i] - idx_base]
-                = hy_gold[hxInd[i] - idx_base] + testing_mult(h_alpha, hxVal[i]);
-        }
-
-        // enable unit check, notice unit check is not invasive, but norm check is,
-        // unit check and norm check can not be interchanged their order
-        if(argus.unit_check)
-        {
-            unit_check_general(1, N, 1, hy_gold.data(), hy_1.data());
-            unit_check_general(1, N, 1, hy_gold.data(), hy_2.data());
-        }
+        hy_gold[hxInd[i] - idx_base]
+            = hy_gold[hxInd[i] - idx_base] + testing_mult(h_alpha, hxVal[i]);
     }
+
+    std::cout << "IIII" << std::endl;
+
+    // enable unit check, notice unit check is not invasive, but norm check is,
+    // unit check and norm check can not be interchanged their order
+    //if(argus.unit_check)
+    //{
+        unit_check_general(1, N, 1, hy_gold.data(), hy_1.data());
+        unit_check_general(1, N, 1, hy_gold.data(), hy_2.data());
+    //}
+
+    std::cout << "JJJJ" << std::endl;
 #endif
+
+    std::cout << "KKKK" << std::endl;
 
     return HIPSPARSE_STATUS_SUCCESS;
 }

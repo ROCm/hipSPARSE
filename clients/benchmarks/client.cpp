@@ -45,6 +45,7 @@ int main(int argc, char* argv[])
         // Run benchmark.
         std::cout << "Run benchmark" << std::endl;
         hipsparseStatus_t status = bench.run();
+        std::cout << "status: " << status << std::endl;
         if(status != HIPSPARSE_STATUS_SUCCESS)
         {
             return status;

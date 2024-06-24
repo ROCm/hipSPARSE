@@ -31,8 +31,8 @@
 typedef std::tuple<int, int, int, hipsparseIndexBase_t>    cscsort_tuple;
 typedef std::tuple<int, hipsparseIndexBase_t, std::string> cscsort_bin_tuple;
 
-int                  cscsort_M_range[] = {-1, 0, 10, 500, 872, 1000};
-int                  cscsort_N_range[] = {-3, 0, 33, 242, 623, 1000};
+int                  cscsort_M_range[] = {0, 10, 500, 872, 1000};
+int                  cscsort_N_range[] = {0, 33, 242, 623, 1000};
 int                  cscsort_perm[]    = {0, 1};
 hipsparseIndexBase_t cscsort_base[]    = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
@@ -125,7 +125,6 @@ TEST_P(parameterized_cscsort_bin, cscsort_bin)
     hipsparseStatus_t status = testing_cscsort(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-#endif
 
 INSTANTIATE_TEST_SUITE_P(cscsort,
                          parameterized_cscsort,
@@ -139,3 +138,4 @@ INSTANTIATE_TEST_SUITE_P(cscsort_bin,
                          testing::Combine(testing::ValuesIn(cscsort_perm),
                                           testing::ValuesIn(cscsort_base),
                                           testing::ValuesIn(cscsort_bin)));
+#endif

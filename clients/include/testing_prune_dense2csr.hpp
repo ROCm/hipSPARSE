@@ -258,7 +258,6 @@ hipsparseStatus_t testing_prune_dense2csr(Arguments argus)
     int                  LDA       = argus.lda;
     T                    threshold = static_cast<T>(argus.threshold);
     hipsparseIndexBase_t idx_base  = argus.baseA;
-    hipsparseStatus_t    status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -268,6 +267,13 @@ hipsparseStatus_t testing_prune_dense2csr(Arguments argus)
 
     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatIndexBase(descr, idx_base));
+
+    if(M == 0 || N == 0)
+    {
+#ifdef __HIP_PLATFORM_NVIDIA__
+        return HIPSPARSE_STATUS_SUCCESS;
+#endif
+    }
 
     // Allocate host memory
     std::vector<T>   h_A(LDA * N);
@@ -284,13 +290,6 @@ hipsparseStatus_t testing_prune_dense2csr(Arguments argus)
     int* d_nnz_total_dev_host_ptr = (int*)d_nnz_total_dev_host_ptr_managed.get();
     int* d_csr_row_ptr            = (int*)d_csr_row_ptr_managed.get();
 
-    if(!d_A || !d_nnz_total_dev_host_ptr || !d_csr_row_ptr)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!d_A || !d_nnz_total_dev_host_ptr || !d_csr_row_ptr");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
-
     // Initialize the entire allocated memory.
     for(int i = 0; i < LDA; ++i)
     {
@@ -302,7 +301,7 @@ hipsparseStatus_t testing_prune_dense2csr(Arguments argus)
 
     // Initialize a random dense matrix.
     srand(0);
-    gen_dense_random_sparsity_pattern(M, N, h_A.data(), LDA, 0.2);
+    gen_dense_random_sparsity_pattern(M, N, h_A.data(), LDA, HIPSPARSE_ORDER_COL, 0.2);
 
     // Transfer.
     CHECK_HIP_ERROR(hipMemcpy(d_A, h_A.data(), sizeof(T) * LDA * N, hipMemcpyHostToDevice));
@@ -327,12 +326,6 @@ hipsparseStatus_t testing_prune_dense2csr(Arguments argus)
     auto d_threshold_managed = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
 
     T* d_threshold = (T*)d_threshold_managed.get();
-
-    if(!d_threshold)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!d_threshold");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
 
     CHECK_HIP_ERROR(hipMemcpy(d_threshold, &threshold, sizeof(T), hipMemcpyHostToDevice));
 
@@ -382,13 +375,6 @@ hipsparseStatus_t testing_prune_dense2csr(Arguments argus)
 
             int* d_csr_col_ind = (int*)d_csr_col_ind_managed.get();
             T*   d_csr_val     = (T*)d_csr_val_managed.get();
-
-            if(!d_csr_col_ind || !d_csr_val)
-            {
-                verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                                "!d_csr_col_ind || !d_csr_val");
-                return HIPSPARSE_STATUS_ALLOC_FAILED;
-            }
 
             CHECK_HIPSPARSE_ERROR(hipsparseXpruneDense2csr(handle,
                                                            M,

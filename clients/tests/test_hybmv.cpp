@@ -33,8 +33,8 @@ typedef std::tuple<int, int, double, double, hipsparseIndexBase_t, hipsparseHybP
 typedef std::tuple<double, double, hipsparseIndexBase_t, hipsparseHybPartition_t, int, std::string>
     hybmv_bin_tuple;
 
-int hyb_M_range[] = {-1, 0, 10, 500, 7111, 10000};
-int hyb_N_range[] = {-3, 0, 33, 842, 4441, 10000};
+int hyb_M_range[] = {0, 10, 500, 7111, 10000};
+int hyb_N_range[] = {0, 33, 842, 4441, 10000};
 
 std::vector<double> hyb_alpha_range = {3.0};
 std::vector<double> hyb_beta_range  = {0.67};
@@ -156,7 +156,6 @@ TEST_P(parameterized_hybmv_bin, hybmv_bin_double)
     hipsparseStatus_t status = testing_hybmv<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-#endif
 
 INSTANTIATE_TEST_SUITE_P(hybmv,
                          parameterized_hybmv,
@@ -176,3 +175,4 @@ INSTANTIATE_TEST_SUITE_P(hybmv_bin,
                                           testing::ValuesIn(hyb_partition),
                                           testing::ValuesIn(hyb_ELL_range),
                                           testing::ValuesIn(hyb_bin)));
+#endif

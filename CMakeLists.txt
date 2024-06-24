@@ -115,8 +115,8 @@ endif()
 
 
 # Setup version
-rocm_setup_version(VERSION 3.0.1)
-set(hipsparse_SOVERSION 1.0.0)
+rocm_setup_version(VERSION 3.1.1)
+set(hipsparse_SOVERSION 1.1.0)
 
 # hipSPARSE library
 add_subdirectory(library)
@@ -128,19 +128,51 @@ if(BUILD_CLIENTS_SAMPLES OR BUILD_CLIENTS_TESTS)
     rocm_read_os_release(CLIENTS_OS_VERSION VERSION_ID)
   endif()
   message(STATUS "OS: ${CLIENTS_OS} ${CLIENTS_OS_VERSION}")
-  set(GFORTRAN_PKG "gcc-gfortran")
-  set(OPENMP_PKG "libgomp")
-  if(CLIENTS_OS STREQUAL "sles")
-    set(GFORTRAN_PKG "gcc-fortran")
-    set(OPENMP_PKG "libgomp1")
-  elseif(CLIENTS_OS STREQUAL "centos" AND CLIENTS_OS_VERSION EQUAL 7)
-    set(GFORTRAN_PKG "devtoolset-7-gcc-gfortran")
+  set(GFORTRAN_RPM "libgfortran4")
+  set(GFORTRAN_DEB "libgfortran4")
+  find_package(OpenMP QUIET)
+  if(OPENMP_FOUND)
+    set(OPENMP_RPM "libgomp")
+    set(OPENMP_DEB "libomp-dev")
   endif()
-  add_subdirectory(clients)
+  if(CLIENTS_OS STREQUAL "centos" OR CLIENTS_OS STREQUAL "rhel")
+    if(CLIENTS_OS_VERSION VERSION_GREATER_EQUAL "8")
+      set(GFORTRAN_RPM "libgfortran")
+    endif()
+  elseif(CLIENTS_OS STREQUAL "ubuntu" AND CLIENTS_OS_VERSION VERSION_GREATER_EQUAL "20.04")
+    set(GFORTRAN_DEB "libgfortran5")
+  elseif(CLIENTS_OS STREQUAL "sles" AND OPENMP_FOUND)
+    set(OPENMP_RPM "libgomp1")
+  elseif(CLIENTS_OS STREQUAL "mariner")
+    set(GFORTRAN_RPM "gfortran")
+  endif()
+
   rocm_package_setup_component(clients)
+  rocm_package_setup_client_component(clients-common)
   if(BUILD_CLIENTS_TESTS)
-    rocm_package_setup_client_component(tests)
+    rocm_package_setup_client_component(
+      tests
+      DEPENDS
+        COMPONENT clients-common
+        DEB "${GFORTRAN_DEB}"
+        RPM "${GFORTRAN_RPM}")
+    rocm_package_setup_client_component(
+      tests
+      DEPENDS
+        COMPONENT clients-common
+        DEB "${OPENMP_DEB}"
+        RPM "${OPENMP_RPM}"
+    )
   endif()
+  if(BUILD_CLIENTS_SAMPLES)
+    rocm_package_setup_client_component(
+      samples
+      DEPENDS
+        COMPONENT clients-common
+        DEB "${GFORTRAN_DEB}"
+        RPM "${GFORTRAN_RPM}")
+  endif()
+
   if( BUILD_CLIENTS_BENCHMARKS )
   rocm_package_setup_client_component(
     benchmarks
@@ -150,17 +182,18 @@ if(BUILD_CLIENTS_SAMPLES OR BUILD_CLIENTS_TESTS)
       RPM "${OPENMP_RPM}"
   )
   endif()
+  
+  add_subdirectory( clients )
+
   if(NOT WIN32)
-    rocm_package_add_rpm_dependencies(COMPONENT tests DEPENDS "${GFORTRAN_PKG}")
-    rocm_package_add_deb_dependencies(COMPONENT tests DEPENDS "gfortran")
-    rocm_package_add_rpm_dependencies(COMPONENT benchmarks DEPENDS "${GFORTRAN_PKG}")
-    rocm_package_add_deb_dependencies(COMPONENT benchmarks DEPENDS "gfortran")
+    rocm_package_add_rpm_dependencies(COMPONENT tests DEPENDS "${GFORTRAN_RPM}")
+    rocm_package_add_deb_dependencies(COMPONENT tests DEPENDS "${GFORTRAN_DEB}")
+    rocm_package_add_rpm_dependencies(COMPONENT samples DEPENDS "${GFORTRAN_RPM}")
+    rocm_package_add_deb_dependencies(COMPONENT samples DEPENDS "${GFORTRAN_DEB}")
   endif()
   if(TARGET OpenMP::OpenMP_CXX)
-    rocm_package_add_rpm_dependencies(COMPONENT tests DEPENDS "${OPENMP_PKG}")
-    rocm_package_add_deb_dependencies(COMPONENT tests DEPENDS "libomp-dev")
-    rocm_package_add_rpm_dependencies(COMPONENT benchmarks DEPENDS "${OPENMP_PKG}")
-    rocm_package_add_deb_dependencies(COMPONENT benchmarks DEPENDS "libomp-dev")
+    rocm_package_add_rpm_dependencies(COMPONENT tests DEPENDS "${OPENMP_RPM}")
+    rocm_package_add_deb_dependencies(COMPONENT tests DEPENDS "${OPENMP_DEB}")
   endif()
 endif()
 

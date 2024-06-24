@@ -22,25 +22,56 @@
  * ************************************************************************ */
 
 #include "testing_gather.hpp"
+#include "utility.hpp"
 
 #include <hipsparse.h>
+#include <string>
+#include <vector>
+
+typedef std::tuple<int, int, hipsparseIndexBase_t> gather_tuple;
+
+int gather_N_range[]   = {15332};
+int gather_nnz_range[] = {500};
+
+hipsparseIndexBase_t gather_base[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+
+class parameterized_gather : public testing::TestWithParam<gather_tuple>
+{
+protected:
+    parameterized_gather() {}
+    virtual ~parameterized_gather() {}
+    virtual void SetUp() {}
+    virtual void TearDown() {}
+};
+
+Arguments setup_gather_arguments(gather_tuple tup)
+{
+    Arguments arg;
+    arg.N        = std::get<0>(tup);
+    arg.nnz      = std::get<1>(tup);
+    arg.baseA    = std::get<2>(tup);
+    arg.timing   = 0;
+    return arg;
+}
 
 // Only run tests for CUDA 11.1 or greater
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
-TEST(gather_bad_arg, gather_float)
+TEST(gather_bad_arg, gather)
 {
     testing_gather_bad_arg();
 }
 
-TEST(gather, gather_i32_float)
+TEST_P(parameterized_gather, gather_float)
 {
-    hipsparseStatus_t status = testing_gather<int32_t, float>();
+    Arguments arg = setup_gather_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_gather<int, float>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-TEST(gather, gather_i64_double)
-{
-    hipsparseStatus_t status = testing_gather<int64_t, double>();
-    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
-}
+INSTANTIATE_TEST_SUITE_P(gather,
+                         parameterized_gather,
+                         testing::Combine(testing::ValuesIn(gather_N_range),
+                                          testing::ValuesIn(gather_nnz_range),
+                                          testing::ValuesIn(gather_base)));
 #endif

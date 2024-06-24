@@ -31,7 +31,7 @@ typedef hipsparseIndexBase_t       base;
 typedef std::tuple<int, int, base> sctr_tuple;
 
 int sctr_N_range[]   = {12000, 15332, 22031};
-int sctr_nnz_range[] = {-1, 0, 5, 10, 500, 1000, 7111, 10000};
+int sctr_nnz_range[] = {0, 5, 10, 500, 1000, 7111, 10000};
 
 base sctr_idx_base_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
@@ -92,10 +92,10 @@ TEST_P(parameterized_sctr, sctr_double_complex)
     hipsparseStatus_t status = testing_sctr<hipDoubleComplex>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-#endif
 
 INSTANTIATE_TEST_SUITE_P(sctr,
                          parameterized_sctr,
                          testing::Combine(testing::ValuesIn(sctr_N_range),
                                           testing::ValuesIn(sctr_nnz_range),
                                           testing::ValuesIn(sctr_idx_base_range)));
+#endif

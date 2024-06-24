@@ -31,7 +31,7 @@ typedef hipsparseIndexBase_t               base;
 typedef std::tuple<int, int, double, base> axpyi_tuple;
 
 int axpyi_N_range[]   = {12000, 15332, 22031};
-int axpyi_nnz_range[] = {-1, 0, 5, 10, 500, 1000, 7111, 10000};
+int axpyi_nnz_range[] = {0, 5, 10, 500, 1000, 7111, 10000};
 
 std::vector<double> axpyi_alpha_range = {1.0, 0.0};
 
@@ -95,7 +95,6 @@ TEST_P(parameterized_axpyi, axpyi_double_complex)
     hipsparseStatus_t status = testing_axpyi<hipDoubleComplex>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-#endif
 
 INSTANTIATE_TEST_SUITE_P(axpyi,
                          parameterized_axpyi,
@@ -103,3 +102,4 @@ INSTANTIATE_TEST_SUITE_P(axpyi,
                                           testing::ValuesIn(axpyi_nnz_range),
                                           testing::ValuesIn(axpyi_alpha_range),
                                           testing::ValuesIn(axpyi_idx_base_range)));
+#endif

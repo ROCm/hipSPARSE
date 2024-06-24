@@ -37,7 +37,7 @@ using namespace hipsparse_test;
 
 void testing_const_spmat_descr_bad_arg(void)
 {
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12001)
+#if(!defined(CUDART_VERSION))
     int64_t rows          = 100;
     int64_t cols          = 100;
     int64_t nnz           = 100;
@@ -176,7 +176,6 @@ void testing_const_spmat_descr_bad_arg(void)
         "Error: val_data is nullptr");
 
     // hipsparseCreateConstBlockedEll
-#if(!defined(CUDART_VERSION))
     verify_hipsparse_status_invalid_pointer(hipsparseCreateConstBlockedEll(nullptr,
                                                                            rows,
                                                                            cols,
@@ -188,7 +187,6 @@ void testing_const_spmat_descr_bad_arg(void)
                                                                            idxBase,
                                                                            dataType),
                                             "Error: A is nullptr");
-#endif
     verify_hipsparse_status_invalid_size(
         hipsparseCreateConstBlockedEll(
             &A, -1, cols, ell_blocksize, ell_cols, col_data, val_data, colType, idxBase, dataType),
@@ -220,11 +218,7 @@ void testing_const_spmat_descr_bad_arg(void)
         "Error: ellValue is nullptr");
 
     // hipsparseDestroySpMat
-#if(!defined(CUDART_VERSION))
     verify_hipsparse_status_invalid_pointer(hipsparseDestroySpMat(nullptr), "Error: A is nullptr");
-#else
-    verify_hipsparse_status_success(hipsparseDestroySpMat(nullptr), "Success");
-#endif
 
     // Create valid descriptors
     hipsparseConstSpMatDescr_t coo;
@@ -277,7 +271,6 @@ void testing_const_spmat_descr_bad_arg(void)
     const void* val_ptr;
 
     // hipsparseConstCooGet
-#if(!defined(CUDART_VERSION))
     verify_hipsparse_status_invalid_pointer(hipsparseConstCooGet(nullptr,
                                                                  &rows,
                                                                  &cols,
@@ -289,7 +282,6 @@ void testing_const_spmat_descr_bad_arg(void)
                                                                  &idxBase,
                                                                  &dataType),
                                             "Error: A is nullptr");
-#endif
     verify_hipsparse_status_invalid_pointer(
         hipsparseConstCooGet(
             coo, nullptr, &cols, &nnz, &row_ptr, &col_ptr, &val_ptr, &rowType, &idxBase, &dataType),
@@ -335,7 +327,6 @@ void testing_const_spmat_descr_bad_arg(void)
         "Error: dataType is nullptr");
 
     // hipsparseConstCsrGet
-#if(!defined(CUDART_VERSION))
     verify_hipsparse_status_invalid_pointer(hipsparseConstCsrGet(nullptr,
                                                                  &rows,
                                                                  &cols,
@@ -348,7 +339,6 @@ void testing_const_spmat_descr_bad_arg(void)
                                                                  &idxBase,
                                                                  &dataType),
                                             "Error: A is nullptr");
-#endif
     verify_hipsparse_status_invalid_pointer(hipsparseConstCsrGet(csr,
                                                                  nullptr,
                                                                  &cols,
@@ -445,7 +435,6 @@ void testing_const_spmat_descr_bad_arg(void)
                                                                  &idxBase,
                                                                  &dataType),
                                             "Error: colType is nullptr");
-#if(!defined(CUDART_VERSION))
     verify_hipsparse_status_invalid_pointer(hipsparseConstCsrGet(csr,
                                                                  &rows,
                                                                  &cols,
@@ -458,7 +447,6 @@ void testing_const_spmat_descr_bad_arg(void)
                                                                  nullptr,
                                                                  &dataType),
                                             "Error: idxBase is nullptr");
-#endif
     verify_hipsparse_status_invalid_pointer(hipsparseConstCsrGet(csr,
                                                                  &rows,
                                                                  &cols,
@@ -473,7 +461,6 @@ void testing_const_spmat_descr_bad_arg(void)
                                             "Error: dataType is nullptr");
 
     // hipsparseConstCsrGet
-#if(!defined(CUDART_VERSION))
     verify_hipsparse_status_invalid_pointer(hipsparseConstCscGet(nullptr,
                                                                  &rows,
                                                                  &cols,
@@ -486,7 +473,6 @@ void testing_const_spmat_descr_bad_arg(void)
                                                                  &idxBase,
                                                                  &dataType),
                                             "Error: A is nullptr");
-#endif
     verify_hipsparse_status_invalid_pointer(hipsparseConstCscGet(csc,
                                                                  nullptr,
                                                                  &cols,
@@ -583,7 +569,6 @@ void testing_const_spmat_descr_bad_arg(void)
                                                                  &idxBase,
                                                                  &dataType),
                                             "Error: rowType is nullptr");
-#if(!defined(CUDART_VERSION))
     verify_hipsparse_status_invalid_pointer(hipsparseConstCscGet(csc,
                                                                  &rows,
                                                                  &cols,
@@ -596,7 +581,6 @@ void testing_const_spmat_descr_bad_arg(void)
                                                                  nullptr,
                                                                  &dataType),
                                             "Error: idxBase is nullptr");
-#endif
     verify_hipsparse_status_invalid_pointer(hipsparseConstCscGet(csc,
                                                                  &rows,
                                                                  &cols,
@@ -611,7 +595,6 @@ void testing_const_spmat_descr_bad_arg(void)
                                             "Error: dataType is nullptr");
 
     // hipsparseConstBlockedEllGet
-#if(!defined(CUDART_VERSION))
     verify_hipsparse_status_invalid_pointer(hipsparseConstBlockedEllGet(nullptr,
                                                                         &rows,
                                                                         &cols,
@@ -623,7 +606,6 @@ void testing_const_spmat_descr_bad_arg(void)
                                                                         &idxBase,
                                                                         &dataType),
                                             "Error: A is nullptr");
-#endif
     verify_hipsparse_status_invalid_pointer(hipsparseConstBlockedEllGet(bell,
                                                                         nullptr,
                                                                         &cols,
@@ -725,7 +707,6 @@ void testing_const_spmat_descr_bad_arg(void)
                                             "Error: valueType is nullptr");
 
     // hipsparseSpMatGetSize
-#if(!defined(CUDART_VERSION))
     verify_hipsparse_status_invalid_pointer(hipsparseSpMatGetSize(nullptr, &rows, &cols, &nnz),
                                             "Error: A is nullptr");
     verify_hipsparse_status_invalid_pointer(hipsparseSpMatGetSize(coo, nullptr, &cols, &nnz),
@@ -734,33 +715,24 @@ void testing_const_spmat_descr_bad_arg(void)
                                             "Error: cols is nullptr");
     verify_hipsparse_status_invalid_pointer(hipsparseSpMatGetSize(coo, &rows, &cols, nullptr),
                                             "Error: nnz is nullptr");
-#endif
 
     // hipsparseSpMatGetFormat
-#if(!defined(CUDART_VERSION))
     verify_hipsparse_status_invalid_pointer(hipsparseSpMatGetFormat(nullptr, &format),
                                             "Error: A is nullptr");
     verify_hipsparse_status_invalid_pointer(hipsparseSpMatGetFormat(coo, nullptr),
                                             "Error: format is nullptr");
-#endif
 
     // hipsparseSpMatGetIndexBase
-#if(!defined(CUDART_VERSION))
     verify_hipsparse_status_invalid_pointer(hipsparseSpMatGetIndexBase(nullptr, &idxBase),
                                             "Error: A is nullptr");
     verify_hipsparse_status_invalid_pointer(hipsparseSpMatGetIndexBase(coo, nullptr),
                                             "Error: idxBase is nullptr");
-#endif
 
     // hipsparseConstSpMatGetValues
-#if(!defined(CUDART_VERSION))
     verify_hipsparse_status_invalid_pointer(hipsparseConstSpMatGetValues(nullptr, &val_ptr),
                                             "Error: A is nullptr");
     verify_hipsparse_status_invalid_pointer(hipsparseConstSpMatGetValues(coo, nullptr),
                                             "Error: val_ptr is nullptr");
-#endif
-
-#if(!defined(CUDART_VERSION))
     int batch_count = 100;
 
     // hipsparseSpMatGetStridedBatch
@@ -770,7 +742,6 @@ void testing_const_spmat_descr_bad_arg(void)
                                             "Error: batch count is nullptr");
     verify_hipsparse_status_invalid_pointer(hipsparseSpMatGetStridedBatch(csr, nullptr),
                                             "Error: batch count is nullptr");
-#endif
 
     // Destroy valid descriptors
     verify_hipsparse_status_success(hipsparseDestroySpMat(coo), "Success");

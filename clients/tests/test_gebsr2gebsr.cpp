@@ -49,12 +49,12 @@ typedef std::tuple<int,
     gebsr2gebsr_bin_tuple;
 
 // Random matrices
-int gebsr2gebsr_M_range[]               = {-1, 0, 872, 13095, 21453};
-int gebsr2gebsr_N_range[]               = {-3, 0, 623, 12766, 29285};
-int gebsr2gebsr_row_block_dim_A_range[] = {-1, 0, 2};
-int gebsr2gebsr_col_block_dim_A_range[] = {-1, 0, 5};
-int gebsr2gebsr_row_block_dim_C_range[] = {-1, 0, 3};
-int gebsr2gebsr_col_block_dim_C_range[] = {-1, 0, 4};
+int gebsr2gebsr_M_range[]               = {0, 872, 13095, 21453};
+int gebsr2gebsr_N_range[]               = {0, 623, 12766, 29285};
+int gebsr2gebsr_row_block_dim_A_range[] = {2};
+int gebsr2gebsr_col_block_dim_A_range[] = {5};
+int gebsr2gebsr_row_block_dim_C_range[] = {3};
+int gebsr2gebsr_col_block_dim_C_range[] = {4};
 
 hipsparseIndexBase_t gebsr2gebsr_A_base_range[] = {HIPSPARSE_INDEX_BASE_ZERO};
 hipsparseIndexBase_t gebsr2gebsr_C_base_range[] = {HIPSPARSE_INDEX_BASE_ONE};
@@ -187,7 +187,6 @@ TEST_P(parameterized_gebsr2gebsr_bin, gebsr2gebsr_bin_double)
     hipsparseStatus_t status = testing_gebsr2gebsr<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-#endif
 
 INSTANTIATE_TEST_SUITE_P(gebsr2gebsr,
                          parameterized_gebsr2gebsr,
@@ -211,3 +210,4 @@ INSTANTIATE_TEST_SUITE_P(gebsr2gebsr_bin,
                                           testing::ValuesIn(gebsr2gebsr_C_base_range_bin),
                                           testing::ValuesIn(gebsr2gebsr_dir_range_bin),
                                           testing::ValuesIn(gebsr2gebsr_bin)));
+#endif

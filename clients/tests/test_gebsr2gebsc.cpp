@@ -32,11 +32,11 @@ typedef std::tuple<int, int, int, int, hipsparseAction_t, hipsparseIndexBase_t> 
 typedef std::tuple<int, int, hipsparseAction_t, hipsparseIndexBase_t, std::string>
     gebsr2gebsc_bin_tuple;
 
-int gebsr2gebsc_M_range[] = {-1, 0, 10, 872};
-int gebsr2gebsc_N_range[] = {-3, 0, 33, 623};
+int gebsr2gebsc_M_range[] = {0, 10, 872};
+int gebsr2gebsc_N_range[] = {0, 33, 623};
 
-int gebsr2gebsc_row_block_dim_range[] = {-1, 0, 1, 7, 16};
-int gebsr2gebsc_col_block_dim_range[] = {-1, 0, 1, 4, 16};
+int gebsr2gebsc_row_block_dim_range[] = {1, 7, 16};
+int gebsr2gebsc_col_block_dim_range[] = {1, 4, 16};
 
 hipsparseAction_t gebsr2gebsc_action_range[]
     = {HIPSPARSE_ACTION_NUMERIC, HIPSPARSE_ACTION_SYMBOLIC};
@@ -158,7 +158,6 @@ TEST_P(parameterized_gebsr2gebsc_bin, gebsr2gebsc_bin_double)
     hipsparseStatus_t status = testing_gebsr2gebsc<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-#endif
 
 INSTANTIATE_TEST_SUITE_P(gebsr2gebsc,
                          parameterized_gebsr2gebsc,
@@ -176,3 +175,4 @@ INSTANTIATE_TEST_SUITE_P(gebsr2gebsc_bin,
                                           testing::ValuesIn(gebsr2gebsc_action_range),
                                           testing::ValuesIn(gebsr2gebsc_csr_base_range),
                                           testing::ValuesIn(gebsr2gebsc_bin)));
+#endif

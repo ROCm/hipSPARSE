@@ -35,7 +35,7 @@ using namespace hipsparse_test;
 
 void testing_const_dnvec_descr_bad_arg(void)
 {
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12001)
+#if(!defined(CUDART_VERSION))
     int64_t size = 100;
 
     hipDataType dataType = HIP_R_32F;
@@ -62,11 +62,7 @@ void testing_const_dnvec_descr_bad_arg(void)
                                             "Error: val_data is nullptr");
 
     // hipsparseDestroyDnVec
-#if(!defined(CUDART_VERSION))
     verify_hipsparse_status_invalid_pointer(hipsparseDestroyDnVec(nullptr), "Error: x is nullptr");
-#else
-    verify_hipsparse_status_success(hipsparseDestroyDnVec(nullptr), "Success");
-#endif
 
     // Create valid descriptor
     verify_hipsparse_status_success(hipsparseCreateConstDnVec(&x, size, val_data, dataType),

@@ -44,7 +44,7 @@ private:
     int           b_action{};
     int           b_part{};
     int           b_dir{};
-    int           b_order{};
+    int           b_orderA{};
     int           b_orderB{};
     int           b_orderC{};
     int           b_formatA{};

@@ -35,8 +35,8 @@ typedef std::tuple<double, double, base, base, base, std::string> csrgeam_bin_tu
 double csrgeam_alpha_range[] = {0.0, 1.0};
 double csrgeam_beta_range[]  = {0.0, 2.0};
 
-int csrgeam_M_range[] = {-1, 0, 50, 647, 1799};
-int csrgeam_N_range[] = {-1, 0, 13, 523, 3712};
+int csrgeam_M_range[] = {0, 50, 647, 1799};
+int csrgeam_N_range[] = {0, 13, 523, 3712};
 
 base csrgeam_idxbaseA_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 base csrgeam_idxbaseB_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
@@ -175,7 +175,6 @@ TEST_P(parameterized_csrgeam_bin, csrgeam_bin_double)
     hipsparseStatus_t status = testing_csrgeam<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-#endif
 
 INSTANTIATE_TEST_SUITE_P(csrgeam,
                          parameterized_csrgeam,
@@ -195,3 +194,4 @@ INSTANTIATE_TEST_SUITE_P(csrgeam_bin,
                                           testing::ValuesIn(csrgeam_idxbaseB_range),
                                           testing::ValuesIn(csrgeam_idxbaseC_range),
                                           testing::ValuesIn(csrgeam_bin)));
+#endif

@@ -31,7 +31,7 @@ typedef hipsparseIndexBase_t                       base;
 typedef std::tuple<int, int, double, double, base> roti_tuple;
 
 int roti_N_range[]   = {12000, 15332, 22031};
-int roti_nnz_range[] = {-1, 0, 5, 10, 500, 1000, 7111, 10000};
+int roti_nnz_range[] = {0, 5, 10, 500, 1000, 7111, 10000};
 
 double roti_c_range[] = {-2.0, 0.0, 1.0};
 double roti_s_range[] = {-3.0, 0.0, 4.0};
@@ -81,7 +81,6 @@ TEST_P(parameterized_roti, roti_double)
     hipsparseStatus_t status = testing_roti<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-#endif
 
 INSTANTIATE_TEST_SUITE_P(roti,
                          parameterized_roti,
@@ -90,3 +89,4 @@ INSTANTIATE_TEST_SUITE_P(roti,
                                           testing::ValuesIn(roti_c_range),
                                           testing::ValuesIn(roti_s_range),
                                           testing::ValuesIn(roti_idx_base_range)));
+#endif

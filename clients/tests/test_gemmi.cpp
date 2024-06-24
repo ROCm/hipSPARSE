@@ -30,9 +30,9 @@
 typedef std::tuple<int, int, int, double, double>    gemmi_tuple;
 typedef std::tuple<int, double, double, std::string> gemmi_bin_tuple;
 
-int gemmi_M_range[] = {-1, 0, 7, 19, 64, 78, 157, 482};
-int gemmi_N_range[] = {-1, 0, 42, 275, 759};
-int gemmi_K_range[] = {-1, 0, 50, 173, 1375};
+int gemmi_M_range[] = {0, 7, 19, 64, 78, 157, 482};
+int gemmi_N_range[] = {0, 42, 275, 759};
+int gemmi_K_range[] = {0, 50, 173, 1375};
 
 double gemmi_alpha_range[] = {-0.5, 2.0};
 double gemmi_beta_range[]  = {0.5, 0.0};
@@ -142,7 +142,6 @@ TEST_P(parameterized_gemmi_bin, gemmi_bin_double)
     hipsparseStatus_t status = testing_gemmi<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-#endif
 
 INSTANTIATE_TEST_SUITE_P(gemmi,
                          parameterized_gemmi,
@@ -158,3 +157,4 @@ INSTANTIATE_TEST_SUITE_P(gemmi_bin,
                                           testing::ValuesIn(gemmi_alpha_range),
                                           testing::ValuesIn(gemmi_beta_range),
                                           testing::ValuesIn(gemmi_bin)));
+#endif

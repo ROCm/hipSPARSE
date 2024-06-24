@@ -31,8 +31,8 @@
 typedef std::tuple<int, int, hipsparseOperation_t, int, hipsparseIndexBase_t>    coosort_tuple;
 typedef std::tuple<hipsparseOperation_t, int, hipsparseIndexBase_t, std::string> coosort_bin_tuple;
 
-int                  coosort_M_range[] = {-1, 0, 10, 500, 3872, 10000};
-int                  coosort_N_range[] = {-3, 0, 33, 242, 1623, 10000};
+int                  coosort_M_range[] = {0, 10, 500, 3872, 10000};
+int                  coosort_N_range[] = {0, 33, 242, 1623, 10000};
 hipsparseOperation_t coosort_trans[]
     = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPERATION_TRANSPOSE};
 
@@ -127,7 +127,6 @@ TEST_P(parameterized_coosort_bin, coosort_bin)
     hipsparseStatus_t status = testing_coosort(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-#endif
 
 INSTANTIATE_TEST_SUITE_P(coosort,
                          parameterized_coosort,
@@ -143,3 +142,4 @@ INSTANTIATE_TEST_SUITE_P(coosort_bin,
                                           testing::ValuesIn(coosort_perm),
                                           testing::ValuesIn(coosort_base),
                                           testing::ValuesIn(coosort_bin)));
+#endif

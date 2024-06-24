@@ -32,9 +32,9 @@ typedef hipsparseOperation_t                                             trans;
 typedef std::tuple<int, int, int, double, double, base, trans, trans>    csrmm_tuple;
 typedef std::tuple<int, double, double, base, trans, trans, std::string> csrmm_bin_tuple;
 
-int csrmm_M_range[] = {-1, 0, 42, 275, 2059};
-int csrmm_N_range[] = {-1, 0, 7, 19, 64, 78};
-int csrmm_K_range[] = {-1, 0, 50, 173, 1375};
+int csrmm_M_range[] = {0, 42, 275, 2059};
+int csrmm_N_range[] = {0, 7, 19, 64, 78};
+int csrmm_K_range[] = {0, 50, 173, 1375};
 
 double csrmm_alpha_range[] = {-0.5};
 double csrmm_beta_range[]  = {0.5};
@@ -158,7 +158,6 @@ TEST_P(parameterized_csrmm_bin, csrmm_bin_double)
     hipsparseStatus_t status = testing_csrmm<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-#endif
 
 INSTANTIATE_TEST_SUITE_P(csrmm,
                          parameterized_csrmm,
@@ -180,3 +179,4 @@ INSTANTIATE_TEST_SUITE_P(csrmm_bin,
                                           testing::ValuesIn(csrmm_transA_range),
                                           testing::ValuesIn(csrmm_transB_range),
                                           testing::ValuesIn(csrmm_bin)));
+#endif

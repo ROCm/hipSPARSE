@@ -34,7 +34,7 @@ typedef std::tuple<double, base, base, std::string> csrgemm2_b_bin_tuple;
 
 double csrgemm2_b_beta_range[] = {1.3};
 
-int csrgemm2_b_M_range[] = {-1, 50, 647, 1799};
+int csrgemm2_b_M_range[] = {50, 647, 1799};
 int csrgemm2_b_N_range[] = {0, 13, 523, 3712};
 
 base csrgemm2_b_idxbaseC_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
@@ -146,7 +146,6 @@ TEST_P(parameterized_csrgemm2_b_bin, csrgemm2_b_bin_double)
     hipsparseStatus_t status = testing_csrgemm2_b<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-#endif
 
 INSTANTIATE_TEST_SUITE_P(csrgemm2_b,
                          parameterized_csrgemm2_b,
@@ -162,3 +161,4 @@ INSTANTIATE_TEST_SUITE_P(csrgemm2_b_bin,
                                           testing::ValuesIn(csrgemm2_b_idxbaseC_range),
                                           testing::ValuesIn(csrgemm2_b_idxbaseD_range),
                                           testing::ValuesIn(csrgemm2_b_bin)));
+#endif

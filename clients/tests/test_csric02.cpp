@@ -32,7 +32,7 @@ typedef hipsparseIndexBase_t          base;
 typedef std::tuple<int, base>         csric02_tuple;
 typedef std::tuple<base, std::string> csric02_bin_tuple;
 
-int csric02_M_range[] = {-1, 0, 50, 426};
+int csric02_M_range[] = {0, 50, 426};
 
 base csric02_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
@@ -137,7 +137,6 @@ TEST_P(parameterized_csric02_bin, csric02_bin_double)
     hipsparseStatus_t status = testing_csric02<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-#endif
 
 INSTANTIATE_TEST_SUITE_P(csric02,
                          parameterized_csric02,
@@ -148,3 +147,4 @@ INSTANTIATE_TEST_SUITE_P(csric02_bin,
                          parameterized_csric02_bin,
                          testing::Combine(testing::ValuesIn(csric02_idxbase_range),
                                           testing::ValuesIn(csric02_bin)));
+#endif

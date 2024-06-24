@@ -79,12 +79,14 @@ constexpr hipsparse_routine::value_type hipsparse_routine::all_routines[];
 template <hipsparse_routine::value_type FNAME, typename T>
 hipsparseStatus_t hipsparse_routine::dispatch_indextype(const char cindextype, const Arguments& arg)
 {
-    std::cout << "hipsparse_routine::dispatch_indextype" << std::endl;
+    std::cout << "hipsparse_routine::dispatch_indextype cindextype: " << cindextype << std::endl;
     const hipsparseIndexType_t indextype = (cindextype == 'm')   ? HIPSPARSE_INDEX_64I
                                           : (cindextype == 's') ? HIPSPARSE_INDEX_32I
                                           : (cindextype == 'd') ? HIPSPARSE_INDEX_64I
                                                                 : ((hipsparseIndexType_t)-1);
     const bool                mixed     = (cindextype == 'm');
+
+    std::cout << "mixed: " << mixed << std::endl;
     switch(indextype)
     {
     case HIPSPARSE_INDEX_16U:
@@ -145,6 +147,7 @@ hipsparseStatus_t hipsparse_routine::dispatch(const char       precision,
 #define HIPSPARSE_DO_ROUTINE(FNAME) \
     case FNAME:                     \
         return dispatch_precision<FNAME>(precision, indextype, arg);
+        
         HIPSPARSE_FOREACH_ROUTINE;
 #undef HIPSPARSE_DO_ROUTINE
     }

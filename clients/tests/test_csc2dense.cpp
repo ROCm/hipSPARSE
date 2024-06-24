@@ -92,7 +92,6 @@ TEST_P(parameterized_csc2dense, csc2dense_double_complex)
     hipsparseStatus_t status = testing_csc2dense<hipDoubleComplex>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-#endif
 
 INSTANTIATE_TEST_SUITE_P(csc2dense,
                          parameterized_csc2dense,
@@ -100,3 +99,4 @@ INSTANTIATE_TEST_SUITE_P(csc2dense,
                                           testing::ValuesIn(csc2dense_N_range),
                                           testing::ValuesIn(csc2dense_LD_range),
                                           testing::ValuesIn(csc2dense_idx_base_range)));
+#endif

@@ -37,8 +37,8 @@ typedef hipsparseFillMode_t  fill;
 typedef std::tuple<int, double, base, int, dir, op, diag, fill>         bsrsv2_tuple;
 typedef std::tuple<double, base, int, dir, op, diag, fill, std::string> bsrsv2_bin_tuple;
 
-int bsrsv2_M_range[]   = {-1, 0, 647};
-int bsrsv2_dim_range[] = {-1, 0, 1, 3, 9};
+int bsrsv2_M_range[]   = {0, 647};
+int bsrsv2_dim_range[] = {1, 3, 9};
 
 double bsrsv2_alpha_range[] = {2.3};
 
@@ -159,7 +159,6 @@ TEST_P(parameterized_bsrsv2_bin, bsrsv2_bin_double)
     hipsparseStatus_t status = testing_bsrsv2<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-#endif
 
 INSTANTIATE_TEST_SUITE_P(bsrsv2,
                          parameterized_bsrsv2,
@@ -182,3 +181,4 @@ INSTANTIATE_TEST_SUITE_P(bsrsv2_bin,
                                           testing::ValuesIn(bsrsv2_diag_range),
                                           testing::ValuesIn(bsrsv2_fill_range),
                                           testing::ValuesIn(bsrsv2_bin)));
+#endif

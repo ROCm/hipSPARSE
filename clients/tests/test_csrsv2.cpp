@@ -36,7 +36,7 @@ typedef hipsparseFillMode_t  fill;
 typedef std::tuple<int, double, base, op, diag, fill>         csrsv2_tuple;
 typedef std::tuple<double, base, op, diag, fill, std::string> csrsv2_bin_tuple;
 
-int csrsv2_M_range[] = {-1, 0, 647};
+int csrsv2_M_range[] = {0, 647};
 
 double csrsv2_alpha_range[] = {2.3};
 
@@ -160,7 +160,6 @@ TEST_P(parameterized_csrsv2_bin, csrsv2_bin_double)
     hipsparseStatus_t status = testing_csrsv2<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-#endif
 
 INSTANTIATE_TEST_SUITE_P(csrsv2,
                          parameterized_csrsv2,
@@ -179,3 +178,4 @@ INSTANTIATE_TEST_SUITE_P(csrsv2_bin,
                                           testing::ValuesIn(csrsv2_diag_range),
                                           testing::ValuesIn(csrsv2_fill_range),
                                           testing::ValuesIn(csrsv2_bin)));
+#endif

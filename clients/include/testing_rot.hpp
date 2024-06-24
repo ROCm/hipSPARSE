@@ -103,14 +103,8 @@ hipsparseStatus_t testing_rot(void)
     hipsparseIndexBase_t idxBase = HIPSPARSE_INDEX_BASE_ZERO;
 
     // Index and data type
-    hipsparseIndexType_t idxType
-        = (typeid(I) == typeid(int32_t)) ? HIPSPARSE_INDEX_32I : HIPSPARSE_INDEX_64I;
-    hipDataType dataType
-        = (typeid(T) == typeid(float))
-              ? HIP_R_32F
-              : ((typeid(T) == typeid(double))
-                     ? HIP_R_64F
-                     : ((typeid(T) == typeid(hipComplex) ? HIP_C_32F : HIP_C_64F)));
+    hipsparseIndexType_t idxType  = getIndexType<I>();
+    hipDataType          dataType = getDataType<T>();
 
     // hipSPARSE handle
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
@@ -152,14 +146,6 @@ hipsparseStatus_t testing_rot(void)
     T* dy_2     = (T*)dy_2_managed.get();
     T* dc_coeff = (T*)dc_coeff_managed.get();
     T* ds_coeff = (T*)ds_coeff_managed.get();
-
-    if(!dx_ind || !dx_val_1 || !dx_val_2 || !dy_1 || !dy_2 || !dc_coeff || !ds_coeff)
-    {
-        verify_hipsparse_status_success(
-            HIPSPARSE_STATUS_ALLOC_FAILED,
-            "!dx_ind || !dx_val_1 || !dx_val_2 || !dy_1 || !dy_2 || !dc_coeff || !ds_coeff");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
 
     // copy data from CPU to device
     CHECK_HIP_ERROR(hipMemcpy(dx_ind, hx_ind.data(), sizeof(I) * nnz, hipMemcpyHostToDevice));

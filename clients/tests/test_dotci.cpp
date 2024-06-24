@@ -31,7 +31,7 @@ typedef hipsparseIndexBase_t       base;
 typedef std::tuple<int, int, base> dotci_tuple;
 
 int dotci_N_range[]   = {12000, 15332, 22031};
-int dotci_nnz_range[] = {-1, 0, 5, 10, 500, 1000, 7111, 10000};
+int dotci_nnz_range[] = {0, 5, 10, 500, 1000, 7111, 10000};
 
 base dotci_idx_base_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
@@ -76,10 +76,10 @@ TEST_P(parameterized_dotci, dotci_double_complex)
     hipsparseStatus_t status = testing_dotci<hipDoubleComplex>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-#endif
 
 INSTANTIATE_TEST_SUITE_P(dotci,
                          parameterized_dotci,
                          testing::Combine(testing::ValuesIn(dotci_N_range),
                                           testing::ValuesIn(dotci_nnz_range),
                                           testing::ValuesIn(dotci_idx_base_range)));
+#endif

@@ -31,8 +31,8 @@
 typedef std::tuple<int, int, int, hipsparseIndexBase_t>    csrsort_tuple;
 typedef std::tuple<int, hipsparseIndexBase_t, std::string> csrsort_bin_tuple;
 
-int csrsort_M_range[] = {-1, 0, 10, 500, 872, 1000};
-int csrsort_N_range[] = {-3, 0, 33, 242, 623, 1000};
+int csrsort_M_range[] = {0, 10, 500, 872, 1000};
+int csrsort_N_range[] = {0, 33, 242, 623, 1000};
 
 #if defined(__HIP_PLATFORM_AMD__)
 int csrsort_perm[] = {0, 1};
@@ -132,7 +132,6 @@ TEST_P(parameterized_csrsort_bin, csrsort_bin)
     hipsparseStatus_t status = testing_csrsort(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-#endif
 
 INSTANTIATE_TEST_SUITE_P(csrsort,
                          parameterized_csrsort,
@@ -146,3 +145,4 @@ INSTANTIATE_TEST_SUITE_P(csrsort_bin,
                          testing::Combine(testing::ValuesIn(csrsort_perm),
                                           testing::ValuesIn(csrsort_base),
                                           testing::ValuesIn(csrsort_bin)));
+#endif

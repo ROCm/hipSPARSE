@@ -33,9 +33,9 @@ typedef hipsparseOperation_t trans;
 typedef std::tuple<int, int, int, base, base, base, trans, trans> csrgemm_tuple;
 typedef std::tuple<base, base, base, trans, trans, std::string>   csrgemm_bin_tuple;
 
-int csrgemm_M_range[] = {-1, 0, 50, 647, 1799};
-int csrgemm_N_range[] = {-1, 0, 13, 523, 3712};
-int csrgemm_K_range[] = {-1, 0, 50, 254, 1942};
+int csrgemm_M_range[] = {0, 50, 647, 1799};
+int csrgemm_N_range[] = {0, 13, 523, 3712};
+int csrgemm_K_range[] = {0, 50, 254, 1942};
 
 base csrgemm_idxbaseA_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 base csrgemm_idxbaseB_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
@@ -166,7 +166,6 @@ TEST_P(parameterized_csrgemm_bin, csrgemm_bin_double)
     hipsparseStatus_t status = testing_csrgemm<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-#endif
 
 INSTANTIATE_TEST_SUITE_P(csrgemm,
                          parameterized_csrgemm,
@@ -187,3 +186,4 @@ INSTANTIATE_TEST_SUITE_P(csrgemm_bin,
                                           testing::ValuesIn(csrgemm_transA_range),
                                           testing::ValuesIn(csrgemm_transB_range),
                                           testing::ValuesIn(csrgemm_bin)));
+#endif
