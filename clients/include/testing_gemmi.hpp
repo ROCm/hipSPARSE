@@ -291,6 +291,13 @@ hipsparseStatus_t testing_gemmi(Arguments argus)
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
     hipsparseHandle_t              handle = test_handle->handle;
 
+    if(M == 0 || N == 0 || K == 0)
+    {
+#ifdef __HIP_PLATFORM_NVIDIA__
+        return HIPSPARSE_STATUS_SUCCESS;
+#endif
+    }
+
     srand(12345ULL);
 
     // Host structures

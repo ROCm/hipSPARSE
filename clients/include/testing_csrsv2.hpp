@@ -461,6 +461,13 @@ hipsparseStatus_t testing_csrsv2(Arguments argus)
     // Set matrix fill mode
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatFillMode(descr, fill_mode));
 
+    if(m == 0)
+    {
+#ifdef __HIP_PLATFORM_NVIDIA__
+        return HIPSPARSE_STATUS_SUCCESS;
+#endif
+    }
+
     srand(12345ULL);
 
     // Host structures
