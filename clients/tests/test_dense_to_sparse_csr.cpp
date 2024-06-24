@@ -22,28 +22,60 @@
  * ************************************************************************ */
 
 #include "testing_dense_to_sparse_csr.hpp"
+#include "utility.hpp"
 
 #include <hipsparse.h>
+#include <string>
+#include <vector>
+
+typedef std::tuple<int, int, hipsparseIndexBase_t, hipsparseOrder_t> dense_to_sparse_csr_tuple;
+
+int dense_to_sparse_csr_M_range[] = {100};
+int dense_to_sparse_csr_N_range[] = {10};
+
+hipsparseIndexBase_t dense_to_sparse_csr_base[]
+    = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+hipsparseOrder_t dense_to_sparse_csr_order[] = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
+
+class parameterized_dense_to_sparse_csr : public testing::TestWithParam<dense_to_sparse_csr_tuple>
+{
+protected:
+    parameterized_dense_to_sparse_csr() {}
+    virtual ~parameterized_dense_to_sparse_csr() {}
+    virtual void SetUp() {}
+    virtual void TearDown() {}
+};
+
+Arguments setup_dense_to_sparse_csr_arguments(dense_to_sparse_csr_tuple tup)
+{
+    Arguments arg;
+    arg.M        = std::get<0>(tup);
+    arg.N        = std::get<1>(tup);
+    arg.idx_base = std::get<2>(tup);
+    arg.orderA   = std::get<3>(tup);
+    arg.timing   = 0;
+    return arg;
+}
 
 // Only run tests for CUDA 11.1 or greater
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
-TEST(dense_to_sparse_csr_bad_arg, dense_to_sparse_csr_float)
+TEST(dense_to_sparse_csr_bad_arg, dense_to_sparse_csr)
 {
     testing_dense_to_sparse_csr_bad_arg();
 }
 
-TEST(dense_to_sparse_csr, dense_to_sparse_csr_i32_i32_float)
+TEST_P(parameterized_dense_to_sparse_csr, dense_to_sparse_csr_float)
 {
-    hipsparseStatus_t status = testing_dense_to_sparse_csr<int32_t, int32_t, float>();
+    Arguments arg = setup_dense_to_sparse_csr_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_dense_to_sparse_csr<int, int, float>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-#if(!defined(CUDART_VERSION))
-TEST(dense_to_sparse_csr, dense_to_sparse_csr_i64_i32_double)
-{
-    hipsparseStatus_t status = testing_dense_to_sparse_csr<int64_t, int32_t, double>();
-    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
-}
-#endif
-
+INSTANTIATE_TEST_SUITE_P(dense_to_sparse_csr,
+                         parameterized_dense_to_sparse_csr,
+                         testing::Combine(testing::ValuesIn(dense_to_sparse_csr_M_range),
+                                          testing::ValuesIn(dense_to_sparse_csr_N_range),
+                                          testing::ValuesIn(dense_to_sparse_csr_base),
+                                          testing::ValuesIn(dense_to_sparse_csr_order)));
 #endif

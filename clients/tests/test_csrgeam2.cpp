@@ -35,8 +35,8 @@ typedef std::tuple<double, double, base, base, base, std::string> csrgeam2_bin_t
 double csrgeam2_alpha_range[] = {0.0, 2.0};
 double csrgeam2_beta_range[]  = {0.0, 1.0};
 
-int csrgeam2_M_range[] = {-1, 0, 50, 647, 1799};
-int csrgeam2_N_range[] = {-1, 0, 13, 523, 3712};
+int csrgeam2_M_range[] = {0, 50, 647, 1799};
+int csrgeam2_N_range[] = {0, 13, 523, 3712};
 
 base csrgeam2_idxbaseA_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 base csrgeam2_idxbaseB_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};

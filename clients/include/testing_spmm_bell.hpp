@@ -241,13 +241,8 @@ hipsparseStatus_t testing_spmm_bell()
     hipsparseSpMMAlg_t   alg      = HIPSPARSE_SPMM_BLOCKED_ELL_ALG1;
 
     // Index and data type
-    hipsparseIndexType_t typeI
-        = (typeid(I) == typeid(int32_t)) ? HIPSPARSE_INDEX_32I : HIPSPARSE_INDEX_64I;
-    hipDataType typeT = (typeid(T) == typeid(float))
-                            ? HIP_R_32F
-                            : ((typeid(T) == typeid(double))
-                                   ? HIP_R_64F
-                                   : ((typeid(T) == typeid(hipComplex) ? HIP_C_32F : HIP_C_64F)));
+    hipsparseIndexType_t typeI = getIndexType<I>();
+    hipDataType          typeT = getDataType<T>();
 
     // hipSPARSE handle
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
@@ -321,16 +316,6 @@ hipsparseStatus_t testing_spmm_bell()
     T* d_beta    = (T*)d_beta_managed.get();
     I* dbell_ind = (I*)dbell_ind_managed.get();
     T* dbell_val = (T*)dbell_val_managed.get();
-
-    if(!dval || !drow_ptr || !dcol_ind || !dB || !dC_1 || !dC_2 || !d_alpha || !d_beta || !dbell_ind
-       || !dbell_val)
-    {
-        verify_hipsparse_status_success(
-            HIPSPARSE_STATUS_ALLOC_FAILED,
-            "!dval || !drow_ptr || !dcol_ind || !dB || "
-            "!dC_1 || !dC_2 || !d_alpha || !d_beta  || !dbell_ind || !dbell_val");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
 
     // copy data from CPU to device
     CHECK_HIP_ERROR(

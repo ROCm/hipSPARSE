@@ -33,8 +33,8 @@ typedef hipsparseDirection_t                    dir;
 typedef std::tuple<int, int, dir, base>         bsric02_tuple;
 typedef std::tuple<int, dir, base, std::string> bsric02_bin_tuple;
 
-int bsric02_M_range[]   = {-1, 50, 426};
-int bsric02_dim_range[] = {-1, 3, 5, 9};
+int bsric02_M_range[]   = {50, 426};
+int bsric02_dim_range[] = {3, 5, 9};
 
 base bsric02_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 dir  bsric02_dir_range[]     = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COLUMN};

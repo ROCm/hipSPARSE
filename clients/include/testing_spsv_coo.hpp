@@ -179,13 +179,8 @@ hipsparseStatus_t testing_spsv_coo(void)
     std::string filename = get_filename("nos3.bin");
 
     // Index and data type
-    hipsparseIndexType_t typeI
-        = (typeid(I) == typeid(int32_t)) ? HIPSPARSE_INDEX_32I : HIPSPARSE_INDEX_64I;
-    hipDataType typeT = (typeid(T) == typeid(float))
-                            ? HIP_R_32F
-                            : ((typeid(T) == typeid(double))
-                                   ? HIP_R_64F
-                                   : ((typeid(T) == typeid(hipComplex) ? HIP_C_32F : HIP_C_64F)));
+    hipsparseIndexType_t typeI = getIndexType<I>();
+    hipDataType          typeT = getDataType<T>();
 
     // hipSPARSE handle
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
@@ -248,14 +243,6 @@ hipsparseStatus_t testing_spsv_coo(void)
     T* dy_1    = (T*)dy_1_managed.get();
     T* dy_2    = (T*)dy_2_managed.get();
     T* d_alpha = (T*)d_alpha_managed.get();
-
-    if(!dval || !drow || !dcol || !dx || !dy_1 || !dy_2 || !d_alpha)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                        "!dval || !drow || !dcol || !dx || "
-                                        "!dy_1 || !dy_2 || !d_alpha");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
 
     // copy data from CPU to device
     CHECK_HIP_ERROR(hipMemcpy(drow, hrow_ind.data(), sizeof(I) * nnz, hipMemcpyHostToDevice));

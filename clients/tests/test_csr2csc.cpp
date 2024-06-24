@@ -31,8 +31,8 @@
 typedef std::tuple<int, int, hipsparseAction_t, hipsparseIndexBase_t>    csr2csc_tuple;
 typedef std::tuple<hipsparseAction_t, hipsparseIndexBase_t, std::string> csr2csc_bin_tuple;
 
-int csr2csc_M_range[] = {-1, 0, 10, 500, 872, 1000};
-int csr2csc_N_range[] = {-3, 0, 33, 242, 623, 1000};
+int csr2csc_M_range[] = {0, 10, 500, 872, 1000};
+int csr2csc_N_range[] = {0, 33, 242, 623, 1000};
 
 hipsparseAction_t csr2csc_action_range[] = {HIPSPARSE_ACTION_NUMERIC, HIPSPARSE_ACTION_SYMBOLIC};
 

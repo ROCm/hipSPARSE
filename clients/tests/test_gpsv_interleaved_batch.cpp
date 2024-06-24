@@ -22,31 +22,80 @@
  * ************************************************************************ */
 
 #include "testing_gpsv_interleaved_batch.hpp"
+#include "utility.hpp"
 
 #include <hipsparse.h>
+#include <string>
 
-// Only run tests for CUDA 11.1 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
+typedef std::tuple<int, int, int> gpsv_interleaved_batch_tuple;
+
+int gpsv_interleaved_batch_M_range[]           = {512};
+int gpsv_interleaved_batch_batch_count_range[] = {512};
+int gpsv_interleaved_batch_algo_range[]        = {0};
+
+class parameterized_gpsv_interleaved_batch
+    : public testing::TestWithParam<gpsv_interleaved_batch_tuple>
+{
+protected:
+    parameterized_gpsv_interleaved_batch() {}
+    virtual ~parameterized_gpsv_interleaved_batch() {}
+    virtual void SetUp() {}
+    virtual void TearDown() {}
+};
+
+Arguments setup_gpsv_interleaved_batch_arguments(gpsv_interleaved_batch_tuple tup)
+{
+    Arguments arg;
+    arg.M           = std::get<0>(tup);
+    arg.batch_count = std::get<1>(tup);
+    arg.algo        = std::get<2>(tup);
+    arg.timing      = 0;
+    return arg;
+}
+
+// Only run tests for CUDA 11.1 or greater (removed in cusparse 12.0.0)
+#if(!defined(CUDART_VERSION) || (CUDART_VERSION >= 11010 && CUDART_VERSION < 12000))
 TEST(gpsv_interleaved_batch_bad_arg, gpsv_interleaved_batch_float)
 {
     testing_gpsv_interleaved_batch_bad_arg<float>();
 }
 
-TEST(gpsv_interleaved_batch, gpsv_interleaved_batch_float)
+TEST_P(parameterized_gpsv_interleaved_batch, gpsv_interleaved_batch_float)
 {
-    hipsparseStatus_t status = testing_gpsv_interleaved_batch<float>();
+    Arguments arg = setup_gpsv_interleaved_batch_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_gpsv_interleaved_batch<float>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-TEST(gpsv_interleaved_batch, gpsv_interleaved_batch_double)
+TEST_P(parameterized_gpsv_interleaved_batch, gpsv_interleaved_batch_double)
 {
-    hipsparseStatus_t status = testing_gpsv_interleaved_batch<double>();
+    Arguments arg = setup_gpsv_interleaved_batch_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_gpsv_interleaved_batch<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-TEST(gpsv_interleaved_batch, gpsv_interleaved_batch_hipComplex)
+TEST_P(parameterized_gpsv_interleaved_batch, gpsv_interleaved_batch_float_complex)
 {
-    hipsparseStatus_t status = testing_gpsv_interleaved_batch<hipComplex>();
+    Arguments arg = setup_gpsv_interleaved_batch_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_gpsv_interleaved_batch<hipComplex>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+
+TEST_P(parameterized_gpsv_interleaved_batch, gpsv_interleaved_batch_double_complex)
+{
+    Arguments arg = setup_gpsv_interleaved_batch_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_gpsv_interleaved_batch<hipDoubleComplex>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+
+INSTANTIATE_TEST_SUITE_P(
+    gpsv_interleaved_batch,
+    parameterized_gpsv_interleaved_batch,
+    testing::Combine(testing::ValuesIn(gpsv_interleaved_batch_M_range),
+                     testing::ValuesIn(gpsv_interleaved_batch_batch_count_range),
+                     testing::ValuesIn(gpsv_interleaved_batch_algo_range)));
 #endif

@@ -63,39 +63,10 @@ void testing_identity_bad_arg(void)
 
 hipsparseStatus_t testing_identity(Arguments argus)
 {
-    int               n         = argus.N;
-    int               safe_size = 100;
-    hipsparseStatus_t status;
+    int n = argus.N;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
-
-    // Argument sanity check before allocating invalid memory
-    if(n <= 0)
-    {
-        auto p_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-
-        int* p = (int*)p_managed.get();
-
-        if(!p)
-        {
-            verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!p");
-            return HIPSPARSE_STATUS_ALLOC_FAILED;
-        }
-
-        status = hipsparseCreateIdentityPermutation(handle, n, p);
-
-        if(n < 0)
-        {
-            verify_hipsparse_status_invalid_size(status, "Error: n < 0");
-        }
-        else
-        {
-            verify_hipsparse_status_success(status, "n >= 0");
-        }
-
-        return HIPSPARSE_STATUS_SUCCESS;
-    }
 
     // Host structures
     std::vector<int> hp(n);
@@ -111,12 +82,6 @@ hipsparseStatus_t testing_identity(Arguments argus)
     auto dp_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * n), device_free};
 
     int* dp = (int*)dp_managed.get();
-
-    if(!dp)
-    {
-        verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!p");
-        return HIPSPARSE_STATUS_ALLOC_FAILED;
-    }
 
     if(argus.unit_check)
     {

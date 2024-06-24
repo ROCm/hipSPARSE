@@ -35,7 +35,7 @@ typedef std::tuple<double, base, base, base, std::string>   csrgemm2_a_bin_tuple
 double csrgemm2_a_alpha_range[] = {2.0};
 
 int csrgemm2_a_M_range[] = {0, 50, 647, 1799};
-int csrgemm2_a_N_range[] = {-1, 13, 523, 3712};
+int csrgemm2_a_N_range[] = {13, 523, 3712};
 int csrgemm2_a_K_range[] = {0, 50, 254, 1942};
 
 base csrgemm2_a_idxbaseA_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};

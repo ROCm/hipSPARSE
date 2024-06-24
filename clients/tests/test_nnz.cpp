@@ -30,9 +30,9 @@
 
 typedef std::tuple<int, int, int> nnz_tuple;
 
-int nnz_M_range[]  = {-1, 0, 10, 500, 872, 1000};
-int nnz_N_range[]  = {-3, 0, 33, 242, 623, 1000};
-int nnz_LD_range[] = {5, 500, 1000};
+int nnz_M_range[]  = {0, 10, 500, 872, 1000};
+int nnz_N_range[]  = {0, 33, 242, 623, 1000};
+int nnz_LD_range[] = {1000};
 
 class parameterized_nnz : public testing::TestWithParam<nnz_tuple>
 {

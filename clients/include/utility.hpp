@@ -559,16 +559,33 @@ J gen_2d_laplacian(int                  ndim,
 /* ============================================================================================ */
 /*! \brief  Generate a random sparsity pattern with a dense format, generated floating point values of type T are positive and normalized. */
 template <typename T>
-void gen_dense_random_sparsity_pattern(int m, int n, T* A, int lda, float sparsity_ratio = 0.3)
+void gen_dense_random_sparsity_pattern(
+    int m, int n, T* A, int lda, hipsparseOrder_t order, float sparsity_ratio = 0.3)
 {
-    for(int j = 0; j < n; ++j)
+    if(order == HIPSPARSE_ORDER_COL)
     {
-        for(int i = 0; i < m; ++i)
+        for(int j = 0; j < n; ++j)
         {
-            const float d  = ((float)rand()) / ((float)RAND_MAX);
-            A[j * lda + i] = (d < sparsity_ratio)
-                                 ? testing_div(make_DataType<T>(rand()), make_DataType<T>(RAND_MAX))
-                                 : make_DataType<T>(0);
+            for(int i = 0; i < m; ++i)
+            {
+                const float d  = ((float)rand()) / ((float)RAND_MAX);
+                A[j * lda + i] = (d < sparsity_ratio) ? testing_div(make_DataType<T>(rand()),
+                                                                    make_DataType<T>(RAND_MAX))
+                                                      : make_DataType<T>(0);
+            }
+        }
+    }
+    else
+    {
+        for(int j = 0; j < m; ++j)
+        {
+            for(int i = 0; i < n; ++i)
+            {
+                const float d  = ((float)rand()) / ((float)RAND_MAX);
+                A[j * lda + i] = (d < sparsity_ratio) ? testing_div(make_DataType<T>(rand()),
+                                                                    make_DataType<T>(RAND_MAX))
+                                                      : make_DataType<T>(0);
+            }
         }
     }
 }
@@ -682,17 +699,20 @@ void gen_matrix_coo(I                    m,
 
 /* ============================================================================================ */
 /*! \brief  Read matrix from mtx file in COO format */
-static inline void read_mtx_value(std::istringstream& is, int& row, int& col, float& val)
+template <typename I>
+static void read_mtx_value(std::istringstream& is, I& row, I& col, float& val)
 {
     is >> row >> col >> val;
 }
 
-static inline void read_mtx_value(std::istringstream& is, int& row, int& col, double& val)
+template <typename I>
+static void read_mtx_value(std::istringstream& is, I& row, I& col, double& val)
 {
     is >> row >> col >> val;
 }
 
-static inline void read_mtx_value(std::istringstream& is, int& row, int& col, hipComplex& val)
+template <typename I>
+static void read_mtx_value(std::istringstream& is, I& row, I& col, hipComplex& val)
 {
     float real;
     float imag;
@@ -702,7 +722,8 @@ static inline void read_mtx_value(std::istringstream& is, int& row, int& col, hi
     val = make_DataType<hipComplex>(real, imag);
 }
 
-static inline void read_mtx_value(std::istringstream& is, int& row, int& col, hipDoubleComplex& val)
+template <typename I>
+static void read_mtx_value(std::istringstream& is, I& row, I& col, hipDoubleComplex& val)
 {
     double real;
     double imag;
@@ -712,13 +733,32 @@ static inline void read_mtx_value(std::istringstream& is, int& row, int& col, hi
     val = make_DataType<hipDoubleComplex>(real, imag);
 }
 
-template <typename T>
+template <typename I>
+static void sort(std::vector<I>& perm, std::vector<I>& unsorted_row, std::vector<I>& unsorted_col)
+{
+    std::sort(perm.begin(), perm.end(), [&](const I& a, const I& b) {
+        if(unsorted_row[a] < unsorted_row[b])
+        {
+            return true;
+        }
+        else if(unsorted_row[a] == unsorted_row[b])
+        {
+            return (unsorted_col[a] < unsorted_col[b]);
+        }
+        else
+        {
+            return false;
+        }
+    });
+}
+
+template <typename I, typename T>
 int read_mtx_matrix(const char*          filename,
-                    int&                 nrow,
-                    int&                 ncol,
-                    int&                 nnz,
-                    std::vector<int>&    row,
-                    std::vector<int>&    col,
+                    I&                   nrow,
+                    I&                   ncol,
+                    I&                   nnz,
+                    std::vector<I>&      row,
+                    std::vector<I>&      col,
                     std::vector<T>&      val,
                     hipsparseIndexBase_t idx_base)
 {
@@ -812,27 +852,27 @@ int read_mtx_matrix(const char*          filename,
     }
 
     // Read dimensions
-    int snnz;
+    I snnz;
 
     sscanf(line, "%d %d %d", &nrow, &ncol, &snnz);
     nnz = symm ? (snnz - nrow) * 2 + nrow : snnz;
 
-    std::vector<int> unsorted_row(nnz);
-    std::vector<int> unsorted_col(nnz);
-    std::vector<T>   unsorted_val(nnz);
+    std::vector<I> unsorted_row(nnz);
+    std::vector<I> unsorted_col(nnz);
+    std::vector<T> unsorted_val(nnz);
 
     // Read entries
-    int idx = 0;
+    I idx = 0;
     while(fgets(line, 1024, f))
     {
         if(idx >= nnz)
         {
-            return true;
+            return 1;
         }
 
-        int irow;
-        int icol;
-        T   ival;
+        I irow;
+        I icol;
+        T ival;
 
         std::istringstream ss(line);
 
@@ -862,7 +902,7 @@ int read_mtx_matrix(const char*          filename,
         {
             if(idx >= nnz)
             {
-                return true;
+                return 1;
             }
 
             unsorted_row[idx] = icol;
@@ -878,28 +918,30 @@ int read_mtx_matrix(const char*          filename,
     val.resize(nnz);
 
     // Sort by row and column index
-    std::vector<int> perm(nnz);
-    for(int i = 0; i < nnz; ++i)
+    std::vector<I> perm(nnz);
+    for(I i = 0; i < nnz; ++i)
     {
         perm[i] = i;
     }
 
-    std::sort(perm.begin(), perm.end(), [&](const int& a, const int& b) {
-        if(unsorted_row[a] < unsorted_row[b])
-        {
-            return true;
-        }
-        else if(unsorted_row[a] == unsorted_row[b])
-        {
-            return (unsorted_col[a] < unsorted_col[b]);
-        }
-        else
-        {
-            return false;
-        }
-    });
+    sort(perm, unsorted_row, unsorted_col);
 
-    for(int i = 0; i < nnz; ++i)
+    // std::sort(perm.begin(), perm.end(), [&](const int& a, const int& b) {
+    //     if(unsorted_row[a] < unsorted_row[b])
+    //     {
+    //         return true;
+    //     }
+    //     else if(unsorted_row[a] == unsorted_row[b])
+    //     {
+    //         return (unsorted_col[a] < unsorted_col[b]);
+    //     }
+    //     else
+    //     {
+    //         return false;
+    //     }
+    // });
+
+    for(I i = 0; i < nnz; ++i)
     {
         row[i] = unsorted_row[perm[i]];
         col[i] = unsorted_col[perm[i]];
@@ -1006,6 +1048,149 @@ int read_bin_matrix(const char*          filename,
     }
 
     return 0;
+}
+
+/* ============================================================================================ */
+/*! \brief  Generate CSR matrix from file. File can be either mtx or bin. If filename is empty, a random matrix is generated*/
+template <typename I, typename J, typename T>
+bool generate_csr_matrix(const std::string    filename,
+                         J&                   nrow,
+                         J&                   ncol,
+                         I&                   nnz,
+                         std::vector<I>&      csr_row_ptr,
+                         std::vector<J>&      csr_col_ind,
+                         std::vector<T>&      csr_val,
+                         hipsparseIndexBase_t idx_base)
+{
+    // If no filename passed, generate matrix
+    if(filename == "")
+    {
+        double scale = 0.02;
+        if(nrow > 1000 || ncol > 1000)
+        {
+            scale = 2.0 / std::max(nrow, ncol);
+        }
+        nnz = nrow * scale * ncol;
+
+        std::vector<J> coo_row_ind;
+        gen_matrix_coo(nrow, ncol, nnz, coo_row_ind, csr_col_ind, csr_val, idx_base);
+
+        csr_row_ptr.resize(nrow + 1, 0);
+        for(int i = 0; i < nnz; ++i)
+        {
+            ++csr_row_ptr[coo_row_ind[i] + 1 - idx_base];
+        }
+
+        csr_row_ptr[0] = idx_base;
+        for(int i = 0; i < nrow; ++i)
+        {
+            csr_row_ptr[i + 1] += csr_row_ptr[i];
+        }
+
+        return true;
+    }
+    else
+    {
+        std::string extension = filename.substr(filename.find_last_of(".") + 1);
+        if(extension == "bin")
+        {
+            if(read_bin_matrix(
+                   filename.c_str(), nrow, ncol, nnz, csr_row_ptr, csr_col_ind, csr_val, idx_base)
+               == 0)
+            {
+                return true;
+            }
+        }
+        else if(extension == "mtx")
+        {
+            std::vector<J> coo_row_ind;
+            if(read_mtx_matrix(
+                   filename.c_str(), nrow, ncol, nnz, coo_row_ind, csr_col_ind, csr_val, idx_base)
+               == 0)
+            {
+                csr_row_ptr.resize(nrow + 1, 0);
+                for(int i = 0; i < nnz; ++i)
+                {
+                    ++csr_row_ptr[coo_row_ind[i] + 1 - idx_base];
+                }
+
+                csr_row_ptr[0] = idx_base;
+                for(int i = 0; i < nrow; ++i)
+                {
+                    csr_row_ptr[i + 1] += csr_row_ptr[i];
+                }
+
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+/* ============================================================================================ */
+/*! \brief  Generate COO matrix from file. File can be either mtx or bin. If filename is empty, a random matrix is generated*/
+template <typename I, typename T>
+bool generate_coo_matrix(const std::string    filename,
+                         I&                   nrow,
+                         I&                   ncol,
+                         I&                   nnz,
+                         std::vector<I>&      coo_row_ind,
+                         std::vector<I>&      coo_col_ind,
+                         std::vector<T>&      coo_val,
+                         hipsparseIndexBase_t idx_base)
+{
+    // If no filename passed, generate matrix
+    if(filename == "")
+    {
+        double scale = 0.02;
+        if(nrow > 1000 || ncol > 1000)
+        {
+            scale = 2.0 / std::max(nrow, ncol);
+        }
+        nnz = nrow * scale * ncol;
+
+        gen_matrix_coo(nrow, ncol, nnz, coo_row_ind, coo_col_ind, coo_val, idx_base);
+
+        return true;
+    }
+    else
+    {
+        std::string extension = filename.substr(filename.find_last_of(".") + 1);
+        if(extension == "bin")
+        {
+            std::vector<I> csr_row_ptr;
+            if(read_bin_matrix(
+                   filename.c_str(), nrow, ncol, nnz, csr_row_ptr, coo_col_ind, coo_val, idx_base)
+               == 0)
+            {
+                coo_row_ind.resize(nnz);
+                for(I i = 0; i < nrow; ++i)
+                {
+                    I row_begin = csr_row_ptr[i] - idx_base;
+                    I row_end   = csr_row_ptr[i + 1] - idx_base;
+
+                    for(I j = row_begin; j < row_end; ++j)
+                    {
+                        coo_row_ind[j] = i + idx_base;
+                    }
+                }
+
+                return true;
+            }
+        }
+        else if(extension == "mtx")
+        {
+            if(read_mtx_matrix(
+                   filename.c_str(), nrow, ncol, nnz, coo_row_ind, coo_col_ind, coo_val, idx_base)
+               == 0)
+            {
+                return true;
+            }
+        }
+    }
+
+    return false;
 }
 
 /* ============================================================================================ */
@@ -2400,6 +2585,111 @@ inline void host_bsrmv(hipsparseDirection_t dir,
     }
 }
 
+template <typename I, typename J, typename T>
+inline void host_csrmv(hipsparseOperation_t trans,
+                       J                    M,
+                       J                    N,
+                       I                    nnz,
+                       T                    alpha,
+                       const I*             csr_row_ptr,
+                       const J*             csr_col_ind,
+                       const T*             csr_val,
+                       const T*             x,
+                       T                    beta,
+                       T*                   y,
+                       hipsparseIndexBase_t base)
+{
+    if(trans == HIPSPARSE_OPERATION_NON_TRANSPOSE)
+    {
+        // Get device properties
+        int             dev;
+        hipDeviceProp_t prop;
+
+        hipGetDevice(&dev);
+        hipGetDeviceProperties(&prop, dev);
+
+        int WF_SIZE;
+        J   nnz_per_row = (M == 0) ? 0 : (nnz / M);
+
+        if(nnz_per_row < 4)
+            WF_SIZE = 2;
+        else if(nnz_per_row < 8)
+            WF_SIZE = 4;
+        else if(nnz_per_row < 16)
+            WF_SIZE = 8;
+        else if(nnz_per_row < 32)
+            WF_SIZE = 16;
+        else if(nnz_per_row < 64 || prop.warpSize == 32)
+            WF_SIZE = 32;
+        else
+            WF_SIZE = 64;
+
+        for(J i = 0; i < M; ++i)
+        {
+            I row_begin = csr_row_ptr[i] - base;
+            I row_end   = csr_row_ptr[i + 1] - base;
+
+            std::vector<T> sum(WF_SIZE, static_cast<T>(0));
+
+            for(I j = row_begin; j < row_end; j += WF_SIZE)
+            {
+                for(int k = 0; k < WF_SIZE; ++k)
+                {
+                    if(j + k < row_end)
+                    {
+                        sum[k] = testing_fma(testing_mult(alpha, csr_val[j + k]),
+                                             x[csr_col_ind[j + k] - base],
+                                             sum[k]);
+                    }
+                }
+            }
+
+            for(int j = 1; j < WF_SIZE; j <<= 1)
+            {
+                for(int k = 0; k < WF_SIZE - j; ++k)
+                {
+                    sum[k] = sum[k] + sum[k + j];
+                }
+            }
+
+            if(beta == make_DataType<T>(0.0))
+            {
+                y[i] = sum[0];
+            }
+            else
+            {
+                y[i] = testing_fma(beta, y[i], sum[0]);
+            }
+        }
+    }
+    else
+    {
+        // Scale y with beta
+        for(J i = 0; i < N; ++i)
+        {
+            y[i] = testing_mult(y[i], beta);
+        }
+
+        // Transposed SpMV
+        for(J i = 0; i < M; ++i)
+        {
+            I row_begin = csr_row_ptr[i] - base;
+            I row_end   = csr_row_ptr[i + 1] - base;
+            T row_val   = testing_mult(alpha, x[i]);
+
+            for(I j = row_begin; j < row_end; ++j)
+            {
+                J col = csr_col_ind[j] - base;
+                T val = (trans == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE)
+                            ? testing_conj(csr_val[j])
+                            : csr_val[j];
+
+                y[col] = testing_fma(val, row_val, y[col]);
+            }
+        }
+    }
+}
+
 template <typename T>
 inline void host_bsrmm(int                     Mb,
                        int                     N,
@@ -3192,7 +3482,10 @@ inline void host_bsrilu02(hipsparseDirection_t    dir,
     std::vector<int> nnz_entries(mb, -1);
 
     // First diagonal block is index 0
-    diag_offset[0] = 0;
+    if(mb > 0)
+    {
+        diag_offset[0] = 0;
+    }
 
     // Loop over all BSR rows
     for(int i = 0; i < mb; ++i)
@@ -5949,6 +6242,8 @@ public:
     int col_block_dimA = 1;
     int col_block_dimB = 1;
 
+    int batch_count = 1;
+
     int lda{};
     int ldb{};
     int ldc{};
@@ -5971,6 +6266,7 @@ public:
     hipsparseDiagType_t     diag_type = HIPSPARSE_DIAG_TYPE_NON_UNIT;
     hipsparseFillMode_t     fill_mode = HIPSPARSE_FILL_MODE_LOWER;
     hipsparseDirection_t    dirA      = HIPSPARSE_DIRECTION_ROW;
+    hipsparseOrder_t        orderA    = HIPSPARSE_ORDER_COL;
 
     int norm_check = 0;
     int unit_check = 1;
@@ -5980,6 +6276,7 @@ public:
     int laplacian = 0;
     int ell_width = 0;
     int temp      = 0;
+    int algo      = 0;
 
     int    numericboost{};
     double boosttol{};
@@ -5999,6 +6296,8 @@ public:
         this->row_block_dimB = rhs.row_block_dimB;
         this->col_block_dimA = rhs.col_block_dimA;
         this->col_block_dimB = rhs.col_block_dimB;
+
+        this->batch_count = rhs.batch_count;
 
         this->lda = rhs.lda;
         this->ldb = rhs.ldb;
@@ -6022,6 +6321,7 @@ public:
         this->diag_type = rhs.diag_type;
         this->fill_mode = rhs.fill_mode;
         this->dirA      = rhs.dirA;
+        this->orderA    = rhs.orderA;
 
         this->norm_check = rhs.norm_check;
         this->unit_check = rhs.unit_check;
@@ -6031,6 +6331,7 @@ public:
         this->laplacian = rhs.laplacian;
         this->ell_width = rhs.ell_width;
         this->temp      = rhs.temp;
+        this->algo      = rhs.algo;
 
         this->numericboost = rhs.numericboost;
         this->boosttol     = rhs.boosttol;
@@ -6103,6 +6404,22 @@ inline std::string get_filename(const std::string& bin_file)
         fclose(tmpf);
     }
     return r;
+}
+
+template <typename I>
+hipsparseIndexType_t getIndexType()
+{
+    return (typeid(I) == typeid(int32_t)) ? HIPSPARSE_INDEX_32I : HIPSPARSE_INDEX_64I;
+}
+
+template <typename T>
+hipDataType getDataType()
+{
+    return (typeid(T) == typeid(float))
+               ? HIP_R_32F
+               : ((typeid(T) == typeid(double))
+                      ? HIP_R_64F
+                      : ((typeid(T) == typeid(hipComplex) ? HIP_C_32F : HIP_C_64F)));
 }
 
 #endif // TESTING_UTILITY_HPP

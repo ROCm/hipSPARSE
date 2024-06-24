@@ -34,7 +34,7 @@ typedef std::tuple<double, base, base, std::string> csrgemm2_b_bin_tuple;
 
 double csrgemm2_b_beta_range[] = {1.3};
 
-int csrgemm2_b_M_range[] = {-1, 50, 647, 1799};
+int csrgemm2_b_M_range[] = {50, 647, 1799};
 int csrgemm2_b_N_range[] = {0, 13, 523, 3712};
 
 base csrgemm2_b_idxbaseC_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};

@@ -36,10 +36,10 @@ typedef std::
         gebsr2csr_bin_tuple;
 
 // Random matrices
-int gebsr2csr_M_range[]             = {-1, 872, 21453};
-int gebsr2csr_N_range[]             = {-3, 623, 29285};
-int gebsr2csr_row_block_dim_range[] = {0, 2, 4, 8};
-int gebsr2csr_col_block_dim_range[] = {-1, 2, 4, 8};
+int gebsr2csr_M_range[]             = {872, 21453};
+int gebsr2csr_N_range[]             = {623, 29285};
+int gebsr2csr_row_block_dim_range[] = {2, 4, 8};
+int gebsr2csr_col_block_dim_range[] = {2, 4, 8};
 
 hipsparseIndexBase_t gebsr2csr_csr_base_range[] = {HIPSPARSE_INDEX_BASE_ZERO};
 

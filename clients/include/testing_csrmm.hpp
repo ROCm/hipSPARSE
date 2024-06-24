@@ -349,32 +349,15 @@ void testing_csrmm_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_csrmm(Arguments argus)
 {
-    int                  safe_size = 100;
-    int                  M         = argus.M;
-    int                  N         = argus.N;
-    int                  K         = argus.K;
-    int                  ldb       = argus.ldb;
-    int                  ldc       = argus.ldc;
-    T                    h_alpha   = make_DataType<T>(argus.alpha);
-    T                    h_beta    = make_DataType<T>(argus.beta);
-    hipsparseOperation_t transA    = argus.transA;
-    hipsparseOperation_t transB    = argus.transB;
-    hipsparseIndexBase_t idx_base  = argus.idx_base;
-    std::string          binfile   = "";
-    std::string          filename  = "";
-
-    // When in testing mode, M == N == -99 indicates that we are testing with a real
-    // matrix from cise.ufl.edu
-    if(M == -99 && K == -99 && argus.timing == 0)
-    {
-        binfile = argus.filename;
-        M = K = safe_size;
-    }
-
-    if(argus.timing == 1)
-    {
-        filename = argus.filename;
-    }
+    int                  M        = argus.M;
+    int                  N        = argus.N;
+    int                  K        = argus.K;
+    T                    h_alpha  = make_DataType<T>(argus.alpha);
+    T                    h_beta   = make_DataType<T>(argus.beta);
+    hipsparseOperation_t transA   = argus.transA;
+    hipsparseOperation_t transB   = argus.transB;
+    hipsparseIndexBase_t idx_base = argus.idx_base;
+    std::string          filename = argus.filename;
 
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
     hipsparseHandle_t              handle = test_handle->handle;
@@ -385,64 +368,19 @@ hipsparseStatus_t testing_csrmm(Arguments argus)
     // Set matrix index base
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatIndexBase(descr, idx_base));
 
-    // Determine number of non-zero elements
-    double scale = 0.02;
-    if(M > 1000 || K > 1000)
-    {
-        scale = 2.0 / std::max(M, K);
-    }
-    int nnz = M * scale * K;
-
-    // Initialize random seed
     srand(12345ULL);
 
-    // Host structures - CSR matrix A
+    // Host structures
     std::vector<int> hcsr_row_ptrA;
     std::vector<int> hcsr_col_indA;
     std::vector<T>   hcsr_valA;
 
-    // Initial Data on CPU
-    if(binfile != "")
+    // Read or construct CSR matrix
+    int nnz = 0;
+    if(!generate_csr_matrix(filename, M, K, nnz, hcsr_row_ptrA, hcsr_col_indA, hcsr_valA, idx_base))
     {
-        if(read_bin_matrix(
-               binfile.c_str(), M, K, nnz, hcsr_row_ptrA, hcsr_col_indA, hcsr_valA, idx_base)
-           != 0)
-        {
-            fprintf(stderr, "Cannot open [read] %s\n", binfile.c_str());
-            return HIPSPARSE_STATUS_INTERNAL_ERROR;
-        }
-    }
-    else
-    {
-        std::vector<int> hcoo_row_indA;
-
-        if(filename != "")
-        {
-            if(read_mtx_matrix(
-                   filename.c_str(), M, K, nnz, hcoo_row_indA, hcsr_col_indA, hcsr_valA, idx_base)
-               != 0)
-            {
-                fprintf(stderr, "Cannot open [read] %s\n", filename.c_str());
-                return HIPSPARSE_STATUS_INTERNAL_ERROR;
-            }
-        }
-        else
-        {
-            gen_matrix_coo(M, K, nnz, hcoo_row_indA, hcsr_col_indA, hcsr_valA, idx_base);
-        }
-
-        // Convert COO to CSR
-        hcsr_row_ptrA.resize(M + 1, 0);
-        for(int i = 0; i < nnz; ++i)
-        {
-            ++hcsr_row_ptrA[hcoo_row_indA[i] + 1 - idx_base];
-        }
-
-        hcsr_row_ptrA[0] = idx_base;
-        for(int i = 0; i < M; ++i)
-        {
-            hcsr_row_ptrA[i + 1] += hcsr_row_ptrA[i];
-        }
+        fprintf(stderr, "Cannot open [read] %s\ncol", filename.c_str());
+        return HIPSPARSE_STATUS_INTERNAL_ERROR;
     }
 
     // Some matrix properties
@@ -456,8 +394,8 @@ hipsparseStatus_t testing_csrmm(Arguments argus)
 
     int C_m   = (transA == HIPSPARSE_OPERATION_NON_TRANSPOSE ? M : K);
     int C_n   = N;
-    ldb       = B_m;
-    ldc       = C_m;
+    int ldb   = B_m;
+    int ldc   = C_m;
     int nrowB = ldb;
     int ncolB = B_n;
     int nrowC = ldc;
