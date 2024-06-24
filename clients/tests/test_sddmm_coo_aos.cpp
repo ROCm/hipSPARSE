@@ -45,19 +45,19 @@ typedef std::tuple<int,
                    std::string>
     sddmm_coo_aos_bin_tuple;
 
-int M_range[] = {50};
-int N_range[] = {84};
-int K_range[] = {5};
+int sddmm_coo_aos_M_range[] = {50};
+int sddmm_coo_aos_N_range[] = {84};
+int sddmm_coo_aos_K_range[] = {5};
 
-std::vector<double> alpha_range = {2.0};
-std::vector<double> beta_range  = {1.0};
+std::vector<double> sddmm_coo_aos_alpha_range = {2.0};
+std::vector<double> sddmm_coo_aos_beta_range  = {1.0};
 
-hipsparseOperation_t transA_range[]  = {HIPSPARSE_OPERATION_NON_TRANSPOSE};
-hipsparseOperation_t transB_range[]  = {HIPSPARSE_OPERATION_NON_TRANSPOSE};
-hipsparseOrder_t     order_range[]   = {HIPSPARSE_ORDER_COL};
-hipsparseIndexBase_t idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO};
+hipsparseOperation_t sddmm_coo_aos_transA_range[]  = {HIPSPARSE_OPERATION_NON_TRANSPOSE};
+hipsparseOperation_t sddmm_coo_aos_transB_range[]  = {HIPSPARSE_OPERATION_NON_TRANSPOSE};
+hipsparseOrder_t     sddmm_coo_aos_order_range[]   = {HIPSPARSE_ORDER_COL};
+hipsparseIndexBase_t sddmm_coo_aos_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
-std::string filename_bin[] = {"nos1.bin",
+std::string sddmm_coo_aos_bin[] = {"nos1.bin",
                               "nos2.bin",
                               "nos3.bin",
                               "nos4.bin",
@@ -181,24 +181,24 @@ TEST_P(parameterized_sddmm_coo_aos_bin, sddmm_coo_aos_bin_i64_double)
 
 INSTANTIATE_TEST_SUITE_P(sddmm_coo_aos,
                          parameterized_sddmm_coo_aos,
-                         testing::Combine(testing::ValuesIn(M_range),
-                                          testing::ValuesIn(N_range),
-                                          testing::ValuesIn(K_range),
-                                          testing::ValuesIn(alpha_range),
-                                          testing::ValuesIn(beta_range),
-                                          testing::ValuesIn(transA_range),
-                                          testing::ValuesIn(transB_range),
-                                          testing::ValuesIn(order_range),
-                                          testing::ValuesIn(idxbase_range)));
+                         testing::Combine(testing::ValuesIn(sddmm_coo_aos_M_range),
+                                          testing::ValuesIn(sddmm_coo_aos_N_range),
+                                          testing::ValuesIn(sddmm_coo_aos_K_range),
+                                          testing::ValuesIn(sddmm_coo_aos_alpha_range),
+                                          testing::ValuesIn(sddmm_coo_aos_beta_range),
+                                          testing::ValuesIn(sddmm_coo_aos_transA_range),
+                                          testing::ValuesIn(sddmm_coo_aos_transB_range),
+                                          testing::ValuesIn(sddmm_coo_aos_order_range),
+                                          testing::ValuesIn(sddmm_coo_aos_idxbase_range)));
 
 INSTANTIATE_TEST_SUITE_P(sddmm_coo_aos_bin,
                          parameterized_sddmm_coo_aos_bin,
-                         testing::Combine(testing::ValuesIn(K_range),
-                                          testing::ValuesIn(alpha_range),
-                                          testing::ValuesIn(beta_range),
-                                          testing::ValuesIn(transA_range),
-                                          testing::ValuesIn(transB_range),
-                                          testing::ValuesIn(order_range),
-                                          testing::ValuesIn(idxbase_range),
-                                          testing::ValuesIn(filename_bin)));
+                         testing::Combine(testing::ValuesIn(sddmm_coo_aos_K_range),
+                                          testing::ValuesIn(sddmm_coo_aos_alpha_range),
+                                          testing::ValuesIn(sddmm_coo_aos_beta_range),
+                                          testing::ValuesIn(sddmm_coo_aos_transA_range),
+                                          testing::ValuesIn(sddmm_coo_aos_transB_range),
+                                          testing::ValuesIn(sddmm_coo_aos_order_range),
+                                          testing::ValuesIn(sddmm_coo_aos_idxbase_range),
+                                          testing::ValuesIn(sddmm_coo_aos_bin)));
 #endif

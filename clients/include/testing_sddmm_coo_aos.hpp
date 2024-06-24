@@ -202,8 +202,6 @@ hipsparseStatus_t testing_sddmm_coo_aos(Arguments argus)
     hipsparseSDDMMAlg_t  alg      = HIPSPARSE_SDDMM_ALG_DEFAULT;
     std::string          filename = argus.filename;
 
-    std::cout << "m: " << m << " n: " << n << " k: " << k << " filename: " << filename << std::endl;
-
     // Index and data type
     hipsparseIndexType_t typeI = getIndexType<I>();
     hipDataType          typeT = getDataType<T>();
@@ -228,34 +226,6 @@ hipsparseStatus_t testing_sddmm_coo_aos(Arguments argus)
         return HIPSPARSE_STATUS_INTERNAL_ERROR;
     }
 
-    // std::cout << "A" << std::endl;
-    // for(int i = 0; i < m; i++)
-    // {
-    //     int start = hcsr_row_ptr[i] - idx_base;
-    //     int end = hcsr_row_ptr[i + 1] - idx_base;
-
-    //     std::vector<float> temp(n, 0.0f);
-    //     for(int j = start; j < end; j++)
-    //     {
-    //         temp[hcsr_col_ind[j] - idx_base] = 1;
-    //     }
-
-    //     for(int j = 0; j < n; j++)
-    //     {
-    //         std::cout << temp[j] << " ";
-    //     }
-    //     std::cout << "" << std::endl;
-    // }
-    // std::cout << "" << std::endl;
-
-    // std::cout << "m: " << m << " n: " << n << " nnz: " << nnz << std::endl;
-    // std::cout << "hcsr_row_ptr" << std::endl;
-    // for(size_t i = 0; i < hcsr_row_ptr.size(); i++)
-    // {
-    //     std::cout << hcsr_row_ptr[i] << " ";
-    // }
-    // std::cout << "" << std::endl;
-
     I lda = m;
     I ldb = k;
 
@@ -266,7 +236,7 @@ hipsparseStatus_t testing_sddmm_coo_aos(Arguments argus)
         for(I j = hcsr_row_ptr[i]; j < hcsr_row_ptr[i + 1]; ++j)
         {
             hrowcol_ind[2 * (j - idx_base) + 0] = i + idx_base;
-            hrowcol_ind[2 * (j - idx_base) + 1] = hcsr_col_ind[j] - idx_base;
+            hrowcol_ind[2 * (j - idx_base) + 1] = hcsr_col_ind[j - idx_base];
         }
     }
 
