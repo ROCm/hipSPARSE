@@ -235,7 +235,7 @@ hipsparseStatus_t testing_sddmm_coo(Arguments argus)
     // Convert to COO
     for(I i = 0; i < m; ++i)
     {
-        for(I j = hcsr_row_ptr[i] - idx_base; j < hcsr_row_ptr[i + 1] - idx_base; ++j)
+        for(I j = hcsr_row_ptr[i]; j < hcsr_row_ptr[i + 1]; ++j)
         {
             hrow_ind[j - idx_base] = i + idx_base;
         }
