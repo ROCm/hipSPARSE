@@ -27,6 +27,8 @@
 
 #include "hipsparse.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
+#include "flops.hpp"
+#include "gbyte.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
 #include "hipsparse_arguments.hpp"
@@ -360,6 +362,36 @@ hipsparseStatus_t testing_hybmv(Arguments argus)
 
         unit_check_near(1, m, 1, hy_gold.data(), hy_1.data());
         unit_check_near(1, m, 1, hy_gold.data(), hy_2.data());
+    }
+
+
+    if(argus.timing)
+    {
+        int number_cold_calls = 2;
+        int number_hot_calls  = argus.iters;
+
+        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
+
+        // Warm up
+        for(int iter = 0; iter < number_cold_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseXhybmv(handle, transA, &h_alpha, descr, hyb, dx, &h_beta, dy_1));
+        }
+
+        double gpu_time_used = get_time_us();
+
+        // Performance run
+        for(int iter = 0; iter < number_hot_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseXhybmv(handle, transA, &h_alpha, descr, hyb, dx, &h_beta, dy_1));
+        }
+
+        gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
+
+        double gflop_count = spmv_gflop_count(m, nnz, h_beta != make_DataType<T>(0.0));
+        double gpu_gflops  = get_gpu_gflops(gpu_time_used, gflop_count);
+
+        std::cout << "GFLOPS/s: " << gpu_gflops << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
     }
 
     return HIPSPARSE_STATUS_SUCCESS;

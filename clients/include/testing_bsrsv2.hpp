@@ -27,6 +27,8 @@
 
 #include "hipsparse.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
+#include "flops.hpp"
+#include "gbyte.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
 #include "hipsparse_arguments.hpp"
@@ -715,6 +717,71 @@ hipsparseStatus_t testing_bsrsv2(Arguments argus)
 
         unit_check_near(1, m, 1, hy_gold.data(), hy_1.data());
         unit_check_near(1, m, 1, hy_gold.data(), hy_2.data());
+    }
+
+    if(argus.timing)
+    {
+        int number_cold_calls = 2;
+        int number_hot_calls  = argus.iters;
+
+        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
+
+        // Warm up
+        for(int iter = 0; iter < number_cold_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseXbsrsv2_solve(handle,
+                                                     dir,
+                                                     trans,
+                                                     mb,
+                                                     nnzb,
+                                                     &h_alpha,
+                                                     descr,
+                                                     dbsr_val,
+                                                     dbsr_row_ptr,
+                                                     dbsr_col_ind,
+                                                     block_dim,
+                                                     info,
+                                                     dx,
+                                                     dy_1,
+                                                     policy,
+                                                     dbuffer));
+        }
+
+        double gpu_time_used = get_time_us();
+
+        // Performance run
+        for(int iter = 0; iter < number_hot_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseXbsrsv2_solve(handle,
+                                                     dir,
+                                                     trans,
+                                                     mb,
+                                                     nnzb,
+                                                     &h_alpha,
+                                                     descr,
+                                                     dbsr_val,
+                                                     dbsr_row_ptr,
+                                                     dbsr_col_ind,
+                                                     block_dim,
+                                                     info,
+                                                     dx,
+                                                     dy_1,
+                                                     policy,
+                                                     dbuffer));
+        }
+
+        gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
+
+        double gflop_count
+            = csrsv_gflop_count(m, size_t(nnzb) * block_dim * block_dim, diag_type);
+        double gbyte_count = bsrsv_gbyte_count<T>(mb, nnzb, block_dim);
+
+        double gpu_gflops = get_gpu_gflops(gpu_time_used, gflop_count);
+        double gpu_gbyte  = get_gpu_gbyte(gpu_time_used, gbyte_count);
+
+        std::cout << "GFlops/s: " << gpu_gflops 
+                  << " GBytes/s: " << gpu_gbyte 
+                  << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
     }
 
     return HIPSPARSE_STATUS_SUCCESS;

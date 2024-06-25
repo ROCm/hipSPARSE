@@ -72,4 +72,34 @@ constexpr double roti_gflop_count(I nnz)
     return (6.0 * nnz) / 1e9;
 }
 
+
+/*
+ * ===========================================================================
+ *    level 2 SPARSE
+ * ===========================================================================
+ */
+template <typename I, typename J>
+constexpr double spmv_gflop_count(J M, I nnz, bool beta = false)
+{
+    return (2.0 * nnz + (beta ? M : 0)) / 1e9;
+}
+
+template <typename I, typename J>
+constexpr double csrsv_gflop_count(J M, I nnz, hipsparseDiagType_t diag)
+{
+    return (2.0 * nnz + M + (diag == HIPSPARSE_DIAG_TYPE_NON_UNIT ? M : 0)) / 1e9;
+}
+
+template <typename I, typename J>
+constexpr double spsv_gflop_count(J M, I nnz, hipsparseDiagType_t diag)
+{
+    return csrsv_gflop_count(M, nnz, diag);
+}
+
+template <typename I>
+constexpr double gemvi_gflop_count(I M, I nnz)
+{
+    return (M + 2.0 * nnz * M) / 1e9;
+}
+
 #endif // FLOPS_HPP
