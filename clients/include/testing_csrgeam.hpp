@@ -856,8 +856,6 @@ hipsparseStatus_t testing_csrgeam(Arguments argus)
         // Compute csrgeam host solution
         std::vector<int> hcsr_row_ptr_C_gold(M + 1);
 
-        double cpu_time_used = get_time_us();
-
         int nnz_C_gold = host_csrgeam_nnz(M,
                                           N,
                                           h_alpha,
@@ -890,8 +888,6 @@ hipsparseStatus_t testing_csrgeam(Arguments argus)
                      idx_base_A,
                      idx_base_B,
                      idx_base_C);
-
-        cpu_time_used = get_time_us() - cpu_time_used;
 
         // Copy output from device to CPU
         int hnnz_C_2;
