@@ -25,6 +25,36 @@
 
 #include <hipsparse.h>
 
+typedef hipsparseIndexBase_t               base;
+typedef std::tuple<int, int, double, base> rot_tuple;
+
+int rot_N_range[]   = {12000, 15332, 22031};
+int rot_nnz_range[] = {0, 5, 10, 500, 1000, 7111, 10000};
+
+std::vector<double> rot_alpha_range = {1.0, 0.0};
+
+base rot_idx_base_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+
+class parameterized_rot : public testing::TestWithParam<rot_tuple>
+{
+protected:
+    parameterized_rot() {}
+    virtual ~parameterized_rot() {}
+    virtual void SetUp() {}
+    virtual void TearDown() {}
+};
+
+Arguments setup_rot_arguments(rot_tuple tup)
+{
+    Arguments arg;
+    arg.N        = std::get<0>(tup);
+    arg.nnz      = std::get<1>(tup);
+    arg.alpha    = std::get<2>(tup);
+    arg.baseA = std::get<3>(tup);
+    arg.timing   = 0;
+    return arg;
+}
+
 // Only run tests for CUDA 11.1 or greater
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(rot_bad_arg, rot_float)
@@ -32,27 +62,42 @@ TEST(rot_bad_arg, rot_float)
     testing_rot_bad_arg();
 }
 
-TEST(rot, rot_i32_float)
+TEST_P(parameterized_rot, rot_i32_float)
 {
-    hipsparseStatus_t status = testing_rot<int32_t, float>();
+    Arguments arg = setup_rot_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_rot<int32_t, float>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-TEST(rot, rot_i64_double)
+TEST_P(parameterized_rot, rot_i64_double)
 {
-    hipsparseStatus_t status = testing_rot<int64_t, double>();
+    Arguments arg = setup_rot_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_rot<int64_t, double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-TEST(rot, rot_i32_hipFloatComplex)
+TEST_P(parameterized_rot, rot_i32_float_complex)
 {
-    hipsparseStatus_t status = testing_rot<int32_t, hipComplex>();
+    Arguments arg = setup_rot_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_rot<int32_t, hipComplex>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-TEST(rot, rot_i64_hipDoubleComplex)
+TEST_P(parameterized_rot, rot_i64_double_complex)
 {
-    hipsparseStatus_t status = testing_rot<int64_t, hipDoubleComplex>();
+    Arguments arg = setup_rot_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_rot<int64_t, hipDoubleComplex>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+
+INSTANTIATE_TEST_SUITE_P(rot,
+                         parameterized_rot,
+                         testing::Combine(testing::ValuesIn(rot_N_range),
+                                          testing::ValuesIn(rot_nnz_range),
+                                          testing::ValuesIn(rot_alpha_range),
+                                          testing::ValuesIn(rot_idx_base_range)));
 #endif
