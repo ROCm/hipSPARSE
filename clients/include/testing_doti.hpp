@@ -28,6 +28,8 @@
 #include "hipsparse.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
+#include "flops.hpp"
+#include "gbyte.hpp"
 #include "utility.hpp"
 #include "hipsparse_arguments.hpp"
 
@@ -117,6 +119,10 @@ hipsparseStatus_t testing_doti(Arguments argus)
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
     hipsparseHandle_t              handle = test_handle->handle;
 
+    // Grab stream used by handle
+    hipStream_t stream;
+    CHECK_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
+
     // Host structures
     std::vector<int> hx_ind(nnz);
     std::vector<T>   hx_val(nnz);
@@ -173,6 +179,40 @@ hipsparseStatus_t testing_doti(Arguments argus)
         // unit check and norm check can not be interchanged their order
         unit_check_general(1, 1, 1, &hresult_gold, &hresult_1);
         unit_check_general(1, 1, 1, &hresult_gold, &hresult_2);
+    }
+
+    if(argus.timing)
+    {
+        int number_cold_calls = 2;
+        int number_hot_calls  = argus.iters;
+
+        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
+
+        // Warm up
+        for(int iter = 0; iter < number_cold_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseXdoti(handle, nnz, dx_val, dx_ind, dy, &hresult_1, idx_base));
+            CHECK_HIP_ERROR(hipStreamSynchronize(stream));
+        }
+
+        double gpu_time_used = get_time_us();
+
+        // Performance run
+        for(int iter = 0; iter < number_hot_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseXdoti(handle, nnz, dx_val, dx_ind, dy, &hresult_1, idx_base));
+            CHECK_HIP_ERROR(hipStreamSynchronize(stream));
+        }
+
+        gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
+
+        double gflop_count = doti_gflop_count(nnz);
+        double gbyte_count = doti_gbyte_count<T, T>(nnz);
+
+        double gpu_gbyte  = get_gpu_gbyte(gpu_time_used, gbyte_count);
+        double gpu_gflops = get_gpu_gflops(gpu_time_used, gflop_count);
+
+        std::cout << "GFLOPS/s: " << gpu_gflops << " GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
     }
 
     return HIPSPARSE_STATUS_SUCCESS;
