@@ -27,6 +27,8 @@
 
 #include "hipsparse.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
+#include "flops.hpp"
+#include "gbyte.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
 #include "hipsparse_arguments.hpp"
@@ -205,25 +207,16 @@ hipsparseStatus_t testing_nnz(Arguments argus)
         }
     }
 
-    //
     // Initialize a random dense matrix.
-    //
     srand(0);
     gen_dense_random_sparsity_pattern(M, N, h_A.data(), lda, HIPSPARSE_ORDER_COL, 0.2);
 
-    //
     // Transfer.
-    //
     CHECK_HIP_ERROR(hipMemcpy(d_A, h_A.data(), sizeof(T) * lda * N, hipMemcpyHostToDevice));
 
-    //
-    // Unit check.
-    //
     if(argus.unit_check)
     {
-        //
         // Compute the reference host first.
-        //
         host_nnz<T>(dirA,
                     M,
                     N,
@@ -233,9 +226,7 @@ hipsparseStatus_t testing_nnz(Arguments argus)
                     h_nnzPerRowColumn.data(),
                     h_nnzTotalDevHostPtr.data());
 
-        //
         // Pointer mode device for nnz and call.
-        //
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
         CHECK_HIPSPARSE_ERROR(hipsparseXnnz(handle,
                                             dirA,
@@ -247,9 +238,7 @@ hipsparseStatus_t testing_nnz(Arguments argus)
                                             d_nnzPerRowColumn,
                                             d_nnzTotalDevHostPtr));
 
-        //
         // Transfer.
-        //
         CHECK_HIP_ERROR(hipMemcpy(
             hd_nnzPerRowColumn.data(), d_nnzPerRowColumn, sizeof(int) * MN, hipMemcpyDeviceToHost));
         CHECK_HIP_ERROR(hipMemcpy(hd_nnzTotalDevHostPtr.data(),
@@ -257,31 +246,56 @@ hipsparseStatus_t testing_nnz(Arguments argus)
                                   sizeof(int) * 1,
                                   hipMemcpyDeviceToHost));
 
-        //
+        
         // Check results.
-        //
         unit_check_general<int>(1, MN, 1, hd_nnzPerRowColumn.data(), h_nnzPerRowColumn.data());
         unit_check_general<int>(1, 1, 1, hd_nnzTotalDevHostPtr.data(), h_nnzTotalDevHostPtr.data());
 
-        //
         // Pointer mode host for nnz and call.
-        //
         int dh_nnz;
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
         CHECK_HIPSPARSE_ERROR(hipsparseXnnz(
             handle, dirA, M, N, descrA, (const T*)d_A, lda, d_nnzPerRowColumn, &dh_nnz));
 
-        //
         // Transfer.
-        //
         CHECK_HIP_ERROR(hipMemcpy(
             hd_nnzPerRowColumn.data(), d_nnzPerRowColumn, sizeof(int) * MN, hipMemcpyDeviceToHost));
 
-        //
         // Check results.
-        //
         unit_check_general<int>(1, MN, 1, hd_nnzPerRowColumn.data(), h_nnzPerRowColumn.data());
         unit_check_general<int>(1, 1, 1, &dh_nnz, h_nnzTotalDevHostPtr.data());
+    }
+
+    if(argus.timing)
+    {
+        int number_cold_calls = 2;
+        int number_hot_calls  = argus.iters;
+
+        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
+
+        // Warm-up
+        int h_nnz;
+        for(int iter = 0; iter < number_cold_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseXnnz(
+                handle, dirA, M, N, descrA, (const T*)d_A, lda, d_nnzPerRowColumn, &h_nnz));
+        }
+
+        double gpu_time_used = get_time_us();
+        
+        // Performance run
+        for(int iter = 0; iter < number_hot_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseXnnz(
+                handle, dirA, M, N, descrA, (const T*)d_A, lda, d_nnzPerRowColumn, &h_nnz));
+        }
+
+        gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
+
+        double gbyte_count = nnz_gbyte_count<T>(M, N, dirA);
+        double gpu_gbyte = get_gpu_gbyte(gpu_time_used, gbyte_count);
+
+        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
     }
 
     return HIPSPARSE_STATUS_SUCCESS;

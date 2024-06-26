@@ -27,6 +27,8 @@
 
 #include "hipsparse.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
+#include "flops.hpp"
+#include "gbyte.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
 #include "hipsparse_arguments.hpp"
@@ -583,6 +585,63 @@ hipsparseStatus_t testing_gebsr2gebsc(Arguments argus)
                                hbsc_val.data());
         }
     }
+
+    if(argus.timing)
+    {
+        int number_cold_calls = 2;
+        int number_hot_calls  = argus.iters;
+
+        // Warm up
+        for(int iter = 0; iter < number_cold_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseXgebsr2gebsc<T>(handle,
+                                                       mb,
+                                                       nb,
+                                                       nnzb,
+                                                       dbsr_val,
+                                                       dbsr_row_ptr,
+                                                       dbsr_col_ind,
+                                                       row_block_dim,
+                                                       col_block_dim,
+                                                       dbsc_val,
+                                                       dbsc_row_ind,
+                                                       dbsc_col_ptr,
+                                                       action,
+                                                       base,
+                                                       dbuffer));
+        }
+
+        double gpu_time_used = get_time_us();
+
+        // Performance run
+        for(int iter = 0; iter < number_hot_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseXgebsr2gebsc<T>(handle,
+                                                       mb,
+                                                       nb,
+                                                       nnzb,
+                                                       dbsr_val,
+                                                       dbsr_row_ptr,
+                                                       dbsr_col_ind,
+                                                       row_block_dim,
+                                                       col_block_dim,
+                                                       dbsc_val,
+                                                       dbsc_row_ind,
+                                                       dbsc_col_ptr,
+                                                       action,
+                                                       base,
+                                                       dbuffer));
+        }
+
+        gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
+
+        double gbyte_count = gebsr2gebsc_gbyte_count<T>(
+            mb, nb, nnzb, row_block_dim, col_block_dim, action);
+        double gpu_gbyte = get_gpu_gbyte(gpu_time_used, gbyte_count);
+
+        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
+    }
+
     return HIPSPARSE_STATUS_SUCCESS;
 }
 

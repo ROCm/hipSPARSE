@@ -176,6 +176,14 @@ constexpr double gemvi_gbyte_count(I m, I nnz, bool beta = false)
  * ===========================================================================
  */
 template <typename T>
+constexpr double nnz_gbyte_count(int M, int N, hipsparseDirection_t dir)
+{
+    return ((M * N) * sizeof(T)
+            + ((dir == HIPSPARSE_DIRECTION_ROW) ? M : N) * sizeof(int))
+           / 1e9;
+}
+
+template <typename T>
 constexpr double bsr2csr_gbyte_count(int Mb, int block_dim, int nnzb)
 {
     // reads
@@ -336,5 +344,111 @@ constexpr double coosort_gbyte_count(int nnz, bool permute)
     return ((4.0 * nnz + (permute ? 2.0 * nnz : 0.0)) * sizeof(int)) / 1e9;
 }
 
+template <typename T>
+constexpr double gebsr2csr_gbyte_count(int Mb,
+                                       int row_block_dim,
+                                       int col_block_dim,
+                                       int nnzb)
+{
+    // reads
+    size_t reads = nnzb * row_block_dim * col_block_dim * sizeof(T)
+                   + (Mb + 1 + nnzb) * sizeof(int);
+
+    // writes
+    size_t writes
+        = nnzb * row_block_dim * col_block_dim * sizeof(T)
+          + (Mb * row_block_dim + 1 + nnzb * row_block_dim * col_block_dim) * sizeof(int);
+
+    return (reads + writes) / 1e9;
+}
+
+template <typename T>
+constexpr double gebsr2gebsc_gbyte_count(int    Mb,
+                                         int    Nb,
+                                         int    nnzb,
+                                         int    row_block_dim,
+                                         int    col_block_dim,
+                                         hipsparseAction_t action)
+{
+    return ((Mb + Nb + 2 + 2.0 * nnzb) * sizeof(int)
+            + (action == HIPSPARSE_ACTION_NUMERIC
+                   ? (2.0 * nnzb * row_block_dim * col_block_dim) * sizeof(T)
+                   : 0.0))
+           / 1e9;
+}
+
+template <typename T>
+constexpr double gebsr2gebsr_gbyte_count(int Mb_A,
+                                         int Mb_C,
+                                         int row_block_dim_A,
+                                         int col_block_dim_A,
+                                         int row_block_dim_C,
+                                         int col_block_dim_C,
+                                         int nnzb_A,
+                                         int nnzb_C)
+{
+    // reads
+    size_t reads = nnzb_A * row_block_dim_A * col_block_dim_A * sizeof(T)
+                   + (Mb_A + 1 + nnzb_A) * sizeof(int);
+
+    // writes
+    size_t writes = nnzb_C * row_block_dim_C * col_block_dim_C * sizeof(T)
+                    + (Mb_C + 1 + nnzb_C) * sizeof(int);
+
+    return (reads + writes) / 1e9;
+}
+
+constexpr double identity_gbyte_count(int N)
+{
+    return N * sizeof(int) / 1e9;
+}
+
+template <typename T>
+constexpr double
+    prune_csr2csr_gbyte_count(int M, int nnz_A, int nnz_C)
+{
+    // reads
+    size_t reads = (M + 1 + nnz_A) * sizeof(int) + nnz_A * sizeof(T);
+
+    // writes
+    size_t writes = (M + 1 + nnz_C) * sizeof(int) + nnz_C * sizeof(T);
+
+    return (reads + writes) / 1e9;
+}
+
+template <typename T>
+constexpr double prune_csr2csr_by_percentage_gbyte_count(int M,
+                                                         int nnz_A,
+                                                         int nnz_C)
+{
+    // reads
+    size_t reads = (M + 1 + nnz_A) * sizeof(int) + nnz_A * sizeof(T);
+
+    // writes
+    size_t writes = (M + 1 + nnz_C) * sizeof(int) + nnz_C * sizeof(T);
+
+    return (reads + writes) / 1e9;
+}
+
+template <typename T>
+constexpr double prune_dense2csr_gbyte_count(int M, int N, int nnz)
+{
+    size_t reads = M * N * sizeof(T);
+
+    size_t writes = (M + 1 + nnz) * sizeof(int) + nnz * sizeof(T);
+
+    return (reads + writes) / 1e9;
+}
+
+template <typename T>
+constexpr double
+    prune_dense2csr_by_percentage_gbyte_count(int M, int N, int nnz)
+{
+    size_t reads = M * N * sizeof(T);
+
+    size_t writes = (M + 1 + nnz) * sizeof(int) + nnz * sizeof(T);
+
+    return (reads + writes) / 1e9;
+}
 
 #endif // GBYTE_HPP

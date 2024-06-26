@@ -342,36 +342,39 @@ hipsparseStatus_t testing_csru2csr(Arguments argus)
 
     void* dbuffer = (void*)dbuffer_managed.get();
 
-    // Sort CSR columns
-    CHECK_HIPSPARSE_ERROR(hipsparseXcsru2csr(
-        handle, m, n, nnz, descr, dcsr_val, dcsr_row_ptr, dcsr_col_ind, info, dbuffer));
+    if(argus.unit_check)
+    {
+        // Sort CSR columns
+        CHECK_HIPSPARSE_ERROR(hipsparseXcsru2csr(
+            handle, m, n, nnz, descr, dcsr_val, dcsr_row_ptr, dcsr_col_ind, info, dbuffer));
 
-    // Copy output from device to host
-    std::vector<int> hcsr_col_ind(nnz);
-    std::vector<T>   hcsr_val(nnz);
+        // Copy output from device to host
+        std::vector<int> hcsr_col_ind(nnz);
+        std::vector<T>   hcsr_val(nnz);
 
-    CHECK_HIP_ERROR(
-        hipMemcpy(hcsr_col_ind.data(), dcsr_col_ind, sizeof(int) * nnz, hipMemcpyDeviceToHost));
-    CHECK_HIP_ERROR(hipMemcpy(hcsr_val.data(), dcsr_val, sizeof(T) * nnz, hipMemcpyDeviceToHost));
+        CHECK_HIP_ERROR(
+            hipMemcpy(hcsr_col_ind.data(), dcsr_col_ind, sizeof(int) * nnz, hipMemcpyDeviceToHost));
+        CHECK_HIP_ERROR(hipMemcpy(hcsr_val.data(), dcsr_val, sizeof(T) * nnz, hipMemcpyDeviceToHost));
 
-    // Unsort CSR columns back to original state
-    CHECK_HIPSPARSE_ERROR(hipsparseXcsr2csru(
-        handle, m, n, nnz, descr, dcsr_val, dcsr_row_ptr, dcsr_col_ind, info, dbuffer));
+        // Unsort CSR columns back to original state
+        CHECK_HIPSPARSE_ERROR(hipsparseXcsr2csru(
+            handle, m, n, nnz, descr, dcsr_val, dcsr_row_ptr, dcsr_col_ind, info, dbuffer));
 
-    // Copy output from device to host
-    std::vector<int> hcsr_col_ind_unsorted(nnz);
-    std::vector<T>   hcsr_val_unsorted(nnz);
+        // Copy output from device to host
+        std::vector<int> hcsr_col_ind_unsorted(nnz);
+        std::vector<T>   hcsr_val_unsorted(nnz);
 
-    CHECK_HIP_ERROR(hipMemcpy(
-        hcsr_col_ind_unsorted.data(), dcsr_col_ind, sizeof(int) * nnz, hipMemcpyDeviceToHost));
-    CHECK_HIP_ERROR(
-        hipMemcpy(hcsr_val_unsorted.data(), dcsr_val, sizeof(T) * nnz, hipMemcpyDeviceToHost));
+        CHECK_HIP_ERROR(hipMemcpy(
+            hcsr_col_ind_unsorted.data(), dcsr_col_ind, sizeof(int) * nnz, hipMemcpyDeviceToHost));
+        CHECK_HIP_ERROR(
+            hipMemcpy(hcsr_val_unsorted.data(), dcsr_val, sizeof(T) * nnz, hipMemcpyDeviceToHost));
 
-    // Unit check
-    unit_check_general(1, nnz, 1, hcsr_col_ind.data(), hcsr_col_ind_gold.data());
-    unit_check_general(1, nnz, 1, hcsr_val.data(), hcsr_val_gold.data());
-    unit_check_general(1, nnz, 1, hcsr_col_ind_unsorted.data(), hcsr_col_ind_unsorted_gold.data());
-    unit_check_general(1, nnz, 1, hcsr_val_unsorted.data(), hcsr_val_unsorted_gold.data());
+        // Unit check
+        unit_check_general(1, nnz, 1, hcsr_col_ind.data(), hcsr_col_ind_gold.data());
+        unit_check_general(1, nnz, 1, hcsr_val.data(), hcsr_val_gold.data());
+        unit_check_general(1, nnz, 1, hcsr_col_ind_unsorted.data(), hcsr_col_ind_unsorted_gold.data());
+        unit_check_general(1, nnz, 1, hcsr_val_unsorted.data(), hcsr_val_unsorted_gold.data());
+    }
 #endif
 
     return HIPSPARSE_STATUS_SUCCESS;
