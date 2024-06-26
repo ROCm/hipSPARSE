@@ -27,6 +27,8 @@
 
 #include "hipsparse.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
+#include "flops.hpp"
+#include "gbyte.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
 #include "hipsparse_arguments.hpp"
@@ -484,6 +486,73 @@ hipsparseStatus_t testing_csr2csr_compress(Arguments argus)
         unit_check_general(1, m + 1, 1, hcsr_row_ptr_C_gold.data(), hcsr_row_ptr_C.data());
         unit_check_general(1, hnnz_C, 1, hcsr_col_ind_C_gold.data(), hcsr_col_ind_C.data());
         unit_check_general(1, hnnz_C, 1, hcsr_val_gold.data(), hcsr_val_C.data());
+    }
+
+    if(argus.timing)
+    {
+        int number_cold_calls = 2;
+        int number_hot_calls  = argus.iters;
+
+        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
+
+        int hnnz_C;
+        CHECK_HIPSPARSE_ERROR(hipsparseXnnz_compress(
+            handle, m, csr_descr, dcsr_val_A, dcsr_row_ptr_A, dnnz_per_row, &hnnz_C, tol));
+
+
+        // Allocate device memory for compressed CSR columns indices and values
+        auto dcsr_col_ind_C_managed
+            = hipsparse_unique_ptr{device_malloc(sizeof(int) * hnnz_C), device_free};
+        auto dcsr_val_C_managed
+            = hipsparse_unique_ptr{device_malloc(sizeof(T) * hnnz_C), device_free};
+
+        int* dcsr_col_ind_C = (int*)dcsr_col_ind_C_managed.get();
+        T*   dcsr_val_C     = (T*)dcsr_val_C_managed.get();
+
+        // Warm up
+        for(int iter = 0; iter < number_cold_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseXcsr2csr_compress(handle,
+                                                         m,
+                                                         n,
+                                                         csr_descr,
+                                                         dcsr_val_A,
+                                                         dcsr_col_ind_A,
+                                                         dcsr_row_ptr_A,
+                                                         hnnz_A,
+                                                         dnnz_per_row,
+                                                         dcsr_val_C,
+                                                         dcsr_col_ind_C,
+                                                         dcsr_row_ptr_C,
+                                                         tol));
+        }
+
+        double gpu_time_used = get_time_us();
+
+        // Performance run
+        for(int iter = 0; iter < number_hot_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseXcsr2csr_compress(handle,
+                                                         m,
+                                                         n,
+                                                         csr_descr,
+                                                         dcsr_val_A,
+                                                         dcsr_col_ind_A,
+                                                         dcsr_row_ptr_A,
+                                                         hnnz_A,
+                                                         dnnz_per_row,
+                                                         dcsr_val_C,
+                                                         dcsr_col_ind_C,
+                                                         dcsr_row_ptr_C,
+                                                         tol));
+        }
+
+        gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
+
+        double gbyte_count = csr2csr_compress_gbyte_count<T>(m, hnnz_A, hnnz_C);
+        double gpu_gbyte   = get_gpu_gbyte(gpu_time_used, gbyte_count);
+
+        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
     }
 
     return HIPSPARSE_STATUS_SUCCESS;

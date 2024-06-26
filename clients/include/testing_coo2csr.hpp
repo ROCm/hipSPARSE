@@ -27,6 +27,8 @@
 
 #include "hipsparse.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
+#include "flops.hpp"
+#include "gbyte.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
 #include "hipsparse_arguments.hpp"
@@ -162,6 +164,33 @@ hipsparseStatus_t testing_coo2csr(Arguments argus)
 
         // Unit check
         unit_check_general(1, m + 1, 1, hcsr_row_ptr_gold.data(), hcsr_row_ptr.data());
+    }
+
+    if(argus.timing)
+    {
+        int number_cold_calls = 2;
+        int number_hot_calls  = argus.iters;
+
+        // Warm up
+        for(int iter = 0; iter < number_cold_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseXcoo2csr(handle, dcoo_row_ind, nnz, m, dcsr_row_ptr, idx_base));
+        }
+
+        double gpu_time_used = get_time_us();
+
+        // Performance run
+        for(int iter = 0; iter < number_hot_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseXcoo2csr(handle, dcoo_row_ind, nnz, m, dcsr_row_ptr, idx_base));
+        }
+
+        gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
+
+        double gbyte_count = coo2csr_gbyte_count<T>(m, nnz);
+        double gpu_gbyte   = get_gpu_gbyte(gpu_time_used, gbyte_count);
+
+        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
     }
 
     return HIPSPARSE_STATUS_SUCCESS;

@@ -27,6 +27,8 @@
 
 #include "hipsparse.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
+#include "flops.hpp"
+#include "gbyte.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
 #include "hipsparse_arguments.hpp"
@@ -41,21 +43,6 @@ using namespace hipsparse_test;
 #define ELL_IND_ROW(i, el, m, width) (el) * (m) + (i)
 #define ELL_IND_EL(i, el, m, width) (el) + (width) * (i)
 #define ELL_IND(i, el, m, width) ELL_IND_ROW(i, el, m, width)
-
-// struct test_hyb
-// {
-//     int                     m;
-//     int                     n;
-//     hipsparseHybPartition_t partition;
-//     int                     ell_nnz;
-//     int                     ell_width;
-//     int*                    ell_col_ind;
-//     void*                   ell_val;
-//     int                     coo_nnz;
-//     int*                    coo_row_ind;
-//     int*                    coo_col_ind;
-//     void*                   coo_val;
-// };
 
 template <typename T>
 void testing_csr2hyb_bad_arg(void)
@@ -407,6 +394,35 @@ hipsparseStatus_t testing_csr2hyb(Arguments argus)
         unit_check_general(1, coo_nnz, 1, hhyb_coo_row_ind_gold.data(), hhyb_coo_row_ind.data());
         unit_check_general(1, coo_nnz, 1, hhyb_coo_col_ind_gold.data(), hhyb_coo_col_ind.data());
         unit_check_general(1, coo_nnz, 1, hhyb_coo_val_gold.data(), hhyb_coo_val.data());
+    }
+
+    if(argus.timing)
+    {
+        int number_cold_calls = 2;
+        int number_hot_calls  = argus.iters;
+
+        // Warm up
+        for(int iter = 0; iter < number_cold_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseXcsr2hyb(
+            handle, m, n, descr, dcsr_val, dcsr_row_ptr, dcsr_col_ind, hyb, user_ell_width, part));
+        }
+
+        double gpu_time_used = get_time_us();
+
+        // Performance run
+        for(int iter = 0; iter < number_hot_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseXcsr2hyb(
+            handle, m, n, descr, dcsr_val, dcsr_row_ptr, dcsr_col_ind, hyb, user_ell_width, part));
+        }
+
+        gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
+
+        double gbyte_count = csr2hyb_gbyte_count<T>(m, nnz, ell_nnz, coo_nnz);
+        double gpu_gbyte   = get_gpu_gbyte(gpu_time_used, gbyte_count);
+
+        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;       
     }
 
     return HIPSPARSE_STATUS_SUCCESS;

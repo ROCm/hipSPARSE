@@ -364,7 +364,6 @@ hipsparseStatus_t testing_hybmv(Arguments argus)
         unit_check_near(1, m, 1, hy_gold.data(), hy_2.data());
     }
 
-
     if(argus.timing)
     {
         int number_cold_calls = 2;

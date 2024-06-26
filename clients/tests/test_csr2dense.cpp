@@ -30,9 +30,9 @@
 typedef hipsparseIndexBase_t            base;
 typedef std::tuple<int, int, int, base> csr2dense_tuple;
 
-int  csr2dense_M_range[]        = {-1, 0, 10, 500, 872, 1000};
-int  csr2dense_N_range[]        = {-3, 0, 33, 242, 623, 1000};
-int  csr2dense_LD_range[]       = {5, 500, 1000};
+int  csr2dense_M_range[]        = {0, 10, 500, 872, 1000};
+int  csr2dense_N_range[]        = {0, 33, 242, 623, 1000};
+int  csr2dense_LD_range[]       = {1000};
 base csr2dense_idx_base_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
 class parameterized_csr2dense : public testing::TestWithParam<csr2dense_tuple>

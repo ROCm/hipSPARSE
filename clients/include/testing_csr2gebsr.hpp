@@ -27,6 +27,8 @@
 
 #include "hipsparse.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
+#include "flops.hpp"
+#include "gbyte.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
 #include "hipsparse_arguments.hpp"
@@ -509,59 +511,32 @@ hipsparseStatus_t testing_csr2gebsr(Arguments argus)
     auto  dbuffer_managed = hipsparse_unique_ptr{device_malloc(buffer_size), device_free};
     void* dbuffer         = dbuffer_managed.get();
 
+    int hbsr_nnzb;
+    CHECK_HIPSPARSE_ERROR(hipsparseXcsr2gebsrNnz(handle,
+                                                    dir,
+                                                    m,
+                                                    n,
+                                                    csr_descr,
+                                                    dcsr_row_ptr,
+                                                    dcsr_col_ind,
+                                                    bsr_descr,
+                                                    dbsr_row_ptr,
+                                                    row_block_dim,
+                                                    col_block_dim,
+                                                    &hbsr_nnzb,
+                                                    dbuffer));
+
+    // Allocate memory on the device
+    auto dbsr_col_ind_managed
+        = hipsparse_unique_ptr{device_malloc(sizeof(int) * hbsr_nnzb), device_free};
+    auto dbsr_val_managed = hipsparse_unique_ptr{
+        device_malloc(sizeof(T) * hbsr_nnzb * row_block_dim * col_block_dim), device_free};
+
+    int* dbsr_col_ind = (int*)dbsr_col_ind_managed.get();
+    T*   dbsr_val     = (T*)dbsr_val_managed.get();
+
     if(argus.unit_check)
     {
-        // Obtain BSR nnzb first on the host and then using the device and ensure they give the same results
-        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
-
-        int hbsr_nnzb;
-        CHECK_HIPSPARSE_ERROR(hipsparseXcsr2gebsrNnz(handle,
-                                                     dir,
-                                                     m,
-                                                     n,
-                                                     csr_descr,
-                                                     dcsr_row_ptr,
-                                                     dcsr_col_ind,
-                                                     bsr_descr,
-                                                     dbsr_row_ptr,
-                                                     row_block_dim,
-                                                     col_block_dim,
-                                                     &hbsr_nnzb,
-                                                     dbuffer));
-
-#if 0
-        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
-        auto dbsr_nnzb_managed = hipsparse_unique_ptr{device_malloc(sizeof(int)), device_free};
-        int* dbsr_nnzb         = (int*)dbsr_nnzb_managed.get();
-        CHECK_HIPSPARSE_ERROR(hipsparseXcsr2gebsrNnz(handle,
-                                                   dir,
-                                                   m,
-                                                   n,
-                                                   csr_descr,
-                                                   dcsr_row_ptr,
-                                                   dcsr_col_ind,
-                                                   block_dim,
-                                                   bsr_descr,
-                                                   dbsr_row_ptr,
-                                                   dbsr_nnzb));
-
-        int hbsr_nnzb_copied_from_device;
-        CHECK_HIP_ERROR(hipMemcpy(
-            &hbsr_nnzb_copied_from_device, dbsr_nnzb, sizeof(int), hipMemcpyDeviceToHost));
-
-        // Check that using host and device pointer mode gives the same result
-        unit_check_general(1, 1, 1, &hbsr_nnzb_copied_from_device, &hbsr_nnzb);
-#endif
-
-        // Allocate memory on the device
-        auto dbsr_col_ind_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * hbsr_nnzb), device_free};
-        auto dbsr_val_managed = hipsparse_unique_ptr{
-            device_malloc(sizeof(T) * hbsr_nnzb * row_block_dim * col_block_dim), device_free};
-
-        int* dbsr_col_ind = (int*)dbsr_col_ind_managed.get();
-        T*   dbsr_val     = (T*)dbsr_val_managed.get();
-
         CHECK_HIPSPARSE_ERROR(hipsparseXcsr2gebsr(handle,
                                                   dir,
                                                   m,
@@ -623,6 +598,63 @@ hipsparseStatus_t testing_csr2gebsr(Arguments argus)
         unit_check_general(
             1, hbsr_nnzb * row_block_dim * col_block_dim, 1, hbsr_val_gold.data(), hbsr_val.data());
     }
+
+    if(argus.timing)
+    {
+        int number_cold_calls = 2;
+        int number_hot_calls  = argus.iters;
+
+        // Warm up
+        for(int iter = 0; iter < number_cold_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseXcsr2gebsr(handle,
+                                                  dir,
+                                                  m,
+                                                  n,
+                                                  csr_descr,
+                                                  dcsr_val,
+                                                  dcsr_row_ptr,
+                                                  dcsr_col_ind,
+                                                  bsr_descr,
+                                                  dbsr_val,
+                                                  dbsr_row_ptr,
+                                                  dbsr_col_ind,
+                                                  row_block_dim,
+                                                  col_block_dim,
+                                                  dbuffer));
+        }
+
+        double gpu_time_used = get_time_us();
+
+        // Performance run
+        for(int iter = 0; iter < number_hot_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseXcsr2gebsr(handle,
+                                                  dir,
+                                                  m,
+                                                  n,
+                                                  csr_descr,
+                                                  dcsr_val,
+                                                  dcsr_row_ptr,
+                                                  dcsr_col_ind,
+                                                  bsr_descr,
+                                                  dbsr_val,
+                                                  dbsr_row_ptr,
+                                                  dbsr_col_ind,
+                                                  row_block_dim,
+                                                  col_block_dim,
+                                                  dbuffer));
+        }
+
+        gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
+
+        double gbyte_count
+            = csr2gebsr_gbyte_count<T>(m, mb, nnz, hbsr_nnzb, row_block_dim, col_block_dim);
+        double gpu_gbyte = get_gpu_gbyte(gpu_time_used, gbyte_count);
+
+        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
+    }
+
     return HIPSPARSE_STATUS_SUCCESS;
 }
 

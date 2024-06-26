@@ -43,18 +43,6 @@ static T convert_alpha_beta(double r, double i)
     return static_cast<T>(r);
 }
 
-template <>
-hipComplex convert_alpha_beta(double r, double i)
-{
-    return hipComplex(r, i);
-}
-
-template <>
-hipDoubleComplex convert_alpha_beta(double r, double i)
-{
-    return hipDoubleComplex(r, i);
-}
-
 struct Arguments
 {
     int M;

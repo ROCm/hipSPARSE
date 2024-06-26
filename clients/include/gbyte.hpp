@@ -158,4 +158,126 @@ constexpr double gemvi_gbyte_count(I m, I nnz, bool beta = false)
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+ * ===========================================================================
+ *    conversion SPARSE
+ * ===========================================================================
+ */
+template <typename T>
+constexpr double bsr2csr_gbyte_count(int Mb, int block_dim, int nnzb)
+{
+    // reads
+    size_t reads = nnzb * block_dim * block_dim * sizeof(T) + (Mb + 1 + nnzb) * sizeof(int);
+
+    // writes
+    size_t writes = nnzb * block_dim * block_dim * sizeof(T)
+                    + (Mb * block_dim + 1 + nnzb * block_dim * block_dim) * sizeof(int);
+
+    return (reads + writes) / 1e9;
+}
+
+template <typename T>
+constexpr double csr2coo_gbyte_count(int M, int nnz)
+{
+    return (M + 1 + nnz) * sizeof(int) / 1e9;
+}
+
+template <typename T>
+constexpr double coo2csr_gbyte_count(int M, int nnz)
+{
+    return (M + 1 + nnz) * sizeof(int) / 1e9;
+}
+
+template <typename T>
+constexpr double csr2csc_gbyte_count(int    M,
+                                     int    N,
+                                     int    nnz,
+                                     hipsparseAction_t action)
+{
+    return ((M + N + 2 + 2.0 * nnz) * sizeof(int)
+            + (action == HIPSPARSE_ACTION_NUMERIC ? (2.0 * nnz) * sizeof(T) : 0.0))
+           / 1e9;
+}
+
+template <typename T>
+constexpr double csr2hyb_gbyte_count(int M,
+                                     int nnz,
+                                     int ell_nnz,
+                                     int coo_nnz)
+{
+    return ((M + 1.0 + ell_nnz + 2.0 * coo_nnz) * sizeof(int)
+            + (nnz + ell_nnz + coo_nnz) * sizeof(T))
+           / 1e9;
+}
+
+template <typename T>
+constexpr double hyb2csr_gbyte_count(int M,
+                                     int csr_nnz,
+                                     int ell_nnz,
+                                     int coo_nnz)
+{
+    return ((M + 1.0 + csr_nnz + ell_nnz + 2.0 * coo_nnz) * sizeof(int)
+            + (csr_nnz + ell_nnz + coo_nnz) * sizeof(T))
+           / 1e9;
+}
+
+template <typename T>
+constexpr double csr2bsr_gbyte_count(int M,
+                                     int Mb,
+                                     int nnz,
+                                     int nnzb,
+                                     int block_dim)
+{
+    // reads
+    size_t reads = (M + 1 + nnz) * sizeof(int) + nnz * sizeof(T);
+
+    // writes
+    size_t writes = (Mb + 1 + nnzb * block_dim * block_dim) * sizeof(int)
+                    + (nnzb * block_dim * block_dim) * sizeof(T);
+
+    return (reads + writes) / 1e9;
+}
+
+template <typename T>
+constexpr double csr2gebsr_gbyte_count(int M,
+                                       int Mb,
+                                       int nnz,
+                                       int nnzb,
+                                       int row_block_dim,
+                                       int col_block_dim)
+{
+    // reads
+    size_t reads = (M + 1 + nnz) * sizeof(int) + nnz * sizeof(T);
+
+    // writes
+    size_t writes = (Mb + 1 + nnzb * row_block_dim * col_block_dim) * sizeof(int)
+                    + (nnzb * row_block_dim * col_block_dim) * sizeof(T);
+
+    return (reads + writes) / 1e9;
+}
+
+template <typename T>
+constexpr double
+    csr2csr_compress_gbyte_count(int M, int nnz_A, int nnz_C)
+{
+    size_t reads = (M + 1 + nnz_A) * sizeof(int) + nnz_A * sizeof(T);
+
+    size_t writes = (M + 1 + nnz_C) * sizeof(int) + nnz_C * sizeof(T);
+
+    return (reads + writes) / 1e9;
+}
+
+
 #endif // GBYTE_HPP

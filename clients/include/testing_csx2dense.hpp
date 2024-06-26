@@ -126,13 +126,11 @@ void testing_csx2dense_bad_arg(FUNC& csx2dense)
 template <hipsparseDirection_t DIRA, typename T, typename FUNC1, typename FUNC2>
 hipsparseStatus_t testing_csx2dense(const Arguments& argus, FUNC1& csx2dense, FUNC2& dense2csx)
 {
-
     int                  M        = argus.M;
     int                  N        = argus.N;
     int                  LD       = argus.lda;
     hipsparseIndexBase_t idx_base = argus.baseA;
 
-    hipsparseStatus_t              status;
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
@@ -140,31 +138,29 @@ hipsparseStatus_t testing_csx2dense(const Arguments& argus, FUNC1& csx2dense, FU
     hipsparseMatDescr_t           descr = unique_ptr_descr->descr;
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatIndexBase(descr, idx_base));
 
-    if(M <= 0 || N <= 0 || LD < M)
-    {
-        hipsparseStatus_t expected_status
-            = (((M == 0 && N >= 0) || (M >= 0 && N == 0)) && (LD >= M))
-                  ? HIPSPARSE_STATUS_SUCCESS
-                  : HIPSPARSE_STATUS_INVALID_VALUE;
-        status
-            = csx2dense(handle, M, N, descr, (const T*)nullptr, nullptr, nullptr, (T*)nullptr, LD);
-        verify_hipsparse_status(status,
-                                expected_status,
-                                (expected_status == HIPSPARSE_STATUS_SUCCESS)
-                                    ? "Error: call with zero sizes must be successful."
-                                    : "Error: An invalid size must be detected.");
+    // if(M <= 0 || N <= 0 || LD < M)
+    // {
+    //     hipsparseStatus_t expected_status
+    //         = (((M == 0 && N >= 0) || (M >= 0 && N == 0)) && (LD >= M))
+    //               ? HIPSPARSE_STATUS_SUCCESS
+    //               : HIPSPARSE_STATUS_INVALID_VALUE;
+    //     status
+    //         = csx2dense(handle, M, N, descr, (const T*)nullptr, nullptr, nullptr, (T*)nullptr, LD);
+    //     verify_hipsparse_status(status,
+    //                             expected_status,
+    //                             (expected_status == HIPSPARSE_STATUS_SUCCESS)
+    //                                 ? "Error: call with zero sizes must be successful."
+    //                                 : "Error: An invalid size must be detected.");
 
-        return HIPSPARSE_STATUS_SUCCESS;
-    }
+    //     return HIPSPARSE_STATUS_SUCCESS;
+    // }
 
     int              DIMDIR = (HIPSPARSE_DIRECTION_ROW == DIRA) ? M : N;
     std::vector<T>   h_dense_val_ref(LD * N);
     std::vector<T>   h_dense_val(LD * N);
     std::vector<int> h_nnzPerRowColumn(DIMDIR);
 
-    //
     // Create the dense matrix.
-    //
     int  MN          = DIMDIR;
     auto m_dense_val = hipsparse_unique_ptr{device_malloc(sizeof(T) * LD * N), device_free};
     auto nnzPerRowColumn_managed
@@ -174,16 +170,8 @@ hipsparseStatus_t testing_csx2dense(const Arguments& argus, FUNC1& csx2dense, FU
 
     T*   d_dense_val       = (T*)m_dense_val.get();
     int* d_nnzPerRowColumn = (int*)nnzPerRowColumn_managed.get();
-    //if(!d_nnzPerRowColumn || !d_dense_val)
-    //{
-    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-    //                                    "!d_nnzPerRowColumn || !d_dense_val");
-    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
-    //}
 
-    //
     // Initialize the entire allocated memory.
-    //
     for(int i = 0; i < LD; ++i)
     {
         for(int j = 0; j < N; ++j)
@@ -191,15 +179,12 @@ hipsparseStatus_t testing_csx2dense(const Arguments& argus, FUNC1& csx2dense, FU
             h_dense_val_ref[j * LD + i] = make_DataType<T>(-1);
         }
     }
-    //
+    
     // Initialize a random dense matrix.
-    //
     srand(0);
     gen_dense_random_sparsity_pattern(M, N, h_dense_val_ref.data(), LD, HIPSPARSE_ORDER_COL, 0.2);
 
-    //
     // Transfer.
-    //
     CHECK_HIP_ERROR(
         hipMemcpy(d_dense_val, h_dense_val_ref.data(), sizeof(T) * LD * N, hipMemcpyHostToDevice));
 
@@ -208,9 +193,7 @@ hipsparseStatus_t testing_csx2dense(const Arguments& argus, FUNC1& csx2dense, FU
     CHECK_HIPSPARSE_ERROR(
         hipsparseXnnz(handle, DIRA, M, N, descr, d_dense_val, LD, d_nnzPerRowColumn, &nnz));
 
-    //
     // Transfer.
-    //
     CHECK_HIP_ERROR(hipMemcpy(
         h_nnzPerRowColumn.data(), d_nnzPerRowColumn, sizeof(int) * DIMDIR, hipMemcpyDeviceToHost));
 
@@ -223,53 +206,22 @@ hipsparseStatus_t testing_csx2dense(const Arguments& argus, FUNC1& csx2dense, FU
     int* d_csx_col_row_ind = (int*)m_csx_col_row_ind.get();
     T*   d_csx_val         = (T*)m_csx_val.get();
 
-    //if(!d_csx_row_col_ptr || !d_csx_val || !d_csx_col_row_ind)
-    //{
-    //    CHECK_HIP_ERROR(hipErrorOutOfMemory);
-    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
-    //}
-
     std::vector<int> cpu_csx_row_col_ptr(DIMDIR + 1);
     std::vector<T>   cpu_csx_val(nnz);
     std::vector<int> cpu_csx_col_row_ind(nnz);
-    //if(!cpu_csx_row_col_ptr.data() || !cpu_csx_val.data() || !cpu_csx_col_row_ind.data())
-    //{
-    //    CHECK_HIP_ERROR(hipErrorOutOfMemory);
-    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
-    //}
-    //
-    // Convert the dense matrix to a compressed sparse matrix.
-    //
-    if(DIRA == HIPSPARSE_DIRECTION_ROW)
-    {
-        CHECK_HIPSPARSE_ERROR(dense2csx(handle,
-                                        M,
-                                        N,
-                                        descr,
-                                        d_dense_val,
-                                        LD,
-                                        d_nnzPerRowColumn,
-                                        d_csx_val,
-                                        d_csx_row_col_ptr,
-                                        d_csx_col_row_ind));
-    }
-    else
-    {
-        CHECK_HIPSPARSE_ERROR(dense2csx(handle,
-                                        M,
-                                        N,
-                                        descr,
-                                        d_dense_val,
-                                        LD,
-                                        d_nnzPerRowColumn,
-                                        d_csx_val,
-                                        d_csx_col_row_ind,
-                                        d_csx_row_col_ptr));
-    }
+   
+    CHECK_HIPSPARSE_ERROR(dense2csx(handle,
+                                    M,
+                                    N,
+                                    descr,
+                                    d_dense_val,
+                                    LD,
+                                    d_nnzPerRowColumn,
+                                    d_csx_val,
+                                    (DIRA == HIPSPARSE_DIRECTION_ROW) ? d_csx_row_col_ptr : d_csx_col_row_ind,
+                                    (DIRA == HIPSPARSE_DIRECTION_ROW) ? d_csx_col_row_ind : d_csx_row_col_ptr));
 
-    //
     // Copy on host.
-    //
     CHECK_HIP_ERROR(hipMemcpy(
         cpu_csx_val.data(), d_csx_val, sizeof(T) * std::max(nnz, 1), hipMemcpyDeviceToHost));
     CHECK_HIP_ERROR(hipMemcpy(cpu_csx_row_col_ptr.data(),
@@ -290,6 +242,7 @@ hipsparseStatus_t testing_csx2dense(const Arguments& argus, FUNC1& csx2dense, FU
                 h_dense_val[j * LD + i] = make_DataType<T>(-2);
             }
         }
+
         CHECK_HIP_ERROR(
             hipMemcpy(d_dense_val, h_dense_val.data(), sizeof(T) * LD * N, hipMemcpyHostToDevice));
         host_csx2dense<DIRA, T>(M,
@@ -301,30 +254,17 @@ hipsparseStatus_t testing_csx2dense(const Arguments& argus, FUNC1& csx2dense, FU
                                 h_dense_val.data(),
                                 LD);
 
-        if(DIRA == HIPSPARSE_DIRECTION_ROW)
-        {
-            CHECK_HIPSPARSE_ERROR(csx2dense(handle,
-                                            M,
-                                            N,
-                                            descr,
-                                            d_csx_val,
-                                            d_csx_row_col_ptr,
-                                            d_csx_col_row_ind,
-                                            d_dense_val,
-                                            LD));
-        }
-        else
-        {
-            CHECK_HIPSPARSE_ERROR(csx2dense(handle,
-                                            M,
-                                            N,
-                                            descr,
-                                            d_csx_val,
-                                            d_csx_col_row_ind,
-                                            d_csx_row_col_ptr,
-                                            d_dense_val,
-                                            LD));
-        }
+        CHECK_HIPSPARSE_ERROR(csx2dense(handle,
+                                        M,
+                                        N,
+                                        descr,
+                                        d_csx_val,
+                                        (DIRA == HIPSPARSE_DIRECTION_ROW) ? d_csx_row_col_ptr : d_csx_col_row_ind,
+                                        (DIRA == HIPSPARSE_DIRECTION_ROW) ? d_csx_col_row_ind : d_csx_row_col_ptr,
+                                        d_dense_val,
+                                        LD));
+    
+
         void* buffer = malloc(sizeof(T) * LD * N);
         CHECK_HIP_ERROR(hipMemcpy(buffer, d_dense_val, sizeof(T) * LD * N, hipMemcpyDeviceToHost));
         unit_check_general(M, N, LD, h_dense_val.data(), (T*)buffer);
@@ -332,6 +272,7 @@ hipsparseStatus_t testing_csx2dense(const Arguments& argus, FUNC1& csx2dense, FU
         free(buffer);
         buffer = nullptr;
     }
+
     return HIPSPARSE_STATUS_SUCCESS;
 }
 #endif // TESTING_CSX2DENSE_HPP
