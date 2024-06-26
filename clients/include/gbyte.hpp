@@ -157,16 +157,6 @@ constexpr double gemvi_gbyte_count(I m, I nnz, bool beta = false)
     return ((nnz) * sizeof(I) + (m * nnz + nnz + m + (beta ? m : 0)) * sizeof(T)) / 1e9;
 }
 
-
-
-
-
-
-
-
-
-
-
 /*
  * ===========================================================================
  *    precond SPARSE
@@ -506,5 +496,37 @@ constexpr double
 
     return (reads + writes) / 1e9;
 }
+
+/*
+ * ===========================================================================
+ *    extra SPARSE
+ * ===========================================================================
+ */
+template <typename T>
+constexpr double csrgeam_gbyte_count(int M,
+                                     int nnz_A,
+                                     int nnz_B,
+                                     int nnz_C,
+                                     const T*      alpha,
+                                     const T*      beta)
+{
+    double size_A = alpha ? (M + 1.0 + nnz_A) * sizeof(int) + nnz_A * sizeof(T) : 0.0;
+    double size_B = beta ? (M + 1.0 + nnz_B) * sizeof(int) + nnz_B * sizeof(T) : 0.0;
+    double size_C = (M + 1.0 + nnz_C) * sizeof(int) + nnz_C * sizeof(T);
+
+    return (size_A + size_B + size_C) / 1e9;
+}
+
+template <typename T, typename I = int, typename J = int>
+constexpr double csrgemm_gbyte_count(
+    J M, J N, J K, I nnz_A, I nnz_B, I nnz_C)
+{
+    double size_A = (M + 1.0) * sizeof(I) + nnz_A * sizeof(J) + nnz_A * sizeof(T);
+    double size_B = (K + 1.0) * sizeof(I) + nnz_B * sizeof(J) + nnz_B * sizeof(T);
+    double size_C = (M + 1.0) * sizeof(I) + nnz_C * sizeof(J) + nnz_C * sizeof(T);
+
+    return (size_A + size_B + size_C) / 1e9;
+}
+
 
 #endif // GBYTE_HPP
