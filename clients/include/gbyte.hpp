@@ -319,5 +319,22 @@ constexpr double coo2dense_gbyte_count(I M, I N, I nnz)
     return (reads + writes) / 1e9;
 }
 
+constexpr double csrsort_gbyte_count(int M, int nnz, bool permute)
+{
+    return ((2.0 * M + 2.0 + 2.0 * nnz + (permute ? 2.0 * nnz : 0.0)) * sizeof(int))
+           / 1e9;
+}
+
+constexpr double cscsort_gbyte_count(int N, int nnz, bool permute)
+{
+    return ((2.0 * N + 2.0 + 2.0 * nnz + (permute ? 2.0 * nnz : 0.0)) * sizeof(int))
+           / 1e9;
+}
+
+constexpr double coosort_gbyte_count(int nnz, bool permute)
+{
+    return ((4.0 * nnz + (permute ? 2.0 * nnz : 0.0)) * sizeof(int)) / 1e9;
+}
+
 
 #endif // GBYTE_HPP

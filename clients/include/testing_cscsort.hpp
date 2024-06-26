@@ -27,6 +27,8 @@
 
 #include "hipsparse.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
+#include "flops.hpp"
+#include "gbyte.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
 #include "hipsparse_arguments.hpp"
@@ -260,25 +262,26 @@ hipsparseStatus_t testing_cscsort(Arguments argus)
     CHECK_HIP_ERROR(
         hipMemcpy(dcsc_val, hcsc_val_unsorted.data(), sizeof(float) * nnz, hipMemcpyHostToDevice));
 
+    // Obtain buffer size
+    size_t bufferSize;
+    CHECK_HIPSPARSE_ERROR(hipsparseXcscsort_bufferSizeExt(
+        handle, m, n, nnz, dcsc_col_ptr, dcsc_row_ind, &bufferSize));
+
+    // Allocate buffer on the device
+    auto dbuffer_managed
+        = hipsparse_unique_ptr{device_malloc(sizeof(char) * bufferSize), device_free};
+
+    void* dbuffer = (void*)dbuffer_managed.get();
+
+    if(permute)
+    {
+        // Initialize perm with identity permutation
+        CHECK_HIPSPARSE_ERROR(hipsparseCreateIdentityPermutation(handle, nnz, dperm));
+    }
+
+
     if(argus.unit_check)
     {
-        // Obtain buffer size
-        size_t bufferSize;
-        CHECK_HIPSPARSE_ERROR(hipsparseXcscsort_bufferSizeExt(
-            handle, m, n, nnz, dcsc_col_ptr, dcsc_row_ind, &bufferSize));
-
-        // Allocate buffer on the device
-        auto dbuffer_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(char) * bufferSize), device_free};
-
-        void* dbuffer = (void*)dbuffer_managed.get();
-
-        if(permute)
-        {
-            // Initialize perm with identity permutation
-            CHECK_HIPSPARSE_ERROR(hipsparseCreateIdentityPermutation(handle, nnz, dperm));
-        }
-
         // Sort CSC columns
         CHECK_HIPSPARSE_ERROR(hipsparseXcscsort(
             handle, m, n, nnz, descr, dcsc_col_ptr, dcsc_row_ind, dperm, dbuffer));
@@ -309,6 +312,35 @@ hipsparseStatus_t testing_cscsort(Arguments argus)
         {
             unit_check_general(1, nnz, 1, hcsc_val.data(), hcsc_val_unsorted.data());
         }
+    }
+
+    if(argus.timing)
+    {
+        int number_cold_calls = 2;
+        int number_hot_calls  = argus.iters;
+
+        // Warm up
+        for(int iter = 0; iter < number_cold_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseXcscsort(
+                handle, m, n, nnz, descr, dcsc_col_ptr, dcsc_row_ind, dperm, dbuffer));
+        }
+
+        double gpu_time_used = get_time_us();
+
+        // Performance run
+        for(int iter = 0; iter < number_hot_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseXcscsort(
+                handle, m, n, nnz, descr, dcsc_col_ptr, dcsc_row_ind, dperm, dbuffer));
+        }
+
+        gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
+
+        double gbyte_count = cscsort_gbyte_count(n, nnz, permute);
+        double gpu_gbyte   = get_gpu_gbyte(gpu_time_used, gbyte_count);
+
+        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
     }
 #endif
 
