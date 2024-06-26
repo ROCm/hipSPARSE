@@ -279,5 +279,45 @@ constexpr double
     return (reads + writes) / 1e9;
 }
 
+template <hipsparseDirection_t DIRA, typename T, typename I, typename J>
+constexpr double csx2dense_gbyte_count(J M, J N, I nnz)
+{
+    J      L        = (DIRA == HIPSPARSE_DIRECTION_ROW) ? M : N;
+    size_t read_csx = nnz * sizeof(T) + nnz * sizeof(J) + (L + 1) * sizeof(I);
+    size_t write_dense = M * N * sizeof(T) + nnz * sizeof(T);
+    return (read_csx + write_dense) / 1e9;
+}
+
+template <hipsparseDirection_t DIRA, typename T, typename I, typename J>
+constexpr double dense2csx_gbyte_count(J M, J N, I nnz)
+{
+    J      L             = (DIRA == HIPSPARSE_DIRECTION_ROW) ? M : N;
+    size_t write_csx_ptr = (L + 1) * sizeof(I);
+    size_t read_csx_ptr  = (L + 1) * sizeof(I);
+    size_t build_csx_ptr = write_csx_ptr + read_csx_ptr;
+
+    size_t write_csx  = nnz * sizeof(T) + nnz * sizeof(J) + (L + 1) * sizeof(I);
+    size_t read_dense = M * N * sizeof(T);
+    return (read_dense + build_csx_ptr + write_csx) / 1e9;
+}
+
+template <typename T, typename I>
+constexpr double dense2coo_gbyte_count(I M, I N, I nnz)
+{
+    size_t reads  = (M * N) * sizeof(T);
+    size_t writes = 2 * nnz * sizeof(I) + nnz * sizeof(T);
+
+    return (reads + writes) / 1e9;
+}
+
+template <typename T, typename I>
+constexpr double coo2dense_gbyte_count(I M, I N, I nnz)
+{
+    size_t reads  = 2 * nnz * sizeof(I) + nnz * sizeof(T);
+    size_t writes = (M * N) * sizeof(T);
+
+    return (reads + writes) / 1e9;
+}
+
 
 #endif // GBYTE_HPP
