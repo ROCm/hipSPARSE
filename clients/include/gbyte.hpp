@@ -167,6 +167,62 @@ constexpr double gemvi_gbyte_count(I m, I nnz, bool beta = false)
 
 
 
+/*
+ * ===========================================================================
+ *    precond SPARSE
+ * ===========================================================================
+ */
+template <typename T>
+constexpr double bsric0_gbyte_count(int Mb, int block_dim, int nnzb)
+{
+    return ((Mb + 1 + nnzb) * sizeof(int)
+            + 2.0 * block_dim * block_dim * nnzb * sizeof(T))
+           / 1e9;
+}
+
+template <typename T>
+constexpr double bsrilu0_gbyte_count(int Mb, int block_dim, int nnzb)
+{
+    return ((Mb + 1 + nnzb) * sizeof(int)
+            + 2.0 * block_dim * block_dim * nnzb * sizeof(T))
+           / 1e9;
+}
+
+template <typename T>
+constexpr double csric0_gbyte_count(int M, int nnz)
+{
+    return ((M + 1 + nnz) * sizeof(int) + 2.0 * nnz * sizeof(T)) / 1e9;
+}
+
+template <typename T>
+constexpr double csrilu0_gbyte_count(int M, int nnz)
+{
+    return ((M + 1 + nnz) * sizeof(int) + 2.0 * nnz * sizeof(T)) / 1e9;
+}
+
+template <typename T>
+constexpr double gtsv_gbyte_count(int M, int N)
+{
+    return ((3 * M + 2 * M * N) * sizeof(T)) / 1e9;
+}
+
+template <typename T>
+constexpr double gtsv_strided_batch_gbyte_count(int M, int N)
+{
+    return ((3 * M * N + 2 * M * N) * sizeof(T)) / 1e9;
+}
+
+template <typename T>
+constexpr double gtsv_interleaved_batch_gbyte_count(int M, int N)
+{
+    return ((3 * M * N + 2 * M * N) * sizeof(T)) / 1e9;
+}
+
+template <typename T>
+constexpr double gpsv_interleaved_batch_gbyte_count(int M, int N)
+{
+    return ((5 * M * N + 2 * M * N) * sizeof(T)) / 1e9;
+}
 
 
 

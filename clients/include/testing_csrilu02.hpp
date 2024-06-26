@@ -27,6 +27,8 @@
 
 #include "hipsparse.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
+#include "flops.hpp"
+#include "gbyte.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
 #include "hipsparse_arguments.hpp"
@@ -363,6 +365,8 @@ hipsparseStatus_t testing_csrilu02(Arguments argus)
         return HIPSPARSE_STATUS_INTERNAL_ERROR;
     }
 
+    std::vector<T> hcsr_val_orig(hcsr_val);
+
     // Allocate memory on device
     auto dptr_managed  = hipsparse_unique_ptr{device_malloc(sizeof(int) * (m + 1)), device_free};
     auto dcol_managed  = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
@@ -469,6 +473,45 @@ hipsparseStatus_t testing_csrilu02(Arguments argus)
         unit_check_near(1, nnz, 1, hcsr_val.data(), result1.data());
         unit_check_near(1, nnz, 1, hcsr_val.data(), result2.data());
 #endif
+    }
+
+    if(argus.timing)
+    {
+        int number_cold_calls = 2;
+        int number_hot_calls  = argus.iters;
+
+        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
+
+        // Warm up
+        for(int iter = 0; iter < number_cold_calls; ++iter)
+        {
+            CHECK_HIP_ERROR(
+                hipMemcpy(dval1, hcsr_val_orig.data(), sizeof(T) * nnz, hipMemcpyHostToDevice));
+                
+            CHECK_HIPSPARSE_ERROR(
+                hipsparseXcsrilu02(handle, m, nnz, descr, dval1, dptr, dcol, info, policy, dbuffer));
+        }
+
+        double gpu_time_used = 0;
+
+        // Performance run
+        for(int iter = 0; iter < number_hot_calls; ++iter)
+        {
+            CHECK_HIP_ERROR(
+                hipMemcpy(dval1, hcsr_val_orig.data(), sizeof(T) * nnz, hipMemcpyHostToDevice));
+            
+            double temp = get_time_us();
+            CHECK_HIPSPARSE_ERROR(
+                hipsparseXcsrilu02(handle, m, nnz, descr, dval1, dptr, dcol, info, policy, dbuffer));
+            gpu_time_used += (get_time_us() - temp);
+        }
+
+        gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
+
+        double gbyte_count = csrilu0_gbyte_count<T>(m, nnz);
+        double gpu_gbyte = get_gpu_gbyte(gpu_time_used, gbyte_count);
+
+        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
     }
 
     return HIPSPARSE_STATUS_SUCCESS;

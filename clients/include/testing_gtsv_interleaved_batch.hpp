@@ -27,6 +27,8 @@
 
 #include "hipsparse.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
+#include "flops.hpp"
+#include "gbyte.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
 #include "hipsparse_arguments.hpp"
@@ -171,34 +173,66 @@ hipsparseStatus_t testing_gtsv_interleaved_batch(Arguments argus)
     void* buffer;
     CHECK_HIP_ERROR(hipMalloc(&buffer, bufferSize));
 
-    CHECK_HIPSPARSE_ERROR(
-        hipsparseXgtsvInterleavedBatch(handle, algo, m, ddl, dd, ddu, dx, batch_count, buffer));
-
-    // copy output from device to CPU
-    CHECK_HIP_ERROR(hipMemcpy(hx.data(), dx, sizeof(T) * m * batch_count, hipMemcpyDeviceToHost));
-
-    // Check
-    std::vector<T> hresult(m * batch_count, make_DataType<T>(3));
-    for(int j = 0; j < batch_count; j++)
+    if(argus.unit_check)
     {
-        hresult[j] = testing_mult(hd[j], hx[j]) + testing_mult(hdu[j], hx[batch_count + j]);
-        hresult[batch_count * (m - 1) + j]
-            = testing_mult(hdl[batch_count * (m - 1) + j], hx[batch_count * (m - 2) + j])
-              + testing_mult(hd[batch_count * (m - 1) + j], hx[batch_count * (m - 1) + j]);
-    }
+        CHECK_HIPSPARSE_ERROR(
+            hipsparseXgtsvInterleavedBatch(handle, algo, m, ddl, dd, ddu, dx, batch_count, buffer));
 
-    for(int i = 1; i < m - 1; i++)
-    {
+        // copy output from device to CPU
+        CHECK_HIP_ERROR(hipMemcpy(hx.data(), dx, sizeof(T) * m * batch_count, hipMemcpyDeviceToHost));
+
+        // Check
+        std::vector<T> hresult(m * batch_count, make_DataType<T>(3));
         for(int j = 0; j < batch_count; j++)
         {
-            hresult[batch_count * i + j]
-                = testing_mult(hdl[batch_count * i + j], hx[batch_count * (i - 1) + j])
-                  + testing_mult(hd[batch_count * i + j], hx[batch_count * i + j])
-                  + testing_mult(hdu[batch_count * i + j], hx[batch_count * (i + 1) + j]);
+            hresult[j] = testing_mult(hd[j], hx[j]) + testing_mult(hdu[j], hx[batch_count + j]);
+            hresult[batch_count * (m - 1) + j]
+                = testing_mult(hdl[batch_count * (m - 1) + j], hx[batch_count * (m - 2) + j])
+                + testing_mult(hd[batch_count * (m - 1) + j], hx[batch_count * (m - 1) + j]);
         }
+
+        for(int i = 1; i < m - 1; i++)
+        {
+            for(int j = 0; j < batch_count; j++)
+            {
+                hresult[batch_count * i + j]
+                    = testing_mult(hdl[batch_count * i + j], hx[batch_count * (i - 1) + j])
+                    + testing_mult(hd[batch_count * i + j], hx[batch_count * i + j])
+                    + testing_mult(hdu[batch_count * i + j], hx[batch_count * (i + 1) + j]);
+            }
+        }
+
+        unit_check_near<T>(1, m * batch_count, 1, hx_original.data(), hresult.data());
     }
 
-    unit_check_near<T>(1, m * batch_count, 1, hx_original.data(), hresult.data());
+    if(argus.timing)
+    {
+        int number_cold_calls = 2;
+        int number_hot_calls  = argus.iters;
+
+        // Warm up
+        for(int iter = 0; iter < number_cold_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(
+                hipsparseXgtsvInterleavedBatch(handle, algo, m, ddl, dd, ddu, dx, batch_count, buffer));
+        }
+
+        double gpu_time_used = get_time_us();
+
+        // Performance run
+        for(int iter = 0; iter < number_hot_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(
+                hipsparseXgtsvInterleavedBatch(handle, algo, m, ddl, dd, ddu, dx, batch_count, buffer));
+        }
+
+        gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
+
+        double gbyte_count = gtsv_interleaved_batch_gbyte_count<T>(m, batch_count);
+        double gpu_gbyte = get_gpu_gbyte(gpu_time_used, gbyte_count);
+
+        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
+    }
 
     CHECK_HIP_ERROR(hipFree(buffer));
 #endif

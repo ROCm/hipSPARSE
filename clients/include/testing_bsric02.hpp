@@ -27,6 +27,8 @@
 
 #include "hipsparse.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
+#include "flops.hpp"
+#include "gbyte.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
 #include "hipsparse_arguments.hpp"
@@ -400,6 +402,7 @@ hipsparseStatus_t testing_bsric02(Arguments argus)
     std::vector<int> hbsr_row_ptr(mb + 1);
     std::vector<int> hbsr_col_ind(nnzb);
     std::vector<T>   hbsr_val(nnzb * block_dim * block_dim);
+    std::vector<T>   hbsr_val_orig(nnzb * block_dim * block_dim);
 
     // Copy device BSR matrix to host
     CHECK_HIP_ERROR(hipMemcpy(
@@ -407,6 +410,10 @@ hipsparseStatus_t testing_bsric02(Arguments argus)
     CHECK_HIP_ERROR(
         hipMemcpy(hbsr_col_ind.data(), dbsr_col_ind, sizeof(int) * nnzb, hipMemcpyDeviceToHost));
     CHECK_HIP_ERROR(hipMemcpy(hbsr_val.data(),
+                              dbsr_val_1,
+                              sizeof(T) * nnzb * block_dim * block_dim,
+                              hipMemcpyDeviceToHost));
+    CHECK_HIP_ERROR(hipMemcpy(hbsr_val_orig.data(),
                               dbsr_val_1,
                               sizeof(T) * nnzb * block_dim * block_dim,
                               hipMemcpyDeviceToHost));
@@ -428,7 +435,6 @@ hipsparseStatus_t testing_bsric02(Arguments argus)
     // Allocate buffer on the device
     auto dbuffer_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(char) * bufferSize), device_free};
-
     void* dbuffer = (void*)dbuffer_managed.get();
 
     int h_analysis_pivot_gold;
@@ -438,13 +444,13 @@ hipsparseStatus_t testing_bsric02(Arguments argus)
     int h_solve_pivot_1;
     int h_solve_pivot_2;
 
+    hipsparseStatus_t status_analysis_1;
+    hipsparseStatus_t status_analysis_2;
+    hipsparseStatus_t status_solve_1;
+    hipsparseStatus_t status_solve_2;
+
     if(argus.unit_check)
     {
-        hipsparseStatus_t status_analysis_1;
-        hipsparseStatus_t status_analysis_2;
-        hipsparseStatus_t status_solve_1;
-        hipsparseStatus_t status_solve_2;
-
         // bsric02 analysis - host mode
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
         CHECK_HIPSPARSE_ERROR(hipsparseXbsric02_analysis(handle,
@@ -596,6 +602,68 @@ hipsparseStatus_t testing_bsric02(Arguments argus)
             unit_check_near(1, nnzb * block_dim * block_dim, 1, hbsr_val.data(), result_1.data());
             unit_check_near(1, nnzb * block_dim * block_dim, 1, hbsr_val.data(), result_2.data());
         }
+    }
+
+    if(argus.timing)
+    {
+        int number_cold_calls = 2;
+        int number_hot_calls  = argus.iters;
+
+        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
+
+        // Warm up
+        for(int iter = 0; iter < number_cold_calls; ++iter)
+        {
+            CHECK_HIP_ERROR(hipMemcpy(dbsr_val_1,
+                                      hbsr_val_orig.data(),
+                                      sizeof(T) * nnzb * block_dim * block_dim,
+                                      hipMemcpyHostToDevice));
+
+            CHECK_HIPSPARSE_ERROR(hipsparseXbsric02(handle,
+                                                dir,
+                                                mb,
+                                                nnzb,
+                                                descr,
+                                                dbsr_val_1,
+                                                dbsr_row_ptr,
+                                                dbsr_col_ind,
+                                                block_dim,
+                                                info,
+                                                policy,
+                                                dbuffer));
+        }
+
+        // Solve run
+        double gpu_time_used = 0;
+        for(int iter = 0; iter < number_hot_calls; ++iter)
+        {
+            CHECK_HIP_ERROR(hipMemcpy(dbsr_val_1,
+                                      hbsr_val_orig.data(),
+                                      sizeof(T) * nnzb * block_dim * block_dim,
+                                      hipMemcpyHostToDevice));
+
+            double temp = get_time_us();
+            CHECK_HIPSPARSE_ERROR(hipsparseXbsric02(handle,
+                                                dir,
+                                                mb,
+                                                nnzb,
+                                                descr,
+                                                dbsr_val_1,
+                                                dbsr_row_ptr,
+                                                dbsr_col_ind,
+                                                block_dim,
+                                                info,
+                                                policy,
+                                                dbuffer));
+            gpu_time_used += (get_time_us() - temp);
+        }
+
+        gpu_time_used = gpu_time_used / number_hot_calls;
+
+        double gbyte_count = bsric0_gbyte_count<T>(mb, block_dim, nnzb);
+        double gpu_gbyte = get_gpu_gbyte(gpu_time_used, gbyte_count);
+
+        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
     }
 
     return HIPSPARSE_STATUS_SUCCESS;

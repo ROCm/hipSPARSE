@@ -27,6 +27,8 @@
 
 #include "hipsparse.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
+#include "flops.hpp"
+#include "gbyte.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
 #include "hipsparse_arguments.hpp"
@@ -322,6 +324,8 @@ hipsparseStatus_t testing_csric02(Arguments argus)
         return HIPSPARSE_STATUS_INTERNAL_ERROR;
     }
 
+    std::vector<T> hcsr_val_orig(hcsr_val);
+
     // Allocate memory on device
     auto dptr_managed   = hipsparse_unique_ptr{device_malloc(sizeof(int) * (m + 1)), device_free};
     auto dcol_managed   = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
@@ -342,6 +346,7 @@ hipsparseStatus_t testing_csric02(Arguments argus)
         hipMemcpy(dptr, hcsr_row_ptr.data(), sizeof(int) * (m + 1), hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dcol, hcsr_col_ind.data(), sizeof(int) * nnz, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dval_1, hcsr_val.data(), sizeof(T) * nnz, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(dval_2, hcsr_val.data(), sizeof(T) * nnz, hipMemcpyHostToDevice));
 
     // Obtain csric02 buffer size
     int bufferSize;
@@ -351,7 +356,6 @@ hipsparseStatus_t testing_csric02(Arguments argus)
     // Allocate buffer on the device
     auto dbuffer_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(char) * bufferSize), device_free};
-
     void* dbuffer = (void*)dbuffer_managed.get();
 
     int h_analysis_pivot_gold;
@@ -361,15 +365,13 @@ hipsparseStatus_t testing_csric02(Arguments argus)
     int h_solve_pivot_1;
     int h_solve_pivot_2;
 
+    hipsparseStatus_t status_analysis_1;
+    hipsparseStatus_t status_analysis_2;
+    hipsparseStatus_t status_solve_1;
+    hipsparseStatus_t status_solve_2;
+
     if(argus.unit_check)
     {
-        CHECK_HIP_ERROR(hipMemcpy(dval_2, hcsr_val.data(), sizeof(T) * nnz, hipMemcpyHostToDevice));
-
-        hipsparseStatus_t status_analysis_1;
-        hipsparseStatus_t status_analysis_2;
-        hipsparseStatus_t status_solve_1;
-        hipsparseStatus_t status_solve_2;
-
         // csric02 analysis - host mode
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
         CHECK_HIPSPARSE_ERROR(hipsparseXcsric02_analysis(
@@ -455,6 +457,43 @@ hipsparseStatus_t testing_csric02(Arguments argus)
             unit_check_near(1, nnz, 1, hcsr_val.data(), result_1.data());
             unit_check_near(1, nnz, 1, hcsr_val.data(), result_2.data());
         }
+    }
+
+    if(argus.timing)
+    {
+        int number_cold_calls = 2;
+        int number_hot_calls  = argus.iters;
+
+        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
+
+        // Warm up
+        for(int iter = 0; iter < number_cold_calls; ++iter)
+        {
+            CHECK_HIP_ERROR(
+                hipMemcpy(dval_1, hcsr_val_orig.data(), sizeof(T) * nnz, hipMemcpyHostToDevice));
+
+            CHECK_HIPSPARSE_ERROR(hipsparseXcsric02(handle, m, nnz, descr, dval_1, dptr, dcol, info, policy, dbuffer));
+        }
+
+        double gpu_time_used = 0;
+
+        // Solve run
+        for(int iter = 0; iter < number_hot_calls; ++iter)
+        {
+            CHECK_HIP_ERROR(
+                hipMemcpy(dval_1, hcsr_val_orig.data(), sizeof(T) * nnz, hipMemcpyHostToDevice));
+
+            double temp = get_time_us();
+            CHECK_HIPSPARSE_ERROR(hipsparseXcsric02(handle, m, nnz, descr, dval_1, dptr, dcol, info, policy, dbuffer));
+            gpu_time_used += (get_time_us() - temp);
+        }
+
+        gpu_time_used = gpu_time_used / number_hot_calls;
+
+        double gbyte_count = csric0_gbyte_count<T>(m, nnz);
+        double gpu_gbyte = get_gpu_gbyte(gpu_time_used, gbyte_count);
+
+        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
     }
 
     return HIPSPARSE_STATUS_SUCCESS;
