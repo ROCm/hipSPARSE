@@ -157,6 +157,46 @@ constexpr double gemvi_gbyte_count(I m, I nnz, bool beta = false)
     return ((nnz) * sizeof(I) + (m * nnz + nnz + m + (beta ? m : 0)) * sizeof(T)) / 1e9;
 }
 
+
+/*
+ * ===========================================================================
+ *    level 3 SPARSE
+ * ===========================================================================
+ */
+template <typename T>
+constexpr double bsrmm_gbyte_count(int Mb,
+                                   int nnzb,
+                                   int block_dim,
+                                   int nnz_B,
+                                   int nnz_C,
+                                   bool          beta = false)
+{
+    //reads
+    size_t reads = (Mb + 1 + nnzb) * sizeof(int)
+                   + (block_dim * block_dim * nnzb + nnz_B + (beta ? nnz_C : 0)) * sizeof(T);
+
+    //writes
+    size_t writes = nnz_C * sizeof(T);
+
+    return (reads + writes) / 1e9;
+}
+
+template <typename T, typename I, typename J>
+constexpr double csrmm_gbyte_count(J M, I nnz_A, I nnz_B, I nnz_C, bool beta = false)
+{
+    return ((M + 1) * sizeof(I) + nnz_A * sizeof(J)
+            + (nnz_A + nnz_B + nnz_C + (beta ? nnz_C : 0)) * sizeof(T))
+           / 1e9;
+}
+
+template <typename T, typename I, typename J>
+constexpr double gemmi_gbyte_count(J N, I nnz_B, I nnz_A, I nnz_C, bool beta = false)
+{
+    return ((N + 1) * sizeof(I) + nnz_B * sizeof(J)
+            + (nnz_B + nnz_A + nnz_C + (beta ? nnz_C : 0)) * sizeof(T))
+           / 1e9;
+}
+
 /*
  * ===========================================================================
  *    precond SPARSE

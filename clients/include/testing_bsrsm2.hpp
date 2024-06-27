@@ -27,6 +27,8 @@
 
 #include "hipsparse.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
+#include "flops.hpp"
+#include "gbyte.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
 #include "hipsparse_arguments.hpp"
@@ -693,9 +695,134 @@ hipsparseStatus_t testing_bsrsm2(Arguments argus)
     int pos_analysis;
     hipsparseXbsrsm2_zeroPivot(handle, info, &pos_analysis);
 
-    // HIPSPARSE pointer mode host
-    CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
-    CHECK_HIPSPARSE_ERROR(hipsparseXbsrsm2_solve(handle,
+    if(argus.unit_check)
+    {
+        // HIPSPARSE pointer mode host
+        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
+        CHECK_HIPSPARSE_ERROR(hipsparseXbsrsm2_solve(handle,
+                                                    dir,
+                                                    transA,
+                                                    transX,
+                                                    mb,
+                                                    nrhs,
+                                                    nnzb,
+                                                    &h_alpha,
+                                                    descr,
+                                                    dbsr_val,
+                                                    dbsr_row_ptr,
+                                                    dbsr_col_ind,
+                                                    block_dim,
+                                                    info,
+                                                    dB,
+                                                    ldb,
+                                                    dX_1,
+                                                    ldx,
+                                                    HIPSPARSE_SOLVE_POLICY_USE_LEVEL,
+                                                    dbuffer));
+
+        int               hposition_1;
+        hipsparseStatus_t pivot_status_1 = hipsparseXbsrsm2_zeroPivot(handle, info, &hposition_1);
+
+        // HIPSPARSE pointer mode device
+        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
+        CHECK_HIPSPARSE_ERROR(hipsparseXbsrsm2_solve(handle,
+                                                    dir,
+                                                    transA,
+                                                    transX,
+                                                    mb,
+                                                    nrhs,
+                                                    nnzb,
+                                                    dalpha,
+                                                    descr,
+                                                    dbsr_val,
+                                                    dbsr_row_ptr,
+                                                    dbsr_col_ind,
+                                                    block_dim,
+                                                    info,
+                                                    dB,
+                                                    ldb,
+                                                    dX_2,
+                                                    ldx,
+                                                    HIPSPARSE_SOLVE_POLICY_USE_LEVEL,
+                                                    dbuffer));
+
+        hipsparseStatus_t pivot_status_2 = hipsparseXbsrsm2_zeroPivot(handle, info, dposition);
+
+        // Copy output from device to CPU
+        int hposition_2;
+        CHECK_HIP_ERROR(hipMemcpy(hX_1.data(), dX_1, sizeof(T) * nrowX * ncolX, hipMemcpyDeviceToHost));
+        CHECK_HIP_ERROR(hipMemcpy(hX_2.data(), dX_2, sizeof(T) * nrowX * ncolX, hipMemcpyDeviceToHost));
+        CHECK_HIP_ERROR(hipMemcpy(&hposition_2, dposition, sizeof(int), hipMemcpyDeviceToHost));
+
+        // Host bsrsm2
+        std::vector<int> hbsr_row_ptr(mb + 1);
+        std::vector<int> hbsr_col_ind(nnzb);
+        std::vector<T>   hbsr_val(nnzb * block_dim * block_dim);
+
+        CHECK_HIP_ERROR(hipMemcpy(
+            hbsr_row_ptr.data(), dbsr_row_ptr, sizeof(int) * (mb + 1), hipMemcpyDeviceToHost));
+        CHECK_HIP_ERROR(
+            hipMemcpy(hbsr_col_ind.data(), dbsr_col_ind, sizeof(int) * nnzb, hipMemcpyDeviceToHost));
+        CHECK_HIP_ERROR(hipMemcpy(hbsr_val.data(),
+                                dbsr_val,
+                                sizeof(T) * nnzb * block_dim * block_dim,
+                                hipMemcpyDeviceToHost));
+
+        int struct_position_gold;
+        int numeric_position_gold;
+
+        bsrsm(mb,
+            nrhs,
+            nnzb,
+            dir,
+            transA,
+            transX,
+            h_alpha,
+            hbsr_row_ptr.data(),
+            hbsr_col_ind.data(),
+            hbsr_val.data(),
+            block_dim,
+            hB.data(),
+            ldb,
+            hX_gold.data(),
+            ldx,
+            HIPSPARSE_DIAG_TYPE_NON_UNIT,
+            HIPSPARSE_FILL_MODE_LOWER,
+            idx_base,
+            &struct_position_gold,
+            &numeric_position_gold);
+
+        unit_check_general(1, 1, 1, &struct_position_gold, &pos_analysis);
+        unit_check_general(1, 1, 1, &numeric_position_gold, &hposition_1);
+        unit_check_general(1, 1, 1, &numeric_position_gold, &hposition_2);
+
+        if(hposition_1 != -1)
+        {
+            verify_hipsparse_status_zero_pivot(pivot_status_1, "expected HIPSPARSE_STATUS_ZERO_PIVOT");
+            return HIPSPARSE_STATUS_SUCCESS;
+        }
+
+        if(hposition_2 != -1)
+        {
+            verify_hipsparse_status_zero_pivot(pivot_status_2, "expected HIPSPARSE_STATUS_ZERO_PIVOT");
+            return HIPSPARSE_STATUS_SUCCESS;
+        }
+
+        unit_check_near(nrowX, ncolX, ldx, hX_gold.data(), hX_1.data());
+        unit_check_near(nrowX, ncolX, ldx, hX_gold.data(), hX_2.data());
+    }
+
+    if(argus.timing)
+    {
+        int number_cold_calls = 2;
+        int number_hot_calls  = argus.iters;
+
+        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
+
+        // Warm up
+        for(int iter = 0; iter < number_cold_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseXbsrsm2_solve(handle,
                                                  dir,
                                                  transA,
                                                  transX,
@@ -715,20 +842,21 @@ hipsparseStatus_t testing_bsrsm2(Arguments argus)
                                                  ldx,
                                                  HIPSPARSE_SOLVE_POLICY_USE_LEVEL,
                                                  dbuffer));
+        }
 
-    int               hposition_1;
-    hipsparseStatus_t pivot_status_1 = hipsparseXbsrsm2_zeroPivot(handle, info, &hposition_1);
+        double gpu_time_used = get_time_us();
 
-    // HIPSPARSE pointer mode device
-    CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
-    CHECK_HIPSPARSE_ERROR(hipsparseXbsrsm2_solve(handle,
+        // Performance run
+        for(int iter = 0; iter < number_hot_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseXbsrsm2_solve(handle,
                                                  dir,
                                                  transA,
                                                  transX,
                                                  mb,
                                                  nrhs,
                                                  nnzb,
-                                                 dalpha,
+                                                 &h_alpha,
                                                  descr,
                                                  dbsr_val,
                                                  dbsr_row_ptr,
@@ -737,75 +865,23 @@ hipsparseStatus_t testing_bsrsm2(Arguments argus)
                                                  info,
                                                  dB,
                                                  ldb,
-                                                 dX_2,
+                                                 dX_1,
                                                  ldx,
                                                  HIPSPARSE_SOLVE_POLICY_USE_LEVEL,
                                                  dbuffer));
+        }
 
-    hipsparseStatus_t pivot_status_2 = hipsparseXbsrsm2_zeroPivot(handle, info, dposition);
+        gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
 
-    // Copy output from device to CPU
-    int hposition_2;
-    CHECK_HIP_ERROR(hipMemcpy(hX_1.data(), dX_1, sizeof(T) * nrowX * ncolX, hipMemcpyDeviceToHost));
-    CHECK_HIP_ERROR(hipMemcpy(hX_2.data(), dX_2, sizeof(T) * nrowX * ncolX, hipMemcpyDeviceToHost));
-    CHECK_HIP_ERROR(hipMemcpy(&hposition_2, dposition, sizeof(int), hipMemcpyDeviceToHost));
+        double gflop_count
+            = csrsv_gflop_count(m, size_t(nnzb) * block_dim * block_dim, HIPSPARSE_DIAG_TYPE_NON_UNIT) * nrhs;
+        double gbyte_count = bsrsv_gbyte_count<T>(mb, nnzb, block_dim) * nrhs;
 
-    // Host bsrsm2
-    std::vector<int> hbsr_row_ptr(mb + 1);
-    std::vector<int> hbsr_col_ind(nnzb);
-    std::vector<T>   hbsr_val(nnzb * block_dim * block_dim);
+        double gpu_gflops = get_gpu_gflops(gpu_time_used, gflop_count);
+        double gpu_gbyte  = get_gpu_gbyte(gpu_time_used, gbyte_count);
 
-    CHECK_HIP_ERROR(hipMemcpy(
-        hbsr_row_ptr.data(), dbsr_row_ptr, sizeof(int) * (mb + 1), hipMemcpyDeviceToHost));
-    CHECK_HIP_ERROR(
-        hipMemcpy(hbsr_col_ind.data(), dbsr_col_ind, sizeof(int) * nnzb, hipMemcpyDeviceToHost));
-    CHECK_HIP_ERROR(hipMemcpy(hbsr_val.data(),
-                              dbsr_val,
-                              sizeof(T) * nnzb * block_dim * block_dim,
-                              hipMemcpyDeviceToHost));
-
-    int struct_position_gold;
-    int numeric_position_gold;
-
-    bsrsm(mb,
-          nrhs,
-          nnzb,
-          dir,
-          transA,
-          transX,
-          h_alpha,
-          hbsr_row_ptr.data(),
-          hbsr_col_ind.data(),
-          hbsr_val.data(),
-          block_dim,
-          hB.data(),
-          ldb,
-          hX_gold.data(),
-          ldx,
-          HIPSPARSE_DIAG_TYPE_NON_UNIT,
-          HIPSPARSE_FILL_MODE_LOWER,
-          idx_base,
-          &struct_position_gold,
-          &numeric_position_gold);
-
-    unit_check_general(1, 1, 1, &struct_position_gold, &pos_analysis);
-    unit_check_general(1, 1, 1, &numeric_position_gold, &hposition_1);
-    unit_check_general(1, 1, 1, &numeric_position_gold, &hposition_2);
-
-    if(hposition_1 != -1)
-    {
-        verify_hipsparse_status_zero_pivot(pivot_status_1, "expected HIPSPARSE_STATUS_ZERO_PIVOT");
-        return HIPSPARSE_STATUS_SUCCESS;
+        std::cout << "GFLOPS/s: " << gpu_gflops << " GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
     }
-
-    if(hposition_2 != -1)
-    {
-        verify_hipsparse_status_zero_pivot(pivot_status_2, "expected HIPSPARSE_STATUS_ZERO_PIVOT");
-        return HIPSPARSE_STATUS_SUCCESS;
-    }
-
-    unit_check_near(nrowX, ncolX, ldx, hX_gold.data(), hX_1.data());
-    unit_check_near(nrowX, ncolX, ldx, hX_gold.data(), hX_2.data());
 
     return HIPSPARSE_STATUS_SUCCESS;
 }

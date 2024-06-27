@@ -104,6 +104,42 @@ constexpr double gemvi_gflop_count(I M, I nnz)
 
 /*
  * ===========================================================================
+ *    level 3 SPARSE
+ * ===========================================================================
+ */
+constexpr double bsrmm_gflop_count(int N,
+                                   int nnzb,
+                                   int block_dim,
+                                   int nnz_C,
+                                   bool          beta = false)
+{
+    return (2.0 * nnzb * block_dim * block_dim * N + (beta ? nnz_C : 0)) / 1e9;
+}
+
+template <typename I, typename J>
+constexpr double csrmm_gflop_count(J N, I nnz_A, I nnz_C, bool beta = false)
+{
+    // Multiplication by 2 comes from 1 addition and 1 multiplication in product. Multiplication
+    // by alpha and beta not counted.
+    return (2.0 * nnz_A * N + (beta ? nnz_C : 0)) / 1e9;
+}
+
+template <typename I, typename J>
+constexpr double gemmi_gflop_count(J M, I nnz_B, I nnz_C, bool beta = false)
+{
+    // Multiplication by 2 comes from 1 addition and 1 multiplication in product. Multiplication
+    // by alpha and beta not counted.
+    return (2.0 * nnz_B * M + (beta ? nnz_C : 0)) / 1e9;
+}
+
+template <typename I, typename J>
+constexpr double spmm_gflop_count(J N, I nnz_A, I nnz_C, bool beta = false)
+{
+    return csrmm_gflop_count(N, nnz_A, nnz_C, beta);
+}
+
+/*
+ * ===========================================================================
  *    extra SPARSE
  * ===========================================================================
  */

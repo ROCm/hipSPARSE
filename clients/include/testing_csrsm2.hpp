@@ -27,6 +27,8 @@
 
 #include "hipsparse.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
+#include "flops.hpp"
+#include "gbyte.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
 #include "hipsparse_arguments.hpp"
@@ -858,71 +860,71 @@ hipsparseStatus_t testing_csrsm2(Arguments argus)
 
     void* dbuffer = (void*)dbuffer_managed.get();
 
+    hipsparseStatus_t status_analysis_1;
+    hipsparseStatus_t status_analysis_2;
+    hipsparseStatus_t status_solve_1;
+    hipsparseStatus_t status_solve_2;
+
+    CHECK_HIP_ERROR(hipMemcpy(dB_2, hB_2.data(), sizeof(T) * m * nrhs, hipMemcpyHostToDevice));
+
+    // csrsm2 analysis - host mode
+    CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
+    CHECK_HIPSPARSE_ERROR(hipsparseXcsrsm2_analysis(handle,
+                                                    0,
+                                                    transA,
+                                                    transB,
+                                                    m,
+                                                    nrhs,
+                                                    nnz,
+                                                    &h_alpha,
+                                                    descr,
+                                                    dval,
+                                                    dptr,
+                                                    dcol,
+                                                    dB_1,
+                                                    ldb,
+                                                    info,
+                                                    policy,
+                                                    dbuffer));
+
+    // Get pivot
+    status_analysis_1 = hipsparseXcsrsm2_zeroPivot(handle, info, &h_analysis_pivot_1);
+    if(h_analysis_pivot_1 != -1)
+    {
+        verify_hipsparse_status_zero_pivot(status_analysis_1,
+                                            "expected HIPSPARSE_STATUS_ZERO_PIVOT");
+    }
+
+    // csrsm2 analysis - device mode
+    CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
+    CHECK_HIPSPARSE_ERROR(hipsparseXcsrsm2_analysis(handle,
+                                                    0,
+                                                    transA,
+                                                    transB,
+                                                    m,
+                                                    nrhs,
+                                                    nnz,
+                                                    d_alpha,
+                                                    descr,
+                                                    dval,
+                                                    dptr,
+                                                    dcol,
+                                                    dB_2,
+                                                    ldb,
+                                                    info,
+                                                    policy,
+                                                    dbuffer));
+
+    // Get pivot
+    status_analysis_2 = hipsparseXcsrsm2_zeroPivot(handle, info, d_analysis_pivot_2);
+    if(h_analysis_pivot_1 != -1)
+    {
+        verify_hipsparse_status_zero_pivot(status_analysis_2,
+                                            "expected HIPSPARSE_STATUS_ZERO_PIVOT");
+    }
+
     if(argus.unit_check)
     {
-        hipsparseStatus_t status_analysis_1;
-        hipsparseStatus_t status_analysis_2;
-        hipsparseStatus_t status_solve_1;
-        hipsparseStatus_t status_solve_2;
-
-        CHECK_HIP_ERROR(hipMemcpy(dB_2, hB_2.data(), sizeof(T) * m * nrhs, hipMemcpyHostToDevice));
-
-        // csrsm2 analysis - host mode
-        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
-        CHECK_HIPSPARSE_ERROR(hipsparseXcsrsm2_analysis(handle,
-                                                        0,
-                                                        transA,
-                                                        transB,
-                                                        m,
-                                                        nrhs,
-                                                        nnz,
-                                                        &h_alpha,
-                                                        descr,
-                                                        dval,
-                                                        dptr,
-                                                        dcol,
-                                                        dB_1,
-                                                        ldb,
-                                                        info,
-                                                        policy,
-                                                        dbuffer));
-
-        // Get pivot
-        status_analysis_1 = hipsparseXcsrsm2_zeroPivot(handle, info, &h_analysis_pivot_1);
-        if(h_analysis_pivot_1 != -1)
-        {
-            verify_hipsparse_status_zero_pivot(status_analysis_1,
-                                               "expected HIPSPARSE_STATUS_ZERO_PIVOT");
-        }
-
-        // csrsm2 analysis - device mode
-        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
-        CHECK_HIPSPARSE_ERROR(hipsparseXcsrsm2_analysis(handle,
-                                                        0,
-                                                        transA,
-                                                        transB,
-                                                        m,
-                                                        nrhs,
-                                                        nnz,
-                                                        d_alpha,
-                                                        descr,
-                                                        dval,
-                                                        dptr,
-                                                        dcol,
-                                                        dB_2,
-                                                        ldb,
-                                                        info,
-                                                        policy,
-                                                        dbuffer));
-
-        // Get pivot
-        status_analysis_2 = hipsparseXcsrsm2_zeroPivot(handle, info, d_analysis_pivot_2);
-        if(h_analysis_pivot_1 != -1)
-        {
-            verify_hipsparse_status_zero_pivot(status_analysis_2,
-                                               "expected HIPSPARSE_STATUS_ZERO_PIVOT");
-        }
-
         // csrsm2 solve - host mode
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
         CHECK_HIPSPARSE_ERROR(hipsparseXcsrsm2_solve(handle,
@@ -1017,6 +1019,70 @@ hipsparseStatus_t testing_csrsm2(Arguments argus)
             unit_check_near(1, m * nrhs, 1, hB_gold.data(), hB_1.data());
             unit_check_near(1, m * nrhs, 1, hB_gold.data(), hB_2.data());
         }
+    }
+
+    if(argus.timing)
+    {
+        int number_cold_calls = 2;
+        int number_hot_calls  = argus.iters;
+
+        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
+
+        // Warm up
+        for(int iter = 0; iter < number_cold_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseXcsrsm2_solve(handle,
+                                                     0,
+                                                     transA,
+                                                     transB,
+                                                     m,
+                                                     nrhs,
+                                                     nnz,
+                                                     &h_alpha,
+                                                     descr,
+                                                     dval,
+                                                     dptr,
+                                                     dcol,
+                                                     dB_1,
+                                                     ldb,
+                                                     info,
+                                                     policy,
+                                                     dbuffer));
+        }
+
+        double gpu_time_used = get_time_us();
+
+        // Performance run
+        for(int iter = 0; iter < number_hot_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseXcsrsm2_solve(handle,
+                                                     0,
+                                                     transA,
+                                                     transB,
+                                                     m,
+                                                     nrhs,
+                                                     nnz,
+                                                     &h_alpha,
+                                                     descr,
+                                                     dval,
+                                                     dptr,
+                                                     dcol,
+                                                     dB_1,
+                                                     ldb,
+                                                     info,
+                                                     policy,
+                                                     dbuffer));
+        }
+
+        gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
+
+        double gflop_count = csrsv_gflop_count(m, nnz, diag) * nrhs;
+        double gbyte_count = csrsv_gbyte_count<T>(m, nnz) * nrhs;
+
+        double gpu_gflops = get_gpu_gflops(gpu_time_used, gflop_count);
+        double gpu_gbyte  = get_gpu_gbyte(gpu_time_used, gbyte_count);
+
+        std::cout << "GFLOPS/s: " << gpu_gflops << " GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
     }
 #endif
 

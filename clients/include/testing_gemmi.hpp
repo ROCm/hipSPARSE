@@ -27,6 +27,8 @@
 
 #include "hipsparse.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
+#include "flops.hpp"
+#include "gbyte.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
 #include "hipsparse_arguments.hpp"
@@ -367,7 +369,7 @@ hipsparseStatus_t testing_gemmi(Arguments argus)
         CHECK_HIP_ERROR(hipMemcpy(d_alpha, &h_alpha, sizeof(T), hipMemcpyHostToDevice));
         CHECK_HIP_ERROR(hipMemcpy(d_beta, &h_beta, sizeof(T), hipMemcpyHostToDevice));
 
-        // ROCSPARSE pointer mode host
+        // pointer mode host
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
         CHECK_HIPSPARSE_ERROR(hipsparseXgemmi(handle,
                                               M,
@@ -384,7 +386,7 @@ hipsparseStatus_t testing_gemmi(Arguments argus)
                                               dC_1,
                                               ldc));
 
-        // ROCSPARSE pointer mode device
+        // pointer mode device
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
         CHECK_HIPSPARSE_ERROR(hipsparseXgemmi(handle,
                                               M,
@@ -431,6 +433,64 @@ hipsparseStatus_t testing_gemmi(Arguments argus)
 
         unit_check_near(M, N, ldc, hC_gold.data(), hC_1.data());
         unit_check_near(M, N, ldc, hC_gold.data(), hC_2.data());
+    }
+
+    if(argus.timing)
+    {
+        int number_cold_calls = 2;
+        int number_hot_calls  = argus.iters;
+
+        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
+
+        // Warm up
+        for(int iter = 0; iter < number_cold_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseXgemmi(handle,
+                                              M,
+                                              N,
+                                              K,
+                                              nnz,
+                                              &h_alpha,
+                                              dA,
+                                              lda,
+                                              dcsc_valB,
+                                              dcsc_col_ptrB,
+                                              dcsc_row_indB,
+                                              &h_beta,
+                                              dC_1,
+                                              ldc));
+        }
+
+        double gpu_time_used = get_time_us();
+
+        // Performance run
+        for(int iter = 0; iter < number_hot_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseXgemmi(handle,
+                                              M,
+                                              N,
+                                              K,
+                                              nnz,
+                                              &h_alpha,
+                                              dA,
+                                              lda,
+                                              dcsc_valB,
+                                              dcsc_col_ptrB,
+                                              dcsc_row_indB,
+                                              &h_beta,
+                                              dC_1,
+                                              ldc));
+        }
+
+        gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
+
+        double gflop_count = gemmi_gflop_count(M, nnz, M * N, h_beta != make_DataType<T>(0.0));
+        double gbyte_count = gemmi_gbyte_count<T>(N, nnz, M * K, M * N, h_beta != make_DataType<T>(0.0));
+
+        double gpu_gflops = get_gpu_gflops(gpu_time_used, gflop_count);
+        double gpu_gbyte  = get_gpu_gbyte(gpu_time_used, gbyte_count);
+
+        std::cout << "GFLOPS/s: " << gpu_gflops << " GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
     }
 #endif
 
