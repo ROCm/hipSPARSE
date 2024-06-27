@@ -271,10 +271,10 @@ void hipsparse_arguments_config::set_description(options_description& desc)
 
     ("ell_width",
      value<int>(&this->ell_width)->default_value(0),
-     "ELL width (default 0)");
+     "ELL width (default 0)")
 
-    ("ell_width",
-     value<int>(&this->ell_width)->default_value(0),
+    ("permute",
+     value<int>(&this->permute)->default_value(0),
      "Using permutation vector in coosort, csrsort, cscsort. Do not use vector: 0, Use vector: 1 (default 0)");
 }
 
