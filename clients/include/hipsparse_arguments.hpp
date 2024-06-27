@@ -106,6 +106,70 @@ struct Arguments
     std::string filename;
     std::string function_name;
 
+    Arguments()
+    {
+        this->M = -1;
+        this->N = -1;
+        this->K = -1;
+        this->nnz = -1;
+        this->block_dim = 2;
+        this->row_block_dimA = 2;
+        this->col_block_dimA = 2;
+        this->row_block_dimB = 2;
+        this->col_block_dimB = 2;
+
+        this->lda = -1;
+        this->ldb = -1;
+        this->ldc = -1;
+
+        this->batch_count = -1;
+
+        this->index_type_I = HIPSPARSE_INDEX_32I;
+        this->index_type_J = HIPSPARSE_INDEX_32I;
+        this->compute_type = HIP_R_32F;
+
+        this->alpha = 0.0;
+        this->alphai = 0.0;
+        this->beta = 0.0;
+        this->betai = 0.0;
+        this->threshold = 0.0;
+        this->percentage = 0.0;
+
+        this->transA = HIPSPARSE_OPERATION_NON_TRANSPOSE;
+        this->transB = HIPSPARSE_OPERATION_NON_TRANSPOSE;
+        this->baseA = HIPSPARSE_INDEX_BASE_ZERO;
+        this->baseB = HIPSPARSE_INDEX_BASE_ZERO;
+        this->baseC = HIPSPARSE_INDEX_BASE_ZERO;
+        this->baseD = HIPSPARSE_INDEX_BASE_ZERO;
+
+        this->action = HIPSPARSE_ACTION_NUMERIC;
+        this->part = HIPSPARSE_HYB_PARTITION_AUTO;
+        this->diag_type = HIPSPARSE_DIAG_TYPE_NON_UNIT;
+        this->fill_mode = HIPSPARSE_FILL_MODE_LOWER;
+
+        this->dirA = HIPSPARSE_DIRECTION_ROW;
+        this->orderA = HIPSPARSE_ORDER_COL;
+        this->orderB = HIPSPARSE_ORDER_COL;
+        this->orderC = HIPSPARSE_ORDER_COL;
+        this->formatA = HIPSPARSE_FORMAT_COO;
+        this->formatB = HIPSPARSE_FORMAT_COO;
+    
+        this->numericboost = 0;
+        this->boosttol = 0.0;
+        this->boostval = 1.0;
+        this->boostvali = 0.0;
+
+        // int ell_width;
+        // int permute;
+
+        this->unit_check = 1;
+        this->timing = 0;
+        this->iters = 10;
+
+        this->filename = "";
+        this->function_name = "";
+    }
+
     // Validate input format.
     static void validate(std::istream& ifs)
     {
