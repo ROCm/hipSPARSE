@@ -531,13 +531,6 @@ hipsparseStatus_t testing_prune_dense2csr_by_percentage(Arguments argus)
                                     sizeof(T) * h_nnz_total_dev_host_ptr[0],
                                     hipMemcpyDeviceToHost));
 
-        std::cout << "h_csr_row_ptr" << std::endl;
-        for(size_t i = 0; i < h_csr_row_ptr.size(); i++)
-        {
-            std::cout << h_csr_row_ptr[i] << " ";
-        }
-        std::cout << "" << std::endl;
-
 
         // call host and check results
         std::vector<int> h_nnz_cpu(1);
@@ -545,23 +538,23 @@ hipsparseStatus_t testing_prune_dense2csr_by_percentage(Arguments argus)
         std::vector<int> h_csr_col_ind_cpu;
         std::vector<T>   h_csr_val_cpu;
 
-        // host_prune_dense2csr_by_percentage(M,
-        //                                     N,
-        //                                     h_A,
-        //                                     LDA,
-        //                                     idx_base,
-        //                                     percentage,
-        //                                     h_nnz_cpu[0],
-        //                                     h_csr_val_cpu,
-        //                                     h_csr_row_ptr_cpu,
-        //                                     h_csr_col_ind_cpu);
+        host_prune_dense2csr_by_percentage(M,
+                                            N,
+                                            h_A,
+                                            LDA,
+                                            idx_base,
+                                            percentage,
+                                            h_nnz_cpu[0],
+                                            h_csr_val_cpu,
+                                            h_csr_row_ptr_cpu,
+                                            h_csr_col_ind_cpu);
 
-        // unit_check_general<int>(1, 1, 1, h_nnz_cpu.data(), h_nnz_total_dev_host_ptr.data());
-        // unit_check_general<int>(1, (M + 1), 1, h_csr_row_ptr_cpu.data(), h_csr_row_ptr.data());
-        // unit_check_general<int>(
-        //     1, h_nnz_total_dev_host_ptr[0], 1, h_csr_col_ind_cpu.data(), h_csr_col_ind.data());
-        // unit_check_general<T>(
-        //     1, h_nnz_total_dev_host_ptr[0], 1, h_csr_val_cpu.data(), h_csr_val.data());
+        unit_check_general<int>(1, 1, 1, h_nnz_cpu.data(), h_nnz_total_dev_host_ptr.data());
+        unit_check_general<int>(1, (M + 1), 1, h_csr_row_ptr_cpu.data(), h_csr_row_ptr.data());
+        unit_check_general<int>(
+            1, h_nnz_total_dev_host_ptr[0], 1, h_csr_col_ind_cpu.data(), h_csr_col_ind.data());
+        unit_check_general<T>(
+            1, h_nnz_total_dev_host_ptr[0], 1, h_csr_val_cpu.data(), h_csr_val.data());
     }
 
     if(argus.timing)
