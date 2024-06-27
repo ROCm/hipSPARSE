@@ -1403,7 +1403,7 @@ void host_prune_dense2csr_by_percentage(int                   m,
     pos       = std::min(pos, nnz_A - 1);
     pos       = std::max(pos, 0);
 
-    std::vector<T> sorted_A(m * n);
+    std::vector<T> sorted_A(nnz_A);
     for(int i = 0; i < n; i++)
     {
         for(int j = 0; j < m; j++)
@@ -1414,7 +1414,7 @@ void host_prune_dense2csr_by_percentage(int                   m,
 
     std::sort(sorted_A.begin(), sorted_A.end());
 
-    T threshold = sorted_A[pos];
+    T threshold = (nnz_A > 0) ? sorted_A[pos] : make_DataType<T>(0);
     host_prune_dense2csr<T>(m, n, A, lda, base, threshold, nnz, csr_val, csr_row_ptr, csr_col_ind);
 }
 

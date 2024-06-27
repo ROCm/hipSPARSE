@@ -159,8 +159,8 @@ struct Arguments
         this->boostval = 1.0;
         this->boostvali = 0.0;
 
-        // int ell_width;
-        // int permute;
+        this->ell_width = 0;
+        this->permute = 0;
 
         this->unit_check = 1;
         this->timing = 0;
