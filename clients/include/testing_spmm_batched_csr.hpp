@@ -183,7 +183,7 @@ void testing_spmm_batched_csr_bad_arg(void)
 }
 
 template <typename I, typename J, typename T>
-hipsparseStatus_t testing_spmm_batched_csr()
+hipsparseStatus_t testing_spmm_batched_csr(Arguments argus)
 {
 #ifdef __HIP_PLATFORM_NVIDIA__
     // do not test for bad args
@@ -191,12 +191,16 @@ hipsparseStatus_t testing_spmm_batched_csr()
 #endif
 
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
-    T                    h_alpha  = make_DataType<T>(1.0);
-    T                    h_beta   = make_DataType<T>(1.0);
-    hipsparseOperation_t transA   = HIPSPARSE_OPERATION_NON_TRANSPOSE;
-    hipsparseOperation_t transB   = HIPSPARSE_OPERATION_NON_TRANSPOSE;
-    hipsparseOrder_t     order    = HIPSPARSE_ORDER_COL;
-    hipsparseIndexBase_t idx_base = HIPSPARSE_INDEX_BASE_ZERO;
+    J                    m        = argus.M;
+    J                    n        = argus.N;
+    J                    k        = argus.K;
+    T                    h_alpha  = make_DataType<T>(argus.alpha);
+    T                    h_beta   = make_DataType<T>(argus.beta);
+    hipsparseOperation_t transA   = argus.transA;
+    hipsparseOperation_t transB   = argus.transB;
+    hipsparseOrder_t     orderB   = argus.orderB;
+    hipsparseOrder_t     orderC   = argus.orderC;
+    hipsparseIndexBase_t idx_base = argus.idx_base;
 
     J batch_count_A = 1;
     J batch_count_B = 3;
@@ -208,8 +212,7 @@ hipsparseStatus_t testing_spmm_batched_csr()
     hipsparseSpMMAlg_t alg = HIPSPARSE_MM_ALG_DEFAULT;
 #endif
 
-    // Matrices are stored at the same path in matrices directory
-    std::string filename = get_filename("nos3.bin");
+    std::string filename = argus.filename;
 
     // Index and data type
     hipsparseIndexType_t typeI = getIndexType<I>();
@@ -221,55 +224,103 @@ hipsparseStatus_t testing_spmm_batched_csr()
     hipsparseHandle_t              handle = test_handle->handle;
 
     // Host structures
-    std::vector<I> hcsr_row_ptr;
-    std::vector<J> hcsr_col_ind;
-    std::vector<T> hcsr_val;
+    std::vector<I> hcsr_row_ptr_temp;
+    std::vector<J> hcsr_col_ind_temp;
+    std::vector<T> hcsr_val_temp;
 
     // Initial Data on CPU
     srand(12345ULL);
 
-    J m;
-    J k;
-    I nnz;
-
-    if(read_bin_matrix(filename.c_str(), m, k, nnz, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base)
-       != 0)
+    I nnz_A;
+    if(!generate_csr_matrix(filename, 
+                            (transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? m : k, 
+                            (transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? k : m, 
+                            nnz_A, 
+                            hcsr_row_ptr_temp, 
+                            hcsr_col_ind_temp, 
+                            hcsr_val_temp, 
+                            idx_base))
     {
-        fprintf(stderr, "Cannot open [read] %s\n", filename.c_str());
+        fprintf(stderr, "Cannot open [read] %s\ncol", filename.c_str());
         return HIPSPARSE_STATUS_INTERNAL_ERROR;
     }
 
-    J n   = 5;
-    J ldb = k;
-    J ldc = m;
+    // Some matrix properties
+    J A_m = (transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? m : k;
+    J A_n = (transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? k : m;
+    J B_m = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? k : n;
+    J B_n = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? n : k;
+    J C_m = m;
+    J C_n = n;
 
-    J offsets_batch_stride_A        = 0;
-    I columns_values_batch_stride_A = 0;
-    I batch_stride_B                = k * n;
-    I batch_stride_C                = m * n;
+    int ld_multiplier_B = 1;
+    int ld_multiplier_C = 1;
 
-    std::vector<T> hB(batch_count_B * k * n);
-    std::vector<T> hC_1(batch_count_C * m * n);
-    std::vector<T> hC_2(batch_count_C * m * n);
-    std::vector<T> hC_gold(batch_count_C * m * n);
+    int64_t ldb = (orderB == HIPSPARSE_ORDER_COL)
+                      ? ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? (int64_t(ld_multiplier_B) * k)
+                                                               : (int64_t(ld_multiplier_B) * n))
+                      : ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? (int64_t(ld_multiplier_B) * n)
+                                                               : (int64_t(ld_multiplier_B) * k));
+    int64_t ldc = (orderC == HIPSPARSE_ORDER_COL) ? (int64_t(ld_multiplier_C) * m)
+                                                      : (int64_t(ld_multiplier_C) * n);
+    
+    ldb = std::max(int64_t(1), ldb);
+    ldc = std::max(int64_t(1), ldc);
 
-    hipsparseInit<T>(hB, batch_count_B * k * n, 1);
-    hipsparseInit<T>(hC_1, batch_count_C * m * n, 1);
+    int64_t nrowB = (orderB == HIPSPARSE_ORDER_COL) ? ldb : B_m;
+    int64_t ncolB = (orderB == HIPSPARSE_ORDER_COL) ? B_n : ldb;
+    int64_t nrowC = (orderC == HIPSPARSE_ORDER_COL) ? ldc : C_m;
+    int64_t ncolC = (orderC == HIPSPARSE_ORDER_COL) ? C_n : ldc;
+
+    int64_t nnz_B = nrowB * ncolB;
+    int64_t nnz_C = nrowC * ncolC;
+
+    int64_t offsets_batch_stride_A        = (batch_count_A > 1) ? (A_m + 1) : 0;
+    int64_t columns_values_batch_stride_A = (batch_count_A > 1) ? nnz_A : 0;
+    int64_t batch_stride_B                = (batch_count_B > 1) ? nnz_B : 0;
+    int64_t batch_stride_C                = (batch_count_C > 1) ? nnz_C : 0;
+
+    // Allocate host memory for all batches of A matrix
+    std::vector<I> hcsr_row_ptr(batch_count_A * (A_m + 1));
+    std::vector<J> hcsr_col_ind(batch_count_A * nnz_A);
+    std::vector<T> hcsr_val(batch_count_A * nnz_A);
+
+    for(J i = 0; i < batch_count_A; i++)
+    {
+        for(J j = 0; j < (A_m + 1); j++)
+        {
+            hcsr_row_ptr[(A_m + 1) * i + j] = hcsr_row_ptr_temp[j];
+        }
+
+        for(I j = 0; j < nnz_A; j++)
+        {
+            hcsr_col_ind[nnz_A * i + j] = hcsr_col_ind_temp[j];
+            hcsr_val[nnz_A * i + j]     = hcsr_val_temp[j];
+        }
+    }
+
+    std::vector<T> hB(batch_count_B * nnz_B);
+    std::vector<T> hC_1(batch_count_C * nnz_C);
+    std::vector<T> hC_2(batch_count_C * nnz_C);
+    std::vector<T> hC_gold(batch_count_C * nnz_C);
+
+    hipsparseInit<T>(hB, batch_count_B * nnz_B, 1);
+    hipsparseInit<T>(hC_1, batch_count_C * nnz_C, 1);
 
     // copy vector is easy in STL; hC_gold = hC: save a copy in hy_gold which will be output of CPU
     hC_2    = hC_1;
     hC_gold = hC_1;
 
     // allocate memory on device
-    auto dptr_managed = hipsparse_unique_ptr{device_malloc(sizeof(I) * (m + 1)), device_free};
-    auto dcol_managed = hipsparse_unique_ptr{device_malloc(sizeof(J) * nnz), device_free};
-    auto dval_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
+    auto dptr_managed = hipsparse_unique_ptr{device_malloc(sizeof(I) * (A_m + 1)), device_free};
+    auto dcol_managed = hipsparse_unique_ptr{device_malloc(sizeof(J) * nnz_A), device_free};
+    auto dval_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz_A), device_free};
     auto dB_managed
-        = hipsparse_unique_ptr{device_malloc(sizeof(T) * batch_count_B * k * n), device_free};
+        = hipsparse_unique_ptr{device_malloc(sizeof(T) * batch_count_B * nnz_B), device_free};
     auto dC_1_managed
-        = hipsparse_unique_ptr{device_malloc(sizeof(T) * batch_count_C * m * n), device_free};
+        = hipsparse_unique_ptr{device_malloc(sizeof(T) * batch_count_C * nnz_C), device_free};
     auto dC_2_managed
-        = hipsparse_unique_ptr{device_malloc(sizeof(T) * batch_count_C * m * n), device_free};
+        = hipsparse_unique_ptr{device_malloc(sizeof(T) * batch_count_C * nnz_C), device_free};
     auto d_alpha_managed = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
     auto d_beta_managed  = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
 
@@ -284,28 +335,28 @@ hipsparseStatus_t testing_spmm_batched_csr()
 
     // copy data from CPU to device
     CHECK_HIP_ERROR(
-        hipMemcpy(dptr, hcsr_row_ptr.data(), sizeof(I) * (m + 1), hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(hipMemcpy(dcol, hcsr_col_ind.data(), sizeof(J) * nnz, hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(hipMemcpy(dval, hcsr_val.data(), sizeof(T) * nnz, hipMemcpyHostToDevice));
+        hipMemcpy(dptr, hcsr_row_ptr.data(), sizeof(I) * (A_m + 1), hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(dcol, hcsr_col_ind.data(), sizeof(J) * nnz_A, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(dval, hcsr_val.data(), sizeof(T) * nnz_A, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(
-        hipMemcpy(dB, hB.data(), sizeof(T) * batch_count_B * k * n, hipMemcpyHostToDevice));
+        hipMemcpy(dB, hB.data(), sizeof(T) * batch_count_B * nnz_B, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(
-        hipMemcpy(dC_1, hC_1.data(), sizeof(T) * batch_count_C * m * n, hipMemcpyHostToDevice));
+        hipMemcpy(dC_1, hC_1.data(), sizeof(T) * batch_count_C * nnz_C, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(
-        hipMemcpy(dC_2, hC_2.data(), sizeof(T) * batch_count_C * m * n, hipMemcpyHostToDevice));
+        hipMemcpy(dC_2, hC_2.data(), sizeof(T) * batch_count_C * nnz_C, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(d_alpha, &h_alpha, sizeof(T), hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(d_beta, &h_beta, sizeof(T), hipMemcpyHostToDevice));
 
     // Create matrices
     hipsparseSpMatDescr_t A;
     CHECK_HIPSPARSE_ERROR(
-        hipsparseCreateCsr(&A, m, k, nnz, dptr, dcol, dval, typeI, typeJ, idx_base, typeT));
+        hipsparseCreateCsr(&A, A_m, A_n, nnz_A, dptr, dcol, dval, typeI, typeJ, idx_base, typeT));
 
     // Create dense matrices
     hipsparseDnMatDescr_t B, C1, C2;
-    CHECK_HIPSPARSE_ERROR(hipsparseCreateDnMat(&B, k, n, ldb, dB, typeT, order));
-    CHECK_HIPSPARSE_ERROR(hipsparseCreateDnMat(&C1, m, n, ldc, dC_1, typeT, order));
-    CHECK_HIPSPARSE_ERROR(hipsparseCreateDnMat(&C2, m, n, ldc, dC_2, typeT, order));
+    CHECK_HIPSPARSE_ERROR(hipsparseCreateDnMat(&B, B_m, B_n, ldb, dB, typeT, orderB));
+    CHECK_HIPSPARSE_ERROR(hipsparseCreateDnMat(&C1, C_m, C_n, ldc, dC_1, typeT, orderC));
+    CHECK_HIPSPARSE_ERROR(hipsparseCreateDnMat(&C2, C_m, C_n, ldc, dC_2, typeT, orderC));
 
     CHECK_HIPSPARSE_ERROR(hipsparseCsrSetStridedBatch(
         A, batch_count_A, offsets_batch_stride_A, columns_values_batch_stride_A));
@@ -349,42 +400,42 @@ hipsparseStatus_t testing_spmm_batched_csr()
 
     // copy output from device to CPU
     CHECK_HIP_ERROR(
-        hipMemcpy(hC_1.data(), dC_1, sizeof(T) * batch_count_C * m * n, hipMemcpyDeviceToHost));
+        hipMemcpy(hC_1.data(), dC_1, sizeof(T) * batch_count_C * nnz_C, hipMemcpyDeviceToHost));
     CHECK_HIP_ERROR(
-        hipMemcpy(hC_2.data(), dC_2, sizeof(T) * batch_count_C * m * n, hipMemcpyDeviceToHost));
+        hipMemcpy(hC_2.data(), dC_2, sizeof(T) * batch_count_C * nnz_C, hipMemcpyDeviceToHost));
 
     // CPU
     double cpu_time_used = get_time_us();
 
-    host_csrmm_batched(m,
-                       n,
-                       k,
-                       batch_count_A,
-                       offsets_batch_stride_A,
-                       columns_values_batch_stride_A,
-                       transA,
-                       transB,
-                       h_alpha,
-                       hcsr_row_ptr.data(),
-                       hcsr_col_ind.data(),
-                       hcsr_val.data(),
-                       hB.data(),
-                       ldb,
-                       batch_count_B,
-                       batch_stride_B,
-                       h_beta,
-                       hC_gold.data(),
-                       ldc,
-                       batch_count_C,
-                       batch_stride_C,
-                       order,
-                       idx_base,
-                       false);
+    // host_csrmm_batched(m,
+    //                    n,
+    //                    k,
+    //                    batch_count_A,
+    //                    offsets_batch_stride_A,
+    //                    columns_values_batch_stride_A,
+    //                    transA,
+    //                    transB,
+    //                    h_alpha,
+    //                    hcsr_row_ptr.data(),
+    //                    hcsr_col_ind.data(),
+    //                    hcsr_val.data(),
+    //                    hB.data(),
+    //                    ldb,
+    //                    batch_count_B,
+    //                    batch_stride_B,
+    //                    h_beta,
+    //                    hC_gold.data(),
+    //                    ldc,
+    //                    batch_count_C,
+    //                    batch_stride_C,
+    //                    order,
+    //                    idx_base,
+    //                    false);
 
     cpu_time_used = get_time_us() - cpu_time_used;
 
-    unit_check_near(1, batch_count_C * m * n, 1, hC_gold.data(), hC_1.data());
-    unit_check_near(1, batch_count_C * m * n, 1, hC_gold.data(), hC_2.data());
+    unit_check_near(1, batch_count_C * nnz_C, 1, hC_gold.data(), hC_1.data());
+    unit_check_near(1, batch_count_C * nnz_C, 1, hC_gold.data(), hC_2.data());
 
     CHECK_HIP_ERROR(hipFree(buffer));
     CHECK_HIPSPARSE_ERROR(hipsparseDestroySpMat(A));
