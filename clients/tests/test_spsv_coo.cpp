@@ -58,7 +58,7 @@ std::string spsv_coo_bin[] = {"nos1.bin",
                                         "nos5.bin",
                                         "nos6.bin",
                                         "nos7.bin",
-                                        "bibd_22_8.bin"};
+                                        "scircuit.bin"};
 
 class parameterized_spsv_coo : public testing::TestWithParam<spsv_coo_tuple>
 {
