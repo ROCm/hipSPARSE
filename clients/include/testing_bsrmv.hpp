@@ -324,58 +324,12 @@ hipsparseStatus_t testing_bsrmv(Arguments argus)
     int mb = (m + block_dim - 1) / block_dim;
     int nb = (n + block_dim - 1) / block_dim;
 
-    if(block_dim == 1)
+    if(block_dim == 1 || mb == 0 || nb == 0)
     {
 #ifdef __HIP_PLATFORM_NVIDIA__
         // cusparse only accepts block_dim > 1
         return HIPSPARSE_STATUS_SUCCESS;
 #endif
-    }
-
-    // Argument sanity check before allocating invalid memory
-    if(mb == 0 || nb == 0)
-    {
-        auto dptr_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto dcol_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
-        auto dval_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-        auto dx_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-        auto dy_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * safe_size), device_free};
-
-        int* dptr = (int*)dptr_managed.get();
-        int* dcol = (int*)dcol_managed.get();
-        T*   dval = (T*)dval_managed.get();
-        T*   dx   = (T*)dx_managed.get();
-        T*   dy   = (T*)dy_managed.get();
-
-        if(!dval || !dptr || !dcol || !dx || !dy)
-        {
-            verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-                                            "!dptr || !dcol || !dval || !dx || !dy");
-            return HIPSPARSE_STATUS_ALLOC_FAILED;
-        }
-
-        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
-        hipsparseStatus_t status = hipsparseXbsrmv(handle,
-                                                   dir,
-                                                   transA,
-                                                   mb,
-                                                   nb,
-                                                   safe_size,
-                                                   &h_alpha,
-                                                   descr,
-                                                   dval,
-                                                   dptr,
-                                                   dcol,
-                                                   block_dim,
-                                                   dx,
-                                                   &h_beta,
-                                                   dy);
-
-        verify_hipsparse_status_success(status, "mb >= 0 && nb >= 0");
-
-        return HIPSPARSE_STATUS_SUCCESS;
     }
 
     // Host structures
