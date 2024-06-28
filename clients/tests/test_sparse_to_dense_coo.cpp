@@ -48,8 +48,7 @@ std::string sparse_to_dense_coo_bin[] = {"nos1.bin",
                                "nos5.bin",
                                "nos6.bin",
                                "nos7.bin",
-                               "Chebyshev4.bin",
-                               "shipsec1.bin"};
+                               "bibd_22_8.bin"};
 
 class parameterized_sparse_to_dense_coo : public testing::TestWithParam<sparse_to_dense_coo_tuple>
 {
