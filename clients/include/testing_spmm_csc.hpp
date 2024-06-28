@@ -293,7 +293,7 @@ hipsparseStatus_t testing_spmm_csc(Arguments argus)
     hC_gold = hC_1;
 
     // allocate memory on device
-    auto dptr_managed    = hipsparse_unique_ptr{device_malloc(sizeof(I) * (A_m + 1)), device_free};
+    auto dptr_managed    = hipsparse_unique_ptr{device_malloc(sizeof(I) * (A_n + 1)), device_free};
     auto drow_managed    = hipsparse_unique_ptr{device_malloc(sizeof(J) * nnz_A), device_free};
     auto dval_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz_A), device_free};
     auto dB_managed      = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz_B), device_free};
@@ -313,7 +313,7 @@ hipsparseStatus_t testing_spmm_csc(Arguments argus)
 
     // copy data from CPU to device
     CHECK_HIP_ERROR(
-        hipMemcpy(dptr, hcsc_col_ptr.data(), sizeof(I) * (A_m + 1), hipMemcpyHostToDevice));
+        hipMemcpy(dptr, hcsc_col_ptr.data(), sizeof(I) * (A_n + 1), hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(drow, hcsc_row_ind.data(), sizeof(J) * nnz_A, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dval, hcsc_val.data(), sizeof(T) * nnz_A, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dB, hB.data(), sizeof(T) * nnz_B, hipMemcpyHostToDevice));
