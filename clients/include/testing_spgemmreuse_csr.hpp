@@ -341,6 +341,17 @@ hipsparseStatus_t testing_spgemmreuse_csr(Arguments argus)
                                              typeJ,
                                              idxBaseA,
                                              typeT));
+    CHECK_HIPSPARSE_ERROR(hipsparseCreateCsr(&B,
+                                             k,
+                                             n,
+                                             nnz_B,
+                                             dcsr_row_ptr_B,
+                                             dcsr_col_ind_B,
+                                             dcsr_val_B,
+                                             typeI,
+                                             typeJ,
+                                             idxBaseB,
+                                             typeT));
     CHECK_HIPSPARSE_ERROR(hipsparseCreateCsr(
         &C, m, n, 0, dcsr_row_ptr_C, nullptr, nullptr, typeI, typeJ, idxBaseC, typeT));
 
