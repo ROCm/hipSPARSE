@@ -341,20 +341,22 @@ void testing_spgemm_csr_bad_arg(void)
 }
 
 template <typename I, typename J, typename T>
-hipsparseStatus_t testing_spgemm_csr(void)
+hipsparseStatus_t testing_spgemm_csr(Arguments argus)
 {
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
-    T                    h_alpha  = make_DataType<T>(2.0);
-    T                    h_beta   = make_DataType<T>(0.0);
-    hipsparseOperation_t transA   = HIPSPARSE_OPERATION_NON_TRANSPOSE;
-    hipsparseOperation_t transB   = HIPSPARSE_OPERATION_NON_TRANSPOSE;
-    hipsparseIndexBase_t idxBaseA = HIPSPARSE_INDEX_BASE_ZERO;
-    hipsparseIndexBase_t idxBaseB = HIPSPARSE_INDEX_BASE_ZERO;
-    hipsparseIndexBase_t idxBaseC = HIPSPARSE_INDEX_BASE_ZERO;
+    J                    m        = argus.M;
+    J                    k        = argus.K;
+    T                    h_alpha  = make_DataType<T>(argus.alpha);
+    T                    h_beta   = make_DataType<T>(argus.beta);
+    hipsparseIndexBase_t idxBaseA = argus.idx_base;
+    hipsparseIndexBase_t idxBaseB = argus.idx_base2;
+    hipsparseIndexBase_t idxBaseC = argus.idx_base3;
     hipsparseSpGEMMAlg_t alg      = HIPSPARSE_SPGEMM_DEFAULT;
 
-    // Matrices are stored at the same path in matrices directory
-    std::string filename = get_filename("nos6.bin");
+    std::string filename = argus.filename;
+
+    hipsparseOperation_t transA   = HIPSPARSE_OPERATION_NON_TRANSPOSE;
+    hipsparseOperation_t transB   = HIPSPARSE_OPERATION_NON_TRANSPOSE;
 
     // Index and data type
     hipsparseIndexType_t typeI = getIndexType<I>();
@@ -376,20 +378,21 @@ hipsparseStatus_t testing_spgemm_csr(void)
     // Initial Data on CPU
     srand(12345ULL);
 
-    // Some sparse matrix A
-    J m;
-    J k;
     I nnz_A;
-
-    if(read_bin_matrix(
-           filename.c_str(), m, k, nnz_A, hcsr_row_ptr_A, hcsr_col_ind_A, hcsr_val_A, idxBaseA)
-       != 0)
+    if(!generate_csr_matrix(filename, 
+                            m, 
+                            k, 
+                            nnz_A, 
+                            hcsr_row_ptr_A, 
+                            hcsr_col_ind_A, 
+                            hcsr_val_A, 
+                            idxBaseA))
     {
-        fprintf(stderr, "Cannot open [read] %s\n", filename.c_str());
+        fprintf(stderr, "Cannot open [read] %s\ncol", filename.c_str());
         return HIPSPARSE_STATUS_INTERNAL_ERROR;
     }
 
-    // Sparse matrix B as the transpose of A
+    // For sparse matrix B, use the transpose of A
     J n     = m;
     I nnz_B = nnz_A;
 
@@ -423,7 +426,7 @@ hipsparseStatus_t testing_spgemm_csr(void)
     auto dcsr_row_ptr_C_1_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(I) * (m + 1)), device_free};
     auto dcsr_row_ptr_C_2_managed
-        = hipsparse_unique_ptr{device_malloc(sizeof(I) * (m + 1)), device_free};
+        = hipsparse_unique_ptr{device_malloc(sizeof(I) * (n + 1)), device_free};
     auto d_alpha_managed = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
     auto d_beta_managed  = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
 
@@ -672,21 +675,21 @@ hipsparseStatus_t testing_spgemm_csr(void)
     std::vector<I> hcsr_row_ptr_C_gold(m + 1);
 
     int64_t nnz_C_gold = host_csrgemm2_nnz(m,
-                                      n,
-                                      k,
-                                      &h_alpha,
-                                      hcsr_row_ptr_A.data(),
-                                      hcsr_col_ind_A.data(),
-                                      hcsr_row_ptr_B.data(),
-                                      hcsr_col_ind_B.data(),
-                                      (const T*)nullptr,
-                                      (const I*)nullptr,
-                                      (const J*)nullptr,
-                                      hcsr_row_ptr_C_gold.data(),
-                                      idxBaseA,
-                                      idxBaseB,
-                                      idxBaseC,
-                                      HIPSPARSE_INDEX_BASE_ZERO);
+                                           n,
+                                           k,
+                                           &h_alpha,
+                                           hcsr_row_ptr_A.data(),
+                                           hcsr_col_ind_A.data(),
+                                           hcsr_row_ptr_B.data(),
+                                           hcsr_col_ind_B.data(),
+                                           (const T*)nullptr,
+                                           (const I*)nullptr,
+                                           (const J*)nullptr,
+                                           hcsr_row_ptr_C_gold.data(),
+                                           idxBaseA,
+                                           idxBaseB,
+                                           idxBaseC,
+                                           HIPSPARSE_INDEX_BASE_ZERO);
 
     // Verify nnz and row pointer array
     unit_check_general(1, 1, 1, &nnz_C_gold, &nnz_C_1);
