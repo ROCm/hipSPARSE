@@ -28,24 +28,21 @@
 typedef std::tuple<int,
                    int,
                    double,
-                   double,
                    hipsparseIndexBase_t,
                    hipsparseIndexBase_t, 
                    hipsparseIndexBase_t>
     spgemm_csr_tuple;
 typedef std::tuple<double,
-                   double,
                    hipsparseIndexBase_t,
                    hipsparseIndexBase_t,
                    hipsparseIndexBase_t,
                    std::string>
     spgemm_csr_bin_tuple;
 
-int spgemm_csr_M_range[] = {50};
-int spgemm_csr_K_range[] = {84};
+int spgemm_csr_M_range[] = {50, 567, 5149};
+int spgemm_csr_K_range[] = {84, 649, 5148};
 
 std::vector<double> spgemm_csr_alpha_range = {2.0};
-std::vector<double> spgemm_csr_beta_range  = {1.0};
 
 hipsparseIndexBase_t spgemm_csr_idxbaseA_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 hipsparseIndexBase_t spgemm_csr_idxbaseB_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
@@ -58,7 +55,7 @@ std::string spgemm_csr_bin[] = {"nos1.bin",
                                 "nos5.bin",
                                 "nos6.bin",
                                 "nos7.bin",
-                                "Chebyshev4.bin",
+                                "amazon0312.bin",
                                 "shipsec1.bin"};
 
 class parameterized_spgemm_csr : public testing::TestWithParam<spgemm_csr_tuple>
@@ -85,10 +82,9 @@ Arguments setup_spgemm_csr_arguments(spgemm_csr_tuple tup)
     arg.M         = std::get<0>(tup);
     arg.K         = std::get<1>(tup);
     arg.alpha     = std::get<2>(tup);
-    arg.beta      = std::get<3>(tup);
-    arg.idx_base  = std::get<4>(tup);
-    arg.idx_base2 = std::get<5>(tup);
-    arg.idx_base3 = std::get<6>(tup);
+    arg.idx_base  = std::get<3>(tup);
+    arg.idx_base2 = std::get<4>(tup);
+    arg.idx_base3 = std::get<5>(tup);
     arg.timing    = 0;
     return arg;
 }
@@ -99,14 +95,13 @@ Arguments setup_spgemm_csr_arguments(spgemm_csr_bin_tuple tup)
     arg.M         = -99;
     arg.K         = -99;
     arg.alpha     = std::get<0>(tup);
-    arg.beta      = std::get<1>(tup);
-    arg.idx_base  = std::get<2>(tup);
-    arg.idx_base2 = std::get<3>(tup);
-    arg.idx_base3 = std::get<4>(tup);
+    arg.idx_base  = std::get<1>(tup);
+    arg.idx_base2 = std::get<2>(tup);
+    arg.idx_base3 = std::get<3>(tup);
     arg.timing    = 0;
 
     // Determine absolute path of test matrix
-    std::string bin_file = std::get<5>(tup);
+    std::string bin_file = std::get<4>(tup);
 
     // Matrices are stored at the same path in matrices directory
     arg.filename = get_filename(bin_file);
@@ -174,7 +169,6 @@ INSTANTIATE_TEST_SUITE_P(spgemm_csr,
                          testing::Combine(testing::ValuesIn(spgemm_csr_M_range),
                                           testing::ValuesIn(spgemm_csr_K_range),
                                           testing::ValuesIn(spgemm_csr_alpha_range),
-                                          testing::ValuesIn(spgemm_csr_beta_range),
                                           testing::ValuesIn(spgemm_csr_idxbaseA_range),
                                           testing::ValuesIn(spgemm_csr_idxbaseB_range),
                                           testing::ValuesIn(spgemm_csr_idxbaseC_range)));
@@ -182,7 +176,6 @@ INSTANTIATE_TEST_SUITE_P(spgemm_csr,
 INSTANTIATE_TEST_SUITE_P(spgemm_csr_bin,
                          parameterized_spgemm_csr_bin,
                          testing::Combine(testing::ValuesIn(spgemm_csr_alpha_range),
-                                          testing::ValuesIn(spgemm_csr_beta_range),
                                           testing::ValuesIn(spgemm_csr_idxbaseA_range),
                                           testing::ValuesIn(spgemm_csr_idxbaseB_range),
                                           testing::ValuesIn(spgemm_csr_idxbaseC_range),

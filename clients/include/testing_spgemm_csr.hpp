@@ -347,7 +347,6 @@ hipsparseStatus_t testing_spgemm_csr(Arguments argus)
     J                    m        = argus.M;
     J                    k        = argus.K;
     T                    h_alpha  = make_DataType<T>(argus.alpha);
-    T                    h_beta   = make_DataType<T>(argus.beta);
     hipsparseIndexBase_t idxBaseA = argus.idx_base;
     hipsparseIndexBase_t idxBaseB = argus.idx_base2;
     hipsparseIndexBase_t idxBaseC = argus.idx_base3;
@@ -355,6 +354,7 @@ hipsparseStatus_t testing_spgemm_csr(Arguments argus)
 
     std::string filename = argus.filename;
 
+    T                    h_beta   = make_DataType<T>(0);
     hipsparseOperation_t transA   = HIPSPARSE_OPERATION_NON_TRANSPOSE;
     hipsparseOperation_t transB   = HIPSPARSE_OPERATION_NON_TRANSPOSE;
 
