@@ -3252,7 +3252,7 @@ void host_coomm(I                    M,
             {
                 I row = coo_row_ind_A[i] - base;
                 I col = coo_col_ind_A[i] - base;
-                T val = alpha * coo_val_A[i];
+                T val = testing_mult(alpha, coo_val_A[i]);
 
                 I idx_C = (order_C == HIPSPARSE_ORDER_COL) ? row + j * ldc : row * ldc + j;
 
@@ -3295,7 +3295,7 @@ void host_coomm(I                    M,
             {
                 I row = coo_row_ind_A[i] - base;
                 I col = coo_col_ind_A[i] - base;
-                T val = alpha * testing_conj(coo_val_A[i], conj_A);
+                T val = testing_mult(alpha, testing_conj(coo_val_A[i], conj_A));
 
                 I idx_C = (order_C == HIPSPARSE_ORDER_COL) ? col + j * ldc : col * ldc + j;
 
@@ -3315,91 +3315,6 @@ void host_coomm(I                    M,
         }
     }
 }
-
-// template <typename T, typename I>
-// void host_coomm(I                    M,
-//                 I                    N,
-//                 I                    K,
-//                 I                    nnz,
-//                 hipsparseOperation_t transA,
-//                 hipsparseOperation_t transB,
-//                 T                    alpha,
-//                 const I*             coo_row_ind_A,
-//                 const I*             coo_col_ind_A,
-//                 const T*             coo_val_A,
-//                 const T*             B,
-//                 I                    ldb,
-//                 hipsparseOrder_t     orderB,
-//                 T                    beta,
-//                 T*                   C,
-//                 I                    ldc,
-//                 hipsparseOrder_t     orderC,
-//                 hipsparseIndexBase_t base)
-// {
-//     if(order == HIPSPARSE_ORDER_COL)
-//     {
-//         for(I j = 0; j < N; j++)
-//         {
-// #ifdef _OPENMP
-// #pragma omp parallel for schedule(dynamic, 1024)
-// #endif
-//             for(I i = 0; i < M; ++i)
-//             {
-//                 I idx_C  = i + j * ldc;
-//                 C[idx_C] = testing_mult(beta, C[idx_C]);
-//             }
-//         }
-//     }
-//     else
-//     {
-//         for(I i = 0; i < M; ++i)
-//         {
-// #ifdef _OPENMP
-// #pragma omp parallel for schedule(dynamic, 1024)
-// #endif
-//             for(I j = 0; j < N; j++)
-//             {
-//                 I idx_C  = i * ldc + j;
-//                 C[idx_C] = testing_mult(beta, C[idx_C]);
-//             }
-//         }
-//     }
-
-// #ifdef _OPENMP
-// #pragma omp parallel for schedule(dynamic, 1024)
-// #endif
-//     for(I j = 0; j < N; j++)
-//     {
-//         for(I i = 0; i < nnz; ++i)
-//         {
-//             I row = coo_row_ind_A[i] - base;
-//             I col = coo_col_ind_A[i] - base;
-//             T val = testing_mult(alpha, coo_val_A[i]);
-
-//             I idx_C = order == HIPSPARSE_ORDER_COL ? row + j * ldc : row * ldc + j;
-
-//             I idx_B = 0;
-//             if((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE && order == HIPSPARSE_ORDER_COL)
-//                || (transB != HIPSPARSE_OPERATION_NON_TRANSPOSE && order != HIPSPARSE_ORDER_COL))
-//             {
-//                 idx_B = (col + j * ldb);
-//             }
-//             else
-//             {
-//                 idx_B = (j + col * ldb);
-//             }
-
-//             if(transB == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE)
-//             {
-//                 C[idx_C] = testing_fma(val, testing_conj(B[idx_B]), C[idx_C]);
-//             }
-//             else
-//             {
-//                 C[idx_C] = testing_fma(val, B[idx_B], C[idx_C]);
-//             }
-//         }
-//     }
-// }
 
 template <typename T, typename I>
 void host_coomm_batched(I                    M,
@@ -4185,6 +4100,7 @@ static inline void host_lssolve(J                     M,
                                 const std::vector<T>& csr_val,
                                 std::vector<T>&       B,
                                 J                     ldb,
+                                hipsparseOrder_t      order_B,
                                 hipsparseDiagType_t   diag_type,
                                 hipsparseIndexBase_t  base,
                                 J*                    struct_pivot,
@@ -4209,7 +4125,7 @@ static inline void host_lssolve(J                     M,
         {
             temp.assign(prop.warpSize, make_DataType<T>(0.0));
 
-            J idx_B = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? i * ldb + row : row * ldb + i;
+            J idx_B = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE && order_B == HIPSPARSE_ORDER_COL) ? i * ldb + row : row * ldb + i;
 
             if(transB == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE)
             {
@@ -4271,7 +4187,7 @@ static inline void host_lssolve(J                     M,
                     }
 
                     // Lower triangular part
-                    J idx     = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? i * ldb + local_col
+                    J idx     = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE && order_B == HIPSPARSE_ORDER_COL) ? i * ldb + local_col
                                                                               : local_col * ldb + i;
                     T neg_val = testing_mult(make_DataType<T>(-1.0), local_val);
 
@@ -4321,6 +4237,7 @@ static inline void host_ussolve(J                     M,
                                 const std::vector<T>& csr_val,
                                 std::vector<T>&       B,
                                 J                     ldb,
+                                hipsparseOrder_t      order_B,
                                 hipsparseDiagType_t   diag_type,
                                 hipsparseIndexBase_t  base,
                                 J*                    struct_pivot,
@@ -4345,7 +4262,7 @@ static inline void host_ussolve(J                     M,
         {
             temp.assign(prop.warpSize, make_DataType<T>(0.0));
 
-            J idx_B = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? i * ldb + row : row * ldb + i;
+            J idx_B = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE && order_B == HIPSPARSE_ORDER_COL) ? i * ldb + row : row * ldb + i;
 
             if(transB == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE)
             {
@@ -4403,8 +4320,9 @@ static inline void host_ussolve(J                     M,
                     }
 
                     // Upper triangular part
-                    J idx     = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? i * ldb + local_col
+                    J idx     = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE && order_B == HIPSPARSE_ORDER_COL) ? i * ldb + local_col
                                                                               : local_col * ldb + i;
+
                     T neg_val = testing_mult(make_DataType<T>(-1.0), local_val);
 
                     if(transB == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE)
@@ -4953,7 +4871,7 @@ void host_coosv(hipsparseOperation_t  trans,
 }
 
 template <typename I, typename J, typename T>
-void host_csrsm(J                     M,
+void host_csrsm2(J                     M,
                 J                     nrhs,
                 I                     nnz,
                 hipsparseOperation_t  transA,
@@ -4964,6 +4882,7 @@ void host_csrsm(J                     M,
                 const std::vector<T>& csr_val,
                 std::vector<T>&       B,
                 J                     ldb,
+                hipsparseOrder_t      order_B,
                 hipsparseDiagType_t   diag_type,
                 hipsparseFillMode_t   fill_mode,
                 hipsparseIndexBase_t  base,
@@ -4987,6 +4906,7 @@ void host_csrsm(J                     M,
                          csr_val,
                          B,
                          ldb,
+                         order_B,
                          diag_type,
                          base,
                          struct_pivot,
@@ -5003,6 +4923,7 @@ void host_csrsm(J                     M,
                          csr_val,
                          B,
                          ldb,
+                         order_B,
                          diag_type,
                          base,
                          struct_pivot,
@@ -5048,6 +4969,7 @@ void host_csrsm(J                     M,
                          csrt_val,
                          B,
                          ldb,
+                         order_B,
                          diag_type,
                          base,
                          struct_pivot,
@@ -5064,6 +4986,7 @@ void host_csrsm(J                     M,
                          csrt_val,
                          B,
                          ldb,
+                         order_B,
                          diag_type,
                          base,
                          struct_pivot,
@@ -5077,6 +5000,187 @@ void host_csrsm(J                     M,
     *numeric_pivot = (*numeric_pivot == M + 1) ? -1 : *numeric_pivot;
 }
 
+
+template <typename I, typename J, typename T>
+void host_csrsm(J                     M,
+                J                     nrhs,
+                I                     nnz,
+                hipsparseOperation_t  trans_A,
+                hipsparseOperation_t  trans_B,
+                T                     alpha,
+                const std::vector<I>& csr_row_ptr,
+                const std::vector<J>& csr_col_ind,
+                const std::vector<T>& csr_val,
+                const std::vector<T>& B,
+                J                     ldb,
+                hipsparseOrder_t      order_B,
+                std::vector<T>&       C,
+                J                     ldc,
+                hipsparseOrder_t      order_C,
+                hipsparseDiagType_t   diag_type,
+                hipsparseFillMode_t   fill_mode,
+                hipsparseIndexBase_t  base,
+                J*                    struct_pivot,
+                J*                    numeric_pivot)
+{
+    J B_m = (trans_B == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? M : nrhs;
+    J B_n = (trans_B == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? nrhs : M;
+    J C_m = M;
+    J C_n = nrhs;
+
+    // Copy B to C
+    if(order_B == HIPSPARSE_ORDER_COL)
+    {
+        if(trans_B == HIPSPARSE_OPERATION_NON_TRANSPOSE)
+        {
+            if(order_C == HIPSPARSE_ORDER_COL)
+            {
+                for(J j = 0; j < B_n; j++)
+                {
+                    for(J i = 0; i < B_m; i++)
+                    {
+                        C[i + ldc * j] = B[i + ldb * j];
+                    }
+                }
+            }
+            else
+            {
+                for(J j = 0; j < B_n; j++)
+                {
+                    for(J i = 0; i < B_m; i++)
+                    {
+                        C[i * ldc + j] = B[i + ldb * j];
+                    }
+                }
+            }
+        }
+        else
+        {
+            if(order_C == HIPSPARSE_ORDER_COL)
+            {
+                for(J j = 0; j < B_n; j++)
+                {
+                    for(J i = 0; i < B_m; i++)
+                    {
+                        C[i * ldc + j] = B[i + ldb * j];
+                    }
+                }
+            }
+            else
+            {
+                for(J j = 0; j < B_n; j++)
+                {
+                    for(J i = 0; i < B_m; i++)
+                    {
+                        C[i + ldc * j] = B[i + ldb * j];
+                    }
+                }
+            }
+        }
+    }
+    else
+    {
+        if(trans_B == HIPSPARSE_OPERATION_NON_TRANSPOSE)
+        {
+            if(order_C == HIPSPARSE_ORDER_COL)
+            {
+                for(J j = 0; j < B_n; j++)
+                {
+                    for(J i = 0; i < B_m; i++)
+                    {
+                        C[i + ldc * j] = B[ldb * i + j];
+                    }
+                }
+            }
+            else
+            {
+                for(J j = 0; j < B_n; j++)
+                {
+                    for(J i = 0; i < B_m; i++)
+                    {
+                        C[i * ldc + j] = B[ldb * i + j];
+                    }
+                }
+            }
+        }
+        else
+        {
+            if(order_C == HIPSPARSE_ORDER_COL)
+            {
+                for(J j = 0; j < B_n; j++)
+                {
+                    for(J i = 0; i < B_m; i++)
+                    {
+                        C[i * ldc + j] = B[ldb * i + j];
+                    }
+                }
+            }
+            else
+            {
+                for(J j = 0; j < B_n; j++)
+                {
+                    for(J i = 0; i < B_m; i++)
+                    {
+                        C[i + ldc * j] = B[ldb * i + j];
+                    }
+                }
+            }
+        }
+    }
+
+    if(trans_B == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE)
+    {
+        if(order_C == HIPSPARSE_ORDER_COL)
+        {
+            for(J j = 0; j < C_n; j++)
+            {
+                for(J i = 0; i < C_m; i++)
+                {
+                    C[i + ldc * j] = testing_conj(C[i + ldc * j]);
+                }
+            }
+        }
+        else
+        {
+            for(J i = 0; i < C_m; i++)
+            {
+                for(J j = 0; j < C_n; j++)
+                {
+                    C[ldc * i + j] = testing_conj(C[ldc * i + j]);
+                }
+            }
+        }
+    }
+
+    hipsparseOperation_t trans_C = HIPSPARSE_OPERATION_NON_TRANSPOSE;
+
+    host_csrsm2(M,
+                nrhs,
+                nnz,
+                trans_A,
+                trans_C,
+                alpha,
+                csr_row_ptr,
+                csr_col_ind,
+                csr_val,
+                C,
+                ldc,
+                order_C,
+                diag_type,
+                fill_mode,
+                base,
+                struct_pivot,
+                numeric_pivot);
+}
+
+
+
+
+
+
+
+
+
 template <typename I, typename T>
 void host_coosm(I                     M,
                 I                     nrhs,
@@ -5089,6 +5193,7 @@ void host_coosm(I                     M,
                 const std::vector<T>& coo_val,
                 std::vector<T>&       B,
                 I                     ldb,
+                hipsparseOrder_t      order_B,
                 hipsparseDiagType_t   diag_type,
                 hipsparseFillMode_t   fill_mode,
                 hipsparseIndexBase_t  base,
@@ -5110,7 +5215,7 @@ void host_coosm(I                     M,
         csr_row_ptr[i + 1] += csr_row_ptr[i];
     }
 
-    host_csrsm(M,
+    host_csrsm2(M,
                nrhs,
                nnz,
                transA,
@@ -5121,6 +5226,7 @@ void host_coosm(I                     M,
                coo_val,
                B,
                ldb,
+               order_B,
                diag_type,
                fill_mode,
                base,
@@ -6081,7 +6187,7 @@ static void host_csrgeam(int                  M,
 /* ============================================================================================ */
 /*! \brief  Compute sparse matrix sparse matrix multiplication. */
 template <typename I, typename J, typename T>
-static I csrgemm2_nnz(J                    m,
+static I host_csrgemm2_nnz(J                    m,
                       J                    n,
                       J                    k,
                       const T*             alpha,
@@ -6187,7 +6293,7 @@ static I csrgemm2_nnz(J                    m,
 }
 
 template <typename I, typename J, typename T>
-static void csrgemm2(J                    m,
+static void host_csrgemm2(J                    m,
                      J                    n,
                      J                    k,
                      const T*             alpha,

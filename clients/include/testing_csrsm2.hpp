@@ -987,7 +987,7 @@ hipsparseStatus_t testing_csrsm2(Arguments argus)
             hipMemcpy(&h_solve_pivot_2, d_solve_pivot_2, sizeof(int), hipMemcpyDeviceToHost));
 
         // Host csrsm2
-        host_csrsm(m,
+        host_csrsm2(m,
                    nrhs,
                    nnz,
                    transA,
@@ -998,6 +998,7 @@ hipsparseStatus_t testing_csrsm2(Arguments argus)
                    hcsr_val,
                    hB_gold,
                    ldb,
+                   HIPSPARSE_ORDER_COL,
                    diag,
                    uplo,
                    idx_base,

@@ -33,8 +33,8 @@ typedef std::tuple<hipsparseIndexBase_t,
                    std::string>
     spvv_bin_tuple;
 
-int spvv_N_range[] = {50};
-int spvv_nnz_range[] = {5};
+int spvv_N_range[] = {50, 750, 2135};
+int spvv_nnz_range[] = {5, 45};
 
 hipsparseIndexBase_t spvv_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 

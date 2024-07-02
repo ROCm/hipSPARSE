@@ -1461,7 +1461,7 @@ hipsparseStatus_t testing_csrgemm2_a(Arguments argus)
 
         double cpu_time_used = get_time_us();
 
-        int nnz_C_gold = csrgemm2_nnz(M,
+        int nnz_C_gold = host_csrgemm2_nnz(M,
                                       N,
                                       K,
                                       h_alpha,
@@ -1487,7 +1487,7 @@ hipsparseStatus_t testing_csrgemm2_a(Arguments argus)
         std::vector<int> hcsr_col_ind_C_gold(nnz_C_gold);
         std::vector<T>   hcsr_val_C_gold(nnz_C_gold);
 
-        csrgemm2(M,
+        host_csrgemm2(M,
                  N,
                  K,
                  h_alpha,

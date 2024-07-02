@@ -517,7 +517,7 @@ hipsparseStatus_t testing_spgemmreuse_csr(void)
     // Compute SpGEMM nnz of C on host
     std::vector<I> hcsr_row_ptr_C_gold(m + 1);
 
-    int64_t nnz_C_gold = csrgemm2_nnz(m,
+    int64_t nnz_C_gold = host_csrgemm2_nnz(m,
                                       n,
                                       k,
                                       &h_alpha,
@@ -543,7 +543,7 @@ hipsparseStatus_t testing_spgemmreuse_csr(void)
     std::vector<J> hcsr_col_ind_C_gold(nnz_C_gold);
     std::vector<T> hcsr_val_C_gold(nnz_C_gold);
 
-    csrgemm2(m,
+    host_csrgemm2(m,
              n,
              k,
              &h_alpha,
