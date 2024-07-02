@@ -5173,14 +5173,6 @@ void host_csrsm(J                     M,
                 numeric_pivot);
 }
 
-
-
-
-
-
-
-
-
 template <typename I, typename T>
 void host_coosm(I                     M,
                 I                     nrhs,
@@ -5191,15 +5183,149 @@ void host_coosm(I                     M,
                 const std::vector<I>& coo_row_ind,
                 const std::vector<I>& coo_col_ind,
                 const std::vector<T>& coo_val,
-                std::vector<T>&       B,
+                const std::vector<T>& B,
                 I                     ldb,
                 hipsparseOrder_t      order_B,
+                std::vector<T>&       C,
+                I                     ldc,
+                hipsparseOrder_t      order_C,
                 hipsparseDiagType_t   diag_type,
                 hipsparseFillMode_t   fill_mode,
                 hipsparseIndexBase_t  base,
                 I*                    struct_pivot,
                 I*                    numeric_pivot)
 {
+    I B_m = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? M : nrhs;
+    I B_n = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? nrhs : M;
+    I C_m = M;
+    I C_n = nrhs;
+
+    // Copy B to C
+    if(order_B == HIPSPARSE_ORDER_COL)
+    {
+        if(transB == HIPSPARSE_OPERATION_NON_TRANSPOSE)
+        {
+            if(order_C == HIPSPARSE_ORDER_COL)
+            {
+                for(I j = 0; j < B_n; j++)
+                {
+                    for(I i = 0; i < B_m; i++)
+                    {
+                        C[i + ldc * j] = B[i + ldb * j];
+                    }
+                }
+            }
+            else
+            {
+                for(I j = 0; j < B_n; j++)
+                {
+                    for(I i = 0; i < B_m; i++)
+                    {
+                        C[i * ldc + j] = B[i + ldb * j];
+                    }
+                }
+            }
+        }
+        else
+        {
+            if(order_C == HIPSPARSE_ORDER_COL)
+            {
+                for(I j = 0; j < B_n; j++)
+                {
+                    for(I i = 0; i < B_m; i++)
+                    {
+                        C[i * ldc + j] = B[i + ldb * j];
+                    }
+                }
+            }
+            else
+            {
+                for(I j = 0; j < B_n; j++)
+                {
+                    for(I i = 0; i < B_m; i++)
+                    {
+                        C[i + ldc * j] = B[i + ldb * j];
+                    }
+                }
+            }
+        }
+    }
+    else
+    {
+        if(transB == HIPSPARSE_OPERATION_NON_TRANSPOSE)
+        {
+            if(order_C == HIPSPARSE_ORDER_COL)
+            {
+                for(I j = 0; j < B_n; j++)
+                {
+                    for(I i = 0; i < B_m; i++)
+                    {
+                        C[i + ldc * j] = B[ldb * i + j];
+                    }
+                }
+            }
+            else
+            {
+                for(I j = 0; j < B_n; j++)
+                {
+                    for(I i = 0; i < B_m; i++)
+                    {
+                        C[i * ldc + j] = B[ldb * i + j];
+                    }
+                }
+            }
+        }
+        else
+        {
+            if(order_C == HIPSPARSE_ORDER_COL)
+            {
+                for(I j = 0; j < B_n; j++)
+                {
+                    for(I i = 0; i < B_m; i++)
+                    {
+                        C[i * ldc + j] = B[ldb * i + j];
+                    }
+                }
+            }
+            else
+            {
+                for(I j = 0; j < B_n; j++)
+                {
+                    for(I i = 0; i < B_m; i++)
+                    {
+                        C[i + ldc * j] = B[ldb * i + j];
+                    }
+                }
+            }
+        }
+    }
+
+    if(transB == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE)
+    {
+        if(order_C == HIPSPARSE_ORDER_COL)
+        {
+            for(I j = 0; j < C_n; j++)
+            {
+                for(I i = 0; i < C_m; i++)
+                {
+                    C[i + ldc * j] = testing_conj(C[i + ldc * j]);
+                }
+            }
+        }
+        else
+        {
+            for(I i = 0; i < C_m; i++)
+            {
+                for(I j = 0; j < C_n; j++)
+                {
+                    C[ldc * i + j] = testing_conj(C[ldc * i + j]);
+                }
+            }
+        }
+    }
+
+    hipsparseOperation_t transC = HIPSPARSE_OPERATION_NON_TRANSPOSE;
+
     std::vector<I> csr_row_ptr(M + 1);
 
     //host_coo_to_csr(M, coo_row_ind, csr_row_ptr, base);
@@ -5219,14 +5345,14 @@ void host_coosm(I                     M,
                nrhs,
                nnz,
                transA,
-               transB,
+               transC,
                alpha,
                csr_row_ptr,
                coo_col_ind,
                coo_val,
-               B,
-               ldb,
-               order_B,
+               C,
+               ldc,
+               order_C,
                diag_type,
                fill_mode,
                base,

@@ -363,6 +363,26 @@ hipsparseStatus_t testing_spsm_coo(Arguments argus)
 
     I struct_pivot  = -1;
     I numeric_pivot = -1;
+    host_coosm(m,
+               k,
+               nnz,
+               transA,
+               transB,
+               h_alpha,
+               hrow_ind,
+               hcol_ind,
+               hval,
+               hB,
+               (I)ldb,
+               orderB,
+               hC_gold,
+               (I)ldc,
+               orderC,
+               diag,
+               uplo,
+               idx_base,
+               &struct_pivot,
+               &numeric_pivot);
     // host_coosm(m,
     //            k,
     //            nnz,

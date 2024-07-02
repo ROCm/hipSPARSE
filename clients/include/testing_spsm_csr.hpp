@@ -376,24 +376,6 @@ hipsparseStatus_t testing_spsm_csr(Arguments argus)
                 &struct_pivot,
                 &numeric_pivot);
 
-
-    // host_csrsm(m,
-    //            k,
-    //            nnz,
-    //            transA,
-    //            transB,
-    //            h_alpha,
-    //            hcsr_row_ptr,
-    //            hcsr_col_ind,
-    //            hcsr_val,
-    //            hC_gold,
-    //            m,
-    //            diag,
-    //            uplo,
-    //            idx_base,
-    //            &struct_pivot,
-    //            &numeric_pivot);
-
     if(struct_pivot == -1 && numeric_pivot == -1)
     {
         unit_check_near(1, nnz_C, 1, hC_gold.data(), hC_1.data());
