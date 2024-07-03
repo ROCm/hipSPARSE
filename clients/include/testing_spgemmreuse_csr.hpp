@@ -469,7 +469,7 @@ hipsparseStatus_t testing_spgemmreuse_csr(Arguments argus)
         hcsr_col_ind_C.data(), dcsr_col_ind_C, sizeof(J) * nnz_C, hipMemcpyDeviceToHost));
     CHECK_HIP_ERROR(
         hipMemcpy(hcsr_val_C.data(), dcsr_val_C, sizeof(T) * nnz_C, hipMemcpyDeviceToHost));
-
+    
     // Compute SpGEMM nnz of C on host
     std::vector<I> hcsr_row_ptr_C_gold(m + 1);
 
@@ -491,7 +491,6 @@ hipsparseStatus_t testing_spgemmreuse_csr(Arguments argus)
                                       HIPSPARSE_INDEX_BASE_ZERO);
     // Verify nnz and row pointer array
     unit_check_general(1, 1, 1, &nnz_C_gold, &nnz_C);
-    unit_check_general(1, 1, 1, &nnz_C_gold, &nnz_C);
     unit_check_general(1, m + 1, 1, hcsr_row_ptr_C_gold.data(), hcsr_row_ptr_C.data());
 
     // Compute SpGEMM on host
@@ -499,26 +498,26 @@ hipsparseStatus_t testing_spgemmreuse_csr(Arguments argus)
     std::vector<T> hcsr_val_C_gold(nnz_C_gold);
 
     host_csrgemm2(m,
-             n,
-             k,
-             &h_alpha,
-             hcsr_row_ptr_A.data(),
-             hcsr_col_ind_A.data(),
-             hcsr_val_A.data(),
-             hcsr_row_ptr_B.data(),
-             hcsr_col_ind_B.data(),
-             hcsr_val_B.data(),
-             (const T*)nullptr,
-             (const I*)nullptr,
-             (const J*)nullptr,
-             (const T*)nullptr,
-             hcsr_row_ptr_C_gold.data(),
-             hcsr_col_ind_C_gold.data(),
-             hcsr_val_C_gold.data(),
-             idxBaseA,
-             idxBaseB,
-             idxBaseC,
-             HIPSPARSE_INDEX_BASE_ZERO);
+                  n,
+                  k,
+                  &h_alpha,
+                  hcsr_row_ptr_A.data(),
+                  hcsr_col_ind_A.data(),
+                  hcsr_val_A.data(),
+                  hcsr_row_ptr_B.data(),
+                  hcsr_col_ind_B.data(),
+                  hcsr_val_B.data(),
+                  (const T*)nullptr,
+                  (const I*)nullptr,
+                  (const J*)nullptr,
+                  (const T*)nullptr,
+                  hcsr_row_ptr_C_gold.data(),
+                  hcsr_col_ind_C_gold.data(),
+                  hcsr_val_C_gold.data(),
+                  idxBaseA,
+                  idxBaseB,
+                  idxBaseC,
+                  HIPSPARSE_INDEX_BASE_ZERO);
 
     // Verify column and value array
     unit_check_general(1, nnz_C_gold, 1, hcsr_col_ind_C_gold.data(), hcsr_col_ind_C.data());
