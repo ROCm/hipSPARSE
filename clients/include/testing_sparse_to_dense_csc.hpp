@@ -187,7 +187,6 @@ hipsparseStatus_t testing_sparse_to_dense_csc(void)
         hcsc_col_ptr[i + 1] += hcsc_col_ptr[i];
     }
 
-
     // Fill row indices and values
     for(J i = 0; i < m; ++i)
     {

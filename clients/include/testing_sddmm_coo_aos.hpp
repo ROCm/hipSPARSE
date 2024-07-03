@@ -218,7 +218,6 @@ hipsparseStatus_t testing_sddmm_coo_aos(Arguments argus)
     // Initial Data on CPU
     srand(12345ULL);
 
-
     // Read or construct CSR matrix
     I nnz = 0;
     if(!generate_csr_matrix(filename, m, n, nnz, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base))

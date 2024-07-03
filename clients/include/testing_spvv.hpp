@@ -244,4 +244,3 @@ hipsparseStatus_t testing_spvv(void)
 }
 
 #endif // TESTING_SPVV_HPP
-

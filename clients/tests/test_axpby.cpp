@@ -34,7 +34,6 @@ std::vector<double> axpby_alpha_range = {1.0, 0.0};
 
 base axpby_idx_base_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
-
 class parameterized_axpby : public testing::TestWithParam<axpby_tuple>
 {
 protected:

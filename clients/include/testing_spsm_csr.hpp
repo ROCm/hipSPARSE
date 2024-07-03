@@ -21,7 +21,6 @@
  *
  * ************************************************************************ */
 
-
 #pragma once
 #ifndef TESTING_SPSM_CSR_HPP
 #define TESTING_SPSM_CSR_HPP

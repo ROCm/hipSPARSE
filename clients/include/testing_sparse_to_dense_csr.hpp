@@ -21,7 +21,6 @@
  *
  * ************************************************************************ */
 
-
 #pragma once
 #ifndef TESTING_SPARSE_TO_DENSE_CSR_HPP
 #define TESTING_SPARSE_TO_DENSE_CSR_HPP

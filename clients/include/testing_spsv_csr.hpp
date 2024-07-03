@@ -333,4 +333,3 @@ hipsparseStatus_t testing_spsv_csr(void)
 }
 
 #endif // TESTING_SPSV_CSR_HPP
-

@@ -21,7 +21,6 @@
  *
  * ************************************************************************ */
 
-
 #pragma once
 #ifndef TESTING_SPMM_CSC_HPP
 #define TESTING_SPMM_CSC_HPP

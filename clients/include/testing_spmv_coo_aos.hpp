@@ -21,7 +21,6 @@
  *
  * ************************************************************************ */
 
-
 #pragma once
 #ifndef TESTING_SPMV_COO_AOS_HPP
 #define TESTING_SPMV_COO_AOS_HPP

@@ -21,7 +21,6 @@
  *
  * ************************************************************************ */
 
-
 #include "testing_spmm_batched_csc.hpp"
 
 #include <hipsparse.h>
