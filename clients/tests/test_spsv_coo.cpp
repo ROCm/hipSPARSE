@@ -42,7 +42,7 @@ typedef std::tuple<double,
     spsv_coo_bin_tuple;
 
 int spsv_coo_M_range[] = {50};
-int spsv_coo_N_range[] = {5};
+int spsv_coo_N_range[] = {50};
 
 std::vector<double> spsv_coo_alpha_range = {2.0};
 

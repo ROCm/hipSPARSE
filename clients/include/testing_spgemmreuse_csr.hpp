@@ -322,7 +322,6 @@ hipsparseStatus_t testing_spgemmreuse_csr(Arguments argus)
     CHECK_HIP_ERROR(hipMemcpy(d_alpha, &h_alpha, sizeof(T), hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(d_beta, &h_beta, sizeof(T), hipMemcpyHostToDevice));
 
-    std::cout << "m: " << m << " k: " << k << " nnz_A: " << nnz_A << std::endl;
     // Create matrices
     hipsparseSpMatDescr_t A, B, C;
     CHECK_HIPSPARSE_ERROR(hipsparseCreateCsr(&A,
@@ -350,13 +349,11 @@ hipsparseStatus_t testing_spgemmreuse_csr(Arguments argus)
     CHECK_HIPSPARSE_ERROR(hipsparseCreateCsr(
         &C, m, n, 0, dcsr_row_ptr_C, nullptr, nullptr, typeI, typeJ, idxBaseC, typeT));
 
-    std::cout << "AAAA" << std::endl;
     // Query SpGEMM work estimation buffer
     size_t bufferSize1;
     CHECK_HIPSPARSE_ERROR(hipsparseSpGEMMreuse_workEstimation(
         handle, transA, transB, A, B, C, alg, descr, &bufferSize1, nullptr));
 
-    std::cout << "bufferSize1: " << bufferSize1 << std::endl;
     auto  externalBuffer1_managed = hipsparse_unique_ptr{device_malloc(bufferSize1), device_free};
     void* externalBuffer1         = (void*)externalBuffer1_managed.get();
 
@@ -384,9 +381,6 @@ hipsparseStatus_t testing_spgemmreuse_csr(Arguments argus)
                                                    &bufferSize4,
                                                    externalBuffer4));
 
-    std::cout << "bufferSize2: " << bufferSize2 << " bufferSize3: " << bufferSize3
-              << " bufferSize4: " << bufferSize4 << std::endl;
-
     auto externalBuffer2_managed = hipsparse_unique_ptr{device_malloc(bufferSize2), device_free};
     externalBuffer2              = (void*)externalBuffer2_managed.get();
     auto externalBuffer3_managed = hipsparse_unique_ptr{device_malloc(bufferSize3), device_free};
@@ -409,8 +403,6 @@ hipsparseStatus_t testing_spgemmreuse_csr(Arguments argus)
                                                    &bufferSize4,
                                                    externalBuffer4));
 
-    std::cout << "BBBB" << std::endl;
-
     // We can already free buffer1
     externalBuffer1_managed.reset(nullptr);
     externalBuffer1 = nullptr;
@@ -432,23 +424,17 @@ hipsparseStatus_t testing_spgemmreuse_csr(Arguments argus)
 
     CHECK_HIP_ERROR(hipMemset(dcsr_val_C, 0, sizeof(T) * nnz_C));
 
-    std::cout << "rows_C: " << rows_C << " cols_C: " << cols_C << " nnz_C: " << nnz_C << std::endl;
-
     // Set C pointers
     CHECK_HIPSPARSE_ERROR(hipsparseCsrSetPointers(C, dcsr_row_ptr_C, dcsr_col_ind_C, dcsr_val_C));
 
     CHECK_HIPSPARSE_ERROR(hipsparseSpGEMMreuse_copy(
         handle, transA, transB, A, B, C, alg, descr, &bufferSize5, externalBuffer5));
 
-    std::cout << "bufferSize5: " << bufferSize5 << std::endl;
-
     auto externalBuffer5_managed = hipsparse_unique_ptr{device_malloc(bufferSize5), device_free};
     externalBuffer5              = (void*)externalBuffer5_managed.get();
 
     CHECK_HIPSPARSE_ERROR(hipsparseSpGEMMreuse_copy(
         handle, transA, transB, A, B, C, alg, descr, &bufferSize5, externalBuffer5));
-
-    std::cout << "DDDD" << std::endl;
 
     externalBuffer3_managed.reset(nullptr);
     externalBuffer3 = nullptr;
@@ -457,11 +443,9 @@ hipsparseStatus_t testing_spgemmreuse_csr(Arguments argus)
     CHECK_HIPSPARSE_ERROR(hipsparseSpGEMMreuse_compute(
         handle, transA, transB, &h_alpha, A, B, &h_beta, C, typeT, alg, descr));
 
-    std::cout << "EEEE" << std::endl;
     CHECK_HIPSPARSE_ERROR(hipsparseSpGEMMreuse_compute(
         handle, transA, transB, &h_alpha, A, B, &h_beta, C, typeT, alg, descr));
 
-    std::cout << "FFFF" << std::endl;
     externalBuffer4_managed.reset(nullptr);
     externalBuffer4 = nullptr;
 
