@@ -31,13 +31,14 @@
 typedef std::tuple<int, int, int, hipsparseIndexBase_t>    csrsort_tuple;
 typedef std::tuple<int, hipsparseIndexBase_t, std::string> csrsort_bin_tuple;
 
+#if defined(__HIP_PLATFORM_AMD__)
 int csrsort_M_range[] = {0, 10, 500, 872, 1000};
 int csrsort_N_range[] = {0, 33, 242, 623, 1000};
-
-#if defined(__HIP_PLATFORM_AMD__)
 int csrsort_perm[] = {0, 1};
 #elif defined(__HIP_PLATFORM_NVIDIA__)
 // cusparse does not allow without permutation
+int csrsort_M_range[] = {10, 500, 872, 1000};
+int csrsort_N_range[] = {33, 242, 623, 1000};
 int csrsort_perm[] = {1};
 #endif
 

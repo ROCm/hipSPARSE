@@ -459,7 +459,7 @@ hipsparseStatus_t testing_spgemmreuse_csr(Arguments argus)
 
     std::cout << "EEEE" << std::endl;
     CHECK_HIPSPARSE_ERROR(hipsparseSpGEMMreuse_compute(
-        handle, transA, transB, d_alpha, A, B, d_beta, C, typeT, alg, descr));
+        handle, transA, transB, &h_alpha, A, B, &h_beta, C, typeT, alg, descr));
 
     std::cout << "FFFF" << std::endl;
     externalBuffer4_managed.reset(nullptr);
