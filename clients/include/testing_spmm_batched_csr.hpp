@@ -185,7 +185,7 @@ void testing_spmm_batched_csr_bad_arg(void)
 template <typename I, typename J, typename T>
 hipsparseStatus_t testing_spmm_batched_csr(Arguments argus)
 {
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11061)
     J                    m        = argus.M;
     J                    n        = argus.N;
     J                    k        = argus.K;

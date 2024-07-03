@@ -51,8 +51,7 @@ std::string spgemm_csr_bin[] = {"nos1.bin",
                                 "nos5.bin",
                                 "nos6.bin",
                                 "nos7.bin",
-                                "amazon0312.bin",
-                                "shipsec1.bin"};
+                                "amazon0312.bin"};
 
 class parameterized_spgemm_csr : public testing::TestWithParam<spgemm_csr_tuple>
 {

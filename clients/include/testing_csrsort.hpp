@@ -169,6 +169,8 @@ hipsparseStatus_t testing_csrsort(Arguments argus)
     hipsparseIndexBase_t idx_base = argus.idx_base;
     std::string          filename = argus.filename;
 
+    std::cout << "m: " << m << " n: " << n << " permute: " << permute << " idx_base: " << idx_base << " filename: " << filename << std::endl;
+
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
@@ -253,6 +255,7 @@ hipsparseStatus_t testing_csrsort(Arguments argus)
         size_t bufferSize;
         CHECK_HIPSPARSE_ERROR(hipsparseXcsrsort_bufferSizeExt(
             handle, m, n, nnz, dcsr_row_ptr, dcsr_col_ind, &bufferSize));
+        std::cout << "bufferSize: " << bufferSize << std::endl;
 
         // Allocate buffer on the device
         auto dbuffer_managed
@@ -262,21 +265,25 @@ hipsparseStatus_t testing_csrsort(Arguments argus)
 
         if(permute)
         {
+            std::cout << "AAAA" << std::endl;
             // Initialize perm with identity permutation
             CHECK_HIPSPARSE_ERROR(hipsparseCreateIdentityPermutation(handle, nnz, dperm));
         }
 
+        std::cout << "BBBB" << std::endl;
         // Sort CSR columns
         CHECK_HIPSPARSE_ERROR(hipsparseXcsrsort(
             handle, m, n, nnz, descr, dcsr_row_ptr, dcsr_col_ind, dperm, dbuffer));
 
         if(permute)
         {
+            std::cout << "CCCC" << std::endl;
             // Sort CSR values
             CHECK_HIPSPARSE_ERROR(hipsparseSgthr(
                 handle, nnz, dcsr_val, dcsr_val_sorted, dperm, HIPSPARSE_INDEX_BASE_ZERO));
         }
 
+        std::cout << "DDDD" << std::endl;
         // Copy output from device to host
         CHECK_HIP_ERROR(hipMemcpy(
             hcsr_col_ind_unsorted.data(), dcsr_col_ind, sizeof(int) * nnz, hipMemcpyDeviceToHost));
