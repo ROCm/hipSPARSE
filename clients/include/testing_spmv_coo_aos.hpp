@@ -272,7 +272,7 @@ hipsparseStatus_t testing_spmv_coo_aos(Arguments argus)
 #endif
     for(I i = 0; i < m; ++i)
     {
-        hy_gold[i] = hy_gold[i] * h_beta;
+        hy_gold[i] = testing_mult(h_beta, hy_gold[i]);
     }
 
     for(I i = 0; i < nnz; ++i)
