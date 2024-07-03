@@ -153,7 +153,7 @@ hipsparseStatus_t testing_sparse_to_dense_coo(Arguments argus)
 
     I nnz;
     if(!generate_csr_matrix(filename, 
-                            m, 
+                                m, 
                             n, 
                             nnz, 
                             hcsr_row_ptr, 
@@ -190,7 +190,8 @@ hipsparseStatus_t testing_sparse_to_dense_coo(Arguments argus)
     auto drow_managed   = hipsparse_unique_ptr{device_malloc(sizeof(I) * nnz), device_free};
     auto dcol_managed   = hipsparse_unique_ptr{device_malloc(sizeof(I) * nnz), device_free};
     auto dval_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
-    auto ddense_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * nrows * ncols), device_free};
+    auto ddense_managed = 
+    hipsparse_unique_ptr{device_malloc(sizeof(T) * nrows * ncols), device_free};
 
     I* drow   = (I*)drow_managed.get();
     I* dcol   = (I*)dcol_managed.get();
