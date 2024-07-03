@@ -25,30 +25,25 @@
 
 #include <hipsparse.h>
 
-typedef std::tuple<int,
-                   int,
-                   hipsparseOrder_t,
-                   hipsparseIndexBase_t>
-    sparse_to_dense_coo_tuple;
-typedef std::tuple<hipsparseOrder_t,
-                   hipsparseIndexBase_t,
-                   std::string>
+typedef std::tuple<int, int, hipsparseOrder_t, hipsparseIndexBase_t> sparse_to_dense_coo_tuple;
+typedef std::tuple<hipsparseOrder_t, hipsparseIndexBase_t, std::string>
     sparse_to_dense_coo_bin_tuple;
 
 int sparse_to_dense_coo_M_range[] = {50};
 int sparse_to_dense_coo_N_range[] = {5};
 
-hipsparseOrder_t sparse_to_dense_coo_order_range[]  = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
-hipsparseIndexBase_t sparse_to_dense_coo_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+hipsparseOrder_t     sparse_to_dense_coo_order_range[] = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
+hipsparseIndexBase_t sparse_to_dense_coo_idxbase_range[]
+    = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
 std::string sparse_to_dense_coo_bin[] = {"nos1.bin",
-                                "nos2.bin",
-                               "nos3.bin",
-                               "nos4.bin",
-                               "nos5.bin",
-                               "nos6.bin",
-                               "nos7.bin",
-                               "bibd_22_8.bin"};
+                                         "nos2.bin",
+                                         "nos3.bin",
+                                         "nos4.bin",
+                                         "nos5.bin",
+                                         "nos6.bin",
+                                         "nos7.bin",
+                                         "bibd_22_8.bin"};
 
 class parameterized_sparse_to_dense_coo : public testing::TestWithParam<sparse_to_dense_coo_tuple>
 {
@@ -59,7 +54,8 @@ protected:
     virtual void TearDown() {}
 };
 
-class parameterized_sparse_to_dense_coo_bin : public testing::TestWithParam<sparse_to_dense_coo_bin_tuple>
+class parameterized_sparse_to_dense_coo_bin
+    : public testing::TestWithParam<sparse_to_dense_coo_bin_tuple>
 {
 protected:
     parameterized_sparse_to_dense_coo_bin() {}

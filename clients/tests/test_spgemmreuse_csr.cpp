@@ -25,36 +25,27 @@
 
 #include <hipsparse.h>
 
-typedef std::tuple<int,
-                   int,
-                   double,
-                   hipsparseIndexBase_t,
-                   hipsparseIndexBase_t, 
-                   hipsparseIndexBase_t>
-    spgemmreuse_csr_tuple;
-typedef std::tuple<double,
-                   hipsparseIndexBase_t,
-                   hipsparseIndexBase_t,
-                   hipsparseIndexBase_t,
-                   std::string>
-    spgemmreuse_csr_bin_tuple;
+typedef std::
+    tuple<int, int, double, hipsparseIndexBase_t, hipsparseIndexBase_t, hipsparseIndexBase_t>
+        spgemmreuse_csr_tuple;
+typedef std::
+    tuple<double, hipsparseIndexBase_t, hipsparseIndexBase_t, hipsparseIndexBase_t, std::string>
+        spgemmreuse_csr_bin_tuple;
 
 int spgemmreuse_csr_M_range[] = {77, 478, 981};
 int spgemmreuse_csr_K_range[] = {64, 934, 1723};
 
 std::vector<double> spgemmreuse_csr_alpha_range = {2.0};
 
-hipsparseIndexBase_t spgemmreuse_csr_idxbaseA_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
-hipsparseIndexBase_t spgemmreuse_csr_idxbaseB_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
-hipsparseIndexBase_t spgemmreuse_csr_idxbaseC_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+hipsparseIndexBase_t spgemmreuse_csr_idxbaseA_range[]
+    = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+hipsparseIndexBase_t spgemmreuse_csr_idxbaseB_range[]
+    = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+hipsparseIndexBase_t spgemmreuse_csr_idxbaseC_range[]
+    = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
-std::string spgemmreuse_csr_bin[] = {"nos1.bin",
-                                     "nos2.bin",
-                                    "nos3.bin",
-                                    "nos4.bin",
-                                    "nos5.bin",
-                                    "nos6.bin",
-                                    "nos7.bin"};
+std::string spgemmreuse_csr_bin[]
+    = {"nos1.bin", "nos2.bin", "nos3.bin", "nos4.bin", "nos5.bin", "nos6.bin", "nos7.bin"};
 
 class parameterized_spgemmreuse_csr : public testing::TestWithParam<spgemmreuse_csr_tuple>
 {

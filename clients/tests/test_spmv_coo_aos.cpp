@@ -25,18 +25,9 @@
 
 #include <hipsparse.h>
 
-typedef std::tuple<int,
-                   int,
-                   double,
-                   double,
-                   hipsparseOperation_t,
-                   hipsparseIndexBase_t>
+typedef std::tuple<int, int, double, double, hipsparseOperation_t, hipsparseIndexBase_t>
     spmv_coo_aos_tuple;
-typedef std::tuple<double,
-                   double,
-                   hipsparseOperation_t,
-                   hipsparseIndexBase_t,
-                   std::string>
+typedef std::tuple<double, double, hipsparseOperation_t, hipsparseIndexBase_t, std::string>
     spmv_coo_aos_bin_tuple;
 
 int spmv_coo_aos_M_range[] = {50};
@@ -50,14 +41,14 @@ hipsparseIndexBase_t spmv_coo_aos_idxbase_range[]
     = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
 std::string spmv_coo_aos_bin[] = {"nos1.bin",
-                                "nos2.bin",
-                               "nos3.bin",
-                               "nos4.bin",
-                               "nos5.bin",
-                               "nos6.bin",
-                               "nos7.bin",
-                               "Chebyshev4.bin",
-                               "shipsec1.bin"};
+                                  "nos2.bin",
+                                  "nos3.bin",
+                                  "nos4.bin",
+                                  "nos5.bin",
+                                  "nos6.bin",
+                                  "nos7.bin",
+                                  "Chebyshev4.bin",
+                                  "shipsec1.bin"};
 
 class parameterized_spmv_coo_aos : public testing::TestWithParam<spmv_coo_aos_tuple>
 {

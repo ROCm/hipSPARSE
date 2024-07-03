@@ -54,21 +54,24 @@ int spmm_coo_K_range[] = {84};
 std::vector<double> spmm_coo_alpha_range = {2.0};
 std::vector<double> spmm_coo_beta_range  = {1.0};
 
-hipsparseOperation_t spmm_coo_transA_range[]  = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPERATION_TRANSPOSE};
-hipsparseOperation_t spmm_coo_transB_range[]  = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPERATION_TRANSPOSE};
-hipsparseOrder_t spmm_coo_orderB_range[]  = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
-hipsparseOrder_t spmm_coo_orderC_range[]  = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
-hipsparseIndexBase_t spmm_coo_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+hipsparseOperation_t spmm_coo_transA_range[]
+    = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPERATION_TRANSPOSE};
+hipsparseOperation_t spmm_coo_transB_range[]
+    = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPERATION_TRANSPOSE};
+hipsparseOrder_t     spmm_coo_orderB_range[] = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
+hipsparseOrder_t     spmm_coo_orderC_range[] = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
+hipsparseIndexBase_t spmm_coo_idxbase_range[]
+    = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
 std::string spmm_coo_bin[] = {"nos1.bin",
-                            "nos2.bin",
-                               "nos3.bin",
-                               "nos4.bin",
-                               "nos5.bin",
-                               "nos6.bin",
-                               "nos7.bin",
-                               "Chebyshev4.bin",
-                               "shipsec1.bin"};
+                              "nos2.bin",
+                              "nos3.bin",
+                              "nos4.bin",
+                              "nos5.bin",
+                              "nos6.bin",
+                              "nos7.bin",
+                              "Chebyshev4.bin",
+                              "shipsec1.bin"};
 
 class parameterized_spmm_coo : public testing::TestWithParam<spmm_coo_tuple>
 {

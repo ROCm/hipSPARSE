@@ -25,31 +25,27 @@
 
 #include <hipsparse.h>
 
-typedef std::tuple<int,
-                   int,
-                   double,
-                   hipsparseIndexBase_t,
-                   hipsparseIndexBase_t, 
-                   hipsparseIndexBase_t>
-    spgemm_csr_tuple;
-typedef std::tuple<double,
-                   hipsparseIndexBase_t,
-                   hipsparseIndexBase_t,
-                   hipsparseIndexBase_t,
-                   std::string>
-    spgemm_csr_bin_tuple;
+typedef std::
+    tuple<int, int, double, hipsparseIndexBase_t, hipsparseIndexBase_t, hipsparseIndexBase_t>
+        spgemm_csr_tuple;
+typedef std::
+    tuple<double, hipsparseIndexBase_t, hipsparseIndexBase_t, hipsparseIndexBase_t, std::string>
+        spgemm_csr_bin_tuple;
 
 int spgemm_csr_M_range[] = {50, 567, 5149};
 int spgemm_csr_K_range[] = {84, 649, 5148};
 
 std::vector<double> spgemm_csr_alpha_range = {2.0};
 
-hipsparseIndexBase_t spgemm_csr_idxbaseA_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
-hipsparseIndexBase_t spgemm_csr_idxbaseB_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
-hipsparseIndexBase_t spgemm_csr_idxbaseC_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+hipsparseIndexBase_t spgemm_csr_idxbaseA_range[]
+    = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+hipsparseIndexBase_t spgemm_csr_idxbaseB_range[]
+    = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+hipsparseIndexBase_t spgemm_csr_idxbaseC_range[]
+    = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
 std::string spgemm_csr_bin[] = {"nos1.bin",
-                                    "nos2.bin",
+                                "nos2.bin",
                                 "nos3.bin",
                                 "nos4.bin",
                                 "nos5.bin",

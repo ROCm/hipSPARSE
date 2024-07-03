@@ -54,16 +54,15 @@ std::vector<double> spsm_csr_alpha_range = {2.0};
 
 hipsparseOperation_t spsm_csr_transA_range[] = {HIPSPARSE_OPERATION_NON_TRANSPOSE};
 hipsparseOperation_t spsm_csr_transB_range[] = {HIPSPARSE_OPERATION_NON_TRANSPOSE};
-hipsparseOrder_t spsm_csr_orderB_range[] = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
-hipsparseOrder_t spsm_csr_orderC_range[] = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
-hipsparseIndexBase_t spsm_csr_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+hipsparseOrder_t     spsm_csr_orderB_range[] = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
+hipsparseOrder_t     spsm_csr_orderC_range[] = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
+hipsparseIndexBase_t spsm_csr_idxbase_range[]
+    = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 hipsparseDiagType_t spsm_csr_diag_type_range[] = {HIPSPARSE_DIAG_TYPE_NON_UNIT};
-hipsparseFillMode_t spsm_csr_fill_mode_range[] = {HIPSPARSE_FILL_MODE_LOWER, HIPSPARSE_FILL_MODE_UPPER};
+hipsparseFillMode_t spsm_csr_fill_mode_range[]
+    = {HIPSPARSE_FILL_MODE_LOWER, HIPSPARSE_FILL_MODE_UPPER};
 
-std::string spsm_csr_bin[] = {"nos1.bin",
-                            "nos4.bin",
-                              "nos5.bin",
-                              "scircuit.bin"};
+std::string spsm_csr_bin[] = {"nos1.bin", "nos4.bin", "nos5.bin", "scircuit.bin"};
 
 class parameterized_spsm_csr : public testing::TestWithParam<spsm_csr_tuple>
 {
@@ -96,7 +95,7 @@ Arguments setup_spsm_csr_arguments(spsm_csr_tuple tup)
     arg.idx_base  = std::get<7>(tup);
     arg.diag_type = std::get<8>(tup);
     arg.fill_mode = std::get<9>(tup);
-    arg.timing   = 0;
+    arg.timing    = 0;
     return arg;
 }
 
@@ -111,7 +110,7 @@ Arguments setup_spsm_csr_arguments(spsm_csr_bin_tuple tup)
     arg.idx_base  = std::get<5>(tup);
     arg.diag_type = std::get<6>(tup);
     arg.fill_mode = std::get<7>(tup);
-    arg.timing   = 0;
+    arg.timing    = 0;
 
     // Determine absolute path of test matrix
     std::string bin_file = std::get<8>(tup);

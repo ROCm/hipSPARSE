@@ -47,18 +47,20 @@ int spsv_csr_N_range[] = {50};
 std::vector<double> spsv_csr_alpha_range = {2.0};
 
 hipsparseOperation_t spsv_csr_transA_range[] = {HIPSPARSE_OPERATION_NON_TRANSPOSE};
-hipsparseIndexBase_t spsv_csr_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+hipsparseIndexBase_t spsv_csr_idxbase_range[]
+    = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 hipsparseDiagType_t spsv_csr_diag_type_range[] = {HIPSPARSE_DIAG_TYPE_NON_UNIT};
-hipsparseFillMode_t spsv_csr_fill_mode_range[] = {HIPSPARSE_FILL_MODE_LOWER, HIPSPARSE_FILL_MODE_UPPER};
+hipsparseFillMode_t spsv_csr_fill_mode_range[]
+    = {HIPSPARSE_FILL_MODE_LOWER, HIPSPARSE_FILL_MODE_UPPER};
 
 std::string spsv_csr_bin[] = {"nos1.bin",
-                                "nos2.bin",
-                                        "nos3.bin",
-                                        "nos4.bin",
-                                        "nos5.bin",
-                                        "nos6.bin",
-                                        "nos7.bin",
-                                        "scircuit.bin"};
+                              "nos2.bin",
+                              "nos3.bin",
+                              "nos4.bin",
+                              "nos5.bin",
+                              "nos6.bin",
+                              "nos7.bin",
+                              "scircuit.bin"};
 
 class parameterized_spsv_csr : public testing::TestWithParam<spsv_csr_tuple>
 {
@@ -88,7 +90,7 @@ Arguments setup_spsv_csr_arguments(spsv_csr_tuple tup)
     arg.idx_base  = std::get<4>(tup);
     arg.diag_type = std::get<5>(tup);
     arg.fill_mode = std::get<6>(tup);
-    arg.timing   = 0;
+    arg.timing    = 0;
     return arg;
 }
 
@@ -100,7 +102,7 @@ Arguments setup_spsv_csr_arguments(spsv_csr_bin_tuple tup)
     arg.idx_base  = std::get<2>(tup);
     arg.diag_type = std::get<3>(tup);
     arg.fill_mode = std::get<4>(tup);
-    arg.timing   = 0;
+    arg.timing    = 0;
 
     // Determine absolute path of test matrix
     std::string bin_file = std::get<5>(tup);
