@@ -104,8 +104,7 @@ Arguments setup_spgemm_csr_arguments(spgemm_csr_bin_tuple tup)
     return arg;
 }
 
-// csr format not supported in cusparse
-#if(!defined(CUDART_VERSION))
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11001)
 TEST(spgemm_csr_bad_arg, spgemm_csr_float)
 {
     testing_spgemm_csr_bad_arg();
@@ -119,27 +118,11 @@ TEST_P(parameterized_spgemm_csr, spgemm_csr_i32_float)
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-TEST_P(parameterized_spgemm_csr, spgemm_csr_i64_double)
-{
-    Arguments arg = setup_spgemm_csr_arguments(GetParam());
-
-    hipsparseStatus_t status = testing_spgemm_csr<int64_t, int64_t, double>(arg);
-    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
-}
-
 TEST_P(parameterized_spgemm_csr, spgemm_csr_i32_float_complex)
 {
     Arguments arg = setup_spgemm_csr_arguments(GetParam());
 
     hipsparseStatus_t status = testing_spgemm_csr<int32_t, int32_t, hipComplex>(arg);
-    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
-}
-
-TEST_P(parameterized_spgemm_csr, spgemm_csr_i64_double_complex)
-{
-    Arguments arg = setup_spgemm_csr_arguments(GetParam());
-
-    hipsparseStatus_t status = testing_spgemm_csr<int64_t, int64_t, hipDoubleComplex>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
@@ -151,6 +134,24 @@ TEST_P(parameterized_spgemm_csr_bin, spgemm_csr_bin_i32_float)
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
+// 64 bit indices not supported in cusparse
+#if(!defined(CUDART_VERSION))
+TEST_P(parameterized_spgemm_csr, spgemm_csr_i64_double)
+{
+    Arguments arg = setup_spgemm_csr_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_spgemm_csr<int64_t, int64_t, double>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+
+TEST_P(parameterized_spgemm_csr, spgemm_csr_i64_double_complex)
+{
+    Arguments arg = setup_spgemm_csr_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_spgemm_csr<int64_t, int64_t, hipDoubleComplex>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+
 TEST_P(parameterized_spgemm_csr_bin, spgemm_csr_bin_i64_double)
 {
     Arguments arg = setup_spgemm_csr_arguments(GetParam());
@@ -158,6 +159,7 @@ TEST_P(parameterized_spgemm_csr_bin, spgemm_csr_bin_i64_double)
     hipsparseStatus_t status = testing_spgemm_csr<int64_t, int64_t, double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+#endif
 
 INSTANTIATE_TEST_SUITE_P(spgemm_csr,
                          parameterized_spgemm_csr,
