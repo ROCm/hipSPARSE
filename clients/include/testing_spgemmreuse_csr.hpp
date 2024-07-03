@@ -422,6 +422,8 @@ hipsparseStatus_t testing_spgemmreuse_csr(Arguments argus)
     J* dcsr_col_ind_C = (J*)dcsr_col_ind_C_managed.get();
     T* dcsr_val_C     = (T*)dcsr_val_C_managed.get();
 
+    CHECK_HIP_ERROR(hipMemset(dcsr_val_C, 0, sizeof(T) * nnz_C));
+
     // Set C pointers
     CHECK_HIPSPARSE_ERROR(hipsparseCsrSetPointers(C, dcsr_row_ptr_C, dcsr_col_ind_C, dcsr_val_C));
 

@@ -147,27 +147,11 @@ TEST_P(parameterized_spmm_batched_coo, spmm_batched_coo_i32_float)
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-TEST_P(parameterized_spmm_batched_coo, spmm_batched_coo_i64_double)
-{
-    Arguments arg = setup_spmm_batched_coo_arguments(GetParam());
-
-    hipsparseStatus_t status = testing_spmm_batched_coo<int64_t, double>(arg);
-    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
-}
-
 TEST_P(parameterized_spmm_batched_coo, spmm_batched_coo_i32_float_complex)
 {
     Arguments arg = setup_spmm_batched_coo_arguments(GetParam());
 
     hipsparseStatus_t status = testing_spmm_batched_coo<int32_t, hipComplex>(arg);
-    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
-}
-
-TEST_P(parameterized_spmm_batched_coo, spmm_batched_coo_i64_double_complex)
-{
-    Arguments arg = setup_spmm_batched_coo_arguments(GetParam());
-
-    hipsparseStatus_t status = testing_spmm_batched_coo<int64_t, hipDoubleComplex>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
@@ -179,6 +163,24 @@ TEST_P(parameterized_spmm_batched_coo_bin, spmm_batched_coo_bin_i32_float)
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
+// 64 bit indices not supported in cusparse for all algorithms
+#if(!defined(CUDART_VERSION))
+TEST_P(parameterized_spmm_batched_coo, spmm_batched_coo_i64_double)
+{
+    Arguments arg = setup_spmm_batched_coo_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_spmm_batched_coo<int64_t, double>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+
+TEST_P(parameterized_spmm_batched_coo, spmm_batched_coo_i64_double_complex)
+{
+    Arguments arg = setup_spmm_batched_coo_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_spmm_batched_coo<int64_t, hipDoubleComplex>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+
 TEST_P(parameterized_spmm_batched_coo_bin, spmm_batched_coo_bin_i64_double)
 {
     Arguments arg = setup_spmm_batched_coo_arguments(GetParam());
@@ -186,6 +188,7 @@ TEST_P(parameterized_spmm_batched_coo_bin, spmm_batched_coo_bin_i64_double)
     hipsparseStatus_t status = testing_spmm_batched_coo<int64_t, double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+#endif
 
 INSTANTIATE_TEST_SUITE_P(spmm_batched_coo,
                          parameterized_spmm_batched_coo,

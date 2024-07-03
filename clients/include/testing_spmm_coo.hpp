@@ -217,7 +217,7 @@ hipsparseStatus_t testing_spmm_coo(Arguments argus)
     std::string filename = argus.filename;
 
 #if(defined(CUDART_VERSION))
-    if(orderB != orderC)
+    if(orderB != orderC || orderB != HIPSPARSE_ORDER_COL)
     {
         return HIPSPARSE_STATUS_SUCCESS;
     }

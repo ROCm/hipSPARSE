@@ -147,27 +147,11 @@ TEST_P(parameterized_spmm_csc, spmm_csc_i32_float)
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-TEST_P(parameterized_spmm_csc, spmm_csc_i64_double)
-{
-    Arguments arg = setup_spmm_csc_arguments(GetParam());
-
-    hipsparseStatus_t status = testing_spmm_csc<int64_t, int64_t, double>(arg);
-    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
-}
-
 TEST_P(parameterized_spmm_csc, spmm_csc_i32_float_complex)
 {
     Arguments arg = setup_spmm_csc_arguments(GetParam());
 
     hipsparseStatus_t status = testing_spmm_csc<int32_t, int32_t, hipComplex>(arg);
-    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
-}
-
-TEST_P(parameterized_spmm_csc, spmm_csc_i64_double_complex)
-{
-    Arguments arg = setup_spmm_csc_arguments(GetParam());
-
-    hipsparseStatus_t status = testing_spmm_csc<int64_t, int64_t, hipDoubleComplex>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
@@ -179,6 +163,16 @@ TEST_P(parameterized_spmm_csc_bin, spmm_csc_bin_i32_float)
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
+// 64 bit indices not supported in cusparse for all algorithms
+#if(!defined(CUDART_VERSION))
+TEST_P(parameterized_spmm_csc, spmm_csc_i64_double_complex)
+{
+    Arguments arg = setup_spmm_csc_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_spmm_csc<int64_t, int64_t, hipDoubleComplex>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+
 TEST_P(parameterized_spmm_csc_bin, spmm_csc_bin_i64_double)
 {
     Arguments arg = setup_spmm_csc_arguments(GetParam());
@@ -186,6 +180,15 @@ TEST_P(parameterized_spmm_csc_bin, spmm_csc_bin_i64_double)
     hipsparseStatus_t status = testing_spmm_csc<int64_t, int64_t, double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+
+TEST_P(parameterized_spmm_csc, spmm_csc_i64_double)
+{
+    Arguments arg = setup_spmm_csc_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_spmm_csc<int64_t, int64_t, double>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+#endif
 
 INSTANTIATE_TEST_SUITE_P(spmm_csc,
                          parameterized_spmm_csc,
