@@ -185,11 +185,6 @@ void testing_spmm_batched_csr_bad_arg(void)
 template <typename I, typename J, typename T>
 hipsparseStatus_t testing_spmm_batched_csr(Arguments argus)
 {
-#ifdef __HIP_PLATFORM_NVIDIA__
-    // do not test for bad args
-    return HIPSPARSE_STATUS_SUCCESS;
-#endif
-
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
     J                    m        = argus.M;
     J                    n        = argus.N;
@@ -213,6 +208,13 @@ hipsparseStatus_t testing_spmm_batched_csr(Arguments argus)
 #endif
 
     std::string filename = argus.filename;
+
+#if(defined(CUDART_VERSION))
+    if(orderB != orderC)
+    {
+        return HIPSPARSE_STATUS_SUCCESS;
+    }
+#endif
 
     // Index and data type
     hipsparseIndexType_t typeI = getIndexType<I>();

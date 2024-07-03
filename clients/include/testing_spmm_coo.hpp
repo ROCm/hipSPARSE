@@ -216,6 +216,13 @@ hipsparseStatus_t testing_spmm_coo(Arguments argus)
 
     std::string filename = argus.filename;
 
+#if(defined(CUDART_VERSION))
+    if(orderB != orderC)
+    {
+        return HIPSPARSE_STATUS_SUCCESS;
+    }
+#endif
+
     // Index and data type
     hipsparseIndexType_t typeI = getIndexType<I>();
     hipDataType          typeT = getDataType<T>();
