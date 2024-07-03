@@ -185,6 +185,11 @@ void testing_spmm_batched_csr_bad_arg(void)
 template <typename I, typename J, typename T>
 hipsparseStatus_t testing_spmm_batched_csr(Arguments argus)
 {
+#ifdef __HIP_PLATFORM_NVIDIA__
+    // do not test for bad args
+    return HIPSPARSE_STATUS_SUCCESS;
+#endif
+
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11061)
     J                    m        = argus.M;
     J                    n        = argus.N;

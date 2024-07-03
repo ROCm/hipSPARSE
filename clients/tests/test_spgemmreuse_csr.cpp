@@ -37,12 +37,18 @@ int spgemmreuse_csr_K_range[] = {64, 934, 1723};
 
 std::vector<double> spgemmreuse_csr_alpha_range = {2.0};
 
+#if(!defined(CUDART_VERSION))
 hipsparseIndexBase_t spgemmreuse_csr_idxbaseA_range[]
     = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 hipsparseIndexBase_t spgemmreuse_csr_idxbaseB_range[]
     = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 hipsparseIndexBase_t spgemmreuse_csr_idxbaseC_range[]
     = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+#else // All matrices must use the same base index in cusparse
+hipsparseIndexBase_t spgemmreuse_csr_idxbaseA_range[] = {HIPSPARSE_INDEX_BASE_ZERO};
+hipsparseIndexBase_t spgemmreuse_csr_idxbaseB_range[] = {HIPSPARSE_INDEX_BASE_ZERO};
+hipsparseIndexBase_t spgemmreuse_csr_idxbaseC_range[] = {HIPSPARSE_INDEX_BASE_ZERO};
+#endif
 
 std::string spgemmreuse_csr_bin[]
     = {"nos1.bin", "nos2.bin", "nos3.bin", "nos4.bin", "nos5.bin", "nos6.bin", "nos7.bin"};
