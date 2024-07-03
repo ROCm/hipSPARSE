@@ -354,9 +354,9 @@ hipsparseStatus_t testing_spgemm_csr(Arguments argus)
 
     std::string filename = argus.filename;
 
-    T                    h_beta   = make_DataType<T>(0);
-    hipsparseOperation_t transA   = HIPSPARSE_OPERATION_NON_TRANSPOSE;
-    hipsparseOperation_t transB   = HIPSPARSE_OPERATION_NON_TRANSPOSE;
+    T                    h_beta = make_DataType<T>(0);
+    hipsparseOperation_t transA = HIPSPARSE_OPERATION_NON_TRANSPOSE;
+    hipsparseOperation_t transB = HIPSPARSE_OPERATION_NON_TRANSPOSE;
 
     // Index and data type
     hipsparseIndexType_t typeI = getIndexType<I>();
@@ -380,7 +380,7 @@ hipsparseStatus_t testing_spgemm_csr(Arguments argus)
 
     I nnz_A;
     if(!generate_csr_matrix(filename, 
-                            m, 
+                                m, 
                             k, 
                             nnz_A, 
                             hcsr_row_ptr_A, 
@@ -675,7 +675,7 @@ hipsparseStatus_t testing_spgemm_csr(Arguments argus)
     std::vector<I> hcsr_row_ptr_C_gold(m + 1);
 
     int64_t nnz_C_gold = host_csrgemm2_nnz(m,
-                                           n,
+                                            n,
                                            k,
                                            &h_alpha,
                                            hcsr_row_ptr_A.data(),

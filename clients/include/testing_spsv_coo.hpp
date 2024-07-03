@@ -197,7 +197,7 @@ hipsparseStatus_t testing_spsv_coo(Arguments argus)
     srand(12345ULL);
 
     I nnz;
-    if(!generate_csr_matrix(filename, 
+        if(!generate_csr_matrix(filename, 
                             m, 
                             n, 
                             nnz, 

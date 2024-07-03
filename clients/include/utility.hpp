@@ -4872,8 +4872,8 @@ void host_coosv(hipsparseOperation_t  trans,
 
 template <typename I, typename J, typename T>
 void host_csrsm2(J                     M,
-                J                     nrhs,
-                I                     nnz,
+                 J                     nrhs,
+                 I                     nnz,
                 hipsparseOperation_t  transA,
                 hipsparseOperation_t  transB,
                 T                     alpha,

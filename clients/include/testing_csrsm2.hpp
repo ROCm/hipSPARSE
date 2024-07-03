@@ -988,7 +988,7 @@ hipsparseStatus_t testing_csrsm2(Arguments argus)
 
         // Host csrsm2
         host_csrsm2(m,
-                   nrhs,
+                    nrhs,
                    nnz,
                    transA,
                    transB,

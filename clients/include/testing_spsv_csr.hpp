@@ -199,18 +199,18 @@ hipsparseStatus_t testing_spsv_csr(Arguments argus)
     srand(12345ULL);
 
     I nnz;
-    if(!generate_csr_matrix(filename, 
-                            m, 
-                            n, 
-                            nnz, 
-                            hcsr_row_ptr, 
-                            hcsr_col_ind, 
-                            hcsr_val, 
-                            idx_base))
-    {
-        fprintf(stderr, "Cannot open [read] %s\ncol", filename.c_str());
-        return HIPSPARSE_STATUS_INTERNAL_ERROR;
-    }
+        if(!generate_csr_matrix(filename, 
+                                m, 
+                                n, 
+                                nnz, 
+                                hcsr_row_ptr, 
+                                hcsr_col_ind, 
+                                hcsr_val, 
+                                idx_base))
+        {
+            fprintf(stderr, "Cannot open [read] %s\ncol", filename.c_str());
+            return HIPSPARSE_STATUS_INTERNAL_ERROR;
+        }
 
     std::vector<T> hx(m);
     std::vector<T> hy_1(m);
@@ -225,13 +225,13 @@ hipsparseStatus_t testing_spsv_csr(Arguments argus)
     hy_gold = hy_1;
 
     // allocate memory on device
-    auto dptr_managed    = hipsparse_unique_ptr{device_malloc(sizeof(I) * (m + 1)), device_free};
-    auto dcol_managed    = hipsparse_unique_ptr{device_malloc(sizeof(J) * nnz), device_free};
-    auto dval_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
-    auto dx_managed      = hipsparse_unique_ptr{device_malloc(sizeof(T) * m), device_free};
-    auto dy_1_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * m), device_free};
-    auto dy_2_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * m), device_free};
-    auto d_alpha_managed = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
+        auto dptr_managed    = hipsparse_unique_ptr{device_malloc(sizeof(I) * (m + 1)), device_free};
+        auto dcol_managed    = hipsparse_unique_ptr{device_malloc(sizeof(J) * nnz), device_free};
+        auto dval_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
+        auto dx_managed      = hipsparse_unique_ptr{device_malloc(sizeof(T) * m), device_free};
+        auto dy_1_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * m), device_free};
+        auto dy_2_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * m), device_free};
+        auto d_alpha_managed = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
 
     I* dptr    = (I*)dptr_managed.get();
     J* dcol    = (J*)dcol_managed.get();

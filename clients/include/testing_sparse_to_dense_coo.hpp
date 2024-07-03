@@ -152,14 +152,7 @@ hipsparseStatus_t testing_sparse_to_dense_coo(Arguments argus)
     srand(12345ULL);
 
     I nnz;
-    if(!generate_csr_matrix(filename, 
-                                m, 
-                            n, 
-                            nnz, 
-                            hcsr_row_ptr, 
-                            hcsr_col_ind, 
-                            hcsr_val, 
-                            idx_base))
+    if(!generate_csr_matrix(filename, m, n, nnz, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base))
     {
         fprintf(stderr, "Cannot open [read] %s\ncol", filename.c_str());
         return HIPSPARSE_STATUS_INTERNAL_ERROR;
@@ -187,11 +180,11 @@ hipsparseStatus_t testing_sparse_to_dense_coo(Arguments argus)
     }
 
     // allocate memory on device
-    auto drow_managed   = hipsparse_unique_ptr{device_malloc(sizeof(I) * nnz), device_free};
-    auto dcol_managed   = hipsparse_unique_ptr{device_malloc(sizeof(I) * nnz), device_free};
-    auto dval_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
-    auto ddense_managed = 
-    hipsparse_unique_ptr{device_malloc(sizeof(T) * nrows * ncols), device_free};
+    auto drow_managed = hipsparse_unique_ptr{device_malloc(sizeof(I) * nnz), device_free};
+    auto dcol_managed = hipsparse_unique_ptr{device_malloc(sizeof(I) * nnz), device_free};
+    auto dval_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
+    auto ddense_managed
+        = hipsparse_unique_ptr{device_malloc(sizeof(T) * nrows * ncols), device_free};
 
     I* drow   = (I*)drow_managed.get();
     I* dcol   = (I*)dcol_managed.get();
@@ -225,7 +218,8 @@ hipsparseStatus_t testing_sparse_to_dense_coo(Arguments argus)
     CHECK_HIPSPARSE_ERROR(hipsparseSparseToDense(handle, matA, matB, alg, buffer));
 
     // copy output from device to CPU
-    CHECK_HIP_ERROR(hipMemcpy(hdense.data(), ddense, sizeof(T) * nrows * ncols, hipMemcpyDeviceToHost));
+    CHECK_HIP_ERROR(
+        hipMemcpy(hdense.data(), ddense, sizeof(T) * nrows * ncols, hipMemcpyDeviceToHost));
 
     std::vector<T> hdense_cpu(nrows * ncols);
 
