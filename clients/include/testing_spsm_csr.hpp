@@ -186,19 +186,23 @@ void testing_spsm_csr_bad_arg(void)
 }
 
 template <typename I, typename J, typename T>
-hipsparseStatus_t testing_spsm_csr(void)
+hipsparseStatus_t testing_spsm_csr(Arguments argus)
 {
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
-    T                    h_alpha  = make_DataType<T>(2.3);
-    hipsparseOperation_t transA   = HIPSPARSE_OPERATION_NON_TRANSPOSE;
-    hipsparseOperation_t transB   = HIPSPARSE_OPERATION_NON_TRANSPOSE;
-    hipsparseIndexBase_t idx_base = HIPSPARSE_INDEX_BASE_ZERO;
-    hipsparseDiagType_t  diag     = HIPSPARSE_DIAG_TYPE_NON_UNIT;
-    hipsparseFillMode_t  uplo     = HIPSPARSE_FILL_MODE_LOWER;
-    hipsparseOrder_t     order    = HIPSPARSE_ORDER_COL;
+    J                    m        = argus.M;
+    J                    n        = argus.N;
+    J                    k        = argus.K;
+    T                    h_alpha  = make_DataType<T>(argus.alpha);
+    hipsparseOperation_t transA   = argus.transA;
+    hipsparseOperation_t transB   = argus.transB;
+    hipsparseOrder_t     orderB   = argus.orderB;
+    hipsparseOrder_t     orderC   = argus.orderC;
+    hipsparseIndexBase_t idx_base = argus.idx_base;
+    hipsparseDiagType_t  diag     = argus.diag_type;
+    hipsparseFillMode_t  uplo     = argus.fill_mode;
     hipsparseSpSMAlg_t   alg      = HIPSPARSE_SPSM_ALG_DEFAULT;
 
-    std::string filename = get_filename("nos3.bin");
+    std::string filename = argus.filename;
 
     // Index and data type
     hipsparseIndexType_t typeI = getIndexType<I>();
@@ -211,29 +215,60 @@ hipsparseStatus_t testing_spsm_csr(void)
 
     // Host structures
     std::vector<I> hcsr_row_ptr;
-    std::vector<J> hcol_ind;
-    std::vector<T> hval;
+    std::vector<J> hcsr_col_ind;
+    std::vector<T> hcsr_val;
 
     // Initial Data on CPU
     srand(12345ULL);
 
-    J m;
-    J n;
     I nnz;
-    J k = 16;
-
-    if(read_bin_matrix(filename.c_str(), m, n, nnz, hcsr_row_ptr, hcol_ind, hval, idx_base) != 0)
+    if(!generate_csr_matrix(filename, 
+                            m, 
+                            n, 
+                            nnz, 
+                            hcsr_row_ptr, 
+                            hcsr_col_ind, 
+                            hcsr_val, 
+                            idx_base))
     {
-        fprintf(stderr, "Cannot open [read] %s\n", filename.c_str());
+        fprintf(stderr, "Cannot open [read] %s\ncol", filename.c_str());
         return HIPSPARSE_STATUS_INTERNAL_ERROR;
     }
 
-    std::vector<T> hB(m * k);
-    std::vector<T> hC_1(m * k);
-    std::vector<T> hC_2(m * k);
-    std::vector<T> hC_gold(m * k);
+    // Some matrix properties
+    J B_m = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? m : k;
+    J B_n = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? k : m;
+    J C_m = m;
+    J C_n = k;
 
-    hipsparseInit<T>(hB, 1, m * k);
+    int ld_multiplier_B = 1;
+    int ld_multiplier_C = 1;
+
+    int64_t ldb = (orderB == HIPSPARSE_ORDER_COL)
+                      ? ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? (int64_t(ld_multiplier_B) * m)
+                                                               : (int64_t(ld_multiplier_B) * k))
+                      : ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? (int64_t(ld_multiplier_B) * k)
+                                                               : (int64_t(ld_multiplier_B) * m));
+    int64_t ldc = (orderC == HIPSPARSE_ORDER_COL) ? (int64_t(ld_multiplier_C) * m)
+                                                      : (int64_t(ld_multiplier_C) * k);
+    
+    ldb = std::max(int64_t(1), ldb);
+    ldc = std::max(int64_t(1), ldc);
+
+    int64_t nrowB = (orderB == HIPSPARSE_ORDER_COL) ? ldb : B_m;
+    int64_t ncolB = (orderB == HIPSPARSE_ORDER_COL) ? B_n : ldb;
+    int64_t nrowC = (orderC == HIPSPARSE_ORDER_COL) ? ldc : C_m;
+    int64_t ncolC = (orderC == HIPSPARSE_ORDER_COL) ? C_n : ldc;
+
+    int64_t nnz_B = nrowB * ncolB;
+    int64_t nnz_C = nrowC * ncolC;
+
+    std::vector<T> hB(nnz_B);
+    std::vector<T> hC_1(nnz_C);
+    std::vector<T> hC_2(nnz_C);
+    std::vector<T> hC_gold(nnz_C);
+
+    hipsparseInit<T>(hB, 1, nnz_B);
 
     hC_1    = hB;
     hC_2    = hC_1;
@@ -243,9 +278,9 @@ hipsparseStatus_t testing_spsm_csr(void)
     auto dptr_managed    = hipsparse_unique_ptr{device_malloc(sizeof(I) * (m + 1)), device_free};
     auto dcol_managed    = hipsparse_unique_ptr{device_malloc(sizeof(J) * nnz), device_free};
     auto dval_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
-    auto dB_managed      = hipsparse_unique_ptr{device_malloc(sizeof(T) * m * k), device_free};
-    auto dC_1_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * m * k), device_free};
-    auto dC_2_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * m * k), device_free};
+    auto dB_managed      = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz_B), device_free};
+    auto dC_1_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz_C), device_free};
+    auto dC_2_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz_C), device_free};
     auto d_alpha_managed = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
 
     I* dptr    = (I*)dptr_managed.get();
@@ -259,11 +294,11 @@ hipsparseStatus_t testing_spsm_csr(void)
     // copy data from CPU to device
     CHECK_HIP_ERROR(
         hipMemcpy(dptr, hcsr_row_ptr.data(), sizeof(I) * (m + 1), hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(hipMemcpy(dcol, hcol_ind.data(), sizeof(J) * nnz, hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(hipMemcpy(dval, hval.data(), sizeof(T) * nnz, hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(hipMemcpy(dB, hB.data(), sizeof(T) * m * k, hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(hipMemcpy(dC_1, hC_1.data(), sizeof(T) * m * k, hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(hipMemcpy(dC_2, hC_2.data(), sizeof(T) * m * k, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(dcol, hcsr_col_ind.data(), sizeof(J) * nnz, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(dval, hcsr_val.data(), sizeof(T) * nnz, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(dB, hB.data(), sizeof(T) * nnz_B, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(dC_1, hC_1.data(), sizeof(T) * nnz_C, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(dC_2, hC_2.data(), sizeof(T) * nnz_C, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(d_alpha, &h_alpha, sizeof(T), hipMemcpyHostToDevice));
 
     hipsparseSpSMDescr_t descr;
@@ -272,13 +307,13 @@ hipsparseStatus_t testing_spsm_csr(void)
     // Create matrices
     hipsparseSpMatDescr_t A;
     CHECK_HIPSPARSE_ERROR(
-        hipsparseCreateCsr(&A, m, n, nnz, dptr, dcol, dval, typeI, typeJ, idx_base, typeT));
+        hipsparseCreateCsr(&A, m, m, nnz, dptr, dcol, dval, typeI, typeJ, idx_base, typeT));
 
     // Create dense matrices
     hipsparseDnMatDescr_t B, C1, C2;
-    CHECK_HIPSPARSE_ERROR(hipsparseCreateDnMat(&B, m, k, m, dB, typeT, order));
-    CHECK_HIPSPARSE_ERROR(hipsparseCreateDnMat(&C1, m, k, m, dC_1, typeT, order));
-    CHECK_HIPSPARSE_ERROR(hipsparseCreateDnMat(&C2, m, k, m, dC_2, typeT, order));
+    CHECK_HIPSPARSE_ERROR(hipsparseCreateDnMat(&B, B_m, B_n, ldb, dB, typeT, orderB));
+    CHECK_HIPSPARSE_ERROR(hipsparseCreateDnMat(&C1, C_m, C_n, ldc, dC_1, typeT, orderC));
+    CHECK_HIPSPARSE_ERROR(hipsparseCreateDnMat(&C2, C_m, C_n, ldc, dC_2, typeT, orderC));
 
     CHECK_HIPSPARSE_ERROR(
         hipsparseSpMatSetAttribute(A, HIPSPARSE_SPMAT_FILL_MODE, &uplo, sizeof(uplo)));
@@ -315,32 +350,36 @@ hipsparseStatus_t testing_spsm_csr(void)
         hipsparseSpSM_solve(handle, transA, transB, d_alpha, A, B, C2, typeT, alg, descr, buffer));
 
     // copy output from device to CPU
-    CHECK_HIP_ERROR(hipMemcpy(hC_1.data(), dC_1, sizeof(T) * m * k, hipMemcpyDeviceToHost));
-    CHECK_HIP_ERROR(hipMemcpy(hC_2.data(), dC_2, sizeof(T) * m * k, hipMemcpyDeviceToHost));
+    CHECK_HIP_ERROR(hipMemcpy(hC_1.data(), dC_1, sizeof(T) * nnz_C, hipMemcpyDeviceToHost));
+    CHECK_HIP_ERROR(hipMemcpy(hC_2.data(), dC_2, sizeof(T) * nnz_C, hipMemcpyDeviceToHost));
 
     J struct_pivot  = -1;
     J numeric_pivot = -1;
     host_csrsm(m,
-               k,
-               nnz,
-               transA,
-               transB,
-               h_alpha,
-               hcsr_row_ptr,
-               hcol_ind,
-               hval,
-               hC_gold,
-               m,
-               diag,
-               uplo,
-               idx_base,
-               &struct_pivot,
-               &numeric_pivot);
+                k,
+                nnz,
+                transA,
+                transB,
+                h_alpha,
+                hcsr_row_ptr,
+                hcsr_col_ind,
+                hcsr_val,
+                hB,
+                (J)ldb,
+                orderB,
+                hC_gold,
+                (J)ldc,
+                orderC,
+                diag,
+                uplo,
+                idx_base,
+                &struct_pivot,
+                &numeric_pivot);
 
     if(struct_pivot == -1 && numeric_pivot == -1)
     {
-        unit_check_near(1, m * k, 1, hC_gold.data(), hC_1.data());
-        unit_check_near(1, m * k, 1, hC_gold.data(), hC_2.data());
+        unit_check_near(1, nnz_C, 1, hC_gold.data(), hC_1.data());
+        unit_check_near(1, nnz_C, 1, hC_gold.data(), hC_2.data());
     }
 
     CHECK_HIP_ERROR(hipFree(buffer));

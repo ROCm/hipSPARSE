@@ -167,17 +167,19 @@ void testing_spsv_csr_bad_arg(void)
 }
 
 template <typename I, typename J, typename T>
-hipsparseStatus_t testing_spsv_csr(void)
+hipsparseStatus_t testing_spsv_csr(Arguments argus)
 {
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11030)
-    T                    h_alpha  = make_DataType<T>(2.3);
-    hipsparseOperation_t transA   = HIPSPARSE_OPERATION_NON_TRANSPOSE;
-    hipsparseIndexBase_t idx_base = HIPSPARSE_INDEX_BASE_ZERO;
-    hipsparseDiagType_t  diag     = HIPSPARSE_DIAG_TYPE_NON_UNIT;
-    hipsparseFillMode_t  uplo     = HIPSPARSE_FILL_MODE_LOWER;
+    J                    m        = argus.M;
+    J                    n        = argus.N;
+    T                    h_alpha  = make_DataType<T>(argus.alpha);
+    hipsparseOperation_t transA   = argus.transA;
+    hipsparseIndexBase_t idx_base = argus.idx_base;
+    hipsparseDiagType_t  diag     = argus.diag_type;
+    hipsparseFillMode_t  uplo     = argus.fill_mode;
     hipsparseSpSVAlg_t   alg      = HIPSPARSE_SPSV_ALG_DEFAULT;
 
-    std::string filename = get_filename("nos3.bin");
+    std::string filename = argus.filename;
 
     // Index and data type
     hipsparseIndexType_t typeI = getIndexType<I>();
@@ -190,19 +192,23 @@ hipsparseStatus_t testing_spsv_csr(void)
 
     // Host structures
     std::vector<I> hcsr_row_ptr;
-    std::vector<J> hcol_ind;
-    std::vector<T> hval;
+    std::vector<J> hcsr_col_ind;
+    std::vector<T> hcsr_val;
 
     // Initial Data on CPU
     srand(12345ULL);
 
-    J m;
-    J n;
     I nnz;
-
-    if(read_bin_matrix(filename.c_str(), m, n, nnz, hcsr_row_ptr, hcol_ind, hval, idx_base) != 0)
+    if(!generate_csr_matrix(filename, 
+                            m, 
+                            n, 
+                            nnz, 
+                            hcsr_row_ptr, 
+                            hcsr_col_ind, 
+                            hcsr_val, 
+                            idx_base))
     {
-        fprintf(stderr, "Cannot open [read] %s\n", filename.c_str());
+        fprintf(stderr, "Cannot open [read] %s\ncol", filename.c_str());
         return HIPSPARSE_STATUS_INTERNAL_ERROR;
     }
 
@@ -238,8 +244,8 @@ hipsparseStatus_t testing_spsv_csr(void)
     // copy data from CPU to device
     CHECK_HIP_ERROR(
         hipMemcpy(dptr, hcsr_row_ptr.data(), sizeof(I) * (m + 1), hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(hipMemcpy(dcol, hcol_ind.data(), sizeof(J) * nnz, hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(hipMemcpy(dval, hval.data(), sizeof(T) * nnz, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(dcol, hcsr_col_ind.data(), sizeof(J) * nnz, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(dval, hcsr_val.data(), sizeof(T) * nnz, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dx, hx.data(), sizeof(T) * m, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dy_1, hy_1.data(), sizeof(T) * m, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dy_2, hy_2.data(), sizeof(T) * m, hipMemcpyHostToDevice));
@@ -304,8 +310,8 @@ hipsparseStatus_t testing_spsv_csr(void)
                nnz,
                h_alpha,
                hcsr_row_ptr.data(),
-               hcol_ind.data(),
-               hval.data(),
+               hcsr_col_ind.data(),
+               hcsr_val.data(),
                hx.data(),
                hy_gold.data(),
                diag,

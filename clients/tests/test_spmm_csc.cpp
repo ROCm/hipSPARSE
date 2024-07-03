@@ -25,28 +25,187 @@
 
 #include <hipsparse.h>
 
-// Only run tests for CUDA 11.1 or greater
+typedef std::tuple<int,
+                   int,
+                   int,
+                   double,
+                   double,
+                   hipsparseOperation_t,
+                   hipsparseOperation_t,
+                   hipsparseOrder_t,
+                   hipsparseOrder_t,
+                   hipsparseIndexBase_t>
+    spmm_csc_tuple;
+typedef std::tuple<int,
+                   double,
+                   double,
+                   hipsparseOperation_t,
+                   hipsparseOperation_t,
+                   hipsparseOrder_t,
+                   hipsparseOrder_t,
+                   hipsparseIndexBase_t,
+                   std::string>
+    spmm_csc_bin_tuple;
+
+int spmm_csc_M_range[] = {50};
+int spmm_csc_N_range[] = {5};
+int spmm_csc_K_range[] = {84};
+
+std::vector<double> spmm_csc_alpha_range = {2.0};
+std::vector<double> spmm_csc_beta_range  = {1.0};
+
+hipsparseOperation_t spmm_csc_transA_range[]  = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPERATION_TRANSPOSE};
+hipsparseOperation_t spmm_csc_transB_range[]  = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPERATION_TRANSPOSE};
+hipsparseOrder_t spmm_csc_orderB_range[]  = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
+hipsparseOrder_t spmm_csc_orderC_range[]  = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
+hipsparseIndexBase_t spmm_csc_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+
+std::string spmm_csc_bin[] = {"nos1.bin",
+                               "nos2.bin",
+                               "nos3.bin",
+                               "nos4.bin",
+                               "nos5.bin",
+                               "nos6.bin",
+                               "nos7.bin",
+                               "Chebyshev4.bin",
+                               "shipsec1.bin"};
+
+class parameterized_spmm_csc : public testing::TestWithParam<spmm_csc_tuple>
+{
+protected:
+    parameterized_spmm_csc() {}
+    virtual ~parameterized_spmm_csc() {}
+    virtual void SetUp() {}
+    virtual void TearDown() {}
+};
+
+class parameterized_spmm_csc_bin : public testing::TestWithParam<spmm_csc_bin_tuple>
+{
+protected:
+    parameterized_spmm_csc_bin() {}
+    virtual ~parameterized_spmm_csc_bin() {}
+    virtual void SetUp() {}
+    virtual void TearDown() {}
+};
+
+Arguments setup_spmm_csc_arguments(spmm_csc_tuple tup)
+{
+    Arguments arg;
+    arg.M        = std::get<0>(tup);
+    arg.N        = std::get<1>(tup);
+    arg.K        = std::get<2>(tup);
+    arg.alpha    = std::get<3>(tup);
+    arg.beta     = std::get<4>(tup);
+    arg.transA   = std::get<5>(tup);
+    arg.transB   = std::get<6>(tup);
+    arg.orderB   = std::get<7>(tup);
+    arg.orderC   = std::get<8>(tup);
+    arg.idx_base = std::get<9>(tup);
+    arg.timing   = 0;
+    return arg;
+}
+
+Arguments setup_spmm_csc_arguments(spmm_csc_bin_tuple tup)
+{
+    Arguments arg;
+    arg.M        = -99;
+    arg.N        = std::get<0>(tup);
+    arg.K        = -99;
+    arg.alpha    = std::get<1>(tup);
+    arg.beta     = std::get<2>(tup);
+    arg.transA   = std::get<3>(tup);
+    arg.transB   = std::get<4>(tup);
+    arg.orderB   = std::get<5>(tup);
+    arg.orderC   = std::get<6>(tup);
+    arg.idx_base = std::get<7>(tup);
+    arg.timing   = 0;
+
+    // Determine absolute path of test matrix
+    std::string bin_file = std::get<8>(tup);
+
+    // Matrices are stored at the same path in matrices directory
+    arg.filename = get_filename(bin_file);
+
+    return arg;
+}
+
+// csc format not supported in cusparse
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(spmm_csc_bad_arg, spmm_csc_float)
 {
     testing_spmm_csc_bad_arg();
 }
 
-TEST(spmm_csc, spmm_csc_i32_i32_float)
+TEST_P(parameterized_spmm_csc, spmm_csc_i32_float)
 {
-    hipsparseStatus_t status = testing_spmm_csc<int32_t, int32_t, float>();
+    Arguments arg = setup_spmm_csc_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_spmm_csc<int32_t, int32_t, float>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-TEST(spmm_csc, spmm_csc_i32_i32_double)
+TEST_P(parameterized_spmm_csc, spmm_csc_i64_double)
 {
-    hipsparseStatus_t status = testing_spmm_csc<int32_t, int32_t, double>();
+    Arguments arg = setup_spmm_csc_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_spmm_csc<int64_t, int64_t, double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-TEST(spmm_csc, spmm_csc_i32_i32_hipComplex)
+TEST_P(parameterized_spmm_csc, spmm_csc_i32_float_complex)
 {
-    hipsparseStatus_t status = testing_spmm_csc<int32_t, int32_t, hipComplex>();
+    Arguments arg = setup_spmm_csc_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_spmm_csc<int32_t, int32_t, hipComplex>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+
+TEST_P(parameterized_spmm_csc, spmm_csc_i64_double_complex)
+{
+    Arguments arg = setup_spmm_csc_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_spmm_csc<int64_t, int64_t, hipDoubleComplex>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+
+TEST_P(parameterized_spmm_csc_bin, spmm_csc_bin_i32_float)
+{
+    Arguments arg = setup_spmm_csc_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_spmm_csc<int32_t, int32_t, float>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+
+TEST_P(parameterized_spmm_csc_bin, spmm_csc_bin_i64_double)
+{
+    Arguments arg = setup_spmm_csc_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_spmm_csc<int64_t, int64_t, double>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+
+INSTANTIATE_TEST_SUITE_P(spmm_csc,
+                         parameterized_spmm_csc,
+                         testing::Combine(testing::ValuesIn(spmm_csc_M_range),
+                                          testing::ValuesIn(spmm_csc_N_range),
+                                          testing::ValuesIn(spmm_csc_K_range),
+                                          testing::ValuesIn(spmm_csc_alpha_range),
+                                          testing::ValuesIn(spmm_csc_beta_range),
+                                          testing::ValuesIn(spmm_csc_transA_range),
+                                          testing::ValuesIn(spmm_csc_transB_range),
+                                          testing::ValuesIn(spmm_csc_orderB_range),
+                                          testing::ValuesIn(spmm_csc_orderC_range),
+                                          testing::ValuesIn(spmm_csc_idxbase_range)));
+
+INSTANTIATE_TEST_SUITE_P(spmm_csc_bin,
+                         parameterized_spmm_csc_bin,
+                         testing::Combine(testing::ValuesIn(spmm_csc_N_range),
+                                          testing::ValuesIn(spmm_csc_alpha_range),
+                                          testing::ValuesIn(spmm_csc_beta_range),
+                                          testing::ValuesIn(spmm_csc_transA_range),
+                                          testing::ValuesIn(spmm_csc_transB_range),
+                                          testing::ValuesIn(spmm_csc_orderB_range),
+                                          testing::ValuesIn(spmm_csc_orderC_range),
+                                          testing::ValuesIn(spmm_csc_idxbase_range),
+                                          testing::ValuesIn(spmm_csc_bin)));
 #endif
