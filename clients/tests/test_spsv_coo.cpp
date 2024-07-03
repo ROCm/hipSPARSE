@@ -52,7 +52,7 @@ hipsparseDiagType_t spsv_coo_diag_type_range[] = {HIPSPARSE_DIAG_TYPE_NON_UNIT};
 hipsparseFillMode_t spsv_coo_fill_mode_range[] = {HIPSPARSE_FILL_MODE_LOWER, HIPSPARSE_FILL_MODE_UPPER};
 
 std::string spsv_coo_bin[] = {"nos1.bin",
-                                        "nos2.bin",
+                                    "nos2.bin",
                                         "nos3.bin",
                                         "nos4.bin",
                                         "nos5.bin",

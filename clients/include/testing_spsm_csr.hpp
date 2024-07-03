@@ -221,19 +221,12 @@ hipsparseStatus_t testing_spsm_csr(Arguments argus)
     // Initial Data on CPU
     srand(12345ULL);
 
-        I nnz;
-        if(!generate_csr_matrix(filename, 
-                                m, 
-                                n, 
-                                nnz, 
-                                hcsr_row_ptr, 
-                                hcsr_col_ind, 
-                                hcsr_val, 
-                                idx_base))
-        {
-            fprintf(stderr, "Cannot open [read] %s\ncol", filename.c_str());
-            return HIPSPARSE_STATUS_INTERNAL_ERROR;
-        }
+    I nnz;
+    if(!generate_csr_matrix(filename, m, n, nnz, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base))
+    {
+        fprintf(stderr, "Cannot open [read] %s\ncol", filename.c_str());
+        return HIPSPARSE_STATUS_INTERNAL_ERROR;
+    }
 
     // Some matrix properties
     J B_m = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? m : k;
@@ -244,14 +237,15 @@ hipsparseStatus_t testing_spsm_csr(Arguments argus)
     int ld_multiplier_B = 1;
     int ld_multiplier_C = 1;
 
-        int64_t ldb = (orderB == HIPSPARSE_ORDER_COL)
-                        ? ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? (int64_t(ld_multiplier_B) * m)
-                                                                : (int64_t(ld_multiplier_B) * k))
-                        : ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? (int64_t(ld_multiplier_B) * k)
-                                                                : (int64_t(ld_multiplier_B) * m));
-        int64_t ldc = (orderC == HIPSPARSE_ORDER_COL) ? (int64_t(ld_multiplier_C) * m)
-                                                        : (int64_t(ld_multiplier_C) * k);
-        
+    int64_t ldb
+        = (orderB == HIPSPARSE_ORDER_COL)
+              ? ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? (int64_t(ld_multiplier_B) * m)
+                                                               : (int64_t(ld_multiplier_B) * k))
+              : ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? (int64_t(ld_multiplier_B) * k)
+                                                               : (int64_t(ld_multiplier_B) * m));
+    int64_t ldc = (orderC == HIPSPARSE_ORDER_COL) ? (int64_t(ld_multiplier_C) * m)
+                                                  : (int64_t(ld_multiplier_C) * k);
+
     ldb = std::max(int64_t(1), ldb);
     ldc = std::max(int64_t(1), ldc);
 
@@ -357,24 +351,24 @@ hipsparseStatus_t testing_spsm_csr(Arguments argus)
     J numeric_pivot = -1;
     host_csrsm(m,
                k,
-                nnz,
-                transA,
-                transB,
-                h_alpha,
-                hcsr_row_ptr,
-                hcsr_col_ind,
-                hcsr_val,
-                hB,
-                (J)ldb,
-                orderB,
-                hC_gold,
-                (J)ldc,
-                orderC,
-                diag,
-                uplo,
-                idx_base,
-                &struct_pivot,
-                &numeric_pivot);
+               nnz,
+               transA,
+               transB,
+               h_alpha,
+               hcsr_row_ptr,
+               hcsr_col_ind,
+               hcsr_val,
+               hB,
+               (J)ldb,
+               orderB,
+               hC_gold,
+               (J)ldc,
+               orderC,
+               diag,
+               uplo,
+               idx_base,
+               &struct_pivot,
+               &numeric_pivot);
 
     if(struct_pivot == -1 && numeric_pivot == -1)
     {

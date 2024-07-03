@@ -49,7 +49,7 @@ hipsparseIndexBase_t spgemmreuse_csr_idxbaseB_range[] = {HIPSPARSE_INDEX_BASE_ZE
 hipsparseIndexBase_t spgemmreuse_csr_idxbaseC_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
 std::string spgemmreuse_csr_bin[] = {"nos1.bin",
-                                    "nos2.bin",
+                                     "nos2.bin",
                                     "nos3.bin",
                                     "nos4.bin",
                                     "nos5.bin",

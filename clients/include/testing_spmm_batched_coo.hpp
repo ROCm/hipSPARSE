@@ -180,20 +180,20 @@ hipsparseStatus_t testing_spmm_batched_coo(Arguments argus)
 #endif
 
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
-    I                    m             = argus.M;
-    I                    n             = argus.N;
-    I                    k             = argus.K;
-    T                    h_alpha       = make_DataType<T>(argus.alpha);
-    T                    h_beta        = make_DataType<T>(argus.beta);
-    hipsparseOperation_t transA        = argus.transA;
-    hipsparseOperation_t transB        = argus.transB;
-    hipsparseOrder_t     orderB        = argus.orderB;
-    hipsparseOrder_t     orderC        = argus.orderC;
-    hipsparseIndexBase_t idx_base      = argus.idx_base;
+    I                    m        = argus.M;
+    I                    n        = argus.N;
+    I                    k        = argus.K;
+    T                    h_alpha  = make_DataType<T>(argus.alpha);
+    T                    h_beta   = make_DataType<T>(argus.beta);
+    hipsparseOperation_t transA   = argus.transA;
+    hipsparseOperation_t transB   = argus.transB;
+    hipsparseOrder_t     orderB   = argus.orderB;
+    hipsparseOrder_t     orderC   = argus.orderC;
+    hipsparseIndexBase_t idx_base = argus.idx_base;
 
-    I                    batch_count_A = 1;
-    I                    batch_count_B = 10;
-    I                    batch_count_C = 10;
+    I batch_count_A = 1;
+    I batch_count_B = 10;
+    I batch_count_C = 10;
 
 #if(CUDART_VERSION >= 11003)
     hipsparseSpMMAlg_t alg = HIPSPARSE_SPMM_COO_ALG1;
@@ -220,13 +220,13 @@ hipsparseStatus_t testing_spmm_batched_coo(Arguments argus)
     srand(12345ULL);
 
     I nnz_A;
-    if(!generate_csr_matrix(filename, 
-                                (transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? m : k, 
-                            (transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? k : m, 
-                            nnz_A, 
-                            hrow_ptr, 
-                            hcol_ind, 
-                            hval, 
+    if(!generate_csr_matrix(filename,
+                            (transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? m : k,
+                            (transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? k : m,
+                            nnz_A,
+                            hrow_ptr,
+                            hcol_ind,
+                            hval,
                             idx_base))
     {
         fprintf(stderr, "Cannot open [read] %s\ncol", filename.c_str());
@@ -256,14 +256,15 @@ hipsparseStatus_t testing_spmm_batched_coo(Arguments argus)
     int ld_multiplier_B = 1;
     int ld_multiplier_C = 1;
 
-        int64_t ldb = (orderB == HIPSPARSE_ORDER_COL)
-                        ? ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? (int64_t(ld_multiplier_B) * k)
-                                                                : (int64_t(ld_multiplier_B) * n))
-                        : ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? (int64_t(ld_multiplier_B) * n)
-                                                                : (int64_t(ld_multiplier_B) * k));
-        int64_t ldc = (orderC == HIPSPARSE_ORDER_COL) ? (int64_t(ld_multiplier_C) * m)
-                                                        : (int64_t(ld_multiplier_C) * n);
-        
+    int64_t ldb
+        = (orderB == HIPSPARSE_ORDER_COL)
+              ? ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? (int64_t(ld_multiplier_B) * k)
+                                                               : (int64_t(ld_multiplier_B) * n))
+              : ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? (int64_t(ld_multiplier_B) * n)
+                                                               : (int64_t(ld_multiplier_B) * k));
+    int64_t ldc = (orderC == HIPSPARSE_ORDER_COL) ? (int64_t(ld_multiplier_C) * m)
+                                                  : (int64_t(ld_multiplier_C) * n);
+
     ldb = std::max(int64_t(1), ldb);
     ldc = std::max(int64_t(1), ldc);
 
@@ -307,9 +308,12 @@ hipsparseStatus_t testing_spmm_batched_coo(Arguments argus)
     hC_gold = hC_1;
 
     // allocate memory on device
-    auto drow_managed = hipsparse_unique_ptr{device_malloc(sizeof(I) * batch_count_A * nnz_A), device_free};
-    auto dcol_managed = hipsparse_unique_ptr{device_malloc(sizeof(I) * batch_count_A * nnz_A), device_free};
-    auto dval_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * batch_count_A * nnz_A), device_free};
+    auto drow_managed
+        = hipsparse_unique_ptr{device_malloc(sizeof(I) * batch_count_A * nnz_A), device_free};
+    auto dcol_managed
+        = hipsparse_unique_ptr{device_malloc(sizeof(I) * batch_count_A * nnz_A), device_free};
+    auto dval_managed
+        = hipsparse_unique_ptr{device_malloc(sizeof(T) * batch_count_A * nnz_A), device_free};
     auto dB_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(T) * batch_count_B * nnz_B), device_free};
     auto dC_1_managed
@@ -329,9 +333,16 @@ hipsparseStatus_t testing_spmm_batched_coo(Arguments argus)
     T* d_beta       = (T*)d_beta_managed.get();
 
     // copy data from CPU to device
-    CHECK_HIP_ERROR(hipMemcpy(dcoo_row_ind, hcoo_row_ind.data(), sizeof(I) * batch_count_A * nnz_A, hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(hipMemcpy(dcoo_col_ind, hcoo_col_ind.data(), sizeof(I) * batch_count_A * nnz_A, hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(hipMemcpy(dcoo_val, hcoo_val.data(), sizeof(T) * batch_count_A * nnz_A, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(dcoo_row_ind,
+                              hcoo_row_ind.data(),
+                              sizeof(I) * batch_count_A * nnz_A,
+                              hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(dcoo_col_ind,
+                              hcoo_col_ind.data(),
+                              sizeof(I) * batch_count_A * nnz_A,
+                              hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(
+        dcoo_val, hcoo_val.data(), sizeof(T) * batch_count_A * nnz_A, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(
         hipMemcpy(dB, hB.data(), sizeof(T) * batch_count_B * nnz_B, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(
@@ -343,8 +354,8 @@ hipsparseStatus_t testing_spmm_batched_coo(Arguments argus)
 
     // Create matrices
     hipsparseSpMatDescr_t A;
-    CHECK_HIPSPARSE_ERROR(
-        hipsparseCreateCoo(&A, A_m, A_n, nnz_A, dcoo_row_ind, dcoo_col_ind, dcoo_val, typeI, idx_base, typeT));
+    CHECK_HIPSPARSE_ERROR(hipsparseCreateCoo(
+        &A, A_m, A_n, nnz_A, dcoo_row_ind, dcoo_col_ind, dcoo_val, typeI, idx_base, typeT));
 
     // Create dense matrices
     hipsparseDnMatDescr_t B, C1, C2;

@@ -228,9 +228,9 @@ hipsparseStatus_t testing_spgemmreuse_csr(Arguments argus)
     // Matrices are stored at the same path in matrices directory
     std::string filename = argus.filename;
 
-    T                    h_beta   = make_DataType<T>(0);
-    hipsparseOperation_t transA   = HIPSPARSE_OPERATION_NON_TRANSPOSE;
-    hipsparseOperation_t transB   = HIPSPARSE_OPERATION_NON_TRANSPOSE;
+    T                    h_beta = make_DataType<T>(0);
+    hipsparseOperation_t transA = HIPSPARSE_OPERATION_NON_TRANSPOSE;
+    hipsparseOperation_t transB = HIPSPARSE_OPERATION_NON_TRANSPOSE;
 
     // Index and data type
     hipsparseIndexType_t typeI = getIndexType<I>();
@@ -253,19 +253,13 @@ hipsparseStatus_t testing_spgemmreuse_csr(Arguments argus)
     srand(12345ULL);
 
     I nnz_A;
-    if(!generate_csr_matrix(filename, 
-                            m, 
-                            k, 
-                            nnz_A, 
-                            hcsr_row_ptr_A, 
-                            hcsr_col_ind_A, 
-                            hcsr_val_A, 
-                            idxBaseA))
+    if(!generate_csr_matrix(
+           filename, m, k, nnz_A, hcsr_row_ptr_A, hcsr_col_ind_A, hcsr_val_A, idxBaseA))
     {
         fprintf(stderr, "Cannot open [read] %s\ncol", filename.c_str());
         return HIPSPARSE_STATUS_INTERNAL_ERROR;
     }
-    
+
     // Sparse matrix B as the transpose of A
     J n     = m;
     I nnz_B = nnz_A;
@@ -302,31 +296,31 @@ hipsparseStatus_t testing_spgemmreuse_csr(Arguments argus)
     auto d_alpha_managed = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
     auto d_beta_managed  = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
 
-    I* dcsr_row_ptr_A   = (I*)dcsr_row_ptr_A_managed.get();
-    J* dcsr_col_ind_A   = (J*)dcsr_col_ind_A_managed.get();
-    T* dcsr_val_A       = (T*)dcsr_val_A_managed.get();
-    I* dcsr_row_ptr_B   = (I*)dcsr_row_ptr_B_managed.get();
-    J* dcsr_col_ind_B   = (J*)dcsr_col_ind_B_managed.get();
-    T* dcsr_val_B       = (T*)dcsr_val_B_managed.get();
-    I* dcsr_row_ptr_C   = (I*)dcsr_row_ptr_C_managed.get();
-    T* d_alpha          = (T*)d_alpha_managed.get();
-    T* d_beta           = (T*)d_beta_managed.get();
+    I* dcsr_row_ptr_A = (I*)dcsr_row_ptr_A_managed.get();
+    J* dcsr_col_ind_A = (J*)dcsr_col_ind_A_managed.get();
+    T* dcsr_val_A     = (T*)dcsr_val_A_managed.get();
+    I* dcsr_row_ptr_B = (I*)dcsr_row_ptr_B_managed.get();
+    J* dcsr_col_ind_B = (J*)dcsr_col_ind_B_managed.get();
+    T* dcsr_val_B     = (T*)dcsr_val_B_managed.get();
+    I* dcsr_row_ptr_C = (I*)dcsr_row_ptr_C_managed.get();
+    T* d_alpha        = (T*)d_alpha_managed.get();
+    T* d_beta         = (T*)d_beta_managed.get();
 
     // copy data from CPU to device
-        CHECK_HIP_ERROR(hipMemcpy(
-            dcsr_row_ptr_A, hcsr_row_ptr_A.data(), sizeof(I) * (m + 1), hipMemcpyHostToDevice));
-        CHECK_HIP_ERROR(
-            hipMemcpy(dcsr_col_ind_A, hcsr_col_ind_A.data(), sizeof(J) * nnz_A, hipMemcpyHostToDevice));
-        CHECK_HIP_ERROR(
-            hipMemcpy(dcsr_val_A, hcsr_val_A.data(), sizeof(T) * nnz_A, hipMemcpyHostToDevice));
-        CHECK_HIP_ERROR(hipMemcpy(
-            dcsr_row_ptr_B, hcsr_row_ptr_B.data(), sizeof(I) * (k + 1), hipMemcpyHostToDevice));
-        CHECK_HIP_ERROR(
-            hipMemcpy(dcsr_col_ind_B, hcsr_col_ind_B.data(), sizeof(J) * nnz_B, hipMemcpyHostToDevice));
-        CHECK_HIP_ERROR(
-            hipMemcpy(dcsr_val_B, hcsr_val_B.data(), sizeof(T) * nnz_B, hipMemcpyHostToDevice));
-        CHECK_HIP_ERROR(hipMemcpy(d_alpha, &h_alpha, sizeof(T), hipMemcpyHostToDevice));
-        CHECK_HIP_ERROR(hipMemcpy(d_beta, &h_beta, sizeof(T), hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(
+        dcsr_row_ptr_A, hcsr_row_ptr_A.data(), sizeof(I) * (m + 1), hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(
+        hipMemcpy(dcsr_col_ind_A, hcsr_col_ind_A.data(), sizeof(J) * nnz_A, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(
+        hipMemcpy(dcsr_val_A, hcsr_val_A.data(), sizeof(T) * nnz_A, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(
+        dcsr_row_ptr_B, hcsr_row_ptr_B.data(), sizeof(I) * (k + 1), hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(
+        hipMemcpy(dcsr_col_ind_B, hcsr_col_ind_B.data(), sizeof(J) * nnz_B, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(
+        hipMemcpy(dcsr_val_B, hcsr_val_B.data(), sizeof(T) * nnz_B, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(d_alpha, &h_alpha, sizeof(T), hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(d_beta, &h_beta, sizeof(T), hipMemcpyHostToDevice));
 
     // Create matrices
     hipsparseSpMatDescr_t A, B, C;
@@ -368,7 +362,7 @@ hipsparseStatus_t testing_spgemmreuse_csr(Arguments argus)
         handle, transA, transB, A, B, C, alg, descr, &bufferSize1, externalBuffer1));
 
     size_t bufferSize2, bufferSize3, bufferSize4, bufferSize5;
-    void *externalBuffer2 = nullptr, *externalBuffer3 = nullptr, *externalBuffer4 = nullptr,
+    void * externalBuffer2 = nullptr, *externalBuffer3 = nullptr, *externalBuffer4 = nullptr,
          *externalBuffer5 = nullptr;
 
     // Query SpGEMM_nnz
@@ -423,15 +417,13 @@ hipsparseStatus_t testing_spgemmreuse_csr(Arguments argus)
     // Allocate C
     auto dcsr_col_ind_C_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(J) * nnz_C), device_free};
-    auto dcsr_val_C_managed
-        = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz_C), device_free};
+    auto dcsr_val_C_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz_C), device_free};
 
     J* dcsr_col_ind_C = (J*)dcsr_col_ind_C_managed.get();
     T* dcsr_val_C     = (T*)dcsr_val_C_managed.get();
 
     // Set C pointers
-    CHECK_HIPSPARSE_ERROR(
-        hipsparseCsrSetPointers(C, dcsr_row_ptr_C, dcsr_col_ind_C, dcsr_val_C));
+    CHECK_HIPSPARSE_ERROR(hipsparseCsrSetPointers(C, dcsr_row_ptr_C, dcsr_col_ind_C, dcsr_val_C));
 
     CHECK_HIPSPARSE_ERROR(hipsparseSpGEMMreuse_copy(
         handle, transA, transB, A, B, C, alg, descr, &bufferSize5, externalBuffer5));
@@ -465,30 +457,30 @@ hipsparseStatus_t testing_spgemmreuse_csr(Arguments argus)
 
     CHECK_HIP_ERROR(hipMemcpy(
         hcsr_row_ptr_C.data(), dcsr_row_ptr_C, sizeof(I) * (m + 1), hipMemcpyDeviceToHost));
-    CHECK_HIP_ERROR(hipMemcpy(
-        hcsr_col_ind_C.data(), dcsr_col_ind_C, sizeof(J) * nnz_C, hipMemcpyDeviceToHost));
+    CHECK_HIP_ERROR(
+        hipMemcpy(hcsr_col_ind_C.data(), dcsr_col_ind_C, sizeof(J) * nnz_C, hipMemcpyDeviceToHost));
     CHECK_HIP_ERROR(
         hipMemcpy(hcsr_val_C.data(), dcsr_val_C, sizeof(T) * nnz_C, hipMemcpyDeviceToHost));
-    
+
     // Compute SpGEMM nnz of C on host
     std::vector<I> hcsr_row_ptr_C_gold(m + 1);
 
     int64_t nnz_C_gold = host_csrgemm2_nnz(m,
-                                        n,
-                                      k,
-                                      &h_alpha,
-                                      hcsr_row_ptr_A.data(),
-                                      hcsr_col_ind_A.data(),
-                                      hcsr_row_ptr_B.data(),
-                                      hcsr_col_ind_B.data(),
-                                      (const T*)nullptr,
-                                      (const I*)nullptr,
-                                      (const J*)nullptr,
-                                      hcsr_row_ptr_C_gold.data(),
-                                      idxBaseA,
-                                      idxBaseB,
-                                      idxBaseC,
-                                      HIPSPARSE_INDEX_BASE_ZERO);
+                                           n,
+                                           k,
+                                           &h_alpha,
+                                           hcsr_row_ptr_A.data(),
+                                           hcsr_col_ind_A.data(),
+                                           hcsr_row_ptr_B.data(),
+                                           hcsr_col_ind_B.data(),
+                                           (const T*)nullptr,
+                                           (const I*)nullptr,
+                                           (const J*)nullptr,
+                                           hcsr_row_ptr_C_gold.data(),
+                                           idxBaseA,
+                                           idxBaseB,
+                                           idxBaseC,
+                                           HIPSPARSE_INDEX_BASE_ZERO);
     // Verify nnz and row pointer array
     unit_check_general(1, 1, 1, &nnz_C_gold, &nnz_C);
     unit_check_general(1, m + 1, 1, hcsr_row_ptr_C_gold.data(), hcsr_row_ptr_C.data());
@@ -498,7 +490,7 @@ hipsparseStatus_t testing_spgemmreuse_csr(Arguments argus)
     std::vector<T> hcsr_val_C_gold(nnz_C_gold);
 
     host_csrgemm2(m,
-                    n,
+                  n,
                   k,
                   &h_alpha,
                   hcsr_row_ptr_A.data(),

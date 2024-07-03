@@ -197,14 +197,7 @@ hipsparseStatus_t testing_spsv_coo(Arguments argus)
     srand(12345ULL);
 
     I nnz;
-        if(!generate_csr_matrix(filename, 
-                            m, 
-                            n, 
-                            nnz, 
-                            hrow_ptr, 
-                            hcol_ind, 
-                            hval, 
-                            idx_base))
+    if(!generate_csr_matrix(filename, m, n, nnz, hrow_ptr, hcol_ind, hval, idx_base))
     {
         fprintf(stderr, "Cannot open [read] %s\ncol", filename.c_str());
         return HIPSPARSE_STATUS_INTERNAL_ERROR;

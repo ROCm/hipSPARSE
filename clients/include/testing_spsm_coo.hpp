@@ -220,14 +220,7 @@ hipsparseStatus_t testing_spsm_coo(Arguments argus)
     srand(12345ULL);
 
     I nnz;
-        if(!generate_csr_matrix(filename, 
-                            m, 
-                            n, 
-                            nnz, 
-                            hrow_ptr, 
-                            hcol_ind, 
-                            hval, 
-                            idx_base))
+    if(!generate_csr_matrix(filename, m, n, nnz, hrow_ptr, hcol_ind, hval, idx_base))
     {
         fprintf(stderr, "Cannot open [read] %s\ncol", filename.c_str());
         return HIPSPARSE_STATUS_INTERNAL_ERROR;
@@ -253,14 +246,15 @@ hipsparseStatus_t testing_spsm_coo(Arguments argus)
     int ld_multiplier_B = 1;
     int ld_multiplier_C = 1;
 
-        int64_t ldb = (orderB == HIPSPARSE_ORDER_COL)
-                        ? ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? (int64_t(ld_multiplier_B) * m)
-                                                                : (int64_t(ld_multiplier_B) * k))
-                        : ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? (int64_t(ld_multiplier_B) * k)
-                                                                : (int64_t(ld_multiplier_B) * m));
-        int64_t ldc = (orderC == HIPSPARSE_ORDER_COL) ? (int64_t(ld_multiplier_C) * m)
-                                                        : (int64_t(ld_multiplier_C) * k);
-    
+    int64_t ldb
+        = (orderB == HIPSPARSE_ORDER_COL)
+              ? ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? (int64_t(ld_multiplier_B) * m)
+                                                               : (int64_t(ld_multiplier_B) * k))
+              : ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? (int64_t(ld_multiplier_B) * k)
+                                                               : (int64_t(ld_multiplier_B) * m));
+    int64_t ldc = (orderC == HIPSPARSE_ORDER_COL) ? (int64_t(ld_multiplier_C) * m)
+                                                  : (int64_t(ld_multiplier_C) * k);
+
     ldb = std::max(int64_t(1), ldb);
     ldc = std::max(int64_t(1), ldc);
 

@@ -159,18 +159,11 @@ hipsparseStatus_t testing_sparse_to_dense_csc(Arguments argus)
     srand(12345ULL);
 
     I nnz;
-        if(!generate_csr_matrix(filename, 
-                                m, 
-                                n, 
-                                nnz, 
-                                hcsr_row_ptr, 
-                                hcsr_col_ind, 
-                                hcsr_val, 
-                                idx_base))
-        {
-            fprintf(stderr, "Cannot open [read] %s\ncol", filename.c_str());
-            return HIPSPARSE_STATUS_INTERNAL_ERROR;
-        }
+    if(!generate_csr_matrix(filename, m, n, nnz, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base))
+    {
+        fprintf(stderr, "Cannot open [read] %s\ncol", filename.c_str());
+        return HIPSPARSE_STATUS_INTERNAL_ERROR;
+    }
 
     I ld = (order == HIPSPARSE_ORDER_COL) ? m : n;
 
@@ -218,10 +211,11 @@ hipsparseStatus_t testing_sparse_to_dense_csc(Arguments argus)
     hcsc_col_ptr[0] = idx_base;
 
     // allocate memory on device
-        auto dptr_managed   = hipsparse_unique_ptr{device_malloc(sizeof(I) * (n + 1)), device_free};
-        auto drow_managed   = hipsparse_unique_ptr{device_malloc(sizeof(J) * nnz), device_free};
-        auto dval_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
-        auto ddense_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * nrows * ncols), device_free};
+    auto dptr_managed = hipsparse_unique_ptr{device_malloc(sizeof(I) * (n + 1)), device_free};
+    auto drow_managed = hipsparse_unique_ptr{device_malloc(sizeof(J) * nnz), device_free};
+    auto dval_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
+    auto ddense_managed
+        = hipsparse_unique_ptr{device_malloc(sizeof(T) * nrows * ncols), device_free};
 
     I* dptr   = (I*)dptr_managed.get();
     J* drow   = (J*)drow_managed.get();
@@ -256,7 +250,8 @@ hipsparseStatus_t testing_sparse_to_dense_csc(Arguments argus)
     CHECK_HIPSPARSE_ERROR(hipsparseSparseToDense(handle, matA, matB, alg, buffer));
 
     // copy output from device to CPU
-    CHECK_HIP_ERROR(hipMemcpy(hdense.data(), ddense, sizeof(T) * nrows * ncols, hipMemcpyDeviceToHost));
+    CHECK_HIP_ERROR(
+        hipMemcpy(hdense.data(), ddense, sizeof(T) * nrows * ncols, hipMemcpyDeviceToHost));
 
     std::vector<T> hdense_cpu(nrows * ncols);
 

@@ -379,14 +379,8 @@ hipsparseStatus_t testing_spgemm_csr(Arguments argus)
     srand(12345ULL);
 
     I nnz_A;
-    if(!generate_csr_matrix(filename, 
-                                m, 
-                            k, 
-                            nnz_A, 
-                            hcsr_row_ptr_A, 
-                            hcsr_col_ind_A, 
-                            hcsr_val_A, 
-                            idxBaseA))
+    if(!generate_csr_matrix(
+           filename, m, k, nnz_A, hcsr_row_ptr_A, hcsr_col_ind_A, hcsr_val_A, idxBaseA))
     {
         fprintf(stderr, "Cannot open [read] %s\ncol", filename.c_str());
         return HIPSPARSE_STATUS_INTERNAL_ERROR;
@@ -675,7 +669,7 @@ hipsparseStatus_t testing_spgemm_csr(Arguments argus)
     std::vector<I> hcsr_row_ptr_C_gold(m + 1);
 
     int64_t nnz_C_gold = host_csrgemm2_nnz(m,
-                                            n,
+                                           n,
                                            k,
                                            &h_alpha,
                                            hcsr_row_ptr_A.data(),
@@ -702,26 +696,26 @@ hipsparseStatus_t testing_spgemm_csr(Arguments argus)
     std::vector<T> hcsr_val_C_gold(nnz_C_gold);
 
     host_csrgemm2(m,
-             n,
-             k,
-             &h_alpha,
-             hcsr_row_ptr_A.data(),
-             hcsr_col_ind_A.data(),
-             hcsr_val_A.data(),
-             hcsr_row_ptr_B.data(),
-             hcsr_col_ind_B.data(),
-             hcsr_val_B.data(),
-             (const T*)nullptr,
-             (const I*)nullptr,
-             (const J*)nullptr,
-             (const T*)nullptr,
-             hcsr_row_ptr_C_gold.data(),
-             hcsr_col_ind_C_gold.data(),
-             hcsr_val_C_gold.data(),
-             idxBaseA,
-             idxBaseB,
-             idxBaseC,
-             HIPSPARSE_INDEX_BASE_ZERO);
+                  n,
+                  k,
+                  &h_alpha,
+                  hcsr_row_ptr_A.data(),
+                  hcsr_col_ind_A.data(),
+                  hcsr_val_A.data(),
+                  hcsr_row_ptr_B.data(),
+                  hcsr_col_ind_B.data(),
+                  hcsr_val_B.data(),
+                  (const T*)nullptr,
+                  (const I*)nullptr,
+                  (const J*)nullptr,
+                  (const T*)nullptr,
+                  hcsr_row_ptr_C_gold.data(),
+                  hcsr_col_ind_C_gold.data(),
+                  hcsr_val_C_gold.data(),
+                  idxBaseA,
+                  idxBaseB,
+                  idxBaseC,
+                  HIPSPARSE_INDEX_BASE_ZERO);
 
     // Verify column and value array
     unit_check_general(1, nnz_C_gold, 1, hcsr_col_ind_C_gold.data(), hcsr_col_ind_C_1.data());

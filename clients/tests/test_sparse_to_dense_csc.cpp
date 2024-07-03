@@ -42,7 +42,7 @@ hipsparseOrder_t sparse_to_dense_csc_order_range[]  = {HIPSPARSE_ORDER_COL, HIPS
 hipsparseIndexBase_t sparse_to_dense_csc_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
 std::string sparse_to_dense_csc_bin[] = {"nos1.bin",
-                               "nos2.bin",
+                                "nos2.bin",
                                "nos3.bin",
                                "nos4.bin",
                                "nos5.bin",

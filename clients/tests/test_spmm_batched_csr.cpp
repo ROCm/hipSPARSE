@@ -61,7 +61,7 @@ hipsparseOrder_t spmm_batched_csr_orderC_range[]  = {HIPSPARSE_ORDER_COL, HIPSPA
 hipsparseIndexBase_t spmm_batched_csr_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
 std::string spmm_batched_csr_bin[] = {"nos1.bin",
-                               "nos2.bin",
+                                "nos2.bin",
                                "nos3.bin",
                                "nos4.bin",
                                "nos5.bin",

@@ -209,7 +209,7 @@ hipsparseStatus_t testing_spmm_csr(Arguments argus)
     hipsparseOrder_t     orderB   = argus.orderB;
     hipsparseOrder_t     orderC   = argus.orderC;
     hipsparseIndexBase_t idx_base = argus.idx_base;
-    
+
 #if(CUDART_VERSION >= 11003)
     hipsparseSpMMAlg_t alg = HIPSPARSE_SPMM_CSR_ALG1;
 #else
@@ -236,13 +236,13 @@ hipsparseStatus_t testing_spmm_csr(Arguments argus)
     srand(12345ULL);
 
     I nnz_A;
-    if(!generate_csr_matrix(filename, 
-                                (transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? m : k, 
-                            (transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? k : m, 
-                            nnz_A, 
-                            hcsr_row_ptr, 
-                            hcsr_col_ind, 
-                            hcsr_val, 
+    if(!generate_csr_matrix(filename,
+                            (transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? m : k,
+                            (transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? k : m,
+                            nnz_A,
+                            hcsr_row_ptr,
+                            hcsr_col_ind,
+                            hcsr_val,
                             idx_base))
     {
         fprintf(stderr, "Cannot open [read] %s\ncol", filename.c_str());
@@ -260,14 +260,15 @@ hipsparseStatus_t testing_spmm_csr(Arguments argus)
     int ld_multiplier_B = 1;
     int ld_multiplier_C = 1;
 
-        int64_t ldb = (orderB == HIPSPARSE_ORDER_COL)
-                        ? ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? (int64_t(ld_multiplier_B) * k)
-                                                                : (int64_t(ld_multiplier_B) * n))
-                        : ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? (int64_t(ld_multiplier_B) * n)
-                                                                : (int64_t(ld_multiplier_B) * k));
-        int64_t ldc = (orderC == HIPSPARSE_ORDER_COL) ? (int64_t(ld_multiplier_C) * m)
-                                                        : (int64_t(ld_multiplier_C) * n);
-    
+    int64_t ldb
+        = (orderB == HIPSPARSE_ORDER_COL)
+              ? ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? (int64_t(ld_multiplier_B) * k)
+                                                               : (int64_t(ld_multiplier_B) * n))
+              : ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? (int64_t(ld_multiplier_B) * n)
+                                                               : (int64_t(ld_multiplier_B) * k));
+    int64_t ldc = (orderC == HIPSPARSE_ORDER_COL) ? (int64_t(ld_multiplier_C) * m)
+                                                  : (int64_t(ld_multiplier_C) * n);
+
     ldb = std::max(int64_t(1), ldb);
     ldc = std::max(int64_t(1), ldc);
 
