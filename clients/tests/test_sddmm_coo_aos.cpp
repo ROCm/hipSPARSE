@@ -21,6 +21,7 @@
  *
  * ************************************************************************ */
 
+
 #include "testing_sddmm_coo_aos.hpp"
 
 #include <hipsparse.h>

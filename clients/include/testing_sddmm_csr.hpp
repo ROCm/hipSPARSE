@@ -189,6 +189,7 @@ void testing_sddmm_csr_bad_arg(void)
 #endif
 }
 
+
 template <typename I, typename J, typename T>
 hipsparseStatus_t testing_sddmm_csr(Arguments argus)
 {

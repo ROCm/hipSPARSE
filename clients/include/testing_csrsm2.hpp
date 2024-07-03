@@ -739,6 +739,7 @@ void testing_csrsm2_bad_arg(void)
 #endif
 }
 
+
 template <typename T>
 hipsparseStatus_t testing_csrsm2(Arguments argus)
 {

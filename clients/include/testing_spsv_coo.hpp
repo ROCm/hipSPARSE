@@ -341,3 +341,4 @@ hipsparseStatus_t testing_spsv_coo(void)
 }
 
 #endif // TESTING_SPSV_COO_HPP
+

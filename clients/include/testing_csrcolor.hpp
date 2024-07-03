@@ -235,6 +235,7 @@ hipsparseStatus_t testing_csrcolor()
     // Matrices are stored at the same path in matrices directory
     std::string filename = get_filename("nos3.bin");
 
+
     // hipSPARSE handle
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
     hipsparseHandle_t              handle = test_handle->handle;

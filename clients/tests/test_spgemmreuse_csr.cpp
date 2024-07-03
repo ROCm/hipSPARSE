@@ -21,6 +21,7 @@
  *
  * ************************************************************************ */
 
+
 #include "testing_spgemmreuse_csr.hpp"
 
 #include <hipsparse.h>

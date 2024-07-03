@@ -21,6 +21,7 @@
  *
  * ************************************************************************ */
 
+
 #include "testing_sparse_to_dense_coo.hpp"
 
 #include <hipsparse.h>

@@ -6241,6 +6241,7 @@ double get_time_us_sync(hipStream_t stream);
 // has to compile with option "-std=c++11", and this hipsparse library uses c++11 everywhere
 // c++11 allows intilization of member of a struct
 
+
 class Arguments
 {
 public:
