@@ -384,7 +384,8 @@ hipsparseStatus_t testing_spgemmreuse_csr(Arguments argus)
                                                    &bufferSize4,
                                                    externalBuffer4));
 
-    std::cout << "bufferSize2: " << bufferSize2 << " bufferSize3: " << bufferSize3 << " bufferSize4: " << bufferSize4 << std::endl;
+    std::cout << "bufferSize2: " << bufferSize2 << " bufferSize3: " << bufferSize3
+              << " bufferSize4: " << bufferSize4 << std::endl;
 
     auto externalBuffer2_managed = hipsparse_unique_ptr{device_malloc(bufferSize2), device_free};
     externalBuffer2              = (void*)externalBuffer2_managed.get();
