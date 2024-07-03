@@ -159,7 +159,7 @@ hipsparseStatus_t testing_spmv_coo_aos(Arguments argus)
     hipsparseOperation_t transA   = argus.transA;
     hipsparseIndexBase_t idx_base = argus.idx_base;
     hipsparseSpMVAlg_t   alg      = HIPSPARSE_COOMV_ALG;
-    std::string filename          = argus.filename;
+    std::string          filename = argus.filename;
 
     // Index and data type
     hipsparseIndexType_t typeI = getIndexType<I>();
