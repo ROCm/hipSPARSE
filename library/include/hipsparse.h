@@ -1172,6 +1172,7 @@ hipsparseStatus_t hipsparseZaxpyi(hipsparseHandle_t       handle,
 *  \f]
 *
 *  \code{.c}
+*      result = 0
 *      for(i = 0; i < nnz; ++i)
 *      {
 *          result += x_val[i] * y[x_ind[i]];
@@ -1282,6 +1283,7 @@ hipsparseStatus_t hipsparseZdoti(hipsparseHandle_t       handle,
 *  \f]
 *
 *  \code{.c}
+*      result = 0
 *      for(i = 0; i < nnz; ++i)
 *      {
 *          result += conj(x_val[i]) * y[x_ind[i]];
