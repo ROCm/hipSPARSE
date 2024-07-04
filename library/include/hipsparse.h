@@ -1172,6 +1172,7 @@ hipsparseStatus_t hipsparseZaxpyi(hipsparseHandle_t       handle,
 *  \f]
 *
 *  \code{.c}
+*      result = 0
 *      for(i = 0; i < nnz; ++i)
 *      {
 *          result += x_val[i] * y[x_ind[i]];
@@ -1282,6 +1283,7 @@ hipsparseStatus_t hipsparseZdoti(hipsparseHandle_t       handle,
 *  \f]
 *
 *  \code{.c}
+*      result = 0
 *      for(i = 0; i < nnz; ++i)
 *      {
 *          result += conj(x_val[i]) * y[x_ind[i]];
@@ -12030,9 +12032,13 @@ hipsparseStatus_t hipsparseDnMatSetStridedBatch(hipsparseDnMatDescr_t dnMatDescr
 *  \f]
 *
 *  \code{.c}
+*      for(i = 0; i < size; ++i)
+*      {
+*          y[i] = beta * y[i]
+*      }
 *      for(i = 0; i < nnz; ++i)
 *      {
-*          y[x_ind[i]] = alpha * x_val[i] + beta * y[x_ind[i]]
+*          y[x_ind[i]] = alpha * x_val[i]
 *      }
 *  \endcode
 *
