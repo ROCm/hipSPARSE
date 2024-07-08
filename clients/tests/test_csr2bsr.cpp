@@ -55,11 +55,7 @@ hipsparseIndexBase_t csr2bsr_bsr_base_range_bin[] = {HIPSPARSE_INDEX_BASE_ONE};
 hipsparseDirection_t csr2bsr_dir_range_bin[]
     = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COLUMN};
 
-std::string csr2bsr_bin[] = {"scircuit.bin",
-                             "nos2.bin",
-                             "nos4.bin",
-                             "nos6.bin",
-                             "sme3Dc.bin"};
+std::string csr2bsr_bin[] = {"scircuit.bin", "nos2.bin", "nos4.bin", "nos6.bin", "sme3Dc.bin"};
 
 class parameterized_csr2bsr : public testing::TestWithParam<csr2bsr_tuple>
 {

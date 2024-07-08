@@ -58,8 +58,8 @@ hipsparseOperation_t spmm_batched_coo_transA_range[]
     = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPERATION_TRANSPOSE};
 hipsparseOperation_t spmm_batched_coo_transB_range[]
     = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPERATION_TRANSPOSE};
-hipsparseOrder_t     spmm_batched_coo_orderB_range[] = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
-hipsparseOrder_t     spmm_batched_coo_orderC_range[] = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
+hipsparseOrder_t     spmm_batched_coo_orderB_range[]  = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
+hipsparseOrder_t     spmm_batched_coo_orderC_range[]  = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
 hipsparseIndexBase_t spmm_batched_coo_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO};
 
 std::string spmm_batched_coo_bin[] = {"shipsec1.bin"};

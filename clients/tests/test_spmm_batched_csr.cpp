@@ -58,8 +58,8 @@ hipsparseOperation_t spmm_batched_csr_transA_range[]
     = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPERATION_TRANSPOSE};
 hipsparseOperation_t spmm_batched_csr_transB_range[]
     = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPERATION_TRANSPOSE};
-hipsparseOrder_t     spmm_batched_csr_orderB_range[] = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
-hipsparseOrder_t     spmm_batched_csr_orderC_range[] = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
+hipsparseOrder_t     spmm_batched_csr_orderB_range[]  = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
+hipsparseOrder_t     spmm_batched_csr_orderC_range[]  = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
 hipsparseIndexBase_t spmm_batched_csr_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO};
 
 std::string spmm_batched_csr_bin[]
