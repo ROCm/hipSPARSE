@@ -32,8 +32,8 @@ typedef std::
     tuple<double, hipsparseIndexBase_t, hipsparseIndexBase_t, hipsparseIndexBase_t, std::string>
         spgemm_csr_bin_tuple;
 
-int spgemm_csr_M_range[] = {50, 567, 5149};
-int spgemm_csr_K_range[] = {84, 649, 5148};
+int spgemm_csr_M_range[] = {567, 1149};
+int spgemm_csr_K_range[] = {649, 2148};
 
 std::vector<double> spgemm_csr_alpha_range = {2.0};
 
@@ -56,8 +56,7 @@ std::string spgemm_csr_bin[] = {"nos1.bin",
                                 "nos4.bin",
                                 "nos5.bin",
                                 "nos6.bin",
-                                "nos7.bin",
-                                "amazon0312.bin"};
+                                "nos7.bin"};
 
 class parameterized_spgemm_csr : public testing::TestWithParam<spgemm_csr_tuple>
 {

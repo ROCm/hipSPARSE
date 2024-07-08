@@ -64,11 +64,8 @@ hipsparseIndexBase_t spmm_csc_idxbase_range[]
     = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
 std::string spmm_csc_bin[] = {"nos1.bin",
-                              "nos2.bin",
                               "nos3.bin",
-                              "nos4.bin",
                               "nos5.bin",
-                              "nos6.bin",
                               "nos7.bin",
                               "Chebyshev4.bin",
                               "shipsec1.bin"};

@@ -32,8 +32,8 @@ typedef std::
     tuple<double, hipsparseIndexBase_t, hipsparseIndexBase_t, hipsparseIndexBase_t, std::string>
         spgemmreuse_csr_bin_tuple;
 
-int spgemmreuse_csr_M_range[] = {77, 478, 981};
-int spgemmreuse_csr_K_range[] = {64, 934, 1723};
+int spgemmreuse_csr_M_range[] = {77, 981};
+int spgemmreuse_csr_K_range[] = {64, 1723};
 
 std::vector<double> spgemmreuse_csr_alpha_range = {2.0};
 

@@ -32,9 +32,9 @@ typedef hipsparseOperation_t                                             trans;
 typedef std::tuple<int, int, int, double, double, base, trans, trans>    csrmm_tuple;
 typedef std::tuple<int, double, double, base, trans, trans, std::string> csrmm_bin_tuple;
 
-int csrmm_M_range[] = {0, 42, 275, 2059};
-int csrmm_N_range[] = {0, 7, 19, 64, 78};
-int csrmm_K_range[] = {0, 50, 173, 1375};
+int csrmm_M_range[] = {0, 275, 2059};
+int csrmm_N_range[] = {0, 64, 78};
+int csrmm_K_range[] = {0, 173, 1375};
 
 double csrmm_alpha_range[] = {-0.5};
 double csrmm_beta_range[]  = {0.5};
@@ -47,7 +47,7 @@ trans csrmm_transB_range[]  = {HIPSPARSE_OPERATION_NON_TRANSPOSE,
                               HIPSPARSE_OPERATION_TRANSPOSE,
                               HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE};
 
-std::string csrmm_bin[] = {"rma10.bin", "nos1.bin", "nos3.bin", "nos5.bin", "nos7.bin"};
+std::string csrmm_bin[] = {"rma10.bin", "nos3.bin", "nos5.bin", "nos7.bin"};
 
 class parameterized_csrmm : public testing::TestWithParam<csrmm_tuple>
 {

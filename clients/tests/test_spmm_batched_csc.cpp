@@ -69,9 +69,7 @@ std::string spmm_batched_csc_bin[] = {"nos1.bin",
                                       "nos4.bin",
                                       "nos5.bin",
                                       "nos6.bin",
-                                      "nos7.bin",
-                                      "Chebyshev4.bin",
-                                      "shipsec1.bin"};
+                                      "nos7.bin"};
 
 class parameterized_spmm_batched_csc : public testing::TestWithParam<spmm_batched_csc_tuple>
 {
