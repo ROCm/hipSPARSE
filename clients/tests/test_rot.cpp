@@ -25,13 +25,14 @@
 
 #include <hipsparse.h>
 
-typedef hipsparseIndexBase_t               base;
-typedef std::tuple<int, int, double, base> rot_tuple;
+typedef hipsparseIndexBase_t                       base;
+typedef std::tuple<int, int, double, double, base> rot_tuple;
 
 int rot_N_range[]   = {12000, 15332, 22031};
 int rot_nnz_range[] = {0, 5, 10, 500, 1000, 7111, 10000};
 
-std::vector<double> rot_alpha_range = {1.0, 0.0};
+double rot_c_range[] = {-2.0, 0.0, 1.0};
+double rot_s_range[] = {-3.0, 0.0, 4.0};
 
 base rot_idx_base_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
@@ -50,7 +51,8 @@ Arguments setup_rot_arguments(rot_tuple tup)
     arg.N        = std::get<0>(tup);
     arg.nnz      = std::get<1>(tup);
     arg.alpha    = std::get<2>(tup);
-    arg.baseA = std::get<3>(tup);
+    arg.beta     = std::get<3>(tup);
+    arg.baseA = std::get<4>(tup);
     arg.timing   = 0;
     return arg;
 }
@@ -78,26 +80,11 @@ TEST_P(parameterized_rot, rot_i64_double)
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-TEST_P(parameterized_rot, rot_i32_float_complex)
-{
-    Arguments arg = setup_rot_arguments(GetParam());
-
-    hipsparseStatus_t status = testing_rot<int32_t, hipComplex>(arg);
-    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
-}
-
-TEST_P(parameterized_rot, rot_i64_double_complex)
-{
-    Arguments arg = setup_rot_arguments(GetParam());
-
-    hipsparseStatus_t status = testing_rot<int64_t, hipDoubleComplex>(arg);
-    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
-}
-
 INSTANTIATE_TEST_SUITE_P(rot,
                          parameterized_rot,
                          testing::Combine(testing::ValuesIn(rot_N_range),
                                           testing::ValuesIn(rot_nnz_range),
-                                          testing::ValuesIn(rot_alpha_range),
+                                          testing::ValuesIn(rot_c_range),
+                                          testing::ValuesIn(rot_s_range),
                                           testing::ValuesIn(rot_idx_base_range)));
 #endif

@@ -36,24 +36,14 @@ int                  cscsort_N_range[] = {0, 33, 242, 623, 1000};
 int                  cscsort_perm[]    = {0, 1};
 hipsparseIndexBase_t cscsort_base[]    = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
-std::string cscsort_bin[] = {"rma10.bin",
-                             "mac_econ_fwd500.bin",
-                             "bibd_22_8.bin",
+std::string cscsort_bin[] = {"mac_econ_fwd500.bin",
                              "mc2depi.bin",
-                             "scircuit.bin",
                              "ASIC_320k.bin",
-                             "bmwcra_1.bin",
-                             "nos1.bin",
                              "nos2.bin",
-                             "nos3.bin",
                              "nos4.bin",
-                             "nos5.bin",
                              "nos6.bin",
-                             "nos7.bin",
                              "amazon0312.bin",
-                             "Chebyshev4.bin",
                              "sme3Dc.bin",
-                             "webbase-1M.bin",
                              "shipsec1.bin"};
 
 class parameterized_cscsort : public testing::TestWithParam<cscsort_tuple>

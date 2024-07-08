@@ -44,6 +44,8 @@
 #include <hip/hip_complex.h>
 #include <hip/hip_runtime.h>
 
+#define INSTANTIATE_TEST_SUITE_P INSTANTIATE_TEST_CASE_P
+
 /// \cond DO_NOT_DOCUMENT
 #define DEPRECATED_CUDA_12000(warning)
 #define DEPRECATED_CUDA_11000(warning)
@@ -1172,6 +1174,7 @@ hipsparseStatus_t hipsparseZaxpyi(hipsparseHandle_t       handle,
 *  \f]
 *
 *  \code{.c}
+*      result = 0
 *      for(i = 0; i < nnz; ++i)
 *      {
 *          result += x_val[i] * y[x_ind[i]];
@@ -1282,6 +1285,7 @@ hipsparseStatus_t hipsparseZdoti(hipsparseHandle_t       handle,
 *  \f]
 *
 *  \code{.c}
+*      result = 0
 *      for(i = 0; i < nnz; ++i)
 *      {
 *          result += conj(x_val[i]) * y[x_ind[i]];
@@ -12030,9 +12034,13 @@ hipsparseStatus_t hipsparseDnMatSetStridedBatch(hipsparseDnMatDescr_t dnMatDescr
 *  \f]
 *
 *  \code{.c}
+*      for(i = 0; i < size; ++i)
+*      {
+*          y[i] = beta * y[i]
+*      }
 *      for(i = 0; i < nnz; ++i)
 *      {
-*          y[x_ind[i]] = alpha * x_val[i] + beta * y[x_ind[i]]
+*          y[x_ind[i]] = alpha * x_val[i]
 *      }
 *  \endcode
 *

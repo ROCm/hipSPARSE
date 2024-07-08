@@ -157,10 +157,12 @@ hipsparseStatus_t testing_spmv_coo(Arguments argus)
 {
 #if(!defined(CUDART_VERSION) || CUDART_VERSION > 10010 \
     || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
-    T                    h_alpha  = make_DataType<T>(2.0);
-    T                    h_beta   = make_DataType<T>(1.0);
-    hipsparseOperation_t transA   = HIPSPARSE_OPERATION_NON_TRANSPOSE;
-    hipsparseIndexBase_t idx_base = HIPSPARSE_INDEX_BASE_ZERO;
+    I                    m        = argus.M;
+    I                    n        = argus.N;
+    T                    h_alpha  = make_DataType<T>(argus.alpha);
+    T                    h_beta   = make_DataType<T>(argus.beta);
+    hipsparseOperation_t transA   = argus.transA;
+    hipsparseIndexBase_t idx_base = argus.baseA;
 
 #if(!defined(CUDART_VERSION))
     hipsparseSpMVAlg_t alg = HIPSPARSE_COOMV_ALG;
@@ -172,8 +174,7 @@ hipsparseStatus_t testing_spmv_coo(Arguments argus)
 #endif
 #endif
 
-    // Matrices are stored at the same path in matrices directory
-    std::string filename = get_filename("nos3.bin");
+    std::string filename = argus.filename;
 
     // Index and data type
     hipsparseIndexType_t typeI = getIndexType<I>();
@@ -191,13 +192,10 @@ hipsparseStatus_t testing_spmv_coo(Arguments argus)
     // Initial Data on CPU
     srand(12345ULL);
 
-    I m;
-    I n;
     I nnz;
-
-    if(read_bin_matrix(filename.c_str(), m, n, nnz, hrow_ptr, hcol_ind, hval, idx_base) != 0)
+    if(!generate_csr_matrix(filename, m, n, nnz, hrow_ptr, hcol_ind, hval, idx_base))
     {
-        fprintf(stderr, "Cannot open [read] %s\n", filename.c_str());
+        fprintf(stderr, "Cannot open [read] %s\ncol", filename.c_str());
         return HIPSPARSE_STATUS_INTERNAL_ERROR;
     }
 
@@ -294,7 +292,7 @@ hipsparseStatus_t testing_spmv_coo(Arguments argus)
     #endif
         for(I i = 0; i < m; ++i)
         {
-            hy_gold[i] = hy_gold[i] * h_beta;
+            hy_gold[i] = testing_mult(h_beta, hy_gold[i]);
         }
 
         for(I i = 0; i < nnz; ++i)

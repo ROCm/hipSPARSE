@@ -25,40 +25,137 @@
 
 #include <hipsparse.h>
 
-// Only run tests for CUDA 11.1 or greater
+typedef std::tuple<int, int, hipsparseOrder_t, hipsparseIndexBase_t> sparse_to_dense_csr_tuple;
+typedef std::tuple<hipsparseOrder_t, hipsparseIndexBase_t, std::string>
+    sparse_to_dense_csr_bin_tuple;
+
+int sparse_to_dense_csr_M_range[] = {50};
+int sparse_to_dense_csr_N_range[] = {5};
+
+hipsparseOrder_t     sparse_to_dense_csr_order_range[] = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
+hipsparseIndexBase_t sparse_to_dense_csr_idxbase_range[]
+    = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+
+std::string sparse_to_dense_csr_bin[] = {"nos1.bin",
+                                         "nos2.bin",
+                                         "nos3.bin",
+                                         "nos4.bin",
+                                         "nos5.bin",
+                                         "nos6.bin",
+                                         "nos7.bin",
+                                         "bibd_22_8.bin"};
+
+class parameterized_sparse_to_dense_csr : public testing::TestWithParam<sparse_to_dense_csr_tuple>
+{
+protected:
+    parameterized_sparse_to_dense_csr() {}
+    virtual ~parameterized_sparse_to_dense_csr() {}
+    virtual void SetUp() {}
+    virtual void TearDown() {}
+};
+
+class parameterized_sparse_to_dense_csr_bin
+    : public testing::TestWithParam<sparse_to_dense_csr_bin_tuple>
+{
+protected:
+    parameterized_sparse_to_dense_csr_bin() {}
+    virtual ~parameterized_sparse_to_dense_csr_bin() {}
+    virtual void SetUp() {}
+    virtual void TearDown() {}
+};
+
+Arguments setup_sparse_to_dense_csr_arguments(sparse_to_dense_csr_tuple tup)
+{
+    Arguments arg;
+    arg.M        = std::get<0>(tup);
+    arg.N        = std::get<1>(tup);
+    arg.orderA   = std::get<2>(tup);
+    arg.baseA = std::get<3>(tup);
+    arg.timing   = 0;
+    return arg;
+}
+
+Arguments setup_sparse_to_dense_csr_arguments(sparse_to_dense_csr_bin_tuple tup)
+{
+    Arguments arg;
+    arg.orderA   = std::get<0>(tup);
+    arg.baseA = std::get<1>(tup);
+    arg.timing   = 0;
+
+    // Determine absolute path of test matrix
+    std::string bin_file = std::get<2>(tup);
+
+    // Matrices are stored at the same path in matrices directory
+    arg.filename = get_filename(bin_file);
+
+    return arg;
+}
+
+// csr format not supported in cusparse
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(sparse_to_dense_csr_bad_arg, sparse_to_dense_csr_float)
 {
     testing_sparse_to_dense_csr_bad_arg();
 }
 
-TEST(sparse_to_dense_csr, sparse_to_dense_csr_i32_i32_float)
+TEST_P(parameterized_sparse_to_dense_csr, sparse_to_dense_csr_i32_float)
 {
-    Arguments arg;
+    Arguments arg = setup_sparse_to_dense_csr_arguments(GetParam());
+
     hipsparseStatus_t status = testing_sparse_to_dense_csr<int32_t, int32_t, float>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-#if(!defined(CUDART_VERSION))
-TEST(sparse_to_dense_csr, sparse_to_dense_csr_i64_i32_double)
+TEST_P(parameterized_sparse_to_dense_csr, sparse_to_dense_csr_i64_double)
 {
-    Arguments arg;
-    hipsparseStatus_t status = testing_sparse_to_dense_csr<int64_t, int32_t, double>(arg);
-    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
-}
-#else
-TEST(sparse_to_dense_csr, sparse_to_dense_csr_i64_i64_double)
-{
-    Arguments arg;
+    Arguments arg = setup_sparse_to_dense_csr_arguments(GetParam());
+
     hipsparseStatus_t status = testing_sparse_to_dense_csr<int64_t, int64_t, double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
-#endif
 
-TEST(sparse_to_dense_csr, sparse_to_dense_csr_i64_i64_hipComplex)
+TEST_P(parameterized_sparse_to_dense_csr, sparse_to_dense_csr_i32_float_complex)
 {
-    Arguments arg;
-    hipsparseStatus_t status = testing_sparse_to_dense_csr<int64_t, int64_t, hipComplex>(arg);
+    Arguments arg = setup_sparse_to_dense_csr_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_sparse_to_dense_csr<int32_t, int32_t, hipComplex>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+
+TEST_P(parameterized_sparse_to_dense_csr, sparse_to_dense_csr_i64_double_complex)
+{
+    Arguments arg = setup_sparse_to_dense_csr_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_sparse_to_dense_csr<int64_t, int64_t, hipDoubleComplex>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+
+TEST_P(parameterized_sparse_to_dense_csr_bin, sparse_to_dense_csr_bin_i32_float)
+{
+    Arguments arg = setup_sparse_to_dense_csr_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_sparse_to_dense_csr<int32_t, int32_t, float>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+
+TEST_P(parameterized_sparse_to_dense_csr_bin, sparse_to_dense_csr_bin_i64_double)
+{
+    Arguments arg = setup_sparse_to_dense_csr_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_sparse_to_dense_csr<int64_t, int64_t, double>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+
+INSTANTIATE_TEST_SUITE_P(sparse_to_dense_csr,
+                         parameterized_sparse_to_dense_csr,
+                         testing::Combine(testing::ValuesIn(sparse_to_dense_csr_M_range),
+                                          testing::ValuesIn(sparse_to_dense_csr_N_range),
+                                          testing::ValuesIn(sparse_to_dense_csr_order_range),
+                                          testing::ValuesIn(sparse_to_dense_csr_idxbase_range)));
+
+INSTANTIATE_TEST_SUITE_P(sparse_to_dense_csr_bin,
+                         parameterized_sparse_to_dense_csr_bin,
+                         testing::Combine(testing::ValuesIn(sparse_to_dense_csr_order_range),
+                                          testing::ValuesIn(sparse_to_dense_csr_idxbase_range),
+                                          testing::ValuesIn(sparse_to_dense_csr_bin)));
 #endif

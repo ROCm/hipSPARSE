@@ -118,14 +118,13 @@ void testing_spvv_bad_arg(void)
 }
 
 template <typename I, typename T>
-hipsparseStatus_t testing_spvv(void)
+hipsparseStatus_t testing_spvv(Arguments argus)
 {
 #if(!defined(CUDART_VERSION) || CUDART_VERSION > 10010 \
     || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
-    int64_t size = 15332;
-    int64_t nnz  = 500;
-
-    hipsparseIndexBase_t idxBase = HIPSPARSE_INDEX_BASE_ZERO;
+    I                    size    = argus.N;
+    I                    nnz     = argus.nnz;
+    hipsparseIndexBase_t idxBase = argus.baseA;
 
     // Index and data type
     hipsparseIndexType_t idxType  = getIndexType<I>();

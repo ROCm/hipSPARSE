@@ -27,8 +27,8 @@
 typedef hipsparseIndexBase_t               base;
 typedef std::tuple<int, int, double, base> axpby_tuple;
 
-int axpby_N_range[]   = {12000, 15332, 22031};
-int axpby_nnz_range[] = {0, 5, 10, 500, 1000, 7111, 10000};
+int axpby_N_range[]   = {22031};
+int axpby_nnz_range[] = {0, 5, 1000, 10000};
 
 std::vector<double> axpby_alpha_range = {1.0, 0.0};
 

@@ -191,21 +191,21 @@ void testing_sddmm_csc_bad_arg(void)
 }
 
 template <typename I, typename J, typename T>
-hipsparseStatus_t testing_sddmm_csc()
+hipsparseStatus_t testing_sddmm_csc(Arguments argus)
 {
 // only csr format supported when using cusparse backend
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11022)
-
-    T                    h_alpha  = make_DataType<T>(2.0);
-    T                    h_beta   = make_DataType<T>(1.0);
-    hipsparseOperation_t transA   = HIPSPARSE_OPERATION_NON_TRANSPOSE;
-    hipsparseOperation_t transB   = HIPSPARSE_OPERATION_NON_TRANSPOSE;
-    hipsparseOrder_t     order    = HIPSPARSE_ORDER_COL;
-    hipsparseIndexBase_t idx_base = HIPSPARSE_INDEX_BASE_ZERO;
+    J                    m        = argus.M;
+    J                    n        = argus.N;
+    J                    k        = argus.K;
+    T                    h_alpha  = make_DataType<T>(argus.alpha);
+    T                    h_beta   = make_DataType<T>(argus.beta);
+    hipsparseOperation_t transA   = argus.transA;
+    hipsparseOperation_t transB   = argus.transB;
+    hipsparseOrder_t     order    = argus.orderA;
+    hipsparseIndexBase_t idx_base = argus.baseA;
     hipsparseSDDMMAlg_t  alg      = HIPSPARSE_SDDMM_ALG_DEFAULT;
-
-    // Matrices are stored at the same path in matrices directory
-    std::string filename = get_filename("nos3.bin");
+    std::string          filename = argus.filename;
 
     // Index and data type
     hipsparseIndexType_t typeI = getIndexType<I>();
@@ -224,26 +224,14 @@ hipsparseStatus_t testing_sddmm_csc()
     // Initial Data on CPU
     srand(12345ULL);
 
-    J m;
-    J n;
-    I nnz;
-
+    // Read or construct CSR matrix
+    I nnz = 0;
+    if(!generate_csr_matrix(filename, n, m, nnz, hcsc_col_ptr, hcsc_row_ind, hcsc_val, idx_base))
     {
-        J mm;
-        J nn;
-        if(read_bin_matrix(
-               filename.c_str(), mm, nn, nnz, hcsc_col_ptr, hcsc_row_ind, hcsc_val, idx_base)
-           != 0)
-        {
-            fprintf(stderr, "Cannot open [read] %s\n", filename.c_str());
-            return HIPSPARSE_STATUS_INTERNAL_ERROR;
-        }
-
-        m = nn;
-        n = mm;
+        fprintf(stderr, "Cannot open [read] %s\ncol", filename.c_str());
+        return HIPSPARSE_STATUS_INTERNAL_ERROR;
     }
 
-    J k   = 5;
     J lda = m;
     J ldb = k;
 

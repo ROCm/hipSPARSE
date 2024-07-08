@@ -133,35 +133,9 @@ hipsparseStatus_t hipsparse_routine::dispatch_precision(const char       precisi
         return dispatch_indextype<FNAME, hipComplex>(indextype, arg);
     case HIP_C_64F:
         return dispatch_indextype<FNAME, hipDoubleComplex>(indextype, arg);
-    case HIP_R_16F:
-    case HIP_R_8I:
-    case HIP_C_16F:
-    case HIP_C_8I:
-    case HIP_R_8U:
-    case HIP_C_8U:
-    case HIP_R_32I:
-    case HIP_C_32I:
-    case HIP_R_32U:
-    case HIP_C_32U:
-    case HIP_R_16BF:
-    case HIP_C_16BF:
-    case HIP_R_4I:
-    case HIP_C_4I:
-    case HIP_R_4U:
-    case HIP_C_4U:
-    case HIP_R_16I:
-    case HIP_C_16I:
-    case HIP_R_16U:
-    case HIP_C_16U:
-    case HIP_R_64I:
-    case HIP_C_64I:
-    case HIP_R_64U:
-    case HIP_C_64U:
-    case HIP_R_8F_E4M3_FNUZ:
-    case HIP_R_8F_E5M2_FNUZ:
+    default:
         return HIPSPARSE_STATUS_INVALID_VALUE;
     }
-    return HIPSPARSE_STATUS_INVALID_VALUE;
 }
 
 hipsparseStatus_t hipsparse_routine::dispatch(const char       precision,

@@ -336,14 +336,13 @@ hipsparseStatus_t testing_gemmi(Arguments argus)
     auto dcsc_col_ptrB_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(int) * (N + 1)), device_free};
     auto dcsc_row_indB_managed
-        = hipsparse_unique_ptr{device_malloc(sizeof(int) * (nnz + 1)), device_free};
-    auto dcsc_valB_managed
-        = hipsparse_unique_ptr{device_malloc(sizeof(T) * (nnz + 1)), device_free};
-    auto dA_managed      = hipsparse_unique_ptr{device_malloc(sizeof(T) * (Annz + 1)), device_free};
-    auto dC_1_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * Cnnz), device_free};
-    auto dC_2_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * Cnnz), device_free};
-    auto d_alpha_managed = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
-    auto d_beta_managed  = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
+        = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
+    auto dcsc_valB_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
+    auto dA_managed        = hipsparse_unique_ptr{device_malloc(sizeof(T) * Annz), device_free};
+    auto dC_1_managed      = hipsparse_unique_ptr{device_malloc(sizeof(T) * Cnnz), device_free};
+    auto dC_2_managed      = hipsparse_unique_ptr{device_malloc(sizeof(T) * Cnnz), device_free};
+    auto d_alpha_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
+    auto d_beta_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
 
     int* dcsc_col_ptrB = (int*)dcsc_col_ptrB_managed.get();
     int* dcsc_row_indB = (int*)dcsc_row_indB_managed.get();

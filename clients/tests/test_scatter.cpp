@@ -25,7 +25,7 @@
 
 #include <hipsparse.h>
 
-typedef hipsparseIndexBase_t               base;
+typedef hipsparseIndexBase_t       base;
 typedef std::tuple<int, int, base> scatter_tuple;
 
 int scatter_N_range[]   = {12000, 15332, 22031};
