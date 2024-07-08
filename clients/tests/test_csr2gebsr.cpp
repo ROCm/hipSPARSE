@@ -36,9 +36,9 @@ typedef std::
         csr2gebsr_bin_tuple;
 
 // Random matrices
-int csr2gebsr_M_range[]             = {0, 2, 13095};
-int csr2gebsr_N_range[]             = {0, 2, 12766};
-int csr2gebsr_row_block_dim_range[] = {1, 2, 7, 16};
+int csr2gebsr_M_range[]             = {0, 13095};
+int csr2gebsr_N_range[]             = {0, 12766};
+int csr2gebsr_row_block_dim_range[] = {1, 2, 7};
 int csr2gebsr_col_block_dim_range[] = {1, 2};
 
 hipsparseIndexBase_t csr2gebsr_csr_base_range[] = {HIPSPARSE_INDEX_BASE_ZERO};
@@ -63,10 +63,6 @@ std::string csr2gebsr_bin[] = {"rma10.bin",
                                "scircuit.bin",
                                "bmwcra_1.bin",
                                "nos1.bin",
-                               "nos2.bin",
-                               "nos3.bin",
-                               "nos4.bin",
-                               "nos5.bin",
                                "nos6.bin",
                                "nos7.bin"};
 

@@ -25,22 +25,151 @@
 
 #include <hipsparse.h>
 
-// Only run tests for CUDA 11.1 or greater
+typedef std::tuple<int, int, double, double, hipsparseOperation_t, hipsparseIndexBase_t>
+    spmv_coo_aos_tuple;
+typedef std::tuple<double, double, hipsparseOperation_t, hipsparseIndexBase_t, std::string>
+    spmv_coo_aos_bin_tuple;
+
+int spmv_coo_aos_M_range[] = {50};
+int spmv_coo_aos_N_range[] = {84};
+
+std::vector<double> spmv_coo_aos_alpha_range = {2.0};
+std::vector<double> spmv_coo_aos_beta_range  = {1.0};
+
+hipsparseOperation_t spmv_coo_aos_transA_range[] = {HIPSPARSE_OPERATION_NON_TRANSPOSE};
+hipsparseIndexBase_t spmv_coo_aos_idxbase_range[]
+    = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+
+std::string spmv_coo_aos_bin[] = {"nos1.bin",
+                                  "nos2.bin",
+                                  "nos3.bin",
+                                  "nos4.bin",
+                                  "nos5.bin",
+                                  "nos6.bin",
+                                  "nos7.bin",
+                                  "Chebyshev4.bin",
+                                  "shipsec1.bin"};
+
+class parameterized_spmv_coo_aos : public testing::TestWithParam<spmv_coo_aos_tuple>
+{
+protected:
+    parameterized_spmv_coo_aos() {}
+    virtual ~parameterized_spmv_coo_aos() {}
+    virtual void SetUp() {}
+    virtual void TearDown() {}
+};
+
+class parameterized_spmv_coo_aos_bin : public testing::TestWithParam<spmv_coo_aos_bin_tuple>
+{
+protected:
+    parameterized_spmv_coo_aos_bin() {}
+    virtual ~parameterized_spmv_coo_aos_bin() {}
+    virtual void SetUp() {}
+    virtual void TearDown() {}
+};
+
+Arguments setup_spmv_coo_aos_arguments(spmv_coo_aos_tuple tup)
+{
+    Arguments arg;
+    arg.M        = std::get<0>(tup);
+    arg.N        = std::get<1>(tup);
+    arg.alpha    = std::get<2>(tup);
+    arg.beta     = std::get<3>(tup);
+    arg.transA   = std::get<4>(tup);
+    arg.idx_base = std::get<5>(tup);
+    arg.timing   = 0;
+    return arg;
+}
+
+Arguments setup_spmv_coo_aos_arguments(spmv_coo_aos_bin_tuple tup)
+{
+    Arguments arg;
+    arg.M        = -99;
+    arg.N        = -99;
+    arg.alpha    = std::get<0>(tup);
+    arg.beta     = std::get<1>(tup);
+    arg.transA   = std::get<2>(tup);
+    arg.idx_base = std::get<3>(tup);
+    arg.timing   = 0;
+
+    // Determine absolute path of test matrix
+    std::string bin_file = std::get<4>(tup);
+
+    // Matrices are stored at the same path in matrices directory
+    arg.filename = get_filename(bin_file);
+
+    return arg;
+}
+
+// coo_aos format not supported in cusparse
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(spmv_coo_aos_bad_arg, spmv_coo_aos_float)
 {
     testing_spmv_coo_aos_bad_arg();
 }
 
-TEST(spmv_coo_aos, spmv_coo_aos_i32_float)
+TEST_P(parameterized_spmv_coo_aos, spmv_coo_aos_i32_float)
 {
-    hipsparseStatus_t status = testing_spmv_coo_aos<int32_t, float>();
+    Arguments arg = setup_spmv_coo_aos_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_spmv_coo_aos<int32_t, float>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-TEST(spmv_coo_aos, spmv_coo_aos_i64_double)
+TEST_P(parameterized_spmv_coo_aos, spmv_coo_aos_i64_double)
 {
-    hipsparseStatus_t status = testing_spmv_coo_aos<int64_t, double>();
+    Arguments arg = setup_spmv_coo_aos_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_spmv_coo_aos<int64_t, double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+
+TEST_P(parameterized_spmv_coo_aos, spmv_coo_aos_i32_float_complex)
+{
+    Arguments arg = setup_spmv_coo_aos_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_spmv_coo_aos<int32_t, hipComplex>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+
+TEST_P(parameterized_spmv_coo_aos, spmv_coo_aos_i64_double_complex)
+{
+    Arguments arg = setup_spmv_coo_aos_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_spmv_coo_aos<int64_t, hipDoubleComplex>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+
+TEST_P(parameterized_spmv_coo_aos_bin, spmv_coo_aos_bin_i32_float)
+{
+    Arguments arg = setup_spmv_coo_aos_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_spmv_coo_aos<int32_t, float>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+
+TEST_P(parameterized_spmv_coo_aos_bin, spmv_coo_aos_bin_i64_double)
+{
+    Arguments arg = setup_spmv_coo_aos_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_spmv_coo_aos<int64_t, double>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+
+INSTANTIATE_TEST_SUITE_P(spmv_coo_aos,
+                         parameterized_spmv_coo_aos,
+                         testing::Combine(testing::ValuesIn(spmv_coo_aos_M_range),
+                                          testing::ValuesIn(spmv_coo_aos_N_range),
+                                          testing::ValuesIn(spmv_coo_aos_alpha_range),
+                                          testing::ValuesIn(spmv_coo_aos_beta_range),
+                                          testing::ValuesIn(spmv_coo_aos_transA_range),
+                                          testing::ValuesIn(spmv_coo_aos_idxbase_range)));
+
+INSTANTIATE_TEST_SUITE_P(spmv_coo_aos_bin,
+                         parameterized_spmv_coo_aos_bin,
+                         testing::Combine(testing::ValuesIn(spmv_coo_aos_alpha_range),
+                                          testing::ValuesIn(spmv_coo_aos_beta_range),
+                                          testing::ValuesIn(spmv_coo_aos_transA_range),
+                                          testing::ValuesIn(spmv_coo_aos_idxbase_range),
+                                          testing::ValuesIn(spmv_coo_aos_bin)));
 #endif

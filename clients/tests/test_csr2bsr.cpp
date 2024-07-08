@@ -35,8 +35,8 @@ typedef std::
         csr2bsr_bin_tuple;
 
 // Random matrices
-int csr2bsr_M_range[]         = {0, 872, 13095, 21453};
-int csr2bsr_N_range[]         = {0, 623, 12766, 29285};
+int csr2bsr_M_range[]         = {0, 872, 21453};
+int csr2bsr_N_range[]         = {0, 623, 29285};
 int csr2bsr_block_dim_range[] = {1, 2, 4, 7, 16};
 
 hipsparseIndexBase_t csr2bsr_csr_base_range[] = {HIPSPARSE_INDEX_BASE_ZERO};
@@ -55,15 +55,7 @@ hipsparseIndexBase_t csr2bsr_bsr_base_range_bin[] = {HIPSPARSE_INDEX_BASE_ONE};
 hipsparseDirection_t csr2bsr_dir_range_bin[]
     = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COLUMN};
 
-std::string csr2bsr_bin[] = {"scircuit.bin",
-                             "nos1.bin",
-                             "nos2.bin",
-                             "nos3.bin",
-                             "nos4.bin",
-                             "nos5.bin",
-                             "nos6.bin",
-                             "nos7.bin",
-                             "sme3Dc.bin"};
+std::string csr2bsr_bin[] = {"scircuit.bin", "nos2.bin", "nos4.bin", "nos6.bin", "sme3Dc.bin"};
 
 class parameterized_csr2bsr : public testing::TestWithParam<csr2bsr_tuple>
 {

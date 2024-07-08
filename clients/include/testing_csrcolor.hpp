@@ -278,14 +278,6 @@ hipsparseStatus_t testing_csrcolor()
     int* dcoloring   = (int*)dcoloring_managed.get();
     int* dreordering = (int*)dreordering_managed.get();
 
-    //if(!dval || !drow_ptr || !dcol_ind || !dcoloring || !dreordering)
-    //{
-    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-    //                                    "!dval || !drow || !dcol || !dB || "
-    //                                    "!dC_1 || !dC_2 || !d_alpha || !d_beta");
-    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
-    //}
-
     // copy data from CPU to device
     CHECK_HIP_ERROR(
         hipMemcpy(drow_ptr, hrow_ptr.data(), sizeof(int) * (m + 1), hipMemcpyHostToDevice));

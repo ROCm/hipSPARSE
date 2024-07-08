@@ -130,9 +130,11 @@ void testing_sparse_to_dense_csr_bad_arg(void)
 }
 
 template <typename I, typename J, typename T>
-hipsparseStatus_t testing_sparse_to_dense_csr(void)
+hipsparseStatus_t testing_sparse_to_dense_csr(Arguments argus)
 {
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11020)
+    J                           m        = argus.M;
+    J                           n        = argus.N;
     hipsparseIndexBase_t        idx_base = HIPSPARSE_INDEX_BASE_ZERO;
     hipsparseSparseToDenseAlg_t alg      = HIPSPARSE_SPARSETODENSE_ALG_DEFAULT;
     hipsparseOrder_t            order    = HIPSPARSE_ORDER_COL;
@@ -157,24 +159,24 @@ hipsparseStatus_t testing_sparse_to_dense_csr(void)
     // Initial Data on CPU
     srand(12345ULL);
 
-    J m;
-    J n;
     I nnz;
-
-    if(read_bin_matrix(filename.c_str(), m, n, nnz, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base)
-       != 0)
+    if(!generate_csr_matrix(filename, m, n, nnz, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base))
     {
-        fprintf(stderr, "Cannot open [read] %s\n", filename.c_str());
+        fprintf(stderr, "Cannot open [read] %s\ncol", filename.c_str());
         return HIPSPARSE_STATUS_INTERNAL_ERROR;
     }
 
-    I ld = m;
+    I ld = (order == HIPSPARSE_ORDER_COL) ? m : n;
+
+    I nrows = (order == HIPSPARSE_ORDER_COL) ? ld : m;
+    I ncols = (order == HIPSPARSE_ORDER_COL) ? n : ld;
 
     // allocate memory on device
-    auto dptr_managed   = hipsparse_unique_ptr{device_malloc(sizeof(I) * (m + 1)), device_free};
-    auto dcol_managed   = hipsparse_unique_ptr{device_malloc(sizeof(J) * nnz), device_free};
-    auto dval_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
-    auto ddense_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * ld * n), device_free};
+    auto dptr_managed = hipsparse_unique_ptr{device_malloc(sizeof(I) * (m + 1)), device_free};
+    auto dcol_managed = hipsparse_unique_ptr{device_malloc(sizeof(J) * nnz), device_free};
+    auto dval_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
+    auto ddense_managed
+        = hipsparse_unique_ptr{device_malloc(sizeof(T) * nrows * ncols), device_free};
 
     I* dptr   = (I*)dptr_managed.get();
     J* dcol   = (J*)dcol_managed.get();
@@ -182,7 +184,7 @@ hipsparseStatus_t testing_sparse_to_dense_csr(void)
     T* ddense = (T*)ddense_managed.get();
 
     // Dense matrix
-    std::vector<T> hdense(ld * n);
+    std::vector<T> hdense(nrows * ncols);
 
     // copy data from CPU to device
     CHECK_HIP_ERROR(
@@ -209,34 +211,55 @@ hipsparseStatus_t testing_sparse_to_dense_csr(void)
     CHECK_HIPSPARSE_ERROR(hipsparseSparseToDense(handle, matA, matB, alg, buffer));
 
     // copy output from device to CPU
-    CHECK_HIP_ERROR(hipMemcpy(hdense.data(), ddense, sizeof(T) * ld * n, hipMemcpyDeviceToHost));
+    CHECK_HIP_ERROR(
+        hipMemcpy(hdense.data(), ddense, sizeof(T) * nrows * ncols, hipMemcpyDeviceToHost));
 
-    // Query for warpSize
-    hipDeviceProp_t prop;
-    hipGetDeviceProperties(&prop, 0);
+    std::vector<T> hdense_cpu(nrows * ncols);
 
-    std::vector<T> hdense_cpu(ld * n);
-
-    for(J col = 0; col < n; ++col)
+    if(order == HIPSPARSE_ORDER_COL)
     {
+        for(I col = 0; col < n; ++col)
+        {
+            for(I row = 0; row < m; ++row)
+            {
+                hdense_cpu[row + ld * col] = make_DataType<T>(0.0);
+            }
+        }
+
         for(J row = 0; row < m; ++row)
         {
-            hdense_cpu[row + ld * col] = make_DataType<T>(0.0);
+            I start = hcsr_row_ptr[row] - idx_base;
+            I end   = hcsr_row_ptr[row + 1] - idx_base;
+
+            for(I at = start; at < end; ++at)
+            {
+                hdense_cpu[ld * (hcsr_col_ind[at] - idx_base) + row] = hcsr_val[at];
+            }
         }
     }
-
-    for(J row = 0; row < m; ++row)
+    else
     {
-        I start = hcsr_row_ptr[row] - idx_base;
-        I end   = hcsr_row_ptr[row + 1] - idx_base;
-
-        for(I at = start; at < end; ++at)
+        for(I row = 0; row < m; ++row)
         {
-            hdense_cpu[(hcsr_col_ind[at] - idx_base) * ld + row] = hcsr_val[at];
+            for(I col = 0; col < n; ++col)
+            {
+                hdense_cpu[ld * row + col] = make_DataType<T>(0.0);
+            }
+        }
+
+        for(J row = 0; row < m; ++row)
+        {
+            I start = hcsr_row_ptr[row] - idx_base;
+            I end   = hcsr_row_ptr[row + 1] - idx_base;
+
+            for(I at = start; at < end; ++at)
+            {
+                hdense_cpu[(hcsr_col_ind[at] - idx_base) + ld * row] = hcsr_val[at];
+            }
         }
     }
 
-    unit_check_general(m, n, ld, hdense_cpu.data(), hdense.data());
+    unit_check_general(1, nrows * ncols, 1, hdense_cpu.data(), hdense.data());
 
     CHECK_HIP_ERROR(hipFree(buffer));
     CHECK_HIPSPARSE_ERROR(hipsparseDestroySpMat(matA));
