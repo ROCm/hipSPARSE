@@ -39,9 +39,11 @@ int bsr2csr_M_range[]         = {0, 872, 21453};
 int bsr2csr_N_range[]         = {0, 12766, 29285};
 int bsr2csr_block_dim_range[] = {1, 2, 4, 7, 16};
 
-hipsparseIndexBase_t bsr2csr_csr_base_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+hipsparseIndexBase_t bsr2csr_csr_base_range[]
+    = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
-hipsparseIndexBase_t bsr2csr_bsr_base_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+hipsparseIndexBase_t bsr2csr_bsr_base_range[]
+    = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
 hipsparseDirection_t bsr2csr_dir_range[] = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COLUMN};
 

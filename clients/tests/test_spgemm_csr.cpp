@@ -50,13 +50,8 @@ hipsparseIndexBase_t spgemm_csr_idxbaseB_range[] = {HIPSPARSE_INDEX_BASE_ZERO};
 hipsparseIndexBase_t spgemm_csr_idxbaseC_range[] = {HIPSPARSE_INDEX_BASE_ZERO};
 #endif
 
-std::string spgemm_csr_bin[] = {"nos1.bin",
-                                "nos2.bin",
-                                "nos3.bin",
-                                "nos4.bin",
-                                "nos5.bin",
-                                "nos6.bin",
-                                "nos7.bin"};
+std::string spgemm_csr_bin[]
+    = {"nos1.bin", "nos2.bin", "nos3.bin", "nos4.bin", "nos5.bin", "nos6.bin", "nos7.bin"};
 
 class parameterized_spgemm_csr : public testing::TestWithParam<spgemm_csr_tuple>
 {

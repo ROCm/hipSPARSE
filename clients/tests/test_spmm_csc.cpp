@@ -63,12 +63,8 @@ hipsparseOrder_t     spmm_csc_orderC_range[] = {HIPSPARSE_ORDER_COL, HIPSPARSE_O
 hipsparseIndexBase_t spmm_csc_idxbase_range[]
     = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
-std::string spmm_csc_bin[] = {"nos1.bin",
-                              "nos3.bin",
-                              "nos5.bin",
-                              "nos7.bin",
-                              "Chebyshev4.bin",
-                              "shipsec1.bin"};
+std::string spmm_csc_bin[]
+    = {"nos1.bin", "nos3.bin", "nos5.bin", "nos7.bin", "Chebyshev4.bin", "shipsec1.bin"};
 
 class parameterized_spmm_csc : public testing::TestWithParam<spmm_csc_tuple>
 {
