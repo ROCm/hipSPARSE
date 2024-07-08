@@ -49,7 +49,7 @@ typedef std::tuple<int,
 
 int spmm_batched_coo_M_range[] = {50};
 int spmm_batched_coo_N_range[] = {5};
-int spmm_batched_coo_K_range[] = {84};
+int spmm_batched_coo_K_range[] = {23};
 
 std::vector<double> spmm_batched_coo_alpha_range = {2.0};
 std::vector<double> spmm_batched_coo_beta_range  = {1.0};
