@@ -185,26 +185,6 @@ hipsparseStatus_t testing_csrmv(Arguments argus)
         return HIPSPARSE_STATUS_INTERNAL_ERROR;
     }
 
-    // std::cout << "nrow: " << nrow << " ncol: " << ncol << " nnz: " << nnz << std::endl;
-    // std::cout << "A" << std::endl;
-    // for(int i = 0; i < nrow; i++)
-    // {
-    //     int start = hcsr_row_ptr[i] - idx_base;
-    //     int end = hcsr_row_ptr[i + 1] - idx_base;
-
-    //     std::vector<double> temp(ncol, 0.0);
-    //     for(int j = start; j < end; j++)
-    //     {
-    //         temp[hcsr_col_ind[j] - idx_base] = 1.0;//(double)hcsr_val[j];
-    //     }
-
-    //     for(size_t j = 0; j < temp.size(); j++)
-    //     {
-    //         std::cout << temp[j] << " ";
-    //     }
-    //     std::cout << "" << std::endl;
-    // }
-
     int m = (transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? nrow : ncol;
     int n = (transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? ncol : nrow;
 

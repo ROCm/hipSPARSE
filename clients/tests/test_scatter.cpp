@@ -25,6 +25,33 @@
 
 #include <hipsparse.h>
 
+typedef hipsparseIndexBase_t       base;
+typedef std::tuple<int, int, base> scatter_tuple;
+
+int scatter_N_range[]   = {12000, 15332, 22031};
+int scatter_nnz_range[] = {0, 5, 10, 500, 1000, 7111, 10000};
+
+base scatter_idx_base_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+
+class parameterized_scatter : public testing::TestWithParam<scatter_tuple>
+{
+protected:
+    parameterized_scatter() {}
+    virtual ~parameterized_scatter() {}
+    virtual void SetUp() {}
+    virtual void TearDown() {}
+};
+
+Arguments setup_scatter_arguments(scatter_tuple tup)
+{
+    Arguments arg;
+    arg.N        = std::get<0>(tup);
+    arg.nnz      = std::get<1>(tup);
+    arg.idx_base = std::get<2>(tup);
+    arg.timing   = 0;
+    return arg;
+}
+
 // Only run tests for CUDA 11.1 or greater
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(scatter_bad_arg, scatter_float)
@@ -32,15 +59,41 @@ TEST(scatter_bad_arg, scatter_float)
     testing_scatter_bad_arg();
 }
 
-TEST(scatter, scatter_i32_float)
+TEST_P(parameterized_scatter, scatter_i32_float)
 {
-    hipsparseStatus_t status = testing_scatter<int32_t, float>();
+    Arguments arg = setup_scatter_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_scatter<int32_t, float>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-TEST(scatter, scatter_i64_double)
+TEST_P(parameterized_scatter, scatter_i64_double)
 {
-    hipsparseStatus_t status = testing_scatter<int64_t, double>();
+    Arguments arg = setup_scatter_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_scatter<int64_t, double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+
+TEST_P(parameterized_scatter, scatter_i32_float_complex)
+{
+    Arguments arg = setup_scatter_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_scatter<int32_t, hipComplex>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+
+TEST_P(parameterized_scatter, scatter_i64_double_complex)
+{
+    Arguments arg = setup_scatter_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_scatter<int64_t, hipDoubleComplex>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
+
+INSTANTIATE_TEST_SUITE_P(scatter,
+                         parameterized_scatter,
+                         testing::Combine(testing::ValuesIn(scatter_N_range),
+                                          testing::ValuesIn(scatter_nnz_range),
+                                          testing::ValuesIn(scatter_idx_base_range)));
 #endif

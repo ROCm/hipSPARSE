@@ -1461,22 +1461,22 @@ hipsparseStatus_t testing_csrgemm2_a(Arguments argus)
 
         double cpu_time_used = get_time_us();
 
-        int nnz_C_gold = csrgemm2_nnz(M,
-                                      N,
-                                      K,
-                                      h_alpha,
-                                      hcsr_row_ptr_A.data(),
-                                      hcsr_col_ind_A.data(),
-                                      hcsr_row_ptr_B.data(),
-                                      hcsr_col_ind_B.data(),
-                                      (T*)nullptr,
-                                      hcsr_row_ptr_D.data(),
-                                      hcsr_col_ind_D.data(),
-                                      hcsr_row_ptr_C_gold.data(),
-                                      idx_base_A,
-                                      idx_base_B,
-                                      idx_base_C,
-                                      HIPSPARSE_INDEX_BASE_ZERO);
+        int nnz_C_gold = host_csrgemm2_nnz(M,
+                                           N,
+                                           K,
+                                           h_alpha,
+                                           hcsr_row_ptr_A.data(),
+                                           hcsr_col_ind_A.data(),
+                                           hcsr_row_ptr_B.data(),
+                                           hcsr_col_ind_B.data(),
+                                           (T*)nullptr,
+                                           hcsr_row_ptr_D.data(),
+                                           hcsr_col_ind_D.data(),
+                                           hcsr_row_ptr_C_gold.data(),
+                                           idx_base_A,
+                                           idx_base_B,
+                                           idx_base_C,
+                                           HIPSPARSE_INDEX_BASE_ZERO);
 
         // If nnz_C == 0, we are done
         if(nnz_C_gold == 0)
@@ -1487,27 +1487,27 @@ hipsparseStatus_t testing_csrgemm2_a(Arguments argus)
         std::vector<int> hcsr_col_ind_C_gold(nnz_C_gold);
         std::vector<T>   hcsr_val_C_gold(nnz_C_gold);
 
-        csrgemm2(M,
-                 N,
-                 K,
-                 h_alpha,
-                 hcsr_row_ptr_A.data(),
-                 hcsr_col_ind_A.data(),
-                 hcsr_val_A.data(),
-                 hcsr_row_ptr_B.data(),
-                 hcsr_col_ind_B.data(),
-                 hcsr_val_B.data(),
-                 (T*)nullptr,
-                 hcsr_row_ptr_D.data(),
-                 hcsr_col_ind_D.data(),
-                 hcsr_val_D.data(),
-                 hcsr_row_ptr_C_gold.data(),
-                 hcsr_col_ind_C_gold.data(),
-                 hcsr_val_C_gold.data(),
-                 idx_base_A,
-                 idx_base_B,
-                 idx_base_C,
-                 HIPSPARSE_INDEX_BASE_ZERO);
+        host_csrgemm2(M,
+                      N,
+                      K,
+                      h_alpha,
+                      hcsr_row_ptr_A.data(),
+                      hcsr_col_ind_A.data(),
+                      hcsr_val_A.data(),
+                      hcsr_row_ptr_B.data(),
+                      hcsr_col_ind_B.data(),
+                      hcsr_val_B.data(),
+                      (T*)nullptr,
+                      hcsr_row_ptr_D.data(),
+                      hcsr_col_ind_D.data(),
+                      hcsr_val_D.data(),
+                      hcsr_row_ptr_C_gold.data(),
+                      hcsr_col_ind_C_gold.data(),
+                      hcsr_val_C_gold.data(),
+                      idx_base_A,
+                      idx_base_B,
+                      idx_base_C,
+                      HIPSPARSE_INDEX_BASE_ZERO);
 
         cpu_time_used = get_time_us() - cpu_time_used;
 

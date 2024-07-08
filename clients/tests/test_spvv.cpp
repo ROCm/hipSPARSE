@@ -25,34 +25,75 @@
 
 #include <hipsparse.h>
 
-// Only run tests for CUDA 11.1 or greater
+typedef std::tuple<int, int, hipsparseIndexBase_t>    spvv_tuple;
+typedef std::tuple<hipsparseIndexBase_t, std::string> spvv_bin_tuple;
+
+int spvv_N_range[]   = {50, 750, 2135};
+int spvv_nnz_range[] = {5, 45};
+
+hipsparseIndexBase_t spvv_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+
+class parameterized_spvv : public testing::TestWithParam<spvv_tuple>
+{
+protected:
+    parameterized_spvv() {}
+    virtual ~parameterized_spvv() {}
+    virtual void SetUp() {}
+    virtual void TearDown() {}
+};
+
+Arguments setup_spvv_arguments(spvv_tuple tup)
+{
+    Arguments arg;
+    arg.N        = std::get<0>(tup);
+    arg.nnz      = std::get<1>(tup);
+    arg.idx_base = std::get<2>(tup);
+    arg.timing   = 0;
+    return arg;
+}
+
+// csr format not supported in cusparse
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(spvv_bad_arg, spvv_float)
 {
     testing_spvv_bad_arg();
 }
 
-TEST(spvv, spvv_i32_float)
+TEST_P(parameterized_spvv, spvv_i32_float)
 {
-    hipsparseStatus_t status = testing_spvv<int32_t, float>();
+    Arguments arg = setup_spvv_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_spvv<int32_t, float>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-TEST(spvv, spvv_i64_double)
+TEST_P(parameterized_spvv, spvv_i64_double)
 {
-    hipsparseStatus_t status = testing_spvv<int64_t, double>();
+    Arguments arg = setup_spvv_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_spvv<int64_t, double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-TEST(spvv, spvv_i32_hipFloatComplex)
+TEST_P(parameterized_spvv, spvv_i32_float_complex)
 {
-    hipsparseStatus_t status = testing_spvv<int32_t, hipComplex>();
+    Arguments arg = setup_spvv_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_spvv<int32_t, hipComplex>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-TEST(spvv, spvv_i64_hipDoubleComplex)
+TEST_P(parameterized_spvv, spvv_i64_double_complex)
 {
-    hipsparseStatus_t status = testing_spvv<int64_t, hipDoubleComplex>();
+    Arguments arg = setup_spvv_arguments(GetParam());
+
+    hipsparseStatus_t status = testing_spvv<int64_t, hipDoubleComplex>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
+
+INSTANTIATE_TEST_SUITE_P(spvv,
+                         parameterized_spvv,
+                         testing::Combine(testing::ValuesIn(spvv_N_range),
+                                          testing::ValuesIn(spvv_nnz_range),
+                                          testing::ValuesIn(spvv_idxbase_range)));
 #endif

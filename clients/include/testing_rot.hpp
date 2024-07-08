@@ -90,16 +90,14 @@ void testing_rot_bad_arg(void)
 }
 
 template <typename I, typename T>
-hipsparseStatus_t testing_rot(void)
+hipsparseStatus_t testing_rot(Arguments argus)
 {
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
-    int64_t size = 15332;
-    int64_t nnz  = 500;
-
-    T hc_coeff = make_DataType<T>(1.5);
-    T hs_coeff = make_DataType<T>(2.0);
-
-    hipsparseIndexBase_t idxBase = HIPSPARSE_INDEX_BASE_ZERO;
+    int64_t              size     = argus.N;
+    int64_t              nnz      = argus.nnz;
+    T                    hc_coeff = make_DataType<T>(argus.alpha);
+    T                    hs_coeff = make_DataType<T>(argus.beta);
+    hipsparseIndexBase_t idxBase  = argus.idx_base;
 
     // Index and data type
     hipsparseIndexType_t idxType  = getIndexType<I>();

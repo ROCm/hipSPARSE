@@ -83,13 +83,12 @@ void testing_scatter_bad_arg(void)
 }
 
 template <typename I, typename T>
-hipsparseStatus_t testing_scatter(void)
+hipsparseStatus_t testing_scatter(Arguments argus)
 {
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
-    int64_t size = 15332;
-    int64_t nnz  = 500;
-
-    hipsparseIndexBase_t idxBase = HIPSPARSE_INDEX_BASE_ZERO;
+    int64_t              size    = argus.N;
+    int64_t              nnz     = argus.nnz;
+    hipsparseIndexBase_t idxBase = argus.idx_base;
 
     // Index and data type
     hipsparseIndexType_t idxType  = getIndexType<I>();

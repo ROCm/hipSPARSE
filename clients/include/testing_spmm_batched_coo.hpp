@@ -172,7 +172,7 @@ void testing_spmm_batched_coo_bad_arg(void)
 }
 
 template <typename I, typename T>
-hipsparseStatus_t testing_spmm_batched_coo()
+hipsparseStatus_t testing_spmm_batched_coo(Arguments argus)
 {
 #ifdef __HIP_PLATFORM_NVIDIA__
     // do not test for bad args
@@ -180,12 +180,16 @@ hipsparseStatus_t testing_spmm_batched_coo()
 #endif
 
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
-    T                    h_alpha  = make_DataType<T>(2.0);
-    T                    h_beta   = make_DataType<T>(1.0);
-    hipsparseOperation_t transA   = HIPSPARSE_OPERATION_NON_TRANSPOSE;
-    hipsparseOperation_t transB   = HIPSPARSE_OPERATION_NON_TRANSPOSE;
-    hipsparseOrder_t     order    = HIPSPARSE_ORDER_COL;
-    hipsparseIndexBase_t idx_base = HIPSPARSE_INDEX_BASE_ZERO;
+    I                    m        = argus.M;
+    I                    n        = argus.N;
+    I                    k        = argus.K;
+    T                    h_alpha  = make_DataType<T>(argus.alpha);
+    T                    h_beta   = make_DataType<T>(argus.beta);
+    hipsparseOperation_t transA   = argus.transA;
+    hipsparseOperation_t transB   = argus.transB;
+    hipsparseOrder_t     orderB   = argus.orderB;
+    hipsparseOrder_t     orderC   = argus.orderC;
+    hipsparseIndexBase_t idx_base = argus.idx_base;
 
     I batch_count_A = 1;
     I batch_count_B = 10;
@@ -197,8 +201,14 @@ hipsparseStatus_t testing_spmm_batched_coo()
     hipsparseSpMMAlg_t alg = HIPSPARSE_COOMM_ALG1;
 #endif
 
-    // Matrices are stored at the same path in matrices directory
-    std::string filename = get_filename("nos3.bin");
+    std::string filename = argus.filename;
+
+#if(defined(CUDART_VERSION))
+    if(orderB != orderC || orderB != HIPSPARSE_ORDER_COL)
+    {
+        return HIPSPARSE_STATUS_SUCCESS;
+    }
+#endif
 
     // Index and data type
     hipsparseIndexType_t typeI = getIndexType<I>();
@@ -216,20 +226,25 @@ hipsparseStatus_t testing_spmm_batched_coo()
     // Initial Data on CPU
     srand(12345ULL);
 
-    I m;
-    I k;
-    I nnz;
-
-    if(read_bin_matrix(filename.c_str(), m, k, nnz, hrow_ptr, hcol_ind, hval, idx_base) != 0)
+    I nnz_A;
+    if(!generate_csr_matrix(filename,
+                            (transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? m : k,
+                            (transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? k : m,
+                            nnz_A,
+                            hrow_ptr,
+                            hcol_ind,
+                            hval,
+                            idx_base))
     {
-        fprintf(stderr, "Cannot open [read] %s\n", filename.c_str());
+        fprintf(stderr, "Cannot open [read] %s\ncol", filename.c_str());
         return HIPSPARSE_STATUS_INTERNAL_ERROR;
     }
 
-    std::vector<I> hrow_ind(nnz);
+    std::vector<I> hrow_ind(nnz_A);
 
     // Convert to COO
-    for(I i = 0; i < m; ++i)
+    I mk = (transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? m : k;
+    for(I i = 0; i < mk; ++i)
     {
         for(I j = hrow_ptr[i]; j < hrow_ptr[i + 1]; ++j)
         {
@@ -237,71 +252,123 @@ hipsparseStatus_t testing_spmm_batched_coo()
         }
     }
 
-    I n   = 5;
-    I ldb = k;
-    I ldc = m;
+    // Some matrix properties
+    I A_m = (transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? m : k;
+    I A_n = (transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? k : m;
+    I B_m = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? k : n;
+    I B_n = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? n : k;
+    I C_m = m;
+    I C_n = n;
 
-    I batch_stride_A = 0;
-    I batch_stride_B = k * n;
-    I batch_stride_C = m * n;
+    int ld_multiplier_B = 1;
+    int ld_multiplier_C = 1;
 
-    std::vector<T> hB(batch_count_B * k * n);
-    std::vector<T> hC_1(batch_count_C * m * n);
-    std::vector<T> hC_2(batch_count_C * m * n);
-    std::vector<T> hC_gold(batch_count_C * m * n);
+    int64_t ldb
+        = (orderB == HIPSPARSE_ORDER_COL)
+              ? ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? (int64_t(ld_multiplier_B) * k)
+                                                               : (int64_t(ld_multiplier_B) * n))
+              : ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? (int64_t(ld_multiplier_B) * n)
+                                                               : (int64_t(ld_multiplier_B) * k));
+    int64_t ldc = (orderC == HIPSPARSE_ORDER_COL) ? (int64_t(ld_multiplier_C) * m)
+                                                  : (int64_t(ld_multiplier_C) * n);
 
-    hipsparseInit<T>(hB, batch_count_B * k * n, 1);
-    hipsparseInit<T>(hC_1, batch_count_C * m * n, 1);
+    ldb = std::max(int64_t(1), ldb);
+    ldc = std::max(int64_t(1), ldc);
+
+    int64_t nrowB = (orderB == HIPSPARSE_ORDER_COL) ? ldb : B_m;
+    int64_t ncolB = (orderB == HIPSPARSE_ORDER_COL) ? B_n : ldb;
+    int64_t nrowC = (orderC == HIPSPARSE_ORDER_COL) ? ldc : C_m;
+    int64_t ncolC = (orderC == HIPSPARSE_ORDER_COL) ? C_n : ldc;
+
+    int64_t nnz_B = nrowB * ncolB;
+    int64_t nnz_C = nrowC * ncolC;
+
+    int64_t batch_stride_A = (batch_count_A > 1) ? nnz_A : 0;
+    int64_t batch_stride_B = (batch_count_B > 1) ? nnz_B : 0;
+    int64_t batch_stride_C = (batch_count_C > 1) ? nnz_C : 0;
+
+    // Allocate host memory for all batches of A matrix
+    std::vector<I> hcoo_row_ind(batch_count_A * nnz_A);
+    std::vector<I> hcoo_col_ind(batch_count_A * nnz_A);
+    std::vector<T> hcoo_val(batch_count_A * nnz_A);
+
+    for(I i = 0; i < batch_count_A; i++)
+    {
+        for(int64_t j = 0; j < nnz_A; j++)
+        {
+            hcoo_row_ind[nnz_A * i + j] = hrow_ind[j];
+            hcoo_col_ind[nnz_A * i + j] = hcol_ind[j];
+            hcoo_val[nnz_A * i + j]     = hval[j];
+        }
+    }
+
+    std::vector<T> hB(batch_count_B * nnz_B);
+    std::vector<T> hC_1(batch_count_C * nnz_C);
+    std::vector<T> hC_2(batch_count_C * nnz_C);
+    std::vector<T> hC_gold(batch_count_C * nnz_C);
+
+    hipsparseInit<T>(hB, batch_count_B * nnz_B, 1);
+    hipsparseInit<T>(hC_1, batch_count_C * nnz_C, 1);
 
     // copy vector is easy in STL; hC_gold = hC: save a copy in hy_gold which will be output of CPU
     hC_2    = hC_1;
     hC_gold = hC_1;
 
     // allocate memory on device
-    auto drow_managed = hipsparse_unique_ptr{device_malloc(sizeof(I) * nnz), device_free};
-    auto dcol_managed = hipsparse_unique_ptr{device_malloc(sizeof(I) * nnz), device_free};
-    auto dval_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
+    auto drow_managed
+        = hipsparse_unique_ptr{device_malloc(sizeof(I) * batch_count_A * nnz_A), device_free};
+    auto dcol_managed
+        = hipsparse_unique_ptr{device_malloc(sizeof(I) * batch_count_A * nnz_A), device_free};
+    auto dval_managed
+        = hipsparse_unique_ptr{device_malloc(sizeof(T) * batch_count_A * nnz_A), device_free};
     auto dB_managed
-        = hipsparse_unique_ptr{device_malloc(sizeof(T) * batch_count_B * k * n), device_free};
+        = hipsparse_unique_ptr{device_malloc(sizeof(T) * batch_count_B * nnz_B), device_free};
     auto dC_1_managed
-        = hipsparse_unique_ptr{device_malloc(sizeof(T) * batch_count_C * m * n), device_free};
+        = hipsparse_unique_ptr{device_malloc(sizeof(T) * batch_count_C * nnz_C), device_free};
     auto dC_2_managed
-        = hipsparse_unique_ptr{device_malloc(sizeof(T) * batch_count_C * m * n), device_free};
+        = hipsparse_unique_ptr{device_malloc(sizeof(T) * batch_count_C * nnz_C), device_free};
     auto d_alpha_managed = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
     auto d_beta_managed  = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
 
-    I* drow    = (I*)drow_managed.get();
-    I* dcol    = (I*)dcol_managed.get();
-    T* dval    = (T*)dval_managed.get();
-    T* dB      = (T*)dB_managed.get();
-    T* dC_1    = (T*)dC_1_managed.get();
-    T* dC_2    = (T*)dC_2_managed.get();
-    T* d_alpha = (T*)d_alpha_managed.get();
-    T* d_beta  = (T*)d_beta_managed.get();
+    I* dcoo_row_ind = (I*)drow_managed.get();
+    I* dcoo_col_ind = (I*)dcol_managed.get();
+    T* dcoo_val     = (T*)dval_managed.get();
+    T* dB           = (T*)dB_managed.get();
+    T* dC_1         = (T*)dC_1_managed.get();
+    T* dC_2         = (T*)dC_2_managed.get();
+    T* d_alpha      = (T*)d_alpha_managed.get();
+    T* d_beta       = (T*)d_beta_managed.get();
 
     // copy data from CPU to device
-    CHECK_HIP_ERROR(hipMemcpy(drow, hrow_ind.data(), sizeof(I) * nnz, hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(hipMemcpy(dcol, hcol_ind.data(), sizeof(I) * nnz, hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(hipMemcpy(dval, hval.data(), sizeof(T) * nnz, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(dcoo_row_ind,
+                              hcoo_row_ind.data(),
+                              sizeof(I) * batch_count_A * nnz_A,
+                              hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(dcoo_col_ind,
+                              hcoo_col_ind.data(),
+                              sizeof(I) * batch_count_A * nnz_A,
+                              hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(
+        dcoo_val, hcoo_val.data(), sizeof(T) * batch_count_A * nnz_A, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(
-        hipMemcpy(dB, hB.data(), sizeof(T) * batch_count_B * k * n, hipMemcpyHostToDevice));
+        hipMemcpy(dB, hB.data(), sizeof(T) * batch_count_B * nnz_B, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(
-        hipMemcpy(dC_1, hC_1.data(), sizeof(T) * batch_count_C * m * n, hipMemcpyHostToDevice));
+        hipMemcpy(dC_1, hC_1.data(), sizeof(T) * batch_count_C * nnz_C, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(
-        hipMemcpy(dC_2, hC_2.data(), sizeof(T) * batch_count_C * m * n, hipMemcpyHostToDevice));
+        hipMemcpy(dC_2, hC_2.data(), sizeof(T) * batch_count_C * nnz_C, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(d_alpha, &h_alpha, sizeof(T), hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(d_beta, &h_beta, sizeof(T), hipMemcpyHostToDevice));
 
     // Create matrices
     hipsparseSpMatDescr_t A;
-    CHECK_HIPSPARSE_ERROR(
-        hipsparseCreateCoo(&A, m, k, nnz, drow, dcol, dval, typeI, idx_base, typeT));
+    CHECK_HIPSPARSE_ERROR(hipsparseCreateCoo(
+        &A, A_m, A_n, nnz_A, dcoo_row_ind, dcoo_col_ind, dcoo_val, typeI, idx_base, typeT));
 
     // Create dense matrices
     hipsparseDnMatDescr_t B, C1, C2;
-    CHECK_HIPSPARSE_ERROR(hipsparseCreateDnMat(&B, k, n, ldb, dB, typeT, order));
-    CHECK_HIPSPARSE_ERROR(hipsparseCreateDnMat(&C1, m, n, ldc, dC_1, typeT, order));
-    CHECK_HIPSPARSE_ERROR(hipsparseCreateDnMat(&C2, m, n, ldc, dC_2, typeT, order));
+    CHECK_HIPSPARSE_ERROR(hipsparseCreateDnMat(&B, B_m, B_n, ldb, dB, typeT, orderB));
+    CHECK_HIPSPARSE_ERROR(hipsparseCreateDnMat(&C1, C_m, C_n, ldc, dC_1, typeT, orderC));
+    CHECK_HIPSPARSE_ERROR(hipsparseCreateDnMat(&C2, C_m, C_n, ldc, dC_2, typeT, orderC));
 
     CHECK_HIPSPARSE_ERROR(hipsparseCooSetStridedBatch(A, batch_count_A, batch_stride_A));
     CHECK_HIPSPARSE_ERROR(hipsparseDnMatSetStridedBatch(B, batch_count_B, batch_stride_B));
@@ -344,39 +411,42 @@ hipsparseStatus_t testing_spmm_batched_coo()
 
     // copy output from device to CPU
     CHECK_HIP_ERROR(
-        hipMemcpy(hC_1.data(), dC_1, sizeof(T) * batch_count_C * m * n, hipMemcpyDeviceToHost));
+        hipMemcpy(hC_1.data(), dC_1, sizeof(T) * batch_count_C * nnz_C, hipMemcpyDeviceToHost));
     CHECK_HIP_ERROR(
-        hipMemcpy(hC_2.data(), dC_2, sizeof(T) * batch_count_C * m * n, hipMemcpyDeviceToHost));
+        hipMemcpy(hC_2.data(), dC_2, sizeof(T) * batch_count_C * nnz_C, hipMemcpyDeviceToHost));
 
     // CPU
     double cpu_time_used = get_time_us();
 
-    host_coomm_batched(m,
+    host_coomm_batched(A_m,
                        n,
-                       nnz,
+                       A_n,
+                       nnz_A,
                        batch_count_A,
-                       batch_stride_A,
+                       (I)batch_stride_A,
+                       transA,
                        transB,
                        h_alpha,
                        hrow_ind.data(),
                        hcol_ind.data(),
                        hval.data(),
                        hB.data(),
-                       ldb,
+                       (I)ldb,
                        batch_count_B,
-                       batch_stride_B,
+                       (I)batch_stride_B,
+                       orderB,
                        h_beta,
                        hC_gold.data(),
-                       ldc,
+                       (I)ldc,
                        batch_count_C,
-                       batch_stride_C,
-                       order,
+                       (I)batch_stride_C,
+                       orderC,
                        idx_base);
 
     cpu_time_used = get_time_us() - cpu_time_used;
 
-    unit_check_near(1, batch_count_C * m * n, 1, hC_gold.data(), hC_1.data());
-    unit_check_near(1, batch_count_C * m * n, 1, hC_gold.data(), hC_2.data());
+    unit_check_near(1, batch_count_C * nnz_C, 1, hC_gold.data(), hC_1.data());
+    unit_check_near(1, batch_count_C * nnz_C, 1, hC_gold.data(), hC_2.data());
 
     CHECK_HIP_ERROR(hipFree(buffer));
     CHECK_HIPSPARSE_ERROR(hipsparseDestroySpMat(A));

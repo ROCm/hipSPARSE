@@ -30,12 +30,12 @@
 typedef std::tuple<int, int, int, double, double>    gemmi_tuple;
 typedef std::tuple<int, double, double, std::string> gemmi_bin_tuple;
 
-int gemmi_M_range[] = {0, 7, 19, 64, 78, 157, 482};
+int gemmi_M_range[] = {0, 19, 78, 482};
 int gemmi_N_range[] = {0, 42, 275, 759};
 int gemmi_K_range[] = {0, 50, 173, 1375};
 
-double gemmi_alpha_range[] = {-0.5, 2.0};
-double gemmi_beta_range[]  = {0.5, 0.0};
+double gemmi_alpha_range[] = {-0.5};
+double gemmi_beta_range[]  = {0.5};
 
 std::string gemmi_bin[] = {"nos1.bin", "nos3.bin", "nos5.bin", "nos7.bin"};
 

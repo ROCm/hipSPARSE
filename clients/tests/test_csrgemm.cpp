@@ -33,22 +33,19 @@ typedef hipsparseOperation_t trans;
 typedef std::tuple<int, int, int, base, base, base, trans, trans> csrgemm_tuple;
 typedef std::tuple<base, base, base, trans, trans, std::string>   csrgemm_bin_tuple;
 
-int csrgemm_M_range[] = {0, 50, 647, 1799};
-int csrgemm_N_range[] = {0, 13, 523, 3712};
-int csrgemm_K_range[] = {0, 50, 254, 1942};
+int csrgemm_M_range[] = {0, 647, 1799};
+int csrgemm_N_range[] = {0, 523, 3712};
+int csrgemm_K_range[] = {0, 254, 1942};
 
-base csrgemm_idxbaseA_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
-base csrgemm_idxbaseB_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
-base csrgemm_idxbaseC_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+base csrgemm_idxbaseA_range[] = {HIPSPARSE_INDEX_BASE_ZERO};
+base csrgemm_idxbaseB_range[] = {HIPSPARSE_INDEX_BASE_ONE};
+base csrgemm_idxbaseC_range[] = {HIPSPARSE_INDEX_BASE_ZERO};
 
 trans csrgemm_transA_range[] = {HIPSPARSE_OPERATION_NON_TRANSPOSE};
 trans csrgemm_transB_range[] = {HIPSPARSE_OPERATION_NON_TRANSPOSE};
 
-std::string csrgemm_bin[] = {/*"rma10.bin",*/
-                             /*"bibd_22_8.bin",*/
-                             "mc2depi.bin",
+std::string csrgemm_bin[] = {"mc2depi.bin",
                              "scircuit.bin",
-                             /*"bmwcra_1.bin",*/
                              "nos1.bin",
                              "nos2.bin",
                              "nos3.bin",

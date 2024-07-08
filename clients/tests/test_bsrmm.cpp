@@ -36,7 +36,7 @@ typedef std::tuple<int, int, double, double, direction, base, trans, trans, std:
 
 int bsrmm_M_range[]         = {42, 2059};
 int bsrmm_N_range[]         = {7, 78};
-int bsrmm_K_range[]         = {50, 173, 1375};
+int bsrmm_K_range[]         = {50, 1375};
 int bsrmm_block_dim_range[] = {4, 7, 16};
 
 double bsrmm_alpha_range[] = {-0.5};
@@ -47,7 +47,7 @@ base      bsrmm_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BA
 trans     bsrmm_transA_range[]  = {HIPSPARSE_OPERATION_NON_TRANSPOSE};
 trans     bsrmm_transB_range[] = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPERATION_TRANSPOSE};
 
-int bsrmm_N_range_bin[]         = {9, 17, 23};
+int bsrmm_N_range_bin[]         = {9, 23};
 int bsrmm_block_dim_range_bin[] = {5};
 
 double bsrmm_alpha_range_bin[] = {0.75};

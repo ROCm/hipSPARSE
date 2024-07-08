@@ -509,6 +509,7 @@ hipsparseStatus_t testing_csrmm(Arguments argus)
                    hcsr_valA.data(),
                    hB.data(),
                    ldb,
+                   HIPSPARSE_ORDER_COL,
                    h_beta,
                    hC_gold.data(),
                    ldc,
