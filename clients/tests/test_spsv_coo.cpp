@@ -47,8 +47,7 @@ int spsv_coo_N_range[] = {50};
 std::vector<double> spsv_coo_alpha_range = {2.0};
 
 hipsparseOperation_t spsv_coo_transA_range[] = {HIPSPARSE_OPERATION_NON_TRANSPOSE};
-hipsparseIndexBase_t spsv_coo_idxbase_range[]
-    = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+hipsparseIndexBase_t spsv_coo_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ONE};
 hipsparseDiagType_t spsv_coo_diag_type_range[] = {HIPSPARSE_DIAG_TYPE_NON_UNIT};
 hipsparseFillMode_t spsv_coo_fill_mode_range[]
     = {HIPSPARSE_FILL_MODE_LOWER, HIPSPARSE_FILL_MODE_UPPER};

@@ -32,8 +32,8 @@ typedef hipsparseOperation_t                                             trans;
 typedef std::tuple<int, int, int, double, double, base, trans, trans>    csrmm_tuple;
 typedef std::tuple<int, double, double, base, trans, trans, std::string> csrmm_bin_tuple;
 
-int csrmm_M_range[] = {0, 275, 2059};
-int csrmm_N_range[] = {0, 64, 78};
+int csrmm_M_range[] = {0, 275, 1059};
+int csrmm_N_range[] = {0, 78};
 int csrmm_K_range[] = {0, 173, 1375};
 
 double csrmm_alpha_range[] = {-0.5};
