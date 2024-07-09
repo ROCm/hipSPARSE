@@ -25,13 +25,13 @@
 #ifndef TESTING_AXPYI_HPP
 #define TESTING_AXPYI_HPP
 
-#include "hipsparse.hpp"
-#include "hipsparse_test_unique_ptr.hpp"
-#include "unit.hpp"
 #include "flops.hpp"
 #include "gbyte.hpp"
-#include "utility.hpp"
+#include "hipsparse.hpp"
 #include "hipsparse_arguments.hpp"
+#include "hipsparse_test_unique_ptr.hpp"
+#include "unit.hpp"
+#include "utility.hpp"
 
 #include <hipsparse.h>
 
@@ -66,11 +66,20 @@ void testing_axpyi_bad_arg(void)
         return;
     }
 
-    verify_hipsparse_status_invalid_pointer(hipsparseXaxpyi(handle, nnz, &alpha, dxVal, nullptr, dy, idx_base), "Error: xInd is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXaxpyi(handle, nnz, &alpha, nullptr, dxInd, dy, idx_base), "Error: xVal is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXaxpyi(handle, nnz, &alpha, dxVal, dxInd, nullptr, idx_base), "Error: y is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXaxpyi(handle, nnz, d_alpha_null, dxVal, dxInd, dy, idx_base), "Error: alpha is nullptr");
-    verify_hipsparse_status_invalid_handle(hipsparseXaxpyi(nullptr, nnz, &alpha, dxVal, dxInd, dy, idx_base));
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXaxpyi(handle, nnz, &alpha, dxVal, nullptr, dy, idx_base),
+        "Error: xInd is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXaxpyi(handle, nnz, &alpha, nullptr, dxInd, dy, idx_base),
+        "Error: xVal is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXaxpyi(handle, nnz, &alpha, dxVal, dxInd, nullptr, idx_base),
+        "Error: y is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXaxpyi(handle, nnz, d_alpha_null, dxVal, dxInd, dy, idx_base),
+        "Error: alpha is nullptr");
+    verify_hipsparse_status_invalid_handle(
+        hipsparseXaxpyi(nullptr, nnz, &alpha, dxVal, dxInd, dy, idx_base));
 
     // // testing for(nullptr == dxInd)
     // {
@@ -195,7 +204,8 @@ hipsparseStatus_t testing_axpyi(Arguments argus)
         // Warm up
         for(int iter = 0; iter < number_cold_calls; ++iter)
         {
-            CHECK_HIPSPARSE_ERROR(hipsparseXaxpyi(handle, nnz, &h_alpha, dxVal, dxInd, dy_1, idx_base));
+            CHECK_HIPSPARSE_ERROR(
+                hipsparseXaxpyi(handle, nnz, &h_alpha, dxVal, dxInd, dy_1, idx_base));
         }
 
         double gpu_time_used = get_time_us();
@@ -203,7 +213,8 @@ hipsparseStatus_t testing_axpyi(Arguments argus)
         // Performance run
         for(int iter = 0; iter < number_hot_calls; ++iter)
         {
-            CHECK_HIPSPARSE_ERROR(hipsparseXaxpyi(handle, nnz, &h_alpha, dxVal, dxInd, dy_1, idx_base));
+            CHECK_HIPSPARSE_ERROR(
+                hipsparseXaxpyi(handle, nnz, &h_alpha, dxVal, dxInd, dy_1, idx_base));
         }
 
         gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
@@ -214,7 +225,8 @@ hipsparseStatus_t testing_axpyi(Arguments argus)
         double gpu_gbyte  = get_gpu_gbyte(gpu_time_used, gbyte_count);
         double gpu_gflops = get_gpu_gflops(gpu_time_used, gflop_count);
 
-        std::cout << "GFLOPS/s: " << gpu_gflops << " GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
+        std::cout << "GFLOPS/s: " << gpu_gflops << " GBytes/s: " << gpu_gbyte
+                  << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
     }
 
 #endif
