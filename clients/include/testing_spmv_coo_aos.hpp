@@ -25,10 +25,10 @@
 #ifndef TESTING_SPMV_COO_AOS_HPP
 #define TESTING_SPMV_COO_AOS_HPP
 
+#include "hipsparse_arguments.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
-#include "hipsparse_arguments.hpp"
 
 #include <hipsparse.h>
 #include <string>

@@ -25,12 +25,12 @@
 #ifndef TESTING_SPARSE_TO_DENSE_CSR_HPP
 #define TESTING_SPARSE_TO_DENSE_CSR_HPP
 
-#include "hipsparse_test_unique_ptr.hpp"
 #include "flops.hpp"
 #include "gbyte.hpp"
+#include "hipsparse_arguments.hpp"
+#include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
-#include "hipsparse_arguments.hpp"
 
 #include <hipsparse.h>
 #include <string>
@@ -278,9 +278,8 @@ hipsparseStatus_t testing_sparse_to_dense_csr(Arguments argus)
         for(int iter = 0; iter < number_cold_calls; ++iter)
         {
             CHECK_HIPSPARSE_ERROR(hipsparseSparseToDense(handle, matA, matB, alg, buffer));
-
         }
-         
+
         double gpu_time_used = get_time_us();
 
         // Performance run
@@ -292,9 +291,10 @@ hipsparseStatus_t testing_sparse_to_dense_csr(Arguments argus)
         gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
 
         double gbyte_count = csx2dense_gbyte_count<HIPSPARSE_DIRECTION_ROW, T>(m, n, nnz);
-        double gpu_gbyte = get_gpu_gbyte(gpu_time_used, gbyte_count);
+        double gpu_gbyte   = get_gpu_gbyte(gpu_time_used, gbyte_count);
 
-        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
+        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used)
+                  << std::endl;
     }
 
     CHECK_HIP_ERROR(hipFree(buffer));

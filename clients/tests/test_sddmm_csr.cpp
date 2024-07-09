@@ -89,32 +89,32 @@ protected:
 Arguments setup_sddmm_csr_arguments(sddmm_csr_tuple tup)
 {
     Arguments arg;
-    arg.M        = std::get<0>(tup);
-    arg.N        = std::get<1>(tup);
-    arg.K        = std::get<2>(tup);
-    arg.alpha    = std::get<3>(tup);
-    arg.beta     = std::get<4>(tup);
-    arg.transA   = std::get<5>(tup);
-    arg.transB   = std::get<6>(tup);
-    arg.orderA   = std::get<7>(tup);
-    arg.baseA = std::get<8>(tup);
-    arg.timing   = 0;
+    arg.M      = std::get<0>(tup);
+    arg.N      = std::get<1>(tup);
+    arg.K      = std::get<2>(tup);
+    arg.alpha  = std::get<3>(tup);
+    arg.beta   = std::get<4>(tup);
+    arg.transA = std::get<5>(tup);
+    arg.transB = std::get<6>(tup);
+    arg.orderA = std::get<7>(tup);
+    arg.baseA  = std::get<8>(tup);
+    arg.timing = 0;
     return arg;
 }
 
 Arguments setup_sddmm_csr_arguments(sddmm_csr_bin_tuple tup)
 {
     Arguments arg;
-    arg.M        = -99;
-    arg.N        = -99;
-    arg.K        = std::get<0>(tup);
-    arg.alpha    = std::get<1>(tup);
-    arg.beta     = std::get<2>(tup);
-    arg.transA   = std::get<3>(tup);
-    arg.transB   = std::get<4>(tup);
-    arg.orderA   = std::get<5>(tup);
-    arg.baseA = std::get<6>(tup);
-    arg.timing   = 0;
+    arg.M      = -99;
+    arg.N      = -99;
+    arg.K      = std::get<0>(tup);
+    arg.alpha  = std::get<1>(tup);
+    arg.beta   = std::get<2>(tup);
+    arg.transA = std::get<3>(tup);
+    arg.transB = std::get<4>(tup);
+    arg.orderA = std::get<5>(tup);
+    arg.baseA  = std::get<6>(tup);
+    arg.timing = 0;
 
     // Determine absolute path of test matrix
     std::string bin_file = std::get<7>(tup);

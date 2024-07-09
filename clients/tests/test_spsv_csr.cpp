@@ -21,8 +21,8 @@
  *
  * ************************************************************************ */
 
-#include "testing_spsv_csr.hpp"
 #include "hipsparse_arguments.hpp"
+#include "testing_spsv_csr.hpp"
 
 #include <hipsparse.h>
 
@@ -87,7 +87,7 @@ Arguments setup_spsv_csr_arguments(spsv_csr_tuple tup)
     arg.N         = std::get<1>(tup);
     arg.alpha     = std::get<2>(tup);
     arg.transA    = std::get<3>(tup);
-    arg.baseA  = std::get<4>(tup);
+    arg.baseA     = std::get<4>(tup);
     arg.diag_type = std::get<5>(tup);
     arg.fill_mode = std::get<6>(tup);
     arg.timing    = 0;
@@ -99,7 +99,7 @@ Arguments setup_spsv_csr_arguments(spsv_csr_bin_tuple tup)
     Arguments arg;
     arg.alpha     = std::get<0>(tup);
     arg.transA    = std::get<1>(tup);
-    arg.baseA  = std::get<2>(tup);
+    arg.baseA     = std::get<2>(tup);
     arg.diag_type = std::get<3>(tup);
     arg.fill_mode = std::get<4>(tup);
     arg.timing    = 0;

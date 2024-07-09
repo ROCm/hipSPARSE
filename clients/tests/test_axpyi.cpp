@@ -49,11 +49,11 @@ protected:
 Arguments setup_axpyi_arguments(axpyi_tuple tup)
 {
     Arguments arg;
-    arg.N        = std::get<0>(tup);
-    arg.nnz      = std::get<1>(tup);
-    arg.alpha    = std::get<2>(tup);
-    arg.baseA = std::get<3>(tup);
-    arg.timing   = 0;
+    arg.N      = std::get<0>(tup);
+    arg.nnz    = std::get<1>(tup);
+    arg.alpha  = std::get<2>(tup);
+    arg.baseA  = std::get<3>(tup);
+    arg.timing = 0;
     return arg;
 }
 

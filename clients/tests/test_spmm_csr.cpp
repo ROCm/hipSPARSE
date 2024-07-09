@@ -21,8 +21,8 @@
  *
  * ************************************************************************ */
 
-#include "testing_spmm_csr.hpp"
 #include "hipsparse_arguments.hpp"
+#include "testing_spmm_csr.hpp"
 
 #include <hipsparse.h>
 
@@ -87,34 +87,34 @@ protected:
 Arguments setup_spmm_csr_arguments(spmm_csr_tuple tup)
 {
     Arguments arg;
-    arg.M        = std::get<0>(tup);
-    arg.N        = std::get<1>(tup);
-    arg.K        = std::get<2>(tup);
-    arg.alpha    = std::get<3>(tup);
-    arg.beta     = std::get<4>(tup);
-    arg.transA   = std::get<5>(tup);
-    arg.transB   = std::get<6>(tup);
-    arg.orderB   = std::get<7>(tup);
-    arg.orderC   = std::get<8>(tup);
-    arg.baseA = std::get<9>(tup);
-    arg.timing   = 0;
+    arg.M      = std::get<0>(tup);
+    arg.N      = std::get<1>(tup);
+    arg.K      = std::get<2>(tup);
+    arg.alpha  = std::get<3>(tup);
+    arg.beta   = std::get<4>(tup);
+    arg.transA = std::get<5>(tup);
+    arg.transB = std::get<6>(tup);
+    arg.orderB = std::get<7>(tup);
+    arg.orderC = std::get<8>(tup);
+    arg.baseA  = std::get<9>(tup);
+    arg.timing = 0;
     return arg;
 }
 
 Arguments setup_spmm_csr_arguments(spmm_csr_bin_tuple tup)
 {
     Arguments arg;
-    arg.M        = -99;
-    arg.N        = std::get<0>(tup);
-    arg.K        = -99;
-    arg.alpha    = std::get<1>(tup);
-    arg.beta     = std::get<2>(tup);
-    arg.transA   = std::get<3>(tup);
-    arg.transB   = std::get<4>(tup);
-    arg.orderB   = std::get<5>(tup);
-    arg.orderC   = std::get<6>(tup);
-    arg.baseA = std::get<7>(tup);
-    arg.timing   = 0;
+    arg.M      = -99;
+    arg.N      = std::get<0>(tup);
+    arg.K      = -99;
+    arg.alpha  = std::get<1>(tup);
+    arg.beta   = std::get<2>(tup);
+    arg.transA = std::get<3>(tup);
+    arg.transB = std::get<4>(tup);
+    arg.orderB = std::get<5>(tup);
+    arg.orderC = std::get<6>(tup);
+    arg.baseA  = std::get<7>(tup);
+    arg.timing = 0;
 
     // Determine absolute path of test matrix
     std::string bin_file = std::get<8>(tup);

@@ -1100,10 +1100,16 @@ bool generate_csr_matrix(const std::string    filename,
         }
         else if(extension == "mtx")
         {
-            int64_t nnz_count;
+            int64_t        nnz_count;
             std::vector<J> coo_row_ind;
-            if(read_mtx_matrix(
-                   filename.c_str(), nrow, ncol, nnz_count, coo_row_ind, csr_col_ind, csr_val, idx_base)
+            if(read_mtx_matrix(filename.c_str(),
+                               nrow,
+                               ncol,
+                               nnz_count,
+                               coo_row_ind,
+                               csr_col_ind,
+                               csr_val,
+                               idx_base)
                == 0)
             {
                 if(nnz_count < std::numeric_limits<I>::max())
@@ -1185,8 +1191,14 @@ bool generate_coo_matrix(const std::string    filename,
         else if(extension == "mtx")
         {
             int64_t nnz_count;
-            if(read_mtx_matrix(
-                   filename.c_str(), nrow, ncol, nnz_count, coo_row_ind, coo_col_ind, coo_val, idx_base)
+            if(read_mtx_matrix(filename.c_str(),
+                               nrow,
+                               ncol,
+                               nnz_count,
+                               coo_row_ind,
+                               coo_col_ind,
+                               coo_val,
+                               idx_base)
                == 0)
             {
                 if(nnz_count < std::numeric_limits<I>::max())
@@ -6770,7 +6782,7 @@ inline void missing_file_error_message(const char* filename)
 
 static const char* s_hipsparse_clients_matrices_dir = nullptr;
 
-inline const char*        get_hipsparse_clients_matrices_dir()
+inline const char* get_hipsparse_clients_matrices_dir()
 {
     return s_hipsparse_clients_matrices_dir;
 }

@@ -25,13 +25,13 @@
 #ifndef TESTING_CSRSM2_HPP
 #define TESTING_CSRSM2_HPP
 
-#include "hipsparse.hpp"
-#include "hipsparse_test_unique_ptr.hpp"
 #include "flops.hpp"
 #include "gbyte.hpp"
+#include "hipsparse.hpp"
+#include "hipsparse_arguments.hpp"
+#include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
-#include "hipsparse_arguments.hpp"
 
 #include <algorithm>
 #include <cmath>
@@ -892,7 +892,7 @@ hipsparseStatus_t testing_csrsm2(Arguments argus)
     if(h_analysis_pivot_1 != -1)
     {
         verify_hipsparse_status_zero_pivot(status_analysis_1,
-                                            "expected HIPSPARSE_STATUS_ZERO_PIVOT");
+                                           "expected HIPSPARSE_STATUS_ZERO_PIVOT");
     }
 
     // csrsm2 analysis - device mode
@@ -920,7 +920,7 @@ hipsparseStatus_t testing_csrsm2(Arguments argus)
     if(h_analysis_pivot_1 != -1)
     {
         verify_hipsparse_status_zero_pivot(status_analysis_2,
-                                            "expected HIPSPARSE_STATUS_ZERO_PIVOT");
+                                           "expected HIPSPARSE_STATUS_ZERO_PIVOT");
     }
 
     if(argus.unit_check)
@@ -1033,22 +1033,22 @@ hipsparseStatus_t testing_csrsm2(Arguments argus)
         for(int iter = 0; iter < number_cold_calls; ++iter)
         {
             CHECK_HIPSPARSE_ERROR(hipsparseXcsrsm2_solve(handle,
-                                                     0,
-                                                     transA,
-                                                     transB,
-                                                     m,
-                                                     nrhs,
-                                                     nnz,
-                                                     &h_alpha,
-                                                     descr,
-                                                     dval,
-                                                     dptr,
-                                                     dcol,
-                                                     dB_1,
-                                                     ldb,
-                                                     info,
-                                                     policy,
-                                                     dbuffer));
+                                                         0,
+                                                         transA,
+                                                         transB,
+                                                         m,
+                                                         nrhs,
+                                                         nnz,
+                                                         &h_alpha,
+                                                         descr,
+                                                         dval,
+                                                         dptr,
+                                                         dcol,
+                                                         dB_1,
+                                                         ldb,
+                                                         info,
+                                                         policy,
+                                                         dbuffer));
         }
 
         double gpu_time_used = get_time_us();
@@ -1057,22 +1057,22 @@ hipsparseStatus_t testing_csrsm2(Arguments argus)
         for(int iter = 0; iter < number_hot_calls; ++iter)
         {
             CHECK_HIPSPARSE_ERROR(hipsparseXcsrsm2_solve(handle,
-                                                     0,
-                                                     transA,
-                                                     transB,
-                                                     m,
-                                                     nrhs,
-                                                     nnz,
-                                                     &h_alpha,
-                                                     descr,
-                                                     dval,
-                                                     dptr,
-                                                     dcol,
-                                                     dB_1,
-                                                     ldb,
-                                                     info,
-                                                     policy,
-                                                     dbuffer));
+                                                         0,
+                                                         transA,
+                                                         transB,
+                                                         m,
+                                                         nrhs,
+                                                         nnz,
+                                                         &h_alpha,
+                                                         descr,
+                                                         dval,
+                                                         dptr,
+                                                         dcol,
+                                                         dB_1,
+                                                         ldb,
+                                                         info,
+                                                         policy,
+                                                         dbuffer));
         }
 
         gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
@@ -1083,7 +1083,8 @@ hipsparseStatus_t testing_csrsm2(Arguments argus)
         double gpu_gflops = get_gpu_gflops(gpu_time_used, gflop_count);
         double gpu_gbyte  = get_gpu_gbyte(gpu_time_used, gbyte_count);
 
-        std::cout << "GFLOPS/s: " << gpu_gflops << " GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
+        std::cout << "GFLOPS/s: " << gpu_gflops << " GBytes/s: " << gpu_gbyte
+                  << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
     }
 #endif
 

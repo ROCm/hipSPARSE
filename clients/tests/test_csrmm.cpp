@@ -41,11 +41,11 @@ double csrmm_beta_range[]  = {0.5};
 
 base  csrmm_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 trans csrmm_transA_range[]  = {HIPSPARSE_OPERATION_NON_TRANSPOSE,
-                              HIPSPARSE_OPERATION_TRANSPOSE,
-                              HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE};
+                               HIPSPARSE_OPERATION_TRANSPOSE,
+                               HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE};
 trans csrmm_transB_range[]  = {HIPSPARSE_OPERATION_NON_TRANSPOSE,
-                              HIPSPARSE_OPERATION_TRANSPOSE,
-                              HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE};
+                               HIPSPARSE_OPERATION_TRANSPOSE,
+                               HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE};
 
 std::string csrmm_bin[] = {"rma10.bin", "nos3.bin", "nos5.bin", "nos7.bin"};
 
@@ -70,30 +70,30 @@ protected:
 Arguments setup_csrmm_arguments(csrmm_tuple tup)
 {
     Arguments arg;
-    arg.M        = std::get<0>(tup);
-    arg.N        = std::get<1>(tup);
-    arg.K        = std::get<2>(tup);
-    arg.alpha    = std::get<3>(tup);
-    arg.beta     = std::get<4>(tup);
-    arg.baseA = std::get<5>(tup);
-    arg.transA   = std::get<6>(tup);
-    arg.transB   = std::get<7>(tup);
-    arg.timing   = 0;
+    arg.M      = std::get<0>(tup);
+    arg.N      = std::get<1>(tup);
+    arg.K      = std::get<2>(tup);
+    arg.alpha  = std::get<3>(tup);
+    arg.beta   = std::get<4>(tup);
+    arg.baseA  = std::get<5>(tup);
+    arg.transA = std::get<6>(tup);
+    arg.transB = std::get<7>(tup);
+    arg.timing = 0;
     return arg;
 }
 
 Arguments setup_csrmm_arguments(csrmm_bin_tuple tup)
 {
     Arguments arg;
-    arg.M        = -99;
-    arg.N        = std::get<0>(tup);
-    arg.K        = -99;
-    arg.alpha    = std::get<1>(tup);
-    arg.beta     = std::get<2>(tup);
-    arg.baseA = std::get<3>(tup);
-    arg.transA   = std::get<4>(tup);
-    arg.transB   = std::get<5>(tup);
-    arg.timing   = 0;
+    arg.M      = -99;
+    arg.N      = std::get<0>(tup);
+    arg.K      = -99;
+    arg.alpha  = std::get<1>(tup);
+    arg.beta   = std::get<2>(tup);
+    arg.baseA  = std::get<3>(tup);
+    arg.transA = std::get<4>(tup);
+    arg.transB = std::get<5>(tup);
+    arg.timing = 0;
 
     // Determine absolute path of test matrix
     std::string bin_file = std::get<6>(tup);

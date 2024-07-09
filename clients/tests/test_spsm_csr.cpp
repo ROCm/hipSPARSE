@@ -91,7 +91,7 @@ Arguments setup_spsm_csr_arguments(spsm_csr_tuple tup)
     arg.transB    = std::get<4>(tup);
     arg.orderB    = std::get<5>(tup);
     arg.orderC    = std::get<6>(tup);
-    arg.baseA  = std::get<7>(tup);
+    arg.baseA     = std::get<7>(tup);
     arg.diag_type = std::get<8>(tup);
     arg.fill_mode = std::get<9>(tup);
     arg.timing    = 0;
@@ -106,7 +106,7 @@ Arguments setup_spsm_csr_arguments(spsm_csr_bin_tuple tup)
     arg.transB    = std::get<2>(tup);
     arg.orderB    = std::get<3>(tup);
     arg.orderC    = std::get<4>(tup);
-    arg.baseA  = std::get<5>(tup);
+    arg.baseA     = std::get<5>(tup);
     arg.diag_type = std::get<6>(tup);
     arg.fill_mode = std::get<7>(tup);
     arg.timing    = 0;

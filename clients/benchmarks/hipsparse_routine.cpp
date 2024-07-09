@@ -81,10 +81,10 @@ hipsparseStatus_t hipsparse_routine::dispatch_indextype(const char cindextype, c
 {
     std::cout << "hipsparse_routine::dispatch_indextype cindextype: " << cindextype << std::endl;
     const hipsparseIndexType_t indextype = (cindextype == 'm')   ? HIPSPARSE_INDEX_64I
-                                          : (cindextype == 's') ? HIPSPARSE_INDEX_32I
-                                          : (cindextype == 'd') ? HIPSPARSE_INDEX_64I
-                                                                : ((hipsparseIndexType_t)-1);
-    const bool                mixed     = (cindextype == 'm');
+                                           : (cindextype == 's') ? HIPSPARSE_INDEX_32I
+                                           : (cindextype == 'd') ? HIPSPARSE_INDEX_64I
+                                                                 : ((hipsparseIndexType_t)-1);
+    const bool                 mixed     = (cindextype == 'm');
 
     std::cout << "mixed: " << mixed << std::endl;
     switch(indextype)
@@ -114,15 +114,15 @@ hipsparseStatus_t hipsparse_routine::dispatch_indextype(const char cindextype, c
 
 template <hipsparse_routine::value_type FNAME>
 hipsparseStatus_t hipsparse_routine::dispatch_precision(const char       precision,
-                                                       const char       indextype,
-                                                       const Arguments& arg)
+                                                        const char       indextype,
+                                                        const Arguments& arg)
 {
     std::cout << "hipsparse_routine::dispatch_precision" << std::endl;
     const hipDataType datatype = (precision == 's')   ? HIP_R_32F
-                                        : (precision == 'd') ? HIP_R_64F
-                                        : (precision == 'c') ? HIP_C_32F
-                                        : (precision == 'z') ? HIP_C_64F
-                                                             : ((hipDataType)-1);
+                                 : (precision == 'd') ? HIP_R_64F
+                                 : (precision == 'c') ? HIP_C_32F
+                                 : (precision == 'z') ? HIP_C_64F
+                                                      : ((hipDataType)-1);
     switch(datatype)
     {
     case HIP_R_32F:
@@ -139,8 +139,8 @@ hipsparseStatus_t hipsparse_routine::dispatch_precision(const char       precisi
 }
 
 hipsparseStatus_t hipsparse_routine::dispatch(const char       precision,
-                                             const char       indextype,
-                                             const Arguments& arg) const
+                                              const char       indextype,
+                                              const Arguments& arg) const
 {
     std::cout << "hipsparse_routine::dispatch this->value: " << this->value << std::endl;
     switch(this->value)
@@ -148,7 +148,7 @@ hipsparseStatus_t hipsparse_routine::dispatch(const char       precision,
 #define HIPSPARSE_DO_ROUTINE(FNAME) \
     case FNAME:                     \
         return dispatch_precision<FNAME>(precision, indextype, arg);
-        
+
         HIPSPARSE_FOREACH_ROUTINE;
 #undef HIPSPARSE_DO_ROUTINE
     }
@@ -206,113 +206,112 @@ constexpr const char* hipsparse_routine::to_string() const
 #include "testing_bsrilu02.hpp"
 #include "testing_csric02.hpp"
 #include "testing_csrilu02.hpp"
-#include "testing_gtsv.hpp"  // File should be renamed to testing_gtsv2.hpp 
+#include "testing_gpsv_interleaved_batch.hpp"
+#include "testing_gtsv.hpp" // File should be renamed to testing_gtsv2.hpp
 #include "testing_gtsv2_nopivot.hpp"
 #include "testing_gtsv2_strided_batch.hpp"
 #include "testing_gtsv_interleaved_batch.hpp"
-#include "testing_gpsv_interleaved_batch.hpp"
 
 // Conversion
 #include "testing_bsr2csr.hpp"
+#include "testing_coo2csr.hpp"
+#include "testing_csr2bsr.hpp"
 #include "testing_csr2coo.hpp"
 #include "testing_csr2csc.hpp"
-#include "testing_csr2hyb.hpp"
-#include "testing_csr2bsr.hpp"
-#include "testing_csr2gebsr.hpp"
 #include "testing_csr2csr_compress.hpp"
-#include "testing_coo2csr.hpp"
-#include "testing_hyb2csr.hpp"
+#include "testing_csr2gebsr.hpp"
+#include "testing_csr2hyb.hpp"
 #include "testing_gebsr2csr.hpp"
 #include "testing_gebsr2gebsc.hpp"
 #include "testing_gebsr2gebsr.hpp"
+#include "testing_hyb2csr.hpp"
 
 // Generic
-#include "testing_spmv_coo.hpp"
-#include "testing_spmv_csr.hpp"
-#include "testing_spsv_csr.hpp"
+#include "testing_dense_to_sparse_coo.hpp"
+#include "testing_dense_to_sparse_csc.hpp"
+#include "testing_dense_to_sparse_csr.hpp"
+#include "testing_sparse_to_dense_coo.hpp"
+#include "testing_sparse_to_dense_csc.hpp"
+#include "testing_sparse_to_dense_csr.hpp"
 #include "testing_spmm_coo.hpp"
 #include "testing_spmm_csc.hpp"
 #include "testing_spmm_csr.hpp"
+#include "testing_spmv_coo.hpp"
+#include "testing_spmv_csr.hpp"
 #include "testing_spsm_coo.hpp"
 #include "testing_spsm_csr.hpp"
-#include "testing_sparse_to_dense_csr.hpp"
-#include "testing_sparse_to_dense_csc.hpp"
-#include "testing_sparse_to_dense_coo.hpp"
-#include "testing_dense_to_sparse_csr.hpp"
-#include "testing_dense_to_sparse_csc.hpp"
-#include "testing_dense_to_sparse_coo.hpp"
+#include "testing_spsv_csr.hpp"
 
 template <hipsparse_routine::value_type FNAME, typename T, typename I, typename J>
 hipsparseStatus_t hipsparse_routine::dispatch_call(const Arguments& arg)
 {
     std::cout << "hipsparse_routine::dispatch_call" << std::endl;
-#define DEFINE_CASE_T_X(value, testingf)      \
-    case value:                               \
-    {                                         \
-        try                                   \
-        {                                     \
-            testingf<T>(arg);                 \
-            return HIPSPARSE_STATUS_SUCCESS;  \
-        }                                     \
+#define DEFINE_CASE_T_X(value, testingf)       \
+    case value:                                \
+    {                                          \
+        try                                    \
+        {                                      \
+            testingf<T>(arg);                  \
+            return HIPSPARSE_STATUS_SUCCESS;   \
+        }                                      \
         catch(const hipsparseStatus_t& status) \
-        {                                     \
-            return status;                    \
-        }                                     \
+        {                                      \
+            return status;                     \
+        }                                      \
     }
 
-#define DEFINE_CASE_IT_X(value, testingf)     \
-    case value:                               \
-    {                                         \
-        try                                   \
-        {                                     \
-            testingf<I, T>(arg);              \
-            return HIPSPARSE_STATUS_SUCCESS;  \
-        }                                     \
+#define DEFINE_CASE_IT_X(value, testingf)      \
+    case value:                                \
+    {                                          \
+        try                                    \
+        {                                      \
+            testingf<I, T>(arg);               \
+            return HIPSPARSE_STATUS_SUCCESS;   \
+        }                                      \
         catch(const hipsparseStatus_t& status) \
-        {                                     \
-            return status;                    \
-        }                                     \
+        {                                      \
+            return status;                     \
+        }                                      \
     }
 
-#define DEFINE_CASE_IJT_X(value, testingf)    \
-    case value:                               \
-    {                                         \
-        try                                   \
-        {                                     \
-            testingf<I, J, T>(arg);           \
-            return HIPSPARSE_STATUS_SUCCESS;  \
-        }                                     \
+#define DEFINE_CASE_IJT_X(value, testingf)     \
+    case value:                                \
+    {                                          \
+        try                                    \
+        {                                      \
+            testingf<I, J, T>(arg);            \
+            return HIPSPARSE_STATUS_SUCCESS;   \
+        }                                      \
         catch(const hipsparseStatus_t& status) \
-        {                                     \
-            return status;                    \
-        }                                     \
+        {                                      \
+            return status;                     \
+        }                                      \
     }
 
 #define DEFINE_CASE_T(value) DEFINE_CASE_T_X(value, testing_##value)
 
 #define IS_T_REAL (std::is_same<T, double>() || std::is_same<T, float>())
-#define IS_T_COMPLEX \
-    (std::is_same<T, hipDoubleComplex>() || std::is_same<T, hipComplex>())
+#define IS_T_COMPLEX (std::is_same<T, hipDoubleComplex>() || std::is_same<T, hipComplex>())
 
-#define DEFINE_CASE_T_REAL_ONLY(value)               \
-    case value:                                      \
-    {                                                \
-        if(IS_T_REAL)                                \
-        {                                            \
-            try                                      \
-            {                                        \
-                testing_##value<T>(arg);             \
-                return HIPSPARSE_STATUS_SUCCESS;     \
-            }                                        \
-            catch(const hipsparseStatus_t& status)    \
-            {                                        \
-                return status;                       \
-            }                                        \
-        }                                            \
-        else                                         \
-        {                                            \
+#define DEFINE_CASE_T_REAL_ONLY(value)              \
+    case value:                                     \
+    {                                               \
+        if(IS_T_REAL)                               \
+        {                                           \
+            try                                     \
+            {                                       \
+                testing_##value<T>(arg);            \
+                return HIPSPARSE_STATUS_SUCCESS;    \
+            }                                       \
+            catch(const hipsparseStatus_t& status)  \
+            {                                       \
+                return status;                      \
+            }                                       \
+        }                                           \
+        else                                        \
+        {                                           \
             return HIPSPARSE_STATUS_INTERNAL_ERROR; \
-        }                                            \
+        }                                           \
     }
 
 #define DEFINE_CASE_T_REAL_VS_COMPLEX(value, rtestingf, ctestingf) \
@@ -333,7 +332,7 @@ hipsparseStatus_t hipsparse_routine::dispatch_call(const Arguments& arg)
                 return HIPSPARSE_STATUS_INTERNAL_ERROR;            \
             }                                                      \
         }                                                          \
-        catch(const hipsparseStatus_t& status)                      \
+        catch(const hipsparseStatus_t& status)                     \
         {                                                          \
             return status;                                         \
         }                                                          \
