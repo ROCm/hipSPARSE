@@ -25,13 +25,13 @@
 #ifndef TESTING_IDENTITY_HPP
 #define TESTING_IDENTITY_HPP
 
-#include "hipsparse.hpp"
-#include "hipsparse_test_unique_ptr.hpp"
 #include "flops.hpp"
 #include "gbyte.hpp"
+#include "hipsparse.hpp"
+#include "hipsparse_arguments.hpp"
+#include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
-#include "hipsparse_arguments.hpp"
 
 #include <algorithm>
 #include <hipsparse.h>
@@ -116,8 +116,9 @@ hipsparseStatus_t testing_identity(Arguments argus)
 
         double gbyte_count = identity_gbyte_count(n);
         double gpu_gbyte   = get_gpu_gbyte(gpu_time_used, gbyte_count);
-      
-        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
+
+        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used)
+                  << std::endl;
     }
 
     return HIPSPARSE_STATUS_SUCCESS;

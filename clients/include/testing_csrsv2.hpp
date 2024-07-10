@@ -25,13 +25,13 @@
 #ifndef TESTING_CSRSV2_HPP
 #define TESTING_CSRSV2_HPP
 
-#include "hipsparse.hpp"
-#include "hipsparse_test_unique_ptr.hpp"
 #include "flops.hpp"
 #include "gbyte.hpp"
+#include "hipsparse.hpp"
+#include "hipsparse_arguments.hpp"
+#include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
-#include "hipsparse_arguments.hpp"
 
 #include <algorithm>
 #include <cmath>
@@ -80,180 +80,242 @@ void testing_csrsv2_bad_arg(void)
     int size;
     int position;
 
-    verify_hipsparse_status_invalid_pointer(hipsparseXcsrsv2_bufferSize(
-            handle, transA, m, nnz, descr, dval, (int*)nullptr, dcol, info, &size), "Error: dptr is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXcsrsv2_bufferSize(
-            handle, transA, m, nnz, descr, dval, dptr, (int*)nullptr, info, &size), "Error: dcol is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXcsrsv2_bufferSize(
-            handle, transA, m, nnz, descr, (T*)nullptr, dptr, dcol, info, &size), "Error: dval is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXcsrsv2_bufferSize(
-            handle, transA, m, nnz, descr, dval, dptr, dcol, info, (int*)nullptr), "Error: size is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXcsrsv2_bufferSize(
-            handle, transA, m, nnz, (hipsparseMatDescr_t)nullptr, dval, dptr, dcol, info, &size), "Error: descr is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXcsrsv2_bufferSize(
-            handle, transA, m, nnz, descr, dval, dptr, dcol, (csrsv2Info_t)nullptr, &size), "Error: info is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXcsrsv2_bufferSize(
+            handle, transA, m, nnz, descr, dval, (int*)nullptr, dcol, info, &size),
+        "Error: dptr is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXcsrsv2_bufferSize(
+            handle, transA, m, nnz, descr, dval, dptr, (int*)nullptr, info, &size),
+        "Error: dcol is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXcsrsv2_bufferSize(
+            handle, transA, m, nnz, descr, (T*)nullptr, dptr, dcol, info, &size),
+        "Error: dval is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXcsrsv2_bufferSize(
+            handle, transA, m, nnz, descr, dval, dptr, dcol, info, (int*)nullptr),
+        "Error: size is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXcsrsv2_bufferSize(
+            handle, transA, m, nnz, (hipsparseMatDescr_t) nullptr, dval, dptr, dcol, info, &size),
+        "Error: descr is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXcsrsv2_bufferSize(
+            handle, transA, m, nnz, descr, dval, dptr, dcol, (csrsv2Info_t) nullptr, &size),
+        "Error: info is nullptr");
     verify_hipsparse_status_invalid_handle(hipsparseXcsrsv2_bufferSize(
-            (hipsparseHandle_t)nullptr, transA, m, nnz, descr, dval, dptr, dcol, info, &size));
+        (hipsparseHandle_t) nullptr, transA, m, nnz, descr, dval, dptr, dcol, info, &size));
 
-    verify_hipsparse_status_invalid_pointer(hipsparseXcsrsv2_analysis(
-            handle, transA, m, nnz, descr, dval, (int*)nullptr, dcol, info, policy, dbuffer), "Error: dptr is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXcsrsv2_analysis(
-            handle, transA, m, nnz, descr, dval, dptr, (int*)nullptr, info, policy, dbuffer), "Error: dcol is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXcsrsv2_analysis(
-            handle, transA, m, nnz, descr, (T*)nullptr, dptr, dcol, info, policy, dbuffer), "Error: dval is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXcsrsv2_analysis(
-            handle, transA, m, nnz, descr, dval, dptr, dcol, info, policy, (void*)nullptr), "Error: dbuffer is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXcsrsv2_analysis(
-            handle, transA, m, nnz, (hipsparseMatDescr_t)nullptr, dval, dptr, dcol, info, policy, dbuffer), "Error: descr is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXcsrsv2_analysis(
-            handle, transA, m, nnz, descr, dval, dptr, dcol, (csrsv2Info_t)nullptr, policy, dbuffer), "Error: info is nullptr");
-    verify_hipsparse_status_invalid_handle(hipsparseXcsrsv2_analysis(
-            (hipsparseHandle_t)nullptr, transA, m, nnz, descr, dval, dptr, dcol, info, policy, dbuffer));
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXcsrsv2_analysis(
+            handle, transA, m, nnz, descr, dval, (int*)nullptr, dcol, info, policy, dbuffer),
+        "Error: dptr is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXcsrsv2_analysis(
+            handle, transA, m, nnz, descr, dval, dptr, (int*)nullptr, info, policy, dbuffer),
+        "Error: dcol is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXcsrsv2_analysis(
+            handle, transA, m, nnz, descr, (T*)nullptr, dptr, dcol, info, policy, dbuffer),
+        "Error: dval is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXcsrsv2_analysis(
+            handle, transA, m, nnz, descr, dval, dptr, dcol, info, policy, (void*)nullptr),
+        "Error: dbuffer is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsrsv2_analysis(handle,
+                                                                      transA,
+                                                                      m,
+                                                                      nnz,
+                                                                      (hipsparseMatDescr_t) nullptr,
+                                                                      dval,
+                                                                      dptr,
+                                                                      dcol,
+                                                                      info,
+                                                                      policy,
+                                                                      dbuffer),
+                                            "Error: descr is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsrsv2_analysis(handle,
+                                                                      transA,
+                                                                      m,
+                                                                      nnz,
+                                                                      descr,
+                                                                      dval,
+                                                                      dptr,
+                                                                      dcol,
+                                                                      (csrsv2Info_t) nullptr,
+                                                                      policy,
+                                                                      dbuffer),
+                                            "Error: info is nullptr");
+    verify_hipsparse_status_invalid_handle(hipsparseXcsrsv2_analysis((hipsparseHandle_t) nullptr,
+                                                                     transA,
+                                                                     m,
+                                                                     nnz,
+                                                                     descr,
+                                                                     dval,
+                                                                     dptr,
+                                                                     dcol,
+                                                                     info,
+                                                                     policy,
+                                                                     dbuffer));
 
     verify_hipsparse_status_invalid_pointer(hipsparseXcsrsv2_solve(handle,
-                                        transA,
-                                        m,
-                                        nnz,
-                                        &h_alpha,
-                                        descr,
-                                        dval,
-                                        (int*)nullptr,
-                                        dcol,
-                                        info,
-                                        dx,
-                                        dy,
-                                        policy,
-                                        dbuffer), "Error: dptr is nullptr");
+                                                                   transA,
+                                                                   m,
+                                                                   nnz,
+                                                                   &h_alpha,
+                                                                   descr,
+                                                                   dval,
+                                                                   (int*)nullptr,
+                                                                   dcol,
+                                                                   info,
+                                                                   dx,
+                                                                   dy,
+                                                                   policy,
+                                                                   dbuffer),
+                                            "Error: dptr is nullptr");
     verify_hipsparse_status_invalid_pointer(hipsparseXcsrsv2_solve(handle,
-                                        transA,
-                                        m,
-                                        nnz,
-                                        &h_alpha,
-                                        descr,
-                                        dval,
-                                        dptr,
-                                        (int*)nullptr,
-                                        info,
-                                        dx,
-                                        dy,
-                                        policy,
-                                        dbuffer), "Error: dcol is nullptr");
+                                                                   transA,
+                                                                   m,
+                                                                   nnz,
+                                                                   &h_alpha,
+                                                                   descr,
+                                                                   dval,
+                                                                   dptr,
+                                                                   (int*)nullptr,
+                                                                   info,
+                                                                   dx,
+                                                                   dy,
+                                                                   policy,
+                                                                   dbuffer),
+                                            "Error: dcol is nullptr");
     verify_hipsparse_status_invalid_pointer(hipsparseXcsrsv2_solve(handle,
-                                    transA,
-                                    m,
-                                    nnz,
-                                    &h_alpha,
-                                    descr,
-                                    (T*)nullptr,
-                                    dptr,
-                                    dcol,
-                                    info,
-                                    dx,
-                                    dy,
-                                    policy,
-                                    dbuffer), "Error: dval is nullptr");
+                                                                   transA,
+                                                                   m,
+                                                                   nnz,
+                                                                   &h_alpha,
+                                                                   descr,
+                                                                   (T*)nullptr,
+                                                                   dptr,
+                                                                   dcol,
+                                                                   info,
+                                                                   dx,
+                                                                   dy,
+                                                                   policy,
+                                                                   dbuffer),
+                                            "Error: dval is nullptr");
     verify_hipsparse_status_invalid_pointer(hipsparseXcsrsv2_solve(handle,
-                                        transA,
-                                        m,
-                                        nnz,
-                                        &h_alpha,
-                                        descr,
-                                        dval,
-                                        dptr,
-                                        dcol,
-                                        info,
-                                        (T*)nullptr,
-                                        dy,
-                                        policy,
-                                        dbuffer), "Error: dx is nullptr");
+                                                                   transA,
+                                                                   m,
+                                                                   nnz,
+                                                                   &h_alpha,
+                                                                   descr,
+                                                                   dval,
+                                                                   dptr,
+                                                                   dcol,
+                                                                   info,
+                                                                   (T*)nullptr,
+                                                                   dy,
+                                                                   policy,
+                                                                   dbuffer),
+                                            "Error: dx is nullptr");
     verify_hipsparse_status_invalid_pointer(hipsparseXcsrsv2_solve(handle,
-                                        transA,
-                                        m,
-                                        nnz,
-                                        &h_alpha,
-                                        descr,
-                                        dval,
-                                        dptr,
-                                        dcol,
-                                        info,
-                                        dx,
-                                        (T*)nullptr,
-                                        policy,
-                                        dbuffer), "Error: dy is nullptr");
+                                                                   transA,
+                                                                   m,
+                                                                   nnz,
+                                                                   &h_alpha,
+                                                                   descr,
+                                                                   dval,
+                                                                   dptr,
+                                                                   dcol,
+                                                                   info,
+                                                                   dx,
+                                                                   (T*)nullptr,
+                                                                   policy,
+                                                                   dbuffer),
+                                            "Error: dy is nullptr");
     verify_hipsparse_status_invalid_pointer(hipsparseXcsrsv2_solve(handle,
-                                        transA,
-                                        m,
-                                        nnz,
-                                        (T*)nullptr,
-                                        descr,
-                                        dval,
-                                        dptr,
-                                        dcol,
-                                        info,
-                                        dx,
-                                        dy,
-                                        policy,
-                                        dbuffer), "Error: alpha is nullptr");
+                                                                   transA,
+                                                                   m,
+                                                                   nnz,
+                                                                   (T*)nullptr,
+                                                                   descr,
+                                                                   dval,
+                                                                   dptr,
+                                                                   dcol,
+                                                                   info,
+                                                                   dx,
+                                                                   dy,
+                                                                   policy,
+                                                                   dbuffer),
+                                            "Error: alpha is nullptr");
     verify_hipsparse_status_invalid_pointer(hipsparseXcsrsv2_solve(handle,
-                                        transA,
-                                        m,
-                                        nnz,
-                                        &h_alpha,
-                                        descr,
-                                        dval,
-                                        dptr,
-                                        dcol,
-                                        info,
-                                        dx,
-                                        dy,
-                                        policy,
-                                        (void*)nullptr), "Error: dbuffer is nullptr");
+                                                                   transA,
+                                                                   m,
+                                                                   nnz,
+                                                                   &h_alpha,
+                                                                   descr,
+                                                                   dval,
+                                                                   dptr,
+                                                                   dcol,
+                                                                   info,
+                                                                   dx,
+                                                                   dy,
+                                                                   policy,
+                                                                   (void*)nullptr),
+                                            "Error: dbuffer is nullptr");
     verify_hipsparse_status_invalid_pointer(hipsparseXcsrsv2_solve(handle,
-                                        transA,
-                                        m,
-                                        nnz,
-                                        &h_alpha,
-                                        (hipsparseMatDescr_t)nullptr,
-                                        dval,
-                                        dptr,
-                                        dcol,
-                                        info,
-                                        dx,
-                                        dy,
-                                        policy,
-                                        dbuffer), "Error: descr is nullptr");
+                                                                   transA,
+                                                                   m,
+                                                                   nnz,
+                                                                   &h_alpha,
+                                                                   (hipsparseMatDescr_t) nullptr,
+                                                                   dval,
+                                                                   dptr,
+                                                                   dcol,
+                                                                   info,
+                                                                   dx,
+                                                                   dy,
+                                                                   policy,
+                                                                   dbuffer),
+                                            "Error: descr is nullptr");
     verify_hipsparse_status_invalid_pointer(hipsparseXcsrsv2_solve(handle,
-                                        transA,
-                                        m,
-                                        nnz,
-                                        &h_alpha,
-                                        descr,
-                                        dval,
-                                        dptr,
-                                        dcol,
-                                        (csrsv2Info_t)nullptr,
-                                        dx,
-                                        dy,
-                                        policy,
-                                        dbuffer), "Error: info is nullptr");
-    verify_hipsparse_status_invalid_handle(hipsparseXcsrsv2_solve((hipsparseHandle_t)nullptr,
-                                        transA,
-                                        m,
-                                        nnz,
-                                        &h_alpha,
-                                        descr,
-                                        dval,
-                                        dptr,
-                                        dcol,
-                                        info,
-                                        dx,
-                                        dy,
-                                        policy,
-                                        dbuffer));
+                                                                   transA,
+                                                                   m,
+                                                                   nnz,
+                                                                   &h_alpha,
+                                                                   descr,
+                                                                   dval,
+                                                                   dptr,
+                                                                   dcol,
+                                                                   (csrsv2Info_t) nullptr,
+                                                                   dx,
+                                                                   dy,
+                                                                   policy,
+                                                                   dbuffer),
+                                            "Error: info is nullptr");
+    verify_hipsparse_status_invalid_handle(hipsparseXcsrsv2_solve((hipsparseHandle_t) nullptr,
+                                                                  transA,
+                                                                  m,
+                                                                  nnz,
+                                                                  &h_alpha,
+                                                                  descr,
+                                                                  dval,
+                                                                  dptr,
+                                                                  dcol,
+                                                                  info,
+                                                                  dx,
+                                                                  dy,
+                                                                  policy,
+                                                                  dbuffer));
 
-    verify_hipsparse_status_invalid_pointer(hipsparseXcsrsv2_zeroPivot(handle, info, (int*)nullptr), "Error: position is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXcsrsv2_zeroPivot(handle, (csrsv2Info_t)nullptr, &position), "Error: info is nullptr");
-    verify_hipsparse_status_invalid_handle(hipsparseXcsrsv2_zeroPivot((hipsparseHandle_t)nullptr, info, &position));
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsrsv2_zeroPivot(handle, info, (int*)nullptr),
+                                            "Error: position is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXcsrsv2_zeroPivot(handle, (csrsv2Info_t) nullptr, &position),
+        "Error: info is nullptr");
+    verify_hipsparse_status_invalid_handle(
+        hipsparseXcsrsv2_zeroPivot((hipsparseHandle_t) nullptr, info, &position));
 #endif
 }
 
@@ -270,7 +332,9 @@ hipsparseStatus_t testing_csrsv2(Arguments argus)
     T                      h_alpha   = make_DataType<T>(argus.alpha);
     std::string            filename  = argus.filename;
 
-    std::cout << "m: " << m << " idx_base: " << idx_base << " trans: " << trans << " diag_type: " << diag_type << " fill_mode: " << fill_mode << " policy: " << policy << " filename: " << filename << std::endl;
+    std::cout << "m: " << m << " idx_base: " << idx_base << " trans: " << trans
+              << " diag_type: " << diag_type << " fill_mode: " << fill_mode << " policy: " << policy
+              << " filename: " << filename << std::endl;
 
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
     hipsparseHandle_t              handle = test_handle->handle;
@@ -469,7 +533,6 @@ hipsparseStatus_t testing_csrsv2(Arguments argus)
         unit_check_near(1, m, 1, hy_gold.data(), hy_2.data());
     }
 
-
     if(argus.timing)
     {
         int number_cold_calls = 2;
@@ -481,19 +544,19 @@ hipsparseStatus_t testing_csrsv2(Arguments argus)
         for(int iter = 0; iter < number_cold_calls; ++iter)
         {
             CHECK_HIPSPARSE_ERROR(hipsparseXcsrsv2_solve(handle,
-                                                     trans,
-                                                     m,
-                                                     nnz,
-                                                     &h_alpha,
-                                                     descr,
-                                                     dval,
-                                                     dptr,
-                                                     dcol,
-                                                     info,
-                                                     dx,
-                                                     dy_1,
-                                                     policy,
-                                                     dbuffer));
+                                                         trans,
+                                                         m,
+                                                         nnz,
+                                                         &h_alpha,
+                                                         descr,
+                                                         dval,
+                                                         dptr,
+                                                         dcol,
+                                                         info,
+                                                         dx,
+                                                         dy_1,
+                                                         policy,
+                                                         dbuffer));
         }
 
         double gpu_time_used = get_time_us();
@@ -502,19 +565,19 @@ hipsparseStatus_t testing_csrsv2(Arguments argus)
         for(int iter = 0; iter < number_hot_calls; ++iter)
         {
             CHECK_HIPSPARSE_ERROR(hipsparseXcsrsv2_solve(handle,
-                                                     trans,
-                                                     m,
-                                                     nnz,
-                                                     &h_alpha,
-                                                     descr,
-                                                     dval,
-                                                     dptr,
-                                                     dcol,
-                                                     info,
-                                                     dx,
-                                                     dy_1,
-                                                     policy,
-                                                     dbuffer));
+                                                         trans,
+                                                         m,
+                                                         nnz,
+                                                         &h_alpha,
+                                                         descr,
+                                                         dval,
+                                                         dptr,
+                                                         dcol,
+                                                         info,
+                                                         dx,
+                                                         dy_1,
+                                                         policy,
+                                                         dbuffer));
         }
 
         gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
@@ -525,11 +588,9 @@ hipsparseStatus_t testing_csrsv2(Arguments argus)
         double gpu_gflops = get_gpu_gflops(gpu_time_used, gflop_count);
         double gpu_gbyte  = get_gpu_gbyte(gpu_time_used, gbyte_count);
 
-        std::cout << "GFlops/s: " << gpu_gflops 
-                  << " GBytes/s: " << gpu_gbyte 
+        std::cout << "GFlops/s: " << gpu_gflops << " GBytes/s: " << gpu_gbyte
                   << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
     }
-
 
 #endif
 

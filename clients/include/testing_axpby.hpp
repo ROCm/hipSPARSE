@@ -25,12 +25,12 @@
 #ifndef TESTING_AXPBY_HPP
 #define TESTING_AXPBY_HPP
 
-#include "hipsparse_test_unique_ptr.hpp"
-#include "unit.hpp"
 #include "flops.hpp"
 #include "gbyte.hpp"
-#include "utility.hpp"
 #include "hipsparse_arguments.hpp"
+#include "hipsparse_test_unique_ptr.hpp"
+#include "unit.hpp"
+#include "utility.hpp"
 
 #include <hipsparse.h>
 #include <typeinfo>
@@ -159,7 +159,8 @@ hipsparseStatus_t testing_axpby(Arguments argus)
 
         for(int64_t i = 0; i < nnz; ++i)
         {
-            hy_gold[hx_ind[i] - idxBase] = testing_fma(alpha, hx_val[i], hy_gold[hx_ind[i] - idxBase]);
+            hy_gold[hx_ind[i] - idxBase]
+                = testing_fma(alpha, hx_val[i], hy_gold[hx_ind[i] - idxBase]);
         }
 
         // Verify results against host
@@ -193,7 +194,8 @@ hipsparseStatus_t testing_axpby(Arguments argus)
         double gpu_gbyte  = get_gpu_gbyte(gpu_time_used, gbyte_count);
         double gpu_gflops = get_gpu_gflops(gpu_time_used, gflop_count);
 
-        std::cout << "GFLOPS/s: " << gpu_gflops << " GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
+        std::cout << "GFLOPS/s: " << gpu_gflops << " GBytes/s: " << gpu_gbyte
+                  << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
     }
 
     CHECK_HIPSPARSE_ERROR(hipsparseDestroySpVec(x));

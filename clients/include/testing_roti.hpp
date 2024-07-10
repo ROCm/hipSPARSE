@@ -25,13 +25,13 @@
 #ifndef TESTING_ROTI_HPP
 #define TESTING_ROTI_HPP
 
-#include "hipsparse.hpp"
-#include "hipsparse_test_unique_ptr.hpp"
 #include "flops.hpp"
 #include "gbyte.hpp"
+#include "hipsparse.hpp"
+#include "hipsparse_arguments.hpp"
+#include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
-#include "hipsparse_arguments.hpp"
 
 #include <hipsparse.h>
 
@@ -88,11 +88,11 @@ template <typename T>
 hipsparseStatus_t testing_roti(Arguments argus)
 {
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
-    int                  N         = argus.N;
-    int                  nnz       = argus.nnz;
-    T                    c         = argus.get_alpha<T>();
-    T                    s         = argus.get_beta<T>();
-    hipsparseIndexBase_t idx_base  = argus.baseA;
+    int                  N        = argus.N;
+    int                  nnz      = argus.nnz;
+    T                    c        = argus.get_alpha<T>();
+    T                    s        = argus.get_beta<T>();
+    hipsparseIndexBase_t idx_base = argus.baseA;
 
     std::cout << "N: " << N << " nnz: " << nnz << " idx_base: " << idx_base << std::endl;
 
@@ -198,7 +198,7 @@ hipsparseStatus_t testing_roti(Arguments argus)
         for(int iter = 0; iter < number_cold_calls; ++iter)
         {
             CHECK_HIPSPARSE_ERROR(
-            hipsparseXroti(handle, nnz, dx_val_1, dx_ind, dy_1, &c, &s, idx_base));
+                hipsparseXroti(handle, nnz, dx_val_1, dx_ind, dy_1, &c, &s, idx_base));
         }
 
         double gpu_time_used = get_time_us();
@@ -207,7 +207,7 @@ hipsparseStatus_t testing_roti(Arguments argus)
         for(int iter = 0; iter < number_hot_calls; ++iter)
         {
             CHECK_HIPSPARSE_ERROR(
-            hipsparseXroti(handle, nnz, dx_val_1, dx_ind, dy_1, &c, &s, idx_base));
+                hipsparseXroti(handle, nnz, dx_val_1, dx_ind, dy_1, &c, &s, idx_base));
         }
 
         gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
@@ -218,7 +218,8 @@ hipsparseStatus_t testing_roti(Arguments argus)
         double gpu_gbyte  = get_gpu_gbyte(gpu_time_used, gbyte_count);
         double gpu_gflops = get_gpu_gflops(gpu_time_used, gflop_count);
 
-        std::cout << "GFLOPS/s: " << gpu_gflops << " GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
+        std::cout << "GFLOPS/s: " << gpu_gflops << " GBytes/s: " << gpu_gbyte
+                  << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
     }
 #endif
 

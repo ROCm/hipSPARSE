@@ -25,13 +25,13 @@
 #ifndef TESTING_CSRGEAM_HPP
 #define TESTING_CSRGEAM_HPP
 
-#include "hipsparse.hpp"
-#include "hipsparse_test_unique_ptr.hpp"
 #include "flops.hpp"
 #include "gbyte.hpp"
+#include "hipsparse.hpp"
+#include "hipsparse_arguments.hpp"
+#include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
-#include "hipsparse_arguments.hpp"
 
 #include <hipsparse.h>
 #include <string>
@@ -702,7 +702,9 @@ hipsparseStatus_t testing_csrgeam(Arguments argus)
     hipsparseIndexBase_t idx_base_C = argus.baseC;
     std::string          filename   = argus.filename;
 
-    std::cout << "M: " << M << " N: " << N << " idx_base_A: " << idx_base_A << " idx_base_B: " << idx_base_B << " idx_base_C: " << idx_base_C << " filename: " << filename << std::endl;
+    std::cout << "M: " << M << " N: " << N << " idx_base_A: " << idx_base_A
+              << " idx_base_B: " << idx_base_B << " idx_base_C: " << idx_base_C
+              << " filename: " << filename << std::endl;
 
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
     hipsparseHandle_t              handle = test_handle->handle;
@@ -830,19 +832,19 @@ hipsparseStatus_t testing_csrgeam(Arguments argus)
 
     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
     CHECK_HIPSPARSE_ERROR(hipsparseXcsrgeamNnz(handle,
-                                                M,
-                                                N,
-                                                descr_A,
-                                                nnz_A,
-                                                dAptr,
-                                                dAcol,
-                                                descr_B,
-                                                nnz_B,
-                                                dBptr,
-                                                dBcol,
-                                                descr_C,
-                                                dCptr_2,
-                                                dnnz_C));
+                                               M,
+                                               N,
+                                               descr_A,
+                                               nnz_A,
+                                               dAptr,
+                                               dAcol,
+                                               descr_B,
+                                               nnz_B,
+                                               dBptr,
+                                               dBcol,
+                                               descr_C,
+                                               dCptr_2,
+                                               dnnz_C));
 
     // Copy output from device to CPU
     int hnnz_C_2;
@@ -974,24 +976,24 @@ hipsparseStatus_t testing_csrgeam(Arguments argus)
         for(int iter = 0; iter < number_cold_calls; ++iter)
         {
             CHECK_HIPSPARSE_ERROR(hipsparseXcsrgeam(handle,
-                                                M,
-                                                N,
-                                                &h_alpha,
-                                                descr_A,
-                                                nnz_A,
-                                                dAval,
-                                                dAptr,
-                                                dAcol,
-                                                &h_beta,
-                                                descr_B,
-                                                nnz_B,
-                                                dBval,
-                                                dBptr,
-                                                dBcol,
-                                                descr_C,
-                                                dCval_1,
-                                                dCptr_1,
-                                                dCcol_1));
+                                                    M,
+                                                    N,
+                                                    &h_alpha,
+                                                    descr_A,
+                                                    nnz_A,
+                                                    dAval,
+                                                    dAptr,
+                                                    dAcol,
+                                                    &h_beta,
+                                                    descr_B,
+                                                    nnz_B,
+                                                    dBval,
+                                                    dBptr,
+                                                    dBcol,
+                                                    descr_C,
+                                                    dCval_1,
+                                                    dCptr_1,
+                                                    dCcol_1));
         }
 
         double gpu_time_used = get_time_us();
@@ -1000,24 +1002,24 @@ hipsparseStatus_t testing_csrgeam(Arguments argus)
         for(int iter = 0; iter < number_hot_calls; ++iter)
         {
             CHECK_HIPSPARSE_ERROR(hipsparseXcsrgeam(handle,
-                                                M,
-                                                N,
-                                                &h_alpha,
-                                                descr_A,
-                                                nnz_A,
-                                                dAval,
-                                                dAptr,
-                                                dAcol,
-                                                &h_beta,
-                                                descr_B,
-                                                nnz_B,
-                                                dBval,
-                                                dBptr,
-                                                dBcol,
-                                                descr_C,
-                                                dCval_1,
-                                                dCptr_1,
-                                                dCcol_1));
+                                                    M,
+                                                    N,
+                                                    &h_alpha,
+                                                    descr_A,
+                                                    nnz_A,
+                                                    dAval,
+                                                    dAptr,
+                                                    dAcol,
+                                                    &h_beta,
+                                                    descr_B,
+                                                    nnz_B,
+                                                    dBval,
+                                                    dBptr,
+                                                    dBcol,
+                                                    descr_C,
+                                                    dCval_1,
+                                                    dCptr_1,
+                                                    dCcol_1));
         }
 
         gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
@@ -1028,7 +1030,8 @@ hipsparseStatus_t testing_csrgeam(Arguments argus)
         double gpu_gflops = get_gpu_gflops(gpu_time_used, gflop_count);
         double gpu_gbyte  = get_gpu_gbyte(gpu_time_used, gbyte_count);
 
-        std::cout << "GBytes/s: " << gpu_gbyte << " GFlops/s: " << gpu_gflops << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
+        std::cout << "GBytes/s: " << gpu_gbyte << " GFlops/s: " << gpu_gflops
+                  << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
     }
 
     return HIPSPARSE_STATUS_SUCCESS;

@@ -25,13 +25,13 @@
 #ifndef TESTING_BSRIC02_HPP
 #define TESTING_BSRIC02_HPP
 
-#include "hipsparse.hpp"
-#include "hipsparse_test_unique_ptr.hpp"
 #include "flops.hpp"
 #include "gbyte.hpp"
+#include "hipsparse.hpp"
+#include "hipsparse_arguments.hpp"
+#include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
-#include "hipsparse_arguments.hpp"
 
 #include <cmath>
 #include <hipsparse.h>
@@ -75,56 +75,262 @@ void testing_bsric02_bad_arg(void)
     int size;
     int position;
 
-    verify_hipsparse_status_invalid_pointer(hipsparseXbsric02_bufferSize(
-            handle, dirA, mb, nnzb, descr, dval, (int*)nullptr, dcol, block_dim, info, &size), "Error: dptr is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXbsric02_bufferSize(
-            handle, dirA, mb, nnzb, descr, dval, dptr, (int*)nullptr, block_dim, info, &size), "Error: dcol is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXbsric02_bufferSize(
-            handle, dirA, mb, nnzb, descr, (T*)nullptr, dptr, dcol, block_dim, info, &size), "Error: dval is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXbsric02_bufferSize(
-            handle, dirA, mb, nnzb, descr, dval, dptr, dcol, block_dim, info, (int*)nullptr), "Error: size is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXbsric02_bufferSize(
-            handle, dirA, mb, nnzb, (hipsparseMatDescr_t)nullptr, dval, dptr, dcol, block_dim, info, &size), "Error: descr is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXbsric02_bufferSize(
-            handle, dirA, mb, nnzb, descr, dval, dptr, dcol, block_dim, (bsric02Info_t)nullptr, &size), "Error: info is nullptr");
-    verify_hipsparse_status_invalid_handle(hipsparseXbsric02_bufferSize(
-            (hipsparseHandle_t)nullptr, dirA, mb, nnzb, descr, dval, dptr, dcol, block_dim, info, &size));
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXbsric02_bufferSize(
+            handle, dirA, mb, nnzb, descr, dval, (int*)nullptr, dcol, block_dim, info, &size),
+        "Error: dptr is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXbsric02_bufferSize(
+            handle, dirA, mb, nnzb, descr, dval, dptr, (int*)nullptr, block_dim, info, &size),
+        "Error: dcol is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXbsric02_bufferSize(
+            handle, dirA, mb, nnzb, descr, (T*)nullptr, dptr, dcol, block_dim, info, &size),
+        "Error: dval is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXbsric02_bufferSize(
+            handle, dirA, mb, nnzb, descr, dval, dptr, dcol, block_dim, info, (int*)nullptr),
+        "Error: size is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXbsric02_bufferSize(handle,
+                                     dirA,
+                                     mb,
+                                     nnzb,
+                                     (hipsparseMatDescr_t) nullptr,
+                                     dval,
+                                     dptr,
+                                     dcol,
+                                     block_dim,
+                                     info,
+                                     &size),
+        "Error: descr is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXbsric02_bufferSize(handle,
+                                                                         dirA,
+                                                                         mb,
+                                                                         nnzb,
+                                                                         descr,
+                                                                         dval,
+                                                                         dptr,
+                                                                         dcol,
+                                                                         block_dim,
+                                                                         (bsric02Info_t) nullptr,
+                                                                         &size),
+                                            "Error: info is nullptr");
+    verify_hipsparse_status_invalid_handle(hipsparseXbsric02_bufferSize((hipsparseHandle_t) nullptr,
+                                                                        dirA,
+                                                                        mb,
+                                                                        nnzb,
+                                                                        descr,
+                                                                        dval,
+                                                                        dptr,
+                                                                        dcol,
+                                                                        block_dim,
+                                                                        info,
+                                                                        &size));
 
-    verify_hipsparse_status_invalid_pointer(hipsparseXbsric02_analysis(
-            handle, dirA, mb, nnzb, descr, dval, (int*)nullptr, dcol, block_dim, info, policy, dbuffer), "Error: dptr is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXbsric02_analysis(
-            handle, dirA, mb, nnzb, descr, dval, dptr, (int*)nullptr, block_dim, info, policy, dbuffer), "Error: dcol is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXbsric02_analysis(
-            handle, dirA, mb, nnzb, descr, (T*)nullptr, dptr, dcol, block_dim, info, policy, dbuffer), "Error: dval is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXbsric02_analysis(
-            handle, dirA, mb, nnzb, descr, dval, dptr, dcol, block_dim, info, policy, (void*)nullptr), "Error: dbuffer is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXbsric02_analysis(
-            handle, dirA, mb, nnzb, (hipsparseMatDescr_t)nullptr, dval, dptr, dcol, block_dim, info, policy, dbuffer), "Error: descr is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXbsric02_analysis(
-            handle, dirA, mb, nnzb, descr, dval, dptr, dcol, block_dim, (bsric02Info_t)nullptr, policy, dbuffer), "Error: info is nullptr");
-    verify_hipsparse_status_invalid_handle(hipsparseXbsric02_analysis(
-            (hipsparseHandle_t)nullptr, dirA, mb, nnzb, descr, dval, dptr, dcol, block_dim, info, policy, dbuffer));
+    verify_hipsparse_status_invalid_pointer(hipsparseXbsric02_analysis(handle,
+                                                                       dirA,
+                                                                       mb,
+                                                                       nnzb,
+                                                                       descr,
+                                                                       dval,
+                                                                       (int*)nullptr,
+                                                                       dcol,
+                                                                       block_dim,
+                                                                       info,
+                                                                       policy,
+                                                                       dbuffer),
+                                            "Error: dptr is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXbsric02_analysis(handle,
+                                                                       dirA,
+                                                                       mb,
+                                                                       nnzb,
+                                                                       descr,
+                                                                       dval,
+                                                                       dptr,
+                                                                       (int*)nullptr,
+                                                                       block_dim,
+                                                                       info,
+                                                                       policy,
+                                                                       dbuffer),
+                                            "Error: dcol is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXbsric02_analysis(handle,
+                                                                       dirA,
+                                                                       mb,
+                                                                       nnzb,
+                                                                       descr,
+                                                                       (T*)nullptr,
+                                                                       dptr,
+                                                                       dcol,
+                                                                       block_dim,
+                                                                       info,
+                                                                       policy,
+                                                                       dbuffer),
+                                            "Error: dval is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXbsric02_analysis(handle,
+                                                                       dirA,
+                                                                       mb,
+                                                                       nnzb,
+                                                                       descr,
+                                                                       dval,
+                                                                       dptr,
+                                                                       dcol,
+                                                                       block_dim,
+                                                                       info,
+                                                                       policy,
+                                                                       (void*)nullptr),
+                                            "Error: dbuffer is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXbsric02_analysis(handle,
+                                   dirA,
+                                   mb,
+                                   nnzb,
+                                   (hipsparseMatDescr_t) nullptr,
+                                   dval,
+                                   dptr,
+                                   dcol,
+                                   block_dim,
+                                   info,
+                                   policy,
+                                   dbuffer),
+        "Error: descr is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXbsric02_analysis(handle,
+                                                                       dirA,
+                                                                       mb,
+                                                                       nnzb,
+                                                                       descr,
+                                                                       dval,
+                                                                       dptr,
+                                                                       dcol,
+                                                                       block_dim,
+                                                                       (bsric02Info_t) nullptr,
+                                                                       policy,
+                                                                       dbuffer),
+                                            "Error: info is nullptr");
+    verify_hipsparse_status_invalid_handle(hipsparseXbsric02_analysis((hipsparseHandle_t) nullptr,
+                                                                      dirA,
+                                                                      mb,
+                                                                      nnzb,
+                                                                      descr,
+                                                                      dval,
+                                                                      dptr,
+                                                                      dcol,
+                                                                      block_dim,
+                                                                      info,
+                                                                      policy,
+                                                                      dbuffer));
 
-    verify_hipsparse_status_invalid_pointer(hipsparseXbsric02(
-            handle, dirA, mb, nnzb, descr, dval, (int*)nullptr, dcol, block_dim, info, policy, dbuffer), "Error: dptr is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXbsric02(
-            handle, dirA, mb, nnzb, descr, dval, dptr, (int*)nullptr, block_dim, info, policy, dbuffer), "Error: dcol is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXbsric02(
-            handle, dirA, mb, nnzb, descr, dval, dptr, (int*)nullptr, block_dim, info, policy, dbuffer), "Error: dcol is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXbsric02(
-            handle, dirA, mb, nnzb, descr, (T*)nullptr, dptr, dcol, block_dim, info, policy, dbuffer), "Error: dval is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXbsric02(
-            handle, dirA, mb, nnzb, descr, dval, dptr, dcol, block_dim, info, policy, (void*)nullptr), "Error: dbuffer is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXbsric02(
-            handle, dirA, mb, nnzb, (hipsparseMatDescr_t)nullptr, dval, dptr, dcol, block_dim, info, policy, dbuffer), "Error: descr is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXbsric02(
-            handle, dirA, mb, nnzb, descr, dval, dptr, dcol, block_dim, (bsric02Info_t)nullptr, policy, dbuffer), "Error: info is nullptr");
-    verify_hipsparse_status_invalid_handle(hipsparseXbsric02(
-            (hipsparseHandle_t)nullptr, dirA, mb, nnzb, descr, dval, dptr, dcol, block_dim, info, policy, dbuffer));
+    verify_hipsparse_status_invalid_pointer(hipsparseXbsric02(handle,
+                                                              dirA,
+                                                              mb,
+                                                              nnzb,
+                                                              descr,
+                                                              dval,
+                                                              (int*)nullptr,
+                                                              dcol,
+                                                              block_dim,
+                                                              info,
+                                                              policy,
+                                                              dbuffer),
+                                            "Error: dptr is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXbsric02(handle,
+                                                              dirA,
+                                                              mb,
+                                                              nnzb,
+                                                              descr,
+                                                              dval,
+                                                              dptr,
+                                                              (int*)nullptr,
+                                                              block_dim,
+                                                              info,
+                                                              policy,
+                                                              dbuffer),
+                                            "Error: dcol is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXbsric02(handle,
+                                                              dirA,
+                                                              mb,
+                                                              nnzb,
+                                                              descr,
+                                                              dval,
+                                                              dptr,
+                                                              (int*)nullptr,
+                                                              block_dim,
+                                                              info,
+                                                              policy,
+                                                              dbuffer),
+                                            "Error: dcol is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXbsric02(handle,
+                                                              dirA,
+                                                              mb,
+                                                              nnzb,
+                                                              descr,
+                                                              (T*)nullptr,
+                                                              dptr,
+                                                              dcol,
+                                                              block_dim,
+                                                              info,
+                                                              policy,
+                                                              dbuffer),
+                                            "Error: dval is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXbsric02(handle,
+                                                              dirA,
+                                                              mb,
+                                                              nnzb,
+                                                              descr,
+                                                              dval,
+                                                              dptr,
+                                                              dcol,
+                                                              block_dim,
+                                                              info,
+                                                              policy,
+                                                              (void*)nullptr),
+                                            "Error: dbuffer is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXbsric02(handle,
+                                                              dirA,
+                                                              mb,
+                                                              nnzb,
+                                                              (hipsparseMatDescr_t) nullptr,
+                                                              dval,
+                                                              dptr,
+                                                              dcol,
+                                                              block_dim,
+                                                              info,
+                                                              policy,
+                                                              dbuffer),
+                                            "Error: descr is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXbsric02(handle,
+                                                              dirA,
+                                                              mb,
+                                                              nnzb,
+                                                              descr,
+                                                              dval,
+                                                              dptr,
+                                                              dcol,
+                                                              block_dim,
+                                                              (bsric02Info_t) nullptr,
+                                                              policy,
+                                                              dbuffer),
+                                            "Error: info is nullptr");
+    verify_hipsparse_status_invalid_handle(hipsparseXbsric02((hipsparseHandle_t) nullptr,
+                                                             dirA,
+                                                             mb,
+                                                             nnzb,
+                                                             descr,
+                                                             dval,
+                                                             dptr,
+                                                             dcol,
+                                                             block_dim,
+                                                             info,
+                                                             policy,
+                                                             dbuffer));
 
-    verify_hipsparse_status_invalid_pointer(hipsparseXbsric02_zeroPivot(handle, info, (int*)nullptr), "Error: position is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXbsric02_zeroPivot(handle, (bsric02Info_t)nullptr, &position), "Error: info is nullptr");
-    verify_hipsparse_status_invalid_handle(hipsparseXbsric02_zeroPivot((hipsparseHandle_t)nullptr, info, &position));
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXbsric02_zeroPivot(handle, info, (int*)nullptr), "Error: position is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXbsric02_zeroPivot(handle, (bsric02Info_t) nullptr, &position),
+        "Error: info is nullptr");
+    verify_hipsparse_status_invalid_handle(
+        hipsparseXbsric02_zeroPivot((hipsparseHandle_t) nullptr, info, &position));
 #endif
 }
 
@@ -138,7 +344,9 @@ hipsparseStatus_t testing_bsric02(Arguments argus)
     hipsparseSolvePolicy_t policy    = argus.solve_policy;
     std::string            filename  = argus.filename;
 
-    std::cout << "m: " << m << " block_dim: " << block_dim << " dir: " << dir << " idx_base: " << idx_base << " policy: " << policy << " filename: " << filename << std::endl;
+    std::cout << "m: " << m << " block_dim: " << block_dim << " dir: " << dir
+              << " idx_base: " << idx_base << " policy: " << policy << " filename: " << filename
+              << std::endl;
 
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
     hipsparseHandle_t              handle = test_handle->handle;
@@ -466,17 +674,17 @@ hipsparseStatus_t testing_bsric02(Arguments argus)
                                       hipMemcpyHostToDevice));
 
             CHECK_HIPSPARSE_ERROR(hipsparseXbsric02(handle,
-                                                dir,
-                                                mb,
-                                                nnzb,
-                                                descr,
-                                                dbsr_val_1,
-                                                dbsr_row_ptr,
-                                                dbsr_col_ind,
-                                                block_dim,
-                                                info,
-                                                policy,
-                                                dbuffer));
+                                                    dir,
+                                                    mb,
+                                                    nnzb,
+                                                    descr,
+                                                    dbsr_val_1,
+                                                    dbsr_row_ptr,
+                                                    dbsr_col_ind,
+                                                    block_dim,
+                                                    info,
+                                                    policy,
+                                                    dbuffer));
         }
 
         // Solve run
@@ -490,26 +698,27 @@ hipsparseStatus_t testing_bsric02(Arguments argus)
 
             double temp = get_time_us();
             CHECK_HIPSPARSE_ERROR(hipsparseXbsric02(handle,
-                                                dir,
-                                                mb,
-                                                nnzb,
-                                                descr,
-                                                dbsr_val_1,
-                                                dbsr_row_ptr,
-                                                dbsr_col_ind,
-                                                block_dim,
-                                                info,
-                                                policy,
-                                                dbuffer));
+                                                    dir,
+                                                    mb,
+                                                    nnzb,
+                                                    descr,
+                                                    dbsr_val_1,
+                                                    dbsr_row_ptr,
+                                                    dbsr_col_ind,
+                                                    block_dim,
+                                                    info,
+                                                    policy,
+                                                    dbuffer));
             gpu_time_used += (get_time_us() - temp);
         }
 
         gpu_time_used = gpu_time_used / number_hot_calls;
 
         double gbyte_count = bsric0_gbyte_count<T>(mb, block_dim, nnzb);
-        double gpu_gbyte = get_gpu_gbyte(gpu_time_used, gbyte_count);
+        double gpu_gbyte   = get_gpu_gbyte(gpu_time_used, gbyte_count);
 
-        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
+        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used)
+                  << std::endl;
     }
 
     return HIPSPARSE_STATUS_SUCCESS;

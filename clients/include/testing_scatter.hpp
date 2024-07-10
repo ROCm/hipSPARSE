@@ -25,12 +25,12 @@
 #ifndef TESTING_SCATTER_HPP
 #define TESTING_SCATTER_HPP
 
-#include "hipsparse_test_unique_ptr.hpp"
 #include "flops.hpp"
 #include "gbyte.hpp"
+#include "hipsparse_arguments.hpp"
+#include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
-#include "hipsparse_arguments.hpp"
 
 #include <hipsparse.h>
 #include <typeinfo>
@@ -175,9 +175,9 @@ hipsparseStatus_t testing_scatter(Arguments argus)
 
         double gbyte_count = sctr_gbyte_count<T>(nnz);
         double gpu_gbyte   = get_gpu_gbyte(gpu_time_used, gbyte_count);
-        
-        std::cout << "GBytes/s: " << gpu_gbyte 
-                  << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
+
+        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used)
+                  << std::endl;
     }
 
     CHECK_HIPSPARSE_ERROR(hipsparseDestroySpVec(x));

@@ -72,7 +72,7 @@ void testing_axpyi_bad_arg(void)
         hipsparseXaxpyi(handle, nnz, (T*)nullptr, dxVal, dxInd, dy, idx_base),
         "Error: alpha is nullptr");
     verify_hipsparse_status_invalid_handle(
-        hipsparseXaxpyi((hipsparseHandle_t)nullptr, nnz, &alpha, dxVal, dxInd, dy, idx_base));
+        hipsparseXaxpyi((hipsparseHandle_t) nullptr, nnz, &alpha, dxVal, dxInd, dy, idx_base));
 #endif
 }
 

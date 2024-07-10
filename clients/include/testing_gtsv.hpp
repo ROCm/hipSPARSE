@@ -25,13 +25,13 @@
 #ifndef TESTING_GTSV2_HPP
 #define TESTING_GTSV2_HPP
 
-#include "hipsparse.hpp"
-#include "hipsparse_test_unique_ptr.hpp"
 #include "flops.hpp"
 #include "gbyte.hpp"
+#include "hipsparse.hpp"
+#include "hipsparse_arguments.hpp"
+#include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
-#include "hipsparse_arguments.hpp"
 
 #include <hipsparse.h>
 #include <string>
@@ -172,14 +172,15 @@ hipsparseStatus_t testing_gtsv2(Arguments argus)
         std::vector<T> hresult = hB_original;
         for(int j = 0; j < n; j++)
         {
-            hresult[ldb * j] = testing_mult(hd[0], hB[ldb * j]) + testing_mult(hdu[0], hB[ldb * j + 1]);
+            hresult[ldb * j]
+                = testing_mult(hd[0], hB[ldb * j]) + testing_mult(hdu[0], hB[ldb * j + 1]);
             hresult[ldb * j + m - 1] = testing_mult(hdl[m - 1], hB[ldb * j + m - 2])
-                                    + testing_mult(hd[m - 1], hB[ldb * j + m - 1]);
+                                       + testing_mult(hd[m - 1], hB[ldb * j + m - 1]);
             for(int i = 1; i < m - 1; i++)
             {
                 hresult[ldb * j + i] = testing_mult(hdl[i], hB[ldb * j + i - 1])
-                                    + testing_mult(hd[i], hB[ldb * j + i])
-                                    + testing_mult(hdu[i], hB[ldb * j + i + 1]);
+                                       + testing_mult(hd[i], hB[ldb * j + i])
+                                       + testing_mult(hdu[i], hB[ldb * j + i + 1]);
             }
         }
 
@@ -209,8 +210,9 @@ hipsparseStatus_t testing_gtsv2(Arguments argus)
 
         double gbyte_count = gtsv_gbyte_count<T>(m, n);
         double gpu_gbyte   = get_gpu_gbyte(gpu_time_used, gbyte_count);
-       
-        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
+
+        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used)
+                  << std::endl;
     }
 
     CHECK_HIP_ERROR(hipFree(buffer));

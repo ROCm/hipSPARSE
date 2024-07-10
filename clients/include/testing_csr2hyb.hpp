@@ -25,13 +25,13 @@
 #ifndef TESTING_CSR2HYB_HPP
 #define TESTING_CSR2HYB_HPP
 
-#include "hipsparse.hpp"
-#include "hipsparse_test_unique_ptr.hpp"
 #include "flops.hpp"
 #include "gbyte.hpp"
+#include "hipsparse.hpp"
+#include "hipsparse_arguments.hpp"
+#include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
-#include "hipsparse_arguments.hpp"
 
 #include <algorithm>
 #include <hipsparse.h>
@@ -47,9 +47,9 @@ using namespace hipsparse_test;
 template <typename T>
 void testing_csr2hyb_bad_arg(void)
 {
-    int               m         = 100;
-    int               n         = 100;
-    int               safe_size = 100;
+    int m         = 100;
+    int n         = 100;
+    int safe_size = 100;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -71,45 +71,48 @@ void testing_csr2hyb_bad_arg(void)
     T*   csr_val     = (T*)csr_val_managed.get();
 
     verify_hipsparse_status_invalid_pointer(hipsparseXcsr2hyb(handle,
-                                   m,
-                                   n,
-                                   descr,
-                                   csr_val,
-                                   (int*)nullptr,
-                                   csr_col_ind,
-                                   hyb,
-                                   0,
-                                   HIPSPARSE_HYB_PARTITION_AUTO), "Error: csr_row_ptr is nullptr");
+                                                              m,
+                                                              n,
+                                                              descr,
+                                                              csr_val,
+                                                              (int*)nullptr,
+                                                              csr_col_ind,
+                                                              hyb,
+                                                              0,
+                                                              HIPSPARSE_HYB_PARTITION_AUTO),
+                                            "Error: csr_row_ptr is nullptr");
     verify_hipsparse_status_invalid_pointer(hipsparseXcsr2hyb(handle,
-                                   m,
-                                   n,
-                                   descr,
-                                   csr_val,
-                                   csr_row_ptr,
-                                   (int*)nullptr,
-                                   hyb,
-                                   0,
-                                   HIPSPARSE_HYB_PARTITION_AUTO), "Error: csr_col_ind is nullptr");
+                                                              m,
+                                                              n,
+                                                              descr,
+                                                              csr_val,
+                                                              csr_row_ptr,
+                                                              (int*)nullptr,
+                                                              hyb,
+                                                              0,
+                                                              HIPSPARSE_HYB_PARTITION_AUTO),
+                                            "Error: csr_col_ind is nullptr");
     verify_hipsparse_status_invalid_pointer(hipsparseXcsr2hyb(handle,
-                                   m,
-                                   n,
-                                   descr,
-                                   (T*)nullptr,
-                                   csr_row_ptr,
-                                   csr_col_ind,
-                                   hyb,
-                                   0,
-                                   HIPSPARSE_HYB_PARTITION_AUTO), "Error: csr_val is nullptr");
-    verify_hipsparse_status_invalid_handle(hipsparseXcsr2hyb((hipsparseHandle_t)nullptr,
-                                m,
-                                n,
-                                descr,
-                                csr_val,
-                                csr_row_ptr,
-                                csr_col_ind,
-                                hyb,
-                                0,
-                                HIPSPARSE_HYB_PARTITION_AUTO));
+                                                              m,
+                                                              n,
+                                                              descr,
+                                                              (T*)nullptr,
+                                                              csr_row_ptr,
+                                                              csr_col_ind,
+                                                              hyb,
+                                                              0,
+                                                              HIPSPARSE_HYB_PARTITION_AUTO),
+                                            "Error: csr_val is nullptr");
+    verify_hipsparse_status_invalid_handle(hipsparseXcsr2hyb((hipsparseHandle_t) nullptr,
+                                                             m,
+                                                             n,
+                                                             descr,
+                                                             csr_val,
+                                                             csr_row_ptr,
+                                                             csr_col_ind,
+                                                             hyb,
+                                                             0,
+                                                             HIPSPARSE_HYB_PARTITION_AUTO));
 }
 
 template <typename T>
@@ -122,7 +125,8 @@ hipsparseStatus_t testing_csr2hyb(Arguments argus)
     int                     user_ell_width = argus.ell_width;
     std::string             filename       = argus.filename;
 
-    std::cout << "m: " << m << " n: " << n << " idx_base: " << idx_base << " part: " << part << " user_ell_width: " << user_ell_width << " filename: " << filename << std::endl;
+    std::cout << "m: " << m << " n: " << n << " idx_base: " << idx_base << " part: " << part
+              << " user_ell_width: " << user_ell_width << " filename: " << filename << std::endl;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -375,8 +379,16 @@ hipsparseStatus_t testing_csr2hyb(Arguments argus)
         // Warm up
         for(int iter = 0; iter < number_cold_calls; ++iter)
         {
-            CHECK_HIPSPARSE_ERROR(hipsparseXcsr2hyb(
-            handle, m, n, descr, dcsr_val, dcsr_row_ptr, dcsr_col_ind, hyb, user_ell_width, part));
+            CHECK_HIPSPARSE_ERROR(hipsparseXcsr2hyb(handle,
+                                                    m,
+                                                    n,
+                                                    descr,
+                                                    dcsr_val,
+                                                    dcsr_row_ptr,
+                                                    dcsr_col_ind,
+                                                    hyb,
+                                                    user_ell_width,
+                                                    part));
         }
 
         double gpu_time_used = get_time_us();
@@ -384,8 +396,16 @@ hipsparseStatus_t testing_csr2hyb(Arguments argus)
         // Performance run
         for(int iter = 0; iter < number_hot_calls; ++iter)
         {
-            CHECK_HIPSPARSE_ERROR(hipsparseXcsr2hyb(
-            handle, m, n, descr, dcsr_val, dcsr_row_ptr, dcsr_col_ind, hyb, user_ell_width, part));
+            CHECK_HIPSPARSE_ERROR(hipsparseXcsr2hyb(handle,
+                                                    m,
+                                                    n,
+                                                    descr,
+                                                    dcsr_val,
+                                                    dcsr_row_ptr,
+                                                    dcsr_col_ind,
+                                                    hyb,
+                                                    user_ell_width,
+                                                    part));
         }
 
         gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
@@ -393,7 +413,8 @@ hipsparseStatus_t testing_csr2hyb(Arguments argus)
         double gbyte_count = csr2hyb_gbyte_count<T>(m, nnz, ell_nnz, coo_nnz);
         double gpu_gbyte   = get_gpu_gbyte(gpu_time_used, gbyte_count);
 
-        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;       
+        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used)
+                  << std::endl;
     }
 
     return HIPSPARSE_STATUS_SUCCESS;

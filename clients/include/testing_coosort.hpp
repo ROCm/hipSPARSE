@@ -25,13 +25,13 @@
 #ifndef TESTING_COOSORT_HPP
 #define TESTING_COOSORT_HPP
 
-#include "hipsparse.hpp"
-#include "hipsparse_test_unique_ptr.hpp"
 #include "flops.hpp"
 #include "gbyte.hpp"
+#include "hipsparse.hpp"
+#include "hipsparse_arguments.hpp"
+#include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
-#include "hipsparse_arguments.hpp"
 
 #include <algorithm>
 #include <hipsparse.h>
@@ -43,10 +43,10 @@ using namespace hipsparse_test;
 void testing_coosort_bad_arg(void)
 {
 #if(!defined(CUDART_VERSION))
-    int               m         = 100;
-    int               n         = 100;
-    int               nnz       = 100;
-    int               safe_size = 100;
+    int m         = 100;
+    int n         = 100;
+    int nnz       = 100;
+    int safe_size = 100;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -66,32 +66,44 @@ void testing_coosort_bad_arg(void)
     int*  perm        = (int*)perm_managed.get();
     void* buffer      = (void*)buffer_managed.get();
 
-    verify_hipsparse_status_invalid_pointer(hipsparseXcoosort_bufferSizeExt(
-        handle, m, n, nnz, (int*)nullptr, coo_col_ind, &buffer_size), "Error: coo_row_ind is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXcoosort_bufferSizeExt(
-        handle, m, n, nnz, coo_row_ind, (int*)nullptr, &buffer_size), "Error: coo_col_ind is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXcoosort_bufferSizeExt(
-        handle, m, n, nnz, coo_row_ind, coo_col_ind, (size_t*)nullptr), "Error: buffer_size is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXcoosort_bufferSizeExt(
+            handle, m, n, nnz, (int*)nullptr, coo_col_ind, &buffer_size),
+        "Error: coo_row_ind is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXcoosort_bufferSizeExt(
+            handle, m, n, nnz, coo_row_ind, (int*)nullptr, &buffer_size),
+        "Error: coo_col_ind is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXcoosort_bufferSizeExt(
+            handle, m, n, nnz, coo_row_ind, coo_col_ind, (size_t*)nullptr),
+        "Error: buffer_size is nullptr");
     verify_hipsparse_status_invalid_handle(hipsparseXcoosort_bufferSizeExt(
-        (hipsparseHandle_t)nullptr, m, n, nnz, coo_row_ind, coo_col_ind, &buffer_size));
+        (hipsparseHandle_t) nullptr, m, n, nnz, coo_row_ind, coo_col_ind, &buffer_size));
 
-    verify_hipsparse_status_invalid_pointer(hipsparseXcoosortByRow(
-        handle, m, n, nnz, (int*)nullptr, coo_col_ind, perm, buffer), "Error: coo_row_ind is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXcoosortByRow(
-        handle, m, n, nnz, coo_row_ind, (int*)nullptr, perm, buffer), "Error: coo_col_ind is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXcoosortByRow(
-        handle, m, n, nnz, coo_row_ind, coo_col_ind, perm, (int*)nullptr), "Error: buffer is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXcoosortByRow(handle, m, n, nnz, (int*)nullptr, coo_col_ind, perm, buffer),
+        "Error: coo_row_ind is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXcoosortByRow(handle, m, n, nnz, coo_row_ind, (int*)nullptr, perm, buffer),
+        "Error: coo_col_ind is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXcoosortByRow(handle, m, n, nnz, coo_row_ind, coo_col_ind, perm, (int*)nullptr),
+        "Error: buffer is nullptr");
     verify_hipsparse_status_invalid_handle(hipsparseXcoosortByRow(
-        (hipsparseHandle_t)nullptr, m, n, nnz, coo_row_ind, coo_col_ind, perm, buffer));
+        (hipsparseHandle_t) nullptr, m, n, nnz, coo_row_ind, coo_col_ind, perm, buffer));
 
-    verify_hipsparse_status_invalid_pointer(hipsparseXcoosortByColumn(
-        handle, m, n, nnz, (int*)nullptr, coo_col_ind, perm, buffer), "Error: coo_row_ind is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXcoosortByColumn(
-        handle, m, n, nnz, coo_row_ind, (int*)nullptr, perm, buffer), "Error: coo_col_ind is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXcoosortByColumn(
-        handle, m, n, nnz, coo_row_ind, coo_col_ind, perm, (int*)nullptr), "Error: buffer is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXcoosortByColumn(handle, m, n, nnz, (int*)nullptr, coo_col_ind, perm, buffer),
+        "Error: coo_row_ind is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXcoosortByColumn(handle, m, n, nnz, coo_row_ind, (int*)nullptr, perm, buffer),
+        "Error: coo_col_ind is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXcoosortByColumn(handle, m, n, nnz, coo_row_ind, coo_col_ind, perm, (int*)nullptr),
+        "Error: buffer is nullptr");
     verify_hipsparse_status_invalid_handle(hipsparseXcoosortByColumn(
-        (hipsparseHandle_t)nullptr, m, n, nnz, coo_row_ind, coo_col_ind, perm, buffer));
+        (hipsparseHandle_t) nullptr, m, n, nnz, coo_row_ind, coo_col_ind, perm, buffer));
 #endif
 }
 
@@ -105,7 +117,8 @@ hipsparseStatus_t testing_coosort(Arguments argus)
     hipsparseIndexBase_t idx_base = argus.baseA;
     std::string          filename = argus.filename;
 
-    std::cout << "m: " << m << " n: " << n << " by_row: " << by_row << " permute: " << permute << " idx_base: " << idx_base << " filename: " << filename << std::endl;
+    std::cout << "m: " << m << " n: " << n << " by_row: " << by_row << " permute: " << permute
+              << " idx_base: " << idx_base << " filename: " << filename << std::endl;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -318,7 +331,8 @@ hipsparseStatus_t testing_coosort(Arguments argus)
         double gbyte_count = coosort_gbyte_count(nnz, permute);
         double gpu_gbyte   = get_gpu_gbyte(gpu_time_used, gbyte_count);
 
-        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
+        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used)
+                  << std::endl;
     }
 #endif
 

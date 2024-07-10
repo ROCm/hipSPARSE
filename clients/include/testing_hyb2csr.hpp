@@ -25,13 +25,13 @@
 #ifndef TESTING_HYB2CSR_HPP
 #define TESTING_HYB2CSR_HPP
 
-#include "hipsparse.hpp"
-#include "hipsparse_test_unique_ptr.hpp"
 #include "flops.hpp"
 #include "gbyte.hpp"
+#include "hipsparse.hpp"
+#include "hipsparse_arguments.hpp"
+#include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
-#include "hipsparse_arguments.hpp"
 
 #include <algorithm>
 #include <hipsparse.h>
@@ -44,7 +44,7 @@ template <typename T>
 void testing_hyb2csr_bad_arg(void)
 {
 #if(!defined(CUDART_VERSION))
-    int               safe_size = 100;
+    int safe_size = 100;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -72,12 +72,25 @@ void testing_hyb2csr_bad_arg(void)
     int* csr_col_ind = (int*)csr_col_ind_managed.get();
     T*   csr_val     = (T*)csr_val_managed.get();
 
-    verify_hipsparse_status_invalid_pointer(hipsparseXhyb2csr(handle, descr, hyb, csr_val, (int*)nullptr, csr_col_ind), "Error: csr_row_ptr is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXhyb2csr(handle, descr, hyb, csr_val, csr_row_ptr, (int*)nullptr), "Error: csr_col_ind is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXhyb2csr(handle, descr, hyb, (T*)nullptr, csr_row_ptr, csr_col_ind), "Error: csr_val is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXhyb2csr(handle, (hipsparseMatDescr_t)nullptr, hyb, csr_val, csr_row_ptr, csr_col_ind), "Error: csr_val is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXhyb2csr(handle, descr, (hipsparseHybMat_t)nullptr, csr_val, csr_row_ptr, csr_col_ind), "Error: csr_val is nullptr");
-    verify_hipsparse_status_invalid_handle(hipsparseXhyb2csr((hipsparseHandle_t)nullptr, descr, hyb, csr_val, csr_row_ptr, csr_col_ind));
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXhyb2csr(handle, descr, hyb, csr_val, (int*)nullptr, csr_col_ind),
+        "Error: csr_row_ptr is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXhyb2csr(handle, descr, hyb, csr_val, csr_row_ptr, (int*)nullptr),
+        "Error: csr_col_ind is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXhyb2csr(handle, descr, hyb, (T*)nullptr, csr_row_ptr, csr_col_ind),
+        "Error: csr_val is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXhyb2csr(
+            handle, (hipsparseMatDescr_t) nullptr, hyb, csr_val, csr_row_ptr, csr_col_ind),
+        "Error: csr_val is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXhyb2csr(
+            handle, descr, (hipsparseHybMat_t) nullptr, csr_val, csr_row_ptr, csr_col_ind),
+        "Error: csr_val is nullptr");
+    verify_hipsparse_status_invalid_handle(hipsparseXhyb2csr(
+        (hipsparseHandle_t) nullptr, descr, hyb, csr_val, csr_row_ptr, csr_col_ind));
 #endif
 }
 
@@ -89,7 +102,8 @@ hipsparseStatus_t testing_hyb2csr(Arguments argus)
     hipsparseIndexBase_t idx_base = argus.baseA;
     std::string          filename = argus.filename;
 
-    std::cout << "m: " << m << " n: " << n << " idx_base: " << idx_base << " filename: " << filename << std::endl;
+    std::cout << "m: " << m << " n: " << n << " idx_base: " << idx_base << " filename: " << filename
+              << std::endl;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -184,7 +198,8 @@ hipsparseStatus_t testing_hyb2csr(Arguments argus)
         // Warm up
         for(int iter = 0; iter < number_cold_calls; ++iter)
         {
-            CHECK_HIPSPARSE_ERROR(hipsparseXhyb2csr(handle, descr, hyb, dcsr_val, dcsr_row_ptr, dcsr_col_ind));
+            CHECK_HIPSPARSE_ERROR(
+                hipsparseXhyb2csr(handle, descr, hyb, dcsr_val, dcsr_row_ptr, dcsr_col_ind));
         }
 
         double gpu_time_used = get_time_us();
@@ -192,7 +207,8 @@ hipsparseStatus_t testing_hyb2csr(Arguments argus)
         // Performance run
         for(int iter = 0; iter < number_hot_calls; ++iter)
         {
-            CHECK_HIPSPARSE_ERROR(hipsparseXhyb2csr(handle, descr, hyb, dcsr_val, dcsr_row_ptr, dcsr_col_ind));
+            CHECK_HIPSPARSE_ERROR(
+                hipsparseXhyb2csr(handle, descr, hyb, dcsr_val, dcsr_row_ptr, dcsr_col_ind));
         }
 
         gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;

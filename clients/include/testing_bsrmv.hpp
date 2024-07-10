@@ -25,13 +25,13 @@
 #ifndef TESTING_BSRMV_HPP
 #define TESTING_BSRMV_HPP
 
-#include "hipsparse.hpp"
-#include "hipsparse_test_unique_ptr.hpp"
 #include "flops.hpp"
 #include "gbyte.hpp"
+#include "hipsparse.hpp"
+#include "hipsparse_arguments.hpp"
+#include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
-#include "hipsparse_arguments.hpp"
 
 #include <cmath>
 #include <hipsparse.h>
@@ -71,7 +71,7 @@ void testing_bsrmv_bad_arg(void)
     T*   dy   = (T*)dy_managed.get();
 
     // Test hipsparseXbsrmv
-    verify_hipsparse_status_invalid_handle(hipsparseXbsrmv((hipsparseHandle_t)nullptr,
+    verify_hipsparse_status_invalid_handle(hipsparseXbsrmv((hipsparseHandle_t) nullptr,
                                                            dirA,
                                                            transA,
                                                            safe_size,
@@ -109,7 +109,7 @@ void testing_bsrmv_bad_arg(void)
                                                             safe_size,
                                                             safe_size,
                                                             &alpha,
-                                                            (hipsparseMatDescr_t)nullptr,
+                                                            (hipsparseMatDescr_t) nullptr,
                                                             dval,
                                                             dptr,
                                                             dcol,
@@ -294,7 +294,9 @@ hipsparseStatus_t testing_bsrmv(Arguments argus)
     hipsparseDirection_t dir       = argus.dirA;
     std::string          filename  = argus.filename;
 
-    std::cout << "m: " << m << " n: " << n << " block_dim: " << block_dim << " transA: " << transA << " idx_base: " << idx_base << " dir: " << dir << " filename: " << filename << std::endl;
+    std::cout << "m: " << m << " n: " << n << " block_dim: " << block_dim << " transA: " << transA
+              << " idx_base: " << idx_base << " dir: " << dir << " filename: " << filename
+              << std::endl;
 
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
     hipsparseHandle_t              handle = test_handle->handle;
@@ -499,27 +501,27 @@ hipsparseStatus_t testing_bsrmv(Arguments argus)
     {
         int number_cold_calls = 2;
         int number_hot_calls  = argus.iters;
-    
+
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
 
         // Warm up
         for(int iter = 0; iter < number_cold_calls; ++iter)
         {
             CHECK_HIPSPARSE_ERROR(hipsparseXbsrmv(handle,
-                                              dir,
-                                              transA,
-                                              mb,
-                                              nb,
-                                              nnzb,
-                                              &h_alpha,
-                                              descr,
-                                              dbsr_val,
-                                              dbsr_row_ptr,
-                                              dbsr_col_ind,
-                                              block_dim,
-                                              dx,
-                                              &h_beta,
-                                              dy_1));
+                                                  dir,
+                                                  transA,
+                                                  mb,
+                                                  nb,
+                                                  nnzb,
+                                                  &h_alpha,
+                                                  descr,
+                                                  dbsr_val,
+                                                  dbsr_row_ptr,
+                                                  dbsr_col_ind,
+                                                  block_dim,
+                                                  dx,
+                                                  &h_beta,
+                                                  dy_1));
         }
 
         double gpu_time_used = get_time_us();
@@ -528,34 +530,33 @@ hipsparseStatus_t testing_bsrmv(Arguments argus)
         for(int iter = 0; iter < number_hot_calls; ++iter)
         {
             CHECK_HIPSPARSE_ERROR(hipsparseXbsrmv(handle,
-                                              dir,
-                                              transA,
-                                              mb,
-                                              nb,
-                                              nnzb,
-                                              &h_alpha,
-                                              descr,
-                                              dbsr_val,
-                                              dbsr_row_ptr,
-                                              dbsr_col_ind,
-                                              block_dim,
-                                              dx,
-                                              &h_beta,
-                                              dy_1));
+                                                  dir,
+                                                  transA,
+                                                  mb,
+                                                  nb,
+                                                  nnzb,
+                                                  &h_alpha,
+                                                  descr,
+                                                  dbsr_val,
+                                                  dbsr_row_ptr,
+                                                  dbsr_col_ind,
+                                                  block_dim,
+                                                  dx,
+                                                  &h_beta,
+                                                  dy_1));
         }
 
         gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
 
-        double gflop_count = spmv_gflop_count(
-            m, nnzb * block_dim * block_dim, h_beta != make_DataType<T>(0.0));
-        double gbyte_count = bsrmv_gbyte_count<T>(
-            mb, nb, nnzb, block_dim, h_beta != make_DataType<T>(0.0));
+        double gflop_count
+            = spmv_gflop_count(m, nnzb * block_dim * block_dim, h_beta != make_DataType<T>(0.0));
+        double gbyte_count
+            = bsrmv_gbyte_count<T>(mb, nb, nnzb, block_dim, h_beta != make_DataType<T>(0.0));
 
         double gpu_gflops = get_gpu_gflops(gpu_time_used, gflop_count);
         double gpu_gbyte  = get_gpu_gbyte(gpu_time_used, gbyte_count);
 
-        std::cout << "GFlops/s: " << gpu_gflops 
-                  << " GBytes/s: " << gpu_gbyte 
+        std::cout << "GFlops/s: " << gpu_gflops << " GBytes/s: " << gpu_gbyte
                   << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
     }
 

@@ -74,7 +74,6 @@ constexpr double roti_gflop_count(I nnz)
     return (6.0 * nnz) / 1e9;
 }
 
-
 /*
  * ===========================================================================
  *    level 2 SPARSE
@@ -109,11 +108,7 @@ constexpr double gemvi_gflop_count(I M, I nnz)
  *    level 3 SPARSE
  * ===========================================================================
  */
-constexpr double bsrmm_gflop_count(int N,
-                                   int nnzb,
-                                   int block_dim,
-                                   int nnz_C,
-                                   bool          beta = false)
+constexpr double bsrmm_gflop_count(int N, int nnzb, int block_dim, int nnz_C, bool beta = false)
 {
     return (2.0 * nnzb * block_dim * block_dim * N + (beta ? nnz_C : 0)) / 1e9;
 }
@@ -146,8 +141,7 @@ constexpr double spmm_gflop_count(J N, I nnz_A, I nnz_C, bool beta = false)
  * ===========================================================================
  */
 template <typename T>
-constexpr double csrgeam_gflop_count(
-    int nnz_A, int nnz_B, int nnz_C, const T* alpha, const T* beta)
+constexpr double csrgeam_gflop_count(int nnz_A, int nnz_B, int nnz_C, const T* alpha, const T* beta)
 {
     // Flop counter
     double flops = 0.0;

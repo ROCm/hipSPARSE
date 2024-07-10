@@ -25,13 +25,13 @@
 #ifndef TESTING_CSR2GEBSR_HPP
 #define TESTING_CSR2GEBSR_HPP
 
-#include "hipsparse.hpp"
-#include "hipsparse_test_unique_ptr.hpp"
 #include "flops.hpp"
 #include "gbyte.hpp"
+#include "hipsparse.hpp"
+#include "hipsparse_arguments.hpp"
+#include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
-#include "hipsparse_arguments.hpp"
 
 #include <algorithm>
 #include <hipsparse.h>
@@ -439,7 +439,10 @@ hipsparseStatus_t testing_csr2gebsr(Arguments argus)
     int                  col_block_dim = argus.col_block_dimA;
     std::string          filename      = argus.filename;
 
-    std::cout << "m: " << m << " n: " << n << " csr_idx_base: " << csr_idx_base << " bsr_idx_base: " << bsr_idx_base << " dir: " << dir << " row_block_dim: " << row_block_dim << " col_block_dim: " << col_block_dim << " filename: " << filename << std::endl;
+    std::cout << "m: " << m << " n: " << n << " csr_idx_base: " << csr_idx_base
+              << " bsr_idx_base: " << bsr_idx_base << " dir: " << dir
+              << " row_block_dim: " << row_block_dim << " col_block_dim: " << col_block_dim
+              << " filename: " << filename << std::endl;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -515,18 +518,18 @@ hipsparseStatus_t testing_csr2gebsr(Arguments argus)
 
     int hbsr_nnzb;
     CHECK_HIPSPARSE_ERROR(hipsparseXcsr2gebsrNnz(handle,
-                                                    dir,
-                                                    m,
-                                                    n,
-                                                    csr_descr,
-                                                    dcsr_row_ptr,
-                                                    dcsr_col_ind,
-                                                    bsr_descr,
-                                                    dbsr_row_ptr,
-                                                    row_block_dim,
-                                                    col_block_dim,
-                                                    &hbsr_nnzb,
-                                                    dbuffer));
+                                                 dir,
+                                                 m,
+                                                 n,
+                                                 csr_descr,
+                                                 dcsr_row_ptr,
+                                                 dcsr_col_ind,
+                                                 bsr_descr,
+                                                 dbsr_row_ptr,
+                                                 row_block_dim,
+                                                 col_block_dim,
+                                                 &hbsr_nnzb,
+                                                 dbuffer));
 
     // Allocate memory on the device
     auto dbsr_col_ind_managed
@@ -610,20 +613,20 @@ hipsparseStatus_t testing_csr2gebsr(Arguments argus)
         for(int iter = 0; iter < number_cold_calls; ++iter)
         {
             CHECK_HIPSPARSE_ERROR(hipsparseXcsr2gebsr(handle,
-                                                  dir,
-                                                  m,
-                                                  n,
-                                                  csr_descr,
-                                                  dcsr_val,
-                                                  dcsr_row_ptr,
-                                                  dcsr_col_ind,
-                                                  bsr_descr,
-                                                  dbsr_val,
-                                                  dbsr_row_ptr,
-                                                  dbsr_col_ind,
-                                                  row_block_dim,
-                                                  col_block_dim,
-                                                  dbuffer));
+                                                      dir,
+                                                      m,
+                                                      n,
+                                                      csr_descr,
+                                                      dcsr_val,
+                                                      dcsr_row_ptr,
+                                                      dcsr_col_ind,
+                                                      bsr_descr,
+                                                      dbsr_val,
+                                                      dbsr_row_ptr,
+                                                      dbsr_col_ind,
+                                                      row_block_dim,
+                                                      col_block_dim,
+                                                      dbuffer));
         }
 
         double gpu_time_used = get_time_us();
@@ -632,20 +635,20 @@ hipsparseStatus_t testing_csr2gebsr(Arguments argus)
         for(int iter = 0; iter < number_hot_calls; ++iter)
         {
             CHECK_HIPSPARSE_ERROR(hipsparseXcsr2gebsr(handle,
-                                                  dir,
-                                                  m,
-                                                  n,
-                                                  csr_descr,
-                                                  dcsr_val,
-                                                  dcsr_row_ptr,
-                                                  dcsr_col_ind,
-                                                  bsr_descr,
-                                                  dbsr_val,
-                                                  dbsr_row_ptr,
-                                                  dbsr_col_ind,
-                                                  row_block_dim,
-                                                  col_block_dim,
-                                                  dbuffer));
+                                                      dir,
+                                                      m,
+                                                      n,
+                                                      csr_descr,
+                                                      dcsr_val,
+                                                      dcsr_row_ptr,
+                                                      dcsr_col_ind,
+                                                      bsr_descr,
+                                                      dbsr_val,
+                                                      dbsr_row_ptr,
+                                                      dbsr_col_ind,
+                                                      row_block_dim,
+                                                      col_block_dim,
+                                                      dbuffer));
         }
 
         gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
@@ -654,7 +657,8 @@ hipsparseStatus_t testing_csr2gebsr(Arguments argus)
             = csr2gebsr_gbyte_count<T>(m, mb, nnz, hbsr_nnzb, row_block_dim, col_block_dim);
         double gpu_gbyte = get_gpu_gbyte(gpu_time_used, gbyte_count);
 
-        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
+        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used)
+                  << std::endl;
     }
 
     return HIPSPARSE_STATUS_SUCCESS;

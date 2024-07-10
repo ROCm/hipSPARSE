@@ -48,7 +48,6 @@ typedef std::tuple<int,
                    hipsparseSpMMAlg_t,
                    std::string>
     spmm_csc_bin_tuple;
-    
 
 int spmm_csc_M_range[] = {50};
 int spmm_csc_N_range[] = {5};
@@ -64,7 +63,7 @@ hipsparseOperation_t spmm_csc_transB_range[]
 hipsparseOrder_t     spmm_csc_orderB_range[]  = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
 hipsparseOrder_t     spmm_csc_orderC_range[]  = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
 hipsparseIndexBase_t spmm_csc_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ONE};
-hipsparseSpMMAlg_t   spmm_csc_alg_range[] = {HIPSPARSE_SPMM_ALG_DEFAULT};
+hipsparseSpMMAlg_t   spmm_csc_alg_range[]     = {HIPSPARSE_SPMM_ALG_DEFAULT};
 
 std::string spmm_csc_bin[]
     = {"nos1.bin", "nos3.bin", "nos5.bin", "nos7.bin", "Chebyshev4.bin", "shipsec1.bin"};
@@ -90,36 +89,36 @@ protected:
 Arguments setup_spmm_csc_arguments(spmm_csc_tuple tup)
 {
     Arguments arg;
-    arg.M      = std::get<0>(tup);
-    arg.N      = std::get<1>(tup);
-    arg.K      = std::get<2>(tup);
-    arg.alpha  = std::get<3>(tup);
-    arg.beta   = std::get<4>(tup);
-    arg.transA = std::get<5>(tup);
-    arg.transB = std::get<6>(tup);
-    arg.orderB = std::get<7>(tup);
-    arg.orderC = std::get<8>(tup);
-    arg.baseA  = std::get<9>(tup);
+    arg.M        = std::get<0>(tup);
+    arg.N        = std::get<1>(tup);
+    arg.K        = std::get<2>(tup);
+    arg.alpha    = std::get<3>(tup);
+    arg.beta     = std::get<4>(tup);
+    arg.transA   = std::get<5>(tup);
+    arg.transB   = std::get<6>(tup);
+    arg.orderB   = std::get<7>(tup);
+    arg.orderC   = std::get<8>(tup);
+    arg.baseA    = std::get<9>(tup);
     arg.spmm_alg = std::get<10>(tup);
-    arg.timing = 0;
+    arg.timing   = 0;
     return arg;
 }
 
 Arguments setup_spmm_csc_arguments(spmm_csc_bin_tuple tup)
 {
     Arguments arg;
-    arg.M      = -99;
-    arg.N      = std::get<0>(tup);
-    arg.K      = -99;
-    arg.alpha  = std::get<1>(tup);
-    arg.beta   = std::get<2>(tup);
-    arg.transA = std::get<3>(tup);
-    arg.transB = std::get<4>(tup);
-    arg.orderB = std::get<5>(tup);
-    arg.orderC = std::get<6>(tup);
-    arg.baseA  = std::get<7>(tup);
+    arg.M        = -99;
+    arg.N        = std::get<0>(tup);
+    arg.K        = -99;
+    arg.alpha    = std::get<1>(tup);
+    arg.beta     = std::get<2>(tup);
+    arg.transA   = std::get<3>(tup);
+    arg.transB   = std::get<4>(tup);
+    arg.orderB   = std::get<5>(tup);
+    arg.orderC   = std::get<6>(tup);
+    arg.baseA    = std::get<7>(tup);
     arg.spmm_alg = std::get<8>(tup);
-    arg.timing = 0;
+    arg.timing   = 0;
 
     // Determine absolute path of test matrix
     std::string bin_file = std::get<9>(tup);

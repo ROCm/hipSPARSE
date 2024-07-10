@@ -26,10 +26,10 @@
 #define TESTING_CSRU2CSR_HPP
 
 #include "hipsparse.hpp"
+#include "hipsparse_arguments.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
-#include "hipsparse_arguments.hpp"
 
 #include <hipsparse.h>
 #include <string>
@@ -249,7 +249,8 @@ hipsparseStatus_t testing_csru2csr(Arguments argus)
     hipsparseIndexBase_t idx_base = argus.baseA;
     std::string          filename = argus.filename;
 
-    std::cout << "m: " << m << " n: " << n << " idx_base: " << idx_base << " filename: " << filename << std::endl;
+    std::cout << "m: " << m << " n: " << n << " idx_base: " << idx_base << " filename: " << filename
+              << std::endl;
 
     // hipSPARSE handle
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
@@ -350,7 +351,8 @@ hipsparseStatus_t testing_csru2csr(Arguments argus)
 
         CHECK_HIP_ERROR(
             hipMemcpy(hcsr_col_ind.data(), dcsr_col_ind, sizeof(int) * nnz, hipMemcpyDeviceToHost));
-        CHECK_HIP_ERROR(hipMemcpy(hcsr_val.data(), dcsr_val, sizeof(T) * nnz, hipMemcpyDeviceToHost));
+        CHECK_HIP_ERROR(
+            hipMemcpy(hcsr_val.data(), dcsr_val, sizeof(T) * nnz, hipMemcpyDeviceToHost));
 
         // Unsort CSR columns back to original state
         CHECK_HIPSPARSE_ERROR(hipsparseXcsr2csru(
@@ -368,7 +370,8 @@ hipsparseStatus_t testing_csru2csr(Arguments argus)
         // Unit check
         unit_check_general(1, nnz, 1, hcsr_col_ind.data(), hcsr_col_ind_gold.data());
         unit_check_general(1, nnz, 1, hcsr_val.data(), hcsr_val_gold.data());
-        unit_check_general(1, nnz, 1, hcsr_col_ind_unsorted.data(), hcsr_col_ind_unsorted_gold.data());
+        unit_check_general(
+            1, nnz, 1, hcsr_col_ind_unsorted.data(), hcsr_col_ind_unsorted_gold.data());
         unit_check_general(1, nnz, 1, hcsr_val_unsorted.data(), hcsr_val_unsorted_gold.data());
     }
 #endif

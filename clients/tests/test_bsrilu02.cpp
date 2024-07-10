@@ -27,11 +27,12 @@
 #include <hipsparse.h>
 #include <string>
 
-typedef hipsparseIndexBase_t                                                 base;
-typedef hipsparseDirection_t                                                 dir;
-typedef hipsparseSolvePolicy_t                                               solve_policy;
-typedef std::tuple<int, int, int, double, double, double, dir, base, solve_policy>         bsrilu02_tuple;
-typedef std::tuple<int, int, double, double, double, dir, base, solve_policy, std::string> bsrilu02_bin_tuple;
+typedef hipsparseIndexBase_t                                                       base;
+typedef hipsparseDirection_t                                                       dir;
+typedef hipsparseSolvePolicy_t                                                     solve_policy;
+typedef std::tuple<int, int, int, double, double, double, dir, base, solve_policy> bsrilu02_tuple;
+typedef std::tuple<int, int, double, double, double, dir, base, solve_policy, std::string>
+    bsrilu02_bin_tuple;
 
 int bsrilu02_M_range[]   = {0, 50, 426};
 int bsrilu02_dim_range[] = {1, 3, 5, 9};
@@ -41,9 +42,10 @@ double bsrilu02_boost_tol_range[]  = {1.1};
 double bsrilu02_boost_val_range[]  = {0.3};
 double bsrilu02_boost_vali_range[] = {0.2};
 
-base bsrilu02_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
-dir  bsrilu02_dir_range[]     = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COLUMN};
-solve_policy bsrilu02_solve_policy_range[] = {HIPSPARSE_SOLVE_POLICY_NO_LEVEL, HIPSPARSE_SOLVE_POLICY_USE_LEVEL};
+base         bsrilu02_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+dir          bsrilu02_dir_range[]     = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COLUMN};
+solve_policy bsrilu02_solve_policy_range[]
+    = {HIPSPARSE_SOLVE_POLICY_NO_LEVEL, HIPSPARSE_SOLVE_POLICY_USE_LEVEL};
 
 std::string bsrilu02_bin[]
     = {"nos1.bin", "nos2.bin", "nos3.bin", "nos4.bin", "nos5.bin", "nos6.bin", "nos7.bin"};

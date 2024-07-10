@@ -25,13 +25,13 @@
 #ifndef TESTING_CSRGEAM2_HPP
 #define TESTING_CSRGEAM2_HPP
 
-#include "hipsparse.hpp"
-#include "hipsparse_test_unique_ptr.hpp"
 #include "flops.hpp"
 #include "gbyte.hpp"
+#include "hipsparse.hpp"
+#include "hipsparse_arguments.hpp"
+#include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
-#include "hipsparse_arguments.hpp"
 
 #include <hipsparse.h>
 #include <string>
@@ -740,7 +740,9 @@ hipsparseStatus_t testing_csrgeam2(Arguments argus)
     T                    h_alpha    = make_DataType<T>(argus.alpha);
     T                    h_beta     = make_DataType<T>(argus.beta);
 
-    std::cout << "M: " << M << " N: " << N << " idx_base_A: " << idx_base_A << " idx_base_B: " << idx_base_B << " idx_base_C: " << idx_base_C << " filename: " << filename << std::endl;
+    std::cout << "M: " << M << " N: " << N << " idx_base_A: " << idx_base_A
+              << " idx_base_B: " << idx_base_B << " idx_base_C: " << idx_base_C
+              << " filename: " << filename << std::endl;
 
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
     hipsparseHandle_t              handle = test_handle->handle;
@@ -882,17 +884,15 @@ hipsparseStatus_t testing_csrgeam2(Arguments argus)
     auto dCval_1_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * hnnz_C_1), device_free};
 
     int* dCcol_1 = (int*)dCcol_1_managed.get();
-    T* dCval_1 = (T*)dCval_1_managed.get();
+    T*   dCval_1 = (T*)dCval_1_managed.get();
 
     CHECK_HIP_ERROR(hipMemcpy(dalpha, &h_alpha, sizeof(T), hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dbeta, &h_beta, sizeof(T), hipMemcpyHostToDevice));
 
     // hipsparse pointer mode device
-    auto dCcol_2_managed
-        = hipsparse_unique_ptr{device_malloc(sizeof(int) * hnnz_C_1), device_free};
-    auto dCval_2_managed
-        = hipsparse_unique_ptr{device_malloc(sizeof(T) * hnnz_C_1), device_free};
-    auto dnnz_C_managed = hipsparse_unique_ptr{device_malloc(sizeof(int)), device_free};
+    auto dCcol_2_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * hnnz_C_1), device_free};
+    auto dCval_2_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * hnnz_C_1), device_free};
+    auto dnnz_C_managed  = hipsparse_unique_ptr{device_malloc(sizeof(int)), device_free};
 
     int* dCcol_2 = (int*)dCcol_2_managed.get();
     T*   dCval_2 = (T*)dCval_2_managed.get();
@@ -987,7 +987,6 @@ hipsparseStatus_t testing_csrgeam2(Arguments argus)
         CHECK_HIP_ERROR(
             hipMemcpy(hcsr_val_C_2.data(), dCval_2, sizeof(T) * hnnz_C_2, hipMemcpyDeviceToHost));
 
-
         // Compute csrgemm host solution
         std::vector<int> hcsr_row_ptr_C_gold(M + 1);
 
@@ -1048,25 +1047,25 @@ hipsparseStatus_t testing_csrgeam2(Arguments argus)
         for(int iter = 0; iter < number_cold_calls; ++iter)
         {
             CHECK_HIPSPARSE_ERROR(hipsparseXcsrgeam2(handle,
-                                                 M,
-                                                 N,
-                                                 &h_alpha,
-                                                 descr_A,
-                                                 nnz_A,
-                                                 dAval,
-                                                 dAptr,
-                                                 dAcol,
-                                                 &h_beta,
-                                                 descr_B,
-                                                 nnz_B,
-                                                 dBval,
-                                                 dBptr,
-                                                 dBcol,
-                                                 descr_C,
-                                                 dCval_1,
-                                                 dCptr_1,
-                                                 dCcol_1,
-                                                 dbuffer));
+                                                     M,
+                                                     N,
+                                                     &h_alpha,
+                                                     descr_A,
+                                                     nnz_A,
+                                                     dAval,
+                                                     dAptr,
+                                                     dAcol,
+                                                     &h_beta,
+                                                     descr_B,
+                                                     nnz_B,
+                                                     dBval,
+                                                     dBptr,
+                                                     dBcol,
+                                                     descr_C,
+                                                     dCval_1,
+                                                     dCptr_1,
+                                                     dCcol_1,
+                                                     dbuffer));
         }
 
         double gpu_time_used = get_time_us();
@@ -1075,25 +1074,25 @@ hipsparseStatus_t testing_csrgeam2(Arguments argus)
         for(int iter = 0; iter < number_hot_calls; ++iter)
         {
             CHECK_HIPSPARSE_ERROR(hipsparseXcsrgeam2(handle,
-                                                 M,
-                                                 N,
-                                                 &h_alpha,
-                                                 descr_A,
-                                                 nnz_A,
-                                                 dAval,
-                                                 dAptr,
-                                                 dAcol,
-                                                 &h_beta,
-                                                 descr_B,
-                                                 nnz_B,
-                                                 dBval,
-                                                 dBptr,
-                                                 dBcol,
-                                                 descr_C,
-                                                 dCval_1,
-                                                 dCptr_1,
-                                                 dCcol_1,
-                                                 dbuffer));
+                                                     M,
+                                                     N,
+                                                     &h_alpha,
+                                                     descr_A,
+                                                     nnz_A,
+                                                     dAval,
+                                                     dAptr,
+                                                     dAcol,
+                                                     &h_beta,
+                                                     descr_B,
+                                                     nnz_B,
+                                                     dBval,
+                                                     dBptr,
+                                                     dBcol,
+                                                     descr_C,
+                                                     dCval_1,
+                                                     dCptr_1,
+                                                     dCcol_1,
+                                                     dbuffer));
         }
 
         gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
@@ -1104,7 +1103,8 @@ hipsparseStatus_t testing_csrgeam2(Arguments argus)
         double gpu_gflops = get_gpu_gflops(gpu_time_used, gflop_count);
         double gpu_gbyte  = get_gpu_gbyte(gpu_time_used, gbyte_count);
 
-        std::cout << "GBytes/s: " << gpu_gbyte << " GFlops/s: " << gpu_gflops << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
+        std::cout << "GBytes/s: " << gpu_gbyte << " GFlops/s: " << gpu_gflops
+                  << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
     }
 
 #endif

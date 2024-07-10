@@ -25,13 +25,13 @@
 #ifndef TESTING_PRUNE_CSR2CSR_HPP
 #define TESTING_PRUNE_CSR2CSR_HPP
 
-#include "hipsparse.hpp"
-#include "hipsparse_test_unique_ptr.hpp"
 #include "flops.hpp"
 #include "gbyte.hpp"
+#include "hipsparse.hpp"
+#include "hipsparse_arguments.hpp"
+#include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
-#include "hipsparse_arguments.hpp"
 
 #include <algorithm>
 #include <hipsparse.h>
@@ -87,8 +87,8 @@ void testing_prune_csr2csr_bad_arg(void)
     T*   temp_buffer   = (T*)temp_buffer_managed.get();
 
     int local_ptr[2] = {0, 1};
-    CHECK_HIP_ERROR(hipMemcpy(
-        csr_row_ptr_C, local_ptr, sizeof(int) * (safe_size + 1), hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(
+        hipMemcpy(csr_row_ptr_C, local_ptr, sizeof(int) * (safe_size + 1), hipMemcpyHostToDevice));
 
 #if(!defined(CUDART_VERSION))
     // Test hipsparseXpruneCsr2csr_bufferSize
@@ -526,7 +526,8 @@ hipsparseStatus_t testing_prune_csr2csr(Arguments argus)
     hipsparseIndexBase_t csr_idx_base_C = argus.baseB;
     std::string          filename       = argus.filename;
 
-    std::cout << "M: " << M << " N: " << N << " csr_idx_base_A: " << csr_idx_base_A << " csr_idx_base_C: " << csr_idx_base_C << " filename: " << filename << std::endl;
+    std::cout << "M: " << M << " N: " << N << " csr_idx_base_A: " << csr_idx_base_A
+              << " csr_idx_base_C: " << csr_idx_base_C << " filename: " << filename << std::endl;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -648,9 +649,9 @@ hipsparseStatus_t testing_prune_csr2csr(Arguments argus)
 
     std::vector<int> h_nnz_total_copied_from_device(1);
     CHECK_HIP_ERROR(hipMemcpy(h_nnz_total_copied_from_device.data(),
-                                d_nnz_total_dev_host_ptr,
-                                sizeof(int),
-                                hipMemcpyDeviceToHost));
+                              d_nnz_total_dev_host_ptr,
+                              sizeof(int),
+                              hipMemcpyDeviceToHost));
 
     if(argus.unit_check)
     {
@@ -660,8 +661,8 @@ hipsparseStatus_t testing_prune_csr2csr(Arguments argus)
 
     auto d_csr_col_ind_C_managed = hipsparse_unique_ptr{
         device_malloc(sizeof(int) * h_nnz_total_dev_host_ptr[0]), device_free};
-    auto d_csr_val_C_managed = hipsparse_unique_ptr{
-        device_malloc(sizeof(T) * h_nnz_total_dev_host_ptr[0]), device_free};
+    auto d_csr_val_C_managed
+        = hipsparse_unique_ptr{device_malloc(sizeof(T) * h_nnz_total_dev_host_ptr[0]), device_free};
 
     int* d_csr_col_ind_C = (int*)d_csr_col_ind_C_managed.get();
     T*   d_csr_val_C     = (T*)d_csr_val_C_managed.get();
@@ -670,37 +671,35 @@ hipsparseStatus_t testing_prune_csr2csr(Arguments argus)
     {
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
         CHECK_HIPSPARSE_ERROR(hipsparseXpruneCsr2csr(handle,
-                                                        M,
-                                                        N,
-                                                        nnz_A,
-                                                        descr_A,
-                                                        d_csr_val_A,
-                                                        d_csr_row_ptr_A,
-                                                        d_csr_col_ind_A,
-                                                        &threshold,
-                                                        descr_C,
-                                                        d_csr_val_C,
-                                                        d_csr_row_ptr_C,
-                                                        d_csr_col_ind_C,
-                                                        d_temp_buffer));
+                                                     M,
+                                                     N,
+                                                     nnz_A,
+                                                     descr_A,
+                                                     d_csr_val_A,
+                                                     d_csr_row_ptr_A,
+                                                     d_csr_col_ind_A,
+                                                     &threshold,
+                                                     descr_C,
+                                                     d_csr_val_C,
+                                                     d_csr_row_ptr_C,
+                                                     d_csr_col_ind_C,
+                                                     d_temp_buffer));
 
         std::vector<int> h_csr_row_ptr_C(M + 1);
         std::vector<int> h_csr_col_ind_C(h_nnz_total_dev_host_ptr[0]);
         std::vector<T>   h_csr_val_C(h_nnz_total_dev_host_ptr[0]);
 
-        CHECK_HIP_ERROR(hipMemcpy(h_csr_row_ptr_C.data(),
-                                    d_csr_row_ptr_C,
-                                    sizeof(int) * (M + 1),
-                                    hipMemcpyDeviceToHost));
+        CHECK_HIP_ERROR(hipMemcpy(
+            h_csr_row_ptr_C.data(), d_csr_row_ptr_C, sizeof(int) * (M + 1), hipMemcpyDeviceToHost));
 
         CHECK_HIP_ERROR(hipMemcpy(h_csr_col_ind_C.data(),
-                                    d_csr_col_ind_C,
-                                    sizeof(int) * h_nnz_total_dev_host_ptr[0],
-                                    hipMemcpyDeviceToHost));
+                                  d_csr_col_ind_C,
+                                  sizeof(int) * h_nnz_total_dev_host_ptr[0],
+                                  hipMemcpyDeviceToHost));
         CHECK_HIP_ERROR(hipMemcpy(h_csr_val_C.data(),
-                                    d_csr_val_C,
-                                    sizeof(T) * h_nnz_total_dev_host_ptr[0],
-                                    hipMemcpyDeviceToHost));
+                                  d_csr_val_C,
+                                  sizeof(T) * h_nnz_total_dev_host_ptr[0],
+                                  hipMemcpyDeviceToHost));
 
         // call host and check results
         std::vector<int> h_nnz_C_cpu(1);
@@ -709,27 +708,23 @@ hipsparseStatus_t testing_prune_csr2csr(Arguments argus)
         std::vector<T>   h_csr_val_cpu;
 
         host_prune_csr_to_csr(M,
-                                N,
-                                nnz_A,
-                                h_csr_row_ptr_A,
-                                h_csr_col_ind_A,
-                                h_csr_val_A,
-                                h_nnz_C_cpu[0],
-                                h_csr_row_ptr_cpu,
-                                h_csr_col_ind_cpu,
-                                h_csr_val_cpu,
-                                csr_idx_base_A,
-                                csr_idx_base_C,
-                                threshold);
+                              N,
+                              nnz_A,
+                              h_csr_row_ptr_A,
+                              h_csr_col_ind_A,
+                              h_csr_val_A,
+                              h_nnz_C_cpu[0],
+                              h_csr_row_ptr_cpu,
+                              h_csr_col_ind_cpu,
+                              h_csr_val_cpu,
+                              csr_idx_base_A,
+                              csr_idx_base_C,
+                              threshold);
 
         unit_check_general<int>(1, 1, 1, h_nnz_C_cpu.data(), h_nnz_total_dev_host_ptr.data());
+        unit_check_general<int>(1, (M + 1), 1, h_csr_row_ptr_cpu.data(), h_csr_row_ptr_C.data());
         unit_check_general<int>(
-            1, (M + 1), 1, h_csr_row_ptr_cpu.data(), h_csr_row_ptr_C.data());
-        unit_check_general<int>(1,
-                                h_nnz_total_dev_host_ptr[0],
-                                1,
-                                h_csr_col_ind_cpu.data(),
-                                h_csr_col_ind_C.data());
+            1, h_nnz_total_dev_host_ptr[0], 1, h_csr_col_ind_cpu.data(), h_csr_col_ind_C.data());
         unit_check_general<T>(
             1, h_nnz_total_dev_host_ptr[0], 1, h_csr_val_cpu.data(), h_csr_val_C.data());
     }
@@ -745,19 +740,19 @@ hipsparseStatus_t testing_prune_csr2csr(Arguments argus)
         for(int iter = 0; iter < number_cold_calls; ++iter)
         {
             CHECK_HIPSPARSE_ERROR(hipsparseXpruneCsr2csr(handle,
-                                                        M,
-                                                        N,
-                                                        nnz_A,
-                                                        descr_A,
-                                                        d_csr_val_A,
-                                                        d_csr_row_ptr_A,
-                                                        d_csr_col_ind_A,
-                                                        &threshold,
-                                                        descr_C,
-                                                        d_csr_val_C,
-                                                        d_csr_row_ptr_C,
-                                                        d_csr_col_ind_C,
-                                                        d_temp_buffer));
+                                                         M,
+                                                         N,
+                                                         nnz_A,
+                                                         descr_A,
+                                                         d_csr_val_A,
+                                                         d_csr_row_ptr_A,
+                                                         d_csr_col_ind_A,
+                                                         &threshold,
+                                                         descr_C,
+                                                         d_csr_val_C,
+                                                         d_csr_row_ptr_C,
+                                                         d_csr_col_ind_C,
+                                                         d_temp_buffer));
         }
 
         double gpu_time_used = get_time_us();
@@ -766,19 +761,19 @@ hipsparseStatus_t testing_prune_csr2csr(Arguments argus)
         for(int iter = 0; iter < number_hot_calls; ++iter)
         {
             CHECK_HIPSPARSE_ERROR(hipsparseXpruneCsr2csr(handle,
-                                                        M,
-                                                        N,
-                                                        nnz_A,
-                                                        descr_A,
-                                                        d_csr_val_A,
-                                                        d_csr_row_ptr_A,
-                                                        d_csr_col_ind_A,
-                                                        &threshold,
-                                                        descr_C,
-                                                        d_csr_val_C,
-                                                        d_csr_row_ptr_C,
-                                                        d_csr_col_ind_C,
-                                                        d_temp_buffer));
+                                                         M,
+                                                         N,
+                                                         nnz_A,
+                                                         descr_A,
+                                                         d_csr_val_A,
+                                                         d_csr_row_ptr_A,
+                                                         d_csr_col_ind_A,
+                                                         &threshold,
+                                                         descr_C,
+                                                         d_csr_val_C,
+                                                         d_csr_row_ptr_C,
+                                                         d_csr_col_ind_C,
+                                                         d_temp_buffer));
         }
 
         gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
@@ -786,7 +781,8 @@ hipsparseStatus_t testing_prune_csr2csr(Arguments argus)
         double gbyte_count = prune_csr2csr_gbyte_count<T>(M, nnz_A, h_nnz_total_dev_host_ptr[0]);
         double gpu_gbyte   = get_gpu_gbyte(gpu_time_used, gbyte_count);
 
-        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
+        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used)
+                  << std::endl;
     }
 
     return HIPSPARSE_STATUS_SUCCESS;

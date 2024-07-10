@@ -28,15 +28,16 @@
 #include <string>
 #include <vector>
 
-typedef hipsparseIndexBase_t          base;
-typedef hipsparseSolvePolicy_t        solve_policy;
+typedef hipsparseIndexBase_t                        base;
+typedef hipsparseSolvePolicy_t                      solve_policy;
 typedef std::tuple<int, base, solve_policy>         csric02_tuple;
 typedef std::tuple<base, solve_policy, std::string> csric02_bin_tuple;
 
 int csric02_M_range[] = {0, 50, 426};
 
-base csric02_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
-solve_policy csric02_solve_policy_range[] = {HIPSPARSE_SOLVE_POLICY_NO_LEVEL, HIPSPARSE_SOLVE_POLICY_USE_LEVEL};
+base         csric02_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+solve_policy csric02_solve_policy_range[]
+    = {HIPSPARSE_SOLVE_POLICY_NO_LEVEL, HIPSPARSE_SOLVE_POLICY_USE_LEVEL};
 
 std::string csric02_bin[] = {"nos3.bin", "nos4.bin", "nos5.bin", "nos6.bin", "nos7.bin"};
 
@@ -64,17 +65,17 @@ Arguments setup_csric02_arguments(csric02_tuple tup)
     arg.M            = std::get<0>(tup);
     arg.baseA        = std::get<1>(tup);
     arg.solve_policy = std::get<2>(tup);
-    arg.timing   = 0;
+    arg.timing       = 0;
     return arg;
 }
 
 Arguments setup_csric02_arguments(csric02_bin_tuple tup)
 {
     Arguments arg;
-    arg.M        = -99;
-    arg.baseA = std::get<0>(tup);
+    arg.M            = -99;
+    arg.baseA        = std::get<0>(tup);
     arg.solve_policy = std::get<1>(tup);
-    arg.timing   = 0;
+    arg.timing       = 0;
 
     // Determine absolute path of test matrix
     std::string bin_file = std::get<2>(tup);

@@ -25,13 +25,13 @@
 #ifndef TESTING_GEMVI_HPP
 #define TESTING_GEMVI_HPP
 
-#include "hipsparse.hpp"
-#include "hipsparse_test_unique_ptr.hpp"
 #include "flops.hpp"
 #include "gbyte.hpp"
+#include "hipsparse.hpp"
+#include "hipsparse_arguments.hpp"
+#include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
-#include "hipsparse_arguments.hpp"
 
 #include <typeinfo>
 
@@ -151,7 +151,8 @@ hipsparseStatus_t testing_gemvi(Arguments argus)
     hipsparseIndexBase_t idxBase  = argus.baseA;
     std::string          filename = argus.filename;
 
-    std::cout << "m: " << m << " n: " << n << " nnz: " << nnz << " trans: " << trans << " idxBase: " << idxBase << " filename: " << filename << std::endl;
+    std::cout << "m: " << m << " n: " << n << " nnz: " << nnz << " trans: " << trans
+              << " idxBase: " << idxBase << " filename: " << filename << std::endl;
 
     int lda = m;
 
@@ -206,19 +207,19 @@ hipsparseStatus_t testing_gemvi(Arguments argus)
     {
         // gemvi
         CHECK_HIPSPARSE_ERROR(hipsparseXgemvi(handle,
-                                            trans,
-                                            m,
-                                            n,
-                                            &alpha,
-                                            dA,
-                                            lda,
-                                            nnz,
-                                            dx_val,
-                                            dx_ind,
-                                            &beta,
-                                            dy,
-                                            idxBase,
-                                            externalBuffer));
+                                              trans,
+                                              m,
+                                              n,
+                                              &alpha,
+                                              dA,
+                                              lda,
+                                              nnz,
+                                              dx_val,
+                                              dx_ind,
+                                              &beta,
+                                              dy,
+                                              idxBase,
+                                              externalBuffer));
 
         // CPU
         for(int i = 0; i < m; ++i)
@@ -248,19 +249,19 @@ hipsparseStatus_t testing_gemvi(Arguments argus)
         for(int iter = 0; iter < number_cold_calls; ++iter)
         {
             CHECK_HIPSPARSE_ERROR(hipsparseXgemvi(handle,
-                                            trans,
-                                            m,
-                                            n,
-                                            &alpha,
-                                            dA,
-                                            lda,
-                                            nnz,
-                                            dx_val,
-                                            dx_ind,
-                                            &beta,
-                                            dy,
-                                            idxBase,
-                                            externalBuffer));
+                                                  trans,
+                                                  m,
+                                                  n,
+                                                  &alpha,
+                                                  dA,
+                                                  lda,
+                                                  nnz,
+                                                  dx_val,
+                                                  dx_ind,
+                                                  &beta,
+                                                  dy,
+                                                  idxBase,
+                                                  externalBuffer));
         }
 
         double gpu_time_used = get_time_us();
@@ -269,34 +270,35 @@ hipsparseStatus_t testing_gemvi(Arguments argus)
         for(int iter = 0; iter < number_hot_calls; ++iter)
         {
             CHECK_HIPSPARSE_ERROR(hipsparseXgemvi(handle,
-                                            trans,
-                                            m,
-                                            n,
-                                            &alpha,
-                                            dA,
-                                            lda,
-                                            nnz,
-                                            dx_val,
-                                            dx_ind,
-                                            &beta,
-                                            dy,
-                                            idxBase,
-                                            externalBuffer));
+                                                  trans,
+                                                  m,
+                                                  n,
+                                                  &alpha,
+                                                  dA,
+                                                  lda,
+                                                  nnz,
+                                                  dx_val,
+                                                  dx_ind,
+                                                  &beta,
+                                                  dy,
+                                                  idxBase,
+                                                  externalBuffer));
         }
 
         gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
 
         double gpu_gflops = gemvi_gflop_count(m, nnz) / gpu_time_used * 1e6;
-        double gpu_gbyte  = gemvi_gbyte_count<T>((trans == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? m : n,
-                                                nnz,
-                                                beta != make_DataType<T>(0.0))
-                           / gpu_time_used * 1e6;
+        double gpu_gbyte
+            = gemvi_gbyte_count<T>((trans == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? m : n,
+                                   nnz,
+                                   beta != make_DataType<T>(0.0))
+              / gpu_time_used * 1e6;
 
-        std::cout << "GFLOPS/s: " << gpu_gflops << " GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
+        std::cout << "GFLOPS/s: " << gpu_gflops << " GBytes/s: " << gpu_gbyte
+                  << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
     }
 
     CHECK_HIP_ERROR(hipFree(externalBuffer));
-
 
     return HIPSPARSE_STATUS_SUCCESS;
 }

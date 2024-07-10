@@ -28,10 +28,10 @@
 #include <string>
 #include <vector>
 
-typedef hipsparseIndexBase_t base;
-typedef hipsparseOperation_t op;
-typedef hipsparseDiagType_t  diag;
-typedef hipsparseFillMode_t  fill;
+typedef hipsparseIndexBase_t   base;
+typedef hipsparseOperation_t   op;
+typedef hipsparseDiagType_t    diag;
+typedef hipsparseFillMode_t    fill;
 typedef hipsparseSolvePolicy_t policy;
 
 typedef std::tuple<int, double, base, op, diag, fill, policy>         csrsv2_tuple;
@@ -41,11 +41,11 @@ int csrsv2_M_range[] = {0, 647};
 
 double csrsv2_alpha_range[] = {2.3};
 
-base csrsv2_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
-op   csrsv2_op_range[]      = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPERATION_TRANSPOSE};
-diag csrsv2_diag_range[]    = {HIPSPARSE_DIAG_TYPE_NON_UNIT};
-fill csrsv2_fill_range[]    = {HIPSPARSE_FILL_MODE_LOWER, HIPSPARSE_FILL_MODE_UPPER};
-policy csrsv2_policy_range[] = {HIPSPARSE_SOLVE_POLICY_NO_LEVEL, HIPSPARSE_SOLVE_POLICY_USE_LEVEL};
+base   csrsv2_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+op     csrsv2_op_range[]      = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPERATION_TRANSPOSE};
+diag   csrsv2_diag_range[]    = {HIPSPARSE_DIAG_TYPE_NON_UNIT};
+fill   csrsv2_fill_range[]    = {HIPSPARSE_FILL_MODE_LOWER, HIPSPARSE_FILL_MODE_UPPER};
+policy csrsv2_policy_range[]  = {HIPSPARSE_SOLVE_POLICY_NO_LEVEL, HIPSPARSE_SOLVE_POLICY_USE_LEVEL};
 
 std::string csrsv2_bin[] = {"rma10.bin",
                             "mc2depi.bin",
@@ -78,28 +78,28 @@ protected:
 Arguments setup_csrsv2_arguments(csrsv2_tuple tup)
 {
     Arguments arg;
-    arg.M         = std::get<0>(tup);
-    arg.alpha     = std::get<1>(tup);
-    arg.baseA  = std::get<2>(tup);
-    arg.transA    = std::get<3>(tup);
-    arg.diag_type = std::get<4>(tup);
-    arg.fill_mode = std::get<5>(tup);
+    arg.M            = std::get<0>(tup);
+    arg.alpha        = std::get<1>(tup);
+    arg.baseA        = std::get<2>(tup);
+    arg.transA       = std::get<3>(tup);
+    arg.diag_type    = std::get<4>(tup);
+    arg.fill_mode    = std::get<5>(tup);
     arg.solve_policy = std::get<6>(tup);
-    arg.timing    = 0;
+    arg.timing       = 0;
     return arg;
 }
 
 Arguments setup_csrsv2_arguments(csrsv2_bin_tuple tup)
 {
     Arguments arg;
-    arg.M         = -99;
-    arg.alpha     = std::get<0>(tup);
-    arg.baseA  = std::get<1>(tup);
-    arg.transA    = std::get<2>(tup);
-    arg.diag_type = std::get<3>(tup);
-    arg.fill_mode = std::get<4>(tup);
+    arg.M            = -99;
+    arg.alpha        = std::get<0>(tup);
+    arg.baseA        = std::get<1>(tup);
+    arg.transA       = std::get<2>(tup);
+    arg.diag_type    = std::get<3>(tup);
+    arg.fill_mode    = std::get<4>(tup);
     arg.solve_policy = std::get<5>(tup);
-    arg.timing    = 0;
+    arg.timing       = 0;
 
     // Determine absolute path of test matrix
     std::string bin_file = std::get<6>(tup);

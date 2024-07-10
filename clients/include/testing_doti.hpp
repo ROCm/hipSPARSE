@@ -25,13 +25,13 @@
 #ifndef TESTING_DOTI_HPP
 #define TESTING_DOTI_HPP
 
-#include "hipsparse.hpp"
-#include "hipsparse_test_unique_ptr.hpp"
-#include "unit.hpp"
 #include "flops.hpp"
 #include "gbyte.hpp"
-#include "utility.hpp"
+#include "hipsparse.hpp"
 #include "hipsparse_arguments.hpp"
+#include "hipsparse_test_unique_ptr.hpp"
+#include "unit.hpp"
+#include "utility.hpp"
 
 #include <hipsparse.h>
 
@@ -42,9 +42,9 @@ template <typename T>
 void testing_doti_bad_arg(void)
 {
 #if(!defined(CUDART_VERSION))
-    int nnz       = 100;
-    int safe_size = 100;
-    hipsparseIndexBase_t idx_base = HIPSPARSE_INDEX_BASE_ZERO;
+    int                  nnz       = 100;
+    int                  safe_size = 100;
+    hipsparseIndexBase_t idx_base  = HIPSPARSE_INDEX_BASE_ZERO;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -58,11 +58,20 @@ void testing_doti_bad_arg(void)
     T*   dy     = (T*)dy_managed.get();
 
     T result;
-    verify_hipsparse_status_invalid_pointer(hipsparseXdoti(handle, nnz, (T*)nullptr, dx_ind, dy, &result, idx_base), "Error: x_val is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXdoti(handle, nnz, dx_val, (int*)nullptr, dy, &result, idx_base), "Error: x_ind is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXdoti(handle, nnz, dx_val, dx_ind, (T*)nullptr, &result, idx_base), "Error: y is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXdoti(handle, nnz, dx_val, dx_ind, dy, (T*)nullptr, idx_base), "Error: result is nullptr");
-    verify_hipsparse_status_invalid_handle(hipsparseXdoti((hipsparseHandle_t)nullptr, nnz, dx_val, dx_ind, dy, &result, idx_base));
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXdoti(handle, nnz, (T*)nullptr, dx_ind, dy, &result, idx_base),
+        "Error: x_val is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXdoti(handle, nnz, dx_val, (int*)nullptr, dy, &result, idx_base),
+        "Error: x_ind is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXdoti(handle, nnz, dx_val, dx_ind, (T*)nullptr, &result, idx_base),
+        "Error: y is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXdoti(handle, nnz, dx_val, dx_ind, dy, (T*)nullptr, idx_base),
+        "Error: result is nullptr");
+    verify_hipsparse_status_invalid_handle(
+        hipsparseXdoti((hipsparseHandle_t) nullptr, nnz, dx_val, dx_ind, dy, &result, idx_base));
 #endif
 }
 
@@ -150,7 +159,8 @@ hipsparseStatus_t testing_doti(Arguments argus)
         // Warm up
         for(int iter = 0; iter < number_cold_calls; ++iter)
         {
-            CHECK_HIPSPARSE_ERROR(hipsparseXdoti(handle, nnz, dx_val, dx_ind, dy, &hresult_1, idx_base));
+            CHECK_HIPSPARSE_ERROR(
+                hipsparseXdoti(handle, nnz, dx_val, dx_ind, dy, &hresult_1, idx_base));
             CHECK_HIP_ERROR(hipStreamSynchronize(stream));
         }
 
@@ -159,7 +169,8 @@ hipsparseStatus_t testing_doti(Arguments argus)
         // Performance run
         for(int iter = 0; iter < number_hot_calls; ++iter)
         {
-            CHECK_HIPSPARSE_ERROR(hipsparseXdoti(handle, nnz, dx_val, dx_ind, dy, &hresult_1, idx_base));
+            CHECK_HIPSPARSE_ERROR(
+                hipsparseXdoti(handle, nnz, dx_val, dx_ind, dy, &hresult_1, idx_base));
             CHECK_HIP_ERROR(hipStreamSynchronize(stream));
         }
 
@@ -171,7 +182,8 @@ hipsparseStatus_t testing_doti(Arguments argus)
         double gpu_gbyte  = get_gpu_gbyte(gpu_time_used, gbyte_count);
         double gpu_gflops = get_gpu_gflops(gpu_time_used, gflop_count);
 
-        std::cout << "GFLOPS/s: " << gpu_gflops << " GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
+        std::cout << "GFLOPS/s: " << gpu_gflops << " GBytes/s: " << gpu_gbyte
+                  << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
     }
 
     return HIPSPARSE_STATUS_SUCCESS;

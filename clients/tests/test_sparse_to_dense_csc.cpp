@@ -25,7 +25,8 @@
 
 #include <hipsparse.h>
 
-typedef std::tuple<int, int, hipsparseOrder_t, hipsparseIndexBase_t, hipsparseSparseToDenseAlg_t> sparse_to_dense_csc_tuple;
+typedef std::tuple<int, int, hipsparseOrder_t, hipsparseIndexBase_t, hipsparseSparseToDenseAlg_t>
+    sparse_to_dense_csc_tuple;
 typedef std::tuple<hipsparseOrder_t, hipsparseIndexBase_t, hipsparseSparseToDenseAlg_t, std::string>
     sparse_to_dense_csc_bin_tuple;
 
@@ -68,22 +69,22 @@ protected:
 Arguments setup_sparse_to_dense_csc_arguments(sparse_to_dense_csc_tuple tup)
 {
     Arguments arg;
-    arg.M      = std::get<0>(tup);
-    arg.N      = std::get<1>(tup);
-    arg.orderA = std::get<2>(tup);
-    arg.baseA  = std::get<3>(tup);
+    arg.M                = std::get<0>(tup);
+    arg.N                = std::get<1>(tup);
+    arg.orderA           = std::get<2>(tup);
+    arg.baseA            = std::get<3>(tup);
     arg.sparse2dense_alg = std::get<4>(tup);
-    arg.timing = 0;
+    arg.timing           = 0;
     return arg;
 }
 
 Arguments setup_sparse_to_dense_csc_arguments(sparse_to_dense_csc_bin_tuple tup)
 {
     Arguments arg;
-    arg.orderA = std::get<0>(tup);
-    arg.baseA  = std::get<1>(tup);
+    arg.orderA           = std::get<0>(tup);
+    arg.baseA            = std::get<1>(tup);
     arg.sparse2dense_alg = std::get<2>(tup);
-    arg.timing = 0;
+    arg.timing           = 0;
 
     // Determine absolute path of test matrix
     std::string bin_file = std::get<3>(tup);

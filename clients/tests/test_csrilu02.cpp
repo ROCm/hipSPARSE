@@ -28,8 +28,8 @@
 #include <string>
 #include <vector>
 
-typedef hipsparseIndexBase_t                                       base;
-typedef hipsparseSolvePolicy_t                                     solve_policy;
+typedef hipsparseIndexBase_t                                                     base;
+typedef hipsparseSolvePolicy_t                                                   solve_policy;
 typedef std::tuple<int, int, double, double, double, base, solve_policy>         csrilu02_tuple;
 typedef std::tuple<int, double, double, double, base, solve_policy, std::string> csrilu02_bin_tuple;
 
@@ -39,8 +39,9 @@ double csrilu02_boost_tol_range[]  = {0.5};
 double csrilu02_boost_val_range[]  = {0.3};
 double csrilu02_boost_vali_range[] = {0.2};
 
-base csrilu02_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
-solve_policy csrilu02_solve_policy_range[] = {HIPSPARSE_SOLVE_POLICY_NO_LEVEL, HIPSPARSE_SOLVE_POLICY_USE_LEVEL};
+base         csrilu02_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+solve_policy csrilu02_solve_policy_range[]
+    = {HIPSPARSE_SOLVE_POLICY_NO_LEVEL, HIPSPARSE_SOLVE_POLICY_USE_LEVEL};
 
 std::string csrilu02_bin[] = {"mac_econ_fwd500.bin",
 #ifdef __HIP_PLATFORM_AMD__

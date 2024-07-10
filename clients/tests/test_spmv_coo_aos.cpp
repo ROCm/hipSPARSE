@@ -26,9 +26,15 @@
 
 #include <hipsparse.h>
 
-typedef std::tuple<int, int, double, double, hipsparseOperation_t, hipsparseIndexBase_t, hipsparseSpMVAlg_t>
-    spmv_coo_aos_tuple;
-typedef std::tuple<double, double, hipsparseOperation_t, hipsparseIndexBase_t, hipsparseSpMVAlg_t, std::string>
+typedef std::
+    tuple<int, int, double, double, hipsparseOperation_t, hipsparseIndexBase_t, hipsparseSpMVAlg_t>
+        spmv_coo_aos_tuple;
+typedef std::tuple<double,
+                   double,
+                   hipsparseOperation_t,
+                   hipsparseIndexBase_t,
+                   hipsparseSpMVAlg_t,
+                   std::string>
     spmv_coo_aos_bin_tuple;
 
 int spmv_coo_aos_M_range[] = {50};
@@ -73,28 +79,28 @@ protected:
 Arguments setup_spmv_coo_aos_arguments(spmv_coo_aos_tuple tup)
 {
     Arguments arg;
-    arg.M      = std::get<0>(tup);
-    arg.N      = std::get<1>(tup);
-    arg.alpha  = std::get<2>(tup);
-    arg.beta   = std::get<3>(tup);
-    arg.transA = std::get<4>(tup);
-    arg.baseA  = std::get<5>(tup);
+    arg.M        = std::get<0>(tup);
+    arg.N        = std::get<1>(tup);
+    arg.alpha    = std::get<2>(tup);
+    arg.beta     = std::get<3>(tup);
+    arg.transA   = std::get<4>(tup);
+    arg.baseA    = std::get<5>(tup);
     arg.spmv_alg = std::get<6>(tup);
-    arg.timing = 0;
+    arg.timing   = 0;
     return arg;
 }
 
 Arguments setup_spmv_coo_aos_arguments(spmv_coo_aos_bin_tuple tup)
 {
     Arguments arg;
-    arg.M      = -99;
-    arg.N      = -99;
-    arg.alpha  = std::get<0>(tup);
-    arg.beta   = std::get<1>(tup);
-    arg.transA = std::get<2>(tup);
-    arg.baseA  = std::get<3>(tup);
+    arg.M        = -99;
+    arg.N        = -99;
+    arg.alpha    = std::get<0>(tup);
+    arg.beta     = std::get<1>(tup);
+    arg.transA   = std::get<2>(tup);
+    arg.baseA    = std::get<3>(tup);
     arg.spmv_alg = std::get<4>(tup);
-    arg.timing = 0;
+    arg.timing   = 0;
 
     // Determine absolute path of test matrix
     std::string bin_file = std::get<5>(tup);

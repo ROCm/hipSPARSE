@@ -23,44 +23,44 @@
 * ************************************************************************ */
 #pragma once
 
-#include "program_options.hpp"
 #include "hipsparse_arguments.hpp"
+#include "program_options.hpp"
 
 struct hipsparse_arguments_config : Arguments
 {
 
 public:
-    char          precision{};
-    char          indextype{};
-    int           device_id{};
+    char precision{};
+    char indextype{};
+    int  device_id{};
 
 private:
-    char          b_transA{};
-    char          b_transB{};
-    int           b_baseA{};
-    int           b_baseB{};
-    int           b_baseC{};
-    int           b_baseD{};
-    int           b_action{};
-    int           b_part{};
-    int           b_dir{};
-    int           b_orderA{};
-    int           b_orderB{};
-    int           b_orderC{};
-    int           b_formatA{};
-    int           b_formatB{};
-    int           b_csr2csc_alg{};
-    int           b_dense2sparse_alg{};
-    int           b_sparse2dense_alg{};
-    int           b_sddmm_alg{};
-    int           b_spgemm_alg{};
-    int           b_spmm_alg{};
-    int           b_spmv_alg{};
-    int           b_spsm_alg{};
-    int           b_spsv_alg{};
-    char          b_diag{};
-    char          b_uplo{};
-    char          b_spol{};
+    char b_transA{};
+    char b_transB{};
+    int  b_baseA{};
+    int  b_baseB{};
+    int  b_baseC{};
+    int  b_baseD{};
+    int  b_action{};
+    int  b_part{};
+    int  b_dir{};
+    int  b_orderA{};
+    int  b_orderB{};
+    int  b_orderC{};
+    int  b_formatA{};
+    int  b_formatB{};
+    int  b_csr2csc_alg{};
+    int  b_dense2sparse_alg{};
+    int  b_sparse2dense_alg{};
+    int  b_sddmm_alg{};
+    int  b_spgemm_alg{};
+    int  b_spmm_alg{};
+    int  b_spmv_alg{};
+    int  b_spsm_alg{};
+    int  b_spsv_alg{};
+    char b_diag{};
+    char b_uplo{};
+    char b_spol{};
 
 public:
     hipsparse_arguments_config();

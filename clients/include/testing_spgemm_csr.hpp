@@ -345,9 +345,11 @@ hipsparseStatus_t testing_spgemm_csr(Arguments argus)
     hipsparseIndexBase_t idxBaseB = argus.baseB;
     hipsparseIndexBase_t idxBaseC = argus.baseC;
     hipsparseSpGEMMAlg_t alg      = argus.spgemm_alg;
-    std::string filename          = argus.filename;
+    std::string          filename = argus.filename;
 
-    std::cout << "m: " << m << " k: " << k << " idxBaseA: " << idxBaseA << " idxBaseB: " << idxBaseB << " idxBaseC: " << idxBaseC << " alg: " << alg << " filename: " << filename << std::endl;
+    std::cout << "m: " << m << " k: " << k << " idxBaseA: " << idxBaseA << " idxBaseB: " << idxBaseB
+              << " idxBaseC: " << idxBaseC << " alg: " << alg << " filename: " << filename
+              << std::endl;
 
     T                    h_beta = make_DataType<T>(0);
     hipsparseOperation_t transA = HIPSPARSE_OPERATION_NON_TRANSPOSE;

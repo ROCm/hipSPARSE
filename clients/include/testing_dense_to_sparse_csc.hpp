@@ -25,12 +25,12 @@
 #ifndef TESTING_DENSE_TO_SPARSE_CSC_HPP
 #define TESTING_DENSE_TO_SPARSE_CSC_HPP
 
-#include "hipsparse_test_unique_ptr.hpp"
 #include "flops.hpp"
 #include "gbyte.hpp"
+#include "hipsparse_arguments.hpp"
+#include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
-#include "hipsparse_arguments.hpp"
 
 #include <hipsparse.h>
 #include <string>
@@ -150,7 +150,8 @@ hipsparseStatus_t testing_dense_to_sparse_csc(Arguments argus)
     hipsparseDenseToSparseAlg_t alg      = argus.dense2sparse_alg;
     hipsparseOrder_t            order    = argus.orderA;
 
-    std::cout << "m: " << m << " n: " << n << " idx_base: " << idx_base << " alg: " << alg << " order: " << order << std::endl;
+    std::cout << "m: " << m << " n: " << n << " idx_base: " << idx_base << " alg: " << alg
+              << " order: " << order << std::endl;
 
     // Index and data type
     hipsparseIndexType_t typeI = getIndexType<I>();
@@ -243,7 +244,8 @@ hipsparseStatus_t testing_dense_to_sparse_csc(Arguments argus)
 
         CHECK_HIP_ERROR(
             hipMemcpy(hcsc_col_ptr.data(), dptr, sizeof(I) * (n + 1), hipMemcpyDeviceToHost));
-        CHECK_HIP_ERROR(hipMemcpy(hcsc_row_ind.data(), drow, sizeof(J) * nnz, hipMemcpyDeviceToHost));
+        CHECK_HIP_ERROR(
+            hipMemcpy(hcsc_row_ind.data(), drow, sizeof(J) * nnz, hipMemcpyDeviceToHost));
         CHECK_HIP_ERROR(hipMemcpy(hcsc_val.data(), dval, sizeof(T) * nnz, hipMemcpyDeviceToHost));
 
         std::vector<I> hcsc_col_ptr_cpu(n + 1);
@@ -340,13 +342,14 @@ hipsparseStatus_t testing_dense_to_sparse_csc(Arguments argus)
         {
             CHECK_HIPSPARSE_ERROR(hipsparseDenseToSparse_convert(handle, matA, matB, alg, buffer));
         }
-        
+
         gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
 
         double gbyte_count = dense2csx_gbyte_count<HIPSPARSE_DIRECTION_COLUMN, T>(m, n, nnz);
         double gpu_gbyte   = get_gpu_gbyte(gpu_time_used, gbyte_count);
 
-        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
+        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used)
+                  << std::endl;
     }
 
     CHECK_HIP_ERROR(hipFree(buffer));

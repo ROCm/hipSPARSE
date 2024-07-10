@@ -92,34 +92,34 @@ protected:
 Arguments setup_sddmm_coo_aos_arguments(sddmm_coo_aos_tuple tup)
 {
     Arguments arg;
-    arg.M      = std::get<0>(tup);
-    arg.N      = std::get<1>(tup);
-    arg.K      = std::get<2>(tup);
-    arg.alpha  = std::get<3>(tup);
-    arg.beta   = std::get<4>(tup);
-    arg.transA = std::get<5>(tup);
-    arg.transB = std::get<6>(tup);
-    arg.orderA = std::get<7>(tup);
-    arg.baseA  = std::get<8>(tup);
+    arg.M         = std::get<0>(tup);
+    arg.N         = std::get<1>(tup);
+    arg.K         = std::get<2>(tup);
+    arg.alpha     = std::get<3>(tup);
+    arg.beta      = std::get<4>(tup);
+    arg.transA    = std::get<5>(tup);
+    arg.transB    = std::get<6>(tup);
+    arg.orderA    = std::get<7>(tup);
+    arg.baseA     = std::get<8>(tup);
     arg.sddmm_alg = std::get<9>(tup);
-    arg.timing = 0;
+    arg.timing    = 0;
     return arg;
 }
 
 Arguments setup_sddmm_coo_aos_arguments(sddmm_coo_aos_bin_tuple tup)
 {
     Arguments arg;
-    arg.M      = -99;
-    arg.N      = -99;
-    arg.K      = std::get<0>(tup);
-    arg.alpha  = std::get<1>(tup);
-    arg.beta   = std::get<2>(tup);
-    arg.transA = std::get<3>(tup);
-    arg.transB = std::get<4>(tup);
-    arg.orderA = std::get<5>(tup);
-    arg.baseA  = std::get<6>(tup);
+    arg.M         = -99;
+    arg.N         = -99;
+    arg.K         = std::get<0>(tup);
+    arg.alpha     = std::get<1>(tup);
+    arg.beta      = std::get<2>(tup);
+    arg.transA    = std::get<3>(tup);
+    arg.transB    = std::get<4>(tup);
+    arg.orderA    = std::get<5>(tup);
+    arg.baseA     = std::get<6>(tup);
     arg.sddmm_alg = std::get<7>(tup);
-    arg.timing = 0;
+    arg.timing    = 0;
 
     // Determine absolute path of test matrix
     std::string bin_file = std::get<8>(tup);

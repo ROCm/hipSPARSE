@@ -25,13 +25,13 @@
 #ifndef TESTING_NNZ_HPP
 #define TESTING_NNZ_HPP
 
-#include "hipsparse.hpp"
-#include "hipsparse_test_unique_ptr.hpp"
 #include "flops.hpp"
 #include "gbyte.hpp"
+#include "hipsparse.hpp"
+#include "hipsparse_arguments.hpp"
+#include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
-#include "hipsparse_arguments.hpp"
 
 #include <algorithm>
 #include <hipsparse.h>
@@ -68,38 +68,47 @@ void testing_nnz_bad_arg(void)
 #if(!defined(CUDART_VERSION))
     verify_hipsparse_status_invalid_handle(hipsparseXnnz(
         nullptr, dirA, M, N, descrA, (const T*)d_A, lda, d_nnzPerRowColumn, d_nnzTotalDevHostPtr));
-    verify_hipsparse_status_invalid_pointer(hipsparseXnnz(
-        handle, dirA, M, N, nullptr, (const T*)d_A, lda, d_nnzPerRowColumn, d_nnzTotalDevHostPtr),
+    verify_hipsparse_status_invalid_pointer(hipsparseXnnz(handle,
+                                                          dirA,
+                                                          M,
+                                                          N,
+                                                          nullptr,
+                                                          (const T*)d_A,
+                                                          lda,
+                                                          d_nnzPerRowColumn,
+                                                          d_nnzTotalDevHostPtr),
                                             "Error: descrA as invalid pointer must be detected.");
     verify_hipsparse_status_invalid_pointer(hipsparseXnnz(handle,
-                           dirA,
-                           M,
-                           N,
-                           descrA,
-                           (const T*)nullptr,
-                           lda,
-                           d_nnzPerRowColumn,
-                           d_nnzTotalDevHostPtr),
+                                                          dirA,
+                                                          M,
+                                                          N,
+                                                          descrA,
+                                                          (const T*)nullptr,
+                                                          lda,
+                                                          d_nnzPerRowColumn,
+                                                          d_nnzTotalDevHostPtr),
                                             "Error: A as invalid pointer must be detected.");
     verify_hipsparse_status_invalid_pointer(
         hipsparseXnnz(
-        handle, dirA, M, N, descrA, (const T*)d_A, lda, nullptr, d_nnzTotalDevHostPtr), "Error: nnzPerRowColumn as invalid pointer must be detected.");
+            handle, dirA, M, N, descrA, (const T*)d_A, lda, nullptr, d_nnzTotalDevHostPtr),
+        "Error: nnzPerRowColumn as invalid pointer must be detected.");
     verify_hipsparse_status_invalid_pointer(
-        hipsparseXnnz(handle, dirA, M, N, descrA, (const T*)d_A, lda, d_nnzPerRowColumn, nullptr), "Error: nnzTotalDevHostPtr as invalid pointer must be detected.");
+        hipsparseXnnz(handle, dirA, M, N, descrA, (const T*)d_A, lda, d_nnzPerRowColumn, nullptr),
+        "Error: nnzTotalDevHostPtr as invalid pointer must be detected.");
 #endif
 
     // Testing invalid direction
     try
     {
         hipsparseXnnz(handle,
-                               (hipsparseDirection_t)77,
-                               -1,
-                               -1,
-                               descrA,
-                               (const T*)nullptr,
-                               -1,
-                               nullptr,
-                               nullptr);
+                      (hipsparseDirection_t)77,
+                      -1,
+                      -1,
+                      descrA,
+                      (const T*)nullptr,
+                      -1,
+                      nullptr,
+                      nullptr);
 
         // An exception should be thrown.
         verify_hipsparse_status_internal_error(
@@ -110,12 +119,36 @@ void testing_nnz_bad_arg(void)
     {
     }
 
-    verify_hipsparse_status_invalid_size(hipsparseXnnz(
-        handle, dirA, -1, N, descrA, (const T*)d_A, lda, d_nnzPerRowColumn, d_nnzTotalDevHostPtr), "Error: M < 0 must be detected.");
-    verify_hipsparse_status_invalid_size(hipsparseXnnz(
-        handle, dirA, M, -1, descrA, (const T*)d_A, lda, d_nnzPerRowColumn, d_nnzTotalDevHostPtr), "Error: N < 0 must be detected.");
-    verify_hipsparse_status_invalid_size(hipsparseXnnz(
-        handle, dirA, M, N, descrA, (const T*)d_A, M - 1, d_nnzPerRowColumn, d_nnzTotalDevHostPtr), "Error: lda < M must be detected.");
+    verify_hipsparse_status_invalid_size(hipsparseXnnz(handle,
+                                                       dirA,
+                                                       -1,
+                                                       N,
+                                                       descrA,
+                                                       (const T*)d_A,
+                                                       lda,
+                                                       d_nnzPerRowColumn,
+                                                       d_nnzTotalDevHostPtr),
+                                         "Error: M < 0 must be detected.");
+    verify_hipsparse_status_invalid_size(hipsparseXnnz(handle,
+                                                       dirA,
+                                                       M,
+                                                       -1,
+                                                       descrA,
+                                                       (const T*)d_A,
+                                                       lda,
+                                                       d_nnzPerRowColumn,
+                                                       d_nnzTotalDevHostPtr),
+                                         "Error: N < 0 must be detected.");
+    verify_hipsparse_status_invalid_size(hipsparseXnnz(handle,
+                                                       dirA,
+                                                       M,
+                                                       N,
+                                                       descrA,
+                                                       (const T*)d_A,
+                                                       M - 1,
+                                                       d_nnzPerRowColumn,
+                                                       d_nnzTotalDevHostPtr),
+                                         "Error: lda < M must be detected.");
 }
 
 template <typename T>
@@ -207,7 +240,6 @@ hipsparseStatus_t testing_nnz(Arguments argus)
                                   sizeof(int) * 1,
                                   hipMemcpyDeviceToHost));
 
-        
         // Check results.
         unit_check_general<int>(1, MN, 1, hd_nnzPerRowColumn.data(), h_nnzPerRowColumn.data());
         unit_check_general<int>(1, 1, 1, hd_nnzTotalDevHostPtr.data(), h_nnzTotalDevHostPtr.data());
@@ -243,7 +275,7 @@ hipsparseStatus_t testing_nnz(Arguments argus)
         }
 
         double gpu_time_used = get_time_us();
-        
+
         // Performance run
         for(int iter = 0; iter < number_hot_calls; ++iter)
         {
@@ -254,9 +286,10 @@ hipsparseStatus_t testing_nnz(Arguments argus)
         gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
 
         double gbyte_count = nnz_gbyte_count<T>(M, N, dirA);
-        double gpu_gbyte = get_gpu_gbyte(gpu_time_used, gbyte_count);
+        double gpu_gbyte   = get_gpu_gbyte(gpu_time_used, gbyte_count);
 
-        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
+        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used)
+                  << std::endl;
     }
 
     return HIPSPARSE_STATUS_SUCCESS;

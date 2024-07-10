@@ -25,13 +25,13 @@
 #ifndef TESTING_GTHR_HPP
 #define TESTING_GTHR_HPP
 
-#include "hipsparse.hpp"
-#include "hipsparse_test_unique_ptr.hpp"
 #include "flops.hpp"
 #include "gbyte.hpp"
+#include "hipsparse.hpp"
+#include "hipsparse_arguments.hpp"
+#include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
-#include "hipsparse_arguments.hpp"
 
 #include <hipsparse.h>
 
@@ -58,10 +58,15 @@ void testing_gthr_bad_arg(void)
     T*   dy     = (T*)dy_managed.get();
 
 #if(!defined(CUDART_VERSION))
-    verify_hipsparse_status_invalid_pointer(hipsparseXgthr(handle, nnz, dy, dx_val, (int*)nullptr, idx_base), "Error: x_ind is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXgthr(handle, nnz, dy, (T*)nullptr, dx_ind, idx_base), "Error: x_val is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXgthr(handle, nnz, (T*)nullptr, dx_val, dx_ind, idx_base), "Error: y is nullptr");
-    verify_hipsparse_status_invalid_handle(hipsparseXgthr((hipsparseHandle_t)nullptr, nnz, dy, dx_val, dx_ind, idx_base));
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXgthr(handle, nnz, dy, dx_val, (int*)nullptr, idx_base),
+        "Error: x_ind is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXgthr(handle, nnz, dy, (T*)nullptr, dx_ind, idx_base), "Error: x_val is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXgthr(handle, nnz, (T*)nullptr, dx_val, dx_ind, idx_base), "Error: y is nullptr");
+    verify_hipsparse_status_invalid_handle(
+        hipsparseXgthr((hipsparseHandle_t) nullptr, nnz, dy, dx_val, dx_ind, idx_base));
 #endif
 }
 
@@ -146,9 +151,10 @@ hipsparseStatus_t testing_gthr(Arguments argus)
         gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
 
         double gbyte_count = gthr_gbyte_count<T>(nnz);
-        double gpu_gbyte = get_gpu_gbyte(gpu_time_used, gbyte_count);
+        double gpu_gbyte   = get_gpu_gbyte(gpu_time_used, gbyte_count);
 
-        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
+        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used)
+                  << std::endl;
     }
 #endif
 

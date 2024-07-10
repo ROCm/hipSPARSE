@@ -25,12 +25,12 @@
 #ifndef TESTING_DENSE_TO_SPARSE_COO_HPP
 #define TESTING_DENSE_TO_SPARSE_COO_HPP
 
-#include "hipsparse_test_unique_ptr.hpp"
 #include "flops.hpp"
 #include "gbyte.hpp"
+#include "hipsparse_arguments.hpp"
+#include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
-#include "hipsparse_arguments.hpp"
 
 #include <hipsparse.h>
 #include <string>
@@ -141,7 +141,8 @@ hipsparseStatus_t testing_dense_to_sparse_coo(Arguments argus)
     hipsparseDenseToSparseAlg_t alg      = argus.dense2sparse_alg;
     hipsparseOrder_t            order    = argus.orderA;
 
-    std::cout << "m: " << m << " n: " << n << " idx_base: " << idx_base << " alg: " << alg << " order: " << order << std::endl;
+    std::cout << "m: " << m << " n: " << n << " idx_base: " << idx_base << " alg: " << alg
+              << " order: " << order << std::endl;
 
     // Index and data type
     hipsparseIndexType_t typeI = getIndexType<I>();
@@ -231,8 +232,10 @@ hipsparseStatus_t testing_dense_to_sparse_coo(Arguments argus)
         std::vector<I> hcoo_col_ind(nnz);
         std::vector<T> hcoo_val(nnz);
 
-        CHECK_HIP_ERROR(hipMemcpy(hcoo_row_ind.data(), drow, sizeof(I) * nnz, hipMemcpyDeviceToHost));
-        CHECK_HIP_ERROR(hipMemcpy(hcoo_col_ind.data(), dcol, sizeof(I) * nnz, hipMemcpyDeviceToHost));
+        CHECK_HIP_ERROR(
+            hipMemcpy(hcoo_row_ind.data(), drow, sizeof(I) * nnz, hipMemcpyDeviceToHost));
+        CHECK_HIP_ERROR(
+            hipMemcpy(hcoo_col_ind.data(), dcol, sizeof(I) * nnz, hipMemcpyDeviceToHost));
         CHECK_HIP_ERROR(hipMemcpy(hcoo_val.data(), dval, sizeof(T) * nnz, hipMemcpyDeviceToHost));
 
         std::vector<I> hcoo_row_ind_cpu(nnz);
@@ -290,23 +293,22 @@ hipsparseStatus_t testing_dense_to_sparse_coo(Arguments argus)
         for(int iter = 0; iter < number_cold_calls; ++iter)
         {
             CHECK_HIPSPARSE_ERROR(hipsparseDenseToSparse_convert(handle, matA, matB, alg, buffer));
-
         }
 
         double gpu_time_used = get_time_us();
-        
+
         // Performance run
         for(int iter = 0; iter < number_hot_calls; ++iter)
         {
             CHECK_HIPSPARSE_ERROR(hipsparseDenseToSparse_convert(handle, matA, matB, alg, buffer));
-
         }
         gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
 
         double gbyte_count = dense2coo_gbyte_count<T>(m, n, (I)nnz);
         double gpu_gbyte   = get_gpu_gbyte(gpu_time_used, gbyte_count);
 
-        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
+        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used)
+                  << std::endl;
     }
 
     CHECK_HIP_ERROR(hipFree(buffer));

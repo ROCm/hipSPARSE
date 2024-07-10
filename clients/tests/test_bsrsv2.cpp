@@ -28,11 +28,11 @@
 #include <string>
 #include <vector>
 
-typedef hipsparseDirection_t dir;
-typedef hipsparseIndexBase_t base;
-typedef hipsparseOperation_t op;
-typedef hipsparseDiagType_t  diag;
-typedef hipsparseFillMode_t  fill;
+typedef hipsparseDirection_t   dir;
+typedef hipsparseIndexBase_t   base;
+typedef hipsparseOperation_t   op;
+typedef hipsparseDiagType_t    diag;
+typedef hipsparseFillMode_t    fill;
 typedef hipsparseSolvePolicy_t policy;
 
 typedef std::tuple<int, double, base, int, dir, op, diag, fill, policy>         bsrsv2_tuple;
@@ -43,12 +43,12 @@ int bsrsv2_dim_range[] = {1, 3, 9};
 
 double bsrsv2_alpha_range[] = {2.3};
 
-base bsrsv2_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
-dir  bsrsv2_dir_range[]     = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COLUMN};
-op   bsrsv2_op_range[]      = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPERATION_TRANSPOSE};
-diag bsrsv2_diag_range[]    = {HIPSPARSE_DIAG_TYPE_NON_UNIT};
-fill bsrsv2_fill_range[]    = {HIPSPARSE_FILL_MODE_LOWER, HIPSPARSE_FILL_MODE_UPPER};
-policy bsrsv2_policy_range[] = {HIPSPARSE_SOLVE_POLICY_NO_LEVEL, HIPSPARSE_SOLVE_POLICY_USE_LEVEL};
+base   bsrsv2_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+dir    bsrsv2_dir_range[]     = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COLUMN};
+op     bsrsv2_op_range[]      = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPERATION_TRANSPOSE};
+diag   bsrsv2_diag_range[]    = {HIPSPARSE_DIAG_TYPE_NON_UNIT};
+fill   bsrsv2_fill_range[]    = {HIPSPARSE_FILL_MODE_LOWER, HIPSPARSE_FILL_MODE_UPPER};
+policy bsrsv2_policy_range[]  = {HIPSPARSE_SOLVE_POLICY_NO_LEVEL, HIPSPARSE_SOLVE_POLICY_USE_LEVEL};
 
 std::string bsrsv2_bin[] = {"nos2.bin", "nos4.bin", "nos5.bin", "nos6.bin"};
 
@@ -73,32 +73,32 @@ protected:
 Arguments setup_bsrsv2_arguments(bsrsv2_tuple tup)
 {
     Arguments arg;
-    arg.M         = std::get<0>(tup);
-    arg.alpha     = std::get<1>(tup);
-    arg.baseA  = std::get<2>(tup);
-    arg.block_dim = std::get<3>(tup);
-    arg.dirA      = std::get<4>(tup);
-    arg.transA    = std::get<5>(tup);
-    arg.diag_type = std::get<6>(tup);
-    arg.fill_mode = std::get<7>(tup);
+    arg.M            = std::get<0>(tup);
+    arg.alpha        = std::get<1>(tup);
+    arg.baseA        = std::get<2>(tup);
+    arg.block_dim    = std::get<3>(tup);
+    arg.dirA         = std::get<4>(tup);
+    arg.transA       = std::get<5>(tup);
+    arg.diag_type    = std::get<6>(tup);
+    arg.fill_mode    = std::get<7>(tup);
     arg.solve_policy = std::get<8>(tup);
-    arg.timing    = 0;
+    arg.timing       = 0;
     return arg;
 }
 
 Arguments setup_bsrsv2_arguments(bsrsv2_bin_tuple tup)
 {
     Arguments arg;
-    arg.M         = -99;
-    arg.alpha     = std::get<0>(tup);
-    arg.baseA  = std::get<1>(tup);
-    arg.block_dim = std::get<2>(tup);
-    arg.dirA      = std::get<3>(tup);
-    arg.transA    = std::get<4>(tup);
-    arg.diag_type = std::get<5>(tup);
-    arg.fill_mode = std::get<6>(tup);
+    arg.M            = -99;
+    arg.alpha        = std::get<0>(tup);
+    arg.baseA        = std::get<1>(tup);
+    arg.block_dim    = std::get<2>(tup);
+    arg.dirA         = std::get<3>(tup);
+    arg.transA       = std::get<4>(tup);
+    arg.diag_type    = std::get<5>(tup);
+    arg.fill_mode    = std::get<6>(tup);
     arg.solve_policy = std::get<7>(tup);
-    arg.timing    = 0;
+    arg.timing       = 0;
 
     // Determine absolute path of test matrix
     std::string bin_file = std::get<8>(tup);

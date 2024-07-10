@@ -25,13 +25,13 @@
 #ifndef TESTING_PRUNE_DENSE2CSR_BY_PERCENTAGE_HPP
 #define TESTING_PRUNE_DENSE2CSR_BY_PERCENTAGE_HPP
 
-#include "hipsparse.hpp"
-#include "hipsparse_test_unique_ptr.hpp"
 #include "flops.hpp"
 #include "gbyte.hpp"
+#include "hipsparse.hpp"
+#include "hipsparse_arguments.hpp"
+#include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
-#include "hipsparse_arguments.hpp"
 
 #include <algorithm>
 #include <hipsparse.h>
@@ -377,7 +377,8 @@ hipsparseStatus_t testing_prune_dense2csr_by_percentage(Arguments argus)
     T                    percentage = argus.get_percentage<T>();
     hipsparseIndexBase_t idx_base   = argus.baseA;
 
-    std::cout << "M: " << M << " N: " << N << " LDA: " << LDA << " idx_base: " << idx_base << std::endl;
+    std::cout << "M: " << M << " N: " << N << " LDA: " << LDA << " idx_base: " << idx_base
+              << std::endl;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -475,9 +476,9 @@ hipsparseStatus_t testing_prune_dense2csr_by_percentage(Arguments argus)
 
     std::vector<int> h_nnz_total_copied_from_device(1);
     CHECK_HIP_ERROR(hipMemcpy(h_nnz_total_copied_from_device.data(),
-                                d_nnz_total_dev_host_ptr,
-                                sizeof(int),
-                                hipMemcpyDeviceToHost));
+                              d_nnz_total_dev_host_ptr,
+                              sizeof(int),
+                              hipMemcpyDeviceToHost));
 
     if(argus.unit_check)
     {
@@ -487,8 +488,8 @@ hipsparseStatus_t testing_prune_dense2csr_by_percentage(Arguments argus)
 
     auto d_csr_col_ind_managed = hipsparse_unique_ptr{
         device_malloc(sizeof(int) * h_nnz_total_dev_host_ptr[0]), device_free};
-    auto d_csr_val_managed = hipsparse_unique_ptr{
-        device_malloc(sizeof(T) * h_nnz_total_dev_host_ptr[0]), device_free};
+    auto d_csr_val_managed
+        = hipsparse_unique_ptr{device_malloc(sizeof(T) * h_nnz_total_dev_host_ptr[0]), device_free};
 
     int* d_csr_col_ind = (int*)d_csr_col_ind_managed.get();
     T*   d_csr_val     = (T*)d_csr_val_managed.get();
@@ -497,17 +498,17 @@ hipsparseStatus_t testing_prune_dense2csr_by_percentage(Arguments argus)
     {
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
         CHECK_HIPSPARSE_ERROR(hipsparseXpruneDense2csrByPercentage(handle,
-                                                                    M,
-                                                                    N,
-                                                                    d_A,
-                                                                    LDA,
-                                                                    percentage,
-                                                                    descr,
-                                                                    d_csr_val,
-                                                                    d_csr_row_ptr,
-                                                                    d_csr_col_ind,
-                                                                    info,
-                                                                    d_temp_buffer));
+                                                                   M,
+                                                                   N,
+                                                                   d_A,
+                                                                   LDA,
+                                                                   percentage,
+                                                                   descr,
+                                                                   d_csr_val,
+                                                                   d_csr_row_ptr,
+                                                                   d_csr_col_ind,
+                                                                   info,
+                                                                   d_temp_buffer));
 
         std::vector<int> h_csr_row_ptr(M + 1);
         std::vector<int> h_csr_col_ind(h_nnz_total_dev_host_ptr[0]);
@@ -517,14 +518,13 @@ hipsparseStatus_t testing_prune_dense2csr_by_percentage(Arguments argus)
             h_csr_row_ptr.data(), d_csr_row_ptr, sizeof(int) * (M + 1), hipMemcpyDeviceToHost));
 
         CHECK_HIP_ERROR(hipMemcpy(h_csr_col_ind.data(),
-                                    d_csr_col_ind,
-                                    sizeof(int) * h_nnz_total_dev_host_ptr[0],
-                                    hipMemcpyDeviceToHost));
+                                  d_csr_col_ind,
+                                  sizeof(int) * h_nnz_total_dev_host_ptr[0],
+                                  hipMemcpyDeviceToHost));
         CHECK_HIP_ERROR(hipMemcpy(h_csr_val.data(),
-                                    d_csr_val,
-                                    sizeof(T) * h_nnz_total_dev_host_ptr[0],
-                                    hipMemcpyDeviceToHost));
-
+                                  d_csr_val,
+                                  sizeof(T) * h_nnz_total_dev_host_ptr[0],
+                                  hipMemcpyDeviceToHost));
 
         // call host and check results
         std::vector<int> h_nnz_cpu(1);
@@ -533,15 +533,15 @@ hipsparseStatus_t testing_prune_dense2csr_by_percentage(Arguments argus)
         std::vector<T>   h_csr_val_cpu;
 
         host_prune_dense2csr_by_percentage(M,
-                                            N,
-                                            h_A,
-                                            LDA,
-                                            idx_base,
-                                            percentage,
-                                            h_nnz_cpu[0],
-                                            h_csr_val_cpu,
-                                            h_csr_row_ptr_cpu,
-                                            h_csr_col_ind_cpu);
+                                           N,
+                                           h_A,
+                                           LDA,
+                                           idx_base,
+                                           percentage,
+                                           h_nnz_cpu[0],
+                                           h_csr_val_cpu,
+                                           h_csr_row_ptr_cpu,
+                                           h_csr_col_ind_cpu);
 
         unit_check_general<int>(1, 1, 1, h_nnz_cpu.data(), h_nnz_total_dev_host_ptr.data());
         unit_check_general<int>(1, (M + 1), 1, h_csr_row_ptr_cpu.data(), h_csr_row_ptr.data());
@@ -562,18 +562,17 @@ hipsparseStatus_t testing_prune_dense2csr_by_percentage(Arguments argus)
         for(int iter = 0; iter < number_cold_calls; ++iter)
         {
             CHECK_HIPSPARSE_ERROR(hipsparseXpruneDense2csrByPercentage(handle,
-                                                                    M,
-                                                                    N,
-                                                                    d_A,
-                                                                    LDA,
-                                                                    percentage,
-                                                                    descr,
-                                                                    d_csr_val,
-                                                                    d_csr_row_ptr,
-                                                                    d_csr_col_ind,
-                                                                    info,
-                                                                    d_temp_buffer));
-
+                                                                       M,
+                                                                       N,
+                                                                       d_A,
+                                                                       LDA,
+                                                                       percentage,
+                                                                       descr,
+                                                                       d_csr_val,
+                                                                       d_csr_row_ptr,
+                                                                       d_csr_col_ind,
+                                                                       info,
+                                                                       d_temp_buffer));
         }
 
         double gpu_time_used = get_time_us();
@@ -582,18 +581,17 @@ hipsparseStatus_t testing_prune_dense2csr_by_percentage(Arguments argus)
         for(int iter = 0; iter < number_hot_calls; ++iter)
         {
             CHECK_HIPSPARSE_ERROR(hipsparseXpruneDense2csrByPercentage(handle,
-                                                                    M,
-                                                                    N,
-                                                                    d_A,
-                                                                    LDA,
-                                                                    percentage,
-                                                                    descr,
-                                                                    d_csr_val,
-                                                                    d_csr_row_ptr,
-                                                                    d_csr_col_ind,
-                                                                    info,
-                                                                    d_temp_buffer));
-
+                                                                       M,
+                                                                       N,
+                                                                       d_A,
+                                                                       LDA,
+                                                                       percentage,
+                                                                       descr,
+                                                                       d_csr_val,
+                                                                       d_csr_row_ptr,
+                                                                       d_csr_col_ind,
+                                                                       info,
+                                                                       d_temp_buffer));
         }
 
         gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
@@ -602,7 +600,8 @@ hipsparseStatus_t testing_prune_dense2csr_by_percentage(Arguments argus)
             = prune_dense2csr_by_percentage_gbyte_count<T>(M, N, h_nnz_total_dev_host_ptr[0]);
         double gpu_gbyte = get_gpu_gbyte(gpu_time_used, gbyte_count);
 
-        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
+        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used)
+                  << std::endl;
     }
 
     return HIPSPARSE_STATUS_SUCCESS;

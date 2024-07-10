@@ -33,55 +33,55 @@ hipsparse_arguments_config::hipsparse_arguments_config()
     // Arguments must be a C-compatible struct so cppcheck complains about non-initialized member variables.
     // Then we need to initialize.
     {
-        this->M               = 0;
-        this->N               = 0;
-        this->K               = 0;
-        this->nnz             = 0;
-        this->block_dim       = 0;
-        this->row_block_dimA  = 0;
-        this->col_block_dimA  = 0;
-        this->row_block_dimB  = 0;
-        this->col_block_dimB  = 0;
+        this->M              = 0;
+        this->N              = 0;
+        this->K              = 0;
+        this->nnz            = 0;
+        this->block_dim      = 0;
+        this->row_block_dimA = 0;
+        this->col_block_dimA = 0;
+        this->row_block_dimB = 0;
+        this->col_block_dimB = 0;
 
-        this->lda  = 0;
-        this->ldb  = 0;
-        this->ldc  = 0;
+        this->lda = 0;
+        this->ldb = 0;
+        this->ldc = 0;
 
         this->batch_count = 1;
-        
-        this->filename = "";
+
+        this->filename      = "";
         this->function_name = "";
 
-        this->index_type_I    = HIPSPARSE_INDEX_32I;
-        this->index_type_J    = HIPSPARSE_INDEX_32I;
-        this->compute_type    = HIP_R_32F;
+        this->index_type_I = HIPSPARSE_INDEX_32I;
+        this->index_type_J = HIPSPARSE_INDEX_32I;
+        this->compute_type = HIP_R_32F;
 
-        this->alpha           = 0.0;
-        this->alphai          = 0.0;
-        this->beta            = 0.0;
-        this->betai           = 0.0;
-        this->threshold       = 0.0;
-        this->percentage      = 0.0;
+        this->alpha      = 0.0;
+        this->alphai     = 0.0;
+        this->beta       = 0.0;
+        this->betai      = 0.0;
+        this->threshold  = 0.0;
+        this->percentage = 0.0;
 
-        this->transA          = HIPSPARSE_OPERATION_NON_TRANSPOSE;
-        this->transB          = HIPSPARSE_OPERATION_NON_TRANSPOSE;
-        this->baseA           = HIPSPARSE_INDEX_BASE_ZERO;
-        this->baseB           = HIPSPARSE_INDEX_BASE_ZERO;
-        this->baseC           = HIPSPARSE_INDEX_BASE_ZERO;
-        this->baseD           = HIPSPARSE_INDEX_BASE_ZERO;
+        this->transA = HIPSPARSE_OPERATION_NON_TRANSPOSE;
+        this->transB = HIPSPARSE_OPERATION_NON_TRANSPOSE;
+        this->baseA  = HIPSPARSE_INDEX_BASE_ZERO;
+        this->baseB  = HIPSPARSE_INDEX_BASE_ZERO;
+        this->baseC  = HIPSPARSE_INDEX_BASE_ZERO;
+        this->baseD  = HIPSPARSE_INDEX_BASE_ZERO;
 
-        this->action          = HIPSPARSE_ACTION_NUMERIC;
-        this->part            = HIPSPARSE_HYB_PARTITION_AUTO;
-        this->diag_type       = HIPSPARSE_DIAG_TYPE_NON_UNIT;
-        this->fill_mode       = HIPSPARSE_FILL_MODE_LOWER;
-        this->solve_policy    = HIPSPARSE_SOLVE_POLICY_NO_LEVEL;
+        this->action       = HIPSPARSE_ACTION_NUMERIC;
+        this->part         = HIPSPARSE_HYB_PARTITION_AUTO;
+        this->diag_type    = HIPSPARSE_DIAG_TYPE_NON_UNIT;
+        this->fill_mode    = HIPSPARSE_FILL_MODE_LOWER;
+        this->solve_policy = HIPSPARSE_SOLVE_POLICY_NO_LEVEL;
 
-        this->dirA            = HIPSPARSE_DIRECTION_ROW;
-        this->orderA          = HIPSPARSE_ORDER_ROW;
-        this->orderB          = HIPSPARSE_ORDER_ROW;
-        this->orderC          = HIPSPARSE_ORDER_ROW;
-        this->formatA         = HIPSPARSE_FORMAT_CSR;
-        this->formatB         = HIPSPARSE_FORMAT_CSR;
+        this->dirA    = HIPSPARSE_DIRECTION_ROW;
+        this->orderA  = HIPSPARSE_ORDER_ROW;
+        this->orderB  = HIPSPARSE_ORDER_ROW;
+        this->orderC  = HIPSPARSE_ORDER_ROW;
+        this->formatA = HIPSPARSE_FORMAT_CSR;
+        this->formatB = HIPSPARSE_FORMAT_CSR;
 
         this->csr2csc_alg      = HIPSPARSE_CSR2CSC_ALG1;
         this->dense2sparse_alg = HIPSPARSE_DENSETOSPARSE_ALG_DEFAULT;
@@ -93,15 +93,15 @@ hipsparse_arguments_config::hipsparse_arguments_config()
         this->spsm_alg         = HIPSPARSE_SPSM_ALG_DEFAULT;
         this->spsv_alg         = HIPSPARSE_SPSV_ALG_DEFAULT;
 
-        this->numericboost     = 0;
-        this->boosttol         = 0.0;
-        this->boostval         = 0.0;
-        this->boostvali        = 0.0;
+        this->numericboost = 0;
+        this->boosttol     = 0.0;
+        this->boostval     = 0.0;
+        this->boostvali    = 0.0;
 
         this->ell_width = 0;
-        this->permute = 0;
-        this->gpsv_alg = 0;
-        this->gtsv_alg = 0;
+        this->permute   = 0;
+        this->gpsv_alg  = 0;
+        this->gtsv_alg  = 0;
 
         this->precision = 's';
         this->indextype = 's';

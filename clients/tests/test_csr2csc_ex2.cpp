@@ -28,8 +28,10 @@
 #include <string>
 #include <vector>
 
-typedef std::tuple<int, int, hipsparseAction_t, hipsparseIndexBase_t, hipsparseCsr2CscAlg_t>    csr2csc_ex2_tuple;
-typedef std::tuple<hipsparseAction_t, hipsparseIndexBase_t, hipsparseCsr2CscAlg_t, std::string> csr2csc_ex2_bin_tuple;
+typedef std::tuple<int, int, hipsparseAction_t, hipsparseIndexBase_t, hipsparseCsr2CscAlg_t>
+    csr2csc_ex2_tuple;
+typedef std::tuple<hipsparseAction_t, hipsparseIndexBase_t, hipsparseCsr2CscAlg_t, std::string>
+    csr2csc_ex2_bin_tuple;
 
 int csr2csc_ex2_M_range[] = {0, 10, 500, 872, 1000};
 int csr2csc_ex2_N_range[] = {0, 33, 242, 623, 1000};
@@ -81,7 +83,7 @@ Arguments setup_csr2csc_ex2_arguments(csr2csc_ex2_tuple tup)
     arg.action      = std::get<2>(tup);
     arg.baseA       = std::get<3>(tup);
     arg.csr2csc_alg = std::get<4>(tup);
-    arg.timing   = 0;
+    arg.timing      = 0;
     return arg;
 }
 
@@ -93,7 +95,7 @@ Arguments setup_csr2csc_ex2_arguments(csr2csc_ex2_bin_tuple tup)
     arg.action      = std::get<0>(tup);
     arg.baseA       = std::get<1>(tup);
     arg.csr2csc_alg = std::get<2>(tup);
-    arg.timing   = 0;
+    arg.timing      = 0;
 
     // Determine absolute path of test matrix
     std::string bin_file = std::get<3>(tup);

@@ -62,7 +62,7 @@ hipsparseIndexBase_t spsm_coo_idxbase_range[]   = {HIPSPARSE_INDEX_BASE_ZERO};
 hipsparseDiagType_t  spsm_coo_diag_type_range[] = {HIPSPARSE_DIAG_TYPE_NON_UNIT};
 hipsparseFillMode_t  spsm_coo_fill_mode_range[]
     = {HIPSPARSE_FILL_MODE_LOWER, HIPSPARSE_FILL_MODE_UPPER};
-hipsparseSpSMAlg_t   spsm_coo_alg_range[] = {HIPSPARSE_SPSM_ALG_DEFAULT};
+hipsparseSpSMAlg_t spsm_coo_alg_range[] = {HIPSPARSE_SPSM_ALG_DEFAULT};
 
 std::string spsm_coo_bin[] = {"nos1.bin", "nos3.bin", "nos6.bin", "scircuit.bin"};
 

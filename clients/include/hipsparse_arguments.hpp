@@ -29,9 +29,9 @@
 
 #pragma once
 
+#include <cmath>
 #include <cstring>
 #include <iomanip>
-#include <cmath>
 #include <iostream>
 
 #include "hipsparse_datatype2string.hpp"
@@ -62,7 +62,7 @@ struct Arguments
 
     hipsparseIndexType_t index_type_I;
     hipsparseIndexType_t index_type_J;
-    hipDataType compute_type;
+    hipDataType          compute_type;
 
     double alpha;
     double alphai;
@@ -91,16 +91,16 @@ struct Arguments
     hipsparseFormat_t    formatA;
     hipsparseFormat_t    formatB;
 
-    hipsparseCsr2CscAlg_t csr2csc_alg;
+    hipsparseCsr2CscAlg_t       csr2csc_alg;
     hipsparseDenseToSparseAlg_t dense2sparse_alg;
     hipsparseSparseToDenseAlg_t sparse2dense_alg;
-    hipsparseSDDMMAlg_t sddmm_alg;
-    hipsparseSpGEMMAlg_t spgemm_alg;
-    hipsparseSpMMAlg_t spmm_alg;
-    hipsparseSpMVAlg_t spmv_alg;
-    hipsparseSpSMAlg_t spsm_alg;
-    hipsparseSpSVAlg_t spsv_alg;
-   
+    hipsparseSDDMMAlg_t         sddmm_alg;
+    hipsparseSpGEMMAlg_t        spgemm_alg;
+    hipsparseSpMMAlg_t          spmm_alg;
+    hipsparseSpMVAlg_t          spmv_alg;
+    hipsparseSpSMAlg_t          spsm_alg;
+    hipsparseSpSVAlg_t          spsv_alg;
+
     int    numericboost;
     double boosttol;
     double boostval;
@@ -120,11 +120,11 @@ struct Arguments
 
     Arguments()
     {
-        this->M = -1;
-        this->N = -1;
-        this->K = -1;
-        this->nnz = -1;
-        this->block_dim = 2;
+        this->M              = -1;
+        this->N              = -1;
+        this->K              = -1;
+        this->nnz            = -1;
+        this->block_dim      = 2;
         this->row_block_dimA = 2;
         this->col_block_dimA = 2;
         this->row_block_dimB = 2;
@@ -140,58 +140,58 @@ struct Arguments
         this->index_type_J = HIPSPARSE_INDEX_32I;
         this->compute_type = HIP_R_32F;
 
-        this->alpha = 0.0;
-        this->alphai = 0.0;
-        this->beta = 0.0;
-        this->betai = 0.0;
-        this->threshold = 0.0;
+        this->alpha      = 0.0;
+        this->alphai     = 0.0;
+        this->beta       = 0.0;
+        this->betai      = 0.0;
+        this->threshold  = 0.0;
         this->percentage = 0.0;
 
         this->transA = HIPSPARSE_OPERATION_NON_TRANSPOSE;
         this->transB = HIPSPARSE_OPERATION_NON_TRANSPOSE;
-        this->baseA = HIPSPARSE_INDEX_BASE_ZERO;
-        this->baseB = HIPSPARSE_INDEX_BASE_ZERO;
-        this->baseC = HIPSPARSE_INDEX_BASE_ZERO;
-        this->baseD = HIPSPARSE_INDEX_BASE_ZERO;
+        this->baseA  = HIPSPARSE_INDEX_BASE_ZERO;
+        this->baseB  = HIPSPARSE_INDEX_BASE_ZERO;
+        this->baseC  = HIPSPARSE_INDEX_BASE_ZERO;
+        this->baseD  = HIPSPARSE_INDEX_BASE_ZERO;
 
-        this->action = HIPSPARSE_ACTION_NUMERIC;
-        this->part = HIPSPARSE_HYB_PARTITION_AUTO;
-        this->diag_type = HIPSPARSE_DIAG_TYPE_NON_UNIT;
-        this->fill_mode = HIPSPARSE_FILL_MODE_LOWER;
+        this->action       = HIPSPARSE_ACTION_NUMERIC;
+        this->part         = HIPSPARSE_HYB_PARTITION_AUTO;
+        this->diag_type    = HIPSPARSE_DIAG_TYPE_NON_UNIT;
+        this->fill_mode    = HIPSPARSE_FILL_MODE_LOWER;
         this->solve_policy = HIPSPARSE_SOLVE_POLICY_NO_LEVEL;
 
-        this->dirA = HIPSPARSE_DIRECTION_ROW;
-        this->orderA = HIPSPARSE_ORDER_COL;
-        this->orderB = HIPSPARSE_ORDER_COL;
-        this->orderC = HIPSPARSE_ORDER_COL;
+        this->dirA    = HIPSPARSE_DIRECTION_ROW;
+        this->orderA  = HIPSPARSE_ORDER_COL;
+        this->orderB  = HIPSPARSE_ORDER_COL;
+        this->orderC  = HIPSPARSE_ORDER_COL;
         this->formatA = HIPSPARSE_FORMAT_COO;
         this->formatB = HIPSPARSE_FORMAT_COO;
 
-        this->csr2csc_alg = HIPSPARSE_CSR2CSC_ALG1;
+        this->csr2csc_alg      = HIPSPARSE_CSR2CSC_ALG1;
         this->dense2sparse_alg = HIPSPARSE_DENSETOSPARSE_ALG_DEFAULT;
         this->sparse2dense_alg = HIPSPARSE_SPARSETODENSE_ALG_DEFAULT;
-        this->sddmm_alg = HIPSPARSE_SDDMM_ALG_DEFAULT;
-        this->spgemm_alg = HIPSPARSE_SPGEMM_DEFAULT;
-        this->spmm_alg = HIPSPARSE_SPMM_ALG_DEFAULT;
-        this->spmv_alg = HIPSPARSE_SPMV_ALG_DEFAULT;
-        this->spsm_alg = HIPSPARSE_SPSM_ALG_DEFAULT;
-        this->spsv_alg = HIPSPARSE_SPSV_ALG_DEFAULT;
+        this->sddmm_alg        = HIPSPARSE_SDDMM_ALG_DEFAULT;
+        this->spgemm_alg       = HIPSPARSE_SPGEMM_DEFAULT;
+        this->spmm_alg         = HIPSPARSE_SPMM_ALG_DEFAULT;
+        this->spmv_alg         = HIPSPARSE_SPMV_ALG_DEFAULT;
+        this->spsm_alg         = HIPSPARSE_SPSM_ALG_DEFAULT;
+        this->spsv_alg         = HIPSPARSE_SPSV_ALG_DEFAULT;
 
         this->numericboost = 0;
-        this->boosttol = 0.0;
-        this->boostval = 1.0;
-        this->boostvali = 0.0;
+        this->boosttol     = 0.0;
+        this->boostval     = 1.0;
+        this->boostvali    = 0.0;
 
         this->ell_width = 0;
-        this->permute = 0;
-        this->gtsv_alg = 0;
-        this->gpsv_alg = 0;
+        this->permute   = 0;
+        this->gtsv_alg  = 0;
+        this->gpsv_alg  = 0;
 
         this->unit_check = 1;
-        this->timing = 0;
-        this->iters = 10;
+        this->timing     = 0;
+        this->iters      = 10;
 
-        this->filename = "";
+        this->filename      = "";
         this->function_name = "";
     }
 

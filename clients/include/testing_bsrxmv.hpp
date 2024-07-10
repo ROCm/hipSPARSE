@@ -26,10 +26,10 @@
 #define TESTING_BSRXMV_HPP
 
 #include "hipsparse.hpp"
+#include "hipsparse_arguments.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
-#include "hipsparse_arguments.hpp"
 
 #include <cmath>
 #include <hipsparse.h>
@@ -411,13 +411,13 @@ hipsparseStatus_t testing_bsrxmv(Arguments argus)
     std::vector<int> hbsr_end_ptr  = {1, 5};
     std::vector<int> hbsr_col_ind  = {1, 2, 1, 2, 3};
     std::vector<T>   hx            = {make_DataType<T>(1.0),
-                         make_DataType<T>(1.0),
-                         make_DataType<T>(1.0),
-                         make_DataType<T>(1.0),
-                         make_DataType<T>(1.0),
-                         make_DataType<T>(1.0)};
+                                      make_DataType<T>(1.0),
+                                      make_DataType<T>(1.0),
+                                      make_DataType<T>(1.0),
+                                      make_DataType<T>(1.0),
+                                      make_DataType<T>(1.0)};
     std::vector<T>   hy            = {
-        make_DataType<T>(2.0), make_DataType<T>(2.0), make_DataType<T>(2.0), make_DataType<T>(2.0)};
+                     make_DataType<T>(2.0), make_DataType<T>(2.0), make_DataType<T>(2.0), make_DataType<T>(2.0)};
     std::vector<T> hyref = {make_DataType<T>(2.0),
                             make_DataType<T>(2.0),
                             make_DataType<T>(58.0),

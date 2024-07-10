@@ -25,12 +25,12 @@
 #ifndef TESTING_ROT_HPP
 #define TESTING_ROT_HPP
 
-#include "hipsparse_test_unique_ptr.hpp"
 #include "flops.hpp"
 #include "gbyte.hpp"
+#include "hipsparse_arguments.hpp"
+#include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
-#include "hipsparse_arguments.hpp"
 
 #include <hipsparse.h>
 #include <typeinfo>
@@ -176,8 +176,10 @@ hipsparseStatus_t testing_rot(Arguments argus)
         CHECK_HIPSPARSE_ERROR(hipsparseRot(handle, dc_coeff, ds_coeff, x2, y2));
 
         // Copy output from device to CPU
-        CHECK_HIP_ERROR(hipMemcpy(hx_val_1.data(), dx_val_1, sizeof(T) * nnz, hipMemcpyDeviceToHost));
-        CHECK_HIP_ERROR(hipMemcpy(hx_val_2.data(), dx_val_2, sizeof(T) * nnz, hipMemcpyDeviceToHost));
+        CHECK_HIP_ERROR(
+            hipMemcpy(hx_val_1.data(), dx_val_1, sizeof(T) * nnz, hipMemcpyDeviceToHost));
+        CHECK_HIP_ERROR(
+            hipMemcpy(hx_val_2.data(), dx_val_2, sizeof(T) * nnz, hipMemcpyDeviceToHost));
         CHECK_HIP_ERROR(hipMemcpy(hy_1.data(), dy_1, sizeof(T) * size, hipMemcpyDeviceToHost));
         CHECK_HIP_ERROR(hipMemcpy(hy_2.data(), dy_2, sizeof(T) * size, hipMemcpyDeviceToHost));
 
@@ -229,7 +231,8 @@ hipsparseStatus_t testing_rot(Arguments argus)
         double gpu_gbyte  = get_gpu_gbyte(gpu_time_used, gbyte_count);
         double gpu_gflops = get_gpu_gflops(gpu_time_used, gflop_count);
 
-        std::cout << "GFLOPS/s: " << gpu_gflops << " GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
+        std::cout << "GFLOPS/s: " << gpu_gflops << " GBytes/s: " << gpu_gbyte
+                  << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
     }
 
     CHECK_HIPSPARSE_ERROR(hipsparseDestroySpVec(x1));

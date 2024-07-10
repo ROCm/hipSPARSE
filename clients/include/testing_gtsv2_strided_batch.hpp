@@ -25,13 +25,13 @@
 #ifndef TESTING_GTSV2_NOPIVOT_STRIDED_BATCH_HPP
 #define TESTING_GTSV2_NOPIVOT_STRIDED_BATCH_HPP
 
-#include "hipsparse.hpp"
-#include "hipsparse_test_unique_ptr.hpp"
 #include "flops.hpp"
 #include "gbyte.hpp"
+#include "hipsparse.hpp"
+#include "hipsparse_arguments.hpp"
+#include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
-#include "hipsparse_arguments.hpp"
 
 #include <hipsparse.h>
 #include <string>
@@ -186,8 +186,8 @@ hipsparseStatus_t testing_gtsv2_strided_batch(Arguments argus)
             handle, m, ddl, dd, ddu, dx, batch_count, batch_stride, buffer));
 
         // copy output from device to CPU
-        CHECK_HIP_ERROR(
-            hipMemcpy(hx.data(), dx, sizeof(T) * batch_stride * batch_count, hipMemcpyDeviceToHost));
+        CHECK_HIP_ERROR(hipMemcpy(
+            hx.data(), dx, sizeof(T) * batch_stride * batch_count, hipMemcpyDeviceToHost));
 
         // Check
         std::vector<T> hresult(batch_stride * batch_count, make_DataType<T>(3));
@@ -195,16 +195,16 @@ hipsparseStatus_t testing_gtsv2_strided_batch(Arguments argus)
         {
             hresult[batch_stride * j]
                 = testing_mult(hd[batch_stride * j + 0], hx[batch_stride * j])
-                + testing_mult(hdu[batch_stride * j + 0], hx[batch_stride * j + 1]);
+                  + testing_mult(hdu[batch_stride * j + 0], hx[batch_stride * j + 1]);
             hresult[batch_stride * j + m - 1]
                 = testing_mult(hdl[batch_stride * j + m - 1], hx[batch_stride * j + m - 2])
-                + testing_mult(hd[batch_stride * j + m - 1], hx[batch_stride * j + m - 1]);
+                  + testing_mult(hd[batch_stride * j + m - 1], hx[batch_stride * j + m - 1]);
             for(int i = 1; i < m - 1; i++)
             {
                 hresult[batch_stride * j + i]
                     = testing_mult(hdl[batch_stride * j + i], hx[batch_stride * j + i - 1])
-                    + testing_mult(hd[batch_stride * j + i], hx[batch_stride * j + i])
-                    + testing_mult(hdu[batch_stride * j + i], hx[batch_stride * j + i + 1]);
+                      + testing_mult(hd[batch_stride * j + i], hx[batch_stride * j + i])
+                      + testing_mult(hdu[batch_stride * j + i], hx[batch_stride * j + i + 1]);
             }
         }
 
@@ -236,8 +236,9 @@ hipsparseStatus_t testing_gtsv2_strided_batch(Arguments argus)
 
         double gbyte_count = gtsv_strided_batch_gbyte_count<T>(m, batch_count);
         double gpu_gbyte   = get_gpu_gbyte(gpu_time_used, gbyte_count);
-        
-        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
+
+        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used)
+                  << std::endl;
     }
 
     CHECK_HIP_ERROR(hipFree(buffer));

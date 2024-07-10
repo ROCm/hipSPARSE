@@ -25,13 +25,13 @@
 #ifndef TESTING_CSCSORT_HPP
 #define TESTING_CSCSORT_HPP
 
-#include "hipsparse.hpp"
-#include "hipsparse_test_unique_ptr.hpp"
 #include "flops.hpp"
 #include "gbyte.hpp"
+#include "hipsparse.hpp"
+#include "hipsparse_arguments.hpp"
+#include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
-#include "hipsparse_arguments.hpp"
 
 #include <algorithm>
 #include <hipsparse.h>
@@ -43,10 +43,10 @@ using namespace hipsparse_test;
 void testing_cscsort_bad_arg(void)
 {
 #if(!defined(CUDART_VERSION))
-    int               m         = 100;
-    int               n         = 100;
-    int               nnz       = 100;
-    int               safe_size = 100;
+    int m         = 100;
+    int n         = 100;
+    int nnz       = 100;
+    int safe_size = 100;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -69,25 +69,42 @@ void testing_cscsort_bad_arg(void)
     int*  perm        = (int*)perm_managed.get();
     void* buffer      = (void*)buffer_managed.get();
 
-    verify_hipsparse_status_invalid_pointer(hipsparseXcscsort_bufferSizeExt(
-            handle, m, n, nnz, (int*)nullptr, csc_row_ind, &buffer_size), "Error: csc_col_ptr is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXcscsort_bufferSizeExt(
-        handle, m, n, nnz, csc_col_ptr, (int*)nullptr, &buffer_size), "Error: csc_row_ind is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXcscsort_bufferSizeExt(
-        handle, m, n, nnz, csc_col_ptr, csc_row_ind, (size_t*)nullptr), "Error: buffer_size is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXcscsort_bufferSizeExt(
+            handle, m, n, nnz, (int*)nullptr, csc_row_ind, &buffer_size),
+        "Error: csc_col_ptr is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXcscsort_bufferSizeExt(
+            handle, m, n, nnz, csc_col_ptr, (int*)nullptr, &buffer_size),
+        "Error: csc_row_ind is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXcscsort_bufferSizeExt(
+            handle, m, n, nnz, csc_col_ptr, csc_row_ind, (size_t*)nullptr),
+        "Error: buffer_size is nullptr");
     verify_hipsparse_status_invalid_handle(hipsparseXcscsort_bufferSizeExt(
-        (hipsparseHandle_t)nullptr, m, n, nnz, csc_col_ptr, csc_row_ind, &buffer_size));
+        (hipsparseHandle_t) nullptr, m, n, nnz, csc_col_ptr, csc_row_ind, &buffer_size));
 
-    verify_hipsparse_status_invalid_pointer(hipsparseXcscsort(
-        handle, m, n, nnz, descr, (int*)nullptr, csc_row_ind, perm, buffer), "Error: csc_col_ptr is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXcscsort(
-        handle, m, n, nnz, descr, csc_col_ptr, (int*)nullptr, perm, buffer), "Error: csc_row_ind is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXcscsort(
-        handle, m, n, nnz, descr, csc_col_ptr, csc_row_ind, perm, (int*)nullptr), "Error: buffer is nullptr");
-    verify_hipsparse_status_invalid_pointer(hipsparseXcscsort(
-        handle, m, n, nnz, (hipsparseMatDescr_t)nullptr, csc_col_ptr, csc_row_ind, perm, buffer), "Error: descr is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXcscsort(handle, m, n, nnz, descr, (int*)nullptr, csc_row_ind, perm, buffer),
+        "Error: csc_col_ptr is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXcscsort(handle, m, n, nnz, descr, csc_col_ptr, (int*)nullptr, perm, buffer),
+        "Error: csc_row_ind is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXcscsort(handle, m, n, nnz, descr, csc_col_ptr, csc_row_ind, perm, (int*)nullptr),
+        "Error: buffer is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcscsort(handle,
+                                                              m,
+                                                              n,
+                                                              nnz,
+                                                              (hipsparseMatDescr_t) nullptr,
+                                                              csc_col_ptr,
+                                                              csc_row_ind,
+                                                              perm,
+                                                              buffer),
+                                            "Error: descr is nullptr");
     verify_hipsparse_status_invalid_handle(hipsparseXcscsort(
-        (hipsparseHandle_t)nullptr, m, n, nnz, descr, csc_col_ptr, csc_row_ind, perm, buffer));
+        (hipsparseHandle_t) nullptr, m, n, nnz, descr, csc_col_ptr, csc_row_ind, perm, buffer));
 #endif
 }
 
@@ -100,7 +117,8 @@ hipsparseStatus_t testing_cscsort(Arguments argus)
     hipsparseIndexBase_t idx_base = argus.baseA;
     std::string          filename = argus.filename;
 
-    std::cout << "m: " << m << " n: " << n << " permute: " << permute << " idx_base: " << idx_base << " filename: " << filename << std::endl;
+    std::cout << "m: " << m << " n: " << n << " permute: " << permute << " idx_base: " << idx_base
+              << " filename: " << filename << std::endl;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -209,7 +227,6 @@ hipsparseStatus_t testing_cscsort(Arguments argus)
         CHECK_HIPSPARSE_ERROR(hipsparseCreateIdentityPermutation(handle, nnz, dperm));
     }
 
-
     if(argus.unit_check)
     {
         // Sort CSC columns
@@ -270,7 +287,8 @@ hipsparseStatus_t testing_cscsort(Arguments argus)
         double gbyte_count = cscsort_gbyte_count(n, nnz, permute);
         double gpu_gbyte   = get_gpu_gbyte(gpu_time_used, gbyte_count);
 
-        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
+        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used)
+                  << std::endl;
     }
 #endif
 
