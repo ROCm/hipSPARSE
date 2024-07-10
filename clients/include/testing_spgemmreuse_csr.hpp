@@ -80,7 +80,6 @@ void testing_spgemmreuse_csr_bad_arg(void)
         = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
     auto dcsr_val_C_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(float) * safe_size), device_free};
-    auto dbuf_managed = hipsparse_unique_ptr{device_malloc(sizeof(char) * safe_size), device_free};
 
     int*   dcsr_row_ptr_A = (int*)dcsr_row_ptr_A_managed.get();
     int*   dcsr_col_ind_A = (int*)dcsr_col_ind_A_managed.get();
@@ -91,14 +90,6 @@ void testing_spgemmreuse_csr_bad_arg(void)
     int*   dcsr_row_ptr_C = (int*)dcsr_row_ptr_C_managed.get();
     int*   dcsr_col_ind_C = (int*)dcsr_col_ind_C_managed.get();
     float* dcsr_val_C     = (float*)dcsr_val_C_managed.get();
-    void*  dbuf           = (void*)dbuf_managed.get();
-
-    if(!dcsr_row_ptr_A || !dcsr_col_ind_A || !dcsr_val_A || !dcsr_row_ptr_B || !dcsr_col_ind_B
-       || !dcsr_val_B || !dcsr_row_ptr_C || !dcsr_col_ind_C || !dcsr_val_C || !dbuf)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
 
     // SpGEMM structures
     hipsparseSpMatDescr_t A, B, C;
@@ -224,10 +215,10 @@ hipsparseStatus_t testing_spgemmreuse_csr(Arguments argus)
     hipsparseIndexBase_t idxBaseA = argus.baseA;
     hipsparseIndexBase_t idxBaseB = argus.baseB;
     hipsparseIndexBase_t idxBaseC = argus.baseC;
-    hipsparseSpGEMMAlg_t alg      = HIPSPARSE_SPGEMM_DEFAULT;
+    hipsparseSpGEMMAlg_t alg      = argus.spgemm_alg;
+    std::string filename          = argus.filename;
 
-    // Matrices are stored at the same path in matrices directory
-    std::string filename = argus.filename;
+    std::cout << "m: " << m << " k: " << k << " idxBaseA: " << idxBaseA << " idxBaseB: " << idxBaseB << " idxBaseC: " << idxBaseC << " alg: " << alg << " filename: " << filename << std::endl;
 
     T                    h_beta = make_DataType<T>(0);
     hipsparseOperation_t transA = HIPSPARSE_OPERATION_NON_TRANSPOSE;

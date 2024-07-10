@@ -32,9 +32,10 @@ typedef hipsparseIndexBase_t base;
 typedef hipsparseOperation_t op;
 typedef hipsparseDiagType_t  diag;
 typedef hipsparseFillMode_t  fill;
+typedef hipsparseSolvePolicy_t policy;
 
-typedef std::tuple<int, int, double, base, op, op, diag, fill>         csrsm2_tuple;
-typedef std::tuple<int, double, base, op, op, diag, fill, std::string> csrsm2_bin_tuple;
+typedef std::tuple<int, int, double, base, op, op, diag, fill, policy>         csrsm2_tuple;
+typedef std::tuple<int, double, base, op, op, diag, fill, policy, std::string> csrsm2_bin_tuple;
 
 int csrsm2_M_range[]    = {0, 124, 9381};
 int csrsm2_nrhs_range[] = {17};
@@ -46,6 +47,7 @@ op   csrsm2_opA_range[]     = {HIPSPARSE_OPERATION_NON_TRANSPOSE};
 op   csrsm2_opB_range[]     = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPERATION_TRANSPOSE};
 diag csrsm2_diag_range[]    = {HIPSPARSE_DIAG_TYPE_NON_UNIT};
 fill csrsm2_fill_range[]    = {HIPSPARSE_FILL_MODE_LOWER, HIPSPARSE_FILL_MODE_UPPER};
+policy csrsm2_policy_range[] = {HIPSPARSE_SOLVE_POLICY_NO_LEVEL, HIPSPARSE_SOLVE_POLICY_USE_LEVEL};
 
 std::string csrsm2_bin[] = {"nos1.bin", "nos2.bin", "nos3.bin", "nos4.bin", "nos5.bin", "nos6.bin"};
 
@@ -73,11 +75,12 @@ Arguments setup_csrsm2_arguments(csrsm2_tuple tup)
     arg.M         = std::get<0>(tup);
     arg.N         = std::get<1>(tup);
     arg.alpha     = std::get<2>(tup);
-    arg.baseA  = std::get<3>(tup);
+    arg.baseA     = std::get<3>(tup);
     arg.transA    = std::get<4>(tup);
     arg.transB    = std::get<5>(tup);
     arg.diag_type = std::get<6>(tup);
     arg.fill_mode = std::get<7>(tup);
+    arg.solve_policy = std::get<8>(tup);
     arg.timing    = 0;
     return arg;
 }
@@ -93,10 +96,11 @@ Arguments setup_csrsm2_arguments(csrsm2_bin_tuple tup)
     arg.transB    = std::get<4>(tup);
     arg.diag_type = std::get<5>(tup);
     arg.fill_mode = std::get<6>(tup);
+    arg.solve_policy = std::get<7>(tup);
     arg.timing    = 0;
 
     // Determine absolute path of test matrix
-    std::string bin_file = std::get<7>(tup);
+    std::string bin_file = std::get<8>(tup);
 
     // Matrices are stored at the same path in matrices directory
     arg.filename = get_filename(bin_file);
@@ -167,7 +171,8 @@ INSTANTIATE_TEST_SUITE_P(csrsm2,
                                           testing::ValuesIn(csrsm2_opA_range),
                                           testing::ValuesIn(csrsm2_opB_range),
                                           testing::ValuesIn(csrsm2_diag_range),
-                                          testing::ValuesIn(csrsm2_fill_range)));
+                                          testing::ValuesIn(csrsm2_fill_range),
+                                          testing::ValuesIn(csrsm2_policy_range)));
 
 INSTANTIATE_TEST_SUITE_P(csrsm2_bin,
                          parameterized_csrsm2_bin,
@@ -178,5 +183,6 @@ INSTANTIATE_TEST_SUITE_P(csrsm2_bin,
                                           testing::ValuesIn(csrsm2_opB_range),
                                           testing::ValuesIn(csrsm2_diag_range),
                                           testing::ValuesIn(csrsm2_fill_range),
+                                          testing::ValuesIn(csrsm2_policy_range),
                                           testing::ValuesIn(csrsm2_bin)));
 #endif

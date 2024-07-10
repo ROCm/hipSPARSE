@@ -49,7 +49,6 @@ void testing_csr2csc_ex2_bad_arg(void)
     int               nnz         = 100;
     int               safe_size   = 100;
     size_t            buffer_size = 0;
-    hipsparseStatus_t status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -75,20 +74,7 @@ void testing_csr2csc_ex2_bad_arg(void)
     T*    csc_val     = (T*)csc_val_managed.get();
     void* buffer      = (void*)buffer_managed.get();
 
-    if(!csr_row_ptr || !csr_col_ind || !csr_val || !csc_row_ind || !csc_col_ptr || !csc_val
-       || !buffer)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
-
-    // Testing hipsparseCsr2cscEx2_bufferSize()
-
-    // Testing for (handle == nullptr)
-    {
-        hipsparseHandle_t handle_null = nullptr;
-
-        status = hipsparseCsr2cscEx2_bufferSize(handle_null,
+    verify_hipsparse_status_invalid_handle(hipsparseCsr2cscEx2_bufferSize((hipsparseHandle_t)nullptr,
                                                 m,
                                                 n,
                                                 nnz,
@@ -102,20 +88,13 @@ void testing_csr2csc_ex2_bad_arg(void)
                                                 HIPSPARSE_ACTION_NUMERIC,
                                                 HIPSPARSE_INDEX_BASE_ZERO,
                                                 HIPSPARSE_CSR2CSC_ALG1,
-                                                &buffer_size);
-        verify_hipsparse_status_invalid_handle(status);
-    }
-
-    // Testing for (csr_row_ptr == nullptr)
-    {
-        int* csr_row_ptr_null = nullptr;
-
-        status = hipsparseCsr2cscEx2_bufferSize(handle,
+                                                &buffer_size));
+    verify_hipsparse_status_invalid_pointer(hipsparseCsr2cscEx2_bufferSize(handle,
                                                 m,
                                                 n,
                                                 nnz,
                                                 csr_val,
-                                                csr_row_ptr_null,
+                                                (int*)nullptr,
                                                 csr_col_ind,
                                                 csc_val,
                                                 csc_col_ptr,
@@ -124,21 +103,14 @@ void testing_csr2csc_ex2_bad_arg(void)
                                                 HIPSPARSE_ACTION_NUMERIC,
                                                 HIPSPARSE_INDEX_BASE_ZERO,
                                                 HIPSPARSE_CSR2CSC_ALG1,
-                                                &buffer_size);
-        verify_hipsparse_status_invalid_pointer(status, "Error: csr_row_ptr is nullptr");
-    }
-
-    // Testing for (csr_col_ind == nullptr)
-    {
-        int* csr_col_ind_null = nullptr;
-
-        status = hipsparseCsr2cscEx2_bufferSize(handle,
+                                                &buffer_size), "Error: csr_row_ptr is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseCsr2cscEx2_bufferSize(handle,
                                                 m,
                                                 n,
                                                 nnz,
                                                 csr_val,
                                                 csr_row_ptr,
-                                                csr_col_ind_null,
+                                                (int*)nullptr,
                                                 csc_val,
                                                 csc_col_ptr,
                                                 csc_row_ind,
@@ -146,15 +118,8 @@ void testing_csr2csc_ex2_bad_arg(void)
                                                 HIPSPARSE_ACTION_NUMERIC,
                                                 HIPSPARSE_INDEX_BASE_ZERO,
                                                 HIPSPARSE_CSR2CSC_ALG1,
-                                                &buffer_size);
-        verify_hipsparse_status_invalid_pointer(status, "Error: csr_col_ind is nullptr");
-    }
-
-    // Testing for (buffer_size == nullptr)
-    {
-        size_t* buffer_size_null = nullptr;
-
-        status = hipsparseCsr2cscEx2_bufferSize(handle,
+                                                &buffer_size), "Error: csr_col_ind is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseCsr2cscEx2_bufferSize(handle,
                                                 m,
                                                 n,
                                                 nnz,
@@ -168,17 +133,9 @@ void testing_csr2csc_ex2_bad_arg(void)
                                                 HIPSPARSE_ACTION_NUMERIC,
                                                 HIPSPARSE_INDEX_BASE_ZERO,
                                                 HIPSPARSE_CSR2CSC_ALG1,
-                                                buffer_size_null);
-        verify_hipsparse_status_invalid_pointer(status, "Error: buffer_size is nullptr");
-    }
-
-    // Testing hipsparseCsr2cscEx2()
-
-    // Testing for (handle == nullptr)
-    {
-        hipsparseHandle_t handle_null = nullptr;
-
-        status = hipsparseCsr2cscEx2(handle_null,
+                                                (size_t*)nullptr), "Error: buffer_size is nullptr");
+  
+    verify_hipsparse_status_invalid_handle(hipsparseCsr2cscEx2((hipsparseHandle_t)nullptr,
                                      m,
                                      n,
                                      nnz,
@@ -192,20 +149,13 @@ void testing_csr2csc_ex2_bad_arg(void)
                                      HIPSPARSE_ACTION_NUMERIC,
                                      HIPSPARSE_INDEX_BASE_ZERO,
                                      HIPSPARSE_CSR2CSC_ALG1,
-                                     buffer);
-        verify_hipsparse_status_invalid_handle(status);
-    }
-
-    // Testing for (csr_row_ptr == nullptr)
-    {
-        int* csr_row_ptr_null = nullptr;
-
-        status = hipsparseCsr2cscEx2(handle,
+                                     buffer));
+    verify_hipsparse_status_invalid_pointer(hipsparseCsr2cscEx2(handle,
                                      m,
                                      n,
                                      nnz,
                                      csr_val,
-                                     csr_row_ptr_null,
+                                     (int*)nullptr,
                                      csr_col_ind,
                                      csc_val,
                                      csc_col_ptr,
@@ -214,21 +164,14 @@ void testing_csr2csc_ex2_bad_arg(void)
                                      HIPSPARSE_ACTION_NUMERIC,
                                      HIPSPARSE_INDEX_BASE_ZERO,
                                      HIPSPARSE_CSR2CSC_ALG1,
-                                     buffer);
-        verify_hipsparse_status_invalid_pointer(status, "Error: csr_row_ptr is nullptr");
-    }
-
-    // Testing for (csr_col_ind == nullptr)
-    {
-        int* csr_col_ind_null = nullptr;
-
-        status = hipsparseCsr2cscEx2(handle,
+                                     buffer), "Error: csr_row_ptr is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseCsr2cscEx2(handle,
                                      m,
                                      n,
                                      nnz,
                                      csr_val,
                                      csr_row_ptr,
-                                     csr_col_ind_null,
+                                     (int*)nullptr,
                                      csc_val,
                                      csc_col_ptr,
                                      csc_row_ind,
@@ -236,19 +179,12 @@ void testing_csr2csc_ex2_bad_arg(void)
                                      HIPSPARSE_ACTION_NUMERIC,
                                      HIPSPARSE_INDEX_BASE_ZERO,
                                      HIPSPARSE_CSR2CSC_ALG1,
-                                     buffer);
-        verify_hipsparse_status_invalid_pointer(status, "Error: csr_col_ind is nullptr");
-    }
-
-    // Testing for (csr_val == nullptr)
-    {
-        T* csr_val_null = nullptr;
-
-        status = hipsparseCsr2cscEx2(handle,
+                                     buffer), "Error: csr_col_ind is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseCsr2cscEx2(handle,
                                      m,
                                      n,
                                      nnz,
-                                     csr_val_null,
+                                     (T*)nullptr,
                                      csr_row_ptr,
                                      csr_col_ind,
                                      csc_val,
@@ -258,15 +194,8 @@ void testing_csr2csc_ex2_bad_arg(void)
                                      HIPSPARSE_ACTION_NUMERIC,
                                      HIPSPARSE_INDEX_BASE_ZERO,
                                      HIPSPARSE_CSR2CSC_ALG1,
-                                     buffer);
-        verify_hipsparse_status_invalid_pointer(status, "Error: csr_val is nullptr");
-    }
-
-    // Testing for (csc_col_ptr == nullptr)
-    {
-        int* csc_col_ptr_null = nullptr;
-
-        status = hipsparseCsr2cscEx2(handle,
+                                     buffer), "Error: csr_val is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseCsr2cscEx2(handle,
                                      m,
                                      n,
                                      nnz,
@@ -274,21 +203,14 @@ void testing_csr2csc_ex2_bad_arg(void)
                                      csr_row_ptr,
                                      csr_col_ind,
                                      csc_val,
-                                     csc_col_ptr_null,
+                                     (int*)nullptr,
                                      csc_row_ind,
                                      HIP_R_32F,
                                      HIPSPARSE_ACTION_NUMERIC,
                                      HIPSPARSE_INDEX_BASE_ZERO,
                                      HIPSPARSE_CSR2CSC_ALG1,
-                                     buffer);
-        verify_hipsparse_status_invalid_pointer(status, "Error: csc_col_ptr is nullptr");
-    }
-
-    // Testing for (csc_row_ind == nullptr)
-    {
-        int* csc_row_ind_null = nullptr;
-
-        status = hipsparseCsr2cscEx2(handle,
+                                     buffer), "Error: csc_col_ptr is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseCsr2cscEx2(handle,
                                      m,
                                      n,
                                      nnz,
@@ -297,42 +219,28 @@ void testing_csr2csc_ex2_bad_arg(void)
                                      csr_col_ind,
                                      csc_val,
                                      csc_col_ptr,
-                                     csc_row_ind_null,
+                                     (int*)nullptr,
                                      HIP_R_32F,
                                      HIPSPARSE_ACTION_NUMERIC,
                                      HIPSPARSE_INDEX_BASE_ZERO,
                                      HIPSPARSE_CSR2CSC_ALG1,
-                                     buffer);
-        verify_hipsparse_status_invalid_pointer(status, "Error: csc_row_ind is nullptr");
-    }
-
-    // Testing for (csc_val == nullptr)
-    {
-        T* csc_val_null = nullptr;
-
-        status = hipsparseCsr2cscEx2(handle,
+                                     buffer), "Error: csc_row_ind is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseCsr2cscEx2(handle,
                                      m,
                                      n,
                                      nnz,
                                      csr_val,
                                      csr_row_ptr,
                                      csr_col_ind,
-                                     csc_val_null,
+                                     (T*)nullptr,
                                      csc_col_ptr,
                                      csc_row_ind,
                                      HIP_R_32F,
                                      HIPSPARSE_ACTION_NUMERIC,
                                      HIPSPARSE_INDEX_BASE_ZERO,
                                      HIPSPARSE_CSR2CSC_ALG1,
-                                     buffer);
-        verify_hipsparse_status_invalid_pointer(status, "Error: csc_val is nullptr");
-    }
-
-    // Testing for (buffer == nullptr)
-    {
-        T* buffer_null = nullptr;
-
-        status = hipsparseCsr2cscEx2(handle,
+                                     buffer), "Error: csc_val is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseCsr2cscEx2(handle,
                                      m,
                                      n,
                                      nnz,
@@ -346,9 +254,7 @@ void testing_csr2csc_ex2_bad_arg(void)
                                      HIPSPARSE_ACTION_NUMERIC,
                                      HIPSPARSE_INDEX_BASE_ZERO,
                                      HIPSPARSE_CSR2CSC_ALG1,
-                                     buffer_null);
-        verify_hipsparse_status_invalid_pointer(status, "Error: buffer is nullptr");
-    }
+                                     (T*)nullptr), "Error: buffer is nullptr");
 #endif
 }
 
@@ -359,8 +265,10 @@ hipsparseStatus_t testing_csr2csc_ex2(Arguments argus)
     int                   n        = argus.N;
     hipsparseIndexBase_t  idx_base = argus.baseA;
     hipsparseAction_t     action   = argus.action;
+    hipsparseCsr2CscAlg_t alg      = argus.csr2csc_alg;
     std::string           filename = argus.filename;
-    hipsparseCsr2CscAlg_t alg      = HIPSPARSE_CSR2CSC_ALG1;
+
+    std::cout << "m: " << m << " n: " << n << " idx_base: " << idx_base << " action: " << action << " filename: " << filename << " alg: " << alg << std::endl;
 
     hipDataType dataType = getDataType<T>();
 

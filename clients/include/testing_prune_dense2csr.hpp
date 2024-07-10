@@ -75,17 +75,9 @@ void testing_prune_dense2csr_bad_arg(void)
     T*   A           = (T*)A_managed.get();
     T*   temp_buffer = (T*)temp_buffer_managed.get();
 
-    if(!csr_row_ptr || !csr_col_ind || !csr_val || !A || !temp_buffer)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
-    { //
-
-        int local_ptr[2] = {0, 1};
-        CHECK_HIP_ERROR(
-            hipMemcpy(csr_row_ptr, local_ptr, sizeof(int) * (1 + 1), hipMemcpyHostToDevice));
-    } //
+    int local_ptr[2] = {0, 1};
+    CHECK_HIP_ERROR(
+        hipMemcpy(csr_row_ptr, local_ptr, sizeof(int) * (1 + 1), hipMemcpyHostToDevice));
 
 #if(!defined(CUDART_VERSION))
     // Test hipsparseXpruneDense2csr_bufferSize
@@ -258,8 +250,10 @@ hipsparseStatus_t testing_prune_dense2csr(Arguments argus)
     int                  M         = argus.M;
     int                  N         = argus.N;
     int                  LDA       = argus.lda;
-    T                    threshold = static_cast<T>(argus.threshold);
+    T                    threshold = make_DataType<T>(argus.threshold);
     hipsparseIndexBase_t idx_base  = argus.baseA;
+
+    std::cout << "M: " << M << " N: " << N << " LDA: " << LDA << " idx_base: " << idx_base << std::endl;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;

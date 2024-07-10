@@ -48,7 +48,6 @@ void testing_nnz_bad_arg(void)
     static constexpr int                  N         = 10;
     static constexpr int                  lda       = M;
     static constexpr hipsparseDirection_t dirA      = HIPSPARSE_DIRECTION_ROW;
-    hipsparseStatus_t                     status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -66,30 +65,13 @@ void testing_nnz_bad_arg(void)
     int* d_nnzPerRowColumn    = (int*)nnzPerRowColumn_managed.get();
     int* d_nnzTotalDevHostPtr = (int*)nnzTotalDevHostPtr_managed.get();
 
-    if(!d_nnzPerRowColumn || !d_A || !d_nnzTotalDevHostPtr)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
-
 #if(!defined(CUDART_VERSION))
-    //
-    // Testing invalid handle.
-    //
-    status = hipsparseXnnz(
-        nullptr, dirA, M, N, descrA, (const T*)d_A, lda, d_nnzPerRowColumn, d_nnzTotalDevHostPtr);
-    verify_hipsparse_status_invalid_handle(status);
-
-    //
-    // Testing invalid pointers.
-    //
-    status = hipsparseXnnz(
-        handle, dirA, M, N, nullptr, (const T*)d_A, lda, d_nnzPerRowColumn, d_nnzTotalDevHostPtr);
-
-    verify_hipsparse_status_invalid_pointer(status,
+    verify_hipsparse_status_invalid_handle(hipsparseXnnz(
+        nullptr, dirA, M, N, descrA, (const T*)d_A, lda, d_nnzPerRowColumn, d_nnzTotalDevHostPtr));
+    verify_hipsparse_status_invalid_pointer(hipsparseXnnz(
+        handle, dirA, M, N, nullptr, (const T*)d_A, lda, d_nnzPerRowColumn, d_nnzTotalDevHostPtr),
                                             "Error: descrA as invalid pointer must be detected.");
-
-    status = hipsparseXnnz(handle,
+    verify_hipsparse_status_invalid_pointer(hipsparseXnnz(handle,
                            dirA,
                            M,
                            N,
@@ -97,27 +79,19 @@ void testing_nnz_bad_arg(void)
                            (const T*)nullptr,
                            lda,
                            d_nnzPerRowColumn,
-                           d_nnzTotalDevHostPtr);
-    verify_hipsparse_status_invalid_pointer(status,
+                           d_nnzTotalDevHostPtr),
                                             "Error: A as invalid pointer must be detected.");
-
-    status = hipsparseXnnz(
-        handle, dirA, M, N, descrA, (const T*)d_A, lda, nullptr, d_nnzTotalDevHostPtr);
     verify_hipsparse_status_invalid_pointer(
-        status, "Error: nnzPerRowColumn as invalid pointer must be detected.");
-
-    status
-        = hipsparseXnnz(handle, dirA, M, N, descrA, (const T*)d_A, lda, d_nnzPerRowColumn, nullptr);
+        hipsparseXnnz(
+        handle, dirA, M, N, descrA, (const T*)d_A, lda, nullptr, d_nnzTotalDevHostPtr), "Error: nnzPerRowColumn as invalid pointer must be detected.");
     verify_hipsparse_status_invalid_pointer(
-        status, "Error: nnzTotalDevHostPtr as invalid pointer must be detected.");
+        hipsparseXnnz(handle, dirA, M, N, descrA, (const T*)d_A, lda, d_nnzPerRowColumn, nullptr), "Error: nnzTotalDevHostPtr as invalid pointer must be detected.");
 #endif
 
-    //
     // Testing invalid direction
-    //
     try
     {
-        status = hipsparseXnnz(handle,
+        hipsparseXnnz(handle,
                                (hipsparseDirection_t)77,
                                -1,
                                -1,
@@ -126,9 +100,8 @@ void testing_nnz_bad_arg(void)
                                -1,
                                nullptr,
                                nullptr);
-        //
+
         // An exception should be thrown.
-        //
         verify_hipsparse_status_internal_error(
             HIPSPARSE_STATUS_SUCCESS,
             "Error: an exception must be thrown from the conversion of the hipsparseDirection_t.");
@@ -137,26 +110,12 @@ void testing_nnz_bad_arg(void)
     {
     }
 
-    //
-    // Testing invalid size on M
-    //
-    status = hipsparseXnnz(
-        handle, dirA, -1, N, descrA, (const T*)d_A, lda, d_nnzPerRowColumn, d_nnzTotalDevHostPtr);
-    verify_hipsparse_status_invalid_size(status, "Error: M < 0 must be detected.");
-
-    //
-    // Testing invalid size on N
-    //
-    status = hipsparseXnnz(
-        handle, dirA, M, -1, descrA, (const T*)d_A, lda, d_nnzPerRowColumn, d_nnzTotalDevHostPtr);
-    verify_hipsparse_status_invalid_size(status, "Error: N < 0 must be detected.");
-
-    //
-    // Testing invalid size on lda
-    //
-    status = hipsparseXnnz(
-        handle, dirA, M, N, descrA, (const T*)d_A, M - 1, d_nnzPerRowColumn, d_nnzTotalDevHostPtr);
-    verify_hipsparse_status_invalid_size(status, "Error: lda < M must be detected.");
+    verify_hipsparse_status_invalid_size(hipsparseXnnz(
+        handle, dirA, -1, N, descrA, (const T*)d_A, lda, d_nnzPerRowColumn, d_nnzTotalDevHostPtr), "Error: M < 0 must be detected.");
+    verify_hipsparse_status_invalid_size(hipsparseXnnz(
+        handle, dirA, M, -1, descrA, (const T*)d_A, lda, d_nnzPerRowColumn, d_nnzTotalDevHostPtr), "Error: N < 0 must be detected.");
+    verify_hipsparse_status_invalid_size(hipsparseXnnz(
+        handle, dirA, M, N, descrA, (const T*)d_A, M - 1, d_nnzPerRowColumn, d_nnzTotalDevHostPtr), "Error: lda < M must be detected.");
 }
 
 template <typename T>
@@ -166,6 +125,8 @@ hipsparseStatus_t testing_nnz(Arguments argus)
     int                  N    = argus.N;
     int                  lda  = argus.lda;
     hipsparseDirection_t dirA = argus.dirA;
+
+    std::cout << "M: " << M << " N: " << N << " lda: " << lda << " dirA: " << dirA << std::endl;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;

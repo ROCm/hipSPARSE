@@ -32,9 +32,10 @@ typedef hipsparseIndexBase_t base;
 typedef hipsparseOperation_t op;
 typedef hipsparseDiagType_t  diag;
 typedef hipsparseFillMode_t  fill;
+typedef hipsparseSolvePolicy_t policy;
 
-typedef std::tuple<int, double, base, op, diag, fill>         csrsv2_tuple;
-typedef std::tuple<double, base, op, diag, fill, std::string> csrsv2_bin_tuple;
+typedef std::tuple<int, double, base, op, diag, fill, policy>         csrsv2_tuple;
+typedef std::tuple<double, base, op, diag, fill, policy, std::string> csrsv2_bin_tuple;
 
 int csrsv2_M_range[] = {0, 647};
 
@@ -44,6 +45,7 @@ base csrsv2_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_O
 op   csrsv2_op_range[]      = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPERATION_TRANSPOSE};
 diag csrsv2_diag_range[]    = {HIPSPARSE_DIAG_TYPE_NON_UNIT};
 fill csrsv2_fill_range[]    = {HIPSPARSE_FILL_MODE_LOWER, HIPSPARSE_FILL_MODE_UPPER};
+policy csrsv2_policy_range[] = {HIPSPARSE_SOLVE_POLICY_NO_LEVEL, HIPSPARSE_SOLVE_POLICY_USE_LEVEL};
 
 std::string csrsv2_bin[] = {"rma10.bin",
                             "mc2depi.bin",
@@ -82,6 +84,7 @@ Arguments setup_csrsv2_arguments(csrsv2_tuple tup)
     arg.transA    = std::get<3>(tup);
     arg.diag_type = std::get<4>(tup);
     arg.fill_mode = std::get<5>(tup);
+    arg.solve_policy = std::get<6>(tup);
     arg.timing    = 0;
     return arg;
 }
@@ -95,10 +98,11 @@ Arguments setup_csrsv2_arguments(csrsv2_bin_tuple tup)
     arg.transA    = std::get<2>(tup);
     arg.diag_type = std::get<3>(tup);
     arg.fill_mode = std::get<4>(tup);
+    arg.solve_policy = std::get<5>(tup);
     arg.timing    = 0;
 
     // Determine absolute path of test matrix
-    std::string bin_file = std::get<5>(tup);
+    std::string bin_file = std::get<6>(tup);
 
     // Matrices are stored at the same path in matrices directory
     arg.filename = get_filename(bin_file);
@@ -168,7 +172,8 @@ INSTANTIATE_TEST_SUITE_P(csrsv2,
                                           testing::ValuesIn(csrsv2_idxbase_range),
                                           testing::ValuesIn(csrsv2_op_range),
                                           testing::ValuesIn(csrsv2_diag_range),
-                                          testing::ValuesIn(csrsv2_fill_range)));
+                                          testing::ValuesIn(csrsv2_fill_range),
+                                          testing::ValuesIn(csrsv2_policy_range)));
 
 INSTANTIATE_TEST_SUITE_P(csrsv2_bin,
                          parameterized_csrsv2_bin,
@@ -177,5 +182,6 @@ INSTANTIATE_TEST_SUITE_P(csrsv2_bin,
                                           testing::ValuesIn(csrsv2_op_range),
                                           testing::ValuesIn(csrsv2_diag_range),
                                           testing::ValuesIn(csrsv2_fill_range),
+                                          testing::ValuesIn(csrsv2_policy_range),
                                           testing::ValuesIn(csrsv2_bin)));
 #endif

@@ -70,14 +70,8 @@ void testing_bsrmv_bad_arg(void)
     T*   dx   = (T*)dx_managed.get();
     T*   dy   = (T*)dy_managed.get();
 
-    if(!dval || !dptr || !dcol || !dx || !dy)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
-
     // Test hipsparseXbsrmv
-    verify_hipsparse_status_invalid_handle(hipsparseXbsrmv(nullptr,
+    verify_hipsparse_status_invalid_handle(hipsparseXbsrmv((hipsparseHandle_t)nullptr,
                                                            dirA,
                                                            transA,
                                                            safe_size,
@@ -115,7 +109,7 @@ void testing_bsrmv_bad_arg(void)
                                                             safe_size,
                                                             safe_size,
                                                             &alpha,
-                                                            nullptr,
+                                                            (hipsparseMatDescr_t)nullptr,
                                                             dval,
                                                             dptr,
                                                             dcol,
@@ -149,7 +143,7 @@ void testing_bsrmv_bad_arg(void)
                                                             &alpha,
                                                             descr,
                                                             dval,
-                                                            nullptr,
+                                                            (int*)nullptr,
                                                             dcol,
                                                             safe_dim,
                                                             dx,
@@ -166,7 +160,7 @@ void testing_bsrmv_bad_arg(void)
                                                             descr,
                                                             dval,
                                                             dptr,
-                                                            nullptr,
+                                                            (int*)nullptr,
                                                             safe_dim,
                                                             dx,
                                                             &beta,
@@ -187,7 +181,7 @@ void testing_bsrmv_bad_arg(void)
                                                             (T*)nullptr,
                                                             &beta,
                                                             dy),
-                                            "Error: xy is nullptr");
+                                            "Error: x is nullptr");
     verify_hipsparse_status_invalid_pointer(hipsparseXbsrmv(handle,
                                                             dirA,
                                                             transA,
@@ -299,6 +293,8 @@ hipsparseStatus_t testing_bsrmv(Arguments argus)
     hipsparseIndexBase_t idx_base  = argus.baseA;
     hipsparseDirection_t dir       = argus.dirA;
     std::string          filename  = argus.filename;
+
+    std::cout << "m: " << m << " n: " << n << " block_dim: " << block_dim << " transA: " << transA << " idx_base: " << idx_base << " dir: " << dir << " filename: " << filename << std::endl;
 
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
     hipsparseHandle_t              handle = test_handle->handle;

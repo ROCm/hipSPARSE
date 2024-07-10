@@ -26,9 +26,9 @@
 
 #include <hipsparse.h>
 
-typedef std::tuple<int, int, double, double, hipsparseOperation_t, hipsparseIndexBase_t>
+typedef std::tuple<int, int, double, double, hipsparseOperation_t, hipsparseIndexBase_t, hipsparseSpMVAlg_t>
     spmv_csr_tuple;
-typedef std::tuple<double, double, hipsparseOperation_t, hipsparseIndexBase_t, std::string>
+typedef std::tuple<double, double, hipsparseOperation_t, hipsparseIndexBase_t, hipsparseSpMVAlg_t, std::string>
     spmv_csr_bin_tuple;
 
 int spmv_csr_M_range[] = {50};
@@ -40,6 +40,7 @@ std::vector<double> spmv_csr_beta_range  = {1.0};
 hipsparseOperation_t spmv_csr_transA_range[] = {HIPSPARSE_OPERATION_NON_TRANSPOSE};
 hipsparseIndexBase_t spmv_csr_idxbase_range[]
     = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+hipsparseSpMVAlg_t spmv_csr_alg_range[] = {HIPSPARSE_SPMV_ALG_DEFAULT};
 
 std::string spmv_csr_bin[] = {"nos1.bin",
                               "nos2.bin",
@@ -78,6 +79,7 @@ Arguments setup_spmv_csr_arguments(spmv_csr_tuple tup)
     arg.beta   = std::get<3>(tup);
     arg.transA = std::get<4>(tup);
     arg.baseA  = std::get<5>(tup);
+    arg.spmv_alg = std::get<6>(tup);
     arg.timing = 0;
     return arg;
 }
@@ -91,10 +93,11 @@ Arguments setup_spmv_csr_arguments(spmv_csr_bin_tuple tup)
     arg.beta   = std::get<1>(tup);
     arg.transA = std::get<2>(tup);
     arg.baseA  = std::get<3>(tup);
+    arg.spmv_alg = std::get<4>(tup);
     arg.timing = 0;
 
     // Determine absolute path of test matrix
-    std::string bin_file = std::get<4>(tup);
+    std::string bin_file = std::get<5>(tup);
 
     // Matrices are stored at the same path in matrices directory
     arg.filename = get_filename(bin_file);
@@ -164,7 +167,8 @@ INSTANTIATE_TEST_SUITE_P(spmv_csr,
                                           testing::ValuesIn(spmv_csr_alpha_range),
                                           testing::ValuesIn(spmv_csr_beta_range),
                                           testing::ValuesIn(spmv_csr_transA_range),
-                                          testing::ValuesIn(spmv_csr_idxbase_range)));
+                                          testing::ValuesIn(spmv_csr_idxbase_range),
+                                          testing::ValuesIn(spmv_csr_alg_range)));
 
 INSTANTIATE_TEST_SUITE_P(spmv_csr_bin,
                          parameterized_spmv_csr_bin,
@@ -172,5 +176,6 @@ INSTANTIATE_TEST_SUITE_P(spmv_csr_bin,
                                           testing::ValuesIn(spmv_csr_beta_range),
                                           testing::ValuesIn(spmv_csr_transA_range),
                                           testing::ValuesIn(spmv_csr_idxbase_range),
+                                          testing::ValuesIn(spmv_csr_alg_range),
                                           testing::ValuesIn(spmv_csr_bin)));
 #endif

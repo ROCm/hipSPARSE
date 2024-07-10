@@ -48,7 +48,7 @@ Arguments setup_gpsv_interleaved_batch_arguments(gpsv_interleaved_batch_tuple tu
     Arguments arg;
     arg.M           = std::get<0>(tup);
     arg.batch_count = std::get<1>(tup);
-    //arg.algo        = std::get<2>(tup);
+    arg.gpsv_alg        = std::get<2>(tup);
     arg.timing      = 0;
     return arg;
 }

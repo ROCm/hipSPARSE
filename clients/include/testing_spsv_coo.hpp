@@ -72,12 +72,6 @@ void testing_spsv_coo_bad_arg(void)
     float* dy   = (float*)dy_managed.get();
     void*  dbuf = (void*)dbuf_managed.get();
 
-    if(!dval || !drow || !dcol || !dx || !dy || !dbuf)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
-
     // SpSV structures
     hipsparseSpMatDescr_t A;
     hipsparseDnVecDescr_t x, y;
@@ -177,9 +171,10 @@ hipsparseStatus_t testing_spsv_coo(Arguments argus)
     hipsparseIndexBase_t idx_base = argus.baseA;
     hipsparseDiagType_t  diag     = argus.diag_type;
     hipsparseFillMode_t  uplo     = argus.fill_mode;
-    hipsparseSpSVAlg_t   alg      = HIPSPARSE_SPSV_ALG_DEFAULT;
+    hipsparseSpSVAlg_t   alg      = argus.spsv_alg;
+    std::string          filename = argus.filename;
 
-    std::string filename = argus.filename;
+    std::cout << "m: " << m << " n: " << n << " transA: " << transA << " idx_base: " << idx_base << " diag: " << diag << " uplo: " << uplo << " alg: " << alg << " filename: " << filename << std::endl;
 
     // Index and data type
     hipsparseIndexType_t typeI = getIndexType<I>();

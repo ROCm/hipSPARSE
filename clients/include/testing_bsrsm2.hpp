@@ -40,7 +40,7 @@ using namespace hipsparse_test;
 
 void testing_bsrsm2_bad_arg(void)
 {
-#ifdef __HIP_PLATFORM_AMD__
+#if(!defined(CUDART_VERSION))
     int   mb        = 100;
     int   nrhs      = 100;
     int   nnzb      = 100;
@@ -77,12 +77,6 @@ void testing_bsrsm2_bad_arg(void)
     float* dB   = (float*)dB_managed.get();
     float* dX   = (float*)dX_managed.get();
     void*  dbuf = (void*)dbuf_managed.get();
-
-    if(!dval || !dptr || !dcol || !dB || !dX || !dbuf)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
 
     // testing hipsparseXbsrsm2_bufferSize
     int size;
@@ -530,6 +524,8 @@ hipsparseStatus_t testing_bsrsm2(Arguments argus)
     hipsparseOperation_t transA    = argus.transA;
     hipsparseOperation_t transX    = argus.transB;
     std::string          filename  = argus.filename;
+
+    std::cout << "m: " << m << " nrhs: " << nrhs << " block_dim: " << block_dim << " dir: " << dir << " idx_base: " << idx_base << " transA: " << transA << " transX: " << transX << " filename: " << filename << std::endl;
 
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
     hipsparseHandle_t              handle = test_handle->handle;

@@ -75,12 +75,6 @@ void testing_spsm_coo_bad_arg(void)
     float* dC   = (float*)dC_managed.get();
     void*  dbuf = (void*)dbuf_managed.get();
 
-    if(!dval || !drow || !dcol || !dB || !dC || !dbuf)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
-
     // SpSM structures
     hipsparseSpMatDescr_t A;
     hipsparseDnVecDescr_t B, C;
@@ -200,9 +194,8 @@ hipsparseStatus_t testing_spsm_coo(Arguments argus)
     hipsparseIndexBase_t idx_base = argus.baseA;
     hipsparseDiagType_t  diag     = argus.diag_type;
     hipsparseFillMode_t  uplo     = argus.fill_mode;
-    hipsparseSpSMAlg_t   alg      = HIPSPARSE_SPSM_ALG_DEFAULT;
-
-    std::string filename = argus.filename;
+    hipsparseSpSMAlg_t   alg      = argus.spsm_alg;
+    std::string          filename = argus.filename;
 
 #if(defined(CUDART_VERSION))
     if(orderB != orderC)

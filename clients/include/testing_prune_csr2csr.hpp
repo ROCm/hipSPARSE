@@ -86,18 +86,9 @@ void testing_prune_csr2csr_bad_arg(void)
     T*   csr_val_C     = (T*)csr_val_C_managed.get();
     T*   temp_buffer   = (T*)temp_buffer_managed.get();
 
-    if(!csr_row_ptr_A || !csr_col_ind_A || !csr_val_A || !csr_row_ptr_C || !csr_col_ind_C
-       || !csr_val_C || !temp_buffer)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
-
-    { //
-        int local_ptr[2] = {0, 1};
-        CHECK_HIP_ERROR(hipMemcpy(
-            csr_row_ptr_C, local_ptr, sizeof(int) * (safe_size + 1), hipMemcpyHostToDevice));
-    } //
+    int local_ptr[2] = {0, 1};
+    CHECK_HIP_ERROR(hipMemcpy(
+        csr_row_ptr_C, local_ptr, sizeof(int) * (safe_size + 1), hipMemcpyHostToDevice));
 
 #if(!defined(CUDART_VERSION))
     // Test hipsparseXpruneCsr2csr_bufferSize
@@ -530,10 +521,12 @@ hipsparseStatus_t testing_prune_csr2csr(Arguments argus)
 {
     int                  M              = argus.M;
     int                  N              = argus.N;
-    T                    threshold      = static_cast<T>(argus.threshold);
+    T                    threshold      = make_DataType<T>(argus.threshold);
     hipsparseIndexBase_t csr_idx_base_A = argus.baseA;
     hipsparseIndexBase_t csr_idx_base_C = argus.baseB;
     std::string          filename       = argus.filename;
+
+    std::cout << "M: " << M << " N: " << N << " csr_idx_base_A: " << csr_idx_base_A << " csr_idx_base_C: " << csr_idx_base_C << " filename: " << filename << std::endl;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;

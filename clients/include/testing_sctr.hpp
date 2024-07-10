@@ -57,12 +57,6 @@ void testing_sctr_bad_arg(void)
     int* dx_ind = (int*)dx_ind_managed.get();
     T*   dy     = (T*)dy_managed.get();
 
-    if(!dx_ind || !dx_val || !dy)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
-
     verify_hipsparse_status_invalid_value(hipsparseXsctr(handle, -1, dx_val, dx_ind, dy, idx_base),
                                           "Error: nnz is invalid");
 
@@ -87,6 +81,8 @@ hipsparseStatus_t testing_sctr(Arguments argus)
     int                  N         = argus.N;
     int                  nnz       = argus.nnz;
     hipsparseIndexBase_t idx_base  = argus.baseA;
+
+    std::cout << "N: " << N << " nnz: " << nnz << " idx_base: " << idx_base << std::endl;
 
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
     hipsparseHandle_t              handle = test_handle->handle;

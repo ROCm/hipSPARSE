@@ -76,12 +76,6 @@ void testing_sparse_to_dense_csr_bad_arg(void)
     float*   dcsr_val     = (float*)dcsr_val_managed.get();
     void*    dbuf         = (void*)dbuf_managed.get();
 
-    if(!ddense_val || !dcsr_row_ptr || !dcsr_col_ind || !dcsr_val || !dbuf)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
-
     // Matrix structures
     hipsparseSpMatDescr_t matA;
     hipsparseDnVecDescr_t matB;
@@ -138,12 +132,12 @@ hipsparseStatus_t testing_sparse_to_dense_csr(Arguments argus)
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11020)
     J                           m        = argus.M;
     J                           n        = argus.N;
-    hipsparseIndexBase_t        idx_base = HIPSPARSE_INDEX_BASE_ZERO;
-    hipsparseSparseToDenseAlg_t alg      = HIPSPARSE_SPARSETODENSE_ALG_DEFAULT;
-    hipsparseOrder_t            order    = HIPSPARSE_ORDER_COL;
+    hipsparseIndexBase_t        idx_base = argus.baseA;
+    hipsparseSparseToDenseAlg_t alg      = argus.sparse2dense_alg;
+    hipsparseOrder_t            order    = argus.orderA;
+    std::string filename = argus.filename;
 
-    // Matrices are stored at the same path in matrices directory
-    std::string filename = get_filename("nos3.bin");
+    std::cout << "m: " << m << " n: " << n << " order: " << order << " idx_base: " << idx_base << " alg: " << alg << " filename: " << filename << std::endl;
 
     // Index and data type
     hipsparseIndexType_t typeI = getIndexType<I>();

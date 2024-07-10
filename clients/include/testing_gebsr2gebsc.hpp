@@ -74,18 +74,11 @@ void testing_gebsr2gebsc_bad_arg(void)
     int* bsc_col_ptr = (int*)bsc_col_ptr_managed.get();
     T*   bsc_val     = (T*)bsc_val_managed.get();
 
-    if(!bsr_row_ptr || !bsr_col_ind || !bsr_val || !bsc_row_ind || !bsc_col_ptr || !bsc_val)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
-    { //
-        int local_ptr[2] = {0, 1};
-        CHECK_HIP_ERROR(hipMemcpy(
-            bsr_row_ptr, local_ptr, sizeof(int) * (safe_size + 1), hipMemcpyHostToDevice));
-        CHECK_HIP_ERROR(hipMemcpy(
-            bsc_col_ptr, local_ptr, sizeof(int) * (safe_size + 1), hipMemcpyHostToDevice));
-    } //
+    int local_ptr[2] = {0, 1};
+    CHECK_HIP_ERROR(hipMemcpy(
+        bsr_row_ptr, local_ptr, sizeof(int) * (safe_size + 1), hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(
+        bsc_col_ptr, local_ptr, sizeof(int) * (safe_size + 1), hipMemcpyHostToDevice));
 
     size_t buffer_size;
     status = hipsparseXgebsr2gebsc_bufferSize<T>(nullptr,
@@ -446,6 +439,8 @@ hipsparseStatus_t testing_gebsr2gebsc(Arguments argus)
     hipsparseAction_t    action        = argus.action;
     hipsparseIndexBase_t base          = argus.baseA;
     std::string          filename      = argus.filename;
+
+    std::cout << "m: " << m << " n: " << n << " row_block_dim: " << row_block_dim << " col_block_dim: " << col_block_dim << " action: " << action << " base: " << base << " filename: " << filename << std::endl;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;

@@ -65,7 +65,6 @@ void testing_hybmv_bad_arg(void)
     T                    alpha     = 0.6;
     T                    beta      = 0.2;
     hipsparseOperation_t transA    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
-    hipsparseStatus_t    status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -88,61 +87,13 @@ void testing_hybmv_bad_arg(void)
     T* dx = (T*)dx_managed.get();
     T* dy = (T*)dy_managed.get();
 
-    if(!dx || !dy)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
-
-    // testing for(nullptr == dx)
-    {
-        T* dx_null = nullptr;
-
-        status = hipsparseXhybmv(handle, transA, &alpha, descr, hyb, dx_null, &beta, dy);
-        verify_hipsparse_status_invalid_pointer(status, "Error: dx is nullptr");
-    }
-    // testing for(nullptr == dy)
-    {
-        T* dy_null = nullptr;
-
-        status = hipsparseXhybmv(handle, transA, &alpha, descr, hyb, dx, &beta, dy_null);
-        verify_hipsparse_status_invalid_pointer(status, "Error: dy is nullptr");
-    }
-    // testing for(nullptr == d_alpha)
-    {
-        T* d_alpha_null = nullptr;
-
-        status = hipsparseXhybmv(handle, transA, d_alpha_null, descr, hyb, dx, &beta, dy);
-        verify_hipsparse_status_invalid_pointer(status, "Error: alpha is nullptr");
-    }
-    // testing for(nullptr == d_beta)
-    {
-        T* d_beta_null = nullptr;
-
-        status = hipsparseXhybmv(handle, transA, &alpha, descr, hyb, dx, d_beta_null, dy);
-        verify_hipsparse_status_invalid_pointer(status, "Error: beta is nullptr");
-    }
-    // testing for(nullptr == hyb)
-    {
-        hipsparseHybMat_t hyb_null = nullptr;
-
-        status = hipsparseXhybmv(handle, transA, &alpha, descr, hyb_null, dx, &beta, dy);
-        verify_hipsparse_status_invalid_pointer(status, "Error: descr is nullptr");
-    }
-    // testing for(nullptr == descr)
-    {
-        hipsparseMatDescr_t descr_null = nullptr;
-
-        status = hipsparseXhybmv(handle, transA, &alpha, descr_null, hyb, dx, &beta, dy);
-        verify_hipsparse_status_invalid_pointer(status, "Error: descr is nullptr");
-    }
-    // testing for(nullptr == handle)
-    {
-        hipsparseHandle_t handle_null = nullptr;
-
-        status = hipsparseXhybmv(handle_null, transA, &alpha, descr, hyb, dx, &beta, dy);
-        verify_hipsparse_status_invalid_handle(status);
-    }
+    verify_hipsparse_status_invalid_pointer(hipsparseXhybmv(handle, transA, &alpha, descr, hyb, (T*)nullptr, &beta, dy), "Error: dx is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXhybmv(handle, transA, &alpha, descr, hyb, dx, &beta, (T*)nullptr), "Error: dy is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXhybmv(handle, transA, (T*)nullptr, descr, hyb, dx, &beta, dy), "Error: alpha is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXhybmv(handle, transA, &alpha, descr, hyb, dx, (T*)nullptr, dy), "Error: beta is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXhybmv(handle, transA, &alpha, descr, (hipsparseHybMat_t)nullptr, dx, &beta, dy), "Error: descr is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXhybmv(handle, transA, &alpha, (hipsparseMatDescr_t)nullptr, hyb, dx, &beta, dy), "Error: descr is nullptr");
+    verify_hipsparse_status_invalid_handle(hipsparseXhybmv((hipsparseHandle_t)nullptr, transA, &alpha, descr, hyb, dx, &beta, dy));
 }
 
 template <typename T>
@@ -157,6 +108,8 @@ hipsparseStatus_t testing_hybmv(Arguments argus)
     hipsparseHybPartition_t part           = argus.part;
     int                     user_ell_width = argus.ell_width;
     std::string             filename       = argus.filename;
+
+    std::cout << "m: " << m << " n: " << n << " transA: " << transA << " idx_base: " << idx_base << " part: " << part << " user_ell_width: " << user_ell_width << " filename: " << filename << std::endl;
 
     T zero = make_DataType<T>(0.0);
     T one  = make_DataType<T>(1.0);

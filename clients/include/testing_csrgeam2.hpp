@@ -87,13 +87,6 @@ void testing_csrgeam2_bad_arg(void)
     T*    dCval   = (T*)dCval_managed.get();
     void* dbuffer = dbuf_managed.get();
 
-    if(!dAval || !dAptr || !dAcol || !dBval || !dBptr || !dBcol || !dCval || !dCptr || !dCcol
-       || !dbuffer)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
-
     const int        M = safe_size;
     std::vector<int> hcsr_row_ptr_C(M + 1);
     hcsr_row_ptr_C[0] = 0;
@@ -746,6 +739,8 @@ hipsparseStatus_t testing_csrgeam2(Arguments argus)
     std::string          filename   = argus.filename;
     T                    h_alpha    = make_DataType<T>(argus.alpha);
     T                    h_beta     = make_DataType<T>(argus.beta);
+
+    std::cout << "M: " << M << " N: " << N << " idx_base_A: " << idx_base_A << " idx_base_B: " << idx_base_B << " idx_base_C: " << idx_base_C << " filename: " << filename << std::endl;
 
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
     hipsparseHandle_t              handle = test_handle->handle;

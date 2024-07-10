@@ -75,12 +75,6 @@ void testing_bsrxmv_bad_arg(void)
     T*   dx        = (T*)dx_managed.get();
     T*   dy        = (T*)dy_managed.get();
 
-    if(!dval || !dptr || !dcol || !dx || !dy || !dend_ptr)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
-
     // Test hipsparseXbsrxmv
     verify_hipsparse_status_invalid_handle(hipsparseXbsrxmv(nullptr,
                                                             dirA,

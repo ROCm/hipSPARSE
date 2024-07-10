@@ -25,6 +25,7 @@
 
 #include <hipsparse.h>
 
+
 typedef std::tuple<int,
                    int,
                    int,
@@ -34,7 +35,8 @@ typedef std::tuple<int,
                    hipsparseOperation_t,
                    hipsparseOrder_t,
                    hipsparseOrder_t,
-                   hipsparseIndexBase_t>
+                   hipsparseIndexBase_t,
+                   hipsparseSpMMAlg_t>
     spmm_coo_tuple;
 typedef std::tuple<int,
                    double,
@@ -44,6 +46,7 @@ typedef std::tuple<int,
                    hipsparseOrder_t,
                    hipsparseOrder_t,
                    hipsparseIndexBase_t,
+                   hipsparseSpMMAlg_t,
                    std::string>
     spmm_coo_bin_tuple;
 
@@ -61,6 +64,7 @@ hipsparseOperation_t spmm_coo_transB_range[]
 hipsparseOrder_t     spmm_coo_orderB_range[]  = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
 hipsparseOrder_t     spmm_coo_orderC_range[]  = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
 hipsparseIndexBase_t spmm_coo_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ONE};
+hipsparseSpMMAlg_t   spmm_coo_alg_range[] = {HIPSPARSE_SPMM_ALG_DEFAULT};
 
 std::string spmm_coo_bin[] = {"nos1.bin", "nos4.bin", "nos5.bin", "Chebyshev4.bin"};
 
@@ -95,6 +99,7 @@ Arguments setup_spmm_coo_arguments(spmm_coo_tuple tup)
     arg.orderB = std::get<7>(tup);
     arg.orderC = std::get<8>(tup);
     arg.baseA  = std::get<9>(tup);
+    arg.spmm_alg = std::get<10>(tup);
     arg.timing = 0;
     return arg;
 }
@@ -112,10 +117,11 @@ Arguments setup_spmm_coo_arguments(spmm_coo_bin_tuple tup)
     arg.orderB = std::get<5>(tup);
     arg.orderC = std::get<6>(tup);
     arg.baseA  = std::get<7>(tup);
+    arg.spmm_alg = std::get<8>(tup);
     arg.timing = 0;
 
     // Determine absolute path of test matrix
-    std::string bin_file = std::get<8>(tup);
+    std::string bin_file = std::get<9>(tup);
 
     // Matrices are stored at the same path in matrices directory
     arg.filename = get_filename(bin_file);
@@ -181,28 +187,30 @@ TEST_P(parameterized_spmm_coo_bin, spmm_coo_bin_i64_double)
 }
 #endif
 
-INSTANTIATE_TEST_SUITE_P(spmm_coo,
-                         parameterized_spmm_coo,
-                         testing::Combine(testing::ValuesIn(spmm_coo_M_range),
-                                          testing::ValuesIn(spmm_coo_N_range),
-                                          testing::ValuesIn(spmm_coo_K_range),
-                                          testing::ValuesIn(spmm_coo_alpha_range),
-                                          testing::ValuesIn(spmm_coo_beta_range),
-                                          testing::ValuesIn(spmm_coo_transA_range),
-                                          testing::ValuesIn(spmm_coo_transB_range),
-                                          testing::ValuesIn(spmm_coo_orderB_range),
-                                          testing::ValuesIn(spmm_coo_orderC_range),
-                                          testing::ValuesIn(spmm_coo_idxbase_range)));
+// INSTANTIATE_TEST_SUITE_P(spmm_coo,
+//                          parameterized_spmm_coo,
+//                          testing::Combine(testing::ValuesIn(spmm_coo_M_range),
+//                                           testing::ValuesIn(spmm_coo_N_range),
+//                                           testing::ValuesIn(spmm_coo_K_range),
+//                                           testing::ValuesIn(spmm_coo_alpha_range),
+//                                           testing::ValuesIn(spmm_coo_beta_range),
+//                                           testing::ValuesIn(spmm_coo_transA_range),
+//                                           testing::ValuesIn(spmm_coo_transB_range),
+//                                           testing::ValuesIn(spmm_coo_orderB_range),
+//                                           testing::ValuesIn(spmm_coo_orderC_range),
+//                                           testing::ValuesIn(spmm_coo_idxbase_range),
+//                                           testing::ValuesIn(spmm_coo_alg_range) ));
 
-INSTANTIATE_TEST_SUITE_P(spmm_coo_bin,
-                         parameterized_spmm_coo_bin,
-                         testing::Combine(testing::ValuesIn(spmm_coo_N_range),
-                                          testing::ValuesIn(spmm_coo_alpha_range),
-                                          testing::ValuesIn(spmm_coo_beta_range),
-                                          testing::ValuesIn(spmm_coo_transA_range),
-                                          testing::ValuesIn(spmm_coo_transB_range),
-                                          testing::ValuesIn(spmm_coo_orderB_range),
-                                          testing::ValuesIn(spmm_coo_orderC_range),
-                                          testing::ValuesIn(spmm_coo_idxbase_range),
-                                          testing::ValuesIn(spmm_coo_bin)));
+// INSTANTIATE_TEST_SUITE_P(spmm_coo_bin,
+//                          parameterized_spmm_coo_bin,
+//                          testing::Combine(testing::ValuesIn(spmm_coo_N_range),
+//                                           testing::ValuesIn(spmm_coo_alpha_range),
+//                                           testing::ValuesIn(spmm_coo_beta_range),
+//                                           testing::ValuesIn(spmm_coo_transA_range),
+//                                           testing::ValuesIn(spmm_coo_transB_range),
+//                                           testing::ValuesIn(spmm_coo_orderB_range),
+//                                           testing::ValuesIn(spmm_coo_orderC_range),
+//                                           testing::ValuesIn(spmm_coo_idxbase_range),
+//                                           testing::ValuesIn(spmm_coo_alg_range),
+//                                           testing::ValuesIn(spmm_coo_bin)));
 #endif

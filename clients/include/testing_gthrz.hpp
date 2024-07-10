@@ -45,7 +45,6 @@ void testing_gthrz_bad_arg(void)
     int safe_size = 100;
 
     hipsparseIndexBase_t idx_base = HIPSPARSE_INDEX_BASE_ZERO;
-    hipsparseStatus_t    status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -58,41 +57,11 @@ void testing_gthrz_bad_arg(void)
     int* dx_ind = (int*)dx_ind_managed.get();
     T*   dy     = (T*)dy_managed.get();
 
-    if(!dx_ind || !dx_val || !dy)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
-
 #if(!defined(CUDART_VERSION))
-    // testing for(nullptr == dx_ind)
-    {
-        int* dx_ind_null = nullptr;
-
-        status = hipsparseXgthrz(handle, nnz, dy, dx_val, dx_ind_null, idx_base);
-        verify_hipsparse_status_invalid_pointer(status, "Error: x_ind is nullptr");
-    }
-    // testing for(nullptr == dx_val)
-    {
-        T* dx_val_null = nullptr;
-
-        status = hipsparseXgthrz(handle, nnz, dy, dx_val_null, dx_ind, idx_base);
-        verify_hipsparse_status_invalid_pointer(status, "Error: x_val is nullptr");
-    }
-    // testing for(nullptr == dy)
-    {
-        T* dy_null = nullptr;
-
-        status = hipsparseXgthrz(handle, nnz, dy_null, dx_val, dx_ind, idx_base);
-        verify_hipsparse_status_invalid_pointer(status, "Error: y is nullptr");
-    }
-    // testing for(nullptr == handle)
-    {
-        hipsparseHandle_t handle_null = nullptr;
-
-        status = hipsparseXgthrz(handle_null, nnz, dy, dx_val, dx_ind, idx_base);
-        verify_hipsparse_status_invalid_handle(status);
-    }
+    verify_hipsparse_status_invalid_pointer(hipsparseXgthrz(handle, nnz, dy, dx_val, (int*)nullptr, idx_base), "Error: x_ind is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXgthrz(handle, nnz, dy, (T*)nullptr, dx_ind, idx_base), "Error: x_val is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXgthrz(handle, nnz, (T*)nullptr, dx_val, dx_ind, idx_base), "Error: y is nullptr");
+    verify_hipsparse_status_invalid_handle(hipsparseXgthrz((hipsparseHandle_t)nullptr, nnz, dy, dx_val, dx_ind, idx_base));
 #endif
 }
 
@@ -103,6 +72,8 @@ hipsparseStatus_t testing_gthrz(Arguments argus)
     int                  N        = argus.N;
     int                  nnz      = argus.nnz;
     hipsparseIndexBase_t idx_base = argus.baseA;
+
+    std::cout << "N: " << N << " nnz: " << nnz << " idx_base: " << idx_base << std::endl;
 
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
     hipsparseHandle_t              handle = test_handle->handle;

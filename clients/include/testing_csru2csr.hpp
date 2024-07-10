@@ -69,12 +69,6 @@ void testing_csru2csr_bad_arg(void)
     float* csr_val     = (float*)csr_val_managed.get();
     void*  buffer      = (void*)buffer_managed.get();
 
-    if(!csr_row_ptr || !csr_col_ind || !csr_val || !buffer)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
-
     // Testing csru2csr_bufferSizeExt for bad args
 #ifndef __HIP_PLATFORM_NVIDIA__
     // cusparse seem to not have any error checking
@@ -254,6 +248,8 @@ hipsparseStatus_t testing_csru2csr(Arguments argus)
     int                  n        = argus.N;
     hipsparseIndexBase_t idx_base = argus.baseA;
     std::string          filename = argus.filename;
+
+    std::cout << "m: " << m << " n: " << n << " idx_base: " << idx_base << " filename: " << filename << std::endl;
 
     // hipSPARSE handle
     std::unique_ptr<handle_struct> test_handle(new handle_struct);

@@ -86,20 +86,11 @@ void testing_gebsr2gebsr_bad_arg(void)
     T*   bsr_val_C     = (T*)bsr_val_C_managed.get();
     T*   temp_buffer   = (T*)temp_buffer_managed.get();
 
-    if(!bsr_row_ptr_A || !bsr_col_ind_A || !bsr_val_A || !bsr_row_ptr_C || !bsr_col_ind_C
-       || !bsr_val_C || !temp_buffer)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
-
-    { // copy
-        int local_ptr[2] = {0, 1};
-        CHECK_HIP_ERROR(hipMemcpy(
-            bsr_row_ptr_A, local_ptr, sizeof(int) * (safe_size + 1), hipMemcpyHostToDevice));
-        CHECK_HIP_ERROR(hipMemcpy(
-            bsr_row_ptr_C, local_ptr, sizeof(int) * (safe_size + 1), hipMemcpyHostToDevice));
-    } //
+    int local_ptr[2] = {0, 1};
+    CHECK_HIP_ERROR(hipMemcpy(
+        bsr_row_ptr_A, local_ptr, sizeof(int) * (safe_size + 1), hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(
+        bsr_row_ptr_C, local_ptr, sizeof(int) * (safe_size + 1), hipMemcpyHostToDevice));
 
     // Testing hipsparseXgebsr2gebsr_bufferSize()
 
@@ -916,6 +907,8 @@ hipsparseStatus_t testing_gebsr2gebsr(Arguments argus)
     hipsparseIndexBase_t idx_base_C      = argus.baseB;
     hipsparseDirection_t dir             = argus.dirA;
     std::string          filename        = argus.filename;
+
+    std::cout << "m: " << m << " n: " << n << " row_block_dim_A: " << row_block_dim_A << " col_block_dim_A: " << col_block_dim_A << " row_block_dim_C: " << row_block_dim_C << " col_block_dim_C: " << col_block_dim_C << " idx_base_A: " << idx_base_A << " idx_base_C: " << idx_base_C << " dir: " << dir << " filename: " << filename << std::endl;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;

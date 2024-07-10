@@ -64,12 +64,6 @@ void testing_gemvi_bad_arg(void)
     int*   xInd = (int*)xInd_managed.get();
     float* y    = (float*)y_managed.get();
 
-    if(!A || !xInd || !x || !y)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
-
     // cusparse has error checks for this function at all
 #if(!defined(CUDART_VERSION))
     // gemvi bufferSize - buffer size is currently not doing anything
@@ -156,6 +150,8 @@ hipsparseStatus_t testing_gemvi(Arguments argus)
     hipsparseOperation_t trans    = argus.transA;
     hipsparseIndexBase_t idxBase  = argus.baseA;
     std::string          filename = argus.filename;
+
+    std::cout << "m: " << m << " n: " << n << " nnz: " << nnz << " trans: " << trans << " idxBase: " << idxBase << " filename: " << filename << std::endl;
 
     int lda = m;
 

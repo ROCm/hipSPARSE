@@ -46,7 +46,7 @@ void testing_csr2coo_bad_arg(void)
     int               m         = 100;
     int               nnz       = 100;
     int               safe_size = 100;
-    hipsparseStatus_t status;
+    hipsparseIndexBase_t idx_base = HIPSPARSE_INDEX_BASE_ZERO;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -59,36 +59,12 @@ void testing_csr2coo_bad_arg(void)
     int* csr_row_ptr = (int*)csr_row_ptr_managed.get();
     int* coo_row_ind = (int*)coo_row_ind_managed.get();
 
-    if(!csr_row_ptr || !coo_row_ind)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
-
-    // Testing for(csr_row_ptr == nullptr)
-    {
-        int* csr_row_ptr_null = nullptr;
-
-        status = hipsparseXcsr2coo(
-            handle, csr_row_ptr_null, nnz, m, coo_row_ind, HIPSPARSE_INDEX_BASE_ZERO);
-        verify_hipsparse_status_invalid_pointer(status, "Error: csr_row_ptr is nullptr");
-    }
-    // Testing for(coo_row_ind == nullptr)
-    {
-        int* coo_row_ind_null = nullptr;
-
-        status = hipsparseXcsr2coo(
-            handle, csr_row_ptr, nnz, m, coo_row_ind_null, HIPSPARSE_INDEX_BASE_ZERO);
-        verify_hipsparse_status_invalid_pointer(status, "Error: coo_row_ind is nullptr");
-    }
-    // Testing for(handle == nullptr)
-    {
-        hipsparseHandle_t handle_null = nullptr;
-
-        status = hipsparseXcsr2coo(
-            handle_null, csr_row_ptr, nnz, m, coo_row_ind, HIPSPARSE_INDEX_BASE_ZERO);
-        verify_hipsparse_status_invalid_handle(status);
-    }
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsr2coo(
+            handle, (int*)nullptr, nnz, m, coo_row_ind, idx_base), "Error: csr_row_ptr is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsr2coo(
+        handle, csr_row_ptr, nnz, m, (int*)nullptr, idx_base), "Error: coo_row_ind is nullptr");
+    verify_hipsparse_status_invalid_handle(hipsparseXcsr2coo(
+        (hipsparseHandle_t)nullptr, csr_row_ptr, nnz, m, coo_row_ind, idx_base));
 #endif
 }
 
@@ -99,6 +75,8 @@ hipsparseStatus_t testing_csr2coo(Arguments argus)
     int                  n        = argus.N;
     hipsparseIndexBase_t idx_base = argus.baseA;
     std::string          filename = argus.filename;
+
+    std::cout << "m: " << m << " n: " << n << " idx_base: " << idx_base << " filename: " << filename << std::endl;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;

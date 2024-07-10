@@ -82,6 +82,7 @@ struct Arguments
     hipsparseHybPartition_t part;
     hipsparseDiagType_t     diag_type;
     hipsparseFillMode_t     fill_mode;
+    hipsparseSolvePolicy_t  solve_policy;
 
     hipsparseDirection_t dirA;
     hipsparseOrder_t     orderA;
@@ -89,6 +90,16 @@ struct Arguments
     hipsparseOrder_t     orderC;
     hipsparseFormat_t    formatA;
     hipsparseFormat_t    formatB;
+
+    hipsparseCsr2CscAlg_t csr2csc_alg;
+    hipsparseDenseToSparseAlg_t dense2sparse_alg;
+    hipsparseSparseToDenseAlg_t sparse2dense_alg;
+    hipsparseSDDMMAlg_t sddmm_alg;
+    hipsparseSpGEMMAlg_t spgemm_alg;
+    hipsparseSpMMAlg_t spmm_alg;
+    hipsparseSpMVAlg_t spmv_alg;
+    hipsparseSpSMAlg_t spsm_alg;
+    hipsparseSpSVAlg_t spsv_alg;
    
     int    numericboost;
     double boosttol;
@@ -97,6 +108,8 @@ struct Arguments
 
     int ell_width;
     int permute;
+    int gtsv_alg;
+    int gpsv_alg;
 
     int unit_check;
     int timing;
@@ -145,6 +158,7 @@ struct Arguments
         this->part = HIPSPARSE_HYB_PARTITION_AUTO;
         this->diag_type = HIPSPARSE_DIAG_TYPE_NON_UNIT;
         this->fill_mode = HIPSPARSE_FILL_MODE_LOWER;
+        this->solve_policy = HIPSPARSE_SOLVE_POLICY_NO_LEVEL;
 
         this->dirA = HIPSPARSE_DIRECTION_ROW;
         this->orderA = HIPSPARSE_ORDER_COL;
@@ -152,7 +166,17 @@ struct Arguments
         this->orderC = HIPSPARSE_ORDER_COL;
         this->formatA = HIPSPARSE_FORMAT_COO;
         this->formatB = HIPSPARSE_FORMAT_COO;
-    
+
+        this->csr2csc_alg = HIPSPARSE_CSR2CSC_ALG1;
+        this->dense2sparse_alg = HIPSPARSE_DENSETOSPARSE_ALG_DEFAULT;
+        this->sparse2dense_alg = HIPSPARSE_SPARSETODENSE_ALG_DEFAULT;
+        this->sddmm_alg = HIPSPARSE_SDDMM_ALG_DEFAULT;
+        this->spgemm_alg = HIPSPARSE_SPGEMM_DEFAULT;
+        this->spmm_alg = HIPSPARSE_SPMM_ALG_DEFAULT;
+        this->spmv_alg = HIPSPARSE_SPMV_ALG_DEFAULT;
+        this->spsm_alg = HIPSPARSE_SPSM_ALG_DEFAULT;
+        this->spsv_alg = HIPSPARSE_SPSV_ALG_DEFAULT;
+
         this->numericboost = 0;
         this->boosttol = 0.0;
         this->boostval = 1.0;
@@ -160,6 +184,8 @@ struct Arguments
 
         this->ell_width = 0;
         this->permute = 0;
+        this->gtsv_alg = 0;
+        this->gpsv_alg = 0;
 
         this->unit_check = 1;
         this->timing = 0;

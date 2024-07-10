@@ -33,9 +33,10 @@ typedef hipsparseIndexBase_t base;
 typedef hipsparseOperation_t op;
 typedef hipsparseDiagType_t  diag;
 typedef hipsparseFillMode_t  fill;
+typedef hipsparseSolvePolicy_t policy;
 
-typedef std::tuple<int, double, base, int, dir, op, diag, fill>         bsrsv2_tuple;
-typedef std::tuple<double, base, int, dir, op, diag, fill, std::string> bsrsv2_bin_tuple;
+typedef std::tuple<int, double, base, int, dir, op, diag, fill, policy>         bsrsv2_tuple;
+typedef std::tuple<double, base, int, dir, op, diag, fill, policy, std::string> bsrsv2_bin_tuple;
 
 int bsrsv2_M_range[]   = {0, 647};
 int bsrsv2_dim_range[] = {1, 3, 9};
@@ -47,6 +48,7 @@ dir  bsrsv2_dir_range[]     = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COLU
 op   bsrsv2_op_range[]      = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPERATION_TRANSPOSE};
 diag bsrsv2_diag_range[]    = {HIPSPARSE_DIAG_TYPE_NON_UNIT};
 fill bsrsv2_fill_range[]    = {HIPSPARSE_FILL_MODE_LOWER, HIPSPARSE_FILL_MODE_UPPER};
+policy bsrsv2_policy_range[] = {HIPSPARSE_SOLVE_POLICY_NO_LEVEL, HIPSPARSE_SOLVE_POLICY_USE_LEVEL};
 
 std::string bsrsv2_bin[] = {"nos2.bin", "nos4.bin", "nos5.bin", "nos6.bin"};
 
@@ -79,6 +81,7 @@ Arguments setup_bsrsv2_arguments(bsrsv2_tuple tup)
     arg.transA    = std::get<5>(tup);
     arg.diag_type = std::get<6>(tup);
     arg.fill_mode = std::get<7>(tup);
+    arg.solve_policy = std::get<8>(tup);
     arg.timing    = 0;
     return arg;
 }
@@ -94,10 +97,11 @@ Arguments setup_bsrsv2_arguments(bsrsv2_bin_tuple tup)
     arg.transA    = std::get<4>(tup);
     arg.diag_type = std::get<5>(tup);
     arg.fill_mode = std::get<6>(tup);
+    arg.solve_policy = std::get<7>(tup);
     arg.timing    = 0;
 
     // Determine absolute path of test matrix
-    std::string bin_file = std::get<7>(tup);
+    std::string bin_file = std::get<8>(tup);
 
     // Matrices are stored at the same path in matrices directory
     arg.filename = get_filename(bin_file);
@@ -169,7 +173,8 @@ INSTANTIATE_TEST_SUITE_P(bsrsv2,
                                           testing::ValuesIn(bsrsv2_dir_range),
                                           testing::ValuesIn(bsrsv2_op_range),
                                           testing::ValuesIn(bsrsv2_diag_range),
-                                          testing::ValuesIn(bsrsv2_fill_range)));
+                                          testing::ValuesIn(bsrsv2_fill_range),
+                                          testing::ValuesIn(bsrsv2_policy_range)));
 
 INSTANTIATE_TEST_SUITE_P(bsrsv2_bin,
                          parameterized_bsrsv2_bin,
@@ -180,5 +185,6 @@ INSTANTIATE_TEST_SUITE_P(bsrsv2_bin,
                                           testing::ValuesIn(bsrsv2_op_range),
                                           testing::ValuesIn(bsrsv2_diag_range),
                                           testing::ValuesIn(bsrsv2_fill_range),
+                                          testing::ValuesIn(bsrsv2_policy_range),
                                           testing::ValuesIn(bsrsv2_bin)));
 #endif

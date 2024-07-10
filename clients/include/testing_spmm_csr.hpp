@@ -88,12 +88,6 @@ void testing_spmm_csr_bad_arg(void)
     float*   dC   = (float*)dC_managed.get();
     void*    dbuf = (void*)dbuf_managed.get();
 
-    if(!dval || !dptr || !dcol || !dB || !dC || !dbuf)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
-
     // SpMM structures
     hipsparseSpMatDescr_t A;
     hipsparseDnMatDescr_t B, C;
@@ -210,14 +204,14 @@ hipsparseStatus_t testing_spmm_csr(Arguments argus)
     hipsparseOrder_t     orderB   = argus.orderB;
     hipsparseOrder_t     orderC   = argus.orderC;
     hipsparseIndexBase_t idx_base = argus.baseA;
+    hipsparseSpMMAlg_t   alg      = argus.spmm_alg;
+    std::string          filename = argus.filename;
 
-#if(CUDART_VERSION >= 11003)
-    hipsparseSpMMAlg_t alg = HIPSPARSE_SPMM_CSR_ALG1;
-#else
-    hipsparseSpMMAlg_t alg = HIPSPARSE_MM_ALG_DEFAULT;
-#endif
-
-    std::string filename = argus.filename;
+// #if(CUDART_VERSION >= 11003)
+//     hipsparseSpMMAlg_t alg = HIPSPARSE_SPMM_CSR_ALG1;
+// #else
+//     hipsparseSpMMAlg_t alg = HIPSPARSE_MM_ALG_DEFAULT;
+// #endif
 
 #if(defined(CUDART_VERSION))
     if(orderB != orderC || orderB != HIPSPARSE_ORDER_COL)

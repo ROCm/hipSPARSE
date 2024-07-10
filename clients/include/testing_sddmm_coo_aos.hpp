@@ -78,12 +78,6 @@ void testing_sddmm_coo_aos_bad_arg(void)
     float*   dA      = (float*)dA_managed.get();
     void*    dbuf    = (void*)dbuf_managed.get();
 
-    if(!dval || !drowcol || !dB || !dA || !dbuf)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
-
     // SDDMM structures
     hipsparseDnMatDescr_t A, B;
     hipsparseSpMatDescr_t C;
@@ -200,8 +194,10 @@ hipsparseStatus_t testing_sddmm_coo_aos(Arguments argus)
     hipsparseOperation_t transB   = argus.transB;
     hipsparseOrder_t     order    = argus.orderA;
     hipsparseIndexBase_t idx_base = argus.baseA;
-    hipsparseSDDMMAlg_t  alg      = HIPSPARSE_SDDMM_ALG_DEFAULT;
+    hipsparseSDDMMAlg_t  alg      = argus.sddmm_alg;
     std::string          filename = argus.filename;
+
+    std::cout << "m: " << m << " n: " << n << " k: " << k << " transA: " << transA << " transB: " << transB << " order: " << order << " idx_base: " << idx_base << " alg: " << alg << " filename: " << filename << std::endl;
 
     // Index and data type
     hipsparseIndexType_t typeI = getIndexType<I>();

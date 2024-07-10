@@ -44,6 +44,8 @@
 #include <hip/hip_complex.h>
 #include <hip/hip_runtime.h>
 
+#define INSTANTIATE_TEST_SUITE_P INSTANTIATE_TEST_CASE_P
+
 /// \cond DO_NOT_DOCUMENT
 #define DEPRECATED_CUDA_12000(warning)
 #define DEPRECATED_CUDA_11000(warning)

@@ -58,12 +58,6 @@ void testing_scatter_bad_arg(void)
     int*   dx_ind = (int*)dx_ind_managed.get();
     float* dy     = (float*)dy_managed.get();
 
-    if(!dx_ind || !dx_val || !dy)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
-
     // Structures
     hipsparseSpVecDescr_t x;
     hipsparseDnVecDescr_t y;
@@ -93,6 +87,8 @@ hipsparseStatus_t testing_scatter(Arguments argus)
     I nnz  = argus.nnz;
 
     hipsparseIndexBase_t idxBase = argus.baseA;
+
+    std::cout << "size: " << size << " nnz: " << nnz << " idxBase: " << idxBase << std::endl;
 
     // Index and data type
     hipsparseIndexType_t idxType  = getIndexType<I>();

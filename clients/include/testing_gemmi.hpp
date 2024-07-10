@@ -62,12 +62,6 @@ void testing_gemmi_bad_arg(void)
     T*   dA   = (T*)dA_managed.get();
     T*   dC   = (T*)dC_managed.get();
 
-    if(!dval || !dptr || !drow || !dA || !dC)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
-
     verify_hipsparse_status_invalid_handle(hipsparseXgemmi<T>(nullptr,
                                                               safe_size,
                                                               safe_size,
@@ -290,6 +284,8 @@ hipsparseStatus_t testing_gemmi(Arguments argus)
     T           h_alpha  = make_DataType<T>(argus.alpha);
     T           h_beta   = make_DataType<T>(argus.beta);
     std::string filename = argus.filename;
+
+    std::cout << "M: " << M << " N: " << N << " K: " << K << " filename: " << filename << std::endl;
 
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
     hipsparseHandle_t              handle = test_handle->handle;

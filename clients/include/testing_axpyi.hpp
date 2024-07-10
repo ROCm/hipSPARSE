@@ -47,7 +47,6 @@ void testing_axpyi_bad_arg(void)
     T   alpha     = 0.6;
 
     hipsparseIndexBase_t idx_base = HIPSPARSE_INDEX_BASE_ZERO;
-    hipsparseStatus_t    status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -60,62 +59,20 @@ void testing_axpyi_bad_arg(void)
     int* dxInd = (int*)dxInd_managed.get();
     T*   dy    = (T*)dy_managed.get();
 
-    if(!dxInd || !dxVal || !dy)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
-
     verify_hipsparse_status_invalid_pointer(
-        hipsparseXaxpyi(handle, nnz, &alpha, dxVal, nullptr, dy, idx_base),
+        hipsparseXaxpyi(handle, nnz, &alpha, dxVal, (int*)nullptr, dy, idx_base),
         "Error: xInd is nullptr");
     verify_hipsparse_status_invalid_pointer(
-        hipsparseXaxpyi(handle, nnz, &alpha, nullptr, dxInd, dy, idx_base),
+        hipsparseXaxpyi(handle, nnz, &alpha, (T*)nullptr, dxInd, dy, idx_base),
         "Error: xVal is nullptr");
     verify_hipsparse_status_invalid_pointer(
-        hipsparseXaxpyi(handle, nnz, &alpha, dxVal, dxInd, nullptr, idx_base),
+        hipsparseXaxpyi(handle, nnz, &alpha, dxVal, dxInd, (T*)nullptr, idx_base),
         "Error: y is nullptr");
     verify_hipsparse_status_invalid_pointer(
-        hipsparseXaxpyi(handle, nnz, d_alpha_null, dxVal, dxInd, dy, idx_base),
+        hipsparseXaxpyi(handle, nnz, (T*)nullptr, dxVal, dxInd, dy, idx_base),
         "Error: alpha is nullptr");
     verify_hipsparse_status_invalid_handle(
-        hipsparseXaxpyi(nullptr, nnz, &alpha, dxVal, dxInd, dy, idx_base));
-
-    // // testing for(nullptr == dxInd)
-    // {
-    //     int* dxInd_null = nullptr;
-
-    //     status = hipsparseXaxpyi(handle, nnz, &alpha, dxVal, dxInd_null, dy, idx_base);
-    //     verify_hipsparse_status_invalid_pointer(status, "Error: xInd is nullptr");
-    // }
-    // // testing for(nullptr == dxVal)
-    // {
-    //     T* dxVal_null = nullptr;
-
-    //     status = hipsparseXaxpyi(handle, nnz, &alpha, dxVal_null, dxInd, dy, idx_base);
-    //     verify_hipsparse_status_invalid_pointer(status, "Error: xVal is nullptr");
-    // }
-    // // testing for(nullptr == dy)
-    // {
-    //     T* dy_null = nullptr;
-
-    //     status = hipsparseXaxpyi(handle, nnz, &alpha, dxVal, dxInd, dy_null, idx_base);
-    //     verify_hipsparse_status_invalid_pointer(status, "Error: y is nullptr");
-    // }
-    // // testing for(nullptr == d_alpha)
-    // {
-    //     T* d_alpha_null = nullptr;
-
-    //     status = hipsparseXaxpyi(handle, nnz, d_alpha_null, dxVal, dxInd, dy, idx_base);
-    //     verify_hipsparse_status_invalid_pointer(status, "Error: alpha is nullptr");
-    // }
-    // // testing for(nullptr == handle)
-    // {
-    //     hipsparseHandle_t handle_null = nullptr;
-
-    //     status = hipsparseXaxpyi(handle_null, nnz, &alpha, dxVal, dxInd, dy, idx_base);
-    //     verify_hipsparse_status_invalid_handle(status);
-    // }
+        hipsparseXaxpyi((hipsparseHandle_t)nullptr, nnz, &alpha, dxVal, dxInd, dy, idx_base));
 #endif
 }
 
@@ -127,6 +84,8 @@ hipsparseStatus_t testing_axpyi(Arguments argus)
     int                  nnz      = argus.nnz;
     T                    h_alpha  = make_DataType<T>(argus.alpha);
     hipsparseIndexBase_t idx_base = argus.baseA;
+
+    std::cout << "N: " << N << " nnz: " << nnz << " idx_base: " << idx_base << std::endl;
 
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
     hipsparseHandle_t              handle = test_handle->handle;

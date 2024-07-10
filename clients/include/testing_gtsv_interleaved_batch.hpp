@@ -66,12 +66,6 @@ void testing_gtsv_interleaved_batch_bad_arg(void)
     T*    dx   = (T*)dx_managed.get();
     void* dbuf = (void*)dbuf_managed.get();
 
-    if(!ddl || !dd || !ddu || !dx || !dbuf)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
-
     size_t bsize;
 
     // gtsvInterleavedBatch_bufferSizeExt
@@ -126,7 +120,9 @@ hipsparseStatus_t testing_gtsv_interleaved_batch(Arguments argus)
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
     int m           = argus.M;
     int batch_count = argus.batch_count;
-    int algo        = 0;//argus.algo;
+    int algo        = argus.gtsv_alg;
+
+    std::cout << "m: " << m << " batch_count: " << batch_count << " algo: " << algo << std::endl;
 
     // hipSPARSE handle
     std::unique_ptr<handle_struct> test_handle(new handle_struct);

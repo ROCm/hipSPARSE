@@ -31,6 +31,8 @@
 #ifndef FLOPS_HPP
 #define FLOPS_HPP
 
+#include "hipsparse.h"
+
 // Compute gflops
 inline double get_gpu_gflops(double gpu_time_used, double gflop_count)
 {

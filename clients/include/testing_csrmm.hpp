@@ -54,7 +54,6 @@ void testing_csrmm_bad_arg(void)
     T                    beta      = 0.2;
     hipsparseOperation_t transA    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
     hipsparseOperation_t transB    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
-    hipsparseStatus_t    status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -73,9 +72,7 @@ void testing_csrmm_bad_arg(void)
     T*   dB           = (T*)dB_managed.get();
     T*   dC           = (T*)dC_managed.get();
 
-    // testing for M = -1
-    {
-        status = hipsparseXcsrmm2(handle,
+    verify_hipsparse_status_invalid_size(hipsparseXcsrmm2(handle,
                                   transA,
                                   transB,
                                   -1,
@@ -91,13 +88,8 @@ void testing_csrmm_bad_arg(void)
                                   ldb,
                                   &beta,
                                   dC,
-                                  ldc);
-        verify_hipsparse_status_invalid_size(status, "Error: M < 0");
-    }
-
-    // testing for N = -1
-    {
-        status = hipsparseXcsrmm2(handle,
+                                  ldc), "Error: M < 0");
+    verify_hipsparse_status_invalid_size(hipsparseXcsrmm2(handle,
                                   transA,
                                   transB,
                                   M,
@@ -113,13 +105,8 @@ void testing_csrmm_bad_arg(void)
                                   ldb,
                                   &beta,
                                   dC,
-                                  ldc);
-        verify_hipsparse_status_invalid_size(status, "Error: N < 0");
-    }
-
-    // testing for K = -1
-    {
-        status = hipsparseXcsrmm2(handle,
+                                  ldc), "Error: N < 0");
+    verify_hipsparse_status_invalid_size(hipsparseXcsrmm2(handle,
                                   transA,
                                   transB,
                                   M,
@@ -135,15 +122,8 @@ void testing_csrmm_bad_arg(void)
                                   ldb,
                                   &beta,
                                   dC,
-                                  ldc);
-        verify_hipsparse_status_invalid_size(status, "Error: K < 0");
-    }
-
-    // testing for(nullptr == dptr)
-    {
-        int* dptr_null = nullptr;
-
-        status = hipsparseXcsrmm2(handle,
+                                  ldc), "Error: K < 0");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsrmm2(handle,
                                   transA,
                                   transB,
                                   M,
@@ -153,20 +133,14 @@ void testing_csrmm_bad_arg(void)
                                   &alpha,
                                   descr,
                                   dval,
-                                  dptr_null,
+                                  (int*)nullptr,
                                   dcol,
                                   dB,
                                   ldb,
                                   &beta,
                                   dC,
-                                  ldc);
-        verify_hipsparse_status_invalid_pointer(status, "Error: dptr is nullptr");
-    }
-    // testing for(nullptr == dcol)
-    {
-        int* dcol_null = nullptr;
-
-        status = hipsparseXcsrmm2(handle,
+                                  ldc), "Error: dptr is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsrmm2(handle,
                                   transA,
                                   transB,
                                   M,
@@ -177,19 +151,13 @@ void testing_csrmm_bad_arg(void)
                                   descr,
                                   dval,
                                   dptr,
-                                  dcol_null,
+                                  (int*)nullptr,
                                   dB,
                                   ldb,
                                   &beta,
                                   dC,
-                                  ldc);
-        verify_hipsparse_status_invalid_pointer(status, "Error: dcol is nullptr");
-    }
-    // testing for(nullptr == dval)
-    {
-        T* dval_null = nullptr;
-
-        status = hipsparseXcsrmm2(handle,
+                                  ldc), "Error: dcol is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsrmm2(handle,
                                   transA,
                                   transB,
                                   M,
@@ -198,21 +166,15 @@ void testing_csrmm_bad_arg(void)
                                   nnz,
                                   &alpha,
                                   descr,
-                                  dval_null,
+                                  (T*)nullptr,
                                   dptr,
                                   dcol,
                                   dB,
                                   ldb,
                                   &beta,
                                   dC,
-                                  ldc);
-        verify_hipsparse_status_invalid_pointer(status, "Error: dval is nullptr");
-    }
-    // testing for(nullptr == dB)
-    {
-        T* dB_null = nullptr;
-
-        status = hipsparseXcsrmm2(handle,
+                                  ldc), "Error: dval is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsrmm2(handle,
                                   transA,
                                   transB,
                                   M,
@@ -224,18 +186,12 @@ void testing_csrmm_bad_arg(void)
                                   dval,
                                   dptr,
                                   dcol,
-                                  dB_null,
+                                  (T*)nullptr,
                                   ldb,
                                   &beta,
                                   dC,
-                                  ldc);
-        verify_hipsparse_status_invalid_pointer(status, "Error: dB is nullptr");
-    }
-    // testing for(nullptr == dC)
-    {
-        T* dC_null = nullptr;
-
-        status = hipsparseXcsrmm2(handle,
+                                  ldc), "Error: dB is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsrmm2(handle,
                                   transA,
                                   transB,
                                   M,
@@ -250,22 +206,16 @@ void testing_csrmm_bad_arg(void)
                                   dB,
                                   ldb,
                                   &beta,
-                                  dC_null,
-                                  ldc);
-        verify_hipsparse_status_invalid_pointer(status, "Error: dC is nullptr");
-    }
-    // testing for(nullptr == d_alpha)
-    {
-        T* d_alpha_null = nullptr;
-
-        status = hipsparseXcsrmm2(handle,
+                                  (T*)nullptr,
+                                  ldc), "Error: dC is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsrmm2(handle,
                                   transA,
                                   transB,
                                   M,
                                   N,
                                   K,
                                   nnz,
-                                  d_alpha_null,
+                                  (T*)nullptr,
                                   descr,
                                   dval,
                                   dptr,
@@ -274,14 +224,8 @@ void testing_csrmm_bad_arg(void)
                                   ldb,
                                   &beta,
                                   dC,
-                                  ldc);
-        verify_hipsparse_status_invalid_pointer(status, "Error: alpha is nullptr");
-    }
-    // testing for(nullptr == d_beta)
-    {
-        T* d_beta_null = nullptr;
-
-        status = hipsparseXcsrmm2(handle,
+                                  ldc), "Error: alpha is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsrmm2(handle,
                                   transA,
                                   transB,
                                   M,
@@ -295,16 +239,10 @@ void testing_csrmm_bad_arg(void)
                                   dcol,
                                   dB,
                                   ldb,
-                                  d_beta_null,
+                                  (T*)nullptr,
                                   dC,
-                                  ldc);
-        verify_hipsparse_status_invalid_pointer(status, "Error: beta is nullptr");
-    }
-    // testing for(nullptr == descr)
-    {
-        hipsparseMatDescr_t descr_null = nullptr;
-
-        status = hipsparseXcsrmm2(handle,
+                                  ldc), "Error: beta is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsrmm2(handle,
                                   transA,
                                   transB,
                                   M,
@@ -312,7 +250,7 @@ void testing_csrmm_bad_arg(void)
                                   K,
                                   nnz,
                                   &alpha,
-                                  descr_null,
+                                  (hipsparseMatDescr_t)nullptr,
                                   dval,
                                   dptr,
                                   dcol,
@@ -320,14 +258,8 @@ void testing_csrmm_bad_arg(void)
                                   ldb,
                                   &beta,
                                   dC,
-                                  ldc);
-        verify_hipsparse_status_invalid_pointer(status, "Error: descr is nullptr");
-    }
-    // testing for(nullptr == handle)
-    {
-        hipsparseHandle_t handle_null = nullptr;
-
-        status = hipsparseXcsrmm2(handle_null,
+                                  ldc), "Error: descr is nullptr");
+    verify_hipsparse_status_invalid_handle(hipsparseXcsrmm2((hipsparseHandle_t)nullptr,
                                   transA,
                                   transB,
                                   M,
@@ -343,9 +275,7 @@ void testing_csrmm_bad_arg(void)
                                   ldb,
                                   &beta,
                                   dC,
-                                  ldc);
-        verify_hipsparse_status_invalid_handle(status);
-    }
+                                  ldc));
 #endif
 }
 
@@ -361,6 +291,8 @@ hipsparseStatus_t testing_csrmm(Arguments argus)
     hipsparseOperation_t transB   = argus.transB;
     hipsparseIndexBase_t idx_base = argus.baseA;
     std::string          filename = argus.filename;
+
+    std::cout << "M: " << M << " N: " << N << " K: " << K << " transA: " << transA << " transB: " << transB << " idx_base: " << idx_base << " filename: " << filename << std::endl;
 
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
     hipsparseHandle_t              handle = test_handle->handle;

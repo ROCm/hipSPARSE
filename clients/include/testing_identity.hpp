@@ -51,12 +51,6 @@ void testing_identity_bad_arg(void)
 
     int* p = (int*)p_managed.get();
 
-    if(!p)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
-
 #if(!defined(CUDART_VERSION))
     verify_hipsparse_status_invalid_pointer(
         hipsparseCreateIdentityPermutation(handle, n, (int*)nullptr), "Error: p is nullptr");
@@ -67,6 +61,8 @@ void testing_identity_bad_arg(void)
 hipsparseStatus_t testing_identity(Arguments argus)
 {
     int n = argus.N;
+
+    std::cout << "n: " << n << std::endl;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;

@@ -44,9 +44,7 @@ void testing_dotci_bad_arg(void)
 #if(!defined(CUDART_VERSION))
     int nnz       = 100;
     int safe_size = 100;
-
     hipsparseIndexBase_t idx_base = HIPSPARSE_INDEX_BASE_ZERO;
-    hipsparseStatus_t    status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -59,53 +57,12 @@ void testing_dotci_bad_arg(void)
     int* dx_ind = (int*)dx_ind_managed.get();
     T*   dy     = (T*)dy_managed.get();
 
-    if(!dx_ind || !dx_val || !dy)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
-
     T result;
-
-    // testing for (nullptr == dx_val)
-    {
-        T* dx_val_null = nullptr;
-
-        status = hipsparseXdotci(handle, nnz, dx_val_null, dx_ind, dy, &result, idx_base);
-        verify_hipsparse_status_invalid_pointer(status, "Error: x_val is nullptr");
-    }
-
-    // testing for (nullptr == dx_ind)
-    {
-        int* dx_ind_null = nullptr;
-
-        status = hipsparseXdotci(handle, nnz, dx_val, dx_ind_null, dy, &result, idx_base);
-        verify_hipsparse_status_invalid_pointer(status, "Error: x_ind is nullptr");
-    }
-
-    // testing for (nullptr == dy)
-    {
-        T* dy_null = nullptr;
-
-        status = hipsparseXdotci(handle, nnz, dx_val, dx_ind, dy_null, &result, idx_base);
-        verify_hipsparse_status_invalid_pointer(status, "Error: y is nullptr");
-    }
-
-    // testing for (nullptr == result)
-    {
-        T* result_null = nullptr;
-
-        status = hipsparseXdotci(handle, nnz, dx_val, dx_ind, dy, result_null, idx_base);
-        verify_hipsparse_status_invalid_pointer(status, "Error: result is nullptr");
-    }
-
-    // testing for(nullptr == handle)
-    {
-        hipsparseHandle_t handle_null = nullptr;
-
-        status = hipsparseXdotci(handle_null, nnz, dx_val, dx_ind, dy, &result, idx_base);
-        verify_hipsparse_status_invalid_handle(status);
-    }
+    verify_hipsparse_status_invalid_pointer(hipsparseXdotci(handle, nnz, (T*)nullptr, dx_ind, dy, &result, idx_base), "Error: x_val is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXdotci(handle, nnz, dx_val, (int*)nullptr, dy, &result, idx_base), "Error: x_ind is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXdotci(handle, nnz, dx_val, dx_ind, (T*)nullptr, &result, idx_base), "Error: y is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXdotci(handle, nnz, dx_val, dx_ind, dy, (T*)nullptr, idx_base), "Error: result is nullptr");
+    verify_hipsparse_status_invalid_handle(hipsparseXdotci((hipsparseHandle_t)nullptr, nnz, dx_val, dx_ind, dy, &result, idx_base));
 #endif
 }
 
@@ -115,6 +72,8 @@ hipsparseStatus_t testing_dotci(Arguments argus)
     int                  N        = argus.N;
     int                  nnz      = argus.nnz;
     hipsparseIndexBase_t idx_base = argus.baseA;
+
+    std::cout << "N: " << N << " nnz: " << nnz << " idx_base: " << idx_base << std::endl;
 
     std::unique_ptr<handle_struct> test_handle(new handle_struct);
     hipsparseHandle_t              handle = test_handle->handle;

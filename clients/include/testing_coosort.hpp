@@ -47,7 +47,6 @@ void testing_coosort_bad_arg(void)
     int               n         = 100;
     int               nnz       = 100;
     int               safe_size = 100;
-    hipsparseStatus_t status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -67,125 +66,32 @@ void testing_coosort_bad_arg(void)
     int*  perm        = (int*)perm_managed.get();
     void* buffer      = (void*)buffer_managed.get();
 
-    if(!coo_row_ind || !coo_col_ind || !perm || !buffer)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
+    verify_hipsparse_status_invalid_pointer(hipsparseXcoosort_bufferSizeExt(
+        handle, m, n, nnz, (int*)nullptr, coo_col_ind, &buffer_size), "Error: coo_row_ind is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcoosort_bufferSizeExt(
+        handle, m, n, nnz, coo_row_ind, (int*)nullptr, &buffer_size), "Error: coo_col_ind is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcoosort_bufferSizeExt(
+        handle, m, n, nnz, coo_row_ind, coo_col_ind, (size_t*)nullptr), "Error: buffer_size is nullptr");
+    verify_hipsparse_status_invalid_handle(hipsparseXcoosort_bufferSizeExt(
+        (hipsparseHandle_t)nullptr, m, n, nnz, coo_row_ind, coo_col_ind, &buffer_size));
 
-    // Testing coosort_buffer_size for bad args
+    verify_hipsparse_status_invalid_pointer(hipsparseXcoosortByRow(
+        handle, m, n, nnz, (int*)nullptr, coo_col_ind, perm, buffer), "Error: coo_row_ind is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcoosortByRow(
+        handle, m, n, nnz, coo_row_ind, (int*)nullptr, perm, buffer), "Error: coo_col_ind is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcoosortByRow(
+        handle, m, n, nnz, coo_row_ind, coo_col_ind, perm, (int*)nullptr), "Error: buffer is nullptr");
+    verify_hipsparse_status_invalid_handle(hipsparseXcoosortByRow(
+        (hipsparseHandle_t)nullptr, m, n, nnz, coo_row_ind, coo_col_ind, perm, buffer));
 
-    // Testing for (coo_row_ind == nullptr)
-    {
-        int* coo_row_ind_null = nullptr;
-
-        status = hipsparseXcoosort_bufferSizeExt(
-            handle, m, n, nnz, coo_row_ind_null, coo_col_ind, &buffer_size);
-        verify_hipsparse_status_invalid_pointer(status, "Error: coo_row_ind is nullptr");
-    }
-
-    // Testing for (coo_col_ind == nullptr)
-    {
-        int* coo_col_ind_null = nullptr;
-
-        status = hipsparseXcoosort_bufferSizeExt(
-            handle, m, n, nnz, coo_row_ind, coo_col_ind_null, &buffer_size);
-        verify_hipsparse_status_invalid_pointer(status, "Error: coo_col_ind is nullptr");
-    }
-
-    // Testing for (buffer_size == nullptr)
-    {
-        size_t* buffer_size_null = nullptr;
-
-        status = hipsparseXcoosort_bufferSizeExt(
-            handle, m, n, nnz, coo_row_ind, coo_col_ind, buffer_size_null);
-        verify_hipsparse_status_invalid_pointer(status, "Error: buffer_size is nullptr");
-    }
-
-    // Testing for (handle == nullptr)
-    {
-        hipsparseHandle_t handle_null = nullptr;
-
-        status = hipsparseXcoosort_bufferSizeExt(
-            handle_null, m, n, nnz, coo_row_ind, coo_col_ind, &buffer_size);
-        verify_hipsparse_status_invalid_handle(status);
-    }
-
-    // Testing coosort_by_row for bad args
-
-    // Testing for (coo_row_ind == nullptr)
-    {
-        int* coo_row_ind_null = nullptr;
-
-        status = hipsparseXcoosortByRow(
-            handle, m, n, nnz, coo_row_ind_null, coo_col_ind, perm, buffer);
-        verify_hipsparse_status_invalid_pointer(status, "Error: coo_row_ind is nullptr");
-    }
-
-    // Testing for (coo_col_ind == nullptr)
-    {
-        int* coo_col_ind_null = nullptr;
-
-        status = hipsparseXcoosortByRow(
-            handle, m, n, nnz, coo_row_ind, coo_col_ind_null, perm, buffer);
-        verify_hipsparse_status_invalid_pointer(status, "Error: coo_col_ind is nullptr");
-    }
-
-    // Testing for (buffer == nullptr)
-    {
-        int* buffer_null = nullptr;
-
-        status = hipsparseXcoosortByRow(
-            handle, m, n, nnz, coo_row_ind, coo_col_ind, perm, buffer_null);
-        verify_hipsparse_status_invalid_pointer(status, "Error: buffer is nullptr");
-    }
-
-    // Testing for (handle == nullptr)
-    {
-        hipsparseHandle_t handle_null = nullptr;
-
-        status = hipsparseXcoosortByRow(
-            handle_null, m, n, nnz, coo_row_ind, coo_col_ind, perm, buffer);
-        verify_hipsparse_status_invalid_handle(status);
-    }
-
-    // Testing coosort_by_column for bad args
-
-    // Testing for (coo_row_ind == nullptr)
-    {
-        int* coo_row_ind_null = nullptr;
-
-        status = hipsparseXcoosortByColumn(
-            handle, m, n, nnz, coo_row_ind_null, coo_col_ind, perm, buffer);
-        verify_hipsparse_status_invalid_pointer(status, "Error: coo_row_ind is nullptr");
-    }
-
-    // Testing for (coo_col_ind == nullptr)
-    {
-        int* coo_col_ind_null = nullptr;
-
-        status = hipsparseXcoosortByColumn(
-            handle, m, n, nnz, coo_row_ind, coo_col_ind_null, perm, buffer);
-        verify_hipsparse_status_invalid_pointer(status, "Error: coo_col_ind is nullptr");
-    }
-
-    // Testing for (buffer == nullptr)
-    {
-        int* buffer_null = nullptr;
-
-        status = hipsparseXcoosortByColumn(
-            handle, m, n, nnz, coo_row_ind, coo_col_ind, perm, buffer_null);
-        verify_hipsparse_status_invalid_pointer(status, "Error: buffer is nullptr");
-    }
-
-    // Testing for (handle == nullptr)
-    {
-        hipsparseHandle_t handle_null = nullptr;
-
-        status = hipsparseXcoosortByColumn(
-            handle_null, m, n, nnz, coo_row_ind, coo_col_ind, perm, buffer);
-        verify_hipsparse_status_invalid_handle(status);
-    }
+    verify_hipsparse_status_invalid_pointer(hipsparseXcoosortByColumn(
+        handle, m, n, nnz, (int*)nullptr, coo_col_ind, perm, buffer), "Error: coo_row_ind is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcoosortByColumn(
+        handle, m, n, nnz, coo_row_ind, (int*)nullptr, perm, buffer), "Error: coo_col_ind is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcoosortByColumn(
+        handle, m, n, nnz, coo_row_ind, coo_col_ind, perm, (int*)nullptr), "Error: buffer is nullptr");
+    verify_hipsparse_status_invalid_handle(hipsparseXcoosortByColumn(
+        (hipsparseHandle_t)nullptr, m, n, nnz, coo_row_ind, coo_col_ind, perm, buffer));
 #endif
 }
 
@@ -194,10 +100,12 @@ hipsparseStatus_t testing_coosort(Arguments argus)
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     int                  m        = argus.M;
     int                  n        = argus.N;
-    int                  by_row   = argus.transA == HIPSPARSE_OPERATION_NON_TRANSPOSE;
-    int                  permute  = 0;//argus.temp;
+    int                  by_row   = (argus.transA == HIPSPARSE_OPERATION_NON_TRANSPOSE);
+    int                  permute  = argus.permute;
     hipsparseIndexBase_t idx_base = argus.baseA;
     std::string          filename = argus.filename;
+
+    std::cout << "m: " << m << " n: " << n << " by_row: " << by_row << " permute: " << permute << " idx_base: " << idx_base << " filename: " << filename << std::endl;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;

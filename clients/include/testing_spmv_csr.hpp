@@ -80,12 +80,6 @@ void testing_spmv_csr_bad_arg(void)
     float* dy   = (float*)dy_managed.get();
     void*  dbuf = (void*)dbuf_managed.get();
 
-    if(!dval || !dptr || !dcol || !dx || !dy || !dbuf)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
-
     // SpMV structures
     hipsparseSpMatDescr_t A;
     hipsparseDnVecDescr_t x, y;
@@ -187,18 +181,18 @@ hipsparseStatus_t testing_spmv_csr(Arguments argus)
     T                    h_beta   = make_DataType<T>(argus.beta);
     hipsparseOperation_t transA   = argus.transA;
     hipsparseIndexBase_t idx_base = argus.baseA;
+    hipsparseSpMVAlg_t   alg      = argus.spmv_alg;
+    std::string          filename = argus.filename;
 
-#if(!defined(CUDART_VERSION))
-    hipsparseSpMVAlg_t alg = HIPSPARSE_CSRMV_ALG2;
-#else
-#if(CUDART_VERSION >= 12000)
-    hipsparseSpMVAlg_t alg = HIPSPARSE_SPMV_CSR_ALG2;
-#elif(CUDART_VERSION >= 10010 && CUDART_VERSION < 12000)
-    hipsparseSpMVAlg_t alg = HIPSPARSE_CSRMV_ALG2;
-#endif
-#endif
-
-    std::string filename = argus.filename;
+// #if(!defined(CUDART_VERSION))
+//     hipsparseSpMVAlg_t alg = HIPSPARSE_CSRMV_ALG2;
+// #else
+// #if(CUDART_VERSION >= 12000)
+//     hipsparseSpMVAlg_t alg = HIPSPARSE_SPMV_CSR_ALG2;
+// #elif(CUDART_VERSION >= 10010 && CUDART_VERSION < 12000)
+//     hipsparseSpMVAlg_t alg = HIPSPARSE_CSRMV_ALG2;
+// #endif
+// #endif
 
     // Index and data type
     hipsparseIndexType_t typeI = getIndexType<I>();

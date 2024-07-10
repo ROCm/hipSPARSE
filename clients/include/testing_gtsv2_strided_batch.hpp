@@ -66,12 +66,6 @@ void testing_gtsv2_strided_batch_bad_arg(void)
     T*    dx   = (T*)dx_managed.get();
     void* dbuf = (void*)dbuf_managed.get();
 
-    if(!ddl || !dd || !ddu || !dx || !dbuf)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
-
     size_t bsize;
 
     // gtsv2StridedBatch_bufferSize
@@ -130,6 +124,8 @@ hipsparseStatus_t testing_gtsv2_strided_batch(Arguments argus)
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
     int m           = argus.M;
     int batch_count = argus.batch_count;
+
+    std::cout << "m: " << m << " batch_count: " << batch_count << std::endl;
 
     // hipSPARSE handle
     std::unique_ptr<handle_struct> test_handle(new handle_struct);

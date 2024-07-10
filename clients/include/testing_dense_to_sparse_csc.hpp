@@ -76,12 +76,6 @@ void testing_dense_to_sparse_csc_bad_arg(void)
     float*   dcsc_val     = (float*)dcsc_val_managed.get();
     void*    dbuf         = (void*)dbuf_managed.get();
 
-    if(!ddense_val || !dcsc_col_ptr || !dcsc_row_ind || !dcsc_val || !dbuf)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
-
     // Matrix structures
     hipsparseDnVecDescr_t matA;
     hipsparseSpMatDescr_t matB;
@@ -153,8 +147,10 @@ hipsparseStatus_t testing_dense_to_sparse_csc(Arguments argus)
     J                           m        = argus.M;
     J                           n        = argus.N;
     hipsparseIndexBase_t        idx_base = argus.baseA;
-    hipsparseDenseToSparseAlg_t alg      = HIPSPARSE_DENSETOSPARSE_ALG_DEFAULT;
+    hipsparseDenseToSparseAlg_t alg      = argus.dense2sparse_alg;
     hipsparseOrder_t            order    = argus.orderA;
+
+    std::cout << "m: " << m << " n: " << n << " idx_base: " << idx_base << " alg: " << alg << " order: " << order << std::endl;
 
     // Index and data type
     hipsparseIndexType_t typeI = getIndexType<I>();

@@ -66,12 +66,6 @@ void testing_gtsv2_bad_arg(void)
     T*    dB   = (T*)dB_managed.get();
     void* dbuf = (void*)dbuf_managed.get();
 
-    if(!ddl || !dd || !ddu || !dB || !dbuf)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
-
     size_t bsize;
 
     // gtsv buffer size
@@ -122,6 +116,8 @@ hipsparseStatus_t testing_gtsv2(Arguments argus)
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
     int m = argus.M;
     int n = argus.N;
+
+    std::cout << "m: " << m << " n: " << n << std::endl;
 
     // hipSPARSE handle
     std::unique_ptr<handle_struct> test_handle(new handle_struct);

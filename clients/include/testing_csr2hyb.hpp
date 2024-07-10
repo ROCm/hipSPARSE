@@ -50,7 +50,6 @@ void testing_csr2hyb_bad_arg(void)
     int               m         = 100;
     int               n         = 100;
     int               safe_size = 100;
-    hipsparseStatus_t status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -71,76 +70,46 @@ void testing_csr2hyb_bad_arg(void)
     int* csr_col_ind = (int*)csr_col_ind_managed.get();
     T*   csr_val     = (T*)csr_val_managed.get();
 
-    if(!csr_row_ptr || !csr_col_ind || !csr_val)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
-
-    // Testing for(csr_row_ptr == nullptr)
-    {
-        int* csr_row_ptr_null = nullptr;
-
-        status = hipsparseXcsr2hyb(handle,
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsr2hyb(handle,
                                    m,
                                    n,
                                    descr,
                                    csr_val,
-                                   csr_row_ptr_null,
+                                   (int*)nullptr,
                                    csr_col_ind,
                                    hyb,
                                    0,
-                                   HIPSPARSE_HYB_PARTITION_AUTO);
-        verify_hipsparse_status_invalid_pointer(status, "Error: csr_row_ptr is nullptr");
-    }
-    // Testing for(csr_col_ind == nullptr)
-    {
-        int* csr_col_ind_null = nullptr;
-
-        status = hipsparseXcsr2hyb(handle,
+                                   HIPSPARSE_HYB_PARTITION_AUTO), "Error: csr_row_ptr is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsr2hyb(handle,
                                    m,
                                    n,
                                    descr,
                                    csr_val,
                                    csr_row_ptr,
-                                   csr_col_ind_null,
+                                   (int*)nullptr,
                                    hyb,
                                    0,
-                                   HIPSPARSE_HYB_PARTITION_AUTO);
-        verify_hipsparse_status_invalid_pointer(status, "Error: csr_col_ind is nullptr");
-    }
-    // Testing for(csr_val == nullptr)
-    {
-        T* csr_val_null = nullptr;
-
-        status = hipsparseXcsr2hyb(handle,
+                                   HIPSPARSE_HYB_PARTITION_AUTO), "Error: csr_col_ind is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsr2hyb(handle,
                                    m,
                                    n,
                                    descr,
-                                   csr_val_null,
+                                   (T*)nullptr,
                                    csr_row_ptr,
                                    csr_col_ind,
                                    hyb,
                                    0,
-                                   HIPSPARSE_HYB_PARTITION_AUTO);
-        verify_hipsparse_status_invalid_pointer(status, "Error: csr_val is nullptr");
-    }
-    // Testing for(handle == nullptr)
-    {
-        hipsparseHandle_t handle_null = nullptr;
-
-        status = hipsparseXcsr2hyb(handle_null,
-                                   m,
-                                   n,
-                                   descr,
-                                   csr_val,
-                                   csr_row_ptr,
-                                   csr_col_ind,
-                                   hyb,
-                                   0,
-                                   HIPSPARSE_HYB_PARTITION_AUTO);
-        verify_hipsparse_status_invalid_handle(status);
-    }
+                                   HIPSPARSE_HYB_PARTITION_AUTO), "Error: csr_val is nullptr");
+    verify_hipsparse_status_invalid_handle(hipsparseXcsr2hyb((hipsparseHandle_t)nullptr,
+                                m,
+                                n,
+                                descr,
+                                csr_val,
+                                csr_row_ptr,
+                                csr_col_ind,
+                                hyb,
+                                0,
+                                HIPSPARSE_HYB_PARTITION_AUTO));
 }
 
 template <typename T>
@@ -152,6 +121,8 @@ hipsparseStatus_t testing_csr2hyb(Arguments argus)
     hipsparseHybPartition_t part           = argus.part;
     int                     user_ell_width = argus.ell_width;
     std::string             filename       = argus.filename;
+
+    std::cout << "m: " << m << " n: " << n << " idx_base: " << idx_base << " part: " << part << " user_ell_width: " << user_ell_width << " filename: " << filename << std::endl;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;

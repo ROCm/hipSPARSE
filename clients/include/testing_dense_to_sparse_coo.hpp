@@ -75,12 +75,6 @@ void testing_dense_to_sparse_coo_bad_arg(void)
     float*   dcoo_val     = (float*)dcoo_val_managed.get();
     void*    dbuf         = (void*)dbuf_managed.get();
 
-    if(!ddense_val || !dcoo_row_ind || !dcoo_col_ind || !dcoo_val || !dbuf)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
-
     // Matrix structures
     hipsparseDnVecDescr_t matA;
     hipsparseSpMatDescr_t matB;
@@ -144,8 +138,10 @@ hipsparseStatus_t testing_dense_to_sparse_coo(Arguments argus)
     I                           m        = argus.M;
     I                           n        = argus.N;
     hipsparseIndexBase_t        idx_base = argus.baseA;
-    hipsparseDenseToSparseAlg_t alg      = HIPSPARSE_DENSETOSPARSE_ALG_DEFAULT;
+    hipsparseDenseToSparseAlg_t alg      = argus.dense2sparse_alg;
     hipsparseOrder_t            order    = argus.orderA;
+
+    std::cout << "m: " << m << " n: " << n << " idx_base: " << idx_base << " alg: " << alg << " order: " << order << std::endl;
 
     // Index and data type
     hipsparseIndexType_t typeI = getIndexType<I>();

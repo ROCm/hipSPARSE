@@ -29,12 +29,14 @@
 #include <vector>
 
 typedef hipsparseIndexBase_t          base;
-typedef std::tuple<int, base>         csric02_tuple;
-typedef std::tuple<base, std::string> csric02_bin_tuple;
+typedef hipsparseSolvePolicy_t        solve_policy;
+typedef std::tuple<int, base, solve_policy>         csric02_tuple;
+typedef std::tuple<base, solve_policy, std::string> csric02_bin_tuple;
 
 int csric02_M_range[] = {0, 50, 426};
 
 base csric02_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+solve_policy csric02_solve_policy_range[] = {HIPSPARSE_SOLVE_POLICY_NO_LEVEL, HIPSPARSE_SOLVE_POLICY_USE_LEVEL};
 
 std::string csric02_bin[] = {"nos3.bin", "nos4.bin", "nos5.bin", "nos6.bin", "nos7.bin"};
 
@@ -59,8 +61,9 @@ protected:
 Arguments setup_csric02_arguments(csric02_tuple tup)
 {
     Arguments arg;
-    arg.M        = std::get<0>(tup);
-    arg.baseA = std::get<1>(tup);
+    arg.M            = std::get<0>(tup);
+    arg.baseA        = std::get<1>(tup);
+    arg.solve_policy = std::get<2>(tup);
     arg.timing   = 0;
     return arg;
 }
@@ -70,10 +73,11 @@ Arguments setup_csric02_arguments(csric02_bin_tuple tup)
     Arguments arg;
     arg.M        = -99;
     arg.baseA = std::get<0>(tup);
+    arg.solve_policy = std::get<1>(tup);
     arg.timing   = 0;
 
     // Determine absolute path of test matrix
-    std::string bin_file = std::get<1>(tup);
+    std::string bin_file = std::get<2>(tup);
 
     // Get current executables absolute path
 
@@ -141,10 +145,12 @@ TEST_P(parameterized_csric02_bin, csric02_bin_double)
 INSTANTIATE_TEST_SUITE_P(csric02,
                          parameterized_csric02,
                          testing::Combine(testing::ValuesIn(csric02_M_range),
-                                          testing::ValuesIn(csric02_idxbase_range)));
+                                          testing::ValuesIn(csric02_idxbase_range),
+                                          testing::ValuesIn(csric02_solve_policy_range)));
 
 INSTANTIATE_TEST_SUITE_P(csric02_bin,
                          parameterized_csric02_bin,
                          testing::Combine(testing::ValuesIn(csric02_idxbase_range),
+                                          testing::ValuesIn(csric02_solve_policy_range),
                                           testing::ValuesIn(csric02_bin)));
 #endif

@@ -61,12 +61,6 @@ void testing_rot_bad_arg(void)
     int*   dx_ind = (int*)dx_ind_managed.get();
     float* dy     = (float*)dy_managed.get();
 
-    if(!dx_ind || !dx_val || !dy)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
-
     // Structures
     hipsparseSpVecDescr_t x;
     hipsparseDnVecDescr_t y;
@@ -98,6 +92,8 @@ hipsparseStatus_t testing_rot(Arguments argus)
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
     I size = argus.N;
     I nnz  = argus.nnz;
+
+    std::cout << "size: " << size << " nnz: " << nnz << std::endl;
 
     T hc_coeff = make_DataType<T>(argus.alpha);
     T hs_coeff = make_DataType<T>(argus.beta);

@@ -50,7 +50,6 @@ void testing_csrgemm2_a_bad_arg(void)
 
     T alpha = 1.0;
 
-    hipsparseStatus_t status;
     size_t            size;
     int               nnz_C;
 
@@ -95,13 +94,6 @@ void testing_csrgemm2_a_bad_arg(void)
     T*    dCval   = (T*)dCval_managed.get();
     void* dbuffer = (void*)dbuffer_managed.get();
 
-    if(!dAval || !dAptr || !dAcol || !dBval || !dBptr || !dBcol || !dCval || !dCptr || !dCcol
-       || !dbuffer)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
-
     std::vector<int> hcsr_row_ptr_C(M + 1);
     hcsr_row_ptr_C[0] = 0;
     hcsr_row_ptr_C[1] = 1;
@@ -110,14 +102,7 @@ void testing_csrgemm2_a_bad_arg(void)
         hipMemcpy(dCptr, hcsr_row_ptr_C.data(), sizeof(int) * (M + 1), hipMemcpyHostToDevice));
 
     // Scenario: alpha != 0 and beta == 0
-
-    // testing hipsparseXcsrgemm2_bufferSizeExt
-
-    // testing for(nullptr == handle)
-    {
-        hipsparseHandle_t handle_null = nullptr;
-
-        status = hipsparseXcsrgemm2_bufferSizeExt(handle_null,
+    verify_hipsparse_status_invalid_handle(hipsparseXcsrgemm2_bufferSizeExt((hipsparseHandle_t)nullptr,
                                                   M,
                                                   N,
                                                   K,
@@ -136,18 +121,12 @@ void testing_csrgemm2_a_bad_arg(void)
                                                   (int*)nullptr,
                                                   (int*)nullptr,
                                                   info,
-                                                  &size);
-        verify_hipsparse_status_invalid_handle(status);
-    }
-    // testing for(nullptr == alpha)
-    {
-        T* alpha_null = nullptr;
-
-        status = hipsparseXcsrgemm2_bufferSizeExt(handle,
+                                                  &size));
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsrgemm2_bufferSizeExt(handle,
                                                   M,
                                                   N,
                                                   K,
-                                                  alpha_null,
+                                                  (T*)nullptr,
                                                   descr_A,
                                                   nnz_A,
                                                   dAptr,
@@ -162,22 +141,56 @@ void testing_csrgemm2_a_bad_arg(void)
                                                   (int*)nullptr,
                                                   (int*)nullptr,
                                                   info,
-                                                  &size);
-        verify_hipsparse_status_invalid_pointer(status, "Error: alpha is nullptr");
-    }
-    // testing for(nullptr == descr_A)
-    {
-        hipsparseMatDescr_t descr_A_null = nullptr;
-
-        status = hipsparseXcsrgemm2_bufferSizeExt(handle,
+                                                  &size), "Error: alpha is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsrgemm2_bufferSizeExt(handle,
+                                                M,
+                                                N,
+                                                K,
+                                                &alpha,
+                                                (hipsparseMatDescr_t)nullptr,
+                                                nnz_A,
+                                                dAptr,
+                                                dAcol,
+                                                descr_B,
+                                                nnz_B,
+                                                dBptr,
+                                                dBcol,
+                                                (T*)nullptr,
+                                                (hipsparseMatDescr_t) nullptr,
+                                                0,
+                                                (int*)nullptr,
+                                                (int*)nullptr,
+                                                info,
+                                                &size), "Error: descr_A is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsrgemm2_bufferSizeExt(handle,
+                                                M,
+                                                N,
+                                                K,
+                                                &alpha,
+                                                descr_A,
+                                                nnz_A,
+                                                (int*)nullptr,
+                                                dAcol,
+                                                descr_B,
+                                                nnz_B,
+                                                dBptr,
+                                                dBcol,
+                                                (T*)nullptr,
+                                                (hipsparseMatDescr_t) nullptr,
+                                                0,
+                                                (int*)nullptr,
+                                                (int*)nullptr,
+                                                info,
+                                                &size), "Error: dAptr is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsrgemm2_bufferSizeExt(handle,
                                                   M,
                                                   N,
                                                   K,
                                                   &alpha,
-                                                  descr_A_null,
+                                                  descr_A,
                                                   nnz_A,
                                                   dAptr,
-                                                  dAcol,
+                                                  (int*)nullptr,
                                                   descr_B,
                                                   nnz_B,
                                                   dBptr,
@@ -188,23 +201,17 @@ void testing_csrgemm2_a_bad_arg(void)
                                                   (int*)nullptr,
                                                   (int*)nullptr,
                                                   info,
-                                                  &size);
-        verify_hipsparse_status_invalid_pointer(status, "Error: descr_A is nullptr");
-    }
-    // testing for(nullptr == dAptr)
-    {
-        int* dAptr_null = nullptr;
-
-        status = hipsparseXcsrgemm2_bufferSizeExt(handle,
+                                                  &size), "Error: dAcol is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsrgemm2_bufferSizeExt(handle,
                                                   M,
                                                   N,
                                                   K,
                                                   &alpha,
                                                   descr_A,
                                                   nnz_A,
-                                                  dAptr_null,
+                                                  dAptr,
                                                   dAcol,
-                                                  descr_B,
+                                                  (hipsparseMatDescr_t)nullptr,
                                                   nnz_B,
                                                   dBptr,
                                                   dBcol,
@@ -214,92 +221,28 @@ void testing_csrgemm2_a_bad_arg(void)
                                                   (int*)nullptr,
                                                   (int*)nullptr,
                                                   info,
-                                                  &size);
-        verify_hipsparse_status_invalid_pointer(status, "Error: dAptr is nullptr");
-    }
-    // testing for(nullptr == dAcol)
-    {
-        int* dAcol_null = nullptr;
-
-        status = hipsparseXcsrgemm2_bufferSizeExt(handle,
-                                                  M,
-                                                  N,
-                                                  K,
-                                                  &alpha,
-                                                  descr_A,
-                                                  nnz_A,
-                                                  dAptr,
-                                                  dAcol_null,
-                                                  descr_B,
-                                                  nnz_B,
-                                                  dBptr,
-                                                  dBcol,
-                                                  (T*)nullptr,
-                                                  (hipsparseMatDescr_t) nullptr,
-                                                  0,
-                                                  (int*)nullptr,
-                                                  (int*)nullptr,
-                                                  info,
-                                                  &size);
-        verify_hipsparse_status_invalid_pointer(status, "Error: dAcol is nullptr");
-    }
-    // testing for(nullptr == descr_B)
-    {
-        hipsparseMatDescr_t descr_B_null = nullptr;
-
-        status = hipsparseXcsrgemm2_bufferSizeExt(handle,
-                                                  M,
-                                                  N,
-                                                  K,
-                                                  &alpha,
-                                                  descr_A,
-                                                  nnz_A,
-                                                  dAptr,
-                                                  dAcol,
-                                                  descr_B_null,
-                                                  nnz_B,
-                                                  dBptr,
-                                                  dBcol,
-                                                  (T*)nullptr,
-                                                  (hipsparseMatDescr_t) nullptr,
-                                                  0,
-                                                  (int*)nullptr,
-                                                  (int*)nullptr,
-                                                  info,
-                                                  &size);
-        verify_hipsparse_status_invalid_pointer(status, "Error: descr_B is nullptr");
-    }
-    // testing for(nullptr == dBptr)
-    {
-        int* dBptr_null = nullptr;
-
-        status = hipsparseXcsrgemm2_bufferSizeExt(handle,
-                                                  M,
-                                                  N,
-                                                  K,
-                                                  &alpha,
-                                                  descr_A,
-                                                  nnz_A,
-                                                  dAptr,
-                                                  dAcol,
-                                                  descr_B,
-                                                  nnz_B,
-                                                  dBptr_null,
-                                                  dBcol,
-                                                  (T*)nullptr,
-                                                  (hipsparseMatDescr_t) nullptr,
-                                                  0,
-                                                  (int*)nullptr,
-                                                  (int*)nullptr,
-                                                  info,
-                                                  &size);
-        verify_hipsparse_status_invalid_pointer(status, "Error: dBptr is nullptr");
-    }
-    // testing for(nullptr == dBcol)
-    {
-        int* dBcol_null = nullptr;
-
-        status = hipsparseXcsrgemm2_bufferSizeExt(handle,
+                                                  &size), "Error: descr_B is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsrgemm2_bufferSizeExt(handle,
+                                                M,
+                                                N,
+                                                K,
+                                                &alpha,
+                                                descr_A,
+                                                nnz_A,
+                                                dAptr,
+                                                dAcol,
+                                                descr_B,
+                                                nnz_B,
+                                                (int*)nullptr,
+                                                dBcol,
+                                                (T*)nullptr,
+                                                (hipsparseMatDescr_t) nullptr,
+                                                0,
+                                                (int*)nullptr,
+                                                (int*)nullptr,
+                                                info,
+                                                &size), "Error: dBptr is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsrgemm2_bufferSizeExt(handle,
                                                   M,
                                                   N,
                                                   K,
@@ -311,21 +254,15 @@ void testing_csrgemm2_a_bad_arg(void)
                                                   descr_B,
                                                   nnz_B,
                                                   dBptr,
-                                                  dBcol_null,
+                                                  (int*)nullptr,
                                                   (T*)nullptr,
                                                   (hipsparseMatDescr_t) nullptr,
                                                   0,
                                                   (int*)nullptr,
                                                   (int*)nullptr,
                                                   info,
-                                                  &size);
-        verify_hipsparse_status_invalid_pointer(status, "Error: dBcol is nullptr");
-    }
-    // testing for(nullptr == info)
-    {
-        csrgemm2Info_t info_null = nullptr;
-
-        status = hipsparseXcsrgemm2_bufferSizeExt(handle,
+                                                  &size), "Error: dBcol is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsrgemm2_bufferSizeExt(handle,
                                                   M,
                                                   N,
                                                   K,
@@ -343,15 +280,9 @@ void testing_csrgemm2_a_bad_arg(void)
                                                   0,
                                                   (int*)nullptr,
                                                   (int*)nullptr,
-                                                  info_null,
-                                                  &size);
-        verify_hipsparse_status_invalid_pointer(status, "Error: info is nullptr");
-    }
-    // testing for(nullptr == size)
-    {
-        size_t* size_null = nullptr;
-
-        status = hipsparseXcsrgemm2_bufferSizeExt(handle,
+                                                  (csrgemm2Info_t)nullptr,
+                                                  &size), "Error: info is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsrgemm2_bufferSizeExt(handle,
                                                   M,
                                                   N,
                                                   K,
@@ -370,17 +301,9 @@ void testing_csrgemm2_a_bad_arg(void)
                                                   (int*)nullptr,
                                                   (int*)nullptr,
                                                   info,
-                                                  size_null);
-        verify_hipsparse_status_invalid_pointer(status, "Error: size is nullptr");
-    }
+                                                  (size_t*)nullptr), "Error: size is nullptr");
 
-    // testing hipsparseXcsrgemm2Nnz
-
-    // testing for(nullptr == handle)
-    {
-        hipsparseHandle_t handle_null = nullptr;
-
-        status = hipsparseXcsrgemm2Nnz(handle_null,
+    verify_hipsparse_status_invalid_handle(hipsparseXcsrgemm2Nnz((hipsparseHandle_t)nullptr,
                                        M,
                                        N,
                                        K,
@@ -400,18 +323,12 @@ void testing_csrgemm2_a_bad_arg(void)
                                        dCptr,
                                        &nnz_C,
                                        info,
-                                       dbuffer);
-        verify_hipsparse_status_invalid_handle(status);
-    }
-    // testing for(nullptr == descr_A)
-    {
-        hipsparseMatDescr_t descr_A_null = nullptr;
-
-        status = hipsparseXcsrgemm2Nnz(handle,
+                                       dbuffer));
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsrgemm2Nnz(handle,
                                        M,
                                        N,
                                        K,
-                                       descr_A_null,
+                                       (hipsparseMatDescr_t)nullptr,
                                        nnz_A,
                                        dAptr,
                                        dAcol,
@@ -427,20 +344,14 @@ void testing_csrgemm2_a_bad_arg(void)
                                        dCptr,
                                        &nnz_C,
                                        info,
-                                       dbuffer);
-        verify_hipsparse_status_invalid_pointer(status, "Error: descr_A is nullptr");
-    }
-    // testing for(nullptr == dAptr)
-    {
-        int* dAptr_null = nullptr;
-
-        status = hipsparseXcsrgemm2Nnz(handle,
+                                       dbuffer), "Error: descr_A is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsrgemm2Nnz(handle,
                                        M,
                                        N,
                                        K,
                                        descr_A,
                                        nnz_A,
-                                       dAptr_null,
+                                       (int*)nullptr,
                                        dAcol,
                                        descr_B,
                                        nnz_B,
@@ -454,22 +365,37 @@ void testing_csrgemm2_a_bad_arg(void)
                                        dCptr,
                                        &nnz_C,
                                        info,
-                                       dbuffer);
-        verify_hipsparse_status_invalid_pointer(status, "Error: dAptr is nullptr");
-    }
-    // testing for(nullptr == dAcol)
-    {
-        int* dAcol_null = nullptr;
-
-        status = hipsparseXcsrgemm2Nnz(handle,
+                                       dbuffer), "Error: dAptr is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsrgemm2Nnz(handle,
+                                    M,
+                                    N,
+                                    K,
+                                    descr_A,
+                                    nnz_A,
+                                    dAptr,
+                                    (int*)nullptr,
+                                    descr_B,
+                                    nnz_B,
+                                    dBptr,
+                                    dBcol,
+                                    nullptr,
+                                    0,
+                                    nullptr,
+                                    nullptr,
+                                    descr_C,
+                                    dCptr,
+                                    &nnz_C,
+                                    info,
+                                    dbuffer), "Error: dAcol is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsrgemm2Nnz(handle,
                                        M,
                                        N,
                                        K,
                                        descr_A,
                                        nnz_A,
                                        dAptr,
-                                       dAcol_null,
-                                       descr_B,
+                                       dAcol,
+                                       (hipsparseMatDescr_t)nullptr,
                                        nnz_B,
                                        dBptr,
                                        dBcol,
@@ -481,41 +407,8 @@ void testing_csrgemm2_a_bad_arg(void)
                                        dCptr,
                                        &nnz_C,
                                        info,
-                                       dbuffer);
-        verify_hipsparse_status_invalid_pointer(status, "Error: dAcol is nullptr");
-    }
-    // testing for(nullptr == descr_B)
-    {
-        hipsparseMatDescr_t descr_B_null = nullptr;
-
-        status = hipsparseXcsrgemm2Nnz(handle,
-                                       M,
-                                       N,
-                                       K,
-                                       descr_A,
-                                       nnz_A,
-                                       dAptr,
-                                       dAcol,
-                                       descr_B_null,
-                                       nnz_B,
-                                       dBptr,
-                                       dBcol,
-                                       nullptr,
-                                       0,
-                                       nullptr,
-                                       nullptr,
-                                       descr_C,
-                                       dCptr,
-                                       &nnz_C,
-                                       info,
-                                       dbuffer);
-        verify_hipsparse_status_invalid_pointer(status, "Error: descr_B is nullptr");
-    }
-    // testing for(nullptr == dBptr)
-    {
-        int* dBptr_null = nullptr;
-
-        status = hipsparseXcsrgemm2Nnz(handle,
+                                       dbuffer), "Error: descr_B is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsrgemm2Nnz(handle,
                                        M,
                                        N,
                                        K,
@@ -525,7 +418,7 @@ void testing_csrgemm2_a_bad_arg(void)
                                        dAcol,
                                        descr_B,
                                        nnz_B,
-                                       dBptr_null,
+                                       (int*)nullptr,
                                        dBcol,
                                        nullptr,
                                        0,
@@ -535,14 +428,8 @@ void testing_csrgemm2_a_bad_arg(void)
                                        dCptr,
                                        &nnz_C,
                                        info,
-                                       dbuffer);
-        verify_hipsparse_status_invalid_pointer(status, "Error: dBptr is nullptr");
-    }
-    // testing for(nullptr == dBcol)
-    {
-        int* dBcol_null = nullptr;
-
-        status = hipsparseXcsrgemm2Nnz(handle,
+                                       dbuffer), "Error: dBptr is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsrgemm2Nnz(handle,
                                        M,
                                        N,
                                        K,
@@ -553,7 +440,7 @@ void testing_csrgemm2_a_bad_arg(void)
                                        descr_B,
                                        nnz_B,
                                        dBptr,
-                                       dBcol_null,
+                                       (int*)nullptr,
                                        nullptr,
                                        0,
                                        nullptr,
@@ -562,14 +449,8 @@ void testing_csrgemm2_a_bad_arg(void)
                                        dCptr,
                                        &nnz_C,
                                        info,
-                                       dbuffer);
-        verify_hipsparse_status_invalid_pointer(status, "Error: dBcol is nullptr");
-    }
-    // testing for(nullptr == descr_C)
-    {
-        hipsparseMatDescr_t descr_C_null = nullptr;
-
-        status = hipsparseXcsrgemm2Nnz(handle,
+                                       dbuffer), "Error: dBcol is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsrgemm2Nnz(handle,
                                        M,
                                        N,
                                        K,
@@ -585,18 +466,12 @@ void testing_csrgemm2_a_bad_arg(void)
                                        0,
                                        nullptr,
                                        nullptr,
-                                       descr_C_null,
+                                       (hipsparseMatDescr_t)nullptr,
                                        dCptr,
                                        &nnz_C,
                                        info,
-                                       dbuffer);
-        verify_hipsparse_status_invalid_pointer(status, "Error: descr_C is nullptr");
-    }
-    // testing for(nullptr == dCptr)
-    {
-        int* dCptr_null = nullptr;
-
-        status = hipsparseXcsrgemm2Nnz(handle,
+                                       dbuffer), "Error: descr_C is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsrgemm2Nnz(handle,
                                        M,
                                        N,
                                        K,
@@ -613,44 +488,32 @@ void testing_csrgemm2_a_bad_arg(void)
                                        nullptr,
                                        nullptr,
                                        descr_C,
-                                       dCptr_null,
+                                       (int*)nullptr,
                                        &nnz_C,
                                        info,
-                                       dbuffer);
-        verify_hipsparse_status_invalid_pointer(status, "Error: dCptr is nullptr");
-    }
-    // testing for(nullptr == nnz_C)
-    {
-        int* nnz_C_null = nullptr;
-
-        status = hipsparseXcsrgemm2Nnz(handle,
-                                       M,
-                                       N,
-                                       K,
-                                       descr_A,
-                                       nnz_A,
-                                       dAptr,
-                                       dAcol,
-                                       descr_B,
-                                       nnz_B,
-                                       dBptr,
-                                       dBcol,
-                                       nullptr,
-                                       0,
-                                       nullptr,
-                                       nullptr,
-                                       descr_C,
-                                       dCptr,
-                                       nnz_C_null,
-                                       info,
-                                       dbuffer);
-        verify_hipsparse_status_invalid_pointer(status, "Error: nnz_C is nullptr");
-    }
-    // testing for(nullptr == info)
-    {
-        csrgemm2Info_t info_null = nullptr;
-
-        status = hipsparseXcsrgemm2Nnz(handle,
+                                       dbuffer), "Error: dCptr is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsrgemm2Nnz(handle,
+                                    M,
+                                    N,
+                                    K,
+                                    descr_A,
+                                    nnz_A,
+                                    dAptr,
+                                    dAcol,
+                                    descr_B,
+                                    nnz_B,
+                                    dBptr,
+                                    dBcol,
+                                    nullptr,
+                                    0,
+                                    nullptr,
+                                    nullptr,
+                                    descr_C,
+                                    dCptr,
+                                    (int*)nullptr,
+                                    info,
+                                    dbuffer), "Error: nnz_C is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsrgemm2Nnz(handle,
                                        M,
                                        N,
                                        K,
@@ -669,15 +532,9 @@ void testing_csrgemm2_a_bad_arg(void)
                                        descr_C,
                                        dCptr,
                                        &nnz_C,
-                                       info_null,
-                                       dbuffer);
-        verify_hipsparse_status_invalid_pointer(status, "Error: info is nullptr");
-    }
-    // testing for(nullptr == dbuffer)
-    {
-        void* dbuffer_null = nullptr;
-
-        status = hipsparseXcsrgemm2Nnz(handle,
+                                       (csrgemm2Info_t)nullptr,
+                                       dbuffer), "Error: info is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsrgemm2Nnz(handle,
                                        M,
                                        N,
                                        K,
@@ -697,17 +554,9 @@ void testing_csrgemm2_a_bad_arg(void)
                                        dCptr,
                                        &nnz_C,
                                        info,
-                                       dbuffer_null);
-        verify_hipsparse_status_invalid_pointer(status, "Error: dbuffer is nullptr");
-    }
+                                       (void*)nullptr), "Error: dbuffer is nullptr");
 
-    // testing hipsparseXcsrgemm2
-
-    // testing for(nullptr == handle)
-    {
-        hipsparseHandle_t handle_null = nullptr;
-
-        status = hipsparseXcsrgemm2(handle_null,
+    verify_hipsparse_status_invalid_handle(hipsparseXcsrgemm2((hipsparseHandle_t)nullptr,
                                     M,
                                     N,
                                     K,
@@ -733,18 +582,12 @@ void testing_csrgemm2_a_bad_arg(void)
                                     dCptr,
                                     dCcol,
                                     info,
-                                    dbuffer);
-        verify_hipsparse_status_invalid_handle(status);
-    }
-    // testing for(nullptr == alpha)
-    {
-        T* alpha_null = nullptr;
-
-        status = hipsparseXcsrgemm2(handle,
+                                    dbuffer));
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsrgemm2(handle,
                                     M,
                                     N,
                                     K,
-                                    alpha_null,
+                                    (T*)nullptr,
                                     descr_A,
                                     nnz_A,
                                     dAval,
@@ -766,19 +609,14 @@ void testing_csrgemm2_a_bad_arg(void)
                                     dCptr,
                                     dCcol,
                                     info,
-                                    dbuffer);
-        verify_hipsparse_status_invalid_pointer(status, "Error: alpha is nullptr");
-    }
-    // testing for(nullptr == descr_A)
-    {
-        hipsparseMatDescr_t descr_A_null = nullptr;
+                                    dbuffer), "Error: alpha is nullptr");
 
-        status = hipsparseXcsrgemm2(handle,
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsrgemm2(handle,
                                     M,
                                     N,
                                     K,
                                     &alpha,
-                                    descr_A_null,
+                                    (hipsparseMatDescr_t)nullptr,
                                     nnz_A,
                                     dAval,
                                     dAptr,
@@ -799,21 +637,15 @@ void testing_csrgemm2_a_bad_arg(void)
                                     dCptr,
                                     dCcol,
                                     info,
-                                    dbuffer);
-        verify_hipsparse_status_invalid_pointer(status, "Error: descr_A is nullptr");
-    }
-    // testing for(nullptr == dAval)
-    {
-        T* dAval_null = nullptr;
-
-        status = hipsparseXcsrgemm2(handle,
+                                    dbuffer), "Error: descr_A is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsrgemm2(handle,
                                     M,
                                     N,
                                     K,
                                     &alpha,
                                     descr_A,
                                     nnz_A,
-                                    dAval_null,
+                                    (T*)nullptr,
                                     dAptr,
                                     dAcol,
                                     descr_B,
@@ -832,14 +664,8 @@ void testing_csrgemm2_a_bad_arg(void)
                                     dCptr,
                                     dCcol,
                                     info,
-                                    dbuffer);
-        verify_hipsparse_status_invalid_pointer(status, "Error: dAval is nullptr");
-    }
-    // testing for(nullptr == dAptr)
-    {
-        int* dAptr_null = nullptr;
-
-        status = hipsparseXcsrgemm2(handle,
+                                    dbuffer), "Error: dAval is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsrgemm2(handle,
                                     M,
                                     N,
                                     K,
@@ -847,7 +673,7 @@ void testing_csrgemm2_a_bad_arg(void)
                                     descr_A,
                                     nnz_A,
                                     dAval,
-                                    dAptr_null,
+                                    (int*)nullptr,
                                     dAcol,
                                     descr_B,
                                     nnz_B,
@@ -865,14 +691,8 @@ void testing_csrgemm2_a_bad_arg(void)
                                     dCptr,
                                     dCcol,
                                     info,
-                                    dbuffer);
-        verify_hipsparse_status_invalid_pointer(status, "Error: dAptr is nullptr");
-    }
-    // testing for(nullptr == dAcol)
-    {
-        int* dAcol_null = nullptr;
-
-        status = hipsparseXcsrgemm2(handle,
+                                    dbuffer), "Error: dAptr is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsrgemm2(handle,
                                     M,
                                     N,
                                     K,
@@ -881,7 +701,7 @@ void testing_csrgemm2_a_bad_arg(void)
                                     nnz_A,
                                     dAval,
                                     dAptr,
-                                    dAcol_null,
+                                    (int*)nullptr,
                                     descr_B,
                                     nnz_B,
                                     dBval,
@@ -898,14 +718,8 @@ void testing_csrgemm2_a_bad_arg(void)
                                     dCptr,
                                     dCcol,
                                     info,
-                                    dbuffer);
-        verify_hipsparse_status_invalid_pointer(status, "Error: dAcol is nullptr");
-    }
-    // testing for(nullptr == descr_B)
-    {
-        hipsparseMatDescr_t descr_B_null = nullptr;
-
-        status = hipsparseXcsrgemm2(handle,
+                                    dbuffer), "Error: dAcol is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsrgemm2(handle,
                                     M,
                                     N,
                                     K,
@@ -915,7 +729,7 @@ void testing_csrgemm2_a_bad_arg(void)
                                     dAval,
                                     dAptr,
                                     dAcol,
-                                    descr_B_null,
+                                    (hipsparseMatDescr_t)nullptr,
                                     nnz_B,
                                     dBval,
                                     dBptr,
@@ -931,14 +745,8 @@ void testing_csrgemm2_a_bad_arg(void)
                                     dCptr,
                                     dCcol,
                                     info,
-                                    dbuffer);
-        verify_hipsparse_status_invalid_pointer(status, "Error: descr_B is nullptr");
-    }
-    // testing for(nullptr == dBval)
-    {
-        T* dBval_null = nullptr;
-
-        status = hipsparseXcsrgemm2(handle,
+                                    dbuffer), "Error: descr_B is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsrgemm2(handle,
                                     M,
                                     N,
                                     K,
@@ -950,7 +758,7 @@ void testing_csrgemm2_a_bad_arg(void)
                                     dAcol,
                                     descr_B,
                                     nnz_B,
-                                    dBval_null,
+                                    (T*)nullptr,
                                     dBptr,
                                     dBcol,
                                     (T*)nullptr,
@@ -964,14 +772,8 @@ void testing_csrgemm2_a_bad_arg(void)
                                     dCptr,
                                     dCcol,
                                     info,
-                                    dbuffer);
-        verify_hipsparse_status_invalid_pointer(status, "Error: dBval is nullptr");
-    }
-    // testing for(nullptr == dBptr)
-    {
-        int* dBptr_null = nullptr;
-
-        status = hipsparseXcsrgemm2(handle,
+                                    dbuffer), "Error: dBval is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsrgemm2(handle,
                                     M,
                                     N,
                                     K,
@@ -984,7 +786,7 @@ void testing_csrgemm2_a_bad_arg(void)
                                     descr_B,
                                     nnz_B,
                                     dBval,
-                                    dBptr_null,
+                                    (int*)nullptr,
                                     dBcol,
                                     (T*)nullptr,
                                     (hipsparseMatDescr_t) nullptr,
@@ -997,14 +799,8 @@ void testing_csrgemm2_a_bad_arg(void)
                                     dCptr,
                                     dCcol,
                                     info,
-                                    dbuffer);
-        verify_hipsparse_status_invalid_pointer(status, "Error: dBptr is nullptr");
-    }
-    // testing for(nullptr == dBcol)
-    {
-        int* dBcol_null = nullptr;
-
-        status = hipsparseXcsrgemm2(handle,
+                                    dbuffer), "Error: dBptr is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsrgemm2(handle,
                                     M,
                                     N,
                                     K,
@@ -1018,7 +814,7 @@ void testing_csrgemm2_a_bad_arg(void)
                                     nnz_B,
                                     dBval,
                                     dBptr,
-                                    dBcol_null,
+                                    (int*)nullptr,
                                     (T*)nullptr,
                                     (hipsparseMatDescr_t) nullptr,
                                     0,
@@ -1030,14 +826,8 @@ void testing_csrgemm2_a_bad_arg(void)
                                     dCptr,
                                     dCcol,
                                     info,
-                                    dbuffer);
-        verify_hipsparse_status_invalid_pointer(status, "Error: dBcol is nullptr");
-    }
-    // testing for(nullptr == descr_C)
-    {
-        hipsparseMatDescr_t descr_C_null = nullptr;
-
-        status = hipsparseXcsrgemm2(handle,
+                                    dbuffer), "Error: dBcol is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsrgemm2(handle,
                                     M,
                                     N,
                                     K,
@@ -1058,19 +848,13 @@ void testing_csrgemm2_a_bad_arg(void)
                                     (T*)nullptr,
                                     (int*)nullptr,
                                     (int*)nullptr,
-                                    descr_C_null,
+                                    (hipsparseMatDescr_t)nullptr,
                                     dCval,
                                     dCptr,
                                     dCcol,
                                     info,
-                                    dbuffer);
-        verify_hipsparse_status_invalid_pointer(status, "Error: descr_C is nullptr");
-    }
-    // testing for(nullptr == dCval)
-    {
-        T* dCval_null = nullptr;
-
-        status = hipsparseXcsrgemm2(handle,
+                                    dbuffer), "Error: descr_C is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsrgemm2(handle,
                                     M,
                                     N,
                                     K,
@@ -1092,18 +876,12 @@ void testing_csrgemm2_a_bad_arg(void)
                                     (int*)nullptr,
                                     (int*)nullptr,
                                     descr_C,
-                                    dCval_null,
+                                    (T*)nullptr,
                                     dCptr,
                                     dCcol,
                                     info,
-                                    dbuffer);
-        verify_hipsparse_status_invalid_pointer(status, "Error: dCval is nullptr");
-    }
-    // testing for(nullptr == dCptr)
-    {
-        int* dCptr_null = nullptr;
-
-        status = hipsparseXcsrgemm2(handle,
+                                    dbuffer), "Error: dCval is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsrgemm2(handle,
                                     M,
                                     N,
                                     K,
@@ -1126,17 +904,11 @@ void testing_csrgemm2_a_bad_arg(void)
                                     (int*)nullptr,
                                     descr_C,
                                     dCval,
-                                    dCptr_null,
+                                    (int*)nullptr,
                                     dCcol,
                                     info,
-                                    dbuffer);
-        verify_hipsparse_status_invalid_pointer(status, "Error: dCptr is nullptr");
-    }
-    // testing for(nullptr == dCcol)
-    {
-        int* dCcol_null = nullptr;
-
-        status = hipsparseXcsrgemm2(handle,
+                                    dbuffer), "Error: dCptr is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsrgemm2(handle,
                                     M,
                                     N,
                                     K,
@@ -1160,16 +932,10 @@ void testing_csrgemm2_a_bad_arg(void)
                                     descr_C,
                                     dCval,
                                     dCptr,
-                                    dCcol_null,
+                                    (int*)nullptr,
                                     info,
-                                    dbuffer);
-        verify_hipsparse_status_invalid_pointer(status, "Error: dCcol is nullptr");
-    }
-    // testing for(nullptr == info)
-    {
-        csrgemm2Info_t info_null = nullptr;
-
-        status = hipsparseXcsrgemm2(handle,
+                                    dbuffer), "Error: dCcol is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsrgemm2(handle,
                                     M,
                                     N,
                                     K,
@@ -1194,15 +960,9 @@ void testing_csrgemm2_a_bad_arg(void)
                                     dCval,
                                     dCptr,
                                     dCcol,
-                                    info_null,
-                                    dbuffer);
-        verify_hipsparse_status_invalid_pointer(status, "Error: info is nullptr");
-    }
-    // testing for(nullptr == dbuffer)
-    {
-        void* dbuffer_null = nullptr;
-
-        status = hipsparseXcsrgemm2(handle,
+                                    (csrgemm2Info_t)nullptr,
+                                    dbuffer), "Error: info is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsrgemm2(handle,
                                     M,
                                     N,
                                     K,
@@ -1228,9 +988,7 @@ void testing_csrgemm2_a_bad_arg(void)
                                     dCptr,
                                     dCcol,
                                     info,
-                                    dbuffer_null);
-        verify_hipsparse_status_invalid_pointer(status, "Error: dbuffer is nullptr");
-    }
+                                    (void*)nullptr), "Error: dbuffer is nullptr");
 #endif
 }
 
@@ -1246,6 +1004,8 @@ hipsparseStatus_t testing_csrgemm2_a(Arguments argus)
     hipsparseIndexBase_t idx_base_C = argus.baseC;
     std::string          filename   = argus.filename;
     T                    alpha      = make_DataType<T>(argus.alpha);
+
+    std::cout << "M: " << M << " N: " << N << " K: " << K << " idx_baseA: " << idx_base_A << " idx_base_B: " << idx_base_B << " idx_base_C: " << idx_base_C << " filename: " << filename << std::endl;
 
     T* h_alpha = &alpha;
 
