@@ -203,6 +203,8 @@ hipsparseStatus_t testing_spsm_coo(Arguments argus)
 
     std::string filename = argus.filename;
 
+    std::cout << "m: " << m << " n: " << n << " k: " << k << " transA: " << transA << " transB: " << transB << " orderB: " << orderB << " orderC: " << orderC << " idx_base: " << idx_base << " diag: " << diag << " uplo: " << uplo << " alg: " << alg << " filename: " << filename << std::endl;
+
 #if(defined(CUDART_VERSION))
     if(orderB != orderC)
     {
@@ -231,6 +233,12 @@ hipsparseStatus_t testing_spsm_coo(Arguments argus)
     {
         fprintf(stderr, "Cannot open [read] %s\ncol", filename.c_str());
         return HIPSPARSE_STATUS_INTERNAL_ERROR;
+    }
+
+    if(m != n)
+    {
+        // Skip non-square matrices
+        return HIPSPARSE_STATUS_SUCCESS;
     }
 
     std::vector<I> hrow_ind(nnz);
