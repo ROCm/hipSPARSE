@@ -201,8 +201,9 @@ hipsparseStatus_t testing_sddmm_coo_aos(Arguments argus)
     std::string          filename = argus.filename;
 
     std::cout << "m: " << m << " n: " << n << " k: " << k << " transA: " << transA
-              << " transB: " << transB << " orderA: " << orderA << " orderB: " << orderB << " idx_base: " << idx_base
-              << " alg: " << alg << " filename: " << filename << std::endl;
+              << " transB: " << transB << " orderA: " << orderA << " orderB: " << orderB
+              << " idx_base: " << idx_base << " alg: " << alg << " filename: " << filename
+              << std::endl;
 
     // Index and data type
     hipsparseIndexType_t typeI = getIndexType<I>();
@@ -222,14 +223,7 @@ hipsparseStatus_t testing_sddmm_coo_aos(Arguments argus)
 
     // Read or construct CSR matrix
     I nnz = 0;
-    if(!generate_csr_matrix(filename, 
-                            m, 
-                            n, 
-                            nnz, 
-                            hcsr_row_ptr, 
-                            hcsr_col_ind, 
-                            hcsr_val, 
-                            idx_base))
+    if(!generate_csr_matrix(filename, m, n, nnz, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base))
     {
         fprintf(stderr, "Cannot open [read] %s\ncol", filename.c_str());
         return HIPSPARSE_STATUS_INTERNAL_ERROR;
@@ -360,27 +354,27 @@ hipsparseStatus_t testing_sddmm_coo_aos(Arguments argus)
         CHECK_HIP_ERROR(hipMemcpy(hval1.data(), dval1, sizeof(T) * nnz, hipMemcpyDeviceToHost));
         CHECK_HIP_ERROR(hipMemcpy(hval2.data(), dval2, sizeof(T) * nnz, hipMemcpyDeviceToHost));
 
-
-
         const I incA = (orderA == HIPSPARSE_ORDER_COL)
-                                ? ((transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? lda : 1)
-                                : ((transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? 1 : lda);
+                           ? ((transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? lda : 1)
+                           : ((transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? 1 : lda);
         const I incB = (orderB == HIPSPARSE_ORDER_COL)
-                                ? ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? 1 : ldb)
-                                : ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? ldb : 1);
+                           ? ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? 1 : ldb)
+                           : ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? ldb : 1);
 
         for(I i = 0; i < nnz; ++i)
         {
             const I r = hrowcol_ind[2 * i] - idx_base;
             const I c = hrowcol_ind[2 * i] - idx_base;
 
-            const T* Aptr = (orderA == HIPSPARSE_ORDER_COL)
-                            ? ((transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? &hA[r] : &hA[lda * r])
-                            : ((transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? &hA[lda * r] : &hA[r]);
+            const T* Aptr
+                = (orderA == HIPSPARSE_ORDER_COL)
+                      ? ((transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? &hA[r] : &hA[lda * r])
+                      : ((transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? &hA[lda * r] : &hA[r]);
 
-            const T* Bptr = (orderB == HIPSPARSE_ORDER_COL)
-                            ? ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? &hB[ldb * c] : &hB[c])
-                            : ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? &hB[c] : &hB[ldb * c]);
+            const T* Bptr
+                = (orderB == HIPSPARSE_ORDER_COL)
+                      ? ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? &hB[ldb * c] : &hB[c])
+                      : ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? &hB[c] : &hB[ldb * c]);
 
             T sum = static_cast<T>(0);
             for(I j = 0; j < k; ++j)
@@ -389,9 +383,6 @@ hipsparseStatus_t testing_sddmm_coo_aos(Arguments argus)
             }
             hcsr_val[i] = testing_mult(hcsr_val[i], h_beta) + testing_mult(h_alpha, sum);
         }
-
-
-
 
         // // CPU
         // const I incx = (orderA == HIPSPARSE_ORDER_COL)

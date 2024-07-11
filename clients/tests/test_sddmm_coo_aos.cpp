@@ -61,8 +61,8 @@ alpha_beta sddmm_coo_aos_alpha_beta_range[] = {{2.0, 1.0}};
 
 hipsparseOperation_t sddmm_coo_aos_transA_range[] = {HIPSPARSE_OPERATION_NON_TRANSPOSE};
 hipsparseOperation_t sddmm_coo_aos_transB_range[] = {HIPSPARSE_OPERATION_NON_TRANSPOSE};
-hipsparseOrder_t     sddmm_coo_aos_orderA_range[]  = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
-hipsparseOrder_t     sddmm_coo_aos_orderB_range[]  = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
+hipsparseOrder_t     sddmm_coo_aos_orderA_range[] = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
+hipsparseOrder_t     sddmm_coo_aos_orderB_range[] = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
 hipsparseIndexBase_t sddmm_coo_aos_idxbase_range[]
     = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 hipsparseSDDMMAlg_t sddmm_coo_aos_alg_range[] = {HIPSPARSE_SDDMM_ALG_DEFAULT};
