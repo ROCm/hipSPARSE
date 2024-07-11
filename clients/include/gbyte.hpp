@@ -136,6 +136,12 @@ constexpr double csrsv_gbyte_count(J M, I nnz)
     return ((M + 1) * sizeof(I) + nnz * sizeof(J) + (M + M + nnz) * sizeof(T)) / 1e9;
 }
 
+template <typename T, typename I>
+constexpr double coosv_gbyte_count(I M, int64_t nnz)
+{
+    return (2 * nnz * sizeof(I) + (M + M + nnz) * sizeof(T)) / 1e9;
+}
+
 template <typename A, typename X, typename Y, typename I, typename J>
 constexpr double csrmv_gbyte_count(J M, J N, I nnz, bool beta = false)
 {
@@ -181,6 +187,94 @@ constexpr double csrmm_gbyte_count(J M, I nnz_A, I nnz_B, I nnz_C, bool beta = f
     return ((M + 1) * sizeof(I) + nnz_A * sizeof(J)
             + (nnz_A + nnz_B + nnz_C + (beta ? nnz_C : 0)) * sizeof(T))
            / 1e9;
+}
+
+template <typename T, typename I, typename J>
+constexpr double cscmm_gbyte_count(J N, I nnz_A, I nnz_B, I nnz_C, bool beta = false)
+{
+    return csrmm_gbyte_count<T>(N, nnz_A, nnz_B, nnz_C, beta);
+}
+
+template <typename T, typename I>
+constexpr double coomm_gbyte_count(int64_t nnz_A, int64_t nnz_B, int64_t nnz_C, bool beta = false)
+{
+    return (2.0 * nnz_A * sizeof(I) + (nnz_A + nnz_B + nnz_C + (beta ? nnz_C : 0)) * sizeof(T))
+           / 1e9;
+}
+
+template <typename T, typename I, typename J>
+constexpr double csrmm_batched_gbyte_count(J    M,
+                                           I    nnz_A,
+                                           I    nnz_B,
+                                           I    nnz_C,
+                                           J    batch_count_A,
+                                           J    batch_count_B,
+                                           J    batch_count_C,
+                                           bool beta = false)
+{
+    // read A matrix
+    size_t readA = batch_count_A * ((M + 1) * sizeof(I) + nnz_A * sizeof(J) + nnz_A * sizeof(T));
+
+    // read B matrix
+    size_t readB = batch_count_B * nnz_B * sizeof(T);
+
+    // read C matrix
+    size_t readC = batch_count_C * (beta ? nnz_C : 0) * sizeof(T);
+
+    // write C matrix
+    size_t writeC = batch_count_C * nnz_C * sizeof(T);
+
+    return (readA + readB + readC + writeC) / 1e9;
+}
+
+template <typename T, typename I, typename J>
+constexpr double cscmm_batched_gbyte_count(J    N,
+                                           I    nnz_A,
+                                           I    nnz_B,
+                                           I    nnz_C,
+                                           J    batch_count_A,
+                                           J    batch_count_B,
+                                           J    batch_count_C,
+                                           bool beta = false)
+{
+    // read A matrix
+    size_t readA = batch_count_A * ((N + 1) * sizeof(I) + nnz_A * sizeof(J) + nnz_A * sizeof(T));
+
+    // read B matrix
+    size_t readB = batch_count_B * nnz_B * sizeof(T);
+
+    // read C matrix
+    size_t readC = batch_count_C * (beta ? nnz_C : 0) * sizeof(T);
+
+    // write C matrix
+    size_t writeC = batch_count_C * nnz_C * sizeof(T);
+
+    return (readA + readB + readC + writeC) / 1e9;
+}
+
+template <typename T, typename I>
+constexpr double coomm_batched_gbyte_count(I       M,
+                                           int64_t nnz_A,
+                                           int64_t nnz_B,
+                                           int64_t nnz_C,
+                                           I       batch_count_A,
+                                           I       batch_count_B,
+                                           I       batch_count_C,
+                                           bool    beta = false)
+{
+    // read A matrix
+    size_t readA = batch_count_A * (nnz_A * sizeof(I) + nnz_A * sizeof(I) + nnz_A * sizeof(T));
+
+    // read B matrix
+    size_t readB = batch_count_B * nnz_B * sizeof(T);
+
+    // read C matrix
+    size_t readC = batch_count_C * (beta ? nnz_C : 0) * sizeof(T);
+
+    // write C matrix
+    size_t writeC = batch_count_C * nnz_C * sizeof(T);
+
+    return (readA + readB + readC + writeC) / 1e9;
 }
 
 template <typename T, typename I, typename J>

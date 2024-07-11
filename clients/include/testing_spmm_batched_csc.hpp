@@ -28,6 +28,8 @@
 #include "hipsparse.hpp"
 #include "hipsparse_arguments.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
+#include "flops.hpp"
+#include "gbyte.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
 
@@ -392,61 +394,108 @@ hipsparseStatus_t testing_spmm_batched_csc(Arguments argus)
     CHECK_HIP_ERROR(hipMalloc(&buffer, bufferSize));
 
     // ROCSPARSE pointer mode host
-    CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11021)
+    CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
     CHECK_HIPSPARSE_ERROR(hipsparseSpMM_preprocess(
         handle, transA, transB, &h_alpha, A, B, &h_beta, C1, typeT, alg, buffer));
 #endif
-    CHECK_HIPSPARSE_ERROR(
-        hipsparseSpMM(handle, transA, transB, &h_alpha, A, B, &h_beta, C1, typeT, alg, buffer));
 
     // ROCSPARSE pointer mode device
-    CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11021)
+    CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
     CHECK_HIPSPARSE_ERROR(hipsparseSpMM_preprocess(
         handle, transA, transB, d_alpha, A, B, d_beta, C2, typeT, alg, buffer));
 #endif
-    CHECK_HIPSPARSE_ERROR(
-        hipsparseSpMM(handle, transA, transB, d_alpha, A, B, d_beta, C2, typeT, alg, buffer));
 
-    // copy output from device to CPU
-    CHECK_HIP_ERROR(
-        hipMemcpy(hC_1.data(), dC_1, sizeof(T) * batch_count_C * nnz_C, hipMemcpyDeviceToHost));
-    CHECK_HIP_ERROR(
-        hipMemcpy(hC_2.data(), dC_2, sizeof(T) * batch_count_C * nnz_C, hipMemcpyDeviceToHost));
+    if(argus.unit_check)
+    {
+        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
+        CHECK_HIPSPARSE_ERROR(
+            hipsparseSpMM(handle, transA, transB, &h_alpha, A, B, &h_beta, C1, typeT, alg, buffer));
 
-    // CPU
-    double cpu_time_used = get_time_us();
+        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
+        CHECK_HIPSPARSE_ERROR(
+            hipsparseSpMM(handle, transA, transB, d_alpha, A, B, d_beta, C2, typeT, alg, buffer));
 
-    host_cscmm_batched(A_m,
-                       n,
-                       A_n,
-                       batch_count_A,
-                       (I)offsets_batch_stride_A,
-                       (I)rows_values_batch_stride_A,
-                       transA,
-                       transB,
-                       h_alpha,
-                       hcsc_col_ptr.data(),
-                       hcsc_row_ind.data(),
-                       hcsc_val.data(),
-                       hB.data(),
-                       (J)ldb,
-                       batch_count_B,
-                       (I)batch_stride_B,
-                       orderB,
-                       h_beta,
-                       hC_gold.data(),
-                       (J)ldc,
-                       batch_count_C,
-                       (I)batch_stride_C,
-                       orderC,
-                       idx_base);
+        // copy output from device to CPU
+        CHECK_HIP_ERROR(
+            hipMemcpy(hC_1.data(), dC_1, sizeof(T) * batch_count_C * nnz_C, hipMemcpyDeviceToHost));
+        CHECK_HIP_ERROR(
+            hipMemcpy(hC_2.data(), dC_2, sizeof(T) * batch_count_C * nnz_C, hipMemcpyDeviceToHost));
 
-    cpu_time_used = get_time_us() - cpu_time_used;
+        // CPU
+        host_cscmm_batched(A_m,
+                        n,
+                        A_n,
+                        batch_count_A,
+                        (I)offsets_batch_stride_A,
+                        (I)rows_values_batch_stride_A,
+                        transA,
+                        transB,
+                        h_alpha,
+                        hcsc_col_ptr.data(),
+                        hcsc_row_ind.data(),
+                        hcsc_val.data(),
+                        hB.data(),
+                        (J)ldb,
+                        batch_count_B,
+                        (I)batch_stride_B,
+                        orderB,
+                        h_beta,
+                        hC_gold.data(),
+                        (J)ldc,
+                        batch_count_C,
+                        (I)batch_stride_C,
+                        orderC,
+                        idx_base);
 
-    unit_check_near(1, batch_count_C * nnz_C, 1, hC_gold.data(), hC_1.data());
-    unit_check_near(1, batch_count_C * nnz_C, 1, hC_gold.data(), hC_2.data());
+        unit_check_near(1, batch_count_C * nnz_C, 1, hC_gold.data(), hC_1.data());
+        unit_check_near(1, batch_count_C * nnz_C, 1, hC_gold.data(), hC_2.data());
+    }
+
+    if(argus.timing)
+    {
+        int number_cold_calls = 2;
+        int number_hot_calls  = argus.iters;
+
+        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
+
+        // Warm up
+        for(int iter = 0; iter < number_cold_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(
+                hipsparseSpMM(handle, transA, transB, &h_alpha, A, B, &h_beta, C1, typeT, alg, buffer));
+        }
+
+        double gpu_time_used = get_time_us();
+
+        // Performance run
+        for(int iter = 0; iter < number_hot_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(
+                hipsparseSpMM(handle, transA, transB, &h_alpha, A, B, &h_beta, C1, typeT, alg, buffer));
+        }
+
+        gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
+
+        double gflop_count
+            = batch_count_C
+              * spmm_gflop_count(n, nnz_A, (I)C_m * (I)C_n, h_beta != make_DataType<T>(0));
+        double gpu_gflops = get_gpu_gflops(gpu_time_used, gflop_count);
+
+        double gbyte_count = cscmm_batched_gbyte_count<T>(A_n,
+                                                          nnz_A,
+                                                          (I)B_m * (I)B_n,
+                                                          (I)C_m * (I)C_n,
+                                                          batch_count_A,
+                                                          batch_count_B,
+                                                          batch_count_C,
+                                                          h_beta != make_DataType<T>(0));
+        double gpu_gbyte   = get_gpu_gbyte(gpu_time_used, gbyte_count);
+
+        std::cout << "GFLOPS/s: " << gpu_gflops << " GBYTES/s: " << gpu_gbyte
+                  << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
+    }
 
     CHECK_HIP_ERROR(hipFree(buffer));
     CHECK_HIPSPARSE_ERROR(hipsparseDestroySpMat(A));
