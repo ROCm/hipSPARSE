@@ -206,8 +206,9 @@ hipsparseStatus_t testing_sddmm_csc(Arguments argus)
     std::string          filename = argus.filename;
 
     std::cout << "m: " << m << " n: " << n << " k: " << k << " transA: " << transA
-              << " transB: " << transB << " orderA: " << orderA << " orderB: " << orderB << " idx_base: " << idx_base
-              << " alg: " << alg << " filename: " << filename << std::endl;
+              << " transB: " << transB << " orderA: " << orderA << " orderB: " << orderB
+              << " idx_base: " << idx_base << " alg: " << alg << " filename: " << filename
+              << std::endl;
 
     // Index and data type
     hipsparseIndexType_t typeI = getIndexType<I>();
@@ -341,8 +342,8 @@ hipsparseStatus_t testing_sddmm_csc(Arguments argus)
     if(argus.unit_check)
     {
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
-        CHECK_HIPSPARSE_ERROR(
-            hipsparseSDDMM(handle, transA, transB, &h_alpha, A, B, &h_beta, C1, typeT, alg, buffer));
+        CHECK_HIPSPARSE_ERROR(hipsparseSDDMM(
+            handle, transA, transB, &h_alpha, A, B, &h_beta, C1, typeT, alg, buffer));
 
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
         CHECK_HIPSPARSE_ERROR(

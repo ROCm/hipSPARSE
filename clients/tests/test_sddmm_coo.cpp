@@ -59,18 +59,17 @@ int sddmm_coo_K_range[] = {5};
 
 alpha_beta sddmm_coo_alpha_beta_range[] = {{2.0, 1.0}};
 
-hipsparseOperation_t sddmm_coo_transA_range[] = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPERATION_TRANSPOSE};
-hipsparseOperation_t sddmm_coo_transB_range[] = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPERATION_TRANSPOSE};
-hipsparseOrder_t     sddmm_coo_orderA_range[]  = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
-hipsparseOrder_t     sddmm_coo_orderB_range[]  = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
+hipsparseOperation_t sddmm_coo_transA_range[]
+    = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPERATION_TRANSPOSE};
+hipsparseOperation_t sddmm_coo_transB_range[]
+    = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPERATION_TRANSPOSE};
+hipsparseOrder_t     sddmm_coo_orderA_range[] = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
+hipsparseOrder_t     sddmm_coo_orderB_range[] = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
 hipsparseIndexBase_t sddmm_coo_idxbase_range[]
     = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 hipsparseSDDMMAlg_t sddmm_coo_alg_range[] = {HIPSPARSE_SDDMM_ALG_DEFAULT};
 
-std::string sddmm_coo_bin[] = {"nos2.bin",
-                               "nos4.bin",
-                               "nos6.bin",
-                               "Chebyshev4.bin"};
+std::string sddmm_coo_bin[] = {"nos2.bin", "nos4.bin", "nos6.bin", "Chebyshev4.bin"};
 
 class parameterized_sddmm_coo : public testing::TestWithParam<sddmm_coo_tuple>
 {

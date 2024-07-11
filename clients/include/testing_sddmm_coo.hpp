@@ -204,8 +204,9 @@ hipsparseStatus_t testing_sddmm_coo(Arguments argus)
     std::string          filename = argus.filename;
 
     std::cout << "m: " << m << " n: " << n << " k: " << k << " transA: " << transA
-              << " transB: " << transB << " orderA: " << orderA << " orderB: " << orderB << " idx_base: " << idx_base
-              << " alg: " << alg << " filename: " << filename << std::endl;
+              << " transB: " << transB << " orderA: " << orderA << " orderB: " << orderB
+              << " idx_base: " << idx_base << " alg: " << alg << " filename: " << filename
+              << std::endl;
 
     // Index and data type
     hipsparseIndexType_t typeI = getIndexType<I>();
@@ -347,8 +348,8 @@ hipsparseStatus_t testing_sddmm_coo(Arguments argus)
     if(argus.unit_check)
     {
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
-        CHECK_HIPSPARSE_ERROR(
-        hipsparseSDDMM(handle, transA, transB, &h_alpha, A, B, &h_beta, C1, typeT, alg, buffer));
+        CHECK_HIPSPARSE_ERROR(hipsparseSDDMM(
+            handle, transA, transB, &h_alpha, A, B, &h_beta, C1, typeT, alg, buffer));
 
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
         CHECK_HIPSPARSE_ERROR(
@@ -359,8 +360,6 @@ hipsparseStatus_t testing_sddmm_coo(Arguments argus)
         std::vector<T> hval2(nnz);
         CHECK_HIP_ERROR(hipMemcpy(hval1.data(), dval1, sizeof(T) * nnz, hipMemcpyDeviceToHost));
         CHECK_HIP_ERROR(hipMemcpy(hval2.data(), dval2, sizeof(T) * nnz, hipMemcpyDeviceToHost));
-
-
 
         const I incA = (orderA == HIPSPARSE_ORDER_COL)
                            ? ((transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? lda : 1)
