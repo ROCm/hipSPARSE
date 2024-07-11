@@ -25,11 +25,11 @@
 #ifndef TESTING_SDDMM_CSC_HPP
 #define TESTING_SDDMM_CSC_HPP
 
+#include "flops.hpp"
+#include "gbyte.hpp"
 #include "hipsparse.hpp"
 #include "hipsparse_arguments.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
-#include "flops.hpp"
-#include "gbyte.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
 
@@ -351,8 +351,8 @@ hipsparseStatus_t testing_sddmm_csc(Arguments argus)
         // Warm up
         for(int iter = 0; iter < number_cold_calls; ++iter)
         {
-            CHECK_HIPSPARSE_ERROR(
-            hipsparseSDDMM(handle, transA, transB, d_alpha, A, B, d_beta, C2, typeT, alg, buffer));
+            CHECK_HIPSPARSE_ERROR(hipsparseSDDMM(
+                handle, transA, transB, d_alpha, A, B, d_beta, C2, typeT, alg, buffer));
         }
 
         double gpu_time_used = get_time_us();
@@ -360,13 +360,13 @@ hipsparseStatus_t testing_sddmm_csc(Arguments argus)
         // Performance run
         for(int iter = 0; iter < number_hot_calls; ++iter)
         {
-            CHECK_HIPSPARSE_ERROR(
-            hipsparseSDDMM(handle, transA, transB, d_alpha, A, B, d_beta, C2, typeT, alg, buffer));
+            CHECK_HIPSPARSE_ERROR(hipsparseSDDMM(
+                handle, transA, transB, d_alpha, A, B, d_beta, C2, typeT, alg, buffer));
         }
 
         gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
 
-        double gflop_count = sddmm_gflop_count(k, nnz, h_beta != make_DataType<T>(0));        
+        double gflop_count = sddmm_gflop_count(k, nnz, h_beta != make_DataType<T>(0));
         double gbyte_count = sddmm_csc_gbyte_count<T>(m, n, k, nnz, h_beta != make_DataType<T>(0));
 
         double gpu_gflops = get_gpu_gflops(gpu_time_used, gflop_count);

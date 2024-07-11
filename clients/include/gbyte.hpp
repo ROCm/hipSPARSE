@@ -112,8 +112,7 @@ constexpr double bsrmv_gbyte_count(J mb, J nb, I nnzb, J block_dim, bool beta = 
 template <typename T>
 constexpr double bsrsv_gbyte_count(int mb, int nnzb, int bsr_dim)
 {
-    return ((mb + 1 + nnzb) * sizeof(int)
-            + (bsr_dim * (mb + mb + nnzb * bsr_dim)) * sizeof(T))
+    return ((mb + 1 + nnzb) * sizeof(int) + (bsr_dim * (mb + mb + nnzb * bsr_dim)) * sizeof(T))
            / 1e9;
 }
 
@@ -157,19 +156,14 @@ constexpr double gemvi_gbyte_count(I m, I nnz, bool beta = false)
     return ((nnz) * sizeof(I) + (m * nnz + nnz + m + (beta ? m : 0)) * sizeof(T)) / 1e9;
 }
 
-
 /*
  * ===========================================================================
  *    level 3 SPARSE
  * ===========================================================================
  */
 template <typename T>
-constexpr double bsrmm_gbyte_count(int Mb,
-                                   int nnzb,
-                                   int block_dim,
-                                   int nnz_B,
-                                   int nnz_C,
-                                   bool          beta = false)
+constexpr double
+    bsrmm_gbyte_count(int Mb, int nnzb, int block_dim, int nnz_B, int nnz_C, bool beta = false)
 {
     //reads
     size_t reads = (Mb + 1 + nnzb) * sizeof(int)
@@ -201,28 +195,30 @@ template <typename T, typename I, typename J>
 constexpr double sddmm_csr_gbyte_count(J M, J N, J K, I nnz, bool beta = false)
 {
     return ((size_t(M) + 1) * sizeof(I) + size_t(nnz) * sizeof(J)
-                + (size_t(nnz) * (K * 2 + ((beta) ? 1 : 0)) * sizeof(T)))
-               / 1e9;
+            + (size_t(nnz) * (K * 2 + ((beta) ? 1 : 0)) * sizeof(T)))
+           / 1e9;
 }
 
 template <typename T, typename I, typename J>
 constexpr double sddmm_csc_gbyte_count(J M, J N, J K, I nnz, bool beta = false)
 {
     return ((size_t(N) + 1) * sizeof(I) + size_t(nnz) * sizeof(J)
-                + (size_t(nnz) * (K * 2 + ((beta) ? 1 : 0)) * sizeof(T)))
-               / 1e9;
+            + (size_t(nnz) * (K * 2 + ((beta) ? 1 : 0)) * sizeof(T)))
+           / 1e9;
 }
 
 template <typename T, typename I, typename J>
 constexpr double sddmm_coo_gbyte_count(J M, J N, J K, I nnz, bool beta = false)
 {
-    return (size_t(nnz) * 2 * sizeof(I) + size_t(nnz) * (K * 2 + ((beta) ? 1 : 0)) * sizeof(T)) / 1e9;
+    return (size_t(nnz) * 2 * sizeof(I) + size_t(nnz) * (K * 2 + ((beta) ? 1 : 0)) * sizeof(T))
+           / 1e9;
 }
 
 template <typename T, typename I, typename J>
 constexpr double sddmm_coo_aos_gbyte_count(J M, J N, J K, I nnz, bool beta = false)
 {
-    return (size_t(nnz) * 2 * sizeof(I) + (size_t(nnz) * (K * 2 + ((beta) ? 1 : 0)) * sizeof(T))) / 1e9;
+    return (size_t(nnz) * 2 * sizeof(I) + (size_t(nnz) * (K * 2 + ((beta) ? 1 : 0)) * sizeof(T)))
+           / 1e9;
 }
 
 /*
@@ -233,17 +229,13 @@ constexpr double sddmm_coo_aos_gbyte_count(J M, J N, J K, I nnz, bool beta = fal
 template <typename T>
 constexpr double bsric0_gbyte_count(int Mb, int block_dim, int nnzb)
 {
-    return ((Mb + 1 + nnzb) * sizeof(int)
-            + 2.0 * block_dim * block_dim * nnzb * sizeof(T))
-           / 1e9;
+    return ((Mb + 1 + nnzb) * sizeof(int) + 2.0 * block_dim * block_dim * nnzb * sizeof(T)) / 1e9;
 }
 
 template <typename T>
 constexpr double bsrilu0_gbyte_count(int Mb, int block_dim, int nnzb)
 {
-    return ((Mb + 1 + nnzb) * sizeof(int)
-            + 2.0 * block_dim * block_dim * nnzb * sizeof(T))
-           / 1e9;
+    return ((Mb + 1 + nnzb) * sizeof(int) + 2.0 * block_dim * block_dim * nnzb * sizeof(T)) / 1e9;
 }
 
 template <typename T>
@@ -282,8 +274,6 @@ constexpr double gpsv_interleaved_batch_gbyte_count(int M, int N)
     return ((5 * M * N + 2 * M * N) * sizeof(T)) / 1e9;
 }
 
-
-
 /*
  * ===========================================================================
  *    conversion SPARSE
@@ -292,9 +282,7 @@ constexpr double gpsv_interleaved_batch_gbyte_count(int M, int N)
 template <typename T>
 constexpr double nnz_gbyte_count(int M, int N, hipsparseDirection_t dir)
 {
-    return ((M * N) * sizeof(T)
-            + ((dir == HIPSPARSE_DIRECTION_ROW) ? M : N) * sizeof(int))
-           / 1e9;
+    return ((M * N) * sizeof(T) + ((dir == HIPSPARSE_DIRECTION_ROW) ? M : N) * sizeof(int)) / 1e9;
 }
 
 template <typename T>
@@ -323,10 +311,7 @@ constexpr double coo2csr_gbyte_count(int M, int nnz)
 }
 
 template <typename T>
-constexpr double csr2csc_gbyte_count(int    M,
-                                     int    N,
-                                     int    nnz,
-                                     hipsparseAction_t action)
+constexpr double csr2csc_gbyte_count(int M, int N, int nnz, hipsparseAction_t action)
 {
     return ((M + N + 2 + 2.0 * nnz) * sizeof(int)
             + (action == HIPSPARSE_ACTION_NUMERIC ? (2.0 * nnz) * sizeof(T) : 0.0))
@@ -334,10 +319,7 @@ constexpr double csr2csc_gbyte_count(int    M,
 }
 
 template <typename T>
-constexpr double csr2hyb_gbyte_count(int M,
-                                     int nnz,
-                                     int ell_nnz,
-                                     int coo_nnz)
+constexpr double csr2hyb_gbyte_count(int M, int nnz, int ell_nnz, int coo_nnz)
 {
     return ((M + 1.0 + ell_nnz + 2.0 * coo_nnz) * sizeof(int)
             + (nnz + ell_nnz + coo_nnz) * sizeof(T))
@@ -345,10 +327,7 @@ constexpr double csr2hyb_gbyte_count(int M,
 }
 
 template <typename T>
-constexpr double hyb2csr_gbyte_count(int M,
-                                     int csr_nnz,
-                                     int ell_nnz,
-                                     int coo_nnz)
+constexpr double hyb2csr_gbyte_count(int M, int csr_nnz, int ell_nnz, int coo_nnz)
 {
     return ((M + 1.0 + csr_nnz + ell_nnz + 2.0 * coo_nnz) * sizeof(int)
             + (csr_nnz + ell_nnz + coo_nnz) * sizeof(T))
@@ -356,11 +335,7 @@ constexpr double hyb2csr_gbyte_count(int M,
 }
 
 template <typename T>
-constexpr double csr2bsr_gbyte_count(int M,
-                                     int Mb,
-                                     int nnz,
-                                     int nnzb,
-                                     int block_dim)
+constexpr double csr2bsr_gbyte_count(int M, int Mb, int nnz, int nnzb, int block_dim)
 {
     // reads
     size_t reads = (M + 1 + nnz) * sizeof(int) + nnz * sizeof(T);
@@ -373,12 +348,8 @@ constexpr double csr2bsr_gbyte_count(int M,
 }
 
 template <typename T>
-constexpr double csr2gebsr_gbyte_count(int M,
-                                       int Mb,
-                                       int nnz,
-                                       int nnzb,
-                                       int row_block_dim,
-                                       int col_block_dim)
+constexpr double
+    csr2gebsr_gbyte_count(int M, int Mb, int nnz, int nnzb, int row_block_dim, int col_block_dim)
 {
     // reads
     size_t reads = (M + 1 + nnz) * sizeof(int) + nnz * sizeof(T);
@@ -391,8 +362,7 @@ constexpr double csr2gebsr_gbyte_count(int M,
 }
 
 template <typename T>
-constexpr double
-    csr2csr_compress_gbyte_count(int M, int nnz_A, int nnz_C)
+constexpr double csr2csr_compress_gbyte_count(int M, int nnz_A, int nnz_C)
 {
     size_t reads = (M + 1 + nnz_A) * sizeof(int) + nnz_A * sizeof(T);
 
@@ -404,8 +374,8 @@ constexpr double
 template <hipsparseDirection_t DIRA, typename T, typename I, typename J>
 constexpr double csx2dense_gbyte_count(J M, J N, I nnz)
 {
-    J      L        = (DIRA == HIPSPARSE_DIRECTION_ROW) ? M : N;
-    size_t read_csx = nnz * sizeof(T) + nnz * sizeof(J) + (L + 1) * sizeof(I);
+    J      L           = (DIRA == HIPSPARSE_DIRECTION_ROW) ? M : N;
+    size_t read_csx    = nnz * sizeof(T) + nnz * sizeof(J) + (L + 1) * sizeof(I);
     size_t write_dense = M * N * sizeof(T) + nnz * sizeof(T);
     return (read_csx + write_dense) / 1e9;
 }
@@ -443,14 +413,12 @@ constexpr double coo2dense_gbyte_count(I M, I N, I nnz)
 
 constexpr double csrsort_gbyte_count(int M, int nnz, bool permute)
 {
-    return ((2.0 * M + 2.0 + 2.0 * nnz + (permute ? 2.0 * nnz : 0.0)) * sizeof(int))
-           / 1e9;
+    return ((2.0 * M + 2.0 + 2.0 * nnz + (permute ? 2.0 * nnz : 0.0)) * sizeof(int)) / 1e9;
 }
 
 constexpr double cscsort_gbyte_count(int N, int nnz, bool permute)
 {
-    return ((2.0 * N + 2.0 + 2.0 * nnz + (permute ? 2.0 * nnz : 0.0)) * sizeof(int))
-           / 1e9;
+    return ((2.0 * N + 2.0 + 2.0 * nnz + (permute ? 2.0 * nnz : 0.0)) * sizeof(int)) / 1e9;
 }
 
 constexpr double coosort_gbyte_count(int nnz, bool permute)
@@ -459,30 +427,21 @@ constexpr double coosort_gbyte_count(int nnz, bool permute)
 }
 
 template <typename T>
-constexpr double gebsr2csr_gbyte_count(int Mb,
-                                       int row_block_dim,
-                                       int col_block_dim,
-                                       int nnzb)
+constexpr double gebsr2csr_gbyte_count(int Mb, int row_block_dim, int col_block_dim, int nnzb)
 {
     // reads
-    size_t reads = nnzb * row_block_dim * col_block_dim * sizeof(T)
-                   + (Mb + 1 + nnzb) * sizeof(int);
+    size_t reads = nnzb * row_block_dim * col_block_dim * sizeof(T) + (Mb + 1 + nnzb) * sizeof(int);
 
     // writes
-    size_t writes
-        = nnzb * row_block_dim * col_block_dim * sizeof(T)
-          + (Mb * row_block_dim + 1 + nnzb * row_block_dim * col_block_dim) * sizeof(int);
+    size_t writes = nnzb * row_block_dim * col_block_dim * sizeof(T)
+                    + (Mb * row_block_dim + 1 + nnzb * row_block_dim * col_block_dim) * sizeof(int);
 
     return (reads + writes) / 1e9;
 }
 
 template <typename T>
-constexpr double gebsr2gebsc_gbyte_count(int    Mb,
-                                         int    Nb,
-                                         int    nnzb,
-                                         int    row_block_dim,
-                                         int    col_block_dim,
-                                         hipsparseAction_t action)
+constexpr double gebsr2gebsc_gbyte_count(
+    int Mb, int Nb, int nnzb, int row_block_dim, int col_block_dim, hipsparseAction_t action)
 {
     return ((Mb + Nb + 2 + 2.0 * nnzb) * sizeof(int)
             + (action == HIPSPARSE_ACTION_NUMERIC
@@ -518,8 +477,7 @@ constexpr double identity_gbyte_count(int N)
 }
 
 template <typename T>
-constexpr double
-    prune_csr2csr_gbyte_count(int M, int nnz_A, int nnz_C)
+constexpr double prune_csr2csr_gbyte_count(int M, int nnz_A, int nnz_C)
 {
     // reads
     size_t reads = (M + 1 + nnz_A) * sizeof(int) + nnz_A * sizeof(T);
@@ -531,9 +489,7 @@ constexpr double
 }
 
 template <typename T>
-constexpr double prune_csr2csr_by_percentage_gbyte_count(int M,
-                                                         int nnz_A,
-                                                         int nnz_C)
+constexpr double prune_csr2csr_by_percentage_gbyte_count(int M, int nnz_A, int nnz_C)
 {
     // reads
     size_t reads = (M + 1 + nnz_A) * sizeof(int) + nnz_A * sizeof(T);
@@ -555,8 +511,7 @@ constexpr double prune_dense2csr_gbyte_count(int M, int N, int nnz)
 }
 
 template <typename T>
-constexpr double
-    prune_dense2csr_by_percentage_gbyte_count(int M, int N, int nnz)
+constexpr double prune_dense2csr_by_percentage_gbyte_count(int M, int N, int nnz)
 {
     size_t reads = M * N * sizeof(T);
 
@@ -571,12 +526,8 @@ constexpr double
  * ===========================================================================
  */
 template <typename T>
-constexpr double csrgeam_gbyte_count(int M,
-                                     int nnz_A,
-                                     int nnz_B,
-                                     int nnz_C,
-                                     const T*      alpha,
-                                     const T*      beta)
+constexpr double
+    csrgeam_gbyte_count(int M, int nnz_A, int nnz_B, int nnz_C, const T* alpha, const T* beta)
 {
     double size_A = alpha ? (M + 1.0 + nnz_A) * sizeof(int) + nnz_A * sizeof(T) : 0.0;
     double size_B = beta ? (M + 1.0 + nnz_B) * sizeof(int) + nnz_B * sizeof(T) : 0.0;
@@ -586,8 +537,7 @@ constexpr double csrgeam_gbyte_count(int M,
 }
 
 template <typename T, typename I = int, typename J = int>
-constexpr double csrgemm_gbyte_count(
-    J M, J N, J K, I nnz_A, I nnz_B, I nnz_C)
+constexpr double csrgemm_gbyte_count(J M, J N, J K, I nnz_A, I nnz_B, I nnz_C)
 {
     double size_A = (M + 1.0) * sizeof(I) + nnz_A * sizeof(J) + nnz_A * sizeof(T);
     double size_B = (K + 1.0) * sizeof(I) + nnz_B * sizeof(J) + nnz_B * sizeof(T);
@@ -595,6 +545,5 @@ constexpr double csrgemm_gbyte_count(
 
     return (size_A + size_B + size_C) / 1e9;
 }
-
 
 #endif // GBYTE_HPP
