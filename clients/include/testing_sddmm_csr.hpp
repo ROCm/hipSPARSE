@@ -28,6 +28,8 @@
 #include "hipsparse.hpp"
 #include "hipsparse_arguments.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
+#include "flops.hpp"
+#include "gbyte.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
 
@@ -304,35 +306,74 @@ hipsparseStatus_t testing_sddmm_csr(Arguments argus)
     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
     CHECK_HIPSPARSE_ERROR(hipsparseSDDMM_preprocess(
         handle, transA, transB, d_alpha, A, B, d_beta, C2, typeT, alg, buffer));
-    CHECK_HIPSPARSE_ERROR(
-        hipsparseSDDMM(handle, transA, transB, d_alpha, A, B, d_beta, C2, typeT, alg, buffer));
-
-    // copy output from device to CPU.
-    CHECK_HIP_ERROR(hipMemcpy(hval1.data(), dval1, sizeof(T) * nnz, hipMemcpyDeviceToHost));
-    CHECK_HIP_ERROR(hipMemcpy(hval2.data(), dval2, sizeof(T) * nnz, hipMemcpyDeviceToHost));
-
-    // CPU
-    const J incx = lda;
-    const J incy = 1;
-
-    for(J i = 0; i < m; ++i)
+    
+    if(argus.unit_check)
     {
-        for(I at = hcsr_row_ptr[i] - idx_base; at < hcsr_row_ptr[i + 1] - idx_base; ++at)
+        CHECK_HIPSPARSE_ERROR(
+            hipsparseSDDMM(handle, transA, transB, d_alpha, A, B, d_beta, C2, typeT, alg, buffer));
+
+        // copy output from device to CPU.
+        CHECK_HIP_ERROR(hipMemcpy(hval1.data(), dval1, sizeof(T) * nnz, hipMemcpyDeviceToHost));
+        CHECK_HIP_ERROR(hipMemcpy(hval2.data(), dval2, sizeof(T) * nnz, hipMemcpyDeviceToHost));
+
+        // CPU
+        const J incx = lda;
+        const J incy = 1;
+
+        for(J i = 0; i < m; ++i)
         {
-            J        j   = hcsr_col_ind[at] - idx_base;
-            const T* x   = &hA[i];
-            const T* y   = &hB[ldb * j];
-            T        sum = make_DataType<T>(0.0);
-            for(J k_ = 0; k_ < k; ++k_)
+            for(I at = hcsr_row_ptr[i] - idx_base; at < hcsr_row_ptr[i + 1] - idx_base; ++at)
             {
-                sum = testing_fma(x[incx * k_], y[incy * k_], sum);
+                J        j   = hcsr_col_ind[at] - idx_base;
+                const T* x   = &hA[i];
+                const T* y   = &hB[ldb * j];
+                T        sum = make_DataType<T>(0.0);
+                for(J k_ = 0; k_ < k; ++k_)
+                {
+                    sum = testing_fma(x[incx * k_], y[incy * k_], sum);
+                }
+                hcsr_val[at] = testing_mult(hcsr_val[at], h_beta) + testing_mult(h_alpha, sum);
             }
-            hcsr_val[at] = testing_mult(hcsr_val[at], h_beta) + testing_mult(h_alpha, sum);
         }
+
+        unit_check_near(1, nnz, 1, hval1.data(), hcsr_val.data());
+        unit_check_near(1, nnz, 1, hval2.data(), hcsr_val.data());
     }
 
-    unit_check_near(1, nnz, 1, hval1.data(), hcsr_val.data());
-    unit_check_near(1, nnz, 1, hval2.data(), hcsr_val.data());
+    if(argus.timing)
+    {
+        int number_cold_calls = 2;
+        int number_hot_calls  = argus.iters;
+
+        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
+
+        // Warm up
+        for(int iter = 0; iter < number_cold_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(
+            hipsparseSDDMM(handle, transA, transB, d_alpha, A, B, d_beta, C2, typeT, alg, buffer));
+        }
+
+        double gpu_time_used = get_time_us();
+
+        // Performance run
+        for(int iter = 0; iter < number_hot_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(
+            hipsparseSDDMM(handle, transA, transB, d_alpha, A, B, d_beta, C2, typeT, alg, buffer));
+        }
+
+        gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
+
+        double gflop_count = sddmm_gflop_count(k, nnz, h_beta != make_DataType<T>(0));        
+        double gbyte_count = sddmm_csr_gbyte_count<T>(m, n, k, nnz, h_beta != make_DataType<T>(0));
+
+        double gpu_gflops = get_gpu_gflops(gpu_time_used, gflop_count);
+        double gpu_gbyte  = get_gpu_gbyte(gpu_time_used, gbyte_count);
+
+        std::cout << "GFLOPS/s: " << gpu_gflops << " GBYTES/s: " << gpu_gbyte
+                  << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
+    }
 
     // free.
     CHECK_HIP_ERROR(hipFree(buffer));

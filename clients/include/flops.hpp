@@ -135,6 +135,12 @@ constexpr double spmm_gflop_count(J N, I nnz_A, I nnz_C, bool beta = false)
     return csrmm_gflop_count(N, nnz_A, nnz_C, beta);
 }
 
+template <typename I, typename J>
+constexpr double sddmm_gflop_count(J K, I nnz, bool beta = false)
+{
+    return (size_t(nnz) * ((size_t(K) + (size_t(K) - 1)) + 1 + ((beta) ? 2 : 0))) / 1e9;
+}
+
 /*
  * ===========================================================================
  *    extra SPARSE

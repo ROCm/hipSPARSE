@@ -197,6 +197,34 @@ constexpr double gemmi_gbyte_count(J N, I nnz_B, I nnz_A, I nnz_C, bool beta = f
            / 1e9;
 }
 
+template <typename T, typename I, typename J>
+constexpr double sddmm_csr_gbyte_count(J M, J N, J K, I nnz, bool beta = false)
+{
+    return ((size_t(M) + 1) * sizeof(I) + size_t(nnz) * sizeof(J)
+                + (size_t(nnz) * (K * 2 + ((beta) ? 1 : 0)) * sizeof(T)))
+               / 1e9;
+}
+
+template <typename T, typename I, typename J>
+constexpr double sddmm_csc_gbyte_count(J M, J N, J K, I nnz, bool beta = false)
+{
+    return ((size_t(N) + 1) * sizeof(I) + size_t(nnz) * sizeof(J)
+                + (size_t(nnz) * (K * 2 + ((beta) ? 1 : 0)) * sizeof(T)))
+               / 1e9;
+}
+
+template <typename T, typename I, typename J>
+constexpr double sddmm_coo_gbyte_count(J M, J N, J K, I nnz, bool beta = false)
+{
+    return (size_t(nnz) * 2 * sizeof(I) + size_t(nnz) * (K * 2 + ((beta) ? 1 : 0)) * sizeof(T)) / 1e9;
+}
+
+template <typename T, typename I, typename J>
+constexpr double sddmm_coo_aos_gbyte_count(J M, J N, J K, I nnz, bool beta = false)
+{
+    return (size_t(nnz) * 2 * sizeof(I) + (size_t(nnz) * (K * 2 + ((beta) ? 1 : 0)) * sizeof(T))) / 1e9;
+}
+
 /*
  * ===========================================================================
  *    precond SPARSE
