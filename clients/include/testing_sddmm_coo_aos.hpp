@@ -194,13 +194,14 @@ hipsparseStatus_t testing_sddmm_coo_aos(Arguments argus)
     T                    h_beta   = make_DataType<T>(argus.beta);
     hipsparseOperation_t transA   = argus.transA;
     hipsparseOperation_t transB   = argus.transB;
-    hipsparseOrder_t     order    = argus.orderA;
-    hipsparseIndexBase_t idx_base = argus.baseA;
+    hipsparseOrder_t     orderA   = argus.orderA;
+    hipsparseOrder_t     orderB   = argus.orderB;
+    hipsparseIndexBase_t idx_base = argus.baseC;
     hipsparseSDDMMAlg_t  alg      = argus.sddmm_alg;
     std::string          filename = argus.filename;
 
     std::cout << "m: " << m << " n: " << n << " k: " << k << " transA: " << transA
-              << " transB: " << transB << " order: " << order << " idx_base: " << idx_base
+              << " transB: " << transB << " orderA: " << orderA << " orderB: " << orderB << " idx_base: " << idx_base
               << " alg: " << alg << " filename: " << filename << std::endl;
 
     // Index and data type
@@ -221,14 +222,18 @@ hipsparseStatus_t testing_sddmm_coo_aos(Arguments argus)
 
     // Read or construct CSR matrix
     I nnz = 0;
-    if(!generate_csr_matrix(filename, m, n, nnz, hcsr_row_ptr, hcsr_col_ind, hcsr_val, idx_base))
+    if(!generate_csr_matrix(filename, 
+                            m, 
+                            n, 
+                            nnz, 
+                            hcsr_row_ptr, 
+                            hcsr_col_ind, 
+                            hcsr_val, 
+                            idx_base))
     {
         fprintf(stderr, "Cannot open [read] %s\ncol", filename.c_str());
         return HIPSPARSE_STATUS_INTERNAL_ERROR;
     }
-
-    I lda = m;
-    I ldb = k;
 
     std::vector<I> hrowcol_ind(nnz * 2);
     // Convert to COO_AOS
@@ -241,21 +246,56 @@ hipsparseStatus_t testing_sddmm_coo_aos(Arguments argus)
         }
     }
 
-    std::vector<T> hA(m * k);
-    std::vector<T> hB(k * n);
+    // Some matrix properties
+    I A_m = (transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? m : k;
+    I A_n = (transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? k : m;
+    I B_m = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? k : n;
+    I B_n = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? n : k;
+    I C_m = m;
+    I C_n = n;
+
+    int ld_multiplier_A = 1;
+    int ld_multiplier_B = 1;
+
+    int64_t lda
+        = (orderA == HIPSPARSE_ORDER_COL)
+              ? ((transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? (int64_t(ld_multiplier_A) * m)
+                                                               : (int64_t(ld_multiplier_A) * k))
+              : ((transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? (int64_t(ld_multiplier_A) * k)
+                                                               : (int64_t(ld_multiplier_A) * m));
+    int64_t ldb
+        = (orderB == HIPSPARSE_ORDER_COL)
+              ? ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? (int64_t(ld_multiplier_B) * k)
+                                                               : (int64_t(ld_multiplier_B) * n))
+              : ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? (int64_t(ld_multiplier_B) * n)
+                                                               : (int64_t(ld_multiplier_B) * k));
+
+    lda = std::max(int64_t(1), lda);
+    ldb = std::max(int64_t(1), ldb);
+
+    int64_t nrowA = (orderA == HIPSPARSE_ORDER_COL) ? lda : A_m;
+    int64_t ncolA = (orderA == HIPSPARSE_ORDER_COL) ? A_n : lda;
+    int64_t nrowB = (orderB == HIPSPARSE_ORDER_COL) ? ldb : B_m;
+    int64_t ncolB = (orderB == HIPSPARSE_ORDER_COL) ? B_n : ldb;
+
+    int64_t nnz_A = nrowA * ncolA;
+    int64_t nnz_B = nrowB * ncolB;
+
+    std::vector<T> hA(A_m * A_n);
+    std::vector<T> hB(B_m * B_n);
     std::vector<T> hval1(nnz);
     std::vector<T> hval2(nnz);
 
-    hipsparseInit<T>(hA, m, k);
-    hipsparseInit<T>(hB, k, n);
+    hipsparseInit<T>(hA, nnz_A, 1);
+    hipsparseInit<T>(hB, nnz_B, 1);
 
     // allocate memory on device
     auto drowcol_managed = hipsparse_unique_ptr{device_malloc(sizeof(I) * nnz * 2), device_free};
     auto dval1_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
     auto dval2_managed   = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
 
-    auto dA_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * m * k), device_free};
-    auto dB_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * k * n), device_free};
+    auto dA_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz_A), device_free};
+    auto dB_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz_B), device_free};
 
     auto d_alpha_managed = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
     auto d_beta_managed  = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
@@ -274,22 +314,22 @@ hipsparseStatus_t testing_sddmm_coo_aos(Arguments argus)
         hipMemcpy(drowcol, hrowcol_ind.data(), sizeof(I) * nnz * 2, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dval1, hcsr_val.data(), sizeof(T) * nnz, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dval2, hcsr_val.data(), sizeof(T) * nnz, hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(hipMemcpy(dA, hA.data(), sizeof(T) * m * k, hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(hipMemcpy(dB, hB.data(), sizeof(T) * k * n, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(dA, hA.data(), sizeof(T) * nnz_A, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(dB, hB.data(), sizeof(T) * nnz_B, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(d_alpha, &h_alpha, sizeof(T), hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(d_beta, &h_beta, sizeof(T), hipMemcpyHostToDevice));
 
     // Create matrices
     hipsparseSpMatDescr_t C1, C2;
     CHECK_HIPSPARSE_ERROR(
-        hipsparseCreateCooAoS(&C1, m, n, nnz, drowcol, dval1, typeI, idx_base, typeT));
+        hipsparseCreateCooAoS(&C1, C_m, C_n, nnz, drowcol, dval1, typeI, idx_base, typeT));
     CHECK_HIPSPARSE_ERROR(
-        hipsparseCreateCooAoS(&C2, m, n, nnz, drowcol, dval2, typeI, idx_base, typeT));
+        hipsparseCreateCooAoS(&C2, C_m, C_n, nnz, drowcol, dval2, typeI, idx_base, typeT));
 
     // Create dense matrices
     hipsparseDnMatDescr_t A, B;
-    CHECK_HIPSPARSE_ERROR(hipsparseCreateDnMat(&A, m, k, lda, dA, typeT, order));
-    CHECK_HIPSPARSE_ERROR(hipsparseCreateDnMat(&B, k, n, ldb, dB, typeT, order));
+    CHECK_HIPSPARSE_ERROR(hipsparseCreateDnMat(&A, A_m, A_n, lda, dA, typeT, orderA));
+    CHECK_HIPSPARSE_ERROR(hipsparseCreateDnMat(&B, B_m, B_n, ldb, dB, typeT, orderB));
 
     // Query SDDMM buffer
     size_t bufferSize;
@@ -320,25 +360,62 @@ hipsparseStatus_t testing_sddmm_coo_aos(Arguments argus)
         CHECK_HIP_ERROR(hipMemcpy(hval1.data(), dval1, sizeof(T) * nnz, hipMemcpyDeviceToHost));
         CHECK_HIP_ERROR(hipMemcpy(hval2.data(), dval2, sizeof(T) * nnz, hipMemcpyDeviceToHost));
 
-        // CPU
-        const I incx = lda;
-        const I incy = 1;
 
-        for(I i = 0; i < m; ++i)
+
+        const I incA = (orderA == HIPSPARSE_ORDER_COL)
+                                ? ((transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? lda : 1)
+                                : ((transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? 1 : lda);
+        const I incB = (orderB == HIPSPARSE_ORDER_COL)
+                                ? ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? 1 : ldb)
+                                : ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? ldb : 1);
+
+        for(I i = 0; i < nnz; ++i)
         {
-            for(I at = hcsr_row_ptr[i] - idx_base; at < hcsr_row_ptr[i + 1] - idx_base; ++at)
+            const I r = hrowcol_ind[2 * i] - idx_base;
+            const I c = hrowcol_ind[2 * i] - idx_base;
+
+            const T* Aptr = (orderA == HIPSPARSE_ORDER_COL)
+                            ? ((transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? &hA[r] : &hA[lda * r])
+                            : ((transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? &hA[lda * r] : &hA[r]);
+
+            const T* Bptr = (orderB == HIPSPARSE_ORDER_COL)
+                            ? ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? &hB[ldb * c] : &hB[c])
+                            : ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? &hB[c] : &hB[ldb * c]);
+
+            T sum = static_cast<T>(0);
+            for(I j = 0; j < k; ++j)
             {
-                I        j   = hcsr_col_ind[at] - idx_base;
-                const T* x   = &hA[i];
-                const T* y   = &hB[ldb * j];
-                T        sum = make_DataType<T>(0.0);
-                for(I k_ = 0; k_ < k; ++k_)
-                {
-                    sum = testing_fma(x[incx * k_], y[incy * k_], sum);
-                }
-                hcsr_val[at] = testing_mult(hcsr_val[at], h_beta) + testing_mult(h_alpha, sum);
+                sum = testing_fma(Aptr[incA * j], Bptr[incB * j], sum);
             }
+            hcsr_val[i] = testing_mult(hcsr_val[i], h_beta) + testing_mult(h_alpha, sum);
         }
+
+
+
+
+        // // CPU
+        // const I incx = (orderA == HIPSPARSE_ORDER_COL)
+        //                         ? ((transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? lda : 1)
+        //                         : ((transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? 1 : lda);
+        // const I incy = (orderB == HIPSPARSE_ORDER_COL)
+        //                         ? ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? 1 : ldb)
+        //                         : ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? ldb : 1);
+
+        // for(I i = 0; i < m; ++i)
+        // {
+        //     for(I at = hcsr_row_ptr[i] - idx_base; at < hcsr_row_ptr[i + 1] - idx_base; ++at)
+        //     {
+        //         I        j   = hcsr_col_ind[at] - idx_base;
+        //         const T* x   = &hA[i];
+        //         const T* y   = &hB[ldb * j];
+        //         T        sum = make_DataType<T>(0.0);
+        //         for(I k_ = 0; k_ < k; ++k_)
+        //         {
+        //             sum = testing_fma(x[incx * k_], y[incy * k_], sum);
+        //         }
+        //         hcsr_val[at] = testing_mult(hcsr_val[at], h_beta) + testing_mult(h_alpha, sum);
+        //     }
+        // }
 
         unit_check_near(1, nnz, 1, hval1.data(), hcsr_val.data());
         unit_check_near(1, nnz, 1, hval2.data(), hcsr_val.data());

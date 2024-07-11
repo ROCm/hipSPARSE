@@ -25,7 +25,13 @@
 
 #include <hipsparse.h>
 
-typedef std::tuple<int,
+struct M_N
+{
+    int M;
+    int N;
+};
+
+typedef std::tuple<M_N,
                    int,
                    double,
                    hipsparseOperation_t,
@@ -37,7 +43,8 @@ typedef std::tuple<int,
                    hipsparseFillMode_t,
                    hipsparseSpSMAlg_t>
     spsm_coo_tuple;
-typedef std::tuple<double,
+typedef std::tuple<int,
+                   double,
                    hipsparseOperation_t,
                    hipsparseOperation_t,
                    hipsparseOrder_t,
@@ -49,8 +56,8 @@ typedef std::tuple<double,
                    std::string>
     spsm_coo_bin_tuple;
 
-int spsm_coo_M_range[] = {50};
-int spsm_coo_N_range[] = {50};
+M_N spsm_coo_M_N_range[] = {{50, 50}};
+int spsm_coo_K_range[]   = {22};
 
 std::vector<double> spsm_coo_alpha_range = {2.0};
 
@@ -87,8 +94,9 @@ protected:
 Arguments setup_spsm_coo_arguments(spsm_coo_tuple tup)
 {
     Arguments arg;
-    arg.M         = std::get<0>(tup);
-    arg.N         = std::get<1>(tup);
+    arg.M         = std::get<0>(tup).M;
+    arg.N         = std::get<0>(tup).N;
+    arg.K         = std::get<1>(tup);
     arg.alpha     = std::get<2>(tup);
     arg.transA    = std::get<3>(tup);
     arg.transB    = std::get<4>(tup);
@@ -105,19 +113,20 @@ Arguments setup_spsm_coo_arguments(spsm_coo_tuple tup)
 Arguments setup_spsm_coo_arguments(spsm_coo_bin_tuple tup)
 {
     Arguments arg;
-    arg.alpha     = std::get<0>(tup);
-    arg.transA    = std::get<1>(tup);
-    arg.transB    = std::get<2>(tup);
-    arg.orderB    = std::get<3>(tup);
-    arg.orderC    = std::get<4>(tup);
-    arg.baseA     = std::get<5>(tup);
-    arg.diag_type = std::get<6>(tup);
-    arg.fill_mode = std::get<7>(tup);
-    arg.spsm_alg  = std::get<8>(tup);
+    arg.K         = std::get<0>(tup);
+    arg.alpha     = std::get<1>(tup);
+    arg.transA    = std::get<2>(tup);
+    arg.transB    = std::get<3>(tup);
+    arg.orderB    = std::get<4>(tup);
+    arg.orderC    = std::get<5>(tup);
+    arg.baseA     = std::get<6>(tup);
+    arg.diag_type = std::get<7>(tup);
+    arg.fill_mode = std::get<8>(tup);
+    arg.spsm_alg  = std::get<9>(tup);
     arg.timing    = 0;
 
     // Determine absolute path of test matrix
-    std::string bin_file = std::get<9>(tup);
+    std::string bin_file = std::get<10>(tup);
 
     // Matrices are stored at the same path in matrices directory
     arg.filename = get_filename(bin_file);
@@ -182,8 +191,8 @@ TEST_P(parameterized_spsm_coo_bin, spsm_coo_bin_i64_double)
 
 // INSTANTIATE_TEST_SUITE_P(spsm_coo,
 //                          parameterized_spsm_coo,
-//                          testing::Combine(testing::ValuesIn(spsm_coo_M_range),
-//                                           testing::ValuesIn(spsm_coo_N_range),
+//                          testing::Combine(testing::ValuesIn(spsm_coo_M_N_range),
+//                                           testing::ValuesIn(spsm_coo_K_range),
 //                                           testing::ValuesIn(spsm_coo_alpha_range),
 //                                           testing::ValuesIn(spsm_coo_transA_range),
 //                                           testing::ValuesIn(spsm_coo_transB_range),
@@ -196,7 +205,8 @@ TEST_P(parameterized_spsm_coo_bin, spsm_coo_bin_i64_double)
 
 // INSTANTIATE_TEST_SUITE_P(spsm_coo_bin,
 //                          parameterized_spsm_coo_bin,
-//                          testing::Combine(testing::ValuesIn(spsm_coo_alpha_range),
+//                          testing::Combine(testing::ValuesIn(spsm_coo_K_range),
+//                                           testing::ValuesIn(spsm_coo_alpha_range),
 //                                           testing::ValuesIn(spsm_coo_transA_range),
 //                                           testing::ValuesIn(spsm_coo_transB_range),
 //                                           testing::ValuesIn(spsm_coo_orderB_range),

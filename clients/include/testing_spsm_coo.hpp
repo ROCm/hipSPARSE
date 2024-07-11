@@ -227,6 +227,12 @@ hipsparseStatus_t testing_spsm_coo(Arguments argus)
         return HIPSPARSE_STATUS_INTERNAL_ERROR;
     }
 
+    if(m != n)
+    {
+        // Skip non-square matrices
+        return HIPSPARSE_STATUS_SUCCESS;
+    }
+
     std::vector<I> hrow_ind(nnz);
 
     // Convert to COO

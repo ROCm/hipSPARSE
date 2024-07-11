@@ -25,22 +25,28 @@
 
 #include <hipsparse.h>
 
+struct alpha_beta
+{
+    double alpha;
+    double beta;
+};
+
 typedef std::tuple<int,
                    int,
                    int,
-                   double,
-                   double,
+                   alpha_beta,
                    hipsparseOperation_t,
                    hipsparseOperation_t,
+                   hipsparseOrder_t,
                    hipsparseOrder_t,
                    hipsparseIndexBase_t,
                    hipsparseSDDMMAlg_t>
     sddmm_coo_aos_tuple;
 typedef std::tuple<int,
-                   double,
-                   double,
+                   alpha_beta,
                    hipsparseOperation_t,
                    hipsparseOperation_t,
+                   hipsparseOrder_t,
                    hipsparseOrder_t,
                    hipsparseIndexBase_t,
                    hipsparseSDDMMAlg_t,
@@ -51,12 +57,12 @@ int sddmm_coo_aos_M_range[] = {50};
 int sddmm_coo_aos_N_range[] = {84};
 int sddmm_coo_aos_K_range[] = {5};
 
-std::vector<double> sddmm_coo_aos_alpha_range = {2.0};
-std::vector<double> sddmm_coo_aos_beta_range  = {1.0};
+alpha_beta sddmm_coo_aos_alpha_beta_range[] = {{2.0, 1.0}};
 
 hipsparseOperation_t sddmm_coo_aos_transA_range[] = {HIPSPARSE_OPERATION_NON_TRANSPOSE};
 hipsparseOperation_t sddmm_coo_aos_transB_range[] = {HIPSPARSE_OPERATION_NON_TRANSPOSE};
-hipsparseOrder_t     sddmm_coo_aos_order_range[]  = {HIPSPARSE_ORDER_COL};
+hipsparseOrder_t     sddmm_coo_aos_orderA_range[]  = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
+hipsparseOrder_t     sddmm_coo_aos_orderB_range[]  = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
 hipsparseIndexBase_t sddmm_coo_aos_idxbase_range[]
     = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 hipsparseSDDMMAlg_t sddmm_coo_aos_alg_range[] = {HIPSPARSE_SDDMM_ALG_DEFAULT};
@@ -95,12 +101,13 @@ Arguments setup_sddmm_coo_aos_arguments(sddmm_coo_aos_tuple tup)
     arg.M         = std::get<0>(tup);
     arg.N         = std::get<1>(tup);
     arg.K         = std::get<2>(tup);
-    arg.alpha     = std::get<3>(tup);
-    arg.beta      = std::get<4>(tup);
-    arg.transA    = std::get<5>(tup);
-    arg.transB    = std::get<6>(tup);
-    arg.orderA    = std::get<7>(tup);
-    arg.baseA     = std::get<8>(tup);
+    arg.alpha     = std::get<3>(tup).alpha;
+    arg.beta      = std::get<3>(tup).beta;
+    arg.transA    = std::get<4>(tup);
+    arg.transB    = std::get<5>(tup);
+    arg.orderA    = std::get<6>(tup);
+    arg.orderB    = std::get<7>(tup);
+    arg.baseC     = std::get<8>(tup);
     arg.sddmm_alg = std::get<9>(tup);
     arg.timing    = 0;
     return arg;
@@ -112,12 +119,13 @@ Arguments setup_sddmm_coo_aos_arguments(sddmm_coo_aos_bin_tuple tup)
     arg.M         = -99;
     arg.N         = -99;
     arg.K         = std::get<0>(tup);
-    arg.alpha     = std::get<1>(tup);
-    arg.beta      = std::get<2>(tup);
-    arg.transA    = std::get<3>(tup);
-    arg.transB    = std::get<4>(tup);
-    arg.orderA    = std::get<5>(tup);
-    arg.baseA     = std::get<6>(tup);
+    arg.alpha     = std::get<1>(tup).alpha;
+    arg.beta      = std::get<1>(tup).beta;
+    arg.transA    = std::get<2>(tup);
+    arg.transB    = std::get<3>(tup);
+    arg.orderA    = std::get<4>(tup);
+    arg.orderB    = std::get<5>(tup);
+    arg.baseC     = std::get<6>(tup);
     arg.sddmm_alg = std::get<7>(tup);
     arg.timing    = 0;
 
@@ -190,22 +198,22 @@ INSTANTIATE_TEST_SUITE_P(sddmm_coo_aos,
                          testing::Combine(testing::ValuesIn(sddmm_coo_aos_M_range),
                                           testing::ValuesIn(sddmm_coo_aos_N_range),
                                           testing::ValuesIn(sddmm_coo_aos_K_range),
-                                          testing::ValuesIn(sddmm_coo_aos_alpha_range),
-                                          testing::ValuesIn(sddmm_coo_aos_beta_range),
+                                          testing::ValuesIn(sddmm_coo_aos_alpha_beta_range),
                                           testing::ValuesIn(sddmm_coo_aos_transA_range),
                                           testing::ValuesIn(sddmm_coo_aos_transB_range),
-                                          testing::ValuesIn(sddmm_coo_aos_order_range),
+                                          testing::ValuesIn(sddmm_coo_aos_orderA_range),
+                                          testing::ValuesIn(sddmm_coo_aos_orderB_range),
                                           testing::ValuesIn(sddmm_coo_aos_idxbase_range),
                                           testing::ValuesIn(sddmm_coo_aos_alg_range)));
 
 INSTANTIATE_TEST_SUITE_P(sddmm_coo_aos_bin,
                          parameterized_sddmm_coo_aos_bin,
                          testing::Combine(testing::ValuesIn(sddmm_coo_aos_K_range),
-                                          testing::ValuesIn(sddmm_coo_aos_alpha_range),
-                                          testing::ValuesIn(sddmm_coo_aos_beta_range),
+                                          testing::ValuesIn(sddmm_coo_aos_alpha_beta_range),
                                           testing::ValuesIn(sddmm_coo_aos_transA_range),
                                           testing::ValuesIn(sddmm_coo_aos_transB_range),
-                                          testing::ValuesIn(sddmm_coo_aos_order_range),
+                                          testing::ValuesIn(sddmm_coo_aos_orderA_range),
+                                          testing::ValuesIn(sddmm_coo_aos_orderB_range),
                                           testing::ValuesIn(sddmm_coo_aos_idxbase_range),
                                           testing::ValuesIn(sddmm_coo_aos_alg_range),
                                           testing::ValuesIn(sddmm_coo_aos_bin)));
