@@ -359,11 +359,11 @@ hipsparseStatus_t testing_sddmm_coo_aos(Arguments argus)
         CHECK_HIP_ERROR(hipMemcpy(hval2.data(), dval2, sizeof(T) * nnz, hipMemcpyDeviceToHost));
 
         const int64_t incA = (orderA == HIPSPARSE_ORDER_COL)
-                           ? ((transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? lda : 1)
-                           : ((transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? 1 : lda);
+                                 ? ((transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? lda : 1)
+                                 : ((transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? 1 : lda);
         const int64_t incB = (orderB == HIPSPARSE_ORDER_COL)
-                           ? ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? 1 : ldb)
-                           : ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? ldb : 1);
+                                 ? ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? 1 : ldb)
+                                 : ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? ldb : 1);
 
         for(I i = 0; i < nnz; ++i)
         {

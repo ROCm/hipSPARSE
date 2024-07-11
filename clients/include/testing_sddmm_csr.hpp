@@ -355,16 +355,16 @@ hipsparseStatus_t testing_sddmm_csr(Arguments argus)
         CHECK_HIP_ERROR(hipMemcpy(hval2.data(), dval2, sizeof(T) * nnz, hipMemcpyDeviceToHost));
 
         const int64_t incA = (orderA == HIPSPARSE_ORDER_COL)
-                           ? ((transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? lda : 1)
-                           : ((transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? 1 : lda);
+                                 ? ((transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? lda : 1)
+                                 : ((transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? 1 : lda);
         const int64_t incB = (orderB == HIPSPARSE_ORDER_COL)
-                           ? ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? 1 : ldb)
-                           : ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? ldb : 1);
+                                 ? ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? 1 : ldb)
+                                 : ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? ldb : 1);
 
         for(J r = 0; r < C_m; r++)
         {
             I start = hcsr_row_ptr[r] - idx_base;
-            I end = hcsr_row_ptr[r + 1] - idx_base;
+            I end   = hcsr_row_ptr[r + 1] - idx_base;
 
             for(I j = start; j < end; j++)
             {
@@ -372,13 +372,13 @@ hipsparseStatus_t testing_sddmm_csr(Arguments argus)
 
                 const T* Aptr
                     = (orderA == HIPSPARSE_ORDER_COL)
-                        ? ((transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? &hA[r] : &hA[lda * r])
-                        : ((transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? &hA[lda * r] : &hA[r]);
+                          ? ((transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? &hA[r] : &hA[lda * r])
+                          : ((transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? &hA[lda * r] : &hA[r]);
 
                 const T* Bptr
                     = (orderB == HIPSPARSE_ORDER_COL)
-                        ? ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? &hB[ldb * c] : &hB[c])
-                        : ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? &hB[c] : &hB[ldb * c]);
+                          ? ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? &hB[ldb * c] : &hB[c])
+                          : ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? &hB[c] : &hB[ldb * c]);
 
                 T sum = static_cast<T>(0);
                 for(I s = 0; s < k; ++s)
