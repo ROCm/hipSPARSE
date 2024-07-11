@@ -55,7 +55,7 @@ typedef std::tuple<int,
     spsm_csr_bin_tuple;
 
 M_N spsm_csr_M_N_range[] = {{50, 50}};
-int spsm_csr_K_range[] = {22};
+int spsm_csr_K_range[]   = {22};
 
 std::vector<double> spsm_csr_alpha_range = {2.0};
 
