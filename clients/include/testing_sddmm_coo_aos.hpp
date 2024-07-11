@@ -344,10 +344,12 @@ hipsparseStatus_t testing_sddmm_coo_aos(Arguments argus)
     if(argus.unit_check)
     {
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
-        CHECK_HIPSPARSE_ERROR(hipsparseSDDMM(handle, transA, transB, &h_alpha, A, B, &h_beta, C1, typeT, alg, buffer));
+        CHECK_HIPSPARSE_ERROR(hipsparseSDDMM(
+            handle, transA, transB, &h_alpha, A, B, &h_beta, C1, typeT, alg, buffer));
 
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
-        CHECK_HIPSPARSE_ERROR(hipsparseSDDMM(handle, transA, transB, d_alpha, A, B, d_beta, C2, typeT, alg, buffer));
+        CHECK_HIPSPARSE_ERROR(
+            hipsparseSDDMM(handle, transA, transB, d_alpha, A, B, d_beta, C2, typeT, alg, buffer));
 
         // copy output from device to CPU.
         std::vector<T> hval1(nnz);
