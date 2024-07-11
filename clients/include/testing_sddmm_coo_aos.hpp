@@ -58,7 +58,8 @@ void testing_sddmm_coo_aos_bad_arg(void)
     float                beta      = 0.2;
     hipsparseOperation_t transA    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
     hipsparseOperation_t transB    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
-    hipsparseOrder_t     order     = HIPSPARSE_ORDER_COL;
+    hipsparseOrder_t     orderA    = HIPSPARSE_ORDER_COL;
+    hipsparseOrder_t     orderB    = HIPSPARSE_ORDER_COL;
     hipsparseIndexBase_t idxBase   = HIPSPARSE_INDEX_BASE_ZERO;
     hipsparseIndexType_t idxTypeI  = HIPSPARSE_INDEX_32I;
     hipDataType          dataType  = HIP_R_32F;
@@ -87,9 +88,9 @@ void testing_sddmm_coo_aos_bad_arg(void)
     size_t bsize;
 
     // Create SDDMM structures
-    verify_hipsparse_status_success(hipsparseCreateDnMat(&A, m, k, m, dA, dataType, order),
+    verify_hipsparse_status_success(hipsparseCreateDnMat(&A, m, k, m, dA, dataType, orderA),
                                     "success");
-    verify_hipsparse_status_success(hipsparseCreateDnMat(&B, k, n, k, dB, dataType, order),
+    verify_hipsparse_status_success(hipsparseCreateDnMat(&B, k, n, k, dB, dataType, orderB),
                                     "success");
     verify_hipsparse_status_success(
         hipsparseCreateCooAoS(&C, m, n, nnz, drowcol, dval, idxTypeI, idxBase, dataType),

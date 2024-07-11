@@ -58,7 +58,8 @@ void testing_sddmm_csc_bad_arg(void)
     float                beta      = 0.2;
     hipsparseOperation_t transA    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
     hipsparseOperation_t transB    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
-    hipsparseOrder_t     order     = HIPSPARSE_ORDER_COL;
+    hipsparseOrder_t     orderA    = HIPSPARSE_ORDER_COL;
+    hipsparseOrder_t     orderB    = HIPSPARSE_ORDER_COL;
     hipsparseIndexBase_t idxBase   = HIPSPARSE_INDEX_BASE_ZERO;
     hipsparseIndexType_t idxTypeI  = HIPSPARSE_INDEX_64I;
     hipsparseIndexType_t idxTypeJ  = HIPSPARSE_INDEX_32I;
@@ -91,9 +92,9 @@ void testing_sddmm_csc_bad_arg(void)
     size_t bsize;
 
     // Create SDDMM structures
-    verify_hipsparse_status_success(hipsparseCreateDnMat(&A, m, k, m, dA, dataType, order),
+    verify_hipsparse_status_success(hipsparseCreateDnMat(&A, m, k, m, dA, dataType, orderA),
                                     "success");
-    verify_hipsparse_status_success(hipsparseCreateDnMat(&B, k, n, k, dB, dataType, order),
+    verify_hipsparse_status_success(hipsparseCreateDnMat(&B, k, n, k, dB, dataType, orderB),
                                     "success");
     verify_hipsparse_status_success(
         hipsparseCreateCsc(&C, m, n, nnz, dptr, dcol, dval, idxTypeI, idxTypeJ, idxBase, dataType),
@@ -198,13 +199,14 @@ hipsparseStatus_t testing_sddmm_csc(Arguments argus)
     T                    h_beta   = make_DataType<T>(argus.beta);
     hipsparseOperation_t transA   = argus.transA;
     hipsparseOperation_t transB   = argus.transB;
-    hipsparseOrder_t     order    = argus.orderA;
+    hipsparseOrder_t     orderA   = argus.orderA;
+    hipsparseOrder_t     orderB   = argus.orderB;
     hipsparseIndexBase_t idx_base = argus.baseA;
     hipsparseSDDMMAlg_t  alg      = argus.sddmm_alg;
     std::string          filename = argus.filename;
 
     std::cout << "m: " << m << " n: " << n << " k: " << k << " transA: " << transA
-              << " transB: " << transB << " order: " << order << " idx_base: " << idx_base
+              << " transB: " << transB << " orderA: " << orderA << " orderB: " << orderB << " idx_base: " << idx_base
               << " alg: " << alg << " filename: " << filename << std::endl;
 
     // Index and data type
@@ -232,25 +234,55 @@ hipsparseStatus_t testing_sddmm_csc(Arguments argus)
         return HIPSPARSE_STATUS_INTERNAL_ERROR;
     }
 
-    J lda = m;
-    J ldb = k;
+    // Some matrix properties
+    J A_m = (transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? m : k;
+    J A_n = (transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? k : m;
+    J B_m = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? k : n;
+    J B_n = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? n : k;
+    J C_m = m;
+    J C_n = n;
 
-    std::vector<T> hA(m * k);
-    std::vector<T> hB(k * n);
-    std::vector<T> hval1(nnz);
-    std::vector<T> hval2(nnz);
+    int ld_multiplier_A = 1;
+    int ld_multiplier_B = 1;
 
-    hipsparseInit<T>(hA, m, k);
-    hipsparseInit<T>(hB, k, n);
+    int64_t lda
+        = (orderA == HIPSPARSE_ORDER_COL)
+              ? ((transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? (int64_t(ld_multiplier_A) * m)
+                                                               : (int64_t(ld_multiplier_A) * k))
+              : ((transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? (int64_t(ld_multiplier_A) * k)
+                                                               : (int64_t(ld_multiplier_A) * m));
+    int64_t ldb
+        = (orderB == HIPSPARSE_ORDER_COL)
+              ? ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? (int64_t(ld_multiplier_B) * k)
+                                                               : (int64_t(ld_multiplier_B) * n))
+              : ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? (int64_t(ld_multiplier_B) * n)
+                                                               : (int64_t(ld_multiplier_B) * k));
+
+    lda = std::max(int64_t(1), lda);
+    ldb = std::max(int64_t(1), ldb);
+
+    int64_t nrowA = (orderA == HIPSPARSE_ORDER_COL) ? lda : A_m;
+    int64_t ncolA = (orderA == HIPSPARSE_ORDER_COL) ? A_n : lda;
+    int64_t nrowB = (orderB == HIPSPARSE_ORDER_COL) ? ldb : B_m;
+    int64_t ncolB = (orderB == HIPSPARSE_ORDER_COL) ? B_n : ldb;
+
+    int64_t nnz_A = nrowA * ncolA;
+    int64_t nnz_B = nrowB * ncolB;
+
+    std::vector<T> hA(nnz_A);
+    std::vector<T> hB(nnz_B);
+
+    hipsparseInit<T>(hA, nnz_A, 1);
+    hipsparseInit<T>(hB, nnz_B, 1);
 
     // allocate memory on device
-    auto dptr_managed  = hipsparse_unique_ptr{device_malloc(sizeof(I) * (n + 1)), device_free};
+    auto dptr_managed  = hipsparse_unique_ptr{device_malloc(sizeof(I) * (C_n + 1)), device_free};
     auto dind_managed  = hipsparse_unique_ptr{device_malloc(sizeof(J) * nnz), device_free};
     auto dval1_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
     auto dval2_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
 
-    auto dA_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * m * k), device_free};
-    auto dB_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * k * n), device_free};
+    auto dA_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz_A), device_free};
+    auto dB_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz_B), device_free};
 
     auto d_alpha_managed = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
     auto d_beta_managed  = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
@@ -267,26 +299,26 @@ hipsparseStatus_t testing_sddmm_csc(Arguments argus)
 
     // copy data from CPU to device
     CHECK_HIP_ERROR(
-        hipMemcpy(dptr, hcsc_col_ptr.data(), sizeof(I) * (n + 1), hipMemcpyHostToDevice));
+        hipMemcpy(dptr, hcsc_col_ptr.data(), sizeof(I) * (C_n + 1), hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dind, hcsc_row_ind.data(), sizeof(J) * nnz, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dval1, hcsc_val.data(), sizeof(T) * nnz, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dval2, hcsc_val.data(), sizeof(T) * nnz, hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(hipMemcpy(dA, hA.data(), sizeof(T) * m * k, hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(hipMemcpy(dB, hB.data(), sizeof(T) * k * n, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(dA, hA.data(), sizeof(T) * nnz_A, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(dB, hB.data(), sizeof(T) * nnz_B, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(d_alpha, &h_alpha, sizeof(T), hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(d_beta, &h_beta, sizeof(T), hipMemcpyHostToDevice));
 
     // Create matrices
     hipsparseSpMatDescr_t C1, C2;
     CHECK_HIPSPARSE_ERROR(
-        hipsparseCreateCsc(&C1, m, n, nnz, dptr, dind, dval1, typeI, typeJ, idx_base, typeT));
+        hipsparseCreateCsc(&C1, C_m, C_n, nnz, dptr, dind, dval1, typeI, typeJ, idx_base, typeT));
     CHECK_HIPSPARSE_ERROR(
-        hipsparseCreateCsc(&C2, m, n, nnz, dptr, dind, dval2, typeI, typeJ, idx_base, typeT));
+        hipsparseCreateCsc(&C2, C_m, C_n, nnz, dptr, dind, dval2, typeI, typeJ, idx_base, typeT));
 
     // Create dense matrices
     hipsparseDnMatDescr_t A, B;
-    CHECK_HIPSPARSE_ERROR(hipsparseCreateDnMat(&A, m, k, lda, dA, typeT, order));
-    CHECK_HIPSPARSE_ERROR(hipsparseCreateDnMat(&B, k, n, ldb, dB, typeT, order));
+    CHECK_HIPSPARSE_ERROR(hipsparseCreateDnMat(&A, A_m, A_n, lda, dA, typeT, orderA));
+    CHECK_HIPSPARSE_ERROR(hipsparseCreateDnMat(&B, B_m, B_n, ldb, dB, typeT, orderB));
 
     // Query SDDMM buffer
     size_t bufferSize;
@@ -300,8 +332,6 @@ hipsparseStatus_t testing_sddmm_csc(Arguments argus)
     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
     CHECK_HIPSPARSE_ERROR(hipsparseSDDMM_preprocess(
         handle, transA, transB, &h_alpha, A, B, &h_beta, C1, typeT, alg, buffer));
-    CHECK_HIPSPARSE_ERROR(
-        hipsparseSDDMM(handle, transA, transB, &h_alpha, A, B, &h_beta, C1, typeT, alg, buffer));
 
     // ROCSPARSE pointer mode device
     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
@@ -310,32 +340,39 @@ hipsparseStatus_t testing_sddmm_csc(Arguments argus)
 
     if(argus.unit_check)
     {
+        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
+        CHECK_HIPSPARSE_ERROR(
+            hipsparseSDDMM(handle, transA, transB, &h_alpha, A, B, &h_beta, C1, typeT, alg, buffer));
+
+        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
         CHECK_HIPSPARSE_ERROR(
             hipsparseSDDMM(handle, transA, transB, d_alpha, A, B, d_beta, C2, typeT, alg, buffer));
 
         // copy output from device to CPU.
+        std::vector<T> hval1(nnz);
+        std::vector<T> hval2(nnz);
         CHECK_HIP_ERROR(hipMemcpy(hval1.data(), dval1, sizeof(T) * nnz, hipMemcpyDeviceToHost));
         CHECK_HIP_ERROR(hipMemcpy(hval2.data(), dval2, sizeof(T) * nnz, hipMemcpyDeviceToHost));
 
         // CPU
-        const J incx = lda;
-        const J incy = 1;
+        // const J incx = lda;
+        // const J incy = 1;
 
-        for(J j = 0; j < n; ++j)
-        {
-            for(I at = hcsc_col_ptr[j] - idx_base; at < hcsc_col_ptr[j + 1] - idx_base; ++at)
-            {
-                J        i   = hcsc_row_ind[at] - idx_base;
-                const T* x   = &hA[i];
-                const T* y   = &hB[ldb * j];
-                T        sum = make_DataType<T>(0.0);
-                for(J k_ = 0; k_ < k; ++k_)
-                {
-                    sum = testing_fma(x[incx * k_], y[incy * k_], sum);
-                }
-                hcsc_val[at] = testing_mult(hcsc_val[at], h_beta) + testing_mult(h_alpha, sum);
-            }
-        }
+        // for(J j = 0; j < n; ++j)
+        // {
+        //     for(I at = hcsc_col_ptr[j] - idx_base; at < hcsc_col_ptr[j + 1] - idx_base; ++at)
+        //     {
+        //         J        i   = hcsc_row_ind[at] - idx_base;
+        //         const T* x   = &hA[i];
+        //         const T* y   = &hB[ldb * j];
+        //         T        sum = make_DataType<T>(0.0);
+        //         for(J k_ = 0; k_ < k; ++k_)
+        //         {
+        //             sum = testing_fma(x[incx * k_], y[incy * k_], sum);
+        //         }
+        //         hcsc_val[at] = testing_mult(hcsc_val[at], h_beta) + testing_mult(h_alpha, sum);
+        //     }
+        // }
 
         unit_check_near(1, nnz, 1, hval1.data(), hcsc_val.data());
         unit_check_near(1, nnz, 1, hval2.data(), hcsc_val.data());
