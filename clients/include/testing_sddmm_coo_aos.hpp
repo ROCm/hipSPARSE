@@ -277,8 +277,6 @@ hipsparseStatus_t testing_sddmm_coo_aos(Arguments argus)
 
     std::vector<T> hA(A_m * A_n);
     std::vector<T> hB(B_m * B_n);
-    std::vector<T> hval1(nnz);
-    std::vector<T> hval2(nnz);
 
     hipsparseInit<T>(hA, nnz_A, 1);
     hipsparseInit<T>(hB, nnz_B, 1);
@@ -337,8 +335,6 @@ hipsparseStatus_t testing_sddmm_coo_aos(Arguments argus)
     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
     CHECK_HIPSPARSE_ERROR(hipsparseSDDMM_preprocess(
         handle, transA, transB, &h_alpha, A, B, &h_beta, C1, typeT, alg, buffer));
-    CHECK_HIPSPARSE_ERROR(
-        hipsparseSDDMM(handle, transA, transB, &h_alpha, A, B, &h_beta, C1, typeT, alg, buffer));
 
     // ROCSPARSE pointer mode device
     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
@@ -347,10 +343,15 @@ hipsparseStatus_t testing_sddmm_coo_aos(Arguments argus)
 
     if(argus.unit_check)
     {
-        CHECK_HIPSPARSE_ERROR(
-            hipsparseSDDMM(handle, transA, transB, d_alpha, A, B, d_beta, C2, typeT, alg, buffer));
+        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
+        CHECK_HIPSPARSE_ERROR(hipsparseSDDMM(handle, transA, transB, &h_alpha, A, B, &h_beta, C1, typeT, alg, buffer));
+
+        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
+        CHECK_HIPSPARSE_ERROR(hipsparseSDDMM(handle, transA, transB, d_alpha, A, B, d_beta, C2, typeT, alg, buffer));
 
         // copy output from device to CPU.
+        std::vector<T> hval1(nnz);
+        std::vector<T> hval2(nnz);
         CHECK_HIP_ERROR(hipMemcpy(hval1.data(), dval1, sizeof(T) * nnz, hipMemcpyDeviceToHost));
         CHECK_HIP_ERROR(hipMemcpy(hval2.data(), dval2, sizeof(T) * nnz, hipMemcpyDeviceToHost));
 
@@ -364,7 +365,7 @@ hipsparseStatus_t testing_sddmm_coo_aos(Arguments argus)
         for(I i = 0; i < nnz; ++i)
         {
             const I r = hrowcol_ind[2 * i] - idx_base;
-            const I c = hrowcol_ind[2 * i] - idx_base;
+            const I c = hrowcol_ind[2 * i + 1] - idx_base;
 
             const T* Aptr
                 = (orderA == HIPSPARSE_ORDER_COL)
@@ -383,30 +384,6 @@ hipsparseStatus_t testing_sddmm_coo_aos(Arguments argus)
             }
             hcsr_val[i] = testing_mult(hcsr_val[i], h_beta) + testing_mult(h_alpha, sum);
         }
-
-        // // CPU
-        // const I incx = (orderA == HIPSPARSE_ORDER_COL)
-        //                         ? ((transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? lda : 1)
-        //                         : ((transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? 1 : lda);
-        // const I incy = (orderB == HIPSPARSE_ORDER_COL)
-        //                         ? ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? 1 : ldb)
-        //                         : ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? ldb : 1);
-
-        // for(I i = 0; i < m; ++i)
-        // {
-        //     for(I at = hcsr_row_ptr[i] - idx_base; at < hcsr_row_ptr[i + 1] - idx_base; ++at)
-        //     {
-        //         I        j   = hcsr_col_ind[at] - idx_base;
-        //         const T* x   = &hA[i];
-        //         const T* y   = &hB[ldb * j];
-        //         T        sum = make_DataType<T>(0.0);
-        //         for(I k_ = 0; k_ < k; ++k_)
-        //         {
-        //             sum = testing_fma(x[incx * k_], y[incy * k_], sum);
-        //         }
-        //         hcsr_val[at] = testing_mult(hcsr_val[at], h_beta) + testing_mult(h_alpha, sum);
-        //     }
-        // }
 
         unit_check_near(1, nnz, 1, hval1.data(), hcsr_val.data());
         unit_check_near(1, nnz, 1, hval2.data(), hcsr_val.data());
