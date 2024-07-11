@@ -25,11 +25,11 @@
 #ifndef TESTING_SPMM_CSC_HPP
 #define TESTING_SPMM_CSC_HPP
 
+#include "flops.hpp"
+#include "gbyte.hpp"
 #include "hipsparse.hpp"
 #include "hipsparse_arguments.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
-#include "flops.hpp"
-#include "gbyte.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
 
@@ -384,22 +384,22 @@ hipsparseStatus_t testing_spmm_csc(Arguments argus)
 
         // CPU
         host_cscmm(A_m,
-                n,
-                A_n,
-                transA,
-                transB,
-                h_alpha,
-                hcsc_col_ptr.data(),
-                hcsc_row_ind.data(),
-                hcsc_val.data(),
-                hB.data(),
-                (J)ldb,
-                orderB,
-                h_beta,
-                hC_gold.data(),
-                (J)ldc,
-                orderC,
-                idx_base);
+                   n,
+                   A_n,
+                   transA,
+                   transB,
+                   h_alpha,
+                   hcsc_col_ptr.data(),
+                   hcsc_row_ind.data(),
+                   hcsc_val.data(),
+                   hB.data(),
+                   (J)ldb,
+                   orderB,
+                   h_beta,
+                   hC_gold.data(),
+                   (J)ldc,
+                   orderC,
+                   idx_base);
 
         unit_check_near(1, nnz_C, 1, hC_gold.data(), hC_1.data());
         unit_check_near(1, nnz_C, 1, hC_gold.data(), hC_2.data());
@@ -415,8 +415,8 @@ hipsparseStatus_t testing_spmm_csc(Arguments argus)
         // Warm up
         for(int iter = 0; iter < number_cold_calls; ++iter)
         {
-            CHECK_HIPSPARSE_ERROR(
-                hipsparseSpMM(handle, transA, transB, &h_alpha, A, B, &h_beta, C1, typeT, alg, buffer));
+            CHECK_HIPSPARSE_ERROR(hipsparseSpMM(
+                handle, transA, transB, &h_alpha, A, B, &h_beta, C1, typeT, alg, buffer));
         }
 
         double gpu_time_used = get_time_us();
@@ -424,8 +424,8 @@ hipsparseStatus_t testing_spmm_csc(Arguments argus)
         // Performance run
         for(int iter = 0; iter < number_hot_calls; ++iter)
         {
-            CHECK_HIPSPARSE_ERROR(
-                hipsparseSpMM(handle, transA, transB, &h_alpha, A, B, &h_beta, C1, typeT, alg, buffer));
+            CHECK_HIPSPARSE_ERROR(hipsparseSpMM(
+                handle, transA, transB, &h_alpha, A, B, &h_beta, C1, typeT, alg, buffer));
         }
 
         gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;

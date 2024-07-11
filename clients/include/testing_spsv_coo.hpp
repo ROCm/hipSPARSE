@@ -25,10 +25,10 @@
 #ifndef TESTING_SPSV_COO_HPP
 #define TESTING_SPSV_COO_HPP
 
-#include "hipsparse_arguments.hpp"
-#include "hipsparse_test_unique_ptr.hpp"
 #include "flops.hpp"
 #include "gbyte.hpp"
+#include "hipsparse_arguments.hpp"
+#include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
 
@@ -309,19 +309,19 @@ hipsparseStatus_t testing_spsv_coo(Arguments argus)
         I struct_pivot  = -1;
         I numeric_pivot = -1;
         host_coosv(transA,
-                m,
-                nnz,
-                h_alpha,
-                hrow_ind,
-                hcol_ind,
-                hval,
-                hx,
-                hy_gold,
-                diag,
-                uplo,
-                idx_base,
-                &struct_pivot,
-                &numeric_pivot);
+                   m,
+                   nnz,
+                   h_alpha,
+                   hrow_ind,
+                   hcol_ind,
+                   hval,
+                   hx,
+                   hy_gold,
+                   diag,
+                   uplo,
+                   idx_base,
+                   &struct_pivot,
+                   &numeric_pivot);
 
         if(struct_pivot == -1 && numeric_pivot == -1)
         {

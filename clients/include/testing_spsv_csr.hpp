@@ -25,10 +25,10 @@
 #ifndef TESTING_SPSV_CSR_HPP
 #define TESTING_SPSV_CSR_HPP
 
-#include "hipsparse_arguments.hpp"
-#include "hipsparse_test_unique_ptr.hpp"
 #include "flops.hpp"
 #include "gbyte.hpp"
+#include "hipsparse_arguments.hpp"
+#include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
 
@@ -301,19 +301,19 @@ hipsparseStatus_t testing_spsv_csr(Arguments argus)
         J struct_pivot  = -1;
         J numeric_pivot = -1;
         host_csrsv(transA,
-                m,
-                nnz,
-                h_alpha,
-                hcsr_row_ptr.data(),
-                hcsr_col_ind.data(),
-                hcsr_val.data(),
-                hx.data(),
-                hy_gold.data(),
-                diag,
-                uplo,
-                idx_base,
-                &struct_pivot,
-                &numeric_pivot);
+                   m,
+                   nnz,
+                   h_alpha,
+                   hcsr_row_ptr.data(),
+                   hcsr_col_ind.data(),
+                   hcsr_val.data(),
+                   hx.data(),
+                   hy_gold.data(),
+                   diag,
+                   uplo,
+                   idx_base,
+                   &struct_pivot,
+                   &numeric_pivot);
 
         if(struct_pivot == -1 && numeric_pivot == -1)
         {

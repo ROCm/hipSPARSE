@@ -25,11 +25,11 @@
 #ifndef TESTING_SPMM_BATCHED_CSR_HPP
 #define TESTING_SPMM_BATCHED_CSR_HPP
 
+#include "flops.hpp"
+#include "gbyte.hpp"
 #include "hipsparse.hpp"
 #include "hipsparse_arguments.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
-#include "flops.hpp"
-#include "gbyte.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
 
@@ -423,30 +423,30 @@ hipsparseStatus_t testing_spmm_batched_csr(Arguments argus)
 
         // CPU
         host_csrmm_batched(A_m,
-                        n,
-                        A_n,
-                        batch_count_A,
-                        (I)offsets_batch_stride_A,
-                        (I)columns_values_batch_stride_A,
-                        transA,
-                        transB,
-                        h_alpha,
-                        hcsr_row_ptr.data(),
-                        hcsr_col_ind.data(),
-                        hcsr_val.data(),
-                        hB.data(),
-                        (J)ldb,
-                        batch_count_B,
-                        (I)batch_stride_B,
-                        orderB,
-                        h_beta,
-                        hC_gold.data(),
-                        (J)ldc,
-                        batch_count_C,
-                        (I)batch_stride_C,
-                        orderC,
-                        idx_base,
-                        false);
+                           n,
+                           A_n,
+                           batch_count_A,
+                           (I)offsets_batch_stride_A,
+                           (I)columns_values_batch_stride_A,
+                           transA,
+                           transB,
+                           h_alpha,
+                           hcsr_row_ptr.data(),
+                           hcsr_col_ind.data(),
+                           hcsr_val.data(),
+                           hB.data(),
+                           (J)ldb,
+                           batch_count_B,
+                           (I)batch_stride_B,
+                           orderB,
+                           h_beta,
+                           hC_gold.data(),
+                           (J)ldc,
+                           batch_count_C,
+                           (I)batch_stride_C,
+                           orderC,
+                           idx_base,
+                           false);
 
         unit_check_near(1, batch_count_C * nnz_C, 1, hC_gold.data(), hC_1.data());
         unit_check_near(1, batch_count_C * nnz_C, 1, hC_gold.data(), hC_2.data());
@@ -462,8 +462,8 @@ hipsparseStatus_t testing_spmm_batched_csr(Arguments argus)
         // Warm up
         for(int iter = 0; iter < number_cold_calls; ++iter)
         {
-            CHECK_HIPSPARSE_ERROR(
-                hipsparseSpMM(handle, transA, transB, &h_alpha, A, B, &h_beta, C1, typeT, alg, buffer));
+            CHECK_HIPSPARSE_ERROR(hipsparseSpMM(
+                handle, transA, transB, &h_alpha, A, B, &h_beta, C1, typeT, alg, buffer));
         }
 
         double gpu_time_used = get_time_us();
@@ -471,8 +471,8 @@ hipsparseStatus_t testing_spmm_batched_csr(Arguments argus)
         // Performance run
         for(int iter = 0; iter < number_hot_calls; ++iter)
         {
-            CHECK_HIPSPARSE_ERROR(
-                hipsparseSpMM(handle, transA, transB, &h_alpha, A, B, &h_beta, C1, typeT, alg, buffer));
+            CHECK_HIPSPARSE_ERROR(hipsparseSpMM(
+                handle, transA, transB, &h_alpha, A, B, &h_beta, C1, typeT, alg, buffer));
         }
 
         gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;

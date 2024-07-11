@@ -25,11 +25,11 @@
 #ifndef TESTING_SPMM_COO_HPP
 #define TESTING_SPMM_COO_HPP
 
+#include "flops.hpp"
+#include "gbyte.hpp"
 #include "hipsparse.hpp"
 #include "hipsparse_arguments.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
-#include "flops.hpp"
-#include "gbyte.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
 
@@ -391,23 +391,23 @@ hipsparseStatus_t testing_spmm_coo(Arguments argus)
 
         // CPU
         host_coomm(A_m,
-                n,
-                A_n,
-                nnz_A,
-                transA,
-                transB,
-                h_alpha,
-                hrow_ind.data(),
-                hcol_ind.data(),
-                hval.data(),
-                hB.data(),
-                (I)ldb,
-                orderB,
-                h_beta,
-                hC_gold.data(),
-                (I)ldc,
-                orderC,
-                idx_base);
+                   n,
+                   A_n,
+                   nnz_A,
+                   transA,
+                   transB,
+                   h_alpha,
+                   hrow_ind.data(),
+                   hcol_ind.data(),
+                   hval.data(),
+                   hB.data(),
+                   (I)ldb,
+                   orderB,
+                   h_beta,
+                   hC_gold.data(),
+                   (I)ldc,
+                   orderC,
+                   idx_base);
 
         unit_check_near(1, nnz_C, 1, hC_gold.data(), hC_1.data());
         unit_check_near(1, nnz_C, 1, hC_gold.data(), hC_2.data());
@@ -423,8 +423,8 @@ hipsparseStatus_t testing_spmm_coo(Arguments argus)
         // Warm up
         for(int iter = 0; iter < number_cold_calls; ++iter)
         {
-            CHECK_HIPSPARSE_ERROR(
-                hipsparseSpMM(handle, transA, transB, &h_alpha, A, B, &h_beta, C1, typeT, alg, buffer));
+            CHECK_HIPSPARSE_ERROR(hipsparseSpMM(
+                handle, transA, transB, &h_alpha, A, B, &h_beta, C1, typeT, alg, buffer));
         }
 
         double gpu_time_used = get_time_us();
@@ -432,15 +432,16 @@ hipsparseStatus_t testing_spmm_coo(Arguments argus)
         // Performance run
         for(int iter = 0; iter < number_hot_calls; ++iter)
         {
-            CHECK_HIPSPARSE_ERROR(
-                hipsparseSpMM(handle, transA, transB, &h_alpha, A, B, &h_beta, C1, typeT, alg, buffer));
+            CHECK_HIPSPARSE_ERROR(hipsparseSpMM(
+                handle, transA, transB, &h_alpha, A, B, &h_beta, C1, typeT, alg, buffer));
         }
 
         gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
 
-        double gflop_count = spmm_gflop_count<I>(n, nnz_A, (I)C_m * (I)C_n, h_beta != make_DataType<T>(0));
-        double gbyte_count
-            = coomm_gbyte_count<T, I>(nnz_A, (I)B_m * (I)B_n, (I)C_m * (I)C_n, h_beta != make_DataType<T>(0));
+        double gflop_count
+            = spmm_gflop_count<I>(n, nnz_A, (I)C_m * (I)C_n, h_beta != make_DataType<T>(0));
+        double gbyte_count = coomm_gbyte_count<T, I>(
+            nnz_A, (I)B_m * (I)B_n, (I)C_m * (I)C_n, h_beta != make_DataType<T>(0));
 
         double gpu_gbyte  = get_gpu_gbyte(gpu_time_used, gbyte_count);
         double gpu_gflops = get_gpu_gflops(gpu_time_used, gflop_count);

@@ -25,10 +25,10 @@
 #ifndef TESTING_SPMV_COO_AOS_HPP
 #define TESTING_SPMV_COO_AOS_HPP
 
-#include "hipsparse_arguments.hpp"
-#include "hipsparse_test_unique_ptr.hpp"
 #include "flops.hpp"
 #include "gbyte.hpp"
+#include "hipsparse_arguments.hpp"
+#include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
 
@@ -280,8 +280,8 @@ hipsparseStatus_t testing_spmv_coo_aos(Arguments argus)
         for(I i = 0; i < nnz; ++i)
         {
             hy_gold[hind[2 * i] - idx_base] = testing_fma(testing_mult(h_alpha, hval[i]),
-                                                        hx[hind[2 * i + 1] - idx_base],
-                                                        hy_gold[hind[2 * i] - idx_base]);
+                                                          hx[hind[2 * i + 1] - idx_base],
+                                                          hy_gold[hind[2 * i] - idx_base]);
         }
 
         unit_check_near(1, m, 1, hy_gold.data(), hy_1.data());
