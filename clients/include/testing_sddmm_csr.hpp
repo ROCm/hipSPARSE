@@ -354,25 +354,40 @@ hipsparseStatus_t testing_sddmm_csr(Arguments argus)
         CHECK_HIP_ERROR(hipMemcpy(hval1.data(), dval1, sizeof(T) * nnz, hipMemcpyDeviceToHost));
         CHECK_HIP_ERROR(hipMemcpy(hval2.data(), dval2, sizeof(T) * nnz, hipMemcpyDeviceToHost));
 
-        // CPU
-        // const J incx = lda;
-        // const J incy = 1;
+        const int64_t incA = (orderA == HIPSPARSE_ORDER_COL)
+                           ? ((transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? lda : 1)
+                           : ((transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? 1 : lda);
+        const int64_t incB = (orderB == HIPSPARSE_ORDER_COL)
+                           ? ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? 1 : ldb)
+                           : ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? ldb : 1);
 
-        // for(J i = 0; i < m; ++i)
-        // {
-        //     for(I at = hcsr_row_ptr[i] - idx_base; at < hcsr_row_ptr[i + 1] - idx_base; ++at)
-        //     {
-        //         J        j   = hcsr_col_ind[at] - idx_base;
-        //         const T* x   = &hA[i];
-        //         const T* y   = &hB[ldb * j];
-        //         T        sum = make_DataType<T>(0.0);
-        //         for(J k_ = 0; k_ < k; ++k_)
-        //         {
-        //             sum = testing_fma(x[incx * k_], y[incy * k_], sum);
-        //         }
-        //         hcsr_val[at] = testing_mult(hcsr_val[at], h_beta) + testing_mult(h_alpha, sum);
-        //     }
-        // }
+        for(J r = 0; r < C_m; r++)
+        {
+            I start = hcsr_row_ptr[r] - idx_base;
+            I end = hcsr_row_ptr[r + 1] - idx_base;
+
+            for(I j = start; j < end; j++)
+            {
+                J c = hcsr_col_ind[j] - idx_base;
+
+                const T* Aptr
+                    = (orderA == HIPSPARSE_ORDER_COL)
+                        ? ((transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? &hA[r] : &hA[lda * r])
+                        : ((transA == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? &hA[lda * r] : &hA[r]);
+
+                const T* Bptr
+                    = (orderB == HIPSPARSE_ORDER_COL)
+                        ? ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? &hB[ldb * c] : &hB[c])
+                        : ((transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? &hB[c] : &hB[ldb * c]);
+
+                T sum = static_cast<T>(0);
+                for(I s = 0; s < k; ++s)
+                {
+                    sum = testing_fma(Aptr[incA * s], Bptr[incB * s], sum);
+                }
+                hcsr_val[j] = testing_mult(hcsr_val[j], h_beta) + testing_mult(h_alpha, sum);
+            }
+        }
 
         unit_check_near(1, nnz, 1, hval1.data(), hcsr_val.data());
         unit_check_near(1, nnz, 1, hval2.data(), hcsr_val.data());
