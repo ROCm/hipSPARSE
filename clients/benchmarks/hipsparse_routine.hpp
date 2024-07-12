@@ -34,7 +34,6 @@ HIPSPARSE_DO_ROUTINE(gthrz)         \
 HIPSPARSE_DO_ROUTINE(roti)          \
 HIPSPARSE_DO_ROUTINE(sctr)          \
 HIPSPARSE_DO_ROUTINE(bsrsv2)        \
-HIPSPARSE_DO_ROUTINE(bsrxmv)        \
 HIPSPARSE_DO_ROUTINE(coomv)         \
 HIPSPARSE_DO_ROUTINE(csrmv)         \
 HIPSPARSE_DO_ROUTINE(csrsv)         \

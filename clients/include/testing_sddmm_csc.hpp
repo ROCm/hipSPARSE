@@ -202,7 +202,7 @@ hipsparseStatus_t testing_sddmm_csc(Arguments argus)
     hipsparseOrder_t     orderA   = argus.orderA;
     hipsparseOrder_t     orderB   = argus.orderB;
     hipsparseIndexBase_t idx_base = argus.baseA;
-    hipsparseSDDMMAlg_t  alg      = argus.sddmm_alg;
+    hipsparseSDDMMAlg_t  alg      = static_cast<hipsparseSDDMMAlg_t>(argus.sddmm_alg);
     std::string          filename = argus.filename;
 
     std::cout << "m: " << m << " n: " << n << " k: " << k << " transA: " << transA

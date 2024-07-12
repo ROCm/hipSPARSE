@@ -279,7 +279,7 @@ hipsparseStatus_t testing_csr2csc_ex2(Arguments argus)
     int                   n        = argus.N;
     hipsparseIndexBase_t  idx_base = argus.baseA;
     hipsparseAction_t     action   = argus.action;
-    hipsparseCsr2CscAlg_t alg      = argus.csr2csc_alg;
+    hipsparseCsr2CscAlg_t alg      = static_cast<hipsparseCsr2CscAlg_t>(argus.csr2csc_alg);
     std::string           filename = argus.filename;
 
     std::cout << "m: " << m << " n: " << n << " idx_base: " << idx_base << " action: " << action

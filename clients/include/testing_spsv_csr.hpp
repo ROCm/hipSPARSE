@@ -174,7 +174,7 @@ hipsparseStatus_t testing_spsv_csr(Arguments argus)
     hipsparseIndexBase_t idx_base = argus.baseA;
     hipsparseDiagType_t  diag     = argus.diag_type;
     hipsparseFillMode_t  uplo     = argus.fill_mode;
-    hipsparseSpSVAlg_t   alg      = argus.spsv_alg;
+    hipsparseSpSVAlg_t   alg      = static_cast<hipsparseSpSVAlg_t>(argus.spsv_alg);
     std::string          filename = argus.filename;
 
     std::cout << "m: " << m << " n: " << n << " transA: " << transA << " idx_base: " << idx_base

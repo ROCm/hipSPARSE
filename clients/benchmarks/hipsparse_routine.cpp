@@ -187,7 +187,6 @@ constexpr const char* hipsparse_routine::to_string() const
 // Level2
 #include "testing_bsrmv.hpp"
 #include "testing_bsrsv2.hpp"
-#include "testing_bsrxmv.hpp"
 #include "testing_csrsv2.hpp"
 #include "testing_gemvi.hpp"
 #include "testing_hybmv.hpp"
@@ -351,7 +350,6 @@ hipsparseStatus_t hipsparse_routine::dispatch_call(const Arguments& arg)
 
         // Level2
         DEFINE_CASE_T(bsrsv2);
-        DEFINE_CASE_T(bsrxmv);
         DEFINE_CASE_IT_X(coomv, testing_spmv_coo);
         DEFINE_CASE_IJT_X(csrmv, testing_spmv_csr);
         DEFINE_CASE_IJT_X(csrsv, testing_spsv_csr);

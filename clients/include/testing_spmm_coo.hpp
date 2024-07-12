@@ -204,7 +204,7 @@ hipsparseStatus_t testing_spmm_coo(Arguments argus)
     hipsparseOrder_t     orderB   = argus.orderB;
     hipsparseOrder_t     orderC   = argus.orderC;
     hipsparseIndexBase_t idx_base = argus.baseA;
-    hipsparseSpMMAlg_t   alg      = argus.spmm_alg;
+    hipsparseSpMMAlg_t   alg      = static_cast<hipsparseSpMMAlg_t>(argus.spmm_alg);
     std::string          filename = argus.filename;
 
     // #if(CUDART_VERSION >= 11003)

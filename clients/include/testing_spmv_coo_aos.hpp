@@ -155,7 +155,7 @@ hipsparseStatus_t testing_spmv_coo_aos(Arguments argus)
     T                    h_beta   = make_DataType<T>(argus.beta);
     hipsparseOperation_t transA   = argus.transA;
     hipsparseIndexBase_t idx_base = argus.baseA;
-    hipsparseSpMVAlg_t   alg      = argus.spmv_alg;
+    hipsparseSpMVAlg_t   alg      = static_cast<hipsparseSpMVAlg_t>(argus.spmv_alg);
     std::string          filename = argus.filename;
 
     std::cout << "m: " << m << " n: " << n << " transA: " << transA << " idx_base: " << idx_base

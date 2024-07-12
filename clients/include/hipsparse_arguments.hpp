@@ -35,6 +35,7 @@
 #include <iostream>
 
 #include "hipsparse_datatype2string.hpp"
+#include "hipsparse_arguments_support.hpp"
 
 template <typename T>
 static T convert_alpha_beta(double r, double i)
@@ -91,15 +92,15 @@ struct Arguments
     hipsparseFormat_t    formatA;
     hipsparseFormat_t    formatB;
 
-    hipsparseCsr2CscAlg_t       csr2csc_alg;
-    hipsparseDenseToSparseAlg_t dense2sparse_alg;
-    hipsparseSparseToDenseAlg_t sparse2dense_alg;
-    hipsparseSDDMMAlg_t         sddmm_alg;
-    hipsparseSpGEMMAlg_t        spgemm_alg;
-    hipsparseSpMMAlg_t          spmm_alg;
-    hipsparseSpMVAlg_t          spmv_alg;
-    hipsparseSpSMAlg_t          spsm_alg;
-    hipsparseSpSVAlg_t          spsv_alg;
+    int         csr2csc_alg;
+    int         dense2sparse_alg;
+    int         sparse2dense_alg;
+    int         sddmm_alg;
+    int         spgemm_alg;
+    int         spmm_alg;
+    int         spmv_alg;
+    int         spsm_alg;
+    int         spsv_alg;
 
     int    numericboost;
     double boosttol;
@@ -167,15 +168,15 @@ struct Arguments
         this->formatA = HIPSPARSE_FORMAT_COO;
         this->formatB = HIPSPARSE_FORMAT_COO;
 
-        this->csr2csc_alg      = HIPSPARSE_CSR2CSC_ALG1;
-        this->dense2sparse_alg = HIPSPARSE_DENSETOSPARSE_ALG_DEFAULT;
-        this->sparse2dense_alg = HIPSPARSE_SPARSETODENSE_ALG_DEFAULT;
-        this->sddmm_alg        = HIPSPARSE_SDDMM_ALG_DEFAULT;
-        this->spgemm_alg       = HIPSPARSE_SPGEMM_DEFAULT;
-        this->spmm_alg         = HIPSPARSE_SPMM_ALG_DEFAULT;
-        this->spmv_alg         = HIPSPARSE_SPMV_ALG_DEFAULT;
-        this->spsm_alg         = HIPSPARSE_SPSM_ALG_DEFAULT;
-        this->spsv_alg         = HIPSPARSE_SPSV_ALG_DEFAULT;
+        this->csr2csc_alg      = csr2csc_alg_support::get_default_algorithm();
+        this->dense2sparse_alg = dense2sparse_support::get_default_algorithm();
+        this->sparse2dense_alg = sparse2dense_support::get_default_algorithm();
+        this->sddmm_alg        = sddmm_support::get_default_algorithm();
+        this->spgemm_alg       = spgemm_support::get_default_algorithm();
+        this->spmm_alg         = spmm_support::get_default_algorithm();
+        this->spmv_alg         = spmv_support::get_default_algorithm();
+        this->spsm_alg         = spsm_support::get_default_algorithm();
+        this->spsv_alg         = spsv_support::get_default_algorithm();
 
         this->numericboost = 0;
         this->boosttol     = 0.0;

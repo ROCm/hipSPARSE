@@ -192,7 +192,7 @@ hipsparseStatus_t testing_spvv(Arguments argus)
 
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
         CHECK_HIPSPARSE_ERROR(
-            hipsparseSpVV_bufferSize(handle, trans, x, y, dresult, dataType, &bufferSize));
+            hipsparseSpVV(handle, trans, x, y, dresult, dataType, externalBuffer));
 
         // Copy output from device to CPU
         CHECK_HIP_ERROR(

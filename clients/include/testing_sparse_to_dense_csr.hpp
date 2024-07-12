@@ -133,7 +133,7 @@ hipsparseStatus_t testing_sparse_to_dense_csr(Arguments argus)
     J                           m        = argus.M;
     J                           n        = argus.N;
     hipsparseIndexBase_t        idx_base = argus.baseA;
-    hipsparseSparseToDenseAlg_t alg      = argus.sparse2dense_alg;
+    hipsparseSparseToDenseAlg_t alg      = static_cast<hipsparseSparseToDenseAlg_t>(argus.sparse2dense_alg);
     hipsparseOrder_t            order    = argus.orderA;
     std::string                 filename = argus.filename;
 

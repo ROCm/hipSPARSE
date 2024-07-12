@@ -26,9 +26,6 @@
 
 hipsparse_arguments_config::hipsparse_arguments_config()
 {
-    //
-    // Arguments must be a C-compatible struct so cppcheck complains about non-initialized member variables.
-    // Then we need to initialize.
     {
         this->M              = 0;
         this->N              = 0;
@@ -74,21 +71,21 @@ hipsparse_arguments_config::hipsparse_arguments_config()
         this->solve_policy = HIPSPARSE_SOLVE_POLICY_NO_LEVEL;
 
         this->dirA    = HIPSPARSE_DIRECTION_ROW;
-        this->orderA  = HIPSPARSE_ORDER_ROW;
-        this->orderB  = HIPSPARSE_ORDER_ROW;
-        this->orderC  = HIPSPARSE_ORDER_ROW;
-        this->formatA = HIPSPARSE_FORMAT_CSR;
-        this->formatB = HIPSPARSE_FORMAT_CSR;
+        this->orderA  = HIPSPARSE_ORDER_COL;
+        this->orderB  = HIPSPARSE_ORDER_COL;
+        this->orderC  = HIPSPARSE_ORDER_COL;
+        this->formatA = HIPSPARSE_FORMAT_COO;
+        this->formatB = HIPSPARSE_FORMAT_COO;
 
-        this->csr2csc_alg      = HIPSPARSE_CSR2CSC_ALG1;
-        this->dense2sparse_alg = HIPSPARSE_DENSETOSPARSE_ALG_DEFAULT;
-        this->sparse2dense_alg = HIPSPARSE_SPARSETODENSE_ALG_DEFAULT;
-        this->sddmm_alg        = HIPSPARSE_SDDMM_ALG_DEFAULT;
-        this->spgemm_alg       = HIPSPARSE_SPGEMM_DEFAULT;
-        this->spmm_alg         = HIPSPARSE_SPMM_ALG_DEFAULT;
-        this->spmv_alg         = HIPSPARSE_SPMV_ALG_DEFAULT;
-        this->spsm_alg         = HIPSPARSE_SPSM_ALG_DEFAULT;
-        this->spsv_alg         = HIPSPARSE_SPSV_ALG_DEFAULT;
+        this->csr2csc_alg      = csr2csc_alg_support::get_default_algorithm();
+        this->dense2sparse_alg = dense2sparse_support::get_default_algorithm();
+        this->sparse2dense_alg = sparse2dense_support::get_default_algorithm();
+        this->sddmm_alg        = sddmm_support::get_default_algorithm();
+        this->spgemm_alg       = spgemm_support::get_default_algorithm();
+        this->spmm_alg         = spmm_support::get_default_algorithm();
+        this->spmv_alg         = spmv_support::get_default_algorithm();
+        this->spsm_alg         = spsm_support::get_default_algorithm();
+        this->spsv_alg         = spsv_support::get_default_algorithm();
 
         this->numericboost = 0;
         this->boosttol     = 0.0;
@@ -206,12 +203,12 @@ void hipsparse_arguments_config::set_description(options_description& desc)
 
     ("action",
      value<int>(&this->b_action)->default_value(0),
-     "0 = rocsparse_action_numeric, 1 = rocsparse_action_symbolic, (default: 0)")
+     "0 = HIPSPARSE_ACTION_NUMERIC, 1 = HIPSPARSE_ACTION_SYMBOLIC, (default: 0)")
 
     ("hybpart",
      value<int>(&this->b_part)->default_value(0),
-     "0 = rocsparse_hyb_partition_auto, 1 = rocsparse_hyb_partition_user,\n"
-     "2 = rocsparse_hyb_partition_max, (default: 0)")
+     "0 = HIPSPARSE_HYB_PARTITION_AUTO, 1 = HIPSPARSE_HYB_PARTITION_USER,\n"
+     "2 = HIPSPARSE_HYB_PARTITION_MAX, (default: 0)")
 
     ("diag",
      value<char>(&this->b_diag)->default_value('N'),
@@ -229,7 +226,7 @@ void hipsparse_arguments_config::set_description(options_description& desc)
      value<std::string>(&this->function_name)->default_value("axpyi"),
      "SPARSE function to test. Options:\n"
      "  Level1: axpyi, doti, dotci, gthr, gthrz, roti, sctr\n"
-     "  Level2: bsrsv2, bsrxmv, coomv, csrmv, csrsv, gemvi, hybmv\n"
+     "  Level2: bsrsv2, coomv, csrmv, csrsv, gemvi, hybmv\n"
      "  Level3: bsrmm, bsrsm2, coomm, cscmm, csrmm, coosm, csrsm, gemmi\n"
      "  Extra: csrgeam, csrgemm\n"
      "  Preconditioner: bsric02, bsrilu02, csric02, csrilu02, gtsv2, gtsv2_nopivot, gtsv2_strided_batch, gtsv_interleaved_batch, gpsv_interleaved_batch\n"
@@ -284,40 +281,40 @@ void hipsparse_arguments_config::set_description(options_description& desc)
      "Indicates whether a sparse matrix is laid out in coo format: 0, coo_aos format: 1, csr format: 2, csc format: 3, bell format: 4 (default:0)")
 
     ("csr2csc_alg",
-     value<int>(&this->b_csr2csc_alg)->default_value(HIPSPARSE_CSR2CSC_ALG1),
-     "Indicates what algorithm to use when running csr2csc. Possible choices are default: 0, Alg1: 1, Alg2: 2 (default:1)")
+     value<int>(&this->csr2csc_alg)->default_value(csr2csc_alg_support::get_default_algorithm()),
+     csr2csc_alg_support::get_description())
     
     ("dense2sparse_alg",
-     value<int>(&this->b_dense2sparse_alg)->default_value(HIPSPARSE_DENSETOSPARSE_ALG_DEFAULT),
-     "Indicates what algorithm to use when running dense2sparse. Possible choices are default: 0 (default:0)")
+     value<int>(&this->dense2sparse_alg)->default_value(dense2sparse_support::get_default_algorithm()),
+     dense2sparse_support::get_description())
     
     ("sparse2dense_alg",
-     value<int>(&this->b_sparse2dense_alg)->default_value(HIPSPARSE_SPARSETODENSE_ALG_DEFAULT),
-     "Indicates what algorithm to use when running sparse2dense. Possible choices are default: 0 (default:0)")
+     value<int>(&this->sparse2dense_alg)->default_value(sparse2dense_support::get_default_algorithm()),
+     sparse2dense_support::get_description())
 
     ("sddmm_alg",
-     value<int>(&this->b_sddmm_alg)->default_value(HIPSPARSE_SDDMM_ALG_DEFAULT),
-     "Indicates what algorithm to use when running sddmm. Possible choices are default: 0 (default:0)")
+     value<int>(&this->sddmm_alg)->default_value(sddmm_support::get_default_algorithm()),
+     sddmm_support::get_description())
 
     ("spgemm_alg",
-     value<int>(&this->b_spgemm_alg)->default_value(HIPSPARSE_SPGEMM_DEFAULT),
-     "Indicates what algorithm to use when running spgemm. Possible choices are default: 0, Deterministic: 1, Non-Deterministic: 2, Alg1: 3, Alg2: 4, Alg3: 5 (default:0)")
+     value<int>(&this->spgemm_alg)->default_value(spgemm_support::get_default_algorithm()),
+     spgemm_support::get_description())
 
     ("spmm_alg",
-     value<int>(&this->b_spmm_alg)->default_value(HIPSPARSE_SPMM_ALG_DEFAULT),
-     "Indicates what algorithm to use when running spmm. Possible choices are default: 0, COO Alg1: 1, COO Alg2: 2, COO Alg3: 3, COO Alg4: 4, CSR Alg1: 5, CSR Alg2: 6, CSR Alg2: 7 (default:0)")
+     value<int>(&this->spmm_alg)->default_value(spmm_support::get_default_algorithm()),
+     spmm_support::get_description())
 
     ("spmv_alg",
-     value<int>(&this->b_spmv_alg)->default_value(HIPSPARSE_SPMV_ALG_DEFAULT),
-     "Indicates what algorithm to use when running spmv. Possible choices are default: 0, COO Alg1: 1, COO Alg2: 2, CSR Alg1: 3, CSR Alg2: 4 (default:0)")
+     value<int>(&this->spmv_alg)->default_value(spmm_support::get_default_algorithm()),
+     spmm_support::get_description())
 
     ("spsm_alg",
-     value<int>(&this->b_spsm_alg)->default_value(HIPSPARSE_SPSM_ALG_DEFAULT),
-     "Indicates what algorithm to use when running spsm. Possible choices are default: 0 (default:0)")
+     value<int>(&this->spsm_alg)->default_value(spsm_support::get_default_algorithm()),
+     spsm_support::get_description())
 
     ("spsv_alg",
-     value<int>(&this->b_spsv_alg)->default_value(HIPSPARSE_SPSV_ALG_DEFAULT),
-     "Indicates what algorithm to use when running spsv. Possible choices are default: 0 (default:0)")
+     value<int>(&this->spsv_alg)->default_value(spsv_support::get_default_algorithm()),
+     spsv_support::get_description())
 
     ("ell_width",
      value<int>(&this->ell_width)->default_value(0),
@@ -346,232 +343,6 @@ int hipsparse_arguments_config::parse(int&argc,char**&argv, options_description&
     {
         std::cout << desc << std::endl;
         return -2;
-    }
-
-    if(this->b_dir != HIPSPARSE_DIRECTION_ROW && this->b_dir != HIPSPARSE_DIRECTION_COLUMN)
-    {
-        std::cerr << "Invalid value for --dirA" << std::endl;
-        return -1;
-    }
-
-    if(this->b_orderA != HIPSPARSE_ORDER_ROW && this->b_orderA != HIPSPARSE_ORDER_COL)
-    {
-        std::cerr << "Invalid value for --orderA" << std::endl;
-        return -1;
-    }
-
-    if(this->b_orderB != HIPSPARSE_ORDER_ROW && this->b_orderB != HIPSPARSE_ORDER_COL)
-    {
-        std::cerr << "Invalid value for --orderB" << std::endl;
-        return -1;
-    }
-
-    if(this->b_orderC != HIPSPARSE_ORDER_ROW && this->b_orderC != HIPSPARSE_ORDER_COL)
-    {
-        std::cerr << "Invalid value for --orderC" << std::endl;
-        return -1;
-    }
-
-    bool is_formatA_invalid = true;
-    switch(this->b_formatA)
-    {
-    case HIPSPARSE_FORMAT_CSR:
-    case HIPSPARSE_FORMAT_CSC:
-    case HIPSPARSE_FORMAT_COO:
-    case HIPSPARSE_FORMAT_COO_AOS:
-    case HIPSPARSE_FORMAT_BLOCKED_ELL:
-    {
-        is_formatA_invalid = false;
-        break;
-    }
-    }
-
-    if(is_formatA_invalid)
-    {
-        std::cerr << "Invalid value for --formatA" << std::endl;
-        return -1;
-    }
-
-    bool is_formatB_invalid = true;
-    switch(this->b_formatB)
-    {
-    case HIPSPARSE_FORMAT_CSR:
-    case HIPSPARSE_FORMAT_CSC:
-    case HIPSPARSE_FORMAT_COO:
-    case HIPSPARSE_FORMAT_COO_AOS:
-    case HIPSPARSE_FORMAT_BLOCKED_ELL:
-    {
-        is_formatB_invalid = false;
-        break;
-    }
-    }
-
-    if(is_formatB_invalid)
-    {
-        std::cerr << "Invalid value for --formatB" << std::endl;
-        return -1;
-    }
-
-    bool is_csr2csc_alg_invalid = true;
-    switch(this->b_csr2csc_alg)
-    {
-    case HIPSPARSE_CSR2CSC_ALG_DEFAULT:
-    case HIPSPARSE_CSR2CSC_ALG1:
-    case HIPSPARSE_CSR2CSC_ALG2:
-    {
-        is_csr2csc_alg_invalid = false;
-        break;
-    }
-    }
-
-    if(is_csr2csc_alg_invalid)
-    {
-        std::cerr << "Invalid value for --csr2csc_alg" << std::endl;
-        return -1;
-    }
-
-    bool is_dense2sparse_alg_invalid = true;
-    switch(this->b_dense2sparse_alg)
-    {
-    case HIPSPARSE_DENSETOSPARSE_ALG_DEFAULT:
-    {
-        is_dense2sparse_alg_invalid = false;
-        break;
-    }
-    }
-
-    if(is_dense2sparse_alg_invalid)
-    {
-        std::cerr << "Invalid value for --dense2sparse_alg" << std::endl;
-        return -1;
-    }
-
-    bool is_sparse2dense_alg_invalid = true;
-    switch(this->b_sparse2dense_alg)
-    {
-    case HIPSPARSE_SPARSETODENSE_ALG_DEFAULT:
-    {
-        is_sparse2dense_alg_invalid = false;
-        break;
-    }
-    }
-
-    if(is_sparse2dense_alg_invalid)
-    {
-        std::cerr << "Invalid value for --sparse2dense_alg" << std::endl;
-        return -1;
-    }
-
-    bool is_sddmm_alg_invalid = true;
-    switch(this->b_sddmm_alg)
-    {
-    case HIPSPARSE_SDDMM_ALG_DEFAULT:
-    {
-        is_sddmm_alg_invalid = false;
-        break;
-    }
-    }
-
-    if(is_sddmm_alg_invalid)
-    {
-        std::cerr << "Invalid value for --sddmm_alg" << std::endl;
-        return -1;
-    }
-
-    bool is_spgemm_alg_invalid = true;
-    switch(this->b_spgemm_alg)
-    {
-    case HIPSPARSE_SPGEMM_DEFAULT:
-    case HIPSPARSE_SPGEMM_CSR_ALG_DETERMINISTIC:
-    case HIPSPARSE_SPGEMM_CSR_ALG_NONDETERMINISTIC:
-    case HIPSPARSE_SPGEMM_ALG1:
-    case HIPSPARSE_SPGEMM_ALG2:
-    case HIPSPARSE_SPGEMM_ALG3:
-    {
-        is_spgemm_alg_invalid = false;
-        break;
-    }
-    }
-
-    if(is_spgemm_alg_invalid)
-    {
-        std::cerr << "Invalid value for --spgemm_alg" << std::endl;
-        return -1;
-    }
-
-    bool is_spmm_alg_invalid = true;
-    switch(this->b_spmm_alg)
-    {
-    case HIPSPARSE_SPMM_ALG_DEFAULT:
-    case HIPSPARSE_SPMM_COO_ALG1:
-    case HIPSPARSE_SPMM_COO_ALG2:
-    case HIPSPARSE_SPMM_COO_ALG3:
-    case HIPSPARSE_SPMM_COO_ALG4:
-    case HIPSPARSE_SPMM_CSR_ALG1:
-    case HIPSPARSE_SPMM_CSR_ALG2:
-    case HIPSPARSE_SPMM_CSR_ALG3:
-    {
-        is_spmm_alg_invalid = false;
-        break;
-    }
-    }
-
-    if(is_spmm_alg_invalid)
-    {
-        std::cerr << "Invalid value for --spmm_alg" << std::endl;
-        return -1;
-    }
-
-    bool is_spmv_alg_invalid = true;
-    switch(this->b_spmv_alg)
-    {
-    case HIPSPARSE_SPMV_ALG_DEFAULT:
-    case HIPSPARSE_SPMV_COO_ALG1:
-    case HIPSPARSE_SPMV_CSR_ALG1:
-    case HIPSPARSE_SPMV_CSR_ALG2:
-    case HIPSPARSE_SPMV_COO_ALG2:
-    {
-        is_spmv_alg_invalid = false;
-        break;
-    }
-    }
-
-    if(is_spmv_alg_invalid)
-    {
-        std::cerr << "Invalid value for --spmv_alg" << std::endl;
-        return -1;
-    }
-
-    bool is_spsm_alg_invalid = true;
-    switch(this->b_spsm_alg)
-    {
-    case HIPSPARSE_SPSM_ALG_DEFAULT:
-    {
-        is_spsm_alg_invalid = false;
-        break;
-    }
-    }
-
-    if(is_spsm_alg_invalid)
-    {
-        std::cerr << "Invalid value for --spsm_alg" << std::endl;
-        return -1;
-    }
-
-    bool is_spsv_alg_invalid = true;
-    switch(this->b_spsv_alg)
-    {
-    case HIPSPARSE_SPSV_ALG_DEFAULT:
-    {
-        is_spsv_alg_invalid = false;
-        break;
-    }
-    }
-
-    if(is_spsv_alg_invalid)
-    {
-        std::cerr << "Invalid value for --spsv_alg" << std::endl;
-        return -1;
     }
 
     if(this->b_transA == 'N')
@@ -619,16 +390,6 @@ int hipsparse_arguments_config::parse(int&argc,char**&argv, options_description&
     this->orderC  = (this->b_orderC == 0) ? HIPSPARSE_ORDER_ROW : HIPSPARSE_ORDER_COL;
     this->formatA = (hipsparseFormat_t)this->b_formatA;
     this->formatB = (hipsparseFormat_t)this->b_formatB;
-
-    this->csr2csc_alg = (hipsparseCsr2CscAlg_t)this->b_csr2csc_alg;
-    this->dense2sparse_alg = (hipsparseDenseToSparseAlg_t)this->b_dense2sparse_alg;
-    this->sparse2dense_alg = (hipsparseSparseToDenseAlg_t)this->b_sparse2dense_alg;
-    this->sddmm_alg = (hipsparseSDDMMAlg_t)this->b_sddmm_alg;
-    this->spgemm_alg = (hipsparseSpGEMMAlg_t)this->b_spgemm_alg;
-    this->spmm_alg = (hipsparseSpMMAlg_t)this->b_spmm_alg;
-    this->spmv_alg = (hipsparseSpMVAlg_t)this->b_spmv_alg;
-    this->spsm_alg = (hipsparseSpSMAlg_t)this->b_spsm_alg;
-    this->spsv_alg = (hipsparseSpSVAlg_t)this->b_spsv_alg;
 
     if(this->M < 0 || this->N < 0)
     {
