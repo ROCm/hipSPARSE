@@ -216,7 +216,7 @@ hipsparseStatus_t testing_hyb2csr(Arguments argus)
         testhyb* dhyb = (testhyb*)hyb;
 
         double gbyte_count = hyb2csr_gbyte_count<T>(m, nnz, dhyb->ell_nnz, dhyb->coo_nnz);
-        double gpu_gbyte = get_gpu_gbyte(gpu_time_used, gbyte_count);
+        double gpu_gbyte   = get_gpu_gbyte(gpu_time_used, gbyte_count);
 
         std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used)
                   << std::endl;

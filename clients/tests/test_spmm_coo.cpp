@@ -200,7 +200,7 @@ INSTANTIATE_TEST_SUITE_P(spmm_coo,
                                           testing::ValuesIn(spmm_coo_orderB_range),
                                           testing::ValuesIn(spmm_coo_orderC_range),
                                           testing::ValuesIn(spmm_coo_idxbase_range),
-                                          testing::ValuesIn(spmm_coo_alg_range) ));
+                                          testing::ValuesIn(spmm_coo_alg_range)));
 
 INSTANTIATE_TEST_SUITE_P(spmm_coo_bin,
                          parameterized_spmm_coo_bin,
