@@ -23,9 +23,6 @@
 * ************************************************************************ */
 
 #include "hipsparse_arguments_config.hpp"
-//#include "rocsparse_clients_matrices_dir.hpp"
-//#include "rocsparse_enum.hpp"
-//#include "rocsparse_importer_format_t.hpp"
 
 hipsparse_arguments_config::hipsparse_arguments_config()
 {
@@ -607,7 +604,6 @@ int hipsparse_arguments_config::parse(int&argc,char**&argv, options_description&
     this->baseB = (this->b_baseB == 0) ? HIPSPARSE_INDEX_BASE_ZERO : HIPSPARSE_INDEX_BASE_ONE;
     this->baseC = (this->b_baseC == 0) ? HIPSPARSE_INDEX_BASE_ZERO : HIPSPARSE_INDEX_BASE_ONE;
     this->baseD = (this->b_baseD == 0) ? HIPSPARSE_INDEX_BASE_ZERO : HIPSPARSE_INDEX_BASE_ONE;
-
 
     this->action      = (this->b_action == 0) ? HIPSPARSE_ACTION_NUMERIC : HIPSPARSE_ACTION_SYMBOLIC;
     this->part        = (this->b_part == 0)   ? HIPSPARSE_HYB_PARTITION_AUTO

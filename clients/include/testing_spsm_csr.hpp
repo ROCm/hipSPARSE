@@ -197,9 +197,8 @@ hipsparseStatus_t testing_spsm_csr(Arguments argus)
     hipsparseIndexBase_t idx_base = argus.baseA;
     hipsparseDiagType_t  diag     = argus.diag_type;
     hipsparseFillMode_t  uplo     = argus.fill_mode;
-    hipsparseSpSMAlg_t   alg      = HIPSPARSE_SPSM_ALG_DEFAULT;
-
-    std::string filename = argus.filename;
+    hipsparseSpSMAlg_t   alg      = argus.spsm_alg;
+    std::string          filename = argus.filename;
 
 #if(defined(CUDART_VERSION))
     if(orderB != orderC)
