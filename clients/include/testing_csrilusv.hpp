@@ -46,14 +46,14 @@ hipsparseStatus_t testing_csrilusv(Arguments argus)
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     hipsparseIndexBase_t idx_base = argus.baseA;
 
-    std::unique_ptr<handle_struct> test_handle(new handle_struct);
-    hipsparseHandle_t              handle = test_handle->handle;
+    std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
+    hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
-    std::unique_ptr<descr_struct> test_descr_M(new descr_struct);
-    hipsparseMatDescr_t           descr_M = test_descr_M->descr;
+    std::unique_ptr<descr_struct> unique_ptr_descr_M(new descr_struct);
+    hipsparseMatDescr_t           descr_M = unique_ptr_descr_M->descr;
 
-    std::unique_ptr<csrilu02_struct> test_csrilu02_info(new csrilu02_struct);
-    csrilu02Info_t                   info_M = test_csrilu02_info->info;
+    std::unique_ptr<csrilu02_struct> unique_ptr_csrilu02_info(new csrilu02_struct);
+    csrilu02Info_t                   info_M = unique_ptr_csrilu02_info->info;
 
     // Initialize the matrix descriptor
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatIndexBase(descr_M, idx_base));
@@ -179,22 +179,22 @@ hipsparseStatus_t testing_csrilusv(Arguments argus)
 #endif
 
     // Create info structs for lower and upper part
-    std::unique_ptr<csrsv2_struct> test_csrsv2_lower(new csrsv2_struct);
-    std::unique_ptr<csrsv2_struct> test_csrsv2_upper(new csrsv2_struct);
+    std::unique_ptr<csrsv2_struct> unique_ptr_csrsv2_lower(new csrsv2_struct);
+    std::unique_ptr<csrsv2_struct> unique_ptr_csrsv2_upper(new csrsv2_struct);
 
-    csrsv2Info_t info_L = test_csrsv2_lower->info;
-    csrsv2Info_t info_U = test_csrsv2_upper->info;
+    csrsv2Info_t info_L = unique_ptr_csrsv2_lower->info;
+    csrsv2Info_t info_U = unique_ptr_csrsv2_upper->info;
 
     // Create matrix descriptors for csrsv
-    std::unique_ptr<descr_struct> test_descr_L(new descr_struct);
-    hipsparseMatDescr_t           descr_L = test_descr_L->descr;
+    std::unique_ptr<descr_struct> unique_ptr_descr_L(new descr_struct);
+    hipsparseMatDescr_t           descr_L = unique_ptr_descr_L->descr;
 
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatIndexBase(descr_L, idx_base));
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatFillMode(descr_L, HIPSPARSE_FILL_MODE_LOWER));
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatDiagType(descr_L, HIPSPARSE_DIAG_TYPE_UNIT));
 
-    std::unique_ptr<descr_struct> test_descr_U(new descr_struct);
-    hipsparseMatDescr_t           descr_U = test_descr_U->descr;
+    std::unique_ptr<descr_struct> unique_ptr_descr_U(new descr_struct);
+    hipsparseMatDescr_t           descr_U = unique_ptr_descr_U->descr;
 
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatIndexBase(descr_U, idx_base));
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatFillMode(descr_U, HIPSPARSE_FILL_MODE_UPPER));

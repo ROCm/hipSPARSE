@@ -457,11 +457,11 @@ hipsparseStatus_t testing_bsrxmv(Arguments argus)
     CHECK_HIP_ERROR(hipMemcpy(dx, hx.data(), sizeof(T) * nb * block_dim, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dy, hy.data(), sizeof(T) * mb * block_dim, hipMemcpyHostToDevice));
 
-    std::unique_ptr<handle_struct> test_handle(new handle_struct);
-    hipsparseHandle_t              handle = test_handle->handle;
+    std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
+    hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
-    std::unique_ptr<descr_struct> test_descr(new descr_struct);
-    hipsparseMatDescr_t           descr = test_descr->descr;
+    std::unique_ptr<descr_struct> unique_ptr_descr(new descr_struct);
+    hipsparseMatDescr_t           descr = unique_ptr_descr->descr;
 
     hipsparseIndexBase_t idx_base = HIPSPARSE_INDEX_BASE_ONE;
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatIndexBase(descr, idx_base));

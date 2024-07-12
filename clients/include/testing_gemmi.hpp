@@ -287,8 +287,8 @@ hipsparseStatus_t testing_gemmi(Arguments argus)
 
     std::cout << "M: " << M << " N: " << N << " K: " << K << " filename: " << filename << std::endl;
 
-    std::unique_ptr<handle_struct> test_handle(new handle_struct);
-    hipsparseHandle_t              handle = test_handle->handle;
+    std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
+    hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
     if(M == 0 || N == 0 || K == 0)
     {

@@ -43,21 +43,6 @@ using namespace hipsparse_test;
 #define ELL_IND_EL(i, el, m, width) (el) + (width) * (i)
 #define ELL_IND(i, el, m, width) ELL_IND_ROW(i, el, m, width)
 
-struct testhyb
-{
-    int                     m;
-    int                     n;
-    hipsparseHybPartition_t partition;
-    int                     ell_nnz;
-    int                     ell_width;
-    int*                    ell_col_ind;
-    void*                   ell_val;
-    int                     coo_nnz;
-    int*                    coo_row_ind;
-    int*                    coo_col_ind;
-    void*                   coo_val;
-};
-
 template <typename T>
 void testing_hybmv_bad_arg(void)
 {
@@ -129,17 +114,17 @@ hipsparseStatus_t testing_hybmv(Arguments argus)
     T zero = make_DataType<T>(0.0);
     T one  = make_DataType<T>(1.0);
 
-    std::unique_ptr<handle_struct> test_handle(new handle_struct);
-    hipsparseHandle_t              handle = test_handle->handle;
+    std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
+    hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
-    std::unique_ptr<descr_struct> test_descr(new descr_struct);
-    hipsparseMatDescr_t           descr = test_descr->descr;
+    std::unique_ptr<descr_struct> unique_ptr_descr(new descr_struct);
+    hipsparseMatDescr_t           descr = unique_ptr_descr->descr;
 
     // Set matrix index base
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatIndexBase(descr, idx_base));
 
-    std::unique_ptr<hyb_struct> test_hyb(new hyb_struct);
-    hipsparseHybMat_t           hyb = test_hyb->hyb;
+    std::unique_ptr<hyb_struct> unique_ptr_hyb(new hyb_struct);
+    hipsparseHybMat_t           hyb = unique_ptr_hyb->hyb;
 
     srand(12345ULL);
 

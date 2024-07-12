@@ -253,16 +253,16 @@ hipsparseStatus_t testing_csru2csr(Arguments argus)
               << std::endl;
 
     // hipSPARSE handle
-    std::unique_ptr<handle_struct> test_handle(new handle_struct);
-    hipsparseHandle_t              handle = test_handle->handle;
+    std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
+    hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
-    std::unique_ptr<descr_struct> test_descr(new descr_struct);
-    hipsparseMatDescr_t           descr = test_descr->descr;
+    std::unique_ptr<descr_struct> unique_ptr_descr(new descr_struct);
+    hipsparseMatDescr_t           descr = unique_ptr_descr->descr;
 
     hipsparseSetMatIndexBase(descr, idx_base);
 
-    std::unique_ptr<csru2csr_struct> test_info(new csru2csr_struct);
-    csru2csrInfo_t                   info = test_info->info;
+    std::unique_ptr<csru2csr_struct> unique_ptr_info(new csru2csr_struct);
+    csru2csrInfo_t                   info = unique_ptr_info->info;
 
     srand(12345ULL);
 

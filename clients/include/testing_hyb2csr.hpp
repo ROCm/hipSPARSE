@@ -55,7 +55,7 @@ void testing_hyb2csr_bad_arg(void)
     std::unique_ptr<hyb_struct> unique_ptr_hyb(new hyb_struct);
     hipsparseHybMat_t           hyb = unique_ptr_hyb->hyb;
 
-    test_hyb* dhyb = (test_hyb*)hyb;
+    testhyb* dhyb = (testhyb*)hyb;
 
     dhyb->m       = safe_size;
     dhyb->n       = safe_size;
@@ -213,12 +213,13 @@ hipsparseStatus_t testing_hyb2csr(Arguments argus)
 
         gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
 
-        // // Initialize pseudo HYB matrix
-        // rocsparse_hyb_mat ptr  = hyb;
-        // test_hyb*         dhyb = reinterpret_cast<test_hyb*>(ptr);
+        testhyb* dhyb = (testhyb*)hyb;
 
-        // double gbyte_count = hyb2csr_gbyte_count<T>(M, nnz, dhyb->ell_nnz, dhyb->coo_nnz);
-        // double gpu_gbyte = get_gpu_gbyte(gpu_time_used, gbyte_count);
+        double gbyte_count = hyb2csr_gbyte_count<T>(m, nnz, dhyb->ell_nnz, dhyb->coo_nnz);
+        double gpu_gbyte = get_gpu_gbyte(gpu_time_used, gbyte_count);
+
+        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used)
+                  << std::endl;
     }
 
     return HIPSPARSE_STATUS_SUCCESS;

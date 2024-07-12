@@ -166,11 +166,11 @@ hipsparseStatus_t testing_csric02(Arguments argus)
     std::cout << "m: " << m << " idx_base: " << idx_base << " policy: " << policy
               << " filename: " << filename << std::endl;
 
-    std::unique_ptr<handle_struct> test_handle(new handle_struct);
-    hipsparseHandle_t              handle = test_handle->handle;
+    std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
+    hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
-    std::unique_ptr<descr_struct> test_descr(new descr_struct);
-    hipsparseMatDescr_t           descr = test_descr->descr;
+    std::unique_ptr<descr_struct> unique_ptr_descr(new descr_struct);
+    hipsparseMatDescr_t           descr = unique_ptr_descr->descr;
 
     std::unique_ptr<csric02_struct> unique_ptr_csric02(new csric02_struct);
     csric02Info_t                   info = unique_ptr_csric02->info;

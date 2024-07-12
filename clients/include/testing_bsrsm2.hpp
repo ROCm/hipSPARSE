@@ -529,11 +529,11 @@ hipsparseStatus_t testing_bsrsm2(Arguments argus)
               << " idx_base: " << idx_base << " transA: " << transA << " transX: " << transX
               << " filename: " << filename << std::endl;
 
-    std::unique_ptr<handle_struct> test_handle(new handle_struct);
-    hipsparseHandle_t              handle = test_handle->handle;
+    std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
+    hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
-    std::unique_ptr<descr_struct> test_descr(new descr_struct);
-    hipsparseMatDescr_t           descr = test_descr->descr;
+    std::unique_ptr<descr_struct> unique_ptr_descr(new descr_struct);
+    hipsparseMatDescr_t           descr = unique_ptr_descr->descr;
 
     std::unique_ptr<bsrsm2_struct> unique_ptr_bsrsm2_info(new bsrsm2_struct);
     bsrsm2Info_t                   info = unique_ptr_bsrsm2_info->info;

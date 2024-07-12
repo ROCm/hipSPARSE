@@ -131,8 +131,8 @@ hipsparseStatus_t testing_spvv(Arguments argus)
     hipDataType          dataType = getDataType<T>();
 
     // hipSPARSE handle
-    std::unique_ptr<handle_struct> test_handle(new handle_struct);
-    hipsparseHandle_t              handle = test_handle->handle;
+    std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
+    hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
     hipStream_t stream;
     CHECK_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));

@@ -84,8 +84,8 @@ hipsparseStatus_t testing_sctr(Arguments argus)
 
     std::cout << "N: " << N << " nnz: " << nnz << " idx_base: " << idx_base << std::endl;
 
-    std::unique_ptr<handle_struct> test_handle(new handle_struct);
-    hipsparseHandle_t              handle = test_handle->handle;
+    std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
+    hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
     // Host structures
     std::vector<int> hx_ind(nnz);

@@ -140,8 +140,8 @@ hipsparseStatus_t testing_gpsv_interleaved_batch(Arguments argus)
     std::cout << "m: " << m << " batch_count: " << batch_count << " algo: " << algo << std::endl;
 
     // hipSPARSE handle
-    std::unique_ptr<handle_struct> test_handle(new handle_struct);
-    hipsparseHandle_t              handle = test_handle->handle;
+    std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
+    hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
     // Host structures
     std::vector<T> hds(m * batch_count, make_DataType<T>(1));

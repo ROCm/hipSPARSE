@@ -118,8 +118,8 @@ hipsparseStatus_t testing_gtsv2_nopivot(Arguments argus)
     std::cout << "m: " << m << " n: " << n << std::endl;
 
     // hipSPARSE handle
-    std::unique_ptr<handle_struct> test_handle(new handle_struct);
-    hipsparseHandle_t              handle = test_handle->handle;
+    std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
+    hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
     int ldb = 2 * m;
 

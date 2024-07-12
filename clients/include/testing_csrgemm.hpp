@@ -712,17 +712,17 @@ hipsparseStatus_t testing_csrgemm(Arguments argus)
               << " trans_B: " << trans_B << " idx_base_A: " << idx_base_A
               << " idx_base_B: " << idx_base_B << " idx_base_C: " << idx_base_C << std::endl;
 
-    std::unique_ptr<handle_struct> test_handle(new handle_struct);
-    hipsparseHandle_t              handle = test_handle->handle;
+    std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
+    hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
-    std::unique_ptr<descr_struct> test_descr_A(new descr_struct);
-    hipsparseMatDescr_t           descr_A = test_descr_A->descr;
+    std::unique_ptr<descr_struct> unique_ptr_descr_A(new descr_struct);
+    hipsparseMatDescr_t           descr_A = unique_ptr_descr_A->descr;
 
-    std::unique_ptr<descr_struct> test_descr_B(new descr_struct);
-    hipsparseMatDescr_t           descr_B = test_descr_B->descr;
+    std::unique_ptr<descr_struct> unique_ptr_descr_B(new descr_struct);
+    hipsparseMatDescr_t           descr_B = unique_ptr_descr_B->descr;
 
-    std::unique_ptr<descr_struct> test_descr_C(new descr_struct);
-    hipsparseMatDescr_t           descr_C = test_descr_C->descr;
+    std::unique_ptr<descr_struct> unique_ptr_descr_C(new descr_struct);
+    hipsparseMatDescr_t           descr_C = unique_ptr_descr_C->descr;
 
     // Set matrix index base
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatIndexBase(descr_A, idx_base_A));

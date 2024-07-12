@@ -337,7 +337,7 @@ hipsparseStatus_t testing_csr2hyb(Arguments argus)
             handle, m, n, descr, dcsr_val, dcsr_row_ptr, dcsr_col_ind, hyb, user_ell_width, part));
 
         // Copy output from device to host
-        test_hyb* dhyb = (test_hyb*)hyb;
+        testhyb* dhyb = (testhyb*)hyb;
 
         // Check if sizes match
         unit_check_general(1, 1, 1, &m, &dhyb->m);

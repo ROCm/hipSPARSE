@@ -6819,7 +6819,7 @@ inline std::string get_filename(const std::string& bin_file)
     return r;
 }
 
-struct test_hyb
+struct testhyb
 {
     int                     m;
     int                     n;

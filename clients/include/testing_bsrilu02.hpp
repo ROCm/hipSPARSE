@@ -355,11 +355,11 @@ hipsparseStatus_t testing_bsrilu02(Arguments argus)
               << " boost_tol: " << boost_tol << " dir: " << dir << " idx_base: " << idx_base
               << " policy: " << policy << " filename: " << filename << std::endl;
 
-    std::unique_ptr<handle_struct> test_handle(new handle_struct);
-    hipsparseHandle_t              handle = test_handle->handle;
+    std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
+    hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
-    std::unique_ptr<descr_struct> test_descr(new descr_struct);
-    hipsparseMatDescr_t           descr = test_descr->descr;
+    std::unique_ptr<descr_struct> unique_ptr_descr(new descr_struct);
+    hipsparseMatDescr_t           descr = unique_ptr_descr->descr;
 
     std::unique_ptr<bsrilu02_struct> unique_ptr_bsrilu02(new bsrilu02_struct);
     bsrilu02Info_t                   info = unique_ptr_bsrilu02->info;
