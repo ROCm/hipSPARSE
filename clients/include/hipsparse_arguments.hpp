@@ -34,8 +34,8 @@
 #include <iomanip>
 #include <iostream>
 
-#include "hipsparse_datatype2string.hpp"
 #include "hipsparse_arguments_support.hpp"
+#include "hipsparse_datatype2string.hpp"
 
 template <typename T>
 static T convert_alpha_beta(double r, double i)
@@ -92,15 +92,15 @@ struct Arguments
     hipsparseFormat_t    formatA;
     hipsparseFormat_t    formatB;
 
-    int         csr2csc_alg;
-    int         dense2sparse_alg;
-    int         sparse2dense_alg;
-    int         sddmm_alg;
-    int         spgemm_alg;
-    int         spmm_alg;
-    int         spmv_alg;
-    int         spsm_alg;
-    int         spsv_alg;
+    int csr2csc_alg;
+    int dense2sparse_alg;
+    int sparse2dense_alg;
+    int sddmm_alg;
+    int spgemm_alg;
+    int spmm_alg;
+    int spmv_alg;
+    int spsm_alg;
+    int spsv_alg;
 
     int    numericboost;
     double boosttol;

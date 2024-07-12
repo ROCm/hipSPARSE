@@ -43,12 +43,15 @@ struct csr2csc_alg_support
     static std::string get_description()
     {
 #if(!defined(CUDART_VERSION))
-        return "Indicates what algorithm to use when running csr2csc. Possible choices are default: 0, Alg1: 1, Alg2: 2 (default:0)";
+        return "Indicates what algorithm to use when running csr2csc. Possible choices are "
+               "default: 0, Alg1: 1, Alg2: 2 (default:0)";
 #else
 #if(CUDART_VERSION >= 12000)
-        return "Indicates what algorithm to use when running csr2csc. Possible choices are default: 0, Alg1: 1 (default:0)";
+        return "Indicates what algorithm to use when running csr2csc. Possible choices are "
+               "default: 0, Alg1: 1 (default:0)";
 #elif(CUDART_VERSION >= 10010 && CUDART_VERSION < 12000)
-        return "Indicates what algorithm to use when running csr2csc. Possible choices are default: 1, Alg1: 1, Alg2: 2 (default:1)";
+        return "Indicates what algorithm to use when running csr2csc. Possible choices are "
+               "default: 1, Alg1: 1, Alg2: 2 (default:1)";
 #else
         return "No algorithm supported in selected cusparse version";
 #endif
@@ -70,7 +73,8 @@ struct dense2sparse_support
     static std::string get_description()
     {
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11020)
-        return "Indicates what algorithm to use when running dense2sparse. Possible choices are default: 0 (default:0)";
+        return "Indicates what algorithm to use when running dense2sparse. Possible choices are "
+               "default: 0 (default:0)";
 #else
         return "No algorithm supported in selected cusparse version";
 #endif
@@ -91,7 +95,8 @@ struct sparse2dense_support
     static std::string get_description()
     {
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11020)
-        return "Indicates what algorithm to use when running sparse2dense. Possible choices are default: 0 (default:0)";
+        return "Indicates what algorithm to use when running sparse2dense. Possible choices are "
+               "default: 0 (default:0)";
 #else
         return "No algorithm supported in selected cusparse version";
 #endif
@@ -112,7 +117,8 @@ struct sddmm_support
     static std::string get_description()
     {
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11022)
-        return "Indicates what algorithm to use when running sddmm. Possible choices are default: 0 (default:0)";
+        return "Indicates what algorithm to use when running sddmm. Possible choices are default: "
+               "0 (default:0)";
 #else
         return "No algorithm supported in selected cusparse version";
 #endif
@@ -132,7 +138,7 @@ struct spgemm_support
         return HIPSPARSE_SPGEMM_DEFAULT;
 #elif(CUDART_VERSION >= 11000)
         return HIPSPARSE_SPGEMM_DEFAULT;
-#else 
+#else
         return -1;
 #endif
 #endif
@@ -141,14 +147,18 @@ struct spgemm_support
     static std::string get_description()
     {
 #if(!defined(CUDART_VERSION))
-        return "Indicates what algorithm to use when running spgemm. Possible choices are default: 0, Deterministic: 1, Non-Deterministic: 2, Alg1: 3, Alg2: 4, Alg3: 5 (default:0)";
+        return "Indicates what algorithm to use when running spgemm. Possible choices are default: "
+               "0, Deterministic: 1, Non-Deterministic: 2, Alg1: 3, Alg2: 4, Alg3: 5 (default:0)";
 #else
 #if(CUDART_VERSION >= 12000)
-        return "Indicates what algorithm to use when running spgemm. Possible choices are default: 0, Deterministic: 1, Non-Deterministic: 2, Alg1: 3, Alg2: 4, Alg3: 5 (default:0)";
+        return "Indicates what algorithm to use when running spgemm. Possible choices are default: "
+               "0, Deterministic: 1, Non-Deterministic: 2, Alg1: 3, Alg2: 4, Alg3: 5 (default:0)";
 #elif(CUDART_VERSION >= 11031 && CUDART_VERSION < 12000)
-        return "Indicates what algorithm to use when running spgemm. Possible choices are default: 0, Deterministic: 1, Non-Deterministic: 2 (default:0)";
+        return "Indicates what algorithm to use when running spgemm. Possible choices are default: "
+               "0, Deterministic: 1, Non-Deterministic: 2 (default:0)";
 #elif(CUDART_VERSION >= 11000)
-        return "Indicates what algorithm to use when running spgemm. Possible choices are default: 0 (default:0)";
+        return "Indicates what algorithm to use when running spgemm. Possible choices are default: "
+               "0 (default:0)";
 #else
         return "No algorithm supported in selected cusparse version";
 #endif
@@ -180,16 +190,25 @@ struct spmm_support
     static std::string get_description()
     {
 #if(!defined(CUDART_VERSION))
-        return "Indicates what algorithm to use when running spmm. Possible choices are default: 0, COO Alg1: 1, COO Alg2: 2, COO Alg3: 3, CSR Alg1: 4, COO Alg4: 5, CSR Alg2: 6, CSR Alg3: 12, Blocked ELL Alg1: 13 (default:0)";
+        return "Indicates what algorithm to use when running spmm. Possible choices are default: "
+               "0, COO Alg1: 1, COO Alg2: 2, COO Alg3: 3, CSR Alg1: 4, COO Alg4: 5, CSR Alg2: 6, "
+               "CSR Alg3: 12, Blocked ELL Alg1: 13 (default:0)";
 #else
 #if(CUDART_VERSION >= 12000)
-        return "Indicates what algorithm to use when running spmm. Possible choices are default: 0, COO Alg1: 1, COO Alg2: 2, COO Alg3: 3, CSR Alg1: 4, COO Alg4: 5 CSR Alg2: 6, CSR Alg3: 12, Blocked ELL Alg1: 13 (default:0)";
+        return "Indicates what algorithm to use when running spmm. Possible choices are default: "
+               "0, COO Alg1: 1, COO Alg2: 2, COO Alg3: 3, CSR Alg1: 4, COO Alg4: 5 CSR Alg2: 6, "
+               "CSR Alg3: 12, Blocked ELL Alg1: 13 (default:0)";
 #elif(CUDART_VERSION >= 11021 && CUDART_VERSION < 12000)
-        return "Indicates what algorithm to use when running spmm. Possible choices are default: 0, COO Alg1: 1, COO Alg2: 2, COO Alg3: 3, CSR Alg1: 4, COO Alg4: 5, CSR Alg2: 6, CSR Alg3: 12, Blocked ELL Alg1: 13 (default:0)";
+        return "Indicates what algorithm to use when running spmm. Possible choices are default: "
+               "0, COO Alg1: 1, COO Alg2: 2, COO Alg3: 3, CSR Alg1: 4, COO Alg4: 5, CSR Alg2: 6, "
+               "CSR Alg3: 12, Blocked ELL Alg1: 13 (default:0)";
 #elif(CUDART_VERSION >= 11003 && CUDART_VERSION < 11021)
-        return "Indicates what algorithm to use when running spmm. Possible choices are default: 0, COO Alg1: 1, COO Alg2: 2, COO Alg3: 3, CSR Alg1: 4, COO Alg4: 5, CSR Alg2: 6, Blocked ELL Alg1: 13 (default:0)";
+        return "Indicates what algorithm to use when running spmm. Possible choices are default: "
+               "0, COO Alg1: 1, COO Alg2: 2, COO Alg3: 3, CSR Alg1: 4, COO Alg4: 5, CSR Alg2: 6, "
+               "Blocked ELL Alg1: 13 (default:0)";
 #elif(CUDART_VERSION >= 10010 && CUDART_VERSION < 11003)
-        return "Indicates what algorithm to use when running spmm. Possible choices are default: 0, COO Alg1: 1, COO Alg2: 2, COO Alg3: 3, CSR Alg1: 4  (default:0)";
+        return "Indicates what algorithm to use when running spmm. Possible choices are default: "
+               "0, COO Alg1: 1, COO Alg2: 2, COO Alg3: 3, CSR Alg1: 4  (default:0)";
 #else
         return "No algorithm supported in selected cusparse version";
 #endif
@@ -219,14 +238,18 @@ struct spmv_support
     static std::string get_description()
     {
 #if(!defined(CUDART_VERSION))
-        return "Indicates what algorithm to use when running spmv. Possible choices are default: 0, COO Alg1: 1, CSR Alg1: 2, CSR Alg2: 3, COO Alg2: 4 (default:0)";
+        return "Indicates what algorithm to use when running spmv. Possible choices are default: "
+               "0, COO Alg1: 1, CSR Alg1: 2, CSR Alg2: 3, COO Alg2: 4 (default:0)";
 #else
 #if(CUDART_VERSION >= 12000)
-        return "Indicates what algorithm to use when running spmv. Possible choices are default: 0, COO Alg1: 1, CSR Alg1: 2, CSR Alg2: 3, COO Alg2: 4 (default:0)";
+        return "Indicates what algorithm to use when running spmv. Possible choices are default: "
+               "0, COO Alg1: 1, CSR Alg1: 2, CSR Alg2: 3, COO Alg2: 4 (default:0)";
 #elif(CUDART_VERSION >= 11021 && CUDART_VERSION < 12000)
-        return "Indicates what algorithm to use when running spmv. Possible choices are default: 0, COO Alg1: 1, CSR Alg1: 2, CSR Alg2: 3, COO Alg2: 4 (default:0)";
+        return "Indicates what algorithm to use when running spmv. Possible choices are default: "
+               "0, COO Alg1: 1, CSR Alg1: 2, CSR Alg2: 3, COO Alg2: 4 (default:0)";
 #elif(CUDART_VERSION >= 10010 && CUDART_VERSION < 11021)
-        return "Indicates what algorithm to use when running spmv. Possible choices are default: 0, COO Alg: 1, CSR Alg1: 2, CSR Alg2: 3 (default:0)";
+        return "Indicates what algorithm to use when running spmv. Possible choices are default: "
+               "0, COO Alg: 1, CSR Alg1: 2, CSR Alg2: 3 (default:0)";
 #else
         return "No algorithm supported in selected cusparse version";
 #endif
@@ -248,13 +271,13 @@ struct spsm_support
     static std::string get_description()
     {
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
-        return "Indicates what algorithm to use when running spsm. Possible choices are default: 0 (default:0)";
+        return "Indicates what algorithm to use when running spsm. Possible choices are default: 0 "
+               "(default:0)";
 #else
         return "No algorithm supported in selected cusparse version";
 #endif
     }
 };
-
 
 struct spsv_support
 {
@@ -270,7 +293,8 @@ struct spsv_support
     static std::string get_description()
     {
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11030)
-        return "Indicates what algorithm to use when running spsv. Possible choices are default: 0 (default:0)";
+        return "Indicates what algorithm to use when running spsv. Possible choices are default: 0 "
+               "(default:0)";
 #else
         return "No algorithm supported in selected cusparse version";
 #endif
