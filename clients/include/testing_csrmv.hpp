@@ -215,12 +215,12 @@ hipsparseStatus_t testing_csrmv(Arguments argus)
     {
         CHECK_HIP_ERROR(hipMemcpy(dy_2, hy_2.data(), sizeof(T) * m, hipMemcpyHostToDevice));
 
-        // ROCSPARSE pointer mode host
+        // HIPSPARSE pointer mode host
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
         CHECK_HIPSPARSE_ERROR(hipsparseXcsrmv(
             handle, transA, nrow, ncol, nnz, &h_alpha, descr, dval, dptr, dcol, dx, &h_beta, dy_1));
 
-        // ROCSPARSE pointer mode device
+        // HIPSPARSE pointer mode device
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
         CHECK_HIPSPARSE_ERROR(hipsparseXcsrmv(
             handle, transA, nrow, ncol, nnz, d_alpha, descr, dval, dptr, dcol, dx, d_beta, dy_2));

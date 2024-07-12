@@ -124,12 +124,12 @@ hipsparseStatus_t testing_doti(Arguments argus)
 
     if(argus.unit_check)
     {
-        // ROCSPARSE pointer mode host
+        // HIPSPARSE pointer mode host
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
         CHECK_HIPSPARSE_ERROR(
             hipsparseXdoti(handle, nnz, dx_val, dx_ind, dy, &hresult_1, idx_base));
 
-        // ROCSPARSE pointer mode device
+        // HIPSPARSE pointer mode device
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
         CHECK_HIPSPARSE_ERROR(hipsparseXdoti(handle, nnz, dx_val, dx_ind, dy, dresult_2, idx_base));
 

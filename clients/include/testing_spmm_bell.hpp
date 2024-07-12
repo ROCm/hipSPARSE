@@ -358,7 +358,7 @@ hipsparseStatus_t testing_spmm_bell()
     void* buffer_bell;
     CHECK_HIP_ERROR(hipMalloc(&buffer_bell, bufferSize_bell));
 
-    // ROCSPARSE pointer mode host
+    // HIPSPARSE pointer mode host
     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
 
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11021)
@@ -368,7 +368,7 @@ hipsparseStatus_t testing_spmm_bell()
     CHECK_HIPSPARSE_ERROR(hipsparseSpMM(
         handle, transA, transB, &h_alpha, A_bell, B, &h_beta, C1, typeT, alg, buffer_bell));
 
-    // ROCSPARSE pointer mode device
+    // HIPSPARSE pointer mode device
     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
 
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11021)

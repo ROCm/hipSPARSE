@@ -23,6 +23,8 @@
 * ************************************************************************ */
 #pragma once
 
+#include <hipsparse.h>
+
 struct csr2csc_alg_support
 {
     static int get_default_algorithm()
