@@ -27,9 +27,9 @@
 
 struct M_N_K_alpha
 {
-    int M;
-    int N;
-    int K;
+    int    M;
+    int    N;
+    int    K;
     double alpha;
 };
 
@@ -65,7 +65,7 @@ hipsparseIndexBase_t spsm_csr_idxbase_range[]   = {HIPSPARSE_INDEX_BASE_ZERO};
 hipsparseDiagType_t  spsm_csr_diag_type_range[] = {HIPSPARSE_DIAG_TYPE_NON_UNIT};
 hipsparseFillMode_t  spsm_csr_fill_mode_range[]
     = {HIPSPARSE_FILL_MODE_LOWER, HIPSPARSE_FILL_MODE_UPPER};
-hipsparseSpSMAlg_t   spsm_csr_alg_range[] = {HIPSPARSE_SPSM_ALG_DEFAULT};
+hipsparseSpSMAlg_t spsm_csr_alg_range[] = {HIPSPARSE_SPSM_ALG_DEFAULT};
 
 std::string spsm_csr_bin[] = {"nos1.bin", "nos3.bin", "nos5.bin", "scircuit.bin"};
 

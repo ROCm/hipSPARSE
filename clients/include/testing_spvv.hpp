@@ -123,7 +123,8 @@ hipsparseStatus_t testing_spvv(Arguments argus)
     hipsparseOperation_t trans   = argus.transA;
     hipsparseIndexBase_t idxBase = argus.baseA;
 
-    std::cout << "size: " << size << " nnz: " << nnz << " trans: " << trans << " idxBase: " << idxBase << std::endl;
+    std::cout << "size: " << size << " nnz: " << nnz << " trans: " << trans
+              << " idxBase: " << idxBase << std::endl;
 
     // Index and data type
     hipsparseIndexType_t idxType  = getIndexType<I>();
@@ -148,14 +149,14 @@ hipsparseStatus_t testing_spvv(Arguments argus)
     hipsparseInit<T>(hy, 1, size);
 
     // Allocate memory on device
-    auto dx_ind_managed    = hipsparse_unique_ptr{device_malloc(sizeof(I) * nnz), device_free};
-    auto dx_val_managed    = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
-    auto dy_managed        = hipsparse_unique_ptr{device_malloc(sizeof(T) * size), device_free};
+    auto dx_ind_managed  = hipsparse_unique_ptr{device_malloc(sizeof(I) * nnz), device_free};
+    auto dx_val_managed  = hipsparse_unique_ptr{device_malloc(sizeof(T) * nnz), device_free};
+    auto dy_managed      = hipsparse_unique_ptr{device_malloc(sizeof(T) * size), device_free};
     auto dresult_managed = hipsparse_unique_ptr{device_malloc(sizeof(T)), device_free};
 
-    I* dx_ind    = (I*)dx_ind_managed.get();
-    T* dx_val    = (T*)dx_val_managed.get();
-    T* dy        = (T*)dy_managed.get();
+    I* dx_ind  = (I*)dx_ind_managed.get();
+    T* dx_val  = (T*)dx_val_managed.get();
+    T* dy      = (T*)dy_managed.get();
     T* dresult = (T*)dresult_managed.get();
 
     // copy data from CPU to device
@@ -177,27 +178,25 @@ hipsparseStatus_t testing_spvv(Arguments argus)
 
     // SpVV_bufferSize
     size_t bufferSize;
-    CHECK_HIPSPARSE_ERROR(hipsparseSpVV_bufferSize(handle, trans, x, y, &hresult, dataType, &bufferSize));
-    
-    void*  externalBuffer;
+    CHECK_HIPSPARSE_ERROR(
+        hipsparseSpVV_bufferSize(handle, trans, x, y, &hresult, dataType, &bufferSize));
+
+    void* externalBuffer;
     CHECK_HIP_ERROR(hipMalloc(&externalBuffer, bufferSize));
-    
+
     if(argus.unit_check)
     {
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
-        CHECK_HIPSPARSE_ERROR(hipsparseSpVV(handle, trans, x, y, &hresult, dataType, externalBuffer));
+        CHECK_HIPSPARSE_ERROR(
+            hipsparseSpVV(handle, trans, x, y, &hresult, dataType, externalBuffer));
 
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
-        CHECK_HIPSPARSE_ERROR(hipsparseSpVV_bufferSize(handle,
-                                                       trans,
-                                                       x,
-                                                       y,
-                                                       dresult,
-                                                       dataType,
-                                                       &bufferSize));
-    
+        CHECK_HIPSPARSE_ERROR(
+            hipsparseSpVV_bufferSize(handle, trans, x, y, dresult, dataType, &bufferSize));
+
         // Copy output from device to CPU
-        CHECK_HIP_ERROR(hipMemcpy(&hresult_copied_from_device, dresult, sizeof(T), hipMemcpyDeviceToHost));
+        CHECK_HIP_ERROR(
+            hipMemcpy(&hresult_copied_from_device, dresult, sizeof(T), hipMemcpyDeviceToHost));
 
         // CPU solution
         if(trans == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE)
@@ -233,7 +232,8 @@ hipsparseStatus_t testing_spvv(Arguments argus)
         // Warm up
         for(int iter = 0; iter < number_cold_calls; ++iter)
         {
-            CHECK_HIPSPARSE_ERROR(hipsparseSpVV(handle, trans, x, y, &hresult, dataType, externalBuffer));
+            CHECK_HIPSPARSE_ERROR(
+                hipsparseSpVV(handle, trans, x, y, &hresult, dataType, externalBuffer));
             CHECK_HIP_ERROR(hipStreamSynchronize(stream));
         }
 
@@ -242,7 +242,8 @@ hipsparseStatus_t testing_spvv(Arguments argus)
         // Performance run
         for(int iter = 0; iter < number_hot_calls; ++iter)
         {
-            CHECK_HIPSPARSE_ERROR(hipsparseSpVV(handle, trans, x, y, &hresult, dataType, externalBuffer));
+            CHECK_HIPSPARSE_ERROR(
+                hipsparseSpVV(handle, trans, x, y, &hresult, dataType, externalBuffer));
             CHECK_HIP_ERROR(hipStreamSynchronize(stream));
         }
 

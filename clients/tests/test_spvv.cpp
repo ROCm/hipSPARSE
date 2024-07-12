@@ -31,7 +31,8 @@ typedef std::tuple<hipsparseOperation_t, hipsparseIndexBase_t, std::string> spvv
 int spvv_N_range[]   = {50, 750, 2135};
 int spvv_nnz_range[] = {5, 45};
 
-hipsparseOperation_t spvv_trans_range[]   = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE};
+hipsparseOperation_t spvv_trans_range[]
+    = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE};
 hipsparseIndexBase_t spvv_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
 class parameterized_spvv : public testing::TestWithParam<spvv_tuple>

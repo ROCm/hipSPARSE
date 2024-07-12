@@ -27,9 +27,9 @@
 
 struct M_N_K_alpha
 {
-    int M;
-    int N;
-    int K;
+    int    M;
+    int    N;
+    int    K;
     double alpha;
 };
 
