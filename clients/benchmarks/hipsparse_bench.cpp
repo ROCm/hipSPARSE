@@ -46,10 +46,10 @@ std::string hipsparse_get_version()
 void hipsparse_bench::parse(int& argc, char**& argv, hipsparse_arguments_config& config)
 {
     config.set_description(this->desc);
-    config.unit_check          = 0;
-    config.timing              = 1;
-    
-    int i                      = config.parse(argc, argv, this->desc);
+    config.unit_check = 0;
+    config.timing     = 1;
+
+    int i = config.parse(argc, argv, this->desc);
     if(i == -1)
     {
         throw HIPSPARSE_STATUS_INTERNAL_ERROR;
@@ -99,7 +99,8 @@ hipsparse_bench& hipsparse_bench::operator()(int& argc, char**& argv)
 
 hipsparseStatus_t hipsparse_bench::run()
 {
-    std::cout << "hipsparse_bench::run() precision: " << this->config.precision << " indextype: " << this->config.indextype << std::endl;
+    std::cout << "hipsparse_bench::run() precision: " << this->config.precision
+              << " indextype: " << this->config.indextype << std::endl;
     return this->routine.dispatch(this->config.precision, this->config.indextype, this->config);
 }
 
@@ -136,7 +137,7 @@ void hipsparse_bench::info_devices(std::ostream& out_) const
 
     // Print header.
     {
-        int   device_id = this->get_device_id();
+        int             device_id = this->get_device_id();
         hipDeviceProp_t prop;
         hipGetDeviceProperties(&prop, device_id);
         out_ << "Using device ID " << device_id << " (" << prop.name << ") for hipSPARSE"

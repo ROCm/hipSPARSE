@@ -297,7 +297,7 @@ hipsparseStatus_t hipsparse_routine::dispatch_call(const Arguments& arg)
 #define DEFINE_CASE_T_REAL_ONLY(value)              \
     case value:                                     \
     {                                               \
-        if(IS_T_FLOAT)                               \
+        if(IS_T_FLOAT)                              \
         {                                           \
             try                                     \
             {                                       \
@@ -326,7 +326,6 @@ hipsparseStatus_t hipsparse_routine::dispatch_call(const Arguments& arg)
             return HIPSPARSE_STATUS_INTERNAL_ERROR; \
         }                                           \
     }
-
 
 #define DEFINE_CASE_T_REAL_VS_COMPLEX(value, rtestingf, ctestingf) \
     case value:                                                    \
@@ -359,7 +358,6 @@ hipsparseStatus_t hipsparse_routine::dispatch_call(const Arguments& arg)
             return status;                                         \
         }                                                          \
     }
-
 
     switch(FNAME)
     {
