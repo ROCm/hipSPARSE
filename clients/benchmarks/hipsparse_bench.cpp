@@ -134,9 +134,7 @@ void hipsparse_bench::info_devices(std::ostream& out_) const
         g.print(out_);
     }
 
-    //
     // Print header.
-    //
     {
         int   device_id = this->get_device_id();
         hipDeviceProp_t prop;

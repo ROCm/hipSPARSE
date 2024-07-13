@@ -289,17 +289,31 @@ hipsparseStatus_t hipsparse_routine::dispatch_call(const Arguments& arg)
 
 #define DEFINE_CASE_T(value) DEFINE_CASE_T_X(value, testing_##value)
 
-#define IS_T_REAL (std::is_same<T, double>() || std::is_same<T, float>())
-#define IS_T_COMPLEX (std::is_same<T, hipDoubleComplex>() || std::is_same<T, hipComplex>())
+#define IS_T_FLOAT (std::is_same<T, float>())
+#define IS_T_DOUBLE (std::is_same<T, double>())
+#define IS_T_COMPLEX_FLOAT (std::is_same<T, hipComplex>())
+#define IS_T_COMPLEX_DOUBLE (std::is_same<T, hipDoubleComplex>())
 
 #define DEFINE_CASE_T_REAL_ONLY(value)              \
     case value:                                     \
     {                                               \
-        if(IS_T_REAL)                               \
+        if(IS_T_FLOAT)                               \
         {                                           \
             try                                     \
             {                                       \
-                testing_##value<T>(arg);            \
+                testing_##value<float>(arg);        \
+                return HIPSPARSE_STATUS_SUCCESS;    \
+            }                                       \
+            catch(const hipsparseStatus_t& status)  \
+            {                                       \
+                return status;                      \
+            }                                       \
+        }                                           \
+        else if(IS_T_DOUBLE)                        \
+        {                                           \
+            try                                     \
+            {                                       \
+                testing_##value<double>(arg);       \
                 return HIPSPARSE_STATUS_SUCCESS;    \
             }                                       \
             catch(const hipsparseStatus_t& status)  \
@@ -313,18 +327,27 @@ hipsparseStatus_t hipsparse_routine::dispatch_call(const Arguments& arg)
         }                                           \
     }
 
+
 #define DEFINE_CASE_T_REAL_VS_COMPLEX(value, rtestingf, ctestingf) \
     case value:                                                    \
     {                                                              \
         try                                                        \
         {                                                          \
-            if(IS_T_REAL)                                          \
+            if(IS_T_FLOAT)                                         \
             {                                                      \
-                rtestingf<T>(arg);                                 \
+                rtestingf<float>(arg);                             \
             }                                                      \
-            else if(IS_T_COMPLEX)                                  \
+            else if(IS_T_DOUBLE)                                   \
             {                                                      \
-                ctestingf<T>(arg);                                 \
+                rtestingf<double>(arg);                            \
+            }                                                      \
+            else if(IS_T_COMPLEX_FLOAT)                            \
+            {                                                      \
+                ctestingf<hipComplex>(arg);                        \
+            }                                                      \
+            else if(IS_T_COMPLEX_DOUBLE)                           \
+            {                                                      \
+                ctestingf<hipDoubleComplex>(arg);                  \
             }                                                      \
             else                                                   \
             {                                                      \
@@ -336,6 +359,7 @@ hipsparseStatus_t hipsparse_routine::dispatch_call(const Arguments& arg)
             return status;                                         \
         }                                                          \
     }
+
 
     switch(FNAME)
     {
@@ -406,8 +430,10 @@ hipsparseStatus_t hipsparse_routine::dispatch_call(const Arguments& arg)
 #undef DEFINE_CASE_IT_X
 #undef DEFINE_CASE_IJT_X
 #undef DEFINE_CASE_T
-#undef IS_T_REAL
-#undef IS_T_COMPLEX
+#undef IS_T_FLOAT
+#undef IS_T_DOUBLE
+#undef IS_T_COMPLEX_FLOAT
+#undef IS_T_COMPLEX_DOUBLE
 #undef DEFINE_CASE_T_REAL_ONLY
 #undef DEFINE_CASE_T_REAL_VS_COMPLEX
 

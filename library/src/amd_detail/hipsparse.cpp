@@ -8911,31 +8911,7 @@ hipsparseStatus_t hipsparseCsr2cscEx2(hipsparseHandle_t     handle,
                                hipsparse::hipActionToHCCAction(copyValues),
                                hipsparse::hipBaseToHCCBase(idxBase),
                                buffer));
-    case HIP_R_16F:
-    case HIP_C_16F:
-#if(HIP_VERSION >= 50600000)
-    case HIP_C_8I:
-    case HIP_R_8U:
-    case HIP_C_8U:
-    case HIP_R_32I:
-    case HIP_C_32I:
-    case HIP_R_32U:
-    case HIP_C_32U:
-    case HIP_R_16BF:
-    case HIP_C_16BF:
-    case HIP_R_4I:
-    case HIP_C_4I:
-    case HIP_R_4U:
-    case HIP_C_4U:
-    case HIP_R_16I:
-    case HIP_C_16I:
-    case HIP_R_16U:
-    case HIP_C_16U:
-    case HIP_R_64I:
-    case HIP_C_64I:
-    case HIP_R_64U:
-    case HIP_C_64U:
-#endif
+    default:
         return HIPSPARSE_STATUS_NOT_SUPPORTED;
     }
 
