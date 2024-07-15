@@ -14485,8 +14485,7 @@ namespace hipsparse
             size = sizeof(hipDoubleComplex);
             return HIPSPARSE_STATUS_SUCCESS;
         }
-        case HIP_R_16F:
-        case HIP_C_16F:
+        default:
         {
             size = 0;
             return HIPSPARSE_STATUS_INVALID_VALUE;
