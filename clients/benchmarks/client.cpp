@@ -27,8 +27,8 @@
 #include "hipsparse_bench.hpp"
 #include "hipsparse_routine.hpp"
 #include "utility.hpp"
-#include <iostream>
 #include <hipsparse.h>
+#include <iostream>
 
 int main(int argc, char* argv[])
 {

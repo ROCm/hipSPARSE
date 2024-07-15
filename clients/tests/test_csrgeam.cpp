@@ -77,10 +77,10 @@ protected:
 Arguments setup_csrgeam_arguments(csrgeam_tuple tup)
 {
     Arguments arg;
-    arg.M        = std::get<0>(tup);
-    arg.N        = std::get<1>(tup);
-    arg.alpha    = std::get<2>(tup);
-    arg.beta     = std::get<3>(tup);
+    arg.M     = std::get<0>(tup);
+    arg.N     = std::get<1>(tup);
+    arg.alpha = std::get<2>(tup);
+    arg.beta  = std::get<3>(tup);
     arg.baseA = std::get<4>(tup);
 #ifdef __HIP_PLATFORM_NVIDIA__
     // There is a bug with index base in cusparse
@@ -97,10 +97,10 @@ Arguments setup_csrgeam_arguments(csrgeam_tuple tup)
 Arguments setup_csrgeam_arguments(csrgeam_bin_tuple tup)
 {
     Arguments arg;
-    arg.M        = -99;
-    arg.N        = -99;
-    arg.alpha    = std::get<0>(tup);
-    arg.beta     = std::get<1>(tup);
+    arg.M     = -99;
+    arg.N     = -99;
+    arg.alpha = std::get<0>(tup);
+    arg.beta  = std::get<1>(tup);
     arg.baseA = std::get<2>(tup);
 #ifdef __HIP_PLATFORM_NVIDIA__
     // There is a bug with index base in cusparse
