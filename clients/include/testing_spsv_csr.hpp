@@ -40,12 +40,7 @@ using namespace hipsparse_test;
 
 void testing_spsv_csr_bad_arg(void)
 {
-#ifdef __HIP_PLATFORM_NVIDIA__
-    // do not test for bad args
-    return;
-#endif
-
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11030)
+#if(!defined(CUDART_VERSION))
     int64_t              m         = 100;
     int64_t              n         = 100;
     int64_t              nnz       = 100;

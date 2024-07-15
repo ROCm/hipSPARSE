@@ -101,10 +101,10 @@ private:
 public:
     hipsparse_bench();
     hipsparse_bench(int& argc, char**& argv);
-    hipsparse_bench& operator()(int& argc, char**& argv);
+    hipsparse_bench&  operator()(int& argc, char**& argv);
     hipsparseStatus_t run();
-    int    get_device_id() const;
-    void             info_devices(std::ostream& out_) const;
+    int               get_device_id() const;
+    void              info_devices(std::ostream& out_) const;
 };
 
 std::string hipsparse_get_version();

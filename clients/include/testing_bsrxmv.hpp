@@ -397,7 +397,8 @@ hipsparseStatus_t testing_bsrxmv(Arguments argus)
 
     T h_alpha = make_DataType<T>(2.0);
     T h_beta  = make_DataType<T>(1.0);
-
+    
+    // clang-format off
     std::vector<T> hbsr_val
         = {make_DataType<T>(1.0),  make_DataType<T>(2.0),  make_DataType<T>(3.0),
            make_DataType<T>(4.0),  make_DataType<T>(5.0),  make_DataType<T>(6.0),
@@ -423,6 +424,7 @@ hipsparseStatus_t testing_bsrxmv(Arguments argus)
                             make_DataType<T>(2.0),
                             make_DataType<T>(58.0),
                             make_DataType<T>(62.0)};
+    // clang-format on
 
     auto dbsr_val_managed = hipsparse_unique_ptr{
         device_malloc(sizeof(T) * block_dim * block_dim * nnzb), device_free};

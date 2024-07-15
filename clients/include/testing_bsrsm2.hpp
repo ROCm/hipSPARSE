@@ -615,6 +615,8 @@ hipsparseStatus_t testing_bsrsm2(Arguments argus)
     CHECK_HIP_ERROR(hipMemcpy(dB, hB.data(), sizeof(T) * nrowB * ncolB, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dalpha, &h_alpha, sizeof(T), hipMemcpyHostToDevice));
 
+    std::cout << "AAAA" << std::endl;
+
     // Convert to BSR
     int nnzb;
     CHECK_HIPSPARSE_ERROR(hipsparseXcsr2bsrNnz(handle,
@@ -629,6 +631,7 @@ hipsparseStatus_t testing_bsrsm2(Arguments argus)
                                                dbsr_row_ptr,
                                                &nnzb));
 
+    std::cout << "nnzb: " << nnzb << std::endl;
     auto dbsr_col_ind_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnzb), device_free};
     auto dbsr_val_managed = hipsparse_unique_ptr{
@@ -651,6 +654,8 @@ hipsparseStatus_t testing_bsrsm2(Arguments argus)
                                             dbsr_row_ptr,
                                             dbsr_col_ind));
 
+    std::cout << "BBBB" << std::endl;
+
     // Obtain bsrsm2 buffer size
     int bufferSize;
     CHECK_HIPSPARSE_ERROR(hipsparseXbsrsm2_bufferSize(handle,
@@ -668,6 +673,7 @@ hipsparseStatus_t testing_bsrsm2(Arguments argus)
                                                       info,
                                                       &bufferSize));
 
+    std::cout << "bufferSize: " << bufferSize << std::endl;
     // Allocate buffer on the device
     auto dbuffer_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(char) * bufferSize), device_free};
@@ -691,9 +697,11 @@ hipsparseStatus_t testing_bsrsm2(Arguments argus)
                                                     HIPSPARSE_SOLVE_POLICY_USE_LEVEL,
                                                     dbuffer));
 
+    std::cout << "CCCC" << std::endl;
     int pos_analysis;
     hipsparseXbsrsm2_zeroPivot(handle, info, &pos_analysis);
 
+    std::cout << "pos_analysis: " << pos_analysis << std::endl;
     if(argus.unit_check)
     {
         // HIPSPARSE pointer mode host
@@ -718,9 +726,12 @@ hipsparseStatus_t testing_bsrsm2(Arguments argus)
                                                      ldx,
                                                      HIPSPARSE_SOLVE_POLICY_USE_LEVEL,
                                                      dbuffer));
+        std::cout << "DDDD" << std::endl;
 
         int               hposition_1;
         hipsparseStatus_t pivot_status_1 = hipsparseXbsrsm2_zeroPivot(handle, info, &hposition_1);
+
+        std::cout << "hposition_1: " << hposition_1 << std::endl;
 
         // HIPSPARSE pointer mode device
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
@@ -745,6 +756,7 @@ hipsparseStatus_t testing_bsrsm2(Arguments argus)
                                                      HIPSPARSE_SOLVE_POLICY_USE_LEVEL,
                                                      dbuffer));
 
+        std::cout << "EEEE" << std::endl;
         hipsparseStatus_t pivot_status_2 = hipsparseXbsrsm2_zeroPivot(handle, info, dposition);
 
         // Copy output from device to CPU
@@ -772,6 +784,7 @@ hipsparseStatus_t testing_bsrsm2(Arguments argus)
         int struct_position_gold;
         int numeric_position_gold;
 
+        std::cout << "FFFF" << std::endl;
         bsrsm(mb,
               nrhs,
               nnzb,
