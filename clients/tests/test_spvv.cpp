@@ -55,7 +55,8 @@ Arguments setup_spvv_arguments(spvv_tuple tup)
     return arg;
 }
 
-#if(!defined(CUDART_VERSION) || CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
+#if(!defined(CUDART_VERSION) || CUDART_VERSION > 10010 \
+    || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
 TEST(spvv_bad_arg, spvv_float)
 {
     testing_spvv_bad_arg();

@@ -44,7 +44,7 @@ trans csr_trans_range[]   = {HIPSPARSE_OPERATION_NON_TRANSPOSE,
                              HIPSPARSE_OPERATION_TRANSPOSE,
                              HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE};
 // clang-format on
-base  csr_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+base csr_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
 std::string csr_bin[] = {"nos1.bin",
                          "nos2.bin",

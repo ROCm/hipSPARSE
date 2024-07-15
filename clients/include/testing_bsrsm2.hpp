@@ -784,27 +784,30 @@ hipsparseStatus_t testing_bsrsm2(Arguments argus)
         int struct_position_gold;
         int numeric_position_gold;
 
-        std::cout << "FFFF" << std::endl;
-        bsrsm(mb,
-              nrhs,
-              nnzb,
-              dir,
-              transA,
-              transX,
-              h_alpha,
-              hbsr_row_ptr.data(),
-              hbsr_col_ind.data(),
-              hbsr_val.data(),
-              block_dim,
-              hB.data(),
-              ldb,
-              hX_gold.data(),
-              ldx,
-              HIPSPARSE_DIAG_TYPE_NON_UNIT,
-              HIPSPARSE_FILL_MODE_LOWER,
-              idx_base,
-              &struct_position_gold,
-              &numeric_position_gold);
+        CHECK_HIP_ERROR(hipDeviceSynchronize());
+
+        std::cout << "FFFF mb: " << mb << " nrhs: " << nrhs << " nnzb: " << nnzb << " block_dim: " << block_dim << " ldb: " << ldb << std::endl;
+        host_bsrsm(mb,
+                   nrhs,
+                   nnzb,
+                   dir,
+                   transA,
+                   transX,
+                   h_alpha,
+                   hbsr_row_ptr.data(),
+                   hbsr_col_ind.data(),
+                   hbsr_val.data(),
+                   block_dim,
+                   hB.data(),
+                   ldb,
+                   hX_gold.data(),
+                   ldx,
+                   HIPSPARSE_DIAG_TYPE_NON_UNIT,
+                   HIPSPARSE_FILL_MODE_LOWER,
+                   idx_base,
+                   &struct_position_gold,
+                   &numeric_position_gold);
+        std::cout << "GGGG" << std::endl;
 
         unit_check_general(1, 1, 1, &struct_position_gold, &pos_analysis);
         unit_check_general(1, 1, 1, &numeric_position_gold, &hposition_1);

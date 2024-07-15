@@ -397,7 +397,6 @@ hipsparseStatus_t testing_bsrxmv(Arguments argus)
 
     T h_alpha = make_DataType<T>(2.0);
     T h_beta  = make_DataType<T>(1.0);
-    
     // clang-format off
     std::vector<T> hbsr_val
         = {make_DataType<T>(1.0),  make_DataType<T>(2.0),  make_DataType<T>(3.0),
