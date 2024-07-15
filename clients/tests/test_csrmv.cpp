@@ -80,7 +80,7 @@ Arguments setup_csrmv_arguments(csrmv_tuple tup)
     arg.alpha    = std::get<2>(tup);
     arg.beta     = std::get<3>(tup);
     arg.transA   = std::get<4>(tup);
-    arg.baseA = std::get<5>(tup);
+    arg.baseA    = std::get<5>(tup);
     arg.timing   = 0;
     return arg;
 }
@@ -93,7 +93,7 @@ Arguments setup_csrmv_arguments(csrmv_bin_tuple tup)
     arg.alpha    = std::get<0>(tup);
     arg.beta     = std::get<1>(tup);
     arg.transA   = std::get<2>(tup);
-    arg.baseA = std::get<3>(tup);
+    arg.baseA    = std::get<3>(tup);
     arg.timing   = 0;
 
     // Determine absolute path of test matrix
@@ -105,8 +105,7 @@ Arguments setup_csrmv_arguments(csrmv_bin_tuple tup)
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
 TEST(csrmv_bad_arg, csrmv_float)
 {
     testing_csrmv_bad_arg<float>();

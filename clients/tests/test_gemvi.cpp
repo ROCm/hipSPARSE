@@ -50,19 +50,18 @@ protected:
 Arguments setup_gemvi_arguments(gemvi_tuple tup)
 {
     Arguments arg;
-    arg.M        = std::get<0>(tup);
-    arg.N        = std::get<1>(tup);
-    arg.nnz      = std::get<2>(tup);
-    arg.alpha    = std::get<3>(tup);
-    arg.beta     = std::get<4>(tup);
-    arg.transA   = std::get<5>(tup);
-    arg.baseA    = std::get<6>(tup);
-    arg.timing   = 0;
+    arg.M      = std::get<0>(tup);
+    arg.N      = std::get<1>(tup);
+    arg.nnz    = std::get<2>(tup);
+    arg.alpha  = std::get<3>(tup);
+    arg.beta   = std::get<4>(tup);
+    arg.transA = std::get<5>(tup);
+    arg.baseA  = std::get<6>(tup);
+    arg.timing = 0;
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater (removed in cusparse 12.0.0)
-#if(!defined(CUDART_VERSION) || (CUDART_VERSION >= 11010 && CUDART_VERSION < 12000))
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 TEST(gemvi_bad_arg, gemvi_float)
 {
     testing_gemvi_bad_arg();

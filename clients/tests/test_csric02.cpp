@@ -88,8 +88,7 @@ Arguments setup_csric02_arguments(csric02_bin_tuple tup)
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 TEST(csric02_bad_arg, csric02_float)
 {
     testing_csric02_bad_arg<float>();

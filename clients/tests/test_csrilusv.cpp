@@ -55,7 +55,7 @@ Arguments setup_csrilusv_arguments(csrilusv_bin_tuple tup)
 {
     Arguments arg;
     arg.M        = -99;
-    arg.baseA = std::get<0>(tup);
+    arg.baseA    = std::get<0>(tup);
     arg.timing   = 0;
 
     // Determine absolute path of test matrix
@@ -67,8 +67,7 @@ Arguments setup_csrilusv_arguments(csrilusv_bin_tuple tup)
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 TEST_P(parameterized_csrilusv_bin, csrilusv_bin_float)
 {
     Arguments arg = setup_csrilusv_arguments(GetParam());

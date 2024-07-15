@@ -95,8 +95,7 @@ Arguments setup_bsric02_arguments(bsric02_bin_tuple tup)
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 TEST(bsric02_bad_arg, bsric02_float)
 {
     testing_bsric02_bad_arg<float>();

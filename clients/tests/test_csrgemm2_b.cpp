@@ -67,8 +67,8 @@ Arguments setup_csrgemm2_b_arguments(csrgemm2_b_tuple tup)
     arg.M         = std::get<0>(tup);
     arg.N         = std::get<1>(tup);
     arg.beta      = std::get<2>(tup);
-    arg.baseC = std::get<3>(tup);
-    arg.baseD = std::get<4>(tup);
+    arg.baseC     = std::get<3>(tup);
+    arg.baseD     = std::get<4>(tup);
     arg.timing    = 0;
     return arg;
 }
@@ -79,8 +79,8 @@ Arguments setup_csrgemm2_b_arguments(csrgemm2_b_bin_tuple tup)
     arg.M         = -99;
     arg.N         = -99;
     arg.beta      = std::get<0>(tup);
-    arg.baseC = std::get<1>(tup);
-    arg.baseD = std::get<2>(tup);
+    arg.baseC     = std::get<1>(tup);
+    arg.baseD     = std::get<2>(tup);
     arg.timing    = 0;
 
     // Determine absolute path of test matrix
@@ -92,8 +92,7 @@ Arguments setup_csrgemm2_b_arguments(csrgemm2_b_bin_tuple tup)
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater (removed in cusparse 12.0.0)
-#if(!defined(CUDART_VERSION) || (CUDART_VERSION >= 11010 && CUDART_VERSION < 12000))
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 TEST(csrgemm2_b_bad_arg, csrgemm2_b_float)
 {
     testing_csrgemm2_b_bad_arg<float>();

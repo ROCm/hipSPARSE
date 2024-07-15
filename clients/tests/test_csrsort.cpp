@@ -102,8 +102,6 @@ Arguments setup_csrsort_arguments(csrsort_bin_tuple tup)
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(csrsort_bad_arg, csrsort)
 {
     testing_csrsort_bad_arg();
@@ -137,4 +135,3 @@ INSTANTIATE_TEST_SUITE_P(csrsort_bin,
                          testing::Combine(testing::ValuesIn(csrsort_perm),
                                           testing::ValuesIn(csrsort_base),
                                           testing::ValuesIn(csrsort_bin)));
-#endif

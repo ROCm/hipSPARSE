@@ -386,6 +386,7 @@ void testing_bsrxmv_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_bsrxmv(Arguments argus)
 {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     hipsparseDirection_t dir          = HIPSPARSE_DIRECTION_COLUMN;
     hipsparseOperation_t trans        = HIPSPARSE_OPERATION_NON_TRANSPOSE;
     static constexpr int size_of_mask = 1;
@@ -490,6 +491,7 @@ hipsparseStatus_t testing_bsrxmv(Arguments argus)
     CHECK_HIP_ERROR(hipMemcpy(hy.data(), dy, sizeof(T) * mb * block_dim, hipMemcpyDeviceToHost));
 
     unit_check_near(1, mb * block_dim, 1, hyref.data(), hy.data());
+#endif
     return HIPSPARSE_STATUS_SUCCESS;
 }
 

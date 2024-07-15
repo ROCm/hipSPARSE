@@ -117,7 +117,7 @@ Arguments setup_spgemm_csr_arguments(spgemm_csr_bin_tuple tup)
     return arg;
 }
 
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11001)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
 TEST(spgemm_csr_bad_arg, spgemm_csr_float)
 {
     testing_spgemm_csr_bad_arg();

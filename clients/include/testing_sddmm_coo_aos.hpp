@@ -42,13 +42,7 @@ using namespace hipsparse_test;
 
 void testing_sddmm_coo_aos_bad_arg(void)
 {
-#ifdef __HIP_PLATFORM_NVIDIA__
-    // do not test for bad args
-    return;
-#endif
-
-#if(!defined(CUDART_VERSION) || (CUDART_VERSION >= 11022 && CUDART_VERSION < 12000))
-
+#if(!defined(CUDART_VERSION))
     int32_t              n         = 100;
     int32_t              m         = 100;
     int32_t              k         = 100;
@@ -186,8 +180,7 @@ void testing_sddmm_coo_aos_bad_arg(void)
 template <typename I, typename T>
 hipsparseStatus_t testing_sddmm_coo_aos(Arguments argus)
 {
-// only csr format supported when using cusparse backend
-#if(!defined(CUDART_VERSION) || (CUDART_VERSION >= 11022 && CUDART_VERSION < 12000))
+#if(!defined(CUDART_VERSION))
     I                    m        = argus.M;
     I                    n        = argus.N;
     I                    k        = argus.K;

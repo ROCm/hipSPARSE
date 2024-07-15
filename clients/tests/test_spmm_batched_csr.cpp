@@ -125,7 +125,7 @@ Arguments setup_spmm_batched_csr_arguments(spmm_batched_csr_bin_tuple tup)
 }
 
 // batched_csr format not supported in cusparse
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
+#if(!defined(CUDART_VERSION))
 TEST(spmm_batched_csr_bad_arg, spmm_batched_csr_float)
 {
     testing_spmm_batched_csr_bad_arg();

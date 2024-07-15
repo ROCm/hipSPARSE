@@ -120,8 +120,6 @@ Arguments setup_bsrmm_arguments(bsrmm_bin_tuple tup)
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(bsrmm_bad_arg, bsrmm_float)
 {
     testing_bsrmm_bad_arg<float>();
@@ -199,4 +197,3 @@ INSTANTIATE_TEST_SUITE_P(bsrmm_bin,
                                           testing::ValuesIn(bsrmm_transA_range_bin),
                                           testing::ValuesIn(bsrmm_transB_range_bin),
                                           testing::ValuesIn(bsrmm_bin)));
-#endif

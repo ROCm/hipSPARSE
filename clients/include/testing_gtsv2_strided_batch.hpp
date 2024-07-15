@@ -121,7 +121,6 @@ void testing_gtsv2_strided_batch_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_gtsv2_strided_batch(Arguments argus)
 {
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
     int m           = argus.M;
     int batch_count = argus.batch_count;
 
@@ -242,7 +241,6 @@ hipsparseStatus_t testing_gtsv2_strided_batch(Arguments argus)
     }
 
     CHECK_HIP_ERROR(hipFree(buffer));
-#endif
 
     return HIPSPARSE_STATUS_SUCCESS;
 }

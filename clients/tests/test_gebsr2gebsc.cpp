@@ -104,8 +104,6 @@ Arguments setup_gebsr2gebsc_arguments(gebsr2gebsc_bin_tuple tup)
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(gebsr2gebsc_bad_arg, gebsr2gebsc)
 {
     testing_gebsr2gebsc_bad_arg<float>();
@@ -175,4 +173,3 @@ INSTANTIATE_TEST_SUITE_P(gebsr2gebsc_bin,
                                           testing::ValuesIn(gebsr2gebsc_action_range),
                                           testing::ValuesIn(gebsr2gebsc_csr_base_range),
                                           testing::ValuesIn(gebsr2gebsc_bin)));
-#endif

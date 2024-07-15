@@ -42,12 +42,7 @@ using namespace hipsparse_test;
 
 void testing_sddmm_csr_bad_arg(void)
 {
-#ifdef __HIP_PLATFORM_NVIDIA__
-    // do not test for bad args
-    return;
-#endif
-
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11022)
+#if(!defined(CUDART_VERSION))
 
     int32_t              n         = 100;
     int32_t              m         = 100;
@@ -190,7 +185,7 @@ void testing_sddmm_csr_bad_arg(void)
 template <typename I, typename J, typename T>
 hipsparseStatus_t testing_sddmm_csr(Arguments argus)
 {
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11022)
+#if(!defined(CUDART_VERSION))
     J                    m        = argus.M;
     J                    n        = argus.N;
     J                    k        = argus.K;

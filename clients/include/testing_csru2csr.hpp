@@ -39,6 +39,7 @@ using namespace hipsparse_test;
 
 void testing_csru2csr_bad_arg(void)
 {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     int m         = 100;
     int n         = 100;
     int nnz       = 100;
@@ -238,12 +239,13 @@ void testing_csru2csr_bad_arg(void)
             handle, 0, n, nnz, nullptr, (float*)nullptr, nullptr, nullptr, nullptr, &bufferSize),
         "Error: nnz is invalid");
 #endif
+#endif
 }
 
 template <typename T>
 hipsparseStatus_t testing_csru2csr(Arguments argus)
 {
-#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     int                  m        = argus.M;
     int                  n        = argus.N;
     hipsparseIndexBase_t idx_base = argus.baseA;

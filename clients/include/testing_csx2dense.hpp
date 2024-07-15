@@ -104,6 +104,7 @@ void testing_csx2dense_bad_arg(FUNC& csx2dense)
 template <hipsparseDirection_t DIRA, typename T, typename FUNC1, typename FUNC2>
 hipsparseStatus_t testing_csx2dense(const Arguments& argus, FUNC1& csx2dense, FUNC2& dense2csx)
 {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     int                  M        = argus.M;
     int                  N        = argus.N;
     int                  LD       = argus.lda;
@@ -285,6 +286,7 @@ hipsparseStatus_t testing_csx2dense(const Arguments& argus, FUNC1& csx2dense, FU
         std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used)
                   << std::endl;
     }
+#endif
 
     return HIPSPARSE_STATUS_SUCCESS;
 }

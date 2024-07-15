@@ -21,13 +21,12 @@
  *
  * ************************************************************************ */
 
-#include "testing_bsrxmv.hpp"
 #include "hipsparse_arguments.hpp"
+#include "testing_bsrxmv.hpp"
 
 #include <hipsparse.h>
 
-// Only run tests for CUDA 11.1 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 TEST(bsrxmv_bad_arg, bsrxmv_bad_arg_float)
 {
     testing_bsrxmv_bad_arg<float>();

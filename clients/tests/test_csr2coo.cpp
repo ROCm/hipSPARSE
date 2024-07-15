@@ -80,7 +80,7 @@ Arguments setup_csr2coo_arguments(csr2coo_tuple tup)
     Arguments arg;
     arg.M        = std::get<0>(tup);
     arg.N        = std::get<1>(tup);
-    arg.baseA = std::get<2>(tup);
+    arg.baseA    = std::get<2>(tup);
     arg.timing   = 0;
     return arg;
 }
@@ -90,7 +90,7 @@ Arguments setup_csr2coo_arguments(csr2coo_bin_tuple tup)
     Arguments arg;
     arg.M        = -99;
     arg.N        = -99;
-    arg.baseA = std::get<0>(tup);
+    arg.baseA    = std::get<0>(tup);
     arg.timing   = 0;
 
     // Determine absolute path of test matrix
@@ -102,8 +102,6 @@ Arguments setup_csr2coo_arguments(csr2coo_bin_tuple tup)
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(csr2coo_bad_arg, csr2coo)
 {
     testing_csr2coo_bad_arg();
@@ -135,4 +133,3 @@ INSTANTIATE_TEST_SUITE_P(csr2coo_bin,
                          parameterized_csr2coo_bin,
                          testing::Combine(testing::ValuesIn(csr2coo_idx_base_range),
                                           testing::ValuesIn(csr2coo_bin)));
-#endif

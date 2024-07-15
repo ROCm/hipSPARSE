@@ -275,6 +275,7 @@ void testing_csr2csc_ex2_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_csr2csc_ex2(Arguments argus)
 {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
     int                   m        = argus.M;
     int                   n        = argus.N;
     hipsparseIndexBase_t  idx_base = argus.baseA;
@@ -493,6 +494,7 @@ hipsparseStatus_t testing_csr2csc_ex2(Arguments argus)
         std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used)
                   << std::endl;
     }
+#endif
 
     return HIPSPARSE_STATUS_SUCCESS;
 }

@@ -57,8 +57,7 @@ Arguments setup_rot_arguments(rot_tuple tup)
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
+#if(!defined(CUDART_VERSION) || (CUDART_VERSION >= 11000 && CUDART_VERSION < 13000))
 TEST(rot_bad_arg, rot_float)
 {
     testing_rot_bad_arg();

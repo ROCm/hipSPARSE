@@ -693,6 +693,7 @@ void testing_csrgeam_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_csrgeam(Arguments argus)
 {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
     int                  M          = argus.M;
     int                  N          = argus.N;
     T                    h_alpha    = make_DataType<T>(argus.alpha);
@@ -1033,6 +1034,7 @@ hipsparseStatus_t testing_csrgeam(Arguments argus)
         std::cout << "GBytes/s: " << gpu_gbyte << " GFlops/s: " << gpu_gflops
                   << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
     }
+#endif
 
     return HIPSPARSE_STATUS_SUCCESS;
 }

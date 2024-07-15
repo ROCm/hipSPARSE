@@ -42,12 +42,7 @@ using namespace hipsparse_test;
 
 void testing_spmm_coo_bad_arg(void)
 {
-#ifdef __HIP_PLATFORM_NVIDIA__
-    // do not test for bad args
-    return;
-#endif
-
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
+#if(!defined(CUDART_VERSION))
     int32_t              n         = 100;
     int32_t              m         = 100;
     int32_t              k         = 100;

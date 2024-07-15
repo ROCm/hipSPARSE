@@ -54,13 +54,12 @@ Arguments setup_roti_arguments(roti_tuple tup)
     arg.nnz      = std::get<1>(tup);
     arg.alpha    = std::get<2>(tup);
     arg.beta     = std::get<3>(tup);
-    arg.baseA = std::get<4>(tup);
+    arg.baseA    = std::get<4>(tup);
     arg.timing   = 0;
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater (removed in cusparse 12.0.0)
-#if(!defined(CUDART_VERSION) || (CUDART_VERSION >= 11010 && CUDART_VERSION < 12000))
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 TEST(roti_bad_arg, roti_float)
 {
     testing_roti_bad_arg<float>();

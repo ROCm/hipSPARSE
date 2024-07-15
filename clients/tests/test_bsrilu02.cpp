@@ -107,8 +107,7 @@ Arguments setup_bsrilu02_arguments(bsrilu02_bin_tuple tup)
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 TEST(bsrilu02_bad_arg, bsrilu02_float)
 {
     testing_bsrilu02_bad_arg<float>();

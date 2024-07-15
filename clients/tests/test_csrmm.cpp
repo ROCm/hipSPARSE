@@ -41,11 +41,11 @@ double csrmm_beta_range[]  = {0.5};
 
 base  csrmm_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 trans csrmm_transA_range[]  = {HIPSPARSE_OPERATION_NON_TRANSPOSE,
-                               HIPSPARSE_OPERATION_TRANSPOSE,
-                               HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE};
+                              HIPSPARSE_OPERATION_TRANSPOSE,
+                              HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE};
 trans csrmm_transB_range[]  = {HIPSPARSE_OPERATION_NON_TRANSPOSE,
-                               HIPSPARSE_OPERATION_TRANSPOSE,
-                               HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE};
+                              HIPSPARSE_OPERATION_TRANSPOSE,
+                              HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE};
 
 std::string csrmm_bin[] = {"rma10.bin", "nos3.bin", "nos5.bin", "nos7.bin"};
 
@@ -104,8 +104,7 @@ Arguments setup_csrmm_arguments(csrmm_bin_tuple tup)
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
 TEST(csrmm_bad_arg, csrmm_float)
 {
     testing_csrmm_bad_arg<float>();

@@ -42,12 +42,7 @@ using namespace hipsparse_test;
 
 void testing_spmm_batched_csc_bad_arg(void)
 {
-#ifdef __HIP_PLATFORM_NVIDIA__
-    // do not test for bad args
-    return;
-#endif
-
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
+#if(!defined(CUDART_VERSION))
     int32_t              m         = 100;
     int32_t              n         = 100;
     int32_t              k         = 100;
@@ -188,12 +183,7 @@ void testing_spmm_batched_csc_bad_arg(void)
 template <typename I, typename J, typename T>
 hipsparseStatus_t testing_spmm_batched_csc(Arguments argus)
 {
-#ifdef __HIP_PLATFORM_NVIDIA__
-    // do not test for bad args
-    return HIPSPARSE_STATUS_SUCCESS;
-#endif
-
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
+#if(!defined(CUDART_VERSION))
     J                    m        = argus.M;
     J                    n        = argus.N;
     J                    k        = argus.K;

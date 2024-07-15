@@ -419,6 +419,7 @@ void testing_bsrsv2_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_bsrsv2(Arguments argus)
 {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     int                    m         = argus.M;
     int                    block_dim = argus.block_dim;
     hipsparseIndexBase_t   idx_base  = argus.baseA;
@@ -765,6 +766,7 @@ hipsparseStatus_t testing_bsrsv2(Arguments argus)
         std::cout << "GFlops/s: " << gpu_gflops << " GBytes/s: " << gpu_gbyte
                   << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
     }
+#endif
 
     return HIPSPARSE_STATUS_SUCCESS;
 }

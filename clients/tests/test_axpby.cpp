@@ -54,8 +54,7 @@ Arguments setup_axpby_arguments(axpby_tuple tup)
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
 TEST(axpby_bad_arg, axpby_float)
 {
     testing_axpby_bad_arg();

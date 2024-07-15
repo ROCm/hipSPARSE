@@ -111,7 +111,6 @@ void testing_gtsv2_nopivot_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_gtsv2_nopivot(Arguments argus)
 {
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
     int m = argus.M;
     int n = argus.N;
 
@@ -216,7 +215,6 @@ hipsparseStatus_t testing_gtsv2_nopivot(Arguments argus)
     }
 
     CHECK_HIP_ERROR(hipFree(buffer));
-#endif
 
     return HIPSPARSE_STATUS_SUCCESS;
 }

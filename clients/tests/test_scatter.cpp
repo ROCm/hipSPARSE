@@ -51,8 +51,7 @@ Arguments setup_scatter_arguments(scatter_tuple tup)
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
 TEST(scatter_bad_arg, scatter_float)
 {
     testing_scatter_bad_arg();

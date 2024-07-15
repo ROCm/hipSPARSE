@@ -60,8 +60,7 @@ Arguments setup_dense_to_sparse_coo_arguments(dense_to_sparse_coo_tuple tup)
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
 TEST(dense_to_sparse_coo_bad_arg, dense_to_sparse_coo)
 {
     testing_dense_to_sparse_coo_bad_arg();

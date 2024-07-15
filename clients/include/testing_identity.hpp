@@ -41,6 +41,7 @@ using namespace hipsparse_test;
 
 void testing_identity_bad_arg(void)
 {
+#if(!defined(CUDART_VERSION))
     int n         = 100;
     int safe_size = 100;
 
@@ -51,7 +52,6 @@ void testing_identity_bad_arg(void)
 
     int* p = (int*)p_managed.get();
 
-#if(!defined(CUDART_VERSION))
     verify_hipsparse_status_invalid_pointer(
         hipsparseCreateIdentityPermutation(handle, n, (int*)nullptr), "Error: p is nullptr");
     verify_hipsparse_status_invalid_handle(hipsparseCreateIdentityPermutation(nullptr, n, p));
@@ -60,6 +60,7 @@ void testing_identity_bad_arg(void)
 
 hipsparseStatus_t testing_identity(Arguments argus)
 {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     int n = argus.N;
 
     std::cout << "n: " << n << std::endl;
@@ -120,6 +121,7 @@ hipsparseStatus_t testing_identity(Arguments argus)
         std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used)
                   << std::endl;
     }
+#endif
 
     return HIPSPARSE_STATUS_SUCCESS;
 }

@@ -47,6 +47,7 @@ using namespace hipsparse_test;
 template <typename T>
 void testing_csr2hyb_bad_arg(void)
 {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
     int m         = 100;
     int n         = 100;
     int safe_size = 100;
@@ -113,11 +114,13 @@ void testing_csr2hyb_bad_arg(void)
                                                              hyb,
                                                              0,
                                                              HIPSPARSE_HYB_PARTITION_AUTO));
+#endif
 }
 
 template <typename T>
 hipsparseStatus_t testing_csr2hyb(Arguments argus)
 {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
     int                     m              = argus.M;
     int                     n              = argus.N;
     hipsparseIndexBase_t    idx_base       = argus.baseA;
@@ -416,6 +419,7 @@ hipsparseStatus_t testing_csr2hyb(Arguments argus)
         std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used)
                   << std::endl;
     }
+#endif
 
     return HIPSPARSE_STATUS_SUCCESS;
 }

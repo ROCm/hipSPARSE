@@ -50,12 +50,11 @@ Arguments setup_csr2dense_arguments(csr2dense_tuple tup)
     arg.M        = std::get<0>(tup);
     arg.N        = std::get<1>(tup);
     arg.lda      = std::get<2>(tup);
-    arg.baseA = std::get<3>(tup);
+    arg.baseA    = std::get<3>(tup);
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater (removed in cusparse 12.0.0)
-#if(!defined(CUDART_VERSION) || (CUDART_VERSION >= 11010 & CUDART_VERSION < 12000))
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 TEST(csr2dense_bad_arg, csr2dense)
 {
     testing_csr2dense_bad_arg<float>();

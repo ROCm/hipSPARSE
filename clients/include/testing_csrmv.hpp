@@ -131,6 +131,7 @@ void testing_csrmv_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_csrmv(Arguments argus)
 {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
     int                  nrow     = argus.M;
     int                  ncol     = argus.N;
     T                    h_alpha  = make_DataType<T>(argus.alpha);
@@ -302,6 +303,7 @@ hipsparseStatus_t testing_csrmv(Arguments argus)
         std::cout << "GFLOPS/s: " << gpu_gflops << " GBytes/s: " << gpu_gbyte
                   << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
     }
+#endif
 
     return HIPSPARSE_STATUS_SUCCESS;
 }

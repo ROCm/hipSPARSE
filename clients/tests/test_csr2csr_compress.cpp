@@ -65,7 +65,7 @@ Arguments setup_csr2csr_compress_arguments(csr2csr_compress_tuple tup)
     arg.M        = std::get<0>(tup);
     arg.N        = std::get<1>(tup);
     arg.alpha    = std::get<2>(tup);
-    arg.baseA = std::get<3>(tup);
+    arg.baseA    = std::get<3>(tup);
     arg.timing   = 0;
     return arg;
 }
@@ -76,7 +76,7 @@ Arguments setup_csr2csr_compress_arguments(csr2csr_compress_bin_tuple tup)
     arg.M        = -99;
     arg.N        = -99;
     arg.alpha    = std::get<0>(tup);
-    arg.baseA = std::get<1>(tup);
+    arg.baseA    = std::get<1>(tup);
     arg.timing   = 0;
 
     // Determine absolute path of test matrix
@@ -88,8 +88,6 @@ Arguments setup_csr2csr_compress_arguments(csr2csr_compress_bin_tuple tup)
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(csr2csr_compress_bad_arg, csr2csr_compress)
 {
     testing_csr2csr_compress_bad_arg<float>();
@@ -155,4 +153,3 @@ INSTANTIATE_TEST_SUITE_P(csr2csr_compress_bin,
                          testing::Combine(testing::ValuesIn(csr2csr_compress_alpha_range),
                                           testing::ValuesIn(csr2csr_compress_base_range),
                                           testing::ValuesIn(csr2csr_compress_bin)));
-#endif

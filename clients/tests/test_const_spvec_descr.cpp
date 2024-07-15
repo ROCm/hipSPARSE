@@ -23,7 +23,6 @@
 
 #include "testing_const_spvec_descr.hpp"
 
-// Only run tests for CUDA 11.1 or greater
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
 TEST(const_spvec_descr_bad_arg, const_spvec_descr_float)
 {

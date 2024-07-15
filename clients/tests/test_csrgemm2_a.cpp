@@ -70,9 +70,9 @@ Arguments setup_csrgemm2_a_arguments(csrgemm2_a_tuple tup)
     arg.N         = std::get<1>(tup);
     arg.K         = std::get<2>(tup);
     arg.alpha     = std::get<3>(tup);
-    arg.baseA  = std::get<4>(tup);
-    arg.baseB = std::get<5>(tup);
-    arg.baseC = std::get<6>(tup);
+    arg.baseA     = std::get<4>(tup);
+    arg.baseB     = std::get<5>(tup);
+    arg.baseC     = std::get<6>(tup);
     arg.timing    = 0;
     return arg;
 }
@@ -84,9 +84,9 @@ Arguments setup_csrgemm2_a_arguments(csrgemm2_a_bin_tuple tup)
     arg.N         = -99;
     arg.K         = -99;
     arg.alpha     = std::get<0>(tup);
-    arg.baseA  = std::get<1>(tup);
-    arg.baseB = std::get<2>(tup);
-    arg.baseC = std::get<3>(tup);
+    arg.baseA     = std::get<1>(tup);
+    arg.baseB     = std::get<2>(tup);
+    arg.baseC     = std::get<3>(tup);
     arg.timing    = 0;
 
     // Determine absolute path of test matrix
@@ -98,8 +98,7 @@ Arguments setup_csrgemm2_a_arguments(csrgemm2_a_bin_tuple tup)
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater (removed in cusparse 12.0.0)
-#if(!defined(CUDART_VERSION) || (CUDART_VERSION >= 11010 && CUDART_VERSION < 12000))
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 TEST(csrgemm2_a_bad_arg, csrgemm2_a_float)
 {
     testing_csrgemm2_a_bad_arg<float>();

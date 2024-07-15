@@ -232,6 +232,7 @@ void testing_csrcolor_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_csrcolor()
 {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     // Determine absolute path of test matrix
     // Matrices are stored at the same path in matrices directory
     std::string filename = get_filename("nos3.bin");
@@ -301,6 +302,8 @@ hipsparseStatus_t testing_csrcolor()
                                              colorInfo));
 
     hipsparseDestroyColorInfo(colorInfo);
+#endif
+
     return HIPSPARSE_STATUS_SUCCESS;
 }
 

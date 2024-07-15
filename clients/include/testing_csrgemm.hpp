@@ -698,6 +698,7 @@ static void csrgemm(int                  m,
 template <typename T>
 hipsparseStatus_t testing_csrgemm(Arguments argus)
 {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
     int                  M          = argus.M;
     int                  N          = argus.N;
     int                  K          = argus.K;
@@ -1004,6 +1005,7 @@ hipsparseStatus_t testing_csrgemm(Arguments argus)
         std::cout << "GBytes/s: " << gpu_gbyte << " GFlops/s: " << gpu_gflops
                   << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
     }
+#endif
 
     return HIPSPARSE_STATUS_SUCCESS;
 }

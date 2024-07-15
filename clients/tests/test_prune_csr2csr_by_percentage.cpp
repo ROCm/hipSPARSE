@@ -107,8 +107,7 @@ Arguments setup_prune_csr2csr_by_percentage_arguments(prune_csr2csr_by_percentag
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 TEST(prune_csr2csr_by_percentage_bad_arg, prune_csr2csr_by_percentage)
 {
     testing_prune_csr2csr_by_percentage_bad_arg<float>();

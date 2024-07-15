@@ -132,7 +132,6 @@ void testing_gpsv_interleaved_batch_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_gpsv_interleaved_batch(Arguments argus)
 {
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
     int m           = argus.M;
     int batch_count = argus.batch_count;
     int algo        = argus.gpsv_alg;
@@ -271,7 +270,6 @@ hipsparseStatus_t testing_gpsv_interleaved_batch(Arguments argus)
     }
 
     CHECK_HIP_ERROR(hipFree(buffer));
-#endif
 
     return HIPSPARSE_STATUS_SUCCESS;
 }

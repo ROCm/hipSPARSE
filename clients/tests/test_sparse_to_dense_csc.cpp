@@ -95,8 +95,7 @@ Arguments setup_sparse_to_dense_csc_arguments(sparse_to_dense_csc_bin_tuple tup)
     return arg;
 }
 
-// csc format not supported in cusparse
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11020)
 TEST(sparse_to_dense_csc_bad_arg, sparse_to_dense_csc_float)
 {
     testing_sparse_to_dense_csc_bad_arg();

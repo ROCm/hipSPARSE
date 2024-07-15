@@ -22,8 +22,6 @@
  * ************************************************************************ */
 
 #include "testing_gtsv2_nopivot.hpp"
-//#include "hipsparse_arguments.hpp"
-//#include "utility.hpp"
 
 #include <hipsparse.h>
 #include <string>
@@ -51,8 +49,6 @@ Arguments setup_gtsv2_nopivot_arguments(gtsv2_nopivot_tuple tup)
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater (removed in cusparse 12.0.0)
-#if(!defined(CUDART_VERSION) || (CUDART_VERSION >= 11010 && CUDART_VERSION < 12000))
 TEST(gtsv2_nopivot_bad_arg, gtsv2_nopivot_float)
 {
     testing_gtsv2_nopivot_bad_arg<float>();
@@ -94,4 +90,3 @@ INSTANTIATE_TEST_SUITE_P(gtsv2_nopivot,
                          parameterized_gtsv2_nopivot,
                          testing::Combine(testing::ValuesIn(gtsv2_nopivot_M_range),
                                           testing::ValuesIn(gtsv2_nopivot_N_range)));
-#endif

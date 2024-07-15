@@ -109,7 +109,6 @@ void testing_coosort_bad_arg(void)
 
 hipsparseStatus_t testing_coosort(Arguments argus)
 {
-#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     int                  m        = argus.M;
     int                  n        = argus.N;
     int                  by_row   = (argus.transA == HIPSPARSE_OPERATION_NON_TRANSPOSE);
@@ -334,7 +333,6 @@ hipsparseStatus_t testing_coosort(Arguments argus)
         std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used)
                   << std::endl;
     }
-#endif
 
     return HIPSPARSE_STATUS_SUCCESS;
 }

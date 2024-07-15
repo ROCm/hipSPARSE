@@ -43,6 +43,7 @@ using namespace hipsparse_test;
 template <typename T>
 void testing_prune_csr2csr_bad_arg(void)
 {
+#if(!defined(CUDART_VERSION))
     size_t safe_size = 1;
 
     int    M                      = 1;
@@ -90,7 +91,6 @@ void testing_prune_csr2csr_bad_arg(void)
     CHECK_HIP_ERROR(
         hipMemcpy(csr_row_ptr_C, local_ptr, sizeof(int) * (safe_size + 1), hipMemcpyHostToDevice));
 
-#if(!defined(CUDART_VERSION))
     // Test hipsparseXpruneCsr2csr_bufferSize
     status = hipsparseXpruneCsr2csr_bufferSize(nullptr,
                                                M,
@@ -519,6 +519,7 @@ void testing_prune_csr2csr_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_prune_csr2csr(Arguments argus)
 {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     int                  M              = argus.M;
     int                  N              = argus.N;
     T                    threshold      = make_DataType<T>(argus.threshold);
@@ -784,6 +785,7 @@ hipsparseStatus_t testing_prune_csr2csr(Arguments argus)
         std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used)
                   << std::endl;
     }
+#endif
 
     return HIPSPARSE_STATUS_SUCCESS;
 }

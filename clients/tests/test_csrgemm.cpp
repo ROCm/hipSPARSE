@@ -109,8 +109,7 @@ Arguments setup_csrgemm_arguments(csrgemm_bin_tuple tup)
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
 TEST(csrgemm_bad_arg, csrgemm_float)
 {
     testing_csrgemm_bad_arg<float>();

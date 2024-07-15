@@ -80,7 +80,7 @@ Arguments setup_coo2csr_arguments(coo2csr_tuple tup)
     Arguments arg;
     arg.M        = std::get<0>(tup);
     arg.N        = std::get<1>(tup);
-    arg.baseA = std::get<2>(tup);
+    arg.baseA    = std::get<2>(tup);
     arg.timing   = 0;
     return arg;
 }
@@ -90,7 +90,7 @@ Arguments setup_coo2csr_arguments(coo2csr_bin_tuple tup)
     Arguments arg;
     arg.M                = -99;
     arg.N                = -99;
-    arg.baseA         = std::get<0>(tup);
+    arg.baseA            = std::get<0>(tup);
     arg.timing           = 0;
     std::string bin_file = std::get<1>(tup);
 
@@ -99,8 +99,6 @@ Arguments setup_coo2csr_arguments(coo2csr_bin_tuple tup)
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(coo2csr_bad_arg, coo2csr)
 {
     testing_coo2csr_bad_arg();
@@ -132,4 +130,3 @@ INSTANTIATE_TEST_SUITE_P(coo2csr_bin,
                          parameterized_coo2csr_bin,
                          testing::Combine(testing::ValuesIn(coo2csr_idx_base_range),
                                           testing::ValuesIn(coo2csr_bin)));
-#endif

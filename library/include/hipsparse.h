@@ -3319,6 +3319,7 @@ hipsparseStatus_t hipsparseZbsrsv2_solve(hipsparseHandle_t         handle,
 /**@}*/
 #endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 /*! \ingroup level2_module
  *  \brief Dense matrix sparse vector multiplication
  *
@@ -3360,7 +3361,9 @@ hipsparseStatus_t hipsparseZgemvi_bufferSize(hipsparseHandle_t    handle,
                                              int                  nnz,
                                              int*                 pBufferSizeInBytes);
 /**@}*/
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 /*! \ingroup level2_module
  *  \brief Dense matrix sparse vector multiplication
  *
@@ -3457,6 +3460,7 @@ hipsparseStatus_t hipsparseZgemvi(hipsparseHandle_t       handle,
                                   hipsparseIndexBase_t    idxBase,
                                   void*                   pBuffer);
 /**@}*/
+#endif
 
 /*
 * ===========================================================================

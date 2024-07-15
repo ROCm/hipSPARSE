@@ -76,7 +76,7 @@ Arguments setup_csr2csc_arguments(csr2csc_tuple tup)
     arg.M        = std::get<0>(tup);
     arg.N        = std::get<1>(tup);
     arg.action   = std::get<2>(tup);
-    arg.baseA = std::get<3>(tup);
+    arg.baseA    = std::get<3>(tup);
     arg.timing   = 0;
     return arg;
 }
@@ -87,7 +87,7 @@ Arguments setup_csr2csc_arguments(csr2csc_bin_tuple tup)
     arg.M        = -99;
     arg.N        = -99;
     arg.action   = std::get<0>(tup);
-    arg.baseA = std::get<1>(tup);
+    arg.baseA    = std::get<1>(tup);
     arg.timing   = 0;
 
     // Determine absolute path of test matrix
@@ -99,8 +99,7 @@ Arguments setup_csr2csc_arguments(csr2csc_bin_tuple tup)
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
 TEST(csr2csc_bad_arg, csr2csc)
 {
     testing_csr2csc_bad_arg<float>();
