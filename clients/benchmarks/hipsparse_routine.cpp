@@ -79,14 +79,12 @@ constexpr hipsparse_routine::value_type hipsparse_routine::all_routines[];
 template <hipsparse_routine::value_type FNAME, typename T>
 hipsparseStatus_t hipsparse_routine::dispatch_indextype(const char cindextype, const Arguments& arg)
 {
-    std::cout << "hipsparse_routine::dispatch_indextype cindextype: " << cindextype << std::endl;
     const hipsparseIndexType_t indextype = (cindextype == 'm')   ? HIPSPARSE_INDEX_64I
                                            : (cindextype == 's') ? HIPSPARSE_INDEX_32I
                                            : (cindextype == 'd') ? HIPSPARSE_INDEX_64I
                                                                  : ((hipsparseIndexType_t)-1);
     const bool                 mixed     = (cindextype == 'm');
 
-    std::cout << "mixed: " << mixed << std::endl;
     switch(indextype)
     {
     case HIPSPARSE_INDEX_16U:
@@ -117,7 +115,6 @@ hipsparseStatus_t hipsparse_routine::dispatch_precision(const char       precisi
                                                         const char       indextype,
                                                         const Arguments& arg)
 {
-    std::cout << "hipsparse_routine::dispatch_precision" << std::endl;
     const hipDataType datatype = (precision == 's')   ? HIP_R_32F
                                  : (precision == 'd') ? HIP_R_64F
                                  : (precision == 'c') ? HIP_C_32F
@@ -142,7 +139,6 @@ hipsparseStatus_t hipsparse_routine::dispatch(const char       precision,
                                               const char       indextype,
                                               const Arguments& arg) const
 {
-    std::cout << "hipsparse_routine::dispatch this->value: " << this->value << std::endl;
     switch(this->value)
     {
 #define HIPSPARSE_DO_ROUTINE(FNAME) \
@@ -244,7 +240,6 @@ constexpr const char* hipsparse_routine::to_string() const
 template <hipsparse_routine::value_type FNAME, typename T, typename I, typename J>
 hipsparseStatus_t hipsparse_routine::dispatch_call(const Arguments& arg)
 {
-    std::cout << "hipsparse_routine::dispatch_call" << std::endl;
 #define DEFINE_CASE_T_X(value, testingf)       \
     case value:                                \
     {                                          \

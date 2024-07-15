@@ -40,6 +40,7 @@ using namespace hipsparse_test;
 
 void testing_gemvi_bad_arg(void)
 {
+#if(!defined(CUDART_VERSION))
     int m   = 100;
     int n   = 100;
     int nnz = 100;
@@ -63,25 +64,6 @@ void testing_gemvi_bad_arg(void)
     float* x    = (float*)x_managed.get();
     int*   xInd = (int*)xInd_managed.get();
     float* y    = (float*)y_managed.get();
-
-    // cusparse has error checks for this function at all
-#if(!defined(CUDART_VERSION))
-    // gemvi bufferSize - buffer size is currently not doing anything
-    //    int bufferSize;
-    //    verify_hipsparse_status_invalid_handle(
-    //        hipsparseSpVV_bufferSize(nullptr, opType, x, y, &result, dataType, &bufferSize));
-    //    verify_hipsparse_status_invalid_pointer(
-    //        hipsparseSpVV_bufferSize(handle, opType, nullptr, y, &result, dataType, &bufferSize),
-    //        "Error: x is nullptr");
-    //    verify_hipsparse_status_invalid_pointer(
-    //        hipsparseSpVV_bufferSize(handle, opType, x, nullptr, &result, dataType, &bufferSize),
-    //        "Error: y is nullptr");
-    //    verify_hipsparse_status_invalid_pointer(
-    //        hipsparseSpVV_bufferSize(handle, opType, x, y, nullptr, dataType, &bufferSize),
-    //        "Error: result is nullptr");
-    //    verify_hipsparse_status_invalid_pointer(
-    //        hipsparseSpVV_bufferSize(handle, opType, x, y, &result, dataType, nullptr),
-    //        "Error: bufferSize is nullptr");
 
     // gemvi
     void* buffer;

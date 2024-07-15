@@ -46,6 +46,7 @@ using namespace hipsparse_test;
 template <typename T>
 void testing_hybmv_bad_arg(void)
 {
+#if(!defined(CUDART_VERSION))
     int                  safe_size = 100;
     T                    alpha     = 0.6;
     T                    beta      = 0.2;
@@ -92,11 +93,13 @@ void testing_hybmv_bad_arg(void)
         "Error: descr is nullptr");
     verify_hipsparse_status_invalid_handle(
         hipsparseXhybmv((hipsparseHandle_t) nullptr, transA, &alpha, descr, hyb, dx, &beta, dy));
+#endif
 }
 
 template <typename T>
 hipsparseStatus_t testing_hybmv(Arguments argus)
 {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
     int                     m              = argus.M;
     int                     n              = argus.N;
     T                       h_alpha        = make_DataType<T>(argus.alpha);
@@ -348,7 +351,7 @@ hipsparseStatus_t testing_hybmv(Arguments argus)
         std::cout << "GFLOPS/s: " << gpu_gflops
                   << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
     }
-
+#endif
     return HIPSPARSE_STATUS_SUCCESS;
 }
 

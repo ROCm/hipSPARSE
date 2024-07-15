@@ -121,8 +121,7 @@ Arguments setup_csrgeam_arguments(csrgeam_bin_tuple tup)
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
 TEST(csrgeam_bad_arg, csrgeam_float)
 {
     testing_csrgeam_bad_arg<float>();

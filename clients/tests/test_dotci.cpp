@@ -54,8 +54,7 @@ Arguments setup_dotci_arguments(dotci_tuple tup)
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
 TEST(dotci_bad_arg, dotci_float)
 {
     testing_dotci_bad_arg<hipComplex>();

@@ -573,18 +573,6 @@ private:
 public:
     static void help(std::ostream& out)
     {
-        out << "" << std::endl;
-        out << "Benchmarks options:" << std::endl;
-        out << "--bench-x                                         flag to preceed the main option "
-            << std::endl;
-        out << "--bench-o                                         output JSON file, (default = "
-               "a.json)"
-            << std::endl;
-        out << "--bench-n                                         number of runs, (default = 1)"
-            << std::endl;
-        out << "--bench-no-rawdata                                do not export raw data."
-            << std::endl;
-        out << "" << std::endl;
         out << "Example:" << std::endl;
         out << "hipsparse-bench -f csrmv --bench-x -M 10 20 30 40" << std::endl;
     }

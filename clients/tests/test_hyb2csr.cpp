@@ -94,7 +94,7 @@ Arguments setup_hyb2csr_arguments(hyb2csr_bin_tuple tup)
 }
 
 // Only run tests for CUDA 11.1 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
 TEST(hyb2csr_bad_arg, hyb2csr)
 {
     testing_hyb2csr_bad_arg<float>();

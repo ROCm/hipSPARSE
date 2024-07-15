@@ -99,8 +99,6 @@ hipsparse_bench& hipsparse_bench::operator()(int& argc, char**& argv)
 
 hipsparseStatus_t hipsparse_bench::run()
 {
-    std::cout << "hipsparse_bench::run() precision: " << this->config.precision
-              << " indextype: " << this->config.indextype << std::endl;
     return this->routine.dispatch(this->config.precision, this->config.indextype, this->config);
 }
 

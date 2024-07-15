@@ -54,8 +54,7 @@ Arguments setup_doti_arguments(doti_tuple tup)
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
 TEST(doti_bad_arg, doti_float)
 {
     testing_doti_bad_arg<float>();

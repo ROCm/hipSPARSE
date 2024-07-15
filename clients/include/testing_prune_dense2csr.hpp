@@ -43,6 +43,7 @@ using namespace hipsparse_test;
 template <typename T>
 void testing_prune_dense2csr_bad_arg(void)
 {
+#if(!defined(CUDART_VERSION))
     size_t safe_size = 100;
 
     int    M                      = 1;
@@ -79,7 +80,6 @@ void testing_prune_dense2csr_bad_arg(void)
     CHECK_HIP_ERROR(
         hipMemcpy(csr_row_ptr, local_ptr, sizeof(int) * (1 + 1), hipMemcpyHostToDevice));
 
-#if(!defined(CUDART_VERSION))
     // Test hipsparseXpruneDense2csr_bufferSize
     status = hipsparseXpruneDense2csr_bufferSize(
         nullptr, M, N, A, LDA, &threshold, descr, csr_val, csr_row_ptr, csr_col_ind, &buffer_size);

@@ -32,8 +32,6 @@
 
 int main(int argc, char* argv[])
 {
-    std::cout << "benchmark main called" << std::endl;
-
     // old style.
     try
     {
@@ -43,9 +41,7 @@ int main(int argc, char* argv[])
         bench.info_devices(std::cout);
 
         // Run benchmark.
-        std::cout << "Run benchmark" << std::endl;
         hipsparseStatus_t status = bench.run();
-        std::cout << "status: " << status << std::endl;
         if(status != HIPSPARSE_STATUS_SUCCESS)
         {
             return status;
