@@ -12038,7 +12038,7 @@ hipsparseStatus_t hipsparseDnMatSetStridedBatch(hipsparseDnMatDescr_t dnMatDescr
 *      }
 *      for(i = 0; i < nnz; ++i)
 *      {
-*          y[x_ind[i]] = alpha * x_val[i]
+*          y[x_ind[i]] += alpha * x_val[i]
 *      }
 *  \endcode
 *
