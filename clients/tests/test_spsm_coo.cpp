@@ -187,7 +187,13 @@ TEST_P(parameterized_spsm_coo_bin, spsm_coo_bin_i64_double)
 
 INSTANTIATE_TEST_SUITE_P(spsm_coo,
                          parameterized_spsm_coo,
+<<<<<<< HEAD
                          testing::Combine(testing::ValuesIn(spsm_coo_M_N_K_alpha_range),
+=======
+                         testing::Combine(testing::ValuesIn(spsm_coo_M_N_range),
+                                          testing::ValuesIn(spsm_coo_K_range),
+                                          testing::ValuesIn(spsm_coo_alpha_range),
+>>>>>>> 1cd85bc3711bc2f8a213ccb53cf198e958d8d521
                                           testing::ValuesIn(spsm_coo_transA_range),
                                           testing::ValuesIn(spsm_coo_transB_range),
                                           testing::ValuesIn(spsm_coo_orderB_range),
@@ -199,7 +205,12 @@ INSTANTIATE_TEST_SUITE_P(spsm_coo,
 
 INSTANTIATE_TEST_SUITE_P(spsm_coo_bin,
                          parameterized_spsm_coo_bin,
+<<<<<<< HEAD
                          testing::Combine(testing::ValuesIn(spsm_coo_M_N_K_alpha_range),
+=======
+                         testing::Combine(testing::ValuesIn(spsm_coo_K_range),
+                                          testing::ValuesIn(spsm_coo_alpha_range),
+>>>>>>> 1cd85bc3711bc2f8a213ccb53cf198e958d8d521
                                           testing::ValuesIn(spsm_coo_transA_range),
                                           testing::ValuesIn(spsm_coo_transB_range),
                                           testing::ValuesIn(spsm_coo_orderB_range),
