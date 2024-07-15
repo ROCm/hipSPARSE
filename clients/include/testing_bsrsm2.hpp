@@ -786,7 +786,8 @@ hipsparseStatus_t testing_bsrsm2(Arguments argus)
 
         CHECK_HIP_ERROR(hipDeviceSynchronize());
 
-        std::cout << "FFFF mb: " << mb << " nrhs: " << nrhs << " nnzb: " << nnzb << " block_dim: " << block_dim << " ldb: " << ldb << std::endl;
+        std::cout << "FFFF mb: " << mb << " nrhs: " << nrhs << " nnzb: " << nnzb
+                  << " block_dim: " << block_dim << " ldb: " << ldb << std::endl;
         host_bsrsm(mb,
                    nrhs,
                    nnzb,
