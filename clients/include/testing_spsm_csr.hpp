@@ -235,6 +235,12 @@ hipsparseStatus_t testing_spsm_csr(Arguments argus)
         return HIPSPARSE_STATUS_INTERNAL_ERROR;
     }
 
+    if(m != n)
+    {
+        // Skip non-square matrices
+        return HIPSPARSE_STATUS_SUCCESS;
+    }
+
     // Some matrix properties
     J B_m = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? m : k;
     J B_n = (transB == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? k : m;
