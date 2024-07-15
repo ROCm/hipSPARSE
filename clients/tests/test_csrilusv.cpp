@@ -54,9 +54,9 @@ protected:
 Arguments setup_csrilusv_arguments(csrilusv_bin_tuple tup)
 {
     Arguments arg;
-    arg.M        = -99;
-    arg.baseA    = std::get<0>(tup);
-    arg.timing   = 0;
+    arg.M      = -99;
+    arg.baseA  = std::get<0>(tup);
+    arg.timing = 0;
 
     // Determine absolute path of test matrix
     std::string bin_file = std::get<1>(tup);

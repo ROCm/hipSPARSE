@@ -73,22 +73,22 @@ protected:
 Arguments setup_csr2csc_arguments(csr2csc_tuple tup)
 {
     Arguments arg;
-    arg.M        = std::get<0>(tup);
-    arg.N        = std::get<1>(tup);
-    arg.action   = std::get<2>(tup);
-    arg.baseA    = std::get<3>(tup);
-    arg.timing   = 0;
+    arg.M      = std::get<0>(tup);
+    arg.N      = std::get<1>(tup);
+    arg.action = std::get<2>(tup);
+    arg.baseA  = std::get<3>(tup);
+    arg.timing = 0;
     return arg;
 }
 
 Arguments setup_csr2csc_arguments(csr2csc_bin_tuple tup)
 {
     Arguments arg;
-    arg.M        = -99;
-    arg.N        = -99;
-    arg.action   = std::get<0>(tup);
-    arg.baseA    = std::get<1>(tup);
-    arg.timing   = 0;
+    arg.M      = -99;
+    arg.N      = -99;
+    arg.action = std::get<0>(tup);
+    arg.baseA  = std::get<1>(tup);
+    arg.timing = 0;
 
     // Determine absolute path of test matrix
     std::string bin_file = std::get<2>(tup);

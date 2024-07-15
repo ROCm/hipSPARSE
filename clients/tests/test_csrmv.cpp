@@ -40,8 +40,8 @@ std::vector<double> csr_alpha_range = {3.0};
 std::vector<double> csr_beta_range  = {1.0};
 
 trans csr_trans_range[]   = {HIPSPARSE_OPERATION_NON_TRANSPOSE,
-                           HIPSPARSE_OPERATION_TRANSPOSE,
-                           HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE};
+                             HIPSPARSE_OPERATION_TRANSPOSE,
+                             HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE};
 base  csr_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
 std::string csr_bin[] = {"nos1.bin",
@@ -75,26 +75,26 @@ protected:
 Arguments setup_csrmv_arguments(csrmv_tuple tup)
 {
     Arguments arg;
-    arg.M        = std::get<0>(tup);
-    arg.N        = std::get<1>(tup);
-    arg.alpha    = std::get<2>(tup);
-    arg.beta     = std::get<3>(tup);
-    arg.transA   = std::get<4>(tup);
-    arg.baseA    = std::get<5>(tup);
-    arg.timing   = 0;
+    arg.M      = std::get<0>(tup);
+    arg.N      = std::get<1>(tup);
+    arg.alpha  = std::get<2>(tup);
+    arg.beta   = std::get<3>(tup);
+    arg.transA = std::get<4>(tup);
+    arg.baseA  = std::get<5>(tup);
+    arg.timing = 0;
     return arg;
 }
 
 Arguments setup_csrmv_arguments(csrmv_bin_tuple tup)
 {
     Arguments arg;
-    arg.M        = -99;
-    arg.N        = -99;
-    arg.alpha    = std::get<0>(tup);
-    arg.beta     = std::get<1>(tup);
-    arg.transA   = std::get<2>(tup);
-    arg.baseA    = std::get<3>(tup);
-    arg.timing   = 0;
+    arg.M      = -99;
+    arg.N      = -99;
+    arg.alpha  = std::get<0>(tup);
+    arg.beta   = std::get<1>(tup);
+    arg.transA = std::get<2>(tup);
+    arg.baseA  = std::get<3>(tup);
+    arg.timing = 0;
 
     // Determine absolute path of test matrix
     std::string bin_file = std::get<4>(tup);

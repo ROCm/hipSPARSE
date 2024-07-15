@@ -66,28 +66,28 @@ protected:
 Arguments setup_csrgemm2_a_arguments(csrgemm2_a_tuple tup)
 {
     Arguments arg;
-    arg.M         = std::get<0>(tup);
-    arg.N         = std::get<1>(tup);
-    arg.K         = std::get<2>(tup);
-    arg.alpha     = std::get<3>(tup);
-    arg.baseA     = std::get<4>(tup);
-    arg.baseB     = std::get<5>(tup);
-    arg.baseC     = std::get<6>(tup);
-    arg.timing    = 0;
+    arg.M      = std::get<0>(tup);
+    arg.N      = std::get<1>(tup);
+    arg.K      = std::get<2>(tup);
+    arg.alpha  = std::get<3>(tup);
+    arg.baseA  = std::get<4>(tup);
+    arg.baseB  = std::get<5>(tup);
+    arg.baseC  = std::get<6>(tup);
+    arg.timing = 0;
     return arg;
 }
 
 Arguments setup_csrgemm2_a_arguments(csrgemm2_a_bin_tuple tup)
 {
     Arguments arg;
-    arg.M         = -99;
-    arg.N         = -99;
-    arg.K         = -99;
-    arg.alpha     = std::get<0>(tup);
-    arg.baseA     = std::get<1>(tup);
-    arg.baseB     = std::get<2>(tup);
-    arg.baseC     = std::get<3>(tup);
-    arg.timing    = 0;
+    arg.M      = -99;
+    arg.N      = -99;
+    arg.K      = -99;
+    arg.alpha  = std::get<0>(tup);
+    arg.baseA  = std::get<1>(tup);
+    arg.baseB  = std::get<2>(tup);
+    arg.baseC  = std::get<3>(tup);
+    arg.timing = 0;
 
     // Determine absolute path of test matrix
     std::string bin_file = std::get<4>(tup);

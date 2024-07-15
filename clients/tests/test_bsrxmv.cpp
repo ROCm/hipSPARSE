@@ -49,21 +49,21 @@ TEST(bsrxmv_bad_arg, bsrxmv_bad_arg_double_complex)
 
 TEST(bsrxmv, bsrxmv_float)
 {
-    Arguments arg;
+    Arguments         arg;
     hipsparseStatus_t status = testing_bsrxmv<float>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
 TEST(bsrxmv, bsrxmv_double)
 {
-    Arguments arg;
+    Arguments         arg;
     hipsparseStatus_t status = testing_bsrxmv<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
 TEST(bsrxmv, bsrxmv_hipComplex)
 {
-    Arguments arg;
+    Arguments         arg;
     hipsparseStatus_t status = testing_bsrxmv<hipComplex>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }

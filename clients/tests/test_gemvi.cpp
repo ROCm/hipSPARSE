@@ -26,7 +26,8 @@
 #include <hipsparse.h>
 #include <string>
 
-typedef std::tuple<int, int, int, double, double, hipsparseOperation_t, hipsparseIndexBase_t> gemvi_tuple;
+typedef std::tuple<int, int, int, double, double, hipsparseOperation_t, hipsparseIndexBase_t>
+    gemvi_tuple;
 
 int gemvi_M_range[]   = {1291};
 int gemvi_N_range[]   = {724};
@@ -35,7 +36,7 @@ int gemvi_nnz_range[] = {237};
 double gemvi_alpha_range[] = {-0.5, 2.0};
 double gemvi_beta_range[]  = {0.5, 0.0};
 
-hipsparseOperation_t gemvi_trans_range[] = {HIPSPARSE_OPERATION_NON_TRANSPOSE};
+hipsparseOperation_t gemvi_trans_range[]    = {HIPSPARSE_OPERATION_NON_TRANSPOSE};
 hipsparseIndexBase_t gemvi_idx_base_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
 class parameterized_gemvi : public testing::TestWithParam<gemvi_tuple>
