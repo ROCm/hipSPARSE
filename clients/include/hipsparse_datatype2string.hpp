@@ -103,7 +103,6 @@ constexpr auto hipsparse_order2string(hipsparseOrder_t order)
     {
     case HIPSPARSE_ORDER_ROW:
         return "row";
-    case HIPSPARSE_ORDER_COLUMN:
     case HIPSPARSE_ORDER_COL:
         return "col";
     }
@@ -117,7 +116,6 @@ constexpr auto hipsparse_order2string(hipsparseOrder_t order)
     {
     case HIPSPARSE_ORDER_ROW:
         return "row";
-    case HIPSPARSE_ORDER_COLUMN:
     case HIPSPARSE_ORDER_COL:
         return "col";
     }
@@ -128,7 +126,6 @@ constexpr auto hipsparse_order2string(hipsparseOrder_t order)
 {
     switch(order)
     {
-    case HIPSPARSE_ORDER_COLUMN:
     case HIPSPARSE_ORDER_COL:
         return "col";
     }
@@ -137,7 +134,7 @@ constexpr auto hipsparse_order2string(hipsparseOrder_t order)
 #endif
 #endif
 
-#if(!defined(CUDART_VERSION) ||)
+#if(!defined(CUDART_VERSION))
 constexpr auto hipsparse_format2string(hipsparseFormat_t format)
 {
     switch(format)
