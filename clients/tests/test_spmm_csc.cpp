@@ -67,26 +67,26 @@ hipsparseOrder_t     spmm_csc_orderB_range[]  = {HIPSPARSE_ORDER_COL, HIPSPARSE_
 hipsparseOrder_t     spmm_csc_orderC_range[]  = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
 hipsparseIndexBase_t spmm_csc_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ONE};
 #if(!defined(CUDART_VERSION))
-hipsparseSpMMAlg_t spmm_csr_alg_range[] = {HIPSPARSE_SPMM_ALG_DEFAULT,
+hipsparseSpMMAlg_t spmm_csc_alg_range[] = {HIPSPARSE_SPMM_ALG_DEFAULT,
                                            HIPSPARSE_SPMM_CSR_ALG1,
                                            HIPSPARSE_SPMM_CSR_ALG2,
                                            HIPSPARSE_SPMM_CSR_ALG3};
 #else
 #if(CUDART_VERSION >= 12000)
-hipsparseSpMMAlg_t spmm_csr_alg_range[] = {HIPSPARSE_SPMM_ALG_DEFAULT,
+hipsparseSpMMAlg_t spmm_csc_alg_range[] = {HIPSPARSE_SPMM_ALG_DEFAULT,
                                            HIPSPARSE_SPMM_CSR_ALG1,
                                            HIPSPARSE_SPMM_CSR_ALG2,
                                            HIPSPARSE_SPMM_CSR_ALG3};
 #elif(CUDART_VERSION >= 11021 && CUDART_VERSION < 12000)
-hipsparseSpMMAlg_t spmm_csr_alg_range[] = {HIPSPARSE_SPMM_ALG_DEFAULT,
+hipsparseSpMMAlg_t spmm_csc_alg_range[] = {HIPSPARSE_SPMM_ALG_DEFAULT,
                                            HIPSPARSE_SPMM_CSR_ALG1,
                                            HIPSPARSE_SPMM_CSR_ALG2,
                                            HIPSPARSE_SPMM_CSR_ALG3};
 #elif(CUDART_VERSION >= 11003 && CUDART_VERSION < 11021)
-hipsparseSpMMAlg_t spmm_csr_alg_range[]
+hipsparseSpMMAlg_t spmm_csc_alg_range[]
     = {HIPSPARSE_SPMM_ALG_DEFAULT, HIPSPARSE_SPMM_CSR_ALG1, HIPSPARSE_SPMM_CSR_ALG2};
 #elif(CUDART_VERSION >= 10010 && CUDART_VERSION < 11003)
-hipsparseSpMMAlg_t spmm_csr_alg_range[] = {HIPSPARSE_MM_ALG_DEFAULT, HIPSPARSE_CSRMM_ALG1};
+hipsparseSpMMAlg_t spmm_csc_alg_range[] = {HIPSPARSE_MM_ALG_DEFAULT, HIPSPARSE_CSRMM_ALG1};
 #endif
 #endif
 
