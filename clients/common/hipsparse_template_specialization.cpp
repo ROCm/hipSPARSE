@@ -5856,6 +5856,7 @@ namespace hipsparse
     }
 #endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     template <>
     hipsparseStatus_t hipsparseXdense2csr(hipsparseHandle_t         handle,
                                           int                       m,
@@ -5919,6 +5920,7 @@ namespace hipsparse
         return hipsparseZdense2csr(
             handle, m, n, descr, A, ld, nnzPerRow, csrVal, csrRowPtr, csrColInd);
     }
+#endif
 
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     template <>

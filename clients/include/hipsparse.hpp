@@ -915,6 +915,7 @@ namespace hipsparse
                                              T                         tol);
 #endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     template <typename T>
     hipsparseStatus_t hipsparseXdense2csr(hipsparseHandle_t         handle,
                                           int                       m,
@@ -926,6 +927,7 @@ namespace hipsparse
                                           T*                        csrVal,
                                           int*                      csrRowPtr,
                                           int*                      csrColInd);
+#endif
 
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     template <typename T>

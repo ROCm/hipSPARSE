@@ -7900,6 +7900,7 @@ hipsparseStatus_t hipsparseZnnz(hipsparseHandle_t         handle,
                                 int*                      nnzTotalDevHostPtr);
 /**@}*/
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 /*! \ingroup conv_module
 *  \brief
 *  This function converts the matrix A in dense format into a sparse matrix in CSR format.
@@ -7957,6 +7958,7 @@ hipsparseStatus_t hipsparseZdense2csr(hipsparseHandle_t         handle,
                                       int*                      csr_row_ptr,
                                       int*                      csr_col_ind);
 /**@}*/
+#endif
 
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup conv_module
