@@ -96,18 +96,48 @@ constexpr auto hipsparse_direction2string(hipsparseDirection_t direction)
     return "invalid";
 }
 
+#if(!defined(CUDART_VERSION))
 constexpr auto hipsparse_order2string(hipsparseOrder_t order)
 {
     switch(order)
     {
     case HIPSPARSE_ORDER_ROW:
         return "row";
+    case HIPSPARSE_ORDER_COLUMN:
     case HIPSPARSE_ORDER_COL:
         return "col";
     }
     return "invalid";
 }
+#else
+#if(CUDART_VERSION >= 11000)
+constexpr auto hipsparse_order2string(hipsparseOrder_t order)
+{
+    switch(order)
+    {
+    case HIPSPARSE_ORDER_ROW:
+        return "row";
+    case HIPSPARSE_ORDER_COLUMN:
+    case HIPSPARSE_ORDER_COL:
+        return "col";
+    }
+    return "invalid";
+}
+#elif(CUDART_VERSION >= 10010)
+constexpr auto hipsparse_order2string(hipsparseOrder_t order)
+{
+    switch(order)
+    {
+    case HIPSPARSE_ORDER_COLUMN:
+    case HIPSPARSE_ORDER_COL:
+        return "col";
+    }
+    return "invalid";
+}
+#endif
+#endif
 
+#if(!defined(CUDART_VERSION) || )
 constexpr auto hipsparse_format2string(hipsparseFormat_t format)
 {
     switch(format)
@@ -125,6 +155,56 @@ constexpr auto hipsparse_format2string(hipsparseFormat_t format)
     }
     return "invalid";
 }
+#else
+#if(CUDART_VERSION >= 12000)
+constexpr auto hipsparse_format2string(hipsparseFormat_t format)
+{
+    switch(format)
+    {
+    case HIPSPARSE_FORMAT_COO:
+        return "coo";
+    case HIPSPARSE_FORMAT_CSR:
+        return "csr";
+    case HIPSPARSE_FORMAT_CSC:
+        return "csc";
+    case HIPSPARSE_FORMAT_BLOCKED_ELL:
+        return "bell";
+    }
+    return "invalid";
+}
+#elif(CUDART_VERSION >= 11021 && CUDART_VERSION < 12000)
+constexpr auto hipsparse_format2string(hipsparseFormat_t format)
+{
+    switch(format)
+    {
+    case HIPSPARSE_FORMAT_COO:
+        return "coo";
+    case HIPSPARSE_FORMAT_COO_AOS:
+        return "coo_aos";
+    case HIPSPARSE_FORMAT_CSR:
+        return "csr";
+    case HIPSPARSE_FORMAT_CSC:
+        return "csc";
+    case HIPSPARSE_FORMAT_BLOCKED_ELL:
+        return "bell";
+    }
+    return "invalid";
+}
+#elif(CUDART_VERSION >= 10010 && CUDART_VERSION < 11021)
+constexpr auto hipsparse_format2string(hipsparseFormat_t format)
+{
+    switch(format)
+    {
+    case HIPSPARSE_FORMAT_COO:
+        return "coo";
+    case HIPSPARSE_FORMAT_COO_AOS:
+        return "coo_aos";
+    case HIPSPARSE_FORMAT_CSR:
+        return "csr";
+    }
+    return "invalid";
+}
+#endif
 
 constexpr auto hipsparse_action2string(hipsparseAction_t action)
 {
