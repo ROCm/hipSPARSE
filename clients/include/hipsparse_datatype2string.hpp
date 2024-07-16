@@ -202,6 +202,7 @@ constexpr auto hipsparse_format2string(hipsparseFormat_t format)
     return "invalid";
 }
 #endif
+#endif
 
 constexpr auto hipsparse_action2string(hipsparseAction_t action)
 {
