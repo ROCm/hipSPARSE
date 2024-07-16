@@ -2724,6 +2724,7 @@ namespace hipsparse
                                               policy,
                                               pBufferSizeInBytes);
     }
+#endif
 
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     template <>
