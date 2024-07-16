@@ -46,7 +46,17 @@ std::vector<double> spmv_coo_beta_range  = {1.0};
 hipsparseOperation_t spmv_coo_transA_range[] = {HIPSPARSE_OPERATION_NON_TRANSPOSE};
 hipsparseIndexBase_t spmv_coo_idxbase_range[]
     = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
-hipsparseSpMVAlg_t spmv_coo_alg_range[] = {HIPSPARSE_SPMV_ALG_DEFAULT};
+#if(!defined(CUDART_VERSION))
+hipsparseSpMVAlg_t spmv_coo_alg_range[] = {HIPSPARSE_SPMV_ALG_DEFAULT, HIPSPARSE_SPMV_COO_ALG1, HIPSPARSE_SPMV_COO_ALG2};
+#else
+#if(CUDART_VERSION >= 12000)
+hipsparseSpMVAlg_t spmv_coo_alg_range[] = {HIPSPARSE_SPMV_ALG_DEFAULT, HIPSPARSE_SPMV_COO_ALG1, HIPSPARSE_SPMV_COO_ALG2};
+#elif(CUDART_VERSION >= 11021 && CUDART_VERSION < 12000)
+hipsparseSpMVAlg_t spmv_coo_alg_range[] = {HIPSPARSE_SPMV_ALG_DEFAULT, HIPSPARSE_SPMV_COO_ALG1, HIPSPARSE_SPMV_COO_ALG2};
+#elif(CUDART_VERSION >= 10010 && CUDART_VERSION < 11021)
+hipsparseSpMVAlg_t spmv_coo_alg_range[] = {HIPSPARSE_MV_ALG_DEFAULT, HIPSPARSE_COOMV_ALG};
+#endif
+#endif
 
 std::string spmv_coo_bin[] = {"nos1.bin",
                               "nos2.bin",

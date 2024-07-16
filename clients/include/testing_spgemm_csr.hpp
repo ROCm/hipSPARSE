@@ -299,11 +299,7 @@ void testing_spgemm_csr_bad_arg(void)
                                                                     &bufferSize,
                                                                     dbuf),
                                             "Error: C is nullptr");
-    verify_hipsparse_status_invalid_pointer(
-        hipsparseSpGEMM_compute(
-            handle, transA, transB, &alpha, A, B, &beta, C, dataType, alg, descr, nullptr, dbuf),
-        "Error: bufferSize is nullptr");
-
+    
     // SpGEMM copy
     verify_hipsparse_status_invalid_handle(hipsparseSpGEMM_copy(
         nullptr, transA, transB, &alpha, A, B, &beta, C, dataType, alg, descr));

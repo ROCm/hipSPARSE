@@ -160,15 +160,7 @@ hipsparseStatus_t testing_spmv_coo(Arguments argus)
     hipsparseSpMVAlg_t   alg      = static_cast<hipsparseSpMVAlg_t>(argus.spmv_alg);
     std::string          filename = argus.filename;
 
-    // #if(!defined(CUDART_VERSION))
-    //     hipsparseSpMVAlg_t alg = HIPSPARSE_COOMV_ALG;
-    // #else
-    // #if(CUDART_VERSION >= 12000)
-    //     hipsparseSpMVAlg_t alg = HIPSPARSE_SPMV_COO_ALG1;
-    // #elif(CUDART_VERSION >= 10010 && CUDART_VERSION < 12000)
-    //     hipsparseSpMVAlg_t alg = HIPSPARSE_COOMV_ALG;
-    // #endif
-    // #endif
+    std::cout << "m: " << m << " n: " << " transA: " << transA << " idx_base: " << idx_base << " alg: " << alg << " filename: " << filename << std::endl;
 
     // Index and data type
     hipsparseIndexType_t typeI = getIndexType<I>();

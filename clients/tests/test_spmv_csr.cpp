@@ -46,7 +46,17 @@ std::vector<double> spmv_csr_beta_range  = {1.0};
 hipsparseOperation_t spmv_csr_transA_range[] = {HIPSPARSE_OPERATION_NON_TRANSPOSE};
 hipsparseIndexBase_t spmv_csr_idxbase_range[]
     = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
-hipsparseSpMVAlg_t spmv_csr_alg_range[] = {HIPSPARSE_SPMV_ALG_DEFAULT};
+#if(!defined(CUDART_VERSION))
+hipsparseSpMVAlg_t spmv_csr_alg_range[] = {HIPSPARSE_SPMV_ALG_DEFAULT, HIPSPARSE_SPMV_CSR_ALG1, HIPSPARSE_SPMV_CSR_ALG2};
+#else
+#if(CUDART_VERSION >= 12000)
+hipsparseSpMVAlg_t spmv_csr_alg_range[] = {HIPSPARSE_SPMV_ALG_DEFAULT, HIPSPARSE_SPMV_CSR_ALG1, HIPSPARSE_SPMV_CSR_ALG2};
+#elif(CUDART_VERSION >= 11021 && CUDART_VERSION < 12000)
+hipsparseSpMVAlg_t spmv_csr_alg_range[] = {HIPSPARSE_SPMV_ALG_DEFAULT, HIPSPARSE_SPMV_CSR_ALG1, HIPSPARSE_SPMV_CSR_ALG2};
+#elif(CUDART_VERSION >= 10010 && CUDART_VERSION < 11021)
+hipsparseSpMVAlg_t spmv_csr_alg_range[] = {HIPSPARSE_MV_ALG_DEFAULT, HIPSPARSE_CSRMV_ALG1, HIPSPARSE_CSRMV_ALG2};
+#endif
+#endif
 
 std::string spmv_csr_bin[] = {"nos1.bin",
                               "nos2.bin",

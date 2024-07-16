@@ -78,14 +78,14 @@ hipsparse_arguments_config::hipsparse_arguments_config()
         this->formatB = HIPSPARSE_FORMAT_COO;
 
         this->csr2csc_alg      = csr2csc_alg_support::get_default_algorithm();
-        this->dense2sparse_alg = dense2sparse_support::get_default_algorithm();
-        this->sparse2dense_alg = sparse2dense_support::get_default_algorithm();
-        this->sddmm_alg        = sddmm_support::get_default_algorithm();
-        this->spgemm_alg       = spgemm_support::get_default_algorithm();
-        this->spmm_alg         = spmm_support::get_default_algorithm();
-        this->spmv_alg         = spmv_support::get_default_algorithm();
-        this->spsm_alg         = spsm_support::get_default_algorithm();
-        this->spsv_alg         = spsv_support::get_default_algorithm();
+        this->dense2sparse_alg = dense2sparse_alg_support::get_default_algorithm();
+        this->sparse2dense_alg = sparse2dense_alg_support::get_default_algorithm();
+        this->sddmm_alg        = sddmm_alg_support::get_default_algorithm();
+        this->spgemm_alg       = spgemm_alg_support::get_default_algorithm();
+        this->spmm_alg         = spmm_alg_support::get_default_algorithm();
+        this->spmv_alg         = spmv_alg_support::get_default_algorithm();
+        this->spsm_alg         = spsm_alg_support::get_default_algorithm();
+        this->spsv_alg         = spsv_alg_support::get_default_algorithm();
 
         this->numericboost = 0;
         this->boosttol     = 0.0;
@@ -285,36 +285,36 @@ void hipsparse_arguments_config::set_description(options_description& desc)
      csr2csc_alg_support::get_description())
     
     ("dense2sparse_alg",
-     value<int>(&this->dense2sparse_alg)->default_value(dense2sparse_support::get_default_algorithm()),
-     dense2sparse_support::get_description())
+     value<int>(&this->dense2sparse_alg)->default_value(dense2sparse_alg_support::get_default_algorithm()),
+     dense2sparse_alg_support::get_description())
     
     ("sparse2dense_alg",
-     value<int>(&this->sparse2dense_alg)->default_value(sparse2dense_support::get_default_algorithm()),
-     sparse2dense_support::get_description())
+     value<int>(&this->sparse2dense_alg)->default_value(sparse2dense_alg_support::get_default_algorithm()),
+     sparse2dense_alg_support::get_description())
 
     ("sddmm_alg",
-     value<int>(&this->sddmm_alg)->default_value(sddmm_support::get_default_algorithm()),
-     sddmm_support::get_description())
+     value<int>(&this->sddmm_alg)->default_value(sddmm_alg_support::get_default_algorithm()),
+     sddmm_alg_support::get_description())
 
     ("spgemm_alg",
-     value<int>(&this->spgemm_alg)->default_value(spgemm_support::get_default_algorithm()),
-     spgemm_support::get_description())
+     value<int>(&this->spgemm_alg)->default_value(spgemm_alg_support::get_default_algorithm()),
+     spgemm_alg_support::get_description())
 
     ("spmm_alg",
-     value<int>(&this->spmm_alg)->default_value(spmm_support::get_default_algorithm()),
-     spmm_support::get_description())
+     value<int>(&this->spmm_alg)->default_value(spmm_alg_support::get_default_algorithm()),
+     spmm_alg_support::get_description())
 
     ("spmv_alg",
-     value<int>(&this->spmv_alg)->default_value(spmm_support::get_default_algorithm()),
-     spmm_support::get_description())
+     value<int>(&this->spmv_alg)->default_value(spmv_alg_support::get_default_algorithm()),
+     spmv_alg_support::get_description())
 
     ("spsm_alg",
-     value<int>(&this->spsm_alg)->default_value(spsm_support::get_default_algorithm()),
-     spsm_support::get_description())
+     value<int>(&this->spsm_alg)->default_value(spsm_alg_support::get_default_algorithm()),
+     spsm_alg_support::get_description())
 
     ("spsv_alg",
-     value<int>(&this->spsv_alg)->default_value(spsv_support::get_default_algorithm()),
-     spsv_support::get_description())
+     value<int>(&this->spsv_alg)->default_value(spsv_alg_support::get_default_algorithm()),
+     spsv_alg_support::get_description())
 
     ("ell_width",
      value<int>(&this->ell_width)->default_value(0),

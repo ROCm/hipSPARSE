@@ -169,14 +169,14 @@ struct Arguments
         this->formatB = HIPSPARSE_FORMAT_COO;
 
         this->csr2csc_alg      = csr2csc_alg_support::get_default_algorithm();
-        this->dense2sparse_alg = dense2sparse_support::get_default_algorithm();
-        this->sparse2dense_alg = sparse2dense_support::get_default_algorithm();
-        this->sddmm_alg        = sddmm_support::get_default_algorithm();
-        this->spgemm_alg       = spgemm_support::get_default_algorithm();
-        this->spmm_alg         = spmm_support::get_default_algorithm();
-        this->spmv_alg         = spmv_support::get_default_algorithm();
-        this->spsm_alg         = spsm_support::get_default_algorithm();
-        this->spsv_alg         = spsv_support::get_default_algorithm();
+        this->dense2sparse_alg = dense2sparse_alg_support::get_default_algorithm();
+        this->sparse2dense_alg = sparse2dense_alg_support::get_default_algorithm();
+        this->sddmm_alg        = sddmm_alg_support::get_default_algorithm();
+        this->spgemm_alg       = spgemm_alg_support::get_default_algorithm();
+        this->spmm_alg         = spmm_alg_support::get_default_algorithm();
+        this->spmv_alg         = spmv_alg_support::get_default_algorithm();
+        this->spsm_alg         = spsm_alg_support::get_default_algorithm();
+        this->spsv_alg         = spsv_alg_support::get_default_algorithm();
 
         this->numericboost = 0;
         this->boosttol     = 0.0;

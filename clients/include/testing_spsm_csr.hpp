@@ -195,6 +195,8 @@ hipsparseStatus_t testing_spsm_csr(Arguments argus)
     hipsparseSpSMAlg_t   alg      = static_cast<hipsparseSpSMAlg_t>(argus.spsm_alg);
     std::string          filename = argus.filename;
 
+    std::cout << "m: " << m << " n: " << n << " k: " << k << " transA: " << transA << " transB: " << transB << " orderB: " << orderB << " orderC: " << orderC << " idx_base: " << idx_base << " diag: " << diag << " uplo: " << uplo << " alg: " << alg << " filename: " << filename << std::endl;
+
 #if(defined(CUDART_VERSION))
     if(orderB != orderC)
     {

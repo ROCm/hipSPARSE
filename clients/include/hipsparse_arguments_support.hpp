@@ -23,6 +23,8 @@
 * ************************************************************************ */
 #pragma once
 
+#include <vector>
+
 #include <hipsparse.h>
 
 struct csr2csc_alg_support
@@ -59,9 +61,23 @@ struct csr2csc_alg_support
 #endif
 #endif
     }
+
+    static std::vector<int> get_supported_algorithms()
+    {
+#if(!defined(CUDART_VERSION))
+        return std::vector<int>({HIPSPARSE_CSR2CSC_ALG_DEFAULT, HIPSPARSE_CSR2CSC_ALG1, HIPSPARSE_CSR2CSC_ALG2});
+#else
+#if(CUDART_VERSION >= 12000)
+        return std::vector<int>({HIPSPARSE_CSR2CSC_ALG_DEFAULT, HIPSPARSE_CSR2CSC_ALG1});
+#elif(CUDART_VERSION >= 10010 && CUDART_VERSION < 12000)
+        return std::vector<int>({HIPSPARSE_CSR2CSC_ALG1, HIPSPARSE_CSR2CSC_ALG2});
+#endif
+#endif
+        return std::vector<int>();
+    }
 };
 
-struct dense2sparse_support
+struct dense2sparse_alg_support
 {
     static int get_default_algorithm()
     {
@@ -83,7 +99,7 @@ struct dense2sparse_support
     }
 };
 
-struct sparse2dense_support
+struct sparse2dense_alg_support
 {
     static int get_default_algorithm()
     {
@@ -105,7 +121,7 @@ struct sparse2dense_support
     }
 };
 
-struct sddmm_support
+struct sddmm_alg_support
 {
     static int get_default_algorithm()
     {
@@ -127,7 +143,7 @@ struct sddmm_support
     }
 };
 
-struct spgemm_support
+struct spgemm_alg_support
 {
     static int get_default_algorithm()
     {
@@ -168,7 +184,7 @@ struct spgemm_support
     }
 };
 
-struct spmm_support
+struct spmm_alg_support
 {
     static int get_default_algorithm()
     {
@@ -218,7 +234,7 @@ struct spmm_support
     }
 };
 
-struct spmv_support
+struct spmv_alg_support
 {
     static int get_default_algorithm()
     {
@@ -259,7 +275,7 @@ struct spmv_support
     }
 };
 
-struct spsm_support
+struct spsm_alg_support
 {
     static int get_default_algorithm()
     {
@@ -281,7 +297,7 @@ struct spsm_support
     }
 };
 
-struct spsv_support
+struct spsv_alg_support
 {
     static int get_default_algorithm()
     {
