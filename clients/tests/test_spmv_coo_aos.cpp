@@ -50,7 +50,7 @@ hipsparseIndexBase_t spmv_coo_aos_idxbase_range[]
 hipsparseSpMVAlg_t spmv_coo_aos_alg_range[]
     = {HIPSPARSE_SPMV_ALG_DEFAULT, HIPSPARSE_SPMV_COO_ALG1, HIPSPARSE_SPMV_COO_ALG2};
 #else // coo_aos format not supported in cusparse 12 or later
-if(CUDART_VERSION >= 11021 && CUDART_VERSION < 12000)
+#if(CUDART_VERSION >= 11021 && CUDART_VERSION < 12000)
     hipsparseSpMVAlg_t spmv_coo_aos_alg_range[]
         = {HIPSPARSE_SPMV_ALG_DEFAULT, HIPSPARSE_SPMV_COO_ALG1, HIPSPARSE_SPMV_COO_ALG2};
 #elif(CUDART_VERSION >= 10010 && CUDART_VERSION < 11021)
