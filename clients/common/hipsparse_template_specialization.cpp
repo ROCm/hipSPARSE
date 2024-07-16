@@ -1666,6 +1666,7 @@ namespace hipsparse
                                       pBuffer);
     }
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     template <>
     hipsparseStatus_t hipsparseXgemvi_bufferSize<float>(hipsparseHandle_t    handle,
                                                         hipsparseOperation_t transA,
@@ -1709,7 +1710,9 @@ namespace hipsparse
     {
         return hipsparseZgemvi_bufferSize(handle, transA, m, n, nnz, pBufferSizeInBytes);
     }
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     template <>
     hipsparseStatus_t hipsparseXgemvi(hipsparseHandle_t    handle,
                                       hipsparseOperation_t transA,
@@ -1789,6 +1792,7 @@ namespace hipsparse
         return hipsparseZgemvi(
             handle, transA, m, n, alpha, A, lda, nnz, x, xInd, beta, y, idxBase, pBuffer);
     }
+#endif
 
     template <>
     hipsparseStatus_t hipsparseXbsrmm(hipsparseHandle_t         handle,
