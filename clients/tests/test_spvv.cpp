@@ -36,11 +36,20 @@ hipsparseOperation_t spvv_trans_complex_range[]
     = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE};
 hipsparseIndexBase_t spvv_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
-class parameterized_spvv : public testing::TestWithParam<spvv_tuple>
+class parameterized_spvv_real : public testing::TestWithParam<spvv_tuple>
 {
 protected:
-    parameterized_spvv() {}
-    virtual ~parameterized_spvv() {}
+    parameterized_spvv_real() {}
+    virtual ~parameterized_spvv_real() {}
+    virtual void SetUp() {}
+    virtual void TearDown() {}
+};
+
+class parameterized_spvv_complex : public testing::TestWithParam<spvv_tuple>
+{
+protected:
+    parameterized_spvv_complex() {}
+    virtual ~parameterized_spvv_complex() {}
     virtual void SetUp() {}
     virtual void TearDown() {}
 };
