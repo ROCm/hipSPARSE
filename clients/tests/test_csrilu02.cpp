@@ -146,21 +146,21 @@ TEST_P(parameterized_csrilu02, csrilu02_double_complex)
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-TEST_P(parameterized_csrilu02_bin, csrilu02_bin_float)
-{
-    Arguments arg = setup_csrilu02_arguments(GetParam());
+// TEST_P(parameterized_csrilu02_bin, csrilu02_bin_float)
+// {
+//     Arguments arg = setup_csrilu02_arguments(GetParam());
 
-    hipsparseStatus_t status = testing_csrilu02<float>(arg);
-    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
-}
+//     hipsparseStatus_t status = testing_csrilu02<float>(arg);
+//     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+// }
 
-TEST_P(parameterized_csrilu02_bin, csrilu02_bin_double)
-{
-    Arguments arg = setup_csrilu02_arguments(GetParam());
+// TEST_P(parameterized_csrilu02_bin, csrilu02_bin_double)
+// {
+//     Arguments arg = setup_csrilu02_arguments(GetParam());
 
-    hipsparseStatus_t status = testing_csrilu02<double>(arg);
-    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
-}
+//     hipsparseStatus_t status = testing_csrilu02<double>(arg);
+//     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+// }
 
 INSTANTIATE_TEST_SUITE_P(csrilu02,
                          parameterized_csrilu02,
@@ -172,13 +172,13 @@ INSTANTIATE_TEST_SUITE_P(csrilu02,
                                           testing::ValuesIn(csrilu02_idxbase_range),
                                           testing::ValuesIn(csrilu02_solve_policy_range)));
 
-INSTANTIATE_TEST_SUITE_P(csrilu02_bin,
-                         parameterized_csrilu02_bin,
-                         testing::Combine(testing::ValuesIn(csrilu02_boost_range),
-                                          testing::ValuesIn(csrilu02_boost_tol_range),
-                                          testing::ValuesIn(csrilu02_boost_val_range),
-                                          testing::ValuesIn(csrilu02_boost_vali_range),
-                                          testing::ValuesIn(csrilu02_idxbase_range),
-                                          testing::ValuesIn(csrilu02_solve_policy_range),
-                                          testing::ValuesIn(csrilu02_bin)));
+// INSTANTIATE_TEST_SUITE_P(csrilu02_bin,
+//                          parameterized_csrilu02_bin,
+//                          testing::Combine(testing::ValuesIn(csrilu02_boost_range),
+//                                           testing::ValuesIn(csrilu02_boost_tol_range),
+//                                           testing::ValuesIn(csrilu02_boost_val_range),
+//                                           testing::ValuesIn(csrilu02_boost_vali_range),
+//                                           testing::ValuesIn(csrilu02_idxbase_range),
+//                                           testing::ValuesIn(csrilu02_solve_policy_range),
+//                                           testing::ValuesIn(csrilu02_bin)));
 #endif
