@@ -110,6 +110,7 @@ void testing_csrsort_bad_arg(void)
 
 hipsparseStatus_t testing_csrsort(Arguments argus)
 {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     int                  m        = argus.M;
     int                  n        = argus.N;
     int                  permute  = argus.permute;
@@ -277,6 +278,7 @@ hipsparseStatus_t testing_csrsort(Arguments argus)
         std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used)
                   << std::endl;
     }
+#endif
 
     return HIPSPARSE_STATUS_SUCCESS;
 }
