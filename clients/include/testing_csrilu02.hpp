@@ -225,6 +225,8 @@ hipsparseStatus_t testing_csrilu02(Arguments argus)
         return HIPSPARSE_STATUS_INTERNAL_ERROR;
     }
 
+    std::cout << "m: " << m << " nnz: " << nnz << std::endl;
+
     std::vector<T> hcsr_val_orig(hcsr_val);
 
     // Allocate memory on device
@@ -256,6 +258,8 @@ hipsparseStatus_t testing_csrilu02(Arguments argus)
     CHECK_HIPSPARSE_ERROR(
         hipsparseXcsrilu02_bufferSize(handle, m, nnz, descr, dval1, dptr, dcol, info, &bufferSize));
 
+    std::cout << "bufferSize: " << bufferSize << std::endl;
+
     // Allocate buffer on the device
     auto dbuffer_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(char) * bufferSize), device_free};
@@ -267,37 +271,47 @@ hipsparseStatus_t testing_csrilu02(Arguments argus)
         CHECK_HIP_ERROR(hipMemcpy(dboost_tol, &boost_tol, sizeof(double), hipMemcpyHostToDevice));
         CHECK_HIP_ERROR(hipMemcpy(dboost_val, &boost_val, sizeof(T), hipMemcpyHostToDevice));
 
+        std::cout << "AAAA" << std::endl;
         // Pointer mode host
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
         CHECK_HIPSPARSE_ERROR(hipsparseXcsrilu02_analysis(
             handle, m, nnz, descr, dval1, dptr, dcol, info, policy, dbuffer));
+        std::cout << "BBBB" << std::endl;
         CHECK_HIPSPARSE_ERROR(
             hipsparseXcsrilu02_numericBoost(handle, info, boost, &boost_tol, &boost_val));
+        std::cout << "CCCC" << std::endl;
         CHECK_HIPSPARSE_ERROR(
             hipsparseXcsrilu02(handle, m, nnz, descr, dval1, dptr, dcol, info, policy, dbuffer));
+        std::cout << "DDDD" << std::endl;
         int               hposition_1;
         hipsparseStatus_t pivot_status_1;
         pivot_status_1 = hipsparseXcsrilu02_zeroPivot(handle, info, &hposition_1);
 
+        std::cout << "hposition_1: " << hposition_1 << std::endl;
         // Pointer mode device
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
         CHECK_HIPSPARSE_ERROR(hipsparseXcsrilu02_analysis(
             handle, m, nnz, descr, dval2, dptr, dcol, info, policy, dbuffer));
+        std::cout << "EEEE" << std::endl;
         CHECK_HIPSPARSE_ERROR(
             hipsparseXcsrilu02_numericBoost(handle, info, boost, dboost_tol, dboost_val));
+        std::cout << "FFFF" << std::endl;
         CHECK_HIPSPARSE_ERROR(
             hipsparseXcsrilu02(handle, m, nnz, descr, dval2, dptr, dcol, info, policy, dbuffer));
+        std::cout << "GGGG" << std::endl;
         int               hposition_2;
         hipsparseStatus_t pivot_status_2;
         pivot_status_2 = hipsparseXcsrilu02_zeroPivot(handle, info, d_position);
         CHECK_HIP_ERROR(hipMemcpy(&hposition_2, d_position, sizeof(int), hipMemcpyDeviceToHost));
 
+        std::cout << "hposition_2: " << hposition_2 << std::endl;
         // Copy output from device to CPU
         std::vector<T> result1(nnz);
         std::vector<T> result2(nnz);
         CHECK_HIP_ERROR(hipMemcpy(result1.data(), dval1, sizeof(T) * nnz, hipMemcpyDeviceToHost));
         CHECK_HIP_ERROR(hipMemcpy(result2.data(), dval2, sizeof(T) * nnz, hipMemcpyDeviceToHost));
 
+        std::cout << "HHHH" << std::endl;
         // Host csrilu02
         int position_gold = csrilu0(m,
                                     hcsr_row_ptr.data(),
@@ -308,6 +322,7 @@ hipsparseStatus_t testing_csrilu02(Arguments argus)
                                     boost_tol,
                                     boost_val);
 
+        std::cout << "position_gold: " << position_gold << std::endl;
         unit_check_general(1, 1, 1, &position_gold, &hposition_1);
         unit_check_general(1, 1, 1, &position_gold, &hposition_2);
 
