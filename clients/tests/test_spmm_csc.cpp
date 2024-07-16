@@ -66,22 +66,22 @@ hipsparseOperation_t spmm_csc_transB_range[]
 hipsparseOrder_t     spmm_csc_orderB_range[]  = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
 hipsparseOrder_t     spmm_csc_orderC_range[]  = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
 hipsparseIndexBase_t spmm_csc_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ONE};
+
 #if(!defined(CUDART_VERSION))
 hipsparseSpMMAlg_t spmm_csc_alg_range[] = {HIPSPARSE_SPMM_ALG_DEFAULT,
                                            HIPSPARSE_SPMM_CSR_ALG1,
                                            HIPSPARSE_SPMM_CSR_ALG2,
                                            HIPSPARSE_SPMM_CSR_ALG3};
 #else
+// Alg3 not supported for CSC format
 #if(CUDART_VERSION >= 12000)
 hipsparseSpMMAlg_t spmm_csc_alg_range[] = {HIPSPARSE_SPMM_ALG_DEFAULT,
                                            HIPSPARSE_SPMM_CSR_ALG1,
-                                           HIPSPARSE_SPMM_CSR_ALG2,
-                                           HIPSPARSE_SPMM_CSR_ALG3};
+                                           HIPSPARSE_SPMM_CSR_ALG2};
 #elif(CUDART_VERSION >= 11021 && CUDART_VERSION < 12000)
 hipsparseSpMMAlg_t spmm_csc_alg_range[] = {HIPSPARSE_SPMM_ALG_DEFAULT,
                                            HIPSPARSE_SPMM_CSR_ALG1,
-                                           HIPSPARSE_SPMM_CSR_ALG2,
-                                           HIPSPARSE_SPMM_CSR_ALG3};
+                                           HIPSPARSE_SPMM_CSR_ALG2};
 #elif(CUDART_VERSION >= 11003 && CUDART_VERSION < 11021)
 hipsparseSpMMAlg_t spmm_csc_alg_range[]
     = {HIPSPARSE_SPMM_ALG_DEFAULT, HIPSPARSE_SPMM_CSR_ALG1, HIPSPARSE_SPMM_CSR_ALG2};
