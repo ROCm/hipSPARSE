@@ -57,7 +57,7 @@ void testing_spmm_csc_bad_arg(void)
     hipsparseIndexType_t idxTypeI  = HIPSPARSE_INDEX_64I;
     hipsparseIndexType_t idxTypeJ  = HIPSPARSE_INDEX_32I;
     hipDataType          dataType  = HIP_R_32F;
-    
+
 #if(CUDART_VERSION >= 11003)
     hipsparseSpMMAlg_t alg = HIPSPARSE_SPMM_CSR_ALG1;
 #else
@@ -202,7 +202,10 @@ hipsparseStatus_t testing_spmm_csc(Arguments argus)
     hipsparseSpMMAlg_t   alg      = static_cast<hipsparseSpMMAlg_t>(argus.spmm_alg);
     std::string          filename = argus.filename;
 
-    std::cout << "m: " << m << " n: " << n << " k: " << k << " transA: " << transA << " transB: " << transB << " orderB: " << orderB << " orderC: " << orderC << " idx_base: " << idx_base << " alg: " << alg << " filename: " << filename << std::endl;
+    std::cout << "m: " << m << " n: " << n << " k: " << k << " transA: " << transA
+              << " transB: " << transB << " orderB: " << orderB << " orderC: " << orderC
+              << " idx_base: " << idx_base << " alg: " << alg << " filename: " << filename
+              << std::endl;
 
     // #if(CUDART_VERSION >= 11003)
     //     hipsparseSpMMAlg_t alg = HIPSPARSE_SPMM_CSR_ALG1;

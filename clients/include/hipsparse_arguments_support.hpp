@@ -65,7 +65,8 @@ struct csr2csc_alg_support
     static std::vector<int> get_supported_algorithms()
     {
 #if(!defined(CUDART_VERSION))
-        return std::vector<int>({HIPSPARSE_CSR2CSC_ALG_DEFAULT, HIPSPARSE_CSR2CSC_ALG1, HIPSPARSE_CSR2CSC_ALG2});
+        return std::vector<int>(
+            {HIPSPARSE_CSR2CSC_ALG_DEFAULT, HIPSPARSE_CSR2CSC_ALG1, HIPSPARSE_CSR2CSC_ALG2});
 #else
 #if(CUDART_VERSION >= 12000)
         return std::vector<int>({HIPSPARSE_CSR2CSC_ALG_DEFAULT, HIPSPARSE_CSR2CSC_ALG1});

@@ -67,35 +67,33 @@ hipsparseOrder_t     spmm_coo_orderB_range[]  = {HIPSPARSE_ORDER_COL, HIPSPARSE_
 hipsparseOrder_t     spmm_coo_orderC_range[]  = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
 hipsparseIndexBase_t spmm_coo_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ONE};
 #if(!defined(CUDART_VERSION))
-hipsparseSpMMAlg_t   spmm_coo_alg_range[]     = {HIPSPARSE_SPMM_ALG_DEFAULT, 
-                                                 HIPSPARSE_SPMM_COO_ALG1,
-                                                 HIPSPARSE_SPMM_COO_ALG2,
-                                                 HIPSPARSE_SPMM_COO_ALG3,
-                                                 HIPSPARSE_SPMM_COO_ALG4};
+hipsparseSpMMAlg_t spmm_coo_alg_range[] = {HIPSPARSE_SPMM_ALG_DEFAULT,
+                                           HIPSPARSE_SPMM_COO_ALG1,
+                                           HIPSPARSE_SPMM_COO_ALG2,
+                                           HIPSPARSE_SPMM_COO_ALG3,
+                                           HIPSPARSE_SPMM_COO_ALG4};
 #else
 #if(CUDART_VERSION >= 12000)
-hipsparseSpMMAlg_t   spmm_coo_alg_range[]     = {HIPSPARSE_SPMM_ALG_DEFAULT, 
-                                                 HIPSPARSE_SPMM_COO_ALG1,
-                                                 HIPSPARSE_SPMM_COO_ALG2,
-                                                 HIPSPARSE_SPMM_COO_ALG3,
-                                                 HIPSPARSE_SPMM_COO_ALG4};
+hipsparseSpMMAlg_t spmm_coo_alg_range[] = {HIPSPARSE_SPMM_ALG_DEFAULT,
+                                           HIPSPARSE_SPMM_COO_ALG1,
+                                           HIPSPARSE_SPMM_COO_ALG2,
+                                           HIPSPARSE_SPMM_COO_ALG3,
+                                           HIPSPARSE_SPMM_COO_ALG4};
 #elif(CUDART_VERSION >= 11021 && CUDART_VERSION < 12000)
-hipsparseSpMMAlg_t   spmm_coo_alg_range[]     = {HIPSPARSE_SPMM_ALG_DEFAULT, 
-                                                 HIPSPARSE_SPMM_COO_ALG1,
-                                                 HIPSPARSE_SPMM_COO_ALG2,
-                                                 HIPSPARSE_SPMM_COO_ALG3,
-                                                 HIPSPARSE_SPMM_COO_ALG4};
+hipsparseSpMMAlg_t spmm_coo_alg_range[] = {HIPSPARSE_SPMM_ALG_DEFAULT,
+                                           HIPSPARSE_SPMM_COO_ALG1,
+                                           HIPSPARSE_SPMM_COO_ALG2,
+                                           HIPSPARSE_SPMM_COO_ALG3,
+                                           HIPSPARSE_SPMM_COO_ALG4};
 #elif(CUDART_VERSION >= 11003 && CUDART_VERSION < 11021)
-hipsparseSpMMAlg_t   spmm_coo_alg_range[]     = {HIPSPARSE_SPMM_ALG_DEFAULT, 
-                                                 HIPSPARSE_SPMM_COO_ALG1,
-                                                 HIPSPARSE_SPMM_COO_ALG2,
-                                                 HIPSPARSE_SPMM_COO_ALG3,
-                                                 HIPSPARSE_SPMM_COO_ALG4};
+hipsparseSpMMAlg_t spmm_coo_alg_range[] = {HIPSPARSE_SPMM_ALG_DEFAULT,
+                                           HIPSPARSE_SPMM_COO_ALG1,
+                                           HIPSPARSE_SPMM_COO_ALG2,
+                                           HIPSPARSE_SPMM_COO_ALG3,
+                                           HIPSPARSE_SPMM_COO_ALG4};
 #elif(CUDART_VERSION >= 10010 && CUDART_VERSION < 11003)
-hipsparseSpMMAlg_t   spmm_coo_alg_range[]     = {HIPSPARSE_MM_ALG_DEFAULT, 
-                                                 HIPSPARSE_COOMM_ALG1,
-                                                 HIPSPARSE_COOMM_ALG2,
-                                                 HIPSPARSE_COOMM_ALG3};
+hipsparseSpMMAlg_t spmm_coo_alg_range[]
+    = {HIPSPARSE_MM_ALG_DEFAULT, HIPSPARSE_COOMM_ALG1, HIPSPARSE_COOMM_ALG2, HIPSPARSE_COOMM_ALG3};
 #endif
 #endif
 

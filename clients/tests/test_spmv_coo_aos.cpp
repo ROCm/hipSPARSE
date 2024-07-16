@@ -47,10 +47,12 @@ hipsparseOperation_t spmv_coo_aos_transA_range[] = {HIPSPARSE_OPERATION_NON_TRAN
 hipsparseIndexBase_t spmv_coo_aos_idxbase_range[]
     = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 #if(!defined(CUDART_VERSION))
-hipsparseSpMVAlg_t spmv_coo_aos_alg_range[] = {HIPSPARSE_SPMV_ALG_DEFAULT, HIPSPARSE_SPMV_COO_ALG1, HIPSPARSE_SPMV_COO_ALG2};
+hipsparseSpMVAlg_t spmv_coo_aos_alg_range[]
+    = {HIPSPARSE_SPMV_ALG_DEFAULT, HIPSPARSE_SPMV_COO_ALG1, HIPSPARSE_SPMV_COO_ALG2};
 #else // coo_aos format not supported in cusparse 12 or later
 if(CUDART_VERSION >= 11021 && CUDART_VERSION < 12000)
-hipsparseSpMVAlg_t spmv_coo_aos_alg_range[] = {HIPSPARSE_SPMV_ALG_DEFAULT, HIPSPARSE_SPMV_COO_ALG1, HIPSPARSE_SPMV_COO_ALG2};
+    hipsparseSpMVAlg_t spmv_coo_aos_alg_range[]
+        = {HIPSPARSE_SPMV_ALG_DEFAULT, HIPSPARSE_SPMV_COO_ALG1, HIPSPARSE_SPMV_COO_ALG2};
 #elif(CUDART_VERSION >= 10010 && CUDART_VERSION < 11021)
 hipsparseSpMVAlg_t spmv_coo_aos_alg_range[] = {HIPSPARSE_MV_ALG_DEFAULT, HIPSPARSE_COOMV_ALG};
 #endif
