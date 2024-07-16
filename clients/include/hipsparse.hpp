@@ -143,6 +143,7 @@ namespace hipsparse
                                       T*                        y);
 #endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     template <typename T>
     hipsparseStatus_t hipsparseXcsrsv2_bufferSize(hipsparseHandle_t         handle,
                                                   hipsparseOperation_t      transA,
@@ -154,6 +155,7 @@ namespace hipsparse
                                                   const int*                csrSortedColIndA,
                                                   csrsv2Info_t              info,
                                                   int*                      pBufferSizeInBytes);
+#endif
 
     template <typename T>
     hipsparseStatus_t hipsparseXcsrsv2_bufferSizeExt(hipsparseHandle_t         handle,
@@ -167,6 +169,7 @@ namespace hipsparse
                                                      csrsv2Info_t              info,
                                                      size_t*                   pBufferSizeInBytes);
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     template <typename T>
     hipsparseStatus_t hipsparseXcsrsv2_analysis(hipsparseHandle_t         handle,
                                                 hipsparseOperation_t      transA,
@@ -179,7 +182,9 @@ namespace hipsparse
                                                 csrsv2Info_t              info,
                                                 hipsparseSolvePolicy_t    policy,
                                                 void*                     pBuffer);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     template <typename T>
     hipsparseStatus_t hipsparseXcsrsv2_solve(hipsparseHandle_t         handle,
                                              hipsparseOperation_t      transA,
@@ -195,7 +200,9 @@ namespace hipsparse
                                              T*                        x,
                                              hipsparseSolvePolicy_t    policy,
                                              void*                     pBuffer);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
     template <typename T>
     hipsparseStatus_t hipsparseXhybmv(hipsparseHandle_t         handle,
                                       hipsparseOperation_t      trans,
@@ -205,6 +212,7 @@ namespace hipsparse
                                       const T*                  x,
                                       const T*                  beta,
                                       T*                        y);
+#endif
 
     template <typename T>
     hipsparseStatus_t hipsparseXbsrmv(hipsparseHandle_t         handle,
@@ -223,6 +231,7 @@ namespace hipsparse
                                       const T*                  beta,
                                       T*                        y);
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     template <typename T>
     hipsparseStatus_t hipsparseXbsrxmv(hipsparseHandle_t         handle,
                                        hipsparseDirection_t      dir,
@@ -242,7 +251,9 @@ namespace hipsparse
                                        const T*                  x,
                                        const T*                  beta,
                                        T*                        y);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     template <typename T>
     hipsparseStatus_t hipsparseXbsrsv2_bufferSize(hipsparseHandle_t         handle,
                                                   hipsparseDirection_t      dir,
@@ -256,6 +267,7 @@ namespace hipsparse
                                                   int                       blockDim,
                                                   bsrsv2Info_t              info,
                                                   int*                      pBufferSizeInBytes);
+#endif
 
     template <typename T>
     hipsparseStatus_t hipsparseXbsrsv2_bufferSizeExt(hipsparseHandle_t         handle,
@@ -271,6 +283,7 @@ namespace hipsparse
                                                      bsrsv2Info_t              info,
                                                      size_t*                   pBufferSizeInBytes);
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     template <typename T>
     hipsparseStatus_t hipsparseXbsrsv2_analysis(hipsparseHandle_t         handle,
                                                 hipsparseDirection_t      dir,
@@ -285,7 +298,9 @@ namespace hipsparse
                                                 bsrsv2Info_t              info,
                                                 hipsparseSolvePolicy_t    policy,
                                                 void*                     pBuffer);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     template <typename T>
     hipsparseStatus_t hipsparseXbsrsv2_solve(hipsparseHandle_t         handle,
                                              hipsparseDirection_t      dir,
@@ -303,7 +318,9 @@ namespace hipsparse
                                              T*                        x,
                                              hipsparseSolvePolicy_t    policy,
                                              void*                     pBuffer);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     template <typename T>
     hipsparseStatus_t hipsparseXgemvi_bufferSize(hipsparseHandle_t    handle,
                                                  hipsparseOperation_t transA,
@@ -311,7 +328,9 @@ namespace hipsparse
                                                  int                  n,
                                                  int                  nnz,
                                                  int*                 pBufferSizeInBytes);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     template <typename T>
     hipsparseStatus_t hipsparseXgemvi(hipsparseHandle_t    handle,
                                       hipsparseOperation_t transA,
@@ -327,6 +346,7 @@ namespace hipsparse
                                       T*                   y,
                                       hipsparseIndexBase_t idxBase,
                                       void*                pBuffer);
+#endif
 
     template <typename T>
     hipsparseStatus_t hipsparseXbsrmm(hipsparseHandle_t         handle,
@@ -370,6 +390,7 @@ namespace hipsparse
                                        int                       ldc);
 #endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     template <typename T>
     hipsparseStatus_t hipsparseXbsrsm2_bufferSize(hipsparseHandle_t         handle,
                                                   hipsparseDirection_t      dirA,
@@ -385,7 +406,9 @@ namespace hipsparse
                                                   int                       blockDim,
                                                   bsrsm2Info_t              info,
                                                   int*                      pBufferSizeInBytes);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     template <typename T>
     hipsparseStatus_t hipsparseXbsrsm2_analysis(hipsparseHandle_t         handle,
                                                 hipsparseDirection_t      dirA,
@@ -402,7 +425,9 @@ namespace hipsparse
                                                 bsrsm2Info_t              info,
                                                 hipsparseSolvePolicy_t    policy,
                                                 void*                     pBuffer);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     template <typename T>
     hipsparseStatus_t hipsparseXbsrsm2_solve(hipsparseHandle_t         handle,
                                              hipsparseDirection_t      dirA,
@@ -424,7 +449,9 @@ namespace hipsparse
                                              int                       ldx,
                                              hipsparseSolvePolicy_t    policy,
                                              void*                     pBuffer);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     template <typename T>
     hipsparseStatus_t hipsparseXcsrsm2_bufferSizeExt(hipsparseHandle_t         handle,
                                                      int                       algo,
@@ -443,7 +470,9 @@ namespace hipsparse
                                                      csrsm2Info_t              info,
                                                      hipsparseSolvePolicy_t    policy,
                                                      size_t*                   pBufferSizeInBytes);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     template <typename T>
     hipsparseStatus_t hipsparseXcsrsm2_analysis(hipsparseHandle_t         handle,
                                                 int                       algo,
@@ -462,7 +491,9 @@ namespace hipsparse
                                                 csrsm2Info_t              info,
                                                 hipsparseSolvePolicy_t    policy,
                                                 void*                     pBuffer);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     template <typename T>
     hipsparseStatus_t hipsparseXcsrsm2_solve(hipsparseHandle_t         handle,
                                              int                       algo,
@@ -481,6 +512,7 @@ namespace hipsparse
                                              csrsm2Info_t              info,
                                              hipsparseSolvePolicy_t    policy,
                                              void*                     pBuffer);
+#endif
 
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     template <typename T>
@@ -613,7 +645,9 @@ namespace hipsparse
                                                        const int*                csrColIndD,
                                                        csrgemm2Info_t            info,
                                                        size_t* pBufferSizeInBytes);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     template <typename T>
     hipsparseStatus_t hipsparseXcsrgemm2(hipsparseHandle_t         handle,
                                          int                       m,
@@ -644,10 +678,13 @@ namespace hipsparse
                                          void*                     pBuffer);
 #endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     template <typename T>
     hipsparseStatus_t hipsparseXbsrilu02_numericBoost(
         hipsparseHandle_t handle, bsrilu02Info_t info, int enable_boost, double* tol, T* boost_val);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     template <typename T>
     hipsparseStatus_t hipsparseXbsrilu02_bufferSize(hipsparseHandle_t         handle,
                                                     hipsparseDirection_t      dirA,
@@ -660,7 +697,9 @@ namespace hipsparse
                                                     int                       block_dim,
                                                     bsrilu02Info_t            info,
                                                     int*                      pBufferSizeInBytes);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     template <typename T>
     hipsparseStatus_t hipsparseXbsrilu02_analysis(hipsparseHandle_t         handle,
                                                   hipsparseDirection_t      dirA,
@@ -674,7 +713,9 @@ namespace hipsparse
                                                   bsrilu02Info_t            info,
                                                   hipsparseSolvePolicy_t    policy,
                                                   void*                     pBuffer);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     template <typename T>
     hipsparseStatus_t hipsparseXbsrilu02(hipsparseHandle_t         handle,
                                          hipsparseDirection_t      dirA,
@@ -688,11 +729,15 @@ namespace hipsparse
                                          bsrilu02Info_t            info,
                                          hipsparseSolvePolicy_t    policy,
                                          void*                     pBuffer);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     template <typename T>
     hipsparseStatus_t hipsparseXcsrilu02_numericBoost(
         hipsparseHandle_t handle, csrilu02Info_t info, int enable_boost, double* tol, T* boost_val);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     template <typename T>
     hipsparseStatus_t hipsparseXcsrilu02_bufferSize(hipsparseHandle_t         handle,
                                                     int                       m,
@@ -703,6 +748,7 @@ namespace hipsparse
                                                     const int*                csrSortedColIndA,
                                                     csrilu02Info_t            info,
                                                     int*                      pBufferSizeInBytes);
+#endif
 
     template <typename T>
     hipsparseStatus_t hipsparseXcsrilu02_bufferSizeExt(hipsparseHandle_t         handle,
@@ -715,6 +761,7 @@ namespace hipsparse
                                                        csrilu02Info_t            info,
                                                        size_t* pBufferSizeInBytes);
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     template <typename T>
     hipsparseStatus_t hipsparseXcsrilu02_analysis(hipsparseHandle_t         handle,
                                                   int                       m,
@@ -726,7 +773,9 @@ namespace hipsparse
                                                   csrilu02Info_t            info,
                                                   hipsparseSolvePolicy_t    policy,
                                                   void*                     pBuffer);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     template <typename T>
     hipsparseStatus_t hipsparseXcsrilu02(hipsparseHandle_t         handle,
                                          int                       m,
@@ -740,7 +789,9 @@ namespace hipsparse
                                          csrilu02Info_t         info,
                                          hipsparseSolvePolicy_t policy,
                                          void*                  pBuffer);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     template <typename T>
     hipsparseStatus_t hipsparseXbsric02_bufferSize(hipsparseHandle_t         handle,
                                                    hipsparseDirection_t      dirA,
@@ -753,7 +804,9 @@ namespace hipsparse
                                                    int                       block_dim,
                                                    bsric02Info_t             info,
                                                    int*                      pBufferSizeInBytes);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     template <typename T>
     hipsparseStatus_t hipsparseXbsric02_analysis(hipsparseHandle_t         handle,
                                                  hipsparseDirection_t      dirA,
@@ -767,7 +820,9 @@ namespace hipsparse
                                                  bsric02Info_t             info,
                                                  hipsparseSolvePolicy_t    policy,
                                                  void*                     pBuffer);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     template <typename T>
     hipsparseStatus_t hipsparseXbsric02(hipsparseHandle_t         handle,
                                         hipsparseDirection_t      dirA,
@@ -781,7 +836,9 @@ namespace hipsparse
                                         bsric02Info_t             info,
                                         hipsparseSolvePolicy_t    policy,
                                         void*                     pBuffer);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     template <typename T>
     hipsparseStatus_t hipsparseXcsric02_bufferSize(hipsparseHandle_t         handle,
                                                    int                       m,
@@ -792,6 +849,7 @@ namespace hipsparse
                                                    const int*                csrSortedColIndA,
                                                    csric02Info_t             info,
                                                    int*                      pBufferSizeInBytes);
+#endif
 
     template <typename T>
     hipsparseStatus_t hipsparseXcsric02_bufferSizeExt(hipsparseHandle_t         handle,
@@ -804,6 +862,7 @@ namespace hipsparse
                                                       csric02Info_t             info,
                                                       size_t*                   pBufferSizeInBytes);
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     template <typename T>
     hipsparseStatus_t hipsparseXcsric02_analysis(hipsparseHandle_t         handle,
                                                  int                       m,
@@ -815,7 +874,9 @@ namespace hipsparse
                                                  csric02Info_t             info,
                                                  hipsparseSolvePolicy_t    policy,
                                                  void*                     pBuffer);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     template <typename T>
     hipsparseStatus_t hipsparseXcsric02(hipsparseHandle_t         handle,
                                         int                       m,
@@ -829,6 +890,7 @@ namespace hipsparse
                                         csric02Info_t          info,
                                         hipsparseSolvePolicy_t policy,
                                         void*                  pBuffer);
+#endif
 
     template <typename T>
     hipsparseStatus_t hipsparseXnnz(hipsparseHandle_t         handle,
@@ -841,6 +903,7 @@ namespace hipsparse
                                     int*                      nnzPerRowColumn,
                                     int*                      nnzTotalDevHostPtr);
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     template <typename T>
     hipsparseStatus_t hipsparseXnnz_compress(hipsparseHandle_t         handle,
                                              int                       m,
@@ -850,6 +913,7 @@ namespace hipsparse
                                              int*                      nnzPerRow,
                                              int*                      nnzC,
                                              T                         tol);
+#endif
 
     template <typename T>
     hipsparseStatus_t hipsparseXdense2csr(hipsparseHandle_t         handle,
@@ -863,6 +927,7 @@ namespace hipsparse
                                           int*                      csrRowPtr,
                                           int*                      csrColInd);
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     template <typename T>
     hipsparseStatus_t hipsparseXpruneDense2csr_bufferSize(hipsparseHandle_t         handle,
                                                           int                       m,
@@ -875,7 +940,9 @@ namespace hipsparse
                                                           const int*                csrRowPtr,
                                                           const int*                csrColInd,
                                                           size_t*                   bufferSize);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     template <typename T>
     hipsparseStatus_t hipsparseXpruneDense2csr_bufferSizeExt(hipsparseHandle_t         handle,
                                                              int                       m,
@@ -888,7 +955,9 @@ namespace hipsparse
                                                              const int*                csrRowPtr,
                                                              const int*                csrColInd,
                                                              size_t*                   bufferSize);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     template <typename T>
     hipsparseStatus_t hipsparseXpruneDense2csrNnz(hipsparseHandle_t         handle,
                                                   int                       m,
@@ -900,7 +969,9 @@ namespace hipsparse
                                                   int*                      csrRowPtr,
                                                   int*                      nnzTotalDevHostPtr,
                                                   void*                     buffer);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     template <typename T>
     hipsparseStatus_t hipsparseXpruneDense2csr(hipsparseHandle_t         handle,
                                                int                       m,
@@ -913,7 +984,9 @@ namespace hipsparse
                                                const int*                csrRowPtr,
                                                int*                      csrColInd,
                                                void*                     buffer);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     template <typename T>
     hipsparseStatus_t
         hipsparseXpruneDense2csrByPercentage_bufferSize(hipsparseHandle_t         handle,
@@ -928,7 +1001,9 @@ namespace hipsparse
                                                         const int*                csrColInd,
                                                         pruneInfo_t               info,
                                                         size_t*                   bufferSize);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     template <typename T>
     hipsparseStatus_t
         hipsparseXpruneDense2csrByPercentage_bufferSizeExt(hipsparseHandle_t         handle,
@@ -943,7 +1018,9 @@ namespace hipsparse
                                                            const int*                csrColInd,
                                                            pruneInfo_t               info,
                                                            size_t*                   bufferSize);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     template <typename T>
     hipsparseStatus_t hipsparseXpruneDense2csrNnzByPercentage(hipsparseHandle_t         handle,
                                                               int                       m,
@@ -956,7 +1033,9 @@ namespace hipsparse
                                                               int*        nnzTotalDevHostPtr,
                                                               pruneInfo_t info,
                                                               void*       buffer);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     template <typename T>
     hipsparseStatus_t hipsparseXpruneDense2csrByPercentage(hipsparseHandle_t         handle,
                                                            int                       m,
@@ -970,7 +1049,9 @@ namespace hipsparse
                                                            int*                      csrColInd,
                                                            pruneInfo_t               info,
                                                            void*                     buffer);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     template <typename T>
     hipsparseStatus_t hipsparseXdense2csc(hipsparseHandle_t         handle,
                                           int                       m,
@@ -982,7 +1063,9 @@ namespace hipsparse
                                           T*                        cscVal,
                                           int*                      cscRowInd,
                                           int*                      cscColPtr);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     template <typename T>
     hipsparseStatus_t hipsparseXcsr2dense(hipsparseHandle_t         handle,
                                           int                       m,
@@ -993,7 +1076,9 @@ namespace hipsparse
                                           const int*                csrColInd,
                                           T*                        A,
                                           int                       ld);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     template <typename T>
     hipsparseStatus_t hipsparseXcsc2dense(hipsparseHandle_t         handle,
                                           int                       m,
@@ -1004,6 +1089,7 @@ namespace hipsparse
                                           const int*                cscColPtr,
                                           T*                        A,
                                           int                       ld);
+#endif
 
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
     template <typename T>
@@ -1181,6 +1267,7 @@ namespace hipsparse
                                                         const int*                csrColIndC,
                                                         size_t*                   bufferSize);
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     template <typename T>
     hipsparseStatus_t hipsparseXpruneCsr2csr_bufferSizeExt(hipsparseHandle_t         handle,
                                                            int                       m,
@@ -1196,7 +1283,9 @@ namespace hipsparse
                                                            const int*                csrRowPtrC,
                                                            const int*                csrColIndC,
                                                            size_t*                   bufferSize);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     template <typename T>
     hipsparseStatus_t hipsparseXpruneCsr2csrNnz(hipsparseHandle_t         handle,
                                                 int                       m,
@@ -1211,7 +1300,9 @@ namespace hipsparse
                                                 int*                      csrRowPtrC,
                                                 int*                      nnzTotalDevHostPtr,
                                                 void*                     buffer);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     template <typename T>
     hipsparseStatus_t hipsparseXpruneCsr2csr(hipsparseHandle_t         handle,
                                              int                       m,
@@ -1227,7 +1318,9 @@ namespace hipsparse
                                              const int*                csrRowPtrC,
                                              int*                      csrColIndC,
                                              void*                     buffer);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     template <typename T>
     hipsparseStatus_t
         hipsparseXpruneCsr2csrByPercentage_bufferSize(hipsparseHandle_t         handle,
@@ -1245,7 +1338,9 @@ namespace hipsparse
                                                       const int*                csrColIndC,
                                                       pruneInfo_t               info,
                                                       size_t*                   bufferSize);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     template <typename T>
     hipsparseStatus_t
         hipsparseXpruneCsr2csrByPercentage_bufferSizeExt(hipsparseHandle_t         handle,
@@ -1263,7 +1358,9 @@ namespace hipsparse
                                                          const int*                csrColIndC,
                                                          pruneInfo_t               info,
                                                          size_t*                   bufferSize);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     template <typename T>
     hipsparseStatus_t hipsparseXpruneCsr2csrNnzByPercentage(hipsparseHandle_t         handle,
                                                             int                       m,
@@ -1279,7 +1376,9 @@ namespace hipsparse
                                                             int*        nnzTotalDevHostPtr,
                                                             pruneInfo_t info,
                                                             void*       buffer);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     template <typename T>
     hipsparseStatus_t hipsparseXpruneCsr2csrByPercentage(hipsparseHandle_t         handle,
                                                          int                       m,
@@ -1296,6 +1395,7 @@ namespace hipsparse
                                                          int*                      csrColIndC,
                                                          pruneInfo_t               info,
                                                          void*                     buffer);
+#endif
 
     template <typename T>
     hipsparseStatus_t hipsparseXgebsr2gebsr_bufferSize(hipsparseHandle_t         handle,
@@ -1333,6 +1433,7 @@ namespace hipsparse
                                             int                       colBlockDimC,
                                             void*                     buffer);
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     template <typename T>
     hipsparseStatus_t hipsparseXcsru2csr_bufferSizeExt(hipsparseHandle_t handle,
                                                        int               m,
@@ -1343,7 +1444,9 @@ namespace hipsparse
                                                        int*              csrColInd,
                                                        csru2csrInfo_t    info,
                                                        size_t*           pBufferSizeInBytes);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     template <typename T>
     hipsparseStatus_t hipsparseXcsru2csr(hipsparseHandle_t         handle,
                                          int                       m,
@@ -1355,7 +1458,9 @@ namespace hipsparse
                                          int*                      csrColInd,
                                          csru2csrInfo_t            info,
                                          void*                     pBuffer);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     template <typename T>
     hipsparseStatus_t hipsparseXcsr2csru(hipsparseHandle_t         handle,
                                          int                       m,
@@ -1367,6 +1472,7 @@ namespace hipsparse
                                          int*                      csrColInd,
                                          csru2csrInfo_t            info,
                                          void*                     pBuffer);
+#endif
 
     template <typename T>
     hipsparseStatus_t hipsparseXgpsvInterleavedBatch_bufferSizeExt(hipsparseHandle_t handle,
@@ -1482,6 +1588,7 @@ namespace hipsparse
                                                      int               batchCount,
                                                      void*             pBuffer);
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     template <typename T>
     hipsparseStatus_t hipsparseXcsrcolor(hipsparseHandle_t         handle,
                                          int                       m,
@@ -1495,7 +1602,7 @@ namespace hipsparse
                                          int*                      coloring,
                                          int*                      reordering,
                                          hipsparseColorInfo_t      info);
-
+#endif
 } // namespace hipsparse
 
 #endif // _HIPSPARSE_HPP_
