@@ -31,7 +31,8 @@ typedef std::tuple<hipsparseOperation_t, hipsparseIndexBase_t, std::string> spvv
 int spvv_N_range[]   = {50, 750, 2135};
 int spvv_nnz_range[] = {5, 45};
 
-hipsparseOperation_t spvv_trans_range[]
+hipsparseOperation_t spvv_trans_real_range[] = {HIPSPARSE_OPERATION_NON_TRANSPOSE};
+hipsparseOperation_t spvv_trans_complex_range[]
     = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE};
 hipsparseIndexBase_t spvv_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
@@ -62,7 +63,7 @@ TEST(spvv_bad_arg, spvv_float)
     testing_spvv_bad_arg();
 }
 
-TEST_P(parameterized_spvv, spvv_i32_float)
+TEST_P(parameterized_spvv_real, spvv_i32_float)
 {
     Arguments arg = setup_spvv_arguments(GetParam());
 
@@ -70,7 +71,7 @@ TEST_P(parameterized_spvv, spvv_i32_float)
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-TEST_P(parameterized_spvv, spvv_i64_double)
+TEST_P(parameterized_spvv_real, spvv_i64_double)
 {
     Arguments arg = setup_spvv_arguments(GetParam());
 
@@ -78,7 +79,7 @@ TEST_P(parameterized_spvv, spvv_i64_double)
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-TEST_P(parameterized_spvv, spvv_i32_float_complex)
+TEST_P(parameterized_spvv_complex, spvv_i32_float_complex)
 {
     Arguments arg = setup_spvv_arguments(GetParam());
 
@@ -86,7 +87,7 @@ TEST_P(parameterized_spvv, spvv_i32_float_complex)
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-TEST_P(parameterized_spvv, spvv_i64_double_complex)
+TEST_P(parameterized_spvv_complex, spvv_i64_double_complex)
 {
     Arguments arg = setup_spvv_arguments(GetParam());
 
@@ -95,9 +96,16 @@ TEST_P(parameterized_spvv, spvv_i64_double_complex)
 }
 
 INSTANTIATE_TEST_SUITE_P(spvv,
-                         parameterized_spvv,
+                         parameterized_spvv_real,
                          testing::Combine(testing::ValuesIn(spvv_N_range),
                                           testing::ValuesIn(spvv_nnz_range),
-                                          testing::ValuesIn(spvv_trans_range),
+                                          testing::ValuesIn(spvv_trans_real_range),
+                                          testing::ValuesIn(spvv_idxbase_range)));
+
+INSTANTIATE_TEST_SUITE_P(spvv,
+                         parameterized_spvv_complex,
+                         testing::Combine(testing::ValuesIn(spvv_N_range),
+                                          testing::ValuesIn(spvv_nnz_range),
+                                          testing::ValuesIn(spvv_trans_complex_range),
                                           testing::ValuesIn(spvv_idxbase_range)));
 #endif
