@@ -75,13 +75,11 @@ hipsparseSpMMAlg_t spmm_csr_alg_range[] = {HIPSPARSE_SPMM_ALG_DEFAULT,
 #else
 // Alg3 not supported when A is transposed or conjugate transposed or when B is conjugate transposed
 #if(CUDART_VERSION >= 12000)
-hipsparseSpMMAlg_t spmm_csr_alg_range[] = {HIPSPARSE_SPMM_ALG_DEFAULT,
-                                           HIPSPARSE_SPMM_CSR_ALG1,
-                                           HIPSPARSE_SPMM_CSR_ALG2};
+hipsparseSpMMAlg_t spmm_csr_alg_range[]
+    = {HIPSPARSE_SPMM_ALG_DEFAULT, HIPSPARSE_SPMM_CSR_ALG1, HIPSPARSE_SPMM_CSR_ALG2};
 #elif(CUDART_VERSION >= 11021 && CUDART_VERSION < 12000)
-hipsparseSpMMAlg_t spmm_csr_alg_range[] = {HIPSPARSE_SPMM_ALG_DEFAULT,
-                                           HIPSPARSE_SPMM_CSR_ALG1,
-                                           HIPSPARSE_SPMM_CSR_ALG2};
+hipsparseSpMMAlg_t spmm_csr_alg_range[]
+    = {HIPSPARSE_SPMM_ALG_DEFAULT, HIPSPARSE_SPMM_CSR_ALG1, HIPSPARSE_SPMM_CSR_ALG2};
 #elif(CUDART_VERSION >= 11003 && CUDART_VERSION < 11021)
 hipsparseSpMMAlg_t spmm_csr_alg_range[]
     = {HIPSPARSE_SPMM_ALG_DEFAULT, HIPSPARSE_SPMM_CSR_ALG1, HIPSPARSE_SPMM_CSR_ALG2};
