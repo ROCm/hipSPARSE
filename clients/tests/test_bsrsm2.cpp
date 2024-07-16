@@ -49,7 +49,7 @@ typedef std::tuple<int,
 
 int    bsrsm2_M_range[]     = {50};
 int    bsrsm2_N_range[]     = {15};
-int    bsrsm2_dim_range[]   = {3};
+int    bsrsm2_dim_range[]   = {2, 3};
 double bsrsm2_alpha_range[] = {2.0};
 
 hipsparseIndexBase_t bsrsm2_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
@@ -172,25 +172,25 @@ TEST_P(parameterized_bsrsm2_bin, bsrsm2_bin_double)
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-// INSTANTIATE_TEST_SUITE_P(bsrsm2,
-//                          parameterized_bsrsm2,
-//                          testing::Combine(testing::ValuesIn(bsrsm2_M_range),
-//                                           testing::ValuesIn(bsrsm2_N_range),
-//                                           testing::ValuesIn(bsrsm2_dim_range),
-//                                           testing::ValuesIn(bsrsm2_alpha_range),
-//                                           testing::ValuesIn(bsrsm2_dir_range),
-//                                           testing::ValuesIn(bsrsm2_idxbase_range),
-//                                           testing::ValuesIn(bsrsm2_transA_range),
-//                                           testing::ValuesIn(bsrsm2_transB_range)));
+INSTANTIATE_TEST_SUITE_P(bsrsm2,
+                         parameterized_bsrsm2,
+                         testing::Combine(testing::ValuesIn(bsrsm2_M_range),
+                                          testing::ValuesIn(bsrsm2_N_range),
+                                          testing::ValuesIn(bsrsm2_dim_range),
+                                          testing::ValuesIn(bsrsm2_alpha_range),
+                                          testing::ValuesIn(bsrsm2_dir_range),
+                                          testing::ValuesIn(bsrsm2_idxbase_range),
+                                          testing::ValuesIn(bsrsm2_transA_range),
+                                          testing::ValuesIn(bsrsm2_transB_range)));
 
-// INSTANTIATE_TEST_SUITE_P(bsrsm2_bin,
-//                          parameterized_bsrsm2_bin,
-//                          testing::Combine(testing::ValuesIn(bsrsm2_N_range),
-//                                           testing::ValuesIn(bsrsm2_dim_range),
-//                                           testing::ValuesIn(bsrsm2_alpha_range),
-//                                           testing::ValuesIn(bsrsm2_dir_range),
-//                                           testing::ValuesIn(bsrsm2_idxbase_range),
-//                                           testing::ValuesIn(bsrsm2_transA_range),
-//                                           testing::ValuesIn(bsrsm2_transB_range),
-//                                           testing::ValuesIn(bsrsm2_bin)));
+INSTANTIATE_TEST_SUITE_P(bsrsm2_bin,
+                         parameterized_bsrsm2_bin,
+                         testing::Combine(testing::ValuesIn(bsrsm2_N_range),
+                                          testing::ValuesIn(bsrsm2_dim_range),
+                                          testing::ValuesIn(bsrsm2_alpha_range),
+                                          testing::ValuesIn(bsrsm2_dir_range),
+                                          testing::ValuesIn(bsrsm2_idxbase_range),
+                                          testing::ValuesIn(bsrsm2_transA_range),
+                                          testing::ValuesIn(bsrsm2_transB_range),
+                                          testing::ValuesIn(bsrsm2_bin)));
 #endif

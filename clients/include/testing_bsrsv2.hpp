@@ -518,8 +518,8 @@ hipsparseStatus_t testing_bsrsv2(Arguments argus)
     CHECK_HIP_ERROR(
         hipMemcpy(dcsr_col_ind, hcsr_col_ind.data(), sizeof(int) * nnz, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dcsr_val, hcsr_val.data(), sizeof(T) * nnz, hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(hipMemcpy(dx, hx.data(), sizeof(T) * m, hipMemcpyHostToDevice));
-    CHECK_HIP_ERROR(hipMemcpy(dy_1, hy_1.data(), sizeof(T) * m, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(dx, hx.data(), sizeof(T) * mb * block_dim, hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(dy_1, hy_1.data(), sizeof(T) * mb * block_dim, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(d_alpha, &h_alpha, sizeof(T), hipMemcpyHostToDevice));
 
     // Convert to BSR
@@ -596,7 +596,7 @@ hipsparseStatus_t testing_bsrsv2(Arguments argus)
 
     if(argus.unit_check)
     {
-        CHECK_HIP_ERROR(hipMemcpy(dy_2, hy_2.data(), sizeof(T) * m, hipMemcpyHostToDevice));
+        CHECK_HIP_ERROR(hipMemcpy(dy_2, hy_2.data(), sizeof(T) * mb * block_dim, hipMemcpyHostToDevice));
 
         // HIPSPARSE pointer mode host
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
@@ -645,8 +645,8 @@ hipsparseStatus_t testing_bsrsv2(Arguments argus)
 
         // Copy output from device to CPU
         int hposition_2;
-        CHECK_HIP_ERROR(hipMemcpy(hy_1.data(), dy_1, sizeof(T) * m, hipMemcpyDeviceToHost));
-        CHECK_HIP_ERROR(hipMemcpy(hy_2.data(), dy_2, sizeof(T) * m, hipMemcpyDeviceToHost));
+        CHECK_HIP_ERROR(hipMemcpy(hy_1.data(), dy_1, sizeof(T) * mb * block_dim, hipMemcpyDeviceToHost));
+        CHECK_HIP_ERROR(hipMemcpy(hy_2.data(), dy_2, sizeof(T) * mb * block_dim, hipMemcpyDeviceToHost));
         CHECK_HIP_ERROR(hipMemcpy(&hposition_2, d_position, sizeof(int), hipMemcpyDeviceToHost));
 
         // Host bsrsv2
@@ -700,8 +700,8 @@ hipsparseStatus_t testing_bsrsv2(Arguments argus)
             return HIPSPARSE_STATUS_SUCCESS;
         }
 
-        unit_check_near(1, m, 1, hy_gold.data(), hy_1.data());
-        unit_check_near(1, m, 1, hy_gold.data(), hy_2.data());
+        unit_check_near(1, mb * block_dim, 1, hy_gold.data(), hy_1.data());
+        unit_check_near(1, mb * block_dim, 1, hy_gold.data(), hy_2.data());
     }
 
     if(argus.timing)
@@ -757,7 +757,7 @@ hipsparseStatus_t testing_bsrsv2(Arguments argus)
 
         gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
 
-        double gflop_count = csrsv_gflop_count(m, size_t(nnzb) * block_dim * block_dim, diag_type);
+        double gflop_count = csrsv_gflop_count(mb * block_dim, size_t(nnzb) * block_dim * block_dim, diag_type);
         double gbyte_count = bsrsv_gbyte_count<T>(mb, nnzb, block_dim);
 
         double gpu_gflops = get_gpu_gflops(gpu_time_used, gflop_count);
