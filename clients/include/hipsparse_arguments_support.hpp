@@ -172,7 +172,8 @@ struct routine_support
     }
     static bool is_coomv_supported()
     {
-#if(!defined(CUDART_VERSION) || CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
+#if(!defined(CUDART_VERSION) || CUDART_VERSION > 10010 \
+    || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
         return true;
 #else
         return false;
@@ -180,7 +181,8 @@ struct routine_support
     }
     static bool is_csrmv_supported()
     {
-#if(!defined(CUDART_VERSION) || CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
+#if(!defined(CUDART_VERSION) || CUDART_VERSION > 10010 \
+    || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
         return true;
 #else
         return false;
