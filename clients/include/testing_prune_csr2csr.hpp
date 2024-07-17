@@ -527,9 +527,6 @@ hipsparseStatus_t testing_prune_csr2csr(Arguments argus)
     hipsparseIndexBase_t csr_idx_base_C = argus.baseB;
     std::string          filename       = argus.filename;
 
-    std::cout << "M: " << M << " N: " << N << " csr_idx_base_A: " << csr_idx_base_A
-              << " csr_idx_base_C: " << csr_idx_base_C << " filename: " << filename << std::endl;
-
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
 

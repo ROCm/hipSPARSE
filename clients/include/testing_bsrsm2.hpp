@@ -526,10 +526,6 @@ hipsparseStatus_t testing_bsrsm2(Arguments argus)
     hipsparseOperation_t transX    = argus.transB;
     std::string          filename  = argus.filename;
 
-    std::cout << "m: " << m << " nrhs: " << nrhs << " block_dim: " << block_dim << " dir: " << dir
-              << " idx_base: " << idx_base << " transA: " << transA << " transX: " << transX
-              << " filename: " << filename << std::endl;
-
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
 

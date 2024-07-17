@@ -128,9 +128,6 @@ hipsparseStatus_t testing_csr2hyb(Arguments argus)
     int                     user_ell_width = argus.ell_width;
     std::string             filename       = argus.filename;
 
-    std::cout << "m: " << m << " n: " << n << " idx_base: " << idx_base << " part: " << part
-              << " user_ell_width: " << user_ell_width << " filename: " << filename << std::endl;
-
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
 

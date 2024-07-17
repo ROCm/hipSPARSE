@@ -294,10 +294,6 @@ hipsparseStatus_t testing_bsrmv(Arguments argus)
     hipsparseDirection_t dir       = argus.dirA;
     std::string          filename  = argus.filename;
 
-    std::cout << "m: " << m << " n: " << n << " block_dim: " << block_dim << " transA: " << transA
-              << " idx_base: " << idx_base << " dir: " << dir << " filename: " << filename
-              << std::endl;
-
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
 

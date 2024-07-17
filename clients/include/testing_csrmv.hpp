@@ -140,9 +140,6 @@ hipsparseStatus_t testing_csrmv(Arguments argus)
     hipsparseIndexBase_t idx_base = argus.baseA;
     std::string          filename = argus.filename;
 
-    std::cout << "nrow: " << nrow << " ncol: " << ncol << " transA: " << transA
-              << " idx_base: " << idx_base << " filename: " << filename << std::endl;
-
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
 

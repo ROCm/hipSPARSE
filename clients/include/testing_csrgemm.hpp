@@ -709,10 +709,6 @@ hipsparseStatus_t testing_csrgemm(Arguments argus)
     hipsparseIndexBase_t idx_base_C = argus.baseC;
     std::string          filename   = argus.filename;
 
-    std::cout << "M: " << M << " N: " << N << " K: " << K << " trans_A: " << trans_A
-              << " trans_B: " << trans_B << " idx_base_A: " << idx_base_A
-              << " idx_base_B: " << idx_base_B << " idx_base_C: " << idx_base_C << std::endl;
-
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
 

@@ -110,9 +110,6 @@ hipsparseStatus_t testing_csx2dense(const Arguments& argus, FUNC1& csx2dense, FU
     int                  LD       = argus.lda;
     hipsparseIndexBase_t idx_base = argus.baseA;
 
-    std::cout << "M: " << M << " N: " << N << " LD: " << LD << " idx_base: " << idx_base
-              << std::endl;
-
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
 

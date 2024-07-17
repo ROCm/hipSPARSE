@@ -352,10 +352,6 @@ hipsparseStatus_t testing_bsrilu02(Arguments argus)
     hipsparseSolvePolicy_t policy    = argus.solve_policy;
     std::string            filename  = argus.filename;
 
-    std::cout << "m: " << m << " block_dim: " << block_dim << " boost: " << boost
-              << " boost_tol: " << boost_tol << " dir: " << dir << " idx_base: " << idx_base
-              << " policy: " << policy << " filename: " << filename << std::endl;
-
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
 

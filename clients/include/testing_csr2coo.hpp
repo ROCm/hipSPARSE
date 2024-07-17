@@ -78,9 +78,6 @@ hipsparseStatus_t testing_csr2coo(Arguments argus)
     hipsparseIndexBase_t idx_base = argus.baseA;
     std::string          filename = argus.filename;
 
-    std::cout << "m: " << m << " n: " << n << " idx_base: " << idx_base << " filename: " << filename
-              << std::endl;
-
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
 

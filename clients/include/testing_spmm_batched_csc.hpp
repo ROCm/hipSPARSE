@@ -205,8 +205,7 @@ hipsparseStatus_t testing_spmm_batched_csc(Arguments argus)
     hipsparseSpMMAlg_t alg = HIPSPARSE_MM_ALG_DEFAULT;
 #endif
 
-    // Matrices are stored at the same path in matrices directory
-    std::string filename = get_filename("nos3.bin");
+    std::string filename = argus.filename;
 
 #if(defined(CUDART_VERSION))
     if(orderB != orderC || orderB != HIPSPARSE_ORDER_COL)

@@ -138,9 +138,6 @@ hipsparseStatus_t testing_sparse_to_dense_csr(Arguments argus)
     hipsparseOrder_t order    = argus.orderA;
     std::string      filename = argus.filename;
 
-    std::cout << "m: " << m << " n: " << n << " order: " << order << " idx_base: " << idx_base
-              << " alg: " << alg << " filename: " << filename << std::endl;
-
     // Index and data type
     hipsparseIndexType_t typeI = getIndexType<I>();
     hipsparseIndexType_t typeJ = getIndexType<J>();

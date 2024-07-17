@@ -94,8 +94,6 @@ hipsparseStatus_t testing_roti(Arguments argus)
     T                    s        = argus.get_beta<T>();
     hipsparseIndexBase_t idx_base = argus.baseA;
 
-    std::cout << "N: " << N << " nnz: " << nnz << " idx_base: " << idx_base << std::endl;
-
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
 

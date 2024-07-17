@@ -63,8 +63,6 @@ hipsparseStatus_t testing_identity(Arguments argus)
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     int n = argus.N;
 
-    std::cout << "n: " << n << std::endl;
-
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
 

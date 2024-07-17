@@ -908,12 +908,6 @@ hipsparseStatus_t testing_gebsr2gebsr(Arguments argus)
     hipsparseDirection_t dir             = argus.dirA;
     std::string          filename        = argus.filename;
 
-    std::cout << "m: " << m << " n: " << n << " row_block_dim_A: " << row_block_dim_A
-              << " col_block_dim_A: " << col_block_dim_A << " row_block_dim_C: " << row_block_dim_C
-              << " col_block_dim_C: " << col_block_dim_C << " idx_base_A: " << idx_base_A
-              << " idx_base_C: " << idx_base_C << " dir: " << dir << " filename: " << filename
-              << std::endl;
-
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
     std::unique_ptr<descr_struct>  unique_ptr_descr_A(new descr_struct);

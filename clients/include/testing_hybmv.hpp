@@ -110,10 +110,6 @@ hipsparseStatus_t testing_hybmv(Arguments argus)
     int                     user_ell_width = argus.ell_width;
     std::string             filename       = argus.filename;
 
-    std::cout << "m: " << m << " n: " << n << " transA: " << transA << " idx_base: " << idx_base
-              << " part: " << part << " user_ell_width: " << user_ell_width
-              << " filename: " << filename << std::endl;
-
     T zero = make_DataType<T>(0.0);
     T one  = make_DataType<T>(1.0);
 

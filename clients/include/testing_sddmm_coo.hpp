@@ -197,11 +197,6 @@ hipsparseStatus_t testing_sddmm_coo(Arguments argus)
     hipsparseSDDMMAlg_t  alg      = static_cast<hipsparseSDDMMAlg_t>(argus.sddmm_alg);
     std::string          filename = argus.filename;
 
-    std::cout << "m: " << m << " n: " << n << " k: " << k << " transA: " << transA
-              << " transB: " << transB << " orderA: " << orderA << " orderB: " << orderB
-              << " idx_base: " << idx_base << " alg: " << alg << " filename: " << filename
-              << std::endl;
-
     // Index and data type
     hipsparseIndexType_t typeI = getIndexType<I>();
     hipDataType          typeT = getDataType<T>();

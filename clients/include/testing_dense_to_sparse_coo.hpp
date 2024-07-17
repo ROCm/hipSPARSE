@@ -142,9 +142,6 @@ hipsparseStatus_t testing_dense_to_sparse_coo(Arguments argus)
         = static_cast<hipsparseDenseToSparseAlg_t>(argus.dense2sparse_alg);
     hipsparseOrder_t order = argus.orderA;
 
-    std::cout << "m: " << m << " n: " << n << " idx_base: " << idx_base << " alg: " << alg
-              << " order: " << order << std::endl;
-
     // Index and data type
     hipsparseIndexType_t typeI = getIndexType<I>();
     hipDataType          typeT = getDataType<T>();

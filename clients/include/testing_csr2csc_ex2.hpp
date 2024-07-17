@@ -283,9 +283,6 @@ hipsparseStatus_t testing_csr2csc_ex2(Arguments argus)
     hipsparseCsr2CscAlg_t alg      = static_cast<hipsparseCsr2CscAlg_t>(argus.csr2csc_alg);
     std::string           filename = argus.filename;
 
-    std::cout << "m: " << m << " n: " << n << " idx_base: " << idx_base << " action: " << action
-              << " filename: " << filename << " alg: " << alg << std::endl;
-
     hipDataType dataType = getDataType<T>();
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);

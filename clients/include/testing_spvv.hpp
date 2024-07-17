@@ -123,9 +123,6 @@ hipsparseStatus_t testing_spvv(Arguments argus)
     hipsparseOperation_t trans   = argus.transA;
     hipsparseIndexBase_t idxBase = argus.baseA;
 
-    std::cout << "size: " << size << " nnz: " << nnz << " trans: " << trans
-              << " idxBase: " << idxBase << std::endl;
-
     // Index and data type
     hipsparseIndexType_t idxType  = getIndexType<I>();
     hipDataType          dataType = getDataType<T>();

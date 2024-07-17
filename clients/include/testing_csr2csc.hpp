@@ -173,9 +173,6 @@ hipsparseStatus_t testing_csr2csc(Arguments argus)
     hipsparseAction_t    action   = argus.action;
     std::string          filename = argus.filename;
 
-    std::cout << "m: " << m << " n: " << n << " idx_base: " << idx_base << " action: " << action
-              << " filename: " << filename << std::endl;
-
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
 

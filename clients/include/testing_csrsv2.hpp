@@ -332,10 +332,6 @@ hipsparseStatus_t testing_csrsv2(Arguments argus)
     T                      h_alpha   = make_DataType<T>(argus.alpha);
     std::string            filename  = argus.filename;
 
-    std::cout << "m: " << m << " idx_base: " << idx_base << " trans: " << trans
-              << " diag_type: " << diag_type << " fill_mode: " << fill_mode << " policy: " << policy
-              << " filename: " << filename << std::endl;
-
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
 

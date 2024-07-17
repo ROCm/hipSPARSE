@@ -134,9 +134,6 @@ hipsparseStatus_t testing_gemvi(Arguments argus)
     hipsparseIndexBase_t idxBase  = argus.baseA;
     std::string          filename = argus.filename;
 
-    std::cout << "m: " << m << " n: " << n << " nnz: " << nnz << " trans: " << trans
-              << " idxBase: " << idxBase << " filename: " << filename << std::endl;
-
     int lda = m;
 
     // hipSPARSE handle

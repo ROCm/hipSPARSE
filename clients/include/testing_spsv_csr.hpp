@@ -172,10 +172,6 @@ hipsparseStatus_t testing_spsv_csr(Arguments argus)
     hipsparseSpSVAlg_t   alg      = static_cast<hipsparseSpSVAlg_t>(argus.spsv_alg);
     std::string          filename = argus.filename;
 
-    std::cout << "m: " << m << " n: " << n << " transA: " << transA << " idx_base: " << idx_base
-              << " diag: " << diag << " uplo: " << uplo << " alg: " << alg
-              << " filename: " << filename << std::endl;
-
     // Index and data type
     hipsparseIndexType_t typeI = getIndexType<I>();
     hipsparseIndexType_t typeJ = getIndexType<J>();

@@ -377,10 +377,6 @@ hipsparseStatus_t testing_csr2bsr(Arguments argus)
     hipsparseDirection_t dir          = argus.dirA;
     std::string          filename     = argus.filename;
 
-    std::cout << "m: " << m << " n: " << n << " block_dim: " << block_dim
-              << " csr_idx_base: " << csr_idx_base << " bsr_idx_base: " << bsr_idx_base
-              << " dir: " << dir << " filename: " << filename << std::endl;
-
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
     std::unique_ptr<descr_struct>  unique_ptr_csr_descr(new descr_struct);

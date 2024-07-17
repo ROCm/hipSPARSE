@@ -93,8 +93,6 @@ hipsparseStatus_t testing_rot(Arguments argus)
     I size = argus.N;
     I nnz  = argus.nnz;
 
-    std::cout << "size: " << size << " nnz: " << nnz << std::endl;
-
     T hc_coeff = make_DataType<T>(argus.alpha);
     T hs_coeff = make_DataType<T>(argus.beta);
 

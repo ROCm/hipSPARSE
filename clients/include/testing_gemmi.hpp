@@ -285,8 +285,6 @@ hipsparseStatus_t testing_gemmi(Arguments argus)
     T           h_beta   = make_DataType<T>(argus.beta);
     std::string filename = argus.filename;
 
-    std::cout << "M: " << M << " N: " << N << " K: " << K << " filename: " << filename << std::endl;
-
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
 

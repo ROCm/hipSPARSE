@@ -121,8 +121,6 @@ hipsparseStatus_t testing_gtsv_interleaved_batch(Arguments argus)
     int batch_count = argus.batch_count;
     int algo        = argus.gtsv_alg;
 
-    std::cout << "m: " << m << " batch_count: " << batch_count << " algo: " << algo << std::endl;
-
     // hipSPARSE handle
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;

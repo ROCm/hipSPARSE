@@ -1050,10 +1050,6 @@ hipsparseStatus_t testing_csrgemm2_a(Arguments argus)
     std::string          filename   = argus.filename;
     T                    alpha      = make_DataType<T>(argus.alpha);
 
-    std::cout << "M: " << M << " N: " << N << " K: " << K << " idx_baseA: " << idx_base_A
-              << " idx_base_B: " << idx_base_B << " idx_base_C: " << idx_base_C
-              << " filename: " << filename << std::endl;
-
     T* h_alpha = &alpha;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
