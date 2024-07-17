@@ -37,7 +37,18 @@ static void print_cuda_12_0_0_to_12_5_1_support_string()
               << " routine below: " << std::endl;
     std::string table = "                      CUDA Version                    \n"
                         "|11.7.1|11.8.0|12.0.0|12.0.1|...|12.4.1|12.5.0|12.5.1|\n"
-                        "              |<------------------------------------>|  ";
+                        "              |<--------------supported------------->|  ";
+    std::cout << table << std::endl;
+}
+
+static void print_cuda_11_3_1_to_12_5_1_support_string()
+{
+    std::cout << "Warning: You are using CUDA version: " << TOSTRING(CUDART_VERSION)
+              << " but this routine is not supported. See CUDA support table for this"
+              << " routine below: " << std::endl;
+    std::string table = "                      CUDA Version                    \n"
+                        "|11.2.2|11.3.0|11.3.1|11.4.0|...|12.4.1|12.5.0|12.5.1|\n"
+                        "              |<--------------supported------------->|  ";
     std::cout << table << std::endl;
 }
 
@@ -48,7 +59,7 @@ static void print_cuda_11_2_0_to_12_5_1_support_string()
               << " routine below: " << std::endl;
     std::string table = "                      CUDA Version                    \n"
                         "|11.1.0|11.1.1|11.2.0|11.2.1|...|12.4.1|12.5.0|12.5.1|\n"
-                        "              |<------------------------------------>|  ";
+                        "              |<--------------supported------------->|  ";
     std::cout << table << std::endl;
 }
 
@@ -60,7 +71,7 @@ static void print_cuda_10_0_0_to_12_5_1_support_string()
 
     std::string table = "                  CUDA Version               \n"
                         "|10.0|10.1|10.2|....|12.4.1|12.5.0|12.5.1|...\n"
-                        "|<-------------------------------------->|     ";
+                        "|<---------------supported-------------->|     ";
     std::cout << table << std::endl;
 }
 
@@ -71,7 +82,7 @@ static void print_cuda_10_0_0_to_11_8_0_support_string()
               << " routine below: " << std::endl;
     std::string table = "                        CUDA Version                       \n"
                         "|10.0|10.1|10.2|....|11.7.0|11.7.1|11.8.0|12.0.0|12.0.1|...\n"
-                        "|<-------------------------------------->|                 ";
+                        "|<--------------supported--------------->|     ";
     std::cout << table << std::endl;
 }
 
@@ -83,7 +94,7 @@ static void print_cuda_10_0_0_to_10_2_0_support_string()
 
     std::string table = "                 CUDA Version                    \n"
                         "|10.0|10.1|10.1.1|10.1.2|10.2.0|11.0.1|11.0.2|...\n"
-                        "|<---------------------------->|                   ";
+                        "|<---------supported---------->|                   ";
     std::cout << table << std::endl;
 }
 #undef STRINGIFY
@@ -161,7 +172,7 @@ struct routine_support
     }
     static bool is_coomv_supported()
     {
-#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
         return true;
 #else
         return false;
@@ -169,7 +180,7 @@ struct routine_support
     }
     static bool is_csrmv_supported()
     {
-#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
         return true;
 #else
         return false;
@@ -177,7 +188,7 @@ struct routine_support
     }
     static bool is_csrsv_supported()
     {
-#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11030)
         return true;
 #else
         return false;
@@ -219,7 +230,7 @@ struct routine_support
     }
     static bool is_coomm_supported()
     {
-#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
         return true;
 #else
         return false;
@@ -227,7 +238,7 @@ struct routine_support
     }
     static bool is_cscmm_supported()
     {
-#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
         return true;
 #else
         return false;
@@ -235,7 +246,7 @@ struct routine_support
     }
     static bool is_csrmm_supported()
     {
-#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
         return true;
 #else
         return false;
@@ -243,7 +254,7 @@ struct routine_support
     }
     static bool is_coosm_supported()
     {
-#if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
         return true;
 #else
         return false;
@@ -251,7 +262,7 @@ struct routine_support
     }
     static bool is_csrsm_supported()
     {
-#if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
         return true;
 #else
         return false;
@@ -462,13 +473,13 @@ struct routine_support
     static void print_coomv_support_warning()
     {
 #if(defined(CUDART_VERSION))
-        print_cuda_10_0_0_to_11_8_0_support_string();
+        print_cuda_10_0_0_to_12_5_1_support_string();
 #endif
     }
     static void print_csrmv_support_warning()
     {
 #if(defined(CUDART_VERSION))
-        print_cuda_10_0_0_to_11_8_0_support_string();
+        print_cuda_10_0_0_to_12_5_1_support_string();
 #endif
     }
     static void print_csrsv_support_warning()
@@ -505,31 +516,31 @@ struct routine_support
     static void print_coomm_support_warning()
     {
 #if(defined(CUDART_VERSION))
-        print_cuda_12_0_0_to_12_5_1_support_string();
+        print_cuda_10_0_0_to_12_5_1_support_string();
 #endif
     }
     static void print_cscmm_support_warning()
     {
 #if(defined(CUDART_VERSION))
-        print_cuda_12_0_0_to_12_5_1_support_string();
+        print_cuda_10_0_0_to_12_5_1_support_string();
 #endif
     }
     static void print_csrmm_support_warning()
     {
 #if(defined(CUDART_VERSION))
-        print_cuda_12_0_0_to_12_5_1_support_string();
+        print_cuda_10_0_0_to_12_5_1_support_string();
 #endif
     }
     static void print_coosm_support_warning()
     {
 #if(defined(CUDART_VERSION))
-        print_cuda_12_0_0_to_12_5_1_support_string();
+        print_cuda_11_3_1_to_12_5_1_support_string();
 #endif
     }
     static void print_csrsm_support_warning()
     {
 #if(defined(CUDART_VERSION))
-        print_cuda_12_0_0_to_12_5_1_support_string();
+        print_cuda_11_3_1_to_12_5_1_support_string();
 #endif
     }
     static void print_gemmi_support_warning()
