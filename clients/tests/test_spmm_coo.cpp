@@ -63,9 +63,10 @@ hipsparseOperation_t spmm_coo_transA_range[]
     = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPERATION_TRANSPOSE};
 hipsparseOperation_t spmm_coo_transB_range[]
     = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPERATION_TRANSPOSE};
-hipsparseOrder_t     spmm_coo_orderB_range[]  = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
-hipsparseOrder_t     spmm_coo_orderC_range[]  = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
-hipsparseIndexBase_t spmm_coo_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+hipsparseOrder_t     spmm_coo_orderB_range[] = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
+hipsparseOrder_t     spmm_coo_orderC_range[] = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
+hipsparseIndexBase_t spmm_coo_idxbase_range[]
+    = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 #if(!defined(CUDART_VERSION))
 hipsparseSpMMAlg_t spmm_coo_alg_range[] = {HIPSPARSE_SPMM_ALG_DEFAULT,
                                            HIPSPARSE_SPMM_COO_ALG1,
@@ -80,7 +81,7 @@ hipsparseSpMMAlg_t spmm_coo_alg_range[] = {HIPSPARSE_SPMM_ALG_DEFAULT,
                                            HIPSPARSE_SPMM_COO_ALG3,
                                            HIPSPARSE_SPMM_COO_ALG4};
 #elif(CUDART_VERSION >= 11021 && CUDART_VERSION < 12000)
-// Note: In cusparse 11.4, Alg2 fails with internal error when using A transposed, B and C 
+// Note: In cusparse 11.4, Alg2 fails with internal error when using A transposed, B and C
 //       both column order. Skip Alg 2 here. Seems to pass in later versions of cusparse.
 hipsparseSpMMAlg_t spmm_coo_alg_range[] = {HIPSPARSE_SPMM_ALG_DEFAULT,
                                            HIPSPARSE_SPMM_COO_ALG1,

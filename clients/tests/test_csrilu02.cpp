@@ -44,24 +44,14 @@ solve_policy csrilu02_solve_policy_range[]
     = {HIPSPARSE_SOLVE_POLICY_NO_LEVEL, HIPSPARSE_SOLVE_POLICY_USE_LEVEL};
 
 #if(!defined(CUDART_VERSION))
-std::string csrilu02_bin[] = {"mac_econ_fwd500.bin",
-                              "rma10.bin",
-                              "nos1.bin",
-                              "nos2.bin",
-                              "nos3.bin",
-                              "nos5.bin",
-                              "nos6.bin"};
+std::string csrilu02_bin[] = {
+    "mac_econ_fwd500.bin", "rma10.bin", "nos1.bin", "nos2.bin", "nos3.bin", "nos5.bin", "nos6.bin"};
 #elif(CUDART_VERSION >= 11080)
-std::string csrilu02_bin[] = {"mac_econ_fwd500.bin",
-                              "nos3.bin",
-                              "nos5.bin",
-                              "nos6.bin"};
+std::string csrilu02_bin[] = {"mac_econ_fwd500.bin", "nos3.bin", "nos5.bin", "nos6.bin"};
 #else
-// Note: There was a bug in csrilu02 where an infinite loop could occur on large matrices. 
+// Note: There was a bug in csrilu02 where an infinite loop could occur on large matrices.
 // This was fixed in cusparse 11.8
-std::string csrilu02_bin[] = {"nos3.bin",
-                              "nos5.bin",
-                              "nos6.bin"};
+std::string csrilu02_bin[] = {"nos3.bin", "nos5.bin", "nos6.bin"};
 #endif
 
 class parameterized_csrilu02 : public testing::TestWithParam<csrilu02_tuple>
