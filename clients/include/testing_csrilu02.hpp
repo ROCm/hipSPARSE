@@ -271,7 +271,7 @@ hipsparseStatus_t testing_csrilu02(Arguments argus)
             hipsparseXcsrilu02_numericBoost(handle, info, boost, &boost_tol, &boost_val));
         CHECK_HIPSPARSE_ERROR(
             hipsparseXcsrilu02(handle, m, nnz, descr, dval1, dptr, dcol, info, policy, dbuffer));
-      
+
         int               hposition_1;
         hipsparseStatus_t pivot_status_1;
         pivot_status_1 = hipsparseXcsrilu02_zeroPivot(handle, info, &hposition_1);
@@ -284,7 +284,7 @@ hipsparseStatus_t testing_csrilu02(Arguments argus)
             hipsparseXcsrilu02_numericBoost(handle, info, boost, dboost_tol, dboost_val));
         CHECK_HIPSPARSE_ERROR(
             hipsparseXcsrilu02(handle, m, nnz, descr, dval2, dptr, dcol, info, policy, dbuffer));
-        
+
         int               hposition_2;
         hipsparseStatus_t pivot_status_2;
         pivot_status_2 = hipsparseXcsrilu02_zeroPivot(handle, info, d_position);
