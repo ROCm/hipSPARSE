@@ -27,6 +27,9 @@
 
 #include <hipsparse.h>
 
+#define STRINGIFY(x) #x
+#define TOSTRING(x) STRINGIFY(x)
+
 struct routine_support
 {
     static bool is_axpyi_supported()
@@ -73,8 +76,9 @@ struct routine_support
     static void print_axpyi_support_warning()
     {
 #if(defined(CUDART_VERSION))
-        std::cout << "Warning: You are using CUDA version: " << std::to_string(#CUDART_VERSION)
-                  << " but this routine is not supported. See CUDA support table below: "
+        std::cout << "Warning: You are using CUDA version: " << TOSTRING(CUDART_VERSION)
+                  << " but this routine is not supported. See CUDA support table for this" 
+                  << " routine below: "
                   << std::endl;
 
         std::string table = "                        CUDA Version                       \n"
@@ -86,8 +90,9 @@ struct routine_support
     static void print_doti_support_warning()
     {
 #if(defined(CUDART_VERSION))
-        std::cout << "Warning: You are using CUDA version: " << std::to_string(#CUDART_VERSION)
-                  << " but this routine is not supported. See CUDA support table below: "
+        std::cout << "Warning: You are using CUDA version: " << TOSTRING(CUDART_VERSION)
+                  << " but this routine is not supported. See CUDA support table for this" 
+                  << " routine below: "
                   << std::endl;
 
         std::string table = "                 CUDA Version                    \n"
@@ -99,8 +104,9 @@ struct routine_support
     static void print_dotci_support_warning()
     {
 #if(defined(CUDART_VERSION))
-        std::cout << "Warning: You are using CUDA version: " << std::to_string(#CUDART_VERSION)
-                  << " but this routine is not supported. See CUDA support table below: "
+        std::cout << "Warning: You are using CUDA version: " << TOSTRING(CUDART_VERSION)
+                  << " but this routine is not supported. See CUDA support table for this" 
+                  << " routine below: "
                   << std::endl;
 
         std::string table = "                 CUDA Version                    \n"
@@ -112,8 +118,9 @@ struct routine_support
     static void print_gthr_support_warning()
     {
 #if(defined(CUDART_VERSION))
-        std::cout << "Warning: You are using CUDA version: " << std::to_string(#CUDART_VERSION)
-                  << " but this routine is not supported. See CUDA support table below: "
+        std::cout << "Warning: You are using CUDA version: " << TOSTRING(CUDART_VERSION)
+                  << " but this routine is not supported. See CUDA support table for this" 
+                  << " routine below: "
                   << std::endl;
 
         std::string table = "                        CUDA Version                       \n"
@@ -125,8 +132,9 @@ struct routine_support
     static void print_gthrz_support_warning()
     {
 #if(defined(CUDART_VERSION))
-        std::cout << "Warning: You are using CUDA version: " << std::to_string(#CUDART_VERSION)
-                  << " but this routine is not supported. See CUDA support table below: "
+        std::cout << "Warning: You are using CUDA version: " << TOSTRING(CUDART_VERSION)
+                  << " but this routine is not supported. See CUDA support table for this" 
+                  << " routine below: "
                   << std::endl;
 
         std::string table = "                        CUDA Version                       \n"
@@ -429,3 +437,6 @@ struct spsv_alg_support
 #endif
     }
 };
+
+#undef STRINGIFY
+#undef TOSTRING
