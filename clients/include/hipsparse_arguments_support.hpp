@@ -70,12 +70,12 @@ struct routine_support
 #endif
     }
 
-
     static void print_axpyi_support_warning()
     {
 #if(defined(CUDART_VERSION))
-        std::cout << "Warning: You are using CUDA version: " << std::to_string(#CUDART_VERSION) << 
-                     " but this routine is not supported. See CUDA support table below: " << std::endl;
+        std::cout << "Warning: You are using CUDA version: " << std::to_string(#CUDART_VERSION)
+                  << " but this routine is not supported. See CUDA support table below: "
+                  << std::endl;
 
         std::string table = "                        CUDA Version                       \n"
                             "|10.0|10.1|10.2|....|11.7.0|11.7.1|11.8.0|12.0.0|12.0.1|...\n"
@@ -86,8 +86,9 @@ struct routine_support
     static void print_doti_support_warning()
     {
 #if(defined(CUDART_VERSION))
-        std::cout << "Warning: You are using CUDA version: " << std::to_string(#CUDART_VERSION) << 
-                     " but this routine is not supported. See CUDA support table below: " << std::endl;
+        std::cout << "Warning: You are using CUDA version: " << std::to_string(#CUDART_VERSION)
+                  << " but this routine is not supported. See CUDA support table below: "
+                  << std::endl;
 
         std::string table = "                 CUDA Version                    \n"
                             "|10.0|10.1|10.1.1|10.1.2|10.2.0|11.0.1|11.0.2|...\n"
@@ -98,8 +99,9 @@ struct routine_support
     static void print_dotci_support_warning()
     {
 #if(defined(CUDART_VERSION))
-        std::cout << "Warning: You are using CUDA version: " << std::to_string(#CUDART_VERSION) << 
-                     " but this routine is not supported. See CUDA support table below: " << std::endl;
+        std::cout << "Warning: You are using CUDA version: " << std::to_string(#CUDART_VERSION)
+                  << " but this routine is not supported. See CUDA support table below: "
+                  << std::endl;
 
         std::string table = "                 CUDA Version                    \n"
                             "|10.0|10.1|10.1.1|10.1.2|10.2.0|11.0.1|11.0.2|...\n"
@@ -110,8 +112,9 @@ struct routine_support
     static void print_gthr_support_warning()
     {
 #if(defined(CUDART_VERSION))
-        std::cout << "Warning: You are using CUDA version: " << std::to_string(#CUDART_VERSION) << 
-                     " but this routine is not supported. See CUDA support table below: " << std::endl;
+        std::cout << "Warning: You are using CUDA version: " << std::to_string(#CUDART_VERSION)
+                  << " but this routine is not supported. See CUDA support table below: "
+                  << std::endl;
 
         std::string table = "                        CUDA Version                       \n"
                             "|10.0|10.1|10.2|....|11.7.0|11.7.1|11.8.0|12.0.0|12.0.1|...\n"
@@ -122,8 +125,9 @@ struct routine_support
     static void print_gthrz_support_warning()
     {
 #if(defined(CUDART_VERSION))
-        std::cout << "Warning: You are using CUDA version: " << std::to_string(#CUDART_VERSION) << 
-                     " but this routine is not supported. See CUDA support table below: " << std::endl;
+        std::cout << "Warning: You are using CUDA version: " << std::to_string(#CUDART_VERSION)
+                  << " but this routine is not supported. See CUDA support table below: "
+                  << std::endl;
 
         std::string table = "                        CUDA Version                       \n"
                             "|10.0|10.1|10.2|....|11.7.0|11.7.1|11.8.0|12.0.0|12.0.1|...\n"
@@ -132,9 +136,6 @@ struct routine_support
 #endif
     }
 };
-
-
-
 
 struct csr2csc_alg_support
 {

@@ -241,16 +241,16 @@ bool hipsparse_routine::is_routine_supported(hipsparse_routine::value_type FNAME
 {
     switch(FNAME)
     {
-        case axpyi:
-            return routine_support::is_axpyi_supported();
-        case doti:
-            return routine_support::is_doti_supported();
-        case dotci:
-            return routine_support::is_dotci_supported();
-        case gthr:
-            return routine_support::is_gthr_supported();
-        case gthrz:
-            return routine_support::is_gthrz_supported();
+    case axpyi:
+        return routine_support::is_axpyi_supported();
+    case doti:
+        return routine_support::is_doti_supported();
+    case dotci:
+        return routine_support::is_dotci_supported();
+    case gthr:
+        return routine_support::is_gthr_supported();
+    case gthrz:
+        return routine_support::is_gthrz_supported();
     }
 
     return true;
@@ -260,21 +260,21 @@ void hipsparse_routine::print_routine_support_info(hipsparse_routine::value_type
 {
     switch(FNAME)
     {
-        case axpyi:
-            routine_support::print_axpyi_support_warning();
-            break;
-        case doti:
-            routine_support::print_doti_support_warning();
-            break;
-        case dotci:
-            routine_support::print_dotci_support_warning();
-            break;
-        case gthr:
-            routine_support::print_gthr_support_warning();
-            break;
-        case gthrz:
-            routine_support::print_gthrz_support_warning();
-            break;
+    case axpyi:
+        routine_support::print_axpyi_support_warning();
+        break;
+    case doti:
+        routine_support::print_doti_support_warning();
+        break;
+    case dotci:
+        routine_support::print_dotci_support_warning();
+        break;
+    case gthr:
+        routine_support::print_gthr_support_warning();
+        break;
+    case gthrz:
+        routine_support::print_gthrz_support_warning();
+        break;
     }
 }
 
