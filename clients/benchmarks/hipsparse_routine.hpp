@@ -122,4 +122,7 @@ private:
     template <hipsparse_routine::value_type FNAME>
     static hipsparseStatus_t
         dispatch_precision(const char precision, const char indextype, const Arguments& arg);
+
+    static bool is_routine_supported(hipsparse_routine::value_type FNAME);
+    static void print_routine_support_info(hipsparse_routine::value_type FNAME);
 };

@@ -27,6 +27,115 @@
 
 #include <hipsparse.h>
 
+struct routine_support
+{
+    static bool is_axpyi_supported()
+    {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
+        return true;
+#else
+        return false;
+#endif
+    }
+    static bool is_doti_supported()
+    {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
+        return true;
+#else
+        return false;
+#endif
+    }
+    static bool is_dotci_supported()
+    {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
+        return true;
+#else
+        return false;
+#endif
+    }
+    static bool is_gthr_supported()
+    {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
+        return true;
+#else
+        return false;
+#endif
+    }
+    static bool is_gthrz_supported()
+    {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
+        return true;
+#else
+        return false;
+#endif
+    }
+
+
+    static void print_axpyi_support_warning()
+    {
+#if(defined(CUDART_VERSION))
+        std::cout << "Warning: You are using CUDA version: " << std::to_string(#CUDART_VERSION) << 
+                     " but this routine is not supported. See CUDA support table below: " << std::endl;
+
+        std::string table = "                        CUDA Version                       \n"
+                            "|10.0|10.1|10.2|....|11.7.0|11.7.1|11.8.0|12.0.0|12.0.1|...\n"
+                            "|<-------------------------------------->|                 ";
+        std::cout << table << std::endl;
+#endif
+    }
+    static void print_doti_support_warning()
+    {
+#if(defined(CUDART_VERSION))
+        std::cout << "Warning: You are using CUDA version: " << std::to_string(#CUDART_VERSION) << 
+                     " but this routine is not supported. See CUDA support table below: " << std::endl;
+
+        std::string table = "                 CUDA Version                    \n"
+                            "|10.0|10.1|10.1.1|10.1.2|10.2.0|11.0.1|11.0.2|...\n"
+                            "|<---------------------------->|                   ";
+        std::cout << table << std::endl;
+#endif
+    }
+    static void print_dotci_support_warning()
+    {
+#if(defined(CUDART_VERSION))
+        std::cout << "Warning: You are using CUDA version: " << std::to_string(#CUDART_VERSION) << 
+                     " but this routine is not supported. See CUDA support table below: " << std::endl;
+
+        std::string table = "                 CUDA Version                    \n"
+                            "|10.0|10.1|10.1.1|10.1.2|10.2.0|11.0.1|11.0.2|...\n"
+                            "|<---------------------------->|                   ";
+        std::cout << table << std::endl;
+#endif
+    }
+    static void print_gthr_support_warning()
+    {
+#if(defined(CUDART_VERSION))
+        std::cout << "Warning: You are using CUDA version: " << std::to_string(#CUDART_VERSION) << 
+                     " but this routine is not supported. See CUDA support table below: " << std::endl;
+
+        std::string table = "                        CUDA Version                       \n"
+                            "|10.0|10.1|10.2|....|11.7.0|11.7.1|11.8.0|12.0.0|12.0.1|...\n"
+                            "|<-------------------------------------->|                 ";
+        std::cout << table << std::endl;
+#endif
+    }
+    static void print_gthrz_support_warning()
+    {
+#if(defined(CUDART_VERSION))
+        std::cout << "Warning: You are using CUDA version: " << std::to_string(#CUDART_VERSION) << 
+                     " but this routine is not supported. See CUDA support table below: " << std::endl;
+
+        std::string table = "                        CUDA Version                       \n"
+                            "|10.0|10.1|10.2|....|11.7.0|11.7.1|11.8.0|12.0.0|12.0.1|...\n"
+                            "|<-------------------------------------->|                 ";
+        std::cout << table << std::endl;
+#endif
+    }
+};
+
+
+
+
 struct csr2csc_alg_support
 {
     static int get_default_algorithm()

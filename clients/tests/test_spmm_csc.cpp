@@ -153,7 +153,6 @@ Arguments setup_spmm_csc_arguments(spmm_csc_bin_tuple tup)
     return arg;
 }
 
-// csc format not supported in cusparse
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(spmm_csc_bad_arg, spmm_csc_float)
 {

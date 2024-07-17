@@ -124,7 +124,6 @@ Arguments setup_spmv_coo_arguments(spmv_coo_bin_tuple tup)
     return arg;
 }
 
-// coo format not supported in cusparse
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(spmv_coo_bad_arg, spmv_coo_float)
 {

@@ -117,7 +117,6 @@ Arguments setup_spsv_coo_arguments(spsv_coo_bin_tuple tup)
     return arg;
 }
 
-// coo format not supported in cusparse
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(spsv_coo_bad_arg, spsv_coo_float)
 {

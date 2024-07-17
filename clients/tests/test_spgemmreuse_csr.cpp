@@ -117,7 +117,6 @@ Arguments setup_spgemmreuse_csr_arguments(spgemmreuse_csr_bin_tuple tup)
     return arg;
 }
 
-// csr format not supported in cusparse
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
 TEST(spgemmreuse_csr_bad_arg, spgemmreuse_csr_float)
 {

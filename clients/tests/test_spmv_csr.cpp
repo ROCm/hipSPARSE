@@ -125,7 +125,6 @@ Arguments setup_spmv_csr_arguments(spmv_csr_bin_tuple tup)
     return arg;
 }
 
-// csr format not supported in cusparse
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(spmv_csr_bad_arg, spmv_csr_float)
 {
