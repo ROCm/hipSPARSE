@@ -33,8 +33,8 @@
 static void print_cuda_12_0_0_to_12_5_1_support_string()
 {
     std::cout << "Warning: You are using CUDA version: " << TOSTRING(CUDART_VERSION)
-                  << " but this routine is not supported. See CUDA support table for this"
-                  << " routine below: " << std::endl;
+              << " but this routine is not supported. See CUDA support table for this"
+              << " routine below: " << std::endl;
     std::string table = "                      CUDA Version                    \n"
                         "|11.7.1|11.8.0|12.0.0|12.0.1|...|12.4.1|12.5.0|12.5.1|\n"
                         "              |<------------------------------------>|  ";
@@ -44,14 +44,13 @@ static void print_cuda_12_0_0_to_12_5_1_support_string()
 static void print_cuda_11_2_0_to_12_5_1_support_string()
 {
     std::cout << "Warning: You are using CUDA version: " << TOSTRING(CUDART_VERSION)
-                  << " but this routine is not supported. See CUDA support table for this"
-                  << " routine below: " << std::endl;
+              << " but this routine is not supported. See CUDA support table for this"
+              << " routine below: " << std::endl;
     std::string table = "                      CUDA Version                    \n"
                         "|11.1.0|11.1.1|11.2.0|11.2.1|...|12.4.1|12.5.0|12.5.1|\n"
                         "              |<------------------------------------>|  ";
     std::cout << table << std::endl;
 }
-
 
 static void print_cuda_10_0_0_to_12_5_1_support_string()
 {
@@ -68,8 +67,8 @@ static void print_cuda_10_0_0_to_12_5_1_support_string()
 static void print_cuda_10_0_0_to_11_8_0_support_string()
 {
     std::cout << "Warning: You are using CUDA version: " << TOSTRING(CUDART_VERSION)
-                  << " but this routine is not supported. See CUDA support table for this"
-                  << " routine below: " << std::endl;
+              << " but this routine is not supported. See CUDA support table for this"
+              << " routine below: " << std::endl;
     std::string table = "                        CUDA Version                       \n"
                         "|10.0|10.1|10.2|....|11.7.0|11.7.1|11.8.0|12.0.0|12.0.1|...\n"
                         "|<-------------------------------------->|                 ";
@@ -90,8 +89,6 @@ static void print_cuda_10_0_0_to_10_2_0_support_string()
 #undef STRINGIFY
 #undef TOSTRING
 #endif
-
-
 
 struct routine_support
 {
