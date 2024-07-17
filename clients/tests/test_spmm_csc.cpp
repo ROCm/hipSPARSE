@@ -65,7 +65,7 @@ hipsparseOperation_t spmm_csc_transB_range[]
     = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPERATION_TRANSPOSE};
 hipsparseOrder_t     spmm_csc_orderB_range[]  = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
 hipsparseOrder_t     spmm_csc_orderC_range[]  = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
-hipsparseIndexBase_t spmm_csc_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ONE};
+hipsparseIndexBase_t spmm_csc_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
 #if(!defined(CUDART_VERSION))
 hipsparseSpMMAlg_t spmm_csc_alg_range[] = {HIPSPARSE_SPMM_ALG_DEFAULT,

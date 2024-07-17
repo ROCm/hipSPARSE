@@ -43,17 +43,26 @@ base         csrilu02_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_IN
 solve_policy csrilu02_solve_policy_range[]
     = {HIPSPARSE_SOLVE_POLICY_NO_LEVEL, HIPSPARSE_SOLVE_POLICY_USE_LEVEL};
 
+#if(!defined(CUDART_VERSION))
 std::string csrilu02_bin[] = {"mac_econ_fwd500.bin",
-#ifdef __HIP_PLATFORM_AMD__
-                              // exclude some matrices from cusparse check,
-                              // they use weaker division producing more rounding errors
                               "rma10.bin",
                               "nos1.bin",
                               "nos2.bin",
-#endif
                               "nos3.bin",
                               "nos5.bin",
                               "nos6.bin"};
+#elif(CUDART_VERSION >= 11080)
+std::string csrilu02_bin[] = {"mac_econ_fwd500.bin",
+                              "nos3.bin",
+                              "nos5.bin",
+                              "nos6.bin"};
+#else
+// Note: There was a bug in csrilu02 where an infinite loop could occur on large matrices. 
+// This was fixed in cusparse 11.8
+std::string csrilu02_bin[] = {"nos3.bin",
+                              "nos5.bin",
+                              "nos6.bin"};
+#endif
 
 class parameterized_csrilu02 : public testing::TestWithParam<csrilu02_tuple>
 {
@@ -146,21 +155,21 @@ TEST_P(parameterized_csrilu02, csrilu02_double_complex)
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-// TEST_P(parameterized_csrilu02_bin, csrilu02_bin_float)
-// {
-//     Arguments arg = setup_csrilu02_arguments(GetParam());
+TEST_P(parameterized_csrilu02_bin, csrilu02_bin_float)
+{
+    Arguments arg = setup_csrilu02_arguments(GetParam());
 
-//     hipsparseStatus_t status = testing_csrilu02<float>(arg);
-//     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
-// }
+    hipsparseStatus_t status = testing_csrilu02<float>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
 
-// TEST_P(parameterized_csrilu02_bin, csrilu02_bin_double)
-// {
-//     Arguments arg = setup_csrilu02_arguments(GetParam());
+TEST_P(parameterized_csrilu02_bin, csrilu02_bin_double)
+{
+    Arguments arg = setup_csrilu02_arguments(GetParam());
 
-//     hipsparseStatus_t status = testing_csrilu02<double>(arg);
-//     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
-// }
+    hipsparseStatus_t status = testing_csrilu02<double>(arg);
+    EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
+}
 
 INSTANTIATE_TEST_SUITE_P(csrilu02,
                          parameterized_csrilu02,
@@ -172,13 +181,13 @@ INSTANTIATE_TEST_SUITE_P(csrilu02,
                                           testing::ValuesIn(csrilu02_idxbase_range),
                                           testing::ValuesIn(csrilu02_solve_policy_range)));
 
-// INSTANTIATE_TEST_SUITE_P(csrilu02_bin,
-//                          parameterized_csrilu02_bin,
-//                          testing::Combine(testing::ValuesIn(csrilu02_boost_range),
-//                                           testing::ValuesIn(csrilu02_boost_tol_range),
-//                                           testing::ValuesIn(csrilu02_boost_val_range),
-//                                           testing::ValuesIn(csrilu02_boost_vali_range),
-//                                           testing::ValuesIn(csrilu02_idxbase_range),
-//                                           testing::ValuesIn(csrilu02_solve_policy_range),
-//                                           testing::ValuesIn(csrilu02_bin)));
+INSTANTIATE_TEST_SUITE_P(csrilu02_bin,
+                         parameterized_csrilu02_bin,
+                         testing::Combine(testing::ValuesIn(csrilu02_boost_range),
+                                          testing::ValuesIn(csrilu02_boost_tol_range),
+                                          testing::ValuesIn(csrilu02_boost_val_range),
+                                          testing::ValuesIn(csrilu02_boost_vali_range),
+                                          testing::ValuesIn(csrilu02_idxbase_range),
+                                          testing::ValuesIn(csrilu02_solve_policy_range),
+                                          testing::ValuesIn(csrilu02_bin)));
 #endif
