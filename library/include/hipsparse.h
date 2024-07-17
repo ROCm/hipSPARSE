@@ -44,8 +44,6 @@
 #include <hip/hip_complex.h>
 #include <hip/hip_runtime.h>
 
-#define INSTANTIATE_TEST_SUITE_P INSTANTIATE_TEST_CASE_P
-
 /// \cond DO_NOT_DOCUMENT
 #define DEPRECATED_CUDA_12000(warning)
 #define DEPRECATED_CUDA_11000(warning)
@@ -14090,7 +14088,7 @@ hipsparseStatus_t hipsparseSpSM_destroyDescr(hipsparseSpSMDescr_t descr);
 *  where A is a sparse matrix in CSR storage format, B and C are dense matrices.
 *
 *  \details
-*  \p hipsparseSpSV_bufferSize computes the required user allocated buffer size needed when computing the 
+*  \p hipsparseSpSM_bufferSize computes the required user allocated buffer size needed when computing the 
 *  solution of triangular linear system op(A) * C = alpha * op(B), where A is a sparse matrix in CSR storage 
 *  format, B and C are dense matrices.
 */
@@ -14127,7 +14125,7 @@ hipsparseStatus_t hipsparseSpSM_bufferSize(hipsparseHandle_t           handle,
 *  where A is a sparse matrix in CSR storage format, B and C are dense vectors.
 *
 *  \details
-*  \p hipsparseSpSV_analysis performs the required analysis used when computing the 
+*  \p hipsparseSpSM_analysis performs the required analysis used when computing the 
 *  solution of triangular linear system op(A) * C = alpha * op(B),
 *  where A is a sparse matrix in CSR storage format, B and C are dense vectors.
 */
