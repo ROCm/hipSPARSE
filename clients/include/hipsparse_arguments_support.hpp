@@ -77,9 +77,8 @@ struct routine_support
     {
 #if(defined(CUDART_VERSION))
         std::cout << "Warning: You are using CUDA version: " << TOSTRING(CUDART_VERSION)
-                  << " but this routine is not supported. See CUDA support table for this" 
-                  << " routine below: "
-                  << std::endl;
+                  << " but this routine is not supported. See CUDA support table for this"
+                  << " routine below: " << std::endl;
 
         std::string table = "                        CUDA Version                       \n"
                             "|10.0|10.1|10.2|....|11.7.0|11.7.1|11.8.0|12.0.0|12.0.1|...\n"
@@ -91,9 +90,8 @@ struct routine_support
     {
 #if(defined(CUDART_VERSION))
         std::cout << "Warning: You are using CUDA version: " << TOSTRING(CUDART_VERSION)
-                  << " but this routine is not supported. See CUDA support table for this" 
-                  << " routine below: "
-                  << std::endl;
+                  << " but this routine is not supported. See CUDA support table for this"
+                  << " routine below: " << std::endl;
 
         std::string table = "                 CUDA Version                    \n"
                             "|10.0|10.1|10.1.1|10.1.2|10.2.0|11.0.1|11.0.2|...\n"
@@ -105,9 +103,8 @@ struct routine_support
     {
 #if(defined(CUDART_VERSION))
         std::cout << "Warning: You are using CUDA version: " << TOSTRING(CUDART_VERSION)
-                  << " but this routine is not supported. See CUDA support table for this" 
-                  << " routine below: "
-                  << std::endl;
+                  << " but this routine is not supported. See CUDA support table for this"
+                  << " routine below: " << std::endl;
 
         std::string table = "                 CUDA Version                    \n"
                             "|10.0|10.1|10.1.1|10.1.2|10.2.0|11.0.1|11.0.2|...\n"
@@ -119,9 +116,8 @@ struct routine_support
     {
 #if(defined(CUDART_VERSION))
         std::cout << "Warning: You are using CUDA version: " << TOSTRING(CUDART_VERSION)
-                  << " but this routine is not supported. See CUDA support table for this" 
-                  << " routine below: "
-                  << std::endl;
+                  << " but this routine is not supported. See CUDA support table for this"
+                  << " routine below: " << std::endl;
 
         std::string table = "                        CUDA Version                       \n"
                             "|10.0|10.1|10.2|....|11.7.0|11.7.1|11.8.0|12.0.0|12.0.1|...\n"
@@ -133,9 +129,8 @@ struct routine_support
     {
 #if(defined(CUDART_VERSION))
         std::cout << "Warning: You are using CUDA version: " << TOSTRING(CUDART_VERSION)
-                  << " but this routine is not supported. See CUDA support table for this" 
-                  << " routine below: "
-                  << std::endl;
+                  << " but this routine is not supported. See CUDA support table for this"
+                  << " routine below: " << std::endl;
 
         std::string table = "                        CUDA Version                       \n"
                             "|10.0|10.1|10.2|....|11.7.0|11.7.1|11.8.0|12.0.0|12.0.1|...\n"
