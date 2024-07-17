@@ -73,12 +73,6 @@ void testing_spmm_bell_bad_arg(void)
     float*   dC   = (float*)dC_managed.get();
     void*    dbuf = (void*)dbuf_managed.get();
 
-    if(!dval || !dind || !dB || !dC || !dbuf)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
-
     // SpMM structures
     hipsparseSpMatDescr_t A;
     hipsparseDnMatDescr_t B, C;

@@ -77,12 +77,6 @@ void testing_csr2gebsr_bad_arg(void)
     int* bsr_col_ind = (int*)bsr_col_ind_managed.get();
     T*   bsr_val     = (T*)bsr_val_managed.get();
 
-    if(!bsr_row_ptr || !bsr_col_ind || !bsr_val || !csr_row_ptr || !csr_col_ind || !csr_val)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
-
     { //
         int local_ptr[2] = {0, 1};
         CHECK_HIP_ERROR(

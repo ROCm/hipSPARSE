@@ -65,12 +65,6 @@ void testing_spmat_descr_bad_arg(void)
     int*   ind_data = (int*)ind_data_managed.get();
     float* val_data = (float*)val_data_managed.get();
 
-    if(!row_data || !col_data || !ind_data || !val_data)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
-
     hipsparseSpMatDescr_t A;
 
     // hipsparseCreateCoo

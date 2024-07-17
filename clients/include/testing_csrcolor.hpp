@@ -66,11 +66,7 @@ void testing_csrcolor_bad_arg(void)
     int* d_csr_row_ptr = (int*)m_csr_row_ptr.get();
     int* d_csr_col_ind = (int*)m_csr_col_ind.get();
     int  ncolors;
-    if(!d_csr_row_ptr || !d_csr_col_ind || !d_csr_val)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
+    
     hipsparseColorInfo_t colorInfo = (hipsparseColorInfo_t)0x4;
 
     status = hipsparseXcsrcolor<T>(handle,

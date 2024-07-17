@@ -90,12 +90,6 @@ void testing_csrgemm2_b_bad_arg(void)
     CHECK_HIP_ERROR(
         hipMemcpy(dCptr, hcsr_row_ptr_C.data(), sizeof(int) * (M + 1), hipMemcpyHostToDevice));
 
-    if(!dDval || !dDptr || !dDcol || !dCval || !dCptr || !dCcol || !dbuffer)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
-
     // Scenario: alpha == 0 and beta != 0
 
     // testing hipsparseXcsrgemm2_bufferSizeExt
