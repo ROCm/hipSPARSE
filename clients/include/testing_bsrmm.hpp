@@ -25,6 +25,7 @@
 #ifndef TESTING_BSRMM_HPP
 #define TESTING_BSRMM_HPP
 
+#include "display.hpp"
 #include "flops.hpp"
 #include "gbyte.hpp"
 #include "hipsparse.hpp"
@@ -712,8 +713,36 @@ hipsparseStatus_t testing_bsrmm(Arguments argus)
         double gpu_gflops = get_gpu_gflops(gpu_time_used, gflop_count);
         double gpu_gbyte  = get_gpu_gbyte(gpu_time_used, gbyte_count);
 
-        std::cout << "GFLOPS/s: " << gpu_gflops << " GBytes/s: " << gpu_gbyte
-                  << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
+        display_timing_info(display_key_t::M,
+                            m,
+                            display_key_t::N,
+                            n,
+                            display_key_t::K,
+                            k,
+                            display_key_t::direction,
+                            dirA,
+                            display_key_t::transA,
+                            transA,
+                            display_key_t::transB,
+                            transB,
+                            display_key_t::nnzb,
+                            nnzb,
+                            display_key_t::block_dim,
+                            block_dim,
+                            display_key_t::nnzB,
+                            nnz_B,
+                            display_key_t::nnzC,
+                            nnz_C,
+                            display_key_t::alpha,
+                            h_alpha,
+                            display_key_t::beta,
+                            h_beta,
+                            display_key_t::gflops,
+                            gpu_gflops,
+                            display_key_t::bandwidth,
+                            gpu_gbyte,
+                            display_key_t::time_ms,
+                            get_gpu_time_msec(gpu_time_used));
     }
 
     return HIPSPARSE_STATUS_SUCCESS;

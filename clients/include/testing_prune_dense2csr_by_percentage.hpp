@@ -25,6 +25,7 @@
 #ifndef TESTING_PRUNE_DENSE2CSR_BY_PERCENTAGE_HPP
 #define TESTING_PRUNE_DENSE2CSR_BY_PERCENTAGE_HPP
 
+#include "display.hpp"
 #include "flops.hpp"
 #include "gbyte.hpp"
 #include "hipsparse.hpp"
@@ -598,8 +599,18 @@ hipsparseStatus_t testing_prune_dense2csr_by_percentage(Arguments argus)
             = prune_dense2csr_by_percentage_gbyte_count<T>(M, N, h_nnz_total_dev_host_ptr[0]);
         double gpu_gbyte = get_gpu_gbyte(gpu_time_used, gbyte_count);
 
-        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used)
-                  << std::endl;
+        display_timing_info(display_key_t::M,
+                            M,
+                            display_key_t::M,
+                            N,
+                            display_key_t::nnz,
+                            h_nnz_total_dev_host_ptr[0],
+                            display_key_t::percentage,
+                            percentage,
+                            display_key_t::bandwidth,
+                            gpu_gbyte,
+                            display_key_t::time_ms,
+                            get_gpu_time_msec(gpu_time_used));
     }
 #endif
 

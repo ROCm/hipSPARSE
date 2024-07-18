@@ -25,6 +25,7 @@
 #ifndef TESTING_GEBSR2CSR_HPP
 #define TESTING_GEBSR2CSR_HPP
 
+#include "display.hpp"
 #include "flops.hpp"
 #include "gbyte.hpp"
 #include "hipsparse.hpp"
@@ -515,8 +516,24 @@ hipsparseStatus_t testing_gebsr2csr(Arguments argus)
         double gbyte_count = gebsr2csr_gbyte_count<T>(mb, row_block_dim, col_block_dim, nnzb);
         double gpu_gbyte   = get_gpu_gbyte(gpu_time_used, gbyte_count);
 
-        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used)
-                  << std::endl;
+        display_timing_info(display_key_t::M,
+                            m,
+                            display_key_t::N,
+                            n,
+                            display_key_t::Mb,
+                            mb,
+                            display_key_t::Nb,
+                            nb,
+                            display_key_t::row_block_dim,
+                            row_block_dim,
+                            display_key_t::col_block_dim,
+                            col_block_dim,
+                            display_key_t::nnzb,
+                            nnzb,
+                            display_key_t::bandwidth,
+                            gpu_gbyte,
+                            display_key_t::time_ms,
+                            get_gpu_time_msec(gpu_time_used));
     }
 
     return HIPSPARSE_STATUS_SUCCESS;

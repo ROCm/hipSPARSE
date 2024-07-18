@@ -253,3 +253,273 @@ constexpr auto hipsparse_fillmode2string(hipsparseFillMode_t fill_mode)
     }
     return "invalid";
 }
+
+constexpr auto hipsparse_solvepolicy2string(hipsparseSolvePolicy_t policy)
+{
+    switch(policy)
+    {
+    case HIPSPARSE_SOLVE_POLICY_NO_LEVEL:
+        return "no_level";
+    case HIPSPARSE_SOLVE_POLICY_USE_LEVEL:
+        return "use_level";
+    }
+    return "invalid";
+}
+
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11022)
+constexpr auto hipsparse_sddmmalg2string(hipsparseSDDMMAlg_t alg)
+{
+    switch(alg)
+    {
+    case HIPSPARSE_SDDMM_ALG_DEFAULT:
+        return "default";
+    }
+    return "invalid";
+}
+#endif
+
+#if(!defined(CUDART_VERSION))
+constexpr auto hipsparse_spmmalg2string(hipsparseSpMMAlg_t alg)
+{
+    switch(alg)
+    {
+    case HIPSPARSE_SPMM_ALG_DEFAULT:
+        return "default";
+    case HIPSPARSE_SPMM_COO_ALG1:
+        return "coo_alg1";
+    case HIPSPARSE_SPMM_COO_ALG2:
+        return "coo_alg2";
+    case HIPSPARSE_SPMM_COO_ALG3:
+        return "coo_alg3";
+    case HIPSPARSE_SPMM_COO_ALG4:
+        return "coo_alg4";
+    case HIPSPARSE_SPMM_CSR_ALG1:
+        return "csr_alg1";
+    case HIPSPARSE_SPMM_CSR_ALG2:
+        return "csr_alg2";
+    case HIPSPARSE_SPMM_CSR_ALG3:
+        return "csr_alg3";
+    case HIPSPARSE_SPMM_BLOCKED_ELL_ALG1:
+        return "bell_alg1";
+    }
+    return "invalid";
+}
+#else
+#if(CUDART_VERSION >= 12000)
+constexpr auto hipsparse_spmmalg2string(hipsparseSpMMAlg_t alg)
+{
+    switch(alg)
+    {
+    case HIPSPARSE_SPMM_ALG_DEFAULT:
+        return "default";
+    case HIPSPARSE_SPMM_COO_ALG1:
+        return "coo_alg1";
+    case HIPSPARSE_SPMM_COO_ALG2:
+        return "coo_alg2";
+    case HIPSPARSE_SPMM_COO_ALG3:
+        return "coo_alg3";
+    case HIPSPARSE_SPMM_COO_ALG4:
+        return "coo_alg4";
+    case HIPSPARSE_SPMM_CSR_ALG1:
+        return "csr_alg1";
+    case HIPSPARSE_SPMM_CSR_ALG2:
+        return "csr_alg2";
+    case HIPSPARSE_SPMM_CSR_ALG3:
+        return "csr_alg3";
+    case HIPSPARSE_SPMM_BLOCKED_ELL_ALG1:
+        return "bell_alg1";
+    }
+    return "invalid";
+}
+#elif(CUDART_VERSION >= 11021 && CUDART_VERSION < 12000)
+constexpr auto hipsparse_spmmalg2string(hipsparseSpMMAlg_t alg)
+{
+    switch(alg)
+    {
+    case HIPSPARSE_SPMM_ALG_DEFAULT:
+        return "default";
+    case HIPSPARSE_SPMM_COO_ALG1:
+        return "coo_alg1";
+    case HIPSPARSE_SPMM_COO_ALG2:
+        return "coo_alg2";
+    case HIPSPARSE_SPMM_COO_ALG3:
+        return "coo_alg3";
+    case HIPSPARSE_SPMM_COO_ALG4:
+        return "coo_alg4";
+    case HIPSPARSE_SPMM_CSR_ALG1:
+        return "csr_alg1";
+    case HIPSPARSE_SPMM_CSR_ALG2:
+        return "csr_alg2";
+    case HIPSPARSE_SPMM_CSR_ALG3:
+        return "csr_alg3";
+    case HIPSPARSE_SPMM_BLOCKED_ELL_ALG1:
+        return "bell_alg1";
+    }
+    return "invalid";
+}
+#elif(CUDART_VERSION >= 11003 && CUDART_VERSION < 11021)
+constexpr auto hipsparse_spmmalg2string(hipsparseSpMMAlg_t alg)
+{
+    switch(alg)
+    {
+    case HIPSPARSE_SPMM_ALG_DEFAULT:
+        return "default";
+    case HIPSPARSE_SPMM_COO_ALG1:
+        return "coo_alg1";
+    case HIPSPARSE_SPMM_COO_ALG2:
+        return "coo_alg2";
+    case HIPSPARSE_SPMM_COO_ALG3:
+        return "coo_alg3";
+    case HIPSPARSE_SPMM_COO_ALG4:
+        return "coo_alg4";
+    case HIPSPARSE_SPMM_CSR_ALG1:
+        return "csr_alg1";
+    case HIPSPARSE_SPMM_CSR_ALG2:
+        return "csr_alg2";
+    case HIPSPARSE_SPMM_BLOCKED_ELL_ALG1:
+        return "bell_alg1";
+    }
+    return "invalid";
+}
+#elif(CUDART_VERSION >= 10010 && CUDART_VERSION < 11003)
+constexpr auto hipsparse_spmmalg2string(hipsparseSpMMAlg_t alg)
+{
+    switch(alg)
+    {
+    case HIPSPARSE_MM_ALG_DEFAULT:
+        return "default";
+    case HIPSPARSE_COOMM_ALG1:
+        return "coo_alg1";
+    case HIPSPARSE_COOMM_ALG2:
+        return "coo_alg2";
+    case HIPSPARSE_COOMM_ALG3:
+        return "coo_alg3";
+    case HIPSPARSE_CSRMM_ALG1:
+        return "csr_alg1";
+    }
+    return "invalid";
+}
+#endif
+#endif
+
+#if(!defined(CUDART_VERSION))
+constexpr auto hipsparse_spmvalg2string(hipsparseSpMVAlg_t alg)
+{
+    switch(alg)
+    {
+    case HIPSPARSE_SPMV_ALG_DEFAULT:
+        return "default";
+    case HIPSPARSE_SPMV_COO_ALG1:
+        return "coo_alg1";
+    case HIPSPARSE_SPMV_COO_ALG2:
+        return "coo_alg2";
+    case HIPSPARSE_SPMV_CSR_ALG1:
+        return "csr_alg1";
+    case HIPSPARSE_SPMV_CSR_ALG2:
+        return "csr_alg2";
+    }
+    return "invalid";
+}
+#else
+#if(CUDART_VERSION >= 12000)
+constexpr auto hipsparse_spmvalg2string(hipsparseSpMVAlg_t alg)
+{
+    switch(alg)
+    {
+    case HIPSPARSE_SPMV_ALG_DEFAULT:
+        return "default";
+    case HIPSPARSE_SPMV_COO_ALG1:
+        return "coo_alg1";
+    case HIPSPARSE_SPMV_COO_ALG2:
+        return "coo_alg2";
+    case HIPSPARSE_SPMV_CSR_ALG1:
+        return "csr_alg1";
+    case HIPSPARSE_SPMV_CSR_ALG2:
+        return "csr_alg2";
+    }
+    return "invalid";
+}
+#elif(CUDART_VERSION >= 11021 && CUDART_VERSION < 12000)
+constexpr auto hipsparse_spmvalg2string(hipsparseSpMVAlg_t alg)
+{
+    switch(alg)
+    {
+    case HIPSPARSE_SPMV_ALG_DEFAULT:
+        return "default";
+    case HIPSPARSE_SPMV_COO_ALG1:
+        return "coo_alg1";
+    case HIPSPARSE_SPMV_COO_ALG2:
+        return "coo_alg2";
+    case HIPSPARSE_SPMV_CSR_ALG1:
+        return "csr_alg1";
+    case HIPSPARSE_SPMV_CSR_ALG2:
+        return "csr_alg2";
+    }
+    return "invalid";
+}
+#elif(CUDART_VERSION >= 10010 && CUDART_VERSION < 11021)
+constexpr auto hipsparse_spmvalg2string(hipsparseSpMVAlg_t alg)
+{
+    switch(alg)
+    {
+    case HIPSPARSE_MV_ALG_DEFAULT:
+        return "default";
+    case HIPSPARSE_COOMV_ALG:
+        return "coo_alg1";
+    case HIPSPARSE_CSRMV_ALG1:
+        return "csr_alg1";
+    case HIPSPARSE_CSRMV_ALG2:
+        return "csr_alg2";
+    }
+    return "invalid";
+}
+#endif
+#endif
+
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
+constexpr auto hipsparse_spsmalg2string(hipsparseSpSMAlg_t alg)
+{
+    switch(alg)
+    {
+    case HIPSPARSE_SPSM_ALG_DEFAULT:
+        return "default";
+    }
+    return "invalid";
+}
+#endif
+
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11030)
+constexpr auto hipsparse_spsvalg2string(hipsparseSpSVAlg_t alg)
+{
+    switch(alg)
+    {
+    case HIPSPARSE_SPSV_ALG_DEFAULT:
+        return "default";
+    }
+    return "invalid";
+}
+#endif
+
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11020)
+constexpr auto hipsparse_sparsetodensealg2string(hipsparseSparseToDenseAlg_t alg)
+{
+    switch(alg)
+    {
+    case HIPSPARSE_SPARSETODENSE_ALG_DEFAULT:
+        return "default";
+    }
+    return "invalid";
+}
+#endif
+
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11020)
+constexpr auto hipsparse_densetosparsealg2string(hipsparseDenseToSparseAlg_t alg)
+{
+    switch(alg)
+    {
+    case HIPSPARSE_DENSETOSPARSE_ALG_DEFAULT:
+        return "default";
+    }
+    return "invalid";
+}
+#endif
