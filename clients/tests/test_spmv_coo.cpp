@@ -21,13 +21,20 @@
  *
  * ************************************************************************ */
 
+#include "hipsparse_arguments.hpp"
 #include "testing_spmv_coo.hpp"
 
 #include <hipsparse.h>
 
-typedef std::tuple<int, int, double, double, hipsparseOperation_t, hipsparseIndexBase_t>
-    spmv_coo_tuple;
-typedef std::tuple<double, double, hipsparseOperation_t, hipsparseIndexBase_t, std::string>
+typedef std::
+    tuple<int, int, double, double, hipsparseOperation_t, hipsparseIndexBase_t, hipsparseSpMVAlg_t>
+        spmv_coo_tuple;
+typedef std::tuple<double,
+                   double,
+                   hipsparseOperation_t,
+                   hipsparseIndexBase_t,
+                   hipsparseSpMVAlg_t,
+                   std::string>
     spmv_coo_bin_tuple;
 
 int spmv_coo_M_range[] = {50};
@@ -39,6 +46,20 @@ std::vector<double> spmv_coo_beta_range  = {1.0};
 hipsparseOperation_t spmv_coo_transA_range[] = {HIPSPARSE_OPERATION_NON_TRANSPOSE};
 hipsparseIndexBase_t spmv_coo_idxbase_range[]
     = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+#if(!defined(CUDART_VERSION))
+hipsparseSpMVAlg_t spmv_coo_alg_range[]
+    = {HIPSPARSE_SPMV_ALG_DEFAULT, HIPSPARSE_SPMV_COO_ALG1, HIPSPARSE_SPMV_COO_ALG2};
+#else
+#if(CUDART_VERSION >= 12000)
+hipsparseSpMVAlg_t spmv_coo_alg_range[]
+    = {HIPSPARSE_SPMV_ALG_DEFAULT, HIPSPARSE_SPMV_COO_ALG1, HIPSPARSE_SPMV_COO_ALG2};
+#elif(CUDART_VERSION >= 11021 && CUDART_VERSION < 12000)
+hipsparseSpMVAlg_t spmv_coo_alg_range[]
+    = {HIPSPARSE_SPMV_ALG_DEFAULT, HIPSPARSE_SPMV_COO_ALG1, HIPSPARSE_SPMV_COO_ALG2};
+#elif(CUDART_VERSION >= 10010 && CUDART_VERSION < 11021)
+hipsparseSpMVAlg_t spmv_coo_alg_range[] = {HIPSPARSE_MV_ALG_DEFAULT, HIPSPARSE_COOMV_ALG};
+#endif
+#endif
 
 std::string spmv_coo_bin[] = {"nos1.bin",
                               "nos2.bin",
@@ -76,7 +97,8 @@ Arguments setup_spmv_coo_arguments(spmv_coo_tuple tup)
     arg.alpha    = std::get<2>(tup);
     arg.beta     = std::get<3>(tup);
     arg.transA   = std::get<4>(tup);
-    arg.idx_base = std::get<5>(tup);
+    arg.baseA    = std::get<5>(tup);
+    arg.spmv_alg = std::get<6>(tup);
     arg.timing   = 0;
     return arg;
 }
@@ -89,11 +111,12 @@ Arguments setup_spmv_coo_arguments(spmv_coo_bin_tuple tup)
     arg.alpha    = std::get<0>(tup);
     arg.beta     = std::get<1>(tup);
     arg.transA   = std::get<2>(tup);
-    arg.idx_base = std::get<3>(tup);
+    arg.baseA    = std::get<3>(tup);
+    arg.spmv_alg = std::get<4>(tup);
     arg.timing   = 0;
 
     // Determine absolute path of test matrix
-    std::string bin_file = std::get<4>(tup);
+    std::string bin_file = std::get<5>(tup);
 
     // Matrices are stored at the same path in matrices directory
     arg.filename = get_filename(bin_file);
@@ -101,7 +124,6 @@ Arguments setup_spmv_coo_arguments(spmv_coo_bin_tuple tup)
     return arg;
 }
 
-// coo format not supported in cusparse
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(spmv_coo_bad_arg, spmv_coo_float)
 {
@@ -163,7 +185,8 @@ INSTANTIATE_TEST_SUITE_P(spmv_coo,
                                           testing::ValuesIn(spmv_coo_alpha_range),
                                           testing::ValuesIn(spmv_coo_beta_range),
                                           testing::ValuesIn(spmv_coo_transA_range),
-                                          testing::ValuesIn(spmv_coo_idxbase_range)));
+                                          testing::ValuesIn(spmv_coo_idxbase_range),
+                                          testing::ValuesIn(spmv_coo_alg_range)));
 
 INSTANTIATE_TEST_SUITE_P(spmv_coo_bin,
                          parameterized_spmv_coo_bin,
@@ -171,5 +194,6 @@ INSTANTIATE_TEST_SUITE_P(spmv_coo_bin,
                                           testing::ValuesIn(spmv_coo_beta_range),
                                           testing::ValuesIn(spmv_coo_transA_range),
                                           testing::ValuesIn(spmv_coo_idxbase_range),
+                                          testing::ValuesIn(spmv_coo_alg_range),
                                           testing::ValuesIn(spmv_coo_bin)));
 #endif

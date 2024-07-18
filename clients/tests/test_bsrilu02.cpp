@@ -27,10 +27,12 @@
 #include <hipsparse.h>
 #include <string>
 
-typedef hipsparseIndexBase_t                                                 base;
-typedef hipsparseDirection_t                                                 dir;
-typedef std::tuple<int, int, int, double, double, double, dir, base>         bsrilu02_tuple;
-typedef std::tuple<int, int, double, double, double, dir, base, std::string> bsrilu02_bin_tuple;
+typedef hipsparseIndexBase_t                                                       base;
+typedef hipsparseDirection_t                                                       dir;
+typedef hipsparseSolvePolicy_t                                                     solve_policy;
+typedef std::tuple<int, int, int, double, double, double, dir, base, solve_policy> bsrilu02_tuple;
+typedef std::tuple<int, int, double, double, double, dir, base, solve_policy, std::string>
+    bsrilu02_bin_tuple;
 
 int bsrilu02_M_range[]   = {0, 50, 426};
 int bsrilu02_dim_range[] = {1, 3, 5, 9};
@@ -40,8 +42,10 @@ double bsrilu02_boost_tol_range[]  = {1.1};
 double bsrilu02_boost_val_range[]  = {0.3};
 double bsrilu02_boost_vali_range[] = {0.2};
 
-base bsrilu02_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
-dir  bsrilu02_dir_range[]     = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COLUMN};
+base         bsrilu02_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+dir          bsrilu02_dir_range[]     = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COLUMN};
+solve_policy bsrilu02_solve_policy_range[]
+    = {HIPSPARSE_SOLVE_POLICY_NO_LEVEL, HIPSPARSE_SOLVE_POLICY_USE_LEVEL};
 
 std::string bsrilu02_bin[]
     = {"nos1.bin", "nos2.bin", "nos3.bin", "nos4.bin", "nos5.bin", "nos6.bin", "nos7.bin"};
@@ -74,7 +78,8 @@ Arguments setup_bsrilu02_arguments(bsrilu02_tuple tup)
     arg.boostval     = std::get<4>(tup);
     arg.boostvali    = std::get<5>(tup);
     arg.dirA         = std::get<6>(tup);
-    arg.idx_base     = std::get<7>(tup);
+    arg.baseA        = std::get<7>(tup);
+    arg.solve_policy = std::get<8>(tup);
     arg.timing       = 0;
     return arg;
 }
@@ -89,11 +94,12 @@ Arguments setup_bsrilu02_arguments(bsrilu02_bin_tuple tup)
     arg.boostval     = std::get<3>(tup);
     arg.boostvali    = std::get<4>(tup);
     arg.dirA         = std::get<5>(tup);
-    arg.idx_base     = std::get<6>(tup);
+    arg.baseA        = std::get<6>(tup);
+    arg.solve_policy = std::get<7>(tup);
     arg.timing       = 0;
 
     // Determine absolute path of test matrix
-    std::string bin_file = std::get<7>(tup);
+    std::string bin_file = std::get<8>(tup);
 
     // Matrices are stored at the same path in matrices directory
     arg.filename = get_filename(bin_file);
@@ -101,8 +107,7 @@ Arguments setup_bsrilu02_arguments(bsrilu02_bin_tuple tup)
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 TEST(bsrilu02_bad_arg, bsrilu02_float)
 {
     testing_bsrilu02_bad_arg<float>();
@@ -165,7 +170,8 @@ INSTANTIATE_TEST_SUITE_P(bsrilu02,
                                           testing::ValuesIn(bsrilu02_boost_val_range),
                                           testing::ValuesIn(bsrilu02_boost_vali_range),
                                           testing::ValuesIn(bsrilu02_dir_range),
-                                          testing::ValuesIn(bsrilu02_idxbase_range)));
+                                          testing::ValuesIn(bsrilu02_idxbase_range),
+                                          testing::ValuesIn(bsrilu02_solve_policy_range)));
 
 INSTANTIATE_TEST_SUITE_P(bsrilu02_bin,
                          parameterized_bsrilu02_bin,
@@ -176,5 +182,6 @@ INSTANTIATE_TEST_SUITE_P(bsrilu02_bin,
                                           testing::ValuesIn(bsrilu02_boost_vali_range),
                                           testing::ValuesIn(bsrilu02_dir_range),
                                           testing::ValuesIn(bsrilu02_idxbase_range),
+                                          testing::ValuesIn(bsrilu02_solve_policy_range),
                                           testing::ValuesIn(bsrilu02_bin)));
 #endif

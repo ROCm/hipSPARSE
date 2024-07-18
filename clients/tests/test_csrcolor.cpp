@@ -25,7 +25,7 @@
 
 #include <hipsparse.h>
 
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 
 TEST(csrcolor_bad_arg, csrcolor_bad_arg_float)
 {

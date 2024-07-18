@@ -21,6 +21,7 @@
  *
  * ************************************************************************ */
 
+#include "hipsparse_arguments.hpp"
 #include "testing_spsv_csr.hpp"
 
 #include <hipsparse.h>
@@ -31,13 +32,15 @@ typedef std::tuple<int,
                    hipsparseOperation_t,
                    hipsparseIndexBase_t,
                    hipsparseDiagType_t,
-                   hipsparseFillMode_t>
+                   hipsparseFillMode_t,
+                   hipsparseSpSVAlg_t>
     spsv_csr_tuple;
 typedef std::tuple<double,
                    hipsparseOperation_t,
                    hipsparseIndexBase_t,
                    hipsparseDiagType_t,
                    hipsparseFillMode_t,
+                   hipsparseSpSVAlg_t,
                    std::string>
     spsv_csr_bin_tuple;
 
@@ -51,6 +54,7 @@ hipsparseIndexBase_t spsv_csr_idxbase_range[]   = {HIPSPARSE_INDEX_BASE_ONE};
 hipsparseDiagType_t  spsv_csr_diag_type_range[] = {HIPSPARSE_DIAG_TYPE_NON_UNIT};
 hipsparseFillMode_t  spsv_csr_fill_mode_range[]
     = {HIPSPARSE_FILL_MODE_LOWER, HIPSPARSE_FILL_MODE_UPPER};
+hipsparseSpSVAlg_t spsv_csr_alg_range[] = {HIPSPARSE_SPSV_ALG_DEFAULT};
 
 std::string spsv_csr_bin[] = {"nos1.bin",
                               "nos2.bin",
@@ -86,9 +90,10 @@ Arguments setup_spsv_csr_arguments(spsv_csr_tuple tup)
     arg.N         = std::get<1>(tup);
     arg.alpha     = std::get<2>(tup);
     arg.transA    = std::get<3>(tup);
-    arg.idx_base  = std::get<4>(tup);
+    arg.baseA     = std::get<4>(tup);
     arg.diag_type = std::get<5>(tup);
     arg.fill_mode = std::get<6>(tup);
+    arg.spsv_alg  = std::get<7>(tup);
     arg.timing    = 0;
     return arg;
 }
@@ -98,13 +103,14 @@ Arguments setup_spsv_csr_arguments(spsv_csr_bin_tuple tup)
     Arguments arg;
     arg.alpha     = std::get<0>(tup);
     arg.transA    = std::get<1>(tup);
-    arg.idx_base  = std::get<2>(tup);
+    arg.baseA     = std::get<2>(tup);
     arg.diag_type = std::get<3>(tup);
     arg.fill_mode = std::get<4>(tup);
+    arg.spsv_alg  = std::get<5>(tup);
     arg.timing    = 0;
 
     // Determine absolute path of test matrix
-    std::string bin_file = std::get<5>(tup);
+    std::string bin_file = std::get<6>(tup);
 
     // Matrices are stored at the same path in matrices directory
     arg.filename = get_filename(bin_file);
@@ -112,7 +118,6 @@ Arguments setup_spsv_csr_arguments(spsv_csr_bin_tuple tup)
     return arg;
 }
 
-// csr format not supported in cusparse
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(spsv_csr_bad_arg, spsv_csr_float)
 {
@@ -175,7 +180,8 @@ INSTANTIATE_TEST_SUITE_P(spsv_csr,
                                           testing::ValuesIn(spsv_csr_transA_range),
                                           testing::ValuesIn(spsv_csr_idxbase_range),
                                           testing::ValuesIn(spsv_csr_diag_type_range),
-                                          testing::ValuesIn(spsv_csr_fill_mode_range)));
+                                          testing::ValuesIn(spsv_csr_fill_mode_range),
+                                          testing::ValuesIn(spsv_csr_alg_range)));
 
 INSTANTIATE_TEST_SUITE_P(spsv_csr_bin,
                          parameterized_spsv_csr_bin,
@@ -184,5 +190,6 @@ INSTANTIATE_TEST_SUITE_P(spsv_csr_bin,
                                           testing::ValuesIn(spsv_csr_idxbase_range),
                                           testing::ValuesIn(spsv_csr_diag_type_range),
                                           testing::ValuesIn(spsv_csr_fill_mode_range),
+                                          testing::ValuesIn(spsv_csr_alg_range),
                                           testing::ValuesIn(spsv_csr_bin)));
 #endif

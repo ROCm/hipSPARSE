@@ -25,7 +25,10 @@
 #ifndef TESTING_CSR2CSR_COMPRESS_HPP
 #define TESTING_CSR2CSR_COMPRESS_HPP
 
+#include "flops.hpp"
+#include "gbyte.hpp"
 #include "hipsparse.hpp"
+#include "hipsparse_arguments.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
@@ -41,7 +44,6 @@ using namespace hipsparse_test;
 template <typename T>
 void testing_csr2csr_compress_bad_arg(void)
 {
-    //
 #if(!defined(CUDART_VERSION))
     int                  m            = 1;
     int                  n            = 1;
@@ -49,7 +51,6 @@ void testing_csr2csr_compress_bad_arg(void)
     int                  safe_size    = 1;
     T                    tol          = make_DataType<T>(0);
     hipsparseIndexBase_t csr_idx_base = HIPSPARSE_INDEX_BASE_ZERO;
-    hipsparseStatus_t    status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -83,262 +84,226 @@ void testing_csr2csr_compress_bad_arg(void)
     int* nnz_per_row   = (int*)nnz_per_row_managed.get();
     int* nnz_C         = (int*)nnz_C_managed.get();
 
-    if(!csr_row_ptr_A || !csr_col_ind_A || !csr_val_A || !csr_row_ptr_C || !csr_col_ind_C
-       || !csr_val_C || !nnz_per_row || !nnz_C)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
+    int local_ptr[2] = {0, 1};
+    CHECK_HIP_ERROR(
+        hipMemcpy(csr_row_ptr_A, local_ptr, sizeof(int) * (1 + 1), hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(
+        hipMemcpy(csr_row_ptr_C, local_ptr, sizeof(int) * (1 + 1), hipMemcpyHostToDevice));
 
-    { //
+    int local_nnz[1] = {1};
+    CHECK_HIP_ERROR(hipMemcpy(nnz_per_row, local_nnz, sizeof(int), hipMemcpyHostToDevice));
 
-        int local_ptr[2] = {0, 1};
-        CHECK_HIP_ERROR(
-            hipMemcpy(csr_row_ptr_A, local_ptr, sizeof(int) * (1 + 1), hipMemcpyHostToDevice));
-        CHECK_HIP_ERROR(
-            hipMemcpy(csr_row_ptr_C, local_ptr, sizeof(int) * (1 + 1), hipMemcpyHostToDevice));
-    } //
+    verify_hipsparse_status_invalid_handle(hipsparseXnnz_compress(
+        nullptr, m, csr_descr, csr_val_A, csr_row_ptr_A, nnz_per_row, nnz_C, tol));
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXnnz_compress(
+            handle, m, nullptr, csr_val_A, csr_row_ptr_A, nnz_per_row, nnz_C, tol),
+        "Error: Matrix descriptor is invalid");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXnnz_compress(handle, m, csr_descr, csr_val_A, nullptr, nnz_per_row, nnz_C, tol),
+        "Error: CSR row pointer array is invalid");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXnnz_compress(handle, m, csr_descr, csr_val_A, csr_row_ptr_A, nullptr, nnz_C, tol),
+        "Error: Number of elements per row array is invalid");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXnnz_compress(
+            handle, m, csr_descr, csr_val_A, csr_row_ptr_A, nnz_per_row, nullptr, tol),
+        "Error: Total number of elements pointer is invalid");
+    verify_hipsparse_status_invalid_size(
+        hipsparseXnnz_compress(
+            handle, -1, csr_descr, csr_val_A, csr_row_ptr_A, nnz_per_row, nnz_C, tol),
+        "Error: Matrix size is invalid");
+    verify_hipsparse_status_invalid_size(hipsparseXnnz_compress(handle,
+                                                                m,
+                                                                csr_descr,
+                                                                csr_val_A,
+                                                                csr_row_ptr_A,
+                                                                nnz_per_row,
+                                                                nnz_C,
+                                                                make_DataType<T>(-1)),
+                                         "Error: Tolerance is invalid");
 
-    { //
-
-        int local_nnz[1] = {1};
-        CHECK_HIP_ERROR(hipMemcpy(nnz_per_row, local_nnz, sizeof(int), hipMemcpyHostToDevice));
-    } //
-
-    // Testing hipsparseXnnz_compress()
-    // Test invalid handle
-    status = hipsparseXnnz_compress(
-        nullptr, m, csr_descr, csr_val_A, csr_row_ptr_A, nnz_per_row, nnz_C, tol);
-    verify_hipsparse_status_invalid_handle(status);
-    // Test invalid pointers
-    status = hipsparseXnnz_compress(
-        handle, m, nullptr, csr_val_A, csr_row_ptr_A, nnz_per_row, nnz_C, tol);
-    verify_hipsparse_status_invalid_pointer(status, "Error: Matrix descriptor is invalid");
-
-    status
-        = hipsparseXnnz_compress(handle, m, csr_descr, csr_val_A, nullptr, nnz_per_row, nnz_C, tol);
-    verify_hipsparse_status_invalid_pointer(status, "Error: CSR row pointer array is invalid");
-
-    status = hipsparseXnnz_compress(
-        handle, m, csr_descr, csr_val_A, csr_row_ptr_A, nullptr, nnz_C, tol);
-    verify_hipsparse_status_invalid_pointer(status,
-                                            "Error: Number of elements per row array is invalid");
-
-    status = hipsparseXnnz_compress(
-        handle, m, csr_descr, csr_val_A, csr_row_ptr_A, nnz_per_row, nullptr, tol);
-    verify_hipsparse_status_invalid_pointer(status,
-                                            "Error: Total number of elements pointer is invalid");
-
-    // Test invalid size
-    status = hipsparseXnnz_compress(
-        handle, -1, csr_descr, csr_val_A, csr_row_ptr_A, nnz_per_row, nnz_C, tol);
-    verify_hipsparse_status_invalid_size(status, "Error: Matrix size is invalid");
-
-    // Test invalid tolerance
-    status = hipsparseXnnz_compress(
-        handle, m, csr_descr, csr_val_A, csr_row_ptr_A, nnz_per_row, nnz_C, make_DataType<T>(-1));
-    verify_hipsparse_status_invalid_size(status, "Error: Tolerance is invalid");
-
-    // Testing hipsparseXcsr2csr_compress()
-
-    // Test invalid handle
-    status = hipsparseXcsr2csr_compress(nullptr,
-                                        m,
-                                        n,
-                                        csr_descr,
-                                        csr_val_A,
-                                        csr_col_ind_A,
-                                        csr_row_ptr_A,
-                                        nnz_A,
-                                        nnz_per_row,
-                                        csr_val_C,
-                                        csr_col_ind_C,
-                                        csr_row_ptr_C,
-                                        tol);
-    verify_hipsparse_status_invalid_handle(status);
-    // Test invalid pointers
-    status = hipsparseXcsr2csr_compress(handle,
-                                        m,
-                                        n,
-                                        nullptr,
-                                        csr_val_A,
-                                        csr_col_ind_A,
-                                        csr_row_ptr_A,
-                                        nnz_A,
-                                        nnz_per_row,
-                                        csr_val_C,
-                                        csr_col_ind_C,
-                                        csr_row_ptr_C,
-                                        tol);
-    verify_hipsparse_status_invalid_pointer(status, "Error: Matrix descriptor is invalid");
-    status = hipsparseXcsr2csr_compress(handle,
-                                        m,
-                                        n,
-                                        csr_descr,
-                                        (const T*)nullptr,
-                                        csr_col_ind_A,
-                                        csr_row_ptr_A,
-                                        nnz_A,
-                                        nnz_per_row,
-                                        csr_val_C,
-                                        csr_col_ind_C,
-                                        csr_row_ptr_C,
-                                        tol);
-    verify_hipsparse_status_invalid_pointer(status, "Error: CSR matrix values array is invalid");
-    status = hipsparseXcsr2csr_compress(handle,
-                                        m,
-                                        n,
-                                        csr_descr,
-                                        csr_val_A,
-                                        nullptr,
-                                        csr_row_ptr_A,
-                                        nnz_A,
-                                        nnz_per_row,
-                                        csr_val_C,
-                                        csr_col_ind_C,
-                                        csr_row_ptr_C,
-                                        tol);
-    verify_hipsparse_status_invalid_pointer(status,
+    verify_hipsparse_status_invalid_handle(hipsparseXcsr2csr_compress(nullptr,
+                                                                      m,
+                                                                      n,
+                                                                      csr_descr,
+                                                                      csr_val_A,
+                                                                      csr_col_ind_A,
+                                                                      csr_row_ptr_A,
+                                                                      nnz_A,
+                                                                      nnz_per_row,
+                                                                      csr_val_C,
+                                                                      csr_col_ind_C,
+                                                                      csr_row_ptr_C,
+                                                                      tol));
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsr2csr_compress(handle,
+                                                                       m,
+                                                                       n,
+                                                                       nullptr,
+                                                                       csr_val_A,
+                                                                       csr_col_ind_A,
+                                                                       csr_row_ptr_A,
+                                                                       nnz_A,
+                                                                       nnz_per_row,
+                                                                       csr_val_C,
+                                                                       csr_col_ind_C,
+                                                                       csr_row_ptr_C,
+                                                                       tol),
+                                            "Error: Matrix descriptor is invalid");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsr2csr_compress(handle,
+                                                                       m,
+                                                                       n,
+                                                                       csr_descr,
+                                                                       (const T*)nullptr,
+                                                                       csr_col_ind_A,
+                                                                       csr_row_ptr_A,
+                                                                       nnz_A,
+                                                                       nnz_per_row,
+                                                                       csr_val_C,
+                                                                       csr_col_ind_C,
+                                                                       csr_row_ptr_C,
+                                                                       tol),
+                                            "Error: CSR matrix values array is invalid");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsr2csr_compress(handle,
+                                                                       m,
+                                                                       n,
+                                                                       csr_descr,
+                                                                       csr_val_A,
+                                                                       nullptr,
+                                                                       csr_row_ptr_A,
+                                                                       nnz_A,
+                                                                       nnz_per_row,
+                                                                       csr_val_C,
+                                                                       csr_col_ind_C,
+                                                                       csr_row_ptr_C,
+                                                                       tol),
                                             "Error: CSR matrix column indices array is invalid");
-
-    status = hipsparseXcsr2csr_compress(handle,
-                                        m,
-                                        n,
-                                        csr_descr,
-                                        csr_val_A,
-                                        csr_col_ind_A,
-                                        nullptr,
-                                        nnz_A,
-                                        nnz_per_row,
-                                        csr_val_C,
-                                        csr_col_ind_C,
-                                        csr_row_ptr_C,
-                                        tol);
-    verify_hipsparse_status_invalid_pointer(status,
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsr2csr_compress(handle,
+                                                                       m,
+                                                                       n,
+                                                                       csr_descr,
+                                                                       csr_val_A,
+                                                                       csr_col_ind_A,
+                                                                       nullptr,
+                                                                       nnz_A,
+                                                                       nnz_per_row,
+                                                                       csr_val_C,
+                                                                       csr_col_ind_C,
+                                                                       csr_row_ptr_C,
+                                                                       tol),
                                             "Error: CSR matrix row pointer array is invalid");
-
-    status = hipsparseXcsr2csr_compress(handle,
-                                        m,
-                                        n,
-                                        csr_descr,
-                                        csr_val_A,
-                                        csr_col_ind_A,
-                                        csr_row_ptr_A,
-                                        nnz_A,
-                                        nullptr,
-                                        csr_val_C,
-                                        csr_col_ind_C,
-                                        csr_row_ptr_C,
-                                        tol);
-    verify_hipsparse_status_invalid_pointer(status,
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsr2csr_compress(handle,
+                                                                       m,
+                                                                       n,
+                                                                       csr_descr,
+                                                                       csr_val_A,
+                                                                       csr_col_ind_A,
+                                                                       csr_row_ptr_A,
+                                                                       nnz_A,
+                                                                       nullptr,
+                                                                       csr_val_C,
+                                                                       csr_col_ind_C,
+                                                                       csr_row_ptr_C,
+                                                                       tol),
                                             "Error: Number of elements per row array is invalid");
-
-    status = hipsparseXcsr2csr_compress(handle,
-                                        m,
-                                        n,
-                                        csr_descr,
-                                        csr_val_A,
-                                        csr_col_ind_A,
-                                        csr_row_ptr_A,
-                                        nnz_A,
-                                        nnz_per_row,
-                                        (T*)nullptr,
-                                        csr_col_ind_C,
-                                        csr_row_ptr_C,
-                                        tol);
-    verify_hipsparse_status_invalid_pointer(status, "Error: CSR matrix values array is invalid");
-
-    status = hipsparseXcsr2csr_compress(handle,
-                                        m,
-                                        n,
-                                        csr_descr,
-                                        csr_val_A,
-                                        csr_col_ind_A,
-                                        csr_row_ptr_A,
-                                        nnz_A,
-                                        nnz_per_row,
-                                        csr_val_C,
-                                        nullptr,
-                                        csr_row_ptr_C,
-                                        tol);
-    verify_hipsparse_status_invalid_pointer(status,
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsr2csr_compress(handle,
+                                                                       m,
+                                                                       n,
+                                                                       csr_descr,
+                                                                       csr_val_A,
+                                                                       csr_col_ind_A,
+                                                                       csr_row_ptr_A,
+                                                                       nnz_A,
+                                                                       nnz_per_row,
+                                                                       (T*)nullptr,
+                                                                       csr_col_ind_C,
+                                                                       csr_row_ptr_C,
+                                                                       tol),
+                                            "Error: CSR matrix values array is invalid");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsr2csr_compress(handle,
+                                                                       m,
+                                                                       n,
+                                                                       csr_descr,
+                                                                       csr_val_A,
+                                                                       csr_col_ind_A,
+                                                                       csr_row_ptr_A,
+                                                                       nnz_A,
+                                                                       nnz_per_row,
+                                                                       csr_val_C,
+                                                                       nullptr,
+                                                                       csr_row_ptr_C,
+                                                                       tol),
                                             "Error: CSR matrix column indices array is invalid");
-
-    status = hipsparseXcsr2csr_compress(handle,
-                                        m,
-                                        n,
-                                        csr_descr,
-                                        csr_val_A,
-                                        csr_col_ind_A,
-                                        csr_row_ptr_A,
-                                        nnz_A,
-                                        nnz_per_row,
-                                        csr_val_C,
-                                        csr_col_ind_C,
-                                        nullptr,
-                                        tol);
-    verify_hipsparse_status_invalid_pointer(status,
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsr2csr_compress(handle,
+                                                                       m,
+                                                                       n,
+                                                                       csr_descr,
+                                                                       csr_val_A,
+                                                                       csr_col_ind_A,
+                                                                       csr_row_ptr_A,
+                                                                       nnz_A,
+                                                                       nnz_per_row,
+                                                                       csr_val_C,
+                                                                       csr_col_ind_C,
+                                                                       nullptr,
+                                                                       tol),
                                             "Error: CSR matrix row pointer array is invalid");
-
-    // Test invalid sizes
-    status = hipsparseXcsr2csr_compress(handle,
-                                        -1,
-                                        n,
-                                        csr_descr,
-                                        csr_val_A,
-                                        csr_col_ind_A,
-                                        csr_row_ptr_A,
-                                        nnz_A,
-                                        nnz_per_row,
-                                        csr_val_C,
-                                        csr_col_ind_C,
-                                        csr_row_ptr_C,
-                                        tol);
-    verify_hipsparse_status_invalid_size(status, "Error: Matrix size is invalid");
-    status = hipsparseXcsr2csr_compress(handle,
-                                        m,
-                                        -1,
-                                        csr_descr,
-                                        csr_val_A,
-                                        csr_col_ind_A,
-                                        csr_row_ptr_A,
-                                        nnz_A,
-                                        nnz_per_row,
-                                        csr_val_C,
-                                        csr_col_ind_C,
-                                        csr_row_ptr_C,
-                                        tol);
-    verify_hipsparse_status_invalid_size(status, "Error: Matrix size is invalid");
-    status = hipsparseXcsr2csr_compress(handle,
-                                        m,
-                                        n,
-                                        csr_descr,
-                                        csr_val_A,
-                                        csr_col_ind_A,
-                                        csr_row_ptr_A,
-                                        -1,
-                                        nnz_per_row,
-                                        csr_val_C,
-                                        csr_col_ind_C,
-                                        csr_row_ptr_C,
-                                        tol);
-    verify_hipsparse_status_invalid_size(status, "Error: Matrix size is invalid");
-
-    // Test invalid tolerance
-    status = hipsparseXcsr2csr_compress(handle,
-                                        m,
-                                        n,
-                                        csr_descr,
-                                        csr_val_A,
-                                        csr_col_ind_A,
-                                        csr_row_ptr_A,
-                                        nnz_A,
-                                        nnz_per_row,
-                                        csr_val_C,
-                                        csr_col_ind_C,
-                                        csr_row_ptr_C,
-                                        static_cast<T>(-1));
-    verify_hipsparse_status_invalid_value(status, "Error: Tolerance is invalid");
+    verify_hipsparse_status_invalid_size(hipsparseXcsr2csr_compress(handle,
+                                                                    -1,
+                                                                    n,
+                                                                    csr_descr,
+                                                                    csr_val_A,
+                                                                    csr_col_ind_A,
+                                                                    csr_row_ptr_A,
+                                                                    nnz_A,
+                                                                    nnz_per_row,
+                                                                    csr_val_C,
+                                                                    csr_col_ind_C,
+                                                                    csr_row_ptr_C,
+                                                                    tol),
+                                         "Error: Matrix size is invalid");
+    verify_hipsparse_status_invalid_size(hipsparseXcsr2csr_compress(handle,
+                                                                    m,
+                                                                    -1,
+                                                                    csr_descr,
+                                                                    csr_val_A,
+                                                                    csr_col_ind_A,
+                                                                    csr_row_ptr_A,
+                                                                    nnz_A,
+                                                                    nnz_per_row,
+                                                                    csr_val_C,
+                                                                    csr_col_ind_C,
+                                                                    csr_row_ptr_C,
+                                                                    tol),
+                                         "Error: Matrix size is invalid");
+    verify_hipsparse_status_invalid_size(hipsparseXcsr2csr_compress(handle,
+                                                                    m,
+                                                                    n,
+                                                                    csr_descr,
+                                                                    csr_val_A,
+                                                                    csr_col_ind_A,
+                                                                    csr_row_ptr_A,
+                                                                    -1,
+                                                                    nnz_per_row,
+                                                                    csr_val_C,
+                                                                    csr_col_ind_C,
+                                                                    csr_row_ptr_C,
+                                                                    tol),
+                                         "Error: Matrix size is invalid");
+    verify_hipsparse_status_invalid_value(hipsparseXcsr2csr_compress(handle,
+                                                                     m,
+                                                                     n,
+                                                                     csr_descr,
+                                                                     csr_val_A,
+                                                                     csr_col_ind_A,
+                                                                     csr_row_ptr_A,
+                                                                     nnz_A,
+                                                                     nnz_per_row,
+                                                                     csr_val_C,
+                                                                     csr_col_ind_C,
+                                                                     csr_row_ptr_C,
+                                                                     static_cast<T>(-1)),
+                                          "Error: Tolerance is invalid");
 #endif
 }
 
@@ -348,7 +313,7 @@ hipsparseStatus_t testing_csr2csr_compress(Arguments argus)
     int                  m        = argus.M;
     int                  n        = argus.N;
     T                    tol      = make_DataType<T>(argus.alpha);
-    hipsparseIndexBase_t idx_base = argus.idx_base;
+    hipsparseIndexBase_t idx_base = argus.baseA;
     std::string          filename = argus.filename;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
@@ -483,6 +448,73 @@ hipsparseStatus_t testing_csr2csr_compress(Arguments argus)
         unit_check_general(1, m + 1, 1, hcsr_row_ptr_C_gold.data(), hcsr_row_ptr_C.data());
         unit_check_general(1, hnnz_C, 1, hcsr_col_ind_C_gold.data(), hcsr_col_ind_C.data());
         unit_check_general(1, hnnz_C, 1, hcsr_val_gold.data(), hcsr_val_C.data());
+    }
+
+    if(argus.timing)
+    {
+        int number_cold_calls = 2;
+        int number_hot_calls  = argus.iters;
+
+        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
+
+        int hnnz_C;
+        CHECK_HIPSPARSE_ERROR(hipsparseXnnz_compress(
+            handle, m, csr_descr, dcsr_val_A, dcsr_row_ptr_A, dnnz_per_row, &hnnz_C, tol));
+
+        // Allocate device memory for compressed CSR columns indices and values
+        auto dcsr_col_ind_C_managed
+            = hipsparse_unique_ptr{device_malloc(sizeof(int) * hnnz_C), device_free};
+        auto dcsr_val_C_managed
+            = hipsparse_unique_ptr{device_malloc(sizeof(T) * hnnz_C), device_free};
+
+        int* dcsr_col_ind_C = (int*)dcsr_col_ind_C_managed.get();
+        T*   dcsr_val_C     = (T*)dcsr_val_C_managed.get();
+
+        // Warm up
+        for(int iter = 0; iter < number_cold_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseXcsr2csr_compress(handle,
+                                                             m,
+                                                             n,
+                                                             csr_descr,
+                                                             dcsr_val_A,
+                                                             dcsr_col_ind_A,
+                                                             dcsr_row_ptr_A,
+                                                             hnnz_A,
+                                                             dnnz_per_row,
+                                                             dcsr_val_C,
+                                                             dcsr_col_ind_C,
+                                                             dcsr_row_ptr_C,
+                                                             tol));
+        }
+
+        double gpu_time_used = get_time_us();
+
+        // Performance run
+        for(int iter = 0; iter < number_hot_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseXcsr2csr_compress(handle,
+                                                             m,
+                                                             n,
+                                                             csr_descr,
+                                                             dcsr_val_A,
+                                                             dcsr_col_ind_A,
+                                                             dcsr_row_ptr_A,
+                                                             hnnz_A,
+                                                             dnnz_per_row,
+                                                             dcsr_val_C,
+                                                             dcsr_col_ind_C,
+                                                             dcsr_row_ptr_C,
+                                                             tol));
+        }
+
+        gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
+
+        double gbyte_count = csr2csr_compress_gbyte_count<T>(m, hnnz_A, hnnz_C);
+        double gpu_gbyte   = get_gpu_gbyte(gpu_time_used, gbyte_count);
+
+        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used)
+                  << std::endl;
     }
 
     return HIPSPARSE_STATUS_SUCCESS;

@@ -74,6 +74,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Build options
 option(BUILD_SHARED_LIBS "Build hipSPARSE as a shared library" ON)
 option(BUILD_CLIENTS_TESTS "Build tests (requires googletest)" OFF)
+option(BUILD_CLIENTS_BENCHMARKS "Build benchmarks" ON)
 option(BUILD_CLIENTS_SAMPLES "Build examples" ON)
 option(BUILD_VERBOSE "Output additional build information" OFF)
 option(USE_CUDA "Build hipSPARSE using CUDA backend" OFF)
@@ -120,7 +121,7 @@ set(hipsparse_SOVERSION 1.1.0)
 # hipSPARSE library
 add_subdirectory(library)
 
-if(BUILD_CLIENTS_SAMPLES OR BUILD_CLIENTS_TESTS)
+if(BUILD_CLIENTS_SAMPLES OR BUILD_CLIENTS_TESTS OR BUILD_CLIENTS_BENCHMARKS)
   if(NOT CLIENTS_OS)
     rocm_set_os_id(CLIENTS_OS)
     string(TOLOWER "${CLIENTS_OS}" CLIENTS_OS)
@@ -171,6 +172,17 @@ if(BUILD_CLIENTS_SAMPLES OR BUILD_CLIENTS_TESTS)
         DEB "${GFORTRAN_DEB}"
         RPM "${GFORTRAN_RPM}")
   endif()
+
+  if( BUILD_CLIENTS_BENCHMARKS )
+  rocm_package_setup_client_component(
+    benchmarks
+    DEPENDS
+      COMPONENT clients-common
+      DEB "${OPENMP_DEB}"
+      RPM "${OPENMP_RPM}"
+  )
+  endif()
+  
   add_subdirectory( clients )
 
   if(NOT WIN32)
@@ -178,6 +190,8 @@ if(BUILD_CLIENTS_SAMPLES OR BUILD_CLIENTS_TESTS)
     rocm_package_add_deb_dependencies(COMPONENT tests DEPENDS "${GFORTRAN_DEB}")
     rocm_package_add_rpm_dependencies(COMPONENT samples DEPENDS "${GFORTRAN_RPM}")
     rocm_package_add_deb_dependencies(COMPONENT samples DEPENDS "${GFORTRAN_DEB}")
+    rocm_package_add_rpm_dependencies(COMPONENT benchmarks DEPENDS "${GFORTRAN_RPM}")
+    rocm_package_add_deb_dependencies(COMPONENT benchmarks DEPENDS "${GFORTRAN_DEB}")
   endif()
   if(TARGET OpenMP::OpenMP_CXX)
     rocm_package_add_rpm_dependencies(COMPONENT tests DEPENDS "${OPENMP_RPM}")

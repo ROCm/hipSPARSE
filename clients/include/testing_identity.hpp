@@ -25,7 +25,10 @@
 #ifndef TESTING_IDENTITY_HPP
 #define TESTING_IDENTITY_HPP
 
+#include "flops.hpp"
+#include "gbyte.hpp"
 #include "hipsparse.hpp"
+#include "hipsparse_arguments.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
@@ -38,6 +41,7 @@ using namespace hipsparse_test;
 
 void testing_identity_bad_arg(void)
 {
+#if(!defined(CUDART_VERSION))
     int n         = 100;
     int safe_size = 100;
 
@@ -48,13 +52,6 @@ void testing_identity_bad_arg(void)
 
     int* p = (int*)p_managed.get();
 
-    if(!p)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
-
-#if(!defined(CUDART_VERSION))
     verify_hipsparse_status_invalid_pointer(
         hipsparseCreateIdentityPermutation(handle, n, (int*)nullptr), "Error: p is nullptr");
     verify_hipsparse_status_invalid_handle(hipsparseCreateIdentityPermutation(nullptr, n, p));
@@ -63,6 +60,7 @@ void testing_identity_bad_arg(void)
 
 hipsparseStatus_t testing_identity(Arguments argus)
 {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     int n = argus.N;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
@@ -93,6 +91,35 @@ hipsparseStatus_t testing_identity(Arguments argus)
         // Unit check
         unit_check_general(1, n, 1, hp_gold.data(), hp.data());
     }
+
+    if(argus.timing)
+    {
+        int number_cold_calls = 2;
+        int number_hot_calls  = argus.iters;
+
+        // Warm up
+        for(int iter = 0; iter < number_cold_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseCreateIdentityPermutation(handle, n, dp));
+        }
+
+        double gpu_time_used = get_time_us();
+
+        // Performance run
+        for(int iter = 0; iter < number_hot_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseCreateIdentityPermutation(handle, n, dp));
+        }
+
+        gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
+
+        double gbyte_count = identity_gbyte_count(n);
+        double gpu_gbyte   = get_gpu_gbyte(gpu_time_used, gbyte_count);
+
+        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used)
+                  << std::endl;
+    }
+#endif
 
     return HIPSPARSE_STATUS_SUCCESS;
 }

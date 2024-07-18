@@ -73,7 +73,7 @@ Arguments setup_bsrmv_arguments(bsrmv_tuple tup)
     arg.beta      = std::get<3>(tup);
     arg.block_dim = std::get<4>(tup);
     arg.dirA      = std::get<5>(tup);
-    arg.idx_base  = std::get<6>(tup);
+    arg.baseA     = std::get<6>(tup);
     arg.timing    = 0;
     return arg;
 }
@@ -87,7 +87,7 @@ Arguments setup_bsrmv_arguments(bsrmv_bin_tuple tup)
     arg.beta      = std::get<1>(tup);
     arg.block_dim = std::get<2>(tup);
     arg.dirA      = std::get<3>(tup);
-    arg.idx_base  = std::get<4>(tup);
+    arg.baseA     = std::get<4>(tup);
     arg.timing    = 0;
 
     // Determine absolute path of test matrix
@@ -99,8 +99,6 @@ Arguments setup_bsrmv_arguments(bsrmv_bin_tuple tup)
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(bsrmv_bad_arg, bsrmv_float)
 {
     testing_bsrmv_bad_arg<float>();
@@ -172,4 +170,3 @@ INSTANTIATE_TEST_SUITE_P(bsrmv_bin,
                                           testing::ValuesIn(bsr_dir_range),
                                           testing::ValuesIn(bsr_idxbase_range),
                                           testing::ValuesIn(bsr_bin)));
-#endif

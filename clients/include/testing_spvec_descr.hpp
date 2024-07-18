@@ -50,12 +50,6 @@ void testing_spvec_descr_bad_arg(void)
     int*   idx_data = (int*)idx_data_managed.get();
     float* val_data = (float*)val_data_managed.get();
 
-    if(!idx_data || !val_data)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
-
     hipsparseSpVecDescr_t x;
 
     // hipsparseCreateSpVec

@@ -25,7 +25,10 @@
 #ifndef TESTING_CSRSORT_HPP
 #define TESTING_CSRSORT_HPP
 
+#include "flops.hpp"
+#include "gbyte.hpp"
 #include "hipsparse.hpp"
+#include "hipsparse_arguments.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
@@ -40,11 +43,10 @@ using namespace hipsparse_test;
 void testing_csrsort_bad_arg(void)
 {
 #if(!defined(CUDART_VERSION))
-    int               m         = 100;
-    int               n         = 100;
-    int               nnz       = 100;
-    int               safe_size = 100;
-    hipsparseStatus_t status;
+    int m         = 100;
+    int n         = 100;
+    int nnz       = 100;
+    int safe_size = 100;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -67,96 +69,42 @@ void testing_csrsort_bad_arg(void)
     int*  perm        = (int*)perm_managed.get();
     void* buffer      = (void*)buffer_managed.get();
 
-    if(!csr_row_ptr || !csr_col_ind || !perm || !buffer)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXcsrsort_bufferSizeExt(
+            handle, m, n, nnz, (int*)nullptr, csr_col_ind, &buffer_size),
+        "Error: csr_row_ptr is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXcsrsort_bufferSizeExt(
+            handle, m, n, nnz, csr_row_ptr, (int*)nullptr, &buffer_size),
+        "Error: csr_col_ind is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXcsrsort_bufferSizeExt(
+            handle, m, n, nnz, csr_row_ptr, csr_col_ind, (size_t*)nullptr),
+        "Error: buffer_size is nullptr");
+    verify_hipsparse_status_invalid_handle(hipsparseXcsrsort_bufferSizeExt(
+        (hipsparseHandle_t) nullptr, m, n, nnz, csr_row_ptr, csr_col_ind, &buffer_size));
 
-    // Testing csrsort_buffer_size for bad args
-
-    // Testing for (csr_row_ptr == nullptr)
-    {
-        int* csr_row_ptr_null = nullptr;
-
-        status = hipsparseXcsrsort_bufferSizeExt(
-            handle, m, n, nnz, csr_row_ptr_null, csr_col_ind, &buffer_size);
-        verify_hipsparse_status_invalid_pointer(status, "Error: csr_row_ptr is nullptr");
-    }
-
-    // Testing for (csr_col_ind == nullptr)
-    {
-        int* csr_col_ind_null = nullptr;
-
-        status = hipsparseXcsrsort_bufferSizeExt(
-            handle, m, n, nnz, csr_row_ptr, csr_col_ind_null, &buffer_size);
-        verify_hipsparse_status_invalid_pointer(status, "Error: csr_col_ind is nullptr");
-    }
-
-    // Testing for (buffer_size == nullptr)
-    {
-        size_t* buffer_size_null = nullptr;
-
-        status = hipsparseXcsrsort_bufferSizeExt(
-            handle, m, n, nnz, csr_row_ptr, csr_col_ind, buffer_size_null);
-        verify_hipsparse_status_invalid_pointer(status, "Error: buffer_size is nullptr");
-    }
-
-    // Testing for (handle == nullptr)
-    {
-        hipsparseHandle_t handle_null = nullptr;
-
-        status = hipsparseXcsrsort_bufferSizeExt(
-            handle_null, m, n, nnz, csr_row_ptr, csr_col_ind, &buffer_size);
-        verify_hipsparse_status_invalid_handle(status);
-    }
-
-    // Testing csrsort for bad args
-
-    // Testing for (csr_row_ptr == nullptr)
-    {
-        int* csr_row_ptr_null = nullptr;
-
-        status = hipsparseXcsrsort(
-            handle, m, n, nnz, descr, csr_row_ptr_null, csr_col_ind, perm, buffer);
-        verify_hipsparse_status_invalid_pointer(status, "Error: csr_row_ptr is nullptr");
-    }
-
-    // Testing for (csr_col_ind == nullptr)
-    {
-        int* csr_col_ind_null = nullptr;
-
-        status = hipsparseXcsrsort(
-            handle, m, n, nnz, descr, csr_row_ptr, csr_col_ind_null, perm, buffer);
-        verify_hipsparse_status_invalid_pointer(status, "Error: csr_col_ind is nullptr");
-    }
-
-    // Testing for (buffer == nullptr)
-    {
-        int* buffer_null = nullptr;
-
-        status = hipsparseXcsrsort(
-            handle, m, n, nnz, descr, csr_row_ptr, csr_col_ind, perm, buffer_null);
-        verify_hipsparse_status_invalid_pointer(status, "Error: buffer is nullptr");
-    }
-
-    // Testing for (descr == nullptr)
-    {
-        hipsparseMatDescr_t descr_null = nullptr;
-
-        status = hipsparseXcsrsort(
-            handle, m, n, nnz, descr_null, csr_row_ptr, csr_col_ind, perm, buffer);
-        verify_hipsparse_status_invalid_pointer(status, "Error: descr is nullptr");
-    }
-
-    // Testing for (handle == nullptr)
-    {
-        hipsparseHandle_t handle_null = nullptr;
-
-        status = hipsparseXcsrsort(
-            handle_null, m, n, nnz, descr, csr_row_ptr, csr_col_ind, perm, buffer);
-        verify_hipsparse_status_invalid_handle(status);
-    }
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXcsrsort(handle, m, n, nnz, descr, (int*)nullptr, csr_col_ind, perm, buffer),
+        "Error: csr_row_ptr is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXcsrsort(handle, m, n, nnz, descr, csr_row_ptr, (int*)nullptr, perm, buffer),
+        "Error: csr_col_ind is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXcsrsort(handle, m, n, nnz, descr, csr_row_ptr, csr_col_ind, perm, (int*)nullptr),
+        "Error: buffer is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsrsort(handle,
+                                                              m,
+                                                              n,
+                                                              nnz,
+                                                              (hipsparseMatDescr_t) nullptr,
+                                                              csr_row_ptr,
+                                                              csr_col_ind,
+                                                              perm,
+                                                              buffer),
+                                            "Error: descr is nullptr");
+    verify_hipsparse_status_invalid_handle(hipsparseXcsrsort(
+        (hipsparseHandle_t) nullptr, m, n, nnz, descr, csr_row_ptr, csr_col_ind, perm, buffer));
 #endif
 }
 
@@ -165,8 +113,8 @@ hipsparseStatus_t testing_csrsort(Arguments argus)
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     int                  m        = argus.M;
     int                  n        = argus.N;
-    int                  permute  = argus.temp;
-    hipsparseIndexBase_t idx_base = argus.idx_base;
+    int                  permute  = argus.permute;
+    hipsparseIndexBase_t idx_base = argus.baseA;
     std::string          filename = argus.filename;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
@@ -247,25 +195,25 @@ hipsparseStatus_t testing_csrsort(Arguments argus)
     CHECK_HIP_ERROR(
         hipMemcpy(dcsr_val, hcsr_val_unsorted.data(), sizeof(float) * nnz, hipMemcpyHostToDevice));
 
+    // Obtain buffer size
+    size_t bufferSize;
+    CHECK_HIPSPARSE_ERROR(hipsparseXcsrsort_bufferSizeExt(
+        handle, m, n, nnz, dcsr_row_ptr, dcsr_col_ind, &bufferSize));
+
+    // Allocate buffer on the device
+    auto dbuffer_managed
+        = hipsparse_unique_ptr{device_malloc(sizeof(char) * bufferSize), device_free};
+
+    void* dbuffer = (void*)dbuffer_managed.get();
+
+    if(permute)
+    {
+        // Initialize perm with identity permutation
+        CHECK_HIPSPARSE_ERROR(hipsparseCreateIdentityPermutation(handle, nnz, dperm));
+    }
+
     if(argus.unit_check)
     {
-        // Obtain buffer size
-        size_t bufferSize;
-        CHECK_HIPSPARSE_ERROR(hipsparseXcsrsort_bufferSizeExt(
-            handle, m, n, nnz, dcsr_row_ptr, dcsr_col_ind, &bufferSize));
-
-        // Allocate buffer on the device
-        auto dbuffer_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(char) * bufferSize), device_free};
-
-        void* dbuffer = (void*)dbuffer_managed.get();
-
-        if(permute)
-        {
-            // Initialize perm with identity permutation
-            CHECK_HIPSPARSE_ERROR(hipsparseCreateIdentityPermutation(handle, nnz, dperm));
-        }
-
         // Sort CSR columns
         CHECK_HIPSPARSE_ERROR(hipsparseXcsrsort(
             handle, m, n, nnz, descr, dcsr_row_ptr, dcsr_col_ind, dperm, dbuffer));
@@ -296,6 +244,36 @@ hipsparseStatus_t testing_csrsort(Arguments argus)
         {
             unit_check_general(1, nnz, 1, hcsr_val.data(), hcsr_val_unsorted.data());
         }
+    }
+
+    if(argus.timing)
+    {
+        int number_cold_calls = 2;
+        int number_hot_calls  = argus.iters;
+
+        // Warm up
+        for(int iter = 0; iter < number_cold_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseXcsrsort(
+                handle, m, n, nnz, descr, dcsr_row_ptr, dcsr_col_ind, dperm, dbuffer));
+        }
+
+        double gpu_time_used = get_time_us();
+
+        // Performance run
+        for(int iter = 0; iter < number_hot_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseXcsrsort(
+                handle, m, n, nnz, descr, dcsr_row_ptr, dcsr_col_ind, dperm, dbuffer));
+        }
+
+        gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
+
+        double gbyte_count = csrsort_gbyte_count(m, nnz, permute);
+        double gpu_gbyte   = get_gpu_gbyte(gpu_time_used, gbyte_count);
+
+        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used)
+                  << std::endl;
     }
 #endif
 

@@ -3319,6 +3319,7 @@ hipsparseStatus_t hipsparseZbsrsv2_solve(hipsparseHandle_t         handle,
 /**@}*/
 #endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 /*! \ingroup level2_module
  *  \brief Dense matrix sparse vector multiplication
  *
@@ -3360,7 +3361,9 @@ hipsparseStatus_t hipsparseZgemvi_bufferSize(hipsparseHandle_t    handle,
                                              int                  nnz,
                                              int*                 pBufferSizeInBytes);
 /**@}*/
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 /*! \ingroup level2_module
  *  \brief Dense matrix sparse vector multiplication
  *
@@ -3457,6 +3460,7 @@ hipsparseStatus_t hipsparseZgemvi(hipsparseHandle_t       handle,
                                   hipsparseIndexBase_t    idxBase,
                                   void*                   pBuffer);
 /**@}*/
+#endif
 
 /*
 * ===========================================================================
@@ -5635,7 +5639,9 @@ hipsparseStatus_t hipsparseXcsrgemmNnz(hipsparseHandle_t         handle,
                                        const hipsparseMatDescr_t descrC,
                                        int*                      csrRowPtrC,
                                        int*                      nnzTotalDevHostPtr);
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
 /*! \ingroup extra_module
 *  \brief Sparse matrix sparse matrix multiplication using CSR storage format
 *
@@ -7894,6 +7900,7 @@ hipsparseStatus_t hipsparseZnnz(hipsparseHandle_t         handle,
                                 int*                      nnzTotalDevHostPtr);
 /**@}*/
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 /*! \ingroup conv_module
 *  \brief
 *  This function converts the matrix A in dense format into a sparse matrix in CSR format.
@@ -7951,6 +7958,7 @@ hipsparseStatus_t hipsparseZdense2csr(hipsparseHandle_t         handle,
                                       int*                      csr_row_ptr,
                                       int*                      csr_col_ind);
 /**@}*/
+#endif
 
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup conv_module
@@ -14080,7 +14088,7 @@ hipsparseStatus_t hipsparseSpSM_destroyDescr(hipsparseSpSMDescr_t descr);
 *  where A is a sparse matrix in CSR storage format, B and C are dense matrices.
 *
 *  \details
-*  \p hipsparseSpSV_bufferSize computes the required user allocated buffer size needed when computing the 
+*  \p hipsparseSpSM_bufferSize computes the required user allocated buffer size needed when computing the 
 *  solution of triangular linear system op(A) * C = alpha * op(B), where A is a sparse matrix in CSR storage 
 *  format, B and C are dense matrices.
 */
@@ -14117,7 +14125,7 @@ hipsparseStatus_t hipsparseSpSM_bufferSize(hipsparseHandle_t           handle,
 *  where A is a sparse matrix in CSR storage format, B and C are dense vectors.
 *
 *  \details
-*  \p hipsparseSpSV_analysis performs the required analysis used when computing the 
+*  \p hipsparseSpSM_analysis performs the required analysis used when computing the 
 *  solution of triangular linear system op(A) * C = alpha * op(B),
 *  where A is a sparse matrix in CSR storage format, B and C are dense vectors.
 */

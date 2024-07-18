@@ -25,7 +25,10 @@
 #ifndef TESTING_BSRMM_HPP
 #define TESTING_BSRMM_HPP
 
+#include "flops.hpp"
+#include "gbyte.hpp"
 #include "hipsparse.hpp"
+#include "hipsparse_arguments.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
@@ -54,7 +57,6 @@ void testing_bsrmm_bad_arg(void)
     hipsparseDirection_t dirA      = HIPSPARSE_DIRECTION_ROW;
     hipsparseOperation_t transA    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
     hipsparseOperation_t transB    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
-    hipsparseStatus_t    status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -76,355 +78,326 @@ void testing_bsrmm_bad_arg(void)
     T*   dB           = (T*)dB_managed.get();
     T*   dC           = (T*)dC_managed.get();
 
-    if(!dbsr_val || !dbsr_row_ptr || !dbsr_col_ind || !dB || !dC)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
-
-    // Testing hipsparseXbsrmm()
-
-    // Test invalid handle
-    status = hipsparseXbsrmm(nullptr,
-                             dirA,
-                             transA,
-                             transB,
-                             mb,
-                             n,
-                             kb,
-                             nnzb,
-                             &alpha,
-                             descr,
-                             dbsr_val,
-                             dbsr_row_ptr,
-                             dbsr_col_ind,
-                             block_dim,
-                             dB,
-                             ldb,
-                             &beta,
-                             dC,
-                             ldc);
-    verify_hipsparse_status_invalid_handle(status);
-
-    // Test invalid pointers
-    status = hipsparseXbsrmm(handle,
-                             dirA,
-                             transA,
-                             transB,
-                             mb,
-                             n,
-                             kb,
-                             nnzb,
-                             (T*)nullptr,
-                             descr,
-                             dbsr_val,
-                             dbsr_row_ptr,
-                             dbsr_col_ind,
-                             block_dim,
-                             dB,
-                             ldb,
-                             &beta,
-                             dC,
-                             ldc);
-    verify_hipsparse_status_invalid_pointer(status, "Error: alpha is nullptr");
-
-    status = hipsparseXbsrmm(handle,
-                             dirA,
-                             transA,
-                             transB,
-                             mb,
-                             n,
-                             kb,
-                             nnzb,
-                             &alpha,
-                             nullptr,
-                             dbsr_val,
-                             dbsr_row_ptr,
-                             dbsr_col_ind,
-                             block_dim,
-                             dB,
-                             ldb,
-                             &beta,
-                             dC,
-                             ldc);
-    verify_hipsparse_status_invalid_pointer(status, "Error: descr is nullptr");
-
-    status = hipsparseXbsrmm(handle,
-                             dirA,
-                             transA,
-                             transB,
-                             mb,
-                             n,
-                             kb,
-                             nnzb,
-                             &alpha,
-                             descr,
-                             (T*)nullptr,
-                             dbsr_row_ptr,
-                             dbsr_col_ind,
-                             block_dim,
-                             dB,
-                             ldb,
-                             &beta,
-                             dC,
-                             ldc);
-    verify_hipsparse_status_invalid_pointer(status, "Error: dbsr_val is nullptr");
-
-    status = hipsparseXbsrmm(handle,
-                             dirA,
-                             transA,
-                             transB,
-                             mb,
-                             n,
-                             kb,
-                             nnzb,
-                             &alpha,
-                             descr,
-                             dbsr_val,
-                             nullptr,
-                             dbsr_col_ind,
-                             block_dim,
-                             dB,
-                             ldb,
-                             &beta,
-                             dC,
-                             ldc);
-    verify_hipsparse_status_invalid_pointer(status, "Error: dbsr_row_ptr is nullptr");
-
-    status = hipsparseXbsrmm(handle,
-                             dirA,
-                             transA,
-                             transB,
-                             mb,
-                             n,
-                             kb,
-                             nnzb,
-                             &alpha,
-                             descr,
-                             dbsr_val,
-                             dbsr_row_ptr,
-                             nullptr,
-                             block_dim,
-                             dB,
-                             ldb,
-                             &beta,
-                             dC,
-                             ldc);
-    verify_hipsparse_status_invalid_pointer(status, "Error: dbsr_col_ind is nullptr");
-
-    status = hipsparseXbsrmm(handle,
-                             dirA,
-                             transA,
-                             transB,
-                             mb,
-                             n,
-                             kb,
-                             nnzb,
-                             &alpha,
-                             descr,
-                             dbsr_val,
-                             dbsr_row_ptr,
-                             dbsr_col_ind,
-                             block_dim,
-                             (T*)nullptr,
-                             ldb,
-                             &beta,
-                             dC,
-                             ldc);
-    verify_hipsparse_status_invalid_pointer(status, "Error: dB is nullptr");
-
-    status = hipsparseXbsrmm(handle,
-                             dirA,
-                             transA,
-                             transB,
-                             mb,
-                             n,
-                             kb,
-                             nnzb,
-                             &alpha,
-                             descr,
-                             dbsr_val,
-                             dbsr_row_ptr,
-                             dbsr_col_ind,
-                             block_dim,
-                             dB,
-                             ldb,
-                             (T*)nullptr,
-                             dC,
-                             ldc);
-    verify_hipsparse_status_invalid_pointer(status, "Error: beta is nullptr");
-
-    status = hipsparseXbsrmm(handle,
-                             dirA,
-                             transA,
-                             transB,
-                             mb,
-                             n,
-                             kb,
-                             nnzb,
-                             &alpha,
-                             descr,
-                             dbsr_val,
-                             dbsr_row_ptr,
-                             dbsr_col_ind,
-                             block_dim,
-                             dB,
-                             ldb,
-                             &beta,
-                             (T*)nullptr,
-                             ldc);
-    verify_hipsparse_status_invalid_pointer(status, "Error: dC is nullptr");
-
-    // Test invalid sizes
-    status = hipsparseXbsrmm(handle,
-                             dirA,
-                             transA,
-                             transB,
-                             -1,
-                             n,
-                             kb,
-                             nnzb,
-                             &alpha,
-                             descr,
-                             dbsr_val,
-                             dbsr_row_ptr,
-                             dbsr_col_ind,
-                             block_dim,
-                             dB,
-                             ldb,
-                             &beta,
-                             dC,
-                             ldc);
-    verify_hipsparse_status_invalid_size(status, "Error: mb is invalid");
-
-    status = hipsparseXbsrmm(handle,
-                             dirA,
-                             transA,
-                             transB,
-                             mb,
-                             -1,
-                             kb,
-                             nnzb,
-                             &alpha,
-                             descr,
-                             dbsr_val,
-                             dbsr_row_ptr,
-                             dbsr_col_ind,
-                             block_dim,
-                             dB,
-                             ldb,
-                             &beta,
-                             dC,
-                             ldc);
-    verify_hipsparse_status_invalid_size(status, "Error: n is invalid");
-
-    status = hipsparseXbsrmm(handle,
-                             dirA,
-                             transA,
-                             transB,
-                             mb,
-                             n,
-                             -1,
-                             nnzb,
-                             &alpha,
-                             descr,
-                             dbsr_val,
-                             dbsr_row_ptr,
-                             dbsr_col_ind,
-                             block_dim,
-                             dB,
-                             ldb,
-                             &beta,
-                             dC,
-                             ldc);
-    verify_hipsparse_status_invalid_size(status, "Error: kb is invalid");
-
-    status = hipsparseXbsrmm(handle,
-                             dirA,
-                             transA,
-                             transB,
-                             mb,
-                             n,
-                             kb,
-                             nnzb,
-                             &alpha,
-                             descr,
-                             dbsr_val,
-                             dbsr_row_ptr,
-                             dbsr_col_ind,
-                             0,
-                             dB,
-                             ldb,
-                             &beta,
-                             dC,
-                             ldc);
-    verify_hipsparse_status_invalid_size(status, "Error: block_dim is invalid");
+    verify_hipsparse_status_invalid_handle(hipsparseXbsrmm((hipsparseHandle_t) nullptr,
+                                                           dirA,
+                                                           transA,
+                                                           transB,
+                                                           mb,
+                                                           n,
+                                                           kb,
+                                                           nnzb,
+                                                           &alpha,
+                                                           descr,
+                                                           dbsr_val,
+                                                           dbsr_row_ptr,
+                                                           dbsr_col_ind,
+                                                           block_dim,
+                                                           dB,
+                                                           ldb,
+                                                           &beta,
+                                                           dC,
+                                                           ldc));
+    verify_hipsparse_status_invalid_pointer(hipsparseXbsrmm(handle,
+                                                            dirA,
+                                                            transA,
+                                                            transB,
+                                                            mb,
+                                                            n,
+                                                            kb,
+                                                            nnzb,
+                                                            (T*)nullptr,
+                                                            descr,
+                                                            dbsr_val,
+                                                            dbsr_row_ptr,
+                                                            dbsr_col_ind,
+                                                            block_dim,
+                                                            dB,
+                                                            ldb,
+                                                            &beta,
+                                                            dC,
+                                                            ldc),
+                                            "Error: alpha is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXbsrmm(handle,
+                                                            dirA,
+                                                            transA,
+                                                            transB,
+                                                            mb,
+                                                            n,
+                                                            kb,
+                                                            nnzb,
+                                                            &alpha,
+                                                            (hipsparseMatDescr_t) nullptr,
+                                                            dbsr_val,
+                                                            dbsr_row_ptr,
+                                                            dbsr_col_ind,
+                                                            block_dim,
+                                                            dB,
+                                                            ldb,
+                                                            &beta,
+                                                            dC,
+                                                            ldc),
+                                            "Error: descr is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXbsrmm(handle,
+                                                            dirA,
+                                                            transA,
+                                                            transB,
+                                                            mb,
+                                                            n,
+                                                            kb,
+                                                            nnzb,
+                                                            &alpha,
+                                                            descr,
+                                                            (T*)nullptr,
+                                                            dbsr_row_ptr,
+                                                            dbsr_col_ind,
+                                                            block_dim,
+                                                            dB,
+                                                            ldb,
+                                                            &beta,
+                                                            dC,
+                                                            ldc),
+                                            "Error: dbsr_val is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXbsrmm(handle,
+                                                            dirA,
+                                                            transA,
+                                                            transB,
+                                                            mb,
+                                                            n,
+                                                            kb,
+                                                            nnzb,
+                                                            &alpha,
+                                                            descr,
+                                                            dbsr_val,
+                                                            (int*)nullptr,
+                                                            dbsr_col_ind,
+                                                            block_dim,
+                                                            dB,
+                                                            ldb,
+                                                            &beta,
+                                                            dC,
+                                                            ldc),
+                                            "Error: dbsr_row_ptr is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXbsrmm(handle,
+                                                            dirA,
+                                                            transA,
+                                                            transB,
+                                                            mb,
+                                                            n,
+                                                            kb,
+                                                            nnzb,
+                                                            &alpha,
+                                                            descr,
+                                                            dbsr_val,
+                                                            dbsr_row_ptr,
+                                                            (int*)nullptr,
+                                                            block_dim,
+                                                            dB,
+                                                            ldb,
+                                                            &beta,
+                                                            dC,
+                                                            ldc),
+                                            "Error: dbsr_col_ind is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXbsrmm(handle,
+                                                            dirA,
+                                                            transA,
+                                                            transB,
+                                                            mb,
+                                                            n,
+                                                            kb,
+                                                            nnzb,
+                                                            &alpha,
+                                                            descr,
+                                                            dbsr_val,
+                                                            dbsr_row_ptr,
+                                                            dbsr_col_ind,
+                                                            block_dim,
+                                                            (T*)nullptr,
+                                                            ldb,
+                                                            &beta,
+                                                            dC,
+                                                            ldc),
+                                            "Error: dB is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXbsrmm(handle,
+                                                            dirA,
+                                                            transA,
+                                                            transB,
+                                                            mb,
+                                                            n,
+                                                            kb,
+                                                            nnzb,
+                                                            &alpha,
+                                                            descr,
+                                                            dbsr_val,
+                                                            dbsr_row_ptr,
+                                                            dbsr_col_ind,
+                                                            block_dim,
+                                                            dB,
+                                                            ldb,
+                                                            (T*)nullptr,
+                                                            dC,
+                                                            ldc),
+                                            "Error: beta is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXbsrmm(handle,
+                                                            dirA,
+                                                            transA,
+                                                            transB,
+                                                            mb,
+                                                            n,
+                                                            kb,
+                                                            nnzb,
+                                                            &alpha,
+                                                            descr,
+                                                            dbsr_val,
+                                                            dbsr_row_ptr,
+                                                            dbsr_col_ind,
+                                                            block_dim,
+                                                            dB,
+                                                            ldb,
+                                                            &beta,
+                                                            (T*)nullptr,
+                                                            ldc),
+                                            "Error: dC is nullptr");
+    verify_hipsparse_status_invalid_size(hipsparseXbsrmm(handle,
+                                                         dirA,
+                                                         transA,
+                                                         transB,
+                                                         -1,
+                                                         n,
+                                                         kb,
+                                                         nnzb,
+                                                         &alpha,
+                                                         descr,
+                                                         dbsr_val,
+                                                         dbsr_row_ptr,
+                                                         dbsr_col_ind,
+                                                         block_dim,
+                                                         dB,
+                                                         ldb,
+                                                         &beta,
+                                                         dC,
+                                                         ldc),
+                                         "Error: mb is invalid");
+    verify_hipsparse_status_invalid_size(hipsparseXbsrmm(handle,
+                                                         dirA,
+                                                         transA,
+                                                         transB,
+                                                         mb,
+                                                         -1,
+                                                         kb,
+                                                         nnzb,
+                                                         &alpha,
+                                                         descr,
+                                                         dbsr_val,
+                                                         dbsr_row_ptr,
+                                                         dbsr_col_ind,
+                                                         block_dim,
+                                                         dB,
+                                                         ldb,
+                                                         &beta,
+                                                         dC,
+                                                         ldc),
+                                         "Error: n is invalid");
+    verify_hipsparse_status_invalid_size(hipsparseXbsrmm(handle,
+                                                         dirA,
+                                                         transA,
+                                                         transB,
+                                                         mb,
+                                                         n,
+                                                         -1,
+                                                         nnzb,
+                                                         &alpha,
+                                                         descr,
+                                                         dbsr_val,
+                                                         dbsr_row_ptr,
+                                                         dbsr_col_ind,
+                                                         block_dim,
+                                                         dB,
+                                                         ldb,
+                                                         &beta,
+                                                         dC,
+                                                         ldc),
+                                         "Error: kb is invalid");
+    verify_hipsparse_status_invalid_size(hipsparseXbsrmm(handle,
+                                                         dirA,
+                                                         transA,
+                                                         transB,
+                                                         mb,
+                                                         n,
+                                                         kb,
+                                                         nnzb,
+                                                         &alpha,
+                                                         descr,
+                                                         dbsr_val,
+                                                         dbsr_row_ptr,
+                                                         dbsr_col_ind,
+                                                         0,
+                                                         dB,
+                                                         ldb,
+                                                         &beta,
+                                                         dC,
+                                                         ldc),
+                                         "Error: block_dim is invalid");
 
     // Test not implemented (mapped to hiparse internal error)
-    status = hipsparseXbsrmm(handle,
-                             dirA,
-                             HIPSPARSE_OPERATION_TRANSPOSE,
-                             transB,
-                             mb,
-                             n,
-                             kb,
-                             nnzb,
-                             &alpha,
-                             descr,
-                             dbsr_val,
-                             dbsr_row_ptr,
-                             dbsr_col_ind,
-                             block_dim,
-                             dB,
-                             ldb,
-                             &beta,
-                             dC,
-                             ldc);
-    verify_hipsparse_status_not_supported(status,
+    verify_hipsparse_status_not_supported(hipsparseXbsrmm(handle,
+                                                          dirA,
+                                                          HIPSPARSE_OPERATION_TRANSPOSE,
+                                                          transB,
+                                                          mb,
+                                                          n,
+                                                          kb,
+                                                          nnzb,
+                                                          &alpha,
+                                                          descr,
+                                                          dbsr_val,
+                                                          dbsr_row_ptr,
+                                                          dbsr_col_ind,
+                                                          block_dim,
+                                                          dB,
+                                                          ldb,
+                                                          &beta,
+                                                          dC,
+                                                          ldc),
                                           "Error: Passed value for transA is not supported");
-
-    status = hipsparseXbsrmm(handle,
-                             dirA,
-                             HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE,
-                             transB,
-                             mb,
-                             n,
-                             kb,
-                             nnzb,
-                             &alpha,
-                             descr,
-                             dbsr_val,
-                             dbsr_row_ptr,
-                             dbsr_col_ind,
-                             block_dim,
-                             dB,
-                             ldb,
-                             &beta,
-                             dC,
-                             ldc);
-    verify_hipsparse_status_not_supported(status,
+    verify_hipsparse_status_not_supported(hipsparseXbsrmm(handle,
+                                                          dirA,
+                                                          HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE,
+                                                          transB,
+                                                          mb,
+                                                          n,
+                                                          kb,
+                                                          nnzb,
+                                                          &alpha,
+                                                          descr,
+                                                          dbsr_val,
+                                                          dbsr_row_ptr,
+                                                          dbsr_col_ind,
+                                                          block_dim,
+                                                          dB,
+                                                          ldb,
+                                                          &beta,
+                                                          dC,
+                                                          ldc),
                                           "Error: Passed value for transA is not supported");
-
-    status = hipsparseXbsrmm(handle,
-                             dirA,
-                             transA,
-                             HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE,
-                             mb,
-                             n,
-                             kb,
-                             nnzb,
-                             &alpha,
-                             descr,
-                             dbsr_val,
-                             dbsr_row_ptr,
-                             dbsr_col_ind,
-                             block_dim,
-                             dB,
-                             ldb,
-                             &beta,
-                             dC,
-                             ldc);
-    verify_hipsparse_status_not_supported(status,
+    verify_hipsparse_status_not_supported(hipsparseXbsrmm(handle,
+                                                          dirA,
+                                                          transA,
+                                                          HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE,
+                                                          mb,
+                                                          n,
+                                                          kb,
+                                                          nnzb,
+                                                          &alpha,
+                                                          descr,
+                                                          dbsr_val,
+                                                          dbsr_row_ptr,
+                                                          dbsr_col_ind,
+                                                          block_dim,
+                                                          dB,
+                                                          ldb,
+                                                          &beta,
+                                                          dC,
+                                                          ldc),
                                           "Error: Passed value for transB is not supported");
 #endif
 }
@@ -441,14 +414,14 @@ hipsparseStatus_t testing_bsrmm(Arguments argus)
     hipsparseDirection_t dirA      = argus.dirA;
     hipsparseOperation_t transA    = argus.transA;
     hipsparseOperation_t transB    = argus.transB;
-    hipsparseIndexBase_t idx_base  = argus.idx_base;
+    hipsparseIndexBase_t idx_base  = argus.baseA;
     std::string          filename  = argus.filename;
 
-    std::unique_ptr<handle_struct> test_handle(new handle_struct);
-    hipsparseHandle_t              handle = test_handle->handle;
+    std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
+    hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
-    std::unique_ptr<descr_struct> test_descr(new descr_struct);
-    hipsparseMatDescr_t           descr = test_descr->descr;
+    std::unique_ptr<descr_struct> unique_ptr_descr(new descr_struct);
+    hipsparseMatDescr_t           descr = unique_ptr_descr->descr;
 
     // Set matrix index base
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatIndexBase(descr, idx_base));
@@ -670,6 +643,77 @@ hipsparseStatus_t testing_bsrmm(Arguments argus)
         // Unit check
         unit_check_near(1, nnz_C, 1, hC_gold.data(), hC_1.data());
         unit_check_near(1, nnz_C, 1, hC_gold.data(), hC_2.data());
+    }
+
+    if(argus.timing)
+    {
+        int number_cold_calls = 2;
+        int number_hot_calls  = argus.iters;
+
+        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
+
+        // Warm up
+        for(int iter = 0; iter < number_cold_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseXbsrmm(handle,
+                                                  dirA,
+                                                  transA,
+                                                  transB,
+                                                  mb,
+                                                  n,
+                                                  kb,
+                                                  nnzb,
+                                                  &h_alpha,
+                                                  descr,
+                                                  dbsr_valA,
+                                                  dbsr_row_ptrA,
+                                                  dbsr_col_indA,
+                                                  block_dim,
+                                                  dB,
+                                                  ldb,
+                                                  &h_beta,
+                                                  dC_1,
+                                                  ldc));
+        }
+
+        double gpu_time_used = get_time_us();
+
+        // Performance run
+        for(int iter = 0; iter < number_hot_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseXbsrmm(handle,
+                                                  dirA,
+                                                  transA,
+                                                  transB,
+                                                  mb,
+                                                  n,
+                                                  kb,
+                                                  nnzb,
+                                                  &h_alpha,
+                                                  descr,
+                                                  dbsr_valA,
+                                                  dbsr_row_ptrA,
+                                                  dbsr_col_indA,
+                                                  block_dim,
+                                                  dB,
+                                                  ldb,
+                                                  &h_beta,
+                                                  dC_1,
+                                                  ldc));
+        }
+
+        gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
+
+        double gflop_count
+            = bsrmm_gflop_count(n, nnzb, block_dim, m * n, h_beta != make_DataType<T>(0.0));
+        double gbyte_count = bsrmm_gbyte_count<T>(
+            mb, nnzb, block_dim, k * n, m * n, h_beta != make_DataType<T>(0.0));
+
+        double gpu_gflops = get_gpu_gflops(gpu_time_used, gflop_count);
+        double gpu_gbyte  = get_gpu_gbyte(gpu_time_used, gbyte_count);
+
+        std::cout << "GFLOPS/s: " << gpu_gflops << " GBytes/s: " << gpu_gbyte
+                  << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
     }
 
     return HIPSPARSE_STATUS_SUCCESS;

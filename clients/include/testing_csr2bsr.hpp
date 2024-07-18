@@ -25,7 +25,10 @@
 #ifndef TESTING_CSR2BSR_HPP
 #define TESTING_CSR2BSR_HPP
 
+#include "flops.hpp"
+#include "gbyte.hpp"
 #include "hipsparse.hpp"
+#include "hipsparse_arguments.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
@@ -48,7 +51,6 @@ void testing_csr2bsr_bad_arg(void)
     hipsparseIndexBase_t csr_idx_base = HIPSPARSE_INDEX_BASE_ZERO;
     hipsparseIndexBase_t bsr_idx_base = HIPSPARSE_INDEX_BASE_ZERO;
     hipsparseDirection_t dir          = HIPSPARSE_DIRECTION_ROW;
-    hipsparseStatus_t    status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -78,329 +80,289 @@ void testing_csr2bsr_bad_arg(void)
     int* bsr_col_ind = (int*)bsr_col_ind_managed.get();
     T*   bsr_val     = (T*)bsr_val_managed.get();
 
-    if(!csr_row_ptr || !csr_col_ind || !csr_val || !bsr_row_ptr || !bsr_col_ind || !bsr_val)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
-
-    { //
-
-        int local_ptr[2] = {0, 1};
-        CHECK_HIP_ERROR(
-            hipMemcpy(csr_row_ptr, local_ptr, sizeof(int) * (1 + 1), hipMemcpyHostToDevice));
-        CHECK_HIP_ERROR(
-            hipMemcpy(bsr_row_ptr, local_ptr, sizeof(int) * (1 + 1), hipMemcpyHostToDevice));
-    } //
-
-    // Testing hipsparseXcsr2bsrNnz()
+    int local_ptr[2] = {0, 1};
+    CHECK_HIP_ERROR(
+        hipMemcpy(csr_row_ptr, local_ptr, sizeof(int) * (1 + 1), hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(
+        hipMemcpy(bsr_row_ptr, local_ptr, sizeof(int) * (1 + 1), hipMemcpyHostToDevice));
 
     int bsr_nnzb;
 
-    // Test invalid handle
-    status = hipsparseXcsr2bsrNnz(nullptr,
-                                  dir,
-                                  m,
-                                  n,
-                                  csr_descr,
-                                  csr_row_ptr,
-                                  csr_col_ind,
-                                  block_dim,
-                                  bsr_descr,
-                                  bsr_row_ptr,
-                                  &bsr_nnzb);
-    verify_hipsparse_status_invalid_handle(status);
+    verify_hipsparse_status_invalid_handle(hipsparseXcsr2bsrNnz(nullptr,
+                                                                dir,
+                                                                m,
+                                                                n,
+                                                                csr_descr,
+                                                                csr_row_ptr,
+                                                                csr_col_ind,
+                                                                block_dim,
+                                                                bsr_descr,
+                                                                bsr_row_ptr,
+                                                                &bsr_nnzb));
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsr2bsrNnz(handle,
+                                                                 dir,
+                                                                 m,
+                                                                 n,
+                                                                 nullptr,
+                                                                 csr_row_ptr,
+                                                                 csr_col_ind,
+                                                                 block_dim,
+                                                                 bsr_descr,
+                                                                 bsr_row_ptr,
+                                                                 &bsr_nnzb),
+                                            "Error: csr_descr is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsr2bsrNnz(handle,
+                                                                 dir,
+                                                                 m,
+                                                                 n,
+                                                                 csr_descr,
+                                                                 nullptr,
+                                                                 csr_col_ind,
+                                                                 block_dim,
+                                                                 bsr_descr,
+                                                                 bsr_row_ptr,
+                                                                 &bsr_nnzb),
+                                            "Error: csr_row_ptr is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsr2bsrNnz(handle,
+                                                                 dir,
+                                                                 m,
+                                                                 n,
+                                                                 csr_descr,
+                                                                 csr_row_ptr,
+                                                                 csr_col_ind,
+                                                                 block_dim,
+                                                                 nullptr,
+                                                                 bsr_row_ptr,
+                                                                 &bsr_nnzb),
+                                            "Error: bsr_descr is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsr2bsrNnz(handle,
+                                                                 dir,
+                                                                 m,
+                                                                 n,
+                                                                 csr_descr,
+                                                                 csr_row_ptr,
+                                                                 csr_col_ind,
+                                                                 block_dim,
+                                                                 bsr_descr,
+                                                                 nullptr,
+                                                                 &bsr_nnzb),
+                                            "Error: bsr_row_ptr is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsr2bsrNnz(handle,
+                                                                 dir,
+                                                                 m,
+                                                                 n,
+                                                                 csr_descr,
+                                                                 csr_row_ptr,
+                                                                 csr_col_ind,
+                                                                 block_dim,
+                                                                 bsr_descr,
+                                                                 bsr_row_ptr,
+                                                                 nullptr),
+                                            "Error: bsr_nnzb is nullptr");
+    verify_hipsparse_status_invalid_size(hipsparseXcsr2bsrNnz(handle,
+                                                              dir,
+                                                              -1,
+                                                              n,
+                                                              csr_descr,
+                                                              csr_row_ptr,
+                                                              csr_col_ind,
+                                                              block_dim,
+                                                              bsr_descr,
+                                                              bsr_row_ptr,
+                                                              &bsr_nnzb),
+                                         "Error: m is invalid");
+    verify_hipsparse_status_invalid_size(hipsparseXcsr2bsrNnz(handle,
+                                                              dir,
+                                                              m,
+                                                              -1,
+                                                              csr_descr,
+                                                              csr_row_ptr,
+                                                              csr_col_ind,
+                                                              block_dim,
+                                                              bsr_descr,
+                                                              bsr_row_ptr,
+                                                              &bsr_nnzb),
+                                         "Error: n is invalid");
+    verify_hipsparse_status_invalid_size(hipsparseXcsr2bsrNnz(handle,
+                                                              dir,
+                                                              m,
+                                                              n,
+                                                              csr_descr,
+                                                              csr_row_ptr,
+                                                              csr_col_ind,
+                                                              -1,
+                                                              bsr_descr,
+                                                              bsr_row_ptr,
+                                                              &bsr_nnzb),
+                                         "Error: block_dim is invalid");
 
-    // Test invalid pointers
-    status = hipsparseXcsr2bsrNnz(handle,
-                                  dir,
-                                  m,
-                                  n,
-                                  nullptr,
-                                  csr_row_ptr,
-                                  csr_col_ind,
-                                  block_dim,
-                                  bsr_descr,
-                                  bsr_row_ptr,
-                                  &bsr_nnzb);
-    verify_hipsparse_status_invalid_pointer(status, "Error: csr_descr is nullptr");
-
-    status = hipsparseXcsr2bsrNnz(handle,
-                                  dir,
-                                  m,
-                                  n,
-                                  csr_descr,
-                                  nullptr,
-                                  csr_col_ind,
-                                  block_dim,
-                                  bsr_descr,
-                                  bsr_row_ptr,
-                                  &bsr_nnzb);
-    verify_hipsparse_status_invalid_pointer(status, "Error: csr_row_ptr is nullptr");
-
-    status = hipsparseXcsr2bsrNnz(handle,
-                                  dir,
-                                  m,
-                                  n,
-                                  csr_descr,
-                                  csr_row_ptr,
-                                  csr_col_ind,
-                                  block_dim,
-                                  nullptr,
-                                  bsr_row_ptr,
-                                  &bsr_nnzb);
-    verify_hipsparse_status_invalid_pointer(status, "Error: bsr_descr is nullptr");
-
-    status = hipsparseXcsr2bsrNnz(handle,
-                                  dir,
-                                  m,
-                                  n,
-                                  csr_descr,
-                                  csr_row_ptr,
-                                  csr_col_ind,
-                                  block_dim,
-                                  bsr_descr,
-                                  nullptr,
-                                  &bsr_nnzb);
-    verify_hipsparse_status_invalid_pointer(status, "Error: bsr_row_ptr is nullptr");
-
-    status = hipsparseXcsr2bsrNnz(handle,
-                                  dir,
-                                  m,
-                                  n,
-                                  csr_descr,
-                                  csr_row_ptr,
-                                  csr_col_ind,
-                                  block_dim,
-                                  bsr_descr,
-                                  bsr_row_ptr,
-                                  nullptr);
-    verify_hipsparse_status_invalid_pointer(status, "Error: bsr_nnzb is nullptr");
-
-    // Test invalid sizes
-    status = hipsparseXcsr2bsrNnz(handle,
-                                  dir,
-                                  -1,
-                                  n,
-                                  csr_descr,
-                                  csr_row_ptr,
-                                  csr_col_ind,
-                                  block_dim,
-                                  bsr_descr,
-                                  bsr_row_ptr,
-                                  &bsr_nnzb);
-    verify_hipsparse_status_invalid_size(status, "Error: m is invalid");
-
-    status = hipsparseXcsr2bsrNnz(handle,
-                                  dir,
-                                  m,
-                                  -1,
-                                  csr_descr,
-                                  csr_row_ptr,
-                                  csr_col_ind,
-                                  block_dim,
-                                  bsr_descr,
-                                  bsr_row_ptr,
-                                  &bsr_nnzb);
-    verify_hipsparse_status_invalid_size(status, "Error: n is invalid");
-
-    status = hipsparseXcsr2bsrNnz(handle,
-                                  dir,
-                                  m,
-                                  n,
-                                  csr_descr,
-                                  csr_row_ptr,
-                                  csr_col_ind,
-                                  -1,
-                                  bsr_descr,
-                                  bsr_row_ptr,
-                                  &bsr_nnzb);
-    verify_hipsparse_status_invalid_size(status, "Error: block_dim is invalid");
-
-    // Testing hipsparseXcsr2bsr()
-
-    // Test invalid handle
-    status = hipsparseXcsr2bsr(nullptr,
-                               dir,
-                               m,
-                               n,
-                               csr_descr,
-                               csr_val,
-                               csr_row_ptr,
-                               csr_col_ind,
-                               block_dim,
-                               bsr_descr,
-                               bsr_val,
-                               bsr_row_ptr,
-                               bsr_col_ind);
-    verify_hipsparse_status_invalid_handle(status);
-
-    // Test invalid pointers
-    status = hipsparseXcsr2bsr(handle,
-                               dir,
-                               m,
-                               n,
-                               nullptr,
-                               csr_val,
-                               csr_row_ptr,
-                               csr_col_ind,
-                               block_dim,
-                               bsr_descr,
-                               bsr_val,
-                               bsr_row_ptr,
-                               bsr_col_ind);
-    verify_hipsparse_status_invalid_pointer(status, "Error: csr_descr is nullptr");
-
-    status = hipsparseXcsr2bsr(handle,
-                               dir,
-                               m,
-                               n,
-                               csr_descr,
-                               (T*)nullptr,
-                               csr_row_ptr,
-                               csr_col_ind,
-                               block_dim,
-                               bsr_descr,
-                               bsr_val,
-                               bsr_row_ptr,
-                               bsr_col_ind);
-    verify_hipsparse_status_invalid_pointer(status, "Error: csr_val is nullptr");
-
-    status = hipsparseXcsr2bsr(handle,
-                               dir,
-                               m,
-                               n,
-                               csr_descr,
-                               csr_val,
-                               nullptr,
-                               csr_col_ind,
-                               block_dim,
-                               bsr_descr,
-                               bsr_val,
-                               bsr_row_ptr,
-                               bsr_col_ind);
-    verify_hipsparse_status_invalid_pointer(status, "Error: csr_row_ptr is nullptr");
-
-    status = hipsparseXcsr2bsr(handle,
-                               dir,
-                               m,
-                               n,
-                               csr_descr,
-                               csr_val,
-                               csr_row_ptr,
-                               nullptr,
-                               block_dim,
-                               bsr_descr,
-                               bsr_val,
-                               bsr_row_ptr,
-                               bsr_col_ind);
-    verify_hipsparse_status_invalid_pointer(status, "Error: csr_col_ind is nullptr");
-
-    status = hipsparseXcsr2bsr(handle,
-                               dir,
-                               m,
-                               n,
-                               csr_descr,
-                               csr_val,
-                               csr_row_ptr,
-                               csr_col_ind,
-                               block_dim,
-                               nullptr,
-                               bsr_val,
-                               bsr_row_ptr,
-                               bsr_col_ind);
-    verify_hipsparse_status_invalid_pointer(status, "Error: bsr_descr is nullptr");
-
-    status = hipsparseXcsr2bsr(handle,
-                               dir,
-                               m,
-                               n,
-                               csr_descr,
-                               csr_val,
-                               csr_row_ptr,
-                               csr_col_ind,
-                               block_dim,
-                               bsr_descr,
-                               (T*)nullptr,
-                               bsr_row_ptr,
-                               bsr_col_ind);
-    verify_hipsparse_status_invalid_pointer(status, "Error: bsr_val is nullptr");
-
-    status = hipsparseXcsr2bsr(handle,
-                               dir,
-                               m,
-                               n,
-                               csr_descr,
-                               csr_val,
-                               csr_row_ptr,
-                               csr_col_ind,
-                               block_dim,
-                               bsr_descr,
-                               bsr_val,
-                               nullptr,
-                               bsr_col_ind);
-    verify_hipsparse_status_invalid_pointer(status, "Error: bsr_row_ptr is nullptr");
-
-    status = hipsparseXcsr2bsr(handle,
-                               dir,
-                               m,
-                               n,
-                               csr_descr,
-                               csr_val,
-                               csr_row_ptr,
-                               csr_col_ind,
-                               block_dim,
-                               bsr_descr,
-                               bsr_val,
-                               bsr_row_ptr,
-                               nullptr);
-    verify_hipsparse_status_invalid_pointer(status, "Error: bsr_col_ind is nullptr");
-
-    // Test invalid sizes
-    status = hipsparseXcsr2bsr(handle,
-                               dir,
-                               -1,
-                               n,
-                               csr_descr,
-                               csr_val,
-                               csr_row_ptr,
-                               csr_col_ind,
-                               block_dim,
-                               bsr_descr,
-                               bsr_val,
-                               bsr_row_ptr,
-                               bsr_col_ind);
-    verify_hipsparse_status_invalid_size(status, "Error: m is invalid");
-
-    status = hipsparseXcsr2bsr(handle,
-                               dir,
-                               m,
-                               -1,
-                               csr_descr,
-                               csr_val,
-                               csr_row_ptr,
-                               csr_col_ind,
-                               block_dim,
-                               bsr_descr,
-                               bsr_val,
-                               bsr_row_ptr,
-                               bsr_col_ind);
-    verify_hipsparse_status_invalid_size(status, "Error: n is invalid");
-
-    status = hipsparseXcsr2bsr(handle,
-                               dir,
-                               m,
-                               n,
-                               csr_descr,
-                               csr_val,
-                               csr_row_ptr,
-                               csr_col_ind,
-                               -1,
-                               bsr_descr,
-                               bsr_val,
-                               bsr_row_ptr,
-                               bsr_col_ind);
-    verify_hipsparse_status_invalid_size(status, "Error: block_dim is invalid");
+    verify_hipsparse_status_invalid_handle(hipsparseXcsr2bsr(nullptr,
+                                                             dir,
+                                                             m,
+                                                             n,
+                                                             csr_descr,
+                                                             csr_val,
+                                                             csr_row_ptr,
+                                                             csr_col_ind,
+                                                             block_dim,
+                                                             bsr_descr,
+                                                             bsr_val,
+                                                             bsr_row_ptr,
+                                                             bsr_col_ind));
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsr2bsr(handle,
+                                                              dir,
+                                                              m,
+                                                              n,
+                                                              nullptr,
+                                                              csr_val,
+                                                              csr_row_ptr,
+                                                              csr_col_ind,
+                                                              block_dim,
+                                                              bsr_descr,
+                                                              bsr_val,
+                                                              bsr_row_ptr,
+                                                              bsr_col_ind),
+                                            "Error: csr_descr is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsr2bsr(handle,
+                                                              dir,
+                                                              m,
+                                                              n,
+                                                              csr_descr,
+                                                              (T*)nullptr,
+                                                              csr_row_ptr,
+                                                              csr_col_ind,
+                                                              block_dim,
+                                                              bsr_descr,
+                                                              bsr_val,
+                                                              bsr_row_ptr,
+                                                              bsr_col_ind),
+                                            "Error: csr_val is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsr2bsr(handle,
+                                                              dir,
+                                                              m,
+                                                              n,
+                                                              csr_descr,
+                                                              csr_val,
+                                                              nullptr,
+                                                              csr_col_ind,
+                                                              block_dim,
+                                                              bsr_descr,
+                                                              bsr_val,
+                                                              bsr_row_ptr,
+                                                              bsr_col_ind),
+                                            "Error: csr_row_ptr is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsr2bsr(handle,
+                                                              dir,
+                                                              m,
+                                                              n,
+                                                              csr_descr,
+                                                              csr_val,
+                                                              csr_row_ptr,
+                                                              nullptr,
+                                                              block_dim,
+                                                              bsr_descr,
+                                                              bsr_val,
+                                                              bsr_row_ptr,
+                                                              bsr_col_ind),
+                                            "Error: csr_col_ind is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsr2bsr(handle,
+                                                              dir,
+                                                              m,
+                                                              n,
+                                                              csr_descr,
+                                                              csr_val,
+                                                              csr_row_ptr,
+                                                              csr_col_ind,
+                                                              block_dim,
+                                                              nullptr,
+                                                              bsr_val,
+                                                              bsr_row_ptr,
+                                                              bsr_col_ind),
+                                            "Error: bsr_descr is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsr2bsr(handle,
+                                                              dir,
+                                                              m,
+                                                              n,
+                                                              csr_descr,
+                                                              csr_val,
+                                                              csr_row_ptr,
+                                                              csr_col_ind,
+                                                              block_dim,
+                                                              bsr_descr,
+                                                              (T*)nullptr,
+                                                              bsr_row_ptr,
+                                                              bsr_col_ind),
+                                            "Error: bsr_val is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsr2bsr(handle,
+                                                              dir,
+                                                              m,
+                                                              n,
+                                                              csr_descr,
+                                                              csr_val,
+                                                              csr_row_ptr,
+                                                              csr_col_ind,
+                                                              block_dim,
+                                                              bsr_descr,
+                                                              bsr_val,
+                                                              nullptr,
+                                                              bsr_col_ind),
+                                            "Error: bsr_row_ptr is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsr2bsr(handle,
+                                                              dir,
+                                                              m,
+                                                              n,
+                                                              csr_descr,
+                                                              csr_val,
+                                                              csr_row_ptr,
+                                                              csr_col_ind,
+                                                              block_dim,
+                                                              bsr_descr,
+                                                              bsr_val,
+                                                              bsr_row_ptr,
+                                                              nullptr),
+                                            "Error: bsr_col_ind is nullptr");
+    verify_hipsparse_status_invalid_size(hipsparseXcsr2bsr(handle,
+                                                           dir,
+                                                           -1,
+                                                           n,
+                                                           csr_descr,
+                                                           csr_val,
+                                                           csr_row_ptr,
+                                                           csr_col_ind,
+                                                           block_dim,
+                                                           bsr_descr,
+                                                           bsr_val,
+                                                           bsr_row_ptr,
+                                                           bsr_col_ind),
+                                         "Error: m is invalid");
+    verify_hipsparse_status_invalid_size(hipsparseXcsr2bsr(handle,
+                                                           dir,
+                                                           m,
+                                                           -1,
+                                                           csr_descr,
+                                                           csr_val,
+                                                           csr_row_ptr,
+                                                           csr_col_ind,
+                                                           block_dim,
+                                                           bsr_descr,
+                                                           bsr_val,
+                                                           bsr_row_ptr,
+                                                           bsr_col_ind),
+                                         "Error: n is invalid");
+    verify_hipsparse_status_invalid_size(hipsparseXcsr2bsr(handle,
+                                                           dir,
+                                                           m,
+                                                           n,
+                                                           csr_descr,
+                                                           csr_val,
+                                                           csr_row_ptr,
+                                                           csr_col_ind,
+                                                           -1,
+                                                           bsr_descr,
+                                                           bsr_val,
+                                                           bsr_row_ptr,
+                                                           bsr_col_ind),
+                                         "Error: block_dim is invalid");
 #endif
 }
 
@@ -410,8 +372,8 @@ hipsparseStatus_t testing_csr2bsr(Arguments argus)
     int                  m            = argus.M;
     int                  n            = argus.N;
     int                  block_dim    = argus.block_dim;
-    hipsparseIndexBase_t csr_idx_base = argus.idx_base;
-    hipsparseIndexBase_t bsr_idx_base = argus.idx_base2;
+    hipsparseIndexBase_t csr_idx_base = argus.baseA;
+    hipsparseIndexBase_t bsr_idx_base = argus.baseB;
     hipsparseDirection_t dir          = argus.dirA;
     std::string          filename     = argus.filename;
 
@@ -472,56 +434,56 @@ hipsparseStatus_t testing_csr2bsr(Arguments argus)
         hipMemcpy(dcsr_col_ind, hcsr_col_ind.data(), sizeof(int) * nnz, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dcsr_val, hcsr_val.data(), sizeof(T) * nnz, hipMemcpyHostToDevice));
 
+    // Obtain BSR nnzb first on the host and then using the device and ensure they give the same results
+    CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
+
+    int hbsr_nnzb;
+    CHECK_HIPSPARSE_ERROR(hipsparseXcsr2bsrNnz(handle,
+                                               dir,
+                                               m,
+                                               n,
+                                               csr_descr,
+                                               dcsr_row_ptr,
+                                               dcsr_col_ind,
+                                               block_dim,
+                                               bsr_descr,
+                                               dbsr_row_ptr,
+                                               &hbsr_nnzb));
+
+    CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
+
+    auto dbsr_nnzb_managed = hipsparse_unique_ptr{device_malloc(sizeof(int)), device_free};
+    int* dbsr_nnzb         = (int*)dbsr_nnzb_managed.get();
+    CHECK_HIPSPARSE_ERROR(hipsparseXcsr2bsrNnz(handle,
+                                               dir,
+                                               m,
+                                               n,
+                                               csr_descr,
+                                               dcsr_row_ptr,
+                                               dcsr_col_ind,
+                                               block_dim,
+                                               bsr_descr,
+                                               dbsr_row_ptr,
+                                               dbsr_nnzb));
+
+    int hbsr_nnzb_copied_from_device;
+    CHECK_HIP_ERROR(
+        hipMemcpy(&hbsr_nnzb_copied_from_device, dbsr_nnzb, sizeof(int), hipMemcpyDeviceToHost));
+
+    // Check that using host and device pointer mode gives the same result
+    unit_check_general(1, 1, 1, &hbsr_nnzb_copied_from_device, &hbsr_nnzb);
+
+    // Allocate memory on the device
+    auto dbsr_col_ind_managed
+        = hipsparse_unique_ptr{device_malloc(sizeof(int) * hbsr_nnzb), device_free};
+    auto dbsr_val_managed = hipsparse_unique_ptr{
+        device_malloc(sizeof(T) * hbsr_nnzb * block_dim * block_dim), device_free};
+
+    int* dbsr_col_ind = (int*)dbsr_col_ind_managed.get();
+    T*   dbsr_val     = (T*)dbsr_val_managed.get();
+
     if(argus.unit_check)
     {
-        // Obtain BSR nnzb first on the host and then using the device and ensure they give the same results
-        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
-
-        int hbsr_nnzb;
-        CHECK_HIPSPARSE_ERROR(hipsparseXcsr2bsrNnz(handle,
-                                                   dir,
-                                                   m,
-                                                   n,
-                                                   csr_descr,
-                                                   dcsr_row_ptr,
-                                                   dcsr_col_ind,
-                                                   block_dim,
-                                                   bsr_descr,
-                                                   dbsr_row_ptr,
-                                                   &hbsr_nnzb));
-
-        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
-
-        auto dbsr_nnzb_managed = hipsparse_unique_ptr{device_malloc(sizeof(int)), device_free};
-        int* dbsr_nnzb         = (int*)dbsr_nnzb_managed.get();
-        CHECK_HIPSPARSE_ERROR(hipsparseXcsr2bsrNnz(handle,
-                                                   dir,
-                                                   m,
-                                                   n,
-                                                   csr_descr,
-                                                   dcsr_row_ptr,
-                                                   dcsr_col_ind,
-                                                   block_dim,
-                                                   bsr_descr,
-                                                   dbsr_row_ptr,
-                                                   dbsr_nnzb));
-
-        int hbsr_nnzb_copied_from_device;
-        CHECK_HIP_ERROR(hipMemcpy(
-            &hbsr_nnzb_copied_from_device, dbsr_nnzb, sizeof(int), hipMemcpyDeviceToHost));
-
-        // Check that using host and device pointer mode gives the same result
-        unit_check_general(1, 1, 1, &hbsr_nnzb_copied_from_device, &hbsr_nnzb);
-
-        // Allocate memory on the device
-        auto dbsr_col_ind_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * hbsr_nnzb), device_free};
-        auto dbsr_val_managed = hipsparse_unique_ptr{
-            device_malloc(sizeof(T) * hbsr_nnzb * block_dim * block_dim), device_free};
-
-        int* dbsr_col_ind = (int*)dbsr_col_ind_managed.get();
-        T*   dbsr_val     = (T*)dbsr_val_managed.get();
-
         CHECK_HIPSPARSE_ERROR(hipsparseXcsr2bsr(handle,
                                                 dir,
                                                 m,
@@ -577,6 +539,60 @@ hipsparseStatus_t testing_csr2bsr(Arguments argus)
         unit_check_general(1, hbsr_nnzb, 1, hbsr_col_ind_gold.data(), hbsr_col_ind.data());
         unit_check_general(
             1, hbsr_nnzb * block_dim * block_dim, 1, hbsr_val_gold.data(), hbsr_val.data());
+    }
+
+    if(argus.timing)
+    {
+        int number_cold_calls = 2;
+        int number_hot_calls  = argus.iters;
+
+        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
+
+        // Warm up
+        for(int iter = 0; iter < number_cold_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseXcsr2bsr(handle,
+                                                    dir,
+                                                    m,
+                                                    n,
+                                                    csr_descr,
+                                                    dcsr_val,
+                                                    dcsr_row_ptr,
+                                                    dcsr_col_ind,
+                                                    block_dim,
+                                                    bsr_descr,
+                                                    dbsr_val,
+                                                    dbsr_row_ptr,
+                                                    dbsr_col_ind));
+        }
+
+        double gpu_time_used = get_time_us();
+
+        // Performance run
+        for(int iter = 0; iter < number_hot_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseXcsr2bsr(handle,
+                                                    dir,
+                                                    m,
+                                                    n,
+                                                    csr_descr,
+                                                    dcsr_val,
+                                                    dcsr_row_ptr,
+                                                    dcsr_col_ind,
+                                                    block_dim,
+                                                    bsr_descr,
+                                                    dbsr_val,
+                                                    dbsr_row_ptr,
+                                                    dbsr_col_ind));
+        }
+
+        gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
+
+        double gbyte_count = csr2bsr_gbyte_count<T>(m, mb, nnz, hbsr_nnzb, block_dim);
+        double gpu_gbyte   = get_gpu_gbyte(gpu_time_used, gbyte_count);
+
+        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used)
+                  << std::endl;
     }
 
     return HIPSPARSE_STATUS_SUCCESS;

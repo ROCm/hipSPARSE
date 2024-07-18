@@ -25,7 +25,10 @@
 #ifndef TESTING_CSRMV_HPP
 #define TESTING_CSRMV_HPP
 
+#include "flops.hpp"
+#include "gbyte.hpp"
 #include "hipsparse.hpp"
+#include "hipsparse_arguments.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
@@ -48,7 +51,6 @@ void testing_csrmv_bad_arg(void)
     T                    alpha     = 0.6;
     T                    beta      = 0.2;
     hipsparseOperation_t transA    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
-    hipsparseStatus_t    status;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -68,103 +70,81 @@ void testing_csrmv_bad_arg(void)
     T*   dx   = (T*)dx_managed.get();
     T*   dy   = (T*)dy_managed.get();
 
-    if(!dval || !dptr || !dcol || !dx || !dy)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
-
-    // testing for(nullptr == dptr)
-    {
-        int* dptr_null = nullptr;
-
-        status = hipsparseXcsrmv(
-            handle, transA, m, n, nnz, &alpha, descr, dval, dptr_null, dcol, dx, &beta, dy);
-        verify_hipsparse_status_invalid_pointer(status, "Error: dptr is nullptr");
-    }
-    // testing for(nullptr == dcol)
-    {
-        int* dcol_null = nullptr;
-
-        status = hipsparseXcsrmv(
-            handle, transA, m, n, nnz, &alpha, descr, dval, dptr, dcol_null, dx, &beta, dy);
-        verify_hipsparse_status_invalid_pointer(status, "Error: dcol is nullptr");
-    }
-    // testing for(nullptr == dval)
-    {
-        T* dval_null = nullptr;
-
-        status = hipsparseXcsrmv(
-            handle, transA, m, n, nnz, &alpha, descr, dval_null, dptr, dcol, dx, &beta, dy);
-        verify_hipsparse_status_invalid_pointer(status, "Error: dval is nullptr");
-    }
-    // testing for(nullptr == dx)
-    {
-        T* dx_null = nullptr;
-
-        status = hipsparseXcsrmv(
-            handle, transA, m, n, nnz, &alpha, descr, dval, dptr, dcol, dx_null, &beta, dy);
-        verify_hipsparse_status_invalid_pointer(status, "Error: dx is nullptr");
-    }
-    // testing for(nullptr == dy)
-    {
-        T* dy_null = nullptr;
-
-        status = hipsparseXcsrmv(
-            handle, transA, m, n, nnz, &alpha, descr, dval, dptr, dcol, dx, &beta, dy_null);
-        verify_hipsparse_status_invalid_pointer(status, "Error: dy is nullptr");
-    }
-    // testing for(nullptr == d_alpha)
-    {
-        T* d_alpha_null = nullptr;
-
-        status = hipsparseXcsrmv(
-            handle, transA, m, n, nnz, d_alpha_null, descr, dval, dptr, dcol, dx, &beta, dy);
-        verify_hipsparse_status_invalid_pointer(status, "Error: alpha is nullptr");
-    }
-    // testing for(nullptr == d_beta)
-    {
-        T* d_beta_null = nullptr;
-
-        status = hipsparseXcsrmv(
-            handle, transA, m, n, nnz, &alpha, descr, dval, dptr, dcol, dx, d_beta_null, dy);
-        verify_hipsparse_status_invalid_pointer(status, "Error: beta is nullptr");
-    }
-    // testing for(nullptr == descr)
-    {
-        hipsparseMatDescr_t descr_null = nullptr;
-
-        status = hipsparseXcsrmv(
-            handle, transA, m, n, nnz, &alpha, descr_null, dval, dptr, dcol, dx, &beta, dy);
-        verify_hipsparse_status_invalid_pointer(status, "Error: descr is nullptr");
-    }
-    // testing for(nullptr == handle)
-    {
-        hipsparseHandle_t handle_null = nullptr;
-
-        status = hipsparseXcsrmv(
-            handle_null, transA, m, n, nnz, &alpha, descr, dval, dptr, dcol, dx, &beta, dy);
-        verify_hipsparse_status_invalid_handle(status);
-    }
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXcsrmv(
+            handle, transA, m, n, nnz, &alpha, descr, dval, (int*)nullptr, dcol, dx, &beta, dy),
+        "Error: dptr is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXcsrmv(
+            handle, transA, m, n, nnz, &alpha, descr, dval, dptr, (int*)nullptr, dx, &beta, dy),
+        "Error: dcol is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXcsrmv(
+            handle, transA, m, n, nnz, &alpha, descr, (T*)nullptr, dptr, dcol, dx, &beta, dy),
+        "Error: dval is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXcsrmv(
+            handle, transA, m, n, nnz, &alpha, descr, dval, dptr, dcol, (T*)nullptr, &beta, dy),
+        "Error: dx is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXcsrmv(
+            handle, transA, m, n, nnz, &alpha, descr, dval, dptr, dcol, dx, &beta, (T*)nullptr),
+        "Error: dy is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXcsrmv(
+            handle, transA, m, n, nnz, (T*)nullptr, descr, dval, dptr, dcol, dx, &beta, dy),
+        "Error: alpha is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXcsrmv(
+            handle, transA, m, n, nnz, &alpha, descr, dval, dptr, dcol, dx, (T*)nullptr, dy),
+        "Error: beta is nullptr");
+    verify_hipsparse_status_invalid_pointer(hipsparseXcsrmv(handle,
+                                                            transA,
+                                                            m,
+                                                            n,
+                                                            nnz,
+                                                            &alpha,
+                                                            (hipsparseMatDescr_t) nullptr,
+                                                            dval,
+                                                            dptr,
+                                                            dcol,
+                                                            dx,
+                                                            &beta,
+                                                            dy),
+                                            "Error: descr is nullptr");
+    verify_hipsparse_status_invalid_handle(hipsparseXcsrmv((hipsparseHandle_t) nullptr,
+                                                           transA,
+                                                           m,
+                                                           n,
+                                                           nnz,
+                                                           &alpha,
+                                                           descr,
+                                                           dval,
+                                                           dptr,
+                                                           dcol,
+                                                           dx,
+                                                           &beta,
+                                                           dy));
 #endif
 }
 
 template <typename T>
 hipsparseStatus_t testing_csrmv(Arguments argus)
 {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
     int                  nrow     = argus.M;
     int                  ncol     = argus.N;
     T                    h_alpha  = make_DataType<T>(argus.alpha);
     T                    h_beta   = make_DataType<T>(argus.beta);
     hipsparseOperation_t transA   = argus.transA;
-    hipsparseIndexBase_t idx_base = argus.idx_base;
+    hipsparseIndexBase_t idx_base = argus.baseA;
     std::string          filename = argus.filename;
 
-    std::unique_ptr<handle_struct> test_handle(new handle_struct);
-    hipsparseHandle_t              handle = test_handle->handle;
+    std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
+    hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
-    std::unique_ptr<descr_struct> test_descr(new descr_struct);
-    hipsparseMatDescr_t           descr = test_descr->descr;
+    std::unique_ptr<descr_struct> unique_ptr_descr(new descr_struct);
+    hipsparseMatDescr_t           descr = unique_ptr_descr->descr;
 
     // Set matrix index base
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatIndexBase(descr, idx_base));
@@ -233,12 +213,12 @@ hipsparseStatus_t testing_csrmv(Arguments argus)
     {
         CHECK_HIP_ERROR(hipMemcpy(dy_2, hy_2.data(), sizeof(T) * m, hipMemcpyHostToDevice));
 
-        // ROCSPARSE pointer mode host
+        // HIPSPARSE pointer mode host
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
         CHECK_HIPSPARSE_ERROR(hipsparseXcsrmv(
             handle, transA, nrow, ncol, nnz, &h_alpha, descr, dval, dptr, dcol, dx, &h_beta, dy_1));
 
-        // ROCSPARSE pointer mode device
+        // HIPSPARSE pointer mode device
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
         CHECK_HIPSPARSE_ERROR(hipsparseXcsrmv(
             handle, transA, nrow, ncol, nnz, d_alpha, descr, dval, dptr, dcol, dx, d_beta, dy_2));
@@ -263,6 +243,64 @@ hipsparseStatus_t testing_csrmv(Arguments argus)
         unit_check_near(1, m, 1, hy_gold.data(), hy_1.data());
         unit_check_near(1, m, 1, hy_gold.data(), hy_2.data());
     }
+
+    if(argus.timing)
+    {
+        int number_cold_calls = 2;
+        int number_hot_calls  = argus.iters;
+
+        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
+
+        // Warm up
+        for(int iter = 0; iter < number_cold_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseXcsrmv(handle,
+                                                  transA,
+                                                  nrow,
+                                                  ncol,
+                                                  nnz,
+                                                  &h_alpha,
+                                                  descr,
+                                                  dval,
+                                                  dptr,
+                                                  dcol,
+                                                  dx,
+                                                  &h_beta,
+                                                  dy_1));
+        }
+
+        double gpu_time_used = get_time_us();
+
+        // Performance run
+        for(int iter = 0; iter < number_hot_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseXcsrmv(handle,
+                                                  transA,
+                                                  nrow,
+                                                  ncol,
+                                                  nnz,
+                                                  &h_alpha,
+                                                  descr,
+                                                  dval,
+                                                  dptr,
+                                                  dcol,
+                                                  dx,
+                                                  &h_beta,
+                                                  dy_1));
+        }
+
+        gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
+
+        double gflop_count = spmv_gflop_count(nrow, nnz, h_beta != make_DataType<T>(0.0));
+        double gbyte_count = csrmv_gbyte_count<T>(nrow, ncol, nnz, h_beta != make_DataType<T>(0.0));
+
+        double gpu_gflops = get_gpu_gflops(gpu_time_used, gflop_count);
+        double gpu_gbyte  = get_gpu_gbyte(gpu_time_used, gbyte_count);
+
+        std::cout << "GFLOPS/s: " << gpu_gflops << " GBytes/s: " << gpu_gbyte
+                  << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
+    }
+#endif
 
     return HIPSPARSE_STATUS_SUCCESS;
 }

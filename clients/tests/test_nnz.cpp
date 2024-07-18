@@ -52,8 +52,6 @@ Arguments setup_nnz_arguments(nnz_tuple tup)
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(nnz_bad_arg, nnz)
 {
     testing_nnz_bad_arg<float>();
@@ -96,4 +94,3 @@ INSTANTIATE_TEST_SUITE_P(nnz,
                          testing::Combine(testing::ValuesIn(nnz_M_range),
                                           testing::ValuesIn(nnz_N_range),
                                           testing::ValuesIn(nnz_LD_range)));
-#endif

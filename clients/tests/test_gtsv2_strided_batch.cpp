@@ -22,7 +22,6 @@
  * ************************************************************************ */
 
 #include "testing_gtsv2_strided_batch.hpp"
-#include "utility.hpp"
 
 #include <hipsparse.h>
 #include <string>
@@ -50,8 +49,6 @@ Arguments setup_gtsv2_strided_batch_arguments(gtsv2_strided_batch_tuple tup)
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater (removed in cusparse 12.0.0)
-#if(!defined(CUDART_VERSION) || (CUDART_VERSION >= 11010 && CUDART_VERSION < 12000))
 TEST(gtsv2_strided_batch_bad_arg, gtsv2_strided_batch_float)
 {
     testing_gtsv2_strided_batch_bad_arg<float>();
@@ -94,4 +91,3 @@ INSTANTIATE_TEST_SUITE_P(
     parameterized_gtsv2_strided_batch,
     testing::Combine(testing::ValuesIn(gtsv2_strided_batch_M_range),
                      testing::ValuesIn(gtsv2_strided_batch_batch_count_range)));
-#endif

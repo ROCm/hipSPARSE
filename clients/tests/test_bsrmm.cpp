@@ -89,7 +89,7 @@ Arguments setup_bsrmm_arguments(bsrmm_tuple tup)
     arg.alpha     = std::get<4>(tup);
     arg.beta      = std::get<5>(tup);
     arg.dirA      = std::get<6>(tup);
-    arg.idx_base  = std::get<7>(tup);
+    arg.baseA     = std::get<7>(tup);
     arg.transA    = std::get<8>(tup);
     arg.transB    = std::get<9>(tup);
     arg.timing    = 0;
@@ -106,7 +106,7 @@ Arguments setup_bsrmm_arguments(bsrmm_bin_tuple tup)
     arg.alpha     = std::get<2>(tup);
     arg.beta      = std::get<3>(tup);
     arg.dirA      = std::get<4>(tup);
-    arg.idx_base  = std::get<5>(tup);
+    arg.baseA     = std::get<5>(tup);
     arg.transA    = std::get<6>(tup);
     arg.transB    = std::get<7>(tup);
     arg.timing    = 0;
@@ -120,8 +120,6 @@ Arguments setup_bsrmm_arguments(bsrmm_bin_tuple tup)
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(bsrmm_bad_arg, bsrmm_float)
 {
     testing_bsrmm_bad_arg<float>();
@@ -199,4 +197,3 @@ INSTANTIATE_TEST_SUITE_P(bsrmm_bin,
                                           testing::ValuesIn(bsrmm_transA_range_bin),
                                           testing::ValuesIn(bsrmm_transB_range_bin),
                                           testing::ValuesIn(bsrmm_bin)));
-#endif

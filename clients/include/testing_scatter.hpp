@@ -25,6 +25,9 @@
 #ifndef TESTING_SCATTER_HPP
 #define TESTING_SCATTER_HPP
 
+#include "flops.hpp"
+#include "gbyte.hpp"
+#include "hipsparse_arguments.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
@@ -55,12 +58,6 @@ void testing_scatter_bad_arg(void)
     int*   dx_ind = (int*)dx_ind_managed.get();
     float* dy     = (float*)dy_managed.get();
 
-    if(!dx_ind || !dx_val || !dy)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
-
     // Structures
     hipsparseSpVecDescr_t x;
     hipsparseDnVecDescr_t y;
@@ -86,17 +83,18 @@ template <typename I, typename T>
 hipsparseStatus_t testing_scatter(Arguments argus)
 {
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
-    int64_t              size    = argus.N;
-    int64_t              nnz     = argus.nnz;
-    hipsparseIndexBase_t idxBase = argus.idx_base;
+    I size = argus.N;
+    I nnz  = argus.nnz;
+
+    hipsparseIndexBase_t idxBase = argus.baseA;
 
     // Index and data type
     hipsparseIndexType_t idxType  = getIndexType<I>();
     hipDataType          dataType = getDataType<T>();
 
     // hipSPARSE handle
-    std::unique_ptr<handle_struct> test_handle(new handle_struct);
-    hipsparseHandle_t              handle = test_handle->handle;
+    std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
+    hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
     // Host structures
     std::vector<I> hx_ind(nnz);
@@ -134,20 +132,51 @@ hipsparseStatus_t testing_scatter(Arguments argus)
         hipsparseCreateSpVec(&x, size, nnz, dx_ind, dx_val, idxType, idxBase, dataType));
     CHECK_HIPSPARSE_ERROR(hipsparseCreateDnVec(&y, size, dy, dataType));
 
-    // Scatter
-    CHECK_HIPSPARSE_ERROR(hipsparseScatter(handle, x, y));
-
-    // Copy output from device to CPU
-    CHECK_HIP_ERROR(hipMemcpy(hy.data(), dy, sizeof(T) * size, hipMemcpyDeviceToHost));
-
-    // CPU
-    for(int64_t i = 0; i < nnz; ++i)
+    if(argus.unit_check)
     {
-        hy_gold[hx_ind[i] - idxBase] = hx_val[i];
+        // Scatter
+        CHECK_HIPSPARSE_ERROR(hipsparseScatter(handle, x, y));
+
+        // Copy output from device to CPU
+        CHECK_HIP_ERROR(hipMemcpy(hy.data(), dy, sizeof(T) * size, hipMemcpyDeviceToHost));
+
+        // CPU
+        for(int64_t i = 0; i < nnz; ++i)
+        {
+            hy_gold[hx_ind[i] - idxBase] = hx_val[i];
+        }
+
+        // Verify results against host
+        unit_check_general(1, size, 1, hy_gold.data(), hy.data());
     }
 
-    // Verify results against host
-    unit_check_general(1, size, 1, hy_gold.data(), hy.data());
+    if(argus.timing)
+    {
+        int number_cold_calls = 2;
+        int number_hot_calls  = argus.iters;
+
+        // Warm up
+        for(int iter = 0; iter < number_cold_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseScatter(handle, x, y));
+        }
+
+        double gpu_time_used = get_time_us();
+
+        // Performance run
+        for(int iter = 0; iter < number_hot_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseScatter(handle, x, y));
+        }
+
+        gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
+
+        double gbyte_count = sctr_gbyte_count<T>(nnz);
+        double gpu_gbyte   = get_gpu_gbyte(gpu_time_used, gbyte_count);
+
+        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used)
+                  << std::endl;
+    }
 
     CHECK_HIPSPARSE_ERROR(hipsparseDestroySpVec(x));
     CHECK_HIPSPARSE_ERROR(hipsparseDestroyDnVec(y));

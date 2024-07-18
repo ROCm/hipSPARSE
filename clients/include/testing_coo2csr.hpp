@@ -25,7 +25,10 @@
 #ifndef TESTING_COO2CSR_HPP
 #define TESTING_COO2CSR_HPP
 
+#include "flops.hpp"
+#include "gbyte.hpp"
 #include "hipsparse.hpp"
+#include "hipsparse_arguments.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
@@ -40,10 +43,10 @@ using namespace hipsparse_test;
 void testing_coo2csr_bad_arg(void)
 {
 #if(!defined(CUDART_VERSION))
-    int               m         = 100;
-    int               nnz       = 100;
-    int               safe_size = 100;
-    hipsparseStatus_t status;
+    int                  m         = 100;
+    int                  nnz       = 100;
+    int                  safe_size = 100;
+    hipsparseIndexBase_t idx_base  = HIPSPARSE_INDEX_BASE_ZERO;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
     hipsparseHandle_t              handle = unique_ptr_handle->handle;
@@ -56,44 +59,23 @@ void testing_coo2csr_bad_arg(void)
     int* coo_row_ind = (int*)coo_row_ind_managed.get();
     int* csr_row_ptr = (int*)csr_row_ptr_managed.get();
 
-    if(!coo_row_ind || !csr_row_ptr)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
-
-    // Testing for(coo_row_ind == nullptr)
-    {
-        int* coo_row_ind_null = nullptr;
-
-        status = hipsparseXcoo2csr(
-            handle, coo_row_ind_null, nnz, m, csr_row_ptr, HIPSPARSE_INDEX_BASE_ZERO);
-        verify_hipsparse_status_invalid_pointer(status, "Error: coo_row_ind is nullptr");
-    }
-    // Testing for(csr_row_ptr == nullptr)
-    {
-        int* csr_row_ptr_null = nullptr;
-
-        status = hipsparseXcoo2csr(
-            handle, coo_row_ind, nnz, m, csr_row_ptr_null, HIPSPARSE_INDEX_BASE_ZERO);
-        verify_hipsparse_status_invalid_pointer(status, "Error: csr_row_ptr is nullptr");
-    }
-    // Testing for(handle == nullptr)
-    {
-        hipsparseHandle_t handle_null = nullptr;
-
-        status = hipsparseXcoo2csr(
-            handle_null, coo_row_ind, nnz, m, csr_row_ptr, HIPSPARSE_INDEX_BASE_ZERO);
-        verify_hipsparse_status_invalid_handle(status);
-    }
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXcoo2csr(handle, (int*)nullptr, nnz, m, csr_row_ptr, idx_base),
+        "Error: coo_row_ind is nullptr");
+    verify_hipsparse_status_invalid_pointer(
+        hipsparseXcoo2csr(handle, coo_row_ind, nnz, m, (int*)nullptr, idx_base),
+        "Error: csr_row_ptr is nullptr");
+    verify_hipsparse_status_invalid_handle(
+        hipsparseXcoo2csr((hipsparseHandle_t) nullptr, coo_row_ind, nnz, m, csr_row_ptr, idx_base));
 #endif
 }
 
+template <typename T>
 hipsparseStatus_t testing_coo2csr(Arguments argus)
 {
     int                  m        = argus.M;
     int                  n        = argus.N;
-    hipsparseIndexBase_t idx_base = argus.idx_base;
+    hipsparseIndexBase_t idx_base = argus.baseA;
     std::string          filename = argus.filename;
 
     std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
@@ -109,9 +91,9 @@ hipsparseStatus_t testing_coo2csr(Arguments argus)
     srand(12345ULL);
 
     // Host structures
-    std::vector<int>   hcoo_row_ind;
-    std::vector<int>   hcoo_col_ind;
-    std::vector<float> hcoo_val;
+    std::vector<int> hcoo_row_ind;
+    std::vector<int> hcoo_col_ind;
+    std::vector<T>   hcoo_val;
 
     // Read or construct CSR matrix
     int nnz = 0;
@@ -160,6 +142,36 @@ hipsparseStatus_t testing_coo2csr(Arguments argus)
 
         // Unit check
         unit_check_general(1, m + 1, 1, hcsr_row_ptr_gold.data(), hcsr_row_ptr.data());
+    }
+
+    if(argus.timing)
+    {
+        int number_cold_calls = 2;
+        int number_hot_calls  = argus.iters;
+
+        // Warm up
+        for(int iter = 0; iter < number_cold_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(
+                hipsparseXcoo2csr(handle, dcoo_row_ind, nnz, m, dcsr_row_ptr, idx_base));
+        }
+
+        double gpu_time_used = get_time_us();
+
+        // Performance run
+        for(int iter = 0; iter < number_hot_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(
+                hipsparseXcoo2csr(handle, dcoo_row_ind, nnz, m, dcsr_row_ptr, idx_base));
+        }
+
+        gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
+
+        double gbyte_count = coo2csr_gbyte_count<T>(m, nnz);
+        double gpu_gbyte   = get_gpu_gbyte(gpu_time_used, gbyte_count);
+
+        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used)
+                  << std::endl;
     }
 
     return HIPSPARSE_STATUS_SUCCESS;

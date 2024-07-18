@@ -26,6 +26,7 @@
 #define TESTING_CSRILUSV_HPP
 
 #include "hipsparse.hpp"
+#include "hipsparse_arguments.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
@@ -43,16 +44,16 @@ template <typename T>
 hipsparseStatus_t testing_csrilusv(Arguments argus)
 {
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
-    hipsparseIndexBase_t idx_base = argus.idx_base;
+    hipsparseIndexBase_t idx_base = argus.baseA;
 
-    std::unique_ptr<handle_struct> test_handle(new handle_struct);
-    hipsparseHandle_t              handle = test_handle->handle;
+    std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
+    hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
-    std::unique_ptr<descr_struct> test_descr_M(new descr_struct);
-    hipsparseMatDescr_t           descr_M = test_descr_M->descr;
+    std::unique_ptr<descr_struct> unique_ptr_descr_M(new descr_struct);
+    hipsparseMatDescr_t           descr_M = unique_ptr_descr_M->descr;
 
-    std::unique_ptr<csrilu02_struct> test_csrilu02_info(new csrilu02_struct);
-    csrilu02Info_t                   info_M = test_csrilu02_info->info;
+    std::unique_ptr<csrilu02_struct> unique_ptr_csrilu02_info(new csrilu02_struct);
+    csrilu02Info_t                   info_M = unique_ptr_csrilu02_info->info;
 
     // Initialize the matrix descriptor
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatIndexBase(descr_M, idx_base));
@@ -86,13 +87,6 @@ hipsparseStatus_t testing_csrilusv(Arguments argus)
     T*   dval       = (T*)dval_managed.get();
     int* d_position = (int*)d_position_managed.get();
 
-    //if(!dval || !dptr || !dcol || !d_position)
-    //{
-    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-    //                                    "!dval || !dptr || !dcol || !d_position");
-    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
-    //}
-
     // copy data from CPU to device
     CHECK_HIP_ERROR(
         hipMemcpy(dptr, hcsr_row_ptr.data(), sizeof(int) * (m + 1), hipMemcpyHostToDevice));
@@ -108,12 +102,6 @@ hipsparseStatus_t testing_csrilusv(Arguments argus)
     auto dbuffer_managed = hipsparse_unique_ptr{device_malloc(sizeof(char) * size), device_free};
 
     void* dbuffer = (void*)dbuffer_managed.get();
-
-    //if(!dbuffer)
-    //{
-    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!dbuffer");
-    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
-    //}
 
     // csrilu02 analysis
     CHECK_HIPSPARSE_ERROR(hipsparseXcsrilu02_analysis(handle,
@@ -191,22 +179,22 @@ hipsparseStatus_t testing_csrilusv(Arguments argus)
 #endif
 
     // Create info structs for lower and upper part
-    std::unique_ptr<csrsv2_struct> test_csrsv2_lower(new csrsv2_struct);
-    std::unique_ptr<csrsv2_struct> test_csrsv2_upper(new csrsv2_struct);
+    std::unique_ptr<csrsv2_struct> unique_ptr_csrsv2_lower(new csrsv2_struct);
+    std::unique_ptr<csrsv2_struct> unique_ptr_csrsv2_upper(new csrsv2_struct);
 
-    csrsv2Info_t info_L = test_csrsv2_lower->info;
-    csrsv2Info_t info_U = test_csrsv2_upper->info;
+    csrsv2Info_t info_L = unique_ptr_csrsv2_lower->info;
+    csrsv2Info_t info_U = unique_ptr_csrsv2_upper->info;
 
     // Create matrix descriptors for csrsv
-    std::unique_ptr<descr_struct> test_descr_L(new descr_struct);
-    hipsparseMatDescr_t           descr_L = test_descr_L->descr;
+    std::unique_ptr<descr_struct> unique_ptr_descr_L(new descr_struct);
+    hipsparseMatDescr_t           descr_L = unique_ptr_descr_L->descr;
 
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatIndexBase(descr_L, idx_base));
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatFillMode(descr_L, HIPSPARSE_FILL_MODE_LOWER));
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatDiagType(descr_L, HIPSPARSE_DIAG_TYPE_UNIT));
 
-    std::unique_ptr<descr_struct> test_descr_U(new descr_struct);
-    hipsparseMatDescr_t           descr_U = test_descr_U->descr;
+    std::unique_ptr<descr_struct> unique_ptr_descr_U(new descr_struct);
+    hipsparseMatDescr_t           descr_U = unique_ptr_descr_U->descr;
 
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatIndexBase(descr_U, idx_base));
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatFillMode(descr_U, HIPSPARSE_FILL_MODE_UPPER));
@@ -242,12 +230,6 @@ hipsparseStatus_t testing_csrilusv(Arguments argus)
     auto dbuffer_sv_managed = hipsparse_unique_ptr{device_malloc(sizeof(char) * size), device_free};
 
     void* dbuffer_sv = (void*)dbuffer_sv_managed.get();
-
-    //if(!dbuffer_sv)
-    //{
-    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED, "!dbuffer_sv");
-    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
-    //}
 
     // csrsv analysis
     CHECK_HIPSPARSE_ERROR(hipsparseXcsrsv2_analysis(handle,
@@ -295,14 +277,6 @@ hipsparseStatus_t testing_csrilusv(Arguments argus)
     T* dz_1    = (T*)dz_1_managed.get();
     T* dz_2    = (T*)dz_2_managed.get();
     T* d_alpha = (T*)d_alpha_managed.get();
-
-    //if(!dx || !dy_1 || !dy_2 || !dz_1 || !dz_2 || !d_alpha)
-    //{
-    //    verify_hipsparse_status_success(HIPSPARSE_STATUS_ALLOC_FAILED,
-    //                                    "!dx || !dy_1 || !dy_2 || !dz_1 || "
-    //                                    "!dz_2 || !d_alpha");
-    //    return HIPSPARSE_STATUS_ALLOC_FAILED;
-    //}
 
     // Copy data from CPU to device
     CHECK_HIP_ERROR(hipMemcpy(dx, hx.data(), sizeof(T) * m, hipMemcpyHostToDevice));

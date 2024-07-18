@@ -26,6 +26,7 @@
 #define TESTING_CSRGEMM2_B_HPP
 
 #include "hipsparse.hpp"
+#include "hipsparse_arguments.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
@@ -88,12 +89,6 @@ void testing_csrgemm2_b_bad_arg(void)
 
     CHECK_HIP_ERROR(
         hipMemcpy(dCptr, hcsr_row_ptr_C.data(), sizeof(int) * (M + 1), hipMemcpyHostToDevice));
-
-    if(!dDval || !dDptr || !dDcol || !dCval || !dCptr || !dCcol || !dbuffer)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
 
     // Scenario: alpha == 0 and beta != 0
 
@@ -823,27 +818,27 @@ hipsparseStatus_t testing_csrgemm2_b(Arguments argus)
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     int                  M          = argus.M;
     int                  N          = argus.N;
-    hipsparseIndexBase_t idx_base_C = argus.idx_base3;
-    hipsparseIndexBase_t idx_base_D = argus.idx_base4;
+    hipsparseIndexBase_t idx_base_C = argus.baseC;
+    hipsparseIndexBase_t idx_base_D = argus.baseD;
     std::string          filename   = argus.filename;
     T                    beta       = make_DataType<T>(argus.beta);
 
     T* h_beta = &beta;
 
-    std::unique_ptr<handle_struct> test_handle(new handle_struct);
-    hipsparseHandle_t              handle = test_handle->handle;
+    std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
+    hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
-    std::unique_ptr<descr_struct> test_descr_A(new descr_struct);
-    hipsparseMatDescr_t           descr_A = test_descr_A->descr;
+    std::unique_ptr<descr_struct> unique_ptr_descr_A(new descr_struct);
+    hipsparseMatDescr_t           descr_A = unique_ptr_descr_A->descr;
 
-    std::unique_ptr<descr_struct> test_descr_B(new descr_struct);
-    hipsparseMatDescr_t           descr_B = test_descr_B->descr;
+    std::unique_ptr<descr_struct> unique_ptr_descr_B(new descr_struct);
+    hipsparseMatDescr_t           descr_B = unique_ptr_descr_B->descr;
 
-    std::unique_ptr<descr_struct> test_descr_C(new descr_struct);
-    hipsparseMatDescr_t           descr_C = test_descr_C->descr;
+    std::unique_ptr<descr_struct> unique_ptr_descr_C(new descr_struct);
+    hipsparseMatDescr_t           descr_C = unique_ptr_descr_C->descr;
 
-    std::unique_ptr<descr_struct> test_descr_D(new descr_struct);
-    hipsparseMatDescr_t           descr_D = test_descr_D->descr;
+    std::unique_ptr<descr_struct> unique_ptr_descr_D(new descr_struct);
+    hipsparseMatDescr_t           descr_D = unique_ptr_descr_D->descr;
 
     std::unique_ptr<csrgemm2_struct> unique_ptr_csrgemm2(new csrgemm2_struct);
     csrgemm2Info_t                   info = unique_ptr_csrgemm2->info;

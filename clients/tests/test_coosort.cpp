@@ -77,24 +77,24 @@ protected:
 Arguments setup_coosort_arguments(coosort_tuple tup)
 {
     Arguments arg;
-    arg.M        = std::get<0>(tup);
-    arg.N        = std::get<1>(tup);
-    arg.transA   = std::get<2>(tup);
-    arg.temp     = std::get<3>(tup);
-    arg.idx_base = std::get<4>(tup);
-    arg.timing   = 0;
+    arg.M       = std::get<0>(tup);
+    arg.N       = std::get<1>(tup);
+    arg.transA  = std::get<2>(tup);
+    arg.permute = std::get<3>(tup);
+    arg.baseA   = std::get<4>(tup);
+    arg.timing  = 0;
     return arg;
 }
 
 Arguments setup_coosort_arguments(coosort_bin_tuple tup)
 {
     Arguments arg;
-    arg.M        = -99;
-    arg.N        = -99;
-    arg.transA   = std::get<0>(tup);
-    arg.temp     = std::get<1>(tup);
-    arg.idx_base = std::get<2>(tup);
-    arg.timing   = 0;
+    arg.M       = -99;
+    arg.N       = -99;
+    arg.transA  = std::get<0>(tup);
+    arg.permute = std::get<1>(tup);
+    arg.baseA   = std::get<2>(tup);
+    arg.timing  = 0;
 
     // Determine absolute path of test matrix
     std::string bin_file = std::get<3>(tup);
@@ -105,8 +105,6 @@ Arguments setup_coosort_arguments(coosort_bin_tuple tup)
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(coosort_bad_arg, coosort)
 {
     testing_coosort_bad_arg();
@@ -142,4 +140,3 @@ INSTANTIATE_TEST_SUITE_P(coosort_bin,
                                           testing::ValuesIn(coosort_perm),
                                           testing::ValuesIn(coosort_base),
                                           testing::ValuesIn(coosort_bin)));
-#endif

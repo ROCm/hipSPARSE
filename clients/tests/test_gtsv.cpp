@@ -22,7 +22,6 @@
  * ************************************************************************ */
 
 #include "testing_gtsv.hpp"
-#include "utility.hpp"
 
 #include <hipsparse.h>
 #include <string>
@@ -50,8 +49,6 @@ Arguments setup_gtsv_arguments(gtsv_tuple tup)
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater (removed in cusparse 12.0.0)
-#if(!defined(CUDART_VERSION) || (CUDART_VERSION >= 11010 && CUDART_VERSION < 12000))
 TEST(gtsv_bad_arg, gtsv_float)
 {
     testing_gtsv2_bad_arg<float>();
@@ -93,4 +90,3 @@ INSTANTIATE_TEST_SUITE_P(gtsv,
                          parameterized_gtsv,
                          testing::Combine(testing::ValuesIn(gtsv_M_range),
                                           testing::ValuesIn(gtsv_N_range)));
-#endif

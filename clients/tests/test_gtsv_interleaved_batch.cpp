@@ -48,13 +48,11 @@ Arguments setup_gtsv_interleaved_batch_arguments(gtsv_interleaved_batch_tuple tu
     Arguments arg;
     arg.M           = std::get<0>(tup);
     arg.batch_count = std::get<1>(tup);
-    arg.algo        = std::get<2>(tup);
+    arg.gtsv_alg    = std::get<2>(tup);
     arg.timing      = 0;
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater (removed in cusparse 12.0.0)
-#if(!defined(CUDART_VERSION) || (CUDART_VERSION >= 11010 && CUDART_VERSION < 12000))
 TEST(gtsv_interleaved_batch_bad_arg, gtsv_interleaved_batch_float)
 {
     testing_gtsv_interleaved_batch_bad_arg<float>();
@@ -98,4 +96,3 @@ INSTANTIATE_TEST_SUITE_P(
     testing::Combine(testing::ValuesIn(gtsv_interleaved_batch_M_range),
                      testing::ValuesIn(gtsv_interleaved_batch_batch_count_range),
                      testing::ValuesIn(gtsv_interleaved_batch_algo_range)));
-#endif

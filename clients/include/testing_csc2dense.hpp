@@ -29,15 +29,21 @@
 template <typename T>
 void testing_csc2dense_bad_arg(void)
 {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     static constexpr hipsparseDirection_t DIRA = HIPSPARSE_DIRECTION_COLUMN;
     testing_csx2dense_bad_arg<DIRA, T>(hipsparseXcsc2dense<T>);
+#endif
 }
 
 template <typename T>
 hipsparseStatus_t testing_csc2dense(Arguments argus)
 {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     static constexpr hipsparseDirection_t DIRA = HIPSPARSE_DIRECTION_COLUMN;
     return testing_csx2dense<DIRA, T>(argus, hipsparseXcsc2dense<T>, hipsparseXdense2csc<T>);
+#else
+    return HIPSPARSE_STATUS_SUCCESS;
+#endif
 }
 
 #endif // TESTING_CSC2DENSE

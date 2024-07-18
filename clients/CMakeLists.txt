@@ -52,10 +52,11 @@ if(NOT TARGET hipsparse)
 
   option(BUILD_CLIENTS_TESTS "Build tests (requires googletest)" OFF)
   option(BUILD_CLIENTS_SAMPLES "Build examples" ON)
+  option(BUILD_CLIENTS_BENCHMARKS "Build benchmarks" ON)
 endif()
 
 # Build flags
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -74,6 +75,10 @@ endif()
 
 if(BUILD_CLIENTS_SAMPLES)
   add_subdirectory(samples)
+endif()
+
+if(BUILD_CLIENTS_BENCHMARKS)
+  add_subdirectory(benchmarks)
 endif()
 
 if(BUILD_CLIENTS_TESTS)

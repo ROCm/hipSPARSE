@@ -70,8 +70,8 @@ Arguments setup_prune_csr2csr_arguments(prune_csr2csr_tuple tup)
     arg.M         = std::get<0>(tup);
     arg.N         = std::get<1>(tup);
     arg.threshold = std::get<2>(tup);
-    arg.idx_base  = std::get<3>(tup);
-    arg.idx_base2 = std::get<4>(tup);
+    arg.baseA     = std::get<3>(tup);
+    arg.baseB     = std::get<4>(tup);
     arg.timing    = 0;
     return arg;
 }
@@ -82,8 +82,8 @@ Arguments setup_prune_csr2csr_arguments(prune_csr2csr_bin_tuple tup)
     arg.M         = -99;
     arg.N         = -99;
     arg.threshold = std::get<0>(tup);
-    arg.idx_base  = std::get<1>(tup);
-    arg.idx_base2 = std::get<2>(tup);
+    arg.baseA     = std::get<1>(tup);
+    arg.baseB     = std::get<2>(tup);
     arg.timing    = 0;
 
     // Determine absolute path of test matrix
@@ -95,8 +95,7 @@ Arguments setup_prune_csr2csr_arguments(prune_csr2csr_bin_tuple tup)
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 TEST(prune_csr2csr_bad_arg, prune_csr2csr)
 {
     testing_prune_csr2csr_bad_arg<float>();

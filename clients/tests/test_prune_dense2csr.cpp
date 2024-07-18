@@ -52,12 +52,11 @@ Arguments setup_prune_dense2csr_arguments(prune_dense2csr_tuple tup)
     arg.N         = std::get<1>(tup);
     arg.lda       = std::get<2>(tup);
     arg.threshold = std::get<3>(tup);
-    arg.idx_base  = std::get<4>(tup);
+    arg.baseA     = std::get<4>(tup);
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 TEST(prune_dense2csr_bad_arg, prune_dense2csr)
 {
     testing_prune_dense2csr_bad_arg<float>();

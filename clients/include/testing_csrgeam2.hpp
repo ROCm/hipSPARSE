@@ -25,7 +25,10 @@
 #ifndef TESTING_CSRGEAM2_HPP
 #define TESTING_CSRGEAM2_HPP
 
+#include "flops.hpp"
+#include "gbyte.hpp"
 #include "hipsparse.hpp"
+#include "hipsparse_arguments.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
@@ -36,9 +39,6 @@
 using namespace hipsparse;
 using namespace hipsparse_test;
 
-//
-//
-//
 template <typename T>
 void testing_csrgeam2_bad_arg(void)
 {
@@ -86,13 +86,6 @@ void testing_csrgeam2_bad_arg(void)
     int*  dCcol   = (int*)dCcol_managed.get();
     T*    dCval   = (T*)dCval_managed.get();
     void* dbuffer = dbuf_managed.get();
-
-    if(!dAval || !dAptr || !dAcol || !dBval || !dBptr || !dBcol || !dCval || !dCptr || !dCcol
-       || !dbuffer)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
 
     const int        M = safe_size;
     std::vector<int> hcsr_row_ptr_C(M + 1);
@@ -737,27 +730,26 @@ void testing_csrgeam2_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_csrgeam2(Arguments argus)
 {
-#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     int                  M          = argus.M;
     int                  N          = argus.N;
-    hipsparseIndexBase_t idx_base_A = argus.idx_base;
-    hipsparseIndexBase_t idx_base_B = argus.idx_base2;
-    hipsparseIndexBase_t idx_base_C = argus.idx_base3;
+    hipsparseIndexBase_t idx_base_A = argus.baseA;
+    hipsparseIndexBase_t idx_base_B = argus.baseB;
+    hipsparseIndexBase_t idx_base_C = argus.baseC;
     std::string          filename   = argus.filename;
     T                    h_alpha    = make_DataType<T>(argus.alpha);
     T                    h_beta     = make_DataType<T>(argus.beta);
 
-    std::unique_ptr<handle_struct> test_handle(new handle_struct);
-    hipsparseHandle_t              handle = test_handle->handle;
+    std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
+    hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
-    std::unique_ptr<descr_struct> test_descr_A(new descr_struct);
-    hipsparseMatDescr_t           descr_A = test_descr_A->descr;
+    std::unique_ptr<descr_struct> unique_ptr_descr_A(new descr_struct);
+    hipsparseMatDescr_t           descr_A = unique_ptr_descr_A->descr;
 
-    std::unique_ptr<descr_struct> test_descr_B(new descr_struct);
-    hipsparseMatDescr_t           descr_B = test_descr_B->descr;
+    std::unique_ptr<descr_struct> unique_ptr_descr_B(new descr_struct);
+    hipsparseMatDescr_t           descr_B = unique_ptr_descr_B->descr;
 
-    std::unique_ptr<descr_struct> test_descr_C(new descr_struct);
-    hipsparseMatDescr_t           descr_C = test_descr_C->descr;
+    std::unique_ptr<descr_struct> unique_ptr_descr_C(new descr_struct);
+    hipsparseMatDescr_t           descr_C = unique_ptr_descr_C->descr;
 
     // Set matrix index base
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatIndexBase(descr_A, idx_base_A));
@@ -818,8 +810,6 @@ hipsparseStatus_t testing_csrgeam2(Arguments argus)
     T*   dBval   = (T*)dBval_managed.get();
     int* dCptr_1 = (int*)dCptr_1_managed.get();
     int* dCptr_2 = (int*)dCptr_2_managed.get();
-    int* dCcol_1 = nullptr;
-    T*   dCval_1 = nullptr;
     T*   dalpha  = (T*)dalpha_managed.get();
     T*   dbeta   = (T*)dbeta_managed.get();
 
@@ -854,18 +844,15 @@ hipsparseStatus_t testing_csrgeam2(Arguments argus)
                                                            dBptr,
                                                            dBcol,
                                                            descr_C,
-                                                           dCval_1,
+                                                           (T*)nullptr,
                                                            dCptr_1,
-                                                           dCcol_1,
+                                                           (int*)nullptr,
                                                            &bufferSize));
 
     // Allocate buffer on the device
     auto dbuffer_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(char) * bufferSize), device_free};
-
     void* dbuffer = (void*)dbuffer_managed.get();
-
-    // csrgeam2 nnz
 
     // hipsparse pointer mode host
     int hnnz_C_1;
@@ -891,89 +878,44 @@ hipsparseStatus_t testing_csrgeam2(Arguments argus)
     auto dCcol_1_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * hnnz_C_1), device_free};
     auto dCval_1_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * hnnz_C_1), device_free};
 
-    dCcol_1 = (int*)dCcol_1_managed.get();
-    dCval_1 = (T*)dCval_1_managed.get();
+    int* dCcol_1 = (int*)dCcol_1_managed.get();
+    T*   dCval_1 = (T*)dCval_1_managed.get();
+
+    CHECK_HIP_ERROR(hipMemcpy(dalpha, &h_alpha, sizeof(T), hipMemcpyHostToDevice));
+    CHECK_HIP_ERROR(hipMemcpy(dbeta, &h_beta, sizeof(T), hipMemcpyHostToDevice));
+
+    // hipsparse pointer mode device
+    auto dCcol_2_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * hnnz_C_1), device_free};
+    auto dCval_2_managed = hipsparse_unique_ptr{device_malloc(sizeof(T) * hnnz_C_1), device_free};
+    auto dnnz_C_managed  = hipsparse_unique_ptr{device_malloc(sizeof(int)), device_free};
+
+    int* dCcol_2 = (int*)dCcol_2_managed.get();
+    T*   dCval_2 = (T*)dCval_2_managed.get();
+    int* dnnz_C  = (int*)dnnz_C_managed.get();
+
+    CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
+    CHECK_HIPSPARSE_ERROR(hipsparseXcsrgeam2Nnz(handle,
+                                                M,
+                                                N,
+                                                descr_A,
+                                                nnz_A,
+                                                dAptr,
+                                                dAcol,
+                                                descr_B,
+                                                nnz_B,
+                                                dBptr,
+                                                dBcol,
+                                                descr_C,
+                                                dCptr_2,
+                                                dnnz_C,
+                                                dbuffer));
+
+    // Copy output from device to CPU
+    int hnnz_C_2;
+    CHECK_HIP_ERROR(hipMemcpy(&hnnz_C_2, dnnz_C, sizeof(int), hipMemcpyDeviceToHost));
 
     if(argus.unit_check)
     {
-        CHECK_HIP_ERROR(hipMemcpy(dalpha, &h_alpha, sizeof(T), hipMemcpyHostToDevice));
-        CHECK_HIP_ERROR(hipMemcpy(dbeta, &h_beta, sizeof(T), hipMemcpyHostToDevice));
-
-        // hipsparse pointer mode device
-        auto dCcol_2_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(int) * hnnz_C_1), device_free};
-        auto dCval_2_managed
-            = hipsparse_unique_ptr{device_malloc(sizeof(T) * hnnz_C_1), device_free};
-        auto dnnz_C_managed = hipsparse_unique_ptr{device_malloc(sizeof(int)), device_free};
-
-        int* dCcol_2;
-        T*   dCval_2;
-
-        dCcol_2     = (int*)dCcol_2_managed.get();
-        dCval_2     = (T*)dCval_2_managed.get();
-        int* dnnz_C = (int*)dnnz_C_managed.get();
-
-        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
-        CHECK_HIPSPARSE_ERROR(hipsparseXcsrgeam2Nnz(handle,
-                                                    M,
-                                                    N,
-                                                    descr_A,
-                                                    nnz_A,
-                                                    dAptr,
-                                                    dAcol,
-                                                    descr_B,
-                                                    nnz_B,
-                                                    dBptr,
-                                                    dBcol,
-                                                    descr_C,
-                                                    dCptr_2,
-                                                    dnnz_C,
-                                                    dbuffer));
-
-        // Compute csrgemm host solution
-        std::vector<int> hcsr_row_ptr_C_gold(M + 1);
-
-        int nnz_C_gold = host_csrgeam_nnz(M,
-                                          N,
-                                          h_alpha,
-                                          hcsr_row_ptr_A.data(),
-                                          hcsr_col_ind_A.data(),
-                                          h_beta,
-                                          hcsr_row_ptr_B.data(),
-                                          hcsr_col_ind_B.data(),
-                                          hcsr_row_ptr_C_gold.data(),
-                                          idx_base_A,
-                                          idx_base_B,
-                                          idx_base_C);
-
-        std::vector<int> hcsr_col_ind_C_gold(nnz_C_gold);
-        std::vector<T>   hcsr_val_C_gold(nnz_C_gold);
-
-        host_csrgeam(M,
-                     N,
-                     h_alpha,
-                     hcsr_row_ptr_A.data(),
-                     hcsr_col_ind_A.data(),
-                     hcsr_val_A.data(),
-                     h_beta,
-                     hcsr_row_ptr_B.data(),
-                     hcsr_col_ind_B.data(),
-                     hcsr_val_B.data(),
-                     hcsr_row_ptr_C_gold.data(),
-                     hcsr_col_ind_C_gold.data(),
-                     hcsr_val_C_gold.data(),
-                     idx_base_A,
-                     idx_base_B,
-                     idx_base_C);
-
-        // Copy output from device to CPU
-        int hnnz_C_2;
-        CHECK_HIP_ERROR(hipMemcpy(&hnnz_C_2, dnnz_C, sizeof(int), hipMemcpyDeviceToHost));
-
-        // Check nnz of C
-        unit_check_general(1, 1, 1, &nnz_C_gold, &hnnz_C_1);
-        unit_check_general(1, 1, 1, &nnz_C_gold, &hnnz_C_2);
-
         // Compute csrgeam2
         CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
         CHECK_HIPSPARSE_ERROR(hipsparseXcsrgeam2(handle,
@@ -1022,23 +964,63 @@ hipsparseStatus_t testing_csrgeam2(Arguments argus)
         // Copy output from device to CPU
         std::vector<int> hcsr_row_ptr_C_1(M + 1);
         std::vector<int> hcsr_row_ptr_C_2(M + 1);
-        std::vector<int> hcsr_col_ind_C_1(nnz_C_gold);
-        std::vector<int> hcsr_col_ind_C_2(nnz_C_gold);
-        std::vector<T>   hcsr_val_C_1(nnz_C_gold);
-        std::vector<T>   hcsr_val_C_2(nnz_C_gold);
+        std::vector<int> hcsr_col_ind_C_1(hnnz_C_1);
+        std::vector<int> hcsr_col_ind_C_2(hnnz_C_2);
+        std::vector<T>   hcsr_val_C_1(hnnz_C_1);
+        std::vector<T>   hcsr_val_C_2(hnnz_C_2);
 
         CHECK_HIP_ERROR(hipMemcpy(
             hcsr_row_ptr_C_1.data(), dCptr_1, sizeof(int) * (M + 1), hipMemcpyDeviceToHost));
         CHECK_HIP_ERROR(hipMemcpy(
             hcsr_row_ptr_C_2.data(), dCptr_2, sizeof(int) * (M + 1), hipMemcpyDeviceToHost));
         CHECK_HIP_ERROR(hipMemcpy(
-            hcsr_col_ind_C_1.data(), dCcol_1, sizeof(int) * nnz_C_gold, hipMemcpyDeviceToHost));
+            hcsr_col_ind_C_1.data(), dCcol_1, sizeof(int) * hnnz_C_1, hipMemcpyDeviceToHost));
         CHECK_HIP_ERROR(hipMemcpy(
-            hcsr_col_ind_C_2.data(), dCcol_2, sizeof(int) * nnz_C_gold, hipMemcpyDeviceToHost));
+            hcsr_col_ind_C_2.data(), dCcol_2, sizeof(int) * hnnz_C_2, hipMemcpyDeviceToHost));
         CHECK_HIP_ERROR(
-            hipMemcpy(hcsr_val_C_1.data(), dCval_1, sizeof(T) * nnz_C_gold, hipMemcpyDeviceToHost));
+            hipMemcpy(hcsr_val_C_1.data(), dCval_1, sizeof(T) * hnnz_C_1, hipMemcpyDeviceToHost));
         CHECK_HIP_ERROR(
-            hipMemcpy(hcsr_val_C_2.data(), dCval_2, sizeof(T) * nnz_C_gold, hipMemcpyDeviceToHost));
+            hipMemcpy(hcsr_val_C_2.data(), dCval_2, sizeof(T) * hnnz_C_2, hipMemcpyDeviceToHost));
+
+        // Compute csrgemm host solution
+        std::vector<int> hcsr_row_ptr_C_gold(M + 1);
+
+        int nnz_C_gold = host_csrgeam_nnz(M,
+                                          N,
+                                          h_alpha,
+                                          hcsr_row_ptr_A.data(),
+                                          hcsr_col_ind_A.data(),
+                                          h_beta,
+                                          hcsr_row_ptr_B.data(),
+                                          hcsr_col_ind_B.data(),
+                                          hcsr_row_ptr_C_gold.data(),
+                                          idx_base_A,
+                                          idx_base_B,
+                                          idx_base_C);
+
+        std::vector<int> hcsr_col_ind_C_gold(nnz_C_gold);
+        std::vector<T>   hcsr_val_C_gold(nnz_C_gold);
+
+        host_csrgeam(M,
+                     N,
+                     h_alpha,
+                     hcsr_row_ptr_A.data(),
+                     hcsr_col_ind_A.data(),
+                     hcsr_val_A.data(),
+                     h_beta,
+                     hcsr_row_ptr_B.data(),
+                     hcsr_col_ind_B.data(),
+                     hcsr_val_B.data(),
+                     hcsr_row_ptr_C_gold.data(),
+                     hcsr_col_ind_C_gold.data(),
+                     hcsr_val_C_gold.data(),
+                     idx_base_A,
+                     idx_base_B,
+                     idx_base_C);
+
+        // Check nnz of C
+        unit_check_general(1, 1, 1, &nnz_C_gold, &hnnz_C_1);
+        unit_check_general(1, 1, 1, &nnz_C_gold, &hnnz_C_2);
 
         // Check structure and entries of C
         unit_check_general(1, M + 1, 1, hcsr_row_ptr_C_gold.data(), hcsr_row_ptr_C_1.data());
@@ -1048,7 +1030,77 @@ hipsparseStatus_t testing_csrgeam2(Arguments argus)
         unit_check_near(1, nnz_C_gold, 1, hcsr_val_C_gold.data(), hcsr_val_C_1.data());
         unit_check_near(1, nnz_C_gold, 1, hcsr_val_C_gold.data(), hcsr_val_C_2.data());
     }
-#endif
+
+    if(argus.timing)
+    {
+        int number_cold_calls = 2;
+        int number_hot_calls  = argus.iters;
+
+        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
+
+        // Warm up
+        for(int iter = 0; iter < number_cold_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseXcsrgeam2(handle,
+                                                     M,
+                                                     N,
+                                                     &h_alpha,
+                                                     descr_A,
+                                                     nnz_A,
+                                                     dAval,
+                                                     dAptr,
+                                                     dAcol,
+                                                     &h_beta,
+                                                     descr_B,
+                                                     nnz_B,
+                                                     dBval,
+                                                     dBptr,
+                                                     dBcol,
+                                                     descr_C,
+                                                     dCval_1,
+                                                     dCptr_1,
+                                                     dCcol_1,
+                                                     dbuffer));
+        }
+
+        double gpu_time_used = get_time_us();
+
+        // Performance run
+        for(int iter = 0; iter < number_hot_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseXcsrgeam2(handle,
+                                                     M,
+                                                     N,
+                                                     &h_alpha,
+                                                     descr_A,
+                                                     nnz_A,
+                                                     dAval,
+                                                     dAptr,
+                                                     dAcol,
+                                                     &h_beta,
+                                                     descr_B,
+                                                     nnz_B,
+                                                     dBval,
+                                                     dBptr,
+                                                     dBcol,
+                                                     descr_C,
+                                                     dCval_1,
+                                                     dCptr_1,
+                                                     dCcol_1,
+                                                     dbuffer));
+        }
+
+        gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
+
+        double gflop_count = csrgeam_gflop_count<T>(nnz_A, nnz_B, hnnz_C_1, &h_alpha, &h_beta);
+        double gbyte_count = csrgeam_gbyte_count<T>(M, nnz_A, nnz_B, hnnz_C_1, &h_alpha, &h_beta);
+
+        double gpu_gflops = get_gpu_gflops(gpu_time_used, gflop_count);
+        double gpu_gbyte  = get_gpu_gbyte(gpu_time_used, gbyte_count);
+
+        std::cout << "GBytes/s: " << gpu_gbyte << " GFlops/s: " << gpu_gflops
+                  << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
+    }
 
     return HIPSPARSE_STATUS_SUCCESS;
 }

@@ -28,14 +28,16 @@
 #include <string>
 #include <vector>
 
-typedef std::tuple<int, int, hipsparseIndexBase_t, hipsparseOrder_t> dense_to_sparse_csc_tuple;
+typedef std::tuple<int, int, hipsparseIndexBase_t, hipsparseOrder_t, hipsparseDenseToSparseAlg_t>
+    dense_to_sparse_csc_tuple;
 
 int dense_to_sparse_csc_M_range[] = {100};
 int dense_to_sparse_csc_N_range[] = {10};
 
 hipsparseIndexBase_t dense_to_sparse_csc_base[]
     = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
-hipsparseOrder_t dense_to_sparse_csc_order[] = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
+hipsparseOrder_t dense_to_sparse_csc_order[]          = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
+hipsparseDenseToSparseAlg_t dense_to_sparse_csc_alg[] = {HIPSPARSE_DENSETOSPARSE_ALG_DEFAULT};
 
 class parameterized_dense_to_sparse_csc : public testing::TestWithParam<dense_to_sparse_csc_tuple>
 {
@@ -49,16 +51,16 @@ protected:
 Arguments setup_dense_to_sparse_csc_arguments(dense_to_sparse_csc_tuple tup)
 {
     Arguments arg;
-    arg.M        = std::get<0>(tup);
-    arg.N        = std::get<1>(tup);
-    arg.idx_base = std::get<2>(tup);
-    arg.orderA   = std::get<3>(tup);
-    arg.timing   = 0;
+    arg.M                = std::get<0>(tup);
+    arg.N                = std::get<1>(tup);
+    arg.baseA            = std::get<2>(tup);
+    arg.orderA           = std::get<3>(tup);
+    arg.dense2sparse_alg = std::get<4>(tup);
+    arg.timing           = 0;
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
 TEST(dense_to_sparse_csc_bad_arg, dense_to_sparse_csc)
 {
     testing_dense_to_sparse_csc_bad_arg();
@@ -77,5 +79,6 @@ INSTANTIATE_TEST_SUITE_P(dense_to_sparse_csc,
                          testing::Combine(testing::ValuesIn(dense_to_sparse_csc_M_range),
                                           testing::ValuesIn(dense_to_sparse_csc_N_range),
                                           testing::ValuesIn(dense_to_sparse_csc_base),
-                                          testing::ValuesIn(dense_to_sparse_csc_order)));
+                                          testing::ValuesIn(dense_to_sparse_csc_order),
+                                          testing::ValuesIn(dense_to_sparse_csc_alg)));
 #endif

@@ -26,6 +26,7 @@
 #define TESTING_CSRU2CSR_HPP
 
 #include "hipsparse.hpp"
+#include "hipsparse_arguments.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
@@ -38,6 +39,7 @@ using namespace hipsparse_test;
 
 void testing_csru2csr_bad_arg(void)
 {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     int m         = 100;
     int n         = 100;
     int nnz       = 100;
@@ -67,12 +69,6 @@ void testing_csru2csr_bad_arg(void)
     int*   csr_col_ind = (int*)csr_col_ind_managed.get();
     float* csr_val     = (float*)csr_val_managed.get();
     void*  buffer      = (void*)buffer_managed.get();
-
-    if(!csr_row_ptr || !csr_col_ind || !csr_val || !buffer)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
 
     // Testing csru2csr_bufferSizeExt for bad args
 #ifndef __HIP_PLATFORM_NVIDIA__
@@ -243,28 +239,29 @@ void testing_csru2csr_bad_arg(void)
             handle, 0, n, nnz, nullptr, (float*)nullptr, nullptr, nullptr, nullptr, &bufferSize),
         "Error: nnz is invalid");
 #endif
+#endif
 }
 
 template <typename T>
 hipsparseStatus_t testing_csru2csr(Arguments argus)
 {
-#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     int                  m        = argus.M;
     int                  n        = argus.N;
-    hipsparseIndexBase_t idx_base = argus.idx_base;
+    hipsparseIndexBase_t idx_base = argus.baseA;
     std::string          filename = argus.filename;
 
     // hipSPARSE handle
-    std::unique_ptr<handle_struct> test_handle(new handle_struct);
-    hipsparseHandle_t              handle = test_handle->handle;
+    std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
+    hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
-    std::unique_ptr<descr_struct> test_descr(new descr_struct);
-    hipsparseMatDescr_t           descr = test_descr->descr;
+    std::unique_ptr<descr_struct> unique_ptr_descr(new descr_struct);
+    hipsparseMatDescr_t           descr = unique_ptr_descr->descr;
 
     hipsparseSetMatIndexBase(descr, idx_base);
 
-    std::unique_ptr<csru2csr_struct> test_info(new csru2csr_struct);
-    csru2csrInfo_t                   info = test_info->info;
+    std::unique_ptr<csru2csr_struct> unique_ptr_info(new csru2csr_struct);
+    csru2csrInfo_t                   info = unique_ptr_info->info;
 
     srand(12345ULL);
 
@@ -341,36 +338,41 @@ hipsparseStatus_t testing_csru2csr(Arguments argus)
 
     void* dbuffer = (void*)dbuffer_managed.get();
 
-    // Sort CSR columns
-    CHECK_HIPSPARSE_ERROR(hipsparseXcsru2csr(
-        handle, m, n, nnz, descr, dcsr_val, dcsr_row_ptr, dcsr_col_ind, info, dbuffer));
+    if(argus.unit_check)
+    {
+        // Sort CSR columns
+        CHECK_HIPSPARSE_ERROR(hipsparseXcsru2csr(
+            handle, m, n, nnz, descr, dcsr_val, dcsr_row_ptr, dcsr_col_ind, info, dbuffer));
 
-    // Copy output from device to host
-    std::vector<int> hcsr_col_ind(nnz);
-    std::vector<T>   hcsr_val(nnz);
+        // Copy output from device to host
+        std::vector<int> hcsr_col_ind(nnz);
+        std::vector<T>   hcsr_val(nnz);
 
-    CHECK_HIP_ERROR(
-        hipMemcpy(hcsr_col_ind.data(), dcsr_col_ind, sizeof(int) * nnz, hipMemcpyDeviceToHost));
-    CHECK_HIP_ERROR(hipMemcpy(hcsr_val.data(), dcsr_val, sizeof(T) * nnz, hipMemcpyDeviceToHost));
+        CHECK_HIP_ERROR(
+            hipMemcpy(hcsr_col_ind.data(), dcsr_col_ind, sizeof(int) * nnz, hipMemcpyDeviceToHost));
+        CHECK_HIP_ERROR(
+            hipMemcpy(hcsr_val.data(), dcsr_val, sizeof(T) * nnz, hipMemcpyDeviceToHost));
 
-    // Unsort CSR columns back to original state
-    CHECK_HIPSPARSE_ERROR(hipsparseXcsr2csru(
-        handle, m, n, nnz, descr, dcsr_val, dcsr_row_ptr, dcsr_col_ind, info, dbuffer));
+        // Unsort CSR columns back to original state
+        CHECK_HIPSPARSE_ERROR(hipsparseXcsr2csru(
+            handle, m, n, nnz, descr, dcsr_val, dcsr_row_ptr, dcsr_col_ind, info, dbuffer));
 
-    // Copy output from device to host
-    std::vector<int> hcsr_col_ind_unsorted(nnz);
-    std::vector<T>   hcsr_val_unsorted(nnz);
+        // Copy output from device to host
+        std::vector<int> hcsr_col_ind_unsorted(nnz);
+        std::vector<T>   hcsr_val_unsorted(nnz);
 
-    CHECK_HIP_ERROR(hipMemcpy(
-        hcsr_col_ind_unsorted.data(), dcsr_col_ind, sizeof(int) * nnz, hipMemcpyDeviceToHost));
-    CHECK_HIP_ERROR(
-        hipMemcpy(hcsr_val_unsorted.data(), dcsr_val, sizeof(T) * nnz, hipMemcpyDeviceToHost));
+        CHECK_HIP_ERROR(hipMemcpy(
+            hcsr_col_ind_unsorted.data(), dcsr_col_ind, sizeof(int) * nnz, hipMemcpyDeviceToHost));
+        CHECK_HIP_ERROR(
+            hipMemcpy(hcsr_val_unsorted.data(), dcsr_val, sizeof(T) * nnz, hipMemcpyDeviceToHost));
 
-    // Unit check
-    unit_check_general(1, nnz, 1, hcsr_col_ind.data(), hcsr_col_ind_gold.data());
-    unit_check_general(1, nnz, 1, hcsr_val.data(), hcsr_val_gold.data());
-    unit_check_general(1, nnz, 1, hcsr_col_ind_unsorted.data(), hcsr_col_ind_unsorted_gold.data());
-    unit_check_general(1, nnz, 1, hcsr_val_unsorted.data(), hcsr_val_unsorted_gold.data());
+        // Unit check
+        unit_check_general(1, nnz, 1, hcsr_col_ind.data(), hcsr_col_ind_gold.data());
+        unit_check_general(1, nnz, 1, hcsr_val.data(), hcsr_val_gold.data());
+        unit_check_general(
+            1, nnz, 1, hcsr_col_ind_unsorted.data(), hcsr_col_ind_unsorted_gold.data());
+        unit_check_general(1, nnz, 1, hcsr_val_unsorted.data(), hcsr_val_unsorted_gold.data());
+    }
 #endif
 
     return HIPSPARSE_STATUS_SUCCESS;

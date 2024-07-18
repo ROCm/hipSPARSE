@@ -75,30 +75,30 @@ protected:
 Arguments setup_csrgemm_arguments(csrgemm_tuple tup)
 {
     Arguments arg;
-    arg.M         = std::get<0>(tup);
-    arg.N         = std::get<1>(tup);
-    arg.K         = std::get<2>(tup);
-    arg.idx_base  = std::get<3>(tup);
-    arg.idx_base2 = std::get<4>(tup);
-    arg.idx_base3 = std::get<5>(tup);
-    arg.transA    = std::get<6>(tup);
-    arg.transB    = std::get<7>(tup);
-    arg.timing    = 0;
+    arg.M      = std::get<0>(tup);
+    arg.N      = std::get<1>(tup);
+    arg.K      = std::get<2>(tup);
+    arg.baseA  = std::get<3>(tup);
+    arg.baseB  = std::get<4>(tup);
+    arg.baseC  = std::get<5>(tup);
+    arg.transA = std::get<6>(tup);
+    arg.transB = std::get<7>(tup);
+    arg.timing = 0;
     return arg;
 }
 
 Arguments setup_csrgemm_arguments(csrgemm_bin_tuple tup)
 {
     Arguments arg;
-    arg.M         = -99;
-    arg.N         = -99;
-    arg.K         = -99;
-    arg.idx_base  = std::get<0>(tup);
-    arg.idx_base2 = std::get<1>(tup);
-    arg.idx_base3 = std::get<2>(tup);
-    arg.transA    = std::get<3>(tup);
-    arg.transB    = std::get<4>(tup);
-    arg.timing    = 0;
+    arg.M      = -99;
+    arg.N      = -99;
+    arg.K      = -99;
+    arg.baseA  = std::get<0>(tup);
+    arg.baseB  = std::get<1>(tup);
+    arg.baseC  = std::get<2>(tup);
+    arg.transA = std::get<3>(tup);
+    arg.transB = std::get<4>(tup);
+    arg.timing = 0;
 
     // Determine absolute path of test matrix
     std::string bin_file = std::get<5>(tup);
@@ -109,8 +109,7 @@ Arguments setup_csrgemm_arguments(csrgemm_bin_tuple tup)
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
 TEST(csrgemm_bad_arg, csrgemm_float)
 {
     testing_csrgemm_bad_arg<float>();

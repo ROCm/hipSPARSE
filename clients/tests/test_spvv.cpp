@@ -25,19 +25,31 @@
 
 #include <hipsparse.h>
 
-typedef std::tuple<int, int, hipsparseIndexBase_t>    spvv_tuple;
-typedef std::tuple<hipsparseIndexBase_t, std::string> spvv_bin_tuple;
+typedef std::tuple<int, int, hipsparseOperation_t, hipsparseIndexBase_t>    spvv_tuple;
+typedef std::tuple<hipsparseOperation_t, hipsparseIndexBase_t, std::string> spvv_bin_tuple;
 
 int spvv_N_range[]   = {50, 750, 2135};
 int spvv_nnz_range[] = {5, 45};
 
+hipsparseOperation_t spvv_trans_real_range[] = {HIPSPARSE_OPERATION_NON_TRANSPOSE};
+hipsparseOperation_t spvv_trans_complex_range[]
+    = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE};
 hipsparseIndexBase_t spvv_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
-class parameterized_spvv : public testing::TestWithParam<spvv_tuple>
+class parameterized_spvv_real : public testing::TestWithParam<spvv_tuple>
 {
 protected:
-    parameterized_spvv() {}
-    virtual ~parameterized_spvv() {}
+    parameterized_spvv_real() {}
+    virtual ~parameterized_spvv_real() {}
+    virtual void SetUp() {}
+    virtual void TearDown() {}
+};
+
+class parameterized_spvv_complex : public testing::TestWithParam<spvv_tuple>
+{
+protected:
+    parameterized_spvv_complex() {}
+    virtual ~parameterized_spvv_complex() {}
     virtual void SetUp() {}
     virtual void TearDown() {}
 };
@@ -45,21 +57,22 @@ protected:
 Arguments setup_spvv_arguments(spvv_tuple tup)
 {
     Arguments arg;
-    arg.N        = std::get<0>(tup);
-    arg.nnz      = std::get<1>(tup);
-    arg.idx_base = std::get<2>(tup);
-    arg.timing   = 0;
+    arg.N      = std::get<0>(tup);
+    arg.nnz    = std::get<1>(tup);
+    arg.transA = std::get<2>(tup);
+    arg.baseA  = std::get<3>(tup);
+    arg.timing = 0;
     return arg;
 }
 
-// csr format not supported in cusparse
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION > 10010 \
+    || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
 TEST(spvv_bad_arg, spvv_float)
 {
     testing_spvv_bad_arg();
 }
 
-TEST_P(parameterized_spvv, spvv_i32_float)
+TEST_P(parameterized_spvv_real, spvv_i32_float)
 {
     Arguments arg = setup_spvv_arguments(GetParam());
 
@@ -67,7 +80,7 @@ TEST_P(parameterized_spvv, spvv_i32_float)
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-TEST_P(parameterized_spvv, spvv_i64_double)
+TEST_P(parameterized_spvv_real, spvv_i64_double)
 {
     Arguments arg = setup_spvv_arguments(GetParam());
 
@@ -75,7 +88,7 @@ TEST_P(parameterized_spvv, spvv_i64_double)
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-TEST_P(parameterized_spvv, spvv_i32_float_complex)
+TEST_P(parameterized_spvv_complex, spvv_i32_float_complex)
 {
     Arguments arg = setup_spvv_arguments(GetParam());
 
@@ -83,7 +96,7 @@ TEST_P(parameterized_spvv, spvv_i32_float_complex)
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-TEST_P(parameterized_spvv, spvv_i64_double_complex)
+TEST_P(parameterized_spvv_complex, spvv_i64_double_complex)
 {
     Arguments arg = setup_spvv_arguments(GetParam());
 
@@ -92,8 +105,16 @@ TEST_P(parameterized_spvv, spvv_i64_double_complex)
 }
 
 INSTANTIATE_TEST_SUITE_P(spvv,
-                         parameterized_spvv,
+                         parameterized_spvv_real,
                          testing::Combine(testing::ValuesIn(spvv_N_range),
                                           testing::ValuesIn(spvv_nnz_range),
+                                          testing::ValuesIn(spvv_trans_real_range),
+                                          testing::ValuesIn(spvv_idxbase_range)));
+
+INSTANTIATE_TEST_SUITE_P(spvv,
+                         parameterized_spvv_complex,
+                         testing::Combine(testing::ValuesIn(spvv_N_range),
+                                          testing::ValuesIn(spvv_nnz_range),
+                                          testing::ValuesIn(spvv_trans_complex_range),
                                           testing::ValuesIn(spvv_idxbase_range)));
 #endif

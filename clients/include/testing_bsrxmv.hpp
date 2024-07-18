@@ -26,6 +26,7 @@
 #define TESTING_BSRXMV_HPP
 
 #include "hipsparse.hpp"
+#include "hipsparse_arguments.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
@@ -73,12 +74,6 @@ void testing_bsrxmv_bad_arg(void)
     T*   dval      = (T*)dval_managed.get();
     T*   dx        = (T*)dx_managed.get();
     T*   dy        = (T*)dy_managed.get();
-
-    if(!dval || !dptr || !dcol || !dx || !dy || !dend_ptr)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
 
     // Test hipsparseXbsrxmv
     verify_hipsparse_status_invalid_handle(hipsparseXbsrxmv(nullptr,
@@ -389,8 +384,9 @@ void testing_bsrxmv_bad_arg(void)
 }
 
 template <typename T>
-hipsparseStatus_t testing_bsrxmv()
+hipsparseStatus_t testing_bsrxmv(Arguments argus)
 {
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
     hipsparseDirection_t dir          = HIPSPARSE_DIRECTION_COLUMN;
     hipsparseOperation_t trans        = HIPSPARSE_OPERATION_NON_TRANSPOSE;
     static constexpr int size_of_mask = 1;
@@ -401,7 +397,7 @@ hipsparseStatus_t testing_bsrxmv()
 
     T h_alpha = make_DataType<T>(2.0);
     T h_beta  = make_DataType<T>(1.0);
-
+    // clang-format off
     std::vector<T> hbsr_val
         = {make_DataType<T>(1.0),  make_DataType<T>(2.0),  make_DataType<T>(3.0),
            make_DataType<T>(4.0),  make_DataType<T>(5.0),  make_DataType<T>(6.0),
@@ -416,17 +412,18 @@ hipsparseStatus_t testing_bsrxmv()
     std::vector<int> hbsr_end_ptr  = {1, 5};
     std::vector<int> hbsr_col_ind  = {1, 2, 1, 2, 3};
     std::vector<T>   hx            = {make_DataType<T>(1.0),
-                         make_DataType<T>(1.0),
-                         make_DataType<T>(1.0),
-                         make_DataType<T>(1.0),
-                         make_DataType<T>(1.0),
-                         make_DataType<T>(1.0)};
+                                      make_DataType<T>(1.0),
+                                      make_DataType<T>(1.0),
+                                      make_DataType<T>(1.0),
+                                      make_DataType<T>(1.0),
+                                      make_DataType<T>(1.0)};
     std::vector<T>   hy            = {
-        make_DataType<T>(2.0), make_DataType<T>(2.0), make_DataType<T>(2.0), make_DataType<T>(2.0)};
+                     make_DataType<T>(2.0), make_DataType<T>(2.0), make_DataType<T>(2.0), make_DataType<T>(2.0)};
     std::vector<T> hyref = {make_DataType<T>(2.0),
                             make_DataType<T>(2.0),
                             make_DataType<T>(58.0),
                             make_DataType<T>(62.0)};
+    // clang-format on
 
     auto dbsr_val_managed = hipsparse_unique_ptr{
         device_malloc(sizeof(T) * block_dim * block_dim * nnzb), device_free};
@@ -462,11 +459,11 @@ hipsparseStatus_t testing_bsrxmv()
     CHECK_HIP_ERROR(hipMemcpy(dx, hx.data(), sizeof(T) * nb * block_dim, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dy, hy.data(), sizeof(T) * mb * block_dim, hipMemcpyHostToDevice));
 
-    std::unique_ptr<handle_struct> test_handle(new handle_struct);
-    hipsparseHandle_t              handle = test_handle->handle;
+    std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
+    hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
-    std::unique_ptr<descr_struct> test_descr(new descr_struct);
-    hipsparseMatDescr_t           descr = test_descr->descr;
+    std::unique_ptr<descr_struct> unique_ptr_descr(new descr_struct);
+    hipsparseMatDescr_t           descr = unique_ptr_descr->descr;
 
     hipsparseIndexBase_t idx_base = HIPSPARSE_INDEX_BASE_ONE;
     CHECK_HIPSPARSE_ERROR(hipsparseSetMatIndexBase(descr, idx_base));
@@ -495,6 +492,7 @@ hipsparseStatus_t testing_bsrxmv()
     CHECK_HIP_ERROR(hipMemcpy(hy.data(), dy, sizeof(T) * mb * block_dim, hipMemcpyDeviceToHost));
 
     unit_check_near(1, mb * block_dim, 1, hyref.data(), hy.data());
+#endif
     return HIPSPARSE_STATUS_SUCCESS;
 }
 

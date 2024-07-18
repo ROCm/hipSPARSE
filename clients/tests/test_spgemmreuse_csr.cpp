@@ -25,12 +25,21 @@
 
 #include <hipsparse.h>
 
-typedef std::
-    tuple<int, int, double, hipsparseIndexBase_t, hipsparseIndexBase_t, hipsparseIndexBase_t>
-        spgemmreuse_csr_tuple;
-typedef std::
-    tuple<double, hipsparseIndexBase_t, hipsparseIndexBase_t, hipsparseIndexBase_t, std::string>
-        spgemmreuse_csr_bin_tuple;
+typedef std::tuple<int,
+                   int,
+                   double,
+                   hipsparseIndexBase_t,
+                   hipsparseIndexBase_t,
+                   hipsparseIndexBase_t,
+                   hipsparseSpGEMMAlg_t>
+    spgemmreuse_csr_tuple;
+typedef std::tuple<double,
+                   hipsparseIndexBase_t,
+                   hipsparseIndexBase_t,
+                   hipsparseIndexBase_t,
+                   hipsparseSpGEMMAlg_t,
+                   std::string>
+    spgemmreuse_csr_bin_tuple;
 
 int spgemmreuse_csr_M_range[] = {77, 981};
 int spgemmreuse_csr_K_range[] = {64, 1723};
@@ -49,6 +58,8 @@ hipsparseIndexBase_t spgemmreuse_csr_idxbaseA_range[] = {HIPSPARSE_INDEX_BASE_ZE
 hipsparseIndexBase_t spgemmreuse_csr_idxbaseB_range[] = {HIPSPARSE_INDEX_BASE_ZERO};
 hipsparseIndexBase_t spgemmreuse_csr_idxbaseC_range[] = {HIPSPARSE_INDEX_BASE_ZERO};
 #endif
+
+hipsparseSpGEMMAlg_t spgemmreuse_csr_alg_range[] = {HIPSPARSE_SPGEMM_DEFAULT};
 
 std::string spgemmreuse_csr_bin[]
     = {"nos1.bin", "nos2.bin", "nos3.bin", "nos4.bin", "nos5.bin", "nos6.bin", "nos7.bin"};
@@ -74,29 +85,31 @@ protected:
 Arguments setup_spgemmreuse_csr_arguments(spgemmreuse_csr_tuple tup)
 {
     Arguments arg;
-    arg.M         = std::get<0>(tup);
-    arg.K         = std::get<1>(tup);
-    arg.alpha     = std::get<2>(tup);
-    arg.idx_base  = std::get<3>(tup);
-    arg.idx_base2 = std::get<4>(tup);
-    arg.idx_base3 = std::get<5>(tup);
-    arg.timing    = 0;
+    arg.M          = std::get<0>(tup);
+    arg.K          = std::get<1>(tup);
+    arg.alpha      = std::get<2>(tup);
+    arg.baseA      = std::get<3>(tup);
+    arg.baseB      = std::get<4>(tup);
+    arg.baseC      = std::get<5>(tup);
+    arg.spgemm_alg = std::get<6>(tup);
+    arg.timing     = 0;
     return arg;
 }
 
 Arguments setup_spgemmreuse_csr_arguments(spgemmreuse_csr_bin_tuple tup)
 {
     Arguments arg;
-    arg.M         = -99;
-    arg.K         = -99;
-    arg.alpha     = std::get<0>(tup);
-    arg.idx_base  = std::get<1>(tup);
-    arg.idx_base2 = std::get<2>(tup);
-    arg.idx_base3 = std::get<3>(tup);
-    arg.timing    = 0;
+    arg.M          = -99;
+    arg.K          = -99;
+    arg.alpha      = std::get<0>(tup);
+    arg.baseA      = std::get<1>(tup);
+    arg.baseB      = std::get<2>(tup);
+    arg.baseC      = std::get<3>(tup);
+    arg.spgemm_alg = std::get<4>(tup);
+    arg.timing     = 0;
 
     // Determine absolute path of test matrix
-    std::string bin_file = std::get<4>(tup);
+    std::string bin_file = std::get<5>(tup);
 
     // Matrices are stored at the same path in matrices directory
     arg.filename = get_filename(bin_file);
@@ -104,7 +117,6 @@ Arguments setup_spgemmreuse_csr_arguments(spgemmreuse_csr_bin_tuple tup)
     return arg;
 }
 
-// csr format not supported in cusparse
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
 TEST(spgemmreuse_csr_bad_arg, spgemmreuse_csr_float)
 {
@@ -169,7 +181,8 @@ INSTANTIATE_TEST_SUITE_P(spgemmreuse_csr,
                                           testing::ValuesIn(spgemmreuse_csr_alpha_range),
                                           testing::ValuesIn(spgemmreuse_csr_idxbaseA_range),
                                           testing::ValuesIn(spgemmreuse_csr_idxbaseB_range),
-                                          testing::ValuesIn(spgemmreuse_csr_idxbaseC_range)));
+                                          testing::ValuesIn(spgemmreuse_csr_idxbaseC_range),
+                                          testing::ValuesIn(spgemmreuse_csr_alg_range)));
 
 INSTANTIATE_TEST_SUITE_P(spgemmreuse_csr_bin,
                          parameterized_spgemmreuse_csr_bin,
@@ -177,5 +190,6 @@ INSTANTIATE_TEST_SUITE_P(spgemmreuse_csr_bin,
                                           testing::ValuesIn(spgemmreuse_csr_idxbaseA_range),
                                           testing::ValuesIn(spgemmreuse_csr_idxbaseB_range),
                                           testing::ValuesIn(spgemmreuse_csr_idxbaseC_range),
+                                          testing::ValuesIn(spgemmreuse_csr_alg_range),
                                           testing::ValuesIn(spgemmreuse_csr_bin)));
 #endif

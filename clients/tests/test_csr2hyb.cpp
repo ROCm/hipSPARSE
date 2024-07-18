@@ -69,7 +69,7 @@ Arguments setup_csr2hyb_arguments(csr2hyb_tuple tup)
     Arguments arg;
     arg.M         = std::get<0>(tup);
     arg.N         = std::get<1>(tup);
-    arg.idx_base  = std::get<2>(tup);
+    arg.baseA     = std::get<2>(tup);
     arg.part      = std::get<3>(tup);
     arg.ell_width = std::get<4>(tup);
     arg.timing    = 0;
@@ -81,7 +81,7 @@ Arguments setup_csr2hyb_arguments(csr2hyb_bin_tuple tup)
     Arguments arg;
     arg.M         = -99;
     arg.N         = -99;
-    arg.idx_base  = std::get<0>(tup);
+    arg.baseA     = std::get<0>(tup);
     arg.part      = std::get<1>(tup);
     arg.ell_width = std::get<2>(tup);
     arg.timing    = 0;
@@ -95,8 +95,7 @@ Arguments setup_csr2hyb_arguments(csr2hyb_bin_tuple tup)
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
 TEST(csr2hyb_bad_arg, csr2hyb)
 {
     testing_csr2hyb_bad_arg<float>();
