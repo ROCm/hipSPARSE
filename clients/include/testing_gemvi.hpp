@@ -269,7 +269,8 @@ hipsparseStatus_t testing_gemvi(Arguments argus)
         gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
 
         double gflop_count = gemvi_gflop_count(m, nnz);
-        double gbyte_count = gemvi_gbyte_count<T>((trans == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? m : n,
+        double gbyte_count
+            = gemvi_gbyte_count<T>((trans == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? m : n,
                                    nnz,
                                    beta != make_DataType<T>(0.0));
 

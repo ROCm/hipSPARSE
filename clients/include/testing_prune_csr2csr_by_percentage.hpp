@@ -892,7 +892,7 @@ hipsparseStatus_t testing_prune_csr2csr_by_percentage(Arguments argus)
                             display_key_t::bandwidth,
                             gpu_gbyte,
                             display_key_t::time_ms,
-                            get_gpu_time_msec(gpu_time_used));        
+                            get_gpu_time_msec(gpu_time_used));
     }
 #endif
 

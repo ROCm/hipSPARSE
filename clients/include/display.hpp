@@ -31,12 +31,12 @@
 #define DISPLAY_HPP
 
 #include <fstream>
-#include <hip/hip_runtime_api.h>
 #include <hip/hip_complex.h>
-#include <sstream>
-#include <vector>
+#include <hip/hip_runtime_api.h>
 #include <iomanip>
 #include <iostream>
+#include <sstream>
+#include <vector>
 
 static constexpr const char* s_timing_info_perf          = "GFlop/s";
 static constexpr const char* s_timing_info_bandwidth     = "GB/s";
@@ -976,8 +976,8 @@ inline void display_timing_info_main(S name, Ts... ts)
         out_legend.setf(std::ios::left);
         //if(!display_timing_info_is_stdout_disabled())
         //{
-            display_timing_info_legend(out_legend, n, name, ts...);
-            std::cout << out_legend.str() << std::endl;
+        display_timing_info_legend(out_legend, n, name, ts...);
+        std::cout << out_legend.str() << std::endl;
         //}
         //else
         //{
@@ -993,8 +993,8 @@ inline void display_timing_info_main(S name, Ts... ts)
     out.setf(std::ios::left);
     //if(!display_timing_info_is_stdout_disabled())
     //{
-        display_timing_info_generate(out, n, name, ts...);
-        std::cout << out.str() << std::endl;
+    display_timing_info_generate(out, n, name, ts...);
+    std::cout << out.str() << std::endl;
     //}
     //else
     //{
@@ -1038,26 +1038,26 @@ inline void hipsparse_get_matrixname(const char* f, char* name)
     name[ddir - cdir] = '\0';
 }
 
-#define display_timing_info(...)                                                             \
-    do                                                                                       \
-    {                                                                                        \
-        const char* ctypename = hipsparse_datatype2string(argus.compute_type);                 \
-        const char* itypename = hipsparse_indextype2string(argus.index_type_I);                \
-        const char* jtypename = hipsparse_indextype2string(argus.index_type_J);                \
-                                                                                             \
-        display_timing_info_main(__VA_ARGS__,                                                \
-                                 display_key_t::iters,                                       \
-                                 argus.iters,                                                \
-                                 "verified",                                                 \
-                                 (argus.unit_check ? "yes" : "no"),                          \
-                                 display_key_t::function,                                    \
-                                 &argus.function_name[0],                                    \
-                                 display_key_t::ctype,                                       \
-                                 ctypename,                                                  \
-                                 display_key_t::itype,                                       \
-                                 itypename,                                                  \
-                                 display_key_t::jtype,                                       \
-                                 jtypename);                                                 \
+#define display_timing_info(...)                                                \
+    do                                                                          \
+    {                                                                           \
+        const char* ctypename = hipsparse_datatype2string(argus.compute_type);  \
+        const char* itypename = hipsparse_indextype2string(argus.index_type_I); \
+        const char* jtypename = hipsparse_indextype2string(argus.index_type_J); \
+                                                                                \
+        display_timing_info_main(__VA_ARGS__,                                   \
+                                 display_key_t::iters,                          \
+                                 argus.iters,                                   \
+                                 "verified",                                    \
+                                 (argus.unit_check ? "yes" : "no"),             \
+                                 display_key_t::function,                       \
+                                 &argus.function_name[0],                       \
+                                 display_key_t::ctype,                          \
+                                 ctypename,                                     \
+                                 display_key_t::itype,                          \
+                                 itypename,                                     \
+                                 display_key_t::jtype,                          \
+                                 jtypename);                                    \
     } while(false)
 
 #endif // DISPLAY_HPP
