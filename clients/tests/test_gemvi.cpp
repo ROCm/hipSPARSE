@@ -22,12 +22,12 @@
  * ************************************************************************ */
 
 #include "testing_gemvi.hpp"
-#include "utility.hpp"
 
 #include <hipsparse.h>
 #include <string>
 
-typedef std::tuple<int, int, int, double, double, hipsparseIndexBase_t> gemvi_tuple;
+typedef std::tuple<int, int, int, double, double, hipsparseOperation_t, hipsparseIndexBase_t>
+    gemvi_tuple;
 
 int gemvi_M_range[]   = {1291};
 int gemvi_N_range[]   = {724};
@@ -36,6 +36,7 @@ int gemvi_nnz_range[] = {237};
 double gemvi_alpha_range[] = {-0.5, 2.0};
 double gemvi_beta_range[]  = {0.5, 0.0};
 
+hipsparseOperation_t gemvi_trans_range[]    = {HIPSPARSE_OPERATION_NON_TRANSPOSE};
 hipsparseIndexBase_t gemvi_idx_base_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
 class parameterized_gemvi : public testing::TestWithParam<gemvi_tuple>
@@ -50,18 +51,18 @@ protected:
 Arguments setup_gemvi_arguments(gemvi_tuple tup)
 {
     Arguments arg;
-    arg.M        = std::get<0>(tup);
-    arg.N        = std::get<1>(tup);
-    arg.nnz      = std::get<2>(tup);
-    arg.alpha    = std::get<3>(tup);
-    arg.beta     = std::get<4>(tup);
-    arg.idx_base = std::get<5>(tup);
-    arg.timing   = 0;
+    arg.M      = std::get<0>(tup);
+    arg.N      = std::get<1>(tup);
+    arg.nnz    = std::get<2>(tup);
+    arg.alpha  = std::get<3>(tup);
+    arg.beta   = std::get<4>(tup);
+    arg.transA = std::get<5>(tup);
+    arg.baseA  = std::get<6>(tup);
+    arg.timing = 0;
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater (removed in cusparse 12.0.0)
-#if(!defined(CUDART_VERSION) || (CUDART_VERSION >= 11010 && CUDART_VERSION < 12000))
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 TEST(gemvi_bad_arg, gemvi_float)
 {
     testing_gemvi_bad_arg();
@@ -106,5 +107,6 @@ INSTANTIATE_TEST_SUITE_P(gemvi,
                                           testing::ValuesIn(gemvi_nnz_range),
                                           testing::ValuesIn(gemvi_alpha_range),
                                           testing::ValuesIn(gemvi_beta_range),
+                                          testing::ValuesIn(gemvi_trans_range),
                                           testing::ValuesIn(gemvi_idx_base_range)));
 #endif

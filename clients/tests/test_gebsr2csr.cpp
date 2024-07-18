@@ -86,8 +86,8 @@ Arguments setup_gebsr2csr_arguments(gebsr2csr_tuple tup)
     arg.N              = std::get<1>(tup);
     arg.row_block_dimA = std::get<2>(tup);
     arg.col_block_dimA = std::get<3>(tup);
-    arg.idx_base       = std::get<4>(tup);
-    arg.idx_base2      = std::get<5>(tup);
+    arg.baseA          = std::get<4>(tup);
+    arg.baseB          = std::get<5>(tup);
     arg.dirA           = std::get<6>(tup);
     arg.timing         = 0;
     return arg;
@@ -100,8 +100,8 @@ Arguments setup_gebsr2csr_arguments(gebsr2csr_bin_tuple tup)
     arg.N              = -99;
     arg.row_block_dimA = std::get<0>(tup);
     arg.col_block_dimA = std::get<1>(tup);
-    arg.idx_base       = std::get<2>(tup);
-    arg.idx_base2      = std::get<3>(tup);
+    arg.baseA          = std::get<2>(tup);
+    arg.baseB          = std::get<3>(tup);
     arg.dirA           = std::get<4>(tup);
     arg.timing         = 0;
 
@@ -114,8 +114,6 @@ Arguments setup_gebsr2csr_arguments(gebsr2csr_bin_tuple tup)
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(gebsr2csr_bad_arg, gebsr2csr)
 {
     testing_gebsr2csr_bad_arg<float>();
@@ -187,4 +185,3 @@ INSTANTIATE_TEST_SUITE_P(gebsr2csr_bin,
                                           testing::ValuesIn(gebsr2csr_csr_base_range_bin),
                                           testing::ValuesIn(gebsr2csr_dir_range_bin),
                                           testing::ValuesIn(gebsr2csr_bin)));
-#endif

@@ -76,22 +76,22 @@ protected:
 Arguments setup_csrsort_arguments(csrsort_tuple tup)
 {
     Arguments arg;
-    arg.M        = std::get<0>(tup);
-    arg.N        = std::get<1>(tup);
-    arg.temp     = std::get<2>(tup);
-    arg.idx_base = std::get<3>(tup);
-    arg.timing   = 0;
+    arg.M       = std::get<0>(tup);
+    arg.N       = std::get<1>(tup);
+    arg.permute = std::get<2>(tup);
+    arg.baseA   = std::get<3>(tup);
+    arg.timing  = 0;
     return arg;
 }
 
 Arguments setup_csrsort_arguments(csrsort_bin_tuple tup)
 {
     Arguments arg;
-    arg.M        = -99;
-    arg.N        = -99;
-    arg.temp     = std::get<0>(tup);
-    arg.idx_base = std::get<1>(tup);
-    arg.timing   = 0;
+    arg.M       = -99;
+    arg.N       = -99;
+    arg.permute = std::get<0>(tup);
+    arg.baseA   = std::get<1>(tup);
+    arg.timing  = 0;
 
     // Determine absolute path of test matrix
     std::string bin_file = std::get<2>(tup);
@@ -102,8 +102,6 @@ Arguments setup_csrsort_arguments(csrsort_bin_tuple tup)
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(csrsort_bad_arg, csrsort)
 {
     testing_csrsort_bad_arg();
@@ -137,4 +135,3 @@ INSTANTIATE_TEST_SUITE_P(csrsort_bin,
                          testing::Combine(testing::ValuesIn(csrsort_perm),
                                           testing::ValuesIn(csrsort_base),
                                           testing::ValuesIn(csrsort_bin)));
-#endif

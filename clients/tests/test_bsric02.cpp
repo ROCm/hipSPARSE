@@ -28,16 +28,19 @@
 #include <string>
 #include <vector>
 
-typedef hipsparseIndexBase_t                    base;
-typedef hipsparseDirection_t                    dir;
-typedef std::tuple<int, int, dir, base>         bsric02_tuple;
-typedef std::tuple<int, dir, base, std::string> bsric02_bin_tuple;
+typedef hipsparseIndexBase_t                                  base;
+typedef hipsparseDirection_t                                  dir;
+typedef hipsparseSolvePolicy_t                                solve_policy;
+typedef std::tuple<int, int, dir, base, solve_policy>         bsric02_tuple;
+typedef std::tuple<int, dir, base, solve_policy, std::string> bsric02_bin_tuple;
 
 int bsric02_M_range[]   = {50, 426};
 int bsric02_dim_range[] = {3, 5, 9};
 
-base bsric02_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
-dir  bsric02_dir_range[]     = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COLUMN};
+base         bsric02_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+dir          bsric02_dir_range[]     = {HIPSPARSE_DIRECTION_ROW, HIPSPARSE_DIRECTION_COLUMN};
+solve_policy bsric02_solve_policy_range[]
+    = {HIPSPARSE_SOLVE_POLICY_NO_LEVEL, HIPSPARSE_SOLVE_POLICY_USE_LEVEL};
 
 std::string bsric02_bin[] = {"nos4.bin", "nos6.bin", "nos7.bin"};
 
@@ -62,25 +65,27 @@ protected:
 Arguments setup_bsric02_arguments(bsric02_tuple tup)
 {
     Arguments arg;
-    arg.M         = std::get<0>(tup);
-    arg.block_dim = std::get<1>(tup);
-    arg.dirA      = std::get<2>(tup);
-    arg.idx_base  = std::get<3>(tup);
-    arg.timing    = 0;
+    arg.M            = std::get<0>(tup);
+    arg.block_dim    = std::get<1>(tup);
+    arg.dirA         = std::get<2>(tup);
+    arg.baseA        = std::get<3>(tup);
+    arg.solve_policy = std::get<4>(tup);
+    arg.timing       = 0;
     return arg;
 }
 
 Arguments setup_bsric02_arguments(bsric02_bin_tuple tup)
 {
     Arguments arg;
-    arg.M         = -99;
-    arg.block_dim = std::get<0>(tup);
-    arg.dirA      = std::get<1>(tup);
-    arg.idx_base  = std::get<2>(tup);
-    arg.timing    = 0;
+    arg.M            = -99;
+    arg.block_dim    = std::get<0>(tup);
+    arg.dirA         = std::get<1>(tup);
+    arg.baseA        = std::get<2>(tup);
+    arg.solve_policy = std::get<3>(tup);
+    arg.timing       = 0;
 
     // Determine absolute path of test matrix
-    std::string bin_file = std::get<3>(tup);
+    std::string bin_file = std::get<4>(tup);
 
     // Get current executables absolute path
 
@@ -90,8 +95,7 @@ Arguments setup_bsric02_arguments(bsric02_bin_tuple tup)
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 TEST(bsric02_bad_arg, bsric02_float)
 {
     testing_bsric02_bad_arg<float>();
@@ -150,12 +154,14 @@ INSTANTIATE_TEST_SUITE_P(bsric02,
                          testing::Combine(testing::ValuesIn(bsric02_M_range),
                                           testing::ValuesIn(bsric02_dim_range),
                                           testing::ValuesIn(bsric02_dir_range),
-                                          testing::ValuesIn(bsric02_idxbase_range)));
+                                          testing::ValuesIn(bsric02_idxbase_range),
+                                          testing::ValuesIn(bsric02_solve_policy_range)));
 
 INSTANTIATE_TEST_SUITE_P(bsric02_bin,
                          parameterized_bsric02_bin,
                          testing::Combine(testing::ValuesIn(bsric02_dim_range),
                                           testing::ValuesIn(bsric02_dir_range),
                                           testing::ValuesIn(bsric02_idxbase_range),
+                                          testing::ValuesIn(bsric02_solve_policy_range),
                                           testing::ValuesIn(bsric02_bin)));
 #endif

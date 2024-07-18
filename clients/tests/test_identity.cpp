@@ -46,8 +46,7 @@ Arguments setup_identity_arguments(int n)
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 TEST(identity_bad_arg, identity)
 {
     testing_identity_bad_arg();

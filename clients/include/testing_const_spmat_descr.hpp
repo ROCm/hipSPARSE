@@ -53,19 +53,11 @@ void testing_const_spmat_descr_bad_arg(void)
     // Allocate memory on device
     auto row_data_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
     auto col_data_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * nnz), device_free};
-    auto ind_data_managed = hipsparse_unique_ptr{device_malloc(sizeof(int) * 2 * nnz), device_free};
     auto val_data_managed = hipsparse_unique_ptr{device_malloc(sizeof(float) * nnz), device_free};
 
     const int*   row_data = (int*)row_data_managed.get();
     const int*   col_data = (int*)col_data_managed.get();
-    const int*   ind_data = (int*)ind_data_managed.get();
     const float* val_data = (float*)val_data_managed.get();
-
-    if(!row_data || !col_data || !ind_data || !val_data)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
 
     hipsparseConstSpMatDescr_t A;
 

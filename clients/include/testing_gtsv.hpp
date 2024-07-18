@@ -25,7 +25,10 @@
 #ifndef TESTING_GTSV2_HPP
 #define TESTING_GTSV2_HPP
 
+#include "flops.hpp"
+#include "gbyte.hpp"
 #include "hipsparse.hpp"
+#include "hipsparse_arguments.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
@@ -62,12 +65,6 @@ void testing_gtsv2_bad_arg(void)
     T*    ddu  = (T*)ddu_managed.get();
     T*    dB   = (T*)dB_managed.get();
     void* dbuf = (void*)dbuf_managed.get();
-
-    if(!ddl || !dd || !ddu || !dB || !dbuf)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
 
     size_t bsize;
 
@@ -116,13 +113,12 @@ void testing_gtsv2_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_gtsv2(Arguments argus)
 {
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
     int m = argus.M;
     int n = argus.N;
 
     // hipSPARSE handle
-    std::unique_ptr<handle_struct> test_handle(new handle_struct);
-    hipsparseHandle_t              handle = test_handle->handle;
+    std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
+    hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
     int ldb = 2 * m;
 
@@ -162,30 +158,61 @@ hipsparseStatus_t testing_gtsv2(Arguments argus)
     void* buffer;
     CHECK_HIP_ERROR(hipMalloc(&buffer, bufferSize));
 
-    CHECK_HIPSPARSE_ERROR(hipsparseXgtsv2(handle, m, n, ddl, dd, ddu, dB, ldb, buffer));
-
-    // copy output from device to CPU
-    CHECK_HIP_ERROR(hipMemcpy(hB.data(), dB, sizeof(T) * ldb * n, hipMemcpyDeviceToHost));
-
-    // Check
-    std::vector<T> hresult = hB_original;
-    for(int j = 0; j < n; j++)
+    if(argus.unit_check)
     {
-        hresult[ldb * j] = testing_mult(hd[0], hB[ldb * j]) + testing_mult(hdu[0], hB[ldb * j + 1]);
-        hresult[ldb * j + m - 1] = testing_mult(hdl[m - 1], hB[ldb * j + m - 2])
-                                   + testing_mult(hd[m - 1], hB[ldb * j + m - 1]);
-        for(int i = 1; i < m - 1; i++)
+        CHECK_HIPSPARSE_ERROR(hipsparseXgtsv2(handle, m, n, ddl, dd, ddu, dB, ldb, buffer));
+
+        // copy output from device to CPU
+        CHECK_HIP_ERROR(hipMemcpy(hB.data(), dB, sizeof(T) * ldb * n, hipMemcpyDeviceToHost));
+
+        // Check
+        std::vector<T> hresult = hB_original;
+        for(int j = 0; j < n; j++)
         {
-            hresult[ldb * j + i] = testing_mult(hdl[i], hB[ldb * j + i - 1])
-                                   + testing_mult(hd[i], hB[ldb * j + i])
-                                   + testing_mult(hdu[i], hB[ldb * j + i + 1]);
+            hresult[ldb * j]
+                = testing_mult(hd[0], hB[ldb * j]) + testing_mult(hdu[0], hB[ldb * j + 1]);
+            hresult[ldb * j + m - 1] = testing_mult(hdl[m - 1], hB[ldb * j + m - 2])
+                                       + testing_mult(hd[m - 1], hB[ldb * j + m - 1]);
+            for(int i = 1; i < m - 1; i++)
+            {
+                hresult[ldb * j + i] = testing_mult(hdl[i], hB[ldb * j + i - 1])
+                                       + testing_mult(hd[i], hB[ldb * j + i])
+                                       + testing_mult(hdu[i], hB[ldb * j + i + 1]);
+            }
         }
+
+        unit_check_near(m, n, ldb, hB_original.data(), hresult.data());
     }
 
-    unit_check_near(m, n, ldb, hB_original.data(), hresult.data());
+    if(argus.timing)
+    {
+        int number_cold_calls = 2;
+        int number_hot_calls  = argus.iters;
+
+        // Warm up
+        for(int iter = 0; iter < number_cold_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseXgtsv2(handle, m, n, ddl, dd, ddu, dB, ldb, buffer));
+        }
+
+        double gpu_time_used = get_time_us();
+
+        // Performance run
+        for(int iter = 0; iter < number_hot_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseXgtsv2(handle, m, n, ddl, dd, ddu, dB, ldb, buffer));
+        }
+
+        gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
+
+        double gbyte_count = gtsv_gbyte_count<T>(m, n);
+        double gpu_gbyte   = get_gpu_gbyte(gpu_time_used, gbyte_count);
+
+        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used)
+                  << std::endl;
+    }
 
     CHECK_HIP_ERROR(hipFree(buffer));
-#endif
 
     return HIPSPARSE_STATUS_SUCCESS;
 }

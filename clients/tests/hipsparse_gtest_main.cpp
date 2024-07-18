@@ -150,12 +150,6 @@ public:
       Main function:
 =================================================================== */
 
-static const char* s_hipsparse_clients_matrices_dir = nullptr;
-const char*        get_hipsparse_clients_matrices_dir()
-{
-    return s_hipsparse_clients_matrices_dir;
-}
-
 int main(int argc, char** argv)
 {
     // Print version

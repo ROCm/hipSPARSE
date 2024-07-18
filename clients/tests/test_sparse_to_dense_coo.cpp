@@ -25,8 +25,9 @@
 
 #include <hipsparse.h>
 
-typedef std::tuple<int, int, hipsparseOrder_t, hipsparseIndexBase_t> sparse_to_dense_coo_tuple;
-typedef std::tuple<hipsparseOrder_t, hipsparseIndexBase_t, std::string>
+typedef std::tuple<int, int, hipsparseOrder_t, hipsparseIndexBase_t, hipsparseSparseToDenseAlg_t>
+    sparse_to_dense_coo_tuple;
+typedef std::tuple<hipsparseOrder_t, hipsparseIndexBase_t, hipsparseSparseToDenseAlg_t, std::string>
     sparse_to_dense_coo_bin_tuple;
 
 int sparse_to_dense_coo_M_range[] = {50};
@@ -35,6 +36,7 @@ int sparse_to_dense_coo_N_range[] = {5};
 hipsparseOrder_t     sparse_to_dense_coo_order_range[] = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
 hipsparseIndexBase_t sparse_to_dense_coo_idxbase_range[]
     = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+hipsparseSparseToDenseAlg_t sparse_to_dense_coo_alg_range[] = {HIPSPARSE_SPARSETODENSE_ALG_DEFAULT};
 
 std::string sparse_to_dense_coo_bin[] = {"nos1.bin",
                                          "nos2.bin",
@@ -67,23 +69,25 @@ protected:
 Arguments setup_sparse_to_dense_coo_arguments(sparse_to_dense_coo_tuple tup)
 {
     Arguments arg;
-    arg.M        = std::get<0>(tup);
-    arg.N        = std::get<1>(tup);
-    arg.orderA   = std::get<2>(tup);
-    arg.idx_base = std::get<3>(tup);
-    arg.timing   = 0;
+    arg.M                = std::get<0>(tup);
+    arg.N                = std::get<1>(tup);
+    arg.orderA           = std::get<2>(tup);
+    arg.baseA            = std::get<3>(tup);
+    arg.sparse2dense_alg = std::get<4>(tup);
+    arg.timing           = 0;
     return arg;
 }
 
 Arguments setup_sparse_to_dense_coo_arguments(sparse_to_dense_coo_bin_tuple tup)
 {
     Arguments arg;
-    arg.orderA   = std::get<0>(tup);
-    arg.idx_base = std::get<1>(tup);
-    arg.timing   = 0;
+    arg.orderA           = std::get<0>(tup);
+    arg.baseA            = std::get<1>(tup);
+    arg.sparse2dense_alg = std::get<2>(tup);
+    arg.timing           = 0;
 
     // Determine absolute path of test matrix
-    std::string bin_file = std::get<2>(tup);
+    std::string bin_file = std::get<3>(tup);
 
     // Matrices are stored at the same path in matrices directory
     arg.filename = get_filename(bin_file);
@@ -91,8 +95,7 @@ Arguments setup_sparse_to_dense_coo_arguments(sparse_to_dense_coo_bin_tuple tup)
     return arg;
 }
 
-// coo format not supported in cusparse
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11020)
 TEST(sparse_to_dense_coo_bad_arg, sparse_to_dense_coo_float)
 {
     testing_sparse_to_dense_coo_bad_arg();
@@ -151,11 +154,13 @@ INSTANTIATE_TEST_SUITE_P(sparse_to_dense_coo,
                          testing::Combine(testing::ValuesIn(sparse_to_dense_coo_M_range),
                                           testing::ValuesIn(sparse_to_dense_coo_N_range),
                                           testing::ValuesIn(sparse_to_dense_coo_order_range),
-                                          testing::ValuesIn(sparse_to_dense_coo_idxbase_range)));
+                                          testing::ValuesIn(sparse_to_dense_coo_idxbase_range),
+                                          testing::ValuesIn(sparse_to_dense_coo_alg_range)));
 
 INSTANTIATE_TEST_SUITE_P(sparse_to_dense_coo_bin,
                          parameterized_sparse_to_dense_coo_bin,
                          testing::Combine(testing::ValuesIn(sparse_to_dense_coo_order_range),
                                           testing::ValuesIn(sparse_to_dense_coo_idxbase_range),
+                                          testing::ValuesIn(sparse_to_dense_coo_alg_range),
                                           testing::ValuesIn(sparse_to_dense_coo_bin)));
 #endif

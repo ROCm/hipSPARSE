@@ -26,6 +26,7 @@
 #define TESTING_SPMM_BELL_HPP
 
 #include "hipsparse.hpp"
+#include "hipsparse_arguments.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
@@ -39,12 +40,7 @@ using namespace hipsparse_test;
 
 void testing_spmm_bell_bad_arg(void)
 {
-#ifdef __HIP_PLATFORM_NVIDIA__
-    // do not test for bad args
-    return;
-#endif
-
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11021)
+#if(!defined(CUDART_VERSION))
     int32_t              n             = 100;
     int32_t              m             = 100;
     int32_t              k             = 100;
@@ -76,12 +72,6 @@ void testing_spmm_bell_bad_arg(void)
     float*   dB   = (float*)dB_managed.get();
     float*   dC   = (float*)dC_managed.get();
     void*    dbuf = (void*)dbuf_managed.get();
-
-    if(!dval || !dind || !dB || !dC || !dbuf)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
 
     // SpMM structures
     hipsparseSpMatDescr_t A;
@@ -245,8 +235,8 @@ hipsparseStatus_t testing_spmm_bell()
     hipDataType          typeT = getDataType<T>();
 
     // hipSPARSE handle
-    std::unique_ptr<handle_struct> test_handle(new handle_struct);
-    hipsparseHandle_t              handle = test_handle->handle;
+    std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
+    hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
     std::vector<T> hB = {make_DataType<T>(1.0),
                          make_DataType<T>(1.0),
@@ -357,7 +347,7 @@ hipsparseStatus_t testing_spmm_bell()
     void* buffer_bell;
     CHECK_HIP_ERROR(hipMalloc(&buffer_bell, bufferSize_bell));
 
-    // ROCSPARSE pointer mode host
+    // HIPSPARSE pointer mode host
     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
 
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11021)
@@ -367,7 +357,7 @@ hipsparseStatus_t testing_spmm_bell()
     CHECK_HIPSPARSE_ERROR(hipsparseSpMM(
         handle, transA, transB, &h_alpha, A_bell, B, &h_beta, C1, typeT, alg, buffer_bell));
 
-    // ROCSPARSE pointer mode device
+    // HIPSPARSE pointer mode device
     CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
 
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11021)

@@ -28,8 +28,10 @@
 #include <string>
 #include <vector>
 
-typedef std::tuple<int, int, hipsparseAction_t, hipsparseIndexBase_t>    csr2csc_ex2_tuple;
-typedef std::tuple<hipsparseAction_t, hipsparseIndexBase_t, std::string> csr2csc_ex2_bin_tuple;
+typedef std::tuple<int, int, hipsparseAction_t, hipsparseIndexBase_t, hipsparseCsr2CscAlg_t>
+    csr2csc_ex2_tuple;
+typedef std::tuple<hipsparseAction_t, hipsparseIndexBase_t, hipsparseCsr2CscAlg_t, std::string>
+    csr2csc_ex2_bin_tuple;
 
 int csr2csc_ex2_M_range[] = {0, 10, 500, 872, 1000};
 int csr2csc_ex2_N_range[] = {0, 33, 242, 623, 1000};
@@ -37,8 +39,10 @@ int csr2csc_ex2_N_range[] = {0, 33, 242, 623, 1000};
 hipsparseAction_t csr2csc_ex2_action_range[]
     = {HIPSPARSE_ACTION_NUMERIC, HIPSPARSE_ACTION_SYMBOLIC};
 
-hipsparseIndexBase_t csr2csc_ex2_csr_base_range[]
+hipsparseIndexBase_t csr2csc_ex2_base_range[]
     = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+
+hipsparseCsr2CscAlg_t csr2csc_ex2_alg_range[] = {HIPSPARSE_CSR2CSC_ALG1};
 
 std::string csr2csc_ex2_bin[] = {"rma10.bin",
                                  "mc2depi.bin",
@@ -74,25 +78,27 @@ protected:
 Arguments setup_csr2csc_ex2_arguments(csr2csc_ex2_tuple tup)
 {
     Arguments arg;
-    arg.M        = std::get<0>(tup);
-    arg.N        = std::get<1>(tup);
-    arg.action   = std::get<2>(tup);
-    arg.idx_base = std::get<3>(tup);
-    arg.timing   = 0;
+    arg.M           = std::get<0>(tup);
+    arg.N           = std::get<1>(tup);
+    arg.action      = std::get<2>(tup);
+    arg.baseA       = std::get<3>(tup);
+    arg.csr2csc_alg = std::get<4>(tup);
+    arg.timing      = 0;
     return arg;
 }
 
 Arguments setup_csr2csc_ex2_arguments(csr2csc_ex2_bin_tuple tup)
 {
     Arguments arg;
-    arg.M        = -99;
-    arg.N        = -99;
-    arg.action   = std::get<0>(tup);
-    arg.idx_base = std::get<1>(tup);
-    arg.timing   = 0;
+    arg.M           = -99;
+    arg.N           = -99;
+    arg.action      = std::get<0>(tup);
+    arg.baseA       = std::get<1>(tup);
+    arg.csr2csc_alg = std::get<2>(tup);
+    arg.timing      = 0;
 
     // Determine absolute path of test matrix
-    std::string bin_file = std::get<2>(tup);
+    std::string bin_file = std::get<3>(tup);
 
     // Matrices are stored at the same path in matrices directory
     arg.filename = get_filename(bin_file);
@@ -100,8 +106,7 @@ Arguments setup_csr2csc_ex2_arguments(csr2csc_ex2_bin_tuple tup)
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 TEST(csr2csc_ex2_bad_arg, csr2csc_ex2)
 {
     testing_csr2csc_ex2_bad_arg<float>();
@@ -160,11 +165,13 @@ INSTANTIATE_TEST_SUITE_P(csr2csc_ex2,
                          testing::Combine(testing::ValuesIn(csr2csc_ex2_M_range),
                                           testing::ValuesIn(csr2csc_ex2_N_range),
                                           testing::ValuesIn(csr2csc_ex2_action_range),
-                                          testing::ValuesIn(csr2csc_ex2_csr_base_range)));
+                                          testing::ValuesIn(csr2csc_ex2_base_range),
+                                          testing::ValuesIn(csr2csc_ex2_alg_range)));
 
 INSTANTIATE_TEST_SUITE_P(csr2csc_ex2_bin,
                          parameterized_csr2csc_ex2_bin,
                          testing::Combine(testing::ValuesIn(csr2csc_ex2_action_range),
-                                          testing::ValuesIn(csr2csc_ex2_csr_base_range),
+                                          testing::ValuesIn(csr2csc_ex2_base_range),
+                                          testing::ValuesIn(csr2csc_ex2_alg_range),
                                           testing::ValuesIn(csr2csc_ex2_bin)));
 #endif

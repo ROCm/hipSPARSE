@@ -23,8 +23,7 @@
 
 #include "testing_dnmat_descr.hpp"
 
-// Only run tests for CUDA 11.1 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 TEST(dnmat_descr_bad_arg, dnmat_descr_float)
 {
     testing_dnmat_descr_bad_arg();

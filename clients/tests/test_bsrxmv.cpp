@@ -21,12 +21,12 @@
  *
  * ************************************************************************ */
 
+#include "hipsparse_arguments.hpp"
 #include "testing_bsrxmv.hpp"
 
 #include <hipsparse.h>
 
-// Only run tests for CUDA 11.1 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 TEST(bsrxmv_bad_arg, bsrxmv_bad_arg_float)
 {
     testing_bsrxmv_bad_arg<float>();
@@ -49,19 +49,22 @@ TEST(bsrxmv_bad_arg, bsrxmv_bad_arg_double_complex)
 
 TEST(bsrxmv, bsrxmv_float)
 {
-    hipsparseStatus_t status = testing_bsrxmv<float>();
+    Arguments         arg;
+    hipsparseStatus_t status = testing_bsrxmv<float>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
 TEST(bsrxmv, bsrxmv_double)
 {
-    hipsparseStatus_t status = testing_bsrxmv<double>();
+    Arguments         arg;
+    hipsparseStatus_t status = testing_bsrxmv<double>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
 TEST(bsrxmv, bsrxmv_hipComplex)
 {
-    hipsparseStatus_t status = testing_bsrxmv<hipComplex>();
+    Arguments         arg;
+    hipsparseStatus_t status = testing_bsrxmv<hipComplex>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 #endif

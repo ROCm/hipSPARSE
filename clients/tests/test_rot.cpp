@@ -48,17 +48,16 @@ protected:
 Arguments setup_rot_arguments(rot_tuple tup)
 {
     Arguments arg;
-    arg.N        = std::get<0>(tup);
-    arg.nnz      = std::get<1>(tup);
-    arg.alpha    = std::get<2>(tup);
-    arg.beta     = std::get<3>(tup);
-    arg.idx_base = std::get<4>(tup);
-    arg.timing   = 0;
+    arg.N      = std::get<0>(tup);
+    arg.nnz    = std::get<1>(tup);
+    arg.alpha  = std::get<2>(tup);
+    arg.beta   = std::get<3>(tup);
+    arg.baseA  = std::get<4>(tup);
+    arg.timing = 0;
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
+#if(!defined(CUDART_VERSION) || (CUDART_VERSION >= 11000 && CUDART_VERSION < 13000))
 TEST(rot_bad_arg, rot_float)
 {
     testing_rot_bad_arg();

@@ -25,6 +25,9 @@
 #ifndef TESTING_DENSE_TO_SPARSE_CSR_HPP
 #define TESTING_DENSE_TO_SPARSE_CSR_HPP
 
+#include "flops.hpp"
+#include "gbyte.hpp"
+#include "hipsparse_arguments.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
@@ -72,12 +75,6 @@ void testing_dense_to_sparse_csr_bad_arg(void)
     int32_t* dcsr_col_ind = (int32_t*)dcsr_col_ind_managed.get();
     float*   dcsr_val     = (float*)dcsr_val_managed.get();
     void*    dbuf         = (void*)dbuf_managed.get();
-
-    if(!ddense_val || !dcsr_row_ptr || !dcsr_col_ind || !dcsr_val || !dbuf)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
 
     // Matrix structures
     hipsparseDnVecDescr_t matA;
@@ -149,9 +146,10 @@ hipsparseStatus_t testing_dense_to_sparse_csr(Arguments argus)
 #if(!defined(CUDART_VERSION))
     J                           m        = argus.M;
     J                           n        = argus.N;
-    hipsparseIndexBase_t        idx_base = argus.idx_base;
-    hipsparseDenseToSparseAlg_t alg      = HIPSPARSE_DENSETOSPARSE_ALG_DEFAULT;
-    hipsparseOrder_t            order    = argus.orderA;
+    hipsparseIndexBase_t        idx_base = argus.baseA;
+    hipsparseDenseToSparseAlg_t alg
+        = static_cast<hipsparseDenseToSparseAlg_t>(argus.dense2sparse_alg);
+    hipsparseOrder_t order = argus.orderA;
 
     // Index and data type
     hipsparseIndexType_t typeI = getIndexType<I>();
@@ -159,8 +157,8 @@ hipsparseStatus_t testing_dense_to_sparse_csr(Arguments argus)
     hipDataType          typeT = getDataType<T>();
 
     // hipSPARSE handle
-    std::unique_ptr<handle_struct> test_handle(new handle_struct);
-    hipsparseHandle_t              handle = test_handle->handle;
+    std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
+    hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
     I ld = (order == HIPSPARSE_ORDER_COL) ? m : n;
 
@@ -233,96 +231,124 @@ hipsparseStatus_t testing_dense_to_sparse_csr(Arguments argus)
 
     CHECK_HIPSPARSE_ERROR(hipsparseCsrSetPointers(matB, dptr, dcol, dval));
 
-    CHECK_HIPSPARSE_ERROR(hipsparseDenseToSparse_convert(handle, matA, matB, alg, buffer));
-
-    // copy output from device to CPU
-    std::vector<I> hcsr_row_ptr(m + 1);
-    std::vector<J> hcsr_col_ind(nnz);
-    std::vector<T> hcsr_val(nnz);
-
-    CHECK_HIP_ERROR(
-        hipMemcpy(hcsr_row_ptr.data(), dptr, sizeof(I) * (m + 1), hipMemcpyDeviceToHost));
-    CHECK_HIP_ERROR(hipMemcpy(hcsr_col_ind.data(), dcol, sizeof(J) * nnz, hipMemcpyDeviceToHost));
-    CHECK_HIP_ERROR(hipMemcpy(hcsr_val.data(), dval, sizeof(T) * nnz, hipMemcpyDeviceToHost));
-
-    // Query for warpSize
-    hipDeviceProp_t prop;
-    hipGetDeviceProperties(&prop, 0);
-
-    std::vector<I> hcsr_row_ptr_cpu(m + 1);
-    std::vector<J> hcsr_col_ind_cpu(nnz);
-    std::vector<T> hcsr_val_cpu(nnz);
-
-    std::vector<I> hnnz_per_row(m, 0);
-    if(order == HIPSPARSE_ORDER_COL)
+    if(argus.unit_check)
     {
-        for(J i = 0; i < m; ++i)
+        CHECK_HIPSPARSE_ERROR(hipsparseDenseToSparse_convert(handle, matA, matB, alg, buffer));
+
+        // copy output from device to CPU
+        std::vector<I> hcsr_row_ptr(m + 1);
+        std::vector<J> hcsr_col_ind(nnz);
+        std::vector<T> hcsr_val(nnz);
+
+        CHECK_HIP_ERROR(
+            hipMemcpy(hcsr_row_ptr.data(), dptr, sizeof(I) * (m + 1), hipMemcpyDeviceToHost));
+        CHECK_HIP_ERROR(
+            hipMemcpy(hcsr_col_ind.data(), dcol, sizeof(J) * nnz, hipMemcpyDeviceToHost));
+        CHECK_HIP_ERROR(hipMemcpy(hcsr_val.data(), dval, sizeof(T) * nnz, hipMemcpyDeviceToHost));
+
+        std::vector<I> hcsr_row_ptr_cpu(m + 1);
+        std::vector<J> hcsr_col_ind_cpu(nnz);
+        std::vector<T> hcsr_val_cpu(nnz);
+
+        std::vector<I> hnnz_per_row(m, 0);
+        if(order == HIPSPARSE_ORDER_COL)
         {
-            for(J j = 0; j < n; ++j)
+            for(J i = 0; i < m; ++i)
             {
-                if(hdense_val[j * ld + i] != make_DataType<T>(0.0))
+                for(J j = 0; j < n; ++j)
                 {
-                    hnnz_per_row[i]++;
+                    if(hdense_val[j * ld + i] != make_DataType<T>(0.0))
+                    {
+                        hnnz_per_row[i]++;
+                    }
                 }
             }
         }
-    }
-    else
-    {
-        for(J i = 0; i < m; ++i)
+        else
         {
-            for(J j = 0; j < n; ++j)
+            for(J i = 0; i < m; ++i)
             {
-                if(hdense_val[i * ld + j] != make_DataType<T>(0.0))
+                for(J j = 0; j < n; ++j)
                 {
-                    hnnz_per_row[i]++;
+                    if(hdense_val[i * ld + j] != make_DataType<T>(0.0))
+                    {
+                        hnnz_per_row[i]++;
+                    }
                 }
             }
         }
-    }
 
-    hcsr_row_ptr_cpu[0] = idx_base;
-    for(J i = 0; i < m; ++i)
-    {
-        hcsr_row_ptr_cpu[i + 1] = hnnz_per_row[i] + hcsr_row_ptr_cpu[i];
-    }
-
-    if(order == HIPSPARSE_ORDER_COL)
-    {
-        int index = 0;
+        hcsr_row_ptr_cpu[0] = idx_base;
         for(J i = 0; i < m; ++i)
         {
-            for(J j = 0; j < n; ++j)
+            hcsr_row_ptr_cpu[i + 1] = hnnz_per_row[i] + hcsr_row_ptr_cpu[i];
+        }
+
+        if(order == HIPSPARSE_ORDER_COL)
+        {
+            int index = 0;
+            for(J i = 0; i < m; ++i)
             {
-                if(hdense_val[j * ld + i] != make_DataType<T>(0.0))
+                for(J j = 0; j < n; ++j)
                 {
-                    hcsr_val_cpu[index]     = hdense_val[j * ld + i];
-                    hcsr_col_ind_cpu[index] = j + idx_base;
-                    index++;
+                    if(hdense_val[j * ld + i] != make_DataType<T>(0.0))
+                    {
+                        hcsr_val_cpu[index]     = hdense_val[j * ld + i];
+                        hcsr_col_ind_cpu[index] = j + idx_base;
+                        index++;
+                    }
                 }
             }
         }
-    }
-    else
-    {
-        int index = 0;
-        for(J i = 0; i < m; ++i)
+        else
         {
-            for(J j = 0; j < n; ++j)
+            int index = 0;
+            for(J i = 0; i < m; ++i)
             {
-                if(hdense_val[i * ld + j] != make_DataType<T>(0.0))
+                for(J j = 0; j < n; ++j)
                 {
-                    hcsr_val_cpu[index]     = hdense_val[i * ld + j];
-                    hcsr_col_ind_cpu[index] = j + idx_base;
-                    index++;
+                    if(hdense_val[i * ld + j] != make_DataType<T>(0.0))
+                    {
+                        hcsr_val_cpu[index]     = hdense_val[i * ld + j];
+                        hcsr_col_ind_cpu[index] = j + idx_base;
+                        index++;
+                    }
                 }
             }
         }
+
+        unit_check_general(1, (m + 1), 1, hcsr_row_ptr_cpu.data(), hcsr_row_ptr.data());
+        unit_check_general(1, nnz, 1, hcsr_col_ind_cpu.data(), hcsr_col_ind.data());
+        unit_check_general(1, nnz, 1, hcsr_val_cpu.data(), hcsr_val.data());
     }
 
-    unit_check_general(1, (m + 1), 1, hcsr_row_ptr_cpu.data(), hcsr_row_ptr.data());
-    unit_check_general(1, nnz, 1, hcsr_col_ind_cpu.data(), hcsr_col_ind.data());
-    unit_check_general(1, nnz, 1, hcsr_val_cpu.data(), hcsr_val.data());
+    if(argus.timing)
+    {
+        int number_cold_calls = 2;
+        int number_hot_calls  = argus.iters;
+
+        // Warm-up
+        for(int iter = 0; iter < number_cold_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseDenseToSparse_convert(handle, matA, matB, alg, buffer));
+        }
+
+        double gpu_time_used = get_time_us();
+
+        // Performance run
+        for(int iter = 0; iter < number_hot_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseDenseToSparse_convert(handle, matA, matB, alg, buffer));
+        }
+
+        gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
+
+        double gbyte_count = dense2csx_gbyte_count<HIPSPARSE_DIRECTION_ROW, T>(m, n, nnz);
+        double gpu_gbyte   = get_gpu_gbyte(gpu_time_used, gbyte_count);
+
+        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used)
+                  << std::endl;
+    }
 
     CHECK_HIP_ERROR(hipFree(buffer));
     CHECK_HIPSPARSE_ERROR(hipsparseDestroyDnMat(matA));

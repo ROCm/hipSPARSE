@@ -45,12 +45,6 @@ void testing_dnvec_descr_bad_arg(void)
 
     float* val_data = (float*)val_data_managed.get();
 
-    if(!val_data)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
-
     hipsparseDnVecDescr_t x;
 
     // hipsparseCreateDnVec

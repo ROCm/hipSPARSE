@@ -21,29 +21,36 @@
  *
  * ************************************************************************ */
 
+#include "hipsparse_arguments.hpp"
 #include "testing_spmm_csr.hpp"
 
 #include <hipsparse.h>
 
+struct alpha_beta
+{
+    double alpha;
+    double beta;
+};
+
 typedef std::tuple<int,
                    int,
                    int,
-                   double,
-                   double,
-                   hipsparseOperation_t,
-                   hipsparseOperation_t,
-                   hipsparseOrder_t,
-                   hipsparseOrder_t,
-                   hipsparseIndexBase_t>
-    spmm_csr_tuple;
-typedef std::tuple<int,
-                   double,
-                   double,
+                   alpha_beta,
                    hipsparseOperation_t,
                    hipsparseOperation_t,
                    hipsparseOrder_t,
                    hipsparseOrder_t,
                    hipsparseIndexBase_t,
+                   hipsparseSpMMAlg_t>
+    spmm_csr_tuple;
+typedef std::tuple<int,
+                   alpha_beta,
+                   hipsparseOperation_t,
+                   hipsparseOperation_t,
+                   hipsparseOrder_t,
+                   hipsparseOrder_t,
+                   hipsparseIndexBase_t,
+                   hipsparseSpMMAlg_t,
                    std::string>
     spmm_csr_bin_tuple;
 
@@ -51,16 +58,36 @@ int spmm_csr_M_range[] = {50};
 int spmm_csr_N_range[] = {5};
 int spmm_csr_K_range[] = {84};
 
-std::vector<double> spmm_csr_alpha_range = {2.0};
-std::vector<double> spmm_csr_beta_range  = {1.0};
+alpha_beta spmm_csr_alpha_beta_range[] = {{2.0, 1.0}};
 
 hipsparseOperation_t spmm_csr_transA_range[]
     = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPERATION_TRANSPOSE};
 hipsparseOperation_t spmm_csr_transB_range[]
     = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPERATION_TRANSPOSE};
-hipsparseOrder_t     spmm_csr_orderB_range[]  = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
-hipsparseOrder_t     spmm_csr_orderC_range[]  = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
-hipsparseIndexBase_t spmm_csr_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ONE};
+hipsparseOrder_t     spmm_csr_orderB_range[] = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
+hipsparseOrder_t     spmm_csr_orderC_range[] = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
+hipsparseIndexBase_t spmm_csr_idxbase_range[]
+    = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+#if(!defined(CUDART_VERSION))
+hipsparseSpMMAlg_t spmm_csr_alg_range[] = {HIPSPARSE_SPMM_ALG_DEFAULT,
+                                           HIPSPARSE_SPMM_CSR_ALG1,
+                                           HIPSPARSE_SPMM_CSR_ALG2,
+                                           HIPSPARSE_SPMM_CSR_ALG3};
+#else
+// Alg3 not supported when A is transposed or conjugate transposed or when B is conjugate transposed
+#if(CUDART_VERSION >= 12000)
+hipsparseSpMMAlg_t spmm_csr_alg_range[]
+    = {HIPSPARSE_SPMM_ALG_DEFAULT, HIPSPARSE_SPMM_CSR_ALG1, HIPSPARSE_SPMM_CSR_ALG2};
+#elif(CUDART_VERSION >= 11021 && CUDART_VERSION < 12000)
+hipsparseSpMMAlg_t spmm_csr_alg_range[]
+    = {HIPSPARSE_SPMM_ALG_DEFAULT, HIPSPARSE_SPMM_CSR_ALG1, HIPSPARSE_SPMM_CSR_ALG2};
+#elif(CUDART_VERSION >= 11003 && CUDART_VERSION < 11021)
+hipsparseSpMMAlg_t spmm_csr_alg_range[]
+    = {HIPSPARSE_SPMM_ALG_DEFAULT, HIPSPARSE_SPMM_CSR_ALG1, HIPSPARSE_SPMM_CSR_ALG2};
+#elif(CUDART_VERSION >= 10010 && CUDART_VERSION < 11003)
+hipsparseSpMMAlg_t spmm_csr_alg_range[] = {HIPSPARSE_MM_ALG_DEFAULT, HIPSPARSE_CSRMM_ALG1};
+#endif
+#endif
 
 std::string spmm_csr_bin[]
     = {"nos2.bin", "nos4.bin", "nos5.bin", "nos7.bin", "Chebyshev4.bin", "shipsec1.bin"};
@@ -89,13 +116,14 @@ Arguments setup_spmm_csr_arguments(spmm_csr_tuple tup)
     arg.M        = std::get<0>(tup);
     arg.N        = std::get<1>(tup);
     arg.K        = std::get<2>(tup);
-    arg.alpha    = std::get<3>(tup);
-    arg.beta     = std::get<4>(tup);
-    arg.transA   = std::get<5>(tup);
-    arg.transB   = std::get<6>(tup);
-    arg.orderB   = std::get<7>(tup);
-    arg.orderC   = std::get<8>(tup);
-    arg.idx_base = std::get<9>(tup);
+    arg.alpha    = std::get<3>(tup).alpha;
+    arg.beta     = std::get<3>(tup).beta;
+    arg.transA   = std::get<4>(tup);
+    arg.transB   = std::get<5>(tup);
+    arg.orderB   = std::get<6>(tup);
+    arg.orderC   = std::get<7>(tup);
+    arg.baseA    = std::get<8>(tup);
+    arg.spmm_alg = std::get<9>(tup);
     arg.timing   = 0;
     return arg;
 }
@@ -106,13 +134,14 @@ Arguments setup_spmm_csr_arguments(spmm_csr_bin_tuple tup)
     arg.M        = -99;
     arg.N        = std::get<0>(tup);
     arg.K        = -99;
-    arg.alpha    = std::get<1>(tup);
-    arg.beta     = std::get<2>(tup);
-    arg.transA   = std::get<3>(tup);
-    arg.transB   = std::get<4>(tup);
-    arg.orderB   = std::get<5>(tup);
-    arg.orderC   = std::get<6>(tup);
-    arg.idx_base = std::get<7>(tup);
+    arg.alpha    = std::get<1>(tup).alpha;
+    arg.beta     = std::get<1>(tup).beta;
+    arg.transA   = std::get<2>(tup);
+    arg.transB   = std::get<3>(tup);
+    arg.orderB   = std::get<4>(tup);
+    arg.orderC   = std::get<5>(tup);
+    arg.baseA    = std::get<6>(tup);
+    arg.spmm_alg = std::get<7>(tup);
     arg.timing   = 0;
 
     // Determine absolute path of test matrix
@@ -124,7 +153,6 @@ Arguments setup_spmm_csr_arguments(spmm_csr_bin_tuple tup)
     return arg;
 }
 
-// csr format not supported in cusparse
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(spmm_csr_bad_arg, spmm_csr_float)
 {
@@ -187,23 +215,23 @@ INSTANTIATE_TEST_SUITE_P(spmm_csr,
                          testing::Combine(testing::ValuesIn(spmm_csr_M_range),
                                           testing::ValuesIn(spmm_csr_N_range),
                                           testing::ValuesIn(spmm_csr_K_range),
-                                          testing::ValuesIn(spmm_csr_alpha_range),
-                                          testing::ValuesIn(spmm_csr_beta_range),
-                                          testing::ValuesIn(spmm_csr_transA_range),
-                                          testing::ValuesIn(spmm_csr_transB_range),
-                                          testing::ValuesIn(spmm_csr_orderB_range),
-                                          testing::ValuesIn(spmm_csr_orderC_range),
-                                          testing::ValuesIn(spmm_csr_idxbase_range)));
-
-INSTANTIATE_TEST_SUITE_P(spmm_csr_bin,
-                         parameterized_spmm_csr_bin,
-                         testing::Combine(testing::ValuesIn(spmm_csr_N_range),
-                                          testing::ValuesIn(spmm_csr_alpha_range),
-                                          testing::ValuesIn(spmm_csr_beta_range),
+                                          testing::ValuesIn(spmm_csr_alpha_beta_range),
                                           testing::ValuesIn(spmm_csr_transA_range),
                                           testing::ValuesIn(spmm_csr_transB_range),
                                           testing::ValuesIn(spmm_csr_orderB_range),
                                           testing::ValuesIn(spmm_csr_orderC_range),
                                           testing::ValuesIn(spmm_csr_idxbase_range),
+                                          testing::ValuesIn(spmm_csr_alg_range)));
+
+INSTANTIATE_TEST_SUITE_P(spmm_csr_bin,
+                         parameterized_spmm_csr_bin,
+                         testing::Combine(testing::ValuesIn(spmm_csr_N_range),
+                                          testing::ValuesIn(spmm_csr_alpha_beta_range),
+                                          testing::ValuesIn(spmm_csr_transA_range),
+                                          testing::ValuesIn(spmm_csr_transB_range),
+                                          testing::ValuesIn(spmm_csr_orderB_range),
+                                          testing::ValuesIn(spmm_csr_orderC_range),
+                                          testing::ValuesIn(spmm_csr_idxbase_range),
+                                          testing::ValuesIn(spmm_csr_alg_range),
                                           testing::ValuesIn(spmm_csr_bin)));
 #endif

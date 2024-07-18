@@ -28,9 +28,8 @@
 typedef hipsparseIndexBase_t       base;
 typedef std::tuple<int, int, base> scatter_tuple;
 
-int scatter_N_range[]   = {12000, 15332, 22031};
-int scatter_nnz_range[] = {0, 5, 10, 500, 1000, 7111, 10000};
-
+int  scatter_N_range[]        = {12000, 15332, 22031};
+int  scatter_nnz_range[]      = {0, 5, 10, 500, 1000, 7111, 10000};
 base scatter_idx_base_range[] = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
 
 class parameterized_scatter : public testing::TestWithParam<scatter_tuple>
@@ -45,15 +44,14 @@ protected:
 Arguments setup_scatter_arguments(scatter_tuple tup)
 {
     Arguments arg;
-    arg.N        = std::get<0>(tup);
-    arg.nnz      = std::get<1>(tup);
-    arg.idx_base = std::get<2>(tup);
-    arg.timing   = 0;
+    arg.N      = std::get<0>(tup);
+    arg.nnz    = std::get<1>(tup);
+    arg.baseA  = std::get<2>(tup);
+    arg.timing = 0;
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
 TEST(scatter_bad_arg, scatter_float)
 {
     testing_scatter_bad_arg();

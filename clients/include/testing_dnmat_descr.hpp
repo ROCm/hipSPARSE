@@ -49,12 +49,6 @@ void testing_dnmat_descr_bad_arg(void)
 
     float* val_data = (float*)val_data_managed.get();
 
-    if(!val_data)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
-
     hipsparseDnMatDescr_t x;
 
     // hipsparseCreateDnMat

@@ -25,6 +25,9 @@
 #ifndef TESTING_ROT_HPP
 #define TESTING_ROT_HPP
 
+#include "flops.hpp"
+#include "gbyte.hpp"
+#include "hipsparse_arguments.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
@@ -36,7 +39,7 @@ using namespace hipsparse_test;
 
 void testing_rot_bad_arg(void)
 {
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
+#if(!defined(CUDART_VERSION) || (CUDART_VERSION >= 11000 && CUDART_VERSION < 13000))
     int64_t size = 100;
     int64_t nnz  = 100;
 
@@ -57,12 +60,6 @@ void testing_rot_bad_arg(void)
     float* dx_val = (float*)dx_val_managed.get();
     int*   dx_ind = (int*)dx_ind_managed.get();
     float* dy     = (float*)dy_managed.get();
-
-    if(!dx_ind || !dx_val || !dy)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
 
     // Structures
     hipsparseSpVecDescr_t x;
@@ -92,20 +89,22 @@ void testing_rot_bad_arg(void)
 template <typename I, typename T>
 hipsparseStatus_t testing_rot(Arguments argus)
 {
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
-    int64_t              size     = argus.N;
-    int64_t              nnz      = argus.nnz;
-    T                    hc_coeff = make_DataType<T>(argus.alpha);
-    T                    hs_coeff = make_DataType<T>(argus.beta);
-    hipsparseIndexBase_t idxBase  = argus.idx_base;
+#if(!defined(CUDART_VERSION) || (CUDART_VERSION >= 11000 && CUDART_VERSION < 13000))
+    I size = argus.N;
+    I nnz  = argus.nnz;
+
+    T hc_coeff = make_DataType<T>(argus.alpha);
+    T hs_coeff = make_DataType<T>(argus.beta);
+
+    hipsparseIndexBase_t idxBase = argus.baseA;
 
     // Index and data type
     hipsparseIndexType_t idxType  = getIndexType<I>();
     hipDataType          dataType = getDataType<T>();
 
     // hipSPARSE handle
-    std::unique_ptr<handle_struct> test_handle(new handle_struct);
-    hipsparseHandle_t              handle = test_handle->handle;
+    std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
+    hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
     // Host structures
     std::vector<I> hx_ind(nnz);
@@ -164,39 +163,75 @@ hipsparseStatus_t testing_rot(Arguments argus)
     CHECK_HIPSPARSE_ERROR(hipsparseCreateDnVec(&y1, size, dy_1, dataType));
     CHECK_HIPSPARSE_ERROR(hipsparseCreateDnVec(&y2, size, dy_2, dataType));
 
-    // Rot
-
-    // hipSPARSE pointer mode host
-    CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
-    CHECK_HIPSPARSE_ERROR(hipsparseRot(handle, &hc_coeff, &hs_coeff, x1, y1));
-
-    // hipSPARSE pointer mode device
-    CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
-    CHECK_HIPSPARSE_ERROR(hipsparseRot(handle, dc_coeff, ds_coeff, x2, y2));
-
-    // Copy output from device to CPU
-    CHECK_HIP_ERROR(hipMemcpy(hx_val_1.data(), dx_val_1, sizeof(T) * nnz, hipMemcpyDeviceToHost));
-    CHECK_HIP_ERROR(hipMemcpy(hx_val_2.data(), dx_val_2, sizeof(T) * nnz, hipMemcpyDeviceToHost));
-    CHECK_HIP_ERROR(hipMemcpy(hy_1.data(), dy_1, sizeof(T) * size, hipMemcpyDeviceToHost));
-    CHECK_HIP_ERROR(hipMemcpy(hy_2.data(), dy_2, sizeof(T) * size, hipMemcpyDeviceToHost));
-
-    // CPU
-    for(int64_t i = 0; i < nnz; ++i)
+    if(argus.unit_check)
     {
-        I idx = hx_ind[i] - idxBase;
+        // hipSPARSE pointer mode host
+        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
+        CHECK_HIPSPARSE_ERROR(hipsparseRot(handle, &hc_coeff, &hs_coeff, x1, y1));
 
-        T x = hx_val_gold[i];
-        T y = hy_gold[idx];
+        // hipSPARSE pointer mode device
+        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
+        CHECK_HIPSPARSE_ERROR(hipsparseRot(handle, dc_coeff, ds_coeff, x2, y2));
 
-        hx_val_gold[i] = testing_mult(hc_coeff, x) + testing_mult(hs_coeff, y);
-        hy_gold[idx]   = testing_mult(hc_coeff, y) - testing_mult(hs_coeff, x);
+        // Copy output from device to CPU
+        CHECK_HIP_ERROR(
+            hipMemcpy(hx_val_1.data(), dx_val_1, sizeof(T) * nnz, hipMemcpyDeviceToHost));
+        CHECK_HIP_ERROR(
+            hipMemcpy(hx_val_2.data(), dx_val_2, sizeof(T) * nnz, hipMemcpyDeviceToHost));
+        CHECK_HIP_ERROR(hipMemcpy(hy_1.data(), dy_1, sizeof(T) * size, hipMemcpyDeviceToHost));
+        CHECK_HIP_ERROR(hipMemcpy(hy_2.data(), dy_2, sizeof(T) * size, hipMemcpyDeviceToHost));
+
+        // CPU
+        for(int64_t i = 0; i < nnz; ++i)
+        {
+            I idx = hx_ind[i] - idxBase;
+
+            T x = hx_val_gold[i];
+            T y = hy_gold[idx];
+
+            hx_val_gold[i] = testing_mult(hc_coeff, x) + testing_mult(hs_coeff, y);
+            hy_gold[idx]   = testing_mult(hc_coeff, y) - testing_mult(hs_coeff, x);
+        }
+
+        // Verify results against host
+        unit_check_general(1, nnz, 1, hx_val_gold.data(), hx_val_1.data());
+        unit_check_general(1, nnz, 1, hx_val_gold.data(), hx_val_2.data());
+        unit_check_general(1, size, 1, hy_gold.data(), hy_1.data());
+        unit_check_general(1, size, 1, hy_gold.data(), hy_2.data());
     }
 
-    // Verify results against host
-    unit_check_general(1, nnz, 1, hx_val_gold.data(), hx_val_1.data());
-    unit_check_general(1, nnz, 1, hx_val_gold.data(), hx_val_2.data());
-    unit_check_general(1, size, 1, hy_gold.data(), hy_1.data());
-    unit_check_general(1, size, 1, hy_gold.data(), hy_2.data());
+    if(argus.timing)
+    {
+        int number_cold_calls = 2;
+        int number_hot_calls  = argus.iters;
+
+        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
+
+        // Warm up
+        for(int iter = 0; iter < number_cold_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseRot(handle, &hc_coeff, &hs_coeff, x1, y1));
+        }
+
+        double gpu_time_used = get_time_us();
+
+        // Performance run
+        for(int iter = 0; iter < number_hot_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseRot(handle, &hc_coeff, &hs_coeff, x1, y1));
+        }
+
+        gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
+
+        double gflop_count = roti_gflop_count<I>(nnz);
+        double gbyte_count = roti_gbyte_count<T>(nnz);
+
+        double gpu_gbyte  = get_gpu_gbyte(gpu_time_used, gbyte_count);
+        double gpu_gflops = get_gpu_gflops(gpu_time_used, gflop_count);
+
+        std::cout << "GFLOPS/s: " << gpu_gflops << " GBytes/s: " << gpu_gbyte
+                  << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
+    }
 
     CHECK_HIPSPARSE_ERROR(hipsparseDestroySpVec(x1));
     CHECK_HIPSPARSE_ERROR(hipsparseDestroySpVec(x2));

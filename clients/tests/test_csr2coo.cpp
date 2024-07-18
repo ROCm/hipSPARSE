@@ -78,20 +78,20 @@ protected:
 Arguments setup_csr2coo_arguments(csr2coo_tuple tup)
 {
     Arguments arg;
-    arg.M        = std::get<0>(tup);
-    arg.N        = std::get<1>(tup);
-    arg.idx_base = std::get<2>(tup);
-    arg.timing   = 0;
+    arg.M      = std::get<0>(tup);
+    arg.N      = std::get<1>(tup);
+    arg.baseA  = std::get<2>(tup);
+    arg.timing = 0;
     return arg;
 }
 
 Arguments setup_csr2coo_arguments(csr2coo_bin_tuple tup)
 {
     Arguments arg;
-    arg.M        = -99;
-    arg.N        = -99;
-    arg.idx_base = std::get<0>(tup);
-    arg.timing   = 0;
+    arg.M      = -99;
+    arg.N      = -99;
+    arg.baseA  = std::get<0>(tup);
+    arg.timing = 0;
 
     // Determine absolute path of test matrix
     std::string bin_file = std::get<1>(tup);
@@ -102,26 +102,24 @@ Arguments setup_csr2coo_arguments(csr2coo_bin_tuple tup)
     return arg;
 }
 
-// Only run tests for CUDA 11.1 or greater
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(csr2coo_bad_arg, csr2coo)
 {
     testing_csr2coo_bad_arg();
 }
 
-TEST_P(parameterized_csr2coo, csr2coo)
+TEST_P(parameterized_csr2coo, csr2coo_float)
 {
     Arguments arg = setup_csr2coo_arguments(GetParam());
 
-    hipsparseStatus_t status = testing_csr2coo(arg);
+    hipsparseStatus_t status = testing_csr2coo<float>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
-TEST_P(parameterized_csr2coo_bin, csr2coo_bin)
+TEST_P(parameterized_csr2coo_bin, csr2coo_bin_float)
 {
     Arguments arg = setup_csr2coo_arguments(GetParam());
 
-    hipsparseStatus_t status = testing_csr2coo(arg);
+    hipsparseStatus_t status = testing_csr2coo<float>(arg);
     EXPECT_EQ(status, HIPSPARSE_STATUS_SUCCESS);
 }
 
@@ -135,4 +133,3 @@ INSTANTIATE_TEST_SUITE_P(csr2coo_bin,
                          parameterized_csr2coo_bin,
                          testing::Combine(testing::ValuesIn(csr2coo_idx_base_range),
                                           testing::ValuesIn(csr2coo_bin)));
-#endif

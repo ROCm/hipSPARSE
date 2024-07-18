@@ -50,12 +50,6 @@ void testing_const_spvec_descr_bad_arg(void)
     const int*   idx_data = (const int*)idx_data_managed.get();
     const float* val_data = (const float*)val_data_managed.get();
 
-    if(!idx_data || !val_data)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
-
     hipsparseConstSpVecDescr_t x;
 
     // hipsparseCreateConstSpVec

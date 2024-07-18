@@ -25,6 +25,9 @@
 #ifndef TESTING_AXPBY_HPP
 #define TESTING_AXPBY_HPP
 
+#include "flops.hpp"
+#include "gbyte.hpp"
+#include "hipsparse_arguments.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
@@ -59,12 +62,6 @@ void testing_axpby_bad_arg(void)
     int*   dx_ind = (int*)dx_ind_managed.get();
     float* dy     = (float*)dy_managed.get();
 
-    if(!dx_ind || !dx_val || !dy)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
-
     // Structures
     hipsparseSpVecDescr_t x;
     hipsparseDnVecDescr_t y;
@@ -94,19 +91,21 @@ template <typename I, typename T>
 hipsparseStatus_t testing_axpby(Arguments argus)
 {
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
-    int64_t              size    = argus.N;
-    int64_t              nnz     = argus.nnz;
-    T                    alpha   = make_DataType<T>(argus.alpha);
-    T                    beta    = make_DataType<T>(argus.beta);
-    hipsparseIndexBase_t idxBase = argus.idx_base;
+    I size = argus.N;
+    I nnz  = argus.nnz;
+
+    T alpha = make_DataType<T>(argus.alpha);
+    T beta  = make_DataType<T>(argus.beta);
+
+    hipsparseIndexBase_t idxBase = argus.baseA;
 
     // Index and data type
     hipsparseIndexType_t idxType  = getIndexType<I>();
     hipDataType          dataType = getDataType<T>();
 
     // hipSPARSE handle
-    std::unique_ptr<handle_struct> test_handle(new handle_struct);
-    hipsparseHandle_t              handle = test_handle->handle;
+    std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
+    hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
     // Host structures
     std::vector<I> hx_ind(nnz);
@@ -144,25 +143,60 @@ hipsparseStatus_t testing_axpby(Arguments argus)
         hipsparseCreateSpVec(&x, size, nnz, dx_ind, dx_val, idxType, idxBase, dataType));
     CHECK_HIPSPARSE_ERROR(hipsparseCreateDnVec(&y, size, dy, dataType));
 
-    // Axpby
-    CHECK_HIPSPARSE_ERROR(hipsparseAxpby(handle, &alpha, x, &beta, y));
-
-    // Copy output from device to CPU
-    CHECK_HIP_ERROR(hipMemcpy(hy.data(), dy, sizeof(T) * size, hipMemcpyDeviceToHost));
-
-    // CPU
-    for(int64_t i = 0; i < size; ++i)
+    if(argus.unit_check)
     {
-        hy_gold[i] = testing_mult(beta, hy_gold[i]);
+        // Axpby
+        CHECK_HIPSPARSE_ERROR(hipsparseAxpby(handle, &alpha, x, &beta, y));
+
+        // Copy output from device to CPU
+        CHECK_HIP_ERROR(hipMemcpy(hy.data(), dy, sizeof(T) * size, hipMemcpyDeviceToHost));
+
+        // CPU
+        for(int64_t i = 0; i < size; ++i)
+        {
+            hy_gold[i] = testing_mult(beta, hy_gold[i]);
+        }
+
+        for(int64_t i = 0; i < nnz; ++i)
+        {
+            hy_gold[hx_ind[i] - idxBase]
+                = testing_fma(alpha, hx_val[i], hy_gold[hx_ind[i] - idxBase]);
+        }
+
+        // Verify results against host
+        unit_check_general(1, size, 1, hy_gold.data(), hy.data());
     }
 
-    for(int64_t i = 0; i < nnz; ++i)
+    if(argus.timing)
     {
-        hy_gold[hx_ind[i] - idxBase] = testing_fma(alpha, hx_val[i], hy_gold[hx_ind[i] - idxBase]);
-    }
+        int number_cold_calls = 2;
+        int number_hot_calls  = argus.iters;
 
-    // Verify results against host
-    unit_check_general(1, size, 1, hy_gold.data(), hy.data());
+        // Warm up
+        for(int iter = 0; iter < number_cold_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseAxpby(handle, &alpha, x, &beta, y));
+        }
+
+        double gpu_time_used = get_time_us();
+
+        // Performance run
+        for(int iter = 0; iter < number_hot_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseAxpby(handle, &alpha, x, &beta, y));
+        }
+
+        gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
+
+        double gflop_count = axpby_gflop_count(nnz);
+        double gbyte_count = axpby_gbyte_count<T>(nnz);
+
+        double gpu_gbyte  = get_gpu_gbyte(gpu_time_used, gbyte_count);
+        double gpu_gflops = get_gpu_gflops(gpu_time_used, gflop_count);
+
+        std::cout << "GFLOPS/s: " << gpu_gflops << " GBytes/s: " << gpu_gbyte
+                  << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
+    }
 
     CHECK_HIPSPARSE_ERROR(hipsparseDestroySpVec(x));
     CHECK_HIPSPARSE_ERROR(hipsparseDestroyDnVec(y));

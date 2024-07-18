@@ -25,6 +25,7 @@
 #ifndef TESTING_SPGEMMREUSE_CSR_HPP
 #define TESTING_SPGEMMREUSE_CSR_HPP
 
+#include "hipsparse_arguments.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
@@ -79,7 +80,6 @@ void testing_spgemmreuse_csr_bad_arg(void)
         = hipsparse_unique_ptr{device_malloc(sizeof(int) * safe_size), device_free};
     auto dcsr_val_C_managed
         = hipsparse_unique_ptr{device_malloc(sizeof(float) * safe_size), device_free};
-    auto dbuf_managed = hipsparse_unique_ptr{device_malloc(sizeof(char) * safe_size), device_free};
 
     int*   dcsr_row_ptr_A = (int*)dcsr_row_ptr_A_managed.get();
     int*   dcsr_col_ind_A = (int*)dcsr_col_ind_A_managed.get();
@@ -90,14 +90,6 @@ void testing_spgemmreuse_csr_bad_arg(void)
     int*   dcsr_row_ptr_C = (int*)dcsr_row_ptr_C_managed.get();
     int*   dcsr_col_ind_C = (int*)dcsr_col_ind_C_managed.get();
     float* dcsr_val_C     = (float*)dcsr_val_C_managed.get();
-    void*  dbuf           = (void*)dbuf_managed.get();
-
-    if(!dcsr_row_ptr_A || !dcsr_col_ind_A || !dcsr_val_A || !dcsr_row_ptr_B || !dcsr_col_ind_B
-       || !dcsr_val_B || !dcsr_row_ptr_C || !dcsr_col_ind_C || !dcsr_val_C || !dbuf)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
 
     // SpGEMM structures
     hipsparseSpMatDescr_t A, B, C;
@@ -220,13 +212,11 @@ hipsparseStatus_t testing_spgemmreuse_csr(Arguments argus)
     J                    m        = argus.M;
     J                    k        = argus.K;
     T                    h_alpha  = make_DataType<T>(argus.alpha);
-    hipsparseIndexBase_t idxBaseA = argus.idx_base;
-    hipsparseIndexBase_t idxBaseB = argus.idx_base2;
-    hipsparseIndexBase_t idxBaseC = argus.idx_base3;
-    hipsparseSpGEMMAlg_t alg      = HIPSPARSE_SPGEMM_DEFAULT;
-
-    // Matrices are stored at the same path in matrices directory
-    std::string filename = argus.filename;
+    hipsparseIndexBase_t idxBaseA = argus.baseA;
+    hipsparseIndexBase_t idxBaseB = argus.baseB;
+    hipsparseIndexBase_t idxBaseC = argus.baseC;
+    hipsparseSpGEMMAlg_t alg      = static_cast<hipsparseSpGEMMAlg_t>(argus.spgemm_alg);
+    std::string          filename = argus.filename;
 
     T                    h_beta = make_DataType<T>(0);
     hipsparseOperation_t transA = HIPSPARSE_OPERATION_NON_TRANSPOSE;
@@ -238,8 +228,8 @@ hipsparseStatus_t testing_spgemmreuse_csr(Arguments argus)
     hipDataType          typeT = getDataType<T>();
 
     // hipSPARSE handles
-    std::unique_ptr<handle_struct> test_handle(new handle_struct);
-    hipsparseHandle_t              handle = test_handle->handle;
+    std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
+    hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
     std::unique_ptr<spgemm_struct> unique_ptr_descr(new spgemm_struct);
     hipsparseSpGEMMDescr_t         descr = unique_ptr_descr->descr;

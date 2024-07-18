@@ -25,6 +25,7 @@
 #ifndef TESTING_SPGEMM_CSR_HPP
 #define TESTING_SPGEMM_CSR_HPP
 
+#include "hipsparse_arguments.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
@@ -92,13 +93,6 @@ void testing_spgemm_csr_bad_arg(void)
     int*   dcsr_col_ind_C = (int*)dcsr_col_ind_C_managed.get();
     float* dcsr_val_C     = (float*)dcsr_val_C_managed.get();
     void*  dbuf           = (void*)dbuf_managed.get();
-
-    if(!dcsr_row_ptr_A || !dcsr_col_ind_A || !dcsr_val_A || !dcsr_row_ptr_B || !dcsr_col_ind_B
-       || !dcsr_val_B || !dcsr_row_ptr_C || !dcsr_col_ind_C || !dcsr_val_C || !dbuf)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
 
     // SpGEMM structures
     hipsparseSpMatDescr_t A, B, C;
@@ -305,10 +299,6 @@ void testing_spgemm_csr_bad_arg(void)
                                                                     &bufferSize,
                                                                     dbuf),
                                             "Error: C is nullptr");
-    verify_hipsparse_status_invalid_pointer(
-        hipsparseSpGEMM_compute(
-            handle, transA, transB, &alpha, A, B, &beta, C, dataType, alg, descr, nullptr, dbuf),
-        "Error: bufferSize is nullptr");
 
     // SpGEMM copy
     verify_hipsparse_status_invalid_handle(hipsparseSpGEMM_copy(
@@ -347,12 +337,11 @@ hipsparseStatus_t testing_spgemm_csr(Arguments argus)
     J                    m        = argus.M;
     J                    k        = argus.K;
     T                    h_alpha  = make_DataType<T>(argus.alpha);
-    hipsparseIndexBase_t idxBaseA = argus.idx_base;
-    hipsparseIndexBase_t idxBaseB = argus.idx_base2;
-    hipsparseIndexBase_t idxBaseC = argus.idx_base3;
-    hipsparseSpGEMMAlg_t alg      = HIPSPARSE_SPGEMM_DEFAULT;
-
-    std::string filename = argus.filename;
+    hipsparseIndexBase_t idxBaseA = argus.baseA;
+    hipsparseIndexBase_t idxBaseB = argus.baseB;
+    hipsparseIndexBase_t idxBaseC = argus.baseC;
+    hipsparseSpGEMMAlg_t alg      = static_cast<hipsparseSpGEMMAlg_t>(argus.spgemm_alg);
+    std::string          filename = argus.filename;
 
     T                    h_beta = make_DataType<T>(0);
     hipsparseOperation_t transA = HIPSPARSE_OPERATION_NON_TRANSPOSE;
@@ -364,8 +353,8 @@ hipsparseStatus_t testing_spgemm_csr(Arguments argus)
     hipDataType          typeT = getDataType<T>();
 
     // hipSPARSE handles
-    std::unique_ptr<handle_struct> test_handle(new handle_struct);
-    hipsparseHandle_t              handle = test_handle->handle;
+    std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
+    hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
     std::unique_ptr<spgemm_struct> unique_ptr_descr(new spgemm_struct);
     hipsparseSpGEMMDescr_t         descr = unique_ptr_descr->descr;

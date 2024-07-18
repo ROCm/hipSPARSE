@@ -25,25 +25,31 @@
 
 #include <hipsparse.h>
 
+struct alpha_beta
+{
+    double alpha;
+    double beta;
+};
+
 typedef std::tuple<int,
                    int,
                    int,
-                   double,
-                   double,
-                   hipsparseOperation_t,
-                   hipsparseOperation_t,
-                   hipsparseOrder_t,
-                   hipsparseOrder_t,
-                   hipsparseIndexBase_t>
-    spmm_coo_tuple;
-typedef std::tuple<int,
-                   double,
-                   double,
+                   alpha_beta,
                    hipsparseOperation_t,
                    hipsparseOperation_t,
                    hipsparseOrder_t,
                    hipsparseOrder_t,
                    hipsparseIndexBase_t,
+                   hipsparseSpMMAlg_t>
+    spmm_coo_tuple;
+typedef std::tuple<int,
+                   alpha_beta,
+                   hipsparseOperation_t,
+                   hipsparseOperation_t,
+                   hipsparseOrder_t,
+                   hipsparseOrder_t,
+                   hipsparseIndexBase_t,
+                   hipsparseSpMMAlg_t,
                    std::string>
     spmm_coo_bin_tuple;
 
@@ -51,16 +57,47 @@ int spmm_coo_M_range[] = {50};
 int spmm_coo_N_range[] = {5};
 int spmm_coo_K_range[] = {84};
 
-std::vector<double> spmm_coo_alpha_range = {2.0};
-std::vector<double> spmm_coo_beta_range  = {1.0};
+alpha_beta spmm_coo_alpha_beta_range[] = {{2.0, 1.0}};
 
 hipsparseOperation_t spmm_coo_transA_range[]
     = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPERATION_TRANSPOSE};
 hipsparseOperation_t spmm_coo_transB_range[]
     = {HIPSPARSE_OPERATION_NON_TRANSPOSE, HIPSPARSE_OPERATION_TRANSPOSE};
-hipsparseOrder_t     spmm_coo_orderB_range[]  = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
-hipsparseOrder_t     spmm_coo_orderC_range[]  = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
-hipsparseIndexBase_t spmm_coo_idxbase_range[] = {HIPSPARSE_INDEX_BASE_ONE};
+hipsparseOrder_t     spmm_coo_orderB_range[] = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
+hipsparseOrder_t     spmm_coo_orderC_range[] = {HIPSPARSE_ORDER_COL, HIPSPARSE_ORDER_ROW};
+hipsparseIndexBase_t spmm_coo_idxbase_range[]
+    = {HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE};
+#if(!defined(CUDART_VERSION))
+hipsparseSpMMAlg_t spmm_coo_alg_range[] = {HIPSPARSE_SPMM_ALG_DEFAULT,
+                                           HIPSPARSE_SPMM_COO_ALG1,
+                                           HIPSPARSE_SPMM_COO_ALG2,
+                                           HIPSPARSE_SPMM_COO_ALG3,
+                                           HIPSPARSE_SPMM_COO_ALG4};
+#else
+#if(CUDART_VERSION >= 12000)
+hipsparseSpMMAlg_t spmm_coo_alg_range[] = {HIPSPARSE_SPMM_ALG_DEFAULT,
+                                           HIPSPARSE_SPMM_COO_ALG1,
+                                           HIPSPARSE_SPMM_COO_ALG2,
+                                           HIPSPARSE_SPMM_COO_ALG3,
+                                           HIPSPARSE_SPMM_COO_ALG4};
+#elif(CUDART_VERSION >= 11021 && CUDART_VERSION < 12000)
+// Note: In cusparse 11.4, Alg2 fails with internal error when using A transposed, B and C
+//       both column order. Skip Alg 2 here. Seems to pass in later versions of cusparse.
+hipsparseSpMMAlg_t spmm_coo_alg_range[] = {HIPSPARSE_SPMM_ALG_DEFAULT,
+                                           HIPSPARSE_SPMM_COO_ALG1,
+                                           HIPSPARSE_SPMM_COO_ALG3,
+                                           HIPSPARSE_SPMM_COO_ALG4};
+#elif(CUDART_VERSION >= 11003 && CUDART_VERSION < 11021)
+hipsparseSpMMAlg_t spmm_coo_alg_range[] = {HIPSPARSE_SPMM_ALG_DEFAULT,
+                                           HIPSPARSE_SPMM_COO_ALG1,
+                                           HIPSPARSE_SPMM_COO_ALG2,
+                                           HIPSPARSE_SPMM_COO_ALG3,
+                                           HIPSPARSE_SPMM_COO_ALG4};
+#elif(CUDART_VERSION >= 10010 && CUDART_VERSION < 11003)
+hipsparseSpMMAlg_t spmm_coo_alg_range[]
+    = {HIPSPARSE_MM_ALG_DEFAULT, HIPSPARSE_COOMM_ALG1, HIPSPARSE_COOMM_ALG2, HIPSPARSE_COOMM_ALG3};
+#endif
+#endif
 
 std::string spmm_coo_bin[] = {"nos1.bin", "nos4.bin", "nos5.bin", "Chebyshev4.bin"};
 
@@ -88,13 +125,14 @@ Arguments setup_spmm_coo_arguments(spmm_coo_tuple tup)
     arg.M        = std::get<0>(tup);
     arg.N        = std::get<1>(tup);
     arg.K        = std::get<2>(tup);
-    arg.alpha    = std::get<3>(tup);
-    arg.beta     = std::get<4>(tup);
-    arg.transA   = std::get<5>(tup);
-    arg.transB   = std::get<6>(tup);
-    arg.orderB   = std::get<7>(tup);
-    arg.orderC   = std::get<8>(tup);
-    arg.idx_base = std::get<9>(tup);
+    arg.alpha    = std::get<3>(tup).alpha;
+    arg.beta     = std::get<3>(tup).beta;
+    arg.transA   = std::get<4>(tup);
+    arg.transB   = std::get<5>(tup);
+    arg.orderB   = std::get<6>(tup);
+    arg.orderC   = std::get<7>(tup);
+    arg.baseA    = std::get<8>(tup);
+    arg.spmm_alg = std::get<9>(tup);
     arg.timing   = 0;
     return arg;
 }
@@ -105,13 +143,14 @@ Arguments setup_spmm_coo_arguments(spmm_coo_bin_tuple tup)
     arg.M        = -99;
     arg.N        = std::get<0>(tup);
     arg.K        = -99;
-    arg.alpha    = std::get<1>(tup);
-    arg.beta     = std::get<2>(tup);
-    arg.transA   = std::get<3>(tup);
-    arg.transB   = std::get<4>(tup);
-    arg.orderB   = std::get<5>(tup);
-    arg.orderC   = std::get<6>(tup);
-    arg.idx_base = std::get<7>(tup);
+    arg.alpha    = std::get<1>(tup).alpha;
+    arg.beta     = std::get<1>(tup).beta;
+    arg.transA   = std::get<2>(tup);
+    arg.transB   = std::get<3>(tup);
+    arg.orderB   = std::get<4>(tup);
+    arg.orderC   = std::get<5>(tup);
+    arg.baseA    = std::get<6>(tup);
+    arg.spmm_alg = std::get<7>(tup);
     arg.timing   = 0;
 
     // Determine absolute path of test matrix
@@ -123,7 +162,6 @@ Arguments setup_spmm_coo_arguments(spmm_coo_bin_tuple tup)
     return arg;
 }
 
-// coo format not supported in cusparse
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(spmm_coo_bad_arg, spmm_coo_float)
 {
@@ -186,23 +224,23 @@ INSTANTIATE_TEST_SUITE_P(spmm_coo,
                          testing::Combine(testing::ValuesIn(spmm_coo_M_range),
                                           testing::ValuesIn(spmm_coo_N_range),
                                           testing::ValuesIn(spmm_coo_K_range),
-                                          testing::ValuesIn(spmm_coo_alpha_range),
-                                          testing::ValuesIn(spmm_coo_beta_range),
-                                          testing::ValuesIn(spmm_coo_transA_range),
-                                          testing::ValuesIn(spmm_coo_transB_range),
-                                          testing::ValuesIn(spmm_coo_orderB_range),
-                                          testing::ValuesIn(spmm_coo_orderC_range),
-                                          testing::ValuesIn(spmm_coo_idxbase_range)));
-
-INSTANTIATE_TEST_SUITE_P(spmm_coo_bin,
-                         parameterized_spmm_coo_bin,
-                         testing::Combine(testing::ValuesIn(spmm_coo_N_range),
-                                          testing::ValuesIn(spmm_coo_alpha_range),
-                                          testing::ValuesIn(spmm_coo_beta_range),
+                                          testing::ValuesIn(spmm_coo_alpha_beta_range),
                                           testing::ValuesIn(spmm_coo_transA_range),
                                           testing::ValuesIn(spmm_coo_transB_range),
                                           testing::ValuesIn(spmm_coo_orderB_range),
                                           testing::ValuesIn(spmm_coo_orderC_range),
                                           testing::ValuesIn(spmm_coo_idxbase_range),
+                                          testing::ValuesIn(spmm_coo_alg_range)));
+
+INSTANTIATE_TEST_SUITE_P(spmm_coo_bin,
+                         parameterized_spmm_coo_bin,
+                         testing::Combine(testing::ValuesIn(spmm_coo_N_range),
+                                          testing::ValuesIn(spmm_coo_alpha_beta_range),
+                                          testing::ValuesIn(spmm_coo_transA_range),
+                                          testing::ValuesIn(spmm_coo_transB_range),
+                                          testing::ValuesIn(spmm_coo_orderB_range),
+                                          testing::ValuesIn(spmm_coo_orderC_range),
+                                          testing::ValuesIn(spmm_coo_idxbase_range),
+                                          testing::ValuesIn(spmm_coo_alg_range),
                                           testing::ValuesIn(spmm_coo_bin)));
 #endif

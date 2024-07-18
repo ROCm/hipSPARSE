@@ -25,6 +25,9 @@
 #ifndef TESTING_SPSM_CSR_HPP
 #define TESTING_SPSM_CSR_HPP
 
+#include "flops.hpp"
+#include "gbyte.hpp"
+#include "hipsparse_arguments.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
@@ -37,12 +40,7 @@ using namespace hipsparse_test;
 
 void testing_spsm_csr_bad_arg(void)
 {
-#ifdef __HIP_PLATFORM_NVIDIA__
-    // do not test for bad args
-    return;
-#endif
-
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
+#if(!defined(CUDART_VERSION))
     int64_t              m         = 100;
     int64_t              n         = 100;
     int64_t              k         = 100;
@@ -73,12 +71,6 @@ void testing_spsm_csr_bad_arg(void)
     float* dB   = (float*)dB_managed.get();
     float* dC   = (float*)dC_managed.get();
     void*  dbuf = (void*)dbuf_managed.get();
-
-    if(!dval || !dptr || !dcol || !dB || !dC || !dbuf)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
 
     // SpSM structures
     hipsparseSpMatDescr_t A;
@@ -197,12 +189,11 @@ hipsparseStatus_t testing_spsm_csr(Arguments argus)
     hipsparseOperation_t transB   = argus.transB;
     hipsparseOrder_t     orderB   = argus.orderB;
     hipsparseOrder_t     orderC   = argus.orderC;
-    hipsparseIndexBase_t idx_base = argus.idx_base;
+    hipsparseIndexBase_t idx_base = argus.baseA;
     hipsparseDiagType_t  diag     = argus.diag_type;
     hipsparseFillMode_t  uplo     = argus.fill_mode;
-    hipsparseSpSMAlg_t   alg      = HIPSPARSE_SPSM_ALG_DEFAULT;
-
-    std::string filename = argus.filename;
+    hipsparseSpSMAlg_t   alg      = static_cast<hipsparseSpSMAlg_t>(argus.spsm_alg);
+    std::string          filename = argus.filename;
 
 #if(defined(CUDART_VERSION))
     if(orderB != orderC)
@@ -217,8 +208,8 @@ hipsparseStatus_t testing_spsm_csr(Arguments argus)
     hipDataType          typeT = getDataType<T>();
 
     // hipSPARSE handle
-    std::unique_ptr<handle_struct> test_handle(new handle_struct);
-    hipsparseHandle_t              handle = test_handle->handle;
+    std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
+    hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
     // Host structures
     std::vector<I> hcsr_row_ptr;
@@ -346,47 +337,85 @@ hipsparseStatus_t testing_spsm_csr(Arguments argus)
     CHECK_HIPSPARSE_ERROR(hipsparseSpSM_analysis(
         handle, transA, transB, d_alpha, A, B, C2, typeT, alg, descr, buffer));
 
-    // HIPSPARSE pointer mode host
-    CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
-    CHECK_HIPSPARSE_ERROR(
-        hipsparseSpSM_solve(handle, transA, transB, &h_alpha, A, B, C1, typeT, alg, descr, buffer));
-
-    // HIPSPARSE pointer mode device
-    CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
-    CHECK_HIPSPARSE_ERROR(
-        hipsparseSpSM_solve(handle, transA, transB, d_alpha, A, B, C2, typeT, alg, descr, buffer));
-
-    // copy output from device to CPU
-    CHECK_HIP_ERROR(hipMemcpy(hC_1.data(), dC_1, sizeof(T) * nnz_C, hipMemcpyDeviceToHost));
-    CHECK_HIP_ERROR(hipMemcpy(hC_2.data(), dC_2, sizeof(T) * nnz_C, hipMemcpyDeviceToHost));
-
-    J struct_pivot  = -1;
-    J numeric_pivot = -1;
-    host_csrsm(m,
-               k,
-               nnz,
-               transA,
-               transB,
-               h_alpha,
-               hcsr_row_ptr,
-               hcsr_col_ind,
-               hcsr_val,
-               hB,
-               (J)ldb,
-               orderB,
-               hC_gold,
-               (J)ldc,
-               orderC,
-               diag,
-               uplo,
-               idx_base,
-               &struct_pivot,
-               &numeric_pivot);
-
-    if(struct_pivot == -1 && numeric_pivot == -1)
+    if(argus.unit_check)
     {
-        unit_check_near(1, nnz_C, 1, hC_gold.data(), hC_1.data());
-        unit_check_near(1, nnz_C, 1, hC_gold.data(), hC_2.data());
+        // HIPSPARSE pointer mode host
+        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
+        CHECK_HIPSPARSE_ERROR(hipsparseSpSM_solve(
+            handle, transA, transB, &h_alpha, A, B, C1, typeT, alg, descr, buffer));
+
+        // HIPSPARSE pointer mode device
+        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_DEVICE));
+        CHECK_HIPSPARSE_ERROR(hipsparseSpSM_solve(
+            handle, transA, transB, d_alpha, A, B, C2, typeT, alg, descr, buffer));
+
+        // copy output from device to CPU
+        CHECK_HIP_ERROR(hipMemcpy(hC_1.data(), dC_1, sizeof(T) * nnz_C, hipMemcpyDeviceToHost));
+        CHECK_HIP_ERROR(hipMemcpy(hC_2.data(), dC_2, sizeof(T) * nnz_C, hipMemcpyDeviceToHost));
+
+        J struct_pivot  = -1;
+        J numeric_pivot = -1;
+        host_csrsm(m,
+                   k,
+                   nnz,
+                   transA,
+                   transB,
+                   h_alpha,
+                   hcsr_row_ptr,
+                   hcsr_col_ind,
+                   hcsr_val,
+                   hB,
+                   (J)ldb,
+                   orderB,
+                   hC_gold,
+                   (J)ldc,
+                   orderC,
+                   diag,
+                   uplo,
+                   idx_base,
+                   &struct_pivot,
+                   &numeric_pivot);
+
+        if(struct_pivot == -1 && numeric_pivot == -1)
+        {
+            unit_check_near(1, nnz_C, 1, hC_gold.data(), hC_1.data());
+            unit_check_near(1, nnz_C, 1, hC_gold.data(), hC_2.data());
+        }
+    }
+
+    if(argus.timing)
+    {
+        int number_cold_calls = 2;
+        int number_hot_calls  = argus.iters;
+
+        CHECK_HIPSPARSE_ERROR(hipsparseSetPointerMode(handle, HIPSPARSE_POINTER_MODE_HOST));
+
+        // Warm up
+        for(int iter = 0; iter < number_cold_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseSpSM_solve(
+                handle, transA, transB, &h_alpha, A, B, C1, typeT, alg, descr, buffer));
+        }
+
+        double gpu_time_used = get_time_us();
+
+        // Performance run
+        for(int iter = 0; iter < number_hot_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseSpSM_solve(
+                handle, transA, transB, &h_alpha, A, B, C1, typeT, alg, descr, buffer));
+        }
+
+        gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
+
+        double gflop_count = spsv_gflop_count(m, nnz, diag) * k;
+        double gpu_gflops  = get_gpu_gflops(gpu_time_used, gflop_count);
+
+        double gbyte_count = csrsv_gbyte_count<T>(m, nnz) * k;
+        double gpu_gbyte   = get_gpu_gbyte(gpu_time_used, gbyte_count);
+
+        std::cout << "GFLOPS/s: " << gpu_gflops << " GBytes/s: " << gpu_gbyte
+                  << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
     }
 
     CHECK_HIP_ERROR(hipFree(buffer));

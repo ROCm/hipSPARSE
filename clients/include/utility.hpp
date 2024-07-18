@@ -753,9 +753,9 @@ static void sort(std::vector<I>& perm, std::vector<I>& unsorted_row, std::vector
 }
 
 template <typename I>
-inline void scan(const char* line, I* nrow, I* ncol, I* nnz)
+inline void scan(const char* line, I* nrow, I* ncol, int64_t* nnz)
 {
-    sscanf(line, "%d %d %d", nrow, ncol, nnz);
+    sscanf(line, "%d %d %ld", nrow, ncol, nnz);
 }
 
 template <>
@@ -768,7 +768,7 @@ template <typename I, typename T>
 int read_mtx_matrix(const char*          filename,
                     I&                   nrow,
                     I&                   ncol,
-                    I&                   nnz,
+                    int64_t&             nnz,
                     std::vector<I>&      row,
                     std::vector<I>&      col,
                     std::vector<T>&      val,
@@ -864,7 +864,7 @@ int read_mtx_matrix(const char*          filename,
     }
 
     // Read dimensions
-    I snnz;
+    int64_t snnz;
 
     scan<I>(line, &nrow, &ncol, &snnz);
     nnz = symm ? (snnz - nrow) * 2 + nrow : snnz;
@@ -874,7 +874,7 @@ int read_mtx_matrix(const char*          filename,
     std::vector<T> unsorted_val(nnz);
 
     // Read entries
-    I idx = 0;
+    int64_t idx = 0;
     while(fgets(line, 1024, f))
     {
         if(idx >= nnz)
@@ -931,29 +931,14 @@ int read_mtx_matrix(const char*          filename,
 
     // Sort by row and column index
     std::vector<I> perm(nnz);
-    for(I i = 0; i < nnz; ++i)
+    for(int64_t i = 0; i < nnz; ++i)
     {
         perm[i] = i;
     }
 
     sort(perm, unsorted_row, unsorted_col);
 
-    // std::sort(perm.begin(), perm.end(), [&](const int& a, const int& b) {
-    //     if(unsorted_row[a] < unsorted_row[b])
-    //     {
-    //         return true;
-    //     }
-    //     else if(unsorted_row[a] == unsorted_row[b])
-    //     {
-    //         return (unsorted_col[a] < unsorted_col[b]);
-    //     }
-    //     else
-    //     {
-    //         return false;
-    //     }
-    // });
-
-    for(I i = 0; i < nnz; ++i)
+    for(int64_t i = 0; i < nnz; ++i)
     {
         row[i] = unsorted_row[perm[i]];
         col[i] = unsorted_col[perm[i]];
@@ -1085,7 +1070,7 @@ bool generate_csr_matrix(const std::string    filename,
         nnz = nrow * scale * ncol;
 
         std::vector<J> coo_row_ind;
-        gen_matrix_coo(nrow, ncol, nnz, coo_row_ind, csr_col_ind, csr_val, idx_base);
+        gen_matrix_coo(nrow, ncol, (J)nnz, coo_row_ind, csr_col_ind, csr_val, idx_base);
 
         csr_row_ptr.resize(nrow + 1, 0);
         for(int i = 0; i < nnz; ++i)
@@ -1115,24 +1100,36 @@ bool generate_csr_matrix(const std::string    filename,
         }
         else if(extension == "mtx")
         {
+            int64_t        nnz_count;
             std::vector<J> coo_row_ind;
-            if(read_mtx_matrix(
-                   filename.c_str(), nrow, ncol, nnz, coo_row_ind, csr_col_ind, csr_val, idx_base)
+            if(read_mtx_matrix(filename.c_str(),
+                               nrow,
+                               ncol,
+                               nnz_count,
+                               coo_row_ind,
+                               csr_col_ind,
+                               csr_val,
+                               idx_base)
                == 0)
             {
-                csr_row_ptr.resize(nrow + 1, 0);
-                for(int i = 0; i < nnz; ++i)
+                if(nnz_count < std::numeric_limits<I>::max())
                 {
-                    ++csr_row_ptr[coo_row_ind[i] + 1 - idx_base];
-                }
+                    nnz = (I)nnz_count;
 
-                csr_row_ptr[0] = idx_base;
-                for(int i = 0; i < nrow; ++i)
-                {
-                    csr_row_ptr[i + 1] += csr_row_ptr[i];
-                }
+                    csr_row_ptr.resize(nrow + 1, 0);
+                    for(int i = 0; i < nnz; ++i)
+                    {
+                        ++csr_row_ptr[coo_row_ind[i] + 1 - idx_base];
+                    }
 
-                return true;
+                    csr_row_ptr[0] = idx_base;
+                    for(int i = 0; i < nrow; ++i)
+                    {
+                        csr_row_ptr[i + 1] += csr_row_ptr[i];
+                    }
+
+                    return true;
+                }
             }
         }
     }
@@ -1193,11 +1190,22 @@ bool generate_coo_matrix(const std::string    filename,
         }
         else if(extension == "mtx")
         {
-            if(read_mtx_matrix(
-                   filename.c_str(), nrow, ncol, nnz, coo_row_ind, coo_col_ind, coo_val, idx_base)
+            int64_t nnz_count;
+            if(read_mtx_matrix(filename.c_str(),
+                               nrow,
+                               ncol,
+                               nnz_count,
+                               coo_row_ind,
+                               coo_col_ind,
+                               coo_val,
+                               idx_base)
                == 0)
             {
-                return true;
+                if(nnz_count < std::numeric_limits<I>::max())
+                {
+                    nnz = (I)nnz_count;
+                    return true;
+                }
             }
         }
     }
@@ -4376,26 +4384,26 @@ static inline void host_ussolve(J                     M,
 }
 
 template <typename T>
-void bsrsm(int                  mb,
-           int                  nrhs,
-           int                  nnzb,
-           hipsparseDirection_t dir,
-           hipsparseOperation_t transA,
-           hipsparseOperation_t transX,
-           T                    alpha,
-           const int*           bsr_row_ptr,
-           const int*           bsr_col_ind,
-           const T*             bsr_val,
-           int                  bsr_dim,
-           const T*             B,
-           int                  ldb,
-           T*                   X,
-           int                  ldx,
-           hipsparseDiagType_t  diag_type,
-           hipsparseFillMode_t  fill_mode,
-           hipsparseIndexBase_t base,
-           int*                 struct_pivot,
-           int*                 numeric_pivot)
+void host_bsrsm(int                  mb,
+                int                  nrhs,
+                int                  nnzb,
+                hipsparseDirection_t dir,
+                hipsparseOperation_t transA,
+                hipsparseOperation_t transX,
+                T                    alpha,
+                const int*           bsr_row_ptr,
+                const int*           bsr_col_ind,
+                const T*             bsr_val,
+                int                  bsr_dim,
+                const T*             B,
+                int                  ldb,
+                T*                   X,
+                int                  ldx,
+                hipsparseDiagType_t  diag_type,
+                hipsparseFillMode_t  fill_mode,
+                hipsparseIndexBase_t base,
+                int*                 struct_pivot,
+                int*                 numeric_pivot)
 {
     // Initialize pivot
     *struct_pivot  = mb + 1;
@@ -6618,132 +6626,6 @@ double get_time_us_sync(hipStream_t stream);
 }
 #endif
 
-/* ============================================================================================ */
-
-/*! \brief Class used to parse command arguments in both client & gtest   */
-
-// has to compile with option "-std=c++11", and this hipsparse library uses c++11 everywhere
-// c++11 allows intilization of member of a struct
-
-class Arguments
-{
-public:
-    int M              = 128;
-    int N              = 128;
-    int K              = 128;
-    int nnz            = 32;
-    int block_dim      = 1;
-    int row_block_dimA = 1;
-    int row_block_dimB = 1;
-    int col_block_dimA = 1;
-    int col_block_dimB = 1;
-
-    int batch_count = 1;
-
-    int lda{};
-    int ldb{};
-    int ldc{};
-
-    double alpha      = 1.0;
-    double alphai     = 0.0;
-    double beta       = 0.0;
-    double betai      = 0.0;
-    double threshold  = 0.0;
-    double percentage = 0.0;
-
-    hipsparseOperation_t    transA    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
-    hipsparseOperation_t    transB    = HIPSPARSE_OPERATION_NON_TRANSPOSE;
-    hipsparseIndexBase_t    idx_base  = HIPSPARSE_INDEX_BASE_ZERO;
-    hipsparseIndexBase_t    idx_base2 = HIPSPARSE_INDEX_BASE_ZERO;
-    hipsparseIndexBase_t    idx_base3 = HIPSPARSE_INDEX_BASE_ZERO;
-    hipsparseIndexBase_t    idx_base4 = HIPSPARSE_INDEX_BASE_ZERO;
-    hipsparseAction_t       action    = HIPSPARSE_ACTION_NUMERIC;
-    hipsparseHybPartition_t part      = HIPSPARSE_HYB_PARTITION_AUTO;
-    hipsparseDiagType_t     diag_type = HIPSPARSE_DIAG_TYPE_NON_UNIT;
-    hipsparseFillMode_t     fill_mode = HIPSPARSE_FILL_MODE_LOWER;
-    hipsparseDirection_t    dirA      = HIPSPARSE_DIRECTION_ROW;
-    hipsparseOrder_t        orderA    = HIPSPARSE_ORDER_COL;
-    hipsparseOrder_t        orderB    = HIPSPARSE_ORDER_COL;
-    hipsparseOrder_t        orderC    = HIPSPARSE_ORDER_COL;
-
-    int norm_check = 0;
-    int unit_check = 1;
-    int timing     = 0;
-
-    int iters     = 10;
-    int laplacian = 0;
-    int ell_width = 0;
-    int temp      = 0;
-    int algo      = 0;
-
-    int    numericboost{};
-    double boosttol{};
-    double boostval{};
-    double boostvali{};
-
-    std::string filename = "";
-
-    Arguments& operator=(const Arguments& rhs)
-    {
-        this->M              = rhs.M;
-        this->N              = rhs.N;
-        this->K              = rhs.K;
-        this->nnz            = rhs.nnz;
-        this->block_dim      = rhs.block_dim;
-        this->row_block_dimA = rhs.row_block_dimA;
-        this->row_block_dimB = rhs.row_block_dimB;
-        this->col_block_dimA = rhs.col_block_dimA;
-        this->col_block_dimB = rhs.col_block_dimB;
-
-        this->batch_count = rhs.batch_count;
-
-        this->lda = rhs.lda;
-        this->ldb = rhs.ldb;
-        this->ldc = rhs.ldc;
-
-        this->alpha      = rhs.alpha;
-        this->alphai     = rhs.alphai;
-        this->beta       = rhs.beta;
-        this->betai      = rhs.betai;
-        this->threshold  = rhs.threshold;
-        this->percentage = rhs.percentage;
-
-        this->transA    = rhs.transA;
-        this->transB    = rhs.transB;
-        this->idx_base  = rhs.idx_base;
-        this->idx_base2 = rhs.idx_base2;
-        this->idx_base3 = rhs.idx_base3;
-        this->idx_base4 = rhs.idx_base4;
-        this->action    = rhs.action;
-        this->part      = rhs.part;
-        this->diag_type = rhs.diag_type;
-        this->fill_mode = rhs.fill_mode;
-        this->dirA      = rhs.dirA;
-        this->orderA    = rhs.orderA;
-        this->orderB    = rhs.orderB;
-        this->orderC    = rhs.orderC;
-
-        this->norm_check = rhs.norm_check;
-        this->unit_check = rhs.unit_check;
-        this->timing     = rhs.timing;
-
-        this->iters     = rhs.iters;
-        this->laplacian = rhs.laplacian;
-        this->ell_width = rhs.ell_width;
-        this->temp      = rhs.temp;
-        this->algo      = rhs.algo;
-
-        this->numericboost = rhs.numericboost;
-        this->boosttol     = rhs.boosttol;
-        this->boostval     = rhs.boostval;
-        this->boostvali    = rhs.boostvali;
-
-        this->filename = rhs.filename;
-
-        return *this;
-    }
-};
-
 inline void missing_file_error_message(const char* filename)
 {
     std::cerr << "#" << std::endl;
@@ -6772,7 +6654,12 @@ inline void missing_file_error_message(const char* filename)
     std::cerr << "#" << std::endl;
 }
 
-const char* get_hipsparse_clients_matrices_dir();
+static const char* s_hipsparse_clients_matrices_dir = nullptr;
+
+inline const char* get_hipsparse_clients_matrices_dir()
+{
+    return s_hipsparse_clients_matrices_dir;
+}
 
 inline std::string get_filename(const std::string& bin_file)
 {
@@ -6805,6 +6692,21 @@ inline std::string get_filename(const std::string& bin_file)
     }
     return r;
 }
+
+struct testhyb
+{
+    int                     m;
+    int                     n;
+    hipsparseHybPartition_t partition;
+    int                     ell_nnz;
+    int                     ell_width;
+    int*                    ell_col_ind;
+    void*                   ell_val;
+    int                     coo_nnz;
+    int*                    coo_row_ind;
+    int*                    coo_col_ind;
+    void*                   coo_val;
+};
 
 template <typename I>
 hipsparseIndexType_t getIndexType()

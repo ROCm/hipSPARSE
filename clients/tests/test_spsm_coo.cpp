@@ -25,25 +25,15 @@
 
 #include <hipsparse.h>
 
-struct M_N
+struct M_N_K_alpha
 {
-    int M;
-    int N;
+    int    M;
+    int    N;
+    int    K;
+    double alpha;
 };
 
-typedef std::tuple<M_N,
-                   int,
-                   double,
-                   hipsparseOperation_t,
-                   hipsparseOperation_t,
-                   hipsparseOrder_t,
-                   hipsparseOrder_t,
-                   hipsparseIndexBase_t,
-                   hipsparseDiagType_t,
-                   hipsparseFillMode_t>
-    spsm_coo_tuple;
-typedef std::tuple<int,
-                   double,
+typedef std::tuple<M_N_K_alpha,
                    hipsparseOperation_t,
                    hipsparseOperation_t,
                    hipsparseOrder_t,
@@ -51,13 +41,21 @@ typedef std::tuple<int,
                    hipsparseIndexBase_t,
                    hipsparseDiagType_t,
                    hipsparseFillMode_t,
+                   hipsparseSpSMAlg_t>
+    spsm_coo_tuple;
+typedef std::tuple<M_N_K_alpha,
+                   hipsparseOperation_t,
+                   hipsparseOperation_t,
+                   hipsparseOrder_t,
+                   hipsparseOrder_t,
+                   hipsparseIndexBase_t,
+                   hipsparseDiagType_t,
+                   hipsparseFillMode_t,
+                   hipsparseSpSMAlg_t,
                    std::string>
     spsm_coo_bin_tuple;
 
-M_N spsm_coo_M_N_range[] = {{50, 50}};
-int spsm_coo_K_range[]   = {22};
-
-std::vector<double> spsm_coo_alpha_range = {2.0};
+M_N_K_alpha spsm_coo_M_N_K_alpha_range[] = {{50, 50, 22, 2.0}};
 
 hipsparseOperation_t spsm_coo_transA_range[]    = {HIPSPARSE_OPERATION_NON_TRANSPOSE};
 hipsparseOperation_t spsm_coo_transB_range[]    = {HIPSPARSE_OPERATION_NON_TRANSPOSE};
@@ -67,6 +65,7 @@ hipsparseIndexBase_t spsm_coo_idxbase_range[]   = {HIPSPARSE_INDEX_BASE_ZERO};
 hipsparseDiagType_t  spsm_coo_diag_type_range[] = {HIPSPARSE_DIAG_TYPE_NON_UNIT};
 hipsparseFillMode_t  spsm_coo_fill_mode_range[]
     = {HIPSPARSE_FILL_MODE_LOWER, HIPSPARSE_FILL_MODE_UPPER};
+hipsparseSpSMAlg_t spsm_coo_alg_range[] = {HIPSPARSE_SPSM_ALG_DEFAULT};
 
 std::string spsm_coo_bin[] = {"nos1.bin", "nos3.bin", "nos6.bin", "scircuit.bin"};
 
@@ -93,15 +92,16 @@ Arguments setup_spsm_coo_arguments(spsm_coo_tuple tup)
     Arguments arg;
     arg.M         = std::get<0>(tup).M;
     arg.N         = std::get<0>(tup).N;
-    arg.K         = std::get<1>(tup);
-    arg.alpha     = std::get<2>(tup);
-    arg.transA    = std::get<3>(tup);
-    arg.transB    = std::get<4>(tup);
-    arg.orderB    = std::get<5>(tup);
-    arg.orderC    = std::get<6>(tup);
-    arg.idx_base  = std::get<7>(tup);
-    arg.diag_type = std::get<8>(tup);
-    arg.fill_mode = std::get<9>(tup);
+    arg.K         = std::get<0>(tup).K;
+    arg.alpha     = std::get<0>(tup).alpha;
+    arg.transA    = std::get<1>(tup);
+    arg.transB    = std::get<2>(tup);
+    arg.orderB    = std::get<3>(tup);
+    arg.orderC    = std::get<4>(tup);
+    arg.baseA     = std::get<5>(tup);
+    arg.diag_type = std::get<6>(tup);
+    arg.fill_mode = std::get<7>(tup);
+    arg.spsm_alg  = std::get<8>(tup);
     arg.timing    = 0;
     return arg;
 }
@@ -109,15 +109,16 @@ Arguments setup_spsm_coo_arguments(spsm_coo_tuple tup)
 Arguments setup_spsm_coo_arguments(spsm_coo_bin_tuple tup)
 {
     Arguments arg;
-    arg.K         = std::get<0>(tup);
-    arg.alpha     = std::get<1>(tup);
-    arg.transA    = std::get<2>(tup);
-    arg.transB    = std::get<3>(tup);
-    arg.orderB    = std::get<4>(tup);
-    arg.orderC    = std::get<5>(tup);
-    arg.idx_base  = std::get<6>(tup);
-    arg.diag_type = std::get<7>(tup);
-    arg.fill_mode = std::get<8>(tup);
+    arg.K         = std::get<0>(tup).K;
+    arg.alpha     = std::get<0>(tup).alpha;
+    arg.transA    = std::get<1>(tup);
+    arg.transB    = std::get<2>(tup);
+    arg.orderB    = std::get<3>(tup);
+    arg.orderC    = std::get<4>(tup);
+    arg.baseA     = std::get<5>(tup);
+    arg.diag_type = std::get<6>(tup);
+    arg.fill_mode = std::get<7>(tup);
+    arg.spsm_alg  = std::get<8>(tup);
     arg.timing    = 0;
 
     // Determine absolute path of test matrix
@@ -129,7 +130,6 @@ Arguments setup_spsm_coo_arguments(spsm_coo_bin_tuple tup)
     return arg;
 }
 
-// coo format not supported in cusparse
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11010)
 TEST(spsm_coo_bad_arg, spsm_coo_float)
 {
@@ -186,21 +186,7 @@ TEST_P(parameterized_spsm_coo_bin, spsm_coo_bin_i64_double)
 
 INSTANTIATE_TEST_SUITE_P(spsm_coo,
                          parameterized_spsm_coo,
-                         testing::Combine(testing::ValuesIn(spsm_coo_M_N_range),
-                                          testing::ValuesIn(spsm_coo_K_range),
-                                          testing::ValuesIn(spsm_coo_alpha_range),
-                                          testing::ValuesIn(spsm_coo_transA_range),
-                                          testing::ValuesIn(spsm_coo_transB_range),
-                                          testing::ValuesIn(spsm_coo_orderB_range),
-                                          testing::ValuesIn(spsm_coo_orderC_range),
-                                          testing::ValuesIn(spsm_coo_idxbase_range),
-                                          testing::ValuesIn(spsm_coo_diag_type_range),
-                                          testing::ValuesIn(spsm_coo_fill_mode_range)));
-
-INSTANTIATE_TEST_SUITE_P(spsm_coo_bin,
-                         parameterized_spsm_coo_bin,
-                         testing::Combine(testing::ValuesIn(spsm_coo_K_range),
-                                          testing::ValuesIn(spsm_coo_alpha_range),
+                         testing::Combine(testing::ValuesIn(spsm_coo_M_N_K_alpha_range),
                                           testing::ValuesIn(spsm_coo_transA_range),
                                           testing::ValuesIn(spsm_coo_transB_range),
                                           testing::ValuesIn(spsm_coo_orderB_range),
@@ -208,5 +194,18 @@ INSTANTIATE_TEST_SUITE_P(spsm_coo_bin,
                                           testing::ValuesIn(spsm_coo_idxbase_range),
                                           testing::ValuesIn(spsm_coo_diag_type_range),
                                           testing::ValuesIn(spsm_coo_fill_mode_range),
+                                          testing::ValuesIn(spsm_coo_alg_range)));
+
+INSTANTIATE_TEST_SUITE_P(spsm_coo_bin,
+                         parameterized_spsm_coo_bin,
+                         testing::Combine(testing::ValuesIn(spsm_coo_M_N_K_alpha_range),
+                                          testing::ValuesIn(spsm_coo_transA_range),
+                                          testing::ValuesIn(spsm_coo_transB_range),
+                                          testing::ValuesIn(spsm_coo_orderB_range),
+                                          testing::ValuesIn(spsm_coo_orderC_range),
+                                          testing::ValuesIn(spsm_coo_idxbase_range),
+                                          testing::ValuesIn(spsm_coo_diag_type_range),
+                                          testing::ValuesIn(spsm_coo_fill_mode_range),
+                                          testing::ValuesIn(spsm_coo_alg_range),
                                           testing::ValuesIn(spsm_coo_bin)));
 #endif

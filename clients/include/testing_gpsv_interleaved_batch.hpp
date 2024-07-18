@@ -25,7 +25,10 @@
 #ifndef TESTING_GPSV_INTERLEAVED_BATCH_HPP
 #define TESTING_GPSV_INTERLEAVED_BATCH_HPP
 
+#include "flops.hpp"
+#include "gbyte.hpp"
 #include "hipsparse.hpp"
+#include "hipsparse_arguments.hpp"
 #include "hipsparse_test_unique_ptr.hpp"
 #include "unit.hpp"
 #include "utility.hpp"
@@ -66,12 +69,6 @@ void testing_gpsv_interleaved_batch_bad_arg(void)
     T*    ddw  = (T*)ddw_managed.get();
     T*    dx   = (T*)dx_managed.get();
     void* dbuf = (void*)dbuf_managed.get();
-
-    if(!dds || !ddl || !dd || !ddu || !ddw || !dx || !dbuf)
-    {
-        PRINT_IF_HIP_ERROR(hipErrorOutOfMemory);
-        return;
-    }
 
     size_t bsize;
 
@@ -135,14 +132,13 @@ void testing_gpsv_interleaved_batch_bad_arg(void)
 template <typename T>
 hipsparseStatus_t testing_gpsv_interleaved_batch(Arguments argus)
 {
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
     int m           = argus.M;
     int batch_count = argus.batch_count;
-    int algo        = argus.algo;
+    int algo        = argus.gpsv_alg;
 
     // hipSPARSE handle
-    std::unique_ptr<handle_struct> test_handle(new handle_struct);
-    hipsparseHandle_t              handle = test_handle->handle;
+    std::unique_ptr<handle_struct> unique_ptr_handle(new handle_struct);
+    hipsparseHandle_t              handle = unique_ptr_handle->handle;
 
     // Host structures
     std::vector<T> hds(m * batch_count, make_DataType<T>(1));
@@ -199,46 +195,79 @@ hipsparseStatus_t testing_gpsv_interleaved_batch(Arguments argus)
     void* buffer;
     CHECK_HIP_ERROR(hipMalloc(&buffer, bufferSize));
 
-    CHECK_HIPSPARSE_ERROR(hipsparseXgpsvInterleavedBatch(
-        handle, algo, m, dds, ddl, dd, ddu, ddw, dx, batch_count, buffer));
-
-    // copy output from device to CPU
-    CHECK_HIP_ERROR(hipMemcpy(hx.data(), dx, sizeof(T) * m * batch_count, hipMemcpyDeviceToHost));
-
-    // Check
-    std::vector<T> hresult(m * batch_count, make_DataType<T>(3));
-
-    for(int b = 0; b < batch_count; b++)
+    if(argus.unit_check)
     {
-        for(int i = 0; i < m; ++i)
+        CHECK_HIPSPARSE_ERROR(hipsparseXgpsvInterleavedBatch(
+            handle, algo, m, dds, ddl, dd, ddu, ddw, dx, batch_count, buffer));
+
+        // copy output from device to CPU
+        CHECK_HIP_ERROR(
+            hipMemcpy(hx.data(), dx, sizeof(T) * m * batch_count, hipMemcpyDeviceToHost));
+
+        // Check
+        std::vector<T> hresult(m * batch_count, make_DataType<T>(3));
+
+        for(int b = 0; b < batch_count; b++)
         {
-            T sum = testing_mult(hd[batch_count * i + b], hx[batch_count * i + b]);
+            for(int i = 0; i < m; ++i)
+            {
+                T sum = testing_mult(hd[batch_count * i + b], hx[batch_count * i + b]);
 
-            sum = sum
-                  + ((i - 2 >= 0)
-                         ? testing_mult(hds[batch_count * i + b], hx[batch_count * (i - 2) + b])
-                         : make_DataType<T>(0));
-            sum = sum
-                  + ((i - 1 >= 0)
-                         ? testing_mult(hdl[batch_count * i + b], hx[batch_count * (i - 1) + b])
-                         : make_DataType<T>(0));
-            sum = sum
-                  + ((i + 1 < m)
-                         ? testing_mult(hdu[batch_count * i + b], hx[batch_count * (i + 1) + b])
-                         : make_DataType<T>(0));
-            sum = sum
-                  + ((i + 2 < m)
-                         ? testing_mult(hdw[batch_count * i + b], hx[batch_count * (i + 2) + b])
-                         : make_DataType<T>(0));
+                sum = sum
+                      + ((i - 2 >= 0)
+                             ? testing_mult(hds[batch_count * i + b], hx[batch_count * (i - 2) + b])
+                             : make_DataType<T>(0));
+                sum = sum
+                      + ((i - 1 >= 0)
+                             ? testing_mult(hdl[batch_count * i + b], hx[batch_count * (i - 1) + b])
+                             : make_DataType<T>(0));
+                sum = sum
+                      + ((i + 1 < m)
+                             ? testing_mult(hdu[batch_count * i + b], hx[batch_count * (i + 1) + b])
+                             : make_DataType<T>(0));
+                sum = sum
+                      + ((i + 2 < m)
+                             ? testing_mult(hdw[batch_count * i + b], hx[batch_count * (i + 2) + b])
+                             : make_DataType<T>(0));
 
-            hresult[batch_count * i + b] = sum;
+                hresult[batch_count * i + b] = sum;
+            }
         }
+
+        unit_check_near<T>(1, m * batch_count, 1, hx_original.data(), hresult.data());
     }
 
-    unit_check_near<T>(1, m * batch_count, 1, hx_original.data(), hresult.data());
+    if(argus.timing)
+    {
+        int number_cold_calls = 2;
+        int number_hot_calls  = argus.iters;
+
+        // Warm up
+        for(int iter = 0; iter < number_cold_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseXgpsvInterleavedBatch(
+                handle, algo, m, dds, ddl, dd, ddu, ddw, dx, batch_count, buffer));
+        }
+
+        double gpu_time_used = get_time_us();
+
+        // Performance run
+        for(int iter = 0; iter < number_hot_calls; ++iter)
+        {
+            CHECK_HIPSPARSE_ERROR(hipsparseXgpsvInterleavedBatch(
+                handle, algo, m, dds, ddl, dd, ddu, ddw, dx, batch_count, buffer));
+        }
+
+        gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
+
+        double gbyte_count = gpsv_interleaved_batch_gbyte_count<T>(m, batch_count);
+        double gpu_gbyte   = get_gpu_gbyte(gpu_time_used, gbyte_count);
+
+        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used)
+                  << std::endl;
+    }
 
     CHECK_HIP_ERROR(hipFree(buffer));
-#endif
 
     return HIPSPARSE_STATUS_SUCCESS;
 }

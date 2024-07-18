@@ -2585,6 +2585,7 @@ hipsparseStatus_t hipsparseZbsrsv2_solve(hipsparseHandle_t         handle,
 }
 #endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 hipsparseStatus_t hipsparseSgemvi_bufferSize(hipsparseHandle_t    handle,
                                              hipsparseOperation_t transA,
                                              int                  m,
@@ -2648,7 +2649,9 @@ hipsparseStatus_t hipsparseZgemvi_bufferSize(hipsparseHandle_t    handle,
                                   nnz,
                                   pBufferSizeInBytes));
 }
+#endif
 
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 hipsparseStatus_t hipsparseSgemvi(hipsparseHandle_t    handle,
                                   hipsparseOperation_t transA,
                                   int                  m,
@@ -2776,6 +2779,7 @@ hipsparseStatus_t hipsparseZgemvi(hipsparseHandle_t       handle,
                        hipsparse::hipIndexBaseToCudaIndexBase(idxBase),
                        pBuffer));
 }
+#endif
 
 hipsparseStatus_t hipsparseSbsrmm(hipsparseHandle_t         handle,
                                   hipsparseDirection_t      dirA,
