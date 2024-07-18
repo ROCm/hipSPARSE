@@ -9,6 +9,7 @@
 #include <cstdio>
 #include <iomanip>
 #include <ostream>
+#include <sstream>
 #include <regex>
 #include <set>
 #include <stdexcept>
