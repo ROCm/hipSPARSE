@@ -48,7 +48,7 @@ static constexpr const char* s_analysis_timing_info_time = "analysis msec";
 hipsparseStatus_t hipsparse_record_output_legend(const std::string& s);
 hipsparseStatus_t hipsparse_record_output(const std::string& s);
 hipsparseStatus_t hipsparse_record_timing(double msec, double gflops, double gbs);
-bool display_timing_info_is_stdout_disabled();
+bool              display_timing_info_is_stdout_disabled();
 
 inline auto& operator<<(std::ostream& out, const hipComplex& z)
 {

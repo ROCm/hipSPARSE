@@ -208,7 +208,7 @@ public:
         return s_instance;
     }
 
-    hipsparse_bench_app(const hipsparse_bench_app&) = delete;
+    hipsparse_bench_app(const hipsparse_bench_app&)            = delete;
     hipsparse_bench_app& operator=(const hipsparse_bench_app&) = delete;
 
     static bool applies(int argc, char** argv)
@@ -233,14 +233,14 @@ public:
     }
 
 protected:
-    void             export_item(std::ostream& out, hipsparse_bench_timing_t::item_t& item);
+    void              export_item(std::ostream& out, hipsparse_bench_timing_t::item_t& item);
     hipsparseStatus_t define_case_json(std::ostream& out, int isample, int argc, char** argv);
     hipsparseStatus_t close_case_json(std::ostream& out, int isample, int argc, char** argv);
     hipsparseStatus_t define_results_json(std::ostream& out);
     hipsparseStatus_t close_results_json(std::ostream& out);
-    void             confidence_interval(const double               alpha,
-                                         const int                  resize,
-                                         const int                  nboots,
-                                         const std::vector<double>& v,
-                                         double                     interval[2]);
+    void              confidence_interval(const double               alpha,
+                                          const int                  resize,
+                                          const int                  nboots,
+                                          const std::vector<double>& v,
+                                          double                     interval[2]);
 };

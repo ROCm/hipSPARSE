@@ -125,12 +125,12 @@ void hipsparse_bench_app::confidence_interval(const double               alpha,
                                               const std::vector<double>& v,
                                               double                     interval[2])
 {
-    const size_t        size = v.size();
-    
-    static std::random_device dev;
-    static std::mt19937 rng(dev());
+    const size_t size = v.size();
+
+    static std::random_device                                       dev;
+    static std::mt19937                                             rng(dev());
     static std::uniform_int_distribution<std::mt19937::result_type> dist(0, size - 1);
-    
+
     std::vector<double> medians(nboots);
     std::vector<double> resample(resize);
 #define median_value(n__, s__) \
