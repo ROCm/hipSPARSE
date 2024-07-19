@@ -22,8 +22,6 @@
 *
 * ************************************************************************ */
 
-//#include "rocsparse.hpp"
-
 #include "hipsparse_bench.hpp"
 #include "hipsparse_bench_app.hpp"
 #include "hipsparse_routine.hpp"
