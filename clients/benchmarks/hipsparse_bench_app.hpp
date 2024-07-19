@@ -207,7 +207,7 @@ public:
     {
         return s_instance;
     }
-    
+
     hipsparse_bench_app(const hipsparse_bench_app&) = delete;
     hipsparse_bench_app& operator=(const hipsparse_bench_app&) = delete;
 
