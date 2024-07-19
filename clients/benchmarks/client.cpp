@@ -87,25 +87,64 @@ bool display_timing_info_is_stdout_disabled()
 
 int main(int argc, char* argv[])
 {
-    // old style.
-    try
+    if(hipsparse_bench_app::applies(argc, argv))
     {
-        hipsparse_bench bench(argc, argv);
+        try
+        {
+            auto* s_bench_app = hipsparse_bench_app::instance(argc, argv);
+            //
+            // RUN CASES.
+            //
+            hipsparseStatus_t status = s_bench_app->run_cases();
+            if(status != HIPSPARSE_STATUS_SUCCESS)
+            {
+                return status;
+            }
 
-        // Print info devices.
-        bench.info_devices(std::cout);
+            //
+            // EXPORT FILE.
+            //
+            status = s_bench_app->export_file();
+            if(status != HIPSPARSE_STATUS_SUCCESS)
+            {
+                return status;
+            }
 
-        // Run benchmark.
-        hipsparseStatus_t status = bench.run();
-        if(status != HIPSPARSE_STATUS_SUCCESS)
+            return status;
+        }
+        catch(const hipsparseStatus_t& status)
         {
             return status;
         }
-
-        return status;
     }
-    catch(const hipsparseStatus_t& status)
+    else
     {
-        return status;
+        //
+        // old style.
+        //
+        try
+        {
+            hipsparse_bench bench(argc, argv);
+
+            //
+            // Print info devices.
+            //
+            bench.info_devices(std::cout);
+
+            //
+            // Run benchmark.
+            //
+            hipsparseStatus_t status = bench.run();
+            if(status != HIPSPARSE_STATUS_SUCCESS)
+            {
+                return status;
+            }
+
+            return status;
+        }
+        catch(const hipsparseStatus_t& status)
+        {
+            return status;
+        }
     }
 }
