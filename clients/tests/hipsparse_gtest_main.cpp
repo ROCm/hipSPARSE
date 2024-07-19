@@ -146,6 +146,26 @@ public:
     }
 };
 
+hipsparseStatus_t hipsparse_record_output_legend(const std::string& s)
+{
+    return HIPSPARSE_STATUS_SUCCESS;
+}
+
+hipsparseStatus_t hipsparse_record_output(const std::string& s)
+{
+    return HIPSPARSE_STATUS_SUCCESS;
+}
+
+hipsparseStatus_t hipsparse_record_timing(double msec, double gflops, double gbs)
+{
+    return HIPSPARSE_STATUS_SUCCESS;
+}
+
+bool display_timing_info_is_stdout_disabled()
+{
+    return HIPSPARSE_STATUS_SUCCESS;
+}
+
 /* =====================================================================
       Main function:
 =================================================================== */

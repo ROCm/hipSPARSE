@@ -27,6 +27,7 @@ set(HIPSPARSE_BENCHMARK_SOURCES
   client.cpp
   hipsparse_arguments_config.cpp
   hipsparse_bench.cpp
+  hipsparse_bench_app.cpp
   hipsparse_bench_cmdlines.cpp
   hipsparse_routine.cpp
 )
