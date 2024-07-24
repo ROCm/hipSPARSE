@@ -7848,10 +7848,42 @@ hipsparseStatus_t hipsparseZgpsvInterleavedBatch(hipsparseHandle_t handle,
 
 /*! \ingroup conv_module
 *  \brief
-*  This function computes the number of nonzero elements per row or column and the total
+*  \p hipsparseXnnz computes the number of nonzero elements per row or column and the total
 *  number of nonzero elements in a dense matrix.
 *
 *  \details
+*  For example, given the dense matrix:
+*  \f[
+*    \begin{bmatrix}
+*    1 & 0 & 0 & 2 \\
+*    3 & 4 & 0 & 0 \\
+*    5 & 0 & 6 & 7
+*    \end{bmatrix}
+*  \f]
+*
+*  Then using \p dirA == \ref HIPSPARSE_DIRECTION_ROW results in: 
+*  \f[
+*    \begin{align}
+*    \text{nnzPerRowColumn} &= \begin{bmatrix} 2 & 2 & 3 \end{bmatrix} \\
+*    \text{nnzTotalDevHostPtr} &= 7
+*    \end{align}
+*  \f]
+*
+*  while using \p dirA == \ref HIPSPARSE_DIRECTION_COLUMN results in:
+*  \f[
+*    \begin{align}
+*    \text{nnzPerRowColumn} &= \begin{bmatrix} 3 & 1 & 1 & 2 \end{bmatrix} \\ 
+*    \text{nnzTotalDevHostPtr} &= 7
+*    \end{align}
+*  \f]
+*
+*  For a complete code example on its usage, see the example found with hipsparseSdense2csr().
+* 
+*  \note
+*  As indicated, nnzTotalDevHostPtr can pointer either to host or device memory. This is controlled 
+*  by setting the pointer mode. See hipsparseSetPointerMode().
+*
+*  \note
 *  The routine does support asynchronous execution if the pointer mode is set to device.
 */
 /**@{*/
@@ -7903,9 +7935,34 @@ hipsparseStatus_t hipsparseZnnz(hipsparseHandle_t         handle,
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 /*! \ingroup conv_module
 *  \brief
-*  This function converts the matrix A in dense format into a sparse matrix in CSR format.
+*  \p hipsparseXdense2csr converts the matrix A in dense format into a sparse matrix in CSR format.
 *  All the parameters are assumed to have been pre-allocated by the user and the arrays
-*  are filled in based on nnz_per_row, which can be pre-computed with hipsparseXnnz().
+*  are filled in based on number of nonzeros per row, which can be pre-computed with hipsparseXnnz().
+*
+*  \details
+*  The desired index base in the output CSR matrix is set in the \ref hipsparseMatDescr_t. 
+*  See hipsparseSetMatIndexBase(). As an example, if using index base zero (i.e. the default) and the dense 
+*  matrix:
+*
+*  \f[
+*    \begin{bmatrix}
+*    1 & 0 & 0 & 2 \\
+*    3 & 4 & 0 & 0 \\
+*    5 & 0 & 6 & 7
+*    \end{bmatrix}
+*  \f]
+*
+*  The conversion results in the CSR arrays:
+*
+*  \f[
+*    \begin{align}
+*    \text{csr_row_ptr} &= \begin{bmatrix} 0 & 2 & 4 & 7 \end{bmatrix} \\
+*    \text{csr_col_ind} &= \begin{bmatrix} 0 & 3 & 0 & 1 & 0 & 2 & 3 \end{bmatrix} \\
+*    \text{csr_val} &= \begin{bmatrix} 1 & 2 & 3 & 4 & 5 & 6 & 7 \end{bmatrix} \\
+*    \end{align}
+*  \f]
+*
+*  \note
 *  It is executed asynchronously with respect to the host and may return control to the
 *  application on the host before the entire result is ready.
 *
@@ -8014,13 +8071,21 @@ hipsparseStatus_t hipsparseZdense2csr(hipsparseHandle_t         handle,
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup conv_module
 *  \brief
-*  This function computes the the size of the user allocated temporary storage buffer used when converting and pruning
-*  a dense matrix to a CSR matrix.
+*  \p hipsparseSpruneDense2csr_bufferSize computes the the size of the user allocated temporary storage buffer 
+*  used when converting and pruning a dense matrix to a CSR matrix. 
 *
+*  \details 
 *  \details
-*  \p hipsparseXpruneDense2csr_bufferSizeExt returns the size of the temporary storage buffer
-*  that is required by hipsparseXpruneDense2csrNnz() and hipsparseXpruneDense2csr(). The
-*  temporary storage buffer must be allocated by the user.
+*  Specifically given an input dense matrix A, the resulting pruned sparse CSR matrix C is computed using:
+*  \f[ 
+*   |C(i,j)| = A(i, j) \text{  if |A(i, j)| > threshold}
+*  \f]
+*
+*  The first step in this conversion is to determine the required user allocated buffer size 
+*  using hipsparseXpruneDense2csr_bufferSize() that will be passed to the subsequent steps of the conversion. 
+*  Once the buffer size has been determined the user must allocate it. This user allocated buffer is then passed 
+*  to hipsparseXpruneDense2csrNnz() and hipsparseXpruneDense2csr(). The user is responsible to then free the buffer 
+*  once the conversion has been completed. See hipsparseSpruneDense2csr() for a full code example.
 */
 /**@{*/
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
@@ -8083,11 +8148,54 @@ hipsparseStatus_t hipsparseDpruneDense2csr_bufferSizeExt(hipsparseHandle_t      
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup conv_module
 *  \brief
-*  This function computes the number of nonzero elements per row and the total number of
-*  nonzero elements in a dense matrix once elements less than the threshold are pruned
-*  from the matrix.
+*  \p hipsparseXpruneDense2csrNnz function computes the number of nonzero elements per row and the total 
+*  number of nonzero elements in a dense matrix once the elements less than the (non-negative) threshold are 
+*  pruned from the matrix.
 *
 *  \details
+*  Specifically given an input dense matrix A, the resulting pruned sparse CSR matrix C is computed using:
+*  \f[ 
+*   |C(i,j)| = A(i, j) \text{  if |A(i, j)| > threshold}
+*  \f]
+*
+*  In order to complete this conversion, we first need to determine the total number of non-zeros that will 
+*  exist in the sparse CSR matrix C (after pruning has been performed on A) as well as the output CSR row 
+*  pointer array \p csrRowPtr.
+*
+*  Given the dense matrix:
+*
+*  \f[
+*    \begin{bmatrix}
+*    6 & 2 & 3 & 7 \\
+*    5 & 6 & 7 & 8 \\
+*    5 & 4 & 8 & 1
+*    \end{bmatrix}
+*  \f]
+*
+*  and the \p threshold value 5, the resulting matrix after pruning is:
+*
+*  \f[
+*    \begin{bmatrix}
+*    6 & 0 & 0 & 7 \\
+*    0 & 6 & 7 & 8 \\
+*    0 & 0 & 8 & 0
+*    \end{bmatrix}
+*  \f]
+*
+*  and corresponding row pointer array and non-zero count:
+*
+*  \f[
+*    \begin{align}
+*    \text{csrRowPtr} &= \begin{bmatrix} 0 & 2 & 5 & 6 \end{bmatrix} \\
+*    \text{nnzTotalDevHostPtr} &= 6
+*    \end{align}
+*  \f]
+*
+*  The above example assumes a zero index base for the output CSR matrix. We can set the desired index base 
+*  in the output CSR matrix by setting it in the \ref hipsparseMatDescr_t. See hipsparseSetMatIndexBase().
+*  For a full code example on how to use this routine, see hipsparseSpruneDense2csr().  
+*
+*  \note
 *  The routine does support asynchronous execution if the pointer mode is set to device.
 */
 /**@{*/
@@ -8122,21 +8230,55 @@ hipsparseStatus_t hipsparseDpruneDense2csrNnz(hipsparseHandle_t         handle,
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup conv_module
 *  \brief
-*  This function converts the matrix A in dense format into a sparse matrix in CSR format
-*  while pruning values that are less than the threshold. All the parameters are assumed
+*  \p hipsparseXpruneDense2csr converts the matrix A in dense format into a sparse matrix in CSR format
+*  while pruning values that are less than the (non-negative) threshold. All the parameters are assumed
 *  to have been pre-allocated by the user.
 *
 *  \details
-*  The user first allocates \p csrRowPtr to have \p m+1 elements and then calls
-*  hipsparseXpruneDense2csrNnz() which fills in the \p csrRowPtr array and stores the
-*  number of elements that are larger than the pruning threshold in \p nnzTotalDevHostPtr.
-*  The user then allocates \p csrColInd and \p csrVal to have size \p nnzTotalDevHostPtr
-*  and completes the conversion by calling hipsparseXpruneDense2csr(). A temporary storage
-*  buffer is used by both hipsparseXpruneDense2csrNnz() and hipsparseXpruneDense2csr() and
-*  must be allocated by the user and whose size is determined by
-*  hipsparseXpruneDense2csr_bufferSizeExt(). The routine hipsparseXpruneDense2csr() is
-*  executed asynchronously with respect to the host and may return control to the
-*  application on the host before the entire result is ready.
+*  Specifically given an input dense matrix A, the resulting pruned sparse CSR matrix C is computed using:
+*  \f[ 
+*   |C(i,j)| = A(i, j) \text{  if |A(i, j)| > threshold}
+*  \f]
+*
+*  The user first calls \p hipsparseXpruneDense2csr_bufferSize to determine the size of the required 
+*  user allocate temporary storage buffer. The user then allocates this buffer. Next, the user 
+*  allocates \p csrRowPtr to have \p m+1 elements and then calls hipsparseXpruneDense2csrNnz() 
+*  which fills in the \p csrRowPtr array and stores the number of elements that are larger than the 
+*  pruning \p threshold in \p nnzTotalDevHostPtr. The user then allocates \p csrColInd and \p csrVal to 
+*  have size \p nnzTotalDevHostPtr and completes the conversion by calling hipsparseXpruneDense2csr().
+*
+*  For example, performing these steps with the dense input matrix A:
+*  \f[
+*    \begin{bmatrix}
+*    6 & 2 & 3 & 7 \\
+*    5 & 6 & 7 & 8 \\
+*    5 & 4 & 8 & 1
+*    \end{bmatrix}
+*  \f]
+*
+*  and the \p threshold value 5, results in the pruned matrix C:
+*
+*  \f[
+*    \begin{bmatrix}
+*    6 & 0 & 0 & 7 \\
+*    0 & 6 & 7 & 8 \\
+*    0 & 0 & 8 & 0
+*    \end{bmatrix}
+*  \f]
+*
+*  and corresponding CSR row, column, and values arrays:
+*
+*  \f[
+*    \begin{align}
+*    \text{csrRowPtr} &= \begin{bmatrix} 0 & 2 & 5 & 6 \end{bmatrix} \\
+*    \text{csrColInd} &= \begin{bmatrix} 0 & 3 & 1 & 2 & 3 & 2 \end{bmatrix} \\
+*    \text{csrVal} &= \begin{bmatrix} 6 & 7 & 6 & 7 & 8 & 8 \end{bmatrix} \\
+*    \end{align}
+*  \f]
+*
+*  \note 
+*  The routine hipsparseXpruneDense2csr() is executed asynchronously with respect to the host and may 
+*  return control to the application on the host before the entire result is ready.
 *
 *  \par Example
 *  \code{.c}
@@ -8227,8 +8369,8 @@ hipsparseStatus_t hipsparseDpruneDense2csr(hipsparseHandle_t         handle,
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup conv_module
 *  \brief
-*  This function computes the size of the user allocated temporary storage buffer used
-*  when converting and pruning by percentage a dense matrix to a CSR matrix.
+*  \p hipsparseSpruneDense2csrByPercentage_bufferSize computes the size of the user allocated temporary 
+*  storage buffer used when converting and pruning by percentage a dense matrix to a CSR matrix.
 *
 *  \details
 *  When converting and pruning a dense matrix A to a CSR matrix by percentage the
@@ -8243,13 +8385,17 @@ hipsparseStatus_t hipsparseDpruneDense2csr(hipsparseHandle_t         handle,
 *  The pruning by percentage works by first sorting the absolute values of the dense
 *  matrix \p A. We then determine a position in this sorted array by
 *  \f[
-*    pos = ceil(m*n*(percentage/100)) - 1
-*    pos = min(pos, m*n-1)
-*    pos = max(pos, 0)
+*    pos = ceil(m*n*(percentage/100)) - 1 \\
+*    pos = min(pos, m*n-1) \\
+*    pos = max(pos, 0) \\
 *    threshold = sorted_A[pos]
 *  \f]
+*
 *  Once we have this threshold we prune values in the dense matrix \p A as in
-*  \p hipsparseXpruneDense2csr. It is executed asynchronously with respect to the host
+*  \p hipsparseXpruneDense2csr. 
+*
+*  \note
+*  It is executed asynchronously with respect to the host
 *  and may return control to the application on the host before the entire result is
 *  ready.
 */
@@ -8304,13 +8450,17 @@ hipsparseStatus_t hipsparseDpruneDense2csrByPercentage_bufferSize(hipsparseHandl
 *  The pruning by percentage works by first sorting the absolute values of the dense
 *  matrix \p A. We then determine a position in this sorted array by
 *  \f[
-*    pos = ceil(m*n*(percentage/100)) - 1
-*    pos = min(pos, m*n-1)
-*    pos = max(pos, 0)
+*    pos = ceil(m*n*(percentage/100)) - 1 \\
+*    pos = min(pos, m*n-1) \\
+*    pos = max(pos, 0) \\
 *    threshold = sorted_A[pos]
 *  \f]
+*
 *  Once we have this threshold we prune values in the dense matrix \p A as in
-*  \p hipsparseXpruneDense2csr. It is executed asynchronously with respect to the host
+*  \p hipsparseXpruneDense2csr. 
+*
+*  \note
+*  It is executed asynchronously with respect to the host
 *  and may return control to the application on the host before the entire result is
 *  ready.
 */
@@ -8369,13 +8519,17 @@ hipsparseStatus_t
 *  The pruning by percentage works by first sorting the absolute values of the dense
 *  matrix \p A. We then determine a position in this sorted array by
 *  \f[
-*    pos = ceil(m*n*(percentage/100)) - 1
-*    pos = min(pos, m*n-1)
-*    pos = max(pos, 0)
+*    pos = ceil(m*n*(percentage/100)) - 1 \\
+*    pos = min(pos, m*n-1) \\
+*    pos = max(pos, 0) \\
 *    threshold = sorted_A[pos]
 *  \f]
+*
 *  Once we have this threshold we prune values in the dense matrix \p A as in
-*  \p hipsparseXpruneDense2csr. The routine does support asynchronous execution if the
+*  \p hipsparseXpruneDense2csr.
+*
+*  \note
+*  The routine does support asynchronous execution if the
 *  pointer mode is set to device.
 */
 /**@{*/
@@ -8429,14 +8583,17 @@ hipsparseStatus_t hipsparseDpruneDense2csrNnzByPercentage(hipsparseHandle_t     
 *  The pruning by percentage works by first sorting the absolute values of the dense
 *  matrix \p A. We then determine a position in this sorted array by
 *  \f[
-*    pos = ceil(m*n*(percentage/100)) - 1
-*    pos = min(pos, m*n-1)
-*    pos = max(pos, 0)
+*    pos = ceil(m*n*(percentage/100)) - 1 \\
+*    pos = min(pos, m*n-1) \\
+*    pos = max(pos, 0) \\
 *    threshold = sorted_A[pos]
 *  \f]
+*
 *  Once we have this threshold we prune values in the dense matrix \p A as in
-*  \p hipsparseXpruneDense2csr. The routine does support asynchronous execution if the
-*  pointer mode is set to device.
+*  \p hipsparseXpruneDense2csr.
+*
+*  \note
+*  The routine does support asynchronous execution if the pointer mode is set to device.
 *
 *  \par Example
 *  \code{.c}
@@ -8533,10 +8690,38 @@ hipsparseStatus_t hipsparseDpruneDense2csrByPercentage(hipsparseHandle_t        
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 /*! \ingroup conv_module
 *  \brief
+*  \p hipsparseXdense2csc converts the matrix A in dense format into a sparse matrix in CSC format.
+*  All the parameters are assumed to have been pre-allocated by the user and the arrays
+*  are filled in based on number of nonzeros per row, which can be pre-computed with hipsparseXnnz().
 *
-*  This function converts the matrix A in dense format into a sparse matrix in CSC format.
-*  All the parameters are assumed to have been pre-allocated by the user and the arrays are filled in based on nnz_per_columns, which can be pre-computed with hipsparseXnnz().
-*  It is executed asynchronously with respect to the host and may return control to the application on the host before the entire result is ready.
+*  \details
+*  We can set the desired index base in the output CSC matrix by setting it in the \ref hipsparseMatDescr_t. 
+*  See hipsparseSetMatIndexBase(). As an example, if using index base zero (i.e. the default) and the dense 
+*  matrix:
+*
+*  \f[
+*    \begin{bmatrix}
+*    1 & 0 & 0 & 2 \\
+*    3 & 4 & 0 & 0 \\
+*    5 & 0 & 6 & 7
+*    \end{bmatrix}
+*  \f]
+*
+*  The conversion results in the CSC arrays:
+*
+*  \f[
+*    \begin{align}
+*    \text{csc_row_ind} &= \begin{bmatrix} 0 & 1 & 2 & 1 & 2 & 0 & 2 \end{bmatrix} \\
+*    \text{csc_col_ptr} &= \begin{bmatrix} 0 & 3 & 4 & 5 & 7 \end{bmatrix} \\
+*    \text{csc_val} &= \begin{bmatrix} 1 & 3 & 5 & 4 & 6 & 2 & 7 \end{bmatrix} \\
+*    \end{align}
+*  \f]
+*
+*  This function works very similar to hipsparseXdense2csr. See hipsparseSdense2csr() for a code example.
+*
+*  \note
+*  It is executed asynchronously with respect to the host and may return control to the
+*  application on the host before the entire result is ready.
 */
 /**@{*/
 DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
@@ -8593,8 +8778,30 @@ hipsparseStatus_t hipsparseZdense2csc(hipsparseHandle_t         handle,
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 /*! \ingroup conv_module
 *  \brief
-*  This function converts the sparse matrix in CSR format into a dense matrix.
-*  It is executed asynchronously with respect to the host and may return control to the application on the host before the entire result is ready.
+*  \p hipsparseXcsr2dense function converts the sparse matrix in CSR format into a dense matrix.
+*
+*  \details
+*  Consider the sparse CSR matrix:
+*  \f[
+*    \begin{align}
+*    \text{csr_row_ptr} &= \begin{bmatrix} 0 & 2 & 4 & 7 \end{bmatrix} \\
+*    \text{csr_col_ind} &= \begin{bmatrix} 0 & 3 & 0 & 1 & 0 & 2 & 3 \end{bmatrix} \\
+*    \text{csr_val} &= \begin{bmatrix} 1 & 2 & 3 & 4 & 5 & 6 & 7 \end{bmatrix} \\
+*    \end{align}
+*  \f]
+*
+*  \p hipsparseXcsr2dense is used to convert to the dense matrix:
+*  \f[
+*    \begin{bmatrix}
+*    1 & 0 & 0 & 2 \\
+*    3 & 4 & 0 & 0 \\
+*    5 & 0 & 6 & 7
+*    \end{bmatrix}
+*  \f]
+*
+*  \note
+*  It is executed asynchronously with respect to the host and may return control to the application 
+*  on the host before the entire result is ready.
 *
 *  \par Example
 *  \code{.c}
@@ -8695,8 +8902,30 @@ hipsparseStatus_t hipsparseZcsr2dense(hipsparseHandle_t         handle,
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 /*! \ingroup conv_module
 *  \brief
-*  This function converts the sparse matrix in CSC format into a dense matrix.
-*  It is executed asynchronously with respect to the host and may return control to the application on the host before the entire result is ready.
+*  \p hipsparseXcsc2dense function converts the sparse matrix in CSC format into a dense matrix.
+*
+*  \details
+*  Consider the sparse CSC matrix:
+*  \f[
+*    \begin{align}
+*    \text{csc_row_ind} &= \begin{bmatrix} 0 & 1 & 2 & 1 & 2 & 0 & 2 \end{bmatrix} \\
+*    \text{csc_col_ptr} &= \begin{bmatrix} 0 & 3 & 4 & 5 & 7 \end{bmatrix} \\
+*    \text{csc_val} &= \begin{bmatrix} 1 & 3 & 5 & 4 & 6 & 2 & 7 \end{bmatrix} \\
+*    \end{align}
+*  \f]
+*
+*  \p hipsparseXcsc2dense is used to convert to the dense matrix:
+*  \f[
+*    \begin{bmatrix}
+*    1 & 0 & 0 & 2 \\
+*    3 & 4 & 0 & 0 \\
+*    5 & 0 & 6 & 7
+*    \end{bmatrix}
+*  \f]
+*
+*  \note
+*  It is executed asynchronously with respect to the host and may return control to the application 
+*  on the host before the entire result is ready.
 */
 /**@{*/
 DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
@@ -8752,6 +8981,99 @@ hipsparseStatus_t hipsparseZcsc2dense(hipsparseHandle_t         handle,
 *  BSR matrix given a sparse CSR matrix as input.
 *
 *  \details
+*  Consider the matrix:
+*  \f[
+*    \begin{bmatrix}
+*    1 & 0 & 0 & 2 \\
+*    3 & 4 & 0 & 0 \\
+*    5 & 0 & 6 & 7 \\
+*    1 & 2 & 3 & 4
+*    \end{bmatrix}
+*  \f]
+*
+*  stored as a sparse CSR matrix. This function computes both the BSR row pointer array as well as the total number 
+*  of non-zero blocks that results when converting the CSR matrix to the BSR format. Assuming a block dimension of 2, 
+*  the above matrix once converted to BSR format looks like:
+*
+*  \f[
+*   \left[ 
+*    \begin{array}{c | c} 
+*      \begin{array}{c c} 
+*       1 & 0 \\ 
+*       3 & 4 
+*      \end{array} & 
+*      \begin{array}{c c} 
+*       0 & 2 \\ 
+*       0 & 0 
+*      \end{array} \\ 
+*    \hline 
+*      \begin{array}{c c} 
+*       5 & 0 \\ 
+*       1 & 2 
+*      \end{array} & 
+*      \begin{array}{c c} 
+*       6 & 7 \\ 
+*       3 & 4 
+*      \end{array} \\ 
+*   \end{array} 
+*  \right] 
+*  \f]
+*
+*  and the resulting BSR row pointer array and total non-zero blocks once \p hipsparseXcsr2bsrNnz has been called:
+*
+*  \f[
+*    \begin{align}
+*    \text{bsrRowPtrC} &= \begin{bmatrix} 0 & 2 & 4 \end{bmatrix} \\
+*    \text{bsrNnzb} &= 4
+*    \end{align}
+*  \f]
+*
+*  In general, when converting a CSR matrix of size \p m x \p n to a BSR matrix, the resulting BSR matrix will have size 
+*  mb x nb where mb and nb equal:
+*
+*  \f[
+*    \begin{align}
+*    \text{mb} &= \text{(m - 1) / blockDim + 1} \\
+*    \text{nb} &= \text{(n - 1) / blockDim + 1}
+*    \end{align}
+*  \f]
+*
+*  In particular, it may be the case that \p blockDim does not divide evenly into \p m and/or \p n. In these cases, the 
+*  CSR matrix is expanded in size in order to fit full BSR blocks. For example, using the original CSR matrix and block 
+*  dimension 3 instead of 2, the function \p hipsparseXcsr2bsrNnz computes the BSR row pointer array and total number of 
+*  non-zero blocks for the BSR matrix:
+*
+*  \f[
+*   \left[ 
+*    \begin{array}{c | c} 
+*      \begin{array}{c c c} 
+*       1 & 0 & 0 \\ 
+*       3 & 4 & 0 \\
+*       5 & 0 & 6
+*      \end{array} & 
+*      \begin{array}{c c c} 
+*       2 & 0 & 0 \\ 
+*       0 & 0 & 0 \\
+*       7 & 0 & 0
+*      \end{array} \\ 
+*    \hline 
+*      \begin{array}{c c c} 
+*       1 & 2 & 3 \\ 
+*       0 & 0 & 0 \\
+*       0 & 0 & 0
+*      \end{array} & 
+*      \begin{array}{c c c} 
+*       4 & 0 & 0 \\ 
+*       0 & 0 & 0 \\
+*       0 & 0 & 0
+*      \end{array} \\ 
+*   \end{array} 
+*  \right] 
+*  \f]
+*
+*  See hipsparseScsr2bsr() for full code example.
+*
+*  \note
 *  The routine does support asynchronous execution if the pointer mode is set to device.
 */
 HIPSPARSE_EXPORT
@@ -9855,12 +10177,83 @@ hipsparseStatus_t hipsparseZcsr2gebsr(hipsparseHandle_t         handle,
 *  \brief Convert a sparse CSR matrix into a sparse BSR matrix
 *
 *  \details
-*  \p hipsparseXcsr2bsr converts a CSR matrix into a BSR matrix. It is assumed,
-*  that \p bsr_val, \p bsr_col_ind and \p bsr_row_ptr are allocated. Allocation size
-*  for \p bsr_row_ptr is computed as \p mb+1 where \p mb is the number of block rows in
-*  the BSR matrix. Allocation size for \p bsr_val and \p bsr_col_ind is computed using
-*  \p csr2bsr_nnz() which also fills in \p bsr_row_ptr.
+*  \p hipsparseXcsr2bsr completes the conversion of a CSR matrix into a BSR matrix. 
+*  It is assumed, that \p bsrValC, \p bsrColIndC and \p bsrRowPtrC are allocated. The 
+*  allocation size for \p bsrRowPtr is computed as \p mb+1 where \p mb is the number of 
+*  block rows in the BSR matrix defined as:
 *
+*  \f[
+*    \begin{align}
+*    \text{mb} &= \text{(m - 1) / blockDim + 1}
+*    \end{align}
+*  \f]
+*
+*  The allocation size for \p bsrColIndC, i.e. \p bsrNnzb, is computed using
+*  \p hipsparseXcsr2bsrNnz() which also fills the \p bsrRowPtrC array. The allocation size 
+*  for \p bsrValC is then equal to:
+*
+*  \f[
+*    \text{bsrNnzb * blockDim * blockDim}
+*  \f]
+*
+*  For example, given the CSR matrix:
+*  \f[
+*    \begin{bmatrix}
+*    1 & 0 & 0 & 2 \\
+*    3 & 4 & 0 & 0 \\
+*    5 & 0 & 6 & 7 \\
+*    1 & 2 & 3 & 4
+*    \end{bmatrix}
+*  \f]
+*
+*  The resulting BSR matrix using block dimension 2 would look like:
+*  \f[
+*   \left[ 
+*    \begin{array}{c | c} 
+*      \begin{array}{c c} 
+*       1 & 0 \\ 
+*       3 & 4 
+*      \end{array} & 
+*      \begin{array}{c c} 
+*       0 & 2 \\ 
+*       0 & 0 
+*      \end{array} \\ 
+*    \hline 
+*      \begin{array}{c c} 
+*       5 & 0 \\ 
+*       1 & 2 
+*      \end{array} & 
+*      \begin{array}{c c} 
+*       6 & 7 \\ 
+*       3 & 4 
+*      \end{array} \\ 
+*   \end{array} 
+*  \right] 
+*  \f]
+*
+*  The call to \p hipsparseXcsr2bsrNnz results in the BSR row pointer array:
+*  \f[
+*    \begin{align}
+*    \text{bsrRowPtrC} &= \begin{bmatrix} 0 & 2 & 4 \end{bmatrix} \\
+*    \end{align}
+*  \f]
+*
+*  and the call to \p hipsparseXcsr2bsr completes the conversion resulting in the BSR column indices and values arrays:
+*  \f[
+*    \begin{align}
+*    \text{bsrColIndC} &= \begin{bmatrix} 0 & 1 & 0 & 1 \end{bmatrix} \\
+*    \text{bsrValC} &= \begin{bmatrix} 1 & 0 & 3 & 4 & 0 & 2 & 0 & 0 & 5 & 0 & 1 & 2 & 6 & 7 & 3 & 4 \end{bmatrix} \\
+*    \end{align}
+*  \f]
+*
+*  The \p dirA parameter determines the order of the BSR block values. The example above uses row order. Using column ordering
+*  would result instead in the BSR values array:
+*
+*  \f[
+*    \text{bsrValC} &= \begin{bmatrix} 1 & 3 & 0 & 4 & 0 & 0 & 2 & 0 & 5 & 1 & 0 & 2 & 6 & 3 & 7 & 4 \end{bmatrix} \\
+*  \f]
+*
+*  \note
 *  \p hipsparseXcsr2bsr requires extra temporary storage that is allocated internally if
 *  \p block_dim>16
 *
@@ -9996,10 +10389,44 @@ hipsparseStatus_t hipsparseZcsr2bsr(hipsparseHandle_t         handle,
 *
 *  \details
 *  \p hipsparseXbsr2csr converts a BSR matrix into a CSR matrix. It is assumed,
-*  that \p csr_val, \p csr_col_ind and \p csr_row_ptr are allocated. Allocation size
-*  for \p csr_row_ptr is computed by the number of block rows multiplied by the block
-*  dimension plus one. Allocation for \p csr_val and \p csr_col_ind is computed by the
+*  that \p csrValC, \p csrColIndC and \p csrRowPtrC are allocated. Allocation size
+*  for \p csrRowPtrC is computed by the number of block rows multiplied by the block
+*  dimension plus one. Allocation for \p csrValC and \p csrColInd is computed by the
 *  the number of blocks in the BSR matrix multiplied by the block dimension squared.
+*
+*  For example, given the BSR matrix using block dimension 2:
+*  \f[
+*   \left[ 
+*    \begin{array}{c | c} 
+*      \begin{array}{c c} 
+*       1 & 0 \\ 
+*       3 & 4 
+*      \end{array} & 
+*      \begin{array}{c c} 
+*       0 & 2 \\ 
+*       0 & 0 
+*      \end{array} \\ 
+*    \hline 
+*      \begin{array}{c c} 
+*       5 & 0 \\ 
+*       1 & 2 
+*      \end{array} & 
+*      \begin{array}{c c} 
+*       6 & 7 \\ 
+*       3 & 4 
+*      \end{array} \\ 
+*   \end{array} 
+*  \right] 
+*  \f]
+*
+*  The resulting CSR matrix row pointer, column indices, and values arrays are:
+*  \f[
+*    \begin{align}
+*    \text{csrRowPtrC} &= \begin{bmatrix} 0 & 4 & 8 & 12 & 16 \end{bmatrix} \\
+*    \text{csrColIndC} &= \begin{bmatrix} 0 & 1 & 2 & 3 & 0 & 1 & 2 & 3 & 0 & 1 & 2 & 3 & 0 & 1 & 2 & 3 \end{bmatrix} \\
+*    \text{csrValC} &= \begin{bmatrix} 1 & 0 & 0 & 2 & 3 & 4 & 0 & 0 & 5 & 0 & 6 & 7 & 1 & 2 & 3 & 4 \end{bmatrix} \\
+*    \end{align}
+*  \f]
 *
 *  \note
 *  This function is non blocking and executed asynchronously with respect to the host.
@@ -10604,7 +11031,7 @@ hipsparseStatus_t hipsparseDpruneCsr2csrNnz(hipsparseHandle_t         handle,
  *  The user first calls hipsparseXpruneCsr2csr_bufferSize() to determine the size of the buffer used
  *  by hipsparseXpruneCsr2csrNnz() and hipsparseXpruneCsr2csr() which the user then allocates. The user then
  *  allocates \p csr_row_ptr_C to have \p m+1 elements and then calls hipsparseXpruneCsr2csrNnz() which fills
- *  in the \p csr_row_ptr_C array stores then number of elements that are larger than the pruning threshold
+ *  in the \p csr_row_ptr_C array stores then number of elements that are larger than the pruning \p threshold
  *  in \p nnz_total_dev_host_ptr. The user then calls hipsparseXpruneCsr2csr() to complete the conversion. It
  *  is executed asynchronously with respect to the host and may return control to the application on the host
  *  before the entire result is ready.
@@ -10799,7 +11226,7 @@ hipsparseStatus_t hipsparseDpruneCsr2csrNnzByPercentage(hipsparseHandle_t       
  *  The user first calls hipsparseXpruneCsr2csr_bufferSize() to determine the size of the buffer used
  *  by hipsparseXpruneCsr2csrNnz() and hipsparseXpruneCsr2csr() which the user then allocates. The user then
  *  allocates \p csr_row_ptr_C to have \p m+1 elements and then calls hipsparseXpruneCsr2csrNnz() which fills
- *  in the \p csr_row_ptr_C array stores then number of elements that are larger than the pruning threshold
+ *  in the \p csr_row_ptr_C array stores then number of elements that are larger than the pruning \p threshold
  *  in \p nnz_total_dev_host_ptr. The user then calls hipsparseXpruneCsr2csr() to complete the conversion. It
  *  is executed asynchronously with respect to the host and may return control to the application on the host
  *  before the entire result is ready.
