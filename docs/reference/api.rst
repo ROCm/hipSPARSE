@@ -210,7 +210,7 @@ Function name                                                                  s
 :cpp:func:`hipsparseXbsrsv2_zeroPivot`
 :cpp:func:`hipsparseXbsrsv2_bufferSize() <hipsparseSbsrsv2_bufferSize>`        x      x      x              x
 :cpp:func:`hipsparseXbsrsv2_bufferSizeExt() <hipsparseSbsrsv2_bufferSizeExt>`  x      x      x              x
-:cpp:func:`hipsparseXbsrsv2_analysis() <hipsparseSbsrsv_analysis>`             x      x      x              x
+:cpp:func:`hipsparseXbsrsv2_analysis() <hipsparseSbsrsv2_analysis>`            x      x      x              x
 :cpp:func:`hipsparseXbsrsv2_solve() <hipsparseSbsrsv2_solve>`                  x      x      x              x
 :cpp:func:`hipsparseXgemvi_bufferSize() <hipsparseSgemvi_bufferSize>`          x      x      x              x
 :cpp:func:`hipsparseXgemvi() <hipsparseSgemvi>`                                x      x      x              x

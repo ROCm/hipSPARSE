@@ -32,48 +32,48 @@ namespace hipsparse
     hipsparseStatus_t hipsparseXaxpyi(hipsparseHandle_t    handle,
                                       int                  nnz,
                                       const float*         alpha,
-                                      const float*         x_val,
-                                      const int*           x_ind,
+                                      const float*         xVal,
+                                      const int*           xInd,
                                       float*               y,
-                                      hipsparseIndexBase_t idx_base)
+                                      hipsparseIndexBase_t idxBase)
     {
-        return hipsparseSaxpyi(handle, nnz, alpha, x_val, x_ind, y, idx_base);
+        return hipsparseSaxpyi(handle, nnz, alpha, xVal, xInd, y, idxBase);
     }
 
     template <>
     hipsparseStatus_t hipsparseXaxpyi(hipsparseHandle_t    handle,
                                       int                  nnz,
                                       const double*        alpha,
-                                      const double*        x_val,
-                                      const int*           x_ind,
+                                      const double*        xVal,
+                                      const int*           xInd,
                                       double*              y,
-                                      hipsparseIndexBase_t idx_base)
+                                      hipsparseIndexBase_t idxBase)
     {
-        return hipsparseDaxpyi(handle, nnz, alpha, x_val, x_ind, y, idx_base);
+        return hipsparseDaxpyi(handle, nnz, alpha, xVal, xInd, y, idxBase);
     }
 
     template <>
     hipsparseStatus_t hipsparseXaxpyi(hipsparseHandle_t    handle,
                                       int                  nnz,
                                       const hipComplex*    alpha,
-                                      const hipComplex*    x_val,
-                                      const int*           x_ind,
+                                      const hipComplex*    xVal,
+                                      const int*           xInd,
                                       hipComplex*          y,
-                                      hipsparseIndexBase_t idx_base)
+                                      hipsparseIndexBase_t idxBase)
     {
-        return hipsparseCaxpyi(handle, nnz, alpha, x_val, x_ind, y, idx_base);
+        return hipsparseCaxpyi(handle, nnz, alpha, xVal, xInd, y, idxBase);
     }
 
     template <>
     hipsparseStatus_t hipsparseXaxpyi(hipsparseHandle_t       handle,
                                       int                     nnz,
                                       const hipDoubleComplex* alpha,
-                                      const hipDoubleComplex* x_val,
-                                      const int*              x_ind,
+                                      const hipDoubleComplex* xVal,
+                                      const int*              xInd,
                                       hipDoubleComplex*       y,
-                                      hipsparseIndexBase_t    idx_base)
+                                      hipsparseIndexBase_t    idxBase)
     {
-        return hipsparseZaxpyi(handle, nnz, alpha, x_val, x_ind, y, idx_base);
+        return hipsparseZaxpyi(handle, nnz, alpha, xVal, xInd, y, idxBase);
     }
 #endif
 
@@ -81,49 +81,49 @@ namespace hipsparse
     template <>
     hipsparseStatus_t hipsparseXdoti(hipsparseHandle_t    handle,
                                      int                  nnz,
-                                     const float*         x_val,
-                                     const int*           x_ind,
+                                     const float*         xVal,
+                                     const int*           xInd,
                                      const float*         y,
                                      float*               result,
-                                     hipsparseIndexBase_t idx_base)
+                                     hipsparseIndexBase_t idxBase)
     {
-        return hipsparseSdoti(handle, nnz, x_val, x_ind, y, result, idx_base);
+        return hipsparseSdoti(handle, nnz, xVal, xInd, y, result, idxBase);
     }
 
     template <>
     hipsparseStatus_t hipsparseXdoti(hipsparseHandle_t    handle,
                                      int                  nnz,
-                                     const double*        x_val,
-                                     const int*           x_ind,
+                                     const double*        xVal,
+                                     const int*           xInd,
                                      const double*        y,
                                      double*              result,
-                                     hipsparseIndexBase_t idx_base)
+                                     hipsparseIndexBase_t idxBase)
     {
-        return hipsparseDdoti(handle, nnz, x_val, x_ind, y, result, idx_base);
+        return hipsparseDdoti(handle, nnz, xVal, xInd, y, result, idxBase);
     }
 
     template <>
     hipsparseStatus_t hipsparseXdoti(hipsparseHandle_t    handle,
                                      int                  nnz,
-                                     const hipComplex*    x_val,
-                                     const int*           x_ind,
+                                     const hipComplex*    xVal,
+                                     const int*           xInd,
                                      const hipComplex*    y,
                                      hipComplex*          result,
-                                     hipsparseIndexBase_t idx_base)
+                                     hipsparseIndexBase_t idxBase)
     {
-        return hipsparseCdoti(handle, nnz, x_val, x_ind, y, result, idx_base);
+        return hipsparseCdoti(handle, nnz, xVal, xInd, y, result, idxBase);
     }
 
     template <>
     hipsparseStatus_t hipsparseXdoti(hipsparseHandle_t       handle,
                                      int                     nnz,
-                                     const hipDoubleComplex* x_val,
-                                     const int*              x_ind,
+                                     const hipDoubleComplex* xVal,
+                                     const int*              xInd,
                                      const hipDoubleComplex* y,
                                      hipDoubleComplex*       result,
-                                     hipsparseIndexBase_t    idx_base)
+                                     hipsparseIndexBase_t    idxBase)
     {
-        return hipsparseZdoti(handle, nnz, x_val, x_ind, y, result, idx_base);
+        return hipsparseZdoti(handle, nnz, xVal, xInd, y, result, idxBase);
     }
 #endif
 
@@ -131,25 +131,25 @@ namespace hipsparse
     template <>
     hipsparseStatus_t hipsparseXdotci(hipsparseHandle_t    handle,
                                       int                  nnz,
-                                      const hipComplex*    x_val,
-                                      const int*           x_ind,
+                                      const hipComplex*    xVal,
+                                      const int*           xInd,
                                       const hipComplex*    y,
                                       hipComplex*          result,
-                                      hipsparseIndexBase_t idx_base)
+                                      hipsparseIndexBase_t idxBase)
     {
-        return hipsparseCdotci(handle, nnz, x_val, x_ind, y, result, idx_base);
+        return hipsparseCdotci(handle, nnz, xVal, xInd, y, result, idxBase);
     }
 
     template <>
     hipsparseStatus_t hipsparseXdotci(hipsparseHandle_t       handle,
                                       int                     nnz,
-                                      const hipDoubleComplex* x_val,
-                                      const int*              x_ind,
+                                      const hipDoubleComplex* xVal,
+                                      const int*              xInd,
                                       const hipDoubleComplex* y,
                                       hipDoubleComplex*       result,
-                                      hipsparseIndexBase_t    idx_base)
+                                      hipsparseIndexBase_t    idxBase)
     {
-        return hipsparseZdotci(handle, nnz, x_val, x_ind, y, result, idx_base);
+        return hipsparseZdotci(handle, nnz, xVal, xInd, y, result, idxBase);
     }
 #endif
 
@@ -158,44 +158,44 @@ namespace hipsparse
     hipsparseStatus_t hipsparseXgthr(hipsparseHandle_t    handle,
                                      int                  nnz,
                                      const float*         y,
-                                     float*               x_val,
-                                     const int*           x_ind,
-                                     hipsparseIndexBase_t idx_base)
+                                     float*               xVal,
+                                     const int*           xInd,
+                                     hipsparseIndexBase_t idxBase)
     {
-        return hipsparseSgthr(handle, nnz, y, x_val, x_ind, idx_base);
+        return hipsparseSgthr(handle, nnz, y, xVal, xInd, idxBase);
     }
 
     template <>
     hipsparseStatus_t hipsparseXgthr(hipsparseHandle_t    handle,
                                      int                  nnz,
                                      const double*        y,
-                                     double*              x_val,
-                                     const int*           x_ind,
-                                     hipsparseIndexBase_t idx_base)
+                                     double*              xVal,
+                                     const int*           xInd,
+                                     hipsparseIndexBase_t idxBase)
     {
-        return hipsparseDgthr(handle, nnz, y, x_val, x_ind, idx_base);
+        return hipsparseDgthr(handle, nnz, y, xVal, xInd, idxBase);
     }
 
     template <>
     hipsparseStatus_t hipsparseXgthr(hipsparseHandle_t    handle,
                                      int                  nnz,
                                      const hipComplex*    y,
-                                     hipComplex*          x_val,
-                                     const int*           x_ind,
-                                     hipsparseIndexBase_t idx_base)
+                                     hipComplex*          xVal,
+                                     const int*           xInd,
+                                     hipsparseIndexBase_t idxBase)
     {
-        return hipsparseCgthr(handle, nnz, y, x_val, x_ind, idx_base);
+        return hipsparseCgthr(handle, nnz, y, xVal, xInd, idxBase);
     }
 
     template <>
     hipsparseStatus_t hipsparseXgthr(hipsparseHandle_t       handle,
                                      int                     nnz,
                                      const hipDoubleComplex* y,
-                                     hipDoubleComplex*       x_val,
-                                     const int*              x_ind,
-                                     hipsparseIndexBase_t    idx_base)
+                                     hipDoubleComplex*       xVal,
+                                     const int*              xInd,
+                                     hipsparseIndexBase_t    idxBase)
     {
-        return hipsparseZgthr(handle, nnz, y, x_val, x_ind, idx_base);
+        return hipsparseZgthr(handle, nnz, y, xVal, xInd, idxBase);
     }
 #endif
 
@@ -204,44 +204,44 @@ namespace hipsparse
     hipsparseStatus_t hipsparseXgthrz(hipsparseHandle_t    handle,
                                       int                  nnz,
                                       float*               y,
-                                      float*               x_val,
-                                      const int*           x_ind,
-                                      hipsparseIndexBase_t idx_base)
+                                      float*               xVal,
+                                      const int*           xInd,
+                                      hipsparseIndexBase_t idxBase)
     {
-        return hipsparseSgthrz(handle, nnz, y, x_val, x_ind, idx_base);
+        return hipsparseSgthrz(handle, nnz, y, xVal, xInd, idxBase);
     }
 
     template <>
     hipsparseStatus_t hipsparseXgthrz(hipsparseHandle_t    handle,
                                       int                  nnz,
                                       double*              y,
-                                      double*              x_val,
-                                      const int*           x_ind,
-                                      hipsparseIndexBase_t idx_base)
+                                      double*              xVal,
+                                      const int*           xInd,
+                                      hipsparseIndexBase_t idxBase)
     {
-        return hipsparseDgthrz(handle, nnz, y, x_val, x_ind, idx_base);
+        return hipsparseDgthrz(handle, nnz, y, xVal, xInd, idxBase);
     }
 
     template <>
     hipsparseStatus_t hipsparseXgthrz(hipsparseHandle_t    handle,
                                       int                  nnz,
                                       hipComplex*          y,
-                                      hipComplex*          x_val,
-                                      const int*           x_ind,
-                                      hipsparseIndexBase_t idx_base)
+                                      hipComplex*          xVal,
+                                      const int*           xInd,
+                                      hipsparseIndexBase_t idxBase)
     {
-        return hipsparseCgthrz(handle, nnz, y, x_val, x_ind, idx_base);
+        return hipsparseCgthrz(handle, nnz, y, xVal, xInd, idxBase);
     }
 
     template <>
     hipsparseStatus_t hipsparseXgthrz(hipsparseHandle_t    handle,
                                       int                  nnz,
                                       hipDoubleComplex*    y,
-                                      hipDoubleComplex*    x_val,
-                                      const int*           x_ind,
-                                      hipsparseIndexBase_t idx_base)
+                                      hipDoubleComplex*    xVal,
+                                      const int*           xInd,
+                                      hipsparseIndexBase_t idxBase)
     {
-        return hipsparseZgthrz(handle, nnz, y, x_val, x_ind, idx_base);
+        return hipsparseZgthrz(handle, nnz, y, xVal, xInd, idxBase);
     }
 #endif
 
@@ -249,27 +249,27 @@ namespace hipsparse
     template <>
     hipsparseStatus_t hipsparseXroti(hipsparseHandle_t    handle,
                                      int                  nnz,
-                                     float*               x_val,
-                                     const int*           x_ind,
+                                     float*               xVal,
+                                     const int*           xInd,
                                      float*               y,
                                      const float*         c,
                                      const float*         s,
-                                     hipsparseIndexBase_t idx_base)
+                                     hipsparseIndexBase_t idxBase)
     {
-        return hipsparseSroti(handle, nnz, x_val, x_ind, y, c, s, idx_base);
+        return hipsparseSroti(handle, nnz, xVal, xInd, y, c, s, idxBase);
     }
 
     template <>
     hipsparseStatus_t hipsparseXroti(hipsparseHandle_t    handle,
                                      int                  nnz,
-                                     double*              x_val,
-                                     const int*           x_ind,
+                                     double*              xVal,
+                                     const int*           xInd,
                                      double*              y,
                                      const double*        c,
                                      const double*        s,
-                                     hipsparseIndexBase_t idx_base)
+                                     hipsparseIndexBase_t idxBase)
     {
-        return hipsparseDroti(handle, nnz, x_val, x_ind, y, c, s, idx_base);
+        return hipsparseDroti(handle, nnz, xVal, xInd, y, c, s, idxBase);
     }
 #endif
 
@@ -277,45 +277,45 @@ namespace hipsparse
     template <>
     hipsparseStatus_t hipsparseXsctr(hipsparseHandle_t    handle,
                                      int                  nnz,
-                                     const float*         x_val,
-                                     const int*           x_ind,
+                                     const float*         xVal,
+                                     const int*           xInd,
                                      float*               y,
-                                     hipsparseIndexBase_t idx_base)
+                                     hipsparseIndexBase_t idxBase)
     {
-        return hipsparseSsctr(handle, nnz, x_val, x_ind, y, idx_base);
+        return hipsparseSsctr(handle, nnz, xVal, xInd, y, idxBase);
     }
 
     template <>
     hipsparseStatus_t hipsparseXsctr(hipsparseHandle_t    handle,
                                      int                  nnz,
-                                     const double*        x_val,
-                                     const int*           x_ind,
+                                     const double*        xVal,
+                                     const int*           xInd,
                                      double*              y,
-                                     hipsparseIndexBase_t idx_base)
+                                     hipsparseIndexBase_t idxBase)
     {
-        return hipsparseDsctr(handle, nnz, x_val, x_ind, y, idx_base);
+        return hipsparseDsctr(handle, nnz, xVal, xInd, y, idxBase);
     }
 
     template <>
     hipsparseStatus_t hipsparseXsctr(hipsparseHandle_t    handle,
                                      int                  nnz,
-                                     const hipComplex*    x_val,
-                                     const int*           x_ind,
+                                     const hipComplex*    xVal,
+                                     const int*           xInd,
                                      hipComplex*          y,
-                                     hipsparseIndexBase_t idx_base)
+                                     hipsparseIndexBase_t idxBase)
     {
-        return hipsparseCsctr(handle, nnz, x_val, x_ind, y, idx_base);
+        return hipsparseCsctr(handle, nnz, xVal, xInd, y, idxBase);
     }
 
     template <>
     hipsparseStatus_t hipsparseXsctr(hipsparseHandle_t       handle,
                                      int                     nnz,
-                                     const hipDoubleComplex* x_val,
-                                     const int*              x_ind,
+                                     const hipDoubleComplex* xVal,
+                                     const int*              xInd,
                                      hipDoubleComplex*       y,
-                                     hipsparseIndexBase_t    idx_base)
+                                     hipsparseIndexBase_t    idxBase)
     {
-        return hipsparseZsctr(handle, nnz, x_val, x_ind, y, idx_base);
+        return hipsparseZsctr(handle, nnz, xVal, xInd, y, idxBase);
     }
 #endif
 
@@ -328,15 +328,15 @@ namespace hipsparse
                                       int                       nnz,
                                       const float*              alpha,
                                       const hipsparseMatDescr_t descr,
-                                      const float*              csr_val,
-                                      const int*                csr_row_ptr,
-                                      const int*                csr_col_ind,
+                                      const float*              csrVal,
+                                      const int*                csrRowPtr,
+                                      const int*                csrColInd,
                                       const float*              x,
                                       const float*              beta,
                                       float*                    y)
     {
         return hipsparseScsrmv(
-            handle, trans, m, n, nnz, alpha, descr, csr_val, csr_row_ptr, csr_col_ind, x, beta, y);
+            handle, trans, m, n, nnz, alpha, descr, csrVal, csrRowPtr, csrColInd, x, beta, y);
     }
 
     template <>
@@ -347,15 +347,15 @@ namespace hipsparse
                                       int                       nnz,
                                       const double*             alpha,
                                       const hipsparseMatDescr_t descr,
-                                      const double*             csr_val,
-                                      const int*                csr_row_ptr,
-                                      const int*                csr_col_ind,
+                                      const double*             csrVal,
+                                      const int*                csrRowPtr,
+                                      const int*                csrColInd,
                                       const double*             x,
                                       const double*             beta,
                                       double*                   y)
     {
         return hipsparseDcsrmv(
-            handle, trans, m, n, nnz, alpha, descr, csr_val, csr_row_ptr, csr_col_ind, x, beta, y);
+            handle, trans, m, n, nnz, alpha, descr, csrVal, csrRowPtr, csrColInd, x, beta, y);
     }
 
     template <>
@@ -366,15 +366,15 @@ namespace hipsparse
                                       int                       nnz,
                                       const hipComplex*         alpha,
                                       const hipsparseMatDescr_t descr,
-                                      const hipComplex*         csr_val,
-                                      const int*                csr_row_ptr,
-                                      const int*                csr_col_ind,
+                                      const hipComplex*         csrVal,
+                                      const int*                csrRowPtr,
+                                      const int*                csrColInd,
                                       const hipComplex*         x,
                                       const hipComplex*         beta,
                                       hipComplex*               y)
     {
         return hipsparseCcsrmv(
-            handle, trans, m, n, nnz, alpha, descr, csr_val, csr_row_ptr, csr_col_ind, x, beta, y);
+            handle, trans, m, n, nnz, alpha, descr, csrVal, csrRowPtr, csrColInd, x, beta, y);
     }
 
     template <>
@@ -385,15 +385,15 @@ namespace hipsparse
                                       int                       nnz,
                                       const hipDoubleComplex*   alpha,
                                       const hipsparseMatDescr_t descr,
-                                      const hipDoubleComplex*   csr_val,
-                                      const int*                csr_row_ptr,
-                                      const int*                csr_col_ind,
+                                      const hipDoubleComplex*   csrVal,
+                                      const int*                csrRowPtr,
+                                      const int*                csrColInd,
                                       const hipDoubleComplex*   x,
                                       const hipDoubleComplex*   beta,
                                       hipDoubleComplex*         y)
     {
         return hipsparseZcsrmv(
-            handle, trans, m, n, nnz, alpha, descr, csr_val, csr_row_ptr, csr_col_ind, x, beta, y);
+            handle, trans, m, n, nnz, alpha, descr, csrVal, csrRowPtr, csrColInd, x, beta, y);
     }
 #endif
 
@@ -1975,17 +1975,17 @@ namespace hipsparse
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
     template <>
     hipsparseStatus_t hipsparseXcsrmm2(hipsparseHandle_t         handle,
-                                       hipsparseOperation_t      trans_A,
-                                       hipsparseOperation_t      trans_B,
+                                       hipsparseOperation_t      transA,
+                                       hipsparseOperation_t      transB,
                                        int                       m,
                                        int                       n,
                                        int                       k,
                                        int                       nnz,
                                        const float*              alpha,
                                        const hipsparseMatDescr_t descr,
-                                       const float*              csr_val,
-                                       const int*                csr_row_ptr,
-                                       const int*                csr_col_ind,
+                                       const float*              csrVal,
+                                       const int*                csrRowPtr,
+                                       const int*                csrColInd,
                                        const float*              B,
                                        int                       ldb,
                                        const float*              beta,
@@ -1993,17 +1993,17 @@ namespace hipsparse
                                        int                       ldc)
     {
         return hipsparseScsrmm2(handle,
-                                trans_A,
-                                trans_B,
+                                transA,
+                                transB,
                                 m,
                                 n,
                                 k,
                                 nnz,
                                 alpha,
                                 descr,
-                                csr_val,
-                                csr_row_ptr,
-                                csr_col_ind,
+                                csrVal,
+                                csrRowPtr,
+                                csrColInd,
                                 B,
                                 ldb,
                                 beta,
@@ -2013,17 +2013,17 @@ namespace hipsparse
 
     template <>
     hipsparseStatus_t hipsparseXcsrmm2(hipsparseHandle_t         handle,
-                                       hipsparseOperation_t      trans_A,
-                                       hipsparseOperation_t      trans_B,
+                                       hipsparseOperation_t      transA,
+                                       hipsparseOperation_t      transB,
                                        int                       m,
                                        int                       n,
                                        int                       k,
                                        int                       nnz,
                                        const double*             alpha,
                                        const hipsparseMatDescr_t descr,
-                                       const double*             csr_val,
-                                       const int*                csr_row_ptr,
-                                       const int*                csr_col_ind,
+                                       const double*             csrVal,
+                                       const int*                csrRowPtr,
+                                       const int*                csrColInd,
                                        const double*             B,
                                        int                       ldb,
                                        const double*             beta,
@@ -2031,17 +2031,17 @@ namespace hipsparse
                                        int                       ldc)
     {
         return hipsparseDcsrmm2(handle,
-                                trans_A,
-                                trans_B,
+                                transA,
+                                transB,
                                 m,
                                 n,
                                 k,
                                 nnz,
                                 alpha,
                                 descr,
-                                csr_val,
-                                csr_row_ptr,
-                                csr_col_ind,
+                                csrVal,
+                                csrRowPtr,
+                                csrColInd,
                                 B,
                                 ldb,
                                 beta,
@@ -2051,17 +2051,17 @@ namespace hipsparse
 
     template <>
     hipsparseStatus_t hipsparseXcsrmm2(hipsparseHandle_t         handle,
-                                       hipsparseOperation_t      trans_A,
-                                       hipsparseOperation_t      trans_B,
+                                       hipsparseOperation_t      transA,
+                                       hipsparseOperation_t      transB,
                                        int                       m,
                                        int                       n,
                                        int                       k,
                                        int                       nnz,
                                        const hipComplex*         alpha,
                                        const hipsparseMatDescr_t descr,
-                                       const hipComplex*         csr_val,
-                                       const int*                csr_row_ptr,
-                                       const int*                csr_col_ind,
+                                       const hipComplex*         csrVal,
+                                       const int*                csrRowPtr,
+                                       const int*                csrColInd,
                                        const hipComplex*         B,
                                        int                       ldb,
                                        const hipComplex*         beta,
@@ -2069,17 +2069,17 @@ namespace hipsparse
                                        int                       ldc)
     {
         return hipsparseCcsrmm2(handle,
-                                trans_A,
-                                trans_B,
+                                transA,
+                                transB,
                                 m,
                                 n,
                                 k,
                                 nnz,
                                 alpha,
                                 descr,
-                                csr_val,
-                                csr_row_ptr,
-                                csr_col_ind,
+                                csrVal,
+                                csrRowPtr,
+                                csrColInd,
                                 B,
                                 ldb,
                                 beta,
@@ -2089,17 +2089,17 @@ namespace hipsparse
 
     template <>
     hipsparseStatus_t hipsparseXcsrmm2(hipsparseHandle_t         handle,
-                                       hipsparseOperation_t      trans_A,
-                                       hipsparseOperation_t      trans_B,
+                                       hipsparseOperation_t      transA,
+                                       hipsparseOperation_t      transB,
                                        int                       m,
                                        int                       n,
                                        int                       k,
                                        int                       nnz,
                                        const hipDoubleComplex*   alpha,
                                        const hipsparseMatDescr_t descr,
-                                       const hipDoubleComplex*   csr_val,
-                                       const int*                csr_row_ptr,
-                                       const int*                csr_col_ind,
+                                       const hipDoubleComplex*   csrVal,
+                                       const int*                csrRowPtr,
+                                       const int*                csrColInd,
                                        const hipDoubleComplex*   B,
                                        int                       ldb,
                                        const hipDoubleComplex*   beta,
@@ -2107,17 +2107,17 @@ namespace hipsparse
                                        int                       ldc)
     {
         return hipsparseZcsrmm2(handle,
-                                trans_A,
-                                trans_B,
+                                transA,
+                                transB,
                                 m,
                                 n,
                                 k,
                                 nnz,
                                 alpha,
                                 descr,
-                                csr_val,
-                                csr_row_ptr,
-                                csr_col_ind,
+                                csrVal,
+                                csrRowPtr,
+                                csrColInd,
                                 B,
                                 ldb,
                                 beta,
@@ -4384,7 +4384,7 @@ namespace hipsparse
                                                   float*                    bsrValA,
                                                   const int*                bsrRowPtrA,
                                                   const int*                bsrColIndA,
-                                                  int                       block_dim,
+                                                  int                       blockDim,
                                                   bsrilu02Info_t            info,
                                                   hipsparseSolvePolicy_t    policy,
                                                   void*                     pBuffer)
@@ -4397,7 +4397,7 @@ namespace hipsparse
                                            bsrValA,
                                            bsrRowPtrA,
                                            bsrColIndA,
-                                           block_dim,
+                                           blockDim,
                                            info,
                                            policy,
                                            pBuffer);
@@ -4412,7 +4412,7 @@ namespace hipsparse
                                                   double*                   bsrValA,
                                                   const int*                bsrRowPtrA,
                                                   const int*                bsrColIndA,
-                                                  int                       block_dim,
+                                                  int                       blockDim,
                                                   bsrilu02Info_t            info,
                                                   hipsparseSolvePolicy_t    policy,
                                                   void*                     pBuffer)
@@ -4425,7 +4425,7 @@ namespace hipsparse
                                            bsrValA,
                                            bsrRowPtrA,
                                            bsrColIndA,
-                                           block_dim,
+                                           blockDim,
                                            info,
                                            policy,
                                            pBuffer);
@@ -4440,7 +4440,7 @@ namespace hipsparse
                                                   hipComplex*               bsrValA,
                                                   const int*                bsrRowPtrA,
                                                   const int*                bsrColIndA,
-                                                  int                       block_dim,
+                                                  int                       blockDim,
                                                   bsrilu02Info_t            info,
                                                   hipsparseSolvePolicy_t    policy,
                                                   void*                     pBuffer)
@@ -4453,7 +4453,7 @@ namespace hipsparse
                                            bsrValA,
                                            bsrRowPtrA,
                                            bsrColIndA,
-                                           block_dim,
+                                           blockDim,
                                            info,
                                            policy,
                                            pBuffer);
@@ -4468,7 +4468,7 @@ namespace hipsparse
                                                   hipDoubleComplex*         bsrValA,
                                                   const int*                bsrRowPtrA,
                                                   const int*                bsrColIndA,
-                                                  int                       block_dim,
+                                                  int                       blockDim,
                                                   bsrilu02Info_t            info,
                                                   hipsparseSolvePolicy_t    policy,
                                                   void*                     pBuffer)
@@ -4481,7 +4481,7 @@ namespace hipsparse
                                            bsrValA,
                                            bsrRowPtrA,
                                            bsrColIndA,
-                                           block_dim,
+                                           blockDim,
                                            info,
                                            policy,
                                            pBuffer);
@@ -4498,7 +4498,7 @@ namespace hipsparse
                                          float*                    bsrValA,
                                          const int*                bsrRowPtrA,
                                          const int*                bsrColIndA,
-                                         int                       block_dim,
+                                         int                       blockDim,
                                          bsrilu02Info_t            info,
                                          hipsparseSolvePolicy_t    policy,
                                          void*                     pBuffer)
@@ -4511,7 +4511,7 @@ namespace hipsparse
                                   bsrValA,
                                   bsrRowPtrA,
                                   bsrColIndA,
-                                  block_dim,
+                                  blockDim,
                                   info,
                                   policy,
                                   pBuffer);
@@ -4526,7 +4526,7 @@ namespace hipsparse
                                          double*                   bsrValA,
                                          const int*                bsrRowPtrA,
                                          const int*                bsrColIndA,
-                                         int                       block_dim,
+                                         int                       blockDim,
                                          bsrilu02Info_t            info,
                                          hipsparseSolvePolicy_t    policy,
                                          void*                     pBuffer)
@@ -4539,7 +4539,7 @@ namespace hipsparse
                                   bsrValA,
                                   bsrRowPtrA,
                                   bsrColIndA,
-                                  block_dim,
+                                  blockDim,
                                   info,
                                   policy,
                                   pBuffer);
@@ -4554,7 +4554,7 @@ namespace hipsparse
                                          hipComplex*               bsrValA,
                                          const int*                bsrRowPtrA,
                                          const int*                bsrColIndA,
-                                         int                       block_dim,
+                                         int                       blockDim,
                                          bsrilu02Info_t            info,
                                          hipsparseSolvePolicy_t    policy,
                                          void*                     pBuffer)
@@ -4567,7 +4567,7 @@ namespace hipsparse
                                   bsrValA,
                                   bsrRowPtrA,
                                   bsrColIndA,
-                                  block_dim,
+                                  blockDim,
                                   info,
                                   policy,
                                   pBuffer);
@@ -4582,7 +4582,7 @@ namespace hipsparse
                                          hipDoubleComplex*         bsrValA,
                                          const int*                bsrRowPtrA,
                                          const int*                bsrColIndA,
-                                         int                       block_dim,
+                                         int                       blockDim,
                                          bsrilu02Info_t            info,
                                          hipsparseSolvePolicy_t    policy,
                                          void*                     pBuffer)
@@ -4595,7 +4595,7 @@ namespace hipsparse
                                   bsrValA,
                                   bsrRowPtrA,
                                   bsrColIndA,
-                                  block_dim,
+                                  blockDim,
                                   info,
                                   policy,
                                   pBuffer);
@@ -5142,7 +5142,7 @@ namespace hipsparse
                                                  const float*              bsrValA,
                                                  const int*                bsrRowPtrA,
                                                  const int*                bsrColIndA,
-                                                 int                       block_dim,
+                                                 int                       blockDim,
                                                  bsric02Info_t             info,
                                                  hipsparseSolvePolicy_t    policy,
                                                  void*                     pBuffer)
@@ -5155,7 +5155,7 @@ namespace hipsparse
                                           bsrValA,
                                           bsrRowPtrA,
                                           bsrColIndA,
-                                          block_dim,
+                                          blockDim,
                                           info,
                                           policy,
                                           pBuffer);
@@ -5170,7 +5170,7 @@ namespace hipsparse
                                                  const double*             bsrValA,
                                                  const int*                bsrRowPtrA,
                                                  const int*                bsrColIndA,
-                                                 int                       block_dim,
+                                                 int                       blockDim,
                                                  bsric02Info_t             info,
                                                  hipsparseSolvePolicy_t    policy,
                                                  void*                     pBuffer)
@@ -5183,7 +5183,7 @@ namespace hipsparse
                                           bsrValA,
                                           bsrRowPtrA,
                                           bsrColIndA,
-                                          block_dim,
+                                          blockDim,
                                           info,
                                           policy,
                                           pBuffer);
@@ -5198,7 +5198,7 @@ namespace hipsparse
                                                  const hipComplex*         bsrValA,
                                                  const int*                bsrRowPtrA,
                                                  const int*                bsrColIndA,
-                                                 int                       block_dim,
+                                                 int                       blockDim,
                                                  bsric02Info_t             info,
                                                  hipsparseSolvePolicy_t    policy,
                                                  void*                     pBuffer)
@@ -5211,7 +5211,7 @@ namespace hipsparse
                                           bsrValA,
                                           bsrRowPtrA,
                                           bsrColIndA,
-                                          block_dim,
+                                          blockDim,
                                           info,
                                           policy,
                                           pBuffer);
@@ -5226,7 +5226,7 @@ namespace hipsparse
                                                  const hipDoubleComplex*   bsrValA,
                                                  const int*                bsrRowPtrA,
                                                  const int*                bsrColIndA,
-                                                 int                       block_dim,
+                                                 int                       blockDim,
                                                  bsric02Info_t             info,
                                                  hipsparseSolvePolicy_t    policy,
                                                  void*                     pBuffer)
@@ -5239,7 +5239,7 @@ namespace hipsparse
                                           bsrValA,
                                           bsrRowPtrA,
                                           bsrColIndA,
-                                          block_dim,
+                                          blockDim,
                                           info,
                                           policy,
                                           pBuffer);
@@ -5256,7 +5256,7 @@ namespace hipsparse
                                         float*                    bsrValA,
                                         const int*                bsrRowPtrA,
                                         const int*                bsrColIndA,
-                                        int                       block_dim,
+                                        int                       blockDim,
                                         bsric02Info_t             info,
                                         hipsparseSolvePolicy_t    policy,
                                         void*                     pBuffer)
@@ -5269,7 +5269,7 @@ namespace hipsparse
                                  bsrValA,
                                  bsrRowPtrA,
                                  bsrColIndA,
-                                 block_dim,
+                                 blockDim,
                                  info,
                                  policy,
                                  pBuffer);
@@ -5284,7 +5284,7 @@ namespace hipsparse
                                         double*                   bsrValA,
                                         const int*                bsrRowPtrA,
                                         const int*                bsrColIndA,
-                                        int                       block_dim,
+                                        int                       blockDim,
                                         bsric02Info_t             info,
                                         hipsparseSolvePolicy_t    policy,
                                         void*                     pBuffer)
@@ -5297,7 +5297,7 @@ namespace hipsparse
                                  bsrValA,
                                  bsrRowPtrA,
                                  bsrColIndA,
-                                 block_dim,
+                                 blockDim,
                                  info,
                                  policy,
                                  pBuffer);
@@ -5312,7 +5312,7 @@ namespace hipsparse
                                         hipComplex*               bsrValA,
                                         const int*                bsrRowPtrA,
                                         const int*                bsrColIndA,
-                                        int                       block_dim,
+                                        int                       blockDim,
                                         bsric02Info_t             info,
                                         hipsparseSolvePolicy_t    policy,
                                         void*                     pBuffer)
@@ -5325,7 +5325,7 @@ namespace hipsparse
                                  bsrValA,
                                  bsrRowPtrA,
                                  bsrColIndA,
-                                 block_dim,
+                                 blockDim,
                                  info,
                                  policy,
                                  pBuffer);
@@ -5340,7 +5340,7 @@ namespace hipsparse
                                         hipDoubleComplex*         bsrValA,
                                         const int*                bsrRowPtrA,
                                         const int*                bsrColIndA,
-                                        int                       block_dim,
+                                        int                       blockDim,
                                         bsric02Info_t             info,
                                         hipsparseSolvePolicy_t    policy,
                                         void*                     pBuffer)
@@ -5353,7 +5353,7 @@ namespace hipsparse
                                  bsrValA,
                                  bsrRowPtrA,
                                  bsrColIndA,
-                                 block_dim,
+                                 blockDim,
                                  info,
                                  policy,
                                  pBuffer);
@@ -6266,13 +6266,13 @@ namespace hipsparse
                                           const hipsparseMatDescr_t descr,
                                           const float*              A,
                                           int                       ld,
-                                          const int*                nnz_per_columns,
+                                          const int*                nnzPerColumn,
                                           float*                    cscVal,
                                           int*                      cscRowInd,
                                           int*                      cscColPtr)
     {
         return hipsparseSdense2csc(
-            handle, m, n, descr, A, ld, nnz_per_columns, cscVal, cscRowInd, cscColPtr);
+            handle, m, n, descr, A, ld, nnzPerColumn, cscVal, cscRowInd, cscColPtr);
     }
     template <>
     hipsparseStatus_t hipsparseXdense2csc(hipsparseHandle_t         handle,
@@ -6281,13 +6281,13 @@ namespace hipsparse
                                           const hipsparseMatDescr_t descr,
                                           const double*             A,
                                           int                       ld,
-                                          const int*                nnz_per_columns,
+                                          const int*                nnzPerColumn,
                                           double*                   cscVal,
                                           int*                      cscRowInd,
                                           int*                      cscColPtr)
     {
         return hipsparseDdense2csc(
-            handle, m, n, descr, A, ld, nnz_per_columns, cscVal, cscRowInd, cscColPtr);
+            handle, m, n, descr, A, ld, nnzPerColumn, cscVal, cscRowInd, cscColPtr);
     }
     template <>
     hipsparseStatus_t hipsparseXdense2csc(hipsparseHandle_t         handle,
@@ -6296,13 +6296,13 @@ namespace hipsparse
                                           const hipsparseMatDescr_t descr,
                                           const hipComplex*         A,
                                           int                       ld,
-                                          const int*                nnz_per_columns,
+                                          const int*                nnzPerColumn,
                                           hipComplex*               cscVal,
                                           int*                      cscRowInd,
                                           int*                      cscColPtr)
     {
         return hipsparseCdense2csc(
-            handle, m, n, descr, A, ld, nnz_per_columns, cscVal, cscRowInd, cscColPtr);
+            handle, m, n, descr, A, ld, nnzPerColumn, cscVal, cscRowInd, cscColPtr);
     }
     template <>
     hipsparseStatus_t hipsparseXdense2csc(hipsparseHandle_t         handle,
@@ -6311,13 +6311,13 @@ namespace hipsparse
                                           const hipsparseMatDescr_t descr,
                                           const hipDoubleComplex*   A,
                                           int                       ld,
-                                          const int*                nnz_per_columns,
+                                          const int*                nnzPerColumn,
                                           hipDoubleComplex*         cscVal,
                                           int*                      cscRowInd,
                                           int*                      cscColPtr)
     {
         return hipsparseZdense2csc(
-            handle, m, n, descr, A, ld, nnz_per_columns, cscVal, cscRowInd, cscColPtr);
+            handle, m, n, descr, A, ld, nnzPerColumn, cscVal, cscRowInd, cscColPtr);
     }
 #endif
 
@@ -6437,27 +6437,27 @@ namespace hipsparse
                                         int                  m,
                                         int                  n,
                                         int                  nnz,
-                                        const float*         csr_val,
-                                        const int*           csr_row_ptr,
-                                        const int*           csr_col_ind,
+                                        const float*         csrVal,
+                                        const int*           csrRowPtr,
+                                        const int*           csrColInd,
                                         float*               csc_val,
-                                        int*                 csc_row_ind,
-                                        int*                 csc_col_ptr,
-                                        hipsparseAction_t    copy_values,
-                                        hipsparseIndexBase_t idx_base)
+                                        int*                 cscRowInd,
+                                        int*                 cscColPtr,
+                                        hipsparseAction_t    copyValues,
+                                        hipsparseIndexBase_t idxBase)
     {
         return hipsparseScsr2csc(handle,
                                  m,
                                  n,
                                  nnz,
-                                 csr_val,
-                                 csr_row_ptr,
-                                 csr_col_ind,
+                                 csrVal,
+                                 csrRowPtr,
+                                 csrColInd,
                                  csc_val,
-                                 csc_row_ind,
-                                 csc_col_ptr,
-                                 copy_values,
-                                 idx_base);
+                                 cscRowInd,
+                                 cscColPtr,
+                                 copyValues,
+                                 idxBase);
     }
 
     template <>
@@ -6465,27 +6465,27 @@ namespace hipsparse
                                         int                  m,
                                         int                  n,
                                         int                  nnz,
-                                        const double*        csr_val,
-                                        const int*           csr_row_ptr,
-                                        const int*           csr_col_ind,
+                                        const double*        csrVal,
+                                        const int*           csrRowPtr,
+                                        const int*           csrColInd,
                                         double*              csc_val,
-                                        int*                 csc_row_ind,
-                                        int*                 csc_col_ptr,
-                                        hipsparseAction_t    copy_values,
-                                        hipsparseIndexBase_t idx_base)
+                                        int*                 cscRowInd,
+                                        int*                 cscColPtr,
+                                        hipsparseAction_t    copyValues,
+                                        hipsparseIndexBase_t idxBase)
     {
         return hipsparseDcsr2csc(handle,
                                  m,
                                  n,
                                  nnz,
-                                 csr_val,
-                                 csr_row_ptr,
-                                 csr_col_ind,
+                                 csrVal,
+                                 csrRowPtr,
+                                 csrColInd,
                                  csc_val,
-                                 csc_row_ind,
-                                 csc_col_ptr,
-                                 copy_values,
-                                 idx_base);
+                                 cscRowInd,
+                                 cscColPtr,
+                                 copyValues,
+                                 idxBase);
     }
 
     template <>
@@ -6493,27 +6493,27 @@ namespace hipsparse
                                         int                  m,
                                         int                  n,
                                         int                  nnz,
-                                        const hipComplex*    csr_val,
-                                        const int*           csr_row_ptr,
-                                        const int*           csr_col_ind,
+                                        const hipComplex*    csrVal,
+                                        const int*           csrRowPtr,
+                                        const int*           csrColInd,
                                         hipComplex*          csc_val,
-                                        int*                 csc_row_ind,
-                                        int*                 csc_col_ptr,
-                                        hipsparseAction_t    copy_values,
-                                        hipsparseIndexBase_t idx_base)
+                                        int*                 cscRowInd,
+                                        int*                 cscColPtr,
+                                        hipsparseAction_t    copyValues,
+                                        hipsparseIndexBase_t idxBase)
     {
         return hipsparseCcsr2csc(handle,
                                  m,
                                  n,
                                  nnz,
-                                 csr_val,
-                                 csr_row_ptr,
-                                 csr_col_ind,
+                                 csrVal,
+                                 csrRowPtr,
+                                 csrColInd,
                                  csc_val,
-                                 csc_row_ind,
-                                 csc_col_ptr,
-                                 copy_values,
-                                 idx_base);
+                                 cscRowInd,
+                                 cscColPtr,
+                                 copyValues,
+                                 idxBase);
     }
 
     template <>
@@ -6521,27 +6521,27 @@ namespace hipsparse
                                         int                     m,
                                         int                     n,
                                         int                     nnz,
-                                        const hipDoubleComplex* csr_val,
-                                        const int*              csr_row_ptr,
-                                        const int*              csr_col_ind,
+                                        const hipDoubleComplex* csrVal,
+                                        const int*              csrRowPtr,
+                                        const int*              csrColInd,
                                         hipDoubleComplex*       csc_val,
-                                        int*                    csc_row_ind,
-                                        int*                    csc_col_ptr,
-                                        hipsparseAction_t       copy_values,
-                                        hipsparseIndexBase_t    idx_base)
+                                        int*                    cscRowInd,
+                                        int*                    cscColPtr,
+                                        hipsparseAction_t       copyValues,
+                                        hipsparseIndexBase_t    idxBase)
     {
         return hipsparseZcsr2csc(handle,
                                  m,
                                  n,
                                  nnz,
-                                 csr_val,
-                                 csr_row_ptr,
-                                 csr_col_ind,
+                                 csrVal,
+                                 csrRowPtr,
+                                 csrColInd,
                                  csc_val,
-                                 csc_row_ind,
-                                 csc_col_ptr,
-                                 copy_values,
-                                 idx_base);
+                                 cscRowInd,
+                                 cscColPtr,
+                                 copyValues,
+                                 idxBase);
     }
 #endif
 
@@ -6551,9 +6551,9 @@ namespace hipsparse
                                         int                       m,
                                         int                       n,
                                         const hipsparseMatDescr_t descr,
-                                        const float*              csr_val,
-                                        const int*                csr_row_ptr,
-                                        const int*                csr_col_ind,
+                                        const float*              csrVal,
+                                        const int*                csrRowPtr,
+                                        const int*                csrColInd,
                                         hipsparseHybMat_t         hyb,
                                         int                       user_ell_width,
                                         hipsparseHybPartition_t   partition_type)
@@ -6562,9 +6562,9 @@ namespace hipsparse
                                  m,
                                  n,
                                  descr,
-                                 csr_val,
-                                 csr_row_ptr,
-                                 csr_col_ind,
+                                 csrVal,
+                                 csrRowPtr,
+                                 csrColInd,
                                  hyb,
                                  user_ell_width,
                                  partition_type);
@@ -6575,9 +6575,9 @@ namespace hipsparse
                                         int                       m,
                                         int                       n,
                                         const hipsparseMatDescr_t descr,
-                                        const double*             csr_val,
-                                        const int*                csr_row_ptr,
-                                        const int*                csr_col_ind,
+                                        const double*             csrVal,
+                                        const int*                csrRowPtr,
+                                        const int*                csrColInd,
                                         hipsparseHybMat_t         hyb,
                                         int                       user_ell_width,
                                         hipsparseHybPartition_t   partition_type)
@@ -6586,9 +6586,9 @@ namespace hipsparse
                                  m,
                                  n,
                                  descr,
-                                 csr_val,
-                                 csr_row_ptr,
-                                 csr_col_ind,
+                                 csrVal,
+                                 csrRowPtr,
+                                 csrColInd,
                                  hyb,
                                  user_ell_width,
                                  partition_type);
@@ -6599,9 +6599,9 @@ namespace hipsparse
                                         int                       m,
                                         int                       n,
                                         const hipsparseMatDescr_t descr,
-                                        const hipComplex*         csr_val,
-                                        const int*                csr_row_ptr,
-                                        const int*                csr_col_ind,
+                                        const hipComplex*         csrVal,
+                                        const int*                csrRowPtr,
+                                        const int*                csrColInd,
                                         hipsparseHybMat_t         hyb,
                                         int                       user_ell_width,
                                         hipsparseHybPartition_t   partition_type)
@@ -6610,9 +6610,9 @@ namespace hipsparse
                                  m,
                                  n,
                                  descr,
-                                 csr_val,
-                                 csr_row_ptr,
-                                 csr_col_ind,
+                                 csrVal,
+                                 csrRowPtr,
+                                 csrColInd,
                                  hyb,
                                  user_ell_width,
                                  partition_type);
@@ -6623,9 +6623,9 @@ namespace hipsparse
                                         int                       m,
                                         int                       n,
                                         const hipsparseMatDescr_t descr,
-                                        const hipDoubleComplex*   csr_val,
-                                        const int*                csr_row_ptr,
-                                        const int*                csr_col_ind,
+                                        const hipDoubleComplex*   csrVal,
+                                        const int*                csrRowPtr,
+                                        const int*                csrColInd,
                                         hipsparseHybMat_t         hyb,
                                         int                       user_ell_width,
                                         hipsparseHybPartition_t   partition_type)
@@ -6634,9 +6634,9 @@ namespace hipsparse
                                  m,
                                  n,
                                  descr,
-                                 csr_val,
-                                 csr_row_ptr,
-                                 csr_col_ind,
+                                 csrVal,
+                                 csrRowPtr,
+                                 csrColInd,
                                  hyb,
                                  user_ell_width,
                                  partition_type);
@@ -6648,23 +6648,23 @@ namespace hipsparse
                                                        int               mb,
                                                        int               nb,
                                                        int               nnzb,
-                                                       const float*      bsr_val,
-                                                       const int*        bsr_row_ptr,
-                                                       const int*        bsr_col_ind,
-                                                       int               row_block_dim,
-                                                       int               col_block_dim,
-                                                       size_t*           p_buffer_size)
+                                                       const float*      bsrVal,
+                                                       const int*        bsrRowPtr,
+                                                       const int*        bsrColInd,
+                                                       int               rowBlockDim,
+                                                       int               colBlockDim,
+                                                       size_t*           pbufferSize)
     {
         return hipsparseSgebsr2gebsc_bufferSize(handle,
                                                 mb,
                                                 nb,
                                                 nnzb,
-                                                bsr_val,
-                                                bsr_row_ptr,
-                                                bsr_col_ind,
-                                                row_block_dim,
-                                                col_block_dim,
-                                                p_buffer_size);
+                                                bsrVal,
+                                                bsrRowPtr,
+                                                bsrColInd,
+                                                rowBlockDim,
+                                                colBlockDim,
+                                                pbufferSize);
     }
 
     template <>
@@ -6672,23 +6672,23 @@ namespace hipsparse
                                                        int               mb,
                                                        int               nb,
                                                        int               nnzb,
-                                                       const double*     bsr_val,
-                                                       const int*        bsr_row_ptr,
-                                                       const int*        bsr_col_ind,
-                                                       int               row_block_dim,
-                                                       int               col_block_dim,
-                                                       size_t*           p_buffer_size)
+                                                       const double*     bsrVal,
+                                                       const int*        bsrRowPtr,
+                                                       const int*        bsrColInd,
+                                                       int               rowBlockDim,
+                                                       int               colBlockDim,
+                                                       size_t*           pbufferSize)
     {
         return hipsparseDgebsr2gebsc_bufferSize(handle,
                                                 mb,
                                                 nb,
                                                 nnzb,
-                                                bsr_val,
-                                                bsr_row_ptr,
-                                                bsr_col_ind,
-                                                row_block_dim,
-                                                col_block_dim,
-                                                p_buffer_size);
+                                                bsrVal,
+                                                bsrRowPtr,
+                                                bsrColInd,
+                                                rowBlockDim,
+                                                colBlockDim,
+                                                pbufferSize);
     }
 
     template <>
@@ -6696,23 +6696,23 @@ namespace hipsparse
                                                        int               mb,
                                                        int               nb,
                                                        int               nnzb,
-                                                       const hipComplex* bsr_val,
-                                                       const int*        bsr_row_ptr,
-                                                       const int*        bsr_col_ind,
-                                                       int               row_block_dim,
-                                                       int               col_block_dim,
-                                                       size_t*           p_buffer_size)
+                                                       const hipComplex* bsrVal,
+                                                       const int*        bsrRowPtr,
+                                                       const int*        bsrColInd,
+                                                       int               rowBlockDim,
+                                                       int               colBlockDim,
+                                                       size_t*           pbufferSize)
     {
         return hipsparseCgebsr2gebsc_bufferSize(handle,
                                                 mb,
                                                 nb,
                                                 nnzb,
-                                                bsr_val,
-                                                bsr_row_ptr,
-                                                bsr_col_ind,
-                                                row_block_dim,
-                                                col_block_dim,
-                                                p_buffer_size);
+                                                bsrVal,
+                                                bsrRowPtr,
+                                                bsrColInd,
+                                                rowBlockDim,
+                                                colBlockDim,
+                                                pbufferSize);
     }
 
     template <>
@@ -6720,23 +6720,23 @@ namespace hipsparse
                                                        int                     mb,
                                                        int                     nb,
                                                        int                     nnzb,
-                                                       const hipDoubleComplex* bsr_val,
-                                                       const int*              bsr_row_ptr,
-                                                       const int*              bsr_col_ind,
-                                                       int                     row_block_dim,
-                                                       int                     col_block_dim,
-                                                       size_t*                 p_buffer_size)
+                                                       const hipDoubleComplex* bsrVal,
+                                                       const int*              bsrRowPtr,
+                                                       const int*              bsrColInd,
+                                                       int                     rowBlockDim,
+                                                       int                     colBlockDim,
+                                                       size_t*                 pbufferSize)
     {
         return hipsparseZgebsr2gebsc_bufferSize(handle,
                                                 mb,
                                                 nb,
                                                 nnzb,
-                                                bsr_val,
-                                                bsr_row_ptr,
-                                                bsr_col_ind,
-                                                row_block_dim,
-                                                col_block_dim,
-                                                p_buffer_size);
+                                                bsrVal,
+                                                bsrRowPtr,
+                                                bsrColInd,
+                                                rowBlockDim,
+                                                colBlockDim,
+                                                pbufferSize);
     }
 
     template <>
@@ -6744,32 +6744,32 @@ namespace hipsparse
                                             int                  mb,
                                             int                  nb,
                                             int                  nnzb,
-                                            const float*         bsr_val,
-                                            const int*           bsr_row_ptr,
-                                            const int*           bsr_col_ind,
-                                            int                  row_block_dim,
-                                            int                  col_block_dim,
-                                            float*               bsc_val,
-                                            int*                 bsc_row_ind,
-                                            int*                 bsc_col_ptr,
-                                            hipsparseAction_t    copy_values,
-                                            hipsparseIndexBase_t idx_base,
+                                            const float*         bsrVal,
+                                            const int*           bsrRowPtr,
+                                            const int*           bsrColInd,
+                                            int                  rowBlockDim,
+                                            int                  colBlockDim,
+                                            float*               bscVal,
+                                            int*                 bscRowInd,
+                                            int*                 bscColPtr,
+                                            hipsparseAction_t    copyValues,
+                                            hipsparseIndexBase_t idxBase,
                                             void*                temp_buffer)
     {
         return hipsparseSgebsr2gebsc(handle,
                                      mb,
                                      nb,
                                      nnzb,
-                                     bsr_val,
-                                     bsr_row_ptr,
-                                     bsr_col_ind,
-                                     row_block_dim,
-                                     col_block_dim,
-                                     bsc_val,
-                                     bsc_row_ind,
-                                     bsc_col_ptr,
-                                     copy_values,
-                                     idx_base,
+                                     bsrVal,
+                                     bsrRowPtr,
+                                     bsrColInd,
+                                     rowBlockDim,
+                                     colBlockDim,
+                                     bscVal,
+                                     bscRowInd,
+                                     bscColPtr,
+                                     copyValues,
+                                     idxBase,
                                      temp_buffer);
     }
 
@@ -6778,32 +6778,32 @@ namespace hipsparse
                                             int                  mb,
                                             int                  nb,
                                             int                  nnzb,
-                                            const double*        bsr_val,
-                                            const int*           bsr_row_ptr,
-                                            const int*           bsr_col_ind,
-                                            int                  row_block_dim,
-                                            int                  col_block_dim,
-                                            double*              bsc_val,
-                                            int*                 bsc_row_ind,
-                                            int*                 bsc_col_ptr,
-                                            hipsparseAction_t    copy_values,
-                                            hipsparseIndexBase_t idx_base,
+                                            const double*        bsrVal,
+                                            const int*           bsrRowPtr,
+                                            const int*           bsrColInd,
+                                            int                  rowBlockDim,
+                                            int                  colBlockDim,
+                                            double*              bscVal,
+                                            int*                 bscRowInd,
+                                            int*                 bscColPtr,
+                                            hipsparseAction_t    copyValues,
+                                            hipsparseIndexBase_t idxBase,
                                             void*                temp_buffer)
     {
         return hipsparseDgebsr2gebsc(handle,
                                      mb,
                                      nb,
                                      nnzb,
-                                     bsr_val,
-                                     bsr_row_ptr,
-                                     bsr_col_ind,
-                                     row_block_dim,
-                                     col_block_dim,
-                                     bsc_val,
-                                     bsc_row_ind,
-                                     bsc_col_ptr,
-                                     copy_values,
-                                     idx_base,
+                                     bsrVal,
+                                     bsrRowPtr,
+                                     bsrColInd,
+                                     rowBlockDim,
+                                     colBlockDim,
+                                     bscVal,
+                                     bscRowInd,
+                                     bscColPtr,
+                                     copyValues,
+                                     idxBase,
                                      temp_buffer);
     }
 
@@ -6812,32 +6812,32 @@ namespace hipsparse
                                             int                  mb,
                                             int                  nb,
                                             int                  nnzb,
-                                            const hipComplex*    bsr_val,
-                                            const int*           bsr_row_ptr,
-                                            const int*           bsr_col_ind,
-                                            int                  row_block_dim,
-                                            int                  col_block_dim,
-                                            hipComplex*          bsc_val,
-                                            int*                 bsc_row_ind,
-                                            int*                 bsc_col_ptr,
-                                            hipsparseAction_t    copy_values,
-                                            hipsparseIndexBase_t idx_base,
+                                            const hipComplex*    bsrVal,
+                                            const int*           bsrRowPtr,
+                                            const int*           bsrColInd,
+                                            int                  rowBlockDim,
+                                            int                  colBlockDim,
+                                            hipComplex*          bscVal,
+                                            int*                 bscRowInd,
+                                            int*                 bscColPtr,
+                                            hipsparseAction_t    copyValues,
+                                            hipsparseIndexBase_t idxBase,
                                             void*                temp_buffer)
     {
         return hipsparseCgebsr2gebsc(handle,
                                      mb,
                                      nb,
                                      nnzb,
-                                     bsr_val,
-                                     bsr_row_ptr,
-                                     bsr_col_ind,
-                                     row_block_dim,
-                                     col_block_dim,
-                                     bsc_val,
-                                     bsc_row_ind,
-                                     bsc_col_ptr,
-                                     copy_values,
-                                     idx_base,
+                                     bsrVal,
+                                     bsrRowPtr,
+                                     bsrColInd,
+                                     rowBlockDim,
+                                     colBlockDim,
+                                     bscVal,
+                                     bscRowInd,
+                                     bscColPtr,
+                                     copyValues,
+                                     idxBase,
                                      temp_buffer);
     }
 
@@ -6846,32 +6846,32 @@ namespace hipsparse
                                             int                     mb,
                                             int                     nb,
                                             int                     nnzb,
-                                            const hipDoubleComplex* bsr_val,
-                                            const int*              bsr_row_ptr,
-                                            const int*              bsr_col_ind,
-                                            int                     row_block_dim,
-                                            int                     col_block_dim,
-                                            hipDoubleComplex*       bsc_val,
-                                            int*                    bsc_row_ind,
-                                            int*                    bsc_col_ptr,
-                                            hipsparseAction_t       copy_values,
-                                            hipsparseIndexBase_t    idx_base,
+                                            const hipDoubleComplex* bsrVal,
+                                            const int*              bsrRowPtr,
+                                            const int*              bsrColInd,
+                                            int                     rowBlockDim,
+                                            int                     colBlockDim,
+                                            hipDoubleComplex*       bscVal,
+                                            int*                    bscRowInd,
+                                            int*                    bscColPtr,
+                                            hipsparseAction_t       copyValues,
+                                            hipsparseIndexBase_t    idxBase,
                                             void*                   temp_buffer)
     {
         return hipsparseZgebsr2gebsc(handle,
                                      mb,
                                      nb,
                                      nnzb,
-                                     bsr_val,
-                                     bsr_row_ptr,
-                                     bsr_col_ind,
-                                     row_block_dim,
-                                     col_block_dim,
-                                     bsc_val,
-                                     bsc_row_ind,
-                                     bsc_col_ptr,
-                                     copy_values,
-                                     idx_base,
+                                     bsrVal,
+                                     bsrRowPtr,
+                                     bsrColInd,
+                                     rowBlockDim,
+                                     colBlockDim,
+                                     bscVal,
+                                     bscRowInd,
+                                     bscColPtr,
+                                     copyValues,
+                                     idxBase,
                                      temp_buffer);
     }
 
@@ -6881,24 +6881,24 @@ namespace hipsparse
                                                      int                       m,
                                                      int                       n,
                                                      const hipsparseMatDescr_t csr_descr,
-                                                     const hipDoubleComplex*   csr_val,
-                                                     const int*                csr_row_ptr,
-                                                     const int*                csr_col_ind,
-                                                     int                       row_block_dim,
-                                                     int                       col_block_dim,
-                                                     size_t*                   p_buffer_size)
+                                                     const hipDoubleComplex*   csrVal,
+                                                     const int*                csrRowPtr,
+                                                     const int*                csrColInd,
+                                                     int                       rowBlockDim,
+                                                     int                       colBlockDim,
+                                                     size_t*                   pbufferSize)
     {
         return hipsparseZcsr2gebsr_bufferSize(handle,
                                               dir,
                                               m,
                                               n,
                                               csr_descr,
-                                              csr_val,
-                                              csr_row_ptr,
-                                              csr_col_ind,
-                                              row_block_dim,
-                                              col_block_dim,
-                                              p_buffer_size);
+                                              csrVal,
+                                              csrRowPtr,
+                                              csrColInd,
+                                              rowBlockDim,
+                                              colBlockDim,
+                                              pbufferSize);
     }
 
     template <>
@@ -6907,24 +6907,24 @@ namespace hipsparse
                                                      int                       m,
                                                      int                       n,
                                                      const hipsparseMatDescr_t csr_descr,
-                                                     const float*              csr_val,
-                                                     const int*                csr_row_ptr,
-                                                     const int*                csr_col_ind,
-                                                     int                       row_block_dim,
-                                                     int                       col_block_dim,
-                                                     size_t*                   p_buffer_size)
+                                                     const float*              csrVal,
+                                                     const int*                csrRowPtr,
+                                                     const int*                csrColInd,
+                                                     int                       rowBlockDim,
+                                                     int                       colBlockDim,
+                                                     size_t*                   pbufferSize)
     {
         return hipsparseScsr2gebsr_bufferSize(handle,
                                               dir,
                                               m,
                                               n,
                                               csr_descr,
-                                              csr_val,
-                                              csr_row_ptr,
-                                              csr_col_ind,
-                                              row_block_dim,
-                                              col_block_dim,
-                                              p_buffer_size);
+                                              csrVal,
+                                              csrRowPtr,
+                                              csrColInd,
+                                              rowBlockDim,
+                                              colBlockDim,
+                                              pbufferSize);
     }
 
     template <>
@@ -6933,24 +6933,24 @@ namespace hipsparse
                                                      int                       m,
                                                      int                       n,
                                                      const hipsparseMatDescr_t csr_descr,
-                                                     const double*             csr_val,
-                                                     const int*                csr_row_ptr,
-                                                     const int*                csr_col_ind,
-                                                     int                       row_block_dim,
-                                                     int                       col_block_dim,
-                                                     size_t*                   p_buffer_size)
+                                                     const double*             csrVal,
+                                                     const int*                csrRowPtr,
+                                                     const int*                csrColInd,
+                                                     int                       rowBlockDim,
+                                                     int                       colBlockDim,
+                                                     size_t*                   pbufferSize)
     {
         return hipsparseDcsr2gebsr_bufferSize(handle,
                                               dir,
                                               m,
                                               n,
                                               csr_descr,
-                                              csr_val,
-                                              csr_row_ptr,
-                                              csr_col_ind,
-                                              row_block_dim,
-                                              col_block_dim,
-                                              p_buffer_size);
+                                              csrVal,
+                                              csrRowPtr,
+                                              csrColInd,
+                                              rowBlockDim,
+                                              colBlockDim,
+                                              pbufferSize);
     }
 
     template <>
@@ -6959,24 +6959,24 @@ namespace hipsparse
                                                      int                       m,
                                                      int                       n,
                                                      const hipsparseMatDescr_t csr_descr,
-                                                     const hipComplex*         csr_val,
-                                                     const int*                csr_row_ptr,
-                                                     const int*                csr_col_ind,
-                                                     int                       row_block_dim,
-                                                     int                       col_block_dim,
-                                                     size_t*                   p_buffer_size)
+                                                     const hipComplex*         csrVal,
+                                                     const int*                csrRowPtr,
+                                                     const int*                csrColInd,
+                                                     int                       rowBlockDim,
+                                                     int                       colBlockDim,
+                                                     size_t*                   pbufferSize)
     {
         return hipsparseCcsr2gebsr_bufferSize(handle,
                                               dir,
                                               m,
                                               n,
                                               csr_descr,
-                                              csr_val,
-                                              csr_row_ptr,
-                                              csr_col_ind,
-                                              row_block_dim,
-                                              col_block_dim,
-                                              p_buffer_size);
+                                              csrVal,
+                                              csrRowPtr,
+                                              csrColInd,
+                                              rowBlockDim,
+                                              colBlockDim,
+                                              pbufferSize);
     }
 
     template <>
@@ -6985,32 +6985,32 @@ namespace hipsparse
                                           int                       m,
                                           int                       n,
                                           const hipsparseMatDescr_t csr_descr,
-                                          const float*              csr_val,
-                                          const int*                csr_row_ptr,
-                                          const int*                csr_col_ind,
+                                          const float*              csrVal,
+                                          const int*                csrRowPtr,
+                                          const int*                csrColInd,
                                           const hipsparseMatDescr_t bsr_descr,
-                                          float*                    bsr_val,
-                                          int*                      bsr_row_ptr,
-                                          int*                      bsr_col_ind,
-                                          int                       row_block_dim,
-                                          int                       col_block_dim,
-                                          void*                     p_buffer)
+                                          float*                    bsrVal,
+                                          int*                      bsrRowPtr,
+                                          int*                      bsrColInd,
+                                          int                       rowBlockDim,
+                                          int                       colBlockDim,
+                                          void*                     pbuffer)
     {
         return hipsparseScsr2gebsr(handle,
                                    dir,
                                    m,
                                    n,
                                    csr_descr,
-                                   csr_val,
-                                   csr_row_ptr,
-                                   csr_col_ind,
+                                   csrVal,
+                                   csrRowPtr,
+                                   csrColInd,
                                    bsr_descr,
-                                   bsr_val,
-                                   bsr_row_ptr,
-                                   bsr_col_ind,
-                                   row_block_dim,
-                                   col_block_dim,
-                                   p_buffer);
+                                   bsrVal,
+                                   bsrRowPtr,
+                                   bsrColInd,
+                                   rowBlockDim,
+                                   colBlockDim,
+                                   pbuffer);
     }
 
     template <>
@@ -7019,32 +7019,32 @@ namespace hipsparse
                                           int                       m,
                                           int                       n,
                                           const hipsparseMatDescr_t csr_descr,
-                                          const double*             csr_val,
-                                          const int*                csr_row_ptr,
-                                          const int*                csr_col_ind,
+                                          const double*             csrVal,
+                                          const int*                csrRowPtr,
+                                          const int*                csrColInd,
                                           const hipsparseMatDescr_t bsr_descr,
-                                          double*                   bsr_val,
-                                          int*                      bsr_row_ptr,
-                                          int*                      bsr_col_ind,
-                                          int                       row_block_dim,
-                                          int                       col_block_dim,
-                                          void*                     p_buffer)
+                                          double*                   bsrVal,
+                                          int*                      bsrRowPtr,
+                                          int*                      bsrColInd,
+                                          int                       rowBlockDim,
+                                          int                       colBlockDim,
+                                          void*                     pbuffer)
     {
         return hipsparseDcsr2gebsr(handle,
                                    dir,
                                    m,
                                    n,
                                    csr_descr,
-                                   csr_val,
-                                   csr_row_ptr,
-                                   csr_col_ind,
+                                   csrVal,
+                                   csrRowPtr,
+                                   csrColInd,
                                    bsr_descr,
-                                   bsr_val,
-                                   bsr_row_ptr,
-                                   bsr_col_ind,
-                                   row_block_dim,
-                                   col_block_dim,
-                                   p_buffer);
+                                   bsrVal,
+                                   bsrRowPtr,
+                                   bsrColInd,
+                                   rowBlockDim,
+                                   colBlockDim,
+                                   pbuffer);
     }
 
     template <>
@@ -7053,32 +7053,32 @@ namespace hipsparse
                                           int                       m,
                                           int                       n,
                                           const hipsparseMatDescr_t csr_descr,
-                                          const hipComplex*         csr_val,
-                                          const int*                csr_row_ptr,
-                                          const int*                csr_col_ind,
+                                          const hipComplex*         csrVal,
+                                          const int*                csrRowPtr,
+                                          const int*                csrColInd,
                                           const hipsparseMatDescr_t bsr_descr,
-                                          hipComplex*               bsr_val,
-                                          int*                      bsr_row_ptr,
-                                          int*                      bsr_col_ind,
-                                          int                       row_block_dim,
-                                          int                       col_block_dim,
-                                          void*                     p_buffer)
+                                          hipComplex*               bsrVal,
+                                          int*                      bsrRowPtr,
+                                          int*                      bsrColInd,
+                                          int                       rowBlockDim,
+                                          int                       colBlockDim,
+                                          void*                     pbuffer)
     {
         return hipsparseCcsr2gebsr(handle,
                                    dir,
                                    m,
                                    n,
                                    csr_descr,
-                                   csr_val,
-                                   csr_row_ptr,
-                                   csr_col_ind,
+                                   csrVal,
+                                   csrRowPtr,
+                                   csrColInd,
                                    bsr_descr,
-                                   bsr_val,
-                                   bsr_row_ptr,
-                                   bsr_col_ind,
-                                   row_block_dim,
-                                   col_block_dim,
-                                   p_buffer);
+                                   bsrVal,
+                                   bsrRowPtr,
+                                   bsrColInd,
+                                   rowBlockDim,
+                                   colBlockDim,
+                                   pbuffer);
     }
 
     template <>
@@ -7087,32 +7087,32 @@ namespace hipsparse
                                           int                       m,
                                           int                       n,
                                           const hipsparseMatDescr_t csr_descr,
-                                          const hipDoubleComplex*   csr_val,
-                                          const int*                csr_row_ptr,
-                                          const int*                csr_col_ind,
+                                          const hipDoubleComplex*   csrVal,
+                                          const int*                csrRowPtr,
+                                          const int*                csrColInd,
                                           const hipsparseMatDescr_t bsr_descr,
-                                          hipDoubleComplex*         bsr_val,
-                                          int*                      bsr_row_ptr,
-                                          int*                      bsr_col_ind,
-                                          int                       row_block_dim,
-                                          int                       col_block_dim,
-                                          void*                     p_buffer)
+                                          hipDoubleComplex*         bsrVal,
+                                          int*                      bsrRowPtr,
+                                          int*                      bsrColInd,
+                                          int                       rowBlockDim,
+                                          int                       colBlockDim,
+                                          void*                     pbuffer)
     {
         return hipsparseZcsr2gebsr(handle,
                                    dir,
                                    m,
                                    n,
                                    csr_descr,
-                                   csr_val,
-                                   csr_row_ptr,
-                                   csr_col_ind,
+                                   csrVal,
+                                   csrRowPtr,
+                                   csrColInd,
                                    bsr_descr,
-                                   bsr_val,
-                                   bsr_row_ptr,
-                                   bsr_col_ind,
-                                   row_block_dim,
-                                   col_block_dim,
-                                   p_buffer);
+                                   bsrVal,
+                                   bsrRowPtr,
+                                   bsrColInd,
+                                   rowBlockDim,
+                                   colBlockDim,
+                                   pbuffer);
     }
 
     template <>
