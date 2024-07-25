@@ -26,6 +26,7 @@ set(HIPSPARSE_CLIENTS_COMMON ../common/utility.cpp)
 # Function to add hipsparse examples
 function(add_hipsparse_example EXAMPLE_SOURCE)
   get_filename_component(EXAMPLE_TARGET ${EXAMPLE_SOURCE} NAME_WE)
+  list(TRANSFORM EXAMPLE_TARGET PREPEND "hipsparse-")
   add_executable(${EXAMPLE_TARGET} ${EXAMPLE_SOURCE} ${HIPSPARSE_CLIENTS_COMMON})
 
   get_filename_component(EXAMPLE_EXTENSION ${EXAMPLE_SOURCE} LAST_EXT)
@@ -49,34 +50,34 @@ function(add_hipsparse_example EXAMPLE_SOURCE)
   endif()
 
   set_target_properties(${EXAMPLE_TARGET} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/staging")
+
+  rocm_install(TARGETS ${EXAMPLE_TARGET} COMPONENT samples)
 endfunction()
 
 # Examples
 add_hipsparse_example(example_handle.cpp)
 
 if(NOT USE_CUDA OR (USE_CUDA AND CUDA_VERSION LESS 11))
-add_hipsparse_example(example_csrmv.cpp)
-add_hipsparse_example(example_hybmv.cpp)
+  add_hipsparse_example(example_csrmv.cpp)
+  add_hipsparse_example(example_hybmv.cpp)
 endif()
 
 if (NOT WIN32)
-# Fortran examples
-if(TARGET hipsparse AND NOT USE_CUDA)
-  # Compile Fortran examples only if built directly with package
-  # else the Fortran module file is not generated
-  
-  
-  add_hipsparse_example(example_fortran_auxiliary.f90)
-  add_hipsparse_example(example_fortran_csrsv2.f90)
-  add_hipsparse_example(example_fortran_bsric02.f90)
-  add_hipsparse_example(example_fortran_csric02.f90)
-  add_hipsparse_example(example_fortran_bsrilu02.f90)
-  add_hipsparse_example(example_fortran_csrilu02.f90)
-  add_hipsparse_example(example_fortran_csrsm2.f90)
-  add_hipsparse_example(example_fortran_dotci.f90)
-  add_hipsparse_example(example_fortran_roti.f90)
-  add_hipsparse_example(example_fortran_spmv.f90)
-  add_hipsparse_example(example_fortran_bsrmm.f90)
-  
-endif()
+  # Fortran examples
+  if(TARGET hipsparse AND NOT USE_CUDA)
+    # Compile Fortran examples only if built directly with package
+    # else the Fortran module file is not generated
+
+    add_hipsparse_example(example_fortran_auxiliary.f90)
+    add_hipsparse_example(example_fortran_csrsv2.f90)
+    add_hipsparse_example(example_fortran_bsric02.f90)
+    add_hipsparse_example(example_fortran_csric02.f90)
+    add_hipsparse_example(example_fortran_bsrilu02.f90)
+    add_hipsparse_example(example_fortran_csrilu02.f90)
+    add_hipsparse_example(example_fortran_csrsm2.f90)
+    add_hipsparse_example(example_fortran_dotci.f90)
+    add_hipsparse_example(example_fortran_roti.f90)
+    add_hipsparse_example(example_fortran_spmv.f90)
+    add_hipsparse_example(example_fortran_bsrmm.f90)
+  endif()
 endif()
