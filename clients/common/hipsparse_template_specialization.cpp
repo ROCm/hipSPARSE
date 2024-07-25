@@ -6558,16 +6558,8 @@ namespace hipsparse
                                         int                       user_ell_width,
                                         hipsparseHybPartition_t   partition_type)
     {
-        return hipsparseScsr2hyb(handle,
-                                 m,
-                                 n,
-                                 descr,
-                                 csrVal,
-                                 csrRowPtr,
-                                 csrColInd,
-                                 hyb,
-                                 user_ell_width,
-                                 partition_type);
+        return hipsparseScsr2hyb(
+            handle, m, n, descr, csrVal, csrRowPtr, csrColInd, hyb, user_ell_width, partition_type);
     }
 
     template <>
@@ -6582,16 +6574,8 @@ namespace hipsparse
                                         int                       user_ell_width,
                                         hipsparseHybPartition_t   partition_type)
     {
-        return hipsparseDcsr2hyb(handle,
-                                 m,
-                                 n,
-                                 descr,
-                                 csrVal,
-                                 csrRowPtr,
-                                 csrColInd,
-                                 hyb,
-                                 user_ell_width,
-                                 partition_type);
+        return hipsparseDcsr2hyb(
+            handle, m, n, descr, csrVal, csrRowPtr, csrColInd, hyb, user_ell_width, partition_type);
     }
 
     template <>
@@ -6606,16 +6590,8 @@ namespace hipsparse
                                         int                       user_ell_width,
                                         hipsparseHybPartition_t   partition_type)
     {
-        return hipsparseCcsr2hyb(handle,
-                                 m,
-                                 n,
-                                 descr,
-                                 csrVal,
-                                 csrRowPtr,
-                                 csrColInd,
-                                 hyb,
-                                 user_ell_width,
-                                 partition_type);
+        return hipsparseCcsr2hyb(
+            handle, m, n, descr, csrVal, csrRowPtr, csrColInd, hyb, user_ell_width, partition_type);
     }
 
     template <>
@@ -6630,16 +6606,8 @@ namespace hipsparse
                                         int                       user_ell_width,
                                         hipsparseHybPartition_t   partition_type)
     {
-        return hipsparseZcsr2hyb(handle,
-                                 m,
-                                 n,
-                                 descr,
-                                 csrVal,
-                                 csrRowPtr,
-                                 csrColInd,
-                                 hyb,
-                                 user_ell_width,
-                                 partition_type);
+        return hipsparseZcsr2hyb(
+            handle, m, n, descr, csrVal, csrRowPtr, csrColInd, hyb, user_ell_width, partition_type);
     }
 #endif
 
