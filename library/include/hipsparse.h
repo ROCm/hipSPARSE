@@ -8535,7 +8535,7 @@ hipsparseStatus_t hipsparseSpruneDense2csr_bufferSizeExt(hipsparseHandle_t      
                                                          const float*              csrVal,
                                                          const int*                csrRowPtr,
                                                          const int*                csrColInd,
-                                                         size_t*                   pBufferSizeInBytes);
+                                                         size_t* pBufferSizeInBytes);
 
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
@@ -8549,7 +8549,7 @@ hipsparseStatus_t hipsparseDpruneDense2csr_bufferSizeExt(hipsparseHandle_t      
                                                          const double*             csrVal,
                                                          const int*                csrRowPtr,
                                                          const int*                csrColInd,
-                                                         size_t*                   pBufferSizeInBytes);
+                                                         size_t* pBufferSizeInBytes);
 /**@}*/
 #endif
 
@@ -8893,7 +8893,7 @@ hipsparseStatus_t
                                                        const int*                csrRowPtr,
                                                        const int*                csrColInd,
                                                        pruneInfo_t               info,
-                                                       size_t*                   pBufferSizeInBytes);
+                                                       size_t* pBufferSizeInBytes);
 
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
@@ -8909,7 +8909,7 @@ hipsparseStatus_t
                                                        const int*                csrRowPtr,
                                                        const int*                csrColInd,
                                                        pruneInfo_t               info,
-                                                       size_t*                   pBufferSizeInBytes);
+                                                       size_t* pBufferSizeInBytes);
 /**@}*/
 #endif
 
@@ -11761,7 +11761,7 @@ hipsparseStatus_t hipsparseSpruneCsr2csr_bufferSizeExt(hipsparseHandle_t        
                                                        const float*              csrValC,
                                                        const int*                csrRowPtrC,
                                                        const int*                csrColIndC,
-                                                       size_t*                   pBufferSizeInBytes);
+                                                       size_t* pBufferSizeInBytes);
 
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
@@ -11778,7 +11778,7 @@ hipsparseStatus_t hipsparseDpruneCsr2csr_bufferSizeExt(hipsparseHandle_t        
                                                        const double*             csrValC,
                                                        const int*                csrRowPtrC,
                                                        const int*                csrColIndC,
-                                                       size_t*                   pBufferSizeInBytes);
+                                                       size_t* pBufferSizeInBytes);
 /**@}*/
 #endif
 
@@ -11971,7 +11971,7 @@ hipsparseStatus_t hipsparseDpruneCsr2csrByPercentage_bufferSizeExt(hipsparseHand
                                                                    const int*    csrRowPtrC,
                                                                    const int*    csrColIndC,
                                                                    pruneInfo_t   info,
-                                                                   size_t*       pBufferSizeInBytes);
+                                                                   size_t* pBufferSizeInBytes);
 /**@}*/
 #endif
 

@@ -7294,7 +7294,7 @@ hipsparseStatus_t hipsparseSpruneDense2csr_bufferSizeExt(hipsparseHandle_t      
                                                          const float*              csrVal,
                                                          const int*                csrRowPtr,
                                                          const int*                csrColInd,
-                                                         size_t*                   pBufferSizeInBytes)
+                                                         size_t* pBufferSizeInBytes)
 {
     return hipsparse::hipCUSPARSEStatusToHIPStatus(
         cusparseSpruneDense2csr_bufferSizeExt((cusparseHandle_t)handle,
@@ -7320,7 +7320,7 @@ hipsparseStatus_t hipsparseDpruneDense2csr_bufferSizeExt(hipsparseHandle_t      
                                                          const double*             csrVal,
                                                          const int*                csrRowPtr,
                                                          const int*                csrColInd,
-                                                         size_t*                   pBufferSizeInBytes)
+                                                         size_t* pBufferSizeInBytes)
 {
     return hipsparse::hipCUSPARSEStatusToHIPStatus(
         cusparseDpruneDense2csr_bufferSizeExt((cusparseHandle_t)handle,

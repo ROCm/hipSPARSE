@@ -10926,7 +10926,7 @@ hipsparseStatus_t hipsparseSpruneDense2csr_bufferSizeExt(hipsparseHandle_t      
                                                          const float*              csrVal,
                                                          const int*                csrRowPtr,
                                                          const int*                csrColInd,
-                                                         size_t*                   pBufferSizeInBytes)
+                                                         size_t* pBufferSizeInBytes)
 {
     RETURN_IF_ROCSPARSE_ERROR(
         rocsparse_sprune_dense2csr_buffer_size((rocsparse_handle)handle,
@@ -10954,7 +10954,7 @@ hipsparseStatus_t hipsparseDpruneDense2csr_bufferSizeExt(hipsparseHandle_t      
                                                          const double*             csrVal,
                                                          const int*                csrRowPtr,
                                                          const int*                csrColInd,
-                                                         size_t*                   pBufferSizeInBytes)
+                                                         size_t* pBufferSizeInBytes)
 {
     RETURN_IF_ROCSPARSE_ERROR(
         rocsparse_dprune_dense2csr_buffer_size((rocsparse_handle)handle,
