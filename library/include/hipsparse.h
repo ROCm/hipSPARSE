@@ -5213,8 +5213,14 @@ hipsparseStatus_t hipsparseZgemmi(hipsparseHandle_t       handle,
 *  \p hipsparseXcsrgeamNnz computes the total CSR non-zero elements and the CSR row
 *  offsets, that point to the start of every row of the sparse CSR matrix, of the
 *  resulting matrix C. It is assumed that \p csrRowPtrC has been allocated with
-*  size \p m + 1.
+*  size \p m+1. The desired index base in the output CSR matrix is set in the 
+*  hipsparseMatDescr_t. See hipsparseSetMatIndexBase().
 *
+*  For full code example, see hipsparseScsrgeam().
+*
+*  \note
+*  As indicated, nnzTotalDevHostPtr can point either to host or device memory. This is controlled 
+*  by setting the pointer mode. See hipsparseSetPointerMode().
 *  \note
 *  This function is non blocking and executed asynchronously with respect to the host.
 *  It may return before the actual computation has finished.
@@ -5251,10 +5257,12 @@ hipsparseStatus_t hipsparseXcsrgeamNnz(hipsparseHandle_t         handle,
 *    C := \alpha \cdot A + \beta \cdot B.
 *  \f]
 *
-*  It is assumed that \p csrRowPtrC has already been filled and that \p csrValC and
-*  \p csrColIndC are allocated by the user. \p csrRowPtrC and allocation size of
-*  \p csrColIndC and \p csrValC is defined by the number of non-zero elements of
-*  the sparse CSR matrix C. Both can be obtained by hipsparseXcsrgeamNnz().
+*  This computation involves a multi step process. First the user must allocate \p csrRowPtrC
+*  to have size \p m+1. The user then calls \p hipsparseXcsrgeamNnz which fills in the \p csrRowPtrC
+*  array as well as computes the total number of nonzeros in C, \p nnzC. The user then allocates both 
+*  arrays \p csrColIndC and \p csrValC to have size \p nnzC and calls \p hipsparseXcsrgeam to complete 
+*  the computation. The desired index base in the output CSR matrix C is set in the 
+*  hipsparseMatDescr_t \p descrC. See hipsparseSetMatIndexBase().
 *
 *  \note Both scalars \f$\alpha\f$ and \f$beta\f$ have to be valid.
 *  \note Currently, only \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
@@ -5477,7 +5485,7 @@ hipsparseStatus_t hipsparseZcsrgeam(hipsparseHandle_t         handle,
 *  \details
 *  \p hipsparseXcsrgeam2_bufferSizeExt returns the size of the temporary storage buffer
 *  in bytes that is required by hipsparseXcsrgeam2Nnz() and hipsparseXcsrgeam2(). The 
-*  temporary storage buffer must be allocated by the user.
+*  temporary storage buffer must be allocated by the user. 
 *
 *  \note
 *  Currently, only \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
@@ -5579,8 +5587,13 @@ hipsparseStatus_t hipsparseZcsrgeam2_bufferSizeExt(hipsparseHandle_t         han
 *  \p hipsparseXcsrgeam2Nnz computes the total CSR non-zero elements and the CSR row
 *  offsets, that point to the start of every row of the sparse CSR matrix, of the
 *  resulting matrix C. It is assumed that \p csrRowPtrC has been allocated with
-*  size \p m + 1.
+*  size \p m+1. The required buffer size can be obtained by hipsparseXcsrgeam2_bufferSizeExt(). 
+*  The desired index base in the output CSR matrix C is set in the hipsparseMatDescr_t 
+*  \p descrC. See hipsparseSetMatIndexBase().
 *
+*  \note
+*  As indicated, nnzTotalDevHostPtr can point either to host or device memory. This is controlled 
+*  by setting the pointer mode. See hipsparseSetPointerMode().
 *  \note
 *  This function is non blocking and executed asynchronously with respect to the host.
 *  It may return before the actual computation has finished.
@@ -5617,10 +5630,14 @@ hipsparseStatus_t hipsparseXcsrgeam2Nnz(hipsparseHandle_t         handle,
 *    C := \alpha \cdot A + \beta \cdot B.
 *  \f]
 *
-*  It is assumed that \p csrRowPtrC has already been filled and that \p csrValC and
-*  \p csrColIndC are allocated by the user. \p csrRowPtrC and allocation size of
-*  \p csrColIndC and \p csrValC is defined by the number of non-zero elements of
-*  the sparse CSR matrix C. Both can be obtained by hipsparseXcsrgeam2Nnz().
+*  This computation involves a multi step process. First the user must call 
+*  \p hipsparseZcsrgeam2_bufferSizeExt in order to determine the required user allocated 
+*  temporary buffer size. The user then allocates this buffer and also allocates \p csrRowPtrC
+*  to have size \p m+1. Both the temporary storage buffer and \p csrRowPtrC array are then passed to 
+*  \p hipsparseXcsrgeam2Nnz which fills in the \p csrRowPtrC array as well as computes the total number
+*  of nonzeros in C, \p nnzC. The user then allocates both arrays \p csrColIndC and \p csrValC to have 
+*  size \p nnzC and calls \p hipsparseXcsrgeam2 to complete the computation. The desired index base in 
+*  the output CSR matrix C is set in the hipsparseMatDescr_t \p descrC. See hipsparseSetMatIndexBase().
 *
 *  \note Both scalars \f$\alpha\f$ and \f$beta\f$ have to be valid.
 *  \note Currently, only \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
@@ -5876,8 +5893,12 @@ hipsparseStatus_t hipsparseZcsrgeam2(hipsparseHandle_t         handle,
 *  \p hipsparseXcsrgemmNnz computes the total CSR non-zero elements and the CSR row
 *  offsets, that point to the start of every row of the sparse CSR matrix, of the
 *  resulting multiplied matrix C. It is assumed that \p csrRowPtrC has been allocated
-*  with size \p m + 1.
+*  with size \p m+1. The desired index base in the output CSR matrix C is set in the 
+*  hipsparseMatDescr_t \p descrC. See hipsparseSetMatIndexBase().
 *
+*  \note
+*  As indicated, nnzTotalDevHostPtr can point either to host or device memory. This is controlled 
+*  by setting the pointer mode. See hipsparseSetPointerMode().
 *  \note
 *  This function is non blocking and executed asynchronously with respect to the host.
 *  It may return before the actual computation has finished.
@@ -5919,8 +5940,8 @@ hipsparseStatus_t hipsparseXcsrgemmNnz(hipsparseHandle_t         handle,
 *  \brief Sparse matrix sparse matrix multiplication using CSR storage format
 *
 *  \details
-*  \p hipsparseXcsrgemm multiplies the sparse \f$m \times k\f$ matrix \f$A\f$, defined in
-*  CSR storage format with the sparse \f$k \times n\f$ matrix \f$B\f$, defined in CSR
+*  \p hipsparseXcsrgemm multiplies the sparse \f$m \times k\f$ matrix \f$op(A)\f$, defined in
+*  CSR storage format with the sparse \f$k \times n\f$ matrix \f$op(B)\f$, defined in CSR
 *  storage format, and stores the result in the sparse \f$m \times n\f$ matrix \f$C\f$,
 *  defined in CSR storage format, such that
 *  \f[
@@ -5947,10 +5968,12 @@ hipsparseStatus_t hipsparseXcsrgemmNnz(hipsparseHandle_t         handle,
 *    \right.
 *  \f]
 *
-*  It is assumed that \p csrRowPtrC has already been filled and that \p csrValC and
-*  \p csrColIndC are allocated by the user. \p csrRowPtrC and allocation size of
-*  \p csrColIndC and \p csrValC is defined by the number of non-zero elements of
-*  the sparse CSR matrix C. Both can be obtained by hipsparseXcsrgemmNnz().
+*  This computation involves a multi step process. First the user must allocate \p csrRowPtrC
+*  to have size \p m+1. The user then calls \p hipsparseXcsrgemmNnz which fills in the \p csrRowPtrC
+*  array as well as computes the total number of nonzeros in C, \p nnzC. The user then allocates both 
+*  arrays \p csrColIndC and \p csrValC to have size \p nnzC and calls \p hipsparseXcsrgemm to complete 
+*  the computation. The desired index base in the output CSR matrix C is set in the 
+*  hipsparseMatDescr_t \p descrC. See hipsparseSetMatIndexBase().
 *
 *  \note Currently, only \p transA == \ref HIPSPARSE_OPERATION_NON_TRANSPOSE is supported.
 *  \note Currently, only \p transB == \ref HIPSPARSE_OPERATION_NON_TRANSPOSE is supported.
@@ -6298,8 +6321,13 @@ hipsparseStatus_t hipsparseZcsrgemm2_bufferSizeExt(hipsparseHandle_t         han
 *  \p hipsparseXcsrgemm2Nnz computes the total CSR non-zero elements and the CSR row
 *  offsets, that point to the start of every row of the sparse CSR matrix, of the
 *  resulting multiplied matrix C. It is assumed that \p csrRowPtrC has been allocated
-*  with size \p m + 1.
-*  The required buffer size can be obtained by hipsparseXcsrgemm2_bufferSizeExt().
+*  with size \p m+1. The required buffer size can be obtained by hipsparseXcsrgemm2_bufferSizeExt(). 
+*  The desired index base in the output CSR matrix C is set in the hipsparseMatDescr_t 
+*  \p descrC. See hipsparseSetMatIndexBase().
+*
+*  \note
+*  As indicated, nnzTotalDevHostPtr can point either to host or device memory. This is controlled 
+*  by setting the pointer mode. See hipsparseSetPointerMode().
 *
 *  \note
 *  This function is non blocking and executed asynchronously with respect to the host.
@@ -6353,12 +6381,14 @@ hipsparseStatus_t hipsparseXcsrgemm2Nnz(hipsparseHandle_t         handle,
 *    C := \alpha \cdot A \cdot B + \beta \cdot D
 *  \f]
 *
-*  It is assumed that \p csrRowPtrC has already been filled and that \p csrValC and
-*  \p csrColIndC are allocated by the user. \p csrRowPtrC and allocation size of
-*  \p csrColIndC and \p csrValC is defined by the number of non-zero elements of
-*  the sparse CSR matrix C. Both can be obtained by hipsparseXcsrgemm2Nnz(). The
-*  required buffer size for the computation can be obtained by
-*  hipsparseXcsrgemm2_bufferSizeExt().
+*  This computation involves a multi step process. First the user must call \p 
+*  \p hipsparseZcsrgemm2_bufferSizeExt in order to determine the required user allocated 
+*  temporary buffer size. The user then allocates this buffer and also allocates \p csrRowPtrC
+*  to have size \p m+1. Both the temporary storage buffer and \p csrRowPtrC array are then passed to 
+*  \p hipsparseXcsrgemm2Nnz which fills in the \p csrRowPtrC array as well as computes the total number
+*  of nonzeros in C, \p nnzC. The user then allocates both arrays \p csrColIndC and \p csrValC to have 
+*  size \p nnzC and calls \p hipsparseXcsrgemm2 to complete the computation. The desired index base in 
+*  the output CSR matrix C is set in the hipsparseMatDescr_t \p descrC. See hipsparseSetMatIndexBase().
 *
 *  \note If \f$\alpha == 0\f$, then \f$C = \beta \cdot D\f$ will be computed.
 *  \note If \f$\beta == 0\f$, then \f$C = \alpha \cdot A \cdot B\f$ will be computed.
@@ -6368,6 +6398,201 @@ hipsparseStatus_t hipsparseXcsrgemm2Nnz(hipsparseHandle_t         handle,
 *        host. It may return before the actual computation has finished.
 *  \note Please note, that for matrix products with more than 4096 non-zero entries per
 *  row, additional temporary storage buffer is allocated by the algorithm.
+*
+*  \par Example
+*  \code{.c}
+*    int m = 4;
+*    int k = 3;
+*    int n = 2;
+*    int nnzA = 7;
+*    int nnzB = 3;
+*    int nnzD = 6;
+*
+*    float alpha{1.0f};
+*    float beta{1.0f};
+*
+*    // A, B, and C are mxk, kxn, and m×n
+*
+*    // A
+*    // 1 0 0
+*    // 3 4 0
+*    // 5 6 7
+*    // 0 0 9
+*    std::vector<int> hcsrRowPtrA = {0, 1, 3, 6, 7};
+*    std::vector<int> hcsrColIndA = {0, 0, 1, 0, 1, 2, 2};
+*    std::vector<float> hcsrValA = {1.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 9.0f};
+*
+*    // B
+*    // 0 1
+*    // 1 0
+*    // 0 1
+*    std::vector<int> hcsrRowPtrB = {0, 1, 2, 3};
+*    std::vector<int> hcsrColIndB = {1, 0, 1};
+*    std::vector<float> hcsrValB = {1.0f, 1.0f, 1.0f};
+*
+*    // D
+*    // 0 1
+*    // 2 3
+*    // 4 5
+*    // 0 6
+*    std::vector<int> hcsrRowPtrD = {0, 1, 3, 5, 6};
+*    std::vector<int> hcsrColIndD = {1, 0, 1, 0, 1, 1};
+*    std::vector<float> hcsrValD = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f};
+*
+*    // Device memory management: Allocate and copy A, B
+*    int* dcsrRowPtrA;
+*    int* dcsrColIndA;
+*    float* dcsrValA;
+*    int* dcsrRowPtrB;
+*    int* dcsrColIndB;
+*    float* dcsrValB;
+*    int* dcsrRowPtrD;
+*    int* dcsrColIndD;
+*    float* dcsrValD;
+*    int* dcsrRowPtrC;
+*    hipMalloc((void**)&dcsrRowPtrA, (m + 1) * sizeof(int));
+*    hipMalloc((void**)&dcsrColIndA, nnzA * sizeof(int));
+*    hipMalloc((void**)&dcsrValA, nnzA * sizeof(float));
+*    hipMalloc((void**)&dcsrRowPtrB, (k + 1) * sizeof(int));
+*    hipMalloc((void**)&dcsrColIndB, nnzB * sizeof(int));
+*    hipMalloc((void**)&dcsrValB, nnzB * sizeof(float));
+*    hipMalloc((void**)&dcsrRowPtrD, (m + 1) * sizeof(int));
+*    hipMalloc((void**)&dcsrColIndD, nnzD * sizeof(int));
+*    hipMalloc((void**)&dcsrValD, nnzD * sizeof(float));
+*    hipMalloc((void**)&dcsrRowPtrC, (m + 1) * sizeof(int));
+*
+*    hipMemcpy(dcsrRowPtrA, hcsrRowPtrA.data(), (m + 1) * sizeof(int), hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrColIndA, hcsrColIndA.data(), nnzA * sizeof(int), hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrValA, hcsrValA.data(), nnzA * sizeof(float), hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrRowPtrB, hcsrRowPtrB.data(), (k + 1) * sizeof(int), hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrColIndB, hcsrColIndB.data(), nnzB * sizeof(int), hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrValB, hcsrValB.data(), nnzB * sizeof(float), hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrRowPtrD, hcsrRowPtrD.data(), (m + 1) * sizeof(int), hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrColIndD, hcsrColIndD.data(), nnzD * sizeof(int), hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrValD, hcsrValD.data(), nnzD * sizeof(float), hipMemcpyHostToDevice);
+*
+*    hipsparseHandle_t handle;
+*    hipsparseCreate(&handle);
+*
+*    hipsparseMatDescr_t descrA;
+*    hipsparseCreateMatDescr(&descrA);
+*
+*    hipsparseMatDescr_t descrB;
+*    hipsparseCreateMatDescr(&descrB);
+*
+*    hipsparseMatDescr_t descrC;
+*    hipsparseCreateMatDescr(&descrC);
+*
+*    hipsparseMatDescr_t descrD;
+*    hipsparseCreateMatDescr(&descrD);
+*
+*    csrgemm2Info_t info;
+*    hipsparseCreateCsrgemm2Info(&info);
+*
+*    size_t bufferSize;
+*    hipsparseScsrgemm2_bufferSizeExt(handle,
+*                                     m,
+*                                     n,
+*                                     k,
+*                                     &alpha,
+*                                     descrA,
+*                                     nnzA,
+*                                     dcsrRowPtrA,
+*                                     dcsrColIndA,
+*                                     descrB,
+*                                     nnzB,
+*                                     dcsrRowPtrB,
+*                                     dcsrColIndB,
+*                                     &beta,
+*                                     descrD,
+*                                     nnzD,
+*                                     dcsrRowPtrD,
+*                                     dcsrColIndD,
+*                                     info,
+*                                     &bufferSize);
+*
+*    void* dbuffer = nullptr;
+*    hipMalloc((void**)&dbuffer, bufferSize);
+*
+*    int nnzC;
+*    hipsparseXcsrgemm2Nnz(handle,
+*                    m,
+*                    n,
+*                    k,
+*                    descrA,
+*                    nnzA,
+*                    dcsrRowPtrA,
+*                    dcsrColIndA,
+*                    descrB,
+*                    nnzB,
+*                    dcsrRowPtrB,
+*                    dcsrColIndB,
+*                    descrD,
+*                    nnzD,
+*                    dcsrRowPtrD,
+*                    dcsrColIndD,
+*                    descrC,
+*                    dcsrRowPtrC,
+*                    &nnzC,
+*                    info,
+*                    dbuffer);
+*
+*    int* dcsrColIndC = nullptr;
+*    float* dcsrValC = nullptr;
+*    hipMalloc((void**)&dcsrColIndC, sizeof(int) * nnzC);
+*    hipMalloc((void**)&dcsrValC, sizeof(float) * nnzC);
+*
+*    hipsparseScsrgemm2(handle, 
+*                      m, 
+*                      n, 
+*                      k,
+*                      &alpha, 
+*                      descrA, 
+*                      nnzA, 
+*                      dcsrValA, 
+*                      dcsrRowPtrA, 
+*                      dcsrColIndA, 
+*                      descrB, 
+*                      nnzB, 
+*                      dcsrValB, 
+*                      dcsrRowPtrB, 
+*                      dcsrColIndB, 
+*                      &beta,
+*                      descrD,
+*                      nnzD,
+*                      dcsrValD, 
+*                      dcsrRowPtrD, 
+*                      dcsrColIndD, 
+*                      descrC, 
+*                      dcsrValC, 
+*                      dcsrRowPtrC, 
+*                      dcsrColIndC,
+*                      info,
+*                      dbuffer);
+*
+*    hipFree(dcsrRowPtrA);
+*    hipFree(dcsrColIndA);
+*    hipFree(dcsrValA);
+*    hipFree(dcsrRowPtrB);
+*    hipFree(dcsrColIndB);
+*    hipFree(dcsrValB);
+*    hipFree(dcsrRowPtrC);
+*    hipFree(dcsrColIndC);
+*    hipFree(dcsrValC);
+*    hipFree(dcsrRowPtrD);
+*    hipFree(dcsrColIndD);
+*    hipFree(dcsrValD);
+*
+*    hipFree(dbuffer);
+*
+*    hipsparseDestroyMatDescr(descrA);
+*    hipsparseDestroyMatDescr(descrB);
+*    hipsparseDestroyMatDescr(descrC);
+*    hipsparseDestroyMatDescr(descrD);
+*    hipsparseDestroyCsrgemm2Info(info);
+*
+*    hipsparseDestroy(handle);
+*  \endcode
 */
 /**@{*/
 DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
