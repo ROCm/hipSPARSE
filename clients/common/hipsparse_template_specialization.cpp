@@ -5934,10 +5934,19 @@ namespace hipsparse
                                                           const float*              csrVal,
                                                           const int*                csrRowPtr,
                                                           const int*                csrColInd,
-                                                          size_t*                   pBufferSizeInBytes)
+                                                          size_t* pBufferSizeInBytes)
     {
-        return hipsparseSpruneDense2csr_bufferSize(
-            handle, m, n, A, lda, threshold, descr, csrVal, csrRowPtr, csrColInd, pBufferSizeInBytes);
+        return hipsparseSpruneDense2csr_bufferSize(handle,
+                                                   m,
+                                                   n,
+                                                   A,
+                                                   lda,
+                                                   threshold,
+                                                   descr,
+                                                   csrVal,
+                                                   csrRowPtr,
+                                                   csrColInd,
+                                                   pBufferSizeInBytes);
     }
 
     template <>
@@ -5951,10 +5960,19 @@ namespace hipsparse
                                                           const double*             csrVal,
                                                           const int*                csrRowPtr,
                                                           const int*                csrColInd,
-                                                          size_t*                   pBufferSizeInBytes)
+                                                          size_t* pBufferSizeInBytes)
     {
-        return hipsparseDpruneDense2csr_bufferSize(
-            handle, m, n, A, lda, threshold, descr, csrVal, csrRowPtr, csrColInd, pBufferSizeInBytes);
+        return hipsparseDpruneDense2csr_bufferSize(handle,
+                                                   m,
+                                                   n,
+                                                   A,
+                                                   lda,
+                                                   threshold,
+                                                   descr,
+                                                   csrVal,
+                                                   csrRowPtr,
+                                                   csrColInd,
+                                                   pBufferSizeInBytes);
     }
 #endif
 
@@ -5970,10 +5988,19 @@ namespace hipsparse
                                                              const float*              csrVal,
                                                              const int*                csrRowPtr,
                                                              const int*                csrColInd,
-                                                             size_t*                   pBufferSizeInBytes)
+                                                             size_t* pBufferSizeInBytes)
     {
-        return hipsparseSpruneDense2csr_bufferSizeExt(
-            handle, m, n, A, lda, threshold, descr, csrVal, csrRowPtr, csrColInd, pBufferSizeInBytes);
+        return hipsparseSpruneDense2csr_bufferSizeExt(handle,
+                                                      m,
+                                                      n,
+                                                      A,
+                                                      lda,
+                                                      threshold,
+                                                      descr,
+                                                      csrVal,
+                                                      csrRowPtr,
+                                                      csrColInd,
+                                                      pBufferSizeInBytes);
     }
 
     template <>
@@ -5987,10 +6014,19 @@ namespace hipsparse
                                                              const double*             csrVal,
                                                              const int*                csrRowPtr,
                                                              const int*                csrColInd,
-                                                             size_t*                   pBufferSizeInBytes)
+                                                             size_t* pBufferSizeInBytes)
     {
-        return hipsparseDpruneDense2csr_bufferSizeExt(
-            handle, m, n, A, lda, threshold, descr, csrVal, csrRowPtr, csrColInd, pBufferSizeInBytes);
+        return hipsparseDpruneDense2csr_bufferSizeExt(handle,
+                                                      m,
+                                                      n,
+                                                      A,
+                                                      lda,
+                                                      threshold,
+                                                      descr,
+                                                      csrVal,
+                                                      csrRowPtr,
+                                                      csrColInd,
+                                                      pBufferSizeInBytes);
     }
 #endif
 
@@ -6078,7 +6114,7 @@ namespace hipsparse
                                                         const int*                csrRowPtr,
                                                         const int*                csrColInd,
                                                         pruneInfo_t               info,
-                                                        size_t*                   pBufferSizeInBytes)
+                                                        size_t* pBufferSizeInBytes)
     {
         return hipsparseSpruneDense2csrByPercentage_bufferSize(handle,
                                                                m,
@@ -6107,7 +6143,7 @@ namespace hipsparse
                                                         const int*                csrRowPtr,
                                                         const int*                csrColInd,
                                                         pruneInfo_t               info,
-                                                        size_t*                   pBufferSizeInBytes)
+                                                        size_t* pBufferSizeInBytes)
     {
         return hipsparseDpruneDense2csrByPercentage_bufferSize(handle,
                                                                m,
@@ -6138,7 +6174,7 @@ namespace hipsparse
                                                            const int*                csrRowPtr,
                                                            const int*                csrColInd,
                                                            pruneInfo_t               info,
-                                                           size_t*                   pBufferSizeInBytes)
+                                                           size_t* pBufferSizeInBytes)
     {
         return hipsparseSpruneDense2csrByPercentage_bufferSizeExt(handle,
                                                                   m,
@@ -6167,7 +6203,7 @@ namespace hipsparse
                                                            const int*                csrRowPtr,
                                                            const int*                csrColInd,
                                                            pruneInfo_t               info,
-                                                           size_t*                   pBufferSizeInBytes)
+                                                           size_t* pBufferSizeInBytes)
     {
         return hipsparseDpruneDense2csrByPercentage_bufferSizeExt(handle,
                                                                   m,
@@ -7631,7 +7667,7 @@ namespace hipsparse
                                                         const float*              csrValC,
                                                         const int*                csrRowPtrC,
                                                         const int*                csrColIndC,
-                                                        size_t*                   pBufferSizeInBytes)
+                                                        size_t* pBufferSizeInBytes)
     {
         return hipsparseSpruneCsr2csr_bufferSize(handle,
                                                  m,
@@ -7663,7 +7699,7 @@ namespace hipsparse
                                                         const double*             csrValC,
                                                         const int*                csrRowPtrC,
                                                         const int*                csrColIndC,
-                                                        size_t*                   pBufferSizeInBytes)
+                                                        size_t* pBufferSizeInBytes)
     {
         return hipsparseDpruneCsr2csr_bufferSize(handle,
                                                  m,
@@ -7696,7 +7732,7 @@ namespace hipsparse
                                                            const float*              csrValC,
                                                            const int*                csrRowPtrC,
                                                            const int*                csrColIndC,
-                                                           size_t*                   pBufferSizeInBytes)
+                                                           size_t* pBufferSizeInBytes)
     {
         return hipsparseSpruneCsr2csr_bufferSizeExt(handle,
                                                     m,
@@ -7728,7 +7764,7 @@ namespace hipsparse
                                                            const double*             csrValC,
                                                            const int*                csrRowPtrC,
                                                            const int*                csrColIndC,
-                                                           size_t*                   pBufferSizeInBytes)
+                                                           size_t* pBufferSizeInBytes)
     {
         return hipsparseDpruneCsr2csr_bufferSizeExt(handle,
                                                     m,
@@ -7964,7 +8000,7 @@ namespace hipsparse
                                                          const int*                csrRowPtrC,
                                                          const int*                csrColIndC,
                                                          pruneInfo_t               info,
-                                                         size_t*                   pBufferSizeInBytes)
+                                                         size_t* pBufferSizeInBytes)
     {
         return hipsparseSpruneCsr2csrByPercentage_bufferSizeExt(handle,
                                                                 m,
@@ -7999,7 +8035,7 @@ namespace hipsparse
                                                          const int*                csrRowPtrC,
                                                          const int*                csrColIndC,
                                                          pruneInfo_t               info,
-                                                         size_t*                   pBufferSizeInBytes)
+                                                         size_t* pBufferSizeInBytes)
     {
         return hipsparseDpruneCsr2csrByPercentage_bufferSizeExt(handle,
                                                                 m,
