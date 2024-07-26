@@ -12121,12 +12121,86 @@ hipsparseStatus_t hipsparseXgebsr2gebsrNnz(hipsparseHandle_t         handle,
 *
 *  \details
 *  The conversion uses three steps. First, the user calls hipsparseXgebsr2gebsr_bufferSize() to determine the size of
-*  the required temporary storage buffer. The user then allocates this buffer. Secondly, the user then allocates \p mb_C+1
-*  integers for the row pointer array for \p C where \p mb_C=(m+rowBlockDim_C-1)/rowBlockDim_C. The user then calls
-*  hipsparseXgebsr2gebsrNnz() to fill in the row pointer array for \p C ( \p bsrRowPtr_C ) and determine the number of
-*  non-zero blocks that will exist in \p C. Finally, the user allocates space for the colimn indices array of \p C to have
-*  \p nnzb_C elements and space for the values array of \p C to have \p nnzb_C*roc_blockDim_C*colBlockDim_C and then calls
-*  hipsparseXgebsr2gebsr() to complete the conversion.
+*  the required temporary storage buffer. The user then allocates this buffer. Secondly, the user then allocates \p mbC+1
+*  integers for the row pointer array for \p C where:
+*  \f[
+*    \begin{align}
+*    \text{mbC} &= \text{(m - 1) / rowBlockDimC + 1} \\
+*    \text{nbC} &= \text{(n - 1) / colBlockDimC + 1}
+*    \end{align}
+*  \f]
+*  The user then calls hipsparseXgebsr2gebsrNnz() to fill in the row pointer array for \p C ( \p bsrRowPtrC ) and 
+*  determine the number of non-zero blocks that will exist in \p C. Finally, the user allocates space for the column 
+*  indices array of \p C to have \p nnzbC elements and space for the values array of \p C to have 
+*  \p nnzbC*rowBlockDimC*colBlockDimC and then calls hipsparseXgebsr2gebsr() to complete the conversion.
+*
+*  It may be the case that \p rowBlockDimC does not divide evenly into \p m and/or \p colBlockDim does not divide evenly 
+*  into \p n. In these cases, the GEBSR matrix is expanded in size in order to fit full GEBSR blocks. For example, if 
+*  the original GEBSR matrix A (using \p rowBlockDimA=2, \p colBlockDimA=3) looks like: 
+*
+*  \f[
+*   \left[ 
+*    \begin{array}{c | c} 
+*      \begin{array}{c c c} 
+*       1 & 0 & 0 \\ 
+*       3 & 4 & 0
+*      \end{array} & 
+*      \begin{array}{c c c} 
+*       2 & 0 & 0 \\ 
+*       4 & 5 & 6
+*      \end{array} \\ 
+*    \hline 
+*      \begin{array}{c c c} 
+*       1 & 2 & 3 \\ 
+*       1 & 2 & 0
+*      \end{array} & 
+*      \begin{array}{c c c} 
+*       4 & 0 & 0 \\ 
+*       3 & 0 & 1
+*      \end{array} \\ 
+*   \end{array} 
+*  \right] 
+*  \f]
+*
+*  then if we specify \p rowBlockDimC=3 and \p colBlockDimC=2, our output GEBSR matrix C would be:
+*
+*  \f[
+*   \left[ 
+*    \begin{array}{c | c | c} 
+*      \begin{array}{c c} 
+*       1 & 0 \\ 
+*       3 & 4 \\
+*       1 & 2
+*      \end{array} & 
+*      \begin{array}{c c} 
+*       0 & 2 \\ 
+*       0 & 4 \\
+*       3 & 4
+*      \end{array} & 
+*      \begin{array}{c c} 
+*       0 & 0 \\ 
+*       5 & 6 \\
+*       0 & 0
+*      \end{array} \\
+*    \hline 
+*      \begin{array}{c c} 
+*       1 & 2 \\ 
+*       0 & 0 \\
+*       0 & 0
+*      \end{array} & 
+*      \begin{array}{c c} 
+*       0 & 3 \\ 
+*       0 & 0 \\
+*       0 & 0
+*      \end{array} & 
+*      \begin{array}{c c} 
+*       0 & 1 \\ 
+*       0 & 0 \\
+*       0 & 0
+*      \end{array} \\
+*   \end{array} 
+*  \right] 
+*  \f]
 *
 *  \par Example
 *  \code{.c}
