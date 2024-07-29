@@ -1060,7 +1060,7 @@ hipsparseStatus_t hipsparseDestroyPruneInfo(pruneInfo_t info);
 *  \code{.c}
 *      for(i = 0; i < nnz; ++i)
 *      {
-*          y[x_ind[i]] = y[x_ind[i]] + alpha * x_val[i];
+*          y[xInd[i]] = y[xInd[i]] + alpha * xVal[i];
 *      }
 *  \endcode
 *
@@ -1074,10 +1074,10 @@ hipsparseStatus_t hipsparseDestroyPruneInfo(pruneInfo_t info);
 *      int nnz = 3;
 *
 *      // Sparse index vector
-*      int hx_ind[3] = {0, 3, 5};
+*      int hxInd[3] = {0, 3, 5};
 *
 *      // Sparse value vector
-*      double hx_val[3] = {1.0, 2.0, 3.0};
+*      double hxVal[3] = {1.0, 2.0, 3.0};
 *
 *      // Dense vector
 *      double hy[9] = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0};
@@ -1086,19 +1086,19 @@ hipsparseStatus_t hipsparseDestroyPruneInfo(pruneInfo_t info);
 *      double alpha = 3.7;
 *
 *      // Index base
-*      hipsparseIndexBase_t idx_base = HIPSPARSE_INDEX_BASE_ZERO;
+*      hipsparseIndexBase_t idxBase = HIPSPARSE_INDEX_BASE_ZERO;
 *
 *      // Offload data to device
-*      int* dx_ind;
-*      double*        dx_val;
+*      int* dxInd;
+*      double*        dxVal;
 *      double*        dy;
 *
-*      hipMalloc((void**)&dx_ind, sizeof(int) * nnz);
-*      hipMalloc((void**)&dx_val, sizeof(double) * nnz);
+*      hipMalloc((void**)&dxInd, sizeof(int) * nnz);
+*      hipMalloc((void**)&dxVal, sizeof(double) * nnz);
 *      hipMalloc((void**)&dy, sizeof(double) * 9);
 *
-*      hipMemcpy(dx_ind, hx_ind, sizeof(int) * nnz, hipMemcpyHostToDevice);
-*      hipMemcpy(dx_val, hx_val, sizeof(double) * nnz, hipMemcpyHostToDevice);
+*      hipMemcpy(dxInd, hxInd, sizeof(int) * nnz, hipMemcpyHostToDevice);
+*      hipMemcpy(dxVal, hxVal, sizeof(double) * nnz, hipMemcpyHostToDevice);
 *      hipMemcpy(dy, hy, sizeof(double) * 9, hipMemcpyHostToDevice);
 *
 *      // hipSPARSE handle
@@ -1106,7 +1106,7 @@ hipsparseStatus_t hipsparseDestroyPruneInfo(pruneInfo_t info);
 *      hipsparseCreate(&handle);
 *
 *      // Call daxpyi to perform y = y + alpha * x
-*      hipsparseDaxpyi(handle, nnz, &alpha, dx_val, dx_ind, dy, idx_base);
+*      hipsparseDaxpyi(handle, nnz, &alpha, dxVal, dxInd, dy, idxBase);
 *
 *      // Copy result back to host
 *      hipMemcpy(hy, dy, sizeof(double) * 9, hipMemcpyDeviceToHost);
@@ -1115,8 +1115,8 @@ hipsparseStatus_t hipsparseDestroyPruneInfo(pruneInfo_t info);
 *      hipsparseDestroy(handle);
 *
 *      // Clear device memory
-*      hipFree(dx_ind);
-*      hipFree(dx_val);
+*      hipFree(dxInd);
+*      hipFree(dxVal);
 *      hipFree(dy);
 *  \endcode
 */
@@ -1168,14 +1168,14 @@ hipsparseStatus_t hipsparseZaxpyi(hipsparseHandle_t       handle,
 *  \p hipsparseXdoti computes the dot product of the sparse vector \f$x\f$ with the
 *  dense vector \f$y\f$, such that
 *  \f[
-*    \text{result} := y^T x
+*    result := y^T x
 *  \f]
 *
 *  \code{.c}
 *      result = 0
 *      for(i = 0; i < nnz; ++i)
 *      {
-*          result += x_val[i] * y[x_ind[i]];
+*          result += xVal[i] * y[xInd[i]];
 *      }
 *  \endcode
 *
@@ -1189,28 +1189,28 @@ hipsparseStatus_t hipsparseZaxpyi(hipsparseHandle_t       handle,
 *      int nnz = 3;
 *
 *      // Sparse index vector
-*      int hx_ind[3] = {0, 3, 5};
+*      int hxInd[3] = {0, 3, 5};
 *
 *      // Sparse value vector
-*      float hx_val[3] = {1.0f, 2.0f, 3.0f};
+*      float hxVal[3] = {1.0f, 2.0f, 3.0f};
 *
 *      // Dense vector
 *      float hy[9] = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f};
 *
 *      // Index base
-*      hipsparseIndexBase_t idx_base = HIPSPARSE_INDEX_BASE_ZERO;
+*      hipsparseIndexBase_t idxBase = HIPSPARSE_INDEX_BASE_ZERO;
 *
 *      // Offload data to device
-*      int* dx_ind;
-*      float*        dx_val;
+*      int* dxInd;
+*      float*        dxVal;
 *      float*        dy;
 *
-*      hipMalloc((void**)&dx_ind, sizeof(int) * nnz);
-*      hipMalloc((void**)&dx_val, sizeof(float) * nnz);
+*      hipMalloc((void**)&dxInd, sizeof(int) * nnz);
+*      hipMalloc((void**)&dxVal, sizeof(float) * nnz);
 *      hipMalloc((void**)&dy, sizeof(float) * 9);
 *
-*      hipMemcpy(dx_ind, hx_ind, sizeof(int) * nnz, hipMemcpyHostToDevice);
-*      hipMemcpy(dx_val, hx_val, sizeof(float) * nnz, hipMemcpyHostToDevice);
+*      hipMemcpy(dxInd, hxInd, sizeof(int) * nnz, hipMemcpyHostToDevice);
+*      hipMemcpy(dxVal, hxVal, sizeof(float) * nnz, hipMemcpyHostToDevice);
 *      hipMemcpy(dy, hy, sizeof(float) * 9, hipMemcpyHostToDevice);
 *
 *      // hipSPARSE handle
@@ -1219,14 +1219,14 @@ hipsparseStatus_t hipsparseZaxpyi(hipsparseHandle_t       handle,
 *
 *      // Call sdoti to compute the dot product
 *      float dot;
-*      hipsparseSdoti(handle, nnz, dx_val, dx_ind, dy, &dot, idx_base);
+*      hipsparseSdoti(handle, nnz, dxVal, dxInd, dy, &dot, idxBase);
 *
 *      // Clear hipSPARSE
 *      hipsparseDestroy(handle);
 *
 *      // Clear device memory
-*      hipFree(dx_ind);
-*      hipFree(dx_val);
+*      hipFree(dxInd);
+*      hipFree(dxVal);
 *      hipFree(dy);
 *  \endcode
 */
@@ -1279,14 +1279,14 @@ hipsparseStatus_t hipsparseZdoti(hipsparseHandle_t       handle,
 *  \p hipsparseXdotci computes the dot product of the complex conjugate sparse vector
 *  \f$x\f$ with the dense vector \f$y\f$, such that
 *  \f[
-*    \text{result} := \bar{x}^H y
+*    result := \bar{x}^H y
 *  \f]
 *
 *  \code{.c}
 *      result = 0
 *      for(i = 0; i < nnz; ++i)
 *      {
-*          result += conj(x_val[i]) * y[x_ind[i]];
+*          result += conj(xVal[i]) * y[xInd[i]];
 *      }
 *  \endcode
 *
@@ -1321,13 +1321,13 @@ hipsparseStatus_t hipsparseZdotci(hipsparseHandle_t       handle,
 *  \brief Gather elements from a dense vector and store them into a sparse vector.
 *
 *  \details
-*  \p hipsparseXgthr gathers the elements that are listed in \p x_ind from the dense
+*  \p hipsparseXgthr gathers the elements that are listed in \p xInd from the dense
 *  vector \f$y\f$ and stores them in the sparse vector \f$x\f$.
 *
 *  \code{.c}
 *      for(i = 0; i < nnz; ++i)
 *      {
-*          x_val[i] = y[x_ind[i]];
+*          xVal[i] = y[xInd[i]];
 *      }
 *  \endcode
 *
@@ -1341,27 +1341,27 @@ hipsparseStatus_t hipsparseZdotci(hipsparseHandle_t       handle,
 *      int nnz = 3;
 *
 *      // Sparse index vector
-*      int hx_ind[3] = {0, 3, 5};
+*      int hxInd[3] = {0, 3, 5};
 *
 *      // Sparse value vector
-*      float hx_val[3];
+*      float hxVal[3];
 *
 *      // Dense vector
 *      float hy[9] = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0};
 *
 *      // Index base
-*      hipsparseIndexBase_t idx_base = HIPSPARSE_INDEX_BASE_ZERO;
+*      hipsparseIndexBase_t idxBase = HIPSPARSE_INDEX_BASE_ZERO;
 *
 *      // Offload data to device
-*      int* dx_ind;
-*      float*         dx_val;
+*      int* dxInd;
+*      float*         dxVal;
 *      float*         dy;
 *
-*      hipMalloc((void**)&dx_ind, sizeof(int) * nnz);
-*      hipMalloc((void**)&dx_val, sizeof(float) * nnz);
+*      hipMalloc((void**)&dxInd, sizeof(int) * nnz);
+*      hipMalloc((void**)&dxVal, sizeof(float) * nnz);
 *      hipMalloc((void**)&dy, sizeof(float) * 9);
 *
-*      hipMemcpy(dx_ind, hx_ind, sizeof(int) * nnz, hipMemcpyHostToDevice);
+*      hipMemcpy(dxInd, hxInd, sizeof(int) * nnz, hipMemcpyHostToDevice);
 *      hipMemcpy(dy, hy, sizeof(float) * 9, hipMemcpyHostToDevice);
 *
 *      // hipSPARSE handle
@@ -1369,17 +1369,17 @@ hipsparseStatus_t hipsparseZdotci(hipsparseHandle_t       handle,
 *      hipsparseCreate(&handle);
 *
 *      // Call sgthr
-*      hipsparseSgthr(handle, nnz, dy, dx_val, dx_ind, idx_base);
+*      hipsparseSgthr(handle, nnz, dy, dxVal, dxInd, idxBase);
 *
 *      // Copy result back to host
-*      hipMemcpy(hx_val, dx_val, sizeof(float) * nnz, hipMemcpyDeviceToHost);
+*      hipMemcpy(hxVal, dxVal, sizeof(float) * nnz, hipMemcpyDeviceToHost);
 *
 *      // Clear hipSPARSE
 *      hipsparseDestroy(handle);
 *
 *      // Clear device memory
-*      hipFree(dx_ind);
-*      hipFree(dx_val);
+*      hipFree(dxInd);
+*      hipFree(dxVal);
 *      hipFree(dy);
 *  \endcode
 */
@@ -1425,15 +1425,15 @@ hipsparseStatus_t hipsparseZgthr(hipsparseHandle_t       handle,
 *  vector.
 *
 *  \details
-*  \p hipsparseXgthrz gathers the elements that are listed in \p x_ind from the dense
+*  \p hipsparseXgthrz gathers the elements that are listed in \p xInd from the dense
 *  vector \f$y\f$ and stores them in the sparse vector \f$x\f$. The gathered elements
 *  in \f$y\f$ are replaced by zero.
 *
 *  \code{.c}
 *      for(i = 0; i < nnz; ++i)
 *      {
-*          x_val[i]    = y[x_ind[i]];
-*          y[x_ind[i]] = 0;
+*          xVal[i]    = y[xInd[i]];
+*          y[xInd[i]] = 0;
 *      }
 *  \endcode
 *
@@ -1491,11 +1491,11 @@ hipsparseStatus_t hipsparseZgthrz(hipsparseHandle_t    handle,
 *  \code{.c}
 *      for(i = 0; i < nnz; ++i)
 *      {
-*          x_tmp = x_val[i];
-*          y_tmp = y[x_ind[i]];
+*          x_tmp = xVal[i];
+*          y_tmp = y[xInd[i]];
 *
-*          x_val[i]    = c * x_tmp + s * y_tmp;
-*          y[x_ind[i]] = c * y_tmp - s * x_tmp;
+*          xVal[i]    = c * x_tmp + s * y_tmp;
+*          y[xInd[i]] = c * y_tmp - s * x_tmp;
 *      }
 *  \endcode
 *
@@ -1509,10 +1509,10 @@ hipsparseStatus_t hipsparseZgthrz(hipsparseHandle_t    handle,
 *      int nnz = 3;
 *
 *      // Sparse index vector
-*      int hx_ind[3] = {0, 3, 5};
+*      int hxInd[3] = {0, 3, 5};
 *
 *      // Sparse value vector
-*      float hx_val[3] = {1.0f, 2.0f, 3.0f};
+*      float hxVal[3] = {1.0f, 2.0f, 3.0f};
 *
 *      // Dense vector
 *      float hy[9] = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f};
@@ -1522,19 +1522,19 @@ hipsparseStatus_t hipsparseZgthrz(hipsparseHandle_t    handle,
 *      float s = 1.3;
 *
 *      // Index base
-*      hipsparseIndexBase_t idx_base = HIPSPARSE_INDEX_BASE_ZERO;
+*      hipsparseIndexBase_t idxBase = HIPSPARSE_INDEX_BASE_ZERO;
 *
 *      // Offload data to device
-*      int* dx_ind;
-*      float*        dx_val;
+*      int* dxInd;
+*      float*        dxVal;
 *      float*        dy;
 *
-*      hipMalloc((void**)&dx_ind, sizeof(int) * nnz);
-*      hipMalloc((void**)&dx_val, sizeof(float) * nnz);
+*      hipMalloc((void**)&dxInd, sizeof(int) * nnz);
+*      hipMalloc((void**)&dxVal, sizeof(float) * nnz);
 *      hipMalloc((void**)&dy, sizeof(float) * 9);
 *
-*      hipMemcpy(dx_ind, hx_ind, sizeof(int) * nnz, hipMemcpyHostToDevice);
-*      hipMemcpy(dx_val, hx_val, sizeof(float) * nnz, hipMemcpyHostToDevice);
+*      hipMemcpy(dxInd, hxInd, sizeof(int) * nnz, hipMemcpyHostToDevice);
+*      hipMemcpy(dxVal, hxVal, sizeof(float) * nnz, hipMemcpyHostToDevice);
 *      hipMemcpy(dy, hy, sizeof(float) * 9, hipMemcpyHostToDevice);
 *
 *      // hipSPARSE handle
@@ -1542,18 +1542,18 @@ hipsparseStatus_t hipsparseZgthrz(hipsparseHandle_t    handle,
 *      hipsparseCreate(&handle);
 *
 *      // Call sroti
-*      hipsparseSroti(handle, nnz, dx_val, dx_ind, dy, &c, &s, idx_base);
+*      hipsparseSroti(handle, nnz, dxVal, dxInd, dy, &c, &s, idxBase);
 *
 *      // Copy result back to host
-*      hipMemcpy(hx_val, dx_val, sizeof(float) * nnz, hipMemcpyDeviceToHost);
+*      hipMemcpy(hxVal, dxVal, sizeof(float) * nnz, hipMemcpyDeviceToHost);
 *      hipMemcpy(hy, dy, sizeof(float) * 9, hipMemcpyDeviceToHost);
 *
 *      // Clear hipSPARSE
 *      hipsparseDestroy(handle);
 *
 *      // Clear device memory
-*      hipFree(dx_ind);
-*      hipFree(dx_val);
+*      hipFree(dxInd);
+*      hipFree(dxVal);
 *      hipFree(dy);
 *  \endcode
 */
@@ -1586,14 +1586,14 @@ hipsparseStatus_t hipsparseDroti(hipsparseHandle_t    handle,
 *  \brief Scatter elements from a dense vector across a sparse vector.
 *
 *  \details
-*  \p hipsparseXsctr scatters the elements that are listed in \p x_ind from the sparse
+*  \p hipsparseXsctr scatters the elements that are listed in \p xInd from the sparse
 *  vector \f$x\f$ into the dense vector \f$y\f$. Indices of \f$y\f$ that are not listed
-*  in \p x_ind remain unchanged.
+*  in \p xInd remain unchanged.
 *
 *  \code{.c}
 *      for(i = 0; i < nnz; ++i)
 *      {
-*          y[x_ind[i]] = x_val[i];
+*          y[xInd[i]] = xVal[i];
 *      }
 *  \endcode
 *
@@ -1607,28 +1607,28 @@ hipsparseStatus_t hipsparseDroti(hipsparseHandle_t    handle,
 *      int nnz = 3;
 *
 *      // Sparse index vector
-*      int hx_ind[3] = {0, 3, 5};
+*      int hxInd[3] = {0, 3, 5};
 *
 *      // Sparse value vector
-*      float hx_val[3] = {9.0, 2.0, 3.0};
+*      float hxVal[3] = {9.0, 2.0, 3.0};
 *
 *      // Dense vector
 *      float hy[9] = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0};
 *
 *      // Index base
-*      hipsparseIndexBase_t idx_base = HIPSPARSE_INDEX_BASE_ZERO;
+*      hipsparseIndexBase_t idxBase = HIPSPARSE_INDEX_BASE_ZERO;
 *
 *      // Offload data to device
-*      int* dx_ind;
-*      float*         dx_val;
+*      int* dxInd;
+*      float*         dxVal;
 *      float*         dy;
 *
-*      hipMalloc((void**)&dx_ind, sizeof(int) * nnz);
-*      hipMalloc((void**)&dx_val, sizeof(float) * nnz);
+*      hipMalloc((void**)&dxInd, sizeof(int) * nnz);
+*      hipMalloc((void**)&dxVal, sizeof(float) * nnz);
 *      hipMalloc((void**)&dy, sizeof(float) * 9);
 *
-*      hipMemcpy(dx_ind, hx_ind, sizeof(int) * nnz, hipMemcpyHostToDevice);
-*      hipMemcpy(dx_val, hx_val, sizeof(float) * nnz, hipMemcpyHostToDevice);
+*      hipMemcpy(dxInd, hxInd, sizeof(int) * nnz, hipMemcpyHostToDevice);
+*      hipMemcpy(dxVal, hxVal, sizeof(float) * nnz, hipMemcpyHostToDevice);
 *      hipMemcpy(dy, hy, sizeof(float) * 9, hipMemcpyHostToDevice);
 *
 *      // hipSPARSE handle
@@ -1636,7 +1636,7 @@ hipsparseStatus_t hipsparseDroti(hipsparseHandle_t    handle,
 *      hipsparseCreate(&handle);
 *
 *      // Call ssctr
-*      hipsparseSsctr(handle, nnz, dx_val, dx_ind, dy, idx_base);
+*      hipsparseSsctr(handle, nnz, dxVal, dxInd, dy, idxBase);
 *
 *      // Copy result back to host
 *      hipMemcpy(hy, dy, sizeof(float) * 9, hipMemcpyDeviceToHost);
@@ -1645,8 +1645,8 @@ hipsparseStatus_t hipsparseDroti(hipsparseHandle_t    handle,
 *      hipsparseDestroy(handle);
 *
 *      // Clear device memory
-*      hipFree(dx_ind);
-*      hipFree(dx_val);
+*      hipFree(dxInd);
+*      hipFree(dxVal);
 *      hipFree(dy);
 *  \endcode
 */
@@ -1720,9 +1720,9 @@ hipsparseStatus_t hipsparseZsctr(hipsparseHandle_t       handle,
 *      {
 *          y[i] = beta * y[i];
 *
-*          for(j = csr_row_ptr[i]; j < csr_row_ptr[i + 1]; ++j)
+*          for(j = csrRowPtr[i]; j < csrRowPtr[i + 1]; ++j)
 *          {
-*              y[i] = y[i] + alpha * csr_val[j] * x[csr_col_ind[j]];
+*              y[i] = y[i] + alpha * csrVal[j] * x[csrColInd[j]];
 *          }
 *      }
 *  \endcode
@@ -1750,13 +1750,13 @@ hipsparseStatus_t hipsparseZsctr(hipsparseHandle_t       handle,
 *      int nnz = 8;
 *
 *      // CSR row pointers
-*      int hcsr_row_ptr[5] = {0, 2, 4, 6, 8};
+*      int hcsrRowPtr[5] = {0, 2, 4, 6, 8};
 *
 *      // CSR column indices
-*      int hcsr_col_ind[8] = {0, 2, 0, 2, 0, 1, 0, 2};
+*      int hcsrColInd[8] = {0, 2, 0, 2, 0, 1, 0, 2};
 *
 *      // CSR values
-*      double hcsr_val[8] = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0};
+*      double hcsrVal[8] = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0};
 *
 *      // Transposition of the matrix
 *      hipsparseOperation_t trans = HIPSPARSE_OPERATION_NON_TRANSPOSE;
@@ -1774,21 +1774,21 @@ hipsparseStatus_t hipsparseZsctr(hipsparseHandle_t       handle,
 *      hipsparseCreateMatDescr(&descr);
 *
 *      // Offload data to device
-*      int* dcsr_row_ptr;
-*      int* dcsr_col_ind;
-*      double*        dcsr_val;
+*      int* dcsrRowPtr;
+*      int* dcsrColInd;
+*      double*        dcsrVal;
 *      double*        dx;
 *      double*        dy;
 *
-*      hipMalloc((void**)&dcsr_row_ptr, sizeof(int) * (m + 1));
-*      hipMalloc((void**)&dcsr_col_ind, sizeof(int) * nnz);
-*      hipMalloc((void**)&dcsr_val, sizeof(double) * nnz);
+*      hipMalloc((void**)&dcsrRowPtr, sizeof(int) * (m + 1));
+*      hipMalloc((void**)&dcsrColInd, sizeof(int) * nnz);
+*      hipMalloc((void**)&dcsrVal, sizeof(double) * nnz);
 *      hipMalloc((void**)&dx, sizeof(double) * n);
 *      hipMalloc((void**)&dy, sizeof(double) * m);
 *
-*      hipMemcpy(dcsr_row_ptr, hcsr_row_ptr, sizeof(int) * (m + 1), hipMemcpyHostToDevice);
-*      hipMemcpy(dcsr_col_ind, hcsr_col_ind, sizeof(int) * nnz, hipMemcpyHostToDevice);
-*      hipMemcpy(dcsr_val, hcsr_val, sizeof(double) * nnz, hipMemcpyHostToDevice);
+*      hipMemcpy(dcsrRowPtr, hcsrRowPtr, sizeof(int) * (m + 1), hipMemcpyHostToDevice);
+*      hipMemcpy(dcsrColInd, hcsrColInd, sizeof(int) * nnz, hipMemcpyHostToDevice);
+*      hipMemcpy(dcsrVal, hcsrVal, sizeof(double) * nnz, hipMemcpyHostToDevice);
 *      hipMemcpy(dx, hx, sizeof(double) * n, hipMemcpyHostToDevice);
 *      hipMemcpy(dy, hy, sizeof(double) * m, hipMemcpyHostToDevice);
 *
@@ -1800,9 +1800,9 @@ hipsparseStatus_t hipsparseZsctr(hipsparseHandle_t       handle,
 *                      nnz,
 *                      &alpha,
 *                      descr,
-*                      dcsr_val,
-*                      dcsr_row_ptr,
-*                      dcsr_col_ind,
+*                      dcsrVal,
+*                      dcsrRowPtr,
+*                      dcsrColInd,
 *                      dx,
 *                      &beta,
 *                      dy);
@@ -1815,9 +1815,9 @@ hipsparseStatus_t hipsparseZsctr(hipsparseHandle_t       handle,
 *      hipsparseDestroy(handle);
 *
 *      // Clear device memory
-*      hipFree(dcsr_row_ptr);
-*      hipFree(dcsr_col_ind);
-*      hipFree(dcsr_val);
+*      hipFree(dcsrRowPtr);
+*      hipFree(dcsrColInd);
+*      hipFree(dcsrVal);
 *      hipFree(dx);
 *      hipFree(dy);
 *  \endcode
@@ -2155,13 +2155,13 @@ hipsparseStatus_t hipsparseZcsrsv2_analysis(hipsparseHandle_t         handle,
 *      int nnz = 13;
 *
 *      // CSR row pointers
-*      int hcsr_row_ptr[5] = {0, 2, 6, 10, 13};
+*      int hcsrRowPtr[5] = {0, 2, 6, 10, 13};
 *
 *      // CSR column indices
-*      int hcsr_col_ind[13] = {0, 2, 0, 1, 2, 3, 0, 1, 2, 3, 0, 2, 3};
+*      int hcsrColInd[13] = {0, 2, 0, 1, 2, 3, 0, 1, 2, 3, 0, 2, 3};
 *
 *      // CSR values
-*      double hcsr_val[13] = {1.0, 2.0, 3.0, 2.0, 4.0, 1.0, 5.0, 6.0, 1.0, 3.0, 7.0, 8.0, 0.6};
+*      double hcsrVal[13] = {1.0, 2.0, 3.0, 2.0, 4.0, 1.0, 5.0, 6.0, 1.0, 3.0, 7.0, 8.0, 0.6};
 *
 *      // Transposition of the matrix
 *      hipsparseOperation_t trans = HIPSPARSE_OPERATION_NON_TRANSPOSE;
@@ -2192,21 +2192,21 @@ hipsparseStatus_t hipsparseZcsrsv2_analysis(hipsparseHandle_t         handle,
 *      hipsparseCreateCsrsv2Info(&info);
 *
 *      // Offload data to device
-*      int* dcsr_row_ptr;
-*      int* dcsr_col_ind;
-*      double*        dcsr_val;
+*      int* dcsrRowPtr;
+*      int* dcsrColInd;
+*      double*        dcsrVal;
 *      double*        df;
 *      double*        dx;
 *
-*      hipMalloc((void**)&dcsr_row_ptr, sizeof(int) * (m + 1));
-*      hipMalloc((void**)&dcsr_col_ind, sizeof(int) * nnz);
-*      hipMalloc((void**)&dcsr_val, sizeof(double) * nnz);
+*      hipMalloc((void**)&dcsrRowPtr, sizeof(int) * (m + 1));
+*      hipMalloc((void**)&dcsrColInd, sizeof(int) * nnz);
+*      hipMalloc((void**)&dcsrVal, sizeof(double) * nnz);
 *      hipMalloc((void**)&df, sizeof(double) * m);
 *      hipMalloc((void**)&dx, sizeof(double) * m);
 *
-*      hipMemcpy(dcsr_row_ptr, hcsr_row_ptr, sizeof(int) * (m + 1), hipMemcpyHostToDevice);
-*      hipMemcpy(dcsr_col_ind, hcsr_col_ind, sizeof(int) * nnz, hipMemcpyHostToDevice);
-*      hipMemcpy(dcsr_val, hcsr_val, sizeof(double) * nnz, hipMemcpyHostToDevice);
+*      hipMemcpy(dcsrRowPtr, hcsrRowPtr, sizeof(int) * (m + 1), hipMemcpyHostToDevice);
+*      hipMemcpy(dcsrColInd, hcsrColInd, sizeof(int) * nnz, hipMemcpyHostToDevice);
+*      hipMemcpy(dcsrVal, hcsrVal, sizeof(double) * nnz, hipMemcpyHostToDevice);
 *      hipMemcpy(df, hf, sizeof(double) * m, hipMemcpyHostToDevice);
 *
 *      int bufferSize = 0;
@@ -2215,9 +2215,9 @@ hipsparseStatus_t hipsparseZcsrsv2_analysis(hipsparseHandle_t         handle,
 *                                  m,
 *                                  nnz,
 *                                  descr,
-*                                  dcsr_val,
-*                                  dcsr_row_ptr,
-*                                  dcsr_col_ind,
+*                                  dcsrVal,
+*                                  dcsrRowPtr,
+*                                  dcsrColInd,
 *                                  info,
 *                                  &bufferSize);
 *
@@ -2229,9 +2229,9 @@ hipsparseStatus_t hipsparseZcsrsv2_analysis(hipsparseHandle_t         handle,
 *                                m,
 *                                nnz,
 *                                descr,
-*                                dcsr_val,
-*                                dcsr_row_ptr,
-*                                dcsr_col_ind,
+*                                dcsrVal,
+*                                dcsrRowPtr,
+*                                dcsrColInd,
 *                                info,
 *                                policy,
 *                                dbuffer);
@@ -2243,9 +2243,9 @@ hipsparseStatus_t hipsparseZcsrsv2_analysis(hipsparseHandle_t         handle,
 *                             nnz,
 *                             &alpha,
 *                             descr,
-*                             dcsr_val,
-*                             dcsr_row_ptr,
-*                             dcsr_col_ind,
+*                             dcsrVal,
+*                             dcsrRowPtr,
+*                             dcsrColInd,
 *                             info,
 *                             df,
 *                             dx,
@@ -2261,9 +2261,9 @@ hipsparseStatus_t hipsparseZcsrsv2_analysis(hipsparseHandle_t         handle,
 *      hipsparseDestroy(handle);
 *
 *      // Clear device memory
-*      hipFree(dcsr_row_ptr);
-*      hipFree(dcsr_col_ind);
-*      hipFree(dcsr_val);
+*      hipFree(dcsrRowPtr);
+*      hipFree(dcsrColInd);
+*      hipFree(dcsrVal);
 *      hipFree(df);
 *      hipFree(dx);
 *      hipFree(dbuffer);
@@ -2489,7 +2489,7 @@ hipsparseStatus_t hipsparseZhybmv(hipsparseHandle_t         handle,
 *
 *  \details
 *  \p hipsparseXbsrmv multiplies the scalar \f$\alpha\f$ with a sparse
-*  \f$(mb \cdot \text{block_dim}) \times (nb \cdot \text{block_dim})\f$
+*  \f$(mb \cdot \text{blockDim}) \times (nb \cdot \text{blockDim})\f$
 *  matrix, defined in BSR storage format, and the dense vector \f$x\f$ and adds the
 *  result to the dense vector \f$y\f$ that is multiplied by the scalar \f$\beta\f$,
 *  such that
@@ -2536,13 +2536,13 @@ hipsparseStatus_t hipsparseZhybmv(hipsparseHandle_t         handle,
 *      int nnzb = 4;
 *
 *      // BSR row pointers
-*      int hbsr_row_ptr[3] = {0, 2, 4};
+*      int hbsrRowPtr[3] = {0, 2, 4};
 *
 *      // BSR column indices
-*      int hbsr_col_ind[4] = {0, 1, 0, 1};
+*      int hbsrColInd[4] = {0, 1, 0, 1};
 *
 *      // BSR values
-*      double hbsr_val[16]
+*      double hbsrVal[16]
 *        = {1.0, 3.0, 0.0, 0.0, 2.0, 4.0, 0.0, 0.0, 5.0, 7.0, 6.0, 0.0, 0.0, 8.0, 0.0, 0.0};
 *
 *      // Block storage in column major
@@ -2564,21 +2564,21 @@ hipsparseStatus_t hipsparseZhybmv(hipsparseHandle_t         handle,
 *      hipsparseCreateMatDescr(&descr);
 *
 *      // Offload data to device
-*      int* dbsr_row_ptr;
-*      int* dbsr_col_ind;
-*      double*        dbsr_val;
+*      int* dbsrRowPtr;
+*      int* dbsrColInd;
+*      double*        dbsrVal;
 *      double*        dx;
 *      double*        dy;
 *
-*      hipMalloc((void**)&dbsr_row_ptr, sizeof(int) * (mb + 1));
-*      hipMalloc((void**)&dbsr_col_ind, sizeof(int) * nnzb);
-*      hipMalloc((void**)&dbsr_val, sizeof(double) * nnzb * bsr_dim * bsr_dim);
+*      hipMalloc((void**)&dbsrRowPtr, sizeof(int) * (mb + 1));
+*      hipMalloc((void**)&dbsrColInd, sizeof(int) * nnzb);
+*      hipMalloc((void**)&dbsrVal, sizeof(double) * nnzb * bsr_dim * bsr_dim);
 *      hipMalloc((void**)&dx, sizeof(double) * nb * bsr_dim);
 *      hipMalloc((void**)&dy, sizeof(double) * mb * bsr_dim);
 *
-*      hipMemcpy(dbsr_row_ptr, hbsr_row_ptr, sizeof(int) * (mb + 1), hipMemcpyHostToDevice);
-*      hipMemcpy(dbsr_col_ind, hbsr_col_ind, sizeof(int) * nnzb, hipMemcpyHostToDevice);
-*      hipMemcpy(dbsr_val, hbsr_val, sizeof(double) * nnzb * bsr_dim * bsr_dim, hipMemcpyHostToDevice);
+*      hipMemcpy(dbsrRowPtr, hbsrRowPtr, sizeof(int) * (mb + 1), hipMemcpyHostToDevice);
+*      hipMemcpy(dbsrColInd, hbsrColInd, sizeof(int) * nnzb, hipMemcpyHostToDevice);
+*      hipMemcpy(dbsrVal, hbsrVal, sizeof(double) * nnzb * bsr_dim * bsr_dim, hipMemcpyHostToDevice);
 *      hipMemcpy(dx, hx, sizeof(double) * nb * bsr_dim, hipMemcpyHostToDevice);
 *      hipMemcpy(dy, hy, sizeof(double) * mb * bsr_dim, hipMemcpyHostToDevice);
 *
@@ -2591,9 +2591,9 @@ hipsparseStatus_t hipsparseZhybmv(hipsparseHandle_t         handle,
 *                      nnzb,
 *                      &alpha,
 *                      descr,
-*                      dbsr_val,
-*                      dbsr_row_ptr,
-*                      dbsr_col_ind,
+*                      dbsrVal,
+*                      dbsrRowPtr,
+*                      dbsrColInd,
 *                      bsr_dim,
 *                      dx,
 *                      &beta,
@@ -2607,9 +2607,9 @@ hipsparseStatus_t hipsparseZhybmv(hipsparseHandle_t         handle,
 *      hipsparseDestroy(handle);
 *
 *      // Clear device memory
-*      hipFree(dbsr_row_ptr);
-*      hipFree(dbsr_col_ind);
-*      hipFree(dbsr_val);
+*      hipFree(dbsrRowPtr);
+*      hipFree(dbsrColInd);
+*      hipFree(dbsrVal);
 *      hipFree(dx);
 *      hipFree(dy);
 *  \endcode
@@ -2687,7 +2687,7 @@ hipsparseStatus_t hipsparseZbsrmv(hipsparseHandle_t         handle,
 *
 *  \details
 *  \p hipsparseXbsrxmv multiplies the scalar \f$\alpha\f$ with a sparse
-*  \f$(mb \cdot \text{block_dim}) \times (nb \cdot \text{block_dim})\f$
+*  \f$(mb \cdot \text{blockDim}) \times (nb \cdot \text{blockDim})\f$
 *  modified matrix, defined in BSR storage format, and the dense vector \f$x\f$ and adds the
 *  result to the dense vector \f$y\f$ that is multiplied by the scalar \f$\beta\f$,
 *  such that
@@ -2707,7 +2707,7 @@ hipsparseStatus_t hipsparseZbsrmv(hipsparseHandle_t         handle,
 *
 *  The \f$\text{mask}\f$ is defined as an array of block row indices.
 *  The input sparse matrix is defined with a modified BSR storage format where the beginning and the end of each row
-*  is defined with two arrays, \p bsr_row_ptr and \p bsr_end_ptr (both of size \p mb), rather the usual \p bsr_row_ptr of size \p mb + 1.
+*  is defined with two arrays, \p bsrRowPtr and \p bsr_end_ptr (both of size \p mb), rather the usual \p bsrRowPtr of size \p mb + 1.
 *
 *  \note
 *  This function is non blocking and executed asynchronously with respect to the host.
@@ -2715,7 +2715,7 @@ hipsparseStatus_t hipsparseZbsrmv(hipsparseHandle_t         handle,
 *
 *  \note
 *  Currently, only \p trans == \ref HIPSPARSE_OPERATION_NON_TRANSPOSE is supported.
-*  Currently, \p block_dim == 1 is not supported.
+*  Currently, \p blockDim == 1 is not supported.
 */
 /**@{*/
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
@@ -3110,13 +3110,13 @@ hipsparseStatus_t hipsparseZbsrsv2_analysis(hipsparseHandle_t         handle,
 *      int nnzb = 3;
 *
 *      // BSR row pointers
-*      int hbsr_row_ptr[3] = {0, 1, 3};
+*      int hbsrRowPtr[3] = {0, 1, 3};
 *
 *      // BSR column indices
-*      int hbsr_col_ind[3] = {0, 0, 1};
+*      int hbsrColInd[3] = {0, 0, 1};
 *
 *      // BSR values
-*      double hbsr_val[12] = {1.0, 2.0, 0.0, 3.0, 4.0, 7.0, 5.0, 0.0, 6.0, 8.0, 0.0, 9.0};
+*      double hbsrVal[12] = {1.0, 2.0, 0.0, 3.0, 4.0, 7.0, 5.0, 0.0, 6.0, 8.0, 0.0, 9.0};
 *
 *      // Storage scheme of the BSR blocks
 *      hipsparseDirection_t dir = HIPSPARSE_DIRECTION_COLUMN;
@@ -3134,21 +3134,21 @@ hipsparseStatus_t hipsparseZbsrsv2_analysis(hipsparseHandle_t         handle,
 *      double hy[4];
 *
 *      // Offload data to device
-*      int* dbsr_row_ptr;
-*      int* dbsr_col_ind;
-*      double* dbsr_val;
+*      int* dbsrRowPtr;
+*      int* dbsrColInd;
+*      double* dbsrVal;
 *      double* dx;
 *      double* dy;
 *
-*      hipMalloc((void**)&dbsr_row_ptr, sizeof(int) * (mb + 1));
-*      hipMalloc((void**)&dbsr_col_ind, sizeof(int) * nnzb);
-*      hipMalloc((void**)&dbsr_val, sizeof(double) * nnzb * bsr_dim * bsr_dim);
+*      hipMalloc((void**)&dbsrRowPtr, sizeof(int) * (mb + 1));
+*      hipMalloc((void**)&dbsrColInd, sizeof(int) * nnzb);
+*      hipMalloc((void**)&dbsrVal, sizeof(double) * nnzb * bsr_dim * bsr_dim);
 *      hipMalloc((void**)&dx, sizeof(double) * nb * bsr_dim);
 *      hipMalloc((void**)&dy, sizeof(double) * mb * bsr_dim);
 *
-*      hipMemcpy(dbsr_row_ptr, hbsr_row_ptr, sizeof(int) * (mb + 1), hipMemcpyHostToDevice);
-*      hipMemcpy(dbsr_col_ind, hbsr_col_ind, sizeof(int) * nnzb, hipMemcpyHostToDevice);
-*      hipMemcpy(dbsr_val, hbsr_val, sizeof(double) * nnzb * bsr_dim * bsr_dim, hipMemcpyHostToDevice);
+*      hipMemcpy(dbsrRowPtr, hbsrRowPtr, sizeof(int) * (mb + 1), hipMemcpyHostToDevice);
+*      hipMemcpy(dbsrColInd, hbsrColInd, sizeof(int) * nnzb, hipMemcpyHostToDevice);
+*      hipMemcpy(dbsrVal, hbsrVal, sizeof(double) * nnzb * bsr_dim * bsr_dim, hipMemcpyHostToDevice);
 *      hipMemcpy(dx, hx, sizeof(double) * nb * bsr_dim, hipMemcpyHostToDevice);
 *
 *      // Matrix descriptor
@@ -3173,9 +3173,9 @@ hipsparseStatus_t hipsparseZbsrsv2_analysis(hipsparseHandle_t         handle,
 *                                  mb,
 *                                  nnzb,
 *                                  descr,
-*                                  dbsr_val,
-*                                  dbsr_row_ptr,
-*                                  dbsr_col_ind,
+*                                  dbsrVal,
+*                                  dbsrRowPtr,
+*                                  dbsrColInd,
 *                                  bsr_dim,
 *                                  info,
 *                                  &buffer_size);
@@ -3191,9 +3191,9 @@ hipsparseStatus_t hipsparseZbsrsv2_analysis(hipsparseHandle_t         handle,
 *                                mb,
 *                                nnzb,
 *                                descr,
-*                                dbsr_val,
-*                                dbsr_row_ptr,
-*                                dbsr_col_ind,
+*                                dbsrVal,
+*                                dbsrRowPtr,
+*                                dbsrColInd,
 *                                bsr_dim,
 *                                info,
 *                                solve_policy,
@@ -3207,9 +3207,9 @@ hipsparseStatus_t hipsparseZbsrsv2_analysis(hipsparseHandle_t         handle,
 *                             nnzb,
 *                             &alpha,
 *                             descr,
-*                             dbsr_val,
-*                             dbsr_row_ptr,
-*                             dbsr_col_ind,
+*                             dbsrVal,
+*                             dbsrRowPtr,
+*                             dbsrColInd,
 *                             bsr_dim,
 *                             info,
 *                             dx,
@@ -3235,9 +3235,9 @@ hipsparseStatus_t hipsparseZbsrsv2_analysis(hipsparseHandle_t         handle,
 *      hipsparseDestroy(handle);
 *
 *      // Clear device memory
-*      hipFree(dbsr_row_ptr);
-*      hipFree(dbsr_col_ind);
-*      hipFree(dbsr_val);
+*      hipFree(dbsrRowPtr);
+*      hipFree(dbsrColInd);
+*      hipFree(dbsrVal);
 *      hipFree(dx);
 *      hipFree(dy);
 *      hipFree(dbuffer);
@@ -3484,7 +3484,7 @@ hipsparseStatus_t hipsparseZgemvi(hipsparseHandle_t       handle,
  *  \f[
  *    op(A) = \left\{
  *    \begin{array}{ll}
- *        A,   & \text{if trans_A == HIPSPARSE_OPERATION_NON_TRANSPOSE} \\
+ *        A,   & \text{if transA == HIPSPARSE_OPERATION_NON_TRANSPOSE} \\
  *    \end{array}
  *    \right.
  *  \f]
@@ -3492,8 +3492,8 @@ hipsparseStatus_t hipsparseZgemvi(hipsparseHandle_t       handle,
  *  \f[
  *    op(B) = \left\{
  *    \begin{array}{ll}
- *        B,   & \text{if trans_B == HIPSPARSE_OPERATION_NON_TRANSPOSE} \\
- *        B^T, & \text{if trans_B == HIPSPARSE_OPERATION_TRANSPOSE} \\
+ *        B,   & \text{if transB == HIPSPARSE_OPERATION_NON_TRANSPOSE} \\
+ *        B^T, & \text{if transB == HIPSPARSE_OPERATION_TRANSPOSE} \\
  *    \end{array}
  *    \right.
  *  \f]
@@ -3503,7 +3503,7 @@ hipsparseStatus_t hipsparseZgemvi(hipsparseHandle_t       handle,
  *  It may return before the actual computation has finished.
  *
  *  \note
- *  Currently, only \p trans_A == \ref HIPSPARSE_OPERATION_NON_TRANSPOSE is supported.
+ *  Currently, only \p transA == \ref HIPSPARSE_OPERATION_NON_TRANSPOSE is supported.
  *
  *  \par Example
  *  \code{.c}
@@ -3516,34 +3516,34 @@ hipsparseStatus_t hipsparseZgemvi(hipsparseHandle_t       handle,
  *      //     0 0 0 7 8 0
  *      //     0 0 1 2 4 1
  *
- *      int block_dim = 2;
+ *      int blockDim = 2;
  *      int mb   = 2;
  *      int kb   = 3;
  *      int nnzb = 4;
  *      hipsparseDirection_t dir = HIPSPARSE_DIRECTION_ROW;
  *
- *      int hbsr_row_ptr[2 + 1]   = {0, 2, 4};
- *      int hbsr_col_ind[4]       = {0, 1, 1, 2};
- *      float hbsr_val[4 * 2 * 2] = {1, 2, 0, 4, 0, 3, 5, 0, 0, 7, 1, 2, 8, 0, 4, 1};
+ *      int hbsrRowPtr[2 + 1]   = {0, 2, 4};
+ *      int hbsrColInd[4]       = {0, 1, 1, 2};
+ *      float hbsrVal[4 * 2 * 2] = {1, 2, 0, 4, 0, 3, 5, 0, 0, 7, 1, 2, 8, 0, 4, 1};
  *
  *      // Set dimension n of B
  *      int n = 3;
- *      int m = mb * block_dim;
- *      int k = kb * block_dim;
+ *      int m = mb * blockDim;
+ *      int k = kb * blockDim;
  *
  *      // Allocate and generate dense matrix B (k x n)
  *      float hB[6 * 3] = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 
  *                      11.0f, 12.0f, 13.0f, 14.0f, 15.0f, 16.0f, 17.0f, 18.0f};
  *
- *      int* dbsr_row_ptr = NULL;
- *      int* dbsr_col_ind = NULL;
- *      float* dbsr_val = NULL;
- *      hipMalloc((void**)&dbsr_row_ptr, sizeof(int) * (mb + 1));
- *      hipMalloc((void**)&dbsr_col_ind, sizeof(int) * nnzb);
- *      hipMalloc((void**)&dbsr_val, sizeof(float) * nnzb * block_dim * block_dim);
- *      hipMemcpy(dbsr_row_ptr, hbsr_row_ptr, sizeof(int) * (mb + 1), hipMemcpyHostToDevice);
- *      hipMemcpy(dbsr_col_ind, hbsr_col_ind, sizeof(int) * nnzb, hipMemcpyHostToDevice);
- *      hipMemcpy(dbsr_val, hbsr_val, sizeof(float) * nnzb * block_dim * block_dim, hipMemcpyHostToDevice);
+ *      int* dbsrRowPtr = NULL;
+ *      int* dbsrColInd = NULL;
+ *      float* dbsrVal = NULL;
+ *      hipMalloc((void**)&dbsrRowPtr, sizeof(int) * (mb + 1));
+ *      hipMalloc((void**)&dbsrColInd, sizeof(int) * nnzb);
+ *      hipMalloc((void**)&dbsrVal, sizeof(float) * nnzb * blockDim * blockDim);
+ *      hipMemcpy(dbsrRowPtr, hbsrRowPtr, sizeof(int) * (mb + 1), hipMemcpyHostToDevice);
+ *      hipMemcpy(dbsrColInd, hbsrColInd, sizeof(int) * nnzb, hipMemcpyHostToDevice);
+ *      hipMemcpy(dbsrVal, hbsrVal, sizeof(float) * nnzb * blockDim * blockDim, hipMemcpyHostToDevice);
  *
  *      // Copy B to the device
  *      float* dB;
@@ -3573,10 +3573,10 @@ hipsparseStatus_t hipsparseZgemvi(hipsparseHandle_t       handle,
  *                      nnzb,
  *                      &alpha,
  *                      descr,
- *                      dbsr_val,
- *                      dbsr_row_ptr,
- *                      dbsr_col_ind,
- *                      block_dim,
+ *                      dbsrVal,
+ *                      dbsrRowPtr,
+ *                      dbsrColInd,
+ *                      blockDim,
  *                      dB,
  *                      k,
  *                      &beta,
@@ -3587,9 +3587,9 @@ hipsparseStatus_t hipsparseZgemvi(hipsparseHandle_t       handle,
  *      float hC[6 * 3];
  *      hipMemcpy(hC, dC, sizeof(float) * m * n, hipMemcpyDeviceToHost);
  *
- *      hipFree(dbsr_row_ptr);
- *      hipFree(dbsr_col_ind);
- *      hipFree(dbsr_val);
+ *      hipFree(dbsrRowPtr);
+ *      hipFree(dbsrColInd);
+ *      hipFree(dbsrVal);
  *      hipFree(dB);
  *      hipFree(dC);
  *  \endcode
@@ -3693,9 +3693,9 @@ hipsparseStatus_t hipsparseZbsrmm(hipsparseHandle_t         handle,
 *  \f[
 *    op(A) = \left\{
 *    \begin{array}{ll}
-*        A,   & \text{if trans_A == HIPSPARSE_OPERATION_NON_TRANSPOSE} \\
-*        A^T, & \text{if trans_A == HIPSPARSE_OPERATION_TRANSPOSE} \\
-*        A^H, & \text{if trans_A == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE}
+*        A,   & \text{if transA == HIPSPARSE_OPERATION_NON_TRANSPOSE} \\
+*        A^T, & \text{if transA == HIPSPARSE_OPERATION_TRANSPOSE} \\
+*        A^H, & \text{if transA == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE}
 *    \end{array}
 *    \right.
 *  \f]
@@ -3707,9 +3707,9 @@ hipsparseStatus_t hipsparseZbsrmm(hipsparseHandle_t         handle,
 *          {
 *              C[i][j] = beta * C[i][j];
 *
-*              for(k = csr_row_ptr[i]; k < csr_row_ptr[i + 1]; ++k)
+*              for(k = csrRowPtr[i]; k < csrRowPtr[i + 1]; ++k)
 *              {
-*                  C[i][j] += alpha * csr_val[k] * B[csr_col_ind[k]][j];
+*                  C[i][j] += alpha * csrVal[k] * B[csrColInd[k]][j];
 *              }
 *          }
 *      }
@@ -3735,9 +3735,9 @@ hipsparseStatus_t hipsparseZbsrmm(hipsparseHandle_t         handle,
 *      int nnz = 11;
 *      hipsparseDirection_t dir = HIPSPARSE_DIRECTION_ROW;
 *
-*      int hcsr_row_ptr[4 + 1] = {0, 3, 5, 7, 11};
-*      int hcsr_col_ind[11]    = {0, 1, 3, 1, 2, 3, 4, 2, 3, 4, 5};
-*      float hcsr_val[11]      = {1, 2, 3, 4, 5, 7, 8, 1, 2, 4, 1};
+*      int hcsrRowPtr[4 + 1] = {0, 3, 5, 7, 11};
+*      int hcsrColInd[11]    = {0, 1, 3, 1, 2, 3, 4, 2, 3, 4, 5};
+*      float hcsrVal[11]      = {1, 2, 3, 4, 5, 7, 8, 1, 2, 4, 1};
 *
 *      // Set dimension n of B
 *      int n = 3;
@@ -3746,15 +3746,15 @@ hipsparseStatus_t hipsparseZbsrmm(hipsparseHandle_t         handle,
 *      float hB[6 * 3] = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 
 *                         11.0f, 12.0f, 13.0f, 14.0f, 15.0f, 16.0f, 17.0f, 18.0f};
 *
-*      int* dcsr_row_ptr = NULL;
-*      int* dcsr_col_ind = NULL;
-*      float* dcsr_val = NULL;
-*      hipMalloc((void**)&dcsr_row_ptr, sizeof(int) * (m + 1));
-*      hipMalloc((void**)&dcsr_col_ind, sizeof(int) * nnz);
-*      hipMalloc((void**)&dcsr_val, sizeof(float) * nnz);
-*      hipMemcpy(dcsr_row_ptr, hcsr_row_ptr, sizeof(int) * (m + 1), hipMemcpyHostToDevice);
-*      hipMemcpy(dcsr_col_ind, hcsr_col_ind, sizeof(int) * nnz, hipMemcpyHostToDevice);
-*      hipMemcpy(dcsr_val, hcsr_val, sizeof(float) * nnz, hipMemcpyHostToDevice);
+*      int* dcsrRowPtr = NULL;
+*      int* dcsrColInd = NULL;
+*      float* dcsrVal = NULL;
+*      hipMalloc((void**)&dcsrRowPtr, sizeof(int) * (m + 1));
+*      hipMalloc((void**)&dcsrColInd, sizeof(int) * nnz);
+*      hipMalloc((void**)&dcsrVal, sizeof(float) * nnz);
+*      hipMemcpy(dcsrRowPtr, hcsrRowPtr, sizeof(int) * (m + 1), hipMemcpyHostToDevice);
+*      hipMemcpy(dcsrColInd, hcsrColInd, sizeof(int) * nnz, hipMemcpyHostToDevice);
+*      hipMemcpy(dcsrVal, hcsrVal, sizeof(float) * nnz, hipMemcpyHostToDevice);
 *
 *      // Copy B to the device
 *      float* dB;
@@ -3782,9 +3782,9 @@ hipsparseStatus_t hipsparseZbsrmm(hipsparseHandle_t         handle,
 *                      nnz,
 *                      &alpha,
 *                      descr,
-*                      dcsr_val,
-*                      dcsr_row_ptr,
-*                      dcsr_col_ind,
+*                      dcsrVal,
+*                      dcsrRowPtr,
+*                      dcsrColInd,
 *                      dB,
 *                      k,
 *                      &beta,
@@ -3795,9 +3795,9 @@ hipsparseStatus_t hipsparseZbsrmm(hipsparseHandle_t         handle,
 *      float hC[6 * 3];
 *      hipMemcpy(hC, dC, sizeof(float) * m * n, hipMemcpyDeviceToHost);
 *
-*      hipFree(dcsr_row_ptr);
-*      hipFree(dcsr_col_ind);
-*      hipFree(dcsr_val);
+*      hipFree(dcsrRowPtr);
+*      hipFree(dcsrColInd);
+*      hipFree(dcsrVal);
 *      hipFree(dB);
 *      hipFree(dC);
 *  \endcode
@@ -3894,9 +3894,9 @@ hipsparseStatus_t hipsparseZcsrmm(hipsparseHandle_t         handle,
 *  \f[
 *    op(A) = \left\{
 *    \begin{array}{ll}
-*        A,   & \text{if trans_A == HIPSPARSE_OPERATION_NON_TRANSPOSE} \\
-*        A^T, & \text{if trans_A == HIPSPARSE_OPERATION_TRANSPOSE} \\
-*        A^H, & \text{if trans_A == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE}
+*        A,   & \text{if transA == HIPSPARSE_OPERATION_NON_TRANSPOSE} \\
+*        A^T, & \text{if transA == HIPSPARSE_OPERATION_TRANSPOSE} \\
+*        A^H, & \text{if transA == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE}
 *    \end{array}
 *    \right.
 *  \f]
@@ -3904,9 +3904,9 @@ hipsparseStatus_t hipsparseZcsrmm(hipsparseHandle_t         handle,
 *  \f[
 *    op(B) = \left\{
 *    \begin{array}{ll}
-*        B,   & \text{if trans_B == HIPSPARSE_OPERATION_NON_TRANSPOSE} \\
-*        B^T, & \text{if trans_B == HIPSPARSE_OPERATION_TRANSPOSE} \\
-*        B^H, & \text{if trans_B == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE}
+*        B,   & \text{if transB == HIPSPARSE_OPERATION_NON_TRANSPOSE} \\
+*        B^T, & \text{if transB == HIPSPARSE_OPERATION_TRANSPOSE} \\
+*        B^H, & \text{if transB == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE}
 *    \end{array}
 *    \right.
 *  \f]
@@ -3918,9 +3918,9 @@ hipsparseStatus_t hipsparseZcsrmm(hipsparseHandle_t         handle,
 *          {
 *              C[i][j] = beta * C[i][j];
 *
-*              for(k = csr_row_ptr[i]; k < csr_row_ptr[i + 1]; ++k)
+*              for(k = csrRowPtr[i]; k < csrRowPtr[i + 1]; ++k)
 *              {
-*                  C[i][j] += alpha * csr_val[k] * B[csr_col_ind[k]][j];
+*                  C[i][j] += alpha * csrVal[k] * B[csrColInd[k]][j];
 *              }
 *          }
 *      }
@@ -4216,9 +4216,9 @@ hipsparseStatus_t hipsparseZbsrsm2_analysis(hipsparseHandle_t         handle,
 *  \f[
 *    op(A) = \left\{
 *    \begin{array}{ll}
-*        A,   & \text{if trans_A == HIPSPARSE_OPERATION_NON_TRANSPOSE} \\
-*        A^T, & \text{if trans_A == HIPSPARSE_OPERATION_TRANSPOSE} \\
-*        A^H, & \text{if trans_A == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE}
+*        A,   & \text{if transA == HIPSPARSE_OPERATION_NON_TRANSPOSE} \\
+*        A^T, & \text{if transA == HIPSPARSE_OPERATION_TRANSPOSE} \\
+*        A^H, & \text{if transA == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE}
 *    \end{array}
 *    \right.
 *  \f]
@@ -4226,9 +4226,9 @@ hipsparseStatus_t hipsparseZbsrsm2_analysis(hipsparseHandle_t         handle,
 *  \f[
 *    op(X) = \left\{
 *    \begin{array}{ll}
-*        X,   & \text{if trans_X == HIPSPARSE_OPERATION_NON_TRANSPOSE} \\
-*        X^T, & \text{if trans_X == HIPSPARSE_OPERATION_TRANSPOSE} \\
-*        X^H, & \text{if trans_X == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE}
+*        X,   & \text{if transX == HIPSPARSE_OPERATION_NON_TRANSPOSE} \\
+*        X^T, & \text{if transX == HIPSPARSE_OPERATION_TRANSPOSE} \\
+*        X^H, & \text{if transX == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE}
 *    \end{array}
 *    \right.
 *  \f]
@@ -4252,8 +4252,8 @@ hipsparseStatus_t hipsparseZbsrsm2_analysis(hipsparseHandle_t         handle,
 *  It may return before the actual computation has finished.
 *
 *  \note
-*  Currently, only \p trans_A != \ref HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE and
-*  \p trans_X != \ref HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE is supported.
+*  Currently, only \p transA != \ref HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE and
+*  \p transX != \ref HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE is supported.
 *
 *  \par Example
 *  \code{.c}
@@ -4293,13 +4293,13 @@ hipsparseStatus_t hipsparseZbsrsm2_analysis(hipsparseHandle_t         handle,
 *      int nnzb = 3;
 *
 *      // BSR row pointers
-*      int hbsr_row_ptr[3] = {0, 1, 3};
+*      int hbsrRowPtr[3] = {0, 1, 3};
 *
 *      // BSR column indices
-*      int hbsr_col_ind[3] = {0, 0, 1};
+*      int hbsrColInd[3] = {0, 0, 1};
 *
 *      // BSR values
-*      double hbsr_val[12] = {1.0, 2.0, 0.0, 3.0, 4.0, 7.0, 5.0, 0.0, 6.0, 8.0, 0.0, 9.0};
+*      double hbsrVal[12] = {1.0, 2.0, 0.0, 3.0, 4.0, 7.0, 5.0, 0.0, 6.0, 8.0, 0.0, 9.0};
 *
 *      // Storage scheme of the BSR blocks
 *      hipsparseDirection_t dir = HIPSPARSE_DIRECTION_COLUMN;
@@ -4322,21 +4322,21 @@ hipsparseStatus_t hipsparseZbsrsm2_analysis(hipsparseHandle_t         handle,
 *      double hX[16];
 *
 *      // Offload data to device
-*      int* dbsr_row_ptr;
-*      int* dbsr_col_ind;
-*      double*        dbsr_val;
+*      int* dbsrRowPtr;
+*      int* dbsrColInd;
+*      double*        dbsrVal;
 *      double*        dB;
 *      double*        dX;
 *
-*      hipMalloc((void**)&dbsr_row_ptr, sizeof(int) * (mb + 1));
-*      hipMalloc((void**)&dbsr_col_ind, sizeof(int) * nnzb);
-*      hipMalloc((void**)&dbsr_val, sizeof(double) * nnzb * bsr_dim * bsr_dim);
+*      hipMalloc((void**)&dbsrRowPtr, sizeof(int) * (mb + 1));
+*      hipMalloc((void**)&dbsrColInd, sizeof(int) * nnzb);
+*      hipMalloc((void**)&dbsrVal, sizeof(double) * nnzb * bsr_dim * bsr_dim);
 *      hipMalloc((void**)&dB, sizeof(double) * nb * bsr_dim * nrhs);
 *      hipMalloc((void**)&dX, sizeof(double) * mb * bsr_dim * nrhs);
 *
-*      hipMemcpy(dbsr_row_ptr, hbsr_row_ptr, sizeof(int) * (mb + 1), hipMemcpyHostToDevice);
-*      hipMemcpy(dbsr_col_ind, hbsr_col_ind, sizeof(int) * nnzb, hipMemcpyHostToDevice);
-*      hipMemcpy(dbsr_val, hbsr_val, sizeof(double) * nnzb * bsr_dim * bsr_dim, hipMemcpyHostToDevice);
+*      hipMemcpy(dbsrRowPtr, hbsrRowPtr, sizeof(int) * (mb + 1), hipMemcpyHostToDevice);
+*      hipMemcpy(dbsrColInd, hbsrColInd, sizeof(int) * nnzb, hipMemcpyHostToDevice);
+*      hipMemcpy(dbsrVal, hbsrVal, sizeof(double) * nnzb * bsr_dim * bsr_dim, hipMemcpyHostToDevice);
 *      hipMemcpy(dB, hB, sizeof(double) * nb * bsr_dim * nrhs, hipMemcpyHostToDevice);
 *
 *      // Matrix descriptor
@@ -4363,9 +4363,9 @@ hipsparseStatus_t hipsparseZbsrsm2_analysis(hipsparseHandle_t         handle,
 *                                  nrhs,
 *                                  nnzb,
 *                                  descr,
-*                                  dbsr_val,
-*                                  dbsr_row_ptr,
-*                                  dbsr_col_ind,
+*                                  dbsrVal,
+*                                  dbsrRowPtr,
+*                                  dbsrColInd,
 *                                  bsr_dim,
 *                                  info,
 *                                  &buffer_size);
@@ -4383,9 +4383,9 @@ hipsparseStatus_t hipsparseZbsrsm2_analysis(hipsparseHandle_t         handle,
 *                                nrhs,
 *                                nnzb,
 *                                descr,
-*                                dbsr_val,
-*                                dbsr_row_ptr,
-*                                dbsr_col_ind,
+*                                dbsrVal,
+*                                dbsrRowPtr,
+*                                dbsrColInd,
 *                                bsr_dim,
 *                                info,
 *                                solve_policy,
@@ -4401,9 +4401,9 @@ hipsparseStatus_t hipsparseZbsrsm2_analysis(hipsparseHandle_t         handle,
 *                             nnzb,
 *                             &alpha,
 *                             descr,
-*                             dbsr_val,
-*                             dbsr_row_ptr,
-*                             dbsr_col_ind,
+*                             dbsrVal,
+*                             dbsrRowPtr,
+*                             dbsrColInd,
 *                             bsr_dim,
 *                             info,
 *                             dB,
@@ -4431,9 +4431,9 @@ hipsparseStatus_t hipsparseZbsrsm2_analysis(hipsparseHandle_t         handle,
 *      hipsparseDestroy(handle);
 *
 *      // Clear device memory
-*      hipFree(dbsr_row_ptr);
-*      hipFree(dbsr_col_ind);
-*      hipFree(dbsr_val);
+*      hipFree(dbsrRowPtr);
+*      hipFree(dbsrColInd);
+*      hipFree(dbsrVal);
 *      hipFree(dB);
 *      hipFree(dX);
 *      hipFree(dbuffer);
@@ -4754,9 +4754,9 @@ hipsparseStatus_t hipsparseZcsrsm2_analysis(hipsparseHandle_t         handle,
 *  \f[
 *    op(A) = \left\{
 *    \begin{array}{ll}
-*        A,   & \text{if trans_A == HIPSPARSE_OPERATION_NON_TRANSPOSE} \\
-*        A^T, & \text{if trans_A == HIPSPARSE_OPERATION_TRANSPOSE} \\
-*        A^H, & \text{if trans_A == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE}
+*        A,   & \text{if transA == HIPSPARSE_OPERATION_NON_TRANSPOSE} \\
+*        A^T, & \text{if transA == HIPSPARSE_OPERATION_TRANSPOSE} \\
+*        A^H, & \text{if transA == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE}
 *    \end{array}
 *    \right.
 *  \f]
@@ -4764,9 +4764,9 @@ hipsparseStatus_t hipsparseZcsrsm2_analysis(hipsparseHandle_t         handle,
 *  \f[
 *    op(B) = \left\{
 *    \begin{array}{ll}
-*        B,   & \text{if trans_B == HIPSPARSE_OPERATION_NON_TRANSPOSE} \\
-*        B^T, & \text{if trans_B == HIPSPARSE_OPERATION_TRANSPOSE} \\
-*        B^H, & \text{if trans_B == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE}
+*        B,   & \text{if transB == HIPSPARSE_OPERATION_NON_TRANSPOSE} \\
+*        B^T, & \text{if transB == HIPSPARSE_OPERATION_TRANSPOSE} \\
+*        B^H, & \text{if transB == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE}
 *    \end{array}
 *    \right.
 *  \f]
@@ -4774,9 +4774,9 @@ hipsparseStatus_t hipsparseZcsrsm2_analysis(hipsparseHandle_t         handle,
 *  \f[
 *    op(X) = \left\{
 *    \begin{array}{ll}
-*        X,   & \text{if trans_B == HIPSPARSE_OPERATION_NON_TRANSPOSE} \\
-*        X^T, & \text{if trans_B == HIPSPARSE_OPERATION_TRANSPOSE} \\
-*        X^H, & \text{if trans_B == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE}
+*        X,   & \text{if transB == HIPSPARSE_OPERATION_NON_TRANSPOSE} \\
+*        X^T, & \text{if transB == HIPSPARSE_OPERATION_TRANSPOSE} \\
+*        X^H, & \text{if transB == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE}
 *    \end{array}
 *    \right.
 *  \f]
@@ -4798,8 +4798,8 @@ hipsparseStatus_t hipsparseZcsrsm2_analysis(hipsparseHandle_t         handle,
 *  It may return before the actual computation has finished.
 *
 *  \note
-*  Currently, only \p trans_A != \ref HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE and
-*  \p trans_B != \ref HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE is supported.
+*  Currently, only \p transA != \ref HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE and
+*  \p transB != \ref HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE is supported.
 *
 *  \par Example
 *  \code{.c}
@@ -4823,13 +4823,13 @@ hipsparseStatus_t hipsparseZcsrsm2_analysis(hipsparseHandle_t         handle,
 *      int nnz = 9;
 *
 *      // CSR row pointers
-*      int hcsr_row_ptr[5] = {0, 1, 3, 6, 9};
+*      int hcsrRowPtr[5] = {0, 1, 3, 6, 9};
 *
 *      // CSR column indices
-*      int hcsr_col_ind[9] = {0, 0, 1, 0, 1, 2, 0, 2, 3};
+*      int hcsrColInd[9] = {0, 0, 1, 0, 1, 2, 0, 2, 3};
 *
 *      // CSR values
-*      double hcsr_val[9] = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0};
+*      double hcsrVal[9] = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0};
 *
 *      // Transposition of the matrix and rhs matrix
 *      hipsparseOperation_t transA = HIPSPARSE_OPERATION_NON_TRANSPOSE;
@@ -4847,19 +4847,19 @@ hipsparseStatus_t hipsparseZcsrsm2_analysis(hipsparseHandle_t         handle,
 *      double hB[16] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
 *
 *      // Offload data to device
-*      int* dcsr_row_ptr;
-*      int* dcsr_col_ind;
-*      double*        dcsr_val;
+*      int* dcsrRowPtr;
+*      int* dcsrColInd;
+*      double*        dcsrVal;
 *      double*        dB;
 *
-*      hipMalloc((void**)&dcsr_row_ptr, sizeof(int) * (m + 1));
-*      hipMalloc((void**)&dcsr_col_ind, sizeof(int) * nnz);
-*      hipMalloc((void**)&dcsr_val, sizeof(double) * nnz);
+*      hipMalloc((void**)&dcsrRowPtr, sizeof(int) * (m + 1));
+*      hipMalloc((void**)&dcsrColInd, sizeof(int) * nnz);
+*      hipMalloc((void**)&dcsrVal, sizeof(double) * nnz);
 *      hipMalloc((void**)&dB, sizeof(double) * n * nrhs);
 *
-*      hipMemcpy(dcsr_row_ptr, hcsr_row_ptr, sizeof(int) * (m + 1), hipMemcpyHostToDevice);
-*      hipMemcpy(dcsr_col_ind, hcsr_col_ind, sizeof(int) * nnz, hipMemcpyHostToDevice);
-*      hipMemcpy(dcsr_val, hcsr_val, sizeof(double) * nnz, hipMemcpyHostToDevice);
+*      hipMemcpy(dcsrRowPtr, hcsrRowPtr, sizeof(int) * (m + 1), hipMemcpyHostToDevice);
+*      hipMemcpy(dcsrColInd, hcsrColInd, sizeof(int) * nnz, hipMemcpyHostToDevice);
+*      hipMemcpy(dcsrVal, hcsrVal, sizeof(double) * nnz, hipMemcpyHostToDevice);
 *      hipMemcpy(dB, hB, sizeof(double) * n * nrhs, hipMemcpyHostToDevice);
 *
 *      // Matrix descriptor
@@ -4887,9 +4887,9 @@ hipsparseStatus_t hipsparseZcsrsm2_analysis(hipsparseHandle_t         handle,
 *                                     nnz,
 *                                     &alpha,
 *                                     descr,
-*                                     dcsr_val,
-*                                     dcsr_row_ptr,
-*                                     dcsr_col_ind,
+*                                     dcsrVal,
+*                                     dcsrRowPtr,
+*                                     dcsrColInd,
 *                                     dB,
 *                                     ldb,
 *                                     info,
@@ -4910,9 +4910,9 @@ hipsparseStatus_t hipsparseZcsrsm2_analysis(hipsparseHandle_t         handle,
 *                                nnz,
 *                                &alpha,
 *                                descr,
-*                                dcsr_val,
-*                                dcsr_row_ptr,
-*                                dcsr_col_ind,
+*                                dcsrVal,
+*                                dcsrRowPtr,
+*                                dcsrColInd,
 *                                dB,
 *                                ldb,
 *                                info,
@@ -4929,9 +4929,9 @@ hipsparseStatus_t hipsparseZcsrsm2_analysis(hipsparseHandle_t         handle,
 *                             nnz,
 *                             &alpha,
 *                             descr,
-*                             dcsr_val,
-*                             dcsr_row_ptr,
-*                             dcsr_col_ind,
+*                             dcsrVal,
+*                             dcsrRowPtr,
+*                             dcsrColInd,
 *                             dB,
 *                             ldb,
 *                             info,
@@ -4956,9 +4956,9 @@ hipsparseStatus_t hipsparseZcsrsm2_analysis(hipsparseHandle_t         handle,
 *      hipsparseDestroy(handle);
 *
 *      // Clear device memory
-*      hipFree(dcsr_row_ptr);
-*      hipFree(dcsr_col_ind);
-*      hipFree(dcsr_val);
+*      hipFree(dcsrRowPtr);
+*      hipFree(dcsrColInd);
+*      hipFree(dcsrVal);
 *      hipFree(dB);
 *      hipFree(dbuffer);
 *  \endcode
@@ -5071,22 +5071,22 @@ hipsparseStatus_t hipsparseZcsrsm2_solve(hipsparseHandle_t         handle,
 *    float alpha = 0.5f;
 *    float beta  = 0.25f;
 *
-*    std::vector<int> hcsc_col_ptr = {0, 2, 5, 7, 8, 10};
-*    std::vector<int> hcsc_row_ind = {0, 2, 0, 1, 3, 1, 3, 2, 0, 2}; 
+*    std::vector<int> hcscColPtr = {0, 2, 5, 7, 8, 10};
+*    std::vector<int> hcscRowInd = {0, 2, 0, 1, 3, 1, 3, 2, 0, 2}; 
 *    std::vector<float> hcsc_val     = {1, 6, 2, 4, 9, 5, 2, 7, 3, 8}; 
 *
 *    std::vector<float> hA(nnz_A, 1.0f);
 *    std::vector<float> hC(nnz_C, 1.0f);
 *
-*    int *dcsc_col_ptr;
-*    int *dcsc_row_ind;
+*    int *dcscColPtr;
+*    int *dcscRowInd;
 *    float *dcsc_val;
-*    hipMalloc((void**)&dcsc_col_ptr, sizeof(int) * (n + 1));
-*    hipMalloc((void**)&dcsc_row_ind, sizeof(int) * nnz_B);
+*    hipMalloc((void**)&dcscColPtr, sizeof(int) * (n + 1));
+*    hipMalloc((void**)&dcscRowInd, sizeof(int) * nnz_B);
 *    hipMalloc((void**)&dcsc_val, sizeof(float) * nnz_B);
 *
-*    hipMemcpy(dcsc_col_ptr, hcsc_col_ptr.data(), sizeof(int) * (n + 1), hipMemcpyHostToDevice);
-*    hipMemcpy(dcsc_row_ind, hcsc_row_ind.data(), sizeof(int) * nnz_B, hipMemcpyHostToDevice);
+*    hipMemcpy(dcscColPtr, hcscColPtr.data(), sizeof(int) * (n + 1), hipMemcpyHostToDevice);
+*    hipMemcpy(dcscRowInd, hcscRowInd.data(), sizeof(int) * nnz_B, hipMemcpyHostToDevice);
 *    hipMemcpy(dcsc_val, hcsc_val.data(), sizeof(float) * nnz_B, hipMemcpyHostToDevice);
 *
 *    hipsparseHandle_t handle;
@@ -5112,8 +5112,8 @@ hipsparseStatus_t hipsparseZcsrsm2_solve(hipsparseHandle_t         handle,
 *                    dA, 
 *                    lda, 
 *                    dcsc_val, 
-*                    dcsc_col_ptr, 
-*                    dcsc_row_ind, 
+*                    dcscColPtr, 
+*                    dcscRowInd, 
 *                    &beta, 
 *                    dC, 
 *                    ldc);
@@ -5124,8 +5124,8 @@ hipsparseStatus_t hipsparseZcsrsm2_solve(hipsparseHandle_t         handle,
 *    // Destroy matrix descriptors and handles
 *    hipsparseDestroy(handle);
 *
-*    hipFree(dcsc_col_ptr);
-*    hipFree(dcsc_row_ind);
+*    hipFree(dcscColPtr);
+*    hipFree(dcscRowInd);
 *    hipFree(dcsc_val);
 *    hipFree(dA);
 *    hipFree(dC);
@@ -5212,9 +5212,15 @@ hipsparseStatus_t hipsparseZgemmi(hipsparseHandle_t       handle,
 *  \details
 *  \p hipsparseXcsrgeamNnz computes the total CSR non-zero elements and the CSR row
 *  offsets, that point to the start of every row of the sparse CSR matrix, of the
-*  resulting matrix C. It is assumed that \p csr_row_ptr_C has been allocated with
-*  size \p m + 1.
+*  resulting matrix C. It is assumed that \p csrRowPtrC has been allocated with
+*  size \p m+1. The desired index base in the output CSR matrix is set in the 
+*  hipsparseMatDescr_t. See hipsparseSetMatIndexBase().
 *
+*  For full code example, see hipsparseScsrgeam().
+*
+*  \note
+*  As indicated, nnzTotalDevHostPtr can point either to host or device memory. This is controlled 
+*  by setting the pointer mode. See hipsparseSetPointerMode().
 *  \note
 *  This function is non blocking and executed asynchronously with respect to the host.
 *  It may return before the actual computation has finished.
@@ -5251,15 +5257,139 @@ hipsparseStatus_t hipsparseXcsrgeamNnz(hipsparseHandle_t         handle,
 *    C := \alpha \cdot A + \beta \cdot B.
 *  \f]
 *
-*  It is assumed that \p csr_row_ptr_C has already been filled and that \p csr_val_C and
-*  \p csr_col_ind_C are allocated by the user. \p csr_row_ptr_C and allocation size of
-*  \p csr_col_ind_C and \p csr_val_C is defined by the number of non-zero elements of
-*  the sparse CSR matrix C. Both can be obtained by hipsparseXcsrgeamNnz().
+*  This computation involves a multi step process. First the user must allocate \p csrRowPtrC
+*  to have size \p m+1. The user then calls \p hipsparseXcsrgeamNnz which fills in the \p csrRowPtrC
+*  array as well as computes the total number of nonzeros in C, \p nnzC. The user then allocates both 
+*  arrays \p csrColIndC and \p csrValC to have size \p nnzC and calls \p hipsparseXcsrgeam to complete 
+*  the computation. The desired index base in the output CSR matrix C is set in the 
+*  hipsparseMatDescr_t \p descrC. See hipsparseSetMatIndexBase().
 *
 *  \note Both scalars \f$\alpha\f$ and \f$beta\f$ have to be valid.
 *  \note Currently, only \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
 *  \note This function is non blocking and executed asynchronously with respect to the
 *        host. It may return before the actual computation has finished.
+*
+*  \par Example
+*  \code{.c}
+*    int m = 4;
+*    int n = 4;
+*    int nnzA = 9;
+*    int nnzB = 6;
+*    
+*    float alpha{1.0f};
+*    float beta{1.0f};
+*
+*    // A, B, and C are m×n
+*
+*    // A
+*    // 1 0 0 2
+*    // 3 4 0 0
+*    // 5 6 7 8
+*    // 0 0 9 0
+*    std::vector<int> hcsrRowPtrA = {0, 2, 4, 8, 9};
+*    std::vector<int> hcsrColIndA = {0, 3, 0, 1, 0, 1, 2, 3, 2};
+*    std::vector<float> hcsrValA = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f};
+*
+*    // B
+*    // 0 1 0 0
+*    // 1 0 1 0
+*    // 0 1 0 1
+*    // 0 0 1 0
+*    std::vector<int> hcsrRowPtrB = {0, 1, 3, 5, 6};
+*    std::vector<int> hcsrColIndB = {1, 0, 2, 1, 3, 2};
+*    std::vector<float> hcsrValB = {1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f};
+*
+*    // Device memory management: Allocate and copy A, B
+*    int* dcsrRowPtrA;
+*    int* dcsrColIndA;
+*    float* dcsrValA;
+*    int* dcsrRowPtrB;
+*    int* dcsrColIndB;
+*    float* dcsrValB;
+*    int* dcsrRowPtrC;
+*    hipMalloc((void**)&dcsrRowPtrA, (m + 1) * sizeof(int));
+*    hipMalloc((void**)&dcsrColIndA, nnzA * sizeof(int));
+*    hipMalloc((void**)&dcsrValA, nnzA * sizeof(float));
+*    hipMalloc((void**)&dcsrRowPtrB, (m + 1) * sizeof(int));
+*    hipMalloc((void**)&dcsrColIndB, nnzB * sizeof(int));
+*    hipMalloc((void**)&dcsrValB, nnzB * sizeof(float));
+*    hipMalloc((void**)&dcsrRowPtrC, (m + 1) * sizeof(int));
+*
+*    hipMemcpy(dcsrRowPtrA, hcsrRowPtrA.data(), (m + 1) * sizeof(int), hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrColIndA, hcsrColIndA.data(), nnzA * sizeof(int), hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrValA, hcsrValA.data(), nnzA * sizeof(float), hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrRowPtrB, hcsrRowPtrB.data(), (m + 1) * sizeof(int), hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrColIndB, hcsrColIndB.data(), nnzB * sizeof(int), hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrValB, hcsrValB.data(), nnzB * sizeof(float), hipMemcpyHostToDevice);
+*
+*    hipsparseHandle_t handle;
+*    hipsparseCreate(&handle);
+*
+*    hipsparseMatDescr_t descrA;
+*    hipsparseCreateMatDescr(&descrA);
+*
+*    hipsparseMatDescr_t descrB;
+*    hipsparseCreateMatDescr(&descrB);
+*
+*    hipsparseMatDescr_t descrC;
+*    hipsparseCreateMatDescr(&descrC);
+*
+*    int nnzC;
+*    hipsparseXcsrgeamNnz(handle,
+*                        m,
+*                        n,
+*                        descrA,
+*                        nnzA,
+*                        dcsrRowPtrA,
+*                        dcsrColIndA,
+*                        descrB,
+*                        nnzB,
+*                        dcsrRowPtrB,
+*                        dcsrColIndB,
+*                        descrC,
+*                        dcsrRowPtrC,
+*                        &nnzC);
+*
+*    int* dcsrColIndC = nullptr;
+*    float* dcsrValC = nullptr;
+*    hipMalloc((void**)&dcsrColIndC, sizeof(int) * nnzC);
+*    hipMalloc((void**)&dcsrValC, sizeof(float) * nnzC);
+*
+*    hipsparseScsrgeam(handle,
+*                      m,
+*                      n,
+*                      &alpha,
+*                      descrA,
+*                      nnzA,
+*                      dcsrValA,
+*                      dcsrRowPtrA,
+*                      dcsrColIndA,
+*                      &beta,
+*                      descrB,
+*                      nnzB,
+*                      dcsrValB,
+*                      dcsrRowPtrB,
+*                      dcsrColIndB,
+*                      descrC,
+*                      dcsrValC,
+*                      dcsrRowPtrC,
+*                      dcsrColIndC);
+*
+*    hipFree(dcsrRowPtrA);
+*    hipFree(dcsrColIndA);
+*    hipFree(dcsrValA);
+*    hipFree(dcsrRowPtrB);
+*    hipFree(dcsrColIndB);
+*    hipFree(dcsrValB);
+*    hipFree(dcsrRowPtrC);
+*    hipFree(dcsrColIndC);
+*    hipFree(dcsrValC);
+*
+*    hipsparseDestroyMatDescr(descrA);
+*    hipsparseDestroyMatDescr(descrB);
+*    hipsparseDestroyMatDescr(descrC);
+*    hipsparseDestroy(handle);
+*  \endcode
 */
 /**@{*/
 DEPRECATED_CUDA_10000("The routine will be removed in CUDA 11")
@@ -5355,7 +5485,7 @@ hipsparseStatus_t hipsparseZcsrgeam(hipsparseHandle_t         handle,
 *  \details
 *  \p hipsparseXcsrgeam2_bufferSizeExt returns the size of the temporary storage buffer
 *  in bytes that is required by hipsparseXcsrgeam2Nnz() and hipsparseXcsrgeam2(). The 
-*  temporary storage buffer must be allocated by the user.
+*  temporary storage buffer must be allocated by the user. 
 *
 *  \note
 *  Currently, only \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
@@ -5456,9 +5586,14 @@ hipsparseStatus_t hipsparseZcsrgeam2_bufferSizeExt(hipsparseHandle_t         han
 *  \details
 *  \p hipsparseXcsrgeam2Nnz computes the total CSR non-zero elements and the CSR row
 *  offsets, that point to the start of every row of the sparse CSR matrix, of the
-*  resulting matrix C. It is assumed that \p csr_row_ptr_C has been allocated with
-*  size \p m + 1.
+*  resulting matrix C. It is assumed that \p csrRowPtrC has been allocated with
+*  size \p m+1. The required buffer size can be obtained by hipsparseXcsrgeam2_bufferSizeExt(). 
+*  The desired index base in the output CSR matrix C is set in the hipsparseMatDescr_t 
+*  \p descrC. See hipsparseSetMatIndexBase().
 *
+*  \note
+*  As indicated, nnzTotalDevHostPtr can point either to host or device memory. This is controlled 
+*  by setting the pointer mode. See hipsparseSetPointerMode().
 *  \note
 *  This function is non blocking and executed asynchronously with respect to the host.
 *  It may return before the actual computation has finished.
@@ -5495,15 +5630,170 @@ hipsparseStatus_t hipsparseXcsrgeam2Nnz(hipsparseHandle_t         handle,
 *    C := \alpha \cdot A + \beta \cdot B.
 *  \f]
 *
-*  It is assumed that \p csr_row_ptr_C has already been filled and that \p csr_val_C and
-*  \p csr_col_ind_C are allocated by the user. \p csr_row_ptr_C and allocation size of
-*  \p csr_col_ind_C and \p csr_val_C is defined by the number of non-zero elements of
-*  the sparse CSR matrix C. Both can be obtained by hipsparseXcsrgeam2Nnz().
+*  This computation involves a multi step process. First the user must call 
+*  \p hipsparseZcsrgeam2_bufferSizeExt in order to determine the required user allocated 
+*  temporary buffer size. The user then allocates this buffer and also allocates \p csrRowPtrC
+*  to have size \p m+1. Both the temporary storage buffer and \p csrRowPtrC array are then passed to 
+*  \p hipsparseXcsrgeam2Nnz which fills in the \p csrRowPtrC array as well as computes the total number
+*  of nonzeros in C, \p nnzC. The user then allocates both arrays \p csrColIndC and \p csrValC to have 
+*  size \p nnzC and calls \p hipsparseXcsrgeam2 to complete the computation. The desired index base in 
+*  the output CSR matrix C is set in the hipsparseMatDescr_t \p descrC. See hipsparseSetMatIndexBase().
 *
 *  \note Both scalars \f$\alpha\f$ and \f$beta\f$ have to be valid.
 *  \note Currently, only \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
 *  \note This function is non blocking and executed asynchronously with respect to the
 *        host. It may return before the actual computation has finished.
+*
+*  \par Example
+*  \code{.c}
+*    int m = 4;
+*    int n = 4;
+*    int nnzA = 9;
+*    int nnzB = 6;
+*    
+*    float alpha{1.0f};
+*    float beta{1.0f};
+*
+*    // A, B, and C are m×n
+*
+*    // A
+*    // 1 0 0 2
+*    // 3 4 0 0
+*    // 5 6 7 8
+*    // 0 0 9 0
+*    std::vector<int> hcsrRowPtrA = {0, 2, 4, 8, 9};
+*    std::vector<int> hcsrColIndA = {0, 3, 0, 1, 0, 1, 2, 3, 2};
+*    std::vector<float> hcsrValA = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f};
+*
+*    // B
+*    // 0 1 0 0
+*    // 1 0 1 0
+*    // 0 1 0 1
+*    // 0 0 1 0
+*    std::vector<int> hcsrRowPtrB = {0, 1, 3, 5, 6};
+*    std::vector<int> hcsrColIndB = {1, 0, 2, 1, 3, 2};
+*    std::vector<float> hcsrValB = {1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f};
+*
+*    // Device memory management: Allocate and copy A, B
+*    int* dcsrRowPtrA;
+*    int* dcsrColIndA;
+*    float* dcsrValA;
+*    int* dcsrRowPtrB;
+*    int* dcsrColIndB;
+*    float* dcsrValB;
+*    int* dcsrRowPtrC;
+*    hipMalloc((void**)&dcsrRowPtrA, (m + 1) * sizeof(int));
+*    hipMalloc((void**)&dcsrColIndA, nnzA * sizeof(int));
+*    hipMalloc((void**)&dcsrValA, nnzA * sizeof(float));
+*    hipMalloc((void**)&dcsrRowPtrB, (m + 1) * sizeof(int));
+*    hipMalloc((void**)&dcsrColIndB, nnzB * sizeof(int));
+*    hipMalloc((void**)&dcsrValB, nnzB * sizeof(float));
+*    hipMalloc((void**)&dcsrRowPtrC, (m + 1) * sizeof(int));
+*
+*    hipMemcpy(dcsrRowPtrA, hcsrRowPtrA.data(), (m + 1) * sizeof(int), hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrColIndA, hcsrColIndA.data(), nnzA * sizeof(int), hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrValA, hcsrValA.data(), nnzA * sizeof(float), hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrRowPtrB, hcsrRowPtrB.data(), (m + 1) * sizeof(int), hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrColIndB, hcsrColIndB.data(), nnzB * sizeof(int), hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrValB, hcsrValB.data(), nnzB * sizeof(float), hipMemcpyHostToDevice);
+*
+*    hipsparseHandle_t handle;
+*    hipsparseCreate(&handle);
+*
+*    hipsparseMatDescr_t descrA;
+*    hipsparseCreateMatDescr(&descrA);
+*
+*    hipsparseMatDescr_t descrB;
+*    hipsparseCreateMatDescr(&descrB);
+*
+*    hipsparseMatDescr_t descrC;
+*    hipsparseCreateMatDescr(&descrC);
+*
+*    size_t bufferSize;
+*    hipsparseScsrgeam2_bufferSizeExt(handle, 
+*                                     m, 
+*                                     n, 
+*                                     &alpha, 
+*                                     descrA, 
+*                                     nnzA, 
+*                                     dcsrValA, 
+*                                     dcsrRowPtrA, 
+*                                     dcsrColIndA, 
+*                                     &beta, 
+*                                     descrB, 
+*                                     nnzB, 
+*                                     dcsrValB, 
+*                                     dcsrRowPtrB, 
+*                                     dcsrColIndB, 
+*                                     descrC, 
+*                                     nullptr, 
+*                                     dcsrRowPtrC, 
+*                                     nullptr, 
+*                                     &bufferSize);
+*
+*    void* dbuffer = nullptr;
+*    hipMalloc((void**)&dbuffer, bufferSize);
+*
+*    int nnzC;
+*    hipsparseXcsrgeam2Nnz(handle,
+*                        m,
+*                        n,
+*                        descrA,
+*                        nnzA,
+*                        dcsrRowPtrA,
+*                        dcsrColIndA,
+*                        descrB,
+*                        nnzB,
+*                        dcsrRowPtrB,
+*                        dcsrColIndB,
+*                        descrC,
+*                        dcsrRowPtrC,
+*                        &nnzC,
+*                        dbuffer);
+*
+*    int* dcsrColIndC = nullptr;
+*    float* dcsrValC = nullptr;
+*    hipMalloc((void**)&dcsrColIndC, sizeof(int) * nnzC);
+*    hipMalloc((void**)&dcsrValC, sizeof(float) * nnzC);
+*
+*    hipsparseScsrgeam2(handle,
+*                      m,
+*                      n,
+*                      &alpha,
+*                      descrA,
+*                      nnzA,
+*                      dcsrValA,
+*                      dcsrRowPtrA,
+*                      dcsrColIndA,
+*                      &beta,
+*                      descrB,
+*                      nnzB,
+*                      dcsrValB,
+*                      dcsrRowPtrB,
+*                      dcsrColIndB,
+*                      descrC,
+*                      dcsrValC,
+*                      dcsrRowPtrC,
+*                      dcsrColIndC,
+*                      dbuffer);
+*
+*    hipFree(dcsrRowPtrA);
+*    hipFree(dcsrColIndA);
+*    hipFree(dcsrValA);
+*    hipFree(dcsrRowPtrB);
+*    hipFree(dcsrColIndB);
+*    hipFree(dcsrValB);
+*    hipFree(dcsrRowPtrC);
+*    hipFree(dcsrColIndC);
+*    hipFree(dcsrValC);
+*
+*    hipFree(dbuffer);
+*
+*    hipsparseDestroyMatDescr(descrA);
+*    hipsparseDestroyMatDescr(descrB);
+*    hipsparseDestroyMatDescr(descrC);
+*    hipsparseDestroy(handle);
+*  \endcode
 */
 /**@{*/
 HIPSPARSE_EXPORT
@@ -5602,9 +5892,13 @@ hipsparseStatus_t hipsparseZcsrgeam2(hipsparseHandle_t         handle,
 *  \details
 *  \p hipsparseXcsrgemmNnz computes the total CSR non-zero elements and the CSR row
 *  offsets, that point to the start of every row of the sparse CSR matrix, of the
-*  resulting multiplied matrix C. It is assumed that \p csr_row_ptr_C has been allocated
-*  with size \p m + 1.
+*  resulting multiplied matrix C. It is assumed that \p csrRowPtrC has been allocated
+*  with size \p m+1. The desired index base in the output CSR matrix C is set in the 
+*  hipsparseMatDescr_t \p descrC. See hipsparseSetMatIndexBase().
 *
+*  \note
+*  As indicated, nnzTotalDevHostPtr can point either to host or device memory. This is controlled 
+*  by setting the pointer mode. See hipsparseSetPointerMode().
 *  \note
 *  This function is non blocking and executed asynchronously with respect to the host.
 *  It may return before the actual computation has finished.
@@ -5614,7 +5908,7 @@ hipsparseStatus_t hipsparseZcsrgeam2(hipsparseHandle_t         handle,
 *  row, additional temporary storage buffer is allocated by the algorithm.
 *
 *  \note
-*  Currently, only \p trans_A == \p trans_B == \ref HIPSPARSE_OPERATION_NON_TRANSPOSE is
+*  Currently, only \p transA == \p transB == \ref HIPSPARSE_OPERATION_NON_TRANSPOSE is
 *  supported.
 *
 *  \note
@@ -5646,8 +5940,8 @@ hipsparseStatus_t hipsparseXcsrgemmNnz(hipsparseHandle_t         handle,
 *  \brief Sparse matrix sparse matrix multiplication using CSR storage format
 *
 *  \details
-*  \p hipsparseXcsrgemm multiplies the sparse \f$m \times k\f$ matrix \f$A\f$, defined in
-*  CSR storage format with the sparse \f$k \times n\f$ matrix \f$B\f$, defined in CSR
+*  \p hipsparseXcsrgemm multiplies the sparse \f$m \times k\f$ matrix \f$op(A)\f$, defined in
+*  CSR storage format with the sparse \f$k \times n\f$ matrix \f$op(B)\f$, defined in CSR
 *  storage format, and stores the result in the sparse \f$m \times n\f$ matrix \f$C\f$,
 *  defined in CSR storage format, such that
 *  \f[
@@ -5657,9 +5951,9 @@ hipsparseStatus_t hipsparseXcsrgemmNnz(hipsparseHandle_t         handle,
 *  \f[
 *    op(A) = \left\{
 *    \begin{array}{ll}
-*        A,   & \text{if trans_A == HIPSPARSE_OPERATION_NON_TRANSPOSE} \\
-*        A^T, & \text{if trans_A == HIPSPARSE_OPERATION_TRANSPOSE} \\
-*        A^H, & \text{if trans_A == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE}
+*        A,   & \text{if transA == HIPSPARSE_OPERATION_NON_TRANSPOSE} \\
+*        A^T, & \text{if transA == HIPSPARSE_OPERATION_TRANSPOSE} \\
+*        A^H, & \text{if transA == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE}
 *    \end{array}
 *    \right.
 *  \f]
@@ -5667,25 +5961,153 @@ hipsparseStatus_t hipsparseXcsrgemmNnz(hipsparseHandle_t         handle,
 *  \f[
 *    op(B) = \left\{
 *    \begin{array}{ll}
-*        B,   & \text{if trans_B == HIPSPARSE_OPERATION_NON_TRANSPOSE} \\
-*        B^T, & \text{if trans_B == HIPSPARSE_OPERATION_TRANSPOSE} \\
-*        B^H, & \text{if trans_B == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE}
+*        B,   & \text{if transB == HIPSPARSE_OPERATION_NON_TRANSPOSE} \\
+*        B^T, & \text{if transB == HIPSPARSE_OPERATION_TRANSPOSE} \\
+*        B^H, & \text{if transB == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE}
 *    \end{array}
 *    \right.
 *  \f]
 *
-*  It is assumed that \p csr_row_ptr_C has already been filled and that \p csr_val_C and
-*  \p csr_col_ind_C are allocated by the user. \p csr_row_ptr_C and allocation size of
-*  \p csr_col_ind_C and \p csr_val_C is defined by the number of non-zero elements of
-*  the sparse CSR matrix C. Both can be obtained by hipsparseXcsrgemmNnz().
+*  This computation involves a multi step process. First the user must allocate \p csrRowPtrC
+*  to have size \p m+1. The user then calls \p hipsparseXcsrgemmNnz which fills in the \p csrRowPtrC
+*  array as well as computes the total number of nonzeros in C, \p nnzC. The user then allocates both 
+*  arrays \p csrColIndC and \p csrValC to have size \p nnzC and calls \p hipsparseXcsrgemm to complete 
+*  the computation. The desired index base in the output CSR matrix C is set in the 
+*  hipsparseMatDescr_t \p descrC. See hipsparseSetMatIndexBase().
 *
-*  \note Currently, only \p trans_A == \ref HIPSPARSE_OPERATION_NON_TRANSPOSE is supported.
-*  \note Currently, only \p trans_B == \ref HIPSPARSE_OPERATION_NON_TRANSPOSE is supported.
+*  \note Currently, only \p transA == \ref HIPSPARSE_OPERATION_NON_TRANSPOSE is supported.
+*  \note Currently, only \p transB == \ref HIPSPARSE_OPERATION_NON_TRANSPOSE is supported.
 *  \note Currently, only \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
 *  \note This function is non blocking and executed asynchronously with respect to the
 *        host. It may return before the actual computation has finished.
 *  \note Please note, that for matrix products with more than 4096 non-zero entries per
 *  row, additional temporary storage buffer is allocated by the algorithm.
+*
+*  \par Example
+*  \code{.c}
+*    int m = 4;
+*    int k = 3;
+*    int n = 2;
+*    int nnzA = 7;
+*    int nnzB = 3;
+*
+*    hipsparseOperation_t transA = HIPSPARSE_OPERATION_NON_TRANSPOSE;
+*    hipsparseOperation_t transB = HIPSPARSE_OPERATION_NON_TRANSPOSE;
+*
+*    // A, B, and C are mxk, kxn, and m×n
+*
+*    // A
+*    // 1 0 0
+*    // 3 4 0
+*    // 5 6 7
+*    // 0 0 9
+*    std::vector<int> hcsrRowPtrA = {0, 1, 3, 6, 7};
+*    std::vector<int> hcsrColIndA = {0, 0, 1, 0, 1, 2, 2};
+*    std::vector<float> hcsrValA = {1.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 9.0f};
+*
+*    // B
+*    // 0 1
+*    // 1 0
+*    // 0 1
+*    std::vector<int> hcsrRowPtrB = {0, 1, 2, 3};
+*    std::vector<int> hcsrColIndB = {1, 0, 1};
+*    std::vector<float> hcsrValB = {1.0f, 1.0f, 1.0f};
+*
+*    // Device memory management: Allocate and copy A, B
+*    int* dcsrRowPtrA;
+*    int* dcsrColIndA;
+*    float* dcsrValA;
+*    int* dcsrRowPtrB;
+*    int* dcsrColIndB;
+*    float* dcsrValB;
+*    int* dcsrRowPtrC;
+*    hipMalloc((void**)&dcsrRowPtrA, (m + 1) * sizeof(int));
+*    hipMalloc((void**)&dcsrColIndA, nnzA * sizeof(int));
+*    hipMalloc((void**)&dcsrValA, nnzA * sizeof(float));
+*    hipMalloc((void**)&dcsrRowPtrB, (m + 1) * sizeof(int));
+*    hipMalloc((void**)&dcsrColIndB, nnzB * sizeof(int));
+*    hipMalloc((void**)&dcsrValB, nnzB * sizeof(float));
+*    hipMalloc((void**)&dcsrRowPtrC, (m + 1) * sizeof(int));
+*
+*    hipMemcpy(dcsrRowPtrA, hcsrRowPtrA.data(), (m + 1) * sizeof(int), hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrColIndA, hcsrColIndA.data(), nnzA * sizeof(int), hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrValA, hcsrValA.data(), nnzA * sizeof(float), hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrRowPtrB, hcsrRowPtrB.data(), (m + 1) * sizeof(int), hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrColIndB, hcsrColIndB.data(), nnzB * sizeof(int), hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrValB, hcsrValB.data(), nnzB * sizeof(float), hipMemcpyHostToDevice);
+*
+*    hipsparseHandle_t handle;
+*    hipsparseCreate(&handle);
+*
+*    hipsparseMatDescr_t descrA;
+*    hipsparseCreateMatDescr(&descrA);
+*
+*    hipsparseMatDescr_t descrB;
+*    hipsparseCreateMatDescr(&descrB);
+*
+*    hipsparseMatDescr_t descrC;
+*    hipsparseCreateMatDescr(&descrC);
+*
+*    int nnzC;
+*    hipsparseXcsrgemmNnz(handle,
+*                    transA,
+*                    transB,
+*                    m,
+*                    n,
+*                    k,
+*                    descrA,
+*                    nnzA,
+*                    dcsrRowPtrA,
+*                    dcsrColIndA,
+*                    descrB,
+*                    nnzB,
+*                    dcsrRowPtrB,
+*                    dcsrColIndB,
+*                    descrC,
+*                    dcsrRowPtrC,
+*                    &nnzC);
+*
+*    int* dcsrColIndC = nullptr;
+*    float* dcsrValC = nullptr;
+*    hipMalloc((void**)&dcsrColIndC, sizeof(int) * nnzC);
+*    hipMalloc((void**)&dcsrValC, sizeof(float) * nnzC);
+*
+*    hipsparseScsrgemm(handle, 
+*                      transA, 
+*                      transB, 
+*                      m, 
+*                      n, 
+*                      k, 
+*                      descrA, 
+*                      nnzA, 
+*                      dcsrValA, 
+*                      dcsrRowPtrA, 
+*                      dcsrColIndA, 
+*                      descrB, 
+*                      nnzB, 
+*                      dcsrValB, 
+*                      dcsrRowPtrB, 
+*                      dcsrColIndB, 
+*                      descrC, 
+*                      dcsrValC, 
+*                      dcsrRowPtrC, 
+*                      dcsrColIndC);
+*
+*    hipFree(dcsrRowPtrA);
+*    hipFree(dcsrColIndA);
+*    hipFree(dcsrValA);
+*    hipFree(dcsrRowPtrB);
+*    hipFree(dcsrColIndB);
+*    hipFree(dcsrValB);
+*    hipFree(dcsrRowPtrC);
+*    hipFree(dcsrColIndC);
+*    hipFree(dcsrValC);
+*
+*    hipsparseDestroyMatDescr(descrA);
+*    hipsparseDestroyMatDescr(descrB);
+*    hipsparseDestroyMatDescr(descrC);
+*    hipsparseDestroy(handle);
+*  \endcode
 */
 /**@{*/
 DEPRECATED_CUDA_10000("The routine will be removed in CUDA 11")
@@ -5898,9 +6320,14 @@ hipsparseStatus_t hipsparseZcsrgemm2_bufferSizeExt(hipsparseHandle_t         han
 *  \details
 *  \p hipsparseXcsrgemm2Nnz computes the total CSR non-zero elements and the CSR row
 *  offsets, that point to the start of every row of the sparse CSR matrix, of the
-*  resulting multiplied matrix C. It is assumed that \p csr_row_ptr_C has been allocated
-*  with size \p m + 1.
-*  The required buffer size can be obtained by hipsparseXcsrgemm2_bufferSizeExt().
+*  resulting multiplied matrix C. It is assumed that \p csrRowPtrC has been allocated
+*  with size \p m+1. The required buffer size can be obtained by hipsparseXcsrgemm2_bufferSizeExt(). 
+*  The desired index base in the output CSR matrix C is set in the hipsparseMatDescr_t 
+*  \p descrC. See hipsparseSetMatIndexBase().
+*
+*  \note
+*  As indicated, nnzTotalDevHostPtr can point either to host or device memory. This is controlled 
+*  by setting the pointer mode. See hipsparseSetPointerMode().
 *
 *  \note
 *  This function is non blocking and executed asynchronously with respect to the host.
@@ -5954,12 +6381,14 @@ hipsparseStatus_t hipsparseXcsrgemm2Nnz(hipsparseHandle_t         handle,
 *    C := \alpha \cdot A \cdot B + \beta \cdot D
 *  \f]
 *
-*  It is assumed that \p csr_row_ptr_C has already been filled and that \p csr_val_C and
-*  \p csr_col_ind_C are allocated by the user. \p csr_row_ptr_C and allocation size of
-*  \p csr_col_ind_C and \p csr_val_C is defined by the number of non-zero elements of
-*  the sparse CSR matrix C. Both can be obtained by hipsparseXcsrgemm2Nnz(). The
-*  required buffer size for the computation can be obtained by
-*  hipsparseXcsrgemm2_bufferSizeExt().
+*  This computation involves a multi step process. First the user must call \p 
+*  \p hipsparseZcsrgemm2_bufferSizeExt in order to determine the required user allocated 
+*  temporary buffer size. The user then allocates this buffer and also allocates \p csrRowPtrC
+*  to have size \p m+1. Both the temporary storage buffer and \p csrRowPtrC array are then passed to 
+*  \p hipsparseXcsrgemm2Nnz which fills in the \p csrRowPtrC array as well as computes the total number
+*  of nonzeros in C, \p nnzC. The user then allocates both arrays \p csrColIndC and \p csrValC to have 
+*  size \p nnzC and calls \p hipsparseXcsrgemm2 to complete the computation. The desired index base in 
+*  the output CSR matrix C is set in the hipsparseMatDescr_t \p descrC. See hipsparseSetMatIndexBase().
 *
 *  \note If \f$\alpha == 0\f$, then \f$C = \beta \cdot D\f$ will be computed.
 *  \note If \f$\beta == 0\f$, then \f$C = \alpha \cdot A \cdot B\f$ will be computed.
@@ -5969,6 +6398,201 @@ hipsparseStatus_t hipsparseXcsrgemm2Nnz(hipsparseHandle_t         handle,
 *        host. It may return before the actual computation has finished.
 *  \note Please note, that for matrix products with more than 4096 non-zero entries per
 *  row, additional temporary storage buffer is allocated by the algorithm.
+*
+*  \par Example
+*  \code{.c}
+*    int m = 4;
+*    int k = 3;
+*    int n = 2;
+*    int nnzA = 7;
+*    int nnzB = 3;
+*    int nnzD = 6;
+*
+*    float alpha{1.0f};
+*    float beta{1.0f};
+*
+*    // A, B, and C are mxk, kxn, and m×n
+*
+*    // A
+*    // 1 0 0
+*    // 3 4 0
+*    // 5 6 7
+*    // 0 0 9
+*    std::vector<int> hcsrRowPtrA = {0, 1, 3, 6, 7};
+*    std::vector<int> hcsrColIndA = {0, 0, 1, 0, 1, 2, 2};
+*    std::vector<float> hcsrValA = {1.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 9.0f};
+*
+*    // B
+*    // 0 1
+*    // 1 0
+*    // 0 1
+*    std::vector<int> hcsrRowPtrB = {0, 1, 2, 3};
+*    std::vector<int> hcsrColIndB = {1, 0, 1};
+*    std::vector<float> hcsrValB = {1.0f, 1.0f, 1.0f};
+*
+*    // D
+*    // 0 1
+*    // 2 3
+*    // 4 5
+*    // 0 6
+*    std::vector<int> hcsrRowPtrD = {0, 1, 3, 5, 6};
+*    std::vector<int> hcsrColIndD = {1, 0, 1, 0, 1, 1};
+*    std::vector<float> hcsrValD = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f};
+*
+*    // Device memory management: Allocate and copy A, B
+*    int* dcsrRowPtrA;
+*    int* dcsrColIndA;
+*    float* dcsrValA;
+*    int* dcsrRowPtrB;
+*    int* dcsrColIndB;
+*    float* dcsrValB;
+*    int* dcsrRowPtrD;
+*    int* dcsrColIndD;
+*    float* dcsrValD;
+*    int* dcsrRowPtrC;
+*    hipMalloc((void**)&dcsrRowPtrA, (m + 1) * sizeof(int));
+*    hipMalloc((void**)&dcsrColIndA, nnzA * sizeof(int));
+*    hipMalloc((void**)&dcsrValA, nnzA * sizeof(float));
+*    hipMalloc((void**)&dcsrRowPtrB, (k + 1) * sizeof(int));
+*    hipMalloc((void**)&dcsrColIndB, nnzB * sizeof(int));
+*    hipMalloc((void**)&dcsrValB, nnzB * sizeof(float));
+*    hipMalloc((void**)&dcsrRowPtrD, (m + 1) * sizeof(int));
+*    hipMalloc((void**)&dcsrColIndD, nnzD * sizeof(int));
+*    hipMalloc((void**)&dcsrValD, nnzD * sizeof(float));
+*    hipMalloc((void**)&dcsrRowPtrC, (m + 1) * sizeof(int));
+*
+*    hipMemcpy(dcsrRowPtrA, hcsrRowPtrA.data(), (m + 1) * sizeof(int), hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrColIndA, hcsrColIndA.data(), nnzA * sizeof(int), hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrValA, hcsrValA.data(), nnzA * sizeof(float), hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrRowPtrB, hcsrRowPtrB.data(), (k + 1) * sizeof(int), hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrColIndB, hcsrColIndB.data(), nnzB * sizeof(int), hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrValB, hcsrValB.data(), nnzB * sizeof(float), hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrRowPtrD, hcsrRowPtrD.data(), (m + 1) * sizeof(int), hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrColIndD, hcsrColIndD.data(), nnzD * sizeof(int), hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrValD, hcsrValD.data(), nnzD * sizeof(float), hipMemcpyHostToDevice);
+*
+*    hipsparseHandle_t handle;
+*    hipsparseCreate(&handle);
+*
+*    hipsparseMatDescr_t descrA;
+*    hipsparseCreateMatDescr(&descrA);
+*
+*    hipsparseMatDescr_t descrB;
+*    hipsparseCreateMatDescr(&descrB);
+*
+*    hipsparseMatDescr_t descrC;
+*    hipsparseCreateMatDescr(&descrC);
+*
+*    hipsparseMatDescr_t descrD;
+*    hipsparseCreateMatDescr(&descrD);
+*
+*    csrgemm2Info_t info;
+*    hipsparseCreateCsrgemm2Info(&info);
+*
+*    size_t bufferSize;
+*    hipsparseScsrgemm2_bufferSizeExt(handle,
+*                                     m,
+*                                     n,
+*                                     k,
+*                                     &alpha,
+*                                     descrA,
+*                                     nnzA,
+*                                     dcsrRowPtrA,
+*                                     dcsrColIndA,
+*                                     descrB,
+*                                     nnzB,
+*                                     dcsrRowPtrB,
+*                                     dcsrColIndB,
+*                                     &beta,
+*                                     descrD,
+*                                     nnzD,
+*                                     dcsrRowPtrD,
+*                                     dcsrColIndD,
+*                                     info,
+*                                     &bufferSize);
+*
+*    void* dbuffer = nullptr;
+*    hipMalloc((void**)&dbuffer, bufferSize);
+*
+*    int nnzC;
+*    hipsparseXcsrgemm2Nnz(handle,
+*                    m,
+*                    n,
+*                    k,
+*                    descrA,
+*                    nnzA,
+*                    dcsrRowPtrA,
+*                    dcsrColIndA,
+*                    descrB,
+*                    nnzB,
+*                    dcsrRowPtrB,
+*                    dcsrColIndB,
+*                    descrD,
+*                    nnzD,
+*                    dcsrRowPtrD,
+*                    dcsrColIndD,
+*                    descrC,
+*                    dcsrRowPtrC,
+*                    &nnzC,
+*                    info,
+*                    dbuffer);
+*
+*    int* dcsrColIndC = nullptr;
+*    float* dcsrValC = nullptr;
+*    hipMalloc((void**)&dcsrColIndC, sizeof(int) * nnzC);
+*    hipMalloc((void**)&dcsrValC, sizeof(float) * nnzC);
+*
+*    hipsparseScsrgemm2(handle, 
+*                      m, 
+*                      n, 
+*                      k,
+*                      &alpha, 
+*                      descrA, 
+*                      nnzA, 
+*                      dcsrValA, 
+*                      dcsrRowPtrA, 
+*                      dcsrColIndA, 
+*                      descrB, 
+*                      nnzB, 
+*                      dcsrValB, 
+*                      dcsrRowPtrB, 
+*                      dcsrColIndB, 
+*                      &beta,
+*                      descrD,
+*                      nnzD,
+*                      dcsrValD, 
+*                      dcsrRowPtrD, 
+*                      dcsrColIndD, 
+*                      descrC, 
+*                      dcsrValC, 
+*                      dcsrRowPtrC, 
+*                      dcsrColIndC,
+*                      info,
+*                      dbuffer);
+*
+*    hipFree(dcsrRowPtrA);
+*    hipFree(dcsrColIndA);
+*    hipFree(dcsrValA);
+*    hipFree(dcsrRowPtrB);
+*    hipFree(dcsrColIndB);
+*    hipFree(dcsrValB);
+*    hipFree(dcsrRowPtrC);
+*    hipFree(dcsrColIndC);
+*    hipFree(dcsrValC);
+*    hipFree(dcsrRowPtrD);
+*    hipFree(dcsrColIndD);
+*    hipFree(dcsrValD);
+*
+*    hipFree(dbuffer);
+*
+*    hipsparseDestroyMatDescr(descrA);
+*    hipsparseDestroyMatDescr(descrB);
+*    hipsparseDestroyMatDescr(descrC);
+*    hipsparseDestroyMatDescr(descrD);
+*    hipsparseDestroyCsrgemm2Info(info);
+*
+*    hipsparseDestroy(handle);
+*  \endcode
 */
 /**@{*/
 DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
@@ -7848,10 +8472,46 @@ hipsparseStatus_t hipsparseZgpsvInterleavedBatch(hipsparseHandle_t handle,
 
 /*! \ingroup conv_module
 *  \brief
-*  This function computes the number of nonzero elements per row or column and the total
+*  \p hipsparseXnnz computes the number of nonzero elements per row or column and the total
 *  number of nonzero elements in a dense matrix.
 *
 *  \details
+*  For example, given the dense matrix:
+*  \f[
+*    \begin{bmatrix}
+*    1 & 0 & 0 & 2 \\
+*    3 & 4 & 0 & 0 \\
+*    5 & 0 & 6 & 7
+*    \end{bmatrix}
+*  \f]
+*
+*  then using \p dirA == \ref HIPSPARSE_DIRECTION_ROW results in: 
+*  \f[
+*    \begin{align}
+*    \text{nnzPerRowColumn} &= \begin{bmatrix} 2 & 2 & 3 \end{bmatrix} \\
+*    \text{nnzTotalDevHostPtr} &= 7
+*    \end{align}
+*  \f]
+*
+*  while using \p dirA == \ref HIPSPARSE_DIRECTION_COLUMN results in:
+*  \f[
+*    \begin{align}
+*    \text{nnzPerRowColumn} &= \begin{bmatrix} 3 & 1 & 1 & 2 \end{bmatrix} \\ 
+*    \text{nnzTotalDevHostPtr} &= 7
+*    \end{align}
+*  \f]
+*
+*  The array \p nnzPerRowColumn must be allocated by the user before calling \p hipsparseXnnz and
+*  has length equal to \p m if \p dirA == \ref HIPSPARSE_DIRECTION_ROW or \p n if 
+*  \p dirA == \ref HIPSPARSE_DIRECTION_COLUMN.
+*
+*  For a complete code example on its usage, see the example found with hipsparseSdense2csr().
+* 
+*  \note
+*  As indicated, nnzTotalDevHostPtr can point either to host or device memory. This is controlled 
+*  by setting the pointer mode. See hipsparseSetPointerMode().
+*
+*  \note
 *  The routine does support asynchronous execution if the pointer mode is set to device.
 */
 /**@{*/
@@ -7903,11 +8563,90 @@ hipsparseStatus_t hipsparseZnnz(hipsparseHandle_t         handle,
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 /*! \ingroup conv_module
 *  \brief
-*  This function converts the matrix A in dense format into a sparse matrix in CSR format.
-*  All the parameters are assumed to have been pre-allocated by the user and the arrays
-*  are filled in based on nnz_per_row, which can be pre-computed with hipsparseXnnz().
+*  \p hipsparseXdense2csr converts the matrix A in dense format into a sparse matrix in CSR format.
+*
+*  \details
+*  Given a dense, column ordered, matrix \p A with leading dimension \p ld where \p ld>=m, 
+*  \p hipsparseXdense2csr converts the matrix to a sparse CSR format matrix. All the parameters 
+*  are assumed to have been pre-allocated by the user and the arrays are filled in based on number 
+*  of nonzeros per row, which can be pre-computed with hipsparseXnnz(). The desired index base in 
+*  the output CSR matrix is set in the \ref hipsparseMatDescr_t. See hipsparseSetMatIndexBase(). 
+*
+*  As an example, if using index base zero (i.e. the default) and the dense 
+*  matrix:
+*
+*  \f[
+*    \begin{bmatrix}
+*    1 & 0 & 0 & 2 \\
+*    3 & 4 & 0 & 0 \\
+*    5 & 0 & 6 & 7
+*    \end{bmatrix}
+*  \f]
+*
+*  The conversion results in the CSR arrays:
+*
+*  \f[
+*    \begin{align}
+*    \text{csrRowPtr} &= \begin{bmatrix} 0 & 2 & 4 & 7 \end{bmatrix} \\
+*    \text{csrColInd} &= \begin{bmatrix} 0 & 3 & 0 & 1 & 0 & 2 & 3 \end{bmatrix} \\
+*    \text{csrVal} &= \begin{bmatrix} 1 & 2 & 3 & 4 & 5 & 6 & 7 \end{bmatrix} \\
+*    \end{align}
+*  \f]
+*
+*  \note
 *  It is executed asynchronously with respect to the host and may return control to the
 *  application on the host before the entire result is ready.
+*
+*  \par Example
+*  \code{.c}
+*    // hipSPARSE handle
+*    hipsparseHandle_t handle;
+*    hipsparseCreate(&handle);
+*
+*    // Matrix descriptor
+*    hipsparseMatDescr_t descr;
+*    hipsparseCreateMatDescr(&descr);
+*
+*    // Dense matrix in column order
+*    //     1 2 0 3 0
+*    // A = 0 4 5 0 0
+*    //     6 0 0 7 8
+*    float hdense_A[15] = {1.0f, 0.0f, 6.0f, 2.0f, 4.0f, 0.0f, 0.0f, 5.0f, 0.0f, 3.0f, 0.0f, 7.0f, 0.0f, 0.0f, 8.0f};
+*
+*    int m         = 3;
+*    int n         = 5;
+*    hipsparseDirection_t dir = HIPSPARSE_DIRECTION_ROW;
+*
+*    float* ddense_A = nullptr;
+*    hipMalloc((void**)&ddense_A, sizeof(float) * m * n);
+*    hipMemcpy(ddense_A, hdense_A, sizeof(float) * m * n, hipMemcpyHostToDevice);
+*
+*    // Allocate memory for the nnz_per_row_columns array
+*    int* dnnz_per_row;
+*    hipMalloc((void**)&dnnz_per_row, sizeof(int) * m);
+*
+*    int nnz_A;
+*    hipsparseSnnz(handle, dir, m, n, descr, ddense_A, m, dnnz_per_row, &nnz_A);
+*
+*    // Allocate sparse CSR matrix
+*    int* dcsrRowPtr = nullptr;
+*    int* dcsrColInd = nullptr;
+*    float* dcsrVal = nullptr;
+*    hipMalloc((void**)&dcsrRowPtr, sizeof(int) * (m + 1));
+*    hipMalloc((void**)&dcsrColInd, sizeof(int) * nnz_A);
+*    hipMalloc((void**)&dcsrVal, sizeof(float) * nnz_A);
+*
+*    hipsparseSdense2csr(handle, m, n, descr, ddense_A, m, dnnz_per_row, dcsrVal, dcsrRowPtr, dcsrColInd);
+*
+*    hipFree(dcsrRowPtr);
+*    hipFree(dcsrColInd);
+*    hipFree(dcsrVal);
+*    hipFree(dnnz_per_row);
+*    hipFree(ddense_A);
+*
+*    hipsparseDestroyMatDescr(descr);
+*    hipsparseDestroy(handle);
+*  \endcode
 */
 /**@{*/
 HIPSPARSE_EXPORT
@@ -7917,10 +8656,10 @@ hipsparseStatus_t hipsparseSdense2csr(hipsparseHandle_t         handle,
                                       const hipsparseMatDescr_t descr,
                                       const float*              A,
                                       int                       ld,
-                                      const int*                nnz_per_rows,
-                                      float*                    csr_val,
-                                      int*                      csr_row_ptr,
-                                      int*                      csr_col_ind);
+                                      const int*                nnzPerRow,
+                                      float*                    csrVal,
+                                      int*                      csrRowPtr,
+                                      int*                      csrColInd);
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDdense2csr(hipsparseHandle_t         handle,
@@ -7929,10 +8668,10 @@ hipsparseStatus_t hipsparseDdense2csr(hipsparseHandle_t         handle,
                                       const hipsparseMatDescr_t descr,
                                       const double*             A,
                                       int                       ld,
-                                      const int*                nnz_per_rows,
-                                      double*                   csr_val,
-                                      int*                      csr_row_ptr,
-                                      int*                      csr_col_ind);
+                                      const int*                nnzPerRows,
+                                      double*                   csrCal,
+                                      int*                      csrRowPtr,
+                                      int*                      csrColInd);
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCdense2csr(hipsparseHandle_t         handle,
@@ -7941,10 +8680,10 @@ hipsparseStatus_t hipsparseCdense2csr(hipsparseHandle_t         handle,
                                       const hipsparseMatDescr_t descr,
                                       const hipComplex*         A,
                                       int                       ld,
-                                      const int*                nnz_per_rows,
-                                      hipComplex*               csr_val,
-                                      int*                      csr_row_ptr,
-                                      int*                      csr_col_ind);
+                                      const int*                nnzPerRow,
+                                      hipComplex*               csrVal,
+                                      int*                      csrRowPtr,
+                                      int*                      csrColInd);
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseZdense2csr(hipsparseHandle_t         handle,
@@ -7953,23 +8692,33 @@ hipsparseStatus_t hipsparseZdense2csr(hipsparseHandle_t         handle,
                                       const hipsparseMatDescr_t descr,
                                       const hipDoubleComplex*   A,
                                       int                       ld,
-                                      const int*                nnz_per_rows,
-                                      hipDoubleComplex*         csr_val,
-                                      int*                      csr_row_ptr,
-                                      int*                      csr_col_ind);
+                                      const int*                nnzPerRows,
+                                      hipDoubleComplex*         csrVal,
+                                      int*                      csrRowPtr,
+                                      int*                      csrColInd);
 /**@}*/
 #endif
 
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup conv_module
 *  \brief
-*  This function computes the the size of the user allocated temporary storage buffer used when converting and pruning
-*  a dense matrix to a CSR matrix.
+*  \p hipsparseSpruneDense2csr_bufferSize computes the the size of the user allocated temporary storage buffer 
+*  used when converting a dense matrix to a pruned CSR matrix. 
 *
 *  \details
-*  \p hipsparseXpruneDense2csr_bufferSizeExt returns the size of the temporary storage buffer
-*  that is required by hipsparseXpruneDense2csrNnz() and hipsparseXpruneDense2csr(). The
-*  temporary storage buffer must be allocated by the user.
+*  Specifically given an input dense column ordered matrix A, with leading dimension \p lda where \p lda>=m, 
+*  the resulting pruned sparse CSR matrix C is computed using:
+*  \f[ 
+*   |C(i,j)| = A(i, j) \text{  if |A(i, j)| > threshold}
+*  \f]
+*
+*  The first step in this conversion is to determine the required user allocated buffer size 
+*  using hipsparseXpruneDense2csr_bufferSize() that will be passed to the subsequent steps of the conversion. 
+*  Once the buffer size has been determined the user must allocate it. This user allocated buffer is then passed 
+*  to hipsparseXpruneDense2csrNnz() and hipsparseXpruneDense2csr() to complete the conversion. The user is 
+*  responsible to then free the buffer once the conversion has been completed. 
+*
+*  See hipsparseSpruneDense2csr() for a full code example.
 */
 /**@{*/
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
@@ -7984,7 +8733,7 @@ hipsparseStatus_t hipsparseSpruneDense2csr_bufferSize(hipsparseHandle_t         
                                                       const float*              csrVal,
                                                       const int*                csrRowPtr,
                                                       const int*                csrColInd,
-                                                      size_t*                   bufferSize);
+                                                      size_t*                   pBufferSizeInBytes);
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDpruneDense2csr_bufferSize(hipsparseHandle_t         handle,
@@ -7997,7 +8746,7 @@ hipsparseStatus_t hipsparseDpruneDense2csr_bufferSize(hipsparseHandle_t         
                                                       const double*             csrVal,
                                                       const int*                csrRowPtr,
                                                       const int*                csrColInd,
-                                                      size_t*                   bufferSize);
+                                                      size_t*                   pBufferSizeInBytes);
 
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
@@ -8011,7 +8760,7 @@ hipsparseStatus_t hipsparseSpruneDense2csr_bufferSizeExt(hipsparseHandle_t      
                                                          const float*              csrVal,
                                                          const int*                csrRowPtr,
                                                          const int*                csrColInd,
-                                                         size_t*                   bufferSize);
+                                                         size_t* pBufferSizeInBytes);
 
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
@@ -8025,18 +8774,65 @@ hipsparseStatus_t hipsparseDpruneDense2csr_bufferSizeExt(hipsparseHandle_t      
                                                          const double*             csrVal,
                                                          const int*                csrRowPtr,
                                                          const int*                csrColInd,
-                                                         size_t*                   bufferSize);
+                                                         size_t* pBufferSizeInBytes);
 /**@}*/
 #endif
 
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup conv_module
 *  \brief
-*  This function computes the number of nonzero elements per row and the total number of
-*  nonzero elements in a dense matrix once elements less than the threshold are pruned
-*  from the matrix.
+*  \p hipsparseXpruneDense2csrNnz function computes the number of nonzero elements per row and the total 
+*  number of nonzero elements in a dense matrix once the elements less than the (non-negative) threshold are 
+*  pruned from the matrix.
 *
 *  \details
+*  Specifically given an input dense column ordered matrix A, with leading dimension \p lda where \p lda>=m, 
+*  the resulting pruned sparse CSR matrix C is computed using:
+*  \f[ 
+*   |C(i,j)| = A(i, j) \text{  if |A(i, j)| > threshold}
+*  \f]
+*
+*  First the user must determine the size of the required temporary buffer using the routine 
+*  \p hipsparseSpruneDense2csr_bufferSize and then allocate it. Next the user allocates \p csrRowPtr with size 
+*  \p m+1. Then the passes both the temporary storage buffer as well as \p csrRowPtr to \p hipsparseXpruneDense2csrNnz 
+*  in order to determine the total number of non-zeros that will exist in the sparse CSR matrix C (after pruning has 
+*  been performed on A) as well as fill the output CSR row pointer array \p csrRowPtr.
+*
+*  For example, given the dense matrix:
+*
+*  \f[
+*    \begin{bmatrix}
+*    6 & 2 & 3 & 7 \\
+*    5 & 6 & 7 & 8 \\
+*    5 & 4 & 8 & 1
+*    \end{bmatrix}
+*  \f]
+*
+*  and the \p threshold value 5, the resulting matrix after pruning is:
+*
+*  \f[
+*    \begin{bmatrix}
+*    6 & 0 & 0 & 7 \\
+*    0 & 6 & 7 & 8 \\
+*    0 & 0 & 8 & 0
+*    \end{bmatrix}
+*  \f]
+*
+*  and corresponding row pointer array and non-zero count:
+*
+*  \f[
+*    \begin{align}
+*    \text{csrRowPtr} &= \begin{bmatrix} 0 & 2 & 5 & 6 \end{bmatrix} \\
+*    \text{nnzTotalDevHostPtr} &= 6
+*    \end{align}
+*  \f]
+*
+*  The above example assumes a zero index base for the output CSR matrix. We can set the desired index base 
+*  in the output CSR matrix by setting it in the \ref hipsparseMatDescr_t. See hipsparseSetMatIndexBase().
+*
+*  For a full code example on how to use this routine, see hipsparseSpruneDense2csr().  
+*
+*  \note
 *  The routine does support asynchronous execution if the pointer mode is set to device.
 */
 /**@{*/
@@ -8071,21 +8867,111 @@ hipsparseStatus_t hipsparseDpruneDense2csrNnz(hipsparseHandle_t         handle,
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup conv_module
 *  \brief
-*  This function converts the matrix A in dense format into a sparse matrix in CSR format
-*  while pruning values that are less than the threshold. All the parameters are assumed
+*  \p hipsparseXpruneDense2csr converts the matrix A in dense format into a sparse matrix in CSR format
+*  while pruning values that are less than the (non-negative) threshold. All the parameters are assumed
 *  to have been pre-allocated by the user.
 *
 *  \details
-*  The user first allocates \p csrRowPtr to have \p m+1 elements and then calls
-*  hipsparseXpruneDense2csrNnz() which fills in the \p csrRowPtr array and stores the
-*  number of elements that are larger than the pruning threshold in \p nnzTotalDevHostPtr.
-*  The user then allocates \p csrColInd and \p csrVal to have size \p nnzTotalDevHostPtr
-*  and completes the conversion by calling hipsparseXpruneDense2csr(). A temporary storage
-*  buffer is used by both hipsparseXpruneDense2csrNnz() and hipsparseXpruneDense2csr() and
-*  must be allocated by the user and whose size is determined by
-*  hipsparseXpruneDense2csr_bufferSizeExt(). The routine hipsparseXpruneDense2csr() is
-*  executed asynchronously with respect to the host and may return control to the
-*  application on the host before the entire result is ready.
+*  Specifically given an input dense column ordered matrix A, with leading dimension \p lda where \p lda>=m, 
+*  the resulting pruned sparse CSR matrix C is computed using:
+*  \f[ 
+*   |C(i,j)| = A(i, j) \text{  if |A(i, j)| > threshold}
+*  \f]
+*
+*  The user first calls \p hipsparseXpruneDense2csr_bufferSize to determine the size of the required 
+*  user allocate temporary storage buffer. The user then allocates this buffer. Next, the user 
+*  allocates \p csrRowPtr to have \p m+1 elements and then calls hipsparseXpruneDense2csrNnz() 
+*  which fills in the \p csrRowPtr array and stores the number of elements that are larger than the 
+*  pruning \p threshold in \p nnzTotalDevHostPtr. The user then allocates \p csrColInd and \p csrVal to 
+*  have size \p nnzTotalDevHostPtr and completes the conversion by calling hipsparseXpruneDense2csr().
+*
+*  For example, performing these steps with the dense input matrix A:
+*  \f[
+*    \begin{bmatrix}
+*    6 & 2 & 3 & 7 \\
+*    5 & 6 & 7 & 8 \\
+*    5 & 4 & 8 & 1
+*    \end{bmatrix}
+*  \f]
+*
+*  and the \p threshold value 5, results in the pruned matrix C:
+*
+*  \f[
+*    \begin{bmatrix}
+*    6 & 0 & 0 & 7 \\
+*    0 & 6 & 7 & 8 \\
+*    0 & 0 & 8 & 0
+*    \end{bmatrix}
+*  \f]
+*
+*  and corresponding CSR row, column, and values arrays:
+*
+*  \f[
+*    \begin{align}
+*    \text{csrRowPtr} &= \begin{bmatrix} 0 & 2 & 5 & 6 \end{bmatrix} \\
+*    \text{csrColInd} &= \begin{bmatrix} 0 & 3 & 1 & 2 & 3 & 2 \end{bmatrix} \\
+*    \text{csrVal} &= \begin{bmatrix} 6 & 7 & 6 & 7 & 8 & 8 \end{bmatrix} \\
+*    \end{align}
+*  \f]
+*
+*  \note 
+*  The routine hipsparseXpruneDense2csr() is executed asynchronously with respect to the host and may 
+*  return control to the application on the host before the entire result is ready.
+*
+*  \par Example
+*  \code{.c}
+*    // hipSPARSE handle
+*    hipsparseHandle_t handle;
+*    hipsparseCreate(&handle);
+*
+*    // Matrix descriptor
+*    hipsparseMatDescr_t descr;
+*    hipsparseCreateMatDescr(&descr);
+*
+*    // Dense matrix in column order
+*    //     1 2 0 3 0
+*    // A = 0 4 5 0 0
+*    //     6 0 0 7 8
+*    float hdense_A[15] = {1.0f, 0.0f, 6.0f, 2.0f, 4.0f, 0.0f, 0.0f, 5.0f, 0.0f, 3.0f, 0.0f, 7.0f, 0.0f, 0.0f, 8.0f};
+*
+*    int m         = 3;
+*    int n         = 5;
+*    int lda       = m;
+*    float threshold = 4.0f;
+*
+*    float* ddense_A = nullptr;
+*    hipMalloc((void**)&ddense_A, sizeof(float) * lda * n);
+*    hipMemcpy(ddense_A, hdense_A, sizeof(float) * lda * n, hipMemcpyHostToDevice);
+*
+*    // Allocate sparse CSR matrix
+*    int* dcsrRowPtr = nullptr;
+*    hipMalloc((void**)&dcsrRowPtr, sizeof(int) * (m + 1));
+*
+*    size_t bufferSize;
+*    hipsparseSpruneDense2csr_bufferSize(handle, m, n, ddense_A, lda, &threshold, descr, nullptr, dcsrRowPtr, nullptr, &bufferSize);
+*
+*    void* dbuffer = nullptr;
+*    hipMalloc((void**)&dbuffer, bufferSize);
+*
+*    int nnz_A;
+*    hipsparseSpruneDense2csrNnz(handle, m, n, ddense_A, lda, &threshold, descr, dcsrRowPtr, &nnz_A, dbuffer);
+*
+*    int* dcsrColInd = nullptr;
+*    float* dcsrVal = nullptr;
+*    hipMalloc((void**)&dcsrColInd, sizeof(int) * nnz_A);
+*    hipMalloc((void**)&dcsrVal, sizeof(float) * nnz_A);
+*
+*    hipsparseSpruneDense2csr(handle, m, n, ddense_A, lda, &threshold, descr, dcsrVal, dcsrRowPtr, dcsrColInd, dbuffer);
+*
+*    hipFree(dcsrRowPtr);
+*    hipFree(dcsrColInd);
+*    hipFree(dcsrVal);
+*    hipFree(ddense_A);
+*    hipFree(dbuffer);
+*
+*    hipsparseDestroyMatDescr(descr);
+*    hipsparseDestroy(handle);
+*  \endcode
 */
 /**@{*/
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
@@ -8121,29 +9007,34 @@ hipsparseStatus_t hipsparseDpruneDense2csr(hipsparseHandle_t         handle,
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup conv_module
 *  \brief
-*  This function computes the size of the user allocated temporary storage buffer used
-*  when converting and pruning by percentage a dense matrix to a CSR matrix.
+*  \p hipsparseSpruneDense2csrByPercentage_bufferSize computes the size of the user allocated temporary 
+*  storage buffer used when converting a dense matrix to a pruned CSR matrix where the pruning is done 
+*  based on a percantage.
 *
 *  \details
 *  When converting and pruning a dense matrix A to a CSR matrix by percentage the
 *  following steps are performed. First the user calls
 *  \p hipsparseXpruneDense2csrByPercentage_bufferSize which determines the size of the
 *  temporary storage buffer. Once determined, this buffer must be allocated by the user.
-*  Next the user allocates the csr_row_ptr array to have \p m+1 elements and calls
+*  Next the user allocates the csrRowPtr array to have \p m+1 elements and calls
 *  \p hipsparseXpruneDense2csrNnzByPercentage. Finally the user finishes the conversion
-*  by allocating the csr_col_ind and csr_val arrays (whos size is determined by the value
-*  at nnz_total_dev_host_ptr) and calling \p hipsparseXpruneDense2csrByPercentage.
+*  by allocating the csrColInd and csrVal arrays (whose size is determined by the value
+*  at \p nnzTotalDevHostPtr) and calling \p hipsparseXpruneDense2csrByPercentage.
 *
 *  The pruning by percentage works by first sorting the absolute values of the dense
 *  matrix \p A. We then determine a position in this sorted array by
 *  \f[
-*    pos = ceil(m*n*(percentage/100)) - 1
-*    pos = min(pos, m*n-1)
-*    pos = max(pos, 0)
+*    pos = ceil(m*n*(percentage/100)) - 1 \\
+*    pos = min(pos, m*n-1) \\
+*    pos = max(pos, 0) \\
 *    threshold = sorted_A[pos]
 *  \f]
+*
 *  Once we have this threshold we prune values in the dense matrix \p A as in
-*  \p hipsparseXpruneDense2csr. It is executed asynchronously with respect to the host
+*  \p hipsparseXpruneDense2csr. 
+*
+*  \note
+*  It is executed asynchronously with respect to the host
 *  and may return control to the application on the host before the entire result is
 *  ready.
 */
@@ -8161,7 +9052,7 @@ hipsparseStatus_t hipsparseSpruneDense2csrByPercentage_bufferSize(hipsparseHandl
                                                                   const int*  csrRowPtr,
                                                                   const int*  csrColInd,
                                                                   pruneInfo_t info,
-                                                                  size_t*     bufferSize);
+                                                                  size_t*     pBufferSizeInBytes);
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDpruneDense2csrByPercentage_bufferSize(hipsparseHandle_t handle,
@@ -8175,7 +9066,7 @@ hipsparseStatus_t hipsparseDpruneDense2csrByPercentage_bufferSize(hipsparseHandl
                                                                   const int*  csrRowPtr,
                                                                   const int*  csrColInd,
                                                                   pruneInfo_t info,
-                                                                  size_t*     bufferSize);
+                                                                  size_t*     pBufferSizeInBytes);
 /**@}*/
 #endif
 
@@ -8190,21 +9081,25 @@ hipsparseStatus_t hipsparseDpruneDense2csrByPercentage_bufferSize(hipsparseHandl
 *  following steps are performed. First the user calls
 *  \p hipsparseXpruneDense2csrByPercentage_bufferSizeExt which determines the size of the
 *  temporary storage buffer. Once determined, this buffer must be allocated by the user.
-*  Next the user allocates the csr_row_ptr array to have \p m+1 elements and calls
+*  Next the user allocates the csrRowPtr array to have \p m+1 elements and calls
 *  \p hipsparseXpruneDense2csrNnzByPercentage. Finally the user finishes the conversion
-*  by allocating the csr_col_ind and csr_val arrays (whos size is determined by the value
-*  at nnz_total_dev_host_ptr) and calling \p hipsparseXpruneDense2csrByPercentage.
+*  by allocating the csrColInd and csrVal arrays (whos size is determined by the value
+*  at \p nnzTotalDevHostPtr) and calling \p hipsparseXpruneDense2csrByPercentage.
 *
 *  The pruning by percentage works by first sorting the absolute values of the dense
 *  matrix \p A. We then determine a position in this sorted array by
 *  \f[
-*    pos = ceil(m*n*(percentage/100)) - 1
-*    pos = min(pos, m*n-1)
-*    pos = max(pos, 0)
+*    pos = ceil(m*n*(percentage/100)) - 1 \\
+*    pos = min(pos, m*n-1) \\
+*    pos = max(pos, 0) \\
 *    threshold = sorted_A[pos]
 *  \f]
+*
 *  Once we have this threshold we prune values in the dense matrix \p A as in
-*  \p hipsparseXpruneDense2csr. It is executed asynchronously with respect to the host
+*  \p hipsparseXpruneDense2csr. 
+*
+*  \note
+*  It is executed asynchronously with respect to the host
 *  and may return control to the application on the host before the entire result is
 *  ready.
 */
@@ -8223,7 +9118,7 @@ hipsparseStatus_t
                                                        const int*                csrRowPtr,
                                                        const int*                csrColInd,
                                                        pruneInfo_t               info,
-                                                       size_t*                   bufferSize);
+                                                       size_t* pBufferSizeInBytes);
 
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
@@ -8239,7 +9134,7 @@ hipsparseStatus_t
                                                        const int*                csrRowPtr,
                                                        const int*                csrColInd,
                                                        pruneInfo_t               info,
-                                                       size_t*                   bufferSize);
+                                                       size_t* pBufferSizeInBytes);
 /**@}*/
 #endif
 
@@ -8255,21 +9150,25 @@ hipsparseStatus_t
 *  following steps are performed. First the user calls
 *  \p hipsparseXpruneDense2csrByPercentage_bufferSize which determines the size of the
 *  temporary storage buffer. Once determined, this buffer must be allocated by the user.
-*  Next the user allocates the csr_row_ptr array to have \p m+1 elements and calls
+*  Next the user allocates the csrRowPtr array to have \p m+1 elements and calls
 *  \p hipsparseXpruneDense2csrNnzByPercentage. Finally the user finishes the conversion
-*  by allocating the csr_col_ind and csr_val arrays (whos size is determined by the value
-*  at nnz_total_dev_host_ptr) and calling \p hipsparseXpruneDense2csrByPercentage.
+*  by allocating the csrColInd and csrVal arrays (whos size is determined by the value
+*  at \p nnzTotalDevHostPtr) and calling \p hipsparseXpruneDense2csrByPercentage.
 *
 *  The pruning by percentage works by first sorting the absolute values of the dense
 *  matrix \p A. We then determine a position in this sorted array by
 *  \f[
-*    pos = ceil(m*n*(percentage/100)) - 1
-*    pos = min(pos, m*n-1)
-*    pos = max(pos, 0)
+*    pos = ceil(m*n*(percentage/100)) - 1 \\
+*    pos = min(pos, m*n-1) \\
+*    pos = max(pos, 0) \\
 *    threshold = sorted_A[pos]
 *  \f]
+*
 *  Once we have this threshold we prune values in the dense matrix \p A as in
-*  \p hipsparseXpruneDense2csr. The routine does support asynchronous execution if the
+*  \p hipsparseXpruneDense2csr.
+*
+*  \note
+*  The routine does support asynchronous execution if the
 *  pointer mode is set to device.
 */
 /**@{*/
@@ -8315,22 +9214,84 @@ hipsparseStatus_t hipsparseDpruneDense2csrNnzByPercentage(hipsparseHandle_t     
 *  following steps are performed. First the user calls
 *  \p hipsparseXpruneDense2csrByPercentage_bufferSize which determines the size of the
 *  temporary storage buffer. Once determined, this buffer must be allocated by the user.
-*  Next the user allocates the csr_row_ptr array to have \p m+1 elements and calls
+*  Next the user allocates the csrRowPtr array to have \p m+1 elements and calls
 *  \p hipsparseXpruneDense2csrNnzByPercentage. Finally the user finishes the conversion
-*  by allocating the csr_col_ind and csr_val arrays (whos size is determined by the value
-*  at nnz_total_dev_host_ptr) and calling \p hipsparseXpruneDense2csrByPercentage.
+*  by allocating the csrColInd and csrVal arrays (whos size is determined by the value
+*  at \p nnzTotalDevHostPtr) and calling \p hipsparseXpruneDense2csrByPercentage.
 *
 *  The pruning by percentage works by first sorting the absolute values of the dense
 *  matrix \p A. We then determine a position in this sorted array by
 *  \f[
-*    pos = ceil(m*n*(percentage/100)) - 1
-*    pos = min(pos, m*n-1)
-*    pos = max(pos, 0)
+*    pos = ceil(m*n*(percentage/100)) - 1 \\
+*    pos = min(pos, m*n-1) \\
+*    pos = max(pos, 0) \\
 *    threshold = sorted_A[pos]
 *  \f]
+*
 *  Once we have this threshold we prune values in the dense matrix \p A as in
-*  \p hipsparseXpruneDense2csr. The routine does support asynchronous execution if the
-*  pointer mode is set to device.
+*  \p hipsparseXpruneDense2csr.
+*
+*  \note
+*  The routine does support asynchronous execution if the pointer mode is set to device.
+*
+*  \par Example
+*  \code{.c}
+*    // hipSPARSE handle
+*    hipsparseHandle_t handle;
+*    hipsparseCreate(&handle);
+*
+*    // Matrix descriptor
+*    hipsparseMatDescr_t descr;
+*    hipsparseCreateMatDescr(&descr);
+*
+*    // Dense matrix in column order
+*    //     1 2 0 3 0
+*    // A = 0 4 5 0 0
+*    //     6 0 0 7 8
+*    float hdense_A[15] = {1.0f, 0.0f, 6.0f, 2.0f, 4.0f, 0.0f, 0.0f, 5.0f, 0.0f, 3.0f, 0.0f, 7.0f, 0.0f, 0.0f, 8.0f};
+*
+*    int m         = 3;
+*    int n         = 5;
+*    int lda       = m;
+*    float percentage = 70.0f;
+*
+*    float* ddense_A = nullptr;
+*    hipMalloc((void**)&ddense_A, sizeof(float) * lda * n);
+*    hipMemcpy(ddense_A, hdense_A, sizeof(float) * lda * n, hipMemcpyHostToDevice);
+*
+*    // Allocate sparse CSR matrix
+*    int* dcsrRowPtr = nullptr;
+*    hipMalloc((void**)&dcsrRowPtr, sizeof(int) * (m + 1));
+*
+*    pruneInfo_t info;
+*    hipsparseCreatePruneInfo(&info);
+*
+*    size_t bufferSize;
+*    hipsparseSpruneDense2csrByPercentage_bufferSize(handle, m, n, ddense_A, lda, percentage, descr, nullptr, dcsrRowPtr, nullptr, info, &bufferSize);
+*
+*    void* dbuffer = nullptr;
+*    hipMalloc((void**)&dbuffer, bufferSize);
+*
+*    int nnz_A;
+*    hipsparseSpruneDense2csrNnzByPercentage(handle, m, n, ddense_A, lda, percentage, descr, dcsrRowPtr, &nnz_A, info, dbuffer);
+*
+*    int* dcsrColInd = nullptr;
+*    float* dcsrVal = nullptr;
+*    hipMalloc((void**)&dcsrColInd, sizeof(int) * nnz_A);
+*    hipMalloc((void**)&dcsrVal, sizeof(float) * nnz_A);
+*
+*    hipsparseSpruneDense2csrByPercentage(handle, m, n, ddense_A, lda, percentage, descr, dcsrVal, dcsrRowPtr, dcsrColInd, info, dbuffer);
+*
+*    hipFree(dcsrRowPtr);
+*    hipFree(dcsrColInd);
+*    hipFree(dcsrVal);
+*    hipFree(ddense_A);
+*    hipFree(dbuffer);
+*
+*    hipsparseDestroyPruneInfo(info);
+*    hipsparseDestroyMatDescr(descr);
+*    hipsparseDestroy(handle);
+*  \endcode
 */
 /**@{*/
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
@@ -8368,10 +9329,47 @@ hipsparseStatus_t hipsparseDpruneDense2csrByPercentage(hipsparseHandle_t        
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 /*! \ingroup conv_module
 *  \brief
+*  \p hipsparseXdense2csc converts the matrix A in dense format into a sparse matrix in CSC format.
 *
-*  This function converts the matrix A in dense format into a sparse matrix in CSC format.
-*  All the parameters are assumed to have been pre-allocated by the user and the arrays are filled in based on nnz_per_columns, which can be pre-computed with hipsparseXnnz().
-*  It is executed asynchronously with respect to the host and may return control to the application on the host before the entire result is ready.
+*  \details
+*  Given a dense, column ordered, matrix \p A with leading dimension \p ld where \p ld>=m, 
+*  \p hipsparseXdense2csc converts the matrix to a sparse CSC format matrix.
+*  All the parameters are assumed to have been pre-allocated by the user and the arrays
+*  are filled in based on number of nonzeros per row, which can be pre-computed with hipsparseXnnz().
+*  We can set the desired index base in the output CSC matrix by setting it in the \ref hipsparseMatDescr_t. 
+*  See hipsparseSetMatIndexBase(). 
+*
+*  As an example, if using index base zero (i.e. the default) and the dense 
+*  matrix:
+*
+*  \f[
+*    \begin{bmatrix}
+*    1 & 0 & 0 & 2 \\
+*    3 & 4 & 0 & 0 \\
+*    5 & 0 & 6 & 7
+*    \end{bmatrix}
+*  \f]
+*
+*  where the \p A values have column ordering with leading dimension \p ld=m:
+*  \f[
+*    \text{A} &= \begin{bmatrix} 1 & 3 & 5 & 0 & 4 & 0 & 0 & 0 & 6 & 2 & 0 & 7 \end{bmatrix} \\
+*  \f]
+*
+*  the conversion results in the CSC arrays:
+*
+*  \f[
+*    \begin{align}
+*    \text{cscRowInd} &= \begin{bmatrix} 0 & 1 & 2 & 1 & 2 & 0 & 2 \end{bmatrix} \\
+*    \text{cscColPtr} &= \begin{bmatrix} 0 & 3 & 4 & 5 & 7 \end{bmatrix} \\
+*    \text{cscVal} &= \begin{bmatrix} 1 & 3 & 5 & 4 & 6 & 2 & 7 \end{bmatrix} \\
+*    \end{align}
+*  \f]
+*
+*  This function works very similar to hipsparseXdense2csr. See hipsparseSdense2csr() for a code example.
+*
+*  \note
+*  It is executed asynchronously with respect to the host and may return control to the
+*  application on the host before the entire result is ready.
 */
 /**@{*/
 DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
@@ -8382,10 +9380,10 @@ hipsparseStatus_t hipsparseSdense2csc(hipsparseHandle_t         handle,
                                       const hipsparseMatDescr_t descr,
                                       const float*              A,
                                       int                       ld,
-                                      const int*                nnz_per_columns,
-                                      float*                    csc_val,
-                                      int*                      csc_row_ind,
-                                      int*                      csc_col_ptr);
+                                      const int*                nnzPerColumn,
+                                      float*                    cscVal,
+                                      int*                      cscRowInd,
+                                      int*                      cscColPtr);
 DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDdense2csc(hipsparseHandle_t         handle,
@@ -8394,10 +9392,10 @@ hipsparseStatus_t hipsparseDdense2csc(hipsparseHandle_t         handle,
                                       const hipsparseMatDescr_t descr,
                                       const double*             A,
                                       int                       ld,
-                                      const int*                nnz_per_columns,
-                                      double*                   csc_val,
-                                      int*                      csc_row_ind,
-                                      int*                      csc_col_ptr);
+                                      const int*                nnzPerColumn,
+                                      double*                   cscVal,
+                                      int*                      cscRowInd,
+                                      int*                      cscColPtr);
 DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCdense2csc(hipsparseHandle_t         handle,
@@ -8406,10 +9404,10 @@ hipsparseStatus_t hipsparseCdense2csc(hipsparseHandle_t         handle,
                                       const hipsparseMatDescr_t descr,
                                       const hipComplex*         A,
                                       int                       ld,
-                                      const int*                nnz_per_columns,
-                                      hipComplex*               csc_val,
-                                      int*                      csc_row_ind,
-                                      int*                      csc_col_ptr);
+                                      const int*                nnzPerColumn,
+                                      hipComplex*               cscVal,
+                                      int*                      cscRowInd,
+                                      int*                      cscColPtr);
 DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseZdense2csc(hipsparseHandle_t         handle,
@@ -8418,18 +9416,99 @@ hipsparseStatus_t hipsparseZdense2csc(hipsparseHandle_t         handle,
                                       const hipsparseMatDescr_t descr,
                                       const hipDoubleComplex*   A,
                                       int                       ld,
-                                      const int*                nnz_per_columns,
-                                      hipDoubleComplex*         csc_val,
-                                      int*                      csc_row_ind,
-                                      int*                      csc_col_ptr);
+                                      const int*                nnzPerColumn,
+                                      hipDoubleComplex*         cscVal,
+                                      int*                      cscRowInd,
+                                      int*                      cscColPtr);
 /**@}*/
 #endif
 
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 /*! \ingroup conv_module
 *  \brief
-*  This function converts the sparse matrix in CSR format into a dense matrix.
-*  It is executed asynchronously with respect to the host and may return control to the application on the host before the entire result is ready.
+*  \p hipsparseXcsr2dense function converts the sparse matrix in CSR format into a dense matrix.
+*
+*  \details
+*  Given the input CSR matrix of size \p mxn, the routine writes the matrix to the dense array \p A such 
+*  that \p A has leading dimension \p ld and is column ordered. This means that \p A has size \p ldxn where
+*  \p ld>=m. All the parameters are assumed to have been pre-allocated by the user. If the input CSR matrix 
+*  has index base of one, it must be set in the \ref hipsparseMatDescr_t. See hipsparseSetMatIndexBase() 
+*  prior to calling \p hipsparseXcsr2dense.
+*
+*  For example, consider the sparse CSR matrix:
+*  \f[
+*    \begin{align}
+*    \text{csrRowPtr} &= \begin{bmatrix} 0 & 2 & 4 & 7 \end{bmatrix} \\
+*    \text{csrColInd} &= \begin{bmatrix} 0 & 3 & 0 & 1 & 0 & 2 & 3 \end{bmatrix} \\
+*    \text{csrVal} &= \begin{bmatrix} 1 & 2 & 3 & 4 & 5 & 6 & 7 \end{bmatrix} \\
+*    \end{align}
+*  \f]
+*
+*  \p hipsparseXcsr2dense is used to convert to the dense matrix:
+*  \f[
+*    \begin{bmatrix}
+*    1 & 0 & 0 & 2 \\
+*    3 & 4 & 0 & 0 \\
+*    5 & 0 & 6 & 7
+*    \end{bmatrix}
+*  \f]
+*
+*  where the values in the \p A array are column ordered:
+*  \f[
+*    \text{A} &= \begin{bmatrix} 1 & 3 & 5 & 0 & 4 & 0 & 0 & 0 & 6 & 2 & 0 & 7 \end{bmatrix} \\
+*  \f]
+*
+*  \note
+*  It is executed asynchronously with respect to the host and may return control to the application 
+*  on the host before the entire result is ready.
+*
+*  \par Example
+*  \code{.c}
+*    // hipSPARSE handle
+*    hipsparseHandle_t handle;
+*    hipsparseCreate(&handle);
+*
+*    // Matrix descriptor
+*    hipsparseMatDescr_t descr;
+*    hipsparseCreateMatDescr(&descr);
+*
+*    // Sparse matrix in CSR format
+*    //     1 2 0 3 0
+*    // A = 0 4 5 0 0
+*    //     6 0 0 7 8
+*    int hcsrRowPtr[4] = {0, 3, 5, 8};
+*    int hcsrColInd[8] = {0, 1, 3, 1, 2, 0, 3, 4};
+*    float hcsrVal[8]   = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f}; 
+*
+*    int m         = 3;
+*    int n         = 5;
+*    int ld        = 3;
+*    int nnz       = 8;
+*
+*    int* dcsrRowPtr = nullptr;
+*    int* dcsrColInd = nullptr;
+*    float* dcsrVal = nullptr;
+*    hipMalloc((void**)&dcsrRowPtr, sizeof(int) * (m + 1));
+*    hipMalloc((void**)&dcsrColInd, sizeof(int) * nnz);
+*    hipMalloc((void**)&dcsrVal, sizeof(float) * nnz);
+*
+*    hipMemcpy(dcsrRowPtr, hcsrRowPtr, sizeof(int) * (m + 1), hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrColInd, hcsrColInd, sizeof(int) * nnz, hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrVal, hcsrVal, sizeof(float) * nnz, hipMemcpyHostToDevice);
+*
+*    float* ddense_A = nullptr;
+*    hipMalloc((void**)&ddense_A, sizeof(float) * ld * n);
+*
+*    hipsparseScsr2dense(handle, m, n, descr, dcsrVal, dcsrRowPtr, dcsrColInd, ddense_A, ld);
+*
+*    hipFree(dcsrRowPtr);
+*    hipFree(dcsrColInd);
+*    hipFree(dcsrVal);
+*    hipFree(ddense_A);
+*
+*    hipsparseDestroyMatDescr(descr);
+*    hipsparseDestroy(handle);
+*  \endcode
 */
 /**@{*/
 DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
@@ -8438,9 +9517,9 @@ hipsparseStatus_t hipsparseScsr2dense(hipsparseHandle_t         handle,
                                       int                       m,
                                       int                       n,
                                       const hipsparseMatDescr_t descr,
-                                      const float*              csr_val,
-                                      const int*                csr_row_ptr,
-                                      const int*                csr_col_ind,
+                                      const float*              csrVal,
+                                      const int*                csrRowPtr,
+                                      const int*                csrColInd,
                                       float*                    A,
                                       int                       ld);
 DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
@@ -8449,9 +9528,9 @@ hipsparseStatus_t hipsparseDcsr2dense(hipsparseHandle_t         handle,
                                       int                       m,
                                       int                       n,
                                       const hipsparseMatDescr_t descr,
-                                      const double*             csr_val,
-                                      const int*                csr_row_ptr,
-                                      const int*                csr_col_ind,
+                                      const double*             csrVal,
+                                      const int*                csrRowPtr,
+                                      const int*                csrColInd,
                                       double*                   A,
                                       int                       ld);
 DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
@@ -8460,9 +9539,9 @@ hipsparseStatus_t hipsparseCcsr2dense(hipsparseHandle_t         handle,
                                       int                       m,
                                       int                       n,
                                       const hipsparseMatDescr_t descr,
-                                      const hipComplex*         csr_val,
-                                      const int*                csr_row_ptr,
-                                      const int*                csr_col_ind,
+                                      const hipComplex*         csrVal,
+                                      const int*                csrRowPtr,
+                                      const int*                csrColInd,
                                       hipComplex*               A,
                                       int                       ld);
 DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
@@ -8471,9 +9550,9 @@ hipsparseStatus_t hipsparseZcsr2dense(hipsparseHandle_t         handle,
                                       int                       m,
                                       int                       n,
                                       const hipsparseMatDescr_t descr,
-                                      const hipDoubleComplex*   csr_val,
-                                      const int*                csr_row_ptr,
-                                      const int*                csr_col_ind,
+                                      const hipDoubleComplex*   csrVal,
+                                      const int*                csrRowPtr,
+                                      const int*                csrColInd,
                                       hipDoubleComplex*         A,
                                       int                       ld);
 /**@}*/
@@ -8482,8 +9561,41 @@ hipsparseStatus_t hipsparseZcsr2dense(hipsparseHandle_t         handle,
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 /*! \ingroup conv_module
 *  \brief
-*  This function converts the sparse matrix in CSC format into a dense matrix.
-*  It is executed asynchronously with respect to the host and may return control to the application on the host before the entire result is ready.
+*  \p hipsparseXcsc2dense function converts the sparse matrix in CSC format into a dense matrix.
+*
+*  \details
+*  Given the input CSC matrix of size \p mxn, the routine writes the matrix to the dense array \p A such 
+*  that \p A has leading dimension \p ld and is column ordered. This means that \p A has size \p ldxn where
+*  \p ld>=m. All the parameters are assumed to have been pre-allocated by the user. If the input CSC matrix 
+*  has index base of one, it must be set in the \ref hipsparseMatDescr_t. See hipsparseSetMatIndexBase() 
+*  prior to calling \p hipsparseXcsc2dense.
+*
+*  For example, consider the sparse CSC matrix:
+*  \f[
+*    \begin{align}
+*    \text{cscRowInd} &= \begin{bmatrix} 0 & 1 & 2 & 1 & 2 & 0 & 2 \end{bmatrix} \\
+*    \text{cscColPtr} &= \begin{bmatrix} 0 & 3 & 4 & 5 & 7 \end{bmatrix} \\
+*    \text{cscVal} &= \begin{bmatrix} 1 & 3 & 5 & 4 & 6 & 2 & 7 \end{bmatrix} \\
+*    \end{align}
+*  \f]
+*
+*  \p hipsparseXcsc2dense is used to convert to the dense matrix:
+*  \f[
+*    \begin{bmatrix}
+*    1 & 0 & 0 & 2 \\
+*    3 & 4 & 0 & 0 \\
+*    5 & 0 & 6 & 7
+*    \end{bmatrix}
+*  \f]
+*
+*  where the values in the \p A array are column ordered:
+*  \f[
+*    \text{A} &= \begin{bmatrix} 1 & 3 & 5 & 0 & 4 & 0 & 0 & 0 & 6 & 2 & 0 & 7 \end{bmatrix} \\
+*  \f]
+*
+*  \note
+*  It is executed asynchronously with respect to the host and may return control to the application 
+*  on the host before the entire result is ready.
 */
 /**@{*/
 DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
@@ -8492,9 +9604,9 @@ hipsparseStatus_t hipsparseScsc2dense(hipsparseHandle_t         handle,
                                       int                       m,
                                       int                       n,
                                       const hipsparseMatDescr_t descr,
-                                      const float*              csc_val,
-                                      const int*                csc_row_ind,
-                                      const int*                csc_col_ptr,
+                                      const float*              cscVal,
+                                      const int*                cscRowInd,
+                                      const int*                cscColPtr,
                                       float*                    A,
                                       int                       ld);
 DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
@@ -8503,9 +9615,9 @@ hipsparseStatus_t hipsparseDcsc2dense(hipsparseHandle_t         handle,
                                       int                       m,
                                       int                       n,
                                       const hipsparseMatDescr_t descr,
-                                      const double*             csc_val,
-                                      const int*                csc_row_ind,
-                                      const int*                csc_col_ptr,
+                                      const double*             cscVal,
+                                      const int*                cscRowInd,
+                                      const int*                cscColPtr,
                                       double*                   A,
                                       int                       ld);
 DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
@@ -8514,9 +9626,9 @@ hipsparseStatus_t hipsparseCcsc2dense(hipsparseHandle_t         handle,
                                       int                       m,
                                       int                       n,
                                       const hipsparseMatDescr_t descr,
-                                      const hipComplex*         csc_val,
-                                      const int*                csc_row_ind,
-                                      const int*                csc_col_ptr,
+                                      const hipComplex*         cscVal,
+                                      const int*                cscRowInd,
+                                      const int*                cscColPtr,
                                       hipComplex*               A,
                                       int                       ld);
 DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
@@ -8525,9 +9637,9 @@ hipsparseStatus_t hipsparseZcsc2dense(hipsparseHandle_t         handle,
                                       int                       m,
                                       int                       n,
                                       const hipsparseMatDescr_t descr,
-                                      const hipDoubleComplex*   csc_val,
-                                      const int*                csc_row_ind,
-                                      const int*                csc_col_ptr,
+                                      const hipDoubleComplex*   cscVal,
+                                      const int*                cscRowInd,
+                                      const int*                cscColPtr,
                                       hipDoubleComplex*         A,
                                       int                       ld);
 /**@}*/
@@ -8539,6 +9651,99 @@ hipsparseStatus_t hipsparseZcsc2dense(hipsparseHandle_t         handle,
 *  BSR matrix given a sparse CSR matrix as input.
 *
 *  \details
+*  Consider the matrix:
+*  \f[
+*    \begin{bmatrix}
+*    1 & 0 & 0 & 2 \\
+*    3 & 4 & 0 & 0 \\
+*    5 & 0 & 6 & 7 \\
+*    1 & 2 & 3 & 4
+*    \end{bmatrix}
+*  \f]
+*
+*  stored as a sparse CSR matrix. This function computes both the BSR row pointer array as well as the total number 
+*  of non-zero blocks that results when converting the CSR matrix to the BSR format. Assuming a block dimension of 2, 
+*  the above matrix once converted to BSR format looks like:
+*
+*  \f[
+*   \left[ 
+*    \begin{array}{c | c} 
+*      \begin{array}{c c} 
+*       1 & 0 \\ 
+*       3 & 4 
+*      \end{array} & 
+*      \begin{array}{c c} 
+*       0 & 2 \\ 
+*       0 & 0 
+*      \end{array} \\ 
+*    \hline 
+*      \begin{array}{c c} 
+*       5 & 0 \\ 
+*       1 & 2 
+*      \end{array} & 
+*      \begin{array}{c c} 
+*       6 & 7 \\ 
+*       3 & 4 
+*      \end{array} \\ 
+*   \end{array} 
+*  \right] 
+*  \f]
+*
+*  and the resulting BSR row pointer array and total non-zero blocks once \p hipsparseXcsr2bsrNnz has been called:
+*
+*  \f[
+*    \begin{align}
+*    \text{bsrRowPtrC} &= \begin{bmatrix} 0 & 2 & 4 \end{bmatrix} \\
+*    \text{bsrNnzb} &= 4
+*    \end{align}
+*  \f]
+*
+*  In general, when converting a CSR matrix of size \p m x \p n to a BSR matrix, the resulting BSR matrix will have size 
+*  \p mb x \p nb where \p mb and \p nb equal:
+*
+*  \f[
+*    \begin{align}
+*    \text{mb} &= \text{(m - 1) / blockDim + 1} \\
+*    \text{nb} &= \text{(n - 1) / blockDim + 1}
+*    \end{align}
+*  \f]
+*
+*  In particular, it may be the case that \p blockDim does not divide evenly into \p m and/or \p n. In these cases, the 
+*  CSR matrix is expanded in size in order to fit full BSR blocks. For example, using the original CSR matrix and block 
+*  dimension 3 instead of 2, the function \p hipsparseXcsr2bsrNnz computes the BSR row pointer array and total number of 
+*  non-zero blocks for the BSR matrix:
+*
+*  \f[
+*   \left[ 
+*    \begin{array}{c | c} 
+*      \begin{array}{c c c} 
+*       1 & 0 & 0 \\ 
+*       3 & 4 & 0 \\
+*       5 & 0 & 6
+*      \end{array} & 
+*      \begin{array}{c c c} 
+*       2 & 0 & 0 \\ 
+*       0 & 0 & 0 \\
+*       7 & 0 & 0
+*      \end{array} \\ 
+*    \hline 
+*      \begin{array}{c c c} 
+*       1 & 2 & 3 \\ 
+*       0 & 0 & 0 \\
+*       0 & 0 & 0
+*      \end{array} & 
+*      \begin{array}{c c c} 
+*       4 & 0 & 0 \\ 
+*       0 & 0 & 0 \\
+*       0 & 0 & 0
+*      \end{array} \\ 
+*   \end{array} 
+*  \right] 
+*  \f]
+*
+*  See hipsparseScsr2bsr() for full code example.
+*
+*  \note
 *  The routine does support asynchronous execution if the pointer mode is set to device.
 */
 HIPSPARSE_EXPORT
@@ -8556,9 +9761,73 @@ hipsparseStatus_t hipsparseXcsr2bsrNnz(hipsparseHandle_t         handle,
 
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup conv_module
+*  This function is used as the first step in converting a CSR matrix to a compressed CSR matrix.
+*
+*  \details
 *  Given a sparse CSR matrix and a non-negative tolerance, this function computes how many entries would be left
 *  in each row of the matrix if elements less than the tolerance were removed. It also computes the total number
-*  of remaining elements in the matrix.
+*  of remaining elements in the matrix. 
+*
+*  Specifically given an input sparse matrix A in CSR format, the resulting compressed sparse CSR matrix C is 
+*  computed using:
+*  \f[ 
+*   C(i,j) = A(i, j) \text{  if |A(i, j)| > tol}
+*  \f]
+*
+*  The user first allocates \p nnzPerRow with size \p m elements. Then calling \p hipsparseXnnz_compress, 
+*  the function fills in the \p nnzPerRow array and sets the total number of nonzeros found in \p nnzC.
+*
+*  See hipsparseScsr2csr_compress() for full code example.
+*
+*  \note
+*  In the case of complex matrices only the magnitude of the real part of \p tol is used.
+*
+*  \par Example
+*  \code{.c}
+*    // hipSPARSE handle
+*    hipsparseHandle_t handle;
+*    hipsparseCreate(&handle);
+*
+*    // Matrix descriptor
+*    hipsparseMatDescr_t descr_A;
+*    hipsparseCreateMatDescr(&descr_A);
+*
+*    //     1 2 0 3 0
+*    // A = 0 4 5 0 0
+*    //     6 0 0 7 8
+*    float tol = 4.2f;
+*
+*    int m     = 3;
+*    int n     = 5;
+*    int nnz_A = 8;
+*
+*    int hcsrRowPtr_A[4] = {0, 3, 5, 8};             
+*    float hcsrVal_A[8]   = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f};
+*
+*    int* dcsrRowPtr_A = nullptr;
+*    float* dcsrVal_A = nullptr;
+*    hipMalloc((void**)&dcsrRowPtr_A, sizeof(int) * (m + 1));
+*    hipMalloc((void**)&dcsrVal_A, sizeof(float) * nnz_A);
+*
+*    hipMemcpy(dcsrRowPtr_A, hcsrRowPtr_A, sizeof(int) * (m + 1), hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrVal_A, hcsrVal_A, sizeof(float) * nnz_A, hipMemcpyHostToDevice);
+*
+*    // Allocate memory for the nnz_per_row array
+*    int* dnnz_per_row;
+*    hipMalloc((void**)&dnnz_per_row, sizeof(int) * m);
+*
+*    // Call snnz_compress() which fills in nnz_per_row array and finds the number
+*    // of entries that will be in the compressed CSR matrix
+*    int nnz_C;
+*    hipsparseSnnz_compress(handle, m, descr_A, dcsrVal_A, dcsrRowPtr_A, dnnz_per_row, &nnz_C, tol);
+*
+*    hipFree(dcsrRowPtr_A);
+*    hipFree(dcsrVal_A);
+*    hipFree(dnnz_per_row);
+*
+*    hipsparseDestroyMatDescr(descr_A);
+*    hipsparseDestroy(handle);
+*  \endcode
 */
 /**@{*/
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
@@ -8612,7 +9881,22 @@ hipsparseStatus_t hipsparseZnnz_compress(hipsparseHandle_t         handle,
 *
 *  \details
 *  \p hipsparseXcsr2coo converts the CSR array containing the row offsets, that point
-*  to the start of every row, into a COO array of row indices.
+*  to the start of every row, into a COO array of row indices. All arrays are assumed 
+*  to be allocated by the user prior to calling \p hipsparseXcsr2coo.
+*
+*  For example, given the CSR row pointer array (assuming zero index base):
+*  \f[
+*    \begin{align}
+*    \text{csrRowPtr} &= \begin{bmatrix} 0 & 1 & 3 & 4 \end{bmatrix}
+*    \end{align}
+*  \f]
+*
+*  Calling \p hipsparseXcsr2coo() results in the COO row indices array:
+*  \f[
+*    \begin{align}
+*    \text{cooRowInd} &= \begin{bmatrix} 0 & 1 & 1 & 2 \end{bmatrix}
+*    \end{align}
+*  \f]
 *
 *  \note
 *  It can also be used to convert a CSC array containing the column offsets into a COO
@@ -8636,9 +9920,39 @@ hipsparseStatus_t hipsparseXcsr2coo(hipsparseHandle_t    handle,
 *
 *  \details
 *  \p hipsparseXcsr2csc converts a CSR matrix into a CSC matrix. \p hipsparseXcsr2csc
-*  can also be used to convert a CSC matrix into a CSR matrix. \p copy_values decides
-*  whether \p csc_val is being filled during conversion (\ref HIPSPARSE_ACTION_NUMERIC)
+*  can also be used to convert a CSC matrix into a CSR matrix. \p copyValues decides
+*  whether \p cscSortedVal is being filled during conversion (\ref HIPSPARSE_ACTION_NUMERIC)
 *  or not (\ref HIPSPARSE_ACTION_SYMBOLIC).
+*
+*  For example given the matrix:
+*  \f[
+*    \begin{bmatrix}
+*    1 & 0 & 0 & 2 \\
+*    3 & 4 & 0 & 0 \\
+*    5 & 0 & 6 & 7
+*    \end{bmatrix}
+*  \f]
+*
+*  Represented using the sparse CSR format as:
+*  \f[
+*    \begin{align}
+*    \text{csrSortedRowPtr} &= \begin{bmatrix} 0 & 2 & 4 & 7 \end{bmatrix}
+*    \text{csrSortedColInd} &= \begin{bmatrix} 0 & 3 & 0 & 1 & 0 & 2 & 3 \end{bmatrix}
+*    \text{csrSortedVal} &= \begin{bmatrix} 1 & 2 & 3 & 4 & 5 & 6 & 7 \end{bmatrix}
+*    \end{align}
+*  \f]
+*
+*  this function converts to sparse CSC format:
+*  \f[
+*    \begin{align}
+*    \text{cscSortedRowInd} &= \begin{bmatrix} 0 & 1 & 2 & 1 & 2 & 0 & 2 \end{bmatrix}
+*    \text{cscSortedColPtr} &= \begin{bmatrix} 0 & 3 & 4 & 5 & 7 \end{bmatrix}
+*    \text{cscSortedVal} &= \begin{bmatrix} 1 & 3 & 5 & 4 & 6 & 2 & 7 \end{bmatrix}
+*    \end{align}
+*  \f]
+*
+*  The CSC arrays, \p cscSortedRowInd, \p cscSortedColPtr, and \p cscSortedVal must be allocated by the 
+*  user prior to calling \p hipsparseXcsr2csc().
 *
 *  \note
 *  The resulting matrix can also be seen as the transpose of the input matrix.
@@ -8646,6 +9960,57 @@ hipsparseStatus_t hipsparseXcsr2coo(hipsparseHandle_t    handle,
 *  \note
 *  This function is non blocking and executed asynchronously with respect to the host.
 *  It may return before the actual computation has finished.
+*
+*  \par Example
+*  \code{.c}
+*    // hipSPARSE handle
+*    hipsparseHandle_t handle;
+*    hipsparseCreate(&handle);
+*
+*    // Sparse matrix in CSR format
+*    //     1 2 0 3 0
+*    // A = 0 4 5 0 0
+*    //     6 0 0 7 8
+*    int hcsrRowPtr[4] = {0, 3, 5, 8};
+*    int hcsrColInd[8] = {0, 1, 3, 1, 2, 0, 3, 4};
+*    float hcsrVal[8]   = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f}; 
+*
+*    int m         = 3;
+*    int n         = 5;
+*    int nnz       = 8;
+*    hipsparseIndexBase_t base = HIPSPARSE_INDEX_BASE_ZERO;
+*    hipsparseAction_t action = HIPSPARSE_ACTION_NUMERIC;
+*
+*    int* dcsrRowPtr = nullptr;
+*    int* dcsrColInd = nullptr;
+*    float* dcsrVal = nullptr;
+*    hipMalloc((void**)&dcsrRowPtr, sizeof(int) * (m + 1));
+*    hipMalloc((void**)&dcsrColInd, sizeof(int) * nnz);
+*    hipMalloc((void**)&dcsrVal, sizeof(float) * nnz);
+*
+*    hipMemcpy(dcsrRowPtr, hcsrRowPtr, sizeof(int) * (m + 1), hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrColInd, hcsrColInd, sizeof(int) * nnz, hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrVal, hcsrVal, sizeof(float) * nnz, hipMemcpyHostToDevice);
+*
+*    int* dcscRowInd = nullptr;
+*    int* dcscColPtr = nullptr;
+*    float* dcsc_val   = nullptr;
+*    hipMalloc((void**)&dcscRowInd, sizeof(int) * nnz);
+*    hipMalloc((void**)&dcscColPtr, sizeof(int) * (n + 1));
+*    hipMalloc((void**)&dcsc_val, sizeof(float) * nnz);
+*
+*    hipsparseScsr2csc(handle, m, n, nnz, dcsrVal, dcsrRowPtr, dcsrColInd, dcsc_val, dcscRowInd, dcscColPtr, action, base);
+*
+*    hipFree(dcsrRowPtr);
+*    hipFree(dcsrColInd);
+*    hipFree(dcsrVal);
+*    
+*    hipFree(dcscRowInd);
+*    hipFree(dcscColPtr);
+*    hipFree(dcsc_val);
+*
+*    hipsparseDestroy(handle);
+*  \endcode
 */
 /**@{*/
 DEPRECATED_CUDA_10000("The routine will be removed in CUDA 11")
@@ -8745,8 +10110,8 @@ typedef enum
 *  \details
 *  \p hipsparseCsr2cscEx2_bufferSize calculates the required user allocated temporary buffer needed 
 *  by \p hipsparseCsr2cscEx2 to convert a CSR matrix into a CSC matrix. \p hipsparseCsr2cscEx2
-*  can also be used to convert a CSC matrix into a CSR matrix. \p copy_values decides
-*  whether \p csc_val is being filled during conversion (\ref HIPSPARSE_ACTION_NUMERIC)
+*  can also be used to convert a CSC matrix into a CSR matrix. \p copyValues decides
+*  whether \p cscVal is being filled during conversion (\ref HIPSPARSE_ACTION_NUMERIC)
 *  or not (\ref HIPSPARSE_ACTION_SYMBOLIC).
 *
 *  \note
@@ -8771,7 +10136,7 @@ hipsparseStatus_t hipsparseCsr2cscEx2_bufferSize(hipsparseHandle_t     handle,
                                                  hipsparseAction_t     copyValues,
                                                  hipsparseIndexBase_t  idxBase,
                                                  hipsparseCsr2CscAlg_t alg,
-                                                 size_t*               bufferSize);
+                                                 size_t*               pBufferSizeInBytes);
 #endif
 
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
@@ -8780,8 +10145,8 @@ hipsparseStatus_t hipsparseCsr2cscEx2_bufferSize(hipsparseHandle_t     handle,
 *
 *  \details
 *  \p hipsparseCsr2cscEx2 converts a CSR matrix into a CSC matrix. \p hipsparseCsr2cscEx2
-*  can also be used to convert a CSC matrix into a CSR matrix. \p copy_values decides
-*  whether \p csc_val is being filled during conversion (\ref HIPSPARSE_ACTION_NUMERIC)
+*  can also be used to convert a CSC matrix into a CSR matrix. \p copyValues decides
+*  whether \p cscVal is being filled during conversion (\ref HIPSPARSE_ACTION_NUMERIC)
 *  or not (\ref HIPSPARSE_ACTION_SYMBOLIC).
 *
 *  \note
@@ -8790,6 +10155,94 @@ hipsparseStatus_t hipsparseCsr2cscEx2_bufferSize(hipsparseHandle_t     handle,
 *  \note
 *  This function is non blocking and executed asynchronously with respect to the host.
 *  It may return before the actual computation has finished.
+*
+*  \par Example
+*  \code{.c}
+*    // hipSPARSE handle
+*    hipsparseHandle_t handle;
+*    hipsparseCreate(&handle);
+*
+*    // Sparse matrix in CSR format
+*    //     1 2 0 3 0
+*    // A = 0 4 5 0 0
+*    //     6 0 0 7 8
+*    int hcsrRowPtr[4] = {0, 3, 5, 8};
+*    int hcsrColInd[8] = {0, 1, 3, 1, 2, 0, 3, 4};
+*    float hcsrVal[8]   = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f}; 
+*
+*    int m         = 3;
+*    int n         = 5;
+*    int nnz       = 8;
+*    hipsparseIndexBase_t base = HIPSPARSE_INDEX_BASE_ZERO;
+*    hipsparseAction_t action = HIPSPARSE_ACTION_NUMERIC;
+*    hipsparseCsr2CscAlg_t alg = HIPSPARSE_CSR2CSC_ALG_DEFAULT;
+*
+*    int* dcsrRowPtr = nullptr;
+*    int* dcsrColInd = nullptr;
+*    float* dcsrVal = nullptr;
+*    hipMalloc((void**)&dcsrRowPtr, sizeof(int) * (m + 1));
+*    hipMalloc((void**)&dcsrColInd, sizeof(int) * nnz);
+*    hipMalloc((void**)&dcsrVal, sizeof(float) * nnz);
+*
+*    hipMemcpy(dcsrRowPtr, hcsrRowPtr, sizeof(int) * (m + 1), hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrColInd, hcsrColInd, sizeof(int) * nnz, hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrVal, hcsrVal, sizeof(float) * nnz, hipMemcpyHostToDevice);
+*
+*    int* dcscRowInd = nullptr;
+*    int* dcscColPtr = nullptr;
+*    float* dcsc_val   = nullptr;
+*    hipMalloc((void**)&dcscRowInd, sizeof(int) * nnz);
+*    hipMalloc((void**)&dcscColPtr, sizeof(int) * (n + 1));
+*    hipMalloc((void**)&dcsc_val, sizeof(float) * nnz);
+*
+*    size_t bufferSize;
+*    hipsparseCsr2cscEx2_bufferSize(handle, 
+*                                   m, 
+*                                   n, 
+*                                   nnz, 
+*                                   dcsrVal, 
+*                                   dcsrRowPtr, 
+*                                   dcsrColInd, 
+*                                   dcsc_val, 
+*                                   dcscColPtr, 
+*                                   dcscRowInd,
+*                                   HIP_R_32F, 
+*                                   action, 
+*                                   base, 
+*                                   alg, 
+*                                   &bufferSize);
+*
+*    void* dbuffer = nullptr;
+*    hipMalloc((void**)&dbuffer, bufferSize);
+*
+*    hipsparseCsr2cscEx2(handle, 
+*                        m, 
+*                        n, 
+*                        nnz, 
+*                        dcsrVal, 
+*                        dcsrRowPtr, 
+*                        dcsrColInd, 
+*                        dcsc_val, 
+*                        dcscColPtr, 
+*                        dcscRowInd, 
+*                        HIP_R_32F, 
+*                        action, 
+*                        base, 
+*                        alg, 
+*                        dbuffer);
+*
+*    hipFree(dcsrRowPtr);
+*    hipFree(dcsrColInd);
+*    hipFree(dcsrVal);
+*    
+*    hipFree(dcscRowInd);
+*    hipFree(dcscColPtr);
+*    hipFree(dcsc_val);
+*
+*    hipFree(dbuffer);
+*
+*    hipsparseDestroy(handle);
+*  \endcode
 */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCsr2cscEx2(hipsparseHandle_t     handle,
@@ -8824,6 +10277,55 @@ hipsparseStatus_t hipsparseCsr2cscEx2(hipsparseHandle_t     handle,
 *  \note
 *  This function is non blocking and executed asynchronously with respect to the host.
 *  It may return before the actual computation has finished.
+*
+*  \par Example
+*  \code{.c}
+*    // hipSPARSE handle
+*    hipsparseHandle_t handle;
+*    hipsparseCreate(&handle);
+*
+*    hipsparseMatDescr_t descr;
+*    hipsparseCreateMatDescr(&descr);
+*
+*    // Sparse matrix in CSR format
+*    //     1 2 0 3 0
+*    // A = 0 4 5 0 0
+*    //     6 0 0 7 8
+*    int hcsrRowPtr[4] = {0, 3, 5, 8};
+*    int hcsrColInd[8] = {0, 1, 3, 1, 2, 0, 3, 4};
+*    float hcsrVal[8]   = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f}; 
+*
+*    int m         = 3;
+*    int n         = 5;
+*    int nnz       = 8;
+*    int userEllWidth = 2;
+*    hipsparseHybPartition_t partitionType = HIPSPARSE_HYB_PARTITION_AUTO;
+*
+*    int* dcsrRowPtr = nullptr;
+*    int* dcsrColInd = nullptr;
+*    float* dcsrVal = nullptr;
+*    hipMalloc((void**)&dcsrRowPtr, sizeof(int) * (m + 1));
+*    hipMalloc((void**)&dcsrColInd, sizeof(int) * nnz);
+*    hipMalloc((void**)&dcsrVal, sizeof(float) * nnz);
+*
+*    hipMemcpy(dcsrRowPtr, hcsrRowPtr, sizeof(int) * (m + 1), hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrColInd, hcsrColInd, sizeof(int) * nnz, hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrVal, hcsrVal, sizeof(float) * nnz, hipMemcpyHostToDevice);
+*
+*    hipsparseHybMat_t hyb;
+*    hipsparseCreateHybMat(&hyb);
+*
+*    hipsparseScsr2hyb(handle, m, n, descr, dcsrVal, dcsrRowPtr, dcsrColInd, hyb, userEllWidth, partitionType);
+*
+*    hipFree(dcsrRowPtr);
+*    hipFree(dcsrColInd);
+*    hipFree(dcsrVal);
+*
+*    hipsparseDestroyHybMat(hyb);    
+*    hipsparseDestroyMatDescr(descr);
+*
+*    hipsparseDestroy(handle);
+*  \endcode
 */
 /**@{*/
 DEPRECATED_CUDA_10000("The routine will be removed in CUDA 11")
@@ -8878,12 +10380,15 @@ hipsparseStatus_t hipsparseZcsr2hyb(hipsparseHandle_t         handle,
 #endif
 
 /*! \ingroup conv_module
-*  \brief Convert a sparse GEneral BSR matrix into a sparse GEneral BSC matrix
+*  \brief Convert a sparse GEBSR matrix into a sparse GEBSC matrix
 *
 *  \details
 *  \p hipsparseXgebsr2gebsc_bufferSize returns the size of the temporary storage buffer
-*  required by hipsparseXgebsr2gebsc().
-*  The temporary storage buffer must be allocated by the user.
+*  required by hipsparseXgebsr2gebsc() and is the first step in converting a sparse matrix 
+*  in GEBSR format to a sparse matrix in GEBSC format. Once the size of the temporary storage 
+*  buffer has been determined, it must be allocated by the user.
+*
+*  See hipsparseSgebsr2gebsc() for a complete code example.
 */
 /**@{*/
 HIPSPARSE_EXPORT
@@ -8891,59 +10396,110 @@ hipsparseStatus_t hipsparseSgebsr2gebsc_bufferSize(hipsparseHandle_t handle,
                                                    int               mb,
                                                    int               nb,
                                                    int               nnzb,
-                                                   const float*      bsr_val,
-                                                   const int*        bsr_row_ptr,
-                                                   const int*        bsr_col_ind,
-                                                   int               row_block_dim,
-                                                   int               col_block_dim,
-                                                   size_t*           p_buffer_size);
+                                                   const float*      bsrVal,
+                                                   const int*        bsrRowPtr,
+                                                   const int*        bsrColInd,
+                                                   int               rowBlockDim,
+                                                   int               colBlockDim,
+                                                   size_t*           pBufferSizeInBytes);
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDgebsr2gebsc_bufferSize(hipsparseHandle_t handle,
                                                    int               mb,
                                                    int               nb,
                                                    int               nnzb,
-                                                   const double*     bsr_val,
-                                                   const int*        bsr_row_ptr,
-                                                   const int*        bsr_col_ind,
-                                                   int               row_block_dim,
-                                                   int               col_block_dim,
-                                                   size_t*           p_buffer_size);
+                                                   const double*     bsrVal,
+                                                   const int*        bsrRowPtr,
+                                                   const int*        bsrColInd,
+                                                   int               rowBlockDim,
+                                                   int               colBlockDim,
+                                                   size_t*           pBufferSizeInBytes);
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCgebsr2gebsc_bufferSize(hipsparseHandle_t handle,
                                                    int               mb,
                                                    int               nb,
                                                    int               nnzb,
-                                                   const hipComplex* bsr_val,
-                                                   const int*        bsr_row_ptr,
-                                                   const int*        bsr_col_ind,
-                                                   int               row_block_dim,
-                                                   int               col_block_dim,
-                                                   size_t*           p_buffer_size);
+                                                   const hipComplex* bsrVal,
+                                                   const int*        bsrRowPtr,
+                                                   const int*        bsrColInd,
+                                                   int               rowBlockDim,
+                                                   int               colBlockDim,
+                                                   size_t*           pBufferSizeInBytes);
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseZgebsr2gebsc_bufferSize(hipsparseHandle_t       handle,
                                                    int                     mb,
                                                    int                     nb,
                                                    int                     nnzb,
-                                                   const hipDoubleComplex* bsr_val,
-                                                   const int*              bsr_row_ptr,
-                                                   const int*              bsr_col_ind,
-                                                   int                     row_block_dim,
-                                                   int                     col_block_dim,
-                                                   size_t*                 p_buffer_size);
+                                                   const hipDoubleComplex* bsrVal,
+                                                   const int*              bsrRowPtr,
+                                                   const int*              bsrColInd,
+                                                   int                     rowBlockDim,
+                                                   int                     colBlockDim,
+                                                   size_t*                 pBufferSizeInBytes);
 /**@}*/
 
 /*! \ingroup conv_module
-*  \brief Convert a sparse GEneral BSR matrix into a sparse GEneral BSC matrix
+*  \brief Convert a sparse GEBSR matrix into a sparse GEBSC matrix
 *
 *  \details
-*  \p hipsparseXgebsr2gebsc converts a GEneral BSR matrix into a GEneral BSC matrix. \p hipsparseXgebsr2gebsc
-*  can also be used to convert a GEneral BSC matrix into a GEneral BSR matrix. \p copy_values decides
-*  whether \p bsc_val is being filled during conversion (\ref HIPSPARSE_ACTION_NUMERIC)
+*  \p hipsparseXgebsr2gebsc converts a GEBSR matrix into a GEBSC matrix. \p hipsparseXgebsr2gebsc
+*  can also be used to convert a GEBSC matrix into a GEBSR matrix. \p copyValues decides
+*  whether \p bscVal is being filled during conversion (\ref HIPSPARSE_ACTION_NUMERIC)
 *  or not (\ref HIPSPARSE_ACTION_SYMBOLIC).
 *
 *  \p hipsparseXgebsr2gebsc requires extra temporary storage buffer that has to be allocated
 *  by the user. Storage buffer size can be determined by hipsparseXgebsr2gebsc_bufferSize().
+*
+*  For example, given the GEBSR matrix:
+*  \f[
+*   \left[ 
+*    \begin{array}{c | c} 
+*      \begin{array}{c c} 
+*       1 & 2 \\ 
+*       3 & 4 \\
+*       6 & 0 
+*      \end{array} & 
+*      \begin{array}{c c} 
+*       0 & 2 \\ 
+*       0 & 0 \\
+*       3 & 4 
+*      \end{array} \\ 
+*    \hline 
+*      \begin{array}{c c} 
+*       5 & 0 \\ 
+*       1 & 2 \\
+*       3 & 4 
+*      \end{array} & 
+*      \begin{array}{c c} 
+*       6 & 7 \\ 
+*       3 & 4 \\
+*       3 & 4 
+*      \end{array} \\ 
+*   \end{array} 
+*  \right] 
+*  \f]
+*
+*  represented with the arrays:
+*  \f[
+*    \begin{align}
+*    \text{bsrRowPtr} &= \begin{bmatrix} 0 & 2 & 4 \end{bmatrix} \\
+*    \text{bsrColInd} &= \begin{bmatrix} 0 & 1 & 0 & 1 \end{bmatrix} \\
+*    \text{bsrVal} &= \begin{bmatrix} 1 & 2 & 3 & 4 & 6 & 0 & 0 & 2 & 0 & 0 & 3 & 4 & 5 & 0 & 1 & 2 & 3 & 4 & 6 & 7 & 3 & 4 & 3 & 4 \end{bmatrix}
+*    \end{align}
+*  \f]
+*
+*  this function converts the matrix to GEBSC format:
+*  \f[
+*    \begin{align}
+*    \text{bscRowInd} &= \begin{bmatrix} 0 & 1 & 0 & 1 \end{bmatrix} \\
+*    \text{bscColPtr} &= \begin{bmatrix} 0 & 2 & 4 \end{bmatrix} \\
+*    \text{bscVal} &= \begin{bmatrix} 1 & 2 & 3 & 4 & 6 & 0 & 5 & 0 & 1 & 2 & 3 & 4 & 0 & 2 & 0 & 0 & 3 & 4 & 6 & 7 & 3 & 4 & 3 & 4 \end{bmatrix}
+*    \end{align}
+*  \f]
+*
+*  The GEBSC arrays, \p bscRowInd, \p bscColPtr, and \p bscVal must be allocated by the user prior 
+*  to calling \p hipsparseXgebsr2gebsc(). The \p bscRowInd array has size \p nnzb, the \p bscColPtr 
+*  array has size \p nb+1, and the \p bscVal array has size \p nnzb*rowBlockDim*colBlockDim.
 *
 *  \note
 *  The resulting matrix can also be seen as the transpose of the input matrix.
@@ -8951,6 +10507,103 @@ hipsparseStatus_t hipsparseZgebsr2gebsc_bufferSize(hipsparseHandle_t       handl
 *  \note
 *  This function is non blocking and executed asynchronously with respect to the host.
 *  It may return before the actual computation has finished.
+*
+*  \par Example
+*  \code{.c}
+*    // hipSPARSE handle
+*    hipsparseHandle_t handle;
+*    hipsparseCreate(&handle);
+*
+*    // Sparse matrix in BSR format
+*    //     1 2 | 0 3 | 0 0 
+*    //     0 4 | 5 0 | 0 1
+*    // A = 6 0 | 0 7 | 8 0
+*    //     --------------- 
+*    //     0 0 | 3 0 | 2 2
+*    //     1 0 | 0 0 | 4 3 
+*    //     7 2 | 0 0 | 1 4
+*    int hbsrRowPtr[3] = {0, 3, 6};
+*    int hbsrColInd[6] = {0, 1, 2, 0, 1, 2};
+*    float hbsrVal[36]  = {1.0f, 2.0f, 0.0f, 4.0f, 6.0f, 0.0f, 
+*                           0.0f, 3.0f, 5.0f, 0.0f, 0.0f, 7.0f, 
+*                           0.0f, 0.0f, 0.0f, 1.0f, 8.0f, 0.0f, 
+*                           0.0f, 0.0f, 1.0f, 0.0f, 7.0f, 2.0f,
+*                           3.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+*                           2.0f, 2.0f, 4.0f, 3.0f, 1.0f, 4.0f}; 
+*
+*    int m           = 6;
+*    int n           = 6;
+*    int rowBlockDim = 3;
+*    int colBlockDim = 2;
+*    int nnzb        = 6;
+*    hipsparseDirection_t dir = HIPSPARSE_DIRECTION_ROW;
+*    hipsparseAction_t    action = HIPSPARSE_ACTION_NUMERIC;
+*    hipsparseIndexBase_t base = HIPSPARSE_INDEX_BASE_ZERO;
+*
+*    int mb = (m + rowBlockDim - 1) / rowBlockDim;
+*    int nb = (n + colBlockDim - 1) / colBlockDim;
+*
+*    int* dbsrRowPtr = nullptr;
+*    int* dbsrColInd = nullptr;
+*    float* dbsrVal = nullptr;
+*    hipMalloc((void**)&dbsrRowPtr, sizeof(int) * (mb + 1));
+*    hipMalloc((void**)&dbsrColInd, sizeof(int) * nnzb);
+*    hipMalloc((void**)&dbsrVal, sizeof(float) * rowBlockDim * colBlockDim * nnzb);
+*
+*    hipMemcpy(dbsrRowPtr, hbsrRowPtr, sizeof(int) * (mb + 1), hipMemcpyHostToDevice);
+*    hipMemcpy(dbsrColInd, hbsrColInd, sizeof(int) * nnzb, hipMemcpyHostToDevice);
+*    hipMemcpy(dbsrVal, hbsrVal, sizeof(float) * rowBlockDim * colBlockDim * nnzb, hipMemcpyHostToDevice);
+*
+*    int* dbscRowInd = nullptr;
+*    int* dbscColPtr = nullptr;
+*    float* dbscVal = nullptr;
+*    hipMalloc((void**)&dbscRowInd, sizeof(int) * nnzb);
+*    hipMalloc((void**)&dbscColPtr, sizeof(int) * (nb + 1));
+*    hipMalloc((void**)&dbscVal, sizeof(float) * rowBlockDim * colBlockDim * nnzb);
+*
+*    size_t bufferSize;
+*    hipsparseSgebsr2gebsc_bufferSize(handle, 
+*                                     mb, 
+*                                     nb, 
+*                                     nnzb, 
+*                                     dbsrVal, 
+*                                     dbsrRowPtr, 
+*                                     dbsrColInd, 
+*                                     rowBlockDim, 
+*                                     colBlockDim, 
+*                                     &bufferSize);
+*
+*    void* dbuffer = nullptr;
+*    hipMalloc((void**)&dbuffer, bufferSize);
+*
+*    hipsparseSgebsr2gebsc(handle, 
+*                          mb, 
+*                          nb, 
+*                          nnzb, 
+*                          dbsrVal, 
+*                          dbsrRowPtr, 
+*                          dbsrColInd, 
+*                          rowBlockDim, 
+*                          colBlockDim, 
+*                          dbscVal, 
+*                          dbscRowInd, 
+*                          dbscColPtr, 
+*                          action, 
+*                          base, 
+*                          dbuffer);
+*
+*    hipFree(dbsrRowPtr);
+*    hipFree(dbsrColInd);
+*    hipFree(dbsrVal);
+*    
+*    hipFree(dbscRowInd);
+*    hipFree(dbscColPtr);
+*    hipFree(dbscVal);
+*
+*    hipFree(dbuffer);
+*
+*    hipsparseDestroy(handle);
+*  \endcode
 */
 /**@{*/
 HIPSPARSE_EXPORT
@@ -8958,16 +10611,16 @@ hipsparseStatus_t hipsparseSgebsr2gebsc(hipsparseHandle_t    handle,
                                         int                  mb,
                                         int                  nb,
                                         int                  nnzb,
-                                        const float*         bsr_val,
-                                        const int*           bsr_row_ptr,
-                                        const int*           bsr_col_ind,
-                                        int                  row_block_dim,
-                                        int                  col_block_dim,
-                                        float*               bsc_val,
-                                        int*                 bsc_row_ind,
-                                        int*                 bsc_col_ptr,
-                                        hipsparseAction_t    copy_values,
-                                        hipsparseIndexBase_t idx_base,
+                                        const float*         bsrVal,
+                                        const int*           bsrRowPtr,
+                                        const int*           bsrColInd,
+                                        int                  rowBlockDim,
+                                        int                  colBlockDim,
+                                        float*               bscVal,
+                                        int*                 bscRowInd,
+                                        int*                 bscColPtr,
+                                        hipsparseAction_t    copyValues,
+                                        hipsparseIndexBase_t idxBase,
                                         void*                temp_buffer);
 
 HIPSPARSE_EXPORT
@@ -8975,16 +10628,16 @@ hipsparseStatus_t hipsparseDgebsr2gebsc(hipsparseHandle_t    handle,
                                         int                  mb,
                                         int                  nb,
                                         int                  nnzb,
-                                        const double*        bsr_val,
-                                        const int*           bsr_row_ptr,
-                                        const int*           bsr_col_ind,
-                                        int                  row_block_dim,
-                                        int                  col_block_dim,
-                                        double*              bsc_val,
-                                        int*                 bsc_row_ind,
-                                        int*                 bsc_col_ptr,
-                                        hipsparseAction_t    copy_values,
-                                        hipsparseIndexBase_t idx_base,
+                                        const double*        bsrVal,
+                                        const int*           bsrRowPtr,
+                                        const int*           bsrColInd,
+                                        int                  rowBlockDim,
+                                        int                  colBlockDim,
+                                        double*              bscVal,
+                                        int*                 bscRowInd,
+                                        int*                 bscColPtr,
+                                        hipsparseAction_t    copyValues,
+                                        hipsparseIndexBase_t idxBase,
                                         void*                temp_buffer);
 
 HIPSPARSE_EXPORT
@@ -8992,16 +10645,16 @@ hipsparseStatus_t hipsparseCgebsr2gebsc(hipsparseHandle_t    handle,
                                         int                  mb,
                                         int                  nb,
                                         int                  nnzb,
-                                        const hipComplex*    bsr_val,
-                                        const int*           bsr_row_ptr,
-                                        const int*           bsr_col_ind,
-                                        int                  row_block_dim,
-                                        int                  col_block_dim,
-                                        hipComplex*          bsc_val,
-                                        int*                 bsc_row_ind,
-                                        int*                 bsc_col_ptr,
-                                        hipsparseAction_t    copy_values,
-                                        hipsparseIndexBase_t idx_base,
+                                        const hipComplex*    bsrVal,
+                                        const int*           bsrRowPtr,
+                                        const int*           bsrColInd,
+                                        int                  rowBlockDim,
+                                        int                  colBlockDim,
+                                        hipComplex*          bscVal,
+                                        int*                 bscRowInd,
+                                        int*                 bscColPtr,
+                                        hipsparseAction_t    copyValues,
+                                        hipsparseIndexBase_t idxBase,
                                         void*                temp_buffer);
 
 HIPSPARSE_EXPORT
@@ -9009,30 +10662,31 @@ hipsparseStatus_t hipsparseZgebsr2gebsc(hipsparseHandle_t       handle,
                                         int                     mb,
                                         int                     nb,
                                         int                     nnzb,
-                                        const hipDoubleComplex* bsr_val,
-                                        const int*              bsr_row_ptr,
-                                        const int*              bsr_col_ind,
-                                        int                     row_block_dim,
-                                        int                     col_block_dim,
-                                        hipDoubleComplex*       bsc_val,
-                                        int*                    bsc_row_ind,
-                                        int*                    bsc_col_ptr,
-                                        hipsparseAction_t       copy_values,
-                                        hipsparseIndexBase_t    idx_base,
+                                        const hipDoubleComplex* bsrVal,
+                                        const int*              bsrRowPtr,
+                                        const int*              bsrColInd,
+                                        int                     rowBlockDim,
+                                        int                     colBlockDim,
+                                        hipDoubleComplex*       bscVal,
+                                        int*                    bscRowInd,
+                                        int*                    bscColPtr,
+                                        hipsparseAction_t       copyValues,
+                                        hipsparseIndexBase_t    idxBase,
                                         void*                   temp_buffer);
 /**@}*/
 
 /*! \ingroup conv_module
-*  \brief
- *  \details
- *  \p hipsparseXcsr2gebsr_bufferSize returns the size of the temporary buffer that
- *  is required by \p hipsparseXcsr2gebcsrNnz and \p hipsparseXcsr2gebcsr.
- *  The temporary storage buffer must be allocated by the user.
- *
-*  This function computes the number of nonzero block columns per row and the total number of nonzero blocks in a sparse
-*  GEneral BSR matrix given a sparse CSR matrix as input.
+*  \brief Convert a sparse CSR matrix into a sparse GEBSR matrix
 *
 *  \details
+*  \p hipsparseXcsr2gebsr_bufferSize returns the size of the temporary buffer that
+*  is required by \p hipsparseXcsr2gebcsrNnz and \p hipsparseXcsr2gebcsr. Once the 
+*  temporary buffer size has been determined, it must be allocated by the user prior 
+*  to calling \p hipsparseXcsr2gebcsrNnz and \p hipsparseXcsr2gebcsr. 
+*
+*  See hipsparseScsr2gebsr() for complete code example.
+*
+*  \note
 *  The routine does support asynchronous execution if the pointer mode is set to device.
 */
 /**@{*/
@@ -9042,12 +10696,12 @@ hipsparseStatus_t hipsparseScsr2gebsr_bufferSize(hipsparseHandle_t         handl
                                                  int                       m,
                                                  int                       n,
                                                  const hipsparseMatDescr_t csr_descr,
-                                                 const float*              csr_val,
-                                                 const int*                csr_row_ptr,
-                                                 const int*                csr_col_ind,
-                                                 int                       row_block_dim,
-                                                 int                       col_block_dim,
-                                                 size_t*                   p_buffer_size);
+                                                 const float*              csrVal,
+                                                 const int*                csrRowPtr,
+                                                 const int*                csrColInd,
+                                                 int                       rowBlockDim,
+                                                 int                       colBlockDim,
+                                                 size_t*                   pBufferSizeInBytes);
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDcsr2gebsr_bufferSize(hipsparseHandle_t         handle,
@@ -9055,12 +10709,12 @@ hipsparseStatus_t hipsparseDcsr2gebsr_bufferSize(hipsparseHandle_t         handl
                                                  int                       m,
                                                  int                       n,
                                                  const hipsparseMatDescr_t csr_descr,
-                                                 const double*             csr_val,
-                                                 const int*                csr_row_ptr,
-                                                 const int*                csr_col_ind,
-                                                 int                       row_block_dim,
-                                                 int                       col_block_dim,
-                                                 size_t*                   p_buffer_size);
+                                                 const double*             csrVal,
+                                                 const int*                csrRowPtr,
+                                                 const int*                csrColInd,
+                                                 int                       rowBlockDim,
+                                                 int                       colBlockDim,
+                                                 size_t*                   pBufferSizeInBytes);
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCcsr2gebsr_bufferSize(hipsparseHandle_t         handle,
@@ -9068,12 +10722,12 @@ hipsparseStatus_t hipsparseCcsr2gebsr_bufferSize(hipsparseHandle_t         handl
                                                  int                       m,
                                                  int                       n,
                                                  const hipsparseMatDescr_t csr_descr,
-                                                 const hipComplex*         csr_val,
-                                                 const int*                csr_row_ptr,
-                                                 const int*                csr_col_ind,
-                                                 int                       row_block_dim,
-                                                 int                       col_block_dim,
-                                                 size_t*                   p_buffer_size);
+                                                 const hipComplex*         csrVal,
+                                                 const int*                csrRowPtr,
+                                                 const int*                csrColInd,
+                                                 int                       rowBlockDim,
+                                                 int                       colBlockDim,
+                                                 size_t*                   pBufferSizeInBytes);
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseZcsr2gebsr_bufferSize(hipsparseHandle_t         handle,
@@ -9081,19 +10735,97 @@ hipsparseStatus_t hipsparseZcsr2gebsr_bufferSize(hipsparseHandle_t         handl
                                                  int                       m,
                                                  int                       n,
                                                  const hipsparseMatDescr_t csr_descr,
-                                                 const hipDoubleComplex*   csr_val,
-                                                 const int*                csr_row_ptr,
-                                                 const int*                csr_col_ind,
-                                                 int                       row_block_dim,
-                                                 int                       col_block_dim,
-                                                 size_t*                   p_buffer_size);
+                                                 const hipDoubleComplex*   csrVal,
+                                                 const int*                csrRowPtr,
+                                                 const int*                csrColInd,
+                                                 int                       rowBlockDim,
+                                                 int                       colBlockDim,
+                                                 size_t*                   pBufferSizeInBytes);
 /**@}*/
 
 /*! \ingroup conv_module
 *  \brief
 *  This function computes the number of nonzero block columns per row and the total number of nonzero blocks in a sparse
-*  GEneral BSR matrix given a sparse CSR matrix as input.
+*  GEBSR matrix given a sparse CSR matrix as input.
 *
+*  \details
+*  This is the second step in conveting a CSR matrix to a GEBSR matrix. The user must first call 
+*  \p hipsparseXcsr2gebsr_bufferSize to determine the size of the required temporary storage buffer. The user then 
+*  allocates this buffer as well as the \p bsrRowPtr array ( size \p mb+1 ) and passes both to 
+*  \p hipsparseXcsr2gebsrNnz(). This second step then computes the number of nonzero block columns per row and the 
+*  total number of nonzero blocks. 
+*
+*  In general, when converting a CSR matrix of size \p m x \p n to a GEBSR matrix, the resulting GEBSR matrix will have size 
+*  \p mb x \p nb where \p mb and \p nb equal:
+*  \f[
+*    \begin{align}
+*    \text{mb} &= \text{(m - 1) / rowBlockDim + 1} \\
+*    \text{nb} &= \text{(n - 1) / colBlockDim + 1}
+*    \end{align}
+*  \f]
+*
+*  For example given a matrix:
+*  \f[
+*    \begin{bmatrix}
+*    1 & 0 & 0 & 2 & 4 & 0 \\
+*    3 & 4 & 0 & 0 & 5 & 1 \\
+*    5 & 0 & 6 & 7 & 6 & 2
+*    \end{bmatrix}
+*  \f]
+*
+*  represented in CSR format with the arrays:
+*  \f[
+*    \begin{align}
+*    \text{csrRowPtr} &= \begin{bmatrix} 0 & 3 & 7 & 12 \end{bmatrix} \\
+*    \text{csrColInd} &= \begin{bmatrix} 0 & 3 & 4 & 0 & 1 & 4 & 5 & 0 & 2 & 3 & 4 & 5 \end{bmatrix} \\
+*    \text{csrVal} &= \begin{bmatrix} 1 & 2 & 4 & 3 & 4 & 5 & 1 & 5 & 6 & 7 & 6 & 2 \end{bmatrix}
+*    \end{align}
+*  \f]
+*
+*  the \p bsrRowPtr array and total nonzero block count will be filled with:
+*  \f[
+*    \begin{align}
+*    \text{bsrRowPtr} &= \begin{bmatrix} 0 & 3 \end{bmatrix} \\
+*    \text{*bsrNnzDevhost} &= 3
+*    \end{align}
+*  \f]
+*
+*  after calling \p hipsparseXcsr2gebsrNnz with \p rowBlockDim=3 and \p colBlockDim=2.
+*
+*  \note
+*  As indicated, bsrNnzDevhost can point either to host or device memory. This is controlled 
+*  by setting the pointer mode. See hipsparseSetPointerMode().
+*
+*  It may be the case that \p rowBlockDim does not divide evenly into \p m and/or that \p colBlockDim does not divide 
+*  evenly into \p n. In these cases, the CSR matrix is expanded in size in order to fit full GEBSR blocks. For example, 
+*  using the original CSR matrix but this time with \p rowBlockDim=2 and \p colBlockDim=3, the function 
+*  \p hipsparseXcsr2gebsrNnz computes the GEBSR row pointer array and total number of non-zero blocks for the GEBSR matrix:
+*
+*  \f[
+*   \left[ 
+*    \begin{array}{c | c} 
+*      \begin{array}{c c c} 
+*       1 & 0 & 0 \\ 
+*       3 & 4 & 0
+*      \end{array} & 
+*      \begin{array}{c c c} 
+*       2 & 4 & 0 \\ 
+*       0 & 5 & 1
+*      \end{array} \\
+*    \hline 
+*      \begin{array}{c c c} 
+*       5 & 0 & 6 \\ 
+*       0 & 0 & 0
+*      \end{array} &
+*      \begin{array}{c c c} 
+*       7 & 6 & 2 \\ 
+*       0 & 0 & 0
+*      \end{array}
+*   \end{array} 
+*  \right] 
+*  \f]
+*
+*  See hipsparseScsr2gebsr() for full code example.
 */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseXcsr2gebsrNnz(hipsparseHandle_t         handle,
@@ -9101,24 +10833,249 @@ hipsparseStatus_t hipsparseXcsr2gebsrNnz(hipsparseHandle_t         handle,
                                          int                       m,
                                          int                       n,
                                          const hipsparseMatDescr_t csr_descr,
-                                         const int*                csr_row_ptr,
-                                         const int*                csr_col_ind,
+                                         const int*                csrRowPtr,
+                                         const int*                csrColInd,
                                          const hipsparseMatDescr_t bsr_descr,
-                                         int*                      bsr_row_ptr,
-                                         int                       row_block_dim,
-                                         int                       col_block_dim,
-                                         int*                      bsr_nnz_devhost,
-                                         void*                     p_buffer);
+                                         int*                      bsrRowPtr,
+                                         int                       rowBlockDim,
+                                         int                       colBlockDim,
+                                         int*                      bsrNnzDevhost,
+                                         void*                     pbuffer);
 
 /*! \ingroup conv_module
-*  \brief Convert a sparse CSR matrix into a sparse GEneral BSR matrix
+*  \brief Convert a sparse CSR matrix into a sparse GEBSR matrix
 *
 *  \details
-*  \p hipsparseXcsr2gebsr converts a CSR matrix into a GEneral BSR matrix. It is assumed,
-*  that \p bsr_val, \p bsr_col_ind and \p bsr_row_ptr are allocated. Allocation size
-*  for \p bsr_row_ptr is computed as \p mb+1 where \p mb is the number of block rows in
-*  the GEneral BSR matrix. Allocation size for \p bsr_val and \p bsr_col_ind is computed using
-*  \p csr2gebsr_nnz() which also fills in \p bsr_row_ptr.
+*  \p hipsparseXcsr2gebsr converts a CSR matrix into a GEBSR matrix. It is assumed,
+*  that \p bsrVal, \p bsrColInd and \p bsrRowPtr are allocated. Allocation size
+*  for \p bsrRowPtr is computed as \p mb+1 where \p mb is the number of block rows in
+*  the GEBSR matrix. The number of nonzero blocks in the resulting GEBSR matrix 
+*  is computed using \p hipsparseXcsr2gebsrNnz which also fills in \p bsrRowPtr.
+*
+*  In more detail, \p hipsparseXcsr2gebsr is the third and final step on the conversion from CSR to GEBSR.
+*  The user first determines the size of the required user allocated temporary storage buffer using 
+*  \p hipsparseXcsr2gebsr_bufferSize. The user then allocates this buffer as well as the row pointer array 
+*  \p bsrRowPtr with size \p mb+1, where \p mb is the number of block rows in the GEBSR matrix and \p nb is 
+*  the number of block columns in GEBSR matrix:
+*
+*  \f[
+*    \begin{align}
+*    \text{mb} &= \text{(m - 1) / rowBlockDim + 1} \\
+*    \text{nb} &= \text{(n - 1) / colBlockDim + 1}
+*    \end{align}
+*  \f]
+*
+*  Both the temporary storage buffer and the GEBSR row pointer array are then passed to \p hipsparseXcsr2gebsrNnz 
+*  which fills the GEBSR row pointer array \p bsrRowPtr and also computes the number of nonzero blocks, 
+*  \p bsr_nnz, that will exist in the GEBSR matrix. The user then allocates both the GEBSR column indices array 
+*  \p bsrColInd with size \p bsr_nnz as well as the GEBSR values array \p bsrVal with size 
+*  \p bsr_nnz*rowBlockDim*colBlockDim. Finally, with all arrays allocated, the conversion is completed by calling
+*  \p hipsparseXcsr2gebsr.
+*
+*  For example, assuming the matrix:
+*  \f[
+*    \begin{bmatrix}
+*    1 & 0 & 0 & 2 & 4 & 0 \\
+*    3 & 4 & 0 & 0 & 5 & 1 \\
+*    5 & 0 & 6 & 7 & 6 & 2
+*    \end{bmatrix}
+*  \f]
+*
+*  represented in CSR format with the arrays:
+*  \f[
+*    \begin{align}
+*    \text{csrRowPtr} &= \begin{bmatrix} 0 & 3 & 7 & 12 \end{bmatrix} \\
+*    \text{csrColInd} &= \begin{bmatrix} 0 & 3 & 4 & 0 & 1 & 4 & 5 & 0 & 2 & 3 & 4 & 5 \end{bmatrix} \\
+*    \text{csrVal} &= \begin{bmatrix} 1 & 2 & 4 & 3 & 4 & 5 & 1 & 5 & 6 & 7 & 6 & 2 \end{bmatrix}
+*    \end{align}
+*  \f]
+*
+*  then using \p rowBlockDim=3 and \p colBlockDim=2, the final GEBSR matrix is:
+*  \f[
+*   \left[ 
+*    \begin{array}{c | c} 
+*      \begin{array}{c c} 
+*       1 & 0 \\ 
+*       3 & 4 \\
+*       3 & 0
+*      \end{array} & 
+*      \begin{array}{c c} 
+*       0 & 2 \\ 
+*       0 & 0 \\
+*       6 & 7
+*      \end{array} & 
+*      \begin{array}{c c} 
+*       4 & 0 \\ 
+*       5 & 1 \\
+*       6 & 2
+*      \end{array}
+*   \end{array} 
+*  \right] 
+*  \f]
+*
+*  and is represented with the arrays:
+*  \f[
+*    \begin{align}
+*    \text{bsrRowPtr} &= \begin{bmatrix} 0 & 3 \end{bmatrix} \\
+*    \text{bsrColInd} &= \begin{bmatrix} 0 & 1 & 2 \end{bmatrix} \\
+*    \text{bsrVal} &= \begin{bmatrix} 1 & 0 & 3 & 4 & 3 & 0 & 0 & 2 & 0 & 0 & 6 & 7 & 4 & 0 & 5 & 1 & 6 & 2 \end{bmatrix}
+*    \end{align}
+*  \f]
+*
+*  The above example assumes that the blocks are row ordered. If instead the blocks are column ordered, the \p bsrVal arrays 
+*  becomes:
+*  \f[
+*    \begin{align}
+*    \text{bsrVal} &= \begin{bmatrix} 1 & 3 & 3 & 0 & 4 & 0 & 0 & 0 & 6 & 2 & 0 & 7 & 4 & 5 & 6 & 0 & 1 & 2 \end{bmatrix}
+*    \end{align}
+*  \f]
+*
+*  The block order direction is determined by \p dir.
+*
+*  It may be the case that \p rowBlockDim does not divide evenly into \p m and/or that \p colBlockDim does not divide 
+*  evenly into \p n. In these cases, the CSR matrix is expanded in size in order to fit full GEBSR blocks. For example, 
+*  using the original CSR matrix but this time with \p rowBlockDim=2 and \p colBlockDim=3, the resulting GEBSR matrix
+*  would looks like:
+*
+*  \f[
+*   \left[ 
+*    \begin{array}{c | c} 
+*      \begin{array}{c c c} 
+*       1 & 0 & 0 \\ 
+*       3 & 4 & 0
+*      \end{array} & 
+*      \begin{array}{c c c} 
+*       2 & 4 & 0 \\ 
+*       0 & 5 & 1
+*      \end{array} \\
+*    \hline 
+*      \begin{array}{c c c} 
+*       5 & 0 & 6 \\ 
+*       0 & 0 & 0
+*      \end{array} &
+*      \begin{array}{c c c} 
+*       7 & 6 & 2 \\ 
+*       0 & 0 & 0
+*      \end{array}
+*   \end{array} 
+*  \right] 
+*  \f]
+*
+*  \par Example
+*  \code{.c}
+*    // hipSPARSE handle
+*    hipsparseHandle_t handle;
+*    hipsparseCreate(&handle);
+*
+*    hipsparseMatDescr_t csr_descr;
+*    hipsparseCreateMatDescr(&csr_descr);
+*
+*    hipsparseMatDescr_t bsr_descr;
+*    hipsparseCreateMatDescr(&bsr_descr);
+*
+*    // Sparse matrix in CSR format
+*    //     1 2 0 3 0 0 
+*    //     0 4 5 0 0 1
+*    // A = 6 0 0 7 8 0
+*    //     0 0 3 0 2 2
+*    //     1 0 0 0 4 3 
+*    //     7 2 0 0 1 4
+*    int hcsrRowPtr[7] = {0, 3, 6, 9, 12, 15, 19};
+*    int hcsrColInd[19] = {0, 1, 3, 1, 2, 5, 0, 3, 4, 2, 4, 5, 0, 4, 5, 0, 1, 4, 5};
+*    float hcsrVal[19]   = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 1.0f, 6.0f, 7.0f, 8.0f, 3.0f, 2.0f, 2.0f,
+*                           1.0f, 4.0f, 3.0f, 7.0f, 2.0f, 1.0f, 4.0f}; 
+*
+*    int m           = 6;
+*    int n           = 6;
+*    int nnz         = 19;
+*    int rowBlockDim = 3;
+*    int colBlockDim = 2;
+*    hipsparseDirection_t dir = HIPSPARSE_DIRECTION_ROW;
+*    hipsparseIndexBase_t base = HIPSPARSE_INDEX_BASE_ZERO;
+*
+*    int mb = (m + rowBlockDim - 1) / rowBlockDim;
+*    int nb = (n + colBlockDim - 1) / colBlockDim;
+*
+*    int* dcsrRowPtr = nullptr;
+*    int* dcsrColInd = nullptr;
+*    float* dcsrVal = nullptr;
+*    hipMalloc((void**)&dcsrRowPtr, sizeof(int) * (m + 1));
+*    hipMalloc((void**)&dcsrColInd, sizeof(int) * nnz);
+*    hipMalloc((void**)&dcsrVal, sizeof(float) * nnz);
+*
+*    hipMemcpy(dcsrRowPtr, hcsrRowPtr, sizeof(int) * (m + 1), hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrColInd, hcsrColInd, sizeof(int) * nnz, hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrVal, hcsrVal, sizeof(float) * nnz, hipMemcpyHostToDevice);
+*
+*    int* dbsrRowPtr = nullptr;
+*    hipMalloc((void**)&dbsrRowPtr, sizeof(int) * (mb + 1));
+*
+*    size_t bufferSize;
+*    hipsparseScsr2gebsr_bufferSize(handle, 
+*                                   dir, 
+*                                   m, 
+*                                   n, 
+*                                   csr_descr, 
+*                                   dcsrVal, 
+*                                   dcsrRowPtr, 
+*                                   dcsrColInd, 
+*                                   rowBlockDim, 
+*                                   colBlockDim, 
+*                                   &bufferSize);
+*
+*    void* dbuffer = nullptr;
+*    hipMalloc((void**)&dbuffer, bufferSize);
+*
+*    int nnzb;
+*    hipsparseXcsr2gebsrNnz(handle, 
+*                           dir, 
+*                           m, 
+*                           n, 
+*                           csr_descr, 
+*                           dcsrRowPtr, 
+*                           dcsrColInd, 
+*                           bsr_descr, 
+*                           dbsrRowPtr, 
+*                           rowBlockDim, 
+*                           colBlockDim, 
+*                           &nnzb, 
+*                           dbuffer);
+*
+*    int* dbsrColInd = nullptr;
+*    float* dbsrVal = nullptr;
+*    hipMalloc((void**)&dbsrColInd, sizeof(int) * nnzb);
+*    hipMalloc((void**)&dbsrVal, sizeof(float) * rowBlockDim * colBlockDim * nnzb);
+*
+*    hipsparseScsr2gebsr(handle, 
+*                        dir, 
+*                        m, 
+*                        n, 
+*                        csr_descr, 
+*                        dcsrVal, 
+*                        dcsrRowPtr, 
+*                        dcsrColInd, 
+*                        bsr_descr, 
+*                        dbsrVal, 
+*                        dbsrRowPtr, 
+*                        dbsrColInd, 
+*                        rowBlockDim, 
+*                        colBlockDim, 
+*                        dbuffer);
+*
+*    hipFree(dcsrRowPtr);
+*    hipFree(dcsrColInd);
+*    hipFree(dcsrVal);
+*    
+*    hipFree(dbsrRowPtr);
+*    hipFree(dbsrColInd);
+*    hipFree(dbsrVal);
+*
+*    hipFree(dbuffer);
+*
+*    hipsparseDestroyMatDescr(csr_descr);
+*    hipsparseDestroyMatDescr(bsr_descr);
+*    hipsparseDestroy(handle);
+*  \endcode
 */
 /**@{*/
 HIPSPARSE_EXPORT
@@ -9127,16 +11084,16 @@ hipsparseStatus_t hipsparseScsr2gebsr(hipsparseHandle_t         handle,
                                       int                       m,
                                       int                       n,
                                       const hipsparseMatDescr_t csr_descr,
-                                      const float*              csr_val,
-                                      const int*                csr_row_ptr,
-                                      const int*                csr_col_ind,
+                                      const float*              csrVal,
+                                      const int*                csrRowPtr,
+                                      const int*                csrColInd,
                                       const hipsparseMatDescr_t bsr_descr,
-                                      float*                    bsr_val,
-                                      int*                      bsr_row_ptr,
-                                      int*                      bsr_col_ind,
-                                      int                       row_block_dim,
-                                      int                       col_block_dim,
-                                      void*                     p_buffer);
+                                      float*                    bsrVal,
+                                      int*                      bsrRowPtr,
+                                      int*                      bsrColInd,
+                                      int                       rowBlockDim,
+                                      int                       colBlockDim,
+                                      void*                     pbuffer);
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDcsr2gebsr(hipsparseHandle_t         handle,
@@ -9144,16 +11101,16 @@ hipsparseStatus_t hipsparseDcsr2gebsr(hipsparseHandle_t         handle,
                                       int                       m,
                                       int                       n,
                                       const hipsparseMatDescr_t csr_descr,
-                                      const double*             csr_val,
-                                      const int*                csr_row_ptr,
-                                      const int*                csr_col_ind,
+                                      const double*             csrVal,
+                                      const int*                csrRowPtr,
+                                      const int*                csrColInd,
                                       const hipsparseMatDescr_t bsr_descr,
-                                      double*                   bsr_val,
-                                      int*                      bsr_row_ptr,
-                                      int*                      bsr_col_ind,
-                                      int                       row_block_dim,
-                                      int                       col_block_dim,
-                                      void*                     p_buffer);
+                                      double*                   bsrVal,
+                                      int*                      bsrRowPtr,
+                                      int*                      bsrColInd,
+                                      int                       rowBlockDim,
+                                      int                       colBlockDim,
+                                      void*                     pbuffer);
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCcsr2gebsr(hipsparseHandle_t         handle,
@@ -9161,16 +11118,16 @@ hipsparseStatus_t hipsparseCcsr2gebsr(hipsparseHandle_t         handle,
                                       int                       m,
                                       int                       n,
                                       const hipsparseMatDescr_t csr_descr,
-                                      const hipComplex*         csr_val,
-                                      const int*                csr_row_ptr,
-                                      const int*                csr_col_ind,
+                                      const hipComplex*         csrVal,
+                                      const int*                csrRowPtr,
+                                      const int*                csrColInd,
                                       const hipsparseMatDescr_t bsr_descr,
-                                      hipComplex*               bsr_val,
-                                      int*                      bsr_row_ptr,
-                                      int*                      bsr_col_ind,
-                                      int                       row_block_dim,
-                                      int                       col_block_dim,
-                                      void*                     p_buffer);
+                                      hipComplex*               bsrVal,
+                                      int*                      bsrRowPtr,
+                                      int*                      bsrColInd,
+                                      int                       rowBlockDim,
+                                      int                       colBlockDim,
+                                      void*                     pbuffer);
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseZcsr2gebsr(hipsparseHandle_t         handle,
@@ -9178,30 +11135,168 @@ hipsparseStatus_t hipsparseZcsr2gebsr(hipsparseHandle_t         handle,
                                       int                       m,
                                       int                       n,
                                       const hipsparseMatDescr_t csr_descr,
-                                      const hipDoubleComplex*   csr_val,
-                                      const int*                csr_row_ptr,
-                                      const int*                csr_col_ind,
+                                      const hipDoubleComplex*   csrVal,
+                                      const int*                csrRowPtr,
+                                      const int*                csrColInd,
                                       const hipsparseMatDescr_t bsr_descr,
-                                      hipDoubleComplex*         bsr_val,
-                                      int*                      bsr_row_ptr,
-                                      int*                      bsr_col_ind,
-                                      int                       row_block_dim,
-                                      int                       col_block_dim,
-                                      void*                     p_buffer);
+                                      hipDoubleComplex*         bsrVal,
+                                      int*                      bsrRowPtr,
+                                      int*                      bsrColInd,
+                                      int                       rowBlockDim,
+                                      int                       colBlockDim,
+                                      void*                     pbuffer);
 /**@}*/
 
 /*! \ingroup conv_module
 *  \brief Convert a sparse CSR matrix into a sparse BSR matrix
 *
 *  \details
-*  \p hipsparseXcsr2bsr converts a CSR matrix into a BSR matrix. It is assumed,
-*  that \p bsr_val, \p bsr_col_ind and \p bsr_row_ptr are allocated. Allocation size
-*  for \p bsr_row_ptr is computed as \p mb+1 where \p mb is the number of block rows in
-*  the BSR matrix. Allocation size for \p bsr_val and \p bsr_col_ind is computed using
-*  \p csr2bsr_nnz() which also fills in \p bsr_row_ptr.
+*  \p hipsparseXcsr2bsr completes the conversion of a CSR matrix into a BSR matrix. 
+*  It is assumed, that \p bsrValC, \p bsrColIndC and \p bsrRowPtrC are allocated. The 
+*  allocation size for \p bsrRowPtr is computed as \p mb+1 where \p mb is the number of 
+*  block rows in the BSR matrix defined as:
 *
+*  \f[
+*    \begin{align}
+*    \text{mb} &= \text{(m - 1) / blockDim + 1}
+*    \end{align}
+*  \f]
+*
+*  The allocation size for \p bsrColIndC, i.e. \p bsrNnzb, is computed using
+*  \p hipsparseXcsr2bsrNnz() which also fills the \p bsrRowPtrC array. The allocation size 
+*  for \p bsrValC is then equal to:
+*
+*  \f[
+*    \text{bsrNnzb * blockDim * blockDim}
+*  \f]
+*
+*  For example, given the CSR matrix:
+*  \f[
+*    \begin{bmatrix}
+*    1 & 0 & 0 & 2 \\
+*    3 & 4 & 0 & 0 \\
+*    5 & 0 & 6 & 7 \\
+*    1 & 2 & 3 & 4
+*    \end{bmatrix}
+*  \f]
+*
+*  The resulting BSR matrix using block dimension 2 would look like:
+*  \f[
+*   \left[ 
+*    \begin{array}{c | c} 
+*      \begin{array}{c c} 
+*       1 & 0 \\ 
+*       3 & 4 
+*      \end{array} & 
+*      \begin{array}{c c} 
+*       0 & 2 \\ 
+*       0 & 0 
+*      \end{array} \\ 
+*    \hline 
+*      \begin{array}{c c} 
+*       5 & 0 \\ 
+*       1 & 2 
+*      \end{array} & 
+*      \begin{array}{c c} 
+*       6 & 7 \\ 
+*       3 & 4 
+*      \end{array} \\ 
+*   \end{array} 
+*  \right] 
+*  \f]
+*
+*  The call to \p hipsparseXcsr2bsrNnz results in the BSR row pointer array:
+*  \f[
+*    \begin{align}
+*    \text{bsrRowPtrC} &= \begin{bmatrix} 0 & 2 & 4 \end{bmatrix} \\
+*    \end{align}
+*  \f]
+*
+*  and the call to \p hipsparseXcsr2bsr completes the conversion resulting in the BSR column indices and values arrays:
+*  \f[
+*    \begin{align}
+*    \text{bsrColIndC} &= \begin{bmatrix} 0 & 1 & 0 & 1 \end{bmatrix} \\
+*    \text{bsrValC} &= \begin{bmatrix} 1 & 0 & 3 & 4 & 0 & 2 & 0 & 0 & 5 & 0 & 1 & 2 & 6 & 7 & 3 & 4 \end{bmatrix} \\
+*    \end{align}
+*  \f]
+*
+*  The \p dirA parameter determines the order of the BSR block values. The example above uses row order. Using column ordering
+*  would result instead in the BSR values array:
+*
+*  \f[
+*    \text{bsrValC} &= \begin{bmatrix} 1 & 3 & 0 & 4 & 0 & 0 & 2 & 0 & 5 & 1 & 0 & 2 & 6 & 3 & 7 & 4 \end{bmatrix} \\
+*  \f]
+*
+*  \note
 *  \p hipsparseXcsr2bsr requires extra temporary storage that is allocated internally if
-*  \p block_dim>16
+*  \p blockDim>16
+*
+*  \par Example
+*  \code{.c}
+*    // hipSPARSE handle
+*    hipsparseHandle_t handle;
+*    hipsparseCreate(&handle);
+*
+*    // Matrix descriptor
+*    hipsparseMatDescr_t csr_descr;
+*    hipsparseCreateMatDescr(&csr_descr);
+*
+*    hipsparseMatDescr_t bsr_descr;
+*    hipsparseCreateMatDescr(&bsr_descr);
+*
+*    // Sparse matrix in CSR format
+*    //     1 2 0 3 0
+*    // A = 0 4 5 0 0
+*    //     6 0 0 7 8
+*    int hcsrRowPtr[4] = {0, 3, 5, 8};
+*    int hcsrColInd[8] = {0, 1, 3, 1, 2, 0, 3, 4};
+*    float hcsrVal[8]   = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f}; 
+*
+*    int m         = 3;
+*    int n         = 5;
+*    int nnz       = 8;
+*    int blockDim  = 3;
+*    hipsparseDirection_t dir = HIPSPARSE_DIRECTION_ROW;
+*
+*    int mb = (m + blockDim - 1) / blockDim;
+*    int nb = (n + blockDim - 1) / blockDim;
+*
+*    int* dcsrRowPtr = nullptr;
+*    int* dcsrColInd = nullptr;
+*    float* dcsrVal = nullptr;
+*    hipMalloc((void**)&dcsrRowPtr, sizeof(int) * (m + 1));
+*    hipMalloc((void**)&dcsrColInd, sizeof(int) * nnz);
+*    hipMalloc((void**)&dcsrVal, sizeof(float) * nnz);
+*
+*    hipMemcpy(dcsrRowPtr, hcsrRowPtr, sizeof(int) * (m + 1), hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrColInd, hcsrColInd, sizeof(int) * nnz, hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrVal, hcsrVal, sizeof(float) * nnz, hipMemcpyHostToDevice);
+*
+*    int* dbsrRowPtr = nullptr;
+*    hipMalloc((void**)&dbsrRowPtr, sizeof(int) * (mb + 1));
+*
+*    int nnzb;
+*    hipsparseXcsr2bsrNnz(handle, dir, m, n, csr_descr, dcsrRowPtr, dcsrColInd, blockDim, bsr_descr, dbsrRowPtr, &nnzb);
+*
+*    int* dbsrColInd = nullptr;
+*    float* dbsrVal = nullptr;
+*    hipMalloc((void**)&dbsrColInd, sizeof(int) * nnzb);
+*    hipMalloc((void**)&dbsrVal, sizeof(float) * blockDim * blockDim * nnzb);
+*
+*    hipsparseScsr2bsr(handle, dir, m, n, csr_descr, dcsrVal, dcsrRowPtr, dcsrColInd, blockDim, bsr_descr, dbsrVal, dbsrRowPtr, dbsrColInd);
+*
+*    hipFree(dcsrRowPtr);
+*    hipFree(dcsrColInd);
+*    hipFree(dcsrVal);
+*   
+*    hipFree(dbsrRowPtr);
+*    hipFree(dbsrColInd);
+*    hipFree(dbsrVal);
+*
+*    hipsparseDestroyMatDescr(csr_descr);
+*    hipsparseDestroyMatDescr(bsr_descr);
+*    hipsparseDestroy(handle);
+*  \endcode
 */
 /**@{*/
 HIPSPARSE_EXPORT
@@ -9268,14 +11363,134 @@ hipsparseStatus_t hipsparseZcsr2bsr(hipsparseHandle_t         handle,
 *
 *  \details
 *  \p hipsparseXbsr2csr converts a BSR matrix into a CSR matrix. It is assumed,
-*  that \p csr_val, \p csr_col_ind and \p csr_row_ptr are allocated. Allocation size
-*  for \p csr_row_ptr is computed by the number of block rows multiplied by the block
-*  dimension plus one. Allocation for \p csr_val and \p csr_col_ind is computed by the
+*  that \p csrValC, \p csrColIndC and \p csrRowPtrC are allocated. Allocation size
+*  for \p csrRowPtrC is computed by the number of block rows multiplied by the block
+*  dimension plus one. Allocation for \p csrValC and \p csrColInd is computed by the
 *  the number of blocks in the BSR matrix multiplied by the block dimension squared.
+*
+*  For example, given the BSR matrix using block dimension 2:
+*  \f[
+*   \left[ 
+*    \begin{array}{c | c} 
+*      \begin{array}{c c} 
+*       1 & 0 \\ 
+*       3 & 4 
+*      \end{array} & 
+*      \begin{array}{c c} 
+*       0 & 2 \\ 
+*       0 & 0 
+*      \end{array} \\ 
+*    \hline 
+*      \begin{array}{c c} 
+*       5 & 0 \\ 
+*       1 & 2 
+*      \end{array} & 
+*      \begin{array}{c c} 
+*       6 & 7 \\ 
+*       3 & 4 
+*      \end{array} \\ 
+*   \end{array} 
+*  \right] 
+*  \f]
+*
+*  The resulting CSR matrix row pointer, column indices, and values arrays are:
+*  \f[
+*    \begin{align}
+*    \text{csrRowPtrC} &= \begin{bmatrix} 0 & 4 & 8 & 12 & 16 \end{bmatrix} \\
+*    \text{csrColIndC} &= \begin{bmatrix} 0 & 1 & 2 & 3 & 0 & 1 & 2 & 3 & 0 & 1 & 2 & 3 & 0 & 1 & 2 & 3 \end{bmatrix} \\
+*    \text{csrValC} &= \begin{bmatrix} 1 & 0 & 0 & 2 & 3 & 4 & 0 & 0 & 5 & 0 & 6 & 7 & 1 & 2 & 3 & 4 \end{bmatrix} \\
+*    \end{align}
+*  \f]
 *
 *  \note
 *  This function is non blocking and executed asynchronously with respect to the host.
 *  It may return before the actual computation has finished.
+*
+*  \par Example
+*  \code{.c}
+*    // hipSPARSE handle
+*    hipsparseHandle_t handle;
+*    hipsparseCreate(&handle);
+*
+*    hipsparseMatDescr_t csr_descr;
+*    hipsparseCreateMatDescr(&csr_descr);
+*
+*    hipsparseMatDescr_t bsr_descr;
+*    hipsparseCreateMatDescr(&bsr_descr);
+*
+*    // Sparse matrix in BSR format
+*    //     1 2 | 0 3 | 0 0 
+*    //     0 4 | 5 0 | 0 1
+*    //     ---------------
+*    // A = 6 0 | 0 7 | 8 0 
+*    //     0 0 | 3 0 | 2 2
+*    //     ---------------
+*    //     1 0 | 0 0 | 4 3 
+*    //     7 2 | 0 0 | 1 4
+*    int hbsrRowPtr[4] = {0, 3, 6, 8};
+*    int hbsrColInd[8] = {0, 1, 2, 0, 1, 2, 0, 2};
+*    float hbsrVal[32]  = {1.0f, 2.0f, 0.0f, 4.0f, 
+*                            0.0f, 3.0f, 5.0f, 0.0f, 
+*                            0.0f, 0.0f, 0.0f, 1.0f,
+*                            6.0f, 0.0f, 0.0f, 0.0f, 
+*                            0.0f, 7.0f, 3.0f, 0.0f,
+*                            8.0f, 0.0f, 2.0f, 2.0f,
+*                            1.0f, 0.0f, 7.0f, 2.0f,
+*                            4.0f, 3.0f, 1.0f, 4.0f}; 
+*
+*    int m        = 6;
+*    int n        = 6;
+*    int nnz      = 32;
+*    int mb       = 3;
+*    int nb       = 3;
+*    int nnzb     = 8;
+*    int blockDim = 2;
+*    hipsparseDirection_t dir = HIPSPARSE_DIRECTION_ROW;
+*
+*    int* dbsrRowPtr = nullptr;
+*    int* dbsrColInd = nullptr;
+*    float* dbsrVal = nullptr;
+*    hipMalloc((void**)&dbsrRowPtr, sizeof(int) * (mb + 1));
+*    hipMalloc((void**)&dbsrColInd, sizeof(int) * nnzb);
+*    hipMalloc((void**)&dbsrVal, sizeof(float) * blockDim * blockDim * nnzb);
+*
+*    hipMemcpy(dbsrRowPtr, hbsrRowPtr, sizeof(int) * (mb + 1), hipMemcpyHostToDevice);
+*    hipMemcpy(dbsrColInd, hbsrColInd, sizeof(int) * nnzb, hipMemcpyHostToDevice);
+*    hipMemcpy(dbsrVal, hbsrVal, sizeof(float) * blockDim * blockDim * nnzb, hipMemcpyHostToDevice);
+*
+*    int* dcsrRowPtr = nullptr;
+*    int* dcsrColInd = nullptr;
+*    float* dcsrVal = nullptr;
+*    hipMalloc((void**)&dcsrRowPtr, sizeof(int) * (m + 1));
+*    hipMalloc((void**)&dcsrColInd, sizeof(int) * nnz);
+*    hipMalloc((void**)&dcsrVal, sizeof(float) * nnz);
+*
+*    hipsparseSbsr2csr(handle, 
+*                      dir, 
+*                      mb, 
+*                      nb, 
+*                      bsr_descr, 
+*                      dbsrVal, 
+*                      dbsrRowPtr, 
+*                      dbsrColInd, 
+*                      blockDim, 
+*                      csr_descr, 
+*                      dcsrVal, 
+*                      dcsrRowPtr, 
+*                      dcsrColInd);
+*
+*    hipFree(dbsrRowPtr);
+*    hipFree(dbsrColInd);
+*    hipFree(dbsrVal);
+*    
+*    hipFree(dcsrRowPtr);
+*    hipFree(dcsrColInd);
+*    hipFree(dcsrVal);
+*
+*    hipsparseDestroyMatDescr(csr_descr);
+*    hipsparseDestroyMatDescr(bsr_descr);
+*    hipsparseDestroy(handle);
+*  \endcode
 */
 /**@{*/
 HIPSPARSE_EXPORT
@@ -9337,18 +11552,152 @@ hipsparseStatus_t hipsparseZbsr2csr(hipsparseHandle_t         handle,
 /**@}*/
 
 /*! \ingroup conv_module
-*  \brief Convert a sparse general BSR matrix into a sparse CSR matrix
+*  \brief Convert a sparse GEBSR matrix into a sparse CSR matrix
 *
 *  \details
-*  \p hipsparseXgebsr2csr converts a BSR matrix into a CSR matrix. It is assumed,
-*  that \p csr_val, \p csr_col_ind and \p csr_row_ptr are allocated. Allocation size
-*  for \p csr_row_ptr is computed by the number of block rows multiplied by the block
-*  dimension plus one. Allocation for \p csr_val and \p csr_col_ind is computed by the
-*  the number of blocks in the BSR matrix multiplied by the product of the block dimensions.
+*  \p hipsparseXgebsr2csr converts a GEBSR matrix into a CSR matrix. It is assumed,
+*  that \p csrValC, \p csrColIndC and \p csrRowPtrC are already allocated prior to 
+*  calling \p hipsparseXgebsr2csr. Allocation size for \p csrRowPtrC equals 
+*  \p m+1 where:
+*
+*  \f[
+*    \begin{align}
+*    \text{m} &= \text{mb * rowBlockDim} \\
+*    \text{n} &= \text{nb * colBlockDim}
+*    \end{align}
+*  \f]
+*
+*  Allocation size for \p csrValC and \p csrColIndC is computed by the the number of blocks in the GEBSR 
+*  matrix, \p nnzb, multiplied by the product of the block dimensions, i.e. \p nnz=nnzb*rocBlockDim*colBlockDim.
+*
+*  For example, given the GEBSR matrix:
+*  \f[
+*   \left[ 
+*    \begin{array}{c | c | c} 
+*      \begin{array}{c c} 
+*       6 & 2 \\ 
+*       1 & 4 \\ 
+*       5 & 4 
+*      \end{array} & 
+*      \begin{array}{c c} 
+*       0 & 3 \\ 
+*       5 & 0 \\ 
+*       0 & 7 
+*      \end{array} &
+*      \begin{array}{c c} 
+*       0 & 0 \\ 
+*       0 & 0 \\ 
+*       0 & 0 
+*      \end{array} \\ 
+*    \hline 
+*      \begin{array}{c c} 
+*       0 & 0 \\ 
+*       0 & 0 \\ 
+*       0 & 0 
+*      \end{array} & 
+*      \begin{array}{c c} 
+*       3 & 0 \\ 
+*       0 & 0 \\ 
+*       0 & 7 
+*      \end{array} &
+*      \begin{array}{c c} 
+*       2 & 2 \\ 
+*       4 & 3 \\ 
+*       1 & 4 
+*      \end{array} \\ 
+*   \end{array} 
+*  \right] 
+*  \f]
+*
 *
 *  \note
 *  This function is non blocking and executed asynchronously with respect to the host.
 *  It may return before the actual computation has finished.
+*
+*  \par Example
+*  \code{.c}
+*    // hipSPARSE handle
+*    hipsparseHandle_t handle;
+*    hipsparseCreate(&handle);
+*
+*    hipsparseMatDescr_t csr_descr;
+*    hipsparseCreateMatDescr(&csr_descr);
+*
+*    hipsparseMatDescr_t bsr_descr;
+*    hipsparseCreateMatDescr(&bsr_descr);
+*
+*    // Sparse matrix in GEBSR format
+*    //     1 2 | 0 3 | 0 0 
+*    //     0 4 | 5 0 | 0 1
+*    // A = 6 0 | 0 7 | 8 0
+*    //     --------------- 
+*    //     0 0 | 3 0 | 2 2
+*    //     1 0 | 0 0 | 4 3 
+*    //     7 2 | 0 0 | 1 4
+*    int hbsrRowPtr[3] = {0, 3, 6};
+*    int hbsrColInd[6] = {0, 1, 2, 0, 1, 2};
+*    float hbsrVal[36]  = {1.0f, 2.0f, 0.0f, 4.0f, 6.0f, 0.0f, 
+*                           0.0f, 3.0f, 5.0f, 0.0f, 0.0f, 7.0f,
+*                           0.0f, 0.0f, 0.0f, 1.0f, 8.0f, 0.0f, 
+*                           0.0f, 0.0f, 1.0f, 0.0f, 7.0f, 2.0f,
+*                           3.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 
+*                           2.0f, 2.0f, 4.0f, 3.0f, 1.0f, 4.0f}; 
+*
+*    int m        = 6;
+*    int n        = 6;
+*    int nnz      = 36;
+*    int mb       = 2;
+*    int nb       = 3;
+*    int nnzb     = 6;
+*    int rowBlockDim = 3;
+*    int colBlockDim = 2;
+*    hipsparseDirection_t dir = HIPSPARSE_DIRECTION_ROW;
+*
+*    int* dbsrRowPtr = nullptr;
+*    int* dbsrColInd = nullptr;
+*    float* dbsrVal = nullptr;
+*    hipMalloc((void**)&dbsrRowPtr, sizeof(int) * (mb + 1));
+*    hipMalloc((void**)&dbsrColInd, sizeof(int) * nnzb);
+*    hipMalloc((void**)&dbsrVal, sizeof(float) * rowBlockDim * colBlockDim * nnzb);
+*
+*    hipMemcpy(dbsrRowPtr, hbsrRowPtr, sizeof(int) * (mb + 1), hipMemcpyHostToDevice);
+*    hipMemcpy(dbsrColInd, hbsrColInd, sizeof(int) * nnzb, hipMemcpyHostToDevice);
+*    hipMemcpy(dbsrVal, hbsrVal, sizeof(float) * rowBlockDim * colBlockDim * nnzb, hipMemcpyHostToDevice);
+*
+*    int* dcsrRowPtr = nullptr;
+*    int* dcsrColInd = nullptr;
+*    float* dcsrVal = nullptr;
+*    hipMalloc((void**)&dcsrRowPtr, sizeof(int) * (m + 1));
+*    hipMalloc((void**)&dcsrColInd, sizeof(int) * nnz);
+*    hipMalloc((void**)&dcsrVal, sizeof(float) * nnz);
+*
+*    hipsparseSgebsr2csr(handle, 
+*                        dir, 
+*                        mb, 
+*                        nb, 
+*                        bsr_descr, 
+*                        dbsrVal, 
+*                        dbsrRowPtr, 
+*                        dbsrColInd, 
+*                        rowBlockDim, 
+*                        colBlockDim, 
+*                        csr_descr, 
+*                        dcsrVal, 
+*                        dcsrRowPtr, 
+*                        dcsrColInd);
+*
+*    hipFree(dbsrRowPtr);
+*    hipFree(dbsrColInd);
+*    hipFree(dbsrVal);
+*    
+*    hipFree(dcsrRowPtr);
+*    hipFree(dcsrColInd);
+*    hipFree(dcsrVal);
+*
+*    hipsparseDestroyMatDescr(csr_descr);
+*    hipsparseDestroyMatDescr(bsr_descr);
+*    hipsparseDestroy(handle);
+*  \endcode
 */
 /**@{*/
 HIPSPARSE_EXPORT
@@ -9414,15 +11763,103 @@ hipsparseStatus_t hipsparseZgebsr2csr(hipsparseHandle_t         handle,
 /**@}*/
 
 /*! \ingroup conv_module
- *  \brief Convert a sparse CSR matrix into a compressed sparse CSR matrix
- *
- *  \details
- *  \p hipsparseXcsr2csr_compress converts a CSR matrix into a compressed CSR matrix by
- *  removing entries in the input CSR matrix that are below a non-negative threshold \p tol
- *
- *  \note
- *  In the case of complex matrices only the magnitude of the real part of \p tol is used.
- */
+*  \brief Convert a sparse CSR matrix into a compressed sparse CSR matrix
+*
+*  \details
+*  \p hipsparseXcsr2csr_compress converts a CSR matrix into a compressed CSR matrix by
+*  removing entries in the input CSR matrix that are below a non-negative threshold \p tol:
+*
+*  \f[ 
+*   C(i,j) = A(i, j) \text{  if |A(i, j)| > tol}
+*  \f]
+*
+*  The user must first call \p nnz_compress to determine the number of nonzeros per row as well as 
+*  the total number of nonzeros that will exist in resulting compressed CSR matrix. The user then uses 
+*  this information to allocate the column indices array \p csrColIndC and the values array \p csrValC. 
+*  The user then calls \p hipsparseXcsr2csr_compress to complete the conversion.
+*
+*  \note
+*  In the case of complex matrices only the magnitude of the real part of \p tol is used.
+*
+*  \par Example
+*  \code{.c}
+*    // hipSPARSE handle
+*    hipsparseHandle_t handle;
+*    hipsparseCreate(&handle);
+*
+*    // Matrix descriptor
+*    hipsparseMatDescr_t descr;
+*    hipsparseCreateMatDescr(&descr);
+*
+*    // Sparse matrix in CSR format
+*    //     1 2 0 3 0
+*    // A = 0 4 5 0 0
+*    //     6 0 0 7 8
+*    int hcsrRowPtrA[4] = {0, 3, 5, 8};
+*    int hcsrColIndA[8] = {0, 1, 3, 1, 2, 0, 3, 4};
+*    float hcsrValA[8]   = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f}; 
+*
+*    int m    = 3;
+*    int n    = 5;
+*    int nnzA = 8;
+*
+*    float tol = 5.9f;
+*    
+*    int* dcsrRowPtrA = nullptr;
+*    int* dcsrColIndA = nullptr;
+*    float* dcsrValA = nullptr;
+*    hipMalloc((void**)&dcsrRowPtrA, sizeof(int) * (m + 1));
+*    hipMalloc((void**)&dcsrColIndA, sizeof(int) * nnzA);
+*    hipMalloc((void**)&dcsrValA, sizeof(float) * nnzA);
+*
+*    hipMemcpy(dcsrRowPtrA, hcsrRowPtrA, sizeof(int) * (m + 1), hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrColIndA, hcsrColIndA, sizeof(int) * nnzA, hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrValA, hcsrValA, sizeof(float) * nnzA, hipMemcpyHostToDevice);
+*
+*    // Allocate memory for the nnz_per_row array
+*    int* dnnz_per_row;
+*    hipMalloc((void**)&dnnz_per_row, sizeof(int) * m);
+*
+*    // Call snnz_compress() which fills in nnz_per_row array and finds the number
+*    // of entries that will be in the compressed CSR matrix
+*    int nnzC;
+*    hipsparseSnnz_compress(handle, m, descr, dcsrValA, dcsrRowPtrA, dnnz_per_row, &nnzC, tol);
+*
+*    int* dcsrRowPtrC = nullptr;
+*    int* dcsrColIndC = nullptr;
+*    float* dcsrValC = nullptr;
+*    hipMalloc((void**)&dcsrRowPtrC, sizeof(int) * (m + 1));
+*    hipMalloc((void**)&dcsrColIndC, sizeof(int) * nnzC);
+*    hipMalloc((void**)&dcsrValC, sizeof(float) * nnzC);
+*
+*    hipsparseScsr2csr_compress(handle,
+*                               m,
+*                               n,
+*                               descr,
+*                               dcsrValA,
+*                               dcsrColIndA,
+*                               dcsrRowPtrA,
+*                               nnzA,
+*                               dnnz_per_row,
+*                               dcsrValC,
+*                               dcsrColIndC,
+*                               dcsrRowPtrC,
+*                               tol);
+*
+*    hipFree(dcsrRowPtrA);
+*    hipFree(dcsrColIndA);
+*    hipFree(dcsrValA);
+*    
+*    hipFree(dcsrRowPtrC);
+*    hipFree(dcsrColIndC);
+*    hipFree(dcsrValC);
+*
+*    hipFree(dnnz_per_row);
+*
+*    hipsparseDestroyMatDescr(descr);
+*    hipsparseDestroy(handle);
+*  \endcode
+*/
 /**@{*/
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseScsr2csr_compress(hipsparseHandle_t         handle,
@@ -9505,7 +11942,7 @@ hipsparseStatus_t hipsparseSpruneCsr2csr_bufferSize(hipsparseHandle_t         ha
                                                     const float*              csrValC,
                                                     const int*                csrRowPtrC,
                                                     const int*                csrColIndC,
-                                                    size_t*                   bufferSize);
+                                                    size_t*                   pBufferSizeInBytes);
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDpruneCsr2csr_bufferSize(hipsparseHandle_t         handle,
@@ -9521,7 +11958,7 @@ hipsparseStatus_t hipsparseDpruneCsr2csr_bufferSize(hipsparseHandle_t         ha
                                                     const double*             csrValC,
                                                     const int*                csrRowPtrC,
                                                     const int*                csrColIndC,
-                                                    size_t*                   bufferSize);
+                                                    size_t*                   pBufferSizeInBytes);
 /**@}*/
 
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
@@ -9549,7 +11986,7 @@ hipsparseStatus_t hipsparseSpruneCsr2csr_bufferSizeExt(hipsparseHandle_t        
                                                        const float*              csrValC,
                                                        const int*                csrRowPtrC,
                                                        const int*                csrColIndC,
-                                                       size_t*                   bufferSize);
+                                                       size_t* pBufferSizeInBytes);
 
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
@@ -9566,7 +12003,7 @@ hipsparseStatus_t hipsparseDpruneCsr2csr_bufferSizeExt(hipsparseHandle_t        
                                                        const double*             csrValC,
                                                        const int*                csrRowPtrC,
                                                        const int*                csrColIndC,
-                                                       size_t*                   bufferSize);
+                                                       size_t* pBufferSizeInBytes);
 /**@}*/
 #endif
 
@@ -9625,9 +12062,9 @@ hipsparseStatus_t hipsparseDpruneCsr2csrNnz(hipsparseHandle_t         handle,
  *  that are less than the threshold. All the parameters are assumed to have been pre-allocated by the user.
  *  The user first calls hipsparseXpruneCsr2csr_bufferSize() to determine the size of the buffer used
  *  by hipsparseXpruneCsr2csrNnz() and hipsparseXpruneCsr2csr() which the user then allocates. The user then
- *  allocates \p csr_row_ptr_C to have \p m+1 elements and then calls hipsparseXpruneCsr2csrNnz() which fills
- *  in the \p csr_row_ptr_C array stores then number of elements that are larger than the pruning threshold
- *  in \p nnz_total_dev_host_ptr. The user then calls hipsparseXpruneCsr2csr() to complete the conversion. It
+ *  allocates \p csrRowPtrC to have \p m+1 elements and then calls hipsparseXpruneCsr2csrNnz() which fills
+ *  in the \p csrRowPtrC array stores then number of elements that are larger than the pruning \p threshold
+ *  in \p nnzTotalDevHostPtr. The user then calls hipsparseXpruneCsr2csr() to complete the conversion. It
  *  is executed asynchronously with respect to the host and may return control to the application on the host
  *  before the entire result is ready.
  */
@@ -9694,7 +12131,7 @@ hipsparseStatus_t hipsparseSpruneCsr2csrByPercentage_bufferSize(hipsparseHandle_
                                                                 const int*  csrRowPtrC,
                                                                 const int*  csrColIndC,
                                                                 pruneInfo_t info,
-                                                                size_t*     bufferSize);
+                                                                size_t*     pBufferSizeInBytes);
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDpruneCsr2csrByPercentage_bufferSize(hipsparseHandle_t         handle,
@@ -9711,7 +12148,7 @@ hipsparseStatus_t hipsparseDpruneCsr2csrByPercentage_bufferSize(hipsparseHandle_
                                                                 const int*  csrRowPtrC,
                                                                 const int*  csrColIndC,
                                                                 pruneInfo_t info,
-                                                                size_t*     bufferSize);
+                                                                size_t*     pBufferSizeInBytes);
 /**@}*/
 #endif
 
@@ -9741,7 +12178,7 @@ hipsparseStatus_t hipsparseSpruneCsr2csrByPercentage_bufferSizeExt(hipsparseHand
                                                                    const int*   csrRowPtrC,
                                                                    const int*   csrColIndC,
                                                                    pruneInfo_t  info,
-                                                                   size_t*      bufferSize);
+                                                                   size_t*      pBufferSizeInBytes);
 
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
@@ -9759,7 +12196,7 @@ hipsparseStatus_t hipsparseDpruneCsr2csrByPercentage_bufferSizeExt(hipsparseHand
                                                                    const int*    csrRowPtrC,
                                                                    const int*    csrColIndC,
                                                                    pruneInfo_t   info,
-                                                                   size_t*       bufferSize);
+                                                                   size_t* pBufferSizeInBytes);
 /**@}*/
 #endif
 
@@ -9820,9 +12257,9 @@ hipsparseStatus_t hipsparseDpruneCsr2csrNnzByPercentage(hipsparseHandle_t       
  *  that are less than the threshold. All the parameters are assumed to have been pre-allocated by the user.
  *  The user first calls hipsparseXpruneCsr2csr_bufferSize() to determine the size of the buffer used
  *  by hipsparseXpruneCsr2csrNnz() and hipsparseXpruneCsr2csr() which the user then allocates. The user then
- *  allocates \p csr_row_ptr_C to have \p m+1 elements and then calls hipsparseXpruneCsr2csrNnz() which fills
- *  in the \p csr_row_ptr_C array stores then number of elements that are larger than the pruning threshold
- *  in \p nnz_total_dev_host_ptr. The user then calls hipsparseXpruneCsr2csr() to complete the conversion. It
+ *  allocates \p csrRowPtrC to have \p m+1 elements and then calls hipsparseXpruneCsr2csrNnz() which fills
+ *  in the \p csrRowPtrC array stores then number of elements that are larger than the pruning \p threshold
+ *  in \p nnzTotalDevHostPtr. The user then calls hipsparseXpruneCsr2csr() to complete the conversion. It
  *  is executed asynchronously with respect to the host and may return control to the application on the host
  *  before the entire result is ready.
  */
@@ -9913,20 +12350,75 @@ hipsparseStatus_t hipsparseZhyb2csr(hipsparseHandle_t         handle,
 #endif
 
 /*! \ingroup conv_module
- *  \brief Convert a sparse COO matrix into a sparse CSR matrix
- *
- *  \details
- *  \p hipsparseXcoo2csr converts the COO array containing the row indices into a
- *  CSR array of row offsets, that point to the start of every row.
- *  It is assumed that the COO row index array is sorted.
- *
- *  \note It can also be used, to convert a COO array containing the column indices into
- *  a CSC array of column offsets, that point to the start of every column. Then, it is
- *  assumed that the COO column index array is sorted, instead.
- *
- *  \note
- *  This function is non blocking and executed asynchronously with respect to the host.
- *  It may return before the actual computation has finished.
+*  \brief Convert a sparse COO matrix into a sparse CSR matrix
+*
+*  \details
+*  \p hipsparseXcoo2csr converts the COO array containing the row indices into a
+*  CSR array of row offsets, that point to the start of every row.
+*  It is assumed that the COO row index array is sorted and that all arrays have been allocated 
+*  prior to calling hipsparseXcoo2csr.
+*
+*  For example, given the COO row indices array:
+*  \f[
+*    \begin{align}
+*    \text{cooRowInd} &= \begin{bmatrix} 0 & 0 & 1 & 2 & 2 & 4 & 4 & 4 \end{bmatrix}
+*    \end{align}
+*  \f]
+*
+*  the resulting CSR row pointer array after calling \p hipsparseXcoo2csr is:
+*  \f[
+*    \begin{align}
+*    \text{csrRowPtr} &= \begin{bmatrix} 0 & 2 & 3 & 5 & 8 \end{bmatrix}
+*    \end{align}
+*  \f]
+*
+*  \note It can also be used, to convert a COO array containing the column indices into
+*  a CSC array of column offsets, that point to the start of every column. Then, it is
+*  assumed that the COO column index array is sorted, instead.
+*
+*  \note
+*  This function is non blocking and executed asynchronously with respect to the host.
+*  It may return before the actual computation has finished.
+*
+*  \par Example
+*  \code{.c}
+*    // hipSPARSE handle
+*    hipsparseHandle_t handle;
+*    hipsparseCreate(&handle);
+*
+*    // Sparse matrix in COO format
+*    //     1 2 0 3 0
+*    // A = 0 4 5 0 0
+*    //     6 0 0 7 8
+*    int hcooRowInd[8] = {0, 0, 0, 1, 1, 2, 2, 2};
+*    int hcooColInd[8] = {0, 1, 3, 1, 2, 0, 3, 4};
+*    float hcooVal[8]   = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f}; 
+*
+*    int m         = 3;
+*    int n         = 5;
+*    int nnz       = 8;
+*    hipsparseIndexBase_t base = HIPSPARSE_INDEX_BASE_ZERO;
+*
+*    int* dcooRowInd = nullptr;
+*    int* dcooColInd = nullptr;
+*    hipMalloc((void**)&dcooRowInd, sizeof(int) * nnz);
+*    hipMalloc((void**)&dcooColInd, sizeof(int) * nnz);
+*
+*    hipMemcpy(dcooRowInd, hcooRowInd, sizeof(int) * nnz, hipMemcpyHostToDevice);
+*    hipMemcpy(dcooColInd, hcooColInd, sizeof(int) * nnz, hipMemcpyHostToDevice);
+*
+*    int* dcsrRowPtr = nullptr;
+*    hipMalloc((void**)&dcsrRowPtr, sizeof(int) * (m + 1));
+*
+*    hipsparseXcoo2csr(handle, dcooRowInd, nnz, m, dcsrRowPtr, base);
+*
+*    hipFree(dcooRowInd);
+*    hipFree(dcooColInd);
+*    
+*    hipFree(dcsrRowPtr);
+*
+*    hipsparseDestroy(handle);
+*  \endcode
 */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseXcoo2csr(hipsparseHandle_t    handle,
@@ -9954,6 +12446,22 @@ hipsparseStatus_t hipsparseXcoo2csr(hipsparseHandle_t    handle,
 *  \note
 *  This function is non blocking and executed asynchronously with respect to the host.
 *  It may return before the actual computation has finished.
+*
+*  \par Example
+*  \code{.c}
+*    // hipSPARSE handle
+*    hipsparseHandle_t handle;
+*    hipsparseCreate(&handle);
+*
+*    int n = 10;
+*
+*    int* dperm = nullptr;
+*    hipMalloc((void**)&dperm, sizeof(int) * n);
+*
+*    hipsparseCreateIdentityPermutation(handle, n, dperm);
+*
+*    hipsparseDestroy(handle);
+*  \endcode
 */
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
@@ -9982,8 +12490,9 @@ hipsparseStatus_t hipsparseXcsrsort_bufferSizeExt(hipsparseHandle_t handle,
 *
 *  \details
 *  \p hipsparseXcsrsort sorts a matrix in CSR format. The sorted permutation vector
-*  \p perm can be used to obtain sorted \p csr_val array. In this case, \p perm must be
-*  initialized as the identity permutation, see hipsparseCreateIdentityPermutation().
+*  \p perm can be used to obtain sorted \p csrVal array. In this case, \p perm must be
+*  initialized as the identity permutation, see hipsparseCreateIdentityPermutation(). To 
+*  apply the permutation vector to the CSR values, see hipsparse hipsparseSgthr().
 *
 *  \p hipsparseXcsrsort requires extra temporary storage buffer that has to be allocated by
 *  the user. Storage buffer size can be determined by hipsparseXcsrsort_bufferSizeExt().
@@ -9994,6 +12503,80 @@ hipsparseStatus_t hipsparseXcsrsort_bufferSizeExt(hipsparseHandle_t handle,
 *  \note
 *  This function is non blocking and executed asynchronously with respect to the host.
 *  It may return before the actual computation has finished.
+*
+*  \par Example
+*  \code{.c}
+*    // hipSPARSE handle
+*    hipsparseHandle_t handle;
+*    hipsparseCreate(&handle);
+*
+*    hipsparseMatDescr_t descr;
+*    hipsparseCreateMatDescr(&descr);
+*
+*    // Sparse matrix in CSR format (columns unsorted)
+*    //     1 2 0 3 0
+*    // A = 0 4 5 0 0
+*    //     6 0 0 7 8
+*    int hcsrRowPtr[4] = {0, 3, 5, 8};
+*    int hcsrColInd[8] = {3, 1, 0, 2, 1, 0, 4, 3};
+*    float hcsrVal[8]  = {3.0f, 2.0f, 1.0f, 5.0f, 4.0f, 6.0f, 8.0f, 7.0f}; 
+*
+*    int m         = 3;
+*    int n         = 5;
+*    int nnz       = 8;
+*
+*    int* dcsrRowPtr = nullptr;
+*    int* dcsrColInd = nullptr;
+*    float* dcsrVal = nullptr;
+*    hipMalloc((void**)&dcsrRowPtr, sizeof(int) * (m + 1));
+*    hipMalloc((void**)&dcsrColInd, sizeof(int) * nnz);
+*    hipMalloc((void**)&dcsrVal, sizeof(float) * nnz);
+*
+*    hipMemcpy(dcsrRowPtr, hcsrRowPtr, sizeof(int) * (m + 1), hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrColInd, hcsrColInd, sizeof(int) * nnz, hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrVal, hcsrVal, sizeof(float) * nnz, hipMemcpyHostToDevice);
+*
+*    size_t bufferSize;
+*    hipsparseXcsrsort_bufferSizeExt(handle,
+*                                    m,
+*                                    n,
+*                                    nnz,
+*                                    dcsrRowPtr,
+*                                    dcsrColInd,
+*                                    &bufferSize);
+*
+*    void* dbuffer = nullptr;
+*    hipMalloc((void**)&dbuffer, bufferSize);
+*
+*    int* dperm = nullptr;
+*    hipMalloc((void**)&dperm, sizeof(int) * nnz);
+*    hipsparseCreateIdentityPermutation(handle, nnz, dperm);
+*
+*    hipsparseXcsrsort(handle,
+*                      m,
+*                      n,
+*                      nnz,
+*                      descr,
+*                      dcsrRowPtr,
+*                      dcsrColInd,
+*                      dperm,
+*                      dbuffer);
+*
+*    float* dcsrValSorted = nullptr;
+*    hipMalloc((void**)&dcsrValSorted, sizeof(float) * nnz);
+*    hipsparseSgthr(handle, nnz, dcsrVal, dcsrValSorted, dperm, HIPSPARSE_INDEX_BASE_ZERO);
+*
+*    hipFree(dcsrRowPtr);
+*    hipFree(dcsrColInd);
+*    hipFree(dcsrVal);
+*    hipFree(dcsrValSorted);
+*
+*    hipFree(dbuffer);
+*    hipFree(dperm);
+*
+*    hipsparseDestroyMatDescr(descr);
+*    hipsparseDestroy(handle);
+*  \endcode
 */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseXcsrsort(hipsparseHandle_t         handle,
@@ -10029,7 +12612,8 @@ hipsparseStatus_t hipsparseXcscsort_bufferSizeExt(hipsparseHandle_t handle,
 *  \details
 *  \p hipsparseXcscsort sorts a matrix in CSC format. The sorted permutation vector
 *  \p perm can be used to obtain sorted \p csc_val array. In this case, \p perm must be
-*  initialized as the identity permutation, see hipsparseCreateIdentityPermutation().
+*  initialized as the identity permutation, see hipsparseCreateIdentityPermutation(). To 
+*  apply the permutation vector to the CSC values, see hipsparse hipsparseSgthr().
 *
 *  \p hipsparseXcscsort requires extra temporary storage buffer that has to be allocated by
 *  the user. Storage buffer size can be determined by hipsparseXcscsort_bufferSizeExt().
@@ -10040,6 +12624,80 @@ hipsparseStatus_t hipsparseXcscsort_bufferSizeExt(hipsparseHandle_t handle,
 *  \note
 *  This function is non blocking and executed asynchronously with respect to the host.
 *  It may return before the actual computation has finished.
+*
+*  \par Example
+*  \code{.c}
+*    // hipSPARSE handle
+*    hipsparseHandle_t handle;
+*    hipsparseCreate(&handle);
+*
+*    hipsparseMatDescr_t descr;
+*    hipsparseCreateMatDescr(&descr);
+*
+*    // Sparse matrix in CSC format (unsorted row indices)
+*    //     1 2 0 3 0
+*    // A = 0 4 5 0 0
+*    //     6 0 0 7 8
+*    int hcscRowInd[8] = {2, 0, 1, 0, 1, 2, 0, 2};
+*    int hcscColPtr[6] = {0, 2, 4, 5, 7, 8};
+*    float hcscVal[8]  = {6.0f, 1.0f, 4.0f, 2.0f, 5.0f, 7.0f, 3.0f, 8.0f}; 
+*
+*    int m         = 3;
+*    int n         = 5;
+*    int nnz       = 8;
+*
+*    int* dcscRowInd = nullptr;
+*    int* dcscColPtr = nullptr;
+*    float* dcscVal = nullptr;
+*    hipMalloc((void**)&dcscRowInd, sizeof(int) * nnz);
+*    hipMalloc((void**)&dcscColPtr, sizeof(int) * (n + 1));
+*    hipMalloc((void**)&dcscVal, sizeof(float) * nnz);
+*
+*    hipMemcpy(dcscRowInd, hcscRowInd, sizeof(int) * nnz, hipMemcpyHostToDevice);
+*    hipMemcpy(dcscColPtr, hcscColPtr, sizeof(int) * (n + 1), hipMemcpyHostToDevice);
+*    hipMemcpy(dcscVal, hcscVal, sizeof(float) * nnz, hipMemcpyHostToDevice);
+*
+*    size_t bufferSize;
+*    hipsparseXcscsort_bufferSizeExt(handle,
+*                                    m,
+*                                    n,
+*                                    nnz,
+*                                    dcscColPtr,
+*                                    dcscRowInd,
+*                                    &bufferSize);
+*
+*    void* dbuffer = nullptr;
+*    hipMalloc((void**)&dbuffer, bufferSize);
+*
+*    int* dperm = nullptr;
+*    hipMalloc((void**)&dperm, sizeof(int) * nnz);
+*    hipsparseCreateIdentityPermutation(handle, nnz, dperm);
+*
+*    hipsparseXcscsort(handle,
+*                      m,
+*                      n,
+*                      nnz,
+*                      descr,
+*                      dcscColPtr,
+*                      dcscRowInd,
+*                      dperm,
+*                      dbuffer);
+*
+*    float* dcscValSorted = nullptr;
+*    hipMalloc((void**)&dcscValSorted, sizeof(float) * nnz);
+*    hipsparseSgthr(handle, nnz, dcscVal, dcscValSorted, dperm, HIPSPARSE_INDEX_BASE_ZERO);
+*
+*    hipFree(dcscRowInd);
+*    hipFree(dcscColPtr);
+*    hipFree(dcscVal);
+*    hipFree(dcscValSorted);
+*
+*    hipFree(dbuffer);
+*    hipFree(dperm);
+*
+*    hipsparseDestroyMatDescr(descr);
+*    hipsparseDestroy(handle);
+*  \endcode
 */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseXcscsort(hipsparseHandle_t         handle,
@@ -10074,9 +12732,10 @@ hipsparseStatus_t hipsparseXcoosort_bufferSizeExt(hipsparseHandle_t handle,
 *
 *  \details
 *  \p hipsparseXcoosortByRow sorts a matrix in COO format by row. The sorted
-*  permutation vector \p perm can be used to obtain sorted \p coo_val array. In this
+*  permutation vector \p perm can be used to obtain sorted \p cooVal array. In this
 *  case, \p perm must be initialized as the identity permutation, see
-*  hipsparseCreateIdentityPermutation().
+*  hipsparseCreateIdentityPermutation(). To apply the permutation vector to the COO 
+*  values, see hipsparse hipsparseSgthr().
 *
 *  \p hipsparseXcoosortByRow requires extra temporary storage buffer that has to be
 *  allocated by the user. Storage buffer size can be determined by
@@ -10088,6 +12747,63 @@ hipsparseStatus_t hipsparseXcoosort_bufferSizeExt(hipsparseHandle_t handle,
 *  \note
 *  This function is non blocking and executed asynchronously with respect to the host.
 *  It may return before the actual computation has finished.
+*
+*  \par Example
+*  \code{.c}
+*    // hipSPARSE handle
+*    hipsparseHandle_t handle;
+*    hipsparseCreate(&handle);
+*
+*    // Sparse matrix in COO format (with unsorted row indices)
+*    //     1 2 0 3 0
+*    // A = 0 4 5 0 0
+*    //     6 0 0 7 8
+*    int hcooRowInd[8] = {0, 2, 0, 1, 1, 0, 2, 2};
+*    int hcooColInd[8] = {0, 0, 1, 1, 2, 3, 3, 4};
+*    float hcooVal[8]   = {1.0f, 6.0f, 2.0f, 4.0f, 5.0f, 3.0f, 7.0f, 8.0f}; 
+*
+*    int m         = 3;
+*    int n         = 5;
+*    int nnz       = 8;
+*    hipsparseIndexBase_t base = HIPSPARSE_INDEX_BASE_ZERO;
+*
+*    int* dcooRowInd = nullptr;
+*    int* dcooColInd = nullptr;
+*    float* dcooVal = nullptr;
+*    hipMalloc((void**)&dcooRowInd, sizeof(int) * nnz);
+*    hipMalloc((void**)&dcooColInd, sizeof(int) * nnz);
+*    hipMalloc((void**)&dcooVal, sizeof(float) * nnz);
+*
+*    hipMemcpy(dcooRowInd, hcooRowInd, sizeof(int) * nnz, hipMemcpyHostToDevice);
+*    hipMemcpy(dcooColInd, hcooColInd, sizeof(int) * nnz, hipMemcpyHostToDevice);
+*    hipMemcpy(dcooVal, hcooVal, sizeof(float) * nnz, hipMemcpyHostToDevice);
+*
+*    size_t bufferSize;
+*    hipsparseXcoosort_bufferSizeExt(handle, m, n, nnz, dcooRowInd, dcooColInd, &bufferSize);
+*
+*    void* dbuffer = nullptr;
+*    hipMalloc((void**)&dbuffer, bufferSize);
+*
+*    int* dperm = nullptr;
+*    hipMalloc((void**)&dperm, sizeof(int) * nnz);
+*    hipsparseCreateIdentityPermutation(handle, nnz, dperm);
+*
+*    hipsparseXcoosortByRow(handle, m, n, nnz, dcooRowInd, dcooColInd, dperm, dbuffer);
+*
+*    float* dcooValSorted = nullptr;
+*    hipMalloc((void**)&dcooValSorted, sizeof(float) * nnz);
+*    hipsparseSgthr(handle, nnz, dcooVal, dcooValSorted, dperm, base);
+*
+*    hipFree(dcooRowInd);
+*    hipFree(dcooColInd);
+*    hipFree(dcooVal);
+*    hipFree(dcooValSorted);
+*    hipFree(dperm);
+*   
+*    hipFree(dbuffer);
+*
+*    hipsparseDestroy(handle);
+*  \endcode
 */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseXcoosortByRow(hipsparseHandle_t handle,
@@ -10104,9 +12820,10 @@ hipsparseStatus_t hipsparseXcoosortByRow(hipsparseHandle_t handle,
 *
 *  \details
 *  \p hipsparseXcoosortByColumn sorts a matrix in COO format by column. The sorted
-*  permutation vector \p perm can be used to obtain sorted \p coo_val array. In this
+*  permutation vector \p perm can be used to obtain sorted \p cooVal array. In this
 *  case, \p perm must be initialized as the identity permutation, see
-*  hipsparseCreateIdentityPermutation().
+*  hipsparseCreateIdentityPermutation(). To apply the permutation vector to the COO 
+*  values, see hipsparse hipsparseSgthr().
 *
 *  \p hipsparseXcoosortByColumn requires extra temporary storage buffer that has to be
 *  allocated by the user. Storage buffer size can be determined by
@@ -10118,6 +12835,63 @@ hipsparseStatus_t hipsparseXcoosortByRow(hipsparseHandle_t handle,
 *  \note
 *  This function is non blocking and executed asynchronously with respect to the host.
 *  It may return before the actual computation has finished.
+*
+*  \par Example
+*  \code{.c}
+*    // hipSPARSE handle
+*    hipsparseHandle_t handle;
+*    hipsparseCreate(&handle);
+*
+*    // Sparse matrix in COO format (with unsorted column indices)
+*    //     1 2 0 3 0
+*    // A = 0 4 5 0 0
+*    //     6 0 0 7 8
+*    int hcooRowInd[8] = {0, 0, 0, 1, 1, 2, 2, 2};
+*    int hcooColInd[8] = {0, 1, 3, 1, 2, 0, 3, 4};
+*    float hcooVal[8]   = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f}; 
+*
+*    int m         = 3;
+*    int n         = 5;
+*    int nnz       = 8;
+*    hipsparseIndexBase_t base = HIPSPARSE_INDEX_BASE_ZERO;
+*
+*    int* dcooRowInd = nullptr;
+*    int* dcooColInd = nullptr;
+*    float* dcooVal = nullptr;
+*    hipMalloc((void**)&dcooRowInd, sizeof(int) * nnz);
+*    hipMalloc((void**)&dcooColInd, sizeof(int) * nnz);
+*    hipMalloc((void**)&dcooVal, sizeof(float) * nnz);
+*
+*    hipMemcpy(dcooRowInd, hcooRowInd, sizeof(int) * nnz, hipMemcpyHostToDevice);
+*    hipMemcpy(dcooColInd, hcooColInd, sizeof(int) * nnz, hipMemcpyHostToDevice);
+*    hipMemcpy(dcooVal, hcooVal, sizeof(float) * nnz, hipMemcpyHostToDevice);
+*
+*    size_t bufferSize;
+*    hipsparseXcoosort_bufferSizeExt(handle, m, n, nnz, dcooRowInd, dcooColInd, &bufferSize);
+*
+*    void* dbuffer = nullptr;
+*    hipMalloc((void**)&dbuffer, bufferSize);
+*
+*    int* dperm = nullptr;
+*    hipMalloc((void**)&dperm, sizeof(int) * nnz);
+*    hipsparseCreateIdentityPermutation(handle, nnz, dperm);
+*
+*    hipsparseXcoosortByColumn(handle, m, n, nnz, dcooRowInd, dcooColInd, dperm, dbuffer);
+*
+*    float* dcooValSorted = nullptr;
+*    hipMalloc((void**)&dcooValSorted, sizeof(float) * nnz);
+*    hipsparseSgthr(handle, nnz, dcooVal, dcooValSorted, dperm, base);
+*
+*    hipFree(dcooRowInd);
+*    hipFree(dcooColInd);
+*    hipFree(dcooVal);
+*    hipFree(dcooValSorted);
+*    hipFree(dperm);
+*   
+*    hipFree(dbuffer);
+*
+*    hipsparseDestroy(handle);
+*  \endcode
 */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseXcoosortByColumn(hipsparseHandle_t handle,
@@ -10132,7 +12906,7 @@ hipsparseStatus_t hipsparseXcoosortByColumn(hipsparseHandle_t handle,
 /*! \ingroup conv_module
 *  \brief
 *  This function computes the the size of the user allocated temporary storage buffer used when converting a sparse
-*  general BSR matrix to another sparse general BSR matrix.
+*  GEBSR matrix to another sparse GEBSR matrix.
 *
 *  \details
 *  \p hipsparseXgebsr2gebsr_bufferSize returns the size of the temporary storage buffer
@@ -10154,7 +12928,7 @@ hipsparseStatus_t hipsparseSgebsr2gebsr_bufferSize(hipsparseHandle_t         han
                                                    int                       colBlockDimA,
                                                    int                       rowBlockDimC,
                                                    int                       colBlockDimC,
-                                                   int*                      bufferSize);
+                                                   int*                      pBufferSizeInBytes);
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDgebsr2gebsr_bufferSize(hipsparseHandle_t         handle,
@@ -10170,7 +12944,7 @@ hipsparseStatus_t hipsparseDgebsr2gebsr_bufferSize(hipsparseHandle_t         han
                                                    int                       colBlockDimA,
                                                    int                       rowBlockDimC,
                                                    int                       colBlockDimC,
-                                                   int*                      bufferSize);
+                                                   int*                      pBufferSizeInBytes);
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCgebsr2gebsr_bufferSize(hipsparseHandle_t         handle,
@@ -10186,7 +12960,7 @@ hipsparseStatus_t hipsparseCgebsr2gebsr_bufferSize(hipsparseHandle_t         han
                                                    int                       colBlockDimA,
                                                    int                       rowBlockDimC,
                                                    int                       colBlockDimC,
-                                                   int*                      bufferSize);
+                                                   int*                      pBufferSizeInBytes);
 
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseZgebsr2gebsr_bufferSize(hipsparseHandle_t         handle,
@@ -10202,11 +12976,11 @@ hipsparseStatus_t hipsparseZgebsr2gebsr_bufferSize(hipsparseHandle_t         han
                                                    int                       colBlockDimA,
                                                    int                       rowBlockDimC,
                                                    int                       colBlockDimC,
-                                                   int*                      bufferSize);
+                                                   int*                      pBufferSizeInBytes);
 /**@}*/
 
 /*! \ingroup conv_module
-*  \brief This function is used when converting a general BSR sparse matrix \p A to another general BSR sparse matrix \p C.
+*  \brief This function is used when converting a GEBSR sparse matrix \p A to another GEBSR sparse matrix \p C.
 *  Specifically, this function determines the number of non-zero blocks that will exist in \p C (stored using either a host
 *  or device pointer), and computes the row pointer array for \p C.
 *
@@ -10233,16 +13007,226 @@ hipsparseStatus_t hipsparseXgebsr2gebsrNnz(hipsparseHandle_t         handle,
 
 /*! \ingroup conv_module
 *  \brief
-*  This function converts the general BSR sparse matrix \p A to another general BSR sparse matrix \p C.
+*  This function converts the GEBSR sparse matrix \p A to another GEBSR sparse matrix \p C.
 *
 *  \details
 *  The conversion uses three steps. First, the user calls hipsparseXgebsr2gebsr_bufferSize() to determine the size of
-*  the required temporary storage buffer. The user then allocates this buffer. Secondly, the user then allocates \p mb_C+1
-*  integers for the row pointer array for \p C where \p mb_C=(m+row_block_dim_C-1)/row_block_dim_C. The user then calls
-*  hipsparseXgebsr2gebsrNnz() to fill in the row pointer array for \p C ( \p bsr_row_ptr_C ) and determine the number of
-*  non-zero blocks that will exist in \p C. Finally, the user allocates space for the colimn indices array of \p C to have
-*  \p nnzb_C elements and space for the values array of \p C to have \p nnzb_C*roc_block_dim_C*col_block_dim_C and then calls
-*  hipsparseXgebsr2gebsr() to complete the conversion.
+*  the required temporary storage buffer. The user then allocates this buffer. Secondly, the user then allocates \p mbC+1
+*  integers for the row pointer array for \p C where:
+*  \f[
+*    \begin{align}
+*    \text{mbC} &= \text{(m - 1) / rowBlockDimC + 1} \\
+*    \text{nbC} &= \text{(n - 1) / colBlockDimC + 1}
+*    \end{align}
+*  \f]
+*  The user then calls hipsparseXgebsr2gebsrNnz() to fill in the row pointer array for \p C ( \p bsrRowPtrC ) and 
+*  determine the number of non-zero blocks that will exist in \p C. Finally, the user allocates space for the column 
+*  indices array of \p C to have \p nnzbC elements and space for the values array of \p C to have 
+*  \p nnzbC*rowBlockDimC*colBlockDimC and then calls hipsparseXgebsr2gebsr() to complete the conversion.
+*
+*  It may be the case that \p rowBlockDimC does not divide evenly into \p m and/or \p colBlockDim does not divide evenly 
+*  into \p n. In these cases, the GEBSR matrix is expanded in size in order to fit full GEBSR blocks. For example, if 
+*  the original GEBSR matrix A (using \p rowBlockDimA=2, \p colBlockDimA=3) looks like: 
+*
+*  \f[
+*   \left[ 
+*    \begin{array}{c | c} 
+*      \begin{array}{c c c} 
+*       1 & 0 & 0 \\ 
+*       3 & 4 & 0
+*      \end{array} & 
+*      \begin{array}{c c c} 
+*       2 & 0 & 0 \\ 
+*       4 & 5 & 6
+*      \end{array} \\ 
+*    \hline 
+*      \begin{array}{c c c} 
+*       1 & 2 & 3 \\ 
+*       1 & 2 & 0
+*      \end{array} & 
+*      \begin{array}{c c c} 
+*       4 & 0 & 0 \\ 
+*       3 & 0 & 1
+*      \end{array} \\ 
+*   \end{array} 
+*  \right] 
+*  \f]
+*
+*  then if we specify \p rowBlockDimC=3 and \p colBlockDimC=2, our output GEBSR matrix C would be:
+*
+*  \f[
+*   \left[ 
+*    \begin{array}{c | c | c} 
+*      \begin{array}{c c} 
+*       1 & 0 \\ 
+*       3 & 4 \\
+*       1 & 2
+*      \end{array} & 
+*      \begin{array}{c c} 
+*       0 & 2 \\ 
+*       0 & 4 \\
+*       3 & 4
+*      \end{array} & 
+*      \begin{array}{c c} 
+*       0 & 0 \\ 
+*       5 & 6 \\
+*       0 & 0
+*      \end{array} \\
+*    \hline 
+*      \begin{array}{c c} 
+*       1 & 2 \\ 
+*       0 & 0 \\
+*       0 & 0
+*      \end{array} & 
+*      \begin{array}{c c} 
+*       0 & 3 \\ 
+*       0 & 0 \\
+*       0 & 0
+*      \end{array} & 
+*      \begin{array}{c c} 
+*       0 & 1 \\ 
+*       0 & 0 \\
+*       0 & 0
+*      \end{array} \\
+*   \end{array} 
+*  \right] 
+*  \f]
+*
+*  \par Example
+*  \code{.c}
+*    // hipSPARSE handle
+*    hipsparseHandle_t handle;
+*    hipsparseCreate(&handle);
+*
+*    hipsparseMatDescr_t descrA;
+*    hipsparseCreateMatDescr(&descrA);
+*
+*    hipsparseMatDescr_t descrC;
+*    hipsparseCreateMatDescr(&descrC);
+*
+*    // Sparse matrix in BSR format
+*    //     1 2 | 0 3 | 0 0 
+*    //     0 4 | 5 0 | 0 1
+*    // A = 6 0 | 0 7 | 8 0
+*    //     --------------- 
+*    //     0 0 | 3 0 | 2 2
+*    //     1 0 | 0 0 | 4 3 
+*    //     7 2 | 0 0 | 1 4
+*    int hbsrRowPtrA[3] = {0, 3, 6};
+*    int hbsrColIndA[6] = {0, 1, 2, 0, 1, 2};
+*    float hbsrValA[36]  = {1.0f, 2.0f, 0.0f, 4.0f, 6.0f, 0.0f, 
+*                           0.0f, 3.0f, 5.0f, 0.0f, 0.0f, 7.0f, 
+*                           0.0f, 0.0f, 0.0f, 1.0f, 8.0f, 0.0f, 
+*                           0.0f, 0.0f, 1.0f, 0.0f, 7.0f, 2.0f,
+*                           3.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+*                           2.0f, 2.0f, 4.0f, 3.0f, 1.0f, 4.0f}; 
+*
+*    int m           = 6;
+*    int n           = 6;
+*    int rowBlockDimA = 3;
+*    int colBlockDimA = 2;
+*    int rowBlockDimC = 2;
+*    int colBlockDimC = 2;
+*    hipsparseDirection_t dirA = HIPSPARSE_DIRECTION_ROW;
+*
+*    int mbA   = (m + rowBlockDimA - 1) / rowBlockDimA;
+*    int nbA   = (n + colBlockDimA - 1) / colBlockDimA;
+*    int nnzbA = 6;
+*
+*    int mbC   = (m + rowBlockDimC - 1) / rowBlockDimC;
+*    int nbC   = (n + colBlockDimC - 1) / colBlockDimC;
+*
+*    int* dbsrRowPtrA = nullptr;
+*    int* dbsrColIndA = nullptr;
+*    float* dbsrValA = nullptr;
+*    hipMalloc((void**)&dbsrRowPtrA, sizeof(int) * (mbA + 1));
+*    hipMalloc((void**)&dbsrColIndA, sizeof(int) * nnzbA);
+*    hipMalloc((void**)&dbsrValA, sizeof(float) * rowBlockDimA * colBlockDimA * nnzbA);
+*
+*    hipMemcpy(dbsrRowPtrA, hbsrRowPtrA, sizeof(int) * (mbA + 1), hipMemcpyHostToDevice);
+*    hipMemcpy(dbsrColIndA, hbsrColIndA, sizeof(int) * nnzbA, hipMemcpyHostToDevice);
+*    hipMemcpy(dbsrValA, hbsrValA, sizeof(float) * rowBlockDimA * colBlockDimA * nnzbA, hipMemcpyHostToDevice);
+*
+*    int* dbsrRowPtrC = nullptr;
+*    hipMalloc((void**)&dbsrRowPtrC, sizeof(int) * (mbC + 1));
+*
+*    size_t bufferSize;
+*    hipsparseSgebsr2gebsr_bufferSize(handle, 
+*                                     dirA, 
+*                                     mbA, 
+*                                     nbA, 
+*                                     nnzbA, 
+*                                     descrA, 
+*                                     dbsrValA, 
+*                                     dbsrRowPtrA, 
+*                                     dbsrColIndA, 
+*                                     rowBlockDimA, 
+*                                     colBlockDimA, 
+*                                     rowBlockDimC, 
+*                                     colBlockDimC, 
+*                                     &bufferSize);
+*
+*    void* dbuffer = nullptr;
+*    hipMalloc((void**)&dbuffer, bufferSize);
+*
+*    int nnzbC;
+*    hipsparseXgebsr2gebsrNnz(handle,
+*                             dirA,
+*                             mbA,
+*                             nbA,
+*                             nnzbA,
+*                             descrA,
+*                             dbsrRowPtrA,
+*                             dbsrColIndA,
+*                             rowBlockDimA,
+*                             colBlockDimA,
+*                             descrC,
+*                             dbsrRowPtrC,
+*                             rowBlockDimC,
+*                             colBlockDimC,
+*                             &nnzbC,
+*                             dbuffer);
+*
+*    hipDeviceSynchronize();
+*
+*    int* dbsrColIndC = nullptr;
+*    float* dbsrValC = nullptr;
+*    hipMalloc((void**)&dbsrColIndC, sizeof(int) * nnzbC);
+*    hipMalloc((void**)&dbsrValC, sizeof(float) * rowBlockDimC * colBlockDimC * nnzbC);
+*
+*    hipsparseSgebsr2gebsr(handle, 
+*                          dirA, 
+*                          mbA, 
+*                          nbA, 
+*                          nnzbA, 
+*                          descrA, 
+*                          dbsrValA, 
+*                          dbsrRowPtrA, 
+*                          dbsrColIndA, 
+*                          rowBlockDimA, 
+*                          colBlockDimA, 
+*                          descrC, 
+*                          dbsrValC, 
+*                          dbsrRowPtrC, 
+*                          dbsrColIndC, 
+*                          rowBlockDimC, 
+*                          colBlockDimC, 
+*                          dbuffer);
+*
+*    hipFree(dbsrRowPtrA);
+*    hipFree(dbsrColIndA);
+*    hipFree(dbsrValA);
+*    
+*    hipFree(dbsrRowPtrC);
+*    hipFree(dbsrColIndC);
+*    hipFree(dbsrValC);
+*
+*    hipFree(dbuffer);
+*
+*    hipsparseDestroyMatDescr(descrA);
+*    hipsparseDestroyMatDescr(descrC);
+*    hipsparseDestroy(handle);
+*  \endcode
 */
 /**@{*/
 HIPSPARSE_EXPORT
@@ -12046,7 +15030,7 @@ hipsparseStatus_t hipsparseDnMatSetStridedBatch(hipsparseDnMatDescr_t dnMatDescr
 *      }
 *      for(i = 0; i < nnz; ++i)
 *      {
-*          y[x_ind[i]] += alpha * x_val[i]
+*          y[xInd[i]] += alpha * xVal[i]
 *      }
 *  \endcode
 *
@@ -12059,10 +15043,10 @@ hipsparseStatus_t hipsparseDnMatSetStridedBatch(hipsparseDnMatDescr_t dnMatDescr
 *    int size = 9;
 *
 *    // Sparse index vector
-*    std::vector<int> hx_ind = {0, 3, 5};
+*    std::vector<int> hxInd = {0, 3, 5};
 *
 *    // Sparse value vector
-*    std::vector<float> hx_val = {1.0f, 2.0f, 3.0f};
+*    std::vector<float> hxVal = {1.0f, 2.0f, 3.0f};
 *
 *    // Dense vector
 *    std::vector<float> hy = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f};
@@ -12074,15 +15058,15 @@ hipsparseStatus_t hipsparseDnMatSetStridedBatch(hipsparseDnMatDescr_t dnMatDescr
 *    float beta = 1.2f;
 *
 *    // Offload data to device
-*    int* dx_ind;
-*    float* dx_val;
+*    int* dxInd;
+*    float* dxVal;
 *    float* dy;
-*    hipMalloc((void**)&dx_ind, sizeof(int) * nnz);
-*    hipMalloc((void**)&dx_val, sizeof(float) * nnz);
+*    hipMalloc((void**)&dxInd, sizeof(int) * nnz);
+*    hipMalloc((void**)&dxVal, sizeof(float) * nnz);
 *    hipMalloc((void**)&dy, sizeof(float) * size);
 *
-*    hipMemcpy(dx_ind, hx_ind.data(), sizeof(int) * nnz, hipMemcpyHostToDevice);
-*    hipMemcpy(dx_val, hx_val.data(), sizeof(float) * nnz, hipMemcpyHostToDevice);
+*    hipMemcpy(dxInd, hxInd.data(), sizeof(int) * nnz, hipMemcpyHostToDevice);
+*    hipMemcpy(dxVal, hxVal.data(), sizeof(float) * nnz, hipMemcpyHostToDevice);
 *    hipMemcpy(dy, hy.data(), sizeof(float) * size, hipMemcpyHostToDevice);
 *
 *    hipsparseHandle_t handle;
@@ -12093,8 +15077,8 @@ hipsparseStatus_t hipsparseDnMatSetStridedBatch(hipsparseDnMatDescr_t dnMatDescr
 *    hipsparseCreateSpVec(&vecX,
 *                        size,
 *                        nnz,
-*                        dx_ind,
-*                        dx_val,
+*                        dxInd,
+*                        dxVal,
 *                        HIPSPARSE_INDEX_32I,
 *                        HIPSPARSE_INDEX_BASE_ZERO,
 *                        HIP_R_32F);
@@ -12118,8 +15102,8 @@ hipsparseStatus_t hipsparseDnMatSetStridedBatch(hipsparseDnMatDescr_t dnMatDescr
 *    hipsparseDestroy(handle);
 *
 *    // Clear device memory
-*    hipFree(dx_ind);
-*    hipFree(dx_val);
+*    hipFree(dxInd);
+*    hipFree(dxVal);
 *    hipFree(dy);
 *  \endcode
 */
@@ -12149,7 +15133,7 @@ hipsparseStatus_t hipsparseAxpby(hipsparseHandle_t     handle,
 *  \code{.c}
 *      for(i = 0; i < nnz; ++i)
 *      {
-*          x_val[i] = y[x_ind[i]];
+*          xVal[i] = y[xInd[i]];
 *      }
 *  \endcode
 *
@@ -12162,20 +15146,20 @@ hipsparseStatus_t hipsparseAxpby(hipsparseHandle_t     handle,
 *    int size = 9;
 *
 *    // Sparse index vector
-*    std::vector<int> hx_ind = {0, 3, 5};
+*    std::vector<int> hxInd = {0, 3, 5};
 *
 *    // Dense vector
 *    std::vector<float> hy = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f};
 *
 *    // Offload data to device
-*    int* dx_ind;
-*    float* dx_val;
+*    int* dxInd;
+*    float* dxVal;
 *    float* dy;
-*    hipMalloc((void**)&dx_ind, sizeof(int) * nnz);
-*    hipMalloc((void**)&dx_val, sizeof(float) * nnz);
+*    hipMalloc((void**)&dxInd, sizeof(int) * nnz);
+*    hipMalloc((void**)&dxVal, sizeof(float) * nnz);
 *    hipMalloc((void**)&dy, sizeof(float) * size);
 *
-*    hipMemcpy(dx_ind, hx_ind.data(), sizeof(int) * nnz, hipMemcpyHostToDevice);
+*    hipMemcpy(dxInd, hxInd.data(), sizeof(int) * nnz, hipMemcpyHostToDevice);
 *    hipMemcpy(dy, hy.data(), sizeof(float) * size, hipMemcpyHostToDevice);
 *
 *    hipsparseHandle_t handle;
@@ -12186,8 +15170,8 @@ hipsparseStatus_t hipsparseAxpby(hipsparseHandle_t     handle,
 *    hipsparseCreateSpVec(&vecX,
 *                         size,
 *                         nnz,
-*                         dx_ind,
-*                         dx_val,
+*                         dxInd,
+*                         dxVal,
 *                         HIPSPARSE_INDEX_32I,
 *                         HIPSPARSE_INDEX_BASE_ZERO,
 *                         HIP_R_32F);
@@ -12199,11 +15183,11 @@ hipsparseStatus_t hipsparseAxpby(hipsparseHandle_t     handle,
 *    // Perform gather
 *    hipsparseGather(handle, vecY, vecX);
 *
-*    hipsparseSpVecGetValues(vecX, (void**)&dx_val);
+*    hipsparseSpVecGetValues(vecX, (void**)&dxVal);
 *
 *    // Copy result back to host
-*    std::vector<float> hx_val(nnz, 0.0f);
-*    hipMemcpy(hx_val.data(), dx_val, sizeof(float) * nnz, hipMemcpyDeviceToHost);
+*    std::vector<float> hxVal(nnz, 0.0f);
+*    hipMemcpy(hxVal.data(), dxVal, sizeof(float) * nnz, hipMemcpyDeviceToHost);
 *
 *    // Clear hipSPARSE
 *    hipsparseDestroySpVec(vecX);
@@ -12211,8 +15195,8 @@ hipsparseStatus_t hipsparseAxpby(hipsparseHandle_t     handle,
 *    hipsparseDestroy(handle);
 *
 *    // Clear device memory
-*    hipFree(dx_ind);
-*    hipFree(dx_val);
+*    hipFree(dxInd);
+*    hipFree(dxVal);
 *    hipFree(dy);
 *  \endcode
 */
@@ -12238,7 +15222,7 @@ hipsparseStatus_t hipsparseGather(hipsparseHandle_t     handle,
 *  \code{.c}
 *      for(i = 0; i < nnz; ++i)
 *      {
-*          y[x_ind[i]] = x_val[i];
+*          y[xInd[i]] = xVal[i];
 *      }
 *  \endcode
 *
@@ -12251,24 +15235,24 @@ hipsparseStatus_t hipsparseGather(hipsparseHandle_t     handle,
 *    int size = 9;
 *
 *    // Sparse index vector
-*    std::vector<int> hx_ind = {0, 3, 5};
+*    std::vector<int> hxInd = {0, 3, 5};
 *
 *    // Sparse value vector
-*    std::vector<float> hx_val = {1.0f, 2.0f, 3.0f};
+*    std::vector<float> hxVal = {1.0f, 2.0f, 3.0f};
 *
 *    // Dense vector
 *    std::vector<float> hy = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f};
 *
 *    // Offload data to device
-*    int* dx_ind;
-*    float* dx_val;
+*    int* dxInd;
+*    float* dxVal;
 *    float* dy;
-*    hipMalloc((void**)&dx_ind, sizeof(int) * nnz);
-*    hipMalloc((void**)&dx_val, sizeof(float) * nnz);
+*    hipMalloc((void**)&dxInd, sizeof(int) * nnz);
+*    hipMalloc((void**)&dxVal, sizeof(float) * nnz);
 *    hipMalloc((void**)&dy, sizeof(float) * size);
 *
-*    hipMemcpy(dx_ind, hx_ind.data(), sizeof(int) * nnz, hipMemcpyHostToDevice);
-*    hipMemcpy(dx_val, hx_val.data(), sizeof(float) * nnz, hipMemcpyHostToDevice);
+*    hipMemcpy(dxInd, hxInd.data(), sizeof(int) * nnz, hipMemcpyHostToDevice);
+*    hipMemcpy(dxVal, hxVal.data(), sizeof(float) * nnz, hipMemcpyHostToDevice);
 *    hipMemcpy(dy, hy.data(), sizeof(float) * size, hipMemcpyHostToDevice);
 *
 *    hipsparseHandle_t handle;
@@ -12279,8 +15263,8 @@ hipsparseStatus_t hipsparseGather(hipsparseHandle_t     handle,
 *    hipsparseCreateSpVec(&vecX,
 *                                size,
 *                                nnz,
-*                                dx_ind,
-*                                dx_val,
+*                                dxInd,
+*                                dxVal,
 *                                HIPSPARSE_INDEX_32I,
 *                                HIPSPARSE_INDEX_BASE_ZERO,
 *                                HIP_R_32F);
@@ -12303,8 +15287,8 @@ hipsparseStatus_t hipsparseGather(hipsparseHandle_t     handle,
 *    hipsparseDestroy(handle);
 *
 *    // Clear device memory
-*    hipFree(dx_ind);
-*    hipFree(dx_val);
+*    hipFree(dxInd);
+*    hipFree(dxVal);
 *    hipFree(dy);
 *  \endcode
 */
@@ -12333,11 +15317,11 @@ hipsparseStatus_t hipsparseScatter(hipsparseHandle_t     handle,
 *  \code{.c}
 *      for(i = 0; i < nnz; ++i)
 *      {
-*          x_tmp = x_val[i];
-*          y_tmp = y[x_ind[i]];
+*          x_tmp = xVal[i];
+*          y_tmp = y[xInd[i]];
 *
-*          x_val[i]    = c * x_tmp + s * y_tmp;
-*          y[x_ind[i]] = c * y_tmp - s * x_tmp;
+*          xVal[i]    = c * x_tmp + s * y_tmp;
+*          y[xInd[i]] = c * y_tmp - s * x_tmp;
 *      }
 *  \endcode
 *
@@ -12350,10 +15334,10 @@ hipsparseStatus_t hipsparseScatter(hipsparseHandle_t     handle,
 *    int size = 9;
 *
 *    // Sparse index vector
-*    std::vector<int> hx_ind = {0, 3, 5};
+*    std::vector<int> hxInd = {0, 3, 5};
 *
 *    // Sparse value vector
-*    std::vector<float> hx_val = {1.0f, 2.0f, 3.0f};
+*    std::vector<float> hxVal = {1.0f, 2.0f, 3.0f};
 *
 *    // Dense vector
 *    std::vector<float> hy = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f};
@@ -12365,15 +15349,15 @@ hipsparseStatus_t hipsparseScatter(hipsparseHandle_t     handle,
 *    float s = 1.2f;
 *
 *    // Offload data to device
-*    int* dx_ind;
-*    float* dx_val;
+*    int* dxInd;
+*    float* dxVal;
 *    float* dy;
-*    hipMalloc((void**)&dx_ind, sizeof(int) * nnz);
-*    hipMalloc((void**)&dx_val, sizeof(float) * nnz);
+*    hipMalloc((void**)&dxInd, sizeof(int) * nnz);
+*    hipMalloc((void**)&dxVal, sizeof(float) * nnz);
 *    hipMalloc((void**)&dy, sizeof(float) * size);
 *
-*    hipMemcpy(dx_ind, hx_ind.data(), sizeof(int) * nnz, hipMemcpyHostToDevice);
-*    hipMemcpy(dx_val, hx_val.data(), sizeof(float) * nnz, hipMemcpyHostToDevice);
+*    hipMemcpy(dxInd, hxInd.data(), sizeof(int) * nnz, hipMemcpyHostToDevice);
+*    hipMemcpy(dxVal, hxVal.data(), sizeof(float) * nnz, hipMemcpyHostToDevice);
 *    hipMemcpy(dy, hy.data(), sizeof(float) * size, hipMemcpyHostToDevice);
 *
 *    hipsparseHandle_t handle;
@@ -12384,8 +15368,8 @@ hipsparseStatus_t hipsparseScatter(hipsparseHandle_t     handle,
 *    hipsparseCreateSpVec(&vecX,
 *                                size,
 *                                nnz,
-*                                dx_ind,
-*                                dx_val,
+*                                dxInd,
+*                                dxVal,
 *                                HIPSPARSE_INDEX_32I,
 *                                HIPSPARSE_INDEX_BASE_ZERO,
 *                                HIP_R_32F);
@@ -12397,11 +15381,11 @@ hipsparseStatus_t hipsparseScatter(hipsparseHandle_t     handle,
 *    // Call rot
 *    hipsparseRot(handle, (void*)&c, (void*)&s, vecX, vecY);
 *
-*    hipsparseSpVecGetValues(vecX, (void**)&dx_val);
+*    hipsparseSpVecGetValues(vecX, (void**)&dxVal);
 *    hipsparseDnVecGetValues(vecY, (void**)&dy);
 *
 *    // Copy result back to host
-*    hipMemcpy(hx_val.data(), dx_val, sizeof(float) * nnz, hipMemcpyDeviceToHost);
+*    hipMemcpy(hxVal.data(), dxVal, sizeof(float) * nnz, hipMemcpyDeviceToHost);
 *    hipMemcpy(hy.data(), dy, sizeof(float) * size, hipMemcpyDeviceToHost);
 *
 *    // Clear hipSPARSE
@@ -12410,8 +15394,8 @@ hipsparseStatus_t hipsparseScatter(hipsparseHandle_t     handle,
 *    hipsparseDestroy(handle);
 *
 *    // Clear device memory
-*    hipFree(dx_ind);
-*    hipFree(dx_val);
+*    hipFree(dxInd);
+*    hipFree(dxVal);
 *    hipFree(dy);
 *  \endcode
 */
@@ -12438,14 +15422,14 @@ hipsparseStatus_t hipsparseSparseToDense_bufferSize(hipsparseHandle_t           
                                                     hipsparseConstSpMatDescr_t  matA,
                                                     hipsparseDnMatDescr_t       matB,
                                                     hipsparseSparseToDenseAlg_t alg,
-                                                    size_t*                     bufferSize);
+                                                    size_t*                     pBufferSizeInBytes);
 #elif(CUDART_VERSION >= 11020)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSparseToDense_bufferSize(hipsparseHandle_t           handle,
                                                     hipsparseSpMatDescr_t       matA,
                                                     hipsparseDnMatDescr_t       matB,
                                                     hipsparseSparseToDenseAlg_t alg,
-                                                    size_t*                     bufferSize);
+                                                    size_t*                     pBufferSizeInBytes);
 #endif
 
 /*! \ingroup generic_module
@@ -12484,14 +15468,14 @@ hipsparseStatus_t hipsparseDenseToSparse_bufferSize(hipsparseHandle_t           
                                                     hipsparseConstDnMatDescr_t  matA,
                                                     hipsparseSpMatDescr_t       matB,
                                                     hipsparseDenseToSparseAlg_t alg,
-                                                    size_t*                     bufferSize);
+                                                    size_t*                     pBufferSizeInBytes);
 #elif(CUDART_VERSION >= 11020)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDenseToSparse_bufferSize(hipsparseHandle_t           handle,
                                                     hipsparseDnMatDescr_t       matA,
                                                     hipsparseSpMatDescr_t       matB,
                                                     hipsparseDenseToSparseAlg_t alg,
-                                                    size_t*                     bufferSize);
+                                                    size_t*                     pBufferSizeInBytes);
 #endif
 
 /*! \ingroup generic_module
@@ -12558,7 +15542,7 @@ hipsparseStatus_t hipsparseSpVV_bufferSize(hipsparseHandle_t          handle,
                                            hipsparseConstDnVecDescr_t vecY,
                                            void*                      result,
                                            hipDataType                computeType,
-                                           size_t*                    bufferSize);
+                                           size_t*                    pBufferSizeInBytes);
 #elif(CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpVV_bufferSize(hipsparseHandle_t     handle,
@@ -12567,7 +15551,7 @@ hipsparseStatus_t hipsparseSpVV_bufferSize(hipsparseHandle_t     handle,
                                            hipsparseDnVecDescr_t vecY,
                                            void*                 result,
                                            hipDataType           computeType,
-                                           size_t*               bufferSize);
+                                           size_t*               pBufferSizeInBytes);
 #endif
 
 /*! \ingroup generic_module
@@ -12586,24 +15570,24 @@ hipsparseStatus_t hipsparseSpVV_bufferSize(hipsparseHandle_t     handle,
 *    int size = 9;
 *
 *    // Sparse index vector
-*    std::vector<int> hx_ind = {0, 3, 5};
+*    std::vector<int> hxInd = {0, 3, 5};
 *
 *    // Sparse value vector
-*    std::vector<float> hx_val = {1.0f, 2.0f, 3.0f};
+*    std::vector<float> hxVal = {1.0f, 2.0f, 3.0f};
 *
 *    // Dense vector
 *    std::vector<float> hy = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f};
 *
 *    // Offload data to device
-*    int* dx_ind;
-*    float* dx_val;
+*    int* dxInd;
+*    float* dxVal;
 *    float* dy;
-*    hipMalloc((void**)&dx_ind, sizeof(int) * nnz);
-*    hipMalloc((void**)&dx_val, sizeof(float) * nnz);
+*    hipMalloc((void**)&dxInd, sizeof(int) * nnz);
+*    hipMalloc((void**)&dxVal, sizeof(float) * nnz);
 *    hipMalloc((void**)&dy, sizeof(float) * size);
 *
-*    hipMemcpy(dx_ind, hx_ind.data(), sizeof(int) * nnz, hipMemcpyHostToDevice);
-*    hipMemcpy(dx_val, hx_val.data(), sizeof(float) * nnz, hipMemcpyHostToDevice);
+*    hipMemcpy(dxInd, hxInd.data(), sizeof(int) * nnz, hipMemcpyHostToDevice);
+*    hipMemcpy(dxVal, hxVal.data(), sizeof(float) * nnz, hipMemcpyHostToDevice);
 *    hipMemcpy(dy, hy.data(), sizeof(float) * size, hipMemcpyHostToDevice);
 *
 *    hipsparseHandle_t handle;
@@ -12614,8 +15598,8 @@ hipsparseStatus_t hipsparseSpVV_bufferSize(hipsparseHandle_t     handle,
 *    hipsparseCreateSpVec(&vecX,
 *                        size,
 *                        nnz,
-*                        dx_ind,
-*                        dx_val,
+*                        dxInd,
+*                        dxVal,
 *                        HIPSPARSE_INDEX_32I,
 *                        HIPSPARSE_INDEX_BASE_ZERO,
 *                        HIP_R_32F);
@@ -12657,8 +15641,8 @@ hipsparseStatus_t hipsparseSpVV_bufferSize(hipsparseHandle_t     handle,
 *    hipsparseDestroy(handle);
 *
 *    // Clear device memory
-*    hipFree(dx_ind);
-*    hipFree(dx_val);
+*    hipFree(dxInd);
+*    hipFree(dxVal);
 *    hipFree(dy);
 *    hipFree(temp_buffer);
 *  \endcode
@@ -12703,7 +15687,7 @@ hipsparseStatus_t hipsparseSpMV_bufferSize(hipsparseHandle_t           handle,
                                            const hipsparseDnVecDescr_t vecY,
                                            hipDataType                 computeType,
                                            hipsparseSpMVAlg_t          alg,
-                                           size_t*                     bufferSize);
+                                           size_t*                     pBufferSizeInBytes);
 #elif(CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpMV_bufferSize(hipsparseHandle_t           handle,
@@ -12715,7 +15699,7 @@ hipsparseStatus_t hipsparseSpMV_bufferSize(hipsparseHandle_t           handle,
                                            const hipsparseDnVecDescr_t vecY,
                                            hipDataType                 computeType,
                                            hipsparseSpMVAlg_t          alg,
-                                           size_t*                     bufferSize);
+                                           size_t*                     pBufferSizeInBytes);
 #endif
 
 /*! \ingroup generic_module
@@ -12771,30 +15755,30 @@ hipsparseStatus_t hipsparseSpMV_preprocess(hipsparseHandle_t           handle,
 *    float alpha = 0.5f;
 *    float beta  = 0.25f;
 *
-*    std::vector<int> hcsr_row_ptr = {0, 3, 5, 8};
-*    std::vector<int> hcsr_col_ind = {0, 1, 3, 1, 2, 0, 2, 3}; 
-*    std::vector<float> hcsr_val     = {1, 2, 3, 4, 5, 6, 7, 8}; 
+*    std::vector<int> hcsrRowPtr = {0, 3, 5, 8};
+*    std::vector<int> hcsrColInd = {0, 1, 3, 1, 2, 0, 2, 3}; 
+*    std::vector<float> hcsrVal     = {1, 2, 3, 4, 5, 6, 7, 8}; 
 *
 *    std::vector<float> hx(k, 1.0f);
 *    std::vector<float> hy(m, 1.0f);
 *
-*    int *dcsr_row_ptr;
-*    int *dcsr_col_ind;
-*    float *dcsr_val;
-*    hipMalloc((void**)&dcsr_row_ptr, sizeof(int) * (m + 1));
-*    hipMalloc((void**)&dcsr_col_ind, sizeof(int) * nnz_A);
-*    hipMalloc((void**)&dcsr_val, sizeof(float) * nnz_A);
+*    int *dcsrRowPtr;
+*    int *dcsrColInd;
+*    float *dcsrVal;
+*    hipMalloc((void**)&dcsrRowPtr, sizeof(int) * (m + 1));
+*    hipMalloc((void**)&dcsrColInd, sizeof(int) * nnz_A);
+*    hipMalloc((void**)&dcsrVal, sizeof(float) * nnz_A);
 *
-*    hipMemcpy(dcsr_row_ptr, hcsr_row_ptr.data(), sizeof(int) * (m + 1), hipMemcpyHostToDevice);
-*    hipMemcpy(dcsr_col_ind, hcsr_col_ind.data(), sizeof(int) * nnz_A, hipMemcpyHostToDevice);
-*    hipMemcpy(dcsr_val, hcsr_val.data(), sizeof(float) * nnz_A, hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrRowPtr, hcsrRowPtr.data(), sizeof(int) * (m + 1), hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrColInd, hcsrColInd.data(), sizeof(int) * nnz_A, hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrVal, hcsrVal.data(), sizeof(float) * nnz_A, hipMemcpyHostToDevice);
 *
 *    hipsparseHandle_t handle;
 *    hipsparseCreate(&handle);
 *
 *    hipsparseSpMatDescr_t matA;
 *    hipsparseCreateCsr(&matA, m, k, nnz_A,
-*                        dcsr_row_ptr, dcsr_col_ind, dcsr_val,
+*                        dcsrRowPtr, dcsrColInd, dcsrVal,
 *                        HIPSPARSE_INDEX_32I, HIPSPARSE_INDEX_32I,
 *                        HIPSPARSE_INDEX_BASE_ZERO, HIP_R_32F);
 *
@@ -12864,9 +15848,9 @@ hipsparseStatus_t hipsparseSpMV_preprocess(hipsparseHandle_t           handle,
 *    hipsparseDestroy(handle);
 *
 *    hipFree(buffer);
-*    hipFree(dcsr_row_ptr);
-*    hipFree(dcsr_col_ind);
-*    hipFree(dcsr_val);
+*    hipFree(dcsrRowPtr);
+*    hipFree(dcsrColInd);
+*    hipFree(dcsrVal);
 *    hipFree(dx);
 *    hipFree(dy);
 *  \endcode
@@ -12918,7 +15902,7 @@ hipsparseStatus_t hipsparseSpMM_bufferSize(hipsparseHandle_t           handle,
                                            const hipsparseDnMatDescr_t matC,
                                            hipDataType                 computeType,
                                            hipsparseSpMMAlg_t          alg,
-                                           size_t*                     bufferSize);
+                                           size_t*                     pBufferSizeInBytes);
 #elif(CUDART_VERSION >= 10010)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpMM_bufferSize(hipsparseHandle_t           handle,
@@ -12931,7 +15915,7 @@ hipsparseStatus_t hipsparseSpMM_bufferSize(hipsparseHandle_t           handle,
                                            const hipsparseDnMatDescr_t matC,
                                            hipDataType                 computeType,
                                            hipsparseSpMMAlg_t          alg,
-                                           size_t*                     bufferSize);
+                                           size_t*                     pBufferSizeInBytes);
 #endif
 
 /*! \ingroup generic_module
@@ -12992,30 +15976,30 @@ hipsparseStatus_t hipsparseSpMM_preprocess(hipsparseHandle_t           handle,
 *    float alpha = 0.5f;
 *    float beta  = 0.25f;
 *
-*    std::vector<int> hcsr_row_ptr = {0, 3, 5, 8};
-*    std::vector<int> hcsr_col_ind = {0, 1, 3, 1, 2, 0, 2, 3}; 
-*    std::vector<float> hcsr_val     = {1, 2, 3, 4, 5, 6, 7, 8}; 
+*    std::vector<int> hcsrRowPtr = {0, 3, 5, 8};
+*    std::vector<int> hcsrColInd = {0, 1, 3, 1, 2, 0, 2, 3}; 
+*    std::vector<float> hcsrVal     = {1, 2, 3, 4, 5, 6, 7, 8}; 
 *
 *    std::vector<float> hB(nnz_B, 1.0f);
 *    std::vector<float> hC(nnz_C, 1.0f);
 *
-*    int *dcsr_row_ptr;
-*    int *dcsr_col_ind;
-*    float *dcsr_val;
-*    hipMalloc((void**)&dcsr_row_ptr, sizeof(int) * (m + 1));
-*    hipMalloc((void**)&dcsr_col_ind, sizeof(int) * nnz_A);
-*    hipMalloc((void**)&dcsr_val, sizeof(float) * nnz_A);
+*    int *dcsrRowPtr;
+*    int *dcsrColInd;
+*    float *dcsrVal;
+*    hipMalloc((void**)&dcsrRowPtr, sizeof(int) * (m + 1));
+*    hipMalloc((void**)&dcsrColInd, sizeof(int) * nnz_A);
+*    hipMalloc((void**)&dcsrVal, sizeof(float) * nnz_A);
 *
-*    hipMemcpy(dcsr_row_ptr, hcsr_row_ptr.data(), sizeof(int) * (m + 1), hipMemcpyHostToDevice);
-*    hipMemcpy(dcsr_col_ind, hcsr_col_ind.data(), sizeof(int) * nnz_A, hipMemcpyHostToDevice);
-*    hipMemcpy(dcsr_val, hcsr_val.data(), sizeof(float) * nnz_A, hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrRowPtr, hcsrRowPtr.data(), sizeof(int) * (m + 1), hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrColInd, hcsrColInd.data(), sizeof(int) * nnz_A, hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrVal, hcsrVal.data(), sizeof(float) * nnz_A, hipMemcpyHostToDevice);
 *
 *    hipsparseHandle_t handle;
 *    hipsparseCreate(&handle);
 *
 *    hipsparseSpMatDescr_t matA;
 *    hipsparseCreateCsr(&matA, m, k, nnz_A,
-*                        dcsr_row_ptr, dcsr_col_ind, dcsr_val,
+*                        dcsrRowPtr, dcsrColInd, dcsrVal,
 *                        HIPSPARSE_INDEX_32I, HIPSPARSE_INDEX_32I,
 *                        HIPSPARSE_INDEX_BASE_ZERO, HIP_R_32F);
 *
@@ -13088,9 +16072,9 @@ hipsparseStatus_t hipsparseSpMM_preprocess(hipsparseHandle_t           handle,
 *    hipsparseDestroy(handle);
 *
 *    hipFree(buffer);
-*    hipFree(dcsr_row_ptr);
-*    hipFree(dcsr_col_ind);
-*    hipFree(dcsr_val);
+*    hipFree(dcsrRowPtr);
+*    hipFree(dcsrColInd);
+*    hipFree(dcsrVal);
 *    hipFree(dB);
 *    hipFree(dC);
 *  \endcode
@@ -13294,15 +16278,15 @@ hipsparseStatus_t hipsparseSpGEMM_compute(hipsparseHandle_t      handle,
 *
 *    // Create sparse matrix A in CSR format
 *    hipsparseCreateCsr(&matA, m, k, nnzA,
-*                                        dcsr_row_ptrA, dcsr_col_indA, dcsr_valA,
+*                                        dcsrRowPtrA, dcsrColIndA, dcsrValA,
 *                                        HIPSPARSE_INDEX_32I, HIPSPARSE_INDEX_32I,
 *                                        HIPSPARSE_INDEX_BASE_ZERO, HIP_R_32F);
 *    hipsparseCreateCsr(&matB, k, n, nnzB,
-*                                        dcsr_row_ptrB, dcsr_col_indB, dcsr_valB,
+*                                        dcsrRowPtrB, dcsrColIndB, dcsrValB,
 *                                        HIPSPARSE_INDEX_32I, HIPSPARSE_INDEX_32I,
 *                                        HIPSPARSE_INDEX_BASE_ZERO, HIP_R_32F);
 *    hipsparseCreateCsr(&matC, m, n, 0,
-*                                        dcsr_row_ptrC, NULL, NULL,
+*                                        dcsrRowPtrC, NULL, NULL,
 *                                        HIPSPARSE_INDEX_32I, HIPSPARSE_INDEX_32I,
 *                                        HIPSPARSE_INDEX_BASE_ZERO, HIP_R_32F);
 *
@@ -13341,11 +16325,11 @@ hipsparseStatus_t hipsparseSpGEMM_compute(hipsparseHandle_t      handle,
 *    hipsparseSpMatGetSize(matC, &C_num_rows1, &C_num_cols1, &C_nnz1);
 *
 *    // Allocate the CSR structures for the matrix C
-*    hipMalloc((void**) &dcsr_col_indC, C_nnz1 * sizeof(int));
-*    hipMalloc((void**) &dcsr_valC,  C_nnz1 * sizeof(float));
+*    hipMalloc((void**) &dcsrColIndC, C_nnz1 * sizeof(int));
+*    hipMalloc((void**) &dcsrValC,  C_nnz1 * sizeof(float));
 *
 *    // Update matC with the new pointers
-*    hipsparseCsrSetPointers(matC, dcsr_row_ptrC, dcsr_col_indC, dcsr_valC);
+*    hipsparseCsrSetPointers(matC, dcsrRowPtrC, dcsrColIndC, dcsrValC);
 *
 *    // Copy the final products to the matrix C
 *    hipsparseSpGEMM_copy(handle, opA, opB,
@@ -13522,12 +16506,12 @@ hipsparseStatus_t hipsparseSpGEMMreuse_nnz(hipsparseHandle_t      handle,
 *    hipsparseSpMatGetSize(matC, &rowsC, &colsC, &nnzC);
 *
 *    // Allocate matrix C
-*    hipMalloc((void**) &dcsr_col_indC, sizeof(int) * nnzC);
-*    hipMalloc((void**) &dcsr_valC,  sizeof(float) * nnzC);
+*    hipMalloc((void**) &dcsrColIndC, sizeof(int) * nnzC);
+*    hipMalloc((void**) &dcsrValC,  sizeof(float) * nnzC);
 *    
 *    // Update matC with the new pointers. The C values array can be filled with data here
 *    // which is used if beta != 0.
-*    hipsparseCsrSetPointers(matC, dcsr_row_ptrC, dcsr_col_indC, dcsr_valC);
+*    hipsparseCsrSetPointers(matC, dcsrRowPtrC, dcsrColIndC, dcsrValC);
 *
 *    // Determine size of fifth user allocated buffer
 *    hipsparseSpGEMMreuse_copy(handle, opA, opB, matA, matB, matC,
@@ -13592,39 +16576,39 @@ hipsparseStatus_t hipsparseSpGEMMreuse_copy(hipsparseHandle_t      handle,
 *    // A, B, and C are m×k, k×n, and m×n
 *
 *    // A
-*    std::vector<int> hcsr_row_ptrA = {0, 2, 4};
-*    std::vector<int> hcsr_col_indA = {0, 1, 0, 1};
-*    std::vector<float> hcsr_valA = {1.0f, 2.0f, 3.0f, 4.0f};
+*    std::vector<int> hcsrRowPtrA = {0, 2, 4};
+*    std::vector<int> hcsrColIndA = {0, 1, 0, 1};
+*    std::vector<float> hcsrValA = {1.0f, 2.0f, 3.0f, 4.0f};
 *
 *    // B
-*    std::vector<int> hcsr_row_ptrB = {0, 2, 4};
-*    std::vector<int> hcsr_col_indB = {1, 2, 0, 2};
-*    std::vector<float> hcsr_valB = {5.0f , 6.0f, 7.0f, 8.0f};
+*    std::vector<int> hcsrRowPtrB = {0, 2, 4};
+*    std::vector<int> hcsrColIndB = {1, 2, 0, 2};
+*    std::vector<float> hcsrValB = {5.0f , 6.0f, 7.0f, 8.0f};
 *
 *    // Device memory management: Allocate and copy A, B
-*    int* dcsr_row_ptrA;
-*    int* dcsr_col_indA;
-*    float* dcsr_valA;
-*    int* dcsr_row_ptrB;
-*    int* dcsr_col_indB;
-*    float* dcsr_valB;
-*    int* dcsr_row_ptrC;
-*    int* dcsr_col_indC;
-*    float* dcsr_valC;
-*    hipMalloc((void**)&dcsr_row_ptrA, (m + 1) * sizeof(int));
-*    hipMalloc((void**)&dcsr_col_indA, nnzA * sizeof(int));
-*    hipMalloc((void**)&dcsr_valA, nnzA * sizeof(float));
-*    hipMalloc((void**)&dcsr_row_ptrB, (k + 1) * sizeof(int));
-*    hipMalloc((void**)&dcsr_col_indB, nnzB * sizeof(int));
-*    hipMalloc((void**)&dcsr_valB, nnzB * sizeof(float));
-*    hipMalloc((void**)&dcsr_row_ptrC, (m + 1) * sizeof(int));
+*    int* dcsrRowPtrA;
+*    int* dcsrColIndA;
+*    float* dcsrValA;
+*    int* dcsrRowPtrB;
+*    int* dcsrColIndB;
+*    float* dcsrValB;
+*    int* dcsrRowPtrC;
+*    int* dcsrColIndC;
+*    float* dcsrValC;
+*    hipMalloc((void**)&dcsrRowPtrA, (m + 1) * sizeof(int));
+*    hipMalloc((void**)&dcsrColIndA, nnzA * sizeof(int));
+*    hipMalloc((void**)&dcsrValA, nnzA * sizeof(float));
+*    hipMalloc((void**)&dcsrRowPtrB, (k + 1) * sizeof(int));
+*    hipMalloc((void**)&dcsrColIndB, nnzB * sizeof(int));
+*    hipMalloc((void**)&dcsrValB, nnzB * sizeof(float));
+*    hipMalloc((void**)&dcsrRowPtrC, (m + 1) * sizeof(int));
 *
-*    hipMemcpy(dcsr_row_ptrA, hcsr_row_ptrA.data(), (m + 1) * sizeof(int), hipMemcpyHostToDevice);
-*    hipMemcpy(dcsr_col_indA, hcsr_col_indA.data(), nnzA * sizeof(int), hipMemcpyHostToDevice);
-*    hipMemcpy(dcsr_valA, hcsr_valA.data(), nnzA * sizeof(float), hipMemcpyHostToDevice);
-*    hipMemcpy(dcsr_row_ptrB, hcsr_row_ptrB.data(), (k + 1) * sizeof(int), hipMemcpyHostToDevice);
-*    hipMemcpy(dcsr_col_indB, hcsr_col_indB.data(), nnzB * sizeof(int), hipMemcpyHostToDevice);
-*    hipMemcpy(dcsr_valB, hcsr_valB.data(), nnzB * sizeof(float), hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrRowPtrA, hcsrRowPtrA.data(), (m + 1) * sizeof(int), hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrColIndA, hcsrColIndA.data(), nnzA * sizeof(int), hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrValA, hcsrValA.data(), nnzA * sizeof(float), hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrRowPtrB, hcsrRowPtrB.data(), (k + 1) * sizeof(int), hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrColIndB, hcsrColIndB.data(), nnzB * sizeof(int), hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrValB, hcsrValB.data(), nnzB * sizeof(float), hipMemcpyHostToDevice);
 *
 *    hipsparseHandle_t     handle = NULL;
 *    hipsparseSpMatDescr_t matA, matB, matC;
@@ -13643,15 +16627,15 @@ hipsparseStatus_t hipsparseSpGEMMreuse_copy(hipsparseHandle_t      handle,
 *
 *    // Create sparse matrix A in CSR format
 *    hipsparseCreateCsr(&matA, m, k, nnzA,
-*                        dcsr_row_ptrA, dcsr_col_indA, dcsr_valA,
+*                        dcsrRowPtrA, dcsrColIndA, dcsrValA,
 *                        HIPSPARSE_INDEX_32I, HIPSPARSE_INDEX_32I,
 *                        HIPSPARSE_INDEX_BASE_ZERO, HIP_R_32F);
 *    hipsparseCreateCsr(&matB, k, n, nnzB,
-*                        dcsr_row_ptrB, dcsr_col_indB, dcsr_valB,
+*                        dcsrRowPtrB, dcsrColIndB, dcsrValB,
 *                        HIPSPARSE_INDEX_32I, HIPSPARSE_INDEX_32I,
 *                        HIPSPARSE_INDEX_BASE_ZERO, HIP_R_32F);
 *    hipsparseCreateCsr(&matC, m, n, 0,
-*                        dcsr_row_ptrC, NULL, NULL,
+*                        dcsrRowPtrC, NULL, NULL,
 *                        HIPSPARSE_INDEX_32I, HIPSPARSE_INDEX_32I,
 *                        HIPSPARSE_INDEX_BASE_ZERO, HIP_R_32F);
 *
@@ -13696,12 +16680,12 @@ hipsparseStatus_t hipsparseSpGEMMreuse_copy(hipsparseHandle_t      handle,
 *    hipsparseSpMatGetSize(matC, &rowsC, &colsC, &nnzC);
 *
 *    // Allocate matrix C
-*    hipMalloc((void**) &dcsr_col_indC, sizeof(int) * nnzC);
-*    hipMalloc((void**) &dcsr_valC,  sizeof(float) * nnzC);
+*    hipMalloc((void**) &dcsrColIndC, sizeof(int) * nnzC);
+*    hipMalloc((void**) &dcsrValC,  sizeof(float) * nnzC);
 *    
 *    // Update matC with the new pointers. The C values array can be filled with data here
 *    // which is used if beta != 0.
-*    hipsparseCsrSetPointers(matC, dcsr_row_ptrC, dcsr_col_indC, dcsr_valC);
+*    hipsparseCsrSetPointers(matC, dcsrRowPtrC, dcsrColIndC, dcsrValC);
 *
 *    // Determine size of fifth user allocated buffer
 *    hipsparseSpGEMMreuse_copy(handle, opA, opB, matA, matB, matC,
@@ -13725,12 +16709,12 @@ hipsparseStatus_t hipsparseSpGEMMreuse_copy(hipsparseHandle_t      handle,
 *
 *    // Copy results back to host if required using hipsparseCsrGet...
 *
-*    // Update dcsr_valA, dcsr_valB with new values
-*    for(size_t i = 0; i < hcsr_valA.size(); i++){ hcsr_valA[i] = 1.0f; }
-*    for(size_t i = 0; i < hcsr_valB.size(); i++){ hcsr_valB[i] = 2.0f; }
+*    // Update dcsrValA, dcsrValB with new values
+*    for(size_t i = 0; i < hcsrValA.size(); i++){ hcsrValA[i] = 1.0f; }
+*    for(size_t i = 0; i < hcsrValB.size(); i++){ hcsrValB[i] = 2.0f; }
 *
-*    hipMemcpy(dcsr_valA, hcsr_valA.data(), sizeof(float) * nnzA, hipMemcpyHostToDevice);
-*    hipMemcpy(dcsr_valB, hcsr_valB.data(), sizeof(float) * nnzB, hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrValA, hcsrValA.data(), sizeof(float) * nnzA, hipMemcpyHostToDevice);
+*    hipMemcpy(dcsrValB, hcsrValB.data(), sizeof(float) * nnzB, hipMemcpyHostToDevice);
 *    
 *    // Compute C' = alpha * A * B + beta * C again with the new A and B values
 *    hipsparseSpGEMMreuse_compute(handle, opA, opB, &alpha, matA, matB, &beta,
@@ -13749,15 +16733,15 @@ hipsparseStatus_t hipsparseSpGEMMreuse_copy(hipsparseHandle_t      handle,
 *    // Free device memory
 *    hipFree(dBuffer4);
 *    hipFree(dBuffer5);
-*    hipFree(dcsr_row_ptrA);
-*    hipFree(dcsr_col_indA);
-*    hipFree(dcsr_valA);
-*    hipFree(dcsr_row_ptrB);
-*    hipFree(dcsr_col_indB);
-*    hipFree(dcsr_valB);
-*    hipFree(dcsr_row_ptrC);
-*    hipFree(dcsr_col_indC);
-*    hipFree(dcsr_valC);
+*    hipFree(dcsrRowPtrA);
+*    hipFree(dcsrColIndA);
+*    hipFree(dcsrValA);
+*    hipFree(dcsrRowPtrB);
+*    hipFree(dcsrColIndB);
+*    hipFree(dcsrValB);
+*    hipFree(dcsrRowPtrC);
+*    hipFree(dcsrColIndC);
+*    hipFree(dcsrValC);
 *  \endcode
 */
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
@@ -13807,7 +16791,7 @@ hipsparseStatus_t hipsparseSDDMM_bufferSize(hipsparseHandle_t          handle,
                                             hipsparseSpMatDescr_t      C,
                                             hipDataType                computeType,
                                             hipsparseSDDMMAlg_t        alg,
-                                            size_t*                    bufferSize);
+                                            size_t*                    pBufferSizeInBytes);
 #elif(CUDART_VERSION >= 11022)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSDDMM_bufferSize(hipsparseHandle_t           handle,
@@ -13820,7 +16804,7 @@ hipsparseStatus_t hipsparseSDDMM_bufferSize(hipsparseHandle_t           handle,
                                             hipsparseSpMatDescr_t       C,
                                             hipDataType                 computeType,
                                             hipsparseSDDMMAlg_t         alg,
-                                            size_t*                     bufferSize);
+                                            size_t*                     pBufferSizeInBytes);
 #endif
 
 /*! \ingroup generic_module
@@ -13889,9 +16873,9 @@ hipsparseStatus_t hipsparseSDDMM_preprocess(hipsparseHandle_t           handle,
 *  \f]
 *   and
 *  \f[
-*    spy(C)_ij = \left\{
+*    spy(C)_{ij} = \left\{
 *    \begin{array}{ll}
-*        1 \text{if i == j},   & 0 \text{if i != j} \\
+*        1 \text{  if i == j},   & 0 \text{  if i != j} \\
 *    \end{array}
 *    \right.
 *  \f]
@@ -13966,7 +16950,7 @@ hipsparseStatus_t hipsparseSpSV_bufferSize(hipsparseHandle_t           handle,
                                            hipDataType                 computeType,
                                            hipsparseSpSVAlg_t          alg,
                                            hipsparseSpSVDescr_t        spsvDescr,
-                                           size_t*                     bufferSize);
+                                           size_t*                     pBufferSizeInBytes);
 #elif(CUDART_VERSION >= 11030)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpSV_bufferSize(hipsparseHandle_t           handle,
@@ -13978,7 +16962,7 @@ hipsparseStatus_t hipsparseSpSV_bufferSize(hipsparseHandle_t           handle,
                                            hipDataType                 computeType,
                                            hipsparseSpSVAlg_t          alg,
                                            hipsparseSpSVDescr_t        spsvDescr,
-                                           size_t*                     bufferSize);
+                                           size_t*                     pBufferSizeInBytes);
 #endif
 
 /*! \ingroup generic_module
@@ -14104,7 +17088,7 @@ hipsparseStatus_t hipsparseSpSM_bufferSize(hipsparseHandle_t           handle,
                                            hipDataType                 computeType,
                                            hipsparseSpSMAlg_t          alg,
                                            hipsparseSpSMDescr_t        spsmDescr,
-                                           size_t*                     bufferSize);
+                                           size_t*                     pBufferSizeInBytes);
 #elif(CUDART_VERSION >= 11031)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpSM_bufferSize(hipsparseHandle_t           handle,
@@ -14117,7 +17101,7 @@ hipsparseStatus_t hipsparseSpSM_bufferSize(hipsparseHandle_t           handle,
                                            hipDataType                 computeType,
                                            hipsparseSpSMAlg_t          alg,
                                            hipsparseSpSMDescr_t        spsmDescr,
-                                           size_t*                     bufferSize);
+                                           size_t*                     pBufferSizeInBytes);
 #endif
 
 /*! \ingroup generic_module
@@ -14181,9 +17165,9 @@ hipsparseStatus_t hipsparseSpSM_analysis(hipsparseHandle_t           handle,
 *  \f[
 *    op(B) = \left\{
 *    \begin{array}{ll}
-*        B,   & \text{if trans_B == HIPSPARSE_OPERATION_NON_TRANSPOSE} \\
-*        B^T, & \text{if trans_B == HIPSPARSE_OPERATION_TRANSPOSE} \\
-*        B^H, & \text{if trans_B == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE}
+*        B,   & \text{if transB == HIPSPARSE_OPERATION_NON_TRANSPOSE} \\
+*        B^T, & \text{if transB == HIPSPARSE_OPERATION_TRANSPOSE} \\
+*        B^H, & \text{if transB == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE}
 *    \end{array}
 *    \right.
 *  \f]
