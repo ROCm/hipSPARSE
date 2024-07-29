@@ -25,6 +25,7 @@
 #ifndef TESTING_CSX2DENSE_HPP
 #define TESTING_CSX2DENSE_HPP
 
+#include "display.hpp"
 #include "flops.hpp"
 #include "gbyte.hpp"
 #include "hipsparse.hpp"
@@ -280,8 +281,18 @@ hipsparseStatus_t testing_csx2dense(const Arguments& argus, FUNC1& csx2dense, FU
         double gbyte_count = csx2dense_gbyte_count<DIRA, T>(M, N, nnz);
         double gpu_gbyte   = get_gpu_gbyte(gpu_time_used, gbyte_count);
 
-        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used)
-                  << std::endl;
+        display_timing_info(display_key_t::M,
+                            M,
+                            display_key_t::N,
+                            N,
+                            display_key_t::LD,
+                            LD,
+                            display_key_t::nnz,
+                            nnz,
+                            display_key_t::bandwidth,
+                            gpu_gbyte,
+                            display_key_t::time_ms,
+                            get_gpu_time_msec(gpu_time_used));
     }
 #endif
 

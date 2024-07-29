@@ -25,6 +25,7 @@
 #ifndef TESTING_ROT_HPP
 #define TESTING_ROT_HPP
 
+#include "display.hpp"
 #include "flops.hpp"
 #include "gbyte.hpp"
 #include "hipsparse_arguments.hpp"
@@ -229,8 +230,14 @@ hipsparseStatus_t testing_rot(Arguments argus)
         double gpu_gbyte  = get_gpu_gbyte(gpu_time_used, gbyte_count);
         double gpu_gflops = get_gpu_gflops(gpu_time_used, gflop_count);
 
-        std::cout << "GFLOPS/s: " << gpu_gflops << " GBytes/s: " << gpu_gbyte
-                  << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
+        display_timing_info(display_key_t::nnz,
+                            nnz,
+                            display_key_t::gflops,
+                            gpu_gflops,
+                            display_key_t::bandwidth,
+                            gpu_gbyte,
+                            display_key_t::time_ms,
+                            get_gpu_time_msec(gpu_time_used));
     }
 
     CHECK_HIPSPARSE_ERROR(hipsparseDestroySpVec(x1));

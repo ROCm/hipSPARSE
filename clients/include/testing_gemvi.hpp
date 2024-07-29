@@ -25,6 +25,7 @@
 #ifndef TESTING_GEMVI_HPP
 #define TESTING_GEMVI_HPP
 
+#include "display.hpp"
 #include "flops.hpp"
 #include "gbyte.hpp"
 #include "hipsparse.hpp"
@@ -267,15 +268,33 @@ hipsparseStatus_t testing_gemvi(Arguments argus)
 
         gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
 
-        double gpu_gflops = gemvi_gflop_count(m, nnz) / gpu_time_used * 1e6;
-        double gpu_gbyte
+        double gflop_count = gemvi_gflop_count(m, nnz);
+        double gbyte_count
             = gemvi_gbyte_count<T>((trans == HIPSPARSE_OPERATION_NON_TRANSPOSE) ? m : n,
                                    nnz,
-                                   beta != make_DataType<T>(0.0))
-              / gpu_time_used * 1e6;
+                                   beta != make_DataType<T>(0.0));
 
-        std::cout << "GFLOPS/s: " << gpu_gflops << " GBytes/s: " << gpu_gbyte
-                  << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
+        double gpu_gflops = get_gpu_gflops(gpu_time_used, gflop_count);
+        double gpu_gbyte  = get_gpu_gbyte(gpu_time_used, gbyte_count);
+
+        display_timing_info(display_key_t::M,
+                            m,
+                            display_key_t::N,
+                            n,
+                            display_key_t::nnz,
+                            nnz,
+                            display_key_t::trans,
+                            hipsparse_operation2string(trans),
+                            display_key_t::alpha,
+                            alpha,
+                            display_key_t::beta,
+                            beta,
+                            display_key_t::gflops,
+                            gpu_gflops,
+                            display_key_t::bandwidth,
+                            gpu_gbyte,
+                            display_key_t::time_ms,
+                            get_gpu_time_msec(gpu_time_used));
     }
 
     CHECK_HIP_ERROR(hipFree(externalBuffer));

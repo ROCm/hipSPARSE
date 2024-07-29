@@ -25,6 +25,7 @@
 #ifndef TESTING_CSRMM_HPP
 #define TESTING_CSRMM_HPP
 
+#include "display.hpp"
 #include "flops.hpp"
 #include "gbyte.hpp"
 #include "hipsparse.hpp"
@@ -529,8 +530,32 @@ hipsparseStatus_t testing_csrmm(Arguments argus)
         double gpu_gflops = get_gpu_gflops(gpu_time_used, gflop_count);
         double gpu_gbyte  = get_gpu_gbyte(gpu_time_used, gbyte_count);
 
-        std::cout << "GFLOPS/s: " << gpu_gflops << " GBytes/s: " << gpu_gbyte
-                  << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
+        display_timing_info(display_key_t::M,
+                            M,
+                            display_key_t::N,
+                            N,
+                            display_key_t::K,
+                            K,
+                            display_key_t::transA,
+                            hipsparse_operation2string(transA),
+                            display_key_t::transB,
+                            hipsparse_operation2string(transB),
+                            display_key_t::nnzA,
+                            nnz,
+                            display_key_t::nnzB,
+                            B_m * B_n,
+                            display_key_t::nnzC,
+                            C_m * C_n,
+                            display_key_t::alpha,
+                            h_alpha,
+                            display_key_t::beta,
+                            h_beta,
+                            display_key_t::gflops,
+                            gpu_gflops,
+                            display_key_t::bandwidth,
+                            gpu_gbyte,
+                            display_key_t::time_ms,
+                            get_gpu_time_msec(gpu_time_used));
     }
 #endif
 

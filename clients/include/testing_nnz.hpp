@@ -25,6 +25,7 @@
 #ifndef TESTING_NNZ_HPP
 #define TESTING_NNZ_HPP
 
+#include "display.hpp"
 #include "flops.hpp"
 #include "gbyte.hpp"
 #include "hipsparse.hpp"
@@ -286,8 +287,20 @@ hipsparseStatus_t testing_nnz(Arguments argus)
         double gbyte_count = nnz_gbyte_count<T>(M, N, dirA);
         double gpu_gbyte   = get_gpu_gbyte(gpu_time_used, gbyte_count);
 
-        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used)
-                  << std::endl;
+        display_timing_info(display_key_t::M,
+                            M,
+                            display_key_t::N,
+                            N,
+                            display_key_t::LD,
+                            lda,
+                            display_key_t::nnz,
+                            h_nnz,
+                            display_key_t::direction,
+                            hipsparse_direction2string(dirA),
+                            display_key_t::bandwidth,
+                            gpu_gbyte,
+                            display_key_t::time_ms,
+                            get_gpu_time_msec(gpu_time_used));
     }
 
     return HIPSPARSE_STATUS_SUCCESS;
