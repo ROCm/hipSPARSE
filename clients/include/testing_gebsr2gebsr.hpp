@@ -25,6 +25,7 @@
 #ifndef TESTING_GEBSR2GEBSR_HPP
 #define TESTING_GEBSR2GEBSR_HPP
 
+#include "display.hpp"
 #include "flops.hpp"
 #include "gbyte.hpp"
 #include "hipsparse.hpp"
@@ -945,6 +946,7 @@ hipsparseStatus_t testing_gebsr2gebsr(Arguments argus)
     int mb   = (m + row_block_dim_A - 1) / row_block_dim_A;
     int nb   = (n + col_block_dim_A - 1) / col_block_dim_A;
     int mb_C = (mb * row_block_dim_A + row_block_dim_C - 1) / row_block_dim_C;
+    int nb_C = (nb * col_block_dim_A + col_block_dim_C - 1) / col_block_dim_C;
 
     // allocate memory on device
     auto dcsr_row_ptr_managed
@@ -1266,8 +1268,34 @@ hipsparseStatus_t testing_gebsr2gebsr(Arguments argus)
                                                         hnnzb_C);
         double gpu_gbyte   = get_gpu_gbyte(gpu_time_used, gbyte_count);
 
-        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used)
-                  << std::endl;
+        display_timing_info(display_key_t::M,
+                            m,
+                            display_key_t::N,
+                            n,
+                            display_key_t::MbA,
+                            mb,
+                            display_key_t::NbA,
+                            nb,
+                            display_key_t::MbC,
+                            mb_C,
+                            display_key_t::NbC,
+                            nb_C,
+                            display_key_t::row_block_dimA,
+                            row_block_dim_A,
+                            display_key_t::col_block_dimA,
+                            col_block_dim_A,
+                            display_key_t::row_block_dimC,
+                            row_block_dim_C,
+                            display_key_t::col_block_dimC,
+                            col_block_dim_C,
+                            display_key_t::nnzbA,
+                            nnzb,
+                            display_key_t::nnzbC,
+                            hnnzb_C,
+                            display_key_t::bandwidth,
+                            gpu_gbyte,
+                            display_key_t::time_ms,
+                            get_gpu_time_msec(gpu_time_used));
     }
 
     return HIPSPARSE_STATUS_SUCCESS;

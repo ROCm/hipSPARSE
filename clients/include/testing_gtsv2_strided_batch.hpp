@@ -25,6 +25,7 @@
 #ifndef TESTING_GTSV2_NOPIVOT_STRIDED_BATCH_HPP
 #define TESTING_GTSV2_NOPIVOT_STRIDED_BATCH_HPP
 
+#include "display.hpp"
 #include "flops.hpp"
 #include "gbyte.hpp"
 #include "hipsparse.hpp"
@@ -234,8 +235,16 @@ hipsparseStatus_t testing_gtsv2_strided_batch(Arguments argus)
         double gbyte_count = gtsv_strided_batch_gbyte_count<T>(m, batch_count);
         double gpu_gbyte   = get_gpu_gbyte(gpu_time_used, gbyte_count);
 
-        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used)
-                  << std::endl;
+        display_timing_info(display_key_t::M,
+                            m,
+                            display_key_t::batch_count,
+                            batch_count,
+                            display_key_t::batch_stride,
+                            batch_stride,
+                            display_key_t::bandwidth,
+                            gpu_gbyte,
+                            display_key_t::time_ms,
+                            get_gpu_time_msec(gpu_time_used));
     }
 
     CHECK_HIP_ERROR(hipFree(buffer));

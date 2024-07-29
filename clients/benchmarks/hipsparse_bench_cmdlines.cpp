@@ -15,7 +15,7 @@ int hipsparse_bench_cmdlines::get_nsamples() const
 {
     return this->m_cmd.get_nsamples();
 };
-int hipsparse_bench_cmdlines::get_option_index_x() const
+size_t hipsparse_bench_cmdlines::get_option_index_x() const
 {
     return this->m_cmd.get_option_index_x();
 };

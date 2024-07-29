@@ -25,6 +25,7 @@
 #ifndef TESTING_SPMM_CSC_HPP
 #define TESTING_SPMM_CSC_HPP
 
+#include "display.hpp"
 #include "flops.hpp"
 #include "gbyte.hpp"
 #include "hipsparse.hpp"
@@ -425,8 +426,26 @@ hipsparseStatus_t testing_spmm_csc(Arguments argus)
             A_n, nnz_A, (I)B_m * (I)B_n, (I)C_m * (I)C_n, h_beta != make_DataType<T>(0));
         double gpu_gbyte = get_gpu_gbyte(gpu_time_used, gbyte_count);
 
-        std::cout << "GFLOPS/s: " << gpu_gflops << " GBYTES/s: " << gpu_gbyte
-                  << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
+        display_timing_info(display_key_t::M,
+                            m,
+                            display_key_t::N,
+                            n,
+                            display_key_t::K,
+                            k,
+                            display_key_t::nnzA,
+                            nnz_A,
+                            display_key_t::alpha,
+                            h_alpha,
+                            display_key_t::beta,
+                            h_beta,
+                            display_key_t::algorithm,
+                            hipsparse_spmmalg2string(alg),
+                            display_key_t::gflops,
+                            gpu_gflops,
+                            display_key_t::bandwidth,
+                            gpu_gbyte,
+                            display_key_t::time_ms,
+                            get_gpu_time_msec(gpu_time_used));
     }
 
     CHECK_HIP_ERROR(hipFree(buffer));

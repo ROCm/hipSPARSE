@@ -25,6 +25,7 @@
 #ifndef TESTING_BSRILU02_HPP
 #define TESTING_BSRILU02_HPP
 
+#include "display.hpp"
 #include "flops.hpp"
 #include "gbyte.hpp"
 #include "hipsparse.hpp"
@@ -737,8 +738,20 @@ hipsparseStatus_t testing_bsrilu02(Arguments argus)
         double gbyte_count = bsrilu0_gbyte_count<T>(mb, block_dim, nnzb);
         double gpu_gbyte   = get_gpu_gbyte(gpu_time_used, gbyte_count);
 
-        std::cout << "GBytes/s: " << gpu_gbyte << " time (ms): " << get_gpu_time_msec(gpu_time_used)
-                  << std::endl;
+        display_timing_info(display_key_t::Mb,
+                            mb,
+                            display_key_t::nnzb,
+                            nnzb,
+                            display_key_t::block_dim,
+                            block_dim,
+                            display_key_t::direction,
+                            hipsparse_direction2string(dir),
+                            display_key_t::solve_policy,
+                            hipsparse_solvepolicy2string(policy),
+                            display_key_t::bandwidth,
+                            gpu_gbyte,
+                            display_key_t::time_ms,
+                            get_gpu_time_msec(gpu_time_used));
     }
 #endif
 

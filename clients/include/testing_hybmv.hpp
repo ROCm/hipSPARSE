@@ -25,6 +25,7 @@
 #ifndef TESTING_HYBMV_HPP
 #define TESTING_HYBMV_HPP
 
+#include "display.hpp"
 #include "flops.hpp"
 #include "gbyte.hpp"
 #include "hipsparse.hpp"
@@ -344,8 +345,24 @@ hipsparseStatus_t testing_hybmv(Arguments argus)
         double gflop_count = spmv_gflop_count(m, nnz, h_beta != make_DataType<T>(0.0));
         double gpu_gflops  = get_gpu_gflops(gpu_time_used, gflop_count);
 
-        std::cout << "GFLOPS/s: " << gpu_gflops
-                  << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
+        display_timing_info(display_key_t::M,
+                            m,
+                            display_key_t::N,
+                            n,
+                            display_key_t::nnz,
+                            nnz,
+                            display_key_t::alpha,
+                            h_alpha,
+                            display_key_t::beta,
+                            h_beta,
+                            display_key_t::partition,
+                            hipsparse_partition2string(part),
+                            display_key_t::ell_width,
+                            user_ell_width,
+                            display_key_t::gflops,
+                            gpu_gflops,
+                            display_key_t::time_ms,
+                            get_gpu_time_msec(gpu_time_used));
     }
 #endif
     return HIPSPARSE_STATUS_SUCCESS;

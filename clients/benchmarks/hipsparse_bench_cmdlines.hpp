@@ -183,7 +183,7 @@ private:
             return this->m_nsamples;
         }
 
-        int get_option_index_x() const
+        size_t get_option_index_x() const
         {
             return this->m_option_index_x;
         }
@@ -369,7 +369,7 @@ private:
 
             const int option_x_nargs = this->m_options[this->m_option_index_x].args.size();
             int       N              = option_x_nargs;
-            for(int iopt = 0; iopt < num_options; ++iopt)
+            for(size_t iopt = 0; iopt < num_options; ++iopt)
             {
                 cmdline_option& option = this->m_options[iopt];
 
@@ -559,7 +559,7 @@ private:
         std::vector<cmdline_arg> m_args;
         bool                     m_has_bench_option{};
         int                      m_bench_nruns{1};
-        int                      m_option_index_x;
+        size_t                   m_option_index_x;
         int                      m_nsamples;
         bool                     m_is_stdout_disabled{true};
         bool                     m_no_rawdata{};
@@ -586,7 +586,7 @@ public:
     // @brief Get the number of samples..
     //
     int         get_nsamples() const;
-    int         get_option_index_x() const;
+    size_t      get_option_index_x() const;
     int         get_option_nargs(int i);
     const char* get_option_arg(int i, int j);
     const char* get_option_name(int i);

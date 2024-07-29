@@ -22,35 +22,127 @@
 *
 * ************************************************************************ */
 
-//#include "rocsparse.hpp"
-
 #include "hipsparse_bench.hpp"
+#include "hipsparse_bench_app.hpp"
 #include "hipsparse_routine.hpp"
 #include "utility.hpp"
 #include <hipsparse.h>
 #include <iostream>
 
+hipsparseStatus_t hipsparse_record_output_legend(const std::string& s)
+{
+    auto* s_bench_app = hipsparse_bench_app::instance();
+    if(s_bench_app)
+    {
+        auto status = s_bench_app->record_output_legend(s);
+        return status;
+    }
+    else
+    {
+        return HIPSPARSE_STATUS_SUCCESS;
+    }
+}
+
+hipsparseStatus_t hipsparse_record_output(const std::string& s)
+{
+    auto* s_bench_app = hipsparse_bench_app::instance();
+    if(s_bench_app)
+    {
+        auto status = s_bench_app->record_output(s);
+        return status;
+    }
+    else
+    {
+        return HIPSPARSE_STATUS_SUCCESS;
+    }
+}
+
+hipsparseStatus_t hipsparse_record_timing(double msec, double gflops, double gbs)
+{
+    auto* s_bench_app = hipsparse_bench_app::instance();
+    if(s_bench_app)
+    {
+        return s_bench_app->record_timing(msec, gflops, gbs);
+    }
+    else
+    {
+        return HIPSPARSE_STATUS_SUCCESS;
+    }
+}
+
+bool display_timing_info_is_stdout_disabled()
+{
+    auto* s_bench_app = hipsparse_bench_app::instance();
+    if(s_bench_app)
+    {
+        return s_bench_app->is_stdout_disabled();
+    }
+    else
+    {
+        return false;
+    }
+}
+
 int main(int argc, char* argv[])
 {
-    // old style.
-    try
+    if(hipsparse_bench_app::applies(argc, argv))
     {
-        hipsparse_bench bench(argc, argv);
+        try
+        {
+            auto* s_bench_app = hipsparse_bench_app::instance(argc, argv);
+            //
+            // RUN CASES.
+            //
+            hipsparseStatus_t status = s_bench_app->run_cases();
+            if(status != HIPSPARSE_STATUS_SUCCESS)
+            {
+                return status;
+            }
 
-        // Print info devices.
-        bench.info_devices(std::cout);
+            //
+            // EXPORT FILE.
+            //
+            status = s_bench_app->export_file();
+            if(status != HIPSPARSE_STATUS_SUCCESS)
+            {
+                return status;
+            }
 
-        // Run benchmark.
-        hipsparseStatus_t status = bench.run();
-        if(status != HIPSPARSE_STATUS_SUCCESS)
+            return status;
+        }
+        catch(const hipsparseStatus_t& status)
         {
             return status;
         }
-
-        return status;
     }
-    catch(const hipsparseStatus_t& status)
+    else
     {
-        return status;
+        //
+        // old style.
+        //
+        try
+        {
+            hipsparse_bench bench(argc, argv);
+
+            //
+            // Print info devices.
+            //
+            bench.info_devices(std::cout);
+
+            //
+            // Run benchmark.
+            //
+            hipsparseStatus_t status = bench.run();
+            if(status != HIPSPARSE_STATUS_SUCCESS)
+            {
+                return status;
+            }
+
+            return status;
+        }
+        catch(const hipsparseStatus_t& status)
+        {
+            return status;
+        }
     }
 }

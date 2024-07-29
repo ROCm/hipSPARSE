@@ -25,6 +25,7 @@
 #ifndef TESTING_SDDMM_COO_HPP
 #define TESTING_SDDMM_COO_HPP
 
+#include "display.hpp"
 #include "flops.hpp"
 #include "gbyte.hpp"
 #include "hipsparse.hpp"
@@ -395,7 +396,7 @@ hipsparseStatus_t testing_sddmm_coo(Arguments argus)
         for(int iter = 0; iter < number_cold_calls; ++iter)
         {
             CHECK_HIPSPARSE_ERROR(hipsparseSDDMM(
-                handle, transA, transB, d_alpha, A, B, d_beta, C2, typeT, alg, buffer));
+                handle, transA, transB, &h_alpha, A, B, &h_beta, C1, typeT, alg, buffer));
         }
 
         double gpu_time_used = get_time_us();
@@ -404,7 +405,7 @@ hipsparseStatus_t testing_sddmm_coo(Arguments argus)
         for(int iter = 0; iter < number_hot_calls; ++iter)
         {
             CHECK_HIPSPARSE_ERROR(hipsparseSDDMM(
-                handle, transA, transB, d_alpha, A, B, d_beta, C2, typeT, alg, buffer));
+                handle, transA, transB, &h_alpha, A, B, &h_beta, C1, typeT, alg, buffer));
         }
 
         gpu_time_used = (get_time_us() - gpu_time_used) / number_hot_calls;
@@ -415,8 +416,32 @@ hipsparseStatus_t testing_sddmm_coo(Arguments argus)
         double gpu_gflops = get_gpu_gflops(gpu_time_used, gflop_count);
         double gpu_gbyte  = get_gpu_gbyte(gpu_time_used, gbyte_count);
 
-        std::cout << "GFLOPS/s: " << gpu_gflops << " GBYTES/s: " << gpu_gbyte
-                  << " time (ms): " << get_gpu_time_msec(gpu_time_used) << std::endl;
+        display_timing_info(display_key_t::format,
+                            hipsparse_format2string(HIPSPARSE_FORMAT_COO),
+                            display_key_t::transA,
+                            hipsparse_operation2string(transA),
+                            display_key_t::transB,
+                            hipsparse_operation2string(transB),
+                            display_key_t::M,
+                            m,
+                            display_key_t::N,
+                            n,
+                            display_key_t::K,
+                            k,
+                            display_key_t::nnz,
+                            nnz,
+                            display_key_t::alpha,
+                            h_alpha,
+                            display_key_t::beta,
+                            h_beta,
+                            display_key_t::algorithm,
+                            hipsparse_sddmmalg2string(alg),
+                            display_key_t::gflops,
+                            gpu_gflops,
+                            display_key_t::bandwidth,
+                            gpu_gbyte,
+                            display_key_t::time_ms,
+                            get_gpu_time_msec(gpu_time_used));
     }
 
     // free.
