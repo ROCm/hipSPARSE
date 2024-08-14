@@ -1068,6 +1068,26 @@ hipsparseStatus_t hipsparseDestroyPruneInfo(pruneInfo_t info);
 *  This function is non blocking and executed asynchronously with respect to the host.
 *  It may return before the actual computation has finished.
 *
+
+*  @param[in]
+*  handle      handle to the hipsparse library context queue.
+*  @param[in]
+*  nnz         number of non-zero entries of vector \f$x\f$.
+*  @param[in]
+*  alpha       scalar \f$\alpha\f$.
+*  @param[in]
+*  xVal       array of \p nnz elements containing the values of \f$x\f$.
+*  @param[in]
+*  xInd       array of \p nnz elements containing the indices of the non-zero
+*              values of \f$x\f$.
+*  @param[inout]
+*  y           array of values in dense format.
+*  @param[in]
+*  idxBase    \ref HIPSPARSE_INDEX_BASE_ZERO or \ref HIPSPARSE_INDEX_BASE_ONE.
+*
+*  \retval HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p idxBase, \p nnz, \p alpha, \p xVal, \p xInd or \p y is invalid.
+*
 *  \par Example
 *  \code{.c}
 *      // Number of non-zeros of the sparse vector
@@ -1183,6 +1203,29 @@ hipsparseStatus_t hipsparseZaxpyi(hipsparseHandle_t       handle,
 *  This function is non blocking and executed asynchronously with respect to the host.
 *  It may return before the actual computation has finished.
 *
+*  @param[in]
+*  handle      handle to the hipsparse library context queue.
+*  @param[in]
+*  nnz         number of non-zero entries of vector \f$x\f$.
+*  @param[in]
+*  xVal       array of \p nnz values.
+*  @param[in]
+*  xInd       array of \p nnz elements containing the indices of the non-zero
+*              values of \f$x\f$.
+*  @param[in]
+*  y           array of values in dense format.
+*  @param[out]
+*  result      pointer to the result, can be host or device memory
+*  @param[in]
+*  idxBase    \ref HIPSPARSE_INDEX_BASE_ZERO or \ref HIPSPARSE_INDEX_BASE_ONE.
+*
+*  \retval HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p idxBase, \p nnz, \p xVal, 
+*          \p xInd, \p y or \p result is invalid.
+*  \retval HIPSPARSE_STATUS_ALLOC_FAILED the buffer for the dot product reduction
+*          could not be allocated.
+*  \retval HIPSPARSE_STATUS_INTERNAL_ERROR an internal error occurred.
+*
 *  \par Example
 *  \code{.c}
 *      // Number of non-zeros of the sparse vector
@@ -1293,6 +1336,29 @@ hipsparseStatus_t hipsparseZdoti(hipsparseHandle_t       handle,
 *  \note
 *  This function is non blocking and executed asynchronously with respect to the host.
 *  It may return before the actual computation has finished.
+*
+*  @param[in]
+*  handle      handle to the hipsparse library context queue.
+*  @param[in]
+*  nnz         number of non-zero entries of vector \f$x\f$.
+*  @param[in]
+*  xVal       array of \p nnz values.
+*  @param[in]
+*  xInd       array of \p nnz elements containing the indices of the non-zero
+*              values of \f$x\f$.
+*  @param[in]
+*  y           array of values in dense format.
+*  @param[out]
+*  result      pointer to the result, can be host or device memory
+*  @param[in]
+*  idxBase    \ref HIPSPARSE_INDEX_BASE_ZERO or \ref HIPSPARSE_INDEX_BASE_ONE.
+*
+*  \retval HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p idxBase, \p nnz, \p xVal, 
+*          \p xInd, \p y or \p result is invalid.
+*  \retval HIPSPARSE_STATUS_ALLOC_FAILED the buffer for the dot product reduction
+*          could not be allocated.
+*  \retval HIPSPARSE_STATUS_INTERNAL_ERROR an internal error occurred.
 */
 /**@{*/
 DEPRECATED_CUDA_10000("The routine will be removed in CUDA 11")
@@ -1334,6 +1400,24 @@ hipsparseStatus_t hipsparseZdotci(hipsparseHandle_t       handle,
 *  \note
 *  This function is non blocking and executed asynchronously with respect to the host.
 *  It may return before the actual computation has finished.
+*
+*  @param[in]
+*  handle      handle to the hipsparse library context queue.
+*  @param[in]
+*  nnz         number of non-zero entries of \f$x\f$.
+*  @param[in]
+*  y           array of values in dense format.
+*  @param[out]
+*  xVal       array of \p nnz elements containing the values of \f$x\f$.
+*  @param[in]
+*  xInd       array of \p nnz elements containing the indices of the non-zero
+*              values of \f$x\f$.
+*  @param[in]
+*  idxBase    \ref HIPSPARSE_INDEX_BASE_ZERO or \ref HIPSPARSE_INDEX_BASE_ONE.
+*
+*  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p idxBase, \p nnz, \p y, \p xVal or \p xInd is
+*              invalid.
 *
 *  \par Example
 *  \code{.c}
@@ -1440,6 +1524,24 @@ hipsparseStatus_t hipsparseZgthr(hipsparseHandle_t       handle,
 *  \note
 *  This function is non blocking and executed asynchronously with respect to the host.
 *  It may return before the actual computation has finished.
+*
+*  @param[in]
+*  handle      handle to the hipsparse library context queue.
+*  @param[in]
+*  nnz         number of non-zero entries of \f$x\f$.
+*  @param[inout]
+*  y           array of values in dense format.
+*  @param[out]
+*  xVal       array of \p nnz elements containing the non-zero values of \f$x\f$.
+*  @param[in]
+*  xInd       array of \p nnz elements containing the indices of the non-zero
+*              values of \f$x\f$.
+*  @param[in]
+*  idxBase    \ref HIPSPARSE_INDEX_BASE_ZERO or \ref HIPSPARSE_INDEX_BASE_ONE.
+*
+*  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p idxBase, \p nnz, \p y, \p xVal 
+*              or \p xInd is invalid.
 */
 /**@{*/
 DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
@@ -1502,6 +1604,28 @@ hipsparseStatus_t hipsparseZgthrz(hipsparseHandle_t    handle,
 *  \note
 *  This function is non blocking and executed asynchronously with respect to the host.
 *  It may return before the actual computation has finished.
+*
+*  @param[in]
+*  handle      handle to the hipsparse library context queue.
+*  @param[in]
+*  nnz         number of non-zero entries of \f$x\f$.
+*  @param[inout]
+*  xVal       array of \p nnz elements containing the non-zero values of \f$x\f$.
+*  @param[in]
+*  xInd       array of \p nnz elements containing the indices of the non-zero
+*              values of \f$x\f$.
+*  @param[inout]
+*  y           array of values in dense format.
+*  @param[in]
+*  c           pointer to the cosine element of \f$G\f$, can be on host or device.
+*  @param[in]
+*  s           pointer to the sine element of \f$G\f$, can be on host or device.
+*  @param[in]
+*  idxBase    \ref HIPSPARSE_INDEX_BASE_ZERO or \ref HIPSPARSE_INDEX_BASE_ONE.
+*
+*  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p idxBase, \p nnz, \p c, \p s, \p xVal, \p xInd 
+*              or \p y is invalid.
 *
 *  \par Example
 *  \code{.c}
@@ -1600,6 +1724,24 @@ hipsparseStatus_t hipsparseDroti(hipsparseHandle_t    handle,
 *  \note
 *  This function is non blocking and executed asynchronously with respect to the host.
 *  It may return before the actual computation has finished.
+*
+*  @param[in]
+*  handle      handle to the hipsparse library context queue.
+*  @param[in]
+*  nnz         number of non-zero entries of \f$x\f$.
+*  @param[in]
+*  xVal       array of \p nnz elements containing the non-zero values of \f$x\f$.
+*  @param[in]
+*  xInd       array of \p nnz elements containing the indices of the non-zero
+*              values of x.
+*  @param[inout]
+*  y           array of values in dense format.
+*  @param[in]
+*  idxBase    \ref HIPSPARSE_INDEX_BASE_ZERO or \ref HIPSPARSE_INDEX_BASE_ONE.
+*
+*  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p idxBase, \p nnz, \p xVal, \p xInd 
+*              or \p y is invalid.
 *
 *  \par Example
 *  \code{.c}
@@ -1732,7 +1874,47 @@ hipsparseStatus_t hipsparseZsctr(hipsparseHandle_t       handle,
 *  It may return before the actual computation has finished.
 *
 *  \note
-*  Currently, only \p trans == \ref HIPSPARSE_OPERATION_NON_TRANSPOSE is supported.
+*  Currently, only \p transA == \ref HIPSPARSE_OPERATION_NON_TRANSPOSE is supported.
+*
+*  @param[in]
+*  handle      handle to the hipsparse library context queue.
+*  @param[in]
+*  transA      matrix operation type.
+*  @param[in]
+*  m           number of rows of the sparse CSR matrix.
+*  @param[in]
+*  n           number of columns of the sparse CSR matrix.
+*  @param[in]
+*  nnz         number of non-zero entries of the sparse CSR matrix.
+*  @param[in]
+*  alpha       scalar \f$\alpha\f$.
+*  @param[in]
+*  descrA      descriptor of the sparse CSR matrix. Currently, only
+*              \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
+*  @param[in]
+*  csrSortedValA array of \p nnz elements of the sparse CSR matrix.
+*  @param[in]
+*  csrSortedRowPtrA array of \p m+1 elements that point to the start
+*              of every row of the sparse CSR matrix.
+*  @param[in]
+*  csrSortedColIndA array of \p nnz elements containing the column indices of the sparse
+*              CSR matrix.
+*  @param[in]
+*  x           array of \p n elements (\f$op(A) == A\f$) or \p m elements
+*              (\f$op(A) == A^T\f$ or \f$op(A) == A^H\f$).
+*  @param[in]
+*  beta        scalar \f$\beta\f$.
+*  @param[inout]
+*  y           array of \p m elements (\f$op(A) == A\f$) or \p n elements
+*              (\f$op(A) == A^T\f$ or \f$op(A) == A^H\f$).
+*
+*  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p m, \p n or \p nnz, \p descr, 
+*              \p alpha, \p csrSortedValA, \p csrSortedRowPtrA, \p csrSortedColIndA, \p x, 
+*              \p beta or \p y is invalid.
+*  \retval     HIPSPARSE_STATUS_ARCH_MISMATCH the device is not supported.
+*  \retval     HIPSPARSE_STATUS_NOT_SUPPORTED
+*              \ref hipsparseMatrixType_t != \ref HIPSPARSE_MATRIX_TYPE_GENERAL.
 *
 *  \par Example
 *  \code{.c}
@@ -1902,6 +2084,18 @@ hipsparseStatus_t hipsparseZcsrmv(hipsparseHandle_t         handle,
 *
 *  \note \p hipsparseXcsrsv2_zeroPivot is a blocking function. It might influence
 *  performance negatively.
+*
+*  @param[in]
+*  handle      handle to the hipsparse library context queue.
+*  @param[in]
+*  info        structure that holds the information collected during the analysis step.
+*  @param[inout]
+*  position    pointer to zero pivot \f$j\f$, can be in host or device memory.
+*
+*  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle \p info or \p position is invalid.
+*  \retval     HIPSPARSE_STATUS_INTERNAL_ERROR an internal error occurred.
+*  \retval     HIPSPARSE_STATUS_ZERO_PIVOT zero pivot has been found.
 */
 DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
@@ -1919,6 +2113,41 @@ hipsparseStatus_t
 *  hipsparseCcsrsv2_analysis(), hipsparseZcsrsv2_analysis(), hipsparseScsrsv2_solve(),
 *  hipsparseDcsrsv2_solve(), hipsparseCcsrsv2_solve() and hipsparseZcsrsv2_solve(). The
 *  temporary storage buffer must be allocated by the user.
+*
+*  @param[in]
+*  handle      handle to the hipsparse library context queue.
+*  @param[in]
+*  transA      matrix operation type.
+*  @param[in]
+*  m           number of rows of the sparse CSR matrix.
+*  @param[in]
+*  nnz         number of non-zero entries of the sparse CSR matrix.
+*  @param[in]
+*  descrA      descriptor of the sparse CSR matrix.
+*  @param[in]
+*  csrSortedValA array of \p nnz elements of the sparse CSR matrix.
+*  @param[in]
+*  csrSortedRowPtrA array of \p m+1 elements that point to the start of every row of the
+*              sparse CSR matrix.
+*  @param[in]
+*  csrSortedColIndA array of \p nnz elements containing the column indices of the sparse
+*              CSR matrix.
+*  @param[out]
+*  info        structure that holds the information collected during the analysis step.
+*  @param[out]
+*  pBufferSizeInBytes number of bytes of the temporary storage buffer required by
+*              hipsparseScsrsv2_analysis(), hipsparseDcsrsv2_analysis(),
+*              hipsparseCcsrsv2_analysis(), hipsparseZcsrsv2_analysis(),
+*              hipsparseScsrsv2_solve(), hipsparseDcsrsv2_solve(),
+*              hipsparseCcsrsv2_solve() and hipsparseZcsrsv2_solve().
+*
+*  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p m, \p nnz, \p descrA, \p csrSortedValA, 
+*              \p csrSortedRowPtrA, \p csrSortedColIndA, \p info or \p pBufferSizeInBytes is invalid.
+*  \retval     HIPSPARSE_STATUS_INTERNAL_ERROR an internal error occurred.
+*  \retval     HIPSPARSE_STATUS_NOT_SUPPORTED
+*              \p transA == \ref HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE or
+*              \ref hipsparseMatrixType_t != \ref HIPSPARSE_MATRIX_TYPE_GENERAL.
 */
 /**@{*/
 DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
@@ -1981,6 +2210,41 @@ hipsparseStatus_t hipsparseZcsrsv2_bufferSize(hipsparseHandle_t         handle,
 *  hipsparseCcsrsv2_analysis(), hipsparseZcsrsv2_analysis(), hipsparseScsrsv2_solve(),
 *  hipsparseDcsrsv2_solve(), hipsparseCcsrsv2_solve() and hipsparseZcsrsv2_solve(). The
 *  temporary storage buffer must be allocated by the user.
+*
+*  @param[in]
+*  handle      handle to the hipsparse library context queue.
+*  @param[in]
+*  transA      matrix operation type.
+*  @param[in]
+*  m           number of rows of the sparse CSR matrix.
+*  @param[in]
+*  nnz         number of non-zero entries of the sparse CSR matrix.
+*  @param[in]
+*  descrA      descriptor of the sparse CSR matrix.
+*  @param[in]
+*  csrSortedValA array of \p nnz elements of the sparse CSR matrix.
+*  @param[in]
+*  csrSortedRowPtrA array of \p m+1 elements that point to the start of every row of the
+*              sparse CSR matrix.
+*  @param[in]
+*  csrSortedColIndA array of \p nnz elements containing the column indices of the sparse
+*              CSR matrix.
+*  @param[out]
+*  info        structure that holds the information collected during the analysis step.
+*  @param[out]
+*  pBufferSizeInBytes number of bytes of the temporary storage buffer required by
+*              hipsparseScsrsv2_analysis(), hipsparseDcsrsv2_analysis(),
+*              hipsparseCcsrsv2_analysis(), hipsparseZcsrsv2_analysis(),
+*              hipsparseScsrsv2_solve(), hipsparseDcsrsv2_solve(),
+*              hipsparseCcsrsv2_solve() and hipsparseZcsrsv2_solve().
+*
+*  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p m, \p nnz, \p descrA, \p csrSortedValA, 
+*              \p csrSortedRowPtrA, \p csrSortedColIndA, \p info or \p pBufferSizeInBytes is invalid.
+*  \retval     HIPSPARSE_STATUS_INTERNAL_ERROR an internal error occurred.
+*  \retval     HIPSPARSE_STATUS_NOT_SUPPORTED
+*              \p transA == \ref HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE or
+*              \ref hipsparseMatrixType_t != \ref HIPSPARSE_MATRIX_TYPE_GENERAL.
 */
 /**@{*/
 HIPSPARSE_EXPORT
@@ -2040,6 +2304,42 @@ hipsparseStatus_t hipsparseZcsrsv2_bufferSizeExt(hipsparseHandle_t         handl
 *  \note
 *  This function is non blocking and executed asynchronously with respect to the host.
 *  It may return before the actual computation has finished.
+*
+*  @param[in]
+*  handle      handle to the hipsparse library context queue.
+*  @param[in]
+*  transA      matrix operation type.
+*  @param[in]
+*  m           number of rows of the sparse CSR matrix.
+*  @param[in]
+*  nnz         number of non-zero entries of the sparse CSR matrix.
+*  @param[in]
+*  descrA      descriptor of the sparse CSR matrix.
+*  @param[in]
+*  csrSortedValA array of \p nnz elements of the sparse CSR matrix.
+*  @param[in]
+*  csrSortedRowPtrA array of \p m+1 elements that point to the start of every row of the
+*              sparse CSR matrix.
+*  @param[in]
+*  csrSortedColIndA array of \p nnz elements containing the column indices of the sparse
+*              CSR matrix.
+*  @param[out]
+*  info        structure that holds the information collected during
+*              the analysis step.
+*  @param[in]
+*  policy      \ref HIPSPARSE_SOLVE_POLICY_NO_LEVEL or
+*              \ref HIPSPARSE_SOLVE_POLICY_USE_LEVEL.
+*  @param[in]
+*  pBuffer     temporary storage buffer allocated by the user.
+*
+*  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p m, \p nnz, \p descr, 
+*              \p csrSortedRowPtrA, \p csrSortedColIndA, \p info or \p pBuffer is 
+*              invalid.
+*  \retval     HIPSPARSE_STATUS_INTERNAL_ERROR an internal error occurred.
+*  \retval     HIPSPARSE_STATUS_NOT_SUPPORTED
+*              \p transA == \ref HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE or
+*              \ref hipsparseMatrixType_t != \ref HIPSPARSE_MATRIX_TYPE_GENERAL.
 */
 /**@{*/
 DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
@@ -2139,6 +2439,64 @@ hipsparseStatus_t hipsparseZcsrsv2_analysis(hipsparseHandle_t         handle,
 *  \note
 *  Currently, only \p trans == \ref HIPSPARSE_OPERATION_NON_TRANSPOSE and
 *  \p trans == \ref HIPSPARSE_OPERATION_TRANSPOSE is supported.
+*
+
+hipsparseStatus_t hipsparseScsrsv2_solve(hipsparseHandle_t         handle,
+                                         hipsparseOperation_t      transA,
+                                         int                       m,
+                                         int                       nnz,
+                                         const float*              alpha,
+                                         const hipsparseMatDescr_t descrA,
+                                         const float*              csrSortedValA,
+                                         const int*                csrSortedRowPtrA,
+                                         const int*                csrSortedColIndA,
+                                         csrsv2Info_t              info,
+                                         const float*              f,
+                                         float*                    x,
+                                         hipsparseSolvePolicy_t    policy,
+                                         void*                     pBuffer);
+
+*  @param[in]
+*  handle      handle to the hipsparse library context queue.
+*  @param[in]
+*  transA      matrix operation type.
+*  @param[in]
+*  m           number of rows of the sparse CSR matrix.
+*  @param[in]
+*  nnz         number of non-zero entries of the sparse CSR matrix.
+*  @param[in]
+*  alpha       scalar \f$\alpha\f$.
+*  @param[in]
+*  descrA      descriptor of the sparse CSR matrix.
+*  @param[in]
+*  csrSortedValA array of \p nnz elements of the sparse CSR matrix.
+*  @param[in]
+*  csrSortedRowPtrA array of \p m+1 elements that point to the start
+*              of every row of the sparse CSR matrix.
+*  @param[in]
+*  csrSortedColIndA array of \p nnz elements containing the column indices of the sparse
+*              CSR matrix.
+*  @param[in]
+*  info        structure that holds the information collected during the analysis step.
+*  @param[in]
+*  f           array of \p m elements, holding the right-hand side.
+*  @param[out]
+*  x           array of \p m elements, holding the solution.
+*  @param[in]
+*  policy      \ref HIPSPARSE_SOLVE_POLICY_NO_LEVEL or
+*              \ref HIPSPARSE_SOLVE_POLICY_USE_LEVEL.
+*  @param[in]
+*  pBuffer     temporary storage buffer allocated by the user.
+*
+*  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p m, \p nnz, \p descrA, 
+*              \p alpha, \p csrSortedValA, \p csrSortedRowPtrA, \p csrSortedColIndA, 
+*              \p f or \p x is invalid.
+*  \retval     HIPSPARSE_STATUS_ARCH_MISMATCH the device is not supported.
+*  \retval     HIPSPARSE_STATUS_INTERNAL_ERROR an internal error occurred.
+*  \retval     HIPSPARSE_STATUS_NOT_SUPPORTED
+*              \p transA == \ref HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE or
+*              \ref hipsparseMatrixType_t != \ref HIPSPARSE_MATRIX_TYPE_GENERAL.
 *
 *  \par Example
 *  \code{.c}
@@ -2365,7 +2723,37 @@ hipsparseStatus_t hipsparseZcsrsv2_solve(hipsparseHandle_t         handle,
 *  It may return before the actual computation has finished.
 *
 *  \note
-*  Currently, only \p trans == \ref HIPSPARSE_OPERATION_NON_TRANSPOSE is supported.
+*  Currently, only \p transA == \ref HIPSPARSE_OPERATION_NON_TRANSPOSE is supported.
+*
+*  @param[in]
+*  handle      handle to the hipsparse library context queue.
+*  @param[in]
+*  transA      matrix operation type.
+*  @param[in]
+*  alpha       scalar \f$\alpha\f$.
+*  @param[in]
+*  descrA      descriptor of the sparse HYB matrix. Currently, only
+*              \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
+*  @param[in]
+*  hybA        matrix in HYB storage format.
+*  @param[in]
+*  x           array of \p n elements (\f$op(A) == A\f$) or \p m elements
+*              (\f$op(A) == A^T\f$ or \f$op(A) == A^H\f$).
+*  @param[in]
+*  beta        scalar \f$\beta\f$.
+*  @param[inout]
+*  y           array of \p m elements (\f$op(A) == A\f$) or \p n elements
+*              (\f$op(A) == A^T\f$ or \f$op(A) == A^H\f$).
+*
+*  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p descrA, \p alpha, 
+*              \p hybA, \p x, \p beta or \p y is invalid.
+*  \retval     HIPSPARSE_STATUS_ARCH_MISMATCH the device is not supported.
+*  \retval     HIPSPARSE_STATUS_ALLOC_FAILED the buffer could not be allocated.
+*  \retval     HIPSPARSE_STATUS_INTERNAL_ERROR an internal error occurred.
+*  \retval     HIPSPARSE_STATUS_NOT_SUPPORTED
+*              \p transA != \ref HIPSPARSE_OPERATION_NON_TRANSPOSE or
+*              \ref hipsparseMatrixType_t != \ref HIPSPARSE_MATRIX_TYPE_GENERAL.
 *
 *  \par Example
 *  \code{.c}
@@ -2512,7 +2900,52 @@ hipsparseStatus_t hipsparseZhybmv(hipsparseHandle_t         handle,
 *  It may return before the actual computation has finished.
 *
 *  \note
-*  Currently, only \p trans == \ref HIPSPARSE_OPERATION_NON_TRANSPOSE is supported.
+*  Currently, only \p transA == \ref HIPSPARSE_OPERATION_NON_TRANSPOSE is supported.
+*
+*  @param[in]
+*  handle      handle to the hipsparse library context queue.
+*  @param[in]
+*  dirA        matrix storage of BSR blocks.
+*  @param[in]
+*  transA      matrix operation type.
+*  @param[in]
+*  mb          number of block rows of the sparse BSR matrix.
+*  @param[in]
+*  nb          number of block columns of the sparse BSR matrix.
+*  @param[in]
+*  nnzb        number of non-zero blocks of the sparse BSR matrix.
+*  @param[in]
+*  alpha       scalar \f$\alpha\f$.
+*  @param[in]
+*  descrA      descriptor of the sparse BSR matrix. Currently, only
+*              \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
+*  @param[in]
+*  bsrSortedValA array of \p nnzb blocks of the sparse BSR matrix.
+*  @param[in]
+*  bsrSortedRowPtrA array of \p mb+1 elements that point to the start of every block row of
+*              the sparse BSR matrix.
+*  @param[in]
+*  bsrSortedColIndA array of \p nnzb elements containing the block column indices of the sparse
+*              BSR matrix.
+*  @param[in]
+*  blockDim     block dimension of the sparse BSR matrix.
+*  @param[in]
+*  x           array of \p nb*blockDim elements (\f$op(A) = A\f$) or \p mb*blockDim
+*              elements (\f$op(A) = A^T\f$ or \f$op(A) = A^H\f$).
+*  @param[in]
+*  beta        scalar \f$\beta\f$.
+*  @param[inout]
+*  y           array of \p mb*blockDim elements (\f$op(A) = A\f$) or \p nb*blockDim
+*              elements (\f$op(A) = A^T\f$ or \f$op(A) = A^H\f$).
+*
+*  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p mb, \p nb, \p nnzb, 
+*              \p blockDim, \p descr, \p alpha, \p bsrSortedValA, \p bsrSortedRowPtrA, 
+*              \p bsrSortedColIndA, \p x, \p beta or \p y is invalid.
+*  \retval     HIPSPARSE_STATUS_ARCH_MISMATCH the device is not supported.
+*  \retval     HIPSPARSE_STATUS_NOT_SUPPORTED
+*              \p trans != \ref HIPSPARSE_OPERATION_NON_TRANSPOSE or
+*              \ref hipsparseMatrixType_t != \ref HIPSPARSE_MATRIX_TYPE_GENERAL.
 *
 *  \par Example
 *  \code{.c}
@@ -2716,6 +3149,61 @@ hipsparseStatus_t hipsparseZbsrmv(hipsparseHandle_t         handle,
 *  \note
 *  Currently, only \p trans == \ref HIPSPARSE_OPERATION_NON_TRANSPOSE is supported.
 *  Currently, \p blockDim == 1 is not supported.
+*
+*  @param[in]
+*  handle      handle to the hipsparse library context queue.
+*  @param[in]
+*  dir         matrix storage of BSR blocks.
+*  @param[in]
+*  trans       matrix operation type.
+*  @param[in]
+*  sizeOfMask  number of updated block rows of the array \p y.
+*  @param[in]
+*  mb          number of block rows of the sparse BSR matrix.
+*  @param[in]
+*  nb          number of block columns of the sparse BSR matrix.
+*  @param[in]
+*  nnzb        number of non-zero blocks of the sparse BSR matrix.
+*  @param[in]
+*  alpha       scalar \f$\alpha\f$.
+*  @param[in]
+*  descr       descriptor of the sparse BSR matrix. Currently, only
+*              \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
+*  @param[in]
+*  bsrVal      array of \p nnzb blocks of the sparse BSR matrix.
+*
+*  @param[in]
+*  bsrMaskPtr  array of \p sizeOfMask elements that give the indices of the updated block rows.
+*
+*  @param[in]
+*  bsrRowPtr   array of \p mb elements that point to the start of every block row of
+*              the sparse BSR matrix.
+*  @param[in]
+*  bsrEndPtr   array of \p mb elements that point to the end of every block row of
+*              the sparse BSR matrix.
+*  @param[in]
+*  bsrColInd   array of \p nnzb elements containing the block column indices of the sparse
+*              BSR matrix.
+*  @param[in]
+*  blockDim    block dimension of the sparse BSR matrix.
+*  @param[in]
+*  x           array of \p nb*blockDim elements (\f$op(A) = A\f$) or \p mb*blockDim
+*              elements (\f$op(A) = A^T\f$ or \f$op(A) = A^H\f$).
+*  @param[in]
+*  beta        scalar \f$\beta\f$.
+*  @param[inout]
+*  y           array of \p mb*blockDim elements (\f$op(A) = A\f$) or \p nb*blockDim
+*              elements (\f$op(A) = A^T\f$ or \f$op(A) = A^H\f$).
+*
+*  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p mb, \p nb, \p nnzb, \p blockDim, 
+*              \p sizeOfMask, \p descr, \p alpha, \p bsrVal, \p bsrRowPtr, \p bsrEndPtr, 
+*              \p bsrColInd, \p x, \p beta or \p y is invalid or if \p sizeOfMask is greater 
+*              than \p mb.
+*  \retval     HIPSPARSE_STATUS_ARCH_MISMATCH the device is not supported.
+*  \retval     HIPSPARSE_STATUS_NOT_SUPPORTED
+*              \p blockDim==1, \p trans != \ref HIPSPARSE_OPERATION_NON_TRANSPOSE or
+*              \ref hipsparseMatrixType_t != \ref HIPSPARSE_MATRIX_TYPE_GENERAL.
 */
 /**@{*/
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
@@ -2816,6 +3304,19 @@ hipsparseStatus_t hipsparseZbsrxmv(hipsparseHandle_t         handle,
 *
 *  \note \p hipsparseXbsrsv2_zeroPivot is a blocking function. It might influence
 *  performance negatively.
+*
+*  @param[in]
+*  handle      handle to the hipsparse library context queue.
+*  @param[in]
+*  info        structure that holds the information collected during the analysis step.
+*  @param[inout]
+*  position    pointer to zero pivot \f$j\f$, can be in host or device memory.
+*
+*  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p info or \p position is
+*              invalid.
+*  \retval     HIPSPARSE_STATUS_INTERNAL_ERROR an internal error occurred.
+*  \retval     HIPSPARSE_STATUS_ZERO_PIVOT zero pivot has been found.
 */
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
@@ -2831,6 +3332,46 @@ hipsparseStatus_t
 *  \p hipsparseXbsrsv2_bufferSize returns the size of the temporary storage buffer in bytes 
 *  that is required by hipsparseXbsrsv2_analysis() and hipsparseXbsrsv2_solve(). The
 *  temporary storage buffer must be allocated by the user.
+*
+*  @param[in]
+*  handle      handle to the hipsparse library context queue.
+*  @param[in]
+*  dirA        matrix storage of BSR blocks.
+*  @param[in]
+*  transA      matrix operation type.
+*  @param[in]
+*  mb          number of block rows of the sparse BSR matrix.
+*  @param[in]
+*  nnzb        number of non-zero blocks of the sparse BSR matrix.
+*  @param[in]
+*  descrA      descriptor of the sparse BSR matrix.
+*  @param[in]
+*  bsrSortedValA array of \p nnzb blocks of the sparse BSR matrix.
+*  @param[in]
+*  bsrSortedRowPtrA array of \p mb+1 elements that point to the start of every block row of
+*              the sparse BSR matrix.
+*  @param[in]
+*  bsrSortedColIndA array of \p nnz containing the block column indices of the sparse
+*              BSR matrix.
+*  @param[in]
+*  blockDim    block dimension of the sparse BSR matrix.
+*  @param[out]
+*  info        structure that holds the information collected during the analysis step.
+*  @param[out]
+*  pBufferSizeInBytes number of bytes of the temporary storage buffer required by
+*              hipsparseSbsrsv2_analysis(), hipsparseDbsrsv2_analysis(),
+*              hipsparseCbsrsv2_analysis(), hipsparseZbsrsv2_analysis(),
+*              hipsparseSbsrsv2_solve(), hipsparseDbsrsv2_solve(),
+*              hipsparseCbsrsv2_solve() and hipsparseZbsrsv2_solve().
+*
+*  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p mb, \p nnzb or \p blockDim, 
+*              \p descr, \p bsrSortedValA, \p bsrSortedRowPtrA, \p bsrSortedColIndA, 
+*              \p info or \p pBufferSizeInBytes is invalid.
+*  \retval     HIPSPARSE_STATUS_INTERNAL_ERROR an internal error occurred.
+*  \retval     HIPSPARSE_STATUS_NOT_SUPPORTED
+*              \p transA == \ref HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE or
+*              \ref hipsparseMatrixType_t != \ref HIPSPARSE_MATRIX_TYPE_GENERAL.
 */
 /**@{*/
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
@@ -2899,6 +3440,46 @@ hipsparseStatus_t hipsparseZbsrsv2_bufferSize(hipsparseHandle_t         handle,
 *  \p hipsparseXbsrsv2_bufferSizeExt returns the size of the temporary storage buffer in bytes 
 *  that is required by hipsparseXbsrsv2_analysis() and hipsparseXbsrsv2_solve(). The
 *  temporary storage buffer must be allocated by the user.
+*
+*  @param[in]
+*  handle      handle to the hipsparse library context queue.
+*  @param[in]
+*  dirA        matrix storage of BSR blocks.
+*  @param[in]
+*  transA      matrix operation type.
+*  @param[in]
+*  mb          number of block rows of the sparse BSR matrix.
+*  @param[in]
+*  nnzb        number of non-zero blocks of the sparse BSR matrix.
+*  @param[in]
+*  descrA      descriptor of the sparse BSR matrix.
+*  @param[in]
+*  bsrSortedValA array of \p nnzb blocks of the sparse BSR matrix.
+*  @param[in]
+*  bsrSortedRowPtrA array of \p mb+1 elements that point to the start of every block row of
+*              the sparse BSR matrix.
+*  @param[in]
+*  bsrSortedColIndA array of \p nnz containing the block column indices of the sparse
+*              BSR matrix.
+*  @param[in]
+*  blockDim    block dimension of the sparse BSR matrix.
+*  @param[out]
+*  info        structure that holds the information collected during the analysis step.
+*  @param[out]
+*  pBufferSizeInBytes number of bytes of the temporary storage buffer required by
+*              hipsparseSbsrsv2_analysis(), hipsparseDbsrsv2_analysis(),
+*              hipsparseCbsrsv2_analysis(), hipsparseZbsrsv2_analysis(),
+*              hipsparseSbsrsv2_solve(), hipsparseDbsrsv2_solve(),
+*              hipsparseCbsrsv2_solve() and hipsparseZbsrsv2_solve().
+*
+*  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p mb, \p nnzb or \p blockDim, 
+*              \p descr, \p bsrSortedValA, \p bsrSortedRowPtrA, \p bsrSortedColIndA, 
+*              \p info or \p pBufferSizeInBytes is invalid.
+*  \retval     HIPSPARSE_STATUS_INTERNAL_ERROR an internal error occurred.
+*  \retval     HIPSPARSE_STATUS_NOT_SUPPORTED
+*              \p transA == \ref HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE or
+*              \ref hipsparseMatrixType_t != \ref HIPSPARSE_MATRIX_TYPE_GENERAL.
 */
 /**@{*/
 HIPSPARSE_EXPORT
@@ -2968,6 +3549,46 @@ hipsparseStatus_t hipsparseZbsrsv2_bufferSizeExt(hipsparseHandle_t         handl
 *  \note
 *  This function is non blocking and executed asynchronously with respect to the host.
 *  It may return before the actual computation has finished.
+*
+*  @param[in]
+*  handle      handle to the hipsparse library context queue.
+*  @param[in]
+*  dirA        matrix storage of BSR blocks.
+*  @param[in]
+*  transA      matrix operation type.
+*  @param[in]
+*  mb          number of block rows of the sparse BSR matrix.
+*  @param[in]
+*  nnzb        number of non-zero blocks of the sparse BSR matrix.
+*  @param[in]
+*  descrA      descriptor of the sparse BSR matrix.
+*  @param[in]
+*  bsrSortedValA array of \p nnzb blocks of the sparse BSR matrix.
+*  @param[in]
+*  bsrSortedRowPtrA array of \p mb+1 elements that point to the start of every block row of
+*              the sparse BSR matrix.
+*  @param[in]
+*  bsrSortedColIndA array of \p nnz containing the block column indices of the sparse
+*              BSR matrix.
+*  @param[in]
+*  blockDim    block dimension of the sparse BSR matrix.
+*  @param[out]
+*  info        structure that holds the information collected during
+*              the analysis step.
+*  @param[in]
+*  policy      \ref HIPSPARSE_SOLVE_POLICY_NO_LEVEL or
+*              \ref HIPSPARSE_SOLVE_POLICY_USE_LEVEL.
+*  @param[in]
+*  pBuffer     temporary storage buffer allocated by the user.
+*
+*  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p mb, \p nnzb, \p blockDim, 
+*              \p descrA, \p bsrSortedRowPtrA, \p bsrSortedColIndA, \p info or 
+*              \p pBuffer is invalid.
+*  \retval     HIPSPARSE_STATUS_INTERNAL_ERROR an internal error occurred.
+*  \retval     HIPSPARSE_STATUS_NOT_SUPPORTED
+*              \p transA == \ref HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE or
+*              \ref hipsparseMatrixType_t != \ref HIPSPARSE_MATRIX_TYPE_GENERAL.
 */
 /**@{*/
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
@@ -3074,6 +3695,52 @@ hipsparseStatus_t hipsparseZbsrsv2_analysis(hipsparseHandle_t         handle,
 *  \note
 *  Currently, only \p trans == \ref HIPSPARSE_OPERATION_NON_TRANSPOSE and
 *  \p trans == \ref HIPSPARSE_OPERATION_TRANSPOSE is supported.
+*
+*  @param[in]
+*  handle      handle to the hipsparse library context queue.
+*  @param[in]
+*  dirA        matrix storage of BSR blocks.
+*  @param[in]
+*  transA      matrix operation type.
+*  @param[in]
+*  mb          number of block rows of the sparse BSR matrix.
+*  @param[in]
+*  nnzb        number of non-zero blocks of the sparse BSR matrix.
+*  @param[in]
+*  alpha       scalar \f$\alpha\f$.
+*  @param[in]
+*  descrA      descriptor of the sparse BSR matrix.
+*  @param[in]
+*  bsrSortedValA array of \p nnzb blocks of the sparse BSR matrix.
+*  @param[in]
+*  bsrSortedRowPtrA array of \p mb+1 elements that point to the start of every block row of
+*              the sparse BSR matrix.
+*  @param[in]
+*  bsrSortedColIndA array of \p nnz containing the block column indices of the sparse
+*              BSR matrix.
+*  @param[in]
+*  blockDim    block dimension of the sparse BSR matrix.
+*  @param[in]
+*  info        structure that holds the information collected during the analysis step.
+*  @param[in]
+*  f           array of \p m elements, holding the right-hand side.
+*  @param[out]
+*  x           array of \p m elements, holding the solution.
+*  @param[in]
+*  policy      \ref HIPSPARSE_SOLVE_POLICY_NO_LEVEL or
+*              \ref HIPSPARSE_SOLVE_POLICY_USE_LEVEL.
+*  @param[in]
+*  pBuffer     temporary storage buffer allocated by the user.
+*
+*  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p mb, \p nnzb, \p blockDim, 
+*              \p descrA, \p alpha, \p bsrSortedValA, \p bsrSortedRowPtrA, \p bsrSortedColIndA, 
+*              \p f or \p x is invalid.
+*  \retval     HIPSPARSE_STATUS_ARCH_MISMATCH the device is not supported.
+*  \retval     HIPSPARSE_STATUS_INTERNAL_ERROR an internal error occurred.
+*  \retval     HIPSPARSE_STATUS_NOT_SUPPORTED
+*              \p transA == \ref HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE or
+*              \ref hipsparseMatrixType_t != \ref HIPSPARSE_MATRIX_TYPE_GENERAL.
 *
 *  \par Example
 *  \code{.c}
@@ -3327,6 +3994,26 @@ hipsparseStatus_t hipsparseZbsrsv2_solve(hipsparseHandle_t         handle,
  *  \p hipsparseXgemvi_bufferSize returns the size of the temporary storage buffer in bytes
  *  required by hipsparseXgemvi(). The temporary storage buffer must be allocated by the
  *  user.
+ *
+ *  @param[in]
+ *  handle      handle to the hipsparse library context queue.
+ *  @param[in]
+ *  transA      matrix operation type.
+ *  @param[in]
+ *  m           number of rows of the dense matrix.
+ *  @param[in]
+ *  n           number of columns of the dense matrix.
+ *  @param[in]
+ *  nnz         number of non-zero entries in the sparse vector.
+ *  @param[out]
+ *  pBufferSizeInBytes temporary storage buffer size.
+ *
+ *  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+ *  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p m, \p n, \p nnz or 
+ *              \p pBufferSizeInBytes is invalid.
+ *  \retval     HIPSPARSE_STATUS_NOT_SUPPORTED
+ *              \p transA != \ref HIPSPARSE_OPERATION_NON_TRANSPOSE or
+ *              \ref hipsparseMatrixType_t != \ref HIPSPARSE_MATRIX_TYPE_GENERAL.
  */
 /**@{*/
 HIPSPARSE_EXPORT
@@ -3394,6 +4081,43 @@ hipsparseStatus_t hipsparseZgemvi_bufferSize(hipsparseHandle_t    handle,
  *
  *  \note
  *  Currently, only \p trans == \ref HIPSPARSE_OPERATION_NON_TRANSPOSE is supported.
+ *
+ *  @param[in]
+ *  handle      handle to the hipsparse library context queue.
+ *  @param[in]
+ *  transA      matrix operation type.
+ *  @param[in]
+ *  m           number of rows of the dense matrix.
+ *  @param[in]
+ *  n           number of columns of the dense matrix.
+ *  @param[in]
+ *  alpha       scalar \f$\alpha\f$.
+ *  @param[in]
+ *  A           pointer to the dense matrix.
+ *  @param[in]
+ *  lda         leading dimension of the dense matrix
+ *  @param[in]
+ *  nnz         number of non-zero entries in the sparse vector
+ *  @param[in]
+ *  x           array of \p nnz elements containing the values of the sparse vector
+ *  @param[in]
+ *  xInd        array of \p nnz elements containing the indices of the sparse vector
+ *  @param[in]
+ *  beta        scalar \f$\beta\f$.
+ *  @param[inout]
+ *  y           array of \p m elements (\f$op(A) == A\f$) or \p n elements
+ *              (\f$op(A) == A^T\f$ or \f$op(A) == A^H\f$).
+ *  @param[in]
+ *  idxBase     \ref HIPSPARSE_INDEX_BASE_ZERO or \ref HIPSPARSE_INDEX_BASE_ONE.
+ *  @param[in]
+ *  pBuffer     temporary storage buffer
+ *
+ *  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+ *  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p m, \p n, \p lda, \p nnz, \p alpha, 
+ *              \p A, \p x, \p xInd, \p beta, \p y or \p pBuffer is invalid.
+ *  \retval     HIPSPARSE_STATUS_NOT_SUPPORTED
+ *              \p transA != \ref HIPSPARSE_OPERATION_NON_TRANSPOSE or
+ *              \ref hipsparseMatrixType_t != \ref HIPSPARSE_MATRIX_TYPE_GENERAL.
  */
 /**@{*/
 HIPSPARSE_EXPORT
@@ -3474,8 +4198,8 @@ hipsparseStatus_t hipsparseZgemvi(hipsparseHandle_t       handle,
  *  \details
  *  \p hipsparseXbsrmm multiplies the scalar \f$\alpha\f$ with a sparse \f$mb \times kb\f$
  *  matrix \f$A\f$, defined in BSR storage format, and the dense \f$k \times n\f$
- *  matrix \f$B\f$ (where \f$k = block\_dim \times kb\f$) and adds the result to the dense
- *  \f$m \times n\f$ matrix \f$C\f$ (where \f$m = block\_dim \times mb\f$) that
+ *  matrix \f$B\f$ (where \f$k = blockDim \times kb\f$) and adds the result to the dense
+ *  \f$m \times n\f$ matrix \f$C\f$ (where \f$m = blockDim \times mb\f$) that
  *  is multiplied by the scalar \f$\beta\f$, such that
  *  \f[
  *    C := \alpha \cdot op(A) \cdot op(B) + \beta \cdot C,
@@ -3504,6 +4228,62 @@ hipsparseStatus_t hipsparseZgemvi(hipsparseHandle_t       handle,
  *
  *  \note
  *  Currently, only \p transA == \ref HIPSPARSE_OPERATION_NON_TRANSPOSE is supported.
+ *
+ *  @param[in]
+ *  handle      handle to the hipsparse library context queue.
+ *  @param[in]
+ *  dirA        the storage format of the blocks. Can be \ref HIPSPARSE_DIRECTION_ROW or \ref HIPSPARSE_DIRECTION_COLUMN.
+ *  @param[in]
+ *  transA      matrix \f$A\f$ operation type. Currently, only \ref HIPSPARSE_OPERATION_NON_TRANSPOSE is supported.
+ *  @param[in]
+ *  transB      matrix \f$B\f$ operation type. Currently, only \ref HIPSPARSE_OPERATION_NON_TRANSPOSE and HIPSPARSE_OPERATION_TRANSPOSE
+ *              are supported.
+ *  @param[in]
+ *  mb          number of block rows of the sparse BSR matrix \f$A\f$.
+ *  @param[in]
+ *  n           number of columns of the dense matrix \f$op(B)\f$ and \f$C\f$.
+ *  @param[in]
+ *  kb          number of block columns of the sparse BSR matrix \f$A\f$.
+ *  @param[in]
+ *  nnzb        number of non-zero blocks of the sparse BSR matrix \f$A\f$.
+ *  @param[in]
+ *  alpha       scalar \f$\alpha\f$.
+ *  @param[in]
+ *  descrA      descriptor of the sparse BSR matrix \f$A\f$. Currently, only
+ *              \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
+ *  @param[in]
+ *  bsrValA     array of \p nnzb*blockDim*blockDim elements of the sparse BSR matrix \f$A\f$.
+ *  @param[in]
+ *  bsrRowPtrA  array of \p mb+1 elements that point to the start of every block row of the
+ *              sparse BSR matrix \f$A\f$.
+ *  @param[in]
+ *  bsrColIndA  array of \p nnzb elements containing the block column indices of the sparse
+ *              BSR matrix \f$A\f$.
+ *  @param[in]
+ *  blockDim    size of the blocks in the sparse BSR matrix.
+ *  @param[in]
+ *  B           array of dimension \f$ldb \times n\f$ (\f$op(B) == B\f$),
+ *              \f$ldb \times k\f$ otherwise.
+ *  @param[in]
+ *  ldb         leading dimension of \f$B\f$, must be at least \f$\max{(1, k)}\f$ (\f$ op(B) == B\f$) where \f$k = blockDim \times kb\f$,
+ *  \f$\max{(1, n)}\f$ otherwise.
+ *  @param[in]
+ *  beta        scalar \f$\beta\f$.
+ *  @param[inout]
+ *  C           array of dimension \f$ldc \times n\f$.
+ *  @param[in]
+ *  ldc         leading dimension of \f$C\f$, must be at least \f$\max{(1, m)}\f$ (\f$ op(A) == A\f$) where \f$m = blockDim \times mb\f$,
+ *  \f$\max{(1, k)}\f$ where \f$k = blockDim \times kb\f$ otherwise.
+ *
+ *  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+ *  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p mb, \p n, \p kb, \p nnzb, \p ldb, 
+ *              \p ldc, \p descr, \p alpha, \p bsrValA, \p bsrRowPtrA, \p bsrColIndA, 
+ *              \p B, \p beta or \p C is invalid.
+ *  \retval     HIPSPARSE_STATUS_ARCH_MISMATCH the device is not supported.
+ *  \retval     HIPSPARSE_STATUS_NOT_SUPPORTED
+ *              \p trans_A != \ref HIPSPARSE_OPERATION_NON_TRANSPOSE or
+ *              \p trans_B == \ref HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE or
+ *              \ref hipsparseMatrixType_t != \ref HIPSPARSE_MATRIX_TYPE_GENERAL.
  *
  *  \par Example
  *  \code{.c}
@@ -3719,6 +4499,53 @@ hipsparseStatus_t hipsparseZbsrmm(hipsparseHandle_t         handle,
 *  This function is non blocking and executed asynchronously with respect to the host.
 *  It may return before the actual computation has finished.
 *
+*  @param[in]
+*  handle      handle to the hipsparse library context queue.
+*  @param[in]
+*  transA      matrix \f$A\f$ operation type.
+*  @param[in]
+*  m           number of rows of the sparse CSR matrix \f$A\f$.
+*  @param[in]
+*  n           number of columns of the dense matrix \f$op(B)\f$ and \f$C\f$.
+*  @param[in]
+*  k           number of columns of the sparse CSR matrix \f$A\f$.
+*  @param[in]
+*  nnz         number of non-zero entries of the sparse CSR matrix \f$A\f$.
+*  @param[in]
+*  alpha       scalar \f$\alpha\f$.
+*  @param[in]
+*  descrA      descriptor of the sparse CSR matrix \f$A\f$. Currently, only
+*              \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
+*  @param[in]
+*  csrSortedValA array of \p nnz elements of the sparse CSR matrix \f$A\f$.
+*  @param[in]
+*  csrSortedRowPtrA array of \p m+1 elements that point to the start of every row of the
+*              sparse CSR matrix \f$A\f$.
+*  @param[in]
+*  csrSortedColIndA array of \p nnz elements containing the column indices of the sparse
+*              CSR matrix \f$A\f$.
+*  @param[in]
+*  B           array of dimension \f$ldb \times n\f$ (\f$op(B) == B\f$),
+*              \f$ldb \times k\f$ otherwise.
+*  @param[in]
+*  ldb         leading dimension of \f$B\f$, must be at least \f$\max{(1, k)}\f$
+*              (\f$op(B) == B\f$), \f$\max{(1, n)}\f$ otherwise.
+*  @param[in]
+*  beta        scalar \f$\beta\f$.
+*  @param[inout]
+*  C           array of dimension \f$ldc \times n\f$.
+*  @param[in]
+*  ldc         leading dimension of \f$C\f$, must be at least \f$\max{(1, m)}\f$
+*              (\f$op(A) == A\f$), \f$\max{(1, k)}\f$ otherwise.
+*
+*  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p m, \p n, \p k, \p nnz, \p ldb, \p ldc
+*              \p descrA, \p alpha, \p csrSortedValA, \p csrSortedRowPtrA, \p csrSortedColIndA, 
+*              \p B, \p beta or \p C is invalid.
+*  \retval     HIPSPARSE_STATUS_ARCH_MISMATCH the device is not supported.
+*  \retval     HIPSPARSE_STATUS_NOT_SUPPORTED
+*              \ref hipsparseMatrixType_t != \ref HIPSPARSE_MATRIX_TYPE_GENERAL.
+*
 *  \par Example
 *  \code{.c}
 *      // hipSPARSE handle
@@ -3929,6 +4756,55 @@ hipsparseStatus_t hipsparseZcsrmm(hipsparseHandle_t         handle,
 *  \note
 *  This function is non blocking and executed asynchronously with respect to the host.
 *  It may return before the actual computation has finished.
+*
+*  @param[in]
+*  handle      handle to the hipsparse library context queue.
+*  @param[in]
+*  transA      matrix \f$A\f$ operation type.
+*  @param[in]
+*  transB      matrix \f$B\f$ operation type.
+*  @param[in]
+*  m           number of rows of the sparse CSR matrix \f$A\f$.
+*  @param[in]
+*  n           number of columns of the dense matrix \f$op(B)\f$ and \f$C\f$.
+*  @param[in]
+*  k           number of columns of the sparse CSR matrix \f$A\f$.
+*  @param[in]
+*  nnz         number of non-zero entries of the sparse CSR matrix \f$A\f$.
+*  @param[in]
+*  alpha       scalar \f$\alpha\f$.
+*  @param[in]
+*  descrA      descriptor of the sparse CSR matrix \f$A\f$. Currently, only
+*              \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
+*  @param[in]
+*  csrSortedValA array of \p nnz elements of the sparse CSR matrix \f$A\f$.
+*  @param[in]
+*  csrSortedRowPtrA array of \p m+1 elements that point to the start of every row of the
+*              sparse CSR matrix \f$A\f$.
+*  @param[in]
+*  csrSortedColIndA array of \p nnz elements containing the column indices of the sparse
+*              CSR matrix \f$A\f$.
+*  @param[in]
+*  B           array of dimension \f$ldb \times n\f$ (\f$op(B) == B\f$),
+*              \f$ldb \times k\f$ otherwise.
+*  @param[in]
+*  ldb         leading dimension of \f$B\f$, must be at least \f$\max{(1, k)}\f$
+*              (\f$op(B) == B\f$), \f$\max{(1, n)}\f$ otherwise.
+*  @param[in]
+*  beta        scalar \f$\beta\f$.
+*  @param[inout]
+*  C           array of dimension \f$ldc \times n\f$.
+*  @param[in]
+*  ldc         leading dimension of \f$C\f$, must be at least \f$\max{(1, m)}\f$
+*              (\f$op(A) == A\f$), \f$\max{(1, k)}\f$ otherwise.
+*
+*  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p m, \p n, \p k, \p nnz, \p ldb, \p ldc
+*              \p descrA, \p alpha, \p csrSortedValA, \p csrSortedRowPtrA, \p csrSortedColIndA, 
+*              \p B, \p beta or \p C is invalid.
+*  \retval     HIPSPARSE_STATUS_ARCH_MISMATCH the device is not supported.
+*  \retval     HIPSPARSE_STATUS_NOT_SUPPORTED
+*              \ref hipsparseMatrixType_t != \ref HIPSPARSE_MATRIX_TYPE_GENERAL.
 */
 /**@{*/
 DEPRECATED_CUDA_10000("The routine will be removed in CUDA 11")
@@ -4025,6 +4901,19 @@ hipsparseStatus_t hipsparseZcsrmm2(hipsparseHandle_t         handle,
 *
 *  \note \p hipsparseXbsrsm2_zeroPivot is a blocking function. It might influence
 *  performance negatively.
+*
+*  @param[in]
+*  handle      handle to the hipsparse library context queue.
+*  @param[in]
+*  info        structure that holds the information collected during the analysis step.
+*  @param[inout]
+*  position    pointer to zero pivot \f$j\f$, can be in host or device memory.
+*
+*  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p info or \p position is
+*              invalid.
+*  \retval     HIPSPARSE_STATUS_INTERNAL_ERROR an internal error occurred.
+*  \retval     HIPSPARSE_STATUS_ZERO_PIVOT zero pivot has been found.
 */
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
@@ -4040,6 +4929,51 @@ hipsparseStatus_t
 *  \p hipsparseXbsrsm2_buffer_size returns the size of the temporary storage buffer in bytes 
 *  that is required by hipsparseXbsrsm2_analysis() and hipsparseXbsrsm2_solve(). The
 *  temporary storage buffer must be allocated by the user.
+*
+*  @param[in]
+*  handle      handle to the hipsparse library context queue.
+*  @param[in]
+*  dirA        matrix storage of BSR blocks.
+*  @param[in]
+*  transA      matrix A operation type.
+*  @param[in]
+*  transX      matrix X operation type.
+*  @param[in]
+*  mb          number of block rows of the sparse BSR matrix A.
+*  @param[in]
+*  nrhs        number of columns of the dense matrix op(X).
+*  @param[in]
+*  nnzb        number of non-zero blocks of the sparse BSR matrix A.
+*  @param[in]
+*  descrA      descriptor of the sparse BSR matrix A.
+*  @param[in]
+*  bsrSortedValA array of \p nnzb blocks of the sparse BSR matrix.
+*  @param[in]
+*  bsrSortedRowPtrA array of \p mb+1 elements that point to the start of every block row of
+*              the sparse BSR matrix.
+*  @param[in]
+*  bsrSortedColIndA array of \p nnzb containing the block column indices of the sparse
+*              BSR matrix.
+*  @param[in]
+*  blockDim    block dimension of the sparse BSR matrix.
+*  @param[in]
+*  info        structure that holds the information collected during the analysis step.
+*  @param[out]
+*  pBufferSizeInBytes number of bytes of the temporary storage buffer required by
+*              hipsparseSbsrsm2_analysis(), hipsparseDbsrsm2_analysis(),
+*              hipsparseCbsrsm2_analysis(), hipsparseZbsrsm2_analysis(),
+*              hipsparseSbsrsm2_solve(), hipsparseDbsrsm2_solve(),
+*              hipsparseCbsrsm2_solve() and hipsparseZbsrsm2_solve().
+*
+*  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p mb, \p nrhs, \p nnzb, \p blockDim, 
+*              \p descrA, \p bsrSortedValA, \p bsrSortedRowPtrA, \p bsrSortedColIndA, \p info or 
+*              \p pBufferSizeInBytes is invalid.
+*  \retval     HIPSPARSE_STATUS_INTERNAL_ERROR an internal error occurred.
+*  \retval     HIPSPARSE_STATUS_NOT_SUPPORTED
+*              \p trans_A == \ref HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE,
+*              \p trans_X == \ref HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE or
+*              \ref hipsparseMatrixType_t != \ref HIPSPARSE_MATRIX_TYPE_GENERAL.
 */
 /**@{*/
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
@@ -4125,6 +5059,50 @@ hipsparseStatus_t hipsparseZbsrsm2_bufferSize(hipsparseHandle_t         handle,
 *  \note
 *  This function is non blocking and executed asynchronously with respect to the host.
 *  It may return before the actual computation has finished.
+*
+*  @param[in]
+*  handle      handle to the hipsparse library context queue.
+*  @param[in]
+*  dirA        matrix storage of BSR blocks.
+*  @param[in]
+*  transA      matrix A operation type.
+*  @param[in]
+*  transX      matrix X operation type.
+*  @param[in]
+*  mb          number of block rows of the sparse BSR matrix A.
+*  @param[in]
+*  nrhs        number of columns of the dense matrix op(X).
+*  @param[in]
+*  nnzb        number of non-zero blocks of the sparse BSR matrix A.
+*  @param[in]
+*  descrA      descriptor of the sparse BSR matrix A.
+*  @param[in]
+*  bsrSortedValA array of \p nnzb blocks of the sparse BSR matrix A.
+*  @param[in]
+*  bsrSortedRowPtrA array of \p mb+1 elements that point to the start of every block row of
+*              the sparse BSR matrix A.
+*  @param[in]
+*  bsrSortedColIndA array of \p nnzb containing the block column indices of the sparse
+*              BSR matrix A.
+*  @param[in]
+*  blockDim    block dimension of the sparse BSR matrix A.
+*  @param[out]
+*  info        structure that holds the information collected during the analysis step.
+*  @param[in]
+*  policy      \ref HIPSPARSE_SOLVE_POLICY_NO_LEVEL or
+*              \ref HIPSPARSE_SOLVE_POLICY_USE_LEVEL.
+*  @param[in]
+*  pBuffer     temporary storage buffer allocated by the user.
+*
+*  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p mb, \p nrhs, \p nnzb or 
+*              \p blockDim, \p descrA, \p bsrSortedValA, \p bsrSortedRowPtrA,
+*              \p bsrSortedColIndA, \p info or \p pBuffer is invalid.
+*  \retval     HIPSPARSE_STATUS_INTERNAL_ERROR an internal error occurred.
+*  \retval     HIPSPARSE_STATUS_NOT_SUPPORTED
+*              \p trans_A == \ref HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE,
+*              \p trans_X == \ref HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE or
+*              \ref hipsparseMatrixType_t != \ref HIPSPARSE_MATRIX_TYPE_GENERAL.
 */
 /**@{*/
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
@@ -4254,6 +5232,60 @@ hipsparseStatus_t hipsparseZbsrsm2_analysis(hipsparseHandle_t         handle,
 *  \note
 *  Currently, only \p transA != \ref HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE and
 *  \p transX != \ref HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE is supported.
+*
+*  @param[in]
+*  handle      handle to the hipsparse library context queue.
+*  @param[in]
+*  dirA        matrix storage of BSR blocks.
+*  @param[in]
+*  transA      matrix A operation type.
+*  @param[in]
+*  transX      matrix X operation type.
+*  @param[in]
+*  mb          number of block rows of the sparse BSR matrix A.
+*  @param[in]
+*  nrhs        number of columns of the dense matrix op(X).
+*  @param[in]
+*  nnzb        number of non-zero blocks of the sparse BSR matrix A.
+*  @param[in]
+*  alpha       scalar \f$\alpha\f$.
+*  @param[in]
+*  descrA      descriptor of the sparse BSR matrix A.
+*  @param[in]
+*  bsrSortedValA array of \p nnzb blocks of the sparse BSR matrix.
+*  @param[in]
+*  bsrSortedRowPtrA array of \p mb+1 elements that point to the start of every block row of
+*              the sparse BSR matrix.
+*  @param[in]
+*  bsrSortedColIndA array of \p nnzb containing the block column indices of the sparse
+*              BSR matrix.
+*  @param[in]
+*  blockDim    block dimension of the sparse BSR matrix.
+*  @param[in]
+*  info        structure that holds the information collected during the analysis step.
+*  @param[in]
+*  B           rhs matrix B with leading dimension \p ldb.
+*  @param[in]
+*  ldb         leading dimension of rhs matrix B.
+*  @param[out]
+*  X           solution matrix X with leading dimension \p ldx.
+*  @param[in]
+*  ldx         leading dimension of solution matrix X.
+*  @param[in]
+*  policy      \ref HIPSPARSE_SOLVE_POLICY_NO_LEVEL or
+*              \ref HIPSPARSE_SOLVE_POLICY_USE_LEVEL.
+*  @param[in]
+*  pBuffer     temporary storage buffer allocated by the user.
+*
+*  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p mb, \p nrhs, \p nnzb, \p blockDim,
+*              \p alpha, \p descrA, \p bsrSortedValA, \p bsrSortedRowPtrA, \p bsrSortedColIndA, 
+*              \p B, \p X \p info or \p pBuffer is invalid.
+*  \retval     HIPSPARSE_STATUS_INTERNAL_ERROR an internal error occurred.
+*  \retval     HIPSPARSE_STATUS_NOT_SUPPORTED
+*              \p trans_A == \ref HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE,
+*              \p trans_X == \ref HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE or
+*              \ref hipsparseMatrixType_t != \ref HIPSPARSE_MATRIX_TYPE_GENERAL.
 *
 *  \par Example
 *  \code{.c}
@@ -4549,6 +5581,18 @@ hipsparseStatus_t hipsparseZbsrsm2_solve(hipsparseHandle_t         handle,
 *
 *  \note \p hipsparseXcsrsm2_zeroPivot is a blocking function. It might influence
 *  performance negatively.
+*
+*  @param[in]
+*  handle      handle to the hipsparse library context queue.
+*  @param[in]
+*  info        structure that holds the information collected during the analysis step.
+*  @param[inout]
+*  position    pointer to zero pivot \f$j\f$, can be in host or device memory.
+*
+*  \retval     HIPSPARSE_STATUS_SUCCCESS the operation completed successfully.
+*  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p info or \p position is invalid.
+*  \retval     HIPSPARSE_STATUS_INTERNAL_ERROR an internal error occurred.
+*  \retval     HIPSPARSE_STATUS_ZERO_PIVOT zero pivot has been found.
 */
 DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
@@ -4564,6 +5608,58 @@ hipsparseStatus_t
 *  \p hipsparseXcsrsm2_bufferSizeExt returns the size of the temporary storage buffer
 *  in bytes that is required by hipsparseXcsrsm2_analysis() and hipsparseXcsrsm2_solve(). 
 *  The temporary storage buffer must be allocated by the user.
+*
+*  @param[in]
+*  handle      handle to the hipsparse library context queue.
+*  @param[in]
+*  algo        algorithm to use.
+*  @param[in]
+*  transA      matrix A operation type.
+*  @param[in]
+*  transB      matrix B operation type.
+*  @param[in]
+*  m           number of rows of the sparse CSR matrix A.
+*  @param[in]
+*  nrhs        number of columns of the dense matrix op(B).
+*  @param[in]
+*  nnz         number of non-zero entries of the sparse CSR matrix A.
+*  @param[in]
+*  alpha       scalar \f$\alpha\f$.
+*  @param[in]
+*  descrA      descriptor of the sparse CSR matrix A.
+*  @param[in]
+*  csrSortedValA array of \p nnz elements of the sparse CSR matrix A.
+*  @param[in]
+*  csrSortedRowPtrA array of \p m+1 elements that point to the start of every row of the
+*              sparse CSR matrix A.
+*  @param[in]
+*  csrSortedColIndA array of \p nnz elements containing the column indices of the sparse
+*              CSR matrix A.
+*  @param[in]
+*  B           array of \p m \f$\times\f$ \p nrhs elements of the rhs matrix B.
+*  @param[in]
+*  ldb         leading dimension of rhs matrix B.
+*  @param[in]
+*  info        structure that holds the information collected during the analysis step.
+*  @param[in]
+*  policy      \ref HIPSPARSE_SOLVE_POLICY_NO_LEVEL or
+*              \ref HIPSPARSE_SOLVE_POLICY_USE_LEVEL.
+*  @param[out]
+*  pBufferSizeInBytes number of bytes of the temporary storage buffer required by
+*              hipsparseScsrsm2_analysis(), hipsparseDcsrsm2_analysis(),
+*              hipsparseCcsrsm2_analysis(), hipsparseZcsrsm2_analysis(),
+*              hipsparseScsrsm2_solve(), hipsparseDcsrsm2_solve(),
+*              hipsparseCcsrsm2_solve() and hipsparseZcsrsm2_solve().
+*
+*  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p m, \p nrhs, \p nnz, \p alpha, 
+*              \p descrA, \p csrSortedValA, \p csrSortedRowPtrA, \p csrSortedColIndA, \p B, 
+*              \p info or \p pBufferSizeInBytes is invalid.
+*  \retval     HIPSPARSE_STATUS_INTERNAL_ERROR an internal error occurred.
+*  \retval     HIPSPARSE_STATUS_NOT_SUPPORTED
+*              \p transA == \ref HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE,
+*              \p transB == \ref HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE or
+*              \ref hipsparseMatrixType_t != \ref HIPSPARSE_MATRIX_TYPE_GENERAL.
 */
 /**@{*/
 DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
@@ -4658,6 +5754,54 @@ hipsparseStatus_t hipsparseZcsrsm2_bufferSizeExt(hipsparseHandle_t         handl
 *  \note
 *  This function is non blocking and executed asynchronously with respect to the host.
 *  It may return before the actual computation has finished.
+*
+*  @param[in]
+*  handle      handle to the hipsparse library context queue.
+*  @param[in]
+*  algo        algorithm to use.
+*  @param[in]
+*  transA      matrix A operation type.
+*  @param[in]
+*  transB      matrix B operation type.
+*  @param[in]
+*  m           number of rows of the sparse CSR matrix A.
+*  @param[in]
+*  nrhs        number of columns of the dense matrix op(B).
+*  @param[in]
+*  nnz         number of non-zero entries of the sparse CSR matrix A.
+*  @param[in]
+*  alpha       scalar \f$\alpha\f$.
+*  @param[in]
+*  descrA      descriptor of the sparse CSR matrix A.
+*  @param[in]
+*  csrSortedValA array of \p nnz elements of the sparse CSR matrix A.
+*  @param[in]
+*  csrSortedRowPtrA array of \p m+1 elements that point to the start of every row of the
+*              sparse CSR matrix A.
+*  @param[in]
+*  csrSortedColIndA array of \p nnz elements containing the column indices of the sparse
+*              CSR matrix A.
+*  @param[in]
+*  B           array of \p m \f$\times\f$ \p nrhs elements of the rhs matrix B.
+*  @param[in]
+*  ldb         leading dimension of rhs matrix B.
+*  @param[out]
+*  info        structure that holds the information collected during the analysis step.
+*  @param[in]
+*  policy      \ref HIPSPARSE_SOLVE_POLICY_NO_LEVEL or
+*              \ref HIPSPARSE_SOLVE_POLICY_USE_LEVEL.
+*  @param[in]
+*  pBuffer     temporary storage buffer allocated by the user.
+*
+*  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p m, \p nrhs, \p nnz, \p alpha, 
+*              \p descrA, \p csrSortedValA, \p csrSortedRowPtrA, \p csrSortedColIndA, \p B, 
+*              \p info or \p pBuffer is invalid.
+*  \retval     HIPSPARSE_STATUS_INTERNAL_ERROR an internal error occurred.
+*  \retval     HIPSPARSE_STATUS_NOT_SUPPORTED
+*              \p trans_A == \ref HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE,
+*              \p trans_B == \ref HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE or
+*              \ref hipsparseMatrixType_t != \ref HIPSPARSE_MATRIX_TYPE_GENERAL.
 */
 /**@{*/
 DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
@@ -4800,6 +5944,54 @@ hipsparseStatus_t hipsparseZcsrsm2_analysis(hipsparseHandle_t         handle,
 *  \note
 *  Currently, only \p transA != \ref HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE and
 *  \p transB != \ref HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE is supported.
+*
+*  @param[in]
+*  handle      handle to the hipsparse library context queue.
+*  @param[in]
+*  algo        algorithm to use.
+*  @param[in]
+*  transA      matrix A operation type.
+*  @param[in]
+*  transB      matrix B operation type.
+*  @param[in]
+*  m           number of rows of the sparse CSR matrix A.
+*  @param[in]
+*  nrhs        number of columns of the dense matrix op(B).
+*  @param[in]
+*  nnz         number of non-zero entries of the sparse CSR matrix A.
+*  @param[in]
+*  alpha       scalar \f$\alpha\f$.
+*  @param[in]
+*  descrA      descriptor of the sparse CSR matrix A.
+*  @param[in]
+*  csrSortedValA array of \p nnz elements of the sparse CSR matrix A.
+*  @param[in]
+*  csrSortedRowPtrA array of \p m+1 elements that point to the start of every row of the
+*              sparse CSR matrix A.
+*  @param[in]
+*  csrSortedColIndA array of \p nnz elements containing the column indices of the sparse
+*              CSR matrix A.
+*  @param[inout]
+*  B           array of \p m \f$\times\f$ \p nrhs elements of the rhs matrix B.
+*  @param[in]
+*  ldb         leading dimension of rhs matrix B.
+*  @param[in]
+*  info        structure that holds the information collected during the analysis step.
+*  @param[in]
+*  policy      \ref HIPSPARSE_SOLVE_POLICY_NO_LEVEL or
+*              \ref HIPSPARSE_SOLVE_POLICY_USE_LEVEL.
+*  @param[in]
+*  pBuffer     temporary storage buffer allocated by the user.
+*
+*  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p m, \p nrhs, \p nnz, \p alpha, 
+*              \p descrA, \p csrSortedValA, \p csrSortedRowPtrA, \p csrSortedColIndA, \p B, 
+*              \p info or \p pBuffer is invalid.
+*  \retval     HIPSPARSE_STATUS_INTERNAL_ERROR an internal error occurred.
+*  \retval     HIPSPARSE_STATUS_NOT_SUPPORTED
+*              \p transA == \ref HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE,
+*              \p transB == \ref HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE or
+*              \ref hipsparseMatrixType_t != \ref HIPSPARSE_MATRIX_TYPE_GENERAL.
 *
 *  \par Example
 *  \code{.c}
@@ -5060,6 +6252,45 @@ hipsparseStatus_t hipsparseZcsrsm2_solve(hipsparseHandle_t         handle,
 *  This function is non blocking and executed asynchronously with respect to the host.
 *  It may return before the actual computation has finished.
 *
+*  @param[in]
+*  handle      handle to the hipsparse library context queue.
+*  @param[in]
+*  m           number of rows of the dense matrix \f$A\f$.
+*  @param[in]
+*  n           number of columns of the sparse CSC matrix \f$op(B)\f$ and \f$C\f$.
+*  @param[in]
+*  k           number of columns of the dense matrix \f$A\f$.
+*  @param[in]
+*  nnz         number of non-zero entries of the sparse CSC matrix \f$B\f$.
+*  @param[in]
+*  alpha       scalar \f$\alpha\f$.
+*  @param[in]
+*  A           array of dimension \f$lda \times k\f$ (\f$op(A) == A\f$) or
+*              \f$lda \times m\f$ (\f$op(A) == A^T\f$ or \f$op(A) == A^H\f$).
+*  @param[in]
+*  lda         leading dimension of \f$A\f$, must be at least \f$m\f$
+*              (\f$op(A) == A\f$) or \f$k\f$ (\f$op(A) == A^T\f$ or
+*              \f$op(A) == A^H\f$).
+*  @param[in]
+*  cscValB     array of \p nnz elements of the sparse CSC matrix \f$B\f$.
+*  @param[in]
+*  cscColPtrB  array of \p n+1 elements that point to the start of every column of the
+*              sparse CSC matrix \f$B\f$.
+*  @param[in]
+*  cscRowIndB  array of \p nnz elements containing the column indices of the sparse CSC
+*              matrix \f$B\f$.
+*  @param[in]
+*  beta        scalar \f$\beta\f$.
+*  @param[inout]
+*  C           array of dimension \f$ldc \times n\f$ that holds the values of \f$C\f$.
+*  @param[in]
+*  ldc         leading dimension of \f$C\f$, must be at least \f$m\f$.
+*
+*  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p m, \p n, \p k, \p nnz, 
+*              \p lda, \p ldc, \p alpha, \p A, \p cscValB, \p cscColPtrB, \p cscRowIndB, 
+*              \p beta or \p C is invalid.
+*
 *  \par Example
 *  \code{.c}
 *    // A, B, and C are m×k, k×n, and m×n
@@ -5221,11 +6452,58 @@ hipsparseStatus_t hipsparseZgemmi(hipsparseHandle_t       handle,
 *  \note
 *  As indicated, nnzTotalDevHostPtr can point either to host or device memory. This is controlled 
 *  by setting the pointer mode. See hipsparseSetPointerMode().
+*
 *  \note
 *  This function is non blocking and executed asynchronously with respect to the host.
 *  It may return before the actual computation has finished.
+*
 *  \note
 *  Currently, only \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
+*
+*  @param[in]
+*  handle          handle to the hipsparse library context queue.
+*  @param[in]
+*  m               number of rows of the sparse CSR matrix \f$A\f$, \f$B\f$ and \f$C\f$.
+*  @param[in]
+*  n               number of columns of the sparse CSR matrix \f$A\f$, \f$B\f$ and \f$C\f$.
+*  @param[in]
+*  descrA          descriptor of the sparse CSR matrix \f$A\f$. Currently, only
+*                  \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
+*  @param[in]
+*  nnzA            number of non-zero entries of the sparse CSR matrix \f$A\f$.
+*  @param[in]
+*  csrRowPtrA      array of \p m+1 elements that point to the start of every row of the
+*                  sparse CSR matrix \f$A\f$.
+*  @param[in]
+*  csrColIndA      array of \p nnzA elements containing the column indices of the
+*                  sparse CSR matrix \f$A\f$.
+*  @param[in]
+*  descrB          descriptor of the sparse CSR matrix \f$B\f$. Currently, only
+*                  \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
+*  @param[in]
+*  nnzB            number of non-zero entries of the sparse CSR matrix \f$B\f$.
+*  @param[in]
+*  csrRowPtrB      array of \p m+1 elements that point to the start of every row of the
+*                  sparse CSR matrix \f$B\f$.
+*  @param[in]
+*  csrColIndB      array of \p nnzB elements containing the column indices of the
+*                  sparse CSR matrix \f$B\f$.
+*  @param[in]
+*  descrC          descriptor of the sparse CSR matrix \f$C\f$. Currently, only
+*                  \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
+*  @param[out]
+*  csrRowPtrC      array of \p m+1 elements that point to the start of every row of the
+*                  sparse CSR matrix \f$C\f$.
+*  @param[out]
+*  nnzTotalDevHostPtr pointer to the number of non-zero entries of the sparse CSR
+*                     matrix \f$C\f$. \p nnzTotalDevHostPtr can be a host or device pointer.
+*
+*  \retval HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p m, \p n, \p nnzA, \p nnzB, \p descrA, 
+*          \p csrRowPtrA, \p csrColIndA, \p descrB, \p csrRowPtrB, \p csrColIndB, \p descrC, 
+*          \p csrRowPtrC or \p nnzTotalDevHostPtr is invalid.
+*  \retval HIPSPARSE_STATUS_NOT_SUPPORTED
+*          \p hipsparseMatrixType_t != \ref HIPSPARSE_MATRIX_TYPE_GENERAL.
 */
 DEPRECATED_CUDA_10000("The routine will be removed in CUDA 11")
 HIPSPARSE_EXPORT
@@ -5268,6 +6546,62 @@ hipsparseStatus_t hipsparseXcsrgeamNnz(hipsparseHandle_t         handle,
 *  \note Currently, only \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
 *  \note This function is non blocking and executed asynchronously with respect to the
 *        host. It may return before the actual computation has finished.
+*
+*  @param[in]
+*  handle          handle to the hipsparse library context queue.
+*  @param[in]
+*  m               number of rows of the sparse CSR matrix \f$A\f$, \f$B\f$ and \f$C\f$.
+*  @param[in]
+*  n               number of columns of the sparse CSR matrix \f$A\f$, \f$B\f$ and \f$C\f$.
+*  @param[in]
+*  alpha           scalar \f$\alpha\f$.
+*  @param[in]
+*  descrA          descriptor of the sparse CSR matrix \f$A\f$. Currently, only
+*                  \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
+*  @param[in]
+*  nnzA            number of non-zero entries of the sparse CSR matrix \f$A\f$.
+*  @param[in]
+*  csrValA         array of \p nnzA elements of the sparse CSR matrix \f$A\f$.
+*  @param[in]
+*  csrRowPtrA      array of \p m+1 elements that point to the start of every row of the
+*                  sparse CSR matrix \f$A\f$.
+*  @param[in]
+*  csrColIndA      array of \p nnzA elements containing the column indices of the
+*                  sparse CSR matrix \f$A\f$.
+*  @param[in]
+*  beta            scalar \f$\beta\f$.
+*  @param[in]
+*  descrB          descriptor of the sparse CSR matrix \f$B\f$. Currently, only
+*                  \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
+*  @param[in]
+*  nnzB            number of non-zero entries of the sparse CSR matrix \f$B\f$.
+*  @param[in]
+*  csrValB         array of \p nnzB elements of the sparse CSR matrix \f$B\f$.
+*  @param[in]
+*  csrRowPtrB      array of \p m+1 elements that point to the start of every row of the
+*                  sparse CSR matrix \f$B\f$.
+*  @param[in]
+*  csrColIndB      array of \p nnzB elements containing the column indices of the
+*                  sparse CSR matrix \f$B\f$.
+*  @param[in]
+*  descrC          descriptor of the sparse CSR matrix \f$C\f$. Currently, only
+*                  \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
+*  @param[out]
+*  csrValC         array of elements of the sparse CSR matrix \f$C\f$.
+*  @param[in]
+*  csrRowPtrC      array of \p m+1 elements that point to the start of every row of the
+*                  sparse CSR matrix \f$C\f$.
+*  @param[out]
+*  csrColIndC      array of elements containing the column indices of the
+*                  sparse CSR matrix \f$C\f$.
+*
+*  \retval HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p m, \p n, \p nnzA, \p nnzB, 
+*          \p alpha, \p descrA, \p csrValA, \p csrRowPtrA, \p csrColIndA, \p beta, 
+*          \p descrB, \p csrValB, \p csrRowPtrB, \p csrColIndB, \p descrC, \p csrValC,
+*          \p csrRowPtrC or \p csrColIndC is invalid.
+*  \retval HIPSPARSE_STATUS_NOT_SUPPORTED
+*          \p hipsparseMatrixType_t != \ref HIPSPARSE_MATRIX_TYPE_GENERAL.
 *
 *  \par Example
 *  \code{.c}
@@ -5489,6 +6823,68 @@ hipsparseStatus_t hipsparseZcsrgeam(hipsparseHandle_t         handle,
 *
 *  \note
 *  Currently, only \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
+*
+*  @param[in]
+*  handle             handle to the hipsparse library context queue.
+*  @param[in]
+*  m                  number of rows of the sparse CSR matrix \f$A\f$, \f$B\f$ and \f$C\f$.
+*  @param[in]
+*  n                  number of columns of the sparse CSR matrix \f$A\f$, \f$B\f$ and \f$C\f$.
+*  @param[in]
+*  alpha              scalar \f$\alpha\f$.
+*  @param[in]
+*  descrA             descriptor of the sparse CSR matrix \f$A\f$. Currently, only
+*                     \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
+*  @param[in]
+*  nnzA               number of non-zero entries of the sparse CSR matrix \f$A\f$.
+*  @param[in]
+*  csrSortedValA      array of \p nnzA elements of the sparse CSR matrix \f$A\f$.
+*  @param[in]
+*  csrSortedRowPtrA   array of \p m+1 elements that point to the start of every row of the
+*                     sparse CSR matrix \f$A\f$.
+*  @param[in]
+*  csrSortedColIndA   array of \p nnzA elements containing the column indices of the
+*                     sparse CSR matrix \f$A\f$.
+*  @param[in]
+*  beta               scalar \f$\beta\f$.
+*  @param[in]
+*  descrB             descriptor of the sparse CSR matrix \f$B\f$. Currently, only
+*                     \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
+*  @param[in]
+*  nnzB               number of non-zero entries of the sparse CSR matrix \f$B\f$.
+*  @param[in]
+*  csrSortedValB      array of \p nnzB elements of the sparse CSR matrix \f$B\f$.
+*  @param[in]
+*  csrSortedRowPtrB   array of \p m+1 elements that point to the start of every row of the
+*                     sparse CSR matrix \f$B\f$.
+*  @param[in]
+*  csrSortedColIndB   array of \p nnzB elements containing the column indices of the
+*                     sparse CSR matrix \f$B\f$.
+*  @param[in]
+*  descrC             descriptor of the sparse CSR matrix \f$C\f$. Currently, only
+*                     \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
+*  @param[out]
+*  csrSortedValC      array of elements of the sparse CSR matrix \f$C\f$.
+*  @param[in]
+*  csrSortedRowPtrC   array of \p m+1 elements that point to the start of every row of the
+*                     sparse CSR matrix \f$C\f$.
+*  @param[out]
+*  csrSortedColIndC   array of elements containing the column indices of the
+*                     sparse CSR matrix \f$C\f$.
+*  @param[out]
+*  pBufferSizeInBytes number of bytes of the temporary storage buffer required by
+*                     hipsparseXcsrgeam2Nnz(), hipsparseScsrgeam2(),
+*                     hipsparseDcsrgeam2(), hipsparseCcsrgeam2(),
+*                     hipsparseZcsrgeam2().
+*
+*  \retval HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p m, \p n, \p nnzA, \p nnzB, 
+*          \p alpha, \p descrA, \p csrSortedValA, \p csrSortedRowPtrA, \p csrSortedColIndA, 
+*          \p beta, \p descrB, \p csrSortedValB, \p csrSortedRowPtrB, \p csrSortedColIndB, 
+*          \p descrC, \p csrSortedValC, \p csrSortedRowPtrC, \p csrSortedColIndC, or 
+*          \p pBufferSizeInBytes is invalid.
+*  \retval HIPSPARSE_STATUS_NOT_SUPPORTED
+*          \p hipsparseMatrixType_t != \ref HIPSPARSE_MATRIX_TYPE_GENERAL.
 */
 /**@{*/
 HIPSPARSE_EXPORT
@@ -5599,6 +6995,53 @@ hipsparseStatus_t hipsparseZcsrgeam2_bufferSizeExt(hipsparseHandle_t         han
 *  It may return before the actual computation has finished.
 *  \note
 *  Currently, only \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
+*
+*  @param[in]
+*  handle             handle to the hipsparse library context queue.
+*  @param[in]
+*  m                  number of rows of the sparse CSR matrix \f$A\f$, \f$B\f$ and \f$C\f$.
+*  @param[in]
+*  n                  number of columns of the sparse CSR matrix \f$A\f$, \f$B\f$ and \f$C\f$.
+*  @param[in]
+*  descrA             descriptor of the sparse CSR matrix \f$A\f$. Currently, only
+*                     \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
+*  @param[in]
+*  nnzA               number of non-zero entries of the sparse CSR matrix \f$A\f$.
+*  @param[in]
+*  csrSortedRowPtrA   array of \p m+1 elements that point to the start of every row of the
+*                     sparse CSR matrix \f$A\f$.
+*  @param[in]
+*  csrSortedColIndA   array of \p nnzA elements containing the column indices of the
+*                     sparse CSR matrix \f$A\f$.
+*  @param[in]
+*  descrB             descriptor of the sparse CSR matrix \f$B\f$. Currently, only
+*                     \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
+*  @param[in]
+*  nnzB               number of non-zero entries of the sparse CSR matrix \f$B\f$.
+*  @param[in]
+*  csrSortedRowPtrB   array of \p m+1 elements that point to the start of every row of the
+*                     sparse CSR matrix \f$B\f$.
+*  @param[in]
+*  csrSortedColIndB   array of \p nnzB elements containing the column indices of the
+*                     sparse CSR matrix \f$B\f$.
+*  @param[in]
+*  descrC             descriptor of the sparse CSR matrix \f$C\f$. Currently, only
+*                     \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
+*  @param[in]
+*  csrSortedRowPtrC   array of \p m+1 elements that point to the start of every row of the
+*                     sparse CSR matrix \f$C\f$.
+*  @param[out]
+*  nnzTotalDevHostPtr pointer to the number of non-zero entries of the sparse CSR
+*                     matrix \f$C\f$. \p nnzTotalDevHostPtr can be a host or device pointer.
+*  @param[in]
+*  workspace          temporary storage buffer allocated by the user.
+*
+*  \retval HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p m, \p n, \p nnzA, \p nnzB, 
+*          \p descrA, \p csrSortedRowPtrA, \p csrSortedColIndA, \p descrB, \p csrSortedRowPtrB, 
+*          \p csrSortedColIndB, \p descrC, \p csrSortedRowPtrC or \p nnzTotalDevHostPtr is invalid.
+*  \retval HIPSPARSE_STATUS_NOT_SUPPORTED
+*          \p hipsparseMatrixType_t != \ref HIPSPARSE_MATRIX_TYPE_GENERAL.
 */
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseXcsrgeam2Nnz(hipsparseHandle_t         handle,
@@ -5643,6 +7086,64 @@ hipsparseStatus_t hipsparseXcsrgeam2Nnz(hipsparseHandle_t         handle,
 *  \note Currently, only \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
 *  \note This function is non blocking and executed asynchronously with respect to the
 *        host. It may return before the actual computation has finished.
+*
+*  @param[in]
+*  handle           handle to the hipsparse library context queue.
+*  @param[in]
+*  m                number of rows of the sparse CSR matrix \f$A\f$, \f$B\f$ and \f$C\f$.
+*  @param[in]
+*  n                number of columns of the sparse CSR matrix \f$A\f$, \f$B\f$ and \f$C\f$.
+*  @param[in]
+*  alpha            scalar \f$\alpha\f$.
+*  @param[in]
+*  descrA           descriptor of the sparse CSR matrix \f$A\f$. Currently, only
+*                   \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
+*  @param[in]
+*  nnzA             number of non-zero entries of the sparse CSR matrix \f$A\f$.
+*  @param[in]
+*  csrSortedValA    array of \p nnzA elements of the sparse CSR matrix \f$A\f$.
+*  @param[in]
+*  csrSortedRowPtrA array of \p m+1 elements that point to the start of every row of the
+*                   sparse CSR matrix \f$A\f$.
+*  @param[in]
+*  csrSortedColIndA array of \p nnzA elements containing the column indices of the
+*                   sparse CSR matrix \f$A\f$.
+*  @param[in]
+*  beta             scalar \f$\beta\f$.
+*  @param[in]
+*  descrB           descriptor of the sparse CSR matrix \f$B\f$. Currently, only
+*                   \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
+*  @param[in]
+*  nnzB             number of non-zero entries of the sparse CSR matrix \f$B\f$.
+*  @param[in]
+*  csrSortedValB    array of \p nnzB elements of the sparse CSR matrix \f$B\f$.
+*  @param[in]
+*  csrSortedRowPtrB array of \p m+1 elements that point to the start of every row of the
+*                   sparse CSR matrix \f$B\f$.
+*  @param[in]
+*  csrSortedColIndB array of \p nnzB elements containing the column indices of the
+*                   sparse CSR matrix \f$B\f$.
+*  @param[in]
+*  descrC           descriptor of the sparse CSR matrix \f$C\f$. Currently, only
+*                   \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
+*  @param[out]
+*  csrSortedValC    array of elements of the sparse CSR matrix \f$C\f$.
+*  @param[in]
+*  csrSortedRowPtrC array of \p m+1 elements that point to the start of every row of the
+*                   sparse CSR matrix \f$C\f$.
+*  @param[out]
+*  csrSortedColIndC array of elements containing the column indices of the
+*                   sparse CSR matrix \f$C\f$.
+*  @param[in]
+*  pBuffer          temporary storage buffer allocated by the user.
+*
+*  \retval HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p m, \p n, \p nnzA, \p nnzB, 
+*          \p alpha, \p descrA, \p csrSortedValA, \p csrSortedRowPtrA, \p csrSortedColIndA, \p beta, 
+*          \p descrB, \p csrSortedValB, \p csrSortedRowPtrB, \p csrSortedColIndB, \p descrC, \p csrSortedValC,
+*          \p csrSortedRowPtrC, \p csrSortedColIndC or \p pBuffer is invalid.
+*  \retval HIPSPARSE_STATUS_NOT_SUPPORTED
+*          \p hipsparseMatrixType_t != \ref HIPSPARSE_MATRIX_TYPE_GENERAL.
 *
 *  \par Example
 *  \code{.c}
@@ -5913,6 +7414,63 @@ hipsparseStatus_t hipsparseZcsrgeam2(hipsparseHandle_t         handle,
 *
 *  \note
 *  Currently, only \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
+*
+*  @param[in]
+*  handle          handle to the hipsparse library context queue.
+*  @param[in]
+*  transA          matrix \f$A\f$ operation type.
+*  @param[in]
+*  transB          matrix \f$B\f$ operation type.
+*  @param[in]
+*  m               number of rows of the sparse CSR matrix \f$op(A)\f$ and \f$C\f$.
+*  @param[in]
+*  n               number of columns of the sparse CSR matrix \f$op(B)\f$ and
+*                  \f$C\f$.
+*  @param[in]
+*  k               number of columns of the sparse CSR matrix \f$op(A)\f$ and number of
+*                  rows of the sparse CSR matrix \f$op(B)\f$.
+*  @param[in]
+*  descrA          descriptor of the sparse CSR matrix \f$A\f$. Currently, only
+*                  \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
+*  @param[in]
+*  nnzA            number of non-zero entries of the sparse CSR matrix \f$A\f$.
+*  @param[in]
+*  csrRowPtrA      array of \p m+1 elements (\f$op(A) == A\f$, \p k+1 otherwise)
+*                  that point to the start of every row of the sparse CSR matrix
+*                  \f$op(A)\f$.
+*  @param[in]
+*  csrColIndA      array of \p nnzA elements containing the column indices of the
+*                  sparse CSR matrix \f$A\f$.
+*  @param[in]
+*  descrB          descriptor of the sparse CSR matrix \f$B\f$. Currently, only
+*                  \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
+*  @param[in]
+*  nnzB            number of non-zero entries of the sparse CSR matrix \f$B\f$.
+*  @param[in]
+*  csrRowPtrB      array of \p k+1 elements (\f$op(B) == B\f$, \p m+1 otherwise)
+*                  that point to the start of every row of the sparse CSR matrix
+*                  \f$op(B)\f$.
+*  @param[in]
+*  csrColIndB      array of \p nnzB elements containing the column indices of the
+*                  sparse CSR matrix \f$B\f$.
+*  @param[in]
+*  descrC          descriptor of the sparse CSR matrix \f$C\f$. Currently, only
+*                  \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
+*  @param[in]
+*  csrRowPtrC      array of \p m+1 elements that point to the start of every row of the
+*                  sparse CSR matrix \f$C\f$.
+*  @param[inout]
+*  nnzTotalDevHostPtr pointer to the number of non-zero entries of the sparse CSR
+*                     matrix \f$C\f$. \p nnzTotalDevHostPtr can be a host or device pointer.
+*
+*  \retval HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p m, \p n, \p k, \p nnzA, \p nnzB, \p nnzC, 
+*          \p descrA, \p csrRowPtrA, \p csrColIndA, \p descrB, \p csrRowPtrB, \p csrColIndB, 
+*          \p descrC, \p csrRowPtrC or \p nnzTotalDevHostPtr is invalid.
+*  \retval HIPSPARSE_STATUS_MATRIX_TYPE_NOT_SUPPORTED
+*          \p transA != \ref HIPSPARSE_OPERATION_NON_TRANSPOSE,
+*          \p transB != \ref HIPSPARSE_OPERATION_NON_TRANSPOSE, or
+*          \p hipsparseMatrixType_t != \ref HIPSPARSE_MATRIX_TYPE_GENERAL.
 */
 DEPRECATED_CUDA_10000("The routine will be removed in CUDA 11")
 HIPSPARSE_EXPORT
@@ -5982,6 +7540,72 @@ hipsparseStatus_t hipsparseXcsrgemmNnz(hipsparseHandle_t         handle,
 *        host. It may return before the actual computation has finished.
 *  \note Please note, that for matrix products with more than 4096 non-zero entries per
 *  row, additional temporary storage buffer is allocated by the algorithm.
+*
+*  @param[in]
+*  handle          handle to the hipsparse library context queue.
+*  @param[in]
+*  transA          matrix \f$A\f$ operation type.
+*  @param[in]
+*  transB          matrix \f$B\f$ operation type.
+*  @param[in]
+*  m               number of rows of the sparse CSR matrix \f$op(A)\f$ and \f$C\f$.
+*  @param[in]
+*  n               number of columns of the sparse CSR matrix \f$op(B)\f$ and
+*                  \f$C\f$.
+*  @param[in]
+*  k               number of columns of the sparse CSR matrix \f$op(A)\f$ and number of
+*                  rows of the sparse CSR matrix \f$op(B)\f$.
+*  @param[in]
+*  descrA          descriptor of the sparse CSR matrix \f$A\f$. Currently, only
+*                  \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
+*  @param[in]
+*  nnzA            number of non-zero entries of the sparse CSR matrix \f$A\f$.
+*  @param[in]
+*  csrValA         array of \p nnzA elements of the sparse CSR matrix \f$A\f$.
+*  @param[in]
+*  csrRowPtrA      array of \p m+1 elements (\f$op(A) == A\f$, \p k+1 otherwise)
+*                  that point to the start of every row of the sparse CSR matrix
+*                  \f$op(A)\f$.
+*  @param[in]
+*  csrColIndA      array of \p nnzA elements containing the column indices of the
+*                  sparse CSR matrix \f$A\f$.
+*  @param[in]
+*  descrB          descriptor of the sparse CSR matrix \f$B\f$. Currently, only
+*                  \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
+*  @param[in]
+*  nnzB            number of non-zero entries of the sparse CSR matrix \f$B\f$.
+*  @param[in]
+*  csrValB         array of \p nnzB elements of the sparse CSR matrix \f$B\f$.
+*  @param[in]
+*  csrRowPtrB      array of \p k+1 elements (\f$op(B) == B\f$, \p m+1 otherwise)
+*                  that point to the start of every row of the sparse CSR matrix
+*                  \f$op(B)\f$.
+*  @param[in]
+*  csrColIndB      array of \p nnzB elements containing the column indices of the
+*                  sparse CSR matrix \f$B\f$.
+*  @param[in]
+*  descrC          descriptor of the sparse CSR matrix \f$C\f$. Currently, only
+*                  \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
+*  @param[out]
+*  csrValC         array of \p nnzC elements of the sparse CSR matrix \f$C\f$.
+*  @param[in]
+*  csrRowPtrC      array of \p m+1 elements that point to the start of every row of the
+*                  sparse CSR matrix \f$C\f$.
+*  @param[out]
+*  csrColIndC      array of \p nnzC elements containing the column indices of the
+*                  sparse CSR matrix \f$C\f$.
+*
+*  \retval HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p m, \p n, \p k, \p nnzA, \p nnzB,
+*          \p descrA, \p csrValA, \p csrRowPtrA, \p csrColIndA, \p descrB, \p csrValB, 
+*          \p csrRowPtrB, \p csrColIndB, \p descrC, \p csrValC, \p csrRowPtrC, \p csrColIndC 
+*          is invalid.
+*  \retval HIPSPARSE_STATUS_ALLOC_FAILED additional buffer for long rows could not be
+*          allocated.
+*  \retval HIPSPARSE_STATUS_NOT_SUPPORTED
+*          \p transA != \ref HIPSPARSE_OPERATION_NON_TRANSPOSE,
+*          \p transB != \ref HIPSPARSE_OPERATION_NON_TRANSPOSE, or
+*          \p hipsparseMatrixType_t != \ref HIPSPARSE_MATRIX_TYPE_GENERAL.
 *
 *  \par Example
 *  \code{.c}
@@ -6220,6 +7844,70 @@ hipsparseStatus_t hipsparseZcsrgemm(hipsparseHandle_t         handle,
 *
 *  \note
 *  Currently, only \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
+*
+*  @param[in]
+*  handle          handle to the hipsparse library context queue.
+*  @param[in]
+*  m               number of rows of the sparse CSR matrix \f$op(A)\f$ and \f$C\f$.
+*  @param[in]
+*  n               number of columns of the sparse CSR matrix \f$op(B)\f$ and
+*                  \f$C\f$.
+*  @param[in]
+*  k               number of columns of the sparse CSR matrix \f$op(A)\f$ and number of
+*                  rows of the sparse CSR matrix \f$op(B)\f$.
+*  @param[in]
+*  alpha           scalar \f$\alpha\f$.
+*  @param[in]
+*  descrA          descriptor of the sparse CSR matrix \f$A\f$. Currently, only
+*                  \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
+*  @param[in]
+*  nnzA            number of non-zero entries of the sparse CSR matrix \f$A\f$.
+*  @param[in]
+*  csrRowPtrA      array of \p m+1 elements (\f$op(A) == A\f$, \p k+1 otherwise)
+*                  that point to the start of every row of the sparse CSR matrix
+*                  \f$op(A)\f$.
+*  @param[in]
+*  csrColIndA      array of \p nnzA elements containing the column indices of the
+*                  sparse CSR matrix \f$A\f$.
+*  @param[in]
+*  descrB          descriptor of the sparse CSR matrix \f$B\f$. Currently, only
+*                  \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
+*  @param[in]
+*  nnzB            number of non-zero entries of the sparse CSR matrix \f$B\f$.
+*  @param[in]
+*  csrRowPtrB      array of \p k+1 elements (\f$op(B) == B\f$, \p m+1 otherwise)
+*                  that point to the start of every row of the sparse CSR matrix
+*                  \f$op(B)\f$.
+*  @param[in]
+*  csrColIndB      array of \p nnzB elements containing the column indices of the
+*                  sparse CSR matrix \f$B\f$.
+*  @param[in]
+*  beta            scalar \f$\beta\f$.
+*  @param[in]
+*  descrD          descriptor of the sparse CSR matrix \f$D\f$. Currently, only
+*                  \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
+*  @param[in]
+*  nnzD            number of non-zero entries of the sparse CSR matrix \f$D\f$.
+*  @param[in]
+*  csrRowPtrD      array of \p m+1 elements that point to the start of every row of the
+*                  sparse CSR matrix \f$D\f$.
+*  @param[in]
+*  csrColIndD      array of \p nnzD elements containing the column indices of the sparse
+*                  CSR matrix \f$D\f$.
+*  @param[inout]
+*  info            structure that holds meta data for the sparse CSR matrix \f$C\f$.
+*  @param[out]
+*  pBufferSizeInBytes number of bytes of the temporary storage buffer required by
+*                     hipsparseXcsrgemm2Nnz(), hipsparseScsrgemm2(), hipsparseDcsrgemm2(),
+*                     hipsparseCcsrgemm2() and hipsparseZcsrgemm2().
+*
+*  \retval HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p m, \p n, \p k, \p nnzA, \p nnzB, \p nnz_D, 
+*          \p alpha, \p beta, \p descrA, \p csrRowPtrA, \p csrColIndA, \p descrB, \p csrRowPtrB, 
+*          \p csrColIndB, \p descrD, \p csrRowPtrD, \p csrColIndD, \p info or \p pBufferSizeInBytes 
+*          is invalid.
+*  \retval HIPSPARSE_STATUS_NOT_SUPPORTED
+*          \p hipsparseMatrixType_t != \ref HIPSPARSE_MATRIX_TYPE_GENERAL.
 */
 /**@{*/
 DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
@@ -6339,6 +8027,77 @@ hipsparseStatus_t hipsparseZcsrgemm2_bufferSizeExt(hipsparseHandle_t         han
 *
 *  \note
 *  Currently, only \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
+*
+*  @param[in]
+*  handle          handle to the hipsparse library context queue.
+*  @param[in]
+*  m               number of rows of the sparse CSR matrix \f$op(A)\f$ and \f$C\f$.
+*  @param[in]
+*  n               number of columns of the sparse CSR matrix \f$op(B)\f$ and
+*                  \f$C\f$.
+*  @param[in]
+*  k               number of columns of the sparse CSR matrix \f$op(A)\f$ and number of
+*                  rows of the sparse CSR matrix \f$op(B)\f$.
+*  @param[in]
+*  descrA          descriptor of the sparse CSR matrix \f$A\f$. Currently, only
+*                  \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
+*  @param[in]
+*  nnzA            number of non-zero entries of the sparse CSR matrix \f$A\f$.
+*  @param[in]
+*  csrRowPtrA      array of \p m+1 elements (\f$op(A) == A\f$, \p k+1 otherwise)
+*                  that point to the start of every row of the sparse CSR matrix
+*                  \f$op(A)\f$.
+*  @param[in]
+*  csrColIndA      array of \p nnzA elements containing the column indices of the
+*                  sparse CSR matrix \f$A\f$.
+*  @param[in]
+*  descrB          descriptor of the sparse CSR matrix \f$B\f$. Currently, only
+*                  \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
+*  @param[in]
+*  nnzB            number of non-zero entries of the sparse CSR matrix \f$B\f$.
+*  @param[in]
+*  csrRowPtrB      array of \p k+1 elements (\f$op(B) == B\f$, \p m+1 otherwise)
+*                  that point to the start of every row of the sparse CSR matrix
+*                  \f$op(B)\f$.
+*  @param[in]
+*  csrColIndB      array of \p nnzB elements containing the column indices of the
+*                  sparse CSR matrix \f$B\f$.
+*  @param[in]
+*  descrD          descriptor of the sparse CSR matrix \f$D\f$. Currently, only
+*                  \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
+*  @param[in]
+*  nnzD            number of non-zero entries of the sparse CSR matrix \f$D\f$.
+*  @param[in]
+*  csrRowPtrD      array of \p m+1 elements that point to the start of every row of the
+*                  sparse CSR matrix \f$D\f$.
+*  @param[in]
+*  csrColIndD      array of \p nnzD elements containing the column indices of the sparse
+*                  CSR matrix \f$D\f$.
+*  @param[in]
+*  descrC          descriptor of the sparse CSR matrix \f$C\f$. Currently, only
+*                  \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
+*  @param[out]
+*  csrRowPtrC      array of \p m+1 elements that point to the start of every row of the
+*                  sparse CSR matrix \f$C\f$.
+*  @param[out]
+*  nnzTotalDevHostPtr pointer to the number of non-zero entries of the sparse CSR
+*                     matrix \f$C\f$.
+*  @param[in]
+*  info            structure that holds meta data for the sparse CSR matrix \f$C\f$.
+*  @param[in]
+*  pBuffer         temporary storage buffer allocated by the user, size is returned
+*                  by hipsparseScsrgemm2_bufferSizeExt(), hipsparseDcsrgemm2_bufferSizeExt(), 
+*                  hipsparseZcsrgemm2_bufferSizeExt() or hipsparseZcsrgemm2_bufferSizeExt().
+*
+*  \retval HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p m, \p n, \p k, \p nnzA, \p nnzB, \p nnzD,
+*          \p descrA, \p csrRowPtrA, \p csrColIndA, \p descrB, \p csrRowPtrB, \p csrColIndB,
+*          \p descrD, \p csrRowPtrD, \p csrColIndD, \p descrC, \p csrRowPtrC, \p nnzTotalDevHostPtr, 
+*          \p info or \p pBuffer is invalid.
+*  \retval HIPSPARSE_STATUS_ALLOC_FAILED additional buffer for long rows could not be
+*          allocated.
+*  \retval HIPSPARSE_STATUS_NOT_SUPPORTED
+*          \p hipsparseMatrixType_t != \ref HIPSPARSE_MATRIX_TYPE_GENERAL.
 */
 DEPRECATED_CUDA_11000("The routine will be removed in CUDA 12")
 HIPSPARSE_EXPORT
@@ -6398,6 +8157,90 @@ hipsparseStatus_t hipsparseXcsrgemm2Nnz(hipsparseHandle_t         handle,
 *        host. It may return before the actual computation has finished.
 *  \note Please note, that for matrix products with more than 4096 non-zero entries per
 *  row, additional temporary storage buffer is allocated by the algorithm.
+*
+*  @param[in]
+*  handle          handle to the hipsparse library context queue.
+*  @param[in]
+*  m               number of rows of the sparse CSR matrix \f$op(A)\f$ and \f$C\f$.
+*  @param[in]
+*  n               number of columns of the sparse CSR matrix \f$op(B)\f$ and
+*                  \f$C\f$.
+*  @param[in]
+*  k               number of columns of the sparse CSR matrix \f$op(A)\f$ and number of
+*                  rows of the sparse CSR matrix \f$op(B)\f$.
+*  @param[in]
+*  alpha           scalar \f$\alpha\f$.
+*  @param[in]
+*  descrA          descriptor of the sparse CSR matrix \f$A\f$. Currently, only
+*                  \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
+*  @param[in]
+*  nnzA            number of non-zero entries of the sparse CSR matrix \f$A\f$.
+*  @param[in]
+*  csrValA         array of \p nnzA elements of the sparse CSR matrix \f$A\f$.
+*  @param[in]
+*  csrRowPtrA      array of \p m+1 elements (\f$op(A) == A\f$, \p k+1 otherwise)
+*                  that point to the start of every row of the sparse CSR matrix
+*                  \f$op(A)\f$.
+*  @param[in]
+*  csrColIndA      array of \p nnzA elements containing the column indices of the
+*                  sparse CSR matrix \f$A\f$.
+*  @param[in]
+*  descrB          descriptor of the sparse CSR matrix \f$B\f$. Currently, only
+*                  \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
+*  @param[in]
+*  nnzB            number of non-zero entries of the sparse CSR matrix \f$B\f$.
+*  @param[in]
+*  csrValB         array of \p nnzB elements of the sparse CSR matrix \f$B\f$.
+*  @param[in]
+*  csrRowPtrB      array of \p k+1 elements (\f$op(B) == B\f$, \p m+1 otherwise)
+*                  that point to the start of every row of the sparse CSR matrix
+*                  \f$op(B)\f$.
+*  @param[in]
+*  csrColIndB      array of \p nnzB elements containing the column indices of the
+*                  sparse CSR matrix \f$B\f$.
+*  @param[in]
+*  beta            scalar \f$\beta\f$.
+*  @param[in]
+*  descrD          descriptor of the sparse CSR matrix \f$D\f$. Currently, only
+*                  \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
+*  @param[in]
+*  nnzD            number of non-zero entries of the sparse CSR matrix \f$D\f$.
+*  @param[in]
+*  csrValD         array of \p nnzD elements of the sparse CSR matrix \f$D\f$.
+*  @param[in]
+*  csrRowPtrD      array of \p m+1 elements that point to the start of every row of the
+*                  sparse CSR matrix \f$D\f$.
+*  @param[in]
+*  csrColIndD      array of \p nnzD elements containing the column indices of the
+*                  sparse CSR matrix \f$D\f$.
+*  @param[in]
+*  descrC          descriptor of the sparse CSR matrix \f$C\f$. Currently, only
+*                  \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
+*  @param[out]
+*  csrValC         array of \p nnzC elements of the sparse CSR matrix \f$C\f$.
+*  @param[in]
+*  csrRowPtrC      array of \p m+1 elements that point to the start of every row of the
+*                  sparse CSR matrix \f$C\f$.
+*  @param[out]
+*  csrColIndC      array of \p nnzC elements containing the column indices of the
+*                  sparse CSR matrix \f$C\f$.
+*  @param[in]
+*  info            structure that holds meta data for the sparse CSR matrix \f$C\f$.
+*  @param[in]
+*  pBuffer         temporary storage buffer allocated by the user, size is returned
+*                  by hipsparseScsrgemm2_bufferSizeExt(), hipsparseDcsrgemm2_bufferSizeExt(), 
+*                  hipsparseCcsrgemm2_bufferSizeExt() or hipsparseZcsrgemm2_bufferSizeExt().
+*
+*  \retval HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p m, \p n, \p k, \p nnzA, \p nnzB, 
+*          \p nnzD, \p alpha, \p beta, \p descrA, \p csrValA, \p csrRowPtrA, \p csrColIndA, 
+*          \p descrB, \p csrValB, \p csrRowPtrB, \p csrColIndB, \p descrD, \p csrValD, 
+*          \p csrRowPtrD, \p csrColIndD, \p csrValC, \p csrRowPtrC, \p csrColIndC, \p info 
+*          or \p pBuffer is invalid.
+*  \retval HIPSPARSE_STATUS_ALLOC_FAILED additional buffer for long rows could not be
+*          allocated.
+*  \retval HIPSPARSE_STATUS_NOT_SUPPORTED
+*          \p hipsparseMatrixType_t != \ref HIPSPARSE_MATRIX_TYPE_GENERAL.
 *
 *  \par Example
 *  \code{.c}
@@ -6741,6 +8584,19 @@ hipsparseStatus_t hipsparseZcsrgemm2(hipsparseHandle_t         handle,
  *
  *  \note \p hipsparseXbsrilu02_zeroPivot is a blocking function. It might influence
  *  performance negatively.
+ *
+ *  @param[in]
+ *  handle      handle to the hipsparse library context queue.
+ *  @param[in]
+ *  info        structure that holds the information collected during the analysis step.
+ *  @param[inout]
+ *  position    pointer to zero pivot \f$j\f$, can be in host or device memory.
+ *
+ *  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+ *  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p info or \p position pointer is
+ *              invalid.
+ *  \retval     HIPSPARSE_STATUS_INTERNAL_ERROR an internal error occurred.
+ *  \retval     HIPSPARSE_STATUS_ZERO_PIVOT zero pivot has been found.
  */
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
@@ -6763,6 +8619,22 @@ hipsparseStatus_t
  *  setting \p enable_boost to 0.
  *
  *  \note \p tol and \p boost_val can be in host or device memory.
+ *
+ *  @param[in]
+ *  handle        handle to the hipsparse library context queue.
+ *  @param[in]
+ *  info          structure that holds the information collected during the analysis step.
+ *  @param[in]
+ *  enable_boost  enable/disable numeric boost.
+ *  @param[in]
+ *  tol           tolerance to determine whether a numerical value is replaced or not.
+ *  @param[in]
+ *  boost_val     boost value to replace a numerical value.
+ *
+ *  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+ *  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p info, \p tol or \p boost_val pointer
+ *              is invalid.
+ *  \retval     HIPSPARSE_STATUS_INTERNAL_ERROR an internal error occurred.
 */
 /**@{*/
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
@@ -6805,6 +8677,43 @@ hipsparseStatus_t hipsparseZbsrilu02_numericBoost(hipsparseHandle_t handle,
  *  \p hipsparseXbsrilu02_bufferSize returns the size of the temporary storage buffer
  *  in bytes that is required by hipsparseXbsrilu02_analysis() and hipsparseXbsrilu02().
  *  The temporary storage buffer must be allocated by the user.
+ *
+ *  @param[in]
+ *  handle             handle to the hipsparse library context queue.
+ *  @param[in]
+ *  dirA               direction that specifies whether to count nonzero elements by \ref HIPSPARSE_DIRECTION_ROW 
+ *                     or by \ref HIPSPARSE_DIRECTION_COLUMN.
+ *  @param[in]
+ *  mb                 number of block rows in the sparse BSR matrix.
+ *  @param[in]
+ *  nnzb               number of non-zero block entries of the sparse BSR matrix.
+ *  @param[in]
+ *  descrA             descriptor of the sparse BSR matrix.
+ *  @param[in]
+ *  bsrSortedValA      array of length \p nnzb*blockDim*blockDim containing the values of the sparse BSR matrix.
+ *  @param[in]
+ *  bsrSortedRowPtrA   array of \p mb+1 elements that point to the start of every block row of the
+ *                     sparse BSR matrix.
+ *  @param[in]
+ *  bsrSortedColIndA   array of \p nnzb elements containing the block column indices of the sparse BSR matrix.
+ *  @param[in]
+ *  blockDim           the block dimension of the BSR matrix. Between 1 and m where \p m=mb*blockDim.
+ *  @param[out]
+ *  info               structure that holds the information collected during the analysis step.
+ *  @param[out]
+ *  pBufferSizeInBytes number of bytes of the temporary storage buffer required by
+ *                     hipsparseSbsrilu02_analysis(), hipsparseDbsrilu02_analysis(),
+ *                     hipsparseCbsrilu02_analysis(), hipsparseZbsrilu02_analysis(),
+ *                     hipsparseSbsrilu02(), hipsparseDbsrilu02(), hipsparseCbsrilu02()
+ *                     and hipsparseZbsrilu02().
+ *
+ *  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+ *  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p mb, \p nnzb, \p blockDim, \p descrA, 
+ *              \p bsrSortedValA, \p bsrSortedRowPtrA, \p bsrSortedColIndA, \p info or 
+ *              \p pBufferSizeInBytes pointer is invalid.
+ *  \retval     HIPSPARSE_STATUS_INTERNAL_ERROR an internal error occurred.
+ *  \retval     HIPSPARSE_STATUS_NOT_SUPPORTED
+ *              \ref hipsparseMatrixType_t != \ref HIPSPARSE_MATRIX_TYPE_GENERAL.
 */
 /**@{*/
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
@@ -6876,6 +8785,41 @@ hipsparseStatus_t hipsparseZbsrilu02_bufferSize(hipsparseHandle_t         handle
  *  \note
  *  This function is non blocking and executed asynchronously with respect to the host.
  *  It may return before the actual computation has finished.
+ *
+ *  @param[in]
+ *  handle           handle to the hipsparse library context queue.
+ *  @param[in]
+ *  dirA             direction that specified whether to count nonzero elements by
+ *                   \ref HIPSPARSE_DIRECTION_ROW or by \ref HIPSPARSE_DIRECTION_COLUMN.
+ *  @param[in]
+ *  mb               number of block rows in the sparse BSR matrix.
+ *  @param[in]
+ *  nnzb             number of non-zero block entries of the sparse BSR matrix.
+ *  @param[in]
+ *  descrA           descriptor of the sparse BSR matrix.
+ *  @param[in]
+ *  bsrSortedValA    array of length \p nnzb*blockDim*blockDim containing the values of the sparse BSR matrix.
+ *  @param[in]
+ *  bsrSortedRowPtrA array of \p mb+1 elements that point to the start of every block row of the
+ *                   sparse BSR matrix.
+ *  @param[in]
+ *  bsrSortedColIndA array of \p nnzb elements containing the block column indices of the sparse BSR matrix.
+ *  @param[in]
+ *  blockDim         the block dimension of the BSR matrix. Between 1 and m where \p m=mb*blockDim.
+ *  @param[out]
+ *  info             structure that holds the information collected during the analysis step.
+ *  @param[in]
+ *  policy           \ref HIPSPARSE_SOLVE_POLICY_NO_LEVEL or \ref HIPSPARSE_SOLVE_POLICY_USE_LEVEL.
+ *  @param[in]
+ *  pBuffer          temporary storage buffer allocated by the user.
+ *
+ *  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+ *  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p mb, \p nnzb, \p blockDim, \p descrA, 
+ *              \p bsrSortedValA, \p bsrSortedRowPtrA, \p bsrSortedColIndA, \p info or \p pBuffer pointer 
+ *              is invalid.
+ *  \retval     HIPSPARSE_STATUS_INTERNAL_ERROR an internal error occurred.
+ *  \retval     HIPSPARSE_STATUS_NOT_SUPPORTED
+ *              \ref hipsparseMatrixType_t != \ref HIPSPARSE_MATRIX_TYPE_GENERAL.
  */
 /**@{*/
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
@@ -6958,6 +8902,41 @@ hipsparseStatus_t hipsparseZbsrilu02_analysis(hipsparseHandle_t         handle,
  *  \note
  *  This function is non blocking and executed asynchronously with respect to the host.
  *  It may return before the actual computation has finished.
+ *
+ *  @param[in]
+ *  handle             handle to the hipsparse library context queue.
+ *  @param[in]
+ *  dirA               direction that specified whether to count nonzero elements by
+ *                     \ref HIPSPARSE_DIRECTION_ROW or by \ref HIPSPARSE_DIRECTION_COLUMN.
+ *  @param[in]
+ *  mb                 number of block rows in the sparse BSR matrix.
+ *  @param[in]
+ *  nnzb               number of non-zero block entries of the sparse BSR matrix.
+ *  @param[in]
+ *  descrA             descriptor of the sparse BSR matrix.
+ *  @param[inout]
+ *  bsrSortedValA_valM array of length \p nnzb*blockDim*blockDim containing the values of the sparse BSR matrix.
+ *  @param[in]
+ *  bsrSortedRowPtrA   array of \p mb+1 elements that point to the start of every block row of the
+ *                     sparse BSR matrix.
+ *  @param[in]
+ *  bsrSortedColIndA   array of \p nnzb elements containing the block column indices of the sparse BSR matrix.
+ *  @param[in]
+ *  blockDim           the block dimension of the BSR matrix. Between 1 and m where \p m=mb*blockDim.
+ *  @param[in]
+ *  info               structure that holds the information collected during the analysis step.
+ *  @param[in]
+ *  policy             \ref HIPSPARSE_SOLVE_POLICY_NO_LEVEL or \ref HIPSPARSE_SOLVE_POLICY_USE_LEVEL.
+ *  @param[in]
+ *  pBuffer            temporary storage buffer allocated by the user.
+ *
+ *  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+ *  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p mb, \p nnzb, \p blockDim, \p descrA, 
+ *              \p bsrSortedValA_valM, \p bsrSortedRowPtrA or \p bsrSortedColIndA pointer is invalid.
+ *  \retval     HIPSPARSE_STATUS_ARCH_MISMATCH the device is not supported.
+ *  \retval     HIPSPARSE_STATUS_INTERNAL_ERROR an internal error occurred.
+ *  \retval     HIPSPARSE_STATUS_NOT_SUPPORTED
+ *              \ref hipsparseMatrixType_t != \ref HIPSPARSE_MATRIX_TYPE_GENERAL.
  */
 /**@{*/
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
@@ -7043,6 +9022,19 @@ hipsparseStatus_t hipsparseZbsrilu02(hipsparseHandle_t         handle,
 *
 *  \note \p hipsparseXcsrilu02_zeroPivot is a blocking function. It might influence
 *  performance negatively.
+*
+*  @param[in]
+*  handle      handle to the hipsparse library context queue.
+*  @param[in]
+*  info        structure that holds the information collected during the analysis step.
+*  @param[inout]
+*  position    pointer to zero pivot \f$j\f$, can be in host or device memory.
+*
+*  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p info or \p position pointer is
+*              invalid.
+*  \retval     HIPSPARSE_STATUS_INTERNAL_ERROR an internal error occurred.
+*  \retval     HIPSPARSE_STATUS_ZERO_PIVOT zero pivot has been found.
 */
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
@@ -7065,6 +9057,22 @@ hipsparseStatus_t
  *  setting \p enable_boost to 0.
  *
  *  \note \p tol and \p boost_val can be in host or device memory.
+ *
+ *  @param[in]
+ *  handle          handle to the hipsparse library context queue.
+ *  @param[in]
+ *  info            structure that holds the information collected during the analysis step.
+ *  @param[in]
+ *  enable_boost    enable/disable numeric boost.
+ *  @param[in]
+ *  tol             tolerance to determine whether a numerical value is replaced or not.
+ *  @param[in]
+ *  boost_val       boost value to replace a numerical value.
+ *
+ *  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+ *  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p info, \p tol or \p boost_val pointer
+ *              is invalid.
+ *  \retval     HIPSPARSE_STATUS_INTERNAL_ERROR an internal error occurred.
  */
 /**@{*/
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
@@ -7107,6 +9115,37 @@ hipsparseStatus_t hipsparseZcsrilu02_numericBoost(hipsparseHandle_t handle,
 *  \p hipsparseXcsrilu02_bufferSize returns the size of the temporary storage buffer
 *  in bytes that is required by hipsparseXcsrilu02_analysis() and hipsparseXcsrilu02_solve(). 
 *  The temporary storage buffer must be allocated by the user.
+*
+*  @param[in]
+*  handle             handle to the hipsparse library context queue.
+*  @param[in]
+*  m                  number of rows of the sparse CSR matrix.
+*  @param[in]
+*  nnz                number of non-zero entries of the sparse CSR matrix.
+*  @param[in]
+*  descrA             descriptor of the sparse CSR matrix.
+*  @param[in]
+*  csrSortedValA      array of \p nnz elements of the sparse CSR matrix.
+*  @param[in]
+*  csrSortedRowPtrA   array of \p m+1 elements that point to the start of every row of the
+*                     sparse CSR matrix.
+*  @param[in]
+*  csrSortedColIndA   array of \p nnz elements containing the column indices of the sparse
+*                     CSR matrix.
+*  @param[out]
+*  info               structure that holds the information collected during the analysis step.
+*  @param[out]
+*  pBufferSizeInBytes number of bytes of the temporary storage buffer required by
+*                     hipsparseScsrilu02_analysis(), hipsparseDcsrilu02_analysis(),
+*                     hipsparseCcsrilu02_analysis(), hipsparseZcsrilu02_analysis(),
+*                     hipsparseScsrilu02(), hipsparseDcsrilu02(), hipsparseCcsrilu02() and
+*                     hipsparseZcsrilu02().
+*
+*  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p m, \p nnz, \p descrA, \p csrSortedValA, 
+*              \p csrSortedRowPtrA, \p csrSortedColIndA, \p info or \p pBufferSizeInBytes pointer 
+*              is invalid.
+*  \retval     HIPSPARSE_STATUS_INTERNAL_ERROR an internal error occurred.
 */
 /**@{*/
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
@@ -7164,6 +9203,37 @@ hipsparseStatus_t hipsparseZcsrilu02_bufferSize(hipsparseHandle_t         handle
 *  \p hipsparseXcsrilu02_bufferSizeExt returns the size of the temporary storage buffer
 *  in bytes that is required by hipsparseXcsrilu02_analysis() and hipsparseXcsrilu02_solve(). 
 *  The temporary storage buffer must be allocated by the user.
+*
+*  @param[in]
+*  handle             handle to the hipsparse library context queue.
+*  @param[in]
+*  m                  number of rows of the sparse CSR matrix.
+*  @param[in]
+*  nnz                number of non-zero entries of the sparse CSR matrix.
+*  @param[in]
+*  descrA             descriptor of the sparse CSR matrix.
+*  @param[in]
+*  csrSortedValA      array of \p nnz elements of the sparse CSR matrix.
+*  @param[in]
+*  csrSortedRowPtrA   array of \p m+1 elements that point to the start of every row of the
+*                     sparse CSR matrix.
+*  @param[in]
+*  csrSortedColIndA   array of \p nnz elements containing the column indices of the sparse
+*                     CSR matrix.
+*  @param[out]
+*  info               structure that holds the information collected during the analysis step.
+*  @param[out]
+*  pBufferSizeInBytes number of bytes of the temporary storage buffer required by
+*                     hipsparseScsrilu02_analysis(), hipsparseDcsrilu02_analysis(),
+*                     hipsparseCcsrilu02_analysis(), hipsparseZcsrilu02_analysis(),
+*                     hipsparseScsrilu02(), hipsparseDcsrilu02(), hipsparseCcsrilu02() and
+*                     hipsparseZcsrilu02().
+*
+*  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p m, \p nnz, \p descrA, \p csrSortedValA, 
+*              \p csrSortedRowPtrA, \p csrSortedColIndA, \p info or \p pBufferSizeInBytes pointer 
+*              is invalid.
+*  \retval     HIPSPARSE_STATUS_INTERNAL_ERROR an internal error occurred.
 */
 /**@{*/
 HIPSPARSE_EXPORT
@@ -7222,6 +9292,35 @@ hipsparseStatus_t hipsparseZcsrilu02_bufferSizeExt(hipsparseHandle_t         han
 *  \note
 *  This function is non blocking and executed asynchronously with respect to the host.
 *  It may return before the actual computation has finished.
+*
+*  @param[in]
+*  handle           handle to the hipsparse library context queue.
+*  @param[in]
+*  m                number of rows of the sparse CSR matrix.
+*  @param[in]
+*  nnz              number of non-zero entries of the sparse CSR matrix.
+*  @param[in]
+*  descrA           descriptor of the sparse CSR matrix.
+*  @param[in]
+*  csrSortedValA    array of \p nnz elements of the sparse CSR matrix.
+*  @param[in]
+*  csrSortedRowPtrA array of \p m+1 elements that point to the start of every row of the
+*                   sparse CSR matrix.
+*  @param[in]
+*  csrSortedColIndA array of \p nnz elements containing the column indices of the sparse
+*                   CSR matrix.
+*  @param[out]
+*  info             structure that holds the information collected during
+*                   the analysis step.
+*  @param[in]
+*  policy           \ref HIPSPARSE_SOLVE_POLICY_NO_LEVEL or \ref HIPSPARSE_SOLVE_POLICY_USE_LEVEL.
+*  @param[in]
+*  pBuffer          temporary storage buffer allocated by the user.
+*
+*  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p m, \p nnz, \p descrA, \p csrSortedValA, 
+*              \p csrSortedRowPtrA, \p csrSortedColIndA, \p info or \p pBuffer pointer is invalid.
+*  \retval     HIPSPARSE_STATUS_INTERNAL_ERROR an internal error occurred.
 */
 /**@{*/
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
@@ -7300,6 +9399,35 @@ hipsparseStatus_t hipsparseZcsrilu02_analysis(hipsparseHandle_t         handle,
 *  \note
 *  This function is non blocking and executed asynchronously with respect to the host.
 *  It may return before the actual computation has finished.
+*
+*  @param[in]
+*  handle             handle to the hipsparse library context queue.
+*  @param[in]
+*  m                  number of rows of the sparse CSR matrix.
+*  @param[in]
+*  nnz                number of non-zero entries of the sparse CSR matrix.
+*  @param[in]
+*  descrA             descriptor of the sparse CSR matrix.
+*  @param[inout]
+*  csrSortedValA_valM array of \p nnz elements of the sparse CSR matrix.
+*  @param[in]
+*  csrSortedRowPtrA   array of \p m+1 elements that point to the start
+*                     of every row of the sparse CSR matrix.
+*  @param[in]
+*  csrSortedColIndA   array of \p nnz elements containing the column indices of the sparse
+*                     CSR matrix.
+*  @param[in]
+*  info               structure that holds the information collected during the analysis step.
+*  @param[in]
+*  policy             \ref HIPSPARSE_SOLVE_POLICY_NO_LEVEL or \ref HIPSPARSE_SOLVE_POLICY_USE_LEVEL.
+*  @param[in]
+*  pBuffer            temporary storage buffer allocated by the user.
+*
+*  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p m, \p nnz, \p descrA, \p csrSortedValA_valM, 
+*              \p csrSortedRowPtrA or \p csrSortedColIndA pointer is invalid.
+*  \retval     HIPSPARSE_STATUS_ARCH_MISMATCH the device is not supported.
+*  \retval     HIPSPARSE_STATUS_INTERNAL_ERROR an internal error occurred.
 */
 /**@{*/
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
@@ -7382,6 +9510,19 @@ hipsparseStatus_t hipsparseZcsrilu02(hipsparseHandle_t         handle,
  *
  *  \note \p hipsparseXbsric02_zeroPivot is a blocking function. It might influence
  *  performance negatively.
+ *
+ *  @param[in]
+ *  handle      handle to the hipsparse library context queue.
+ *  @param[in]
+ *  info        structure that holds the information collected during the analysis step.
+ *  @param[inout]
+ *  position    pointer to zero pivot \f$j\f$, can be in host or device memory.
+ *
+ *  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+ *  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p info or \p position pointer is
+ *              invalid.
+ *  \retval     HIPSPARSE_STATUS_INTERNAL_ERROR an internal error occurred.
+ *  \retval     HIPSPARSE_STATUS_ZERO_PIVOT zero pivot has been found.
  */
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
@@ -7398,6 +9539,43 @@ hipsparseStatus_t
  *  \p hipsparseXbsric02_bufferSize returns the size of the temporary storage buffer
  *  in bytes that is required by hipsparseXbsric02_analysis() and hipsparseXbsric02(). 
  *  The temporary storage buffer must be allocated by the user.
+ *
+ *  @param[in]
+ *  handle             handle to the hipsparse library context queue.
+ *  @param[in]
+ *  dirA               direction that specifies whether to count nonzero elements by \ref HIPSPARSE_DIRECTION_ROW 
+ *                     or by \ref HIPSPARSE_DIRECTION_COLUMN.
+ *  @param[in]
+ *  mb                 number of block rows in the sparse BSR matrix.
+ *  @param[in]
+ *  nnzb               number of non-zero block entries of the sparse BSR matrix.
+ *  @param[in]
+ *  descrA             descriptor of the sparse BSR matrix.
+ *  @param[in]
+ *  bsrValA            array of length \p nnzb*blockDim*blockDim containing the values of the sparse BSR matrix.
+ *  @param[in]
+ *  bsrRowPtrA         array of \p mb+1 elements that point to the start of every block row of the
+ *                     sparse BSR matrix.
+ *  @param[in]
+ *  bsrColIndA         array of \p nnzb elements containing the block column indices of the sparse BSR matrix.
+ *  @param[in]
+ *  blockDim           the block dimension of the BSR matrix. Between 1 and m where \p m=mb*blockDim.
+ *  @param[out]
+ *  info               structure that holds the information collected during the analysis step.
+ *  @param[out]
+ *  pBufferSizeInBytes number of bytes of the temporary storage buffer required by
+ *                     hipsparseSbsric02_analysis(), hipsparseDbsric02_analysis(),
+ *                     hipsparseCbsric02_analysis(), hipsparseZbsric02_analysis(),
+ *                     hipsparseSbsric02(), hipsparseDbsric02(), hipsparseCbsric02()
+ *                     and hipsparseZbsric02().
+ *
+ *  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+ *  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p mb, \p nnzb, \p blockDim, \p descrA, 
+ *              \p bsrValA, \p bsrRowPtrA, \p bsrColIndA, \p info or \p pBufferSizeInBytes pointer 
+ *              is invalid.
+ *  \retval     HIPSPARSE_STATUS_INTERNAL_ERROR an internal error occurred.
+ *  \retval     HIPSPARSE_STATUS_NOT_SUPPORTED
+ *              \ref hipsparseMatrixType_t != \ref HIPSPARSE_MATRIX_TYPE_GENERAL.
  */
 /**@{*/
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
@@ -7469,6 +9647,40 @@ hipsparseStatus_t hipsparseZbsric02_bufferSize(hipsparseHandle_t         handle,
  *  \note
  *  This function is non blocking and executed asynchronously with respect to the host.
  *  It may return before the actual computation has finished.
+ *
+ *  @param[in]
+ *  handle      handle to the hipsparse library context queue.
+ *  @param[in]
+ *  dirA        direction that specified whether to count nonzero elements by \ref HIPSPARSE_DIRECTION_ROW or by
+ *              \ref HIPSPARSE_DIRECTION_COLUMN.
+ *  @param[in]
+ *  mb          number of block rows in the sparse BSR matrix.
+ *  @param[in]
+ *  nnzb        number of non-zero block entries of the sparse BSR matrix.
+ *  @param[in]
+ *  descr       descriptor of the sparse BSR matrix.
+ *  @param[in]
+ *  bsrValA     array of length \p nnzb*blockDim*blockDim containing the values of the sparse BSR matrix.
+ *  @param[in]
+ *  bsrRowPtrA  array of \p mb+1 elements that point to the start of every block row of the
+ *              sparse BSR matrix.
+ *  @param[in]
+ *  bsrColIndA  array of \p nnzb elements containing the block column indices of the sparse BSR matrix.
+ *  @param[in]
+ *  blockDim    the block dimension of the BSR matrix. Between 1 and m where \p m=mb*blockDim.
+ *  @param[out]
+ *  info        structure that holds the information collected during the analysis step.
+ *  @param[in]
+ *  policy      \ref HIPSPARSE_SOLVE_POLICY_NO_LEVEL or \ref HIPSPARSE_SOLVE_POLICY_USE_LEVEL.
+ *  @param[in]
+ *  pBuffer     temporary storage buffer allocated by the user.
+ *
+ *  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+ *  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p mb, \p nnzb, \p blockDim, \p descrA, 
+ *              \p bsrValA, \p bsrRowPtrA, \p bsrColIndA, \p info or \p pBuffer pointer is invalid.
+ *  \retval     HIPSPARSE_STATUS_INTERNAL_ERROR an internal error occurred.
+ *  \retval     HIPSPARSE_STATUS_NOT_SUPPORTED
+ *              \ref hipsparseMatrixType_t != \ref HIPSPARSE_MATRIX_TYPE_GENERAL.
  */
 /**@{*/
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
@@ -7551,6 +9763,41 @@ hipsparseStatus_t hipsparseZbsric02_analysis(hipsparseHandle_t         handle,
  *  \note
  *  This function is non blocking and executed asynchronously with respect to the host.
  *  It may return before the actual computation has finished.
+ *
+ *  @param[in]
+ *  handle      handle to the hipsparse library context queue.
+ *  @param[in]
+ *  dirA        direction that specified whether to count nonzero elements by \ref HIPSPARSE_DIRECTION_ROW or by
+ *              \ref HIPSPARSE_DIRECTION_COLUMN.
+ *  @param[in]
+ *  mb          number of block rows in the sparse BSR matrix.
+ *  @param[in]
+ *  nnzb        number of non-zero block entries of the sparse BSR matrix.
+ *  @param[in]
+ *  descrA      descriptor of the sparse BSR matrix.
+ *  @param[inout]
+ *  bsrValA     array of length \p nnzb*blockDim*blockDim containing the values of the sparse BSR matrix.
+ *  @param[in]
+ *  bsrRowPtrA  array of \p mb+1 elements that point to the start of every block row of the
+ *              sparse BSR matrix.
+ *  @param[in]
+ *  bsrColIndA  array of \p nnzb elements containing the block column indices of the sparse BSR matrix.
+ *  @param[in]
+ *  blockDim    the block dimension of the BSR matrix. Between 1 and m where \p m=mb*blockDim.
+ *  @param[in]
+ *  info        structure that holds the information collected during the analysis step.
+ *  @param[in]
+ *  policy      \ref HIPSPARSE_SOLVE_POLICY_NO_LEVEL or \ref HIPSPARSE_SOLVE_POLICY_USE_LEVEL.
+ *  @param[in]
+ *  pBuffer     temporary storage buffer allocated by the user.
+ *
+ *  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+ *  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p mb, \p nnzb, \p blockDim, \p descrA, 
+ *              \p bsrValA, \p bsrRowPtrA, or \p bsrColIndA pointer is invalid.
+ *  \retval     HIPSPARSE_STATUS_ARCH_MISMATCH the device is not supported.
+ *  \retval     HIPSPARSE_STATUS_INTERNAL_ERROR an internal error occurred.
+ *  \retval     HIPSPARSE_STATUS_NOT_SUPPORTED
+ *              \ref hipsparseMatrixType_t != \ref HIPSPARSE_MATRIX_TYPE_GENERAL.
  */
 /**@{*/
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
@@ -7628,6 +9875,19 @@ hipsparseStatus_t hipsparseZbsric02(hipsparseHandle_t         handle,
 *
 *  \note \p hipsparseXcsric02_zeroPivot is a blocking function. It might influence
 *  performance negatively.
+*
+*  @param[in]
+*  handle      handle to the hipsparse library context queue.
+*  @param[in]
+*  info        structure that holds the information collected during the analysis step.
+*  @param[inout]
+*  position    pointer to zero pivot \f$j\f$, can be in host or device memory.
+*
+*  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p info or \p position pointer is
+*              invalid.
+*  \retval     HIPSPARSE_STATUS_INTERNAL_ERROR an internal error occurred.
+*  \retval     HIPSPARSE_STATUS_ZERO_PIVOT zero pivot has been found.
 */
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
@@ -7643,6 +9903,39 @@ hipsparseStatus_t
 *  \details
 *  \p hipsparseXcsric02_bufferSize returns the size of the temporary storage buffer in bytes
 *  that is required by hipsparseXcsric02_analysis() and hipsparseXcsric02().
+*
+*  @param[in]
+*  handle             handle to the hipsparse library context queue.
+*  @param[in]
+*  m                  number of rows of the sparse CSR matrix.
+*  @param[in]
+*  nnz                number of non-zero entries of the sparse CSR matrix.
+*  @param[in]
+*  descrA             descriptor of the sparse CSR matrix.
+*  @param[in]
+*  csrSortedValA      array of \p nnz elements of the sparse CSR matrix.
+*  @param[in]
+*  csrSortedRowPtrA   array of \p m+1 elements that point to the start of every row of the
+*                     sparse CSR matrix.
+*  @param[in]
+*  csrSortedColIndA   array of \p nnz elements containing the column indices of the sparse
+*                     CSR matrix.
+*  @param[out]
+*  info               structure that holds the information collected during the analysis step.
+*  @param[out]
+*  pBufferSizeInBytes number of bytes of the temporary storage buffer required by
+*                     hipsparseScsric02_analysis(), hipsparseDcsric02_analysis(),
+*                     hipsparseCcsric02_analysis(), hipsparseZcsric02_analysis(),
+*                     hipsparseScsric02(), hipsparseDcsric02(), hipsparseCcsric02()
+*                     and hipsparseZcsric02().
+*
+*  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p m, \p nnz, \p descrA, \p csrSortedValA, 
+*              \p csrSortedRowPtrA, \p csrSortedColIndA, \p info or \p pBufferSizeInBytes pointer is 
+*              invalid.
+*  \retval     HIPSPARSE_STATUS_INTERNAL_ERROR an internal error occurred.
+*  \retval     HIPSPARSE_STATUS_NOT_SUPPORTED
+*              \ref hipsparseMatrixType_t != \ref HIPSPARSE_MATRIX_TYPE_GENERAL.
 */
 /**@{*/
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
@@ -7699,6 +9992,39 @@ hipsparseStatus_t hipsparseZcsric02_bufferSize(hipsparseHandle_t         handle,
 *  \details
 *  \p hipsparseXcsric02_bufferSizeExt returns the size of the temporary storage buffer
 *  in bytes that is required by hipsparseXcsric02_analysis() and hipsparseXcsric02().
+*
+*  @param[in]
+*  handle             handle to the hipsparse library context queue.
+*  @param[in]
+*  m                  number of rows of the sparse CSR matrix.
+*  @param[in]
+*  nnz                number of non-zero entries of the sparse CSR matrix.
+*  @param[in]
+*  descrA             descriptor of the sparse CSR matrix.
+*  @param[in]
+*  csrSortedValA      array of \p nnz elements of the sparse CSR matrix.
+*  @param[in]
+*  csrSortedRowPtrA   array of \p m+1 elements that point to the start of every row of the
+*                     sparse CSR matrix.
+*  @param[in]
+*  csrSortedColIndA   array of \p nnz elements containing the column indices of the sparse
+*                     CSR matrix.
+*  @param[out]
+*  info               structure that holds the information collected during the analysis step.
+*  @param[out]
+*  pBufferSizeInBytes number of bytes of the temporary storage buffer required by
+*                     hipsparseScsric02_analysis(), hipsparseDcsric02_analysis(),
+*                     hipsparseCcsric02_analysis(), hipsparseZcsric02_analysis(),
+*                     hipsparseScsric02(), hipsparseDcsric02(), hipsparseCcsric02()
+*                     and hipsparseZcsric02().
+*
+*  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p m, \p nnz, \p descrA, \p csrSortedValA, 
+*              \p csrSortedRowPtrA, \p csrSortedColIndA, \p info or \p pBufferSizeInBytes pointer is 
+*              invalid.
+*  \retval     HIPSPARSE_STATUS_INTERNAL_ERROR an internal error occurred.
+*  \retval     HIPSPARSE_STATUS_NOT_SUPPORTED
+*              \ref hipsparseMatrixType_t != \ref HIPSPARSE_MATRIX_TYPE_GENERAL.
 */
 /**@{*/
 HIPSPARSE_EXPORT
@@ -7757,6 +10083,37 @@ hipsparseStatus_t hipsparseZcsric02_bufferSizeExt(hipsparseHandle_t         hand
 *  \note
 *  This function is non blocking and executed asynchronously with respect to the host.
 *  It may return before the actual computation has finished.
+*
+*  @param[in]
+*  handle           handle to the hipsparse library context queue.
+*  @param[in]
+*  m                number of rows of the sparse CSR matrix.
+*  @param[in]
+*  nnz              number of non-zero entries of the sparse CSR matrix.
+*  @param[in]
+*  descrA           descriptor of the sparse CSR matrix.
+*  @param[in]
+*  csrSortedValA    array of \p nnz elements of the sparse CSR matrix.
+*  @param[in]
+*  csrSortedRowPtrA array of \p m+1 elements that point to the start of every row of the
+*                   sparse CSR matrix.
+*  @param[in]
+*  csrSortedColIndA array of \p nnz elements containing the column indices of the sparse
+*                   CSR matrix.
+*  @param[out]
+*  info             structure that holds the information collected during
+*                   the analysis step.
+*  @param[in]
+*  policy           \ref HIPSPARSE_SOLVE_POLICY_NO_LEVEL or \ref HIPSPARSE_SOLVE_POLICY_USE_LEVEL.
+*  @param[in]
+*  pBuffer          temporary storage buffer allocated by the user.
+*
+*  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p m, \p nnz, \p descrA, \p csrSortedValA, 
+*              \p csrSortedRowPtrA, \p csrSortedColIndA, \p info or \p pBuffer pointer is invalid.
+*  \retval     HIPSPARSE_STATUS_INTERNAL_ERROR an internal error occurred.
+*  \retval     HIPSPARSE_STATUS_NOT_SUPPORTED
+*              \ref hipsparseMatrixType_t != \ref HIPSPARSE_MATRIX_TYPE_GENERAL.
 */
 /**@{*/
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
@@ -7835,6 +10192,37 @@ hipsparseStatus_t hipsparseZcsric02_analysis(hipsparseHandle_t         handle,
 *  \note
 *  This function is non blocking and executed asynchronously with respect to the host.
 *  It may return before the actual computation has finished.
+*
+*  @param[in]
+*  handle             handle to the hipsparse library context queue.
+*  @param[in]
+*  m                  number of rows of the sparse CSR matrix.
+*  @param[in]
+*  nnz                number of non-zero entries of the sparse CSR matrix.
+*  @param[in]
+*  descrA             descriptor of the sparse CSR matrix.
+*  @param[inout]
+*  csrSortedValA_valM array of \p nnz elements of the sparse CSR matrix.
+*  @param[in]
+*  csrSortedRowPtrA   array of \p m+1 elements that point to the start
+*                     of every row of the sparse CSR matrix.
+*  @param[in]
+*  csrSortedColIndA   array of \p nnz elements containing the column indices of the sparse
+*                     CSR matrix.
+*  @param[in]
+*  info               structure that holds the information collected during the analysis step.
+*  @param[in]
+*  policy             \ref HIPSPARSE_SOLVE_POLICY_NO_LEVEL or \ref HIPSPARSE_SOLVE_POLICY_USE_LEVEL.
+*  @param[in]
+*  pBuffer            temporary storage buffer allocated by the user.
+*
+*  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p m, \p nnz, \p descrA, \p csrSortedValA_valM, 
+*              \p csrSortedRowPtrA or \p csrSortedColIndA pointer is invalid.
+*  \retval     HIPSPARSE_STATUS_ARCH_MISMATCH the device is not supported.
+*  \retval     HIPSPARSE_STATUS_INTERNAL_ERROR an internal error occurred.
+*  \retval     HIPSPARSE_STATUS_NOT_SUPPORTED
+*              \ref hipsparseMatrixType_t != \ref HIPSPARSE_MATRIX_TYPE_GENERAL.
 */
 /**@{*/
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
@@ -8013,6 +10401,32 @@ hipsparseStatus_t hipsparseZgtsv2(hipsparseHandle_t       handle,
 *  \p hipsparseXgtsv2_nopivot_bufferSizeExt returns the size of the temporary storage
 *  buffer in bytes that is required by hipsparseXgtsv2_nopivot(). The temporary storage 
 *  buffer must be allocated by the user.
+*
+*  @param[in]
+*  handle             handle to the hipsparse library context queue.
+*  @param[in]
+*  m                  size of the tri-diagonal linear system (must be >= 2).
+*  @param[in]
+*  n                  number of columns in the dense matrix B.
+*  @param[in]
+*  dl                 lower diagonal of tri-diagonal system. First entry must be zero.
+*  @param[in]
+*  d                  main diagonal of tri-diagonal system.
+*  @param[in]
+*  du                 upper diagonal of tri-diagonal system. Last entry must be zero.
+*  @param[in]
+*  B                  Dense matrix of size ( \p ldb, \p n ).
+*  @param[in]
+*  ldb                Leading dimension of B. Must satisfy \p ldb >= max(1, m).
+*  @param[out]
+*  pBufferSizeInBytes number of bytes of the temporary storage buffer required by
+*                     hipsparseSgtsv2_nopivot(), hipsparseDgtsv2_nopivot(), hipsparseCgtsv2_nopivot()
+*                     and hipsparseZgtsv2_nopivot().
+*
+*  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p m, \p n, \p ldb, \p dl, \p d, \p du,
+*              \p B or \p pBufferSizeInBytes pointer is invalid.
+*  \retval     HIPSPARSE_STATUS_INTERNAL_ERROR an internal error occurred.
 */
 /**@{*/
 HIPSPARSE_EXPORT
@@ -8069,6 +10483,30 @@ hipsparseStatus_t hipsparseZgtsv2_nopivot_bufferSizeExt(hipsparseHandle_t       
 *  \note
 *  This function is non blocking and executed asynchronously with respect to the host.
 *  It may return before the actual computation has finished.
+*
+*  @param[in]
+*  handle      handle to the hipsparse library context queue.
+*  @param[in]
+*  m           size of the tri-diagonal linear system (must be >= 2).
+*  @param[in]
+*  n           number of columns in the dense matrix B.
+*  @param[in]
+*  dl          lower diagonal of tri-diagonal system. First entry must be zero.
+*  @param[in]
+*  d           main diagonal of tri-diagonal system.
+*  @param[in]
+*  du          upper diagonal of tri-diagonal system. Last entry must be zero.
+*  @param[inout]
+*  B           Dense matrix of size ( \p ldb, \p n ).
+*  @param[in]
+*  ldb         Leading dimension of B. Must satisfy \p ldb >= max(1, m).
+*  @param[in]
+*  pBuffer     temporary storage buffer allocated by the user.
+*
+*  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p m, \p n, \p ldb, \p dl, \p d,
+*              \p du, \p B or \p pBuffer pointer is invalid.
+*  \retval     HIPSPARSE_STATUS_INTERNAL_ERROR an internal error occurred.
 */
 /**@{*/
 HIPSPARSE_EXPORT
@@ -8123,6 +10561,35 @@ hipsparseStatus_t hipsparseZgtsv2_nopivot(hipsparseHandle_t       handle,
 *  \p hipsparseXgtsv2StridedBatch_bufferSizeExt returns the size of the temporary storage
 *  buffer in bytes that is required by hipsparseXgtsv2StridedBatch(). The temporary 
 *  storage buffer must be allocated by the user.
+*
+*  @param[in]
+*  handle             handle to the hipsparse library context queue.
+*  @param[in]
+*  m                  size of the tri-diagonal linear system.
+*  @param[in]
+*  dl                 lower diagonal of tri-diagonal system where the ith system lower diagonal starts at 
+*                     \p dl+batchStride*i.
+*  @param[in]
+*  d                  main diagonal of tri-diagonal system where the ith system diagonal starts at 
+*                     \p d+batchStride*i.
+*  @param[in]
+*  du                 upper diagonal of tri-diagonal system where the ith system upper diagonal starts at 
+*                     \p du+batchStride*i.
+*  @param[inout]
+*  x                  Dense array of righthand-sides where the ith righthand-side starts at \p x+batchStride*i.
+*  @param[in]
+*  batchCount         The number of systems to solve.
+*  @param[in]
+*  batchStride        The number of elements that separate each system. Must satisfy \p batchStride >= m.
+*  @param[out]
+*  pBufferSizeInBytes number of bytes of the temporary storage buffer required by
+*                     hipsparseSgtsv2StridedBatch(), hipsparseDgtsv2StridedBatch(), 
+*                     hipsparseCgtsv2StridedBatch() and hipsparseZgtsv2StridedBatch().
+*
+*  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p m, \p batchCount, \p batchStride, \p dl, 
+*              \p d, \p du, \p x or \p pBufferSizeInBytes pointer is invalid.
+*  \retval     HIPSPARSE_STATUS_INTERNAL_ERROR an internal error occurred.
 */
 /**@{*/
 HIPSPARSE_EXPORT
@@ -8179,6 +10646,30 @@ hipsparseStatus_t hipsparseZgtsv2StridedBatch_bufferSizeExt(hipsparseHandle_t   
 *  \note
 *  This function is non blocking and executed asynchronously with respect to the host.
 *  It may return before the actual computation has finished.
+*
+*  @param[in]
+*  handle      handle to the hipsparse library context queue.
+*  @param[in]
+*  m           size of the tri-diagonal linear system (must be >= 2).
+*  @param[in]
+*  dl          lower diagonal of tri-diagonal system. First entry must be zero.
+*  @param[in]
+*  d           main diagonal of tri-diagonal system.
+*  @param[in]
+*  du          upper diagonal of tri-diagonal system. Last entry must be zero.
+*  @param[inout]
+*  x           Dense array of righthand-sides where the ith righthand-side starts at \p x+batchStride*i.
+*  @param[in]
+*  batchCount  The number of systems to solve.
+*  @param[in]
+*  batchStride The number of elements that separate each system. Must satisfy \p batchStride >= m.
+*  @param[in]
+*  pBuffer     temporary storage buffer allocated by the user.
+*
+*  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p m, \p batchCount, \p batchStride, \p dl, \p d,
+*              \p du, \p x or \p pBuffer pointer is invalid.
+*  \retval     HIPSPARSE_STATUS_INTERNAL_ERROR an internal error occurred.
 */
 /**@{*/
 HIPSPARSE_EXPORT
@@ -8233,6 +10724,34 @@ hipsparseStatus_t hipsparseZgtsv2StridedBatch(hipsparseHandle_t       handle,
 *  \p hipsparseXgtsvInterleavedBatch_bufferSizeExt returns the size of the temporary storage
 *  buffer in bytes that is required by hipsparseXgtsvInterleavedBatch(). The temporary storage 
 *  buffer must be allocated by the user.
+*
+*  @param[in]
+*  handle             handle to the hipsparse library context queue.
+*  @param[in]
+*  alg                Algorithm to use when solving tridiagonal systems. Options are thomas ( \p alg=0 ),
+*                     LU ( \p alg=1 ), or QR ( \p alg=2 ). Thomas algorithm is the fastest but is not
+*                     stable while LU and QR are slower but are stable.
+*  @param[in]
+*  m                  size of the tri-diagonal linear system.
+*  @param[in]
+*  dl                 lower diagonal of tri-diagonal system. The first element of the lower diagonal must be zero.
+*  @param[in]
+*  d                  main diagonal of tri-diagonal system.
+*  @param[in]
+*  du                 upper diagonal of tri-diagonal system. The last element of the upper diagonal must be zero.
+*  @param[inout]
+*  x                  Dense array of righthand-sides with dimension \p batchCount by \p m.
+*  @param[in]
+*  batchCount         The number of systems to solve.
+*  @param[out]
+*  pBufferSizeInBytes number of bytes of the temporary storage buffer required by
+*                     hipsparseSgtsvInterleavedBatch(), hipsparseDgtsvInterleavedBatch(), hipsparseCgtsvInterleavedBatch()
+*                     and hipsparseZgtsvInterleavedBatch().
+*
+*  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p m, \p batchCount, \p dl, \p d, \p du,
+*              \p x or \p pBufferSizeInBytes pointer is invalid.
+*  \retval     HIPSPARSE_STATUS_INTERNAL_ERROR an internal error occurred.
 */
 /**@{*/
 HIPSPARSE_EXPORT
@@ -8289,6 +10808,32 @@ hipsparseStatus_t hipsparseZgtsvInterleavedBatch_bufferSizeExt(hipsparseHandle_t
 *  \note
 *  This function is non blocking and executed asynchronously with respect to the host.
 *  It may return before the actual computation has finished.
+*
+*  @param[in]
+*  handle      handle to the hipsparse library context queue.
+*  @param[in]
+*  alg         Algorithm to use when solving tridiagonal systems. Options are thomas ( \p alg=0 ),
+*              LU ( \p alg=1 ), or QR ( \p alg=2 ). Thomas algorithm is the fastest but is not
+*              stable while LU and QR are slower but are stable.
+*  @param[in]
+*  m           size of the tri-diagonal linear system.
+*  @param[inout]
+*  dl          lower diagonal of tri-diagonal system. The first element of the lower diagonal must be zero.
+*  @param[inout]
+*  d           main diagonal of tri-diagonal system.
+*  @param[inout]
+*  du          upper diagonal of tri-diagonal system. The last element of the upper diagonal must be zero.
+*  @param[inout]
+*  x           Dense array of righthand-sides with dimension \p batchCount by \p m.
+*  @param[in]
+*  batchCount  The number of systems to solve.
+*  @param[in]
+*  pBuffer     temporary storage buffer allocated by the user.
+*
+*  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p m, \p batchCount, \p dl, \p d,
+*              \p du, \p x or \p pBuffer pointer is invalid.
+*  \retval     HIPSPARSE_STATUS_INTERNAL_ERROR an internal error occurred.
 */
 /**@{*/
 HIPSPARSE_EXPORT
@@ -8343,6 +10888,36 @@ hipsparseStatus_t hipsparseZgtsvInterleavedBatch(hipsparseHandle_t handle,
 *  \p hipsparseXgpsvInterleavedBatch_bufferSizeExt returns the size of the temporary storage
 *  buffer in bytes that is required by hipsparseXgpsvInterleavedBatch(). The temporary 
 *  storage buffer must be allocated by the user.
+*
+*  @param[in]
+*  handle             handle to the hipsparse library context queue.
+*  @param[in]
+*  alg                algorithm to solve the linear system.
+*  @param[in]
+*  m                  size of the pentadiagonal linear system.
+*  @param[in]
+*  ds                 lower diagonal (distance 2) of pentadiagonal system. First two entries
+*                     must be zero.
+*  @param[in]
+*  dl                 lower diagonal of pentadiagonal system. First entry must be zero.
+*  @param[in]
+*  d                  main diagonal of pentadiagonal system.
+*  @param[in]
+*  du                 upper diagonal of pentadiagonal system. Last entry must be zero.
+*  @param[in]
+*  dw                 upper diagonal (distance 2) of pentadiagonal system. Last two entries
+*                     must be zero.
+*  @param[in]
+*  x                  Dense array of right-hand-sides with dimension \p batchCount by \p m.
+*  @param[in]
+*  batchCount         The number of systems to solve.
+*  @param[out]
+*  pBufferSizeInBytes Number of bytes of the temporary storage buffer required.
+*
+*  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p m, \p alg, \p batchCount, \p ds, \p dl, 
+*              \p d, \p du, \p dw, \p x or \p pBufferSizeInBytes pointer is invalid.
+*  \retval     HIPSPARSE_STATUS_INTERNAL_ERROR an internal error occurred.
 */
 /**@{*/
 HIPSPARSE_EXPORT
@@ -8408,6 +10983,36 @@ hipsparseStatus_t hipsparseZgpsvInterleavedBatch_bufferSizeExt(hipsparseHandle_t
 *  \note
 *  This function is non blocking and executed asynchronously with respect to the host.
 *  It may return before the actual computation has finished.
+*
+*  @param[in]
+*  handle      handle to the hipsparse library context queue.
+*  @param[in]
+*  alg         algorithm to solve the linear system.
+*  @param[in]
+*  m           size of the pentadiagonal linear system.
+*  @param[inout]
+*  ds          lower diagonal (distance 2) of pentadiagonal system. First two entries
+*              must be zero.
+*  @param[inout]
+*  dl          lower diagonal of pentadiagonal system. First entry must be zero.
+*  @param[inout]
+*  d           main diagonal of pentadiagonal system.
+*  @param[inout]
+*  du          upper diagonal of pentadiagonal system. Last entry must be zero.
+*  @param[inout]
+*  dw          upper diagonal (distance 2) of pentadiagonal system. Last two entries
+*              must be zero.
+*  @param[inout]
+*  x           Dense array of right-hand-sides with dimension \p batchCount by \p m.
+*  @param[in]
+*  batchCount  The number of systems to solve.
+*  @param[in]
+*  pBuffer     Temporary storage buffer allocated by the user.
+*
+*  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p m, \p alg, \p batchCount, \p ds, 
+*              \p dl, \p d, \p du, \p dw, \p x or \p pBuffer pointer is invalid.
+*  \retval     HIPSPARSE_STATUS_INTERNAL_ERROR an internal error occurred.
 */
 /**@{*/
 HIPSPARSE_EXPORT
