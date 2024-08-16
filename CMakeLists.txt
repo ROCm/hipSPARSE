@@ -147,42 +147,17 @@ if(BUILD_CLIENTS_SAMPLES OR BUILD_CLIENTS_TESTS OR BUILD_CLIENTS_BENCHMARKS)
     set(GFORTRAN_RPM "gfortran")
   endif()
 
-  rocm_package_setup_component(clients)
-  rocm_package_setup_client_component(clients-common)
   if(BUILD_CLIENTS_TESTS)
-    rocm_package_setup_client_component(
-      tests
-      DEPENDS
-        COMPONENT clients-common
-        DEB "${GFORTRAN_DEB}"
-        RPM "${GFORTRAN_RPM}")
-    rocm_package_setup_client_component(
-      tests
-      DEPENDS
-        COMPONENT clients-common
-        DEB "${OPENMP_DEB}"
-        RPM "${OPENMP_RPM}"
-    )
+    rocm_package_setup_client_component(tests)
   endif()
-  if(BUILD_CLIENTS_SAMPLES)
-    rocm_package_setup_client_component(
-      samples
-      DEPENDS
-        COMPONENT clients-common
-        DEB "${GFORTRAN_DEB}"
-        RPM "${GFORTRAN_RPM}")
+#  if(BUILD_CLIENTS_SAMPLES)
+#    rocm_package_setup_client_component(samples)
+#  endif()
+
+  if(BUILD_CLIENTS_BENCHMARKS)
+  rocm_package_setup_client_component(benchmarks)
   endif()
 
-  if( BUILD_CLIENTS_BENCHMARKS )
-  rocm_package_setup_client_component(
-    benchmarks
-    DEPENDS
-      COMPONENT clients-common
-      DEB "${OPENMP_DEB}"
-      RPM "${OPENMP_RPM}"
-  )
-  endif()
-  
   add_subdirectory( clients )
 
   if(NOT WIN32)
