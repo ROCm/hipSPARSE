@@ -301,6 +301,7 @@ Function name                                                                   
 :cpp:func:`hipsparseXnnz() <hipsparseSnnz>`                                                                            x      x      x              x
 :cpp:func:`hipsparseXdense2csr() <hipsparseSdense2csr>`                                                                x      x      x              x
 :cpp:func:`hipsparseXpruneDense2csr_bufferSize() <hipsparseSpruneDense2csr_bufferSize>`                                x      x
+:cpp:func:`hipsparseXpruneDense2csr_bufferSizeExt() <hipsparseSpruneDense2csr_bufferSizeExt>`                          x      x
 :cpp:func:`hipsparseXpruneDense2csrNnz() <hipsparseSpruneDense2csrNnz>`                                                x      x
 :cpp:func:`hipsparseXpruneDense2csr() <hipsparseSpruneDense2csr>`                                                      x      x
 :cpp:func:`hipsparseXpruneDense2csrByPercentage_bufferSize() <hipsparseSpruneDense2csrByPercentage_bufferSize>`        x      x
