@@ -149,10 +149,11 @@ typedef void* hipsparseColorInfo_t;
  *
  *  \details
  *  The hipSPARSE bsrsv2 structure holds the information used by hipsparseXbsrsv2_zeroPivot(), 
- *  hipsparseXbsrsv2_bufferSize(), hipsparseXbsrsv2_bufferSizeExt(), hipsparseXbsrsv2_analysis(), 
- *  and hipsparseXbsrsv2_solve(). It must be initialized using hipsparseCreateBsrsv2Info() and 
- *  the returned structure must be passed to all subsequent library calls that involve bsrsv2. 
- *  It should be destroyed at the end using hipsparseDestroyBsrsv2Info().
+ *  \ref hipsparseSbsrsv2_bufferSize "hipsparseXbsrsv2_bufferSize()", \ref hipsparseSbsrsv2_bufferSizeExt 
+ *  "hipsparseXbsrsv2_bufferSizeExt()", \ref hipsparseSbsrsv2_analysis "hipsparseXbsrsv2_analysis()", 
+ *  and \ref hipsparseSbsrsv2_solve "hipsparseXbsrsv2_solve()". It must be initialized using 
+ *  hipsparseCreateBsrsv2Info() and the returned structure must be passed to all subsequent library calls 
+ *  that involve bsrsv2. It should be destroyed at the end using hipsparseDestroyBsrsv2Info().
  */
 typedef struct bsrsv2Info* bsrsv2Info_t;
 
@@ -160,9 +161,10 @@ typedef struct bsrsv2Info* bsrsv2Info_t;
  *  \brief Pointer type to opaque structure holding bsrsm2 info.
  *
  *  \details
- *  The hipSPARSE bsrsm2 structure holds the information used by hipsparseXbsrsm2_zeroPivot(), hipsparseXbsrsm2_bufferSize(), 
- *  hipsparseXbsrsm2_analysis(), and hipsparseXbsrsm2_solve(). It must be initialized using 
- *  hipsparseCreateBsrsm2Info() and the returned structure must be
+ *  The hipSPARSE bsrsm2 structure holds the information used by hipsparseXbsrsm2_zeroPivot(), 
+ *  \ref hipsparseSbsrsm2_bufferSize "hipsparseXbsrsm2_bufferSize()", \ref hipsparseSbsrsm2_analysis 
+ *  "hipsparseXbsrsm2_analysis()", and \ref hipsparseSbsrsm2_solve "hipsparseXbsrsm2_solve()". It 
+ *  must be initialized using hipsparseCreateBsrsm2Info() and the returned structure must be
  *  passed to all subsequent library calls that involve bsrsm2. It should be
  *  destroyed at the end using hipsparseDestroyBsrsm2Info().
  */
@@ -173,9 +175,10 @@ typedef struct bsrsm2Info* bsrsm2Info_t;
  *
  *  \details
  *  The hipSPARSE bsrilu02 structure holds the information used by hipsparseXbsrilu02_zeroPivot(), 
- *  hipsparseXbsrilu02_numericBoost(), hipsparseXbsrilu02_bufferSize(), hipsparseXbsrilu02_analysis(), 
- *  and hipsparseXbsrilu02(). It must be initialized using hipsparseCreateBsrilu02Info() and the 
- *  returned structure must be passed to all subsequent library calls that involve bsrilu02. It should be
+ *  \ref hipsparseSbsrilu02_numericBoost "hipsparseXbsrilu02_numericBoost()", \ref hipsparseSbsrilu02_bufferSize 
+ *  "hipsparseXbsrilu02_bufferSize()", \ref hipsparseSbsrilu02_analysis "hipsparseXbsrilu02_analysis()", 
+ *  and \ref hipsparseSbsrilu02 "hipsparseXbsrilu02()". It must be initialized using hipsparseCreateBsrilu02Info() 
+ *  and the returned structure must be passed to all subsequent library calls that involve bsrilu02. It should be
  *  destroyed at the end using hipsparseDestroyBsrilu02Info().
  */
 typedef struct bsrilu02Info* bsrilu02Info_t;
@@ -184,11 +187,11 @@ typedef struct bsrilu02Info* bsrilu02Info_t;
  *  \brief Pointer type to opaque structure holding bsric02 info.
  *
  *  \details
- *  The hipSPARSE bsric02 structure holds the information used by hipsparseXbsric02_zeroPivot(), hipsparseXbsric02_bufferSize(), 
- *  hipsparseXbsric02_analysis(), and hipsparseXbsric02(). It must be initialized using 
- *  hipsparseCreateBsric02Info() and the returned structure must be
- *  passed to all subsequent library calls that involve bsric02. It should be
- *  destroyed at the end using hipsparseDestroyBsric02Info().
+ *  The hipSPARSE bsric02 structure holds the information used by hipsparseXbsric02_zeroPivot(), 
+ *  \ref hipsparseSbsric02_bufferSize "hipsparseXbsric02_bufferSize()", \ref hipsparseSbsric02_analysis 
+ *  "hipsparseXbsric02_analysis()", and \ref hipsparseSbsric02 "hipsparseXbsric02()". It must be initialized using 
+ *  hipsparseCreateBsric02Info() and the returned structure must be passed to all subsequent library calls 
+ *  that involve bsric02. It should be destroyed at the end using hipsparseDestroyBsric02Info().
  */
 typedef struct bsric02Info* bsric02Info_t;
 
@@ -196,11 +199,11 @@ typedef struct bsric02Info* bsric02Info_t;
  *  \brief Pointer type to opaque structure holding csrsv2 info.
  *
  *  \details
- *  The hipSPARSE csrsv2 structure holds the information used by hipsparseXcsrsv2_zeroPivot(), hipsparseXcsrsv2_bufferSize(), 
- *  hipsparseXcsrsv2_analysis(), and hipsparseXcsrsv2(). It must be initialized using 
- *  hipsparseCreateCsrsv2Info() and the returned structure must be
- *  passed to all subsequent library calls that involve csrsv2. It should be
- *  destroyed at the end using hipsparseDestroyCsrsv2Info().
+ *  The hipSPARSE csrsv2 structure holds the information used by hipsparseXcsrsv2_zeroPivot(), 
+ *  \ref hipsparseScsrsv2_bufferSize "hipsparseXcsrsv2_bufferSize()", \ref hipsparseScsrsv2_analysis
+ *  "hipsparseXcsrsv2_analysis()", and \ref hipsparseScsrsv2_solve "hipsparseXcsrsv2_solve()". It must be initialized using 
+ *  hipsparseCreateCsrsv2Info() and the returned structure must be passed to all subsequent library calls 
+ *  that involve csrsv2. It should be destroyed at the end using hipsparseDestroyCsrsv2Info().
  */
 typedef struct csrsv2Info* csrsv2Info_t;
 
@@ -208,11 +211,11 @@ typedef struct csrsv2Info* csrsv2Info_t;
  *  \brief Pointer type to opaque structure holding csrsm2 info.
  *
  *  \details
- *  The hipSPARSE csrsm2 structure holds the information used by hipsparseXcsrsm2_zeroPivot(), hipsparseXcsrsm2_bufferSize(), 
- *  hipsparseXcsrsm2_analysis(), and hipsparseXcsrsm2(). It must be initialized using 
- *  hipsparseCreateCsrsm2Info() and the returned structure must be
- *  passed to all subsequent library calls that involve csrsm2. It should be
- *  destroyed at the end using hipsparseDestroyCsrsm2Info().
+ *  The hipSPARSE csrsm2 structure holds the information used by hipsparseXcsrsm2_zeroPivot(), 
+ *  \ref hipsparseScsrsm2_bufferSizeExt "hipsparseXcsrsm2_bufferSizeExt()", \ref hipsparseScsrsm2_analysis 
+ *  "hipsparseXcsrsm2_analysis()", and \ref hipsparseScsrsm2_solve "hipsparseXcsrsm2_solve()". It must be initialized using 
+ *  hipsparseCreateCsrsm2Info() and the returned structure must be passed to all subsequent library calls 
+ *  that involve csrsm2. It should be destroyed at the end using hipsparseDestroyCsrsm2Info().
  */
 typedef struct csrsm2Info* csrsm2Info_t;
 
@@ -221,9 +224,10 @@ typedef struct csrsm2Info* csrsm2Info_t;
  *
  *  \details
  *  The hipSPARSE csrilu02 structure holds the information used by hipsparseXcsrilu02_zeroPivot(), 
- *  hipsparseXcsrilu02_numericBoost(), hipsparseXcsrilu02_bufferSize(), hipsparseXcsrilu02_analysis(), 
- *  and hipsparseXcsrilu02(). It must be initialized using hipsparseCreateCsrilu02Info() and the 
- *  returned structure must be passed to all subsequent library calls that involve csrilu02. It should be
+ *  \ref hipsparseScsrilu02_numericBoost "hipsparseXcsrilu02_numericBoost()", \ref hipsparseScsrilu02_bufferSize 
+ *  "hipsparseXcsrilu02_bufferSize()", \ref hipsparseScsrilu02_analysis "hipsparseXcsrilu02_analysis()", 
+ *  and \ref hipsparseScsrilu02 "hipsparseXcsrilu02()". It must be initialized using hipsparseCreateCsrilu02Info() 
+ *  and the returned structure must be passed to all subsequent library calls that involve csrilu02. It should be
  *  destroyed at the end using hipsparseDestroyCsrilu02Info().
  */
 typedef struct csrilu02Info* csrilu02Info_t;
@@ -233,7 +237,8 @@ typedef struct csrilu02Info* csrilu02Info_t;
  *
  *  \details
  *  The hipSPARSE csric02 structure holds the information used by hipsparseXcsric02_zeroPivot(), 
- *  hipsparseXcsric02_bufferSize(), hipsparseXcsric02_analysis(), and hipsparseXcsric02(). It must be 
+ *  \ref hipsparseScsric02_bufferSize "hipsparseXcsric02_bufferSize()", \ref hipsparseScsric02_analysis 
+ *  "hipsparseXcsric02_analysis()", and \ref hipsparseScsric02 "hipsparseXcsric02()". It must be 
  *  initialized using hipsparseCreateCsric02Info() and the returned structure must be passed to all 
  *  subsequent library calls that involve csric02. It should be destroyed at the end using 
  *  hipsparseDestroyCsric02Info().
@@ -244,10 +249,10 @@ typedef struct csric02Info* csric02Info_t;
  *  \brief Pointer type to opaque structure holding csrgemm2 info.
  *
  *  \details
- *  The hipSPARSE csrgemm2 structure holds the information used by hipsparseXcsrgemm2_bufferSizeExt(), 
- *  hipsparseXcsrgemm2Nnz(), and hipsparseXcsrgemm2(). It must be initialized using 
- *  hipsparseCreateCsrgemm2Info() and the returned structure must be passed to all subsequent 
- *  library calls that involve csrgemm2. It should be destroyed at the end using 
+ *  The hipSPARSE csrgemm2 structure holds the information used by \ref hipsparseScsrgemm2_bufferSizeExt 
+ *  "hipsparseXcsrgemm2_bufferSizeExt()", hipsparseXcsrgemm2Nnz(), and \ref hipsparseScsrgemm2 "hipsparseXcsrgemm2()". 
+ *  It must be initialized using hipsparseCreateCsrgemm2Info() and the returned structure must be passed to all 
+ *  subsequent library calls that involve csrgemm2. It should be destroyed at the end using 
  *  hipsparseDestroyCsrgemm2Info().
  */
 typedef struct csrgemm2Info* csrgemm2Info_t;
@@ -256,11 +261,15 @@ typedef struct csrgemm2Info* csrgemm2Info_t;
  *  \brief Pointer type to opaque structure holding prune info.
  *
  *  \details
- *  The hipSPARSE prune structure holds the information used by hipsparseXpruneDense2csrByPercentage_bufferSize(), 
- *  hipsparseXpruneDense2csrByPercentage_bufferSizeExt(), hipsparseXpruneCsr2csrByPercentage_bufferSize(), 
- *  hipsparseXpruneCsr2csrByPercentage_bufferSizeExt(), hipsparseXpruneDense2csrNnzByPercentage(), 
- *  hipsparseXpruneCsr2csrNnzByPercentage(), hipsparseXpruneDense2csrByPercentage(), and 
- *  hipsparseXpruneCsr2csrByPercentage(). It must be initialized using hipsparseCreatePruneInfo() and the 
+ *  The hipSPARSE prune structure holds the information used by \ref hipsparseSpruneDense2csrByPercentage_bufferSize 
+ *  "hipsparseXpruneDense2csrByPercentage_bufferSize()", \ref hipsparseSpruneDense2csrByPercentage_bufferSizeExt
+ *  "hipsparseXpruneDense2csrByPercentage_bufferSizeExt()", \ref hipsparseSpruneCsr2csrByPercentage_bufferSize 
+ *  "hipsparseXpruneCsr2csrByPercentage_bufferSize()", \ref hipsparseSpruneCsr2csrByPercentage_bufferSizeExt 
+ *  "hipsparseXpruneCsr2csrByPercentage_bufferSizeExt()", \ref hipsparseSpruneDense2csrNnzByPercentage 
+ *  "hipsparseXpruneDense2csrNnzByPercentage()", \ref hipsparseSpruneCsr2csrNnzByPercentage 
+ *  "hipsparseXpruneCsr2csrNnzByPercentage()", \ref hipsparseSpruneDense2csrByPercentage 
+ *  "hipsparseXpruneDense2csrByPercentage()", and \ref hipsparseSpruneCsr2csrByPercentage 
+ *  "hipsparseXpruneCsr2csrByPercentage()". It must be initialized using hipsparseCreatePruneInfo() and the 
  *  returned structure must be passed to all subsequent library calls that involve prune. It should be 
  *  destroyed at the end using hipsparseDestroyPruneInfo().
  */
@@ -270,8 +279,9 @@ typedef struct pruneInfo* pruneInfo_t;
  *  \brief Pointer type to opaque structure holding csru2csr info.
  *
  *  \details
- *  The hipSPARSE csru2csr structure holds the information used by hipsparseXcsru2csr_bufferSizeExt(), 
- *  hipsparseXcsru2csr(), and hipsparseXcsr2csru(). It must be initialized using hipsparseCreateCsru2csrInfo() 
+ *  The hipSPARSE csru2csr structure holds the information used by \ref hipsparseScsru2csr_bufferSizeExt 
+ *  "hipsparseXcsru2csr_bufferSizeExt()", \ref hipsparseScsru2csr "hipsparseXcsru2csr()", and 
+ *  \ref hipsparseScsr2csru "hipsparseXcsr2csru()". It must be initialized using hipsparseCreateCsru2csrInfo() 
  *  and the returned structure must be passed to all subsequent library calls that involve csru2csr. It should be 
  *  destroyed at the end using hipsparseDestroyCsru2csrInfo().
  */
@@ -4514,15 +4524,15 @@ hipsparseStatus_t hipsparseZbsrmm(hipsparseHandle_t         handle,
 *  csrSortedColIndA array of \p nnz elements containing the column indices of the sparse
 *              CSR matrix \f$A\f$.
 *  @param[in]
-*  B           array of dimension \f$ldb \times n\f$ (\f$op(B) == B\f$),
-*              \f$ldb \times k\f$ otherwise.
+*  B           array of dimension \p ldb*n (\f$op(B) == B\f$),
+*              \p ldb*k otherwise.
 *  @param[in]
 *  ldb         leading dimension of \f$B\f$, must be at least \f$\max{(1, k)}\f$
 *              (\f$op(B) == B\f$), \f$\max{(1, n)}\f$ otherwise.
 *  @param[in]
 *  beta        scalar \f$\beta\f$.
 *  @param[inout]
-*  C           array of dimension \f$ldc \times n\f$.
+*  C           array of dimension \p ldc*n.
 *  @param[in]
 *  ldc         leading dimension of \f$C\f$, must be at least \f$\max{(1, m)}\f$
 *              (\f$op(A) == A\f$), \f$\max{(1, k)}\f$ otherwise.
@@ -4774,15 +4784,15 @@ hipsparseStatus_t hipsparseZcsrmm(hipsparseHandle_t         handle,
 *  csrSortedColIndA array of \p nnz elements containing the column indices of the sparse
 *              CSR matrix \f$A\f$.
 *  @param[in]
-*  B           array of dimension \f$ldb \times n\f$ (\f$op(B) == B\f$),
-*              \f$ldb \times k\f$ otherwise.
+*  B           array of dimension \p ldb*n (\f$op(B) == B\f$),
+*              \p ldb*k otherwise.
 *  @param[in]
 *  ldb         leading dimension of \f$B\f$, must be at least \f$\max{(1, k)}\f$
 *              (\f$op(B) == B\f$), \f$\max{(1, n)}\f$ otherwise.
 *  @param[in]
 *  beta        scalar \f$\beta\f$.
 *  @param[inout]
-*  C           array of dimension \f$ldc \times n\f$.
+*  C           array of dimension \p ldc*n.
 *  @param[in]
 *  ldc         leading dimension of \f$C\f$, must be at least \f$\max{(1, m)}\f$
 *              (\f$op(A) == A\f$), \f$\max{(1, k)}\f$ otherwise.
@@ -4925,17 +4935,17 @@ hipsparseStatus_t
 *  @param[in]
 *  dirA        matrix storage of BSR blocks.
 *  @param[in]
-*  transA      matrix A operation type.
+*  transA      matrix \f$A\f$ operation type.
 *  @param[in]
-*  transX      matrix X operation type.
+*  transX      matrix \f$X\f$ operation type.
 *  @param[in]
-*  mb          number of block rows of the sparse BSR matrix A.
+*  mb          number of block rows of the sparse BSR matrix \f$A\f$.
 *  @param[in]
-*  nrhs        number of columns of the dense matrix op(X).
+*  nrhs        number of columns of the dense matrix \f$op(X)\f$.
 *  @param[in]
-*  nnzb        number of non-zero blocks of the sparse BSR matrix A.
+*  nnzb        number of non-zero blocks of the sparse BSR matrix \f$A\f$.
 *  @param[in]
-*  descrA      descriptor of the sparse BSR matrix A.
+*  descrA      descriptor of the sparse BSR matrix \f$A\f$.
 *  @param[in]
 *  bsrSortedValA array of \p nnzb blocks of the sparse BSR matrix.
 *  @param[in]
@@ -5056,27 +5066,27 @@ hipsparseStatus_t hipsparseZbsrsm2_bufferSize(hipsparseHandle_t         handle,
 *  @param[in]
 *  dirA        matrix storage of BSR blocks.
 *  @param[in]
-*  transA      matrix A operation type.
+*  transA      matrix \f$A\f$ operation type.
 *  @param[in]
-*  transX      matrix X operation type.
+*  transX      matrix \f$X\f$ operation type.
 *  @param[in]
-*  mb          number of block rows of the sparse BSR matrix A.
+*  mb          number of block rows of the sparse BSR matrix \f$A\f$.
 *  @param[in]
-*  nrhs        number of columns of the dense matrix op(X).
+*  nrhs        number of columns of the dense matrix \f$op(X)\f$.
 *  @param[in]
-*  nnzb        number of non-zero blocks of the sparse BSR matrix A.
+*  nnzb        number of non-zero blocks of the sparse BSR matrix \f$A\f$.
 *  @param[in]
-*  descrA      descriptor of the sparse BSR matrix A.
+*  descrA      descriptor of the sparse BSR matrix \f$A\f$.
 *  @param[in]
-*  bsrSortedValA array of \p nnzb blocks of the sparse BSR matrix A.
+*  bsrSortedValA array of \p nnzb blocks of the sparse BSR matrix \f$A\f$.
 *  @param[in]
 *  bsrSortedRowPtrA array of \p mb+1 elements that point to the start of every block row of
-*              the sparse BSR matrix A.
+*              the sparse BSR matrix \f$A\f$.
 *  @param[in]
 *  bsrSortedColIndA array of \p nnzb containing the block column indices of the sparse
-*              BSR matrix A.
+*              BSR matrix \f$A\f$.
 *  @param[in]
-*  blockDim    block dimension of the sparse BSR matrix A.
+*  blockDim    block dimension of the sparse BSR matrix \f$A\f$.
 *  @param[out]
 *  info        structure that holds the information collected during the analysis step.
 *  @param[in]
@@ -5229,19 +5239,19 @@ hipsparseStatus_t hipsparseZbsrsm2_analysis(hipsparseHandle_t         handle,
 *  @param[in]
 *  dirA             matrix storage of BSR blocks.
 *  @param[in]
-*  transA           matrix A operation type.
+*  transA           matrix \f$A\f$ operation type.
 *  @param[in]
-*  transX           matrix X operation type.
+*  transX           matrix \f$X\f$ operation type.
 *  @param[in]
-*  mb               number of block rows of the sparse BSR matrix A.
+*  mb               number of block rows of the sparse BSR matrix \f$A\f$.
 *  @param[in]
-*  nrhs             number of columns of the dense matrix op(X).
+*  nrhs             number of columns of the dense matrix \f$op(X)\f$.
 *  @param[in]
-*  nnzb             number of non-zero blocks of the sparse BSR matrix A.
+*  nnzb             number of non-zero blocks of the sparse BSR matrix \f$A\f$.
 *  @param[in]
 *  alpha            scalar \f$\alpha\f$.
 *  @param[in]
-*  descrA           descriptor of the sparse BSR matrix A.
+*  descrA           descriptor of the sparse BSR matrix \f$A\f$.
 *  @param[in]
 *  bsrSortedValA    array of \p nnzb blocks of the sparse BSR matrix.
 *  @param[in]
@@ -5257,11 +5267,11 @@ hipsparseStatus_t hipsparseZbsrsm2_analysis(hipsparseHandle_t         handle,
 *  @param[in]
 *  B                rhs matrix B with leading dimension \p ldb.
 *  @param[in]
-*  ldb              leading dimension of rhs matrix B.
+*  ldb              leading dimension of rhs matrix \f$B\f$.
 *  @param[out]
 *  X                solution matrix X with leading dimension \p ldx.
 *  @param[in]
-*  ldx              leading dimension of solution matrix X.
+*  ldx              leading dimension of solution matrix \f$X\f$.
 *  @param[in]
 *  policy           \ref HIPSPARSE_SOLVE_POLICY_NO_LEVEL or \ref HIPSPARSE_SOLVE_POLICY_USE_LEVEL.
 *  @param[in]
@@ -5606,31 +5616,31 @@ hipsparseStatus_t
 *  @param[in]
 *  algo        algorithm to use.
 *  @param[in]
-*  transA      matrix A operation type.
+*  transA      matrix \f$A\f$ operation type.
 *  @param[in]
-*  transB      matrix B operation type.
+*  transB      matrix \f$B\f$ operation type.
 *  @param[in]
-*  m           number of rows of the sparse CSR matrix A.
+*  m           number of rows of the sparse CSR matrix \f$A\f$.
 *  @param[in]
-*  nrhs        number of columns of the dense matrix op(B).
+*  nrhs        number of columns of the dense matrix \f$op(B)\f$.
 *  @param[in]
-*  nnz         number of non-zero entries of the sparse CSR matrix A.
+*  nnz         number of non-zero entries of the sparse CSR matrix \f$A\f$.
 *  @param[in]
 *  alpha       scalar \f$\alpha\f$.
 *  @param[in]
-*  descrA      descriptor of the sparse CSR matrix A.
+*  descrA      descriptor of the sparse CSR matrix \f$A\f$.
 *  @param[in]
-*  csrSortedValA array of \p nnz elements of the sparse CSR matrix A.
+*  csrSortedValA array of \p nnz elements of the sparse CSR matrix \f$A\f$.
 *  @param[in]
 *  csrSortedRowPtrA array of \p m+1 elements that point to the start of every row of the
-*              sparse CSR matrix A.
+*              sparse CSR matrix \f$A\f$.
 *  @param[in]
 *  csrSortedColIndA array of \p nnz elements containing the column indices of the sparse
-*              CSR matrix A.
+*              CSR matrix \f$A\f$.
 *  @param[in]
-*  B           array of \p m \f$\times\f$ \p nrhs elements of the rhs matrix B.
+*  B           array of \p m \f$\times\f$ \p nrhs elements of the rhs matrix \f$B\f$.
 *  @param[in]
-*  ldb         leading dimension of rhs matrix B.
+*  ldb         leading dimension of rhs matrix \f$B\f$.
 *  @param[in]
 *  info        structure that holds the information collected during the analysis step.
 *  @param[in]
@@ -5753,31 +5763,31 @@ hipsparseStatus_t hipsparseZcsrsm2_bufferSizeExt(hipsparseHandle_t         handl
 *  @param[in]
 *  algo        algorithm to use.
 *  @param[in]
-*  transA      matrix A operation type.
+*  transA      matrix \f$A\f$ operation type.
 *  @param[in]
-*  transB      matrix B operation type.
+*  transB      matrix \f$B\f$ operation type.
 *  @param[in]
-*  m           number of rows of the sparse CSR matrix A.
+*  m           number of rows of the sparse CSR matrix \f$A\f$.
 *  @param[in]
-*  nrhs        number of columns of the dense matrix op(B).
+*  nrhs        number of columns of the dense matrix \f$op(B)\f$.
 *  @param[in]
-*  nnz         number of non-zero entries of the sparse CSR matrix A.
+*  nnz         number of non-zero entries of the sparse CSR matrix \f$A\f$.
 *  @param[in]
 *  alpha       scalar \f$\alpha\f$.
 *  @param[in]
-*  descrA      descriptor of the sparse CSR matrix A.
+*  descrA      descriptor of the sparse CSR matrix \f$A\f$.
 *  @param[in]
-*  csrSortedValA array of \p nnz elements of the sparse CSR matrix A.
+*  csrSortedValA array of \p nnz elements of the sparse CSR matrix \f$A\f$.
 *  @param[in]
 *  csrSortedRowPtrA array of \p m+1 elements that point to the start of every row of the
-*              sparse CSR matrix A.
+*              sparse CSR matrix \f$A\f$.
 *  @param[in]
 *  csrSortedColIndA array of \p nnz elements containing the column indices of the sparse
-*              CSR matrix A.
+*              CSR matrix \f$A\f$.
 *  @param[in]
-*  B           array of \p m \f$\times\f$ \p nrhs elements of the rhs matrix B.
+*  B           array of \p m \f$\times\f$ \p nrhs elements of the rhs matrix \f$B\f$.
 *  @param[in]
-*  ldb         leading dimension of rhs matrix B.
+*  ldb         leading dimension of rhs matrix \f$B\f$.
 *  @param[out]
 *  info        structure that holds the information collected during the analysis step.
 *  @param[in]
@@ -5944,31 +5954,31 @@ hipsparseStatus_t hipsparseZcsrsm2_analysis(hipsparseHandle_t         handle,
 *  @param[in]
 *  algo        algorithm to use.
 *  @param[in]
-*  transA      matrix A operation type.
+*  transA      matrix \f$A\f$ operation type.
 *  @param[in]
-*  transB      matrix B operation type.
+*  transB      matrix \f$B\f$ operation type.
 *  @param[in]
-*  m           number of rows of the sparse CSR matrix A.
+*  m           number of rows of the sparse CSR matrix \f$A\f$.
 *  @param[in]
-*  nrhs        number of columns of the dense matrix op(B).
+*  nrhs        number of columns of the dense matrix \f$op(B)\f$.
 *  @param[in]
-*  nnz         number of non-zero entries of the sparse CSR matrix A.
+*  nnz         number of non-zero entries of the sparse CSR matrix \f$A\f$.
 *  @param[in]
 *  alpha       scalar \f$\alpha\f$.
 *  @param[in]
-*  descrA      descriptor of the sparse CSR matrix A.
+*  descrA      descriptor of the sparse CSR matrix \f$A\f$.
 *  @param[in]
-*  csrSortedValA array of \p nnz elements of the sparse CSR matrix A.
+*  csrSortedValA array of \p nnz elements of the sparse CSR matrix \f$A\f$.
 *  @param[in]
 *  csrSortedRowPtrA array of \p m+1 elements that point to the start of every row of the
-*              sparse CSR matrix A.
+*              sparse CSR matrix \f$A\f$.
 *  @param[in]
 *  csrSortedColIndA array of \p nnz elements containing the column indices of the sparse
-*              CSR matrix A.
+*              CSR matrix \f$A\f$.
 *  @param[inout]
-*  B           array of \p m \f$\times\f$ \p nrhs elements of the rhs matrix B.
+*  B           array of \p m \f$\times\f$ \p nrhs elements of the rhs matrix \f$B\f$.
 *  @param[in]
-*  ldb         leading dimension of rhs matrix B.
+*  ldb         leading dimension of rhs matrix \f$B\f$.
 *  @param[in]
 *  info        structure that holds the information collected during the analysis step.
 *  @param[in]
@@ -11788,9 +11798,9 @@ hipsparseStatus_t hipsparseDpruneDense2csr(hipsparseHandle_t         handle,
 *  The pruning by percentage works by first sorting the absolute values of the dense
 *  matrix \p A. We then determine a position in this sorted array by
 *  \f[
-*    pos = ceil(m*n*(percentage/100)) - 1 \\
-*    pos = min(pos, m*n-1) \\
-*    pos = max(pos, 0) \\
+*    pos = ceil(m \cdot n \cdot (percentage/100)) - 1 \\
+*    pos = \min(pos, m \cdot n-1) \\
+*    pos = \max(pos, 0) \\
 *    threshold = sorted_A[pos]
 *  \f]
 *
@@ -11884,9 +11894,9 @@ hipsparseStatus_t hipsparseDpruneDense2csrByPercentage_bufferSize(hipsparseHandl
 *  The pruning by percentage works by first sorting the absolute values of the dense
 *  matrix \p A. We then determine a position in this sorted array by
 *  \f[
-*    pos = ceil(m*n*(percentage/100)) - 1 \\
-*    pos = min(pos, m*n-1) \\
-*    pos = max(pos, 0) \\
+*    pos = ceil(m \cdot n \cdot (percentage/100)) - 1 \\
+*    pos = \min(pos, m \cdot n-1) \\
+*    pos = \max(pos, 0) \\
 *    threshold = sorted_A[pos]
 *  \f]
 *
@@ -11984,9 +11994,9 @@ hipsparseStatus_t
 *  The pruning by percentage works by first sorting the absolute values of the dense
 *  matrix \p A. We then determine a position in this sorted array by
 *  \f[
-*    pos = ceil(m*n*(percentage/100)) - 1 \\
-*    pos = min(pos, m*n-1) \\
-*    pos = max(pos, 0) \\
+*    pos = ceil(m \cdot n \cdot (percentage/100)) - 1 \\
+*    pos = \min(pos, m \cdot n-1) \\
+*    pos = \max(pos, 0) \\
 *    threshold = sorted_A[pos]
 *  \f]
 *
@@ -12076,9 +12086,9 @@ hipsparseStatus_t hipsparseDpruneDense2csrNnzByPercentage(hipsparseHandle_t     
 *  The pruning by percentage works by first sorting the absolute values of the dense
 *  matrix \p A. We then determine a position in this sorted array by
 *  \f[
-*    pos = ceil(m*n*(percentage/100)) - 1 \\
-*    pos = min(pos, m*n-1) \\
-*    pos = max(pos, 0) \\
+*    pos = ceil(m \ cdot n \cdot (percentage/100)) - 1 \\
+*    pos = \min(pos, m \cdot n-1) \\
+*    pos = \max(pos, 0) \\
 *    threshold = sorted_A[pos]
 *  \f]
 *
@@ -12723,7 +12733,7 @@ hipsparseStatus_t hipsparseZcsc2dense(hipsparseHandle_t         handle,
 *  @param[in]
 *  csrColIndA  integer array of the column indices for each non-zero element in the CSR matrix
 *  @param[in]
-*  blockDim    the block dimension of the BSR matrix. Between 1 and min(m, n)
+*  blockDim    the block dimension of the BSR matrix. Between \f$1\f$ and \f$\min(m, n)\f$
 *  @param[in]
 *  descrC      descriptor of the sparse BSR matrix. Currently, only \ref HIPSPARSE_MATRIX_TYPE_GENERAL is supported.
 *  @param[out]
@@ -12971,8 +12981,8 @@ hipsparseStatus_t hipsparseXcsr2coo(hipsparseHandle_t    handle,
 *  Represented using the sparse CSR format as:
 *  \f[
 *    \begin{align}
-*    \text{csrSortedRowPtr} &= \begin{bmatrix} 0 & 2 & 4 & 7 \end{bmatrix}
-*    \text{csrSortedColInd} &= \begin{bmatrix} 0 & 3 & 0 & 1 & 0 & 2 & 3 \end{bmatrix}
+*    \text{csrSortedRowPtr} &= \begin{bmatrix} 0 & 2 & 4 & 7 \end{bmatrix} \\
+*    \text{csrSortedColInd} &= \begin{bmatrix} 0 & 3 & 0 & 1 & 0 & 2 & 3 \end{bmatrix} \\
 *    \text{csrSortedVal} &= \begin{bmatrix} 1 & 2 & 3 & 4 & 5 & 6 & 7 \end{bmatrix}
 *    \end{align}
 *  \f]
@@ -12980,8 +12990,8 @@ hipsparseStatus_t hipsparseXcsr2coo(hipsparseHandle_t    handle,
 *  this function converts to sparse CSC format:
 *  \f[
 *    \begin{align}
-*    \text{cscSortedRowInd} &= \begin{bmatrix} 0 & 1 & 2 & 1 & 2 & 0 & 2 \end{bmatrix}
-*    \text{cscSortedColPtr} &= \begin{bmatrix} 0 & 3 & 4 & 5 & 7 \end{bmatrix}
+*    \text{cscSortedRowInd} &= \begin{bmatrix} 0 & 1 & 2 & 1 & 2 & 0 & 2 \end{bmatrix} \\
+*    \text{cscSortedColPtr} &= \begin{bmatrix} 0 & 3 & 4 & 5 & 7 \end{bmatrix} \\
 *    \text{cscSortedVal} &= \begin{bmatrix} 1 & 3 & 5 & 4 & 6 & 2 & 7 \end{bmatrix}
 *    \end{align}
 *  \f]
@@ -14144,10 +14154,10 @@ hipsparseStatus_t hipsparseZcsr2gebsr_bufferSize(hipsparseHandle_t         handl
 *  bsrRowPtr     integer array containing \p mb+1 elements that point to the start of each block row of the General BSR matrix
 *
 *  @param[in]
-*  rowBlockDim   the row block dimension of the GEneral BSR matrix. Between 1 and min(m, n)
+*  rowBlockDim   the row block dimension of the GEneral BSR matrix. Between \f$1\f$ and \f$\min(m, n)\f$
 *
 *  @param[in]
-*  colBlockDim   the col block dimension of the GEneral BSR matrix. Between 1 and min(m, n)
+*  colBlockDim   the col block dimension of the GEneral BSR matrix. Between \f$1\f$ and \f$\min(m, n)\f$
 *
 *  @param[out]
 *  bsrNnzDevhost total number of nonzero elements in device or host memory.
@@ -17157,9 +17167,10 @@ hipsparseStatus_t hipsparseXgebsr2gebsrNnz(hipsparseHandle_t         handle,
 *  This function converts the GEBSR sparse matrix \f$A\f$ to another GEBSR sparse matrix \f$C\f$.
 *
 *  \details
-*  The conversion uses three steps. First, the user calls hipsparseXgebsr2gebsr_bufferSize() to determine the size of
-*  the required temporary storage buffer. The user then allocates this buffer. Secondly, the user then allocates \p mbC+1
-*  integers for the row pointer array for \f$C\f$ where:
+*  The conversion uses three steps. First, the user calls \ref hipsparseSgebsr2gebsr_bufferSize 
+*  "hipsparseXgebsr2gebsr_bufferSize()" to determine the size of the required temporary storage buffer. 
+*  The user then allocates this buffer. Secondly, the user then allocates \p mbC+1 integers for the row 
+*  pointer array for \f$C\f$ where:
 *  \f[
 *    \begin{align}
 *    \text{mbC} &= \text{(m - 1) / rowBlockDimC + 1} \\
@@ -17169,7 +17180,7 @@ hipsparseStatus_t hipsparseXgebsr2gebsrNnz(hipsparseHandle_t         handle,
 *  The user then calls hipsparseXgebsr2gebsrNnz() to fill in the row pointer array for \f$C\f$ ( \p bsrRowPtrC ) and 
 *  determine the number of non-zero blocks that will exist in \f$C\f$. Finally, the user allocates space for the column 
 *  indices array of \f$C\f$ to have \p nnzbC elements and space for the values array of \f$C\f$ to have 
-*  \p nnzbC*rowBlockDimC*colBlockDimC and then calls hipsparseXgebsr2gebsr() to complete the conversion.
+*  \p nnzbC*rowBlockDimC*colBlockDimC and then calls \p hipsparseXgebsr2gebsr to complete the conversion.
 *
 *  It may be the case that \p rowBlockDimC does not divide evenly into \p m and/or \p colBlockDim does not divide evenly 
 *  into \p n. In these cases, the GEBSR matrix is expanded in size in order to fit full GEBSR blocks. For example, if 
@@ -17836,9 +17847,10 @@ typedef void* hipsparseDnVecDescr_t;
  *
  *  \details
  *  The hipSPARSE descriptor is an opaque structure holding information for a sparse matrix. It must
- *  be initialized using hipsparseCreateSpMat() and the returned descriptor 
- *  is used in hipSPARSE generic API's involving sparse matrices. It should be destroyed at the end using
- *  hipsparseDestroySpMat().
+ *  be initialized using either hipsparseCreateCoo() (for COO format), hipsparseCreateCooAoS() (for COO AOS format).
+ *  hipsparseCreateCsr() (for CSR format), hipsparseCreateCsc() (for CSC format) or hipsparseCreateBlockedEll() 
+ *  (for Blocked ELL format). The returned descriptor is used in hipSPARSE generic API's involving sparse matrices. 
+ *  It should be destroyed at the end using hipsparseDestroySpMat().
  */
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 typedef void* hipsparseSpMatDescr_t;
@@ -19887,7 +19899,7 @@ hipsparseStatus_t hipsparseDenseToSparse_convert(hipsparseHandle_t           han
 *  \p hipsparseSpVV_bufferSize computes the required user allocated buffer size needed when computing the 
 *  inner dot product of a sparse vector with a dense vector
 *
-*  See full example below
+*  See \ref hipsparseSpVV for full code example.
 *
 *  @param[in]
 *  handle              handle to the hipsparse library context queue.
@@ -20071,7 +20083,7 @@ hipsparseStatus_t hipsparseSpVV(hipsparseHandle_t     handle,
 *  \p hipsparseSpMV_bufferSize computes the required user allocated buffer size needed when computing the 
 *  sparse matrix multiplication with a dense vector
 *
-*  See full example below
+*  See \ref hipsparseSpMV for full code example.
 *
 *  @param[in]
 *  handle              handle to the hipsparse library context queue.
@@ -20134,7 +20146,7 @@ hipsparseStatus_t hipsparseSpMV_bufferSize(hipsparseHandle_t           handle,
 *  sparse matrix multiplication with a dense vector. This step is optional but if used may 
 *  results in better performance.
 *
-*  See full example below
+*  See \ref hipsparseSpMV for full code example.
 *
 *  @param[in]
 *  handle          handle to the hipsparse library context queue.
@@ -20366,7 +20378,7 @@ hipsparseStatus_t hipsparseSpMV(hipsparseHandle_t           handle,
 *  \p hipsparseSpMM_bufferSize computes the required user allocated buffer size needed when computing the 
 *  sparse matrix multiplication with a dense matrix
 *
-*  See full example below
+*  See \ref hipsparseSpMM for full code example.
 *
 *  @param[in]
 *  handle              handle to the hipsparse library context queue.
@@ -20432,7 +20444,7 @@ hipsparseStatus_t hipsparseSpMM_bufferSize(hipsparseHandle_t           handle,
 *  \p hipsparseSpMM_preprocess performs the required preprocessing used when computing the 
 *  sparse matrix multiplication with a dense matrix
 *
-*  See full example below
+*  See \ref hipsparseSpMM for full code example.
 *
 *  @param[in]
 *  handle          handle to the hipsparse library context queue.
