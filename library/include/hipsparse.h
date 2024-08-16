@@ -1860,9 +1860,9 @@ hipsparseStatus_t hipsparseZsctr(hipsparseHandle_t       handle,
 *  \f[
 *    op(A) = \left\{
 *    \begin{array}{ll}
-*        A,   & \text{if trans == HIPSPARSE_OPERATION_NON_TRANSPOSE} \\
-*        A^T, & \text{if trans == HIPSPARSE_OPERATION_TRANSPOSE} \\
-*        A^H, & \text{if trans == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE}
+*        A,   & \text{if transA == HIPSPARSE_OPERATION_NON_TRANSPOSE} \\
+*        A^T, & \text{if transA == HIPSPARSE_OPERATION_TRANSPOSE} \\
+*        A^H, & \text{if transA == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE}
 *    \end{array}
 *    \right.
 *  \f]
@@ -2422,9 +2422,9 @@ hipsparseStatus_t hipsparseZcsrsv2_analysis(hipsparseHandle_t         handle,
 *  \f[
 *    op(A) = \left\{
 *    \begin{array}{ll}
-*        A,   & \text{if trans == HIPSPARSE_OPERATION_NON_TRANSPOSE} \\
-*        A^T, & \text{if trans == HIPSPARSE_OPERATION_TRANSPOSE} \\
-*        A^H, & \text{if trans == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE}
+*        A,   & \text{if transA == HIPSPARSE_OPERATION_NON_TRANSPOSE} \\
+*        A^T, & \text{if transA == HIPSPARSE_OPERATION_TRANSPOSE} \\
+*        A^H, & \text{if transA == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE}
 *    \end{array}
 *    \right.
 *  \f]
@@ -2447,8 +2447,8 @@ hipsparseStatus_t hipsparseZcsrsv2_analysis(hipsparseHandle_t         handle,
 *  It may return before the actual computation has finished.
 *
 *  \note
-*  Currently, only \p trans == \ref HIPSPARSE_OPERATION_NON_TRANSPOSE and
-*  \p trans == \ref HIPSPARSE_OPERATION_TRANSPOSE is supported.
+*  Currently, only \p transA == \ref HIPSPARSE_OPERATION_NON_TRANSPOSE and
+*  \p transA == \ref HIPSPARSE_OPERATION_TRANSPOSE is supported.
 *
 *  @param[in]
 *  handle      handle to the hipsparse library context queue.
@@ -2705,9 +2705,9 @@ hipsparseStatus_t hipsparseZcsrsv2_solve(hipsparseHandle_t         handle,
 *  \f[
 *    op(A) = \left\{
 *    \begin{array}{ll}
-*        A,   & \text{if trans == HIPSPARSE_OPERATION_NON_TRANSPOSE} \\
-*        A^T, & \text{if trans == HIPSPARSE_OPERATION_TRANSPOSE} \\
-*        A^H, & \text{if trans == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE}
+*        A,   & \text{if transA == HIPSPARSE_OPERATION_NON_TRANSPOSE} \\
+*        A^T, & \text{if transA == HIPSPARSE_OPERATION_TRANSPOSE} \\
+*        A^H, & \text{if transA == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE}
 *    \end{array}
 *    \right.
 *  \f]
@@ -2882,9 +2882,9 @@ hipsparseStatus_t hipsparseZhybmv(hipsparseHandle_t         handle,
 *  \f[
 *    op(A) = \left\{
 *    \begin{array}{ll}
-*        A,   & \text{if trans == HIPSPARSE_OPERATION_NON_TRANSPOSE} \\
-*        A^T, & \text{if trans == HIPSPARSE_OPERATION_TRANSPOSE} \\
-*        A^H, & \text{if trans == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE}
+*        A,   & \text{if transA == HIPSPARSE_OPERATION_NON_TRANSPOSE} \\
+*        A^T, & \text{if transA == HIPSPARSE_OPERATION_TRANSPOSE} \\
+*        A^H, & \text{if transA == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE}
 *    \end{array}
 *    \right.
 *  \f]
@@ -3667,9 +3667,9 @@ hipsparseStatus_t hipsparseZbsrsv2_analysis(hipsparseHandle_t         handle,
 *  \f[
 *    op(A) = \left\{
 *    \begin{array}{ll}
-*        A,   & \text{if trans == HIPSPARSE_OPERATION_NON_TRANSPOSE} \\
-*        A^T, & \text{if trans == HIPSPARSE_OPERATION_TRANSPOSE} \\
-*        A^H, & \text{if trans == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE}
+*        A,   & \text{if transA == HIPSPARSE_OPERATION_NON_TRANSPOSE} \\
+*        A^T, & \text{if transA == HIPSPARSE_OPERATION_TRANSPOSE} \\
+*        A^H, & \text{if transA == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE}
 *    \end{array}
 *    \right.
 *  \f]
@@ -3692,8 +3692,8 @@ hipsparseStatus_t hipsparseZbsrsv2_analysis(hipsparseHandle_t         handle,
 *  It may return before the actual computation has finished.
 *
 *  \note
-*  Currently, only \p trans == \ref HIPSPARSE_OPERATION_NON_TRANSPOSE and
-*  \p trans == \ref HIPSPARSE_OPERATION_TRANSPOSE is supported.
+*  Currently, only \p transA == \ref HIPSPARSE_OPERATION_NON_TRANSPOSE and
+*  \p transA == \ref HIPSPARSE_OPERATION_TRANSPOSE is supported.
 *
 *  @param[in]
 *  handle      handle to the hipsparse library context queue.
@@ -4064,9 +4064,9 @@ hipsparseStatus_t hipsparseZgemvi_bufferSize(hipsparseHandle_t    handle,
  *  \f[
  *    op(A) = \left\{
  *    \begin{array}{ll}
- *        A,   & \text{if trans == HIPSPARSE_OPERATION_NON_TRANSPOSE} \\
- *        A^T, & \text{if trans == HIPSPARSE_OPERATION_TRANSPOSE} \\
- *        A^H, & \text{if trans == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE}
+ *        A,   & \text{if transA == HIPSPARSE_OPERATION_NON_TRANSPOSE} \\
+ *        A^T, & \text{if transA == HIPSPARSE_OPERATION_TRANSPOSE} \\
+ *        A^H, & \text{if transA == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE}
  *    \end{array}
  *    \right.
  *  \f]
@@ -4079,7 +4079,7 @@ hipsparseStatus_t hipsparseZgemvi_bufferSize(hipsparseHandle_t    handle,
  *  It may return before the actual computation has finished.
  *
  *  \note
- *  Currently, only \p trans == \ref HIPSPARSE_OPERATION_NON_TRANSPOSE is supported.
+ *  Currently, only \p transA == \ref HIPSPARSE_OPERATION_NON_TRANSPOSE is supported.
  *
  *  @param[in]
  *  handle      handle to the hipsparse library context queue.
@@ -20081,7 +20081,12 @@ hipsparseStatus_t hipsparseSpVV(hipsparseHandle_t     handle,
 *
 *  \details
 *  \p hipsparseSpMV_bufferSize computes the required user allocated buffer size needed when computing the 
-*  sparse matrix multiplication with a dense vector
+*  sparse matrix multiplication with a dense vector:
+*  \f[
+*    y := \alpha \cdot op(A) \cdot x + \beta \cdot y,
+*  \f]
+*  where \f$op(A)\f$ is a sparse \f$m \times n\f$ matrix in CSR format, \f$x\f$ is a dense vector of length \f$n\f$ and 
+*  \f$y\f$ is a dense vector of length \f$m\f$.
 *
 *  See \ref hipsparseSpMV for full code example.
 *
@@ -20143,8 +20148,14 @@ hipsparseStatus_t hipsparseSpMV_bufferSize(hipsparseHandle_t           handle,
 *
 *  \details
 *  \p hipsparseSpMV_preprocess performs the optional preprocess used when computing the 
-*  sparse matrix multiplication with a dense vector. This step is optional but if used may 
-*  results in better performance.
+*  sparse matrix multiplication with a dense vector:
+*  \f[
+*    y := \alpha \cdot op(A) \cdot x + \beta \cdot y,
+*  \f]
+*  where \f$op(A)\f$ is a sparse \f$m \times n\f$ matrix in CSR format, \f$x\f$ is a dense vector of length \f$n\f$ and 
+*  \f$y\f$ is a dense vector of length \f$m\f$.
+*
+*  This step is optional but if used may results in better performance.
 *
 *  See \ref hipsparseSpMV for full code example.
 *
@@ -20205,7 +20216,12 @@ hipsparseStatus_t hipsparseSpMV_preprocess(hipsparseHandle_t           handle,
 *  \brief Compute the sparse matrix multiplication with a dense vector
 *
 *  \details
-*  \p hipsparseSpMV computes sparse matrix multiplication with a dense vector
+*  \p hipsparseSpMV computes sparse matrix multiplication with a dense vector:
+*  \f[
+*    y := \alpha \cdot op(A) \cdot x + \beta \cdot y,
+*  \f]
+*  where \f$op(A)\f$ is a sparse \f$m \times n\f$ matrix in CSR format, \f$x\f$ is a dense vector of length \f$n\f$ and 
+*  \f$y\f$ is a dense vector of length \f$m\f$.
 *
 *  @param[in]
 *  handle          handle to the hipsparse library context queue.
@@ -20376,7 +20392,12 @@ hipsparseStatus_t hipsparseSpMV(hipsparseHandle_t           handle,
 *
 *  \details
 *  \p hipsparseSpMM_bufferSize computes the required user allocated buffer size needed when computing the 
-*  sparse matrix multiplication with a dense matrix
+*  sparse matrix multiplication with a dense matrix:
+*  \f[
+*    C := \alpha \cdot op(A) \cdot op(B) + \beta \cdot C,
+*  \f]
+*  where \f$op(A)\f$ is a sparse \f$m \times k\f$ matrix in CSR format, \f$B\f$ is a dense matrix of size \f$k \times n\f$ and 
+*  \f$C\f$ is a dense matrix of size \f$m \times n\f$.
 *
 *  See \ref hipsparseSpMM for full code example.
 *
@@ -20442,7 +20463,12 @@ hipsparseStatus_t hipsparseSpMM_bufferSize(hipsparseHandle_t           handle,
 *
 *  \details
 *  \p hipsparseSpMM_preprocess performs the required preprocessing used when computing the 
-*  sparse matrix multiplication with a dense matrix
+*  sparse matrix multiplication with a dense matrix:
+*  \f[
+*    C := \alpha \cdot op(A) \cdot op(B) + \beta \cdot C,
+*  \f]
+*  where \f$op(A)\f$ is a sparse \f$m \times k\f$ matrix in CSR format, \f$B\f$ is a dense matrix of size \f$k \times n\f$ and 
+*  \f$C\f$ is a dense matrix of size \f$m \times n\f$.
 *
 *  See \ref hipsparseSpMM for full code example.
 *
@@ -20507,7 +20533,12 @@ hipsparseStatus_t hipsparseSpMM_preprocess(hipsparseHandle_t           handle,
 *  \brief Compute the sparse matrix multiplication with a dense matrix
 *
 *  \details
-*  \p hipsparseSpMM computes sparse matrix multiplication with a dense matrix
+*  \p hipsparseSpMM computes sparse matrix multiplication with a dense matrix:
+*  \f[
+*    C := \alpha \cdot op(A) \cdot op(B) + \beta \cdot C,
+*  \f]
+*  where \f$op(A)\f$ is a sparse \f$m \times k\f$ matrix in CSR format, \f$B\f$ is a dense matrix of size \f$k \times n\f$ and 
+*  \f$C\f$ is a dense matrix of size \f$m \times n\f$.
 *
 *  @param[in]
 *  handle          handle to the hipsparse library context queue.
@@ -21752,7 +21783,7 @@ hipsparseStatus_t hipsparseSDDMM_preprocess(hipsparseHandle_t           handle,
 *  \f$\beta\f$. The final result is stored in the sparse \f$m \times n\f$ matrix \f$C\f$,
 *  such that
 *  \f[
-*    C := \alpha ( opA(A) \cdot opB(B) ) \circ spy(C) + \beta C,
+*    C := \alpha ( op(A) \cdot op(B) ) \circ spy(C) + \beta C,
 *  \f]
 *  with
 *  \f[
