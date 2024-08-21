@@ -384,6 +384,7 @@ Function name                                     single double single complex d
 :cpp:func:`hipsparseSpGEMM_createDescr()`         x      x      x              x
 :cpp:func:`hipsparseSpGEMM_destroyDescr()`        x      x      x              x
 :cpp:func:`hipsparseSpGEMM_workEstimation()`      x      x      x              x
+:cpp:func:`hipsparseSpGEMM_estimateMemory()`      x      x      x              x
 :cpp:func:`hipsparseSpGEMM_compute()`             x      x      x              x
 :cpp:func:`hipsparseSpGEMM_copy()`                x      x      x              x
 :cpp:func:`hipsparseSpGEMMreuse_workEstimation()` x      x      x              x

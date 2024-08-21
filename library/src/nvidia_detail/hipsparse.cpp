@@ -13155,6 +13155,41 @@ hipsparseStatus_t hipsparseSpGEMM_workEstimation(hipsparseHandle_t handle,
 }
 #endif
 
+#if(CUDART_VERSION >= 12001)
+hipsparseStatus_t hipsparseSpGEMM_estimateMemory(hipsparseHandle_t          handle,
+                                                 hipsparseOperation_t       opA,
+                                                 hipsparseOperation_t       opB,
+                                                 const void*                alpha,
+                                                 hipsparseConstSpMatDescr_t matA,
+                                                 hipsparseConstSpMatDescr_t matB,
+                                                 const void*                beta,
+                                                 hipsparseSpMatDescr_t      matC,
+                                                 hipDataType                computeType,
+                                                 hipsparseSpGEMMAlg_t       alg,
+                                                 hipsparseSpGEMMDescr_t     spgemmDescr,
+                                                 float                      chunk_fraction,
+                                                 size_t*                    bufferSize3,
+                                                 void*                      externalBuffer3,
+                                                 size_t*                    bufferSize2)
+{
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSpGEMM_estimateMemory(handle,
+                                                                                 opA,
+                                                                                 opB,
+                                                                                 alpha,
+                                                                                 matA,
+                                                                                 matB,
+                                                                                 beta,
+                                                                                 matC,
+                                                                                 computeType,
+                                                                                 alg,
+                                                                                 spgemmDescr,
+                                                                                 chunk_fraction,
+                                                                                 bufferSize3,
+                                                                                 externalBuffer3,
+                                                                                 bufferSize2));
+}
+#endif
+
 #if(CUDART_VERSION >= 12000)
 hipsparseStatus_t hipsparseSpGEMM_compute(hipsparseHandle_t          handle,
                                           hipsparseOperation_t       opA,
