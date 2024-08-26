@@ -41,6 +41,13 @@ hipsparseXpruneDense2csr_bufferSize()
   :outline:
 .. doxygenfunction:: hipsparseDpruneDense2csr_bufferSize
 
+hipsparseXpruneDense2csr_bufferSizeExt()
+========================================
+
+.. doxygenfunction:: hipsparseSpruneDense2csr_bufferSizeExt
+  :outline:
+.. doxygenfunction:: hipsparseDpruneDense2csr_bufferSizeExt
+
 hipsparseXpruneDense2csrNnz()
 =================================
 
