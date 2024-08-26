@@ -14,7 +14,7 @@ hipsparseHandle_t
 .. doxygentypedef:: hipsparseHandle_t
 
 hipsparseMatDescr_t
-====================
+===================
 
 .. doxygentypedef:: hipsparseMatDescr_t
 
@@ -48,17 +48,17 @@ bsrilu02Info_t
 .. doxygentypedef:: bsrilu02Info_t
 
 bsric02Info_t
-==============
+=============
 
 .. doxygentypedef:: bsric02Info_t
 
 csrsv2Info_t
-=============
+============
 
 .. doxygentypedef:: csrsv2Info_t
 
 csrsm2Info_t
-=============
+============
 
 .. doxygentypedef:: csrsm2Info_t
 
@@ -210,22 +210,22 @@ hipsparseCsr2CscAlg_t
 .. doxygenenum:: hipsparseCsr2CscAlg_t
 
 hipsparseSpMVAlg_t
-===================
+==================
 
 .. doxygenenum:: hipsparseSpMVAlg_t
 
 hipsparseSpMMAlg_t
-===================
+==================
 
 .. doxygenenum:: hipsparseSpMMAlg_t
 
 hipsparseSparseToDenseAlg_t
-============================
+===========================
 
 .. doxygenenum:: hipsparseSparseToDenseAlg_t
 
 hipsparseDenseToSparseAlg_t
-============================
+===========================
 
 .. doxygenenum:: hipsparseDenseToSparseAlg_t
 
