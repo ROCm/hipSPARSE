@@ -18,7 +18,7 @@ def runCI =
     prj.paths.build_command = './install.sh -c'
     prj.compiler.compiler_name = 'c++'
     prj.compiler.compiler_path = 'c++'
-    prj.libraryDependencies = ['rocBLAS', 'rocSPARSE', 'rocPRIM']
+    prj.libraryDependencies = ['hipBLAS-common', 'hipBLASLt', 'rocBLAS', 'rocSPARSE', 'rocPRIM']
     prj.defaults.ccache = false
 
     // Define test architectures, optional rocm version argument is available
