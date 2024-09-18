@@ -57,7 +57,8 @@ def runCI =
 ci: { 
     String urlJobName = auxiliary.getTopJobName(env.BUILD_URL)
 
-    def propertyList = auxiliary.appendPropertyList(propertyList)
+    def propertyList = [:]
+    propertyList = auxiliary.appendPropertyList(propertyList)
 
     def jobNameList = [:]
     jobNameList = auxiliary.appendJobNameList(jobNameList, 'hipSPARSE')
