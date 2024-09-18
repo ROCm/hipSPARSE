@@ -57,13 +57,35 @@ def runCI =
 ci: { 
     String urlJobName = auxiliary.getTopJobName(env.BUILD_URL)
 
+    def propertyList = auxiliary.appendPropertyList(propertyList)
+
     def jobNameList = [:]
+    jobNameList = auxiliary.appendJobNameList(jobNameList, 'hipSPARSE')
+
+    propertyList.each
+    {
+        jobName, property->
+        if (urlJobName == jobName)
+        {
+            properties(auxiliary.addCommonProperties(property))
+        }
+    }
+
+    jobNameList.each
+    {
+        jobName, nodeDetails->
+        if (urlJobName == jobName)
+            stage(jobName) {
+                runCI(nodeDetails, jobName)
+            }
+    }
 
     // For url job names that are not listed by the jobNameList i.e. compute-rocm-dkms-no-npi-1901
     if(!jobNameList.keySet().contains(urlJobName))
     {
         properties(auxiliary.addCommonProperties([pipelineTriggers([cron('0 1 * * 6')])]))
-        runCI(['ubuntu20-cuda11':['anycuda']], urlJobName)
+        stage(urlJobName) {
+            runCI(['ubuntu22-cuda12':['anycuda']], urlJobName)
+        }
     }
 }
-
