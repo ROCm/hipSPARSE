@@ -3,6 +3,25 @@
 Documentation for hipSPARSE is available at
 [https://rocm.docs.amd.com/projects/hipSPARSE/en/latest/](https://rocm.docs.amd.com/projects/hipSPARSE/en/latest/).
 
+
+## hipSPARSE 3.1.2 for ROCm 6.3.0
+
+### Additions
+
+* Added alpha version of hipsparse-bench excutable to facilitate comparing cusparse and rocsparse backends
+
+### Changes
+
+* Change default compiler from hipcc to amdclang in install script and cmake files.
+
+### Optimizations
+
+* Improved user manual
+
+### Known issues
+
+* In `hipsparseSpSM_solve()`, we currently pass the external buffer as a parameter. This does not match the cuSPARSE API and this extra external buffer parameter will be removed in a future release. For now this extra parameter can be ignored and nullptr passed as it is unused internally by `hipsparseSpSM_solve()`.
+
 ## hipSPARSE 3.1.1 for ROCm 6.2.0
 
 ### Additions
