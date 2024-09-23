@@ -378,6 +378,7 @@ Function name                                     single double single complex d
 :cpp:func:`hipsparseSpVV_bufferSize()`            x      x      x              x
 :cpp:func:`hipsparseSpVV()`                       x      x      x              x
 :cpp:func:`hipsparseSpMV_bufferSize()`            x      x      x              x
+:cpp:func:`hipsparseSpMV_preprocess()`            x      x      x              x
 :cpp:func:`hipsparseSpMV()`                       x      x      x              x
 :cpp:func:`hipsparseSpMM_bufferSize()`            x      x      x              x
 :cpp:func:`hipsparseSpMM_preprocess()`            x      x      x              x
