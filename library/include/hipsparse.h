@@ -20147,7 +20147,7 @@ hipsparseStatus_t hipsparseSpMV_bufferSize(hipsparseHandle_t           handle,
 *  \brief Preprocess step of the sparse matrix multiplication with a dense vector (optional)
 *
 *  \details
-*  \p hipsparseSpMV_preprocess performs the optional preprocess used when computing the 
+*  \p hipsparseSpMV_preprocess performs analysis on the sparse matrix \f$A\f$ when computing the 
 *  sparse matrix multiplication with a dense vector:
 *  \f[
 *    y := \alpha \cdot op(A) \cdot x + \beta \cdot y,
