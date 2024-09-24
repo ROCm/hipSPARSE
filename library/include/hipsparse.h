@@ -20088,6 +20088,9 @@ hipsparseStatus_t hipsparseSpVV(hipsparseHandle_t     handle,
 *  where \f$op(A)\f$ is a sparse \f$m \times n\f$ matrix in CSR format, \f$x\f$ is a dense vector of length \f$n\f$ and 
 *  \f$y\f$ is a dense vector of length \f$m\f$.
 *
+*  \ref hipsparseSpMV_bufferSize supports multiple combinations of data types and compute types. See \ref hipsparseSpMV for a complete 
+*  listing of all the data type and compute type combinations available.
+*
 *  See \ref hipsparseSpMV for full code example.
 *
 *  @param[in]
@@ -20157,6 +20160,9 @@ hipsparseStatus_t hipsparseSpMV_bufferSize(hipsparseHandle_t           handle,
 *
 *  This step is optional but if used may results in better performance.
 *
+*  \ref hipsparseSpMV_preprocess supports multiple combinations of data types and compute types. See \ref hipsparseSpMV for a complete 
+*  listing of all the data type and compute type combinations available.
+*
 *  See \ref hipsparseSpMV for full code example.
 *
 *  @param[in]
@@ -20222,6 +20228,45 @@ hipsparseStatus_t hipsparseSpMV_preprocess(hipsparseHandle_t           handle,
 *  \f]
 *  where \f$op(A)\f$ is a sparse \f$m \times n\f$ matrix in CSR format, \f$x\f$ is a dense vector of length \f$n\f$ and 
 *  \f$y\f$ is a dense vector of length \f$m\f$.
+*
+*  \ref hipsparseSpMV supports multiple combinations of data types and compute types. The tables below indicate the currently
+*  supported different data types that can be used for for the sparse matrix A and the dense vectors X and Y and the compute
+*  type for \f$\alpha\f$ and \f$\beta\f$. The advantage of using different data types is to save on memory bandwidth and storage
+*  when a user application allows while performing the actual computation in a higher precision.
+*
+*  \par Uniform Precisions:
+*  <table>
+*  <caption id="spmv_uniform">Uniform Precisions</caption>
+*  <tr><th>A / X / Y / compute_type
+*  <tr><td>HIP_R_32F
+*  <tr><td>HIP_R_64F
+*  <tr><td>HIP_C_32F
+*  <tr><td>HIP_C_64F
+*  </table>
+*
+*  \par Mixed precisions:
+*  <table>
+*  <caption id="spmv_mixed">Mixed Precisions</caption>
+*  <tr><th>A / X    <th>Y         <th>compute_type
+*  <tr><td>HIP_R_8I <td>HIP_R_32I <td>HIP_R_32I
+*  <tr><td>HIP_R_8I <td>HIP_R_32F <td>HIP_R_32F
+*  </table>
+*
+*  \par Mixed-regular real precisions
+*  <table>
+*  <caption id="spmv_mixed_regular_real">Mixed-regular real precisions</caption>
+*  <tr><th>A         <th>X / Y / compute_type
+*  <tr><td>HIP_R_32F <td>HIP_R_64F
+*  <tr><td>HIP_C_32F <td>HIP_C_64F
+*  </table>
+*
+*  \par Mixed-regular Complex precisions
+*  <table>
+*  <caption id="spmv_mixed_regular_complex">Mixed-regular Complex precisions</caption>
+*  <tr><th>A         <th>X / Y / compute_type
+*  <tr><td>HIP_R_32F <td>HIP_C_32F
+*  <tr><td>HIP_R_64F <td>HIP_C_64F
+*  </table>
 *
 *  @param[in]
 *  handle          handle to the hipsparse library context queue.
@@ -20399,6 +20444,9 @@ hipsparseStatus_t hipsparseSpMV(hipsparseHandle_t           handle,
 *  where \f$op(A)\f$ is a sparse \f$m \times k\f$ matrix in CSR format, \f$B\f$ is a dense matrix of size \f$k \times n\f$ and 
 *  \f$C\f$ is a dense matrix of size \f$m \times n\f$.
 *
+*  \ref hipsparseSpMM_bufferSize supports multiple combinations of data types and compute types. See \ref hipsparseSpMM for a complete 
+*  listing of all the data type and compute type combinations available.
+*
 *  See \ref hipsparseSpMM for full code example.
 *
 *  @param[in]
@@ -20470,6 +20518,9 @@ hipsparseStatus_t hipsparseSpMM_bufferSize(hipsparseHandle_t           handle,
 *  where \f$op(A)\f$ is a sparse \f$m \times k\f$ matrix in CSR format, \f$B\f$ is a dense matrix of size \f$k \times n\f$ and 
 *  \f$C\f$ is a dense matrix of size \f$m \times n\f$.
 *
+*  \ref hipsparseSpMM_preprocess supports multiple combinations of data types and compute types. See \ref hipsparseSpMM for a complete 
+*  listing of all the data type and compute type combinations available.
+*
 *  See \ref hipsparseSpMM for full code example.
 *
 *  @param[in]
@@ -20539,6 +20590,29 @@ hipsparseStatus_t hipsparseSpMM_preprocess(hipsparseHandle_t           handle,
 *  \f]
 *  where \f$op(A)\f$ is a sparse \f$m \times k\f$ matrix in CSR format, \f$B\f$ is a dense matrix of size \f$k \times n\f$ and 
 *  \f$C\f$ is a dense matrix of size \f$m \times n\f$.
+*
+*  \ref hipsparseSpMM supports multiple combinations of data types and compute types. The tables below indicate the currently
+*  supported different data types that can be used for for the sparse matrix A and the dense matrices B and C and the compute
+*  type for \f$\alpha\f$ and \f$\beta\f$. The advantage of using different data types is to save on memory bandwidth and storage
+*  when a user application allows while performing the actual computation in a higher precision.
+*
+*  \par Uniform Precisions:
+*  <table>
+*  <caption id="spmm_uniform">Uniform Precisions</caption>
+*  <tr><th>A / B / C / compute_type
+*  <tr><td>HIP_R_32F
+*  <tr><td>HIP_R_64F
+*  <tr><td>HIP_C_32F
+*  <tr><td>HIP_C_64F
+*  </table>
+*
+*  \par Mixed precisions:
+*  <table>
+*  <caption id="spmm_mixed">Mixed Precisions</caption>
+*  <tr><th>A / B    <th>C         <th>compute_type
+*  <tr><td>HIP_R_8I <td>HIP_R_32I <td>HIP_R_32I
+*  <tr><td>HIP_R_8I <td>HIP_R_32F <td>HIP_R_32F
+*  </table>
 *
 *  @param[in]
 *  handle          handle to the hipsparse library context queue.
