@@ -8,7 +8,7 @@ Documentation for hipSPARSE is available at
 
 ### Additions
 
-* Added alpha version of hipsparse-bench excutable to facilitate comparing cusparse and rocsparse backends
+* Added alpha version of hipsparse-bench excutable to facilitate comparing NVIDIA CUDA cuSPARSE and rocsparse backends
 
 ### Changes
 
@@ -20,7 +20,7 @@ Documentation for hipSPARSE is available at
 
 ### Known issues
 
-* In `hipsparseSpSM_solve()`, we currently pass the external buffer as a parameter. This does not match the cuSPARSE API and this extra external buffer parameter will be removed in a future release. For now this extra parameter can be ignored and nullptr passed as it is unused internally by `hipsparseSpSM_solve()`.
+* In `hipsparseSpSM_solve()`, we currently pass the external buffer as a parameter. This does not match the NVIDIA CUDA cuSPARSE API and this extra external buffer parameter will be removed in a future release. For now this extra parameter can be ignored and nullptr passed as it is unused internally by `hipsparseSpSM_solve()`.
 
 ## hipSPARSE 3.1.1 for ROCm 6.2.0
 
@@ -31,11 +31,11 @@ Documentation for hipSPARSE is available at
 ### Changes
 
 * All internal hipSPARSE functions now exist inside a namespace
-* Match deprecations found in cusparse 12.x.x when using cusparse backend.
+* Match deprecations found in NVIDIA CUDA cuSPARSE 12.x.x when using NVIDIA CUDA cuSPARSE backend.
 
 ### Fixes
 
-* Fixed SpGEMM and SpGEMM_reuse routines which were not matching cuSPARSE behaviour
+* Fixed SpGEMM and SpGEMM_reuse routines which were not matching NVIDIA CUDA cuSPARSE behaviour
 
 ### Optimizations
 
@@ -44,7 +44,7 @@ Documentation for hipSPARSE is available at
 
 ### Known issues
 
-* In `hipsparseSpSM_solve()`, we currently pass the external buffer as a parameter. This does not match the cuSPARSE API and this extra external buffer parameter will be removed in a future release. For now this extra parameter can be ignored and nullptr passed as it is unused internally by `hipsparseSpSM_solve()`.
+* In `hipsparseSpSM_solve()`, we currently pass the external buffer as a parameter. This does not match the NVIDIA CUDA cuSPARSE API and this extra external buffer parameter will be removed in a future release. For now this extra parameter can be ignored and nullptr passed as it is unused internally by `hipsparseSpSM_solve()`.
 
 ## hipSPARSE 3.0.1 for ROCm 6.1.0
 
@@ -59,7 +59,7 @@ Documentation for hipSPARSE is available at
 
 ### Changes
 
-* Changed the `hipsparseSpSV_solve()` API function to match the cuSPARSE API
+* Changed the `hipsparseSpSV_solve()` API function to match the NVIDIA CUDA cuSPARSE API
 * Changed generic API functions to use const descriptors
 * Improved documentation
 
@@ -67,8 +67,8 @@ Documentation for hipSPARSE is available at
 
 ### Fixes
 
-* Compilation failures when using the cuSPARSE 12.1.0 and 12.0.0 backends
-* Compilation failures when using the cuSPARSE 10.1 (non-update version) backend
+* Compilation failures when using the NVIDIA CUDA cuSPARSE 12.1.0 and 12.0.0 backends
+* Compilation failures when using the NVIDIA CUDA cuSPARSE 10.1 (non-update version) backend
 
 ## hipSPARSE 2.3.7 for ROCm 5.6.1
 
@@ -93,7 +93,7 @@ Documentation for hipSPARSE is available at
 ### Fixes
 
 * Fixed an issue where the `rocm` folder was not removed after upgrading meta packages
-* Fixed a compilation issue with the cuSPARSE backend
+* Fixed a compilation issue with the NVIDIA CUDA cuSPARSE backend
 * Added more detailed messages for unit test failures due related to missing input data
 * Improved documentation
 * Fixed a bug with deprecation messages when using gcc9
@@ -107,7 +107,7 @@ Documentation for hipSPARSE is available at
 ### Changes
 
 * `HIPSPARSE_ORDER_COLUMN` has been renamed to `HIPSPARSE_ORDER_COL` in order to match
-    cuSPARSE
+    NVIDIA CUDA cuSPARSE
 
 ## hipSPARSE 2.3.1 for ROCm 5.3.0
 
