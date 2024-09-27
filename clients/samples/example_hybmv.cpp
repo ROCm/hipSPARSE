@@ -1,5 +1,5 @@
 /* ************************************************************************
- * Copyright (C) 2018-2019 Advanced Micro Devices, Inc. All rights Reserved.
+ * Copyright (C) 2018-2024 Advanced Micro Devices, Inc. All rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -160,6 +160,10 @@ int main(int argc, char* argv[])
     hipsparseDestroyHybMat(hybA);
     hipsparseDestroyMatDescr(descrA);
     hipsparseDestroy(handle);
+
+    // Clean up
+    hipFree(dx);
+    hipFree(dy);
 
     return 0;
 }
