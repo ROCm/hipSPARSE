@@ -72,6 +72,11 @@ hipsparseSpMV_bufferSize()
 
 .. doxygenfunction:: hipsparseSpMV_bufferSize
 
+hipsparseSpMV_preprocess()
+==========================
+
+.. doxygenfunction:: hipsparseSpMV_preprocess
+
 hipsparseSpMV()
 ===============
 
