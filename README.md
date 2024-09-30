@@ -5,12 +5,12 @@ application and a 'worker' SPARSE library, where it marshals inputs to the backe
 results to your application. hipSPARSE exports an interface that doesn't require the client to change,
 regardless of the chosen backend. Currently, hipSPARSE supports
 [rocSPARSE](https://github.com/ROCmSoftwarePlatform/rocSPARSE) and
-[cuSPARSE](https://developer.nvidia.com/cusparse) backends.
+[NVIDIA CUDA cuSPARSE](https://developer.nvidia.com/cusparse) backends.
 
 ## Documentation
 
-Documentation for hipSPARSE is available at
-[https://rocm.docs.amd.com/projects/hipSPARSE/en/latest/](https://rocm.docs.amd.com/projects/hipSPARSE/en/latest/).
+> [!NOTE]
+> The published hipSPARSE documentation is available at [https://rocm.docs.amd.com/projects/hipSPARSE/en/latest/](https://rocm.docs.amd.com/projects/hipSPARSE/en/latest/index.html) in an organized, easy-to-read format, with search and a table of contents. The documentation source files reside in the hipSPARSE/docs folder of this repository. As with all ROCm projects, the documentation is open source. For more information, see [Contribute to ROCm documentation](https://rocm.docs.amd.com/en/latest/contribute/contributing.html).
 
 To build our documentation locally, run the following code:
 
@@ -67,8 +67,8 @@ on our wiki.
 
 ## Interface examples
 
-The hipSPARSE interface is compatible with rocSPARSE and cuSPARSE-v2 APIs. Porting a CUDA
-application that calls the cuSPARSE API to an application that calls the hipSPARSE API is relatively
+The hipSPARSE interface is compatible with rocSPARSE and CUDA cuSPARSE-v2 APIs. Porting a CUDA
+application that calls the CUDA cuSPARSE API to an application that calls the hipSPARSE API is relatively
 straightforward. For example, the hipSPARSE SCSRMV interface is:
 
 ### CSRMV API
