@@ -8,7 +8,7 @@
 hipSPARSE documentation
 ********************************************************************
 
-hipSPARSE exposes a common interface that provides basic linear algebra subroutines for sparse computation implemented on top of the AMD ROCm runtime and toolchains. hipSPARSE is a SPARSE marshalling library supporting both rocSPARSE and cuSPARSE as backends.
+hipSPARSE exposes a common interface that provides basic linear algebra subroutines for sparse computation implemented on top of the AMD ROCm runtime and toolchains. hipSPARSE is a SPARSE marshalling library supporting both rocSPARSE and NVIDIA CUDA cuSPARSE as backends.
 It sits between the application and a `worker` SPARSE library, marshalling inputs into the backend library and marshalling results back to the application. hipSPARSE is created using the HIP programming language and optimized for AMD's latest discrete GPUs.
 
 The code is open and hosted here: `<https://github.com/ROCmSoftwarePlatform/hipSPARSE>`__

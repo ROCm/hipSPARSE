@@ -27,7 +27,7 @@ The code is open and hosted here: https://github.com/ROCmSoftwarePlatform/hipSPA
 hipSPARSE is a SPARSE marshalling library, with multiple supported backends.
 It sits between the application and a `worker` SPARSE library, marshalling inputs into the backend library and marshalling results back to the application.
 hipSPARSE exports an interface that does not require the client to change, regardless of the chosen backend.
-Currently, hipSPARSE supports rocSPARSE and cuSPARSE as backends.
+Currently, hipSPARSE supports rocSPARSE and NVIDIA CUDA cuSPARSE as backends.
 hipSPARSE focuses on convenience and portability.
 If performance outweighs these factors, then using rocSPARSE itself is highly recommended.
 rocSPARSE can also be found on `GitHub <https://github.com/ROCmSoftwarePlatform/rocSPARSE/>`_.
