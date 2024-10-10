@@ -6,21 +6,21 @@ Documentation for hipSPARSE is available at
 
 ## hipSPARSE 3.1.2 for ROCm 6.3.0
 
-### Additions
+### Added
 
-* Added alpha version of hipsparse-bench excutable to facilitate comparing NVIDIA CUDA cuSPARSE and rocsparse backends
+* Added an alpha version of the hipsparse-bench executable to facilitate comparing NVIDIA CUDA cuSPARSE and rocSPARSE backends
 
-### Changes
+### Changed
 
-* Change default compiler from hipcc to amdclang in install script and cmake files.
+* Changed the default compiler from hipcc to amdclang in the install script and cmake files.
 
-### Optimizations
+### Optimized
 
-* Improved user manual
+* Improved the user documentation
 
 ### Known issues
 
-* In `hipsparseSpSM_solve()`, we currently pass the external buffer as a parameter. This does not match the NVIDIA CUDA cuSPARSE API and this extra external buffer parameter will be removed in a future release. For now this extra parameter can be ignored and nullptr passed as it is unused internally by `hipsparseSpSM_solve()`.
+* In `hipsparseSpSM_solve()`, the external buffer is passed as a parameter. This does not match the NVIDIA CUDA cuSPARSE API. This extra external buffer parameter will be removed in a future release. For now this extra parameter can be ignored and nullptr passed as it is unused internally by `hipsparseSpSM_solve()`.
 
 ## hipSPARSE 3.1.1 for ROCm 6.2.0
 
