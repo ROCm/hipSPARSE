@@ -115,7 +115,7 @@ endif()
 
 
 # Setup version
-rocm_setup_version(VERSION 3.1.2)
+rocm_setup_version(VERSION 3.2.0)
 set(hipsparse_SOVERSION 1.1.0)
 
 # hipSPARSE library
@@ -143,7 +143,7 @@ if(BUILD_CLIENTS_SAMPLES OR BUILD_CLIENTS_TESTS OR BUILD_CLIENTS_BENCHMARKS)
     set(GFORTRAN_DEB "libgfortran5")
   elseif(CLIENTS_OS STREQUAL "sles" AND OPENMP_FOUND)
     set(OPENMP_RPM "libgomp1")
-  elseif(CLIENTS_OS STREQUAL "mariner")
+  elseif(CLIENTS_OS STREQUAL "mariner" OR CLIENTS_OS STREQUAL "azurelinux")
     set(GFORTRAN_RPM "gfortran")
   endif()
 
