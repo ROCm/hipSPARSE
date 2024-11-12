@@ -8,7 +8,6 @@ Documentation for hipSPARSE is available at
 ### Added
 
 * Added an alpha version of the hipsparse-bench executable to facilitate comparing NVIDIA CUDA cuSPARSE and rocSPARSE backends
-* Added `azurelinux` OS name for correcting gfortran dependency
 
 ### Changed
 
@@ -17,6 +16,10 @@ Documentation for hipSPARSE is available at
 ### Optimized
 
 * Improved the user documentation
+
+### Resolved issues
+
+* Fixed `azurelinux` OS name for gfortran dependency
 
 ### Known issues
 
