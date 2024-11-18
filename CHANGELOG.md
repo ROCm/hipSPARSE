@@ -3,7 +3,6 @@
 Documentation for hipSPARSE is available at
 [https://rocm.docs.amd.com/projects/hipSPARSE/en/latest/](https://rocm.docs.amd.com/projects/hipSPARSE/en/latest/).
 
-
 ## hipSPARSE 3.1.2 for ROCm 6.3.0
 
 ### Added
@@ -17,6 +16,10 @@ Documentation for hipSPARSE is available at
 ### Optimized
 
 * Improved the user documentation
+
+### Resolved issues
+
+* Fixed the gfortran dependency for the `azurelinux` operating system.
 
 ### Known issues
 
