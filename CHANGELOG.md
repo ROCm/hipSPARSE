@@ -19,7 +19,7 @@ Documentation for hipSPARSE is available at
 
 ### Resolved issues
 
-* Fixed `azurelinux` OS name for gfortran dependency
+* Fixed the gfortran dependency for the `azurelinux` operating system.
 
 ### Known issues
 
