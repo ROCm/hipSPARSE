@@ -457,7 +457,7 @@ namespace hipsparse
         case HIP_R_8I:
             return rocsparse_datatype_i8_r;
         case HIP_R_32I:
-            return rocsparse_datatype_i32_r
+            return rocsparse_datatype_i32_r;
         case HIP_R_16F:
             return rocsparse_datatype_f16_r;
         case HIP_R_32F:
