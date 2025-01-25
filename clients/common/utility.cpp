@@ -63,7 +63,6 @@ std::string hipsparse_exepath()
         result.resize(result.size() * 2);
     }
 
-    // std::filesystem::path exepath(result.begin(), result.end());
     fs::path exepath(result.begin(), result.end());
     exepath = exepath.remove_filename();
     exepath += exepath.empty() ? "" : "/";
