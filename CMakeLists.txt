@@ -75,7 +75,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Set CXX standard
 if (CMAKE_CXX_STANDARD EQUAL 14)
-  message(WARNING "C++14 will be deprecated in the next major release")
+  message( DEPRECATION "Builds using the C++14 standard will no longer be supported in the next major release" )
 elseif(NOT CMAKE_CXX_STANDARD EQUAL 17)
   message(FATAL_ERROR "Only C++14 and C++17 are supported")
 endif()
