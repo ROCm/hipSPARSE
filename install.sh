@@ -138,12 +138,14 @@ install_packages( )
   local library_dependencies_centos_6=( "epel-release" "make" "cmake3" "gcc-c++" "rpm-build" )
   local library_dependencies_centos_7=( "epel-release" "make" "cmake3" "gcc-c++" "rpm-build" )
   local library_dependencies_centos_8=( "epel-release" "make" "cmake3" "gcc-c++" "rpm-build" )
+  local library_dependencies_centos_9=( "epel-release" "make" "cmake3" "gcc-c++" "rpm-build" )
   local library_dependencies_fedora=( "make" "cmake" "gcc-c++" "libcxx-devel" "rpm-build" "numactl-libs" )
   local library_dependencies_sles=( "make" "cmake" "gcc-c++" "rpm-build" "pkg-config" "dpkg" )
 
   local client_dependencies_centos_6=( "gcc-gfortran" )
   local client_dependencies_centos_7=( "devtoolset-7-gcc-gfortran" )
   local client_dependencies_centos_8=( "gcc-gfortran" )
+  local client_dependencies_centos_9=( "gcc-gfortran" )
   local client_dependencies_fedora=( "gcc-gfortran" )
   local client_dependencies_sles=( "gcc-fortran" )
 
@@ -153,6 +155,7 @@ install_packages( )
     else
       library_dependencies_centos_7+=( "numactl-libs" )
       library_dependencies_centos_8+=( "numactl-libs" )
+      library_dependencies_centos_9+=( "numactl-libs" )
     fi
   fi
 
@@ -179,7 +182,13 @@ install_packages( )
 #     yum -y update brings *all* installed packages up to date
 #     without seeking user approval
 #     elevate_if_not_root yum -y update
-      if [[ "${MAJORVERSION}" == 8 ]]; then
+      if [[ "${MAJORVERSION}" == 9 ]]; then
+        install_yum_packages "${library_dependencies_centos_9[@]}"
+
+        if [[ "${build_clients}" == true ]]; then
+          install_yum_packages "${client_dependencies_centos_9[@]}"
+        fi
+      elif [[ "${MAJORVERSION}" == 8 ]]; then
         install_yum_packages "${library_dependencies_centos_8[@]}"
 
         if [[ "${build_clients}" == true ]]; then

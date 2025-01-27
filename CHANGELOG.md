@@ -9,6 +9,10 @@ Documentation for hipSPARSE is available at
 
 * Added `azurelinux` OS name for correcting gfortran dependency
 
+### Optimized
+
+* Removed unused `GTest` dependency from `hipsparse-bench`
+
 ## hipSPARSE 3.1.2 for ROCm 6.3.0
 
 ### Added
