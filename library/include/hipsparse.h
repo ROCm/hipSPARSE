@@ -18570,7 +18570,7 @@ hipsparseStatus_t hipsparseCreateConstCsr(hipsparseConstSpMatDescr_t* spMatDescr
 /*! \ingroup generic_module
 *  \brief Create a sparse CSC matrix descriptor
 *  \details
-*  \p hipsparseCreateCsr creates a sparse CSC matrix descriptor. It should be
+*  \p hipsparseCreateCsc creates a sparse CSC matrix descriptor. It should be
 *  destroyed at the end using \p hipsparseDestroySpMat.
 */
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11020)
