@@ -454,6 +454,12 @@ namespace hipsparse
     {
         switch(datatype)
         {
+        case HIP_R_8I:
+            return CUDA_R_8I;
+        case HIP_R_32I:
+            return CUDA_R_32I;
+        case HIP_R_16F:
+            return CUDA_R_16F;
         case HIP_R_32F:
             return CUDA_R_32F;
         case HIP_R_64F:
@@ -471,6 +477,12 @@ namespace hipsparse
     {
         switch(datatype)
         {
+        case CUDA_R_8I:
+            return HIP_R_8I;
+        case CUDA_R_32I:
+            return HIP_R_32I;
+        case CUDA_R_16F:
+            return HIP_R_16F;
         case CUDA_R_32F:
             return HIP_R_32F;
         case CUDA_R_64F:

@@ -477,6 +477,12 @@ namespace hipsparse
     {
         switch(datatype)
         {
+        case rocsparse_datatype_i8_r:
+            return HIP_R_8I;
+        case rocsparse_datatype_i32_r:
+            return HIP_R_32I;
+        case rocsparse_datatype_f16_r:
+            return HIP_R_16F;
         case rocsparse_datatype_f32_r:
             return HIP_R_32F;
         case rocsparse_datatype_f64_r:
