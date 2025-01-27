@@ -34,8 +34,6 @@
 #define strSUITEcmp(A, B) _stricmp(A, B)
 #endif
 
-#include <version>
-
 #ifdef __cpp_lib_filesystem
 #include <filesystem>
 namespace fs = std::filesystem;
