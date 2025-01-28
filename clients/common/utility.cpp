@@ -36,40 +36,10 @@
 
 #ifdef __cpp_lib_filesystem
 #include <filesystem>
+namespace fs = std::filesystem;
 #else
 #include <experimental/filesystem>
-
-namespace std
-{
-    namespace filesystem = experimental::filesystem;
-}
-#endif
-#if 0
-#ifdef WIN32
-#include <windows.h>
-#endif
-
-#include "utility.hpp"
-
-#include <hip/hip_runtime_api.h>
-#include <hipsparse.h>
-#include <stdio.h>
-// #include <sys/time.h>
-#include <chrono>
-//#define _USE_MATH_DEFINES
-#include <cmath>
-#include <cstdlib>
-
-#ifdef __cpp_lib_filesystem
-#include <filesystem>
-#else
-#include <experimental/filesystem>
-
-namespace std
-{
-    namespace filesystem = experimental::filesystem;
-}
-#endif
+namespace fs = std::experimental::filesystem;
 #endif
 
 /* ============================================================================================ */
@@ -91,7 +61,7 @@ std::string hipsparse_exepath()
         result.resize(result.size() * 2);
     }
 
-    std::filesystem::path exepath(result.begin(), result.end());
+    fs::path exepath(result.begin(), result.end());
     exepath = exepath.remove_filename();
     exepath += exepath.empty() ? "" : "/";
     return exepath.string();
