@@ -38,7 +38,7 @@ Furthermore, the following compile-time dependencies must be met
 - `rocSPARSE <https://github.com/ROCmSoftwarePlatform/rocSPARSE>`_
 - `git <https://git-scm.com/>`_
 - `CMake <https://cmake.org/>`_ 3.5 or later
-- `AMD ROCm <https://github.com/RadeonOpenCompute/ROCm>`_
+- `AMD ROCm <https://github.com/ROCm/ROCm>`_
 - `googletest <https://github.com/google/googletest>`_ (optional, for clients)
 
 Download hipSPARSE
@@ -152,4 +152,4 @@ Currently, hipSPARSE is supported under the following operating systems
 - RHEL 9
 - SLES 15
 
-To compile and run hipSPARSE, `AMD ROCm Platform <https://github.com/RadeonOpenCompute/ROCm>`_ is required.
+To compile and run hipSPARSE, `AMD ROCm Platform <https://github.com/ROCm/ROCm>`_ is required.
