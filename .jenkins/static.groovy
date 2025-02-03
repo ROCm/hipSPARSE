@@ -18,7 +18,7 @@ def runCI =
     prj.paths.build_command = './install.sh -c --static'
     prj.compiler.compiler_name = 'amdclang++'
     prj.compiler.compiler_path = '/opt/rocm/bin/amdclang++'
-    prj.libraryDependencies = ['hipBLAS-common', 'hipBLASLt', 'rocBLAS', 'rocSPARSE', 'rocPRIM']
+    prj.libraryDependencies = ['hipBLAS-common', 'rocBLAS', 'rocSPARSE', 'rocPRIM']
     prj.defaults.ccache = false
 
     // Define test architectures, optional rocm version argument is available
