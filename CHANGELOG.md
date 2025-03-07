@@ -8,7 +8,6 @@ Documentation for hipSPARSE is available at
 ### Added
 
 * Added build dependencies for CentOS/RHEL 9 in install script
-* Added `azurelinux` OS name for correcting gfortran dependency
 
 ### Changed
 
@@ -35,6 +34,10 @@ Documentation for hipSPARSE is available at
 ### Optimized
 
 * Improved the user documentation
+
+### Resolved issues
+
+* Fixed the gfortran dependency for the `azurelinux` operating system.
 
 ### Known issues
 
