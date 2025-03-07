@@ -10,6 +10,10 @@ Documentation for hipSPARSE is available at
 * Added build dependencies for CentOS/RHEL 9 in install script
 * Added `azurelinux` OS name for correcting gfortran dependency
 
+### Changed
+
+* Moved `hipsparse_clientmatrices.cmake` and `hipsparse_mtx2csr` files from `hipsparse-tests` package to `hipsparse-clients-common` package
+
 ### Optimized
 
 * Removed unused `GTest` dependency from `hipsparse-bench`
