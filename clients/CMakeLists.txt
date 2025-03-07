@@ -111,16 +111,16 @@ if(BUILD_CLIENTS_TESTS)
     WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}")
   
   add_custom_target(hipsparse-common DEPENDS "${HIPSPARSE_CLIENTMATRICES}" "${HIPSPARSE_CONVERT}")
-  
+
   rocm_install(
     PROGRAMS "${HIPSPARSE_CONVERT}"
-    COMPONENT tests
+    COMPONENT clients-common
     DESTINATION ${CMAKE_INSTALL_BINDIR}
     )
   
   rocm_install(
     FILES "${HIPSPARSE_CLIENTMATRICES}"
-    COMPONENT tests
+    COMPONENT clients-common
     DESTINATION "${CMAKE_INSTALL_DATADIR}/hipsparse/test"
     )
   
