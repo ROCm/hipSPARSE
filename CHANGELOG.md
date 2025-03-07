@@ -3,11 +3,11 @@
 Documentation for hipSPARSE is available at
 [https://rocm.docs.amd.com/projects/hipSPARSE/en/latest/](https://rocm.docs.amd.com/projects/hipSPARSE/en/latest/).
 
-## (Unreleased) hipSPARSE 3.2.0
+## hipSPARSE 3.2.0 for ROCm 6.4.0
 
 ### Added
 
-* Added `azurelinux` OS name for correcting gfortran dependency
+* Added build dependencies for CentOS/RHEL 9 in install script
 
 ### Changed
 
@@ -16,6 +16,10 @@ Documentation for hipSPARSE is available at
 ### Optimized
 
 * Removed unused `GTest` dependency from `hipsparse-bench`
+
+### Known issues
+
+* In `hipsparseSpSM_solve()`, the external buffer is passed as a parameter. This does not match the NVIDIA CUDA cuSPARSE API. This extra external buffer parameter will be removed in a future release. For now this extra parameter can be ignored and nullptr passed as it is unused internally by `hipsparseSpSM_solve()`.
 
 ## hipSPARSE 3.1.2 for ROCm 6.3.0
 
@@ -30,6 +34,10 @@ Documentation for hipSPARSE is available at
 ### Optimized
 
 * Improved the user documentation
+
+### Resolved issues
+
+* Fixed the gfortran dependency for the `azurelinux` operating system.
 
 ### Known issues
 
