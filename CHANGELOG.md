@@ -12,7 +12,7 @@ Documentation for hipSPARSE is available at
 
 ### Changed
 
-* Moved `hipsparse_clientmatrices.cmake` and `hipsparse_mtx2csr` files from `hipsparse-tests` package to `hipsparse-clients-common` package
+* Moved the `hipsparse_clientmatrices.cmake` and `hipsparse_mtx2csr` files from the `hipsparse-tests` package to the `hipsparse-clients-common` package
 
 ### Optimized
 
