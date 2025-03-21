@@ -170,7 +170,7 @@ void set_device(int device_id)
 double get_time_us(void)
 {
     std::ignore = hipDeviceSynchronize();
-    auto now = std::chrono::steady_clock::now();
+    auto now    = std::chrono::steady_clock::now();
     // struct timeval tv;
     // gettimeofday(&tv, NULL);
     //  return (tv.tv_sec * 1000 * 1000) + tv.tv_usec;
@@ -188,7 +188,7 @@ double get_time_us(void)
 double get_time_us_sync(hipStream_t stream)
 {
     std::ignore = hipStreamSynchronize(stream);
-    auto now = std::chrono::steady_clock::now();
+    auto now    = std::chrono::steady_clock::now();
 
     // struct timeval tv;
     // gettimeofday(&tv, NULL);

@@ -124,18 +124,18 @@ int main(int argc, char* argv[])
     {
         // Call hipsparse csrmv
         HIPSPARSE_CHECK(hipsparseDcsrmv(handle,
-                        HIPSPARSE_OPERATION_NON_TRANSPOSE,
-                        m,
-                        n,
-                        nnz,
-                        &halpha,
-                        descrA,
-                        dAval,
-                        dAptr,
-                        dAcol,
-                        dx,
-                        &hbeta,
-                        dy));
+                                        HIPSPARSE_OPERATION_NON_TRANSPOSE,
+                                        m,
+                                        n,
+                                        nnz,
+                                        &halpha,
+                                        descrA,
+                                        dAval,
+                                        dAptr,
+                                        dAcol,
+                                        dx,
+                                        &hbeta,
+                                        dy));
     }
 
     // Device synchronization
@@ -151,18 +151,18 @@ int main(int argc, char* argv[])
         {
             // Call hipsparse csrmv
             HIPSPARSE_CHECK(hipsparseDcsrmv(handle,
-                            HIPSPARSE_OPERATION_NON_TRANSPOSE,
-                            m,
-                            n,
-                            nnz,
-                            &halpha,
-                            descrA,
-                            dAval,
-                            dAptr,
-                            dAcol,
-                            dx,
-                            &hbeta,
-                            dy));
+                                            HIPSPARSE_OPERATION_NON_TRANSPOSE,
+                                            m,
+                                            n,
+                                            nnz,
+                                            &halpha,
+                                            descrA,
+                                            dAval,
+                                            dAptr,
+                                            dAcol,
+                                            dx,
+                                            &hbeta,
+                                            dy));
         }
 
         // Device synchronization
