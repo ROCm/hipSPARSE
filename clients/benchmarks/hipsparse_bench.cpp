@@ -137,7 +137,11 @@ void hipsparse_bench::info_devices(std::ostream& out_) const
     {
         int             device_id = this->get_device_id();
         hipDeviceProp_t prop;
-        hipGetDeviceProperties(&prop, device_id);
+        if(hipGetDeviceProperties(&prop, device_id) != hipSuccess)
+        {
+            std::cerr << "Error: cannot get device properties" << std::endl;
+            exit(1);
+        }
         out_ << "Using device ID " << device_id << " (" << prop.name << ") for hipSPARSE"
              << std::endl
              << "-------------------------------------------------------------------------"
