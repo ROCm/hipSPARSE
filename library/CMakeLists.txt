@@ -38,6 +38,27 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/include/hipsparse-version.h.in"
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/include/hipsparse.h"
                "${PROJECT_BINARY_DIR}/include/hipsparse/hipsparse.h" COPYONLY)
 
+set(HEADER_FILES 
+    generic/hipsparse_axpby.h
+    generic/hipsparse_dense2sparse.h
+    generic/hipsparse_gather.h
+    generic/hipsparse_rot.h
+    generic/hipsparse_scatter.h
+    generic/hipsparse_sddmm.h
+    generic/hipsparse_sparse2dense.h
+    generic/hipsparse_spgemm_reuse.h
+    generic/hipsparse_spgemm.h
+    generic/hipsparse_spmm.h
+    generic/hipsparse_spmv.h
+    generic/hipsparse_spsm.h
+    generic/hipsparse_spsv.h
+    generic/hipsparse_spvv.h)
+           
+foreach( file_i ${HEADER_FILES})
+  configure_file("${CMAKE_CURRENT_SOURCE_DIR}/include/${file_i}"
+    "${PROJECT_BINARY_DIR}/include/hipsparse/${file_i}" COPYONLY)
+endforeach()
+
 # Public hipSPARSE headers
 set(hipsparse_headers_public
   include/hipsparse.h
