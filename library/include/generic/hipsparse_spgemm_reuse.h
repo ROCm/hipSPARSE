@@ -21,8 +21,8 @@
  * THE SOFTWARE.
  *
  * ************************************************************************ */
-#ifndef HIPSPARSE_GENERIC_HIPSPARSE_SPVV_H
-#define HIPSPARSE_GENERIC_HIPSPARSE_SPVV_H
+#ifndef HIPSPARSE_GENERIC_HIPSPARSE_SPGEMM_REUSE_H
+#define HIPSPARSE_GENERIC_HIPSPARSE_SPGEMM_REUSE_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -569,4 +569,4 @@ hipsparseStatus_t hipsparseSpGEMMreuse_compute(hipsparseHandle_t      handle,
 }
 #endif
 
-#endif /* HIPSPARSE_GENERIC_HIPSPARSE_SPVV_H */
+#endif /* HIPSPARSE_GENERIC_HIPSPARSE_SPGEMM_REUSE_H */

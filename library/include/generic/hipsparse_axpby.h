@@ -21,8 +21,8 @@
  * THE SOFTWARE.
  *
  * ************************************************************************ */
-#ifndef HIPSPARSE_GENERIC_HIPSPARSE_SPVV_H
-#define HIPSPARSE_GENERIC_HIPSPARSE_SPVV_H
+#ifndef HIPSPARSE_GENERIC_HIPSPARSE_AXPBY_H
+#define HIPSPARSE_GENERIC_HIPSPARSE_AXPBY_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -159,4 +159,4 @@ hipsparseStatus_t hipsparseAxpby(hipsparseHandle_t     handle,
 }
 #endif
 
-#endif /* HIPSPARSE_GENERIC_HIPSPARSE_SPVV_H */
+#endif /* HIPSPARSE_GENERIC_HIPSPARSE_AXPBY_H */
