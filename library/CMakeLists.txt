@@ -38,6 +38,18 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/include/hipsparse-version.h.in"
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/include/hipsparse.h"
                "${PROJECT_BINARY_DIR}/include/hipsparse/hipsparse.h" COPYONLY)
 
+set(HEADER_FILES 
+    level3/hipsparse_bsrmm.h
+    level3/hipsparse_bsrsm.h
+    level3/hipsparse_csrmm.h
+    level3/hipsparse_csrsm.h
+    level3/hipsparse_gemmi.h)
+
+foreach( file_i ${HEADER_FILES})
+  configure_file("${CMAKE_CURRENT_SOURCE_DIR}/include/${file_i}"
+    "${PROJECT_BINARY_DIR}/include/hipsparse/${file_i}" COPYONLY)
+endforeach()
+
 # Public hipSPARSE headers
 set(hipsparse_headers_public
   include/hipsparse.h
