@@ -38,6 +38,22 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/include/hipsparse-version.h.in"
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/include/hipsparse.h"
                "${PROJECT_BINARY_DIR}/include/hipsparse/hipsparse.h" COPYONLY)
 
+set(HEADER_FILES 
+    precond/hipsparse_bsric0.h
+    precond/hipsparse_bsrilu0.h
+    precond/hipsparse_csric0.h
+    precond/hipsparse_csrilu0.h
+    precond/hipsparse_gpsv_interleaved_batch.h
+    precond/hipsparse_gtsv_interleaved_batch.h
+    precond/hipsparse_gtsv_nopivot.h
+    precond/hipsparse_gtsv_strided_batch.h
+    precond/hipsparse_gtsv.h)
+
+foreach( file_i ${HEADER_FILES})
+  configure_file("${CMAKE_CURRENT_SOURCE_DIR}/include/${file_i}"
+    "${PROJECT_BINARY_DIR}/include/hipsparse/${file_i}" COPYONLY)
+endforeach()
+
 # Public hipSPARSE headers
 set(hipsparse_headers_public
   include/hipsparse.h
