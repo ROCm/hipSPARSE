@@ -38,6 +38,41 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/include/hipsparse-version.h.in"
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/include/hipsparse.h"
                "${PROJECT_BINARY_DIR}/include/hipsparse/hipsparse.h" COPYONLY)
 
+set(HEADER_FILES 
+    conversion/hipsparse_bsr2csr.h
+    conversion/hipsparse_coo2csr.h
+    conversion/hipsparse_coosort.h
+    conversion/hipsparse_create_identity_permutation.h
+    conversion/hipsparse_csc2dense.h
+    conversion/hipsparse_cscsort.h
+    conversion/hipsparse_csr2bsr.h
+    conversion/hipsparse_csr2coo.h
+    conversion/hipsparse_csr2csc.h
+    conversion/hipsparse_csr2csr_compress.h
+    conversion/hipsparse_csr2csru.h
+    conversion/hipsparse_csr2dense.h
+    conversion/hipsparse_csr2gebsr.h
+    conversion/hipsparse_csr2hyb.h
+    conversion/hipsparse_csrsort.h
+    conversion/hipsparse_csru2csr.h
+    conversion/hipsparse_dense2csc.h
+    conversion/hipsparse_dense2csr.h
+    conversion/hipsparse_gebsr2csr.h
+    conversion/hipsparse_gebsr2gebsc.h
+    conversion/hipsparse_gebsr2gebsr.h
+    conversion/hipsparse_hyb2csr.h
+    conversion/hipsparse_nnz_compress.h
+    conversion/hipsparse_nnz.h
+    conversion/hipsparse_prune_csr2csr_by_percentage.h
+    conversion/hipsparse_prune_csr2csr.h
+    conversion/hipsparse_prune_dense2csr_by_percentage.h
+    conversion/hipsparse_prune_dense2csr.h)
+           
+foreach( file_i ${HEADER_FILES})
+  configure_file("${CMAKE_CURRENT_SOURCE_DIR}/include/${file_i}"
+    "${PROJECT_BINARY_DIR}/include/hipsparse/${file_i}" COPYONLY)
+endforeach()
+
 # Public hipSPARSE headers
 set(hipsparse_headers_public
   include/hipsparse.h
