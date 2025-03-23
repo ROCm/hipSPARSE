@@ -14810,24 +14810,26 @@ hipsparseStatus_t hipsparseSpGEMM_copy(hipsparseHandle_t          handle,
     {
         if(computeType == HIP_R_32F)
         {
-            hipMemcpyAsync(device_one, &host_sone, sizeof(float), hipMemcpyHostToDevice, stream);
+            RETURN_IF_HIP_ERROR(hipMemcpyAsync(
+                device_one, &host_sone, sizeof(float), hipMemcpyHostToDevice, stream));
             one = device_one;
         }
         if(computeType == HIP_R_64F)
         {
-            hipMemcpyAsync(device_one, &host_done, sizeof(double), hipMemcpyHostToDevice, stream);
+            RETURN_IF_HIP_ERROR(hipMemcpyAsync(
+                device_one, &host_done, sizeof(double), hipMemcpyHostToDevice, stream));
             one = device_one;
         }
         if(computeType == HIP_C_32F)
         {
-            hipMemcpyAsync(
-                device_one, &host_cone, sizeof(hipComplex), hipMemcpyHostToDevice, stream);
+            RETURN_IF_HIP_ERROR(hipMemcpyAsync(
+                device_one, &host_cone, sizeof(hipComplex), hipMemcpyHostToDevice, stream));
             one = device_one;
         }
         if(computeType == HIP_C_64F)
         {
-            hipMemcpyAsync(
-                device_one, &host_zone, sizeof(hipDoubleComplex), hipMemcpyHostToDevice, stream);
+            RETURN_IF_HIP_ERROR(hipMemcpyAsync(
+                device_one, &host_zone, sizeof(hipDoubleComplex), hipMemcpyHostToDevice, stream));
             one = device_one;
         }
     }
@@ -15267,24 +15269,26 @@ hipsparseStatus_t hipsparseSpGEMMreuse_compute(hipsparseHandle_t          handle
     {
         if(computeType == HIP_R_32F)
         {
-            hipMemcpyAsync(device_one, &host_sone, sizeof(float), hipMemcpyHostToDevice, stream);
+            RETURN_IF_HIP_ERROR(hipMemcpyAsync(
+                device_one, &host_sone, sizeof(float), hipMemcpyHostToDevice, stream));
             one = device_one;
         }
         if(computeType == HIP_R_64F)
         {
-            hipMemcpyAsync(device_one, &host_done, sizeof(double), hipMemcpyHostToDevice, stream);
+            RETURN_IF_HIP_ERROR(hipMemcpyAsync(
+                device_one, &host_done, sizeof(double), hipMemcpyHostToDevice, stream));
             one = device_one;
         }
         if(computeType == HIP_C_32F)
         {
-            hipMemcpyAsync(
-                device_one, &host_cone, sizeof(hipComplex), hipMemcpyHostToDevice, stream);
+            RETURN_IF_HIP_ERROR(hipMemcpyAsync(
+                device_one, &host_cone, sizeof(hipComplex), hipMemcpyHostToDevice, stream));
             one = device_one;
         }
         if(computeType == HIP_C_64F)
         {
-            hipMemcpyAsync(
-                device_one, &host_zone, sizeof(hipDoubleComplex), hipMemcpyHostToDevice, stream);
+            RETURN_IF_HIP_ERROR(hipMemcpyAsync(
+                device_one, &host_zone, sizeof(hipDoubleComplex), hipMemcpyHostToDevice, stream));
             one = device_one;
         }
     }

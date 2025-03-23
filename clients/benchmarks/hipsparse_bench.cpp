@@ -77,7 +77,7 @@ hipsparse_bench::hipsparse_bench(int& argc, char**& argv)
     int devs;
     if(hipGetDeviceCount(&devs) != hipSuccess)
     {
-        std::cerr << "Error: cannot get device count" << std::endl;
+        std::cerr << "hipsparse_bench error: cannot get device count" << std::endl;
         exit(-1);
     }
     auto device_id = this->config.device_id;
@@ -85,7 +85,7 @@ hipsparse_bench::hipsparse_bench(int& argc, char**& argv)
     // Set device
     if(hipSetDevice(device_id) != hipSuccess || device_id >= devs)
     {
-        std::cerr << "Error: cannot set device ID " << device_id << std::endl;
+        std::cerr << "hipsparse_bench error: cannot set device ID " << device_id << std::endl;
         exit(-1);
     }
 }
@@ -113,7 +113,7 @@ void hipsparse_bench::info_devices(std::ostream& out_) const
     int devs;
     if(hipGetDeviceCount(&devs) != hipSuccess)
     {
-        std::cerr << "Error: cannot get device count" << std::endl;
+        std::cerr << "hipsparse_bench error: cannot get device count" << std::endl;
         exit(1);
     }
 
@@ -123,7 +123,7 @@ void hipsparse_bench::info_devices(std::ostream& out_) const
         hipDeviceProp_t prop;
         if(hipGetDeviceProperties(&prop, i) != hipSuccess)
         {
-            std::cerr << "Error: cannot get device properties" << std::endl;
+            std::cerr << "hipsparse_bench error: cannot get device properties" << std::endl;
             exit(1);
         }
 
@@ -137,7 +137,11 @@ void hipsparse_bench::info_devices(std::ostream& out_) const
     {
         int             device_id = this->get_device_id();
         hipDeviceProp_t prop;
-        hipGetDeviceProperties(&prop, device_id);
+        if(hipGetDeviceProperties(&prop, device_id) != hipSuccess)
+        {
+            std::cerr << "hipsparse_bench error: cannot get device properties" << std::endl;
+            exit(1);
+        }
         out_ << "Using device ID " << device_id << " (" << prop.name << ") for hipSPARSE"
              << std::endl
              << "-------------------------------------------------------------------------"

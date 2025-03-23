@@ -29,6 +29,24 @@
 #include <stdlib.h>
 #include <vector>
 
+#define HIP_CHECK(stat)                                               \
+    {                                                                 \
+        if(stat != hipSuccess)                                        \
+        {                                                             \
+            fprintf(stderr, "Error: hip error in line %d", __LINE__); \
+            return -1;                                                \
+        }                                                             \
+    }
+
+#define HIPSPARSE_CHECK(stat)                                               \
+    {                                                                       \
+        if(stat != HIPSPARSE_STATUS_SUCCESS)                                \
+        {                                                                   \
+            fprintf(stderr, "Error: hipsparse error in line %d", __LINE__); \
+            return -1;                                                      \
+        }                                                                   \
+    }
+
 int main(int argc, char* argv[])
 {
     // Parse command line
@@ -53,13 +71,13 @@ int main(int argc, char* argv[])
 
     // hipSPARSE handle
     hipsparseHandle_t handle;
-    hipsparseCreate(&handle);
+    HIPSPARSE_CHECK(hipsparseCreate(&handle));
 
     hipDeviceProp_t devProp;
     int             device_id = 0;
 
-    hipGetDevice(&device_id);
-    hipGetDeviceProperties(&devProp, device_id);
+    HIP_CHECK(hipGetDevice(&device_id));
+    HIP_CHECK(hipGetDeviceProperties(&devProp, device_id));
     printf("Device: %s\n", devProp.name);
 
     // Generate problem
@@ -81,7 +99,7 @@ int main(int argc, char* argv[])
 
     // Matrix descriptor
     hipsparseMatDescr_t descrA;
-    hipsparseCreateMatDescr(&descrA);
+    HIPSPARSE_CHECK(hipsparseCreateMatDescr(&descrA));
 
     // Offload data to device
     int*    dAptr = NULL;
@@ -90,38 +108,38 @@ int main(int argc, char* argv[])
     double* dx    = NULL;
     double* dy    = NULL;
 
-    hipMalloc((void**)&dAptr, sizeof(int) * (m + 1));
-    hipMalloc((void**)&dAcol, sizeof(int) * nnz);
-    hipMalloc((void**)&dAval, sizeof(double) * nnz);
-    hipMalloc((void**)&dx, sizeof(double) * n);
-    hipMalloc((void**)&dy, sizeof(double) * m);
+    HIP_CHECK(hipMalloc((void**)&dAptr, sizeof(int) * (m + 1)));
+    HIP_CHECK(hipMalloc((void**)&dAcol, sizeof(int) * nnz));
+    HIP_CHECK(hipMalloc((void**)&dAval, sizeof(double) * nnz));
+    HIP_CHECK(hipMalloc((void**)&dx, sizeof(double) * n));
+    HIP_CHECK(hipMalloc((void**)&dy, sizeof(double) * m));
 
-    hipMemcpy(dAptr, hAptr.data(), sizeof(int) * (m + 1), hipMemcpyHostToDevice);
-    hipMemcpy(dAcol, hAcol.data(), sizeof(int) * nnz, hipMemcpyHostToDevice);
-    hipMemcpy(dAval, hAval.data(), sizeof(double) * nnz, hipMemcpyHostToDevice);
-    hipMemcpy(dx, hx.data(), sizeof(double) * n, hipMemcpyHostToDevice);
+    HIP_CHECK(hipMemcpy(dAptr, hAptr.data(), sizeof(int) * (m + 1), hipMemcpyHostToDevice));
+    HIP_CHECK(hipMemcpy(dAcol, hAcol.data(), sizeof(int) * nnz, hipMemcpyHostToDevice));
+    HIP_CHECK(hipMemcpy(dAval, hAval.data(), sizeof(double) * nnz, hipMemcpyHostToDevice));
+    HIP_CHECK(hipMemcpy(dx, hx.data(), sizeof(double) * n, hipMemcpyHostToDevice));
 
     // Warm up
     for(int i = 0; i < 10; ++i)
     {
         // Call hipsparse csrmv
-        hipsparseDcsrmv(handle,
-                        HIPSPARSE_OPERATION_NON_TRANSPOSE,
-                        m,
-                        n,
-                        nnz,
-                        &halpha,
-                        descrA,
-                        dAval,
-                        dAptr,
-                        dAcol,
-                        dx,
-                        &hbeta,
-                        dy);
+        HIPSPARSE_CHECK(hipsparseDcsrmv(handle,
+                                        HIPSPARSE_OPERATION_NON_TRANSPOSE,
+                                        m,
+                                        n,
+                                        nnz,
+                                        &halpha,
+                                        descrA,
+                                        dAval,
+                                        dAptr,
+                                        dAcol,
+                                        dx,
+                                        &hbeta,
+                                        dy));
     }
 
     // Device synchronization
-    hipDeviceSynchronize();
+    HIP_CHECK(hipDeviceSynchronize());
 
     // Start time measurement
     double time = get_time_us();
@@ -132,23 +150,23 @@ int main(int argc, char* argv[])
         for(int j = 0; j < batch_size; ++j)
         {
             // Call hipsparse csrmv
-            hipsparseDcsrmv(handle,
-                            HIPSPARSE_OPERATION_NON_TRANSPOSE,
-                            m,
-                            n,
-                            nnz,
-                            &halpha,
-                            descrA,
-                            dAval,
-                            dAptr,
-                            dAcol,
-                            dx,
-                            &hbeta,
-                            dy);
+            HIPSPARSE_CHECK(hipsparseDcsrmv(handle,
+                                            HIPSPARSE_OPERATION_NON_TRANSPOSE,
+                                            m,
+                                            n,
+                                            nnz,
+                                            &halpha,
+                                            descrA,
+                                            dAval,
+                                            dAptr,
+                                            dAcol,
+                                            dx,
+                                            &hbeta,
+                                            dy));
         }
 
         // Device synchronization
-        hipDeviceSynchronize();
+        HIP_CHECK(hipDeviceSynchronize());
     }
 
     time = (get_time_us() - time) / (trials * batch_size * 1e3);
@@ -168,14 +186,14 @@ int main(int argc, char* argv[])
            time);
 
     // Clear up on device
-    hipFree(dAptr);
-    hipFree(dAcol);
-    hipFree(dAval);
-    hipFree(dx);
-    hipFree(dy);
+    HIP_CHECK(hipFree(dAptr));
+    HIP_CHECK(hipFree(dAcol));
+    HIP_CHECK(hipFree(dAval));
+    HIP_CHECK(hipFree(dx));
+    HIP_CHECK(hipFree(dy));
 
-    hipsparseDestroyMatDescr(descrA);
-    hipsparseDestroy(handle);
+    HIPSPARSE_CHECK(hipsparseDestroyMatDescr(descrA));
+    HIPSPARSE_CHECK(hipsparseDestroy(handle));
 
     return 0;
 }
