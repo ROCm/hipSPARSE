@@ -43,6 +43,15 @@ set(hipsparse_headers_public
   include/hipsparse.h
   ${PROJECT_BINARY_DIR}/include/hipsparse/hipsparse-version.h)
 
+set(HEADER_FILES 
+    extra/hipsparse_csrgeam.h
+    extra/hipsparse_csrgemm.h)
+
+foreach( file_i ${HEADER_FILES})
+  configure_file("${CMAKE_CURRENT_SOURCE_DIR}/include/${file_i}"
+    "${PROJECT_BINARY_DIR}/include/hipsparse/${file_i}" COPYONLY)
+endforeach()
+
 source_group("Header Files\\Public" FILES ${hipsparse_headers_public})
 
 # Include sources
