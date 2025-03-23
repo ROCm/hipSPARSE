@@ -78,7 +78,6 @@ HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreateIdentityPermutation(hipsparseHandle_t handle, int n, int* p);
 #endif
 
-
 #ifdef __cplusplus
 }
 #endif
