@@ -292,7 +292,7 @@ hipsparseStatus_t testing_spmv_csr(Arguments argus)
 
         // Query for warpSize
         hipDeviceProp_t prop;
-        hipGetDeviceProperties(&prop, 0);
+        CHECK_HIP_ERROR(hipGetDeviceProperties(&prop, 0));
 
         int WF_SIZE;
         I   nnz_per_row = nnz / m;

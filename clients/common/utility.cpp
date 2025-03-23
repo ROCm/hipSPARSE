@@ -169,8 +169,8 @@ void set_device(int device_id)
 /*! \brief  CPU Timer(in microsecond): synchronize with the default device and return wall time */
 double get_time_us(void)
 {
-    hipDeviceSynchronize();
-    auto now = std::chrono::steady_clock::now();
+    std::ignore = hipDeviceSynchronize();
+    auto now    = std::chrono::steady_clock::now();
     // struct timeval tv;
     // gettimeofday(&tv, NULL);
     //  return (tv.tv_sec * 1000 * 1000) + tv.tv_usec;
@@ -187,8 +187,8 @@ double get_time_us(void)
 /*! \brief  CPU Timer(in microsecond): synchronize with given queue/stream and return wall time */
 double get_time_us_sync(hipStream_t stream)
 {
-    hipStreamSynchronize(stream);
-    auto now = std::chrono::steady_clock::now();
+    std::ignore = hipStreamSynchronize(stream);
+    auto now    = std::chrono::steady_clock::now();
 
     // struct timeval tv;
     // gettimeofday(&tv, NULL);

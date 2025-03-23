@@ -326,7 +326,7 @@ hipsparseStatus_t testing_csrilusv(Arguments argus)
 
     // Host csrsv
     hipDeviceProp_t prop;
-    hipGetDeviceProperties(&prop, 0);
+    CHECK_HIP_ERROR(hipGetDeviceProperties(&prop, 0));
 
     position_gold = csr_lsolve(HIPSPARSE_OPERATION_NON_TRANSPOSE,
                                m,

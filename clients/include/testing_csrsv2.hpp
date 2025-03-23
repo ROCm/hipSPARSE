@@ -476,7 +476,7 @@ hipsparseStatus_t testing_csrsv2(Arguments argus)
 
         // Host csrsv2
         hipDeviceProp_t prop;
-        hipGetDeviceProperties(&prop, 0);
+        CHECK_HIP_ERROR(hipGetDeviceProperties(&prop, 0));
 
         int position_gold;
         if((fill_mode == HIPSPARSE_FILL_MODE_LOWER && trans == HIPSPARSE_OPERATION_NON_TRANSPOSE)
