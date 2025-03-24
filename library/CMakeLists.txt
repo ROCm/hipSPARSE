@@ -44,8 +44,8 @@ set(hipsparse_headers_public
   ${PROJECT_BINARY_DIR}/include/hipsparse/hipsparse-version.h)
 
 set(HEADER_FILES 
-    extra/hipsparse_csrgeam.h
-    extra/hipsparse_csrgemm.h)
+    internal/extra/hipsparse_csrgeam.h
+    internal/extra/hipsparse_csrgemm.h)
 
 foreach( file_i ${HEADER_FILES})
   configure_file("${CMAKE_CURRENT_SOURCE_DIR}/include/${file_i}"
