@@ -8570,15 +8570,15 @@ hipsparseStatus_t hipsparseZcsrgemm2(hipsparseHandle_t         handle,
 * ===========================================================================
 */
 
-#include "precond/hipsparse_bsric0.h"
-#include "precond/hipsparse_bsrilu0.h"
-#include "precond/hipsparse_csric0.h"
-#include "precond/hipsparse_csrilu0.h"
-#include "precond/hipsparse_gpsv_interleaved_batch.h"
-#include "precond/hipsparse_gtsv.h"
-#include "precond/hipsparse_gtsv_interleaved_batch.h"
-#include "precond/hipsparse_gtsv_nopivot.h"
-#include "precond/hipsparse_gtsv_strided_batch.h"
+#include "internal/precond/hipsparse_bsric0.h"
+#include "internal/precond/hipsparse_bsrilu0.h"
+#include "internal/precond/hipsparse_csric0.h"
+#include "internal/precond/hipsparse_csrilu0.h"
+#include "internal/precond/hipsparse_gpsv_interleaved_batch.h"
+#include "internal/precond/hipsparse_gtsv.h"
+#include "internal/precond/hipsparse_gtsv_interleaved_batch.h"
+#include "internal/precond/hipsparse_gtsv_nopivot.h"
+#include "internal/precond/hipsparse_gtsv_strided_batch.h"
 
 /*
 * ===========================================================================
