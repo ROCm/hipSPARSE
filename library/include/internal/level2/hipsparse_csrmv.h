@@ -21,8 +21,8 @@
  * THE SOFTWARE.
  *
  * ************************************************************************ */
-#ifndef HIPSPARSE_LEVEL2_HIPSPARSE_CSRMV_H
-#define HIPSPARSE_LEVEL2_HIPSPARSE_CSRMV_H
+#ifndef HIPSPARSE_CSRMV_H
+#define HIPSPARSE_CSRMV_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -266,4 +266,4 @@ hipsparseStatus_t hipsparseZcsrmv(hipsparseHandle_t         handle,
 }
 #endif
 
-#endif /* HIPSPARSE_LEVEL2_HIPSPARSE_CSRMV_H */
+#endif /* HIPSPARSE_CSRMV_H */
