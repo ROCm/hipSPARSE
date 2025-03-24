@@ -21,8 +21,8 @@
  * THE SOFTWARE.
  *
  * ************************************************************************ */
-#ifndef HIPSPARSE_PRECOND_HIPSPARSE_CSRIC0_H
-#define HIPSPARSE_PRECOND_HIPSPARSE_CSRIC0_H
+#ifndef HIPSPARSE_CSRIC0_H
+#define HIPSPARSE_CSRIC0_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -463,4 +463,4 @@ hipsparseStatus_t hipsparseZcsric02(hipsparseHandle_t         handle,
 }
 #endif
 
-#endif /* HIPSPARSE_PRECOND_HIPSPARSE_CSRIC0_H */
+#endif /* HIPSPARSE_CSRIC0_H */

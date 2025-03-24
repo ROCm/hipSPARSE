@@ -21,8 +21,8 @@
  * THE SOFTWARE.
  *
  * ************************************************************************ */
-#ifndef HIPSPARSE_PRECOND_HIPSPARSE_GTSV_NOPIVOT_H
-#define HIPSPARSE_PRECOND_HIPSPARSE_GTSV_NOPIVOT_H
+#ifndef HIPSPARSE_GTSV_NOPIVOT_H
+#define HIPSPARSE_GTSV_NOPIVOT_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -192,4 +192,4 @@ hipsparseStatus_t hipsparseZgtsv2_nopivot(hipsparseHandle_t       handle,
 }
 #endif
 
-#endif /* HIPSPARSE_PRECOND_HIPSPARSE_GTSV_NOPIVOT_H */
+#endif /* HIPSPARSE_GTSV_NOPIVOT_H */
