@@ -21,8 +21,8 @@
  * THE SOFTWARE.
  *
  * ************************************************************************ */
-#ifndef HIPSPARSE_CONVERSION_HIPSPARSE_PRUNE_CSR2CSR_BY_PRECENTAGE_H
-#define HIPSPARSE_CONVERSION_HIPSPARSE_PRUNE_CSR2CSR_BY_PRECENTAGE_H
+#ifndef HIPSPARSE_PRUNE_CSR2CSR_BY_PRECENTAGE_H
+#define HIPSPARSE_PRUNE_CSR2CSR_BY_PRECENTAGE_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -392,4 +392,4 @@ hipsparseStatus_t hipsparseDpruneCsr2csrByPercentage(hipsparseHandle_t         h
 }
 #endif
 
-#endif /* HIPSPARSE_CONVERSION_HIPSPARSE_PRUNE_CSR2CSR_BY_PRECENTAGE_H */
+#endif /* HIPSPARSE_PRUNE_CSR2CSR_BY_PRECENTAGE_H */

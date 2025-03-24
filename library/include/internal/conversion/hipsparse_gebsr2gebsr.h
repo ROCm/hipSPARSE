@@ -21,8 +21,8 @@
  * THE SOFTWARE.
  *
  * ************************************************************************ */
-#ifndef HIPSPARSE_CONVERSION_HIPSPARSE_GEBSR2GEBSR_H
-#define HIPSPARSE_CONVERSION_HIPSPARSE_GEBSR2GEBSR_H
+#ifndef HIPSPARSE_GEBSR2GEBSR_H
+#define HIPSPARSE_GEBSR2GEBSR_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -567,4 +567,4 @@ hipsparseStatus_t hipsparseZgebsr2gebsr(hipsparseHandle_t         handle,
 }
 #endif
 
-#endif /* HIPSPARSE_CONVERSION_HIPSPARSE_GEBSR2GEBSR_H */
+#endif /* HIPSPARSE_GEBSR2GEBSR_H */

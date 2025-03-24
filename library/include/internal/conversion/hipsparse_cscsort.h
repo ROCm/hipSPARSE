@@ -21,8 +21,8 @@
  * THE SOFTWARE.
  *
  * ************************************************************************ */
-#ifndef HIPSPARSE_CONVERSION_HIPSPARSE_CSCSORT_H
-#define HIPSPARSE_CONVERSION_HIPSPARSE_CSCSORT_H
+#ifndef HIPSPARSE_CSCSORT_H
+#define HIPSPARSE_CSCSORT_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -207,4 +207,4 @@ hipsparseStatus_t hipsparseXcscsort(hipsparseHandle_t         handle,
 }
 #endif
 
-#endif /* HIPSPARSE_CONVERSION_HIPSPARSE_CSCSORT_H */
+#endif /* HIPSPARSE_CSCSORT_H */

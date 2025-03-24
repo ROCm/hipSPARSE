@@ -21,8 +21,8 @@
  * THE SOFTWARE.
  *
  * ************************************************************************ */
-#ifndef HIPSPARSE_CONVERSION_HIPSPARSE_CSRU2CSR_H
-#define HIPSPARSE_CONVERSION_HIPSPARSE_CSRU2CSR_H
+#ifndef HIPSPARSE_CSR2CSRU_H
+#define HIPSPARSE_CSR2CSRU_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -31,70 +31,13 @@ extern "C" {
 #if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup conv_module
 *  \brief
-*  This function calculates the amount of temporary storage in bytes required for
-*  hipsparseXcsru2csr() and hipsparseXcsr2csru().
-*/
-/**@{*/
-DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
-HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseScsru2csr_bufferSizeExt(hipsparseHandle_t handle,
-                                                   int               m,
-                                                   int               n,
-                                                   int               nnz,
-                                                   float*            csrVal,
-                                                   const int*        csrRowPtr,
-                                                   int*              csrColInd,
-                                                   csru2csrInfo_t    info,
-                                                   size_t*           pBufferSizeInBytes);
-
-DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
-HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseDcsru2csr_bufferSizeExt(hipsparseHandle_t handle,
-                                                   int               m,
-                                                   int               n,
-                                                   int               nnz,
-                                                   double*           csrVal,
-                                                   const int*        csrRowPtr,
-                                                   int*              csrColInd,
-                                                   csru2csrInfo_t    info,
-                                                   size_t*           pBufferSizeInBytes);
-
-DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
-HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseCcsru2csr_bufferSizeExt(hipsparseHandle_t handle,
-                                                   int               m,
-                                                   int               n,
-                                                   int               nnz,
-                                                   hipComplex*       csrVal,
-                                                   const int*        csrRowPtr,
-                                                   int*              csrColInd,
-                                                   csru2csrInfo_t    info,
-                                                   size_t*           pBufferSizeInBytes);
-
-DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
-HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseZcsru2csr_bufferSizeExt(hipsparseHandle_t handle,
-                                                   int               m,
-                                                   int               n,
-                                                   int               nnz,
-                                                   hipDoubleComplex* csrVal,
-                                                   const int*        csrRowPtr,
-                                                   int*              csrColInd,
-                                                   csru2csrInfo_t    info,
-                                                   size_t*           pBufferSizeInBytes);
-/**@}*/
-#endif
-
-#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
-/*! \ingroup conv_module
-*  \brief
-*  This function converts unsorted CSR format to sorted CSR format. The required
+*  This function converts sorted CSR format to unsorted CSR format. The required
 *  temporary storage has to be allocated by the user.
 */
 /**@{*/
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseScsru2csr(hipsparseHandle_t         handle,
+hipsparseStatus_t hipsparseScsr2csru(hipsparseHandle_t         handle,
                                      int                       m,
                                      int                       n,
                                      int                       nnz,
@@ -107,7 +50,7 @@ hipsparseStatus_t hipsparseScsru2csr(hipsparseHandle_t         handle,
 
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseDcsru2csr(hipsparseHandle_t         handle,
+hipsparseStatus_t hipsparseDcsr2csru(hipsparseHandle_t         handle,
                                      int                       m,
                                      int                       n,
                                      int                       nnz,
@@ -120,7 +63,7 @@ hipsparseStatus_t hipsparseDcsru2csr(hipsparseHandle_t         handle,
 
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseCcsru2csr(hipsparseHandle_t         handle,
+hipsparseStatus_t hipsparseCcsr2csru(hipsparseHandle_t         handle,
                                      int                       m,
                                      int                       n,
                                      int                       nnz,
@@ -133,7 +76,7 @@ hipsparseStatus_t hipsparseCcsru2csr(hipsparseHandle_t         handle,
 
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseZcsru2csr(hipsparseHandle_t         handle,
+hipsparseStatus_t hipsparseZcsr2csru(hipsparseHandle_t         handle,
                                      int                       m,
                                      int                       n,
                                      int                       nnz,
@@ -150,4 +93,4 @@ hipsparseStatus_t hipsparseZcsru2csr(hipsparseHandle_t         handle,
 }
 #endif
 
-#endif /* HIPSPARSE_CONVERSION_HIPSPARSE_CSRU2CSR_H */
+#endif /* HIPSPARSE_CSR2CSRU_H */

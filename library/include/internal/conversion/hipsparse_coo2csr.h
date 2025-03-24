@@ -21,8 +21,8 @@
  * THE SOFTWARE.
  *
  * ************************************************************************ */
-#ifndef HIPSPARSE_CONVERSION_HIPSPARSE_COO2CSR_H
-#define HIPSPARSE_CONVERSION_HIPSPARSE_COO2CSR_H
+#ifndef HIPSPARSE_COO2CSR_H
+#define HIPSPARSE_COO2CSR_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -130,4 +130,4 @@ hipsparseStatus_t hipsparseXcoo2csr(hipsparseHandle_t    handle,
 }
 #endif
 
-#endif /* HIPSPARSE_CONVERSION_HIPSPARSE_COO2CSR_H */
+#endif /* HIPSPARSE_COO2CSR_H */

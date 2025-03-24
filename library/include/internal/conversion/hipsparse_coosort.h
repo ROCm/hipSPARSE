@@ -21,8 +21,8 @@
  * THE SOFTWARE.
  *
  * ************************************************************************ */
-#ifndef HIPSPARSE_CONVERSION_HIPSPARSE_COOSORT_H
-#define HIPSPARSE_CONVERSION_HIPSPARSE_COOSORT_H
+#ifndef HIPSPARSE_COOSORT_H
+#define HIPSPARSE_COOSORT_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -300,4 +300,4 @@ hipsparseStatus_t hipsparseXcoosortByColumn(hipsparseHandle_t handle,
 }
 #endif
 
-#endif /* HIPSPARSE_CONVERSION_HIPSPARSE_COOSORT_H */
+#endif /* HIPSPARSE_COOSORT_H */

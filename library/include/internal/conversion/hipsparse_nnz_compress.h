@@ -21,8 +21,8 @@
  * THE SOFTWARE.
  *
  * ************************************************************************ */
-#ifndef HIPSPARSE_CONVERSION_HIPSPARSE_NNZ_COMPRESS_H
-#define HIPSPARSE_CONVERSION_HIPSPARSE_NNZ_COMPRESS_H
+#ifndef HIPSPARSE_NNZ_COMPRESS_H
+#define HIPSPARSE_NNZ_COMPRESS_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -175,4 +175,4 @@ hipsparseStatus_t hipsparseZnnz_compress(hipsparseHandle_t         handle,
 }
 #endif
 
-#endif /* HIPSPARSE_CONVERSION_HIPSPARSE_NNZ_COMPRESS_H */
+#endif /* HIPSPARSE_NNZ_COMPRESS_H */
