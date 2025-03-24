@@ -1844,13 +1844,13 @@ hipsparseStatus_t hipsparseZsctr(hipsparseHandle_t       handle,
 * ===========================================================================
 */
 
-#include "level2/hipsparse_bsrmv.h"
-#include "level2/hipsparse_bsrsv.h"
-#include "level2/hipsparse_bsrxmv.h"
-#include "level2/hipsparse_csrmv.h"
-#include "level2/hipsparse_csrsv.h"
-#include "level2/hipsparse_gemvi.h"
-#include "level2/hipsparse_hybmv.h"
+#include "internal/level2/hipsparse_bsrmv.h"
+#include "internal/level2/hipsparse_bsrsv.h"
+#include "internal/level2/hipsparse_bsrxmv.h"
+#include "internal/level2/hipsparse_csrmv.h"
+#include "internal/level2/hipsparse_csrsv.h"
+#include "internal/level2/hipsparse_gemvi.h"
+#include "internal/level2/hipsparse_hybmv.h"
 
 /*
 * ===========================================================================
