@@ -39,7 +39,7 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/include/hipsparse.h"
                "${PROJECT_BINARY_DIR}/include/hipsparse/hipsparse.h" COPYONLY)
 
 set(HEADER_FILES 
-    reorder/hipsparse_csrcolor.h)
+    internal/reorder/hipsparse_csrcolor.h)
            
 foreach( file_i ${HEADER_FILES})
   configure_file("${CMAKE_CURRENT_SOURCE_DIR}/include/${file_i}"

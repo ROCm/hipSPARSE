@@ -17700,7 +17700,7 @@ hipsparseStatus_t hipsparseZcsr2csru(hipsparseHandle_t         handle,
 * ===========================================================================
 */
 
-#include "reorder/hipsparse_csrcolor.h"
+#include "internal/reorder/hipsparse_csrcolor.h"
 
 /*
 * ===========================================================================

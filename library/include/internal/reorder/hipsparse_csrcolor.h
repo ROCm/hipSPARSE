@@ -21,8 +21,8 @@
  * THE SOFTWARE.
  *
  * ************************************************************************ */
-#ifndef HIPSPARSE_REORDER_HIPSPARSE_CSRCOLOR_H
-#define HIPSPARSE_REORDER_HIPSPARSE_CSRCOLOR_H
+#ifndef HIPSPARSE_CSRCOLOR_H
+#define HIPSPARSE_CSRCOLOR_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -140,4 +140,4 @@ hipsparseStatus_t hipsparseZcsrcolor(hipsparseHandle_t         handle,
 }
 #endif
 
-#endif /* HIPSPARSE_REORDER_HIPSPARSE_CSRCOLOR_H */
+#endif /* HIPSPARSE_CSRCOLOR_H */
