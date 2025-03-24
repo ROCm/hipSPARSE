@@ -4191,11 +4191,11 @@ hipsparseStatus_t hipsparseZgemvi(hipsparseHandle_t       handle,
 * ===========================================================================
 */
 
-#include "level3/hipsparse_bsrmm.h"
-#include "level3/hipsparse_bsrsm.h"
-#include "level3/hipsparse_csrmm.h"
-#include "level3/hipsparse_csrsm.h"
-#include "level3/hipsparse_gemmi.h"
+#include "internal/level3/hipsparse_bsrmm.h"
+#include "internal/level3/hipsparse_bsrsm.h"
+#include "internal/level3/hipsparse_csrmm.h"
+#include "internal/level3/hipsparse_csrsm.h"
+#include "internal/level3/hipsparse_gemmi.h"
 
 /*
 * ===========================================================================
