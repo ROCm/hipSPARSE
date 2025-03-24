@@ -21,8 +21,8 @@
  * THE SOFTWARE.
  *
  * ************************************************************************ */
-#ifndef HIPSPARSE_LEVEL1_HIPSPARSE_AXPYI_H
-#define HIPSPARSE_LEVEL1_HIPSPARSE_AXPYI_H
+#ifndef HIPSPARSE_AXPYI_H
+#define HIPSPARSE_AXPYI_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -167,4 +167,4 @@ hipsparseStatus_t hipsparseZaxpyi(hipsparseHandle_t       handle,
 }
 #endif
 
-#endif /* HIPSPARSE_LEVEL1_HIPSPARSE_AXPYI_H */
+#endif /* HIPSPARSE_AXPYI_H */

@@ -1055,13 +1055,13 @@ hipsparseStatus_t hipsparseDestroyPruneInfo(pruneInfo_t info);
 * ===========================================================================
 */
 
-#include "level1/hipsparse_axpyi.h"
-#include "level1/hipsparse_dotci.h"
-#include "level1/hipsparse_doti.h"
-#include "level1/hipsparse_gthr.h"
-#include "level1/hipsparse_gthrz.h"
-#include "level1/hipsparse_roti.h"
-#include "level1/hipsparse_sctr.h"
+#include "internal/level1/hipsparse_axpyi.h"
+#include "internal/level1/hipsparse_dotci.h"
+#include "internal/level1/hipsparse_doti.h"
+#include "internal/level1/hipsparse_gthr.h"
+#include "internal/level1/hipsparse_gthrz.h"
+#include "internal/level1/hipsparse_roti.h"
+#include "internal/level1/hipsparse_sctr.h"
 
 /*
 * ===========================================================================

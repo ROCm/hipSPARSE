@@ -21,8 +21,8 @@
  * THE SOFTWARE.
  *
  * ************************************************************************ */
-#ifndef HIPSPARSE_LEVEL1_HIPSPARSE_DOTCI_H
-#define HIPSPARSE_LEVEL1_HIPSPARSE_DOTCI_H
+#ifndef HIPSPARSE_DOTCI_H
+#define HIPSPARSE_DOTCI_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -101,4 +101,4 @@ hipsparseStatus_t hipsparseZdotci(hipsparseHandle_t       handle,
 }
 #endif
 
-#endif /* HIPSPARSE_LEVEL1_HIPSPARSE_DOTCI_H */
+#endif /* HIPSPARSE_DOTCI_H */
