@@ -21,8 +21,8 @@
  * THE SOFTWARE.
  *
  * ************************************************************************ */
-#ifndef HIPSPARSE_GENERIC_HIPSPARSE_SPARSE2DENSE_H
-#define HIPSPARSE_GENERIC_HIPSPARSE_SPARSE2DENSE_H
+#ifndef HIPSPARSE_SPARSE2DENSE_H
+#define HIPSPARSE_SPARSE2DENSE_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -108,4 +108,4 @@ hipsparseStatus_t hipsparseSparseToDense(hipsparseHandle_t           handle,
 }
 #endif
 
-#endif /* HIPSPARSE_GENERIC_HIPSPARSE_SPARSE2DENSE_H */
+#endif /* HIPSPARSE_SPARSE2DENSE_H */

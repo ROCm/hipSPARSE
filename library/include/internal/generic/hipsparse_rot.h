@@ -21,36 +21,48 @@
  * THE SOFTWARE.
  *
  * ************************************************************************ */
-#ifndef HIPSPARSE_GENERIC_HIPSPARSE_GATHER_H
-#define HIPSPARSE_GENERIC_HIPSPARSE_GATHER_H
+#ifndef HIPSPARSE_ROT_H
+#define HIPSPARSE_ROT_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /*! \ingroup generic_module
-*  \brief Gather elements from a dense vector and store them into a sparse vector.
+*  \brief Apply Givens rotation to a dense and a sparse vector.
 *
 *  \details
-*  \ref hipsparseGather gathers the elements from the dense vector \f$y\f$ and stores
-*  them in the sparse vector \f$x\f$.
+*  \ref hipsparseRot applies the Givens rotation matrix \f$G\f$ to the sparse vector
+*  \f$x\f$ and the dense vector \f$y\f$, where
+*  \f[
+*    G = \begin{pmatrix} c & s \\ -s & c \end{pmatrix}
+*  \f]
 *
 *  \code{.c}
 *      for(i = 0; i < nnz; ++i)
 *      {
-*          xVal[i] = y[xInd[i]];
+*          x_tmp = xVal[i];
+*          y_tmp = y[xInd[i]];
+*
+*          xVal[i]    = c * x_tmp + s * y_tmp;
+*          y[xInd[i]] = c * y_tmp - s * x_tmp;
 *      }
 *  \endcode
 *
 *  @param[in]
-*  handle       handle to the hipsparse library context queue.
+*  handle      handle to the hipsparse library context queue.
 *  @param[in]
-*  vecY         dense vector descriptor \f$y\f$.
-*  @param[out]
-*  vecX         sparse vector descriptor \f$x\f$.
+*  c_coeff     pointer to the cosine element of \f$G\f$, can be on host or device.
+*  @param[in]
+*  s_coeff     pointer to the sine element of \f$G\f$, can be on host or device.
+*  @param[inout]
+*  vecX        sparse vector descriptor \f$x\f$.
+*  @param[inout]
+*  vecY        dense vector descriptor \f$y\f$.
 *
-*  \retval      HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
-*  \retval      HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p vecX or \p vecY pointer is invalid.
+*  \retval     HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval     HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p c_coeff, \p s_coeff, \p vecX or \p vecY pointer is
+*              invalid.
 *
 *  \par Example
 *  \code{.c}
@@ -63,8 +75,17 @@ extern "C" {
 *    // Sparse index vector
 *    std::vector<int> hxInd = {0, 3, 5};
 *
+*    // Sparse value vector
+*    std::vector<float> hxVal = {1.0f, 2.0f, 3.0f};
+*
 *    // Dense vector
 *    std::vector<float> hy = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f};
+*
+*    // Scalar c
+*    float c = 3.7f;
+*
+*    // Scalar s
+*    float s = 1.2f;
 *
 *    // Offload data to device
 *    int* dxInd;
@@ -75,6 +96,7 @@ extern "C" {
 *    hipMalloc((void**)&dy, sizeof(float) * size);
 *
 *    hipMemcpy(dxInd, hxInd.data(), sizeof(int) * nnz, hipMemcpyHostToDevice);
+*    hipMemcpy(dxVal, hxVal.data(), sizeof(float) * nnz, hipMemcpyHostToDevice);
 *    hipMemcpy(dy, hy.data(), sizeof(float) * size, hipMemcpyHostToDevice);
 *
 *    hipsparseHandle_t handle;
@@ -83,26 +105,27 @@ extern "C" {
 *    // Create sparse vector X
 *    hipsparseSpVecDescr_t vecX;
 *    hipsparseCreateSpVec(&vecX,
-*                         size,
-*                         nnz,
-*                         dxInd,
-*                         dxVal,
-*                         HIPSPARSE_INDEX_32I,
-*                         HIPSPARSE_INDEX_BASE_ZERO,
-*                         HIP_R_32F);
+*                                size,
+*                                nnz,
+*                                dxInd,
+*                                dxVal,
+*                                HIPSPARSE_INDEX_32I,
+*                                HIPSPARSE_INDEX_BASE_ZERO,
+*                                HIP_R_32F);
 *
 *    // Create dense vector Y
 *    hipsparseDnVecDescr_t vecY;
 *    hipsparseCreateDnVec(&vecY, size, dy, HIP_R_32F);
 *
-*    // Perform gather
-*    hipsparseGather(handle, vecY, vecX);
+*    // Call rot
+*    hipsparseRot(handle, (void*)&c, (void*)&s, vecX, vecY);
 *
 *    hipsparseSpVecGetValues(vecX, (void**)&dxVal);
+*    hipsparseDnVecGetValues(vecY, (void**)&dy);
 *
 *    // Copy result back to host
-*    std::vector<float> hxVal(nnz, 0.0f);
 *    hipMemcpy(hxVal.data(), dxVal, sizeof(float) * nnz, hipMemcpyDeviceToHost);
+*    hipMemcpy(hy.data(), dy, sizeof(float) * size, hipMemcpyDeviceToHost);
 *
 *    // Clear hipSPARSE
 *    hipsparseDestroySpVec(vecX);
@@ -115,20 +138,18 @@ extern "C" {
 *    hipFree(dy);
 *  \endcode
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+#if(!defined(CUDART_VERSION) || (CUDART_VERSION >= 11000 && CUDART_VERSION < 13000))
+DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseGather(hipsparseHandle_t          handle,
-                                  hipsparseConstDnVecDescr_t vecY,
-                                  hipsparseSpVecDescr_t      vecX);
-#elif(CUDART_VERSION >= 11000)
-HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseGather(hipsparseHandle_t     handle,
-                                  hipsparseDnVecDescr_t vecY,
-                                  hipsparseSpVecDescr_t vecX);
+hipsparseStatus_t hipsparseRot(hipsparseHandle_t     handle,
+                               const void*           c_coeff,
+                               const void*           s_coeff,
+                               hipsparseSpVecDescr_t vecX,
+                               hipsparseDnVecDescr_t vecY);
 #endif
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* HIPSPARSE_GENERIC_HIPSPARSE_GATHER_H */
+#endif /* HIPSPARSE_ROT_H */

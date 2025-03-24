@@ -21,8 +21,8 @@
  * THE SOFTWARE.
  *
  * ************************************************************************ */
-#ifndef HIPSPARSE_GENERIC_HIPSPARSE_SPGEMM_H
-#define HIPSPARSE_GENERIC_HIPSPARSE_SPGEMM_H
+#ifndef HIPSPARSE_SPGEMM_H
+#define HIPSPARSE_SPGEMM_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -414,4 +414,4 @@ hipsparseStatus_t hipsparseSpGEMM_copy(hipsparseHandle_t      handle,
 }
 #endif
 
-#endif /* HIPSPARSE_GENERIC_HIPSPARSE_SPGEMM_H */
+#endif /* HIPSPARSE_SPGEMM_H */

@@ -19257,20 +19257,20 @@ hipsparseStatus_t hipsparseDnMatSetStridedBatch(hipsparseDnMatDescr_t dnMatDescr
 * ===========================================================================
 */
 
-#include "generic/hipsparse_axpby.h"
-#include "generic/hipsparse_dense2sparse.h"
-#include "generic/hipsparse_gather.h"
-#include "generic/hipsparse_rot.h"
-#include "generic/hipsparse_scatter.h"
-#include "generic/hipsparse_sddmm.h"
-#include "generic/hipsparse_sparse2dense.h"
-#include "generic/hipsparse_spgemm.h"
-#include "generic/hipsparse_spgemm_reuse.h"
-#include "generic/hipsparse_spmm.h"
-#include "generic/hipsparse_spmv.h"
-#include "generic/hipsparse_spsm.h"
-#include "generic/hipsparse_spsv.h"
-#include "generic/hipsparse_spvv.h"
+#include "internal/generic/hipsparse_axpby.h"
+#include "internal/generic/hipsparse_dense2sparse.h"
+#include "internal/generic/hipsparse_gather.h"
+#include "internal/generic/hipsparse_rot.h"
+#include "internal/generic/hipsparse_scatter.h"
+#include "internal/generic/hipsparse_sddmm.h"
+#include "internal/generic/hipsparse_sparse2dense.h"
+#include "internal/generic/hipsparse_spgemm.h"
+#include "internal/generic/hipsparse_spgemm_reuse.h"
+#include "internal/generic/hipsparse_spmm.h"
+#include "internal/generic/hipsparse_spmv.h"
+#include "internal/generic/hipsparse_spsm.h"
+#include "internal/generic/hipsparse_spsv.h"
+#include "internal/generic/hipsparse_spvv.h"
 
 #ifdef __cplusplus
 }

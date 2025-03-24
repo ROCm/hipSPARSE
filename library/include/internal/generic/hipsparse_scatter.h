@@ -21,50 +21,36 @@
  * THE SOFTWARE.
  *
  * ************************************************************************ */
-#ifndef HIPSPARSE_GENERIC_HIPSPARSE_AXPBY_H
-#define HIPSPARSE_GENERIC_HIPSPARSE_AXPBY_H
+#ifndef HIPSPARSE_SCATTER_H
+#define HIPSPARSE_SCATTER_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /*! \ingroup generic_module
-*  \brief Scale a sparse vector and add it to a scaled dense vector.
+*  \brief Scatter elements from a sparse vector into a dense vector.
 *
 *  \details
-*  \ref hipsparseAxpby multiplies the sparse vector \f$x\f$ with scalar \f$\alpha\f$ and
-*  adds the result to the dense vector \f$y\f$ that is multiplied with scalar
-*  \f$\beta\f$, such that
-*
-*  \f[
-*      y := \alpha \cdot x + \beta \cdot y
-*  \f]
+*  \ref hipsparseScatter scatters the elements from the sparse vector \f$x\f$ in the dense
+*  vector \f$y\f$.
 *
 *  \code{.c}
-*      for(i = 0; i < size; ++i)
-*      {
-*          y[i] = beta * y[i]
-*      }
 *      for(i = 0; i < nnz; ++i)
 *      {
-*          y[xInd[i]] += alpha * xVal[i]
+*          y[xInd[i]] = xVal[i];
 *      }
 *  \endcode
 *
 *  @param[in]
-*  handle      handle to the hipsparse library context queue.
+*  handle       handle to the hipsparse library context queue.
 *  @param[in]
-*  alpha       scalar \f$\alpha\f$.
-*  @param[in]
-*  vecX        sparse matrix descriptor.
-*  @param[in]
-*  beta        scalar \f$\beta\f$.
-*  @param[inout]
-*  vecY        dense matrix descriptor.
+*  vecX         sparse vector descriptor \f$x\f$.
+*  @param[out]
+*  vecY         dense vector descriptor \f$y\f$.
 *
-*  \retval HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
-*  \retval HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p alpha, \p vecX, \p beta or \p vecY pointer is
-*          invalid.
+*  \retval      HIPSPARSE_STATUS_SUCCESS the operation completed successfully.
+*  \retval      HIPSPARSE_STATUS_INVALID_VALUE \p handle, \p vecX or \p vecY pointer is invalid.
 *
 *  \par Example
 *  \code{.c}
@@ -82,12 +68,6 @@ extern "C" {
 *
 *    // Dense vector
 *    std::vector<float> hy = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f};
-*
-*    // Scalar alpha
-*    float alpha = 3.7f;
-*
-*    // Scalar beta
-*    float beta = 1.2f;
 *
 *    // Offload data to device
 *    int* dxInd;
@@ -107,26 +87,25 @@ extern "C" {
 *    // Create sparse vector X
 *    hipsparseSpVecDescr_t vecX;
 *    hipsparseCreateSpVec(&vecX,
-*                        size,
-*                        nnz,
-*                        dxInd,
-*                        dxVal,
-*                        HIPSPARSE_INDEX_32I,
-*                        HIPSPARSE_INDEX_BASE_ZERO,
-*                        HIP_R_32F);
+*                                size,
+*                                nnz,
+*                                dxInd,
+*                                dxVal,
+*                                HIPSPARSE_INDEX_32I,
+*                                HIPSPARSE_INDEX_BASE_ZERO,
+*                                HIP_R_32F);
 *
 *    // Create dense vector Y
 *    hipsparseDnVecDescr_t vecY;
 *    hipsparseCreateDnVec(&vecY, size, dy, HIP_R_32F);
 *
-*    // Call axpby to perform y = beta * y + alpha * x
-*    hipsparseAxpby(handle, &alpha, vecX, &beta, vecY);
+*    // Perform scatter
+*    hipsparseScatter(handle, vecX, vecY);
 *
 *    hipsparseDnVecGetValues(vecY, (void**)&dy);
 *
 *    // Copy result back to host
 *    hipMemcpy(hy.data(), dy, sizeof(float) * size, hipMemcpyDeviceToHost);
-*
 *
 *    // Clear hipSPARSE
 *    hipsparseDestroySpVec(vecX);
@@ -141,22 +120,18 @@ extern "C" {
 */
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseAxpby(hipsparseHandle_t          handle,
-                                 const void*                alpha,
-                                 hipsparseConstSpVecDescr_t vecX,
-                                 const void*                beta,
-                                 hipsparseDnVecDescr_t      vecY);
+hipsparseStatus_t hipsparseScatter(hipsparseHandle_t          handle,
+                                   hipsparseConstSpVecDescr_t vecX,
+                                   hipsparseDnVecDescr_t      vecY);
 #elif(CUDART_VERSION >= 11000)
 HIPSPARSE_EXPORT
-hipsparseStatus_t hipsparseAxpby(hipsparseHandle_t     handle,
-                                 const void*           alpha,
-                                 hipsparseSpVecDescr_t vecX,
-                                 const void*           beta,
-                                 hipsparseDnVecDescr_t vecY);
+hipsparseStatus_t hipsparseScatter(hipsparseHandle_t     handle,
+                                   hipsparseSpVecDescr_t vecX,
+                                   hipsparseDnVecDescr_t vecY);
 #endif
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* HIPSPARSE_GENERIC_HIPSPARSE_AXPBY_H */
+#endif /* HIPSPARSE_SCATTER_H */

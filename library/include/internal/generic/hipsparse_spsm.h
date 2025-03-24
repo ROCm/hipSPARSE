@@ -21,8 +21,8 @@
  * THE SOFTWARE.
  *
  * ************************************************************************ */
-#ifndef HIPSPARSE_GENERIC_HIPSPARSE_SPSM_H
-#define HIPSPARSE_GENERIC_HIPSPARSE_SPSM_H
+#ifndef HIPSPARSE_SPSM_H
+#define HIPSPARSE_SPSM_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -280,4 +280,4 @@ hipsparseStatus_t hipsparseSpSM_solve(hipsparseHandle_t           handle,
 }
 #endif
 
-#endif /* HIPSPARSE_GENERIC_HIPSPARSE_SPSM_H */
+#endif /* HIPSPARSE_SPSM_H */
