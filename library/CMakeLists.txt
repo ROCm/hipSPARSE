@@ -39,10 +39,10 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/include/hipsparse.h"
                "${PROJECT_BINARY_DIR}/include/hipsparse/hipsparse.h" COPYONLY)
 
 set(HEADER_FILES 
-    hipsparse_types.h
-    hipsparse_auxiliary.h
-    hipsparse_generic_types.h
-    hipsparse_generic_auxiliary.h)
+    hipsparse-types.h
+    hipsparse-auxiliary.h
+    hipsparse-generic-types.h
+    hipsparse-generic-auxiliary.h)
            
 foreach( file_i ${HEADER_FILES})
   configure_file("${CMAKE_CURRENT_SOURCE_DIR}/include/${file_i}"

@@ -85,8 +85,9 @@
 #endif
 #endif
 
-#include "hipsparse_types.h"
-#include "hipsparse_auxiliary.h"
+#include "hipsparse-types.h"
+
+#include "hipsparse-auxiliary.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -16857,10 +16858,10 @@ hipsparseStatus_t hipsparseZcsrcolor(hipsparseHandle_t         handle,
 * ===========================================================================
 */
 
-#include "hipsparse_generic_types.h"
+#include "hipsparse-generic-types.h"
 
 /* Sparse vector API */
-#include "hipsparse_generic_auxiliary.h"
+#include "hipsparse-generic-auxiliary.h"
 
 /* Generic API functions */
 
