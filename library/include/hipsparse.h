@@ -6440,8 +6440,8 @@ hipsparseStatus_t hipsparseZgemmi(hipsparseHandle_t       handle,
 * ===========================================================================
 */
 
-#include "extra/hipsparse_csrgeam.h"
-#include "extra/hipsparse_csrgemm.h"
+#include "internal/extra/hipsparse_csrgeam.h"
+#include "internal/extra/hipsparse_csrgemm.h"
 
 /*
 * ===========================================================================
