@@ -21,8 +21,8 @@
  * THE SOFTWARE.
  *
  * ************************************************************************ */
-#ifndef HIPSPARSE_LEVEL3_HIPSPARSE_GEMMI_H
-#define HIPSPARSE_LEVEL3_HIPSPARSE_GEMMI_H
+#ifndef HIPSPARSE_GEMMI_H
+#define HIPSPARSE_GEMMI_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -227,4 +227,4 @@ hipsparseStatus_t hipsparseZgemmi(hipsparseHandle_t       handle,
 }
 #endif
 
-#endif /* HIPSPARSE_LEVEL3_HIPSPARSE_GEMMI_H */
+#endif /* HIPSPARSE_GEMMI_H */

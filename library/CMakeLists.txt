@@ -39,11 +39,11 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/include/hipsparse.h"
                "${PROJECT_BINARY_DIR}/include/hipsparse/hipsparse.h" COPYONLY)
 
 set(HEADER_FILES 
-    level3/hipsparse_bsrmm.h
-    level3/hipsparse_bsrsm.h
-    level3/hipsparse_csrmm.h
-    level3/hipsparse_csrsm.h
-    level3/hipsparse_gemmi.h)
+    internal/level3/hipsparse_bsrmm.h
+    internal/level3/hipsparse_bsrsm.h
+    internal/level3/hipsparse_csrmm.h
+    internal/level3/hipsparse_csrsm.h
+    internal/level3/hipsparse_gemmi.h)
 
 foreach( file_i ${HEADER_FILES})
   configure_file("${CMAKE_CURRENT_SOURCE_DIR}/include/${file_i}"
