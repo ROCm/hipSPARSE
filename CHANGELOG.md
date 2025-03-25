@@ -20,7 +20,7 @@ Add the `int8`, `int32`, and `float16` data types to `hipDataTypeToHCCDataType` 
 
 ### Known issues
 
-* In `hipsparseSpSM_solve()`, the external buffer is passed as a parameter. This does not match the NVIDIA CUDA cuSPARSE API. This extra external buffer parameter will be removed in a future release. For now this extra parameter can be ignored and nullptr passed as it is unused internally by `hipsparseSpSM_solve()`.
+* In `hipsparseSpSM_solve()`, the external buffer is passed as a parameter. This does not match the NVIDIA CUDA cuSPARSE API. This extra external buffer parameter will be removed in a future release. For now, this extra parameter can be ignored and nullptr passed because it is unused internally by `hipsparseSpSM_solve()`.
 
 ## hipSPARSE 3.2.0 for ROCm 6.4.0
 
