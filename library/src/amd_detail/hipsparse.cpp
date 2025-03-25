@@ -8923,6 +8923,55 @@ hipsparseStatus_t hipsparseCsr2cscEx2(hipsparseHandle_t     handle,
                                hipsparse::hipActionToHCCAction(copyValues),
                                hipsparse::hipBaseToHCCBase(idxBase),
                                buffer));
+    case HIP_R_8I:
+    {
+        // Build Source
+        rocsparse_spmat_descr source;
+        RETURN_IF_HIPSPARSE_ERROR(rocsparse_create_csr_descr(&source, 
+                                    m, 
+                                    n, 
+                                    nnz, 
+                                    csrRowPtr, 
+                                    csrColInd, 
+                                    (const int8_t*)csrVal, 
+                                    rocsparse_indextype_i32, 
+                                    rocsparse_indextype_i32, 
+                                    hipsparse::hipBaseToHCCBase(idxBase), 
+                                    rocsparse_datatype_i8_r));
+
+        // Build target
+        rocsparse_spmat_descr target;
+        RETURN_IF_HIPSPARSE_ERROR(rocsparse_create_csc_descr(&target, 
+                                   m, 
+                                   n, 
+                                   nnz, 
+                                   cscColPtr, 
+                                   cscRowInd, 
+                                   (int8_t*)cscVal, 
+                                   hipsparse::hipBaseToHCCBase(idxBase), 
+                                   rocsparse_datatype_i8_r));
+
+        // Create descriptor
+        rocsparse_sparse_to_sparse_descr descr;
+        RETURN_IF_HIPSPARSE_ERROR(rocsparse_create_sparse_to_sparse_descr(&descr, source, target, rocsparse_sparse_to_sparse_alg_default));
+
+        // Analysis phase
+        RETURN_IF_HIPSPARSE_ERROR(rocsparse_sparse_to_sparse_buffer_size(handle, descr, source, target, rocsparse_sparse_to_sparse_stage_analysis, &buffer_size));
+        RETURN_IF_HIP_ERROR(hipMalloc(&buffer,buffer_size));
+        RETURN_IF_HIPSPARSE_ERROR(rocsparse_sparse_to_sparse(handle, descr, source, target, rocsparse_sparse_to_sparse_stage_analysis, buffer_size, buffer));
+        RETURN_IF_HIP_ERROR(hipFree(buffer));
+
+        // Calculation phase
+        RETURN_IF_HIPSPARSE_ERROR(rocsparse_sparse_to_sparse_buffer_size(handle, descr, source, target, rocsparse_sparse_to_sparse_stage_compute, &buffer_size));
+        RETURN_IF_HIP_ERROR(hipMalloc(&buffer, buffer_size));
+        RETURN_IF_HIPSPARSE_ERROR(rocsparse_sparse_to_sparse(handle, descr, source, target, rocsparse_sparse_to_sparse_stage_compute, buffer_size, buffer));
+        RETURN_IF_HIP_ERROR(hipFree(buffer));
+
+        RETURN_IF_HIPSPARSE_ERROR(rocsparse_destroy_spmat_descr(source));
+        RETURN_IF_HIPSPARSE_ERROR(rocsparse_destroy_spmat_descr(target));
+
+        return HIPSPARSE_STATUS_SUCCESS;
+    }
     default:
         return HIPSPARSE_STATUS_NOT_SUPPORTED;
     }
