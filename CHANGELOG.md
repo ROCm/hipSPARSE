@@ -13,9 +13,10 @@ Add the `int8`, `int32`, and `float16` data types to `hipDataTypeToHCCDataType` 
 
 * Switch to defaulting to C++17 when building hipSPARSE from source. Previously hipSPARSE was using C++14 by default.
 
-### Fixes
-* Fixed compilation [issue](https://github.com/ROCm/hipSPARSE/issues/555) related to using `std::filesystem` and C++14
-* Fix empty clients-common package by moving `hipsparse_clientmatrices.cmake` and `hipsparse_mtx2csr` files to it.
+### Resolved issues
+
+* Fixed a compilation [issue](https://github.com/ROCm/hipSPARSE/issues/555) related to using `std::filesystem` and C++14.
+* Fixed the empty clients-common package by moving the `hipsparse_clientmatrices.cmake` and `hipsparse_mtx2csr` files to it.
 
 ### Known issues
 
