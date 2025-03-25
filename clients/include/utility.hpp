@@ -700,6 +700,12 @@ void gen_matrix_coo(I                    m,
 /* ============================================================================================ */
 /*! \brief  Read matrix from mtx file in COO format */
 template <typename I>
+static inline void read_mtx_value(std::istringstream& is, I& row, I& col, int8_t& val)
+{
+    is >> row >> col >> val;
+}
+
+template <typename I>
 static void read_mtx_value(std::istringstream& is, I& row, I& col, float& val)
 {
     is >> row >> col >> val;
