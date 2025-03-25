@@ -7,7 +7,7 @@ Documentation for hipSPARSE is available at
 
 ### Added
 
-Add `int8`, `int32`, and `float16` data types to `hipDataTypeToHCCDataType` so that sparse matrix descriptors can be used with these data types.
+Add the `int8`, `int32`, and `float16` data types to `hipDataTypeToHCCDataType` so that sparse matrix descriptors can be used with them.
 
 ### Changed
 
