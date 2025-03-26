@@ -6723,11 +6723,13 @@ hipsparseIndexType_t getIndexType()
 template <typename T>
 hipDataType getDataType()
 {
-    return (typeid(T) == typeid(float))
-               ? HIP_R_32F
-               : ((typeid(T) == typeid(double))
-                      ? HIP_R_64F
-                      : ((typeid(T) == typeid(hipComplex) ? HIP_C_32F : HIP_C_64F)));
+    return (typeid(T) == typeid(int8_t)) 
+                ? HIP_R_8I 
+                : (typeid(T) == typeid(float))
+                    ? HIP_R_32F
+                    : ((typeid(T) == typeid(double))
+                        ? HIP_R_64F
+                        : ((typeid(T) == typeid(hipComplex) ? HIP_C_32F : HIP_C_64F)));
 }
 
 #endif // TESTING_UTILITY_HPP
