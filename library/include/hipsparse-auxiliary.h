@@ -24,10 +24,6 @@
 #ifndef HIPSPARSE_AUXILIARY_H
 #define HIPSPARSE_AUXILIARY_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 /*! \ingroup aux_module
  *  \brief Create a hipsparse handle
  *
@@ -583,10 +579,6 @@ hipsparseStatus_t hipsparseCreatePruneInfo(pruneInfo_t* info);
 DEPRECATED_CUDA_12000("The routine will be removed in CUDA 13")
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroyPruneInfo(pruneInfo_t info);
-#endif
-
-#ifdef __cplusplus
-}
 #endif
 
 #endif /* HIPSPARSE_AUXILIARY_H */

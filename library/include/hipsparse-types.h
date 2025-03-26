@@ -425,6 +425,36 @@ typedef enum {
     HIPSPARSE_DIRECTION_COLUMN = 1 /**< Parse the matrix by columns */
 } hipsparseDirection_t;
 
+/*! \ingroup types_module
+ *  \brief List of hipsparse csr2csc algorithms.
+ *
+ *  \details
+ *  This is a list of the \ref hipsparseCsr2CscAlg_t algorithms that can be used by the hipSPARSE
+ *  library routines \ref hipsparseCsr2cscEx2_bufferSize and \ref hipsparseCsr2cscEx2.
+ */
+#if(!defined(CUDART_VERSION))
+typedef enum
+{
+    HIPSPARSE_CSR2CSC_ALG_DEFAULT = 0,
+    HIPSPARSE_CSR2CSC_ALG1        = 1,
+    HIPSPARSE_CSR2CSC_ALG2        = 2
+} hipsparseCsr2CscAlg_t;
+#else
+#if(CUDART_VERSION >= 12000)
+typedef enum
+{
+    HIPSPARSE_CSR2CSC_ALG_DEFAULT = 0,
+    HIPSPARSE_CSR2CSC_ALG1        = 1
+} hipsparseCsr2CscAlg_t;
+#elif(CUDART_VERSION >= 10010 && CUDART_VERSION < 12000)
+typedef enum
+{
+    HIPSPARSE_CSR2CSC_ALG1 = 1,
+    HIPSPARSE_CSR2CSC_ALG2 = 2
+} hipsparseCsr2CscAlg_t;
+#endif
+#endif
+
 // clang-format on
 
 #endif /* HIPSPARSE_TYPES_H */
