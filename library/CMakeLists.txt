@@ -39,8 +39,44 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/include/hipsparse.h"
                "${PROJECT_BINARY_DIR}/include/hipsparse/hipsparse.h" COPYONLY)
 
 set(HEADER_FILES 
-    internal/reorder/hipsparse_csrcolor.h)
-           
+  # Level1
+  internal/level1/hipsparse_axpyi.h
+  internal/level1/hipsparse_dotci.h
+  internal/level1/hipsparse_doti.h
+  internal/level1/hipsparse_gthr.h
+  internal/level1/hipsparse_gthrz.h
+  internal/level1/hipsparse_roti.h
+  internal/level1/hipsparse_sctr.h
+  # Level2
+  internal/level2/hipsparse_bsrmv.h
+  internal/level2/hipsparse_bsrsv.h
+  internal/level2/hipsparse_bsrxmv.h
+  internal/level2/hipsparse_csrmv.h
+  internal/level2/hipsparse_csrsv.h
+  internal/level2/hipsparse_gemvi.h
+  internal/level2/hipsparse_hybmv.h
+  # Level3
+  internal/level3/hipsparse_bsrmm.h
+  internal/level3/hipsparse_bsrsm.h
+  internal/level3/hipsparse_csrmm.h
+  internal/level3/hipsparse_csrsm.h
+  internal/level3/hipsparse_gemmi.h
+  # Extra
+  internal/extra/hipsparse_csrgeam.h
+  internal/extra/hipsparse_csrgemm.h
+  # Precond
+  internal/precond/hipsparse_bsric0.h
+  internal/precond/hipsparse_bsrilu0.h
+  internal/precond/hipsparse_csric0.h
+  internal/precond/hipsparse_csrilu0.h
+  internal/precond/hipsparse_gpsv_interleaved_batch.h
+  internal/precond/hipsparse_gtsv_interleaved_batch.h
+  internal/precond/hipsparse_gtsv_nopivot.h
+  internal/precond/hipsparse_gtsv_strided_batch.h
+  internal/precond/hipsparse_gtsv.h
+  # Reorder
+  internal/reorder/hipsparse_csrcolor.h)
+
 foreach( file_i ${HEADER_FILES})
   configure_file("${CMAKE_CURRENT_SOURCE_DIR}/include/${file_i}"
     "${PROJECT_BINARY_DIR}/include/hipsparse/${file_i}" COPYONLY)
@@ -50,6 +86,15 @@ endforeach()
 set(hipsparse_headers_public
   include/hipsparse.h
   ${PROJECT_BINARY_DIR}/include/hipsparse/hipsparse-version.h)
+
+set(HEADER_FILES 
+    internal/extra/hipsparse_csrgeam.h
+    internal/extra/hipsparse_csrgemm.h)
+
+foreach( file_i ${HEADER_FILES})
+  configure_file("${CMAKE_CURRENT_SOURCE_DIR}/include/${file_i}"
+    "${PROJECT_BINARY_DIR}/include/hipsparse/${file_i}" COPYONLY)
+endforeach()
 
 source_group("Header Files\\Public" FILES ${hipsparse_headers_public})
 
