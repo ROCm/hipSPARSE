@@ -39,6 +39,15 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/include/hipsparse.h"
                "${PROJECT_BINARY_DIR}/include/hipsparse/hipsparse.h" COPYONLY)
 
 set(HEADER_FILES 
+  # Level1
+  internal/level1/hipsparse_axpyi.h
+  internal/level1/hipsparse_dotci.h
+  internal/level1/hipsparse_doti.h
+  internal/level1/hipsparse_gthr.h
+  internal/level1/hipsparse_gthrz.h
+  internal/level1/hipsparse_roti.h
+  internal/level1/hipsparse_sctr.h
+  #Level2
   internal/level2/hipsparse_bsrmv.h
   internal/level2/hipsparse_bsrsv.h
   internal/level2/hipsparse_bsrxmv.h
