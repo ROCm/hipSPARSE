@@ -8928,7 +8928,7 @@ hipsparseStatus_t hipsparseCsr2cscEx2(hipsparseHandle_t     handle,
         // Build Source
         rocsparse_const_spmat_descr source;
         RETURN_IF_ROCSPARSE_ERROR(rocsparse_create_const_csr_descr(&source, 
-                                    m, 
+                                  m, 
                                     n, 
                                     nnz, 
                                     csrRowPtr, 

@@ -6723,8 +6723,7 @@ hipsparseIndexType_t getIndexType()
 template <typename T>
 hipDataType getDataType()
 {
-    return (typeid(T) == typeid(int8_t)) 
-                ? HIP_R_8I 
+    return (typeid(T) == typeid(int8_t)) ? HIP_R_8I 
                 : (typeid(T) == typeid(float))
                     ? HIP_R_32F
                     : ((typeid(T) == typeid(double))
