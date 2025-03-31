@@ -54,8 +54,8 @@ std::string hipsparse_exepath();
 // BSR indexing macros
 #define BSR_IND(j, bi, bj, dir) \
     ((dir == HIPSPARSE_DIRECTION_ROW) ? BSR_IND_R(j, bi, bj) : BSR_IND_C(j, bi, bj))
-#define BSR_IND_R(j, bi, bj) (bsr_dim * bsr_dim * (j) + (bi)*bsr_dim + (bj))
-#define BSR_IND_C(j, bi, bj) (bsr_dim * bsr_dim * (j) + (bi) + (bj)*bsr_dim)
+#define BSR_IND_R(j, bi, bj) (bsr_dim * bsr_dim * (j) + (bi) * bsr_dim + (bj))
+#define BSR_IND_C(j, bi, bj) (bsr_dim * bsr_dim * (j) + (bi) + (bj) * bsr_dim)
 
 #define CHECK_HIP_ERROR(error)                \
     if(error != hipSuccess)                   \
@@ -69,7 +69,7 @@ std::string hipsparse_exepath();
         exit(EXIT_FAILURE);                   \
     }
 
-#if(!defined(CUDART_VERSION) || (CUDART_VERSION >= 11003))
+#if (!defined(CUDART_VERSION) || (CUDART_VERSION >= 11003))
 
 #define CHECK_HIPSPARSE_ERROR_CASE__(token_) \
     case token_:                             \
@@ -6723,12 +6723,12 @@ hipsparseIndexType_t getIndexType()
 template <typename T>
 hipDataType getDataType()
 {
-    return (typeid(T) == typeid(int8_t)) ? HIP_R_8I 
-                : (typeid(T) == typeid(float))
-                    ? HIP_R_32F
-                    : ((typeid(T) == typeid(double))
-                        ? HIP_R_64F
-                        : ((typeid(T) == typeid(hipComplex) ? HIP_C_32F : HIP_C_64F)));
+    return (typeid(T) == typeid(int8_t)) ? HIP_R_8I
+           : (typeid(T) == typeid(float))
+               ? HIP_R_32F
+               : ((typeid(T) == typeid(double))
+                      ? HIP_R_64F
+                      : ((typeid(T) == typeid(hipComplex) ? HIP_C_32F : HIP_C_64F)));
 }
 
 #endif // TESTING_UTILITY_HPP
