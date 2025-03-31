@@ -40,7 +40,7 @@ def runCI =
     {
         platform, project->
 
-        def gfilter = "*pre_checkin*"
+        def gfilter = "**"
         commonGroovy.runCoverageCommand(platform, project, gfilter, "release-debug")
     }
 
