@@ -8842,13 +8842,13 @@ hipsparseStatus_t hipsparseCsr2cscEx2_bufferSize(hipsparseHandle_t     handle,
     case HIP_C_64F:
         return hipsparse::rocSPARSEStatusToHIPStatus(
             rocsparse_csr2csc_buffer_size((rocsparse_handle)handle,
-                                        m,
-                                        n,
-                                        nnz,
-                                        csrRowPtr,
-                                        csrColInd,
-                                        hipsparse::hipActionToHCCAction(copyValues),
-                                        pBufferSizeInBytes));
+                                          m,
+                                          n,
+                                          nnz,
+                                          csrRowPtr,
+                                          csrColInd,
+                                          hipsparse::hipActionToHCCAction(copyValues),
+                                          pBufferSizeInBytes));
     case HIP_R_8I:
     {
         // Build Source
@@ -8891,20 +8891,20 @@ hipsparseStatus_t hipsparseCsr2cscEx2_bufferSize(hipsparseHandle_t     handle,
         // Analysis phase
         RETURN_IF_ROCSPARSE_ERROR(
             rocsparse_sparse_to_sparse_buffer_size((rocsparse_handle)handle,
-                                                    descr,
-                                                    source,
-                                                    target,
-                                                    rocsparse_sparse_to_sparse_stage_analysis,
-                                                    &buffer_size_analysis));
+                                                   descr,
+                                                   source,
+                                                   target,
+                                                   rocsparse_sparse_to_sparse_stage_analysis,
+                                                   &buffer_size_analysis));
 
         // Calculation phase
         RETURN_IF_ROCSPARSE_ERROR(
             rocsparse_sparse_to_sparse_buffer_size((rocsparse_handle)handle,
-                                                    descr,
-                                                    source,
-                                                    target,
-                                                    rocsparse_sparse_to_sparse_stage_compute,
-                                                    &buffer_size_compute));
+                                                   descr,
+                                                   source,
+                                                   target,
+                                                   rocsparse_sparse_to_sparse_stage_compute,
+                                                   &buffer_size_compute));
 
         *pBufferSizeInBytes = std::max(buffer_size_analysis, buffer_size_compute);
 
