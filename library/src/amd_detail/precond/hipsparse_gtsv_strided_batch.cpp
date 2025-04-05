@@ -31,184 +31,184 @@
 #include "../utility.h"
 
 hipsparseStatus_t hipsparseSgtsv2StridedBatch_bufferSizeExt(hipsparseHandle_t handle,
-    int               m,
-    const float*      dl,
-    const float*      d,
-    const float*      du,
-    const float*      x,
-    int               batchCount,
-    int               batchStride,
-    size_t*           pBufferSizeInBytes)
+                                                            int               m,
+                                                            const float*      dl,
+                                                            const float*      d,
+                                                            const float*      du,
+                                                            const float*      x,
+                                                            int               batchCount,
+                                                            int               batchStride,
+                                                            size_t*           pBufferSizeInBytes)
 {
-// cusparse allows passing nullptr's for dl, d, du, and B. On the other hand rocsparse checks
-// if they are nullptr and returns invalid pointer if they are. In both cases the pointers are
-// never actually de-referenced. In order to work in the same way regardless of the backend
-// that a user chooses, just pass in non-null dummy pointer.
-const float* dummy = static_cast<const float*>((void*)0x4);
-return hipsparse::rocSPARSEStatusToHIPStatus(
-rocsparse_sgtsv_no_pivot_strided_batch_buffer_size((rocsparse_handle)handle,
-   m,
-   dummy,
-   dummy,
-   dummy,
-   dummy,
-   batchCount,
-   batchStride,
-   pBufferSizeInBytes));
+    // cusparse allows passing nullptr's for dl, d, du, and B. On the other hand rocsparse checks
+    // if they are nullptr and returns invalid pointer if they are. In both cases the pointers are
+    // never actually de-referenced. In order to work in the same way regardless of the backend
+    // that a user chooses, just pass in non-null dummy pointer.
+    const float* dummy = static_cast<const float*>((void*)0x4);
+    return hipsparse::rocSPARSEStatusToHIPStatus(
+        rocsparse_sgtsv_no_pivot_strided_batch_buffer_size((rocsparse_handle)handle,
+                                                           m,
+                                                           dummy,
+                                                           dummy,
+                                                           dummy,
+                                                           dummy,
+                                                           batchCount,
+                                                           batchStride,
+                                                           pBufferSizeInBytes));
 }
 
 hipsparseStatus_t hipsparseDgtsv2StridedBatch_bufferSizeExt(hipsparseHandle_t handle,
-    int               m,
-    const double*     dl,
-    const double*     d,
-    const double*     du,
-    const double*     x,
-    int               batchCount,
-    int               batchStride,
-    size_t*           pBufferSizeInBytes)
+                                                            int               m,
+                                                            const double*     dl,
+                                                            const double*     d,
+                                                            const double*     du,
+                                                            const double*     x,
+                                                            int               batchCount,
+                                                            int               batchStride,
+                                                            size_t*           pBufferSizeInBytes)
 {
-// cusparse allows passing nullptr's for dl, d, du, and B. On the other hand rocsparse checks
-// if they are nullptr and returns invalid pointer if they are. In both cases the pointers are
-// never actually de-referenced. In order to work in the same way regardless of the backend
-// that a user chooses, just pass in non-null dummy pointer.
-const double* dummy = static_cast<const double*>((void*)0x4);
-return hipsparse::rocSPARSEStatusToHIPStatus(
-rocsparse_dgtsv_no_pivot_strided_batch_buffer_size((rocsparse_handle)handle,
-   m,
-   dummy,
-   dummy,
-   dummy,
-   dummy,
-   batchCount,
-   batchStride,
-   pBufferSizeInBytes));
+    // cusparse allows passing nullptr's for dl, d, du, and B. On the other hand rocsparse checks
+    // if they are nullptr and returns invalid pointer if they are. In both cases the pointers are
+    // never actually de-referenced. In order to work in the same way regardless of the backend
+    // that a user chooses, just pass in non-null dummy pointer.
+    const double* dummy = static_cast<const double*>((void*)0x4);
+    return hipsparse::rocSPARSEStatusToHIPStatus(
+        rocsparse_dgtsv_no_pivot_strided_batch_buffer_size((rocsparse_handle)handle,
+                                                           m,
+                                                           dummy,
+                                                           dummy,
+                                                           dummy,
+                                                           dummy,
+                                                           batchCount,
+                                                           batchStride,
+                                                           pBufferSizeInBytes));
 }
 
 hipsparseStatus_t hipsparseCgtsv2StridedBatch_bufferSizeExt(hipsparseHandle_t handle,
-    int               m,
-    const hipComplex* dl,
-    const hipComplex* d,
-    const hipComplex* du,
-    const hipComplex* x,
-    int               batchCount,
-    int               batchStride,
-    size_t*           pBufferSizeInBytes)
+                                                            int               m,
+                                                            const hipComplex* dl,
+                                                            const hipComplex* d,
+                                                            const hipComplex* du,
+                                                            const hipComplex* x,
+                                                            int               batchCount,
+                                                            int               batchStride,
+                                                            size_t*           pBufferSizeInBytes)
 {
-// cusparse allows passing nullptr's for dl, d, du, and B. On the other hand rocsparse checks
-// if they are nullptr and returns invalid pointer if they are. In both cases the pointers are
-// never actually de-referenced. In order to work in the same way regardless of the backend
-// that a user chooses, just pass in non-null dummy pointer.
-const hipComplex* dummy = static_cast<const hipComplex*>((void*)0x4);
-return hipsparse::rocSPARSEStatusToHIPStatus(
-rocsparse_cgtsv_no_pivot_strided_batch_buffer_size((rocsparse_handle)handle,
-   m,
-   (const rocsparse_float_complex*)dummy,
-   (const rocsparse_float_complex*)dummy,
-   (const rocsparse_float_complex*)dummy,
-   (const rocsparse_float_complex*)dummy,
-   batchCount,
-   batchStride,
-   pBufferSizeInBytes));
+    // cusparse allows passing nullptr's for dl, d, du, and B. On the other hand rocsparse checks
+    // if they are nullptr and returns invalid pointer if they are. In both cases the pointers are
+    // never actually de-referenced. In order to work in the same way regardless of the backend
+    // that a user chooses, just pass in non-null dummy pointer.
+    const hipComplex* dummy = static_cast<const hipComplex*>((void*)0x4);
+    return hipsparse::rocSPARSEStatusToHIPStatus(
+        rocsparse_cgtsv_no_pivot_strided_batch_buffer_size((rocsparse_handle)handle,
+                                                           m,
+                                                           (const rocsparse_float_complex*)dummy,
+                                                           (const rocsparse_float_complex*)dummy,
+                                                           (const rocsparse_float_complex*)dummy,
+                                                           (const rocsparse_float_complex*)dummy,
+                                                           batchCount,
+                                                           batchStride,
+                                                           pBufferSizeInBytes));
 }
 
 hipsparseStatus_t hipsparseZgtsv2StridedBatch_bufferSizeExt(hipsparseHandle_t       handle,
-    int                     m,
-    const hipDoubleComplex* dl,
-    const hipDoubleComplex* d,
-    const hipDoubleComplex* du,
-    const hipDoubleComplex* x,
-    int                     batchCount,
-    int                     batchStride,
-    size_t* pBufferSizeInBytes)
+                                                            int                     m,
+                                                            const hipDoubleComplex* dl,
+                                                            const hipDoubleComplex* d,
+                                                            const hipDoubleComplex* du,
+                                                            const hipDoubleComplex* x,
+                                                            int                     batchCount,
+                                                            int                     batchStride,
+                                                            size_t* pBufferSizeInBytes)
 {
-// cusparse allows passing nullptr's for dl, d, du, and B. On the other hand rocsparse checks
-// if they are nullptr and returns invalid pointer if they are. In both cases the pointers are
-// never actually de-referenced. In order to work in the same way regardless of the backend
-// that a user chooses, just pass in non-null dummy pointer.
-const hipDoubleComplex* dummy = static_cast<const hipDoubleComplex*>((void*)0x4);
-return hipsparse::rocSPARSEStatusToHIPStatus(
-rocsparse_zgtsv_no_pivot_strided_batch_buffer_size((rocsparse_handle)handle,
-   m,
-   (const rocsparse_double_complex*)dummy,
-   (const rocsparse_double_complex*)dummy,
-   (const rocsparse_double_complex*)dummy,
-   (const rocsparse_double_complex*)dummy,
-   batchCount,
-   batchStride,
-   pBufferSizeInBytes));
+    // cusparse allows passing nullptr's for dl, d, du, and B. On the other hand rocsparse checks
+    // if they are nullptr and returns invalid pointer if they are. In both cases the pointers are
+    // never actually de-referenced. In order to work in the same way regardless of the backend
+    // that a user chooses, just pass in non-null dummy pointer.
+    const hipDoubleComplex* dummy = static_cast<const hipDoubleComplex*>((void*)0x4);
+    return hipsparse::rocSPARSEStatusToHIPStatus(
+        rocsparse_zgtsv_no_pivot_strided_batch_buffer_size((rocsparse_handle)handle,
+                                                           m,
+                                                           (const rocsparse_double_complex*)dummy,
+                                                           (const rocsparse_double_complex*)dummy,
+                                                           (const rocsparse_double_complex*)dummy,
+                                                           (const rocsparse_double_complex*)dummy,
+                                                           batchCount,
+                                                           batchStride,
+                                                           pBufferSizeInBytes));
 }
 
 hipsparseStatus_t hipsparseSgtsv2StridedBatch(hipsparseHandle_t handle,
-int               m,
-const float*      dl,
-const float*      d,
-const float*      du,
-float*            x,
-int               batchCount,
-int               batchStride,
-void*             pBuffer)
+                                              int               m,
+                                              const float*      dl,
+                                              const float*      d,
+                                              const float*      du,
+                                              float*            x,
+                                              int               batchCount,
+                                              int               batchStride,
+                                              void*             pBuffer)
 
 {
-return hipsparse::rocSPARSEStatusToHIPStatus(rocsparse_sgtsv_no_pivot_strided_batch(
-(rocsparse_handle)handle, m, dl, d, du, x, batchCount, batchStride, pBuffer));
+    return hipsparse::rocSPARSEStatusToHIPStatus(rocsparse_sgtsv_no_pivot_strided_batch(
+        (rocsparse_handle)handle, m, dl, d, du, x, batchCount, batchStride, pBuffer));
 }
 
 hipsparseStatus_t hipsparseDgtsv2StridedBatch(hipsparseHandle_t handle,
-int               m,
-const double*     dl,
-const double*     d,
-const double*     du,
-double*           x,
-int               batchCount,
-int               batchStride,
-void*             pBuffer)
+                                              int               m,
+                                              const double*     dl,
+                                              const double*     d,
+                                              const double*     du,
+                                              double*           x,
+                                              int               batchCount,
+                                              int               batchStride,
+                                              void*             pBuffer)
 
 {
-return hipsparse::rocSPARSEStatusToHIPStatus(rocsparse_dgtsv_no_pivot_strided_batch(
-(rocsparse_handle)handle, m, dl, d, du, x, batchCount, batchStride, pBuffer));
+    return hipsparse::rocSPARSEStatusToHIPStatus(rocsparse_dgtsv_no_pivot_strided_batch(
+        (rocsparse_handle)handle, m, dl, d, du, x, batchCount, batchStride, pBuffer));
 }
 
 hipsparseStatus_t hipsparseCgtsv2StridedBatch(hipsparseHandle_t handle,
-int               m,
-const hipComplex* dl,
-const hipComplex* d,
-const hipComplex* du,
-hipComplex*       x,
-int               batchCount,
-int               batchStride,
-void*             pBuffer)
+                                              int               m,
+                                              const hipComplex* dl,
+                                              const hipComplex* d,
+                                              const hipComplex* du,
+                                              hipComplex*       x,
+                                              int               batchCount,
+                                              int               batchStride,
+                                              void*             pBuffer)
 {
-return hipsparse::rocSPARSEStatusToHIPStatus(
-rocsparse_cgtsv_no_pivot_strided_batch((rocsparse_handle)handle,
-m,
-(const rocsparse_float_complex*)dl,
-(const rocsparse_float_complex*)d,
-(const rocsparse_float_complex*)du,
-(rocsparse_float_complex*)x,
-batchCount,
-batchStride,
-pBuffer));
+    return hipsparse::rocSPARSEStatusToHIPStatus(
+        rocsparse_cgtsv_no_pivot_strided_batch((rocsparse_handle)handle,
+                                               m,
+                                               (const rocsparse_float_complex*)dl,
+                                               (const rocsparse_float_complex*)d,
+                                               (const rocsparse_float_complex*)du,
+                                               (rocsparse_float_complex*)x,
+                                               batchCount,
+                                               batchStride,
+                                               pBuffer));
 }
 
 hipsparseStatus_t hipsparseZgtsv2StridedBatch(hipsparseHandle_t       handle,
-int                     m,
-const hipDoubleComplex* dl,
-const hipDoubleComplex* d,
-const hipDoubleComplex* du,
-hipDoubleComplex*       x,
-int                     batchCount,
-int                     batchStride,
-void*                   pBuffer)
+                                              int                     m,
+                                              const hipDoubleComplex* dl,
+                                              const hipDoubleComplex* d,
+                                              const hipDoubleComplex* du,
+                                              hipDoubleComplex*       x,
+                                              int                     batchCount,
+                                              int                     batchStride,
+                                              void*                   pBuffer)
 
 {
-return hipsparse::rocSPARSEStatusToHIPStatus(
-rocsparse_zgtsv_no_pivot_strided_batch((rocsparse_handle)handle,
-m,
-(const rocsparse_double_complex*)dl,
-(const rocsparse_double_complex*)d,
-(const rocsparse_double_complex*)du,
-(rocsparse_double_complex*)x,
-batchCount,
-batchStride,
-pBuffer));
+    return hipsparse::rocSPARSEStatusToHIPStatus(
+        rocsparse_zgtsv_no_pivot_strided_batch((rocsparse_handle)handle,
+                                               m,
+                                               (const rocsparse_double_complex*)dl,
+                                               (const rocsparse_double_complex*)d,
+                                               (const rocsparse_double_complex*)du,
+                                               (rocsparse_double_complex*)x,
+                                               batchCount,
+                                               batchStride,
+                                               pBuffer));
 }

@@ -31,81 +31,81 @@
 #include "../utility.h"
 
 hipsparseStatus_t hipsparseShybmv(hipsparseHandle_t         handle,
-    hipsparseOperation_t      transA,
-    const float*              alpha,
-    const hipsparseMatDescr_t descrA,
-    const hipsparseHybMat_t   hybA,
-    const float*              x,
-    const float*              beta,
-    float*                    y)
+                                  hipsparseOperation_t      transA,
+                                  const float*              alpha,
+                                  const hipsparseMatDescr_t descrA,
+                                  const hipsparseHybMat_t   hybA,
+                                  const float*              x,
+                                  const float*              beta,
+                                  float*                    y)
 {
-return hipsparse::rocSPARSEStatusToHIPStatus(
-rocsparse_shybmv((rocsparse_handle)handle,
-hipsparse::hipOperationToHCCOperation(transA),
-alpha,
-(rocsparse_mat_descr)descrA,
-(rocsparse_hyb_mat)hybA,
-x,
-beta,
-y));
+    return hipsparse::rocSPARSEStatusToHIPStatus(
+        rocsparse_shybmv((rocsparse_handle)handle,
+                         hipsparse::hipOperationToHCCOperation(transA),
+                         alpha,
+                         (rocsparse_mat_descr)descrA,
+                         (rocsparse_hyb_mat)hybA,
+                         x,
+                         beta,
+                         y));
 }
 
 hipsparseStatus_t hipsparseDhybmv(hipsparseHandle_t         handle,
-    hipsparseOperation_t      transA,
-    const double*             alpha,
-    const hipsparseMatDescr_t descrA,
-    const hipsparseHybMat_t   hybA,
-    const double*             x,
-    const double*             beta,
-    double*                   y)
+                                  hipsparseOperation_t      transA,
+                                  const double*             alpha,
+                                  const hipsparseMatDescr_t descrA,
+                                  const hipsparseHybMat_t   hybA,
+                                  const double*             x,
+                                  const double*             beta,
+                                  double*                   y)
 {
-return hipsparse::rocSPARSEStatusToHIPStatus(
-rocsparse_dhybmv((rocsparse_handle)handle,
-hipsparse::hipOperationToHCCOperation(transA),
-alpha,
-(rocsparse_mat_descr)descrA,
-(rocsparse_hyb_mat)hybA,
-x,
-beta,
-y));
+    return hipsparse::rocSPARSEStatusToHIPStatus(
+        rocsparse_dhybmv((rocsparse_handle)handle,
+                         hipsparse::hipOperationToHCCOperation(transA),
+                         alpha,
+                         (rocsparse_mat_descr)descrA,
+                         (rocsparse_hyb_mat)hybA,
+                         x,
+                         beta,
+                         y));
 }
 
 hipsparseStatus_t hipsparseChybmv(hipsparseHandle_t         handle,
-    hipsparseOperation_t      transA,
-    const hipComplex*         alpha,
-    const hipsparseMatDescr_t descrA,
-    const hipsparseHybMat_t   hybA,
-    const hipComplex*         x,
-    const hipComplex*         beta,
-    hipComplex*               y)
+                                  hipsparseOperation_t      transA,
+                                  const hipComplex*         alpha,
+                                  const hipsparseMatDescr_t descrA,
+                                  const hipsparseHybMat_t   hybA,
+                                  const hipComplex*         x,
+                                  const hipComplex*         beta,
+                                  hipComplex*               y)
 {
-return hipsparse::rocSPARSEStatusToHIPStatus(
-rocsparse_chybmv((rocsparse_handle)handle,
-hipsparse::hipOperationToHCCOperation(transA),
-(const rocsparse_float_complex*)alpha,
-(rocsparse_mat_descr)descrA,
-(rocsparse_hyb_mat)hybA,
-(const rocsparse_float_complex*)x,
-(const rocsparse_float_complex*)beta,
-(rocsparse_float_complex*)y));
+    return hipsparse::rocSPARSEStatusToHIPStatus(
+        rocsparse_chybmv((rocsparse_handle)handle,
+                         hipsparse::hipOperationToHCCOperation(transA),
+                         (const rocsparse_float_complex*)alpha,
+                         (rocsparse_mat_descr)descrA,
+                         (rocsparse_hyb_mat)hybA,
+                         (const rocsparse_float_complex*)x,
+                         (const rocsparse_float_complex*)beta,
+                         (rocsparse_float_complex*)y));
 }
 
 hipsparseStatus_t hipsparseZhybmv(hipsparseHandle_t         handle,
-    hipsparseOperation_t      transA,
-    const hipDoubleComplex*   alpha,
-    const hipsparseMatDescr_t descrA,
-    const hipsparseHybMat_t   hybA,
-    const hipDoubleComplex*   x,
-    const hipDoubleComplex*   beta,
-    hipDoubleComplex*         y)
+                                  hipsparseOperation_t      transA,
+                                  const hipDoubleComplex*   alpha,
+                                  const hipsparseMatDescr_t descrA,
+                                  const hipsparseHybMat_t   hybA,
+                                  const hipDoubleComplex*   x,
+                                  const hipDoubleComplex*   beta,
+                                  hipDoubleComplex*         y)
 {
-return hipsparse::rocSPARSEStatusToHIPStatus(
-rocsparse_zhybmv((rocsparse_handle)handle,
-hipsparse::hipOperationToHCCOperation(transA),
-(const rocsparse_double_complex*)alpha,
-(rocsparse_mat_descr)descrA,
-(rocsparse_hyb_mat)hybA,
-(const rocsparse_double_complex*)x,
-(const rocsparse_double_complex*)beta,
-(rocsparse_double_complex*)y));
+    return hipsparse::rocSPARSEStatusToHIPStatus(
+        rocsparse_zhybmv((rocsparse_handle)handle,
+                         hipsparse::hipOperationToHCCOperation(transA),
+                         (const rocsparse_double_complex*)alpha,
+                         (rocsparse_mat_descr)descrA,
+                         (rocsparse_hyb_mat)hybA,
+                         (const rocsparse_double_complex*)x,
+                         (const rocsparse_double_complex*)beta,
+                         (rocsparse_double_complex*)y));
 }

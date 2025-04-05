@@ -31,34 +31,34 @@
 #include "../utility.h"
 
 hipsparseStatus_t hipsparseXcsrsort_bufferSizeExt(hipsparseHandle_t handle,
-    int               m,
-    int               n,
-    int               nnz,
-    const int*        csrRowPtr,
-    const int*        csrColInd,
-    size_t*           pBufferSizeInBytes)
+                                                  int               m,
+                                                  int               n,
+                                                  int               nnz,
+                                                  const int*        csrRowPtr,
+                                                  const int*        csrColInd,
+                                                  size_t*           pBufferSizeInBytes)
 {
-return hipsparse::rocSPARSEStatusToHIPStatus(rocsparse_csrsort_buffer_size(
-(rocsparse_handle)handle, m, n, nnz, csrRowPtr, csrColInd, pBufferSizeInBytes));
+    return hipsparse::rocSPARSEStatusToHIPStatus(rocsparse_csrsort_buffer_size(
+        (rocsparse_handle)handle, m, n, nnz, csrRowPtr, csrColInd, pBufferSizeInBytes));
 }
 
 hipsparseStatus_t hipsparseXcsrsort(hipsparseHandle_t         handle,
-int                       m,
-int                       n,
-int                       nnz,
-const hipsparseMatDescr_t descrA,
-const int*                csrRowPtr,
-int*                      csrColInd,
-int*                      P,
-void*                     pBuffer)
+                                    int                       m,
+                                    int                       n,
+                                    int                       nnz,
+                                    const hipsparseMatDescr_t descrA,
+                                    const int*                csrRowPtr,
+                                    int*                      csrColInd,
+                                    int*                      P,
+                                    void*                     pBuffer)
 {
-return hipsparse::rocSPARSEStatusToHIPStatus(rocsparse_csrsort((rocsparse_handle)handle,
-                     m,
-                     n,
-                     nnz,
-                     (rocsparse_mat_descr)descrA,
-                     csrRowPtr,
-                     csrColInd,
-                     P,
-                     pBuffer));
+    return hipsparse::rocSPARSEStatusToHIPStatus(rocsparse_csrsort((rocsparse_handle)handle,
+                                                                   m,
+                                                                   n,
+                                                                   nnz,
+                                                                   (rocsparse_mat_descr)descrA,
+                                                                   csrRowPtr,
+                                                                   csrColInd,
+                                                                   P,
+                                                                   pBuffer));
 }

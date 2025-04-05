@@ -31,47 +31,47 @@
 #include "../utility.h"
 
 hipsparseStatus_t hipsparseSpVV_bufferSize(hipsparseHandle_t          handle,
-    hipsparseOperation_t       opX,
-    hipsparseConstSpVecDescr_t vecX,
-    hipsparseConstDnVecDescr_t vecY,
-    void*                      result,
-    hipDataType                computeType,
-    size_t*                    pBufferSizeInBytes)
+                                           hipsparseOperation_t       opX,
+                                           hipsparseConstSpVecDescr_t vecX,
+                                           hipsparseConstDnVecDescr_t vecY,
+                                           void*                      result,
+                                           hipDataType                computeType,
+                                           size_t*                    pBufferSizeInBytes)
 {
-return hipsparse::rocSPARSEStatusToHIPStatus(
-rocsparse_spvv((rocsparse_handle)handle,
-hipsparse::hipOperationToHCCOperation(opX),
-(rocsparse_const_spvec_descr)vecX,
-(rocsparse_const_dnvec_descr)vecY,
-result,
-hipsparse::hipDataTypeToHCCDataType(computeType),
-pBufferSizeInBytes,
-nullptr));
+    return hipsparse::rocSPARSEStatusToHIPStatus(
+        rocsparse_spvv((rocsparse_handle)handle,
+                       hipsparse::hipOperationToHCCOperation(opX),
+                       (rocsparse_const_spvec_descr)vecX,
+                       (rocsparse_const_dnvec_descr)vecY,
+                       result,
+                       hipsparse::hipDataTypeToHCCDataType(computeType),
+                       pBufferSizeInBytes,
+                       nullptr));
 }
 
 hipsparseStatus_t hipsparseSpVV(hipsparseHandle_t          handle,
-hipsparseOperation_t       opX,
-hipsparseConstSpVecDescr_t vecX,
-hipsparseConstDnVecDescr_t vecY,
-void*                      result,
-hipDataType                computeType,
-void*                      externalBuffer)
+                                hipsparseOperation_t       opX,
+                                hipsparseConstSpVecDescr_t vecX,
+                                hipsparseConstDnVecDescr_t vecY,
+                                void*                      result,
+                                hipDataType                computeType,
+                                void*                      externalBuffer)
 {
-size_t bufferSize;
+    size_t bufferSize;
 
-// Check for buffer == nullptr as this is not done in rocsparse
-if(externalBuffer == nullptr)
-{
-return HIPSPARSE_STATUS_INVALID_VALUE;
-}
+    // Check for buffer == nullptr as this is not done in rocsparse
+    if(externalBuffer == nullptr)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
 
-return hipsparse::rocSPARSEStatusToHIPStatus(
-rocsparse_spvv((rocsparse_handle)handle,
-hipsparse::hipOperationToHCCOperation(opX),
-(rocsparse_const_spvec_descr)vecX,
-(rocsparse_const_dnvec_descr)vecY,
-result,
-hipsparse::hipDataTypeToHCCDataType(computeType),
-&bufferSize,
-externalBuffer));
+    return hipsparse::rocSPARSEStatusToHIPStatus(
+        rocsparse_spvv((rocsparse_handle)handle,
+                       hipsparse::hipOperationToHCCOperation(opX),
+                       (rocsparse_const_spvec_descr)vecX,
+                       (rocsparse_const_dnvec_descr)vecY,
+                       result,
+                       hipsparse::hipDataTypeToHCCDataType(computeType),
+                       &bufferSize,
+                       externalBuffer));
 }

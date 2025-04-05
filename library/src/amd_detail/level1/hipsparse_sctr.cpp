@@ -31,55 +31,55 @@
 #include "../utility.h"
 
 hipsparseStatus_t hipsparseSsctr(hipsparseHandle_t    handle,
-    int                  nnz,
-    const float*         xVal,
-    const int*           xInd,
-    float*               y,
-    hipsparseIndexBase_t idxBase)
+                                 int                  nnz,
+                                 const float*         xVal,
+                                 const int*           xInd,
+                                 float*               y,
+                                 hipsparseIndexBase_t idxBase)
 {
-return hipsparse::rocSPARSEStatusToHIPStatus(rocsparse_ssctr(
-(rocsparse_handle)handle, nnz, xVal, xInd, y, hipsparse::hipBaseToHCCBase(idxBase)));
+    return hipsparse::rocSPARSEStatusToHIPStatus(rocsparse_ssctr(
+        (rocsparse_handle)handle, nnz, xVal, xInd, y, hipsparse::hipBaseToHCCBase(idxBase)));
 }
 
 hipsparseStatus_t hipsparseDsctr(hipsparseHandle_t    handle,
-    int                  nnz,
-    const double*        xVal,
-    const int*           xInd,
-    double*              y,
-    hipsparseIndexBase_t idxBase)
+                                 int                  nnz,
+                                 const double*        xVal,
+                                 const int*           xInd,
+                                 double*              y,
+                                 hipsparseIndexBase_t idxBase)
 {
-return hipsparse::rocSPARSEStatusToHIPStatus(rocsparse_dsctr(
-(rocsparse_handle)handle, nnz, xVal, xInd, y, hipsparse::hipBaseToHCCBase(idxBase)));
+    return hipsparse::rocSPARSEStatusToHIPStatus(rocsparse_dsctr(
+        (rocsparse_handle)handle, nnz, xVal, xInd, y, hipsparse::hipBaseToHCCBase(idxBase)));
 }
 
 hipsparseStatus_t hipsparseCsctr(hipsparseHandle_t    handle,
-    int                  nnz,
-    const hipComplex*    xVal,
-    const int*           xInd,
-    hipComplex*          y,
-    hipsparseIndexBase_t idxBase)
+                                 int                  nnz,
+                                 const hipComplex*    xVal,
+                                 const int*           xInd,
+                                 hipComplex*          y,
+                                 hipsparseIndexBase_t idxBase)
 {
-return hipsparse::rocSPARSEStatusToHIPStatus(
-rocsparse_csctr((rocsparse_handle)handle,
-nnz,
-(const rocsparse_float_complex*)xVal,
-xInd,
-(rocsparse_float_complex*)y,
-hipsparse::hipBaseToHCCBase(idxBase)));
+    return hipsparse::rocSPARSEStatusToHIPStatus(
+        rocsparse_csctr((rocsparse_handle)handle,
+                        nnz,
+                        (const rocsparse_float_complex*)xVal,
+                        xInd,
+                        (rocsparse_float_complex*)y,
+                        hipsparse::hipBaseToHCCBase(idxBase)));
 }
 
 hipsparseStatus_t hipsparseZsctr(hipsparseHandle_t       handle,
-    int                     nnz,
-    const hipDoubleComplex* xVal,
-    const int*              xInd,
-    hipDoubleComplex*       y,
-    hipsparseIndexBase_t    idxBase)
+                                 int                     nnz,
+                                 const hipDoubleComplex* xVal,
+                                 const int*              xInd,
+                                 hipDoubleComplex*       y,
+                                 hipsparseIndexBase_t    idxBase)
 {
-return hipsparse::rocSPARSEStatusToHIPStatus(
-rocsparse_zsctr((rocsparse_handle)handle,
-nnz,
-(const rocsparse_double_complex*)xVal,
-xInd,
-(rocsparse_double_complex*)y,
-hipsparse::hipBaseToHCCBase(idxBase)));
+    return hipsparse::rocSPARSEStatusToHIPStatus(
+        rocsparse_zsctr((rocsparse_handle)handle,
+                        nnz,
+                        (const rocsparse_double_complex*)xVal,
+                        xInd,
+                        (rocsparse_double_complex*)y,
+                        hipsparse::hipBaseToHCCBase(idxBase)));
 }

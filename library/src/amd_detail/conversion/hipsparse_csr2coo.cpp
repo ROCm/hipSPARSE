@@ -31,17 +31,17 @@
 #include "../utility.h"
 
 hipsparseStatus_t hipsparseXcsr2coo(hipsparseHandle_t    handle,
-    const int*           csrRowPtr,
-    int                  nnz,
-    int                  m,
-    int*                 cooRowInd,
-    hipsparseIndexBase_t idxBase)
+                                    const int*           csrRowPtr,
+                                    int                  nnz,
+                                    int                  m,
+                                    int*                 cooRowInd,
+                                    hipsparseIndexBase_t idxBase)
 {
-return hipsparse::rocSPARSEStatusToHIPStatus(
-rocsparse_csr2coo((rocsparse_handle)handle,
-csrRowPtr,
-nnz,
-m,
-cooRowInd,
-hipsparse::hipBaseToHCCBase(idxBase)));
+    return hipsparse::rocSPARSEStatusToHIPStatus(
+        rocsparse_csr2coo((rocsparse_handle)handle,
+                          csrRowPtr,
+                          nnz,
+                          m,
+                          cooRowInd,
+                          hipsparse::hipBaseToHCCBase(idxBase)));
 }

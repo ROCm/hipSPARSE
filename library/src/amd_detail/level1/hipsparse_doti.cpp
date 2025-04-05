@@ -31,109 +31,109 @@
 #include "../utility.h"
 
 hipsparseStatus_t hipsparseSdoti(hipsparseHandle_t    handle,
-    int                  nnz,
-    const float*         xVal,
-    const int*           xInd,
-    const float*         y,
-    float*               result,
-    hipsparseIndexBase_t idxBase)
+                                 int                  nnz,
+                                 const float*         xVal,
+                                 const int*           xInd,
+                                 const float*         y,
+                                 float*               result,
+                                 hipsparseIndexBase_t idxBase)
 {
-// Obtain stream, to explicitly sync (cusparse doti is blocking)
-hipStream_t stream;
-RETURN_IF_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
+    // Obtain stream, to explicitly sync (cusparse doti is blocking)
+    hipStream_t stream;
+    RETURN_IF_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
 
-// Doti
-RETURN_IF_ROCSPARSE_ERROR(rocsparse_sdoti((rocsparse_handle)handle,
-                 nnz,
-                 xVal,
-                 xInd,
-                 y,
-                 result,
-                 hipsparse::hipBaseToHCCBase(idxBase)));
+    // Doti
+    RETURN_IF_ROCSPARSE_ERROR(rocsparse_sdoti((rocsparse_handle)handle,
+                                              nnz,
+                                              xVal,
+                                              xInd,
+                                              y,
+                                              result,
+                                              hipsparse::hipBaseToHCCBase(idxBase)));
 
-// Synchronize stream
-RETURN_IF_HIP_ERROR(hipStreamSynchronize(stream));
+    // Synchronize stream
+    RETURN_IF_HIP_ERROR(hipStreamSynchronize(stream));
 
-return HIPSPARSE_STATUS_SUCCESS;
+    return HIPSPARSE_STATUS_SUCCESS;
 }
 
 hipsparseStatus_t hipsparseDdoti(hipsparseHandle_t    handle,
-    int                  nnz,
-    const double*        xVal,
-    const int*           xInd,
-    const double*        y,
-    double*              result,
-    hipsparseIndexBase_t idxBase)
+                                 int                  nnz,
+                                 const double*        xVal,
+                                 const int*           xInd,
+                                 const double*        y,
+                                 double*              result,
+                                 hipsparseIndexBase_t idxBase)
 {
-// Obtain stream, to explicitly sync (cusparse doti is blocking)
-hipStream_t stream;
-RETURN_IF_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
+    // Obtain stream, to explicitly sync (cusparse doti is blocking)
+    hipStream_t stream;
+    RETURN_IF_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
 
-// Doti
-RETURN_IF_ROCSPARSE_ERROR(rocsparse_ddoti((rocsparse_handle)handle,
-                 nnz,
-                 xVal,
-                 xInd,
-                 y,
-                 result,
-                 hipsparse::hipBaseToHCCBase(idxBase)));
+    // Doti
+    RETURN_IF_ROCSPARSE_ERROR(rocsparse_ddoti((rocsparse_handle)handle,
+                                              nnz,
+                                              xVal,
+                                              xInd,
+                                              y,
+                                              result,
+                                              hipsparse::hipBaseToHCCBase(idxBase)));
 
-// Synchronize stream
-RETURN_IF_HIP_ERROR(hipStreamSynchronize(stream));
+    // Synchronize stream
+    RETURN_IF_HIP_ERROR(hipStreamSynchronize(stream));
 
-return HIPSPARSE_STATUS_SUCCESS;
+    return HIPSPARSE_STATUS_SUCCESS;
 }
 
 hipsparseStatus_t hipsparseCdoti(hipsparseHandle_t    handle,
-    int                  nnz,
-    const hipComplex*    xVal,
-    const int*           xInd,
-    const hipComplex*    y,
-    hipComplex*          result,
-    hipsparseIndexBase_t idxBase)
+                                 int                  nnz,
+                                 const hipComplex*    xVal,
+                                 const int*           xInd,
+                                 const hipComplex*    y,
+                                 hipComplex*          result,
+                                 hipsparseIndexBase_t idxBase)
 {
-// Obtain stream, to explicitly sync (cusparse doti is blocking)
-hipStream_t stream;
-RETURN_IF_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
+    // Obtain stream, to explicitly sync (cusparse doti is blocking)
+    hipStream_t stream;
+    RETURN_IF_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
 
-// Doti
-RETURN_IF_ROCSPARSE_ERROR(rocsparse_cdoti((rocsparse_handle)handle,
-                 nnz,
-                 (const rocsparse_float_complex*)xVal,
-                 xInd,
-                 (const rocsparse_float_complex*)y,
-                 (rocsparse_float_complex*)result,
-                 hipsparse::hipBaseToHCCBase(idxBase)));
+    // Doti
+    RETURN_IF_ROCSPARSE_ERROR(rocsparse_cdoti((rocsparse_handle)handle,
+                                              nnz,
+                                              (const rocsparse_float_complex*)xVal,
+                                              xInd,
+                                              (const rocsparse_float_complex*)y,
+                                              (rocsparse_float_complex*)result,
+                                              hipsparse::hipBaseToHCCBase(idxBase)));
 
-// Synchronize stream
-RETURN_IF_HIP_ERROR(hipStreamSynchronize(stream));
+    // Synchronize stream
+    RETURN_IF_HIP_ERROR(hipStreamSynchronize(stream));
 
-return HIPSPARSE_STATUS_SUCCESS;
+    return HIPSPARSE_STATUS_SUCCESS;
 }
 
 hipsparseStatus_t hipsparseZdoti(hipsparseHandle_t       handle,
-    int                     nnz,
-    const hipDoubleComplex* xVal,
-    const int*              xInd,
-    const hipDoubleComplex* y,
-    hipDoubleComplex*       result,
-    hipsparseIndexBase_t    idxBase)
+                                 int                     nnz,
+                                 const hipDoubleComplex* xVal,
+                                 const int*              xInd,
+                                 const hipDoubleComplex* y,
+                                 hipDoubleComplex*       result,
+                                 hipsparseIndexBase_t    idxBase)
 {
-// Obtain stream, to explicitly sync (cusparse doti is blocking)
-hipStream_t stream;
-RETURN_IF_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
+    // Obtain stream, to explicitly sync (cusparse doti is blocking)
+    hipStream_t stream;
+    RETURN_IF_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
 
-// Doti
-RETURN_IF_ROCSPARSE_ERROR(rocsparse_zdoti((rocsparse_handle)handle,
-                 nnz,
-                 (const rocsparse_double_complex*)xVal,
-                 xInd,
-                 (const rocsparse_double_complex*)y,
-                 (rocsparse_double_complex*)result,
-                 hipsparse::hipBaseToHCCBase(idxBase)));
+    // Doti
+    RETURN_IF_ROCSPARSE_ERROR(rocsparse_zdoti((rocsparse_handle)handle,
+                                              nnz,
+                                              (const rocsparse_double_complex*)xVal,
+                                              xInd,
+                                              (const rocsparse_double_complex*)y,
+                                              (rocsparse_double_complex*)result,
+                                              hipsparse::hipBaseToHCCBase(idxBase)));
 
-// Synchronize stream
-RETURN_IF_HIP_ERROR(hipStreamSynchronize(stream));
+    // Synchronize stream
+    RETURN_IF_HIP_ERROR(hipStreamSynchronize(stream));
 
-return HIPSPARSE_STATUS_SUCCESS;
+    return HIPSPARSE_STATUS_SUCCESS;
 }

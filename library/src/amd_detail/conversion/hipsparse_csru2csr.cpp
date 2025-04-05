@@ -72,549 +72,549 @@ hipsparseStatus_t hipsparseDestroyCsru2csrInfo(csru2csrInfo_t info)
 }
 
 hipsparseStatus_t hipsparseScsru2csr_bufferSizeExt(hipsparseHandle_t handle,
-    int               m,
-    int               n,
-    int               nnz,
-    float*            csrVal,
-    const int*        csrRowPtr,
-    int*              csrColInd,
-    csru2csrInfo_t    info,
-    size_t*           pBufferSizeInBytes)
+                                                   int               m,
+                                                   int               n,
+                                                   int               nnz,
+                                                   float*            csrVal,
+                                                   const int*        csrRowPtr,
+                                                   int*              csrColInd,
+                                                   csru2csrInfo_t    info,
+                                                   size_t*           pBufferSizeInBytes)
 {
-// Test for bad args
-if(handle == nullptr)
-{
-return HIPSPARSE_STATUS_INVALID_VALUE;
-}
+    // Test for bad args
+    if(handle == nullptr)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
 
-// Invalid sizes
-if(m < 0 || n < 0 || nnz < 0)
-{
-return HIPSPARSE_STATUS_INVALID_VALUE;
-}
+    // Invalid sizes
+    if(m < 0 || n < 0 || nnz < 0)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
 
-// Quick return
-if(m == 0 || n == 0 || nnz == 0)
-{
-// nnz must be 0 and pBufferSizeInBytes must be valid
-if(nnz != 0 || pBufferSizeInBytes == nullptr)
-{
-return HIPSPARSE_STATUS_INVALID_VALUE;
-}
+    // Quick return
+    if(m == 0 || n == 0 || nnz == 0)
+    {
+        // nnz must be 0 and pBufferSizeInBytes must be valid
+        if(nnz != 0 || pBufferSizeInBytes == nullptr)
+        {
+            return HIPSPARSE_STATUS_INVALID_VALUE;
+        }
 
-*pBufferSizeInBytes = 4;
+        *pBufferSizeInBytes = 4;
 
-return HIPSPARSE_STATUS_SUCCESS;
-}
+        return HIPSPARSE_STATUS_SUCCESS;
+    }
 
-// Invalid pointers
-if(csrVal == nullptr || csrRowPtr == nullptr || csrColInd == nullptr || info == nullptr
-|| pBufferSizeInBytes == nullptr)
-{
-return HIPSPARSE_STATUS_INVALID_VALUE;
-}
+    // Invalid pointers
+    if(csrVal == nullptr || csrRowPtr == nullptr || csrColInd == nullptr || info == nullptr
+       || pBufferSizeInBytes == nullptr)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
 
-// Determine required buffer size for CSR sort
-RETURN_IF_HIPSPARSE_ERROR(hipsparseXcsrsort_bufferSizeExt(
-handle, m, n, nnz, csrRowPtr, csrColInd, pBufferSizeInBytes));
+    // Determine required buffer size for CSR sort
+    RETURN_IF_HIPSPARSE_ERROR(hipsparseXcsrsort_bufferSizeExt(
+        handle, m, n, nnz, csrRowPtr, csrColInd, pBufferSizeInBytes));
 
-// We need a buffer of at least nnz * sizeof(float)
-size_t min_size     = nnz * sizeof(float);
-*pBufferSizeInBytes = std::max(*pBufferSizeInBytes, min_size);
+    // We need a buffer of at least nnz * sizeof(float)
+    size_t min_size     = nnz * sizeof(float);
+    *pBufferSizeInBytes = std::max(*pBufferSizeInBytes, min_size);
 
-return HIPSPARSE_STATUS_SUCCESS;
+    return HIPSPARSE_STATUS_SUCCESS;
 }
 
 hipsparseStatus_t hipsparseDcsru2csr_bufferSizeExt(hipsparseHandle_t handle,
-    int               m,
-    int               n,
-    int               nnz,
-    double*           csrVal,
-    const int*        csrRowPtr,
-    int*              csrColInd,
-    csru2csrInfo_t    info,
-    size_t*           pBufferSizeInBytes)
+                                                   int               m,
+                                                   int               n,
+                                                   int               nnz,
+                                                   double*           csrVal,
+                                                   const int*        csrRowPtr,
+                                                   int*              csrColInd,
+                                                   csru2csrInfo_t    info,
+                                                   size_t*           pBufferSizeInBytes)
 {
-// Test for bad args
-if(handle == nullptr)
-{
-return HIPSPARSE_STATUS_INVALID_VALUE;
-}
+    // Test for bad args
+    if(handle == nullptr)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
 
-// Invalid sizes
-if(m < 0 || n < 0 || nnz < 0)
-{
-return HIPSPARSE_STATUS_INVALID_VALUE;
-}
+    // Invalid sizes
+    if(m < 0 || n < 0 || nnz < 0)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
 
-// Quick return
-if(m == 0 || n == 0 || nnz == 0)
-{
-// nnz must be 0 and pBufferSizeInBytes must be valid
-if(nnz != 0 || pBufferSizeInBytes == nullptr)
-{
-return HIPSPARSE_STATUS_INVALID_VALUE;
-}
+    // Quick return
+    if(m == 0 || n == 0 || nnz == 0)
+    {
+        // nnz must be 0 and pBufferSizeInBytes must be valid
+        if(nnz != 0 || pBufferSizeInBytes == nullptr)
+        {
+            return HIPSPARSE_STATUS_INVALID_VALUE;
+        }
 
-*pBufferSizeInBytes = 4;
+        *pBufferSizeInBytes = 4;
 
-return HIPSPARSE_STATUS_SUCCESS;
-}
+        return HIPSPARSE_STATUS_SUCCESS;
+    }
 
-// Invalid pointers
-if(csrVal == nullptr || csrRowPtr == nullptr || csrColInd == nullptr || info == nullptr
-|| pBufferSizeInBytes == nullptr)
-{
-return HIPSPARSE_STATUS_INVALID_VALUE;
-}
+    // Invalid pointers
+    if(csrVal == nullptr || csrRowPtr == nullptr || csrColInd == nullptr || info == nullptr
+       || pBufferSizeInBytes == nullptr)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
 
-// Determine required buffer size for CSR sort
-RETURN_IF_HIPSPARSE_ERROR(hipsparseXcsrsort_bufferSizeExt(
-handle, m, n, nnz, csrRowPtr, csrColInd, pBufferSizeInBytes));
+    // Determine required buffer size for CSR sort
+    RETURN_IF_HIPSPARSE_ERROR(hipsparseXcsrsort_bufferSizeExt(
+        handle, m, n, nnz, csrRowPtr, csrColInd, pBufferSizeInBytes));
 
-// We need a buffer of at least nnz * sizeof(double)
-size_t min_size     = nnz * sizeof(double);
-*pBufferSizeInBytes = std::max(*pBufferSizeInBytes, min_size);
+    // We need a buffer of at least nnz * sizeof(double)
+    size_t min_size     = nnz * sizeof(double);
+    *pBufferSizeInBytes = std::max(*pBufferSizeInBytes, min_size);
 
-return HIPSPARSE_STATUS_SUCCESS;
+    return HIPSPARSE_STATUS_SUCCESS;
 }
 
 hipsparseStatus_t hipsparseCcsru2csr_bufferSizeExt(hipsparseHandle_t handle,
-    int               m,
-    int               n,
-    int               nnz,
-    hipComplex*       csrVal,
-    const int*        csrRowPtr,
-    int*              csrColInd,
-    csru2csrInfo_t    info,
-    size_t*           pBufferSizeInBytes)
+                                                   int               m,
+                                                   int               n,
+                                                   int               nnz,
+                                                   hipComplex*       csrVal,
+                                                   const int*        csrRowPtr,
+                                                   int*              csrColInd,
+                                                   csru2csrInfo_t    info,
+                                                   size_t*           pBufferSizeInBytes)
 {
-// Test for bad args
-if(handle == nullptr)
-{
-return HIPSPARSE_STATUS_INVALID_VALUE;
-}
+    // Test for bad args
+    if(handle == nullptr)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
 
-// Invalid sizes
-if(m < 0 || n < 0 || nnz < 0)
-{
-return HIPSPARSE_STATUS_INVALID_VALUE;
-}
+    // Invalid sizes
+    if(m < 0 || n < 0 || nnz < 0)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
 
-// Quick return
-if(m == 0 || n == 0 || nnz == 0)
-{
-// nnz must be 0 and pBufferSizeInBytes must be valid
-if(nnz != 0 || pBufferSizeInBytes == nullptr)
-{
-return HIPSPARSE_STATUS_INVALID_VALUE;
-}
+    // Quick return
+    if(m == 0 || n == 0 || nnz == 0)
+    {
+        // nnz must be 0 and pBufferSizeInBytes must be valid
+        if(nnz != 0 || pBufferSizeInBytes == nullptr)
+        {
+            return HIPSPARSE_STATUS_INVALID_VALUE;
+        }
 
-*pBufferSizeInBytes = 4;
+        *pBufferSizeInBytes = 4;
 
-return HIPSPARSE_STATUS_SUCCESS;
-}
+        return HIPSPARSE_STATUS_SUCCESS;
+    }
 
-// Invalid pointers
-if(csrVal == nullptr || csrRowPtr == nullptr || csrColInd == nullptr || info == nullptr
-|| pBufferSizeInBytes == nullptr)
-{
-return HIPSPARSE_STATUS_INVALID_VALUE;
-}
+    // Invalid pointers
+    if(csrVal == nullptr || csrRowPtr == nullptr || csrColInd == nullptr || info == nullptr
+       || pBufferSizeInBytes == nullptr)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
 
-// Determine required buffer size for CSR sort
-RETURN_IF_HIPSPARSE_ERROR(hipsparseXcsrsort_bufferSizeExt(
-handle, m, n, nnz, csrRowPtr, csrColInd, pBufferSizeInBytes));
+    // Determine required buffer size for CSR sort
+    RETURN_IF_HIPSPARSE_ERROR(hipsparseXcsrsort_bufferSizeExt(
+        handle, m, n, nnz, csrRowPtr, csrColInd, pBufferSizeInBytes));
 
-// We need a buffer of at least nnz * sizeof(hipComplex)
-size_t min_size     = nnz * sizeof(hipComplex);
-*pBufferSizeInBytes = std::max(*pBufferSizeInBytes, min_size);
+    // We need a buffer of at least nnz * sizeof(hipComplex)
+    size_t min_size     = nnz * sizeof(hipComplex);
+    *pBufferSizeInBytes = std::max(*pBufferSizeInBytes, min_size);
 
-return HIPSPARSE_STATUS_SUCCESS;
+    return HIPSPARSE_STATUS_SUCCESS;
 }
 
 hipsparseStatus_t hipsparseZcsru2csr_bufferSizeExt(hipsparseHandle_t handle,
-    int               m,
-    int               n,
-    int               nnz,
-    hipDoubleComplex* csrVal,
-    const int*        csrRowPtr,
-    int*              csrColInd,
-    csru2csrInfo_t    info,
-    size_t*           pBufferSizeInBytes)
+                                                   int               m,
+                                                   int               n,
+                                                   int               nnz,
+                                                   hipDoubleComplex* csrVal,
+                                                   const int*        csrRowPtr,
+                                                   int*              csrColInd,
+                                                   csru2csrInfo_t    info,
+                                                   size_t*           pBufferSizeInBytes)
 {
-// Test for bad args
-if(handle == nullptr)
-{
-return HIPSPARSE_STATUS_INVALID_VALUE;
-}
+    // Test for bad args
+    if(handle == nullptr)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
 
-// Invalid sizes
-if(m < 0 || n < 0 || nnz < 0)
-{
-return HIPSPARSE_STATUS_INVALID_VALUE;
-}
+    // Invalid sizes
+    if(m < 0 || n < 0 || nnz < 0)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
 
-// Quick return
-if(m == 0 || n == 0 || nnz == 0)
-{
-// nnz must be 0 and pBufferSizeInBytes must be valid
-if(nnz != 0 || pBufferSizeInBytes == nullptr)
-{
-return HIPSPARSE_STATUS_INVALID_VALUE;
-}
+    // Quick return
+    if(m == 0 || n == 0 || nnz == 0)
+    {
+        // nnz must be 0 and pBufferSizeInBytes must be valid
+        if(nnz != 0 || pBufferSizeInBytes == nullptr)
+        {
+            return HIPSPARSE_STATUS_INVALID_VALUE;
+        }
 
-*pBufferSizeInBytes = 4;
+        *pBufferSizeInBytes = 4;
 
-return HIPSPARSE_STATUS_SUCCESS;
-}
+        return HIPSPARSE_STATUS_SUCCESS;
+    }
 
-// Invalid pointers
-if(csrVal == nullptr || csrRowPtr == nullptr || csrColInd == nullptr || info == nullptr
-|| pBufferSizeInBytes == nullptr)
-{
-return HIPSPARSE_STATUS_INVALID_VALUE;
-}
+    // Invalid pointers
+    if(csrVal == nullptr || csrRowPtr == nullptr || csrColInd == nullptr || info == nullptr
+       || pBufferSizeInBytes == nullptr)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
 
-// Determine required buffer size for CSR sort
-RETURN_IF_HIPSPARSE_ERROR(hipsparseXcsrsort_bufferSizeExt(
-handle, m, n, nnz, csrRowPtr, csrColInd, pBufferSizeInBytes));
+    // Determine required buffer size for CSR sort
+    RETURN_IF_HIPSPARSE_ERROR(hipsparseXcsrsort_bufferSizeExt(
+        handle, m, n, nnz, csrRowPtr, csrColInd, pBufferSizeInBytes));
 
-// We need a buffer of at least nnz * sizeof(hipDoubleComplex)
-size_t min_size     = nnz * sizeof(hipDoubleComplex);
-*pBufferSizeInBytes = std::max(*pBufferSizeInBytes, min_size);
+    // We need a buffer of at least nnz * sizeof(hipDoubleComplex)
+    size_t min_size     = nnz * sizeof(hipDoubleComplex);
+    *pBufferSizeInBytes = std::max(*pBufferSizeInBytes, min_size);
 
-return HIPSPARSE_STATUS_SUCCESS;
+    return HIPSPARSE_STATUS_SUCCESS;
 }
 
 hipsparseStatus_t hipsparseScsru2csr(hipsparseHandle_t         handle,
-int                       m,
-int                       n,
-int                       nnz,
-const hipsparseMatDescr_t descrA,
-float*                    csrVal,
-const int*                csrRowPtr,
-int*                      csrColInd,
-csru2csrInfo_t            info,
-void*                     pBuffer)
+                                     int                       m,
+                                     int                       n,
+                                     int                       nnz,
+                                     const hipsparseMatDescr_t descrA,
+                                     float*                    csrVal,
+                                     const int*                csrRowPtr,
+                                     int*                      csrColInd,
+                                     csru2csrInfo_t            info,
+                                     void*                     pBuffer)
 {
-// Test for bad args
-if(handle == nullptr)
-{
-return HIPSPARSE_STATUS_INVALID_VALUE;
-}
+    // Test for bad args
+    if(handle == nullptr)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
 
-// Invalid sizes
-if(m < 0 || n < 0 || nnz < 0)
-{
-return HIPSPARSE_STATUS_INVALID_VALUE;
-}
+    // Invalid sizes
+    if(m < 0 || n < 0 || nnz < 0)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
 
-// Quick return
-if(m == 0 || n == 0 || nnz == 0)
-{
-// nnz must be 0
-if(nnz != 0)
-{
-return HIPSPARSE_STATUS_INVALID_VALUE;
-}
+    // Quick return
+    if(m == 0 || n == 0 || nnz == 0)
+    {
+        // nnz must be 0
+        if(nnz != 0)
+        {
+            return HIPSPARSE_STATUS_INVALID_VALUE;
+        }
 
-return HIPSPARSE_STATUS_SUCCESS;
-}
+        return HIPSPARSE_STATUS_SUCCESS;
+    }
 
-// Invalid pointers
-if(descrA == nullptr || csrVal == nullptr || csrRowPtr == nullptr || csrColInd == nullptr
-|| info == nullptr || pBuffer == nullptr)
-{
-return HIPSPARSE_STATUS_INVALID_VALUE;
-}
+    // Invalid pointers
+    if(descrA == nullptr || csrVal == nullptr || csrRowPtr == nullptr || csrColInd == nullptr
+       || info == nullptr || pBuffer == nullptr)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
 
-// De-allocate permutation array, if already allocated but sizes do not match
-if(info->P != nullptr && info->size != nnz)
-{
-RETURN_IF_HIP_ERROR(hipFree(info->P));
-info->size = 0;
-}
+    // De-allocate permutation array, if already allocated but sizes do not match
+    if(info->P != nullptr && info->size != nnz)
+    {
+        RETURN_IF_HIP_ERROR(hipFree(info->P));
+        info->size = 0;
+    }
 
-// Allocate memory inside info structure to keep track of the permutation
-// if it has not yet been allocated with matching size
-if(info->P == nullptr)
-{
-// size must be 0
-assert(info->size == 0);
+    // Allocate memory inside info structure to keep track of the permutation
+    // if it has not yet been allocated with matching size
+    if(info->P == nullptr)
+    {
+        // size must be 0
+        assert(info->size == 0);
 
-RETURN_IF_HIP_ERROR(hipMalloc((void**)&info->P, sizeof(int) * nnz));
+        RETURN_IF_HIP_ERROR(hipMalloc((void**)&info->P, sizeof(int) * nnz));
 
-info->size = nnz;
-}
+        info->size = nnz;
+    }
 
-// Initialize permutation with identity
-RETURN_IF_HIPSPARSE_ERROR(hipsparseCreateIdentityPermutation(handle, nnz, info->P));
+    // Initialize permutation with identity
+    RETURN_IF_HIPSPARSE_ERROR(hipsparseCreateIdentityPermutation(handle, nnz, info->P));
 
-// Sort CSR columns
-RETURN_IF_HIPSPARSE_ERROR(
-hipsparseXcsrsort(handle, m, n, nnz, descrA, csrRowPtr, csrColInd, info->P, pBuffer));
+    // Sort CSR columns
+    RETURN_IF_HIPSPARSE_ERROR(
+        hipsparseXcsrsort(handle, m, n, nnz, descrA, csrRowPtr, csrColInd, info->P, pBuffer));
 
-// Sort CSR values
-RETURN_IF_HIPSPARSE_ERROR(
-hipsparseSgthr(handle, nnz, csrVal, (float*)pBuffer, info->P, HIPSPARSE_INDEX_BASE_ZERO));
+    // Sort CSR values
+    RETURN_IF_HIPSPARSE_ERROR(
+        hipsparseSgthr(handle, nnz, csrVal, (float*)pBuffer, info->P, HIPSPARSE_INDEX_BASE_ZERO));
 
-// Get stream
-hipStream_t stream;
-RETURN_IF_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
+    // Get stream
+    hipStream_t stream;
+    RETURN_IF_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
 
-// Copy sorted values back to csrVal
-RETURN_IF_HIP_ERROR(
-hipMemcpyAsync(csrVal, pBuffer, sizeof(float) * nnz, hipMemcpyDeviceToDevice, stream));
+    // Copy sorted values back to csrVal
+    RETURN_IF_HIP_ERROR(
+        hipMemcpyAsync(csrVal, pBuffer, sizeof(float) * nnz, hipMemcpyDeviceToDevice, stream));
 
-return HIPSPARSE_STATUS_SUCCESS;
+    return HIPSPARSE_STATUS_SUCCESS;
 }
 
 hipsparseStatus_t hipsparseDcsru2csr(hipsparseHandle_t         handle,
-int                       m,
-int                       n,
-int                       nnz,
-const hipsparseMatDescr_t descrA,
-double*                   csrVal,
-const int*                csrRowPtr,
-int*                      csrColInd,
-csru2csrInfo_t            info,
-void*                     pBuffer)
+                                     int                       m,
+                                     int                       n,
+                                     int                       nnz,
+                                     const hipsparseMatDescr_t descrA,
+                                     double*                   csrVal,
+                                     const int*                csrRowPtr,
+                                     int*                      csrColInd,
+                                     csru2csrInfo_t            info,
+                                     void*                     pBuffer)
 {
-// Test for bad args
-if(handle == nullptr)
-{
-return HIPSPARSE_STATUS_INVALID_VALUE;
-}
+    // Test for bad args
+    if(handle == nullptr)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
 
-// Invalid sizes
-if(m < 0 || n < 0 || nnz < 0)
-{
-return HIPSPARSE_STATUS_INVALID_VALUE;
-}
+    // Invalid sizes
+    if(m < 0 || n < 0 || nnz < 0)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
 
-// Quick return
-if(m == 0 || n == 0 || nnz == 0)
-{
-// nnz must be 0
-if(nnz != 0)
-{
-return HIPSPARSE_STATUS_INVALID_VALUE;
-}
+    // Quick return
+    if(m == 0 || n == 0 || nnz == 0)
+    {
+        // nnz must be 0
+        if(nnz != 0)
+        {
+            return HIPSPARSE_STATUS_INVALID_VALUE;
+        }
 
-return HIPSPARSE_STATUS_SUCCESS;
-}
+        return HIPSPARSE_STATUS_SUCCESS;
+    }
 
-// Invalid pointers
-if(descrA == nullptr || csrVal == nullptr || csrRowPtr == nullptr || csrColInd == nullptr
-|| info == nullptr || pBuffer == nullptr)
-{
-return HIPSPARSE_STATUS_INVALID_VALUE;
-}
+    // Invalid pointers
+    if(descrA == nullptr || csrVal == nullptr || csrRowPtr == nullptr || csrColInd == nullptr
+       || info == nullptr || pBuffer == nullptr)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
 
-// De-allocate permutation array, if already allocated but sizes do not match
-if(info->P != nullptr && info->size != nnz)
-{
-RETURN_IF_HIP_ERROR(hipFree(info->P));
-info->size = 0;
-}
+    // De-allocate permutation array, if already allocated but sizes do not match
+    if(info->P != nullptr && info->size != nnz)
+    {
+        RETURN_IF_HIP_ERROR(hipFree(info->P));
+        info->size = 0;
+    }
 
-// Allocate memory inside info structure to keep track of the permutation
-// if it has not yet been allocated with matching size
-if(info->P == nullptr)
-{
-// size must be 0
-assert(info->size == 0);
+    // Allocate memory inside info structure to keep track of the permutation
+    // if it has not yet been allocated with matching size
+    if(info->P == nullptr)
+    {
+        // size must be 0
+        assert(info->size == 0);
 
-RETURN_IF_HIP_ERROR(hipMalloc((void**)&info->P, sizeof(int) * nnz));
+        RETURN_IF_HIP_ERROR(hipMalloc((void**)&info->P, sizeof(int) * nnz));
 
-info->size = nnz;
-}
+        info->size = nnz;
+    }
 
-// Initialize permutation with identity
-RETURN_IF_HIPSPARSE_ERROR(hipsparseCreateIdentityPermutation(handle, nnz, info->P));
+    // Initialize permutation with identity
+    RETURN_IF_HIPSPARSE_ERROR(hipsparseCreateIdentityPermutation(handle, nnz, info->P));
 
-// Sort CSR columns
-RETURN_IF_HIPSPARSE_ERROR(
-hipsparseXcsrsort(handle, m, n, nnz, descrA, csrRowPtr, csrColInd, info->P, pBuffer));
+    // Sort CSR columns
+    RETURN_IF_HIPSPARSE_ERROR(
+        hipsparseXcsrsort(handle, m, n, nnz, descrA, csrRowPtr, csrColInd, info->P, pBuffer));
 
-// Sort CSR values
-RETURN_IF_HIPSPARSE_ERROR(
-hipsparseDgthr(handle, nnz, csrVal, (double*)pBuffer, info->P, HIPSPARSE_INDEX_BASE_ZERO));
+    // Sort CSR values
+    RETURN_IF_HIPSPARSE_ERROR(
+        hipsparseDgthr(handle, nnz, csrVal, (double*)pBuffer, info->P, HIPSPARSE_INDEX_BASE_ZERO));
 
-// Get stream
-hipStream_t stream;
-RETURN_IF_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
+    // Get stream
+    hipStream_t stream;
+    RETURN_IF_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
 
-// Copy sorted values back to csrVal
-RETURN_IF_HIP_ERROR(
-hipMemcpyAsync(csrVal, pBuffer, sizeof(double) * nnz, hipMemcpyDeviceToDevice, stream));
+    // Copy sorted values back to csrVal
+    RETURN_IF_HIP_ERROR(
+        hipMemcpyAsync(csrVal, pBuffer, sizeof(double) * nnz, hipMemcpyDeviceToDevice, stream));
 
-return HIPSPARSE_STATUS_SUCCESS;
+    return HIPSPARSE_STATUS_SUCCESS;
 }
 
 hipsparseStatus_t hipsparseCcsru2csr(hipsparseHandle_t         handle,
-int                       m,
-int                       n,
-int                       nnz,
-const hipsparseMatDescr_t descrA,
-hipComplex*               csrVal,
-const int*                csrRowPtr,
-int*                      csrColInd,
-csru2csrInfo_t            info,
-void*                     pBuffer)
+                                     int                       m,
+                                     int                       n,
+                                     int                       nnz,
+                                     const hipsparseMatDescr_t descrA,
+                                     hipComplex*               csrVal,
+                                     const int*                csrRowPtr,
+                                     int*                      csrColInd,
+                                     csru2csrInfo_t            info,
+                                     void*                     pBuffer)
 {
-// Test for bad args
-if(handle == nullptr)
-{
-return HIPSPARSE_STATUS_INVALID_VALUE;
-}
+    // Test for bad args
+    if(handle == nullptr)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
 
-// Invalid sizes
-if(m < 0 || n < 0 || nnz < 0)
-{
-return HIPSPARSE_STATUS_INVALID_VALUE;
-}
+    // Invalid sizes
+    if(m < 0 || n < 0 || nnz < 0)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
 
-// Quick return
-if(m == 0 || n == 0 || nnz == 0)
-{
-// nnz must be 0
-if(nnz != 0)
-{
-return HIPSPARSE_STATUS_INVALID_VALUE;
-}
+    // Quick return
+    if(m == 0 || n == 0 || nnz == 0)
+    {
+        // nnz must be 0
+        if(nnz != 0)
+        {
+            return HIPSPARSE_STATUS_INVALID_VALUE;
+        }
 
-return HIPSPARSE_STATUS_SUCCESS;
-}
+        return HIPSPARSE_STATUS_SUCCESS;
+    }
 
-// Invalid pointers
-if(descrA == nullptr || csrVal == nullptr || csrRowPtr == nullptr || csrColInd == nullptr
-|| info == nullptr || pBuffer == nullptr)
-{
-return HIPSPARSE_STATUS_INVALID_VALUE;
-}
+    // Invalid pointers
+    if(descrA == nullptr || csrVal == nullptr || csrRowPtr == nullptr || csrColInd == nullptr
+       || info == nullptr || pBuffer == nullptr)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
 
-// De-allocate permutation array, if already allocated but sizes do not match
-if(info->P != nullptr && info->size != nnz)
-{
-RETURN_IF_HIP_ERROR(hipFree(info->P));
-info->size = 0;
-}
+    // De-allocate permutation array, if already allocated but sizes do not match
+    if(info->P != nullptr && info->size != nnz)
+    {
+        RETURN_IF_HIP_ERROR(hipFree(info->P));
+        info->size = 0;
+    }
 
-// Allocate memory inside info structure to keep track of the permutation
-// if it has not yet been allocated with matching size
-if(info->P == nullptr)
-{
-// size must be 0
-assert(info->size == 0);
+    // Allocate memory inside info structure to keep track of the permutation
+    // if it has not yet been allocated with matching size
+    if(info->P == nullptr)
+    {
+        // size must be 0
+        assert(info->size == 0);
 
-RETURN_IF_HIP_ERROR(hipMalloc((void**)&info->P, sizeof(int) * nnz));
+        RETURN_IF_HIP_ERROR(hipMalloc((void**)&info->P, sizeof(int) * nnz));
 
-info->size = nnz;
-}
+        info->size = nnz;
+    }
 
-// Initialize permutation with identity
-RETURN_IF_HIPSPARSE_ERROR(hipsparseCreateIdentityPermutation(handle, nnz, info->P));
+    // Initialize permutation with identity
+    RETURN_IF_HIPSPARSE_ERROR(hipsparseCreateIdentityPermutation(handle, nnz, info->P));
 
-// Sort CSR columns
-RETURN_IF_HIPSPARSE_ERROR(
-hipsparseXcsrsort(handle, m, n, nnz, descrA, csrRowPtr, csrColInd, info->P, pBuffer));
+    // Sort CSR columns
+    RETURN_IF_HIPSPARSE_ERROR(
+        hipsparseXcsrsort(handle, m, n, nnz, descrA, csrRowPtr, csrColInd, info->P, pBuffer));
 
-// Sort CSR values
-RETURN_IF_HIPSPARSE_ERROR(hipsparseCgthr(
-handle, nnz, csrVal, (hipComplex*)pBuffer, info->P, HIPSPARSE_INDEX_BASE_ZERO));
+    // Sort CSR values
+    RETURN_IF_HIPSPARSE_ERROR(hipsparseCgthr(
+        handle, nnz, csrVal, (hipComplex*)pBuffer, info->P, HIPSPARSE_INDEX_BASE_ZERO));
 
-// Get stream
-hipStream_t stream;
-RETURN_IF_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
+    // Get stream
+    hipStream_t stream;
+    RETURN_IF_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
 
-// Copy sorted values back to csrVal
-RETURN_IF_HIP_ERROR(
-hipMemcpyAsync(csrVal, pBuffer, sizeof(hipComplex) * nnz, hipMemcpyDeviceToDevice, stream));
+    // Copy sorted values back to csrVal
+    RETURN_IF_HIP_ERROR(
+        hipMemcpyAsync(csrVal, pBuffer, sizeof(hipComplex) * nnz, hipMemcpyDeviceToDevice, stream));
 
-return HIPSPARSE_STATUS_SUCCESS;
+    return HIPSPARSE_STATUS_SUCCESS;
 }
 
 hipsparseStatus_t hipsparseZcsru2csr(hipsparseHandle_t         handle,
-int                       m,
-int                       n,
-int                       nnz,
-const hipsparseMatDescr_t descrA,
-hipDoubleComplex*         csrVal,
-const int*                csrRowPtr,
-int*                      csrColInd,
-csru2csrInfo_t            info,
-void*                     pBuffer)
+                                     int                       m,
+                                     int                       n,
+                                     int                       nnz,
+                                     const hipsparseMatDescr_t descrA,
+                                     hipDoubleComplex*         csrVal,
+                                     const int*                csrRowPtr,
+                                     int*                      csrColInd,
+                                     csru2csrInfo_t            info,
+                                     void*                     pBuffer)
 {
-// Test for bad args
-if(handle == nullptr)
-{
-return HIPSPARSE_STATUS_INVALID_VALUE;
-}
+    // Test for bad args
+    if(handle == nullptr)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
 
-// Invalid sizes
-if(m < 0 || n < 0 || nnz < 0)
-{
-return HIPSPARSE_STATUS_INVALID_VALUE;
-}
+    // Invalid sizes
+    if(m < 0 || n < 0 || nnz < 0)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
 
-// Quick return
-if(m == 0 || n == 0 || nnz == 0)
-{
-// nnz must be 0
-if(nnz != 0)
-{
-return HIPSPARSE_STATUS_INVALID_VALUE;
-}
+    // Quick return
+    if(m == 0 || n == 0 || nnz == 0)
+    {
+        // nnz must be 0
+        if(nnz != 0)
+        {
+            return HIPSPARSE_STATUS_INVALID_VALUE;
+        }
 
-return HIPSPARSE_STATUS_SUCCESS;
-}
+        return HIPSPARSE_STATUS_SUCCESS;
+    }
 
-// Invalid pointers
-if(descrA == nullptr || csrVal == nullptr || csrRowPtr == nullptr || csrColInd == nullptr
-|| info == nullptr || pBuffer == nullptr)
-{
-return HIPSPARSE_STATUS_INVALID_VALUE;
-}
+    // Invalid pointers
+    if(descrA == nullptr || csrVal == nullptr || csrRowPtr == nullptr || csrColInd == nullptr
+       || info == nullptr || pBuffer == nullptr)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
 
-// De-allocate permutation array, if already allocated but sizes do not match
-if(info->P != nullptr && info->size != nnz)
-{
-RETURN_IF_HIP_ERROR(hipFree(info->P));
-info->size = 0;
-}
+    // De-allocate permutation array, if already allocated but sizes do not match
+    if(info->P != nullptr && info->size != nnz)
+    {
+        RETURN_IF_HIP_ERROR(hipFree(info->P));
+        info->size = 0;
+    }
 
-// Allocate memory inside info structure to keep track of the permutation
-// if it has not yet been allocated with matching size
-if(info->P == nullptr)
-{
-// size must be 0
-assert(info->size == 0);
+    // Allocate memory inside info structure to keep track of the permutation
+    // if it has not yet been allocated with matching size
+    if(info->P == nullptr)
+    {
+        // size must be 0
+        assert(info->size == 0);
 
-RETURN_IF_HIP_ERROR(hipMalloc((void**)&info->P, sizeof(int) * nnz));
+        RETURN_IF_HIP_ERROR(hipMalloc((void**)&info->P, sizeof(int) * nnz));
 
-info->size = nnz;
-}
+        info->size = nnz;
+    }
 
-// Initialize permutation with identity
-RETURN_IF_HIPSPARSE_ERROR(hipsparseCreateIdentityPermutation(handle, nnz, info->P));
+    // Initialize permutation with identity
+    RETURN_IF_HIPSPARSE_ERROR(hipsparseCreateIdentityPermutation(handle, nnz, info->P));
 
-// Sort CSR columns
-RETURN_IF_HIPSPARSE_ERROR(
-hipsparseXcsrsort(handle, m, n, nnz, descrA, csrRowPtr, csrColInd, info->P, pBuffer));
+    // Sort CSR columns
+    RETURN_IF_HIPSPARSE_ERROR(
+        hipsparseXcsrsort(handle, m, n, nnz, descrA, csrRowPtr, csrColInd, info->P, pBuffer));
 
-// Sort CSR values
-RETURN_IF_HIPSPARSE_ERROR(hipsparseZgthr(
-handle, nnz, csrVal, (hipDoubleComplex*)pBuffer, info->P, HIPSPARSE_INDEX_BASE_ZERO));
+    // Sort CSR values
+    RETURN_IF_HIPSPARSE_ERROR(hipsparseZgthr(
+        handle, nnz, csrVal, (hipDoubleComplex*)pBuffer, info->P, HIPSPARSE_INDEX_BASE_ZERO));
 
-// Get stream
-hipStream_t stream;
-RETURN_IF_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
+    // Get stream
+    hipStream_t stream;
+    RETURN_IF_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
 
-// Copy sorted values back to csrVal
-RETURN_IF_HIP_ERROR(hipMemcpyAsync(
-csrVal, pBuffer, sizeof(hipDoubleComplex) * nnz, hipMemcpyDeviceToDevice, stream));
+    // Copy sorted values back to csrVal
+    RETURN_IF_HIP_ERROR(hipMemcpyAsync(
+        csrVal, pBuffer, sizeof(hipDoubleComplex) * nnz, hipMemcpyDeviceToDevice, stream));
 
-return HIPSPARSE_STATUS_SUCCESS;
+    return HIPSPARSE_STATUS_SUCCESS;
 }

@@ -31,89 +31,89 @@
 #include "../utility.h"
 
 hipsparseStatus_t hipsparseScsc2dense(hipsparseHandle_t         handle,
-    int                       m,
-    int                       n,
-    const hipsparseMatDescr_t descr,
-    const float*              cscVal,
-    const int*                cscRowInd,
-    const int*                cscColPtr,
-    float*                    A,
-    int                       ld)
+                                      int                       m,
+                                      int                       n,
+                                      const hipsparseMatDescr_t descr,
+                                      const float*              cscVal,
+                                      const int*                cscRowInd,
+                                      const int*                cscColPtr,
+                                      float*                    A,
+                                      int                       ld)
 {
-RETURN_IF_ROCSPARSE_ERROR(rocsparse_scsc2dense((rocsparse_handle)handle,
-                 m,
-                 n,
-                 (const rocsparse_mat_descr)descr,
-                 cscVal,
-                 cscColPtr,
-                 cscRowInd,
-                 A,
-                 ld));
-return HIPSPARSE_STATUS_SUCCESS;
+    RETURN_IF_ROCSPARSE_ERROR(rocsparse_scsc2dense((rocsparse_handle)handle,
+                                                   m,
+                                                   n,
+                                                   (const rocsparse_mat_descr)descr,
+                                                   cscVal,
+                                                   cscColPtr,
+                                                   cscRowInd,
+                                                   A,
+                                                   ld));
+    return HIPSPARSE_STATUS_SUCCESS;
 }
 
 hipsparseStatus_t hipsparseDcsc2dense(hipsparseHandle_t         handle,
-    int                       m,
-    int                       n,
-    const hipsparseMatDescr_t descr,
-    const double*             cscVal,
-    const int*                cscRowInd,
-    const int*                cscColPtr,
-    double*                   A,
-    int                       ld)
+                                      int                       m,
+                                      int                       n,
+                                      const hipsparseMatDescr_t descr,
+                                      const double*             cscVal,
+                                      const int*                cscRowInd,
+                                      const int*                cscColPtr,
+                                      double*                   A,
+                                      int                       ld)
 {
-RETURN_IF_ROCSPARSE_ERROR(rocsparse_dcsc2dense((rocsparse_handle)handle,
-                 m,
-                 n,
-                 (const rocsparse_mat_descr)descr,
-                 cscVal,
-                 cscColPtr,
-                 cscRowInd,
-                 A,
-                 ld));
-return HIPSPARSE_STATUS_SUCCESS;
+    RETURN_IF_ROCSPARSE_ERROR(rocsparse_dcsc2dense((rocsparse_handle)handle,
+                                                   m,
+                                                   n,
+                                                   (const rocsparse_mat_descr)descr,
+                                                   cscVal,
+                                                   cscColPtr,
+                                                   cscRowInd,
+                                                   A,
+                                                   ld));
+    return HIPSPARSE_STATUS_SUCCESS;
 }
 
 hipsparseStatus_t hipsparseCcsc2dense(hipsparseHandle_t         handle,
-    int                       m,
-    int                       n,
-    const hipsparseMatDescr_t descr,
-    const hipComplex*         cscVal,
-    const int*                cscRowInd,
-    const int*                cscColPtr,
-    hipComplex*               A,
-    int                       ld)
+                                      int                       m,
+                                      int                       n,
+                                      const hipsparseMatDescr_t descr,
+                                      const hipComplex*         cscVal,
+                                      const int*                cscRowInd,
+                                      const int*                cscColPtr,
+                                      hipComplex*               A,
+                                      int                       ld)
 {
-RETURN_IF_ROCSPARSE_ERROR(rocsparse_ccsc2dense((rocsparse_handle)handle,
-                 m,
-                 n,
-                 (const rocsparse_mat_descr)descr,
-                 (const rocsparse_float_complex*)cscVal,
-                 cscColPtr,
-                 cscRowInd,
-                 (rocsparse_float_complex*)A,
-                 ld));
-return HIPSPARSE_STATUS_SUCCESS;
+    RETURN_IF_ROCSPARSE_ERROR(rocsparse_ccsc2dense((rocsparse_handle)handle,
+                                                   m,
+                                                   n,
+                                                   (const rocsparse_mat_descr)descr,
+                                                   (const rocsparse_float_complex*)cscVal,
+                                                   cscColPtr,
+                                                   cscRowInd,
+                                                   (rocsparse_float_complex*)A,
+                                                   ld));
+    return HIPSPARSE_STATUS_SUCCESS;
 }
 
 hipsparseStatus_t hipsparseZcsc2dense(hipsparseHandle_t         handle,
-    int                       m,
-    int                       n,
-    const hipsparseMatDescr_t descr,
-    const hipDoubleComplex*   cscVal,
-    const int*                cscRowInd,
-    const int*                cscColPtr,
-    hipDoubleComplex*         A,
-    int                       ld)
+                                      int                       m,
+                                      int                       n,
+                                      const hipsparseMatDescr_t descr,
+                                      const hipDoubleComplex*   cscVal,
+                                      const int*                cscRowInd,
+                                      const int*                cscColPtr,
+                                      hipDoubleComplex*         A,
+                                      int                       ld)
 {
-RETURN_IF_ROCSPARSE_ERROR(rocsparse_zcsc2dense((rocsparse_handle)handle,
-                 m,
-                 n,
-                 (const rocsparse_mat_descr)descr,
-                 (const rocsparse_double_complex*)cscVal,
-                 cscColPtr,
-                 cscRowInd,
-                 (rocsparse_double_complex*)A,
-                 ld));
-return HIPSPARSE_STATUS_SUCCESS;
+    RETURN_IF_ROCSPARSE_ERROR(rocsparse_zcsc2dense((rocsparse_handle)handle,
+                                                   m,
+                                                   n,
+                                                   (const rocsparse_mat_descr)descr,
+                                                   (const rocsparse_double_complex*)cscVal,
+                                                   cscColPtr,
+                                                   cscRowInd,
+                                                   (rocsparse_double_complex*)A,
+                                                   ld));
+    return HIPSPARSE_STATUS_SUCCESS;
 }

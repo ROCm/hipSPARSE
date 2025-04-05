@@ -31,141 +31,141 @@
 #include "../utility.h"
 
 hipsparseStatus_t hipsparseShyb2csr(hipsparseHandle_t         handle,
-    const hipsparseMatDescr_t descrA,
-    const hipsparseHybMat_t   hybA,
-    float*                    csrSortedValA,
-    int*                      csrSortedRowPtrA,
-    int*                      csrSortedColIndA)
+                                    const hipsparseMatDescr_t descrA,
+                                    const hipsparseHybMat_t   hybA,
+                                    float*                    csrSortedValA,
+                                    int*                      csrSortedRowPtrA,
+                                    int*                      csrSortedColIndA)
 {
-// Determine buffer size
-size_t buffer_size = 0;
-RETURN_IF_ROCSPARSE_ERROR(rocsparse_hyb2csr_buffer_size((rocsparse_handle)handle,
-                            (const rocsparse_mat_descr)descrA,
-                            (const rocsparse_hyb_mat)hybA,
-                            csrSortedRowPtrA,
-                            &buffer_size));
+    // Determine buffer size
+    size_t buffer_size = 0;
+    RETURN_IF_ROCSPARSE_ERROR(rocsparse_hyb2csr_buffer_size((rocsparse_handle)handle,
+                                                            (const rocsparse_mat_descr)descrA,
+                                                            (const rocsparse_hyb_mat)hybA,
+                                                            csrSortedRowPtrA,
+                                                            &buffer_size));
 
-// Allocate buffer
-void* buffer = nullptr;
-RETURN_IF_HIP_ERROR(hipMalloc(&buffer, buffer_size));
+    // Allocate buffer
+    void* buffer = nullptr;
+    RETURN_IF_HIP_ERROR(hipMalloc(&buffer, buffer_size));
 
-// Format conversion
-hipsparseStatus_t status = hipsparse::rocSPARSEStatusToHIPStatus(
-rocsparse_shyb2csr((rocsparse_handle)handle,
-(const rocsparse_mat_descr)descrA,
-(const rocsparse_hyb_mat)hybA,
-csrSortedValA,
-csrSortedRowPtrA,
-csrSortedColIndA,
-buffer));
+    // Format conversion
+    hipsparseStatus_t status = hipsparse::rocSPARSEStatusToHIPStatus(
+        rocsparse_shyb2csr((rocsparse_handle)handle,
+                           (const rocsparse_mat_descr)descrA,
+                           (const rocsparse_hyb_mat)hybA,
+                           csrSortedValA,
+                           csrSortedRowPtrA,
+                           csrSortedColIndA,
+                           buffer));
 
-// Free buffer
-RETURN_IF_HIP_ERROR(hipFree(buffer));
+    // Free buffer
+    RETURN_IF_HIP_ERROR(hipFree(buffer));
 
-return status;
+    return status;
 }
 
 hipsparseStatus_t hipsparseDhyb2csr(hipsparseHandle_t         handle,
-    const hipsparseMatDescr_t descrA,
-    const hipsparseHybMat_t   hybA,
-    double*                   csrSortedValA,
-    int*                      csrSortedRowPtrA,
-    int*                      csrSortedColIndA)
+                                    const hipsparseMatDescr_t descrA,
+                                    const hipsparseHybMat_t   hybA,
+                                    double*                   csrSortedValA,
+                                    int*                      csrSortedRowPtrA,
+                                    int*                      csrSortedColIndA)
 {
-// Determine buffer size
-size_t buffer_size = 0;
-RETURN_IF_ROCSPARSE_ERROR(rocsparse_hyb2csr_buffer_size((rocsparse_handle)handle,
-                            (const rocsparse_mat_descr)descrA,
-                            (const rocsparse_hyb_mat)hybA,
-                            csrSortedRowPtrA,
-                            &buffer_size));
+    // Determine buffer size
+    size_t buffer_size = 0;
+    RETURN_IF_ROCSPARSE_ERROR(rocsparse_hyb2csr_buffer_size((rocsparse_handle)handle,
+                                                            (const rocsparse_mat_descr)descrA,
+                                                            (const rocsparse_hyb_mat)hybA,
+                                                            csrSortedRowPtrA,
+                                                            &buffer_size));
 
-// Allocate buffer
-void* buffer = nullptr;
-RETURN_IF_HIP_ERROR(hipMalloc(&buffer, buffer_size));
+    // Allocate buffer
+    void* buffer = nullptr;
+    RETURN_IF_HIP_ERROR(hipMalloc(&buffer, buffer_size));
 
-// Format conversion
-hipsparseStatus_t status = hipsparse::rocSPARSEStatusToHIPStatus(
-rocsparse_dhyb2csr((rocsparse_handle)handle,
-(const rocsparse_mat_descr)descrA,
-(const rocsparse_hyb_mat)hybA,
-csrSortedValA,
-csrSortedRowPtrA,
-csrSortedColIndA,
-buffer));
+    // Format conversion
+    hipsparseStatus_t status = hipsparse::rocSPARSEStatusToHIPStatus(
+        rocsparse_dhyb2csr((rocsparse_handle)handle,
+                           (const rocsparse_mat_descr)descrA,
+                           (const rocsparse_hyb_mat)hybA,
+                           csrSortedValA,
+                           csrSortedRowPtrA,
+                           csrSortedColIndA,
+                           buffer));
 
-// Free buffer
-RETURN_IF_HIP_ERROR(hipFree(buffer));
+    // Free buffer
+    RETURN_IF_HIP_ERROR(hipFree(buffer));
 
-return status;
+    return status;
 }
 
 hipsparseStatus_t hipsparseChyb2csr(hipsparseHandle_t         handle,
-    const hipsparseMatDescr_t descrA,
-    const hipsparseHybMat_t   hybA,
-    hipComplex*               csrSortedValA,
-    int*                      csrSortedRowPtrA,
-    int*                      csrSortedColIndA)
+                                    const hipsparseMatDescr_t descrA,
+                                    const hipsparseHybMat_t   hybA,
+                                    hipComplex*               csrSortedValA,
+                                    int*                      csrSortedRowPtrA,
+                                    int*                      csrSortedColIndA)
 {
-// Determine buffer size
-size_t buffer_size = 0;
-RETURN_IF_ROCSPARSE_ERROR(rocsparse_hyb2csr_buffer_size((rocsparse_handle)handle,
-                            (const rocsparse_mat_descr)descrA,
-                            (const rocsparse_hyb_mat)hybA,
-                            csrSortedRowPtrA,
-                            &buffer_size));
+    // Determine buffer size
+    size_t buffer_size = 0;
+    RETURN_IF_ROCSPARSE_ERROR(rocsparse_hyb2csr_buffer_size((rocsparse_handle)handle,
+                                                            (const rocsparse_mat_descr)descrA,
+                                                            (const rocsparse_hyb_mat)hybA,
+                                                            csrSortedRowPtrA,
+                                                            &buffer_size));
 
-// Allocate buffer
-void* buffer = nullptr;
-RETURN_IF_HIP_ERROR(hipMalloc(&buffer, buffer_size));
+    // Allocate buffer
+    void* buffer = nullptr;
+    RETURN_IF_HIP_ERROR(hipMalloc(&buffer, buffer_size));
 
-// Format conversion
-hipsparseStatus_t status = hipsparse::rocSPARSEStatusToHIPStatus(
-rocsparse_chyb2csr((rocsparse_handle)handle,
-(const rocsparse_mat_descr)descrA,
-(const rocsparse_hyb_mat)hybA,
-(rocsparse_float_complex*)csrSortedValA,
-csrSortedRowPtrA,
-csrSortedColIndA,
-buffer));
+    // Format conversion
+    hipsparseStatus_t status = hipsparse::rocSPARSEStatusToHIPStatus(
+        rocsparse_chyb2csr((rocsparse_handle)handle,
+                           (const rocsparse_mat_descr)descrA,
+                           (const rocsparse_hyb_mat)hybA,
+                           (rocsparse_float_complex*)csrSortedValA,
+                           csrSortedRowPtrA,
+                           csrSortedColIndA,
+                           buffer));
 
-// Free buffer
-RETURN_IF_HIP_ERROR(hipFree(buffer));
+    // Free buffer
+    RETURN_IF_HIP_ERROR(hipFree(buffer));
 
-return status;
+    return status;
 }
 
 hipsparseStatus_t hipsparseZhyb2csr(hipsparseHandle_t         handle,
-    const hipsparseMatDescr_t descrA,
-    const hipsparseHybMat_t   hybA,
-    hipDoubleComplex*         csrSortedValA,
-    int*                      csrSortedRowPtrA,
-    int*                      csrSortedColIndA)
+                                    const hipsparseMatDescr_t descrA,
+                                    const hipsparseHybMat_t   hybA,
+                                    hipDoubleComplex*         csrSortedValA,
+                                    int*                      csrSortedRowPtrA,
+                                    int*                      csrSortedColIndA)
 {
-// Determine buffer size
-size_t buffer_size = 0;
-RETURN_IF_ROCSPARSE_ERROR(rocsparse_hyb2csr_buffer_size((rocsparse_handle)handle,
-                            (const rocsparse_mat_descr)descrA,
-                            (const rocsparse_hyb_mat)hybA,
-                            csrSortedRowPtrA,
-                            &buffer_size));
+    // Determine buffer size
+    size_t buffer_size = 0;
+    RETURN_IF_ROCSPARSE_ERROR(rocsparse_hyb2csr_buffer_size((rocsparse_handle)handle,
+                                                            (const rocsparse_mat_descr)descrA,
+                                                            (const rocsparse_hyb_mat)hybA,
+                                                            csrSortedRowPtrA,
+                                                            &buffer_size));
 
-// Allocate buffer
-void* buffer = nullptr;
-RETURN_IF_HIP_ERROR(hipMalloc(&buffer, buffer_size));
+    // Allocate buffer
+    void* buffer = nullptr;
+    RETURN_IF_HIP_ERROR(hipMalloc(&buffer, buffer_size));
 
-// Format conversion
-hipsparseStatus_t status = hipsparse::rocSPARSEStatusToHIPStatus(
-rocsparse_zhyb2csr((rocsparse_handle)handle,
-(const rocsparse_mat_descr)descrA,
-(const rocsparse_hyb_mat)hybA,
-(rocsparse_double_complex*)csrSortedValA,
-csrSortedRowPtrA,
-csrSortedColIndA,
-buffer));
+    // Format conversion
+    hipsparseStatus_t status = hipsparse::rocSPARSEStatusToHIPStatus(
+        rocsparse_zhyb2csr((rocsparse_handle)handle,
+                           (const rocsparse_mat_descr)descrA,
+                           (const rocsparse_hyb_mat)hybA,
+                           (rocsparse_double_complex*)csrSortedValA,
+                           csrSortedRowPtrA,
+                           csrSortedColIndA,
+                           buffer));
 
-// Free buffer
-RETURN_IF_HIP_ERROR(hipFree(buffer));
+    // Free buffer
+    RETURN_IF_HIP_ERROR(hipFree(buffer));
 
-return status;
+    return status;
 }

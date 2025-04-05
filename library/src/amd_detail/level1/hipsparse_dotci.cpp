@@ -31,55 +31,55 @@
 #include "../utility.h"
 
 hipsparseStatus_t hipsparseCdotci(hipsparseHandle_t    handle,
-    int                  nnz,
-    const hipComplex*    xVal,
-    const int*           xInd,
-    const hipComplex*    y,
-    hipComplex*          result,
-    hipsparseIndexBase_t idxBase)
+                                  int                  nnz,
+                                  const hipComplex*    xVal,
+                                  const int*           xInd,
+                                  const hipComplex*    y,
+                                  hipComplex*          result,
+                                  hipsparseIndexBase_t idxBase)
 {
-// Obtain stream, to explicitly sync (cusparse dotci is blocking)
-hipStream_t stream;
-RETURN_IF_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
+    // Obtain stream, to explicitly sync (cusparse dotci is blocking)
+    hipStream_t stream;
+    RETURN_IF_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
 
-// Dotci
-RETURN_IF_ROCSPARSE_ERROR(rocsparse_cdotci((rocsparse_handle)handle,
-                 nnz,
-                 (const rocsparse_float_complex*)xVal,
-                 xInd,
-                 (const rocsparse_float_complex*)y,
-                 (rocsparse_float_complex*)result,
-                 hipsparse::hipBaseToHCCBase(idxBase)));
+    // Dotci
+    RETURN_IF_ROCSPARSE_ERROR(rocsparse_cdotci((rocsparse_handle)handle,
+                                               nnz,
+                                               (const rocsparse_float_complex*)xVal,
+                                               xInd,
+                                               (const rocsparse_float_complex*)y,
+                                               (rocsparse_float_complex*)result,
+                                               hipsparse::hipBaseToHCCBase(idxBase)));
 
-// Synchronize stream
-RETURN_IF_HIP_ERROR(hipStreamSynchronize(stream));
+    // Synchronize stream
+    RETURN_IF_HIP_ERROR(hipStreamSynchronize(stream));
 
-return HIPSPARSE_STATUS_SUCCESS;
+    return HIPSPARSE_STATUS_SUCCESS;
 }
 
 hipsparseStatus_t hipsparseZdotci(hipsparseHandle_t       handle,
-    int                     nnz,
-    const hipDoubleComplex* xVal,
-    const int*              xInd,
-    const hipDoubleComplex* y,
-    hipDoubleComplex*       result,
-    hipsparseIndexBase_t    idxBase)
+                                  int                     nnz,
+                                  const hipDoubleComplex* xVal,
+                                  const int*              xInd,
+                                  const hipDoubleComplex* y,
+                                  hipDoubleComplex*       result,
+                                  hipsparseIndexBase_t    idxBase)
 {
-// Obtain stream, to explicitly sync (cusparse dotci is blocking)
-hipStream_t stream;
-RETURN_IF_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
+    // Obtain stream, to explicitly sync (cusparse dotci is blocking)
+    hipStream_t stream;
+    RETURN_IF_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
 
-// Dotci
-RETURN_IF_ROCSPARSE_ERROR(rocsparse_zdotci((rocsparse_handle)handle,
-                 nnz,
-                 (const rocsparse_double_complex*)xVal,
-                 xInd,
-                 (const rocsparse_double_complex*)y,
-                 (rocsparse_double_complex*)result,
-                 hipsparse::hipBaseToHCCBase(idxBase)));
+    // Dotci
+    RETURN_IF_ROCSPARSE_ERROR(rocsparse_zdotci((rocsparse_handle)handle,
+                                               nnz,
+                                               (const rocsparse_double_complex*)xVal,
+                                               xInd,
+                                               (const rocsparse_double_complex*)y,
+                                               (rocsparse_double_complex*)result,
+                                               hipsparse::hipBaseToHCCBase(idxBase)));
 
-// Synchronize stream
-RETURN_IF_HIP_ERROR(hipStreamSynchronize(stream));
+    // Synchronize stream
+    RETURN_IF_HIP_ERROR(hipStreamSynchronize(stream));
 
-return HIPSPARSE_STATUS_SUCCESS;
+    return HIPSPARSE_STATUS_SUCCESS;
 }

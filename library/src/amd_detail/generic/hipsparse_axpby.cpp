@@ -31,14 +31,14 @@
 #include "../utility.h"
 
 hipsparseStatus_t hipsparseAxpby(hipsparseHandle_t          handle,
-    const void*                alpha,
-    hipsparseConstSpVecDescr_t vecX,
-    const void*                beta,
-    hipsparseDnVecDescr_t      vecY)
+                                 const void*                alpha,
+                                 hipsparseConstSpVecDescr_t vecX,
+                                 const void*                beta,
+                                 hipsparseDnVecDescr_t      vecY)
 {
-return hipsparse::rocSPARSEStatusToHIPStatus(rocsparse_axpby((rocsparse_handle)handle,
-                                    alpha,
-                                    (rocsparse_const_spvec_descr)vecX,
-                                    beta,
-                                    (rocsparse_dnvec_descr)vecY));
+    return hipsparse::rocSPARSEStatusToHIPStatus(rocsparse_axpby((rocsparse_handle)handle,
+                                                                 alpha,
+                                                                 (rocsparse_const_spvec_descr)vecX,
+                                                                 beta,
+                                                                 (rocsparse_dnvec_descr)vecY));
 }

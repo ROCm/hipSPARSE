@@ -531,7 +531,8 @@ namespace hipsparse
         }
     }
 
-    inline rocsparse_sparse_to_dense_alg_ hipSpToDnAlgToHCCSpToDnAlg(hipsparseSparseToDenseAlg_t alg)
+    inline rocsparse_sparse_to_dense_alg_
+        hipSpToDnAlgToHCCSpToDnAlg(hipsparseSparseToDenseAlg_t alg)
     {
         switch(alg)
         {
@@ -542,7 +543,8 @@ namespace hipsparse
         }
     }
 
-    inline hipsparseSparseToDenseAlg_t HCCSpToDnAlgToHipSpToDnAlg(rocsparse_sparse_to_dense_alg_ alg)
+    inline hipsparseSparseToDenseAlg_t
+        HCCSpToDnAlgToHipSpToDnAlg(rocsparse_sparse_to_dense_alg_ alg)
     {
         switch(alg)
         {
@@ -553,7 +555,8 @@ namespace hipsparse
         }
     }
 
-    inline rocsparse_dense_to_sparse_alg_ hipDnToSpAlgToHCCDnToSpAlg(hipsparseDenseToSparseAlg_t alg)
+    inline rocsparse_dense_to_sparse_alg_
+        hipDnToSpAlgToHCCDnToSpAlg(hipsparseDenseToSparseAlg_t alg)
     {
         switch(alg)
         {
@@ -564,7 +567,8 @@ namespace hipsparse
         }
     }
 
-    inline hipsparseDenseToSparseAlg_t HCCDnToSpAlgToHipDnToSpAlg(rocsparse_dense_to_sparse_alg_ alg)
+    inline hipsparseDenseToSparseAlg_t
+        HCCDnToSpAlgToHipDnToSpAlg(rocsparse_dense_to_sparse_alg_ alg)
     {
         switch(alg)
         {

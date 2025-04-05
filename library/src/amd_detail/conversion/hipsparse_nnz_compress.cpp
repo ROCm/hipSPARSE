@@ -31,81 +31,81 @@
 #include "../utility.h"
 
 hipsparseStatus_t hipsparseSnnz_compress(hipsparseHandle_t         handle,
-    int                       m,
-    const hipsparseMatDescr_t descrA,
-    const float*              csrValA,
-    const int*                csrRowPtrA,
-    int*                      nnzPerRow,
-    int*                      nnzC,
-    float                     tol)
+                                         int                       m,
+                                         const hipsparseMatDescr_t descrA,
+                                         const float*              csrValA,
+                                         const int*                csrRowPtrA,
+                                         int*                      nnzPerRow,
+                                         int*                      nnzC,
+                                         float                     tol)
 {
-RETURN_IF_ROCSPARSE_ERROR(rocsparse_snnz_compress((rocsparse_handle)handle,
-                 m,
-                 (const rocsparse_mat_descr)descrA,
-                 csrValA,
-                 csrRowPtrA,
-                 nnzPerRow,
-                 nnzC,
-                 tol));
-return HIPSPARSE_STATUS_SUCCESS;
+    RETURN_IF_ROCSPARSE_ERROR(rocsparse_snnz_compress((rocsparse_handle)handle,
+                                                      m,
+                                                      (const rocsparse_mat_descr)descrA,
+                                                      csrValA,
+                                                      csrRowPtrA,
+                                                      nnzPerRow,
+                                                      nnzC,
+                                                      tol));
+    return HIPSPARSE_STATUS_SUCCESS;
 }
 
 hipsparseStatus_t hipsparseDnnz_compress(hipsparseHandle_t         handle,
-    int                       m,
-    const hipsparseMatDescr_t descrA,
-    const double*             csrValA,
-    const int*                csrRowPtrA,
-    int*                      nnzPerRow,
-    int*                      nnzC,
-    double                    tol)
+                                         int                       m,
+                                         const hipsparseMatDescr_t descrA,
+                                         const double*             csrValA,
+                                         const int*                csrRowPtrA,
+                                         int*                      nnzPerRow,
+                                         int*                      nnzC,
+                                         double                    tol)
 {
-RETURN_IF_ROCSPARSE_ERROR(rocsparse_dnnz_compress((rocsparse_handle)handle,
-                 m,
-                 (const rocsparse_mat_descr)descrA,
-                 csrValA,
-                 csrRowPtrA,
-                 nnzPerRow,
-                 nnzC,
-                 tol));
-return HIPSPARSE_STATUS_SUCCESS;
+    RETURN_IF_ROCSPARSE_ERROR(rocsparse_dnnz_compress((rocsparse_handle)handle,
+                                                      m,
+                                                      (const rocsparse_mat_descr)descrA,
+                                                      csrValA,
+                                                      csrRowPtrA,
+                                                      nnzPerRow,
+                                                      nnzC,
+                                                      tol));
+    return HIPSPARSE_STATUS_SUCCESS;
 }
 
 hipsparseStatus_t hipsparseCnnz_compress(hipsparseHandle_t         handle,
-    int                       m,
-    const hipsparseMatDescr_t descrA,
-    const hipComplex*         csrValA,
-    const int*                csrRowPtrA,
-    int*                      nnzPerRow,
-    int*                      nnzC,
-    hipComplex                tol)
+                                         int                       m,
+                                         const hipsparseMatDescr_t descrA,
+                                         const hipComplex*         csrValA,
+                                         const int*                csrRowPtrA,
+                                         int*                      nnzPerRow,
+                                         int*                      nnzC,
+                                         hipComplex                tol)
 {
-RETURN_IF_ROCSPARSE_ERROR(rocsparse_cnnz_compress((rocsparse_handle)handle,
-                 m,
-                 (const rocsparse_mat_descr)descrA,
-                 (const rocsparse_float_complex*)csrValA,
-                 csrRowPtrA,
-                 nnzPerRow,
-                 nnzC,
-                 {hipCrealf(tol), hipCimagf(tol)}));
-return HIPSPARSE_STATUS_SUCCESS;
+    RETURN_IF_ROCSPARSE_ERROR(rocsparse_cnnz_compress((rocsparse_handle)handle,
+                                                      m,
+                                                      (const rocsparse_mat_descr)descrA,
+                                                      (const rocsparse_float_complex*)csrValA,
+                                                      csrRowPtrA,
+                                                      nnzPerRow,
+                                                      nnzC,
+                                                      {hipCrealf(tol), hipCimagf(tol)}));
+    return HIPSPARSE_STATUS_SUCCESS;
 }
 
 hipsparseStatus_t hipsparseZnnz_compress(hipsparseHandle_t         handle,
-    int                       m,
-    const hipsparseMatDescr_t descrA,
-    const hipDoubleComplex*   csrValA,
-    const int*                csrRowPtrA,
-    int*                      nnzPerRow,
-    int*                      nnzC,
-    hipDoubleComplex          tol)
+                                         int                       m,
+                                         const hipsparseMatDescr_t descrA,
+                                         const hipDoubleComplex*   csrValA,
+                                         const int*                csrRowPtrA,
+                                         int*                      nnzPerRow,
+                                         int*                      nnzC,
+                                         hipDoubleComplex          tol)
 {
-RETURN_IF_ROCSPARSE_ERROR(rocsparse_znnz_compress((rocsparse_handle)handle,
-                 m,
-                 (const rocsparse_mat_descr)descrA,
-                 (const rocsparse_double_complex*)csrValA,
-                 csrRowPtrA,
-                 nnzPerRow,
-                 nnzC,
-                 {hipCreal(tol), hipCimag(tol)}));
-return HIPSPARSE_STATUS_SUCCESS;
+    RETURN_IF_ROCSPARSE_ERROR(rocsparse_znnz_compress((rocsparse_handle)handle,
+                                                      m,
+                                                      (const rocsparse_mat_descr)descrA,
+                                                      (const rocsparse_double_complex*)csrValA,
+                                                      csrRowPtrA,
+                                                      nnzPerRow,
+                                                      nnzC,
+                                                      {hipCreal(tol), hipCimag(tol)}));
+    return HIPSPARSE_STATUS_SUCCESS;
 }

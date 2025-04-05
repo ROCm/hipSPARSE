@@ -38,301 +38,301 @@ struct csru2csrInfo
 };
 
 hipsparseStatus_t hipsparseScsr2csru(hipsparseHandle_t         handle,
-    int                       m,
-    int                       n,
-    int                       nnz,
-    const hipsparseMatDescr_t descrA,
-    float*                    csrVal,
-    const int*                csrRowPtr,
-    int*                      csrColInd,
-    csru2csrInfo_t            info,
-    void*                     pBuffer)
+                                     int                       m,
+                                     int                       n,
+                                     int                       nnz,
+                                     const hipsparseMatDescr_t descrA,
+                                     float*                    csrVal,
+                                     const int*                csrRowPtr,
+                                     int*                      csrColInd,
+                                     csru2csrInfo_t            info,
+                                     void*                     pBuffer)
 {
-// Test for bad args
-if(handle == nullptr)
-{
-return HIPSPARSE_STATUS_INVALID_VALUE;
-}
+    // Test for bad args
+    if(handle == nullptr)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
 
-// Invalid sizes
-if(m < 0 || n < 0 || nnz < 0)
-{
-return HIPSPARSE_STATUS_INVALID_VALUE;
-}
+    // Invalid sizes
+    if(m < 0 || n < 0 || nnz < 0)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
 
-// Quick return
-if(m == 0 || n == 0 || nnz == 0)
-{
-// nnz must be 0
-if(nnz != 0)
-{
-return HIPSPARSE_STATUS_INVALID_VALUE;
-}
+    // Quick return
+    if(m == 0 || n == 0 || nnz == 0)
+    {
+        // nnz must be 0
+        if(nnz != 0)
+        {
+            return HIPSPARSE_STATUS_INVALID_VALUE;
+        }
 
-return HIPSPARSE_STATUS_SUCCESS;
-}
+        return HIPSPARSE_STATUS_SUCCESS;
+    }
 
-// Invalid pointers
-if(descrA == nullptr || csrVal == nullptr || csrRowPtr == nullptr || csrColInd == nullptr
-|| info == nullptr || pBuffer == nullptr)
-{
-return HIPSPARSE_STATUS_INVALID_VALUE;
-}
+    // Invalid pointers
+    if(descrA == nullptr || csrVal == nullptr || csrRowPtr == nullptr || csrColInd == nullptr
+       || info == nullptr || pBuffer == nullptr)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
 
-// Check for valid permutation array
-if(info->P == nullptr || info->size != nnz)
-{
-return HIPSPARSE_STATUS_INVALID_VALUE;
-}
+    // Check for valid permutation array
+    if(info->P == nullptr || info->size != nnz)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
 
-// Get stream
-hipStream_t stream;
-RETURN_IF_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
+    // Get stream
+    hipStream_t stream;
+    RETURN_IF_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
 
-// Unsort CSR column indices based on the given permutation
-RETURN_IF_ROCSPARSE_ERROR(rocsparse_isctr((rocsparse_handle)handle,
-             nnz,
-             csrColInd,
-             info->P,
-             (int*)pBuffer,
-             rocsparse_index_base_zero));
+    // Unsort CSR column indices based on the given permutation
+    RETURN_IF_ROCSPARSE_ERROR(rocsparse_isctr((rocsparse_handle)handle,
+                                              nnz,
+                                              csrColInd,
+                                              info->P,
+                                              (int*)pBuffer,
+                                              rocsparse_index_base_zero));
 
-// Copy unsorted column indices back to csrColInd
-RETURN_IF_HIP_ERROR(
-hipMemcpyAsync(csrColInd, pBuffer, sizeof(int) * nnz, hipMemcpyDeviceToDevice, stream));
+    // Copy unsorted column indices back to csrColInd
+    RETURN_IF_HIP_ERROR(
+        hipMemcpyAsync(csrColInd, pBuffer, sizeof(int) * nnz, hipMemcpyDeviceToDevice, stream));
 
-// Unsort CSR values based on the given permutation
-RETURN_IF_HIPSPARSE_ERROR(
-hipsparseSsctr(handle, nnz, csrVal, info->P, (float*)pBuffer, HIPSPARSE_INDEX_BASE_ZERO));
+    // Unsort CSR values based on the given permutation
+    RETURN_IF_HIPSPARSE_ERROR(
+        hipsparseSsctr(handle, nnz, csrVal, info->P, (float*)pBuffer, HIPSPARSE_INDEX_BASE_ZERO));
 
-// Copy unsorted values back to csrVal
-RETURN_IF_HIP_ERROR(
-hipMemcpyAsync(csrVal, pBuffer, sizeof(float) * nnz, hipMemcpyDeviceToDevice, stream));
+    // Copy unsorted values back to csrVal
+    RETURN_IF_HIP_ERROR(
+        hipMemcpyAsync(csrVal, pBuffer, sizeof(float) * nnz, hipMemcpyDeviceToDevice, stream));
 
-return HIPSPARSE_STATUS_SUCCESS;
+    return HIPSPARSE_STATUS_SUCCESS;
 }
 
 hipsparseStatus_t hipsparseDcsr2csru(hipsparseHandle_t         handle,
-    int                       m,
-    int                       n,
-    int                       nnz,
-    const hipsparseMatDescr_t descrA,
-    double*                   csrVal,
-    const int*                csrRowPtr,
-    int*                      csrColInd,
-    csru2csrInfo_t            info,
-    void*                     pBuffer)
+                                     int                       m,
+                                     int                       n,
+                                     int                       nnz,
+                                     const hipsparseMatDescr_t descrA,
+                                     double*                   csrVal,
+                                     const int*                csrRowPtr,
+                                     int*                      csrColInd,
+                                     csru2csrInfo_t            info,
+                                     void*                     pBuffer)
 {
-// Test for bad args
-if(handle == nullptr)
-{
-return HIPSPARSE_STATUS_INVALID_VALUE;
-}
+    // Test for bad args
+    if(handle == nullptr)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
 
-// Invalid sizes
-if(m < 0 || n < 0 || nnz < 0)
-{
-return HIPSPARSE_STATUS_INVALID_VALUE;
-}
+    // Invalid sizes
+    if(m < 0 || n < 0 || nnz < 0)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
 
-// Quick return
-if(m == 0 || n == 0 || nnz == 0)
-{
-// nnz must be 0
-if(nnz != 0)
-{
-return HIPSPARSE_STATUS_INVALID_VALUE;
-}
+    // Quick return
+    if(m == 0 || n == 0 || nnz == 0)
+    {
+        // nnz must be 0
+        if(nnz != 0)
+        {
+            return HIPSPARSE_STATUS_INVALID_VALUE;
+        }
 
-return HIPSPARSE_STATUS_SUCCESS;
-}
+        return HIPSPARSE_STATUS_SUCCESS;
+    }
 
-// Invalid pointers
-if(descrA == nullptr || csrVal == nullptr || csrRowPtr == nullptr || csrColInd == nullptr
-|| info == nullptr || pBuffer == nullptr)
-{
-return HIPSPARSE_STATUS_INVALID_VALUE;
-}
+    // Invalid pointers
+    if(descrA == nullptr || csrVal == nullptr || csrRowPtr == nullptr || csrColInd == nullptr
+       || info == nullptr || pBuffer == nullptr)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
 
-// Check for valid permutation array
-if(info->P == nullptr || info->size != nnz)
-{
-return HIPSPARSE_STATUS_INVALID_VALUE;
-}
+    // Check for valid permutation array
+    if(info->P == nullptr || info->size != nnz)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
 
-// Get stream
-hipStream_t stream;
-RETURN_IF_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
+    // Get stream
+    hipStream_t stream;
+    RETURN_IF_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
 
-// Unsort CSR column indices based on the given permutation
-RETURN_IF_ROCSPARSE_ERROR(rocsparse_isctr((rocsparse_handle)handle,
-             nnz,
-             csrColInd,
-             info->P,
-             (int*)pBuffer,
-             rocsparse_index_base_zero));
+    // Unsort CSR column indices based on the given permutation
+    RETURN_IF_ROCSPARSE_ERROR(rocsparse_isctr((rocsparse_handle)handle,
+                                              nnz,
+                                              csrColInd,
+                                              info->P,
+                                              (int*)pBuffer,
+                                              rocsparse_index_base_zero));
 
-// Copy unsorted column indices back to csrColInd
-RETURN_IF_HIP_ERROR(
-hipMemcpyAsync(csrColInd, pBuffer, sizeof(int) * nnz, hipMemcpyDeviceToDevice, stream));
+    // Copy unsorted column indices back to csrColInd
+    RETURN_IF_HIP_ERROR(
+        hipMemcpyAsync(csrColInd, pBuffer, sizeof(int) * nnz, hipMemcpyDeviceToDevice, stream));
 
-// Unsort CSR values based on the given permutation
-RETURN_IF_HIPSPARSE_ERROR(
-hipsparseDsctr(handle, nnz, csrVal, info->P, (double*)pBuffer, HIPSPARSE_INDEX_BASE_ZERO));
+    // Unsort CSR values based on the given permutation
+    RETURN_IF_HIPSPARSE_ERROR(
+        hipsparseDsctr(handle, nnz, csrVal, info->P, (double*)pBuffer, HIPSPARSE_INDEX_BASE_ZERO));
 
-// Copy unsorted values back to csrVal
-RETURN_IF_HIP_ERROR(
-hipMemcpyAsync(csrVal, pBuffer, sizeof(double) * nnz, hipMemcpyDeviceToDevice, stream));
+    // Copy unsorted values back to csrVal
+    RETURN_IF_HIP_ERROR(
+        hipMemcpyAsync(csrVal, pBuffer, sizeof(double) * nnz, hipMemcpyDeviceToDevice, stream));
 
-return HIPSPARSE_STATUS_SUCCESS;
+    return HIPSPARSE_STATUS_SUCCESS;
 }
 
 hipsparseStatus_t hipsparseCcsr2csru(hipsparseHandle_t         handle,
-    int                       m,
-    int                       n,
-    int                       nnz,
-    const hipsparseMatDescr_t descrA,
-    hipComplex*               csrVal,
-    const int*                csrRowPtr,
-    int*                      csrColInd,
-    csru2csrInfo_t            info,
-    void*                     pBuffer)
+                                     int                       m,
+                                     int                       n,
+                                     int                       nnz,
+                                     const hipsparseMatDescr_t descrA,
+                                     hipComplex*               csrVal,
+                                     const int*                csrRowPtr,
+                                     int*                      csrColInd,
+                                     csru2csrInfo_t            info,
+                                     void*                     pBuffer)
 {
-// Test for bad args
-if(handle == nullptr)
-{
-return HIPSPARSE_STATUS_INVALID_VALUE;
-}
+    // Test for bad args
+    if(handle == nullptr)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
 
-// Invalid sizes
-if(m < 0 || n < 0 || nnz < 0)
-{
-return HIPSPARSE_STATUS_INVALID_VALUE;
-}
+    // Invalid sizes
+    if(m < 0 || n < 0 || nnz < 0)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
 
-// Quick return
-if(m == 0 || n == 0 || nnz == 0)
-{
-// nnz must be 0
-if(nnz != 0)
-{
-return HIPSPARSE_STATUS_INVALID_VALUE;
-}
+    // Quick return
+    if(m == 0 || n == 0 || nnz == 0)
+    {
+        // nnz must be 0
+        if(nnz != 0)
+        {
+            return HIPSPARSE_STATUS_INVALID_VALUE;
+        }
 
-return HIPSPARSE_STATUS_SUCCESS;
-}
+        return HIPSPARSE_STATUS_SUCCESS;
+    }
 
-// Invalid pointers
-if(descrA == nullptr || csrVal == nullptr || csrRowPtr == nullptr || csrColInd == nullptr
-|| info == nullptr || pBuffer == nullptr)
-{
-return HIPSPARSE_STATUS_INVALID_VALUE;
-}
+    // Invalid pointers
+    if(descrA == nullptr || csrVal == nullptr || csrRowPtr == nullptr || csrColInd == nullptr
+       || info == nullptr || pBuffer == nullptr)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
 
-// Check for valid permutation array
-if(info->P == nullptr || info->size != nnz)
-{
-return HIPSPARSE_STATUS_INVALID_VALUE;
-}
+    // Check for valid permutation array
+    if(info->P == nullptr || info->size != nnz)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
 
-// Get stream
-hipStream_t stream;
-RETURN_IF_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
+    // Get stream
+    hipStream_t stream;
+    RETURN_IF_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
 
-// Unsort CSR column indices based on the given permutation
-RETURN_IF_ROCSPARSE_ERROR(rocsparse_isctr((rocsparse_handle)handle,
-             nnz,
-             csrColInd,
-             info->P,
-             (int*)pBuffer,
-             rocsparse_index_base_zero));
+    // Unsort CSR column indices based on the given permutation
+    RETURN_IF_ROCSPARSE_ERROR(rocsparse_isctr((rocsparse_handle)handle,
+                                              nnz,
+                                              csrColInd,
+                                              info->P,
+                                              (int*)pBuffer,
+                                              rocsparse_index_base_zero));
 
-// Copy unsorted column indices back to csrColInd
-RETURN_IF_HIP_ERROR(
-hipMemcpyAsync(csrColInd, pBuffer, sizeof(int) * nnz, hipMemcpyDeviceToDevice, stream));
+    // Copy unsorted column indices back to csrColInd
+    RETURN_IF_HIP_ERROR(
+        hipMemcpyAsync(csrColInd, pBuffer, sizeof(int) * nnz, hipMemcpyDeviceToDevice, stream));
 
-// Unsort CSR values based on the given permutation
-RETURN_IF_HIPSPARSE_ERROR(hipsparseCsctr(
-handle, nnz, csrVal, info->P, (hipComplex*)pBuffer, HIPSPARSE_INDEX_BASE_ZERO));
+    // Unsort CSR values based on the given permutation
+    RETURN_IF_HIPSPARSE_ERROR(hipsparseCsctr(
+        handle, nnz, csrVal, info->P, (hipComplex*)pBuffer, HIPSPARSE_INDEX_BASE_ZERO));
 
-// Copy unsorted values back to csrVal
-RETURN_IF_HIP_ERROR(
-hipMemcpyAsync(csrVal, pBuffer, sizeof(hipComplex) * nnz, hipMemcpyDeviceToDevice, stream));
+    // Copy unsorted values back to csrVal
+    RETURN_IF_HIP_ERROR(
+        hipMemcpyAsync(csrVal, pBuffer, sizeof(hipComplex) * nnz, hipMemcpyDeviceToDevice, stream));
 
-return HIPSPARSE_STATUS_SUCCESS;
+    return HIPSPARSE_STATUS_SUCCESS;
 }
 
 hipsparseStatus_t hipsparseZcsr2csru(hipsparseHandle_t         handle,
-    int                       m,
-    int                       n,
-    int                       nnz,
-    const hipsparseMatDescr_t descrA,
-    hipDoubleComplex*         csrVal,
-    const int*                csrRowPtr,
-    int*                      csrColInd,
-    csru2csrInfo_t            info,
-    void*                     pBuffer)
+                                     int                       m,
+                                     int                       n,
+                                     int                       nnz,
+                                     const hipsparseMatDescr_t descrA,
+                                     hipDoubleComplex*         csrVal,
+                                     const int*                csrRowPtr,
+                                     int*                      csrColInd,
+                                     csru2csrInfo_t            info,
+                                     void*                     pBuffer)
 {
-// Test for bad args
-if(handle == nullptr)
-{
-return HIPSPARSE_STATUS_INVALID_VALUE;
-}
+    // Test for bad args
+    if(handle == nullptr)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
 
-// Invalid sizes
-if(m < 0 || n < 0 || nnz < 0)
-{
-return HIPSPARSE_STATUS_INVALID_VALUE;
-}
+    // Invalid sizes
+    if(m < 0 || n < 0 || nnz < 0)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
 
-// Quick return
-if(m == 0 || n == 0 || nnz == 0)
-{
-// nnz must be 0
-if(nnz != 0)
-{
-return HIPSPARSE_STATUS_INVALID_VALUE;
-}
+    // Quick return
+    if(m == 0 || n == 0 || nnz == 0)
+    {
+        // nnz must be 0
+        if(nnz != 0)
+        {
+            return HIPSPARSE_STATUS_INVALID_VALUE;
+        }
 
-return HIPSPARSE_STATUS_SUCCESS;
-}
+        return HIPSPARSE_STATUS_SUCCESS;
+    }
 
-// Invalid pointers
-if(descrA == nullptr || csrVal == nullptr || csrRowPtr == nullptr || csrColInd == nullptr
-|| info == nullptr || pBuffer == nullptr)
-{
-return HIPSPARSE_STATUS_INVALID_VALUE;
-}
+    // Invalid pointers
+    if(descrA == nullptr || csrVal == nullptr || csrRowPtr == nullptr || csrColInd == nullptr
+       || info == nullptr || pBuffer == nullptr)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
 
-// Check for valid permutation array
-if(info->P == nullptr || info->size != nnz)
-{
-return HIPSPARSE_STATUS_INVALID_VALUE;
-}
+    // Check for valid permutation array
+    if(info->P == nullptr || info->size != nnz)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
 
-// Get stream
-hipStream_t stream;
-RETURN_IF_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
+    // Get stream
+    hipStream_t stream;
+    RETURN_IF_HIPSPARSE_ERROR(hipsparseGetStream(handle, &stream));
 
-// Unsort CSR column indices based on the given permutation
-RETURN_IF_ROCSPARSE_ERROR(rocsparse_isctr((rocsparse_handle)handle,
-             nnz,
-             csrColInd,
-             info->P,
-             (int*)pBuffer,
-             rocsparse_index_base_zero));
+    // Unsort CSR column indices based on the given permutation
+    RETURN_IF_ROCSPARSE_ERROR(rocsparse_isctr((rocsparse_handle)handle,
+                                              nnz,
+                                              csrColInd,
+                                              info->P,
+                                              (int*)pBuffer,
+                                              rocsparse_index_base_zero));
 
-// Copy unsorted column indices back to csrColInd
-RETURN_IF_HIP_ERROR(
-hipMemcpyAsync(csrColInd, pBuffer, sizeof(int) * nnz, hipMemcpyDeviceToDevice, stream));
+    // Copy unsorted column indices back to csrColInd
+    RETURN_IF_HIP_ERROR(
+        hipMemcpyAsync(csrColInd, pBuffer, sizeof(int) * nnz, hipMemcpyDeviceToDevice, stream));
 
-// Unsort CSR values based on the given permutation
-RETURN_IF_HIPSPARSE_ERROR(hipsparseZsctr(
-handle, nnz, csrVal, info->P, (hipDoubleComplex*)pBuffer, HIPSPARSE_INDEX_BASE_ZERO));
+    // Unsort CSR values based on the given permutation
+    RETURN_IF_HIPSPARSE_ERROR(hipsparseZsctr(
+        handle, nnz, csrVal, info->P, (hipDoubleComplex*)pBuffer, HIPSPARSE_INDEX_BASE_ZERO));
 
-// Copy unsorted values back to csrVal
-RETURN_IF_HIP_ERROR(hipMemcpyAsync(
-csrVal, pBuffer, sizeof(hipDoubleComplex) * nnz, hipMemcpyDeviceToDevice, stream));
+    // Copy unsorted values back to csrVal
+    RETURN_IF_HIP_ERROR(hipMemcpyAsync(
+        csrVal, pBuffer, sizeof(hipDoubleComplex) * nnz, hipMemcpyDeviceToDevice, stream));
 
-return HIPSPARSE_STATUS_SUCCESS;
+    return HIPSPARSE_STATUS_SUCCESS;
 }

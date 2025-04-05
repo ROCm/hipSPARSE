@@ -31,27 +31,27 @@
 #include "../utility.h"
 
 hipsparseStatus_t hipsparseSroti(hipsparseHandle_t    handle,
-    int                  nnz,
-    float*               xVal,
-    const int*           xInd,
-    float*               y,
-    const float*         c,
-    const float*         s,
-    hipsparseIndexBase_t idxBase)
+                                 int                  nnz,
+                                 float*               xVal,
+                                 const int*           xInd,
+                                 float*               y,
+                                 const float*         c,
+                                 const float*         s,
+                                 hipsparseIndexBase_t idxBase)
 {
-return hipsparse::rocSPARSEStatusToHIPStatus(rocsparse_sroti(
-(rocsparse_handle)handle, nnz, xVal, xInd, y, c, s, hipsparse::hipBaseToHCCBase(idxBase)));
+    return hipsparse::rocSPARSEStatusToHIPStatus(rocsparse_sroti(
+        (rocsparse_handle)handle, nnz, xVal, xInd, y, c, s, hipsparse::hipBaseToHCCBase(idxBase)));
 }
 
 hipsparseStatus_t hipsparseDroti(hipsparseHandle_t    handle,
-    int                  nnz,
-    double*              xVal,
-    const int*           xInd,
-    double*              y,
-    const double*        c,
-    const double*        s,
-    hipsparseIndexBase_t idxBase)
+                                 int                  nnz,
+                                 double*              xVal,
+                                 const int*           xInd,
+                                 double*              y,
+                                 const double*        c,
+                                 const double*        s,
+                                 hipsparseIndexBase_t idxBase)
 {
-return hipsparse::rocSPARSEStatusToHIPStatus(rocsparse_droti(
-(rocsparse_handle)handle, nnz, xVal, xInd, y, c, s, hipsparse::hipBaseToHCCBase(idxBase)));
+    return hipsparse::rocSPARSEStatusToHIPStatus(rocsparse_droti(
+        (rocsparse_handle)handle, nnz, xVal, xInd, y, c, s, hipsparse::hipBaseToHCCBase(idxBase)));
 }

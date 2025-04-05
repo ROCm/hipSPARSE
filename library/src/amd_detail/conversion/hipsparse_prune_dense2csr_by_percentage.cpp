@@ -31,239 +31,239 @@
 #include "../utility.h"
 
 hipsparseStatus_t hipsparseSpruneDense2csrByPercentage_bufferSize(hipsparseHandle_t handle,
-    int               m,
-    int               n,
-    const float*      A,
-    int               lda,
-    float             percentage,
-    const hipsparseMatDescr_t descr,
-    const float*              csrVal,
-    const int*  csrRowPtr,
-    const int*  csrColInd,
-    pruneInfo_t info,
-    size_t*     pBufferSizeInBytes)
+                                                                  int               m,
+                                                                  int               n,
+                                                                  const float*      A,
+                                                                  int               lda,
+                                                                  float             percentage,
+                                                                  const hipsparseMatDescr_t descr,
+                                                                  const float*              csrVal,
+                                                                  const int*  csrRowPtr,
+                                                                  const int*  csrColInd,
+                                                                  pruneInfo_t info,
+                                                                  size_t*     pBufferSizeInBytes)
 {
-RETURN_IF_ROCSPARSE_ERROR(
-rocsparse_sprune_dense2csr_by_percentage_buffer_size((rocsparse_handle)handle,
-m,
-n,
-A,
-lda,
-percentage,
-(const rocsparse_mat_descr)descr,
-csrVal,
-csrRowPtr,
-csrColInd,
-(rocsparse_mat_info)info,
-pBufferSizeInBytes));
+    RETURN_IF_ROCSPARSE_ERROR(
+        rocsparse_sprune_dense2csr_by_percentage_buffer_size((rocsparse_handle)handle,
+                                                             m,
+                                                             n,
+                                                             A,
+                                                             lda,
+                                                             percentage,
+                                                             (const rocsparse_mat_descr)descr,
+                                                             csrVal,
+                                                             csrRowPtr,
+                                                             csrColInd,
+                                                             (rocsparse_mat_info)info,
+                                                             pBufferSizeInBytes));
 
-return HIPSPARSE_STATUS_SUCCESS;
+    return HIPSPARSE_STATUS_SUCCESS;
 }
 
 hipsparseStatus_t hipsparseDpruneDense2csrByPercentage_bufferSize(hipsparseHandle_t handle,
-    int               m,
-    int               n,
-    const double*     A,
-    int               lda,
-    double            percentage,
-    const hipsparseMatDescr_t descr,
-    const double*             csrVal,
-    const int*  csrRowPtr,
-    const int*  csrColInd,
-    pruneInfo_t info,
-    size_t*     pBufferSizeInBytes)
+                                                                  int               m,
+                                                                  int               n,
+                                                                  const double*     A,
+                                                                  int               lda,
+                                                                  double            percentage,
+                                                                  const hipsparseMatDescr_t descr,
+                                                                  const double*             csrVal,
+                                                                  const int*  csrRowPtr,
+                                                                  const int*  csrColInd,
+                                                                  pruneInfo_t info,
+                                                                  size_t*     pBufferSizeInBytes)
 {
-RETURN_IF_ROCSPARSE_ERROR(
-rocsparse_dprune_dense2csr_by_percentage_buffer_size((rocsparse_handle)handle,
-m,
-n,
-A,
-lda,
-percentage,
-(const rocsparse_mat_descr)descr,
-csrVal,
-csrRowPtr,
-csrColInd,
-(rocsparse_mat_info)info,
-pBufferSizeInBytes));
+    RETURN_IF_ROCSPARSE_ERROR(
+        rocsparse_dprune_dense2csr_by_percentage_buffer_size((rocsparse_handle)handle,
+                                                             m,
+                                                             n,
+                                                             A,
+                                                             lda,
+                                                             percentage,
+                                                             (const rocsparse_mat_descr)descr,
+                                                             csrVal,
+                                                             csrRowPtr,
+                                                             csrColInd,
+                                                             (rocsparse_mat_info)info,
+                                                             pBufferSizeInBytes));
 
-return HIPSPARSE_STATUS_SUCCESS;
+    return HIPSPARSE_STATUS_SUCCESS;
 }
 
 hipsparseStatus_t
-hipsparseSpruneDense2csrByPercentage_bufferSizeExt(hipsparseHandle_t         handle,
-int                       m,
-int                       n,
-const float*              A,
-int                       lda,
-float                     percentage,
-const hipsparseMatDescr_t descr,
-const float*              csrVal,
-const int*                csrRowPtr,
-const int*                csrColInd,
-pruneInfo_t               info,
-size_t*                   pBufferSizeInBytes)
+    hipsparseSpruneDense2csrByPercentage_bufferSizeExt(hipsparseHandle_t         handle,
+                                                       int                       m,
+                                                       int                       n,
+                                                       const float*              A,
+                                                       int                       lda,
+                                                       float                     percentage,
+                                                       const hipsparseMatDescr_t descr,
+                                                       const float*              csrVal,
+                                                       const int*                csrRowPtr,
+                                                       const int*                csrColInd,
+                                                       pruneInfo_t               info,
+                                                       size_t*                   pBufferSizeInBytes)
 {
-RETURN_IF_ROCSPARSE_ERROR(
-rocsparse_sprune_dense2csr_by_percentage_buffer_size((rocsparse_handle)handle,
-m,
-n,
-A,
-lda,
-percentage,
-(const rocsparse_mat_descr)descr,
-csrVal,
-csrRowPtr,
-csrColInd,
-(rocsparse_mat_info)info,
-pBufferSizeInBytes));
+    RETURN_IF_ROCSPARSE_ERROR(
+        rocsparse_sprune_dense2csr_by_percentage_buffer_size((rocsparse_handle)handle,
+                                                             m,
+                                                             n,
+                                                             A,
+                                                             lda,
+                                                             percentage,
+                                                             (const rocsparse_mat_descr)descr,
+                                                             csrVal,
+                                                             csrRowPtr,
+                                                             csrColInd,
+                                                             (rocsparse_mat_info)info,
+                                                             pBufferSizeInBytes));
 
-return HIPSPARSE_STATUS_SUCCESS;
+    return HIPSPARSE_STATUS_SUCCESS;
 }
 
 hipsparseStatus_t
-hipsparseDpruneDense2csrByPercentage_bufferSizeExt(hipsparseHandle_t         handle,
-int                       m,
-int                       n,
-const double*             A,
-int                       lda,
-double                    percentage,
-const hipsparseMatDescr_t descr,
-const double*             csrVal,
-const int*                csrRowPtr,
-const int*                csrColInd,
-pruneInfo_t               info,
-size_t*                   pBufferSizeInBytes)
+    hipsparseDpruneDense2csrByPercentage_bufferSizeExt(hipsparseHandle_t         handle,
+                                                       int                       m,
+                                                       int                       n,
+                                                       const double*             A,
+                                                       int                       lda,
+                                                       double                    percentage,
+                                                       const hipsparseMatDescr_t descr,
+                                                       const double*             csrVal,
+                                                       const int*                csrRowPtr,
+                                                       const int*                csrColInd,
+                                                       pruneInfo_t               info,
+                                                       size_t*                   pBufferSizeInBytes)
 {
-RETURN_IF_ROCSPARSE_ERROR(
-rocsparse_dprune_dense2csr_by_percentage_buffer_size((rocsparse_handle)handle,
-m,
-n,
-A,
-lda,
-percentage,
-(const rocsparse_mat_descr)descr,
-csrVal,
-csrRowPtr,
-csrColInd,
-(rocsparse_mat_info)info,
-pBufferSizeInBytes));
+    RETURN_IF_ROCSPARSE_ERROR(
+        rocsparse_dprune_dense2csr_by_percentage_buffer_size((rocsparse_handle)handle,
+                                                             m,
+                                                             n,
+                                                             A,
+                                                             lda,
+                                                             percentage,
+                                                             (const rocsparse_mat_descr)descr,
+                                                             csrVal,
+                                                             csrRowPtr,
+                                                             csrColInd,
+                                                             (rocsparse_mat_info)info,
+                                                             pBufferSizeInBytes));
 
-return HIPSPARSE_STATUS_SUCCESS;
+    return HIPSPARSE_STATUS_SUCCESS;
 }
 
 hipsparseStatus_t hipsparseSpruneDense2csrNnzByPercentage(hipsparseHandle_t         handle,
-int                       m,
-int                       n,
-const float*              A,
-int                       lda,
-float                     percentage,
-const hipsparseMatDescr_t descr,
-int*                      csrRowPtr,
-int*        nnzTotalDevHostPtr,
-pruneInfo_t info,
-void*       buffer)
+                                                          int                       m,
+                                                          int                       n,
+                                                          const float*              A,
+                                                          int                       lda,
+                                                          float                     percentage,
+                                                          const hipsparseMatDescr_t descr,
+                                                          int*                      csrRowPtr,
+                                                          int*        nnzTotalDevHostPtr,
+                                                          pruneInfo_t info,
+                                                          void*       buffer)
 {
-RETURN_IF_ROCSPARSE_ERROR(
-rocsparse_sprune_dense2csr_nnz_by_percentage((rocsparse_handle)handle,
-m,
-n,
-A,
-lda,
-percentage,
-(const rocsparse_mat_descr)descr,
-csrRowPtr,
-nnzTotalDevHostPtr,
-(rocsparse_mat_info)info,
-buffer));
+    RETURN_IF_ROCSPARSE_ERROR(
+        rocsparse_sprune_dense2csr_nnz_by_percentage((rocsparse_handle)handle,
+                                                     m,
+                                                     n,
+                                                     A,
+                                                     lda,
+                                                     percentage,
+                                                     (const rocsparse_mat_descr)descr,
+                                                     csrRowPtr,
+                                                     nnzTotalDevHostPtr,
+                                                     (rocsparse_mat_info)info,
+                                                     buffer));
 
-return HIPSPARSE_STATUS_SUCCESS;
+    return HIPSPARSE_STATUS_SUCCESS;
 }
 
 hipsparseStatus_t hipsparseDpruneDense2csrNnzByPercentage(hipsparseHandle_t         handle,
-int                       m,
-int                       n,
-const double*             A,
-int                       lda,
-double                    percentage,
-const hipsparseMatDescr_t descr,
-int*                      csrRowPtr,
-int*        nnzTotalDevHostPtr,
-pruneInfo_t info,
-void*       buffer)
+                                                          int                       m,
+                                                          int                       n,
+                                                          const double*             A,
+                                                          int                       lda,
+                                                          double                    percentage,
+                                                          const hipsparseMatDescr_t descr,
+                                                          int*                      csrRowPtr,
+                                                          int*        nnzTotalDevHostPtr,
+                                                          pruneInfo_t info,
+                                                          void*       buffer)
 {
-RETURN_IF_ROCSPARSE_ERROR(
-rocsparse_dprune_dense2csr_nnz_by_percentage((rocsparse_handle)handle,
-m,
-n,
-A,
-lda,
-percentage,
-(const rocsparse_mat_descr)descr,
-csrRowPtr,
-nnzTotalDevHostPtr,
-(rocsparse_mat_info)info,
-buffer));
+    RETURN_IF_ROCSPARSE_ERROR(
+        rocsparse_dprune_dense2csr_nnz_by_percentage((rocsparse_handle)handle,
+                                                     m,
+                                                     n,
+                                                     A,
+                                                     lda,
+                                                     percentage,
+                                                     (const rocsparse_mat_descr)descr,
+                                                     csrRowPtr,
+                                                     nnzTotalDevHostPtr,
+                                                     (rocsparse_mat_info)info,
+                                                     buffer));
 
-return HIPSPARSE_STATUS_SUCCESS;
+    return HIPSPARSE_STATUS_SUCCESS;
 }
 
 hipsparseStatus_t hipsparseSpruneDense2csrByPercentage(hipsparseHandle_t         handle,
-int                       m,
-int                       n,
-const float*              A,
-int                       lda,
-float                     percentage,
-const hipsparseMatDescr_t descr,
-float*                    csrVal,
-const int*                csrRowPtr,
-int*                      csrColInd,
-pruneInfo_t               info,
-void*                     buffer)
+                                                       int                       m,
+                                                       int                       n,
+                                                       const float*              A,
+                                                       int                       lda,
+                                                       float                     percentage,
+                                                       const hipsparseMatDescr_t descr,
+                                                       float*                    csrVal,
+                                                       const int*                csrRowPtr,
+                                                       int*                      csrColInd,
+                                                       pruneInfo_t               info,
+                                                       void*                     buffer)
 {
-RETURN_IF_ROCSPARSE_ERROR(
-rocsparse_sprune_dense2csr_by_percentage((rocsparse_handle)handle,
-m,
-n,
-A,
-lda,
-percentage,
-(const rocsparse_mat_descr)descr,
-csrVal,
-csrRowPtr,
-csrColInd,
-(rocsparse_mat_info)info,
-buffer));
+    RETURN_IF_ROCSPARSE_ERROR(
+        rocsparse_sprune_dense2csr_by_percentage((rocsparse_handle)handle,
+                                                 m,
+                                                 n,
+                                                 A,
+                                                 lda,
+                                                 percentage,
+                                                 (const rocsparse_mat_descr)descr,
+                                                 csrVal,
+                                                 csrRowPtr,
+                                                 csrColInd,
+                                                 (rocsparse_mat_info)info,
+                                                 buffer));
 
-return HIPSPARSE_STATUS_SUCCESS;
+    return HIPSPARSE_STATUS_SUCCESS;
 }
 
 hipsparseStatus_t hipsparseDpruneDense2csrByPercentage(hipsparseHandle_t         handle,
-int                       m,
-int                       n,
-const double*             A,
-int                       lda,
-double                    percentage,
-const hipsparseMatDescr_t descr,
-double*                   csrVal,
-const int*                csrRowPtr,
-int*                      csrColInd,
-pruneInfo_t               info,
-void*                     buffer)
+                                                       int                       m,
+                                                       int                       n,
+                                                       const double*             A,
+                                                       int                       lda,
+                                                       double                    percentage,
+                                                       const hipsparseMatDescr_t descr,
+                                                       double*                   csrVal,
+                                                       const int*                csrRowPtr,
+                                                       int*                      csrColInd,
+                                                       pruneInfo_t               info,
+                                                       void*                     buffer)
 {
-RETURN_IF_ROCSPARSE_ERROR(
-rocsparse_dprune_dense2csr_by_percentage((rocsparse_handle)handle,
-m,
-n,
-A,
-lda,
-percentage,
-(const rocsparse_mat_descr)descr,
-csrVal,
-csrRowPtr,
-csrColInd,
-(rocsparse_mat_info)info,
-buffer));
+    RETURN_IF_ROCSPARSE_ERROR(
+        rocsparse_dprune_dense2csr_by_percentage((rocsparse_handle)handle,
+                                                 m,
+                                                 n,
+                                                 A,
+                                                 lda,
+                                                 percentage,
+                                                 (const rocsparse_mat_descr)descr,
+                                                 csrVal,
+                                                 csrRowPtr,
+                                                 csrColInd,
+                                                 (rocsparse_mat_info)info,
+                                                 buffer));
 
-return HIPSPARSE_STATUS_SUCCESS;
+    return HIPSPARSE_STATUS_SUCCESS;
 }

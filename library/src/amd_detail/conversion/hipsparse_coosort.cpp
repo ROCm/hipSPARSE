@@ -31,39 +31,39 @@
 #include "../utility.h"
 
 hipsparseStatus_t hipsparseXcoosort_bufferSizeExt(hipsparseHandle_t handle,
-    int               m,
-    int               n,
-    int               nnz,
-    const int*        cooRows,
-    const int*        cooCols,
-    size_t*           pBufferSizeInBytes)
+                                                  int               m,
+                                                  int               n,
+                                                  int               nnz,
+                                                  const int*        cooRows,
+                                                  const int*        cooCols,
+                                                  size_t*           pBufferSizeInBytes)
 {
-return hipsparse::rocSPARSEStatusToHIPStatus(rocsparse_coosort_buffer_size(
-(rocsparse_handle)handle, m, n, nnz, cooRows, cooCols, pBufferSizeInBytes));
+    return hipsparse::rocSPARSEStatusToHIPStatus(rocsparse_coosort_buffer_size(
+        (rocsparse_handle)handle, m, n, nnz, cooRows, cooCols, pBufferSizeInBytes));
 }
 
 hipsparseStatus_t hipsparseXcoosortByRow(hipsparseHandle_t handle,
-int               m,
-int               n,
-int               nnz,
-int*              cooRows,
-int*              cooCols,
-int*              P,
-void*             pBuffer)
+                                         int               m,
+                                         int               n,
+                                         int               nnz,
+                                         int*              cooRows,
+                                         int*              cooCols,
+                                         int*              P,
+                                         void*             pBuffer)
 {
-return hipsparse::rocSPARSEStatusToHIPStatus(rocsparse_coosort_by_row(
-(rocsparse_handle)handle, m, n, nnz, cooRows, cooCols, P, pBuffer));
+    return hipsparse::rocSPARSEStatusToHIPStatus(rocsparse_coosort_by_row(
+        (rocsparse_handle)handle, m, n, nnz, cooRows, cooCols, P, pBuffer));
 }
 
 hipsparseStatus_t hipsparseXcoosortByColumn(hipsparseHandle_t handle,
-int               m,
-int               n,
-int               nnz,
-int*              cooRows,
-int*              cooCols,
-int*              P,
-void*             pBuffer)
+                                            int               m,
+                                            int               n,
+                                            int               nnz,
+                                            int*              cooRows,
+                                            int*              cooCols,
+                                            int*              P,
+                                            void*             pBuffer)
 {
-return hipsparse::rocSPARSEStatusToHIPStatus(rocsparse_coosort_by_column(
-(rocsparse_handle)handle, m, n, nnz, cooRows, cooCols, P, pBuffer));
+    return hipsparse::rocSPARSEStatusToHIPStatus(rocsparse_coosort_by_column(
+        (rocsparse_handle)handle, m, n, nnz, cooRows, cooCols, P, pBuffer));
 }

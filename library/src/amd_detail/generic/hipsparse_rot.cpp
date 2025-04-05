@@ -31,14 +31,14 @@
 #include "../utility.h"
 
 hipsparseStatus_t hipsparseRot(hipsparseHandle_t     handle,
-    const void*           c_coeff,
-    const void*           s_coeff,
-    hipsparseSpVecDescr_t vecX,
-    hipsparseDnVecDescr_t vecY)
+                               const void*           c_coeff,
+                               const void*           s_coeff,
+                               hipsparseSpVecDescr_t vecX,
+                               hipsparseDnVecDescr_t vecY)
 {
-return hipsparse::rocSPARSEStatusToHIPStatus(rocsparse_rot((rocsparse_handle)handle,
-                                    c_coeff,
-                                    s_coeff,
-                                    (rocsparse_spvec_descr)vecX,
-                                    (rocsparse_dnvec_descr)vecY));
+    return hipsparse::rocSPARSEStatusToHIPStatus(rocsparse_rot((rocsparse_handle)handle,
+                                                               c_coeff,
+                                                               s_coeff,
+                                                               (rocsparse_spvec_descr)vecX,
+                                                               (rocsparse_dnvec_descr)vecY));
 }

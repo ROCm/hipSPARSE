@@ -31,9 +31,9 @@
 #include "../utility.h"
 
 hipsparseStatus_t hipsparseGather(hipsparseHandle_t          handle,
-    hipsparseConstDnVecDescr_t vecY,
-    hipsparseSpVecDescr_t      vecX)
+                                  hipsparseConstDnVecDescr_t vecY,
+                                  hipsparseSpVecDescr_t      vecX)
 {
-return hipsparse::rocSPARSEStatusToHIPStatus(rocsparse_gather(
-(rocsparse_handle)handle, (rocsparse_const_dnvec_descr)vecY, (rocsparse_spvec_descr)vecX));
+    return hipsparse::rocSPARSEStatusToHIPStatus(rocsparse_gather(
+        (rocsparse_handle)handle, (rocsparse_const_dnvec_descr)vecY, (rocsparse_spvec_descr)vecX));
 }

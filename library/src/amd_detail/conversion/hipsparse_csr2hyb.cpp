@@ -31,97 +31,97 @@
 #include "../utility.h"
 
 hipsparseStatus_t hipsparseScsr2hyb(hipsparseHandle_t         handle,
-    int                       m,
-    int                       n,
-    const hipsparseMatDescr_t descrA,
-    const float*              csrSortedValA,
-    const int*                csrSortedRowPtrA,
-    const int*                csrSortedColIndA,
-    hipsparseHybMat_t         hybA,
-    int                       userEllWidth,
-    hipsparseHybPartition_t   partitionType)
+                                    int                       m,
+                                    int                       n,
+                                    const hipsparseMatDescr_t descrA,
+                                    const float*              csrSortedValA,
+                                    const int*                csrSortedRowPtrA,
+                                    const int*                csrSortedColIndA,
+                                    hipsparseHybMat_t         hybA,
+                                    int                       userEllWidth,
+                                    hipsparseHybPartition_t   partitionType)
 {
-return hipsparse::rocSPARSEStatusToHIPStatus(
-rocsparse_scsr2hyb((rocsparse_handle)handle,
-m,
-n,
-(rocsparse_mat_descr)descrA,
-csrSortedValA,
-csrSortedRowPtrA,
-csrSortedColIndA,
-(rocsparse_hyb_mat)hybA,
-userEllWidth,
-hipsparse::hipHybPartToHCCHybPart(partitionType)));
+    return hipsparse::rocSPARSEStatusToHIPStatus(
+        rocsparse_scsr2hyb((rocsparse_handle)handle,
+                           m,
+                           n,
+                           (rocsparse_mat_descr)descrA,
+                           csrSortedValA,
+                           csrSortedRowPtrA,
+                           csrSortedColIndA,
+                           (rocsparse_hyb_mat)hybA,
+                           userEllWidth,
+                           hipsparse::hipHybPartToHCCHybPart(partitionType)));
 }
 
 hipsparseStatus_t hipsparseDcsr2hyb(hipsparseHandle_t         handle,
-    int                       m,
-    int                       n,
-    const hipsparseMatDescr_t descrA,
-    const double*             csrSortedValA,
-    const int*                csrSortedRowPtrA,
-    const int*                csrSortedColIndA,
-    hipsparseHybMat_t         hybA,
-    int                       userEllWidth,
-    hipsparseHybPartition_t   partitionType)
+                                    int                       m,
+                                    int                       n,
+                                    const hipsparseMatDescr_t descrA,
+                                    const double*             csrSortedValA,
+                                    const int*                csrSortedRowPtrA,
+                                    const int*                csrSortedColIndA,
+                                    hipsparseHybMat_t         hybA,
+                                    int                       userEllWidth,
+                                    hipsparseHybPartition_t   partitionType)
 {
-return hipsparse::rocSPARSEStatusToHIPStatus(
-rocsparse_dcsr2hyb((rocsparse_handle)handle,
-m,
-n,
-(rocsparse_mat_descr)descrA,
-csrSortedValA,
-csrSortedRowPtrA,
-csrSortedColIndA,
-(rocsparse_hyb_mat)hybA,
-userEllWidth,
-hipsparse::hipHybPartToHCCHybPart(partitionType)));
+    return hipsparse::rocSPARSEStatusToHIPStatus(
+        rocsparse_dcsr2hyb((rocsparse_handle)handle,
+                           m,
+                           n,
+                           (rocsparse_mat_descr)descrA,
+                           csrSortedValA,
+                           csrSortedRowPtrA,
+                           csrSortedColIndA,
+                           (rocsparse_hyb_mat)hybA,
+                           userEllWidth,
+                           hipsparse::hipHybPartToHCCHybPart(partitionType)));
 }
 
 hipsparseStatus_t hipsparseCcsr2hyb(hipsparseHandle_t         handle,
-    int                       m,
-    int                       n,
-    const hipsparseMatDescr_t descrA,
-    const hipComplex*         csrSortedValA,
-    const int*                csrSortedRowPtrA,
-    const int*                csrSortedColIndA,
-    hipsparseHybMat_t         hybA,
-    int                       userEllWidth,
-    hipsparseHybPartition_t   partitionType)
+                                    int                       m,
+                                    int                       n,
+                                    const hipsparseMatDescr_t descrA,
+                                    const hipComplex*         csrSortedValA,
+                                    const int*                csrSortedRowPtrA,
+                                    const int*                csrSortedColIndA,
+                                    hipsparseHybMat_t         hybA,
+                                    int                       userEllWidth,
+                                    hipsparseHybPartition_t   partitionType)
 {
-return hipsparse::rocSPARSEStatusToHIPStatus(
-rocsparse_ccsr2hyb((rocsparse_handle)handle,
-m,
-n,
-(rocsparse_mat_descr)descrA,
-(const rocsparse_float_complex*)csrSortedValA,
-csrSortedRowPtrA,
-csrSortedColIndA,
-(rocsparse_hyb_mat)hybA,
-userEllWidth,
-hipsparse::hipHybPartToHCCHybPart(partitionType)));
+    return hipsparse::rocSPARSEStatusToHIPStatus(
+        rocsparse_ccsr2hyb((rocsparse_handle)handle,
+                           m,
+                           n,
+                           (rocsparse_mat_descr)descrA,
+                           (const rocsparse_float_complex*)csrSortedValA,
+                           csrSortedRowPtrA,
+                           csrSortedColIndA,
+                           (rocsparse_hyb_mat)hybA,
+                           userEllWidth,
+                           hipsparse::hipHybPartToHCCHybPart(partitionType)));
 }
 
 hipsparseStatus_t hipsparseZcsr2hyb(hipsparseHandle_t         handle,
-    int                       m,
-    int                       n,
-    const hipsparseMatDescr_t descrA,
-    const hipDoubleComplex*   csrSortedValA,
-    const int*                csrSortedRowPtrA,
-    const int*                csrSortedColIndA,
-    hipsparseHybMat_t         hybA,
-    int                       userEllWidth,
-    hipsparseHybPartition_t   partitionType)
+                                    int                       m,
+                                    int                       n,
+                                    const hipsparseMatDescr_t descrA,
+                                    const hipDoubleComplex*   csrSortedValA,
+                                    const int*                csrSortedRowPtrA,
+                                    const int*                csrSortedColIndA,
+                                    hipsparseHybMat_t         hybA,
+                                    int                       userEllWidth,
+                                    hipsparseHybPartition_t   partitionType)
 {
-return hipsparse::rocSPARSEStatusToHIPStatus(
-rocsparse_zcsr2hyb((rocsparse_handle)handle,
-m,
-n,
-(rocsparse_mat_descr)descrA,
-(const rocsparse_double_complex*)csrSortedValA,
-csrSortedRowPtrA,
-csrSortedColIndA,
-(rocsparse_hyb_mat)hybA,
-userEllWidth,
-hipsparse::hipHybPartToHCCHybPart(partitionType)));
+    return hipsparse::rocSPARSEStatusToHIPStatus(
+        rocsparse_zcsr2hyb((rocsparse_handle)handle,
+                           m,
+                           n,
+                           (rocsparse_mat_descr)descrA,
+                           (const rocsparse_double_complex*)csrSortedValA,
+                           csrSortedRowPtrA,
+                           csrSortedColIndA,
+                           (rocsparse_hyb_mat)hybA,
+                           userEllWidth,
+                           hipsparse::hipHybPartToHCCHybPart(partitionType)));
 }
