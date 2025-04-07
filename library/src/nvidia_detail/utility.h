@@ -421,7 +421,7 @@ namespace hipsparse
     }
 
 #if CUDART_VERSION < 11050
-inline cusparseSideMode_t hipSideToCudaSide(hipsparseSideMode_t side)
+    inline cusparseSideMode_t hipSideToCudaSide(hipsparseSideMode_t side)
     {
         switch(side)
         {
@@ -449,7 +449,7 @@ inline cusparseSideMode_t hipSideToCudaSide(hipsparseSideMode_t side)
 #endif
 
 #if CUDART_VERSION > 10000
-inline cudaDataType hipDataTypeToCudaDataType(hipDataType datatype)
+    inline cudaDataType hipDataTypeToCudaDataType(hipDataType datatype)
     {
         switch(datatype)
         {
@@ -497,7 +497,7 @@ inline cudaDataType hipDataTypeToCudaDataType(hipDataType datatype)
 #endif
 
 #if (CUDART_VERSION >= 12000)
-inline cusparseCsr2CscAlg_t hipCsr2CscAlgToCudaCsr2CscAlg(hipsparseCsr2CscAlg_t alg)
+    inline cusparseCsr2CscAlg_t hipCsr2CscAlgToCudaCsr2CscAlg(hipsparseCsr2CscAlg_t alg)
     {
         switch(alg)
         {
@@ -510,7 +510,7 @@ inline cusparseCsr2CscAlg_t hipCsr2CscAlgToCudaCsr2CscAlg(hipsparseCsr2CscAlg_t 
         }
     }
 #elif (CUDART_VERSION >= 10010 && CUDART_VERSION < 12000)
-inline cusparseCsr2CscAlg_t hipCsr2CscAlgToCudaCsr2CscAlg(hipsparseCsr2CscAlg_t alg)
+    inline cusparseCsr2CscAlg_t hipCsr2CscAlgToCudaCsr2CscAlg(hipsparseCsr2CscAlg_t alg)
     {
         switch(alg)
         {
@@ -526,7 +526,7 @@ inline cusparseCsr2CscAlg_t hipCsr2CscAlgToCudaCsr2CscAlg(hipsparseCsr2CscAlg_t 
 
     /* Generic API */
 #if (CUDART_VERSION >= 12000)
-inline cusparseFormat_t hipFormatToCudaFormat(hipsparseFormat_t format)
+    inline cusparseFormat_t hipFormatToCudaFormat(hipsparseFormat_t format)
     {
         switch(format)
         {
@@ -543,7 +543,7 @@ inline cusparseFormat_t hipFormatToCudaFormat(hipsparseFormat_t format)
         }
     }
 #elif (CUDART_VERSION >= 11021 && CUDART_VERSION < 12000)
-inline cusparseFormat_t hipFormatToCudaFormat(hipsparseFormat_t format)
+    inline cusparseFormat_t hipFormatToCudaFormat(hipsparseFormat_t format)
     {
         switch(format)
         {
@@ -562,7 +562,7 @@ inline cusparseFormat_t hipFormatToCudaFormat(hipsparseFormat_t format)
         }
     }
 #elif (CUDART_VERSION >= 10010 && CUDART_VERSION < 11021)
-inline cusparseFormat_t hipFormatToCudaFormat(hipsparseFormat_t format)
+    inline cusparseFormat_t hipFormatToCudaFormat(hipsparseFormat_t format)
     {
         switch(format)
         {
@@ -579,7 +579,7 @@ inline cusparseFormat_t hipFormatToCudaFormat(hipsparseFormat_t format)
 #endif
 
 #if (CUDART_VERSION >= 12000)
-inline hipsparseFormat_t CudaFormatToHIPFormat(cusparseFormat_t format)
+    inline hipsparseFormat_t CudaFormatToHIPFormat(cusparseFormat_t format)
     {
         switch(format)
         {
@@ -596,7 +596,7 @@ inline hipsparseFormat_t CudaFormatToHIPFormat(cusparseFormat_t format)
         }
     }
 #elif (CUDART_VERSION >= 11021 && CUDART_VERSION < 12000)
-inline hipsparseFormat_t CudaFormatToHIPFormat(cusparseFormat_t format)
+    inline hipsparseFormat_t CudaFormatToHIPFormat(cusparseFormat_t format)
     {
         switch(format)
         {
@@ -615,7 +615,7 @@ inline hipsparseFormat_t CudaFormatToHIPFormat(cusparseFormat_t format)
         }
     }
 #elif (CUDART_VERSION >= 10010 && CUDART_VERSION < 11021)
-inline hipsparseFormat_t CudaFormatToHIPFormat(cusparseFormat_t format)
+    inline hipsparseFormat_t CudaFormatToHIPFormat(cusparseFormat_t format)
     {
         switch(format)
         {
@@ -632,7 +632,7 @@ inline hipsparseFormat_t CudaFormatToHIPFormat(cusparseFormat_t format)
 #endif
 
 #if (CUDART_VERSION >= 11000)
-inline cusparseOrder_t hipOrderToCudaOrder(hipsparseOrder_t op)
+    inline cusparseOrder_t hipOrderToCudaOrder(hipsparseOrder_t op)
     {
         switch(op)
         {
@@ -658,7 +658,7 @@ inline cusparseOrder_t hipOrderToCudaOrder(hipsparseOrder_t op)
         }
     }
 #elif (CUDART_VERSION >= 10010)
-inline cusparseOrder_t hipOrderToCudaOrder(hipsparseOrder_t op)
+    inline cusparseOrder_t hipOrderToCudaOrder(hipsparseOrder_t op)
     {
         switch(op)
         {
@@ -682,7 +682,7 @@ inline cusparseOrder_t hipOrderToCudaOrder(hipsparseOrder_t op)
 #endif
 
 #if (CUDART_VERSION >= 10010)
-inline cusparseIndexType_t hipIndexTypeToCudaIndexType(hipsparseIndexType_t type)
+    inline cusparseIndexType_t hipIndexTypeToCudaIndexType(hipsparseIndexType_t type)
     {
         switch(type)
         {
@@ -714,7 +714,7 @@ inline cusparseIndexType_t hipIndexTypeToCudaIndexType(hipsparseIndexType_t type
 #endif
 
 #if (CUDART_VERSION >= 12000)
-inline cusparseSpMVAlg_t hipSpMVAlgToCudaSpMVAlg(hipsparseSpMVAlg_t alg)
+    inline cusparseSpMVAlg_t hipSpMVAlgToCudaSpMVAlg(hipsparseSpMVAlg_t alg)
     {
         switch(alg)
         {
@@ -733,7 +733,7 @@ inline cusparseSpMVAlg_t hipSpMVAlgToCudaSpMVAlg(hipsparseSpMVAlg_t alg)
         }
     }
 #elif (CUDART_VERSION >= 11021 && CUDART_VERSION < 12000)
-inline cusparseSpMVAlg_t hipSpMVAlgToCudaSpMVAlg(hipsparseSpMVAlg_t alg)
+    inline cusparseSpMVAlg_t hipSpMVAlgToCudaSpMVAlg(hipsparseSpMVAlg_t alg)
     {
         switch(alg)
         {
@@ -756,7 +756,7 @@ inline cusparseSpMVAlg_t hipSpMVAlgToCudaSpMVAlg(hipsparseSpMVAlg_t alg)
         }
     }
 #elif (CUDART_VERSION >= 10010 && CUDART_VERSION < 11021)
-inline cusparseSpMVAlg_t hipSpMVAlgToCudaSpMVAlg(hipsparseSpMVAlg_t alg)
+    inline cusparseSpMVAlg_t hipSpMVAlgToCudaSpMVAlg(hipsparseSpMVAlg_t alg)
     {
         switch(alg)
         {
@@ -775,7 +775,7 @@ inline cusparseSpMVAlg_t hipSpMVAlgToCudaSpMVAlg(hipsparseSpMVAlg_t alg)
 #endif
 
 #if (CUDART_VERSION >= 12000)
-inline cusparseSpMMAlg_t hipSpMMAlgToCudaSpMMAlg(hipsparseSpMMAlg_t alg)
+    inline cusparseSpMMAlg_t hipSpMMAlgToCudaSpMMAlg(hipsparseSpMMAlg_t alg)
     {
         switch(alg)
         {
@@ -802,7 +802,7 @@ inline cusparseSpMMAlg_t hipSpMMAlgToCudaSpMMAlg(hipsparseSpMMAlg_t alg)
         }
     }
 #elif (CUDART_VERSION >= 11021 && CUDART_VERSION < 12000)
-inline cusparseSpMMAlg_t hipSpMMAlgToCudaSpMMAlg(hipsparseSpMMAlg_t alg)
+    inline cusparseSpMMAlg_t hipSpMMAlgToCudaSpMMAlg(hipsparseSpMMAlg_t alg)
     {
         switch(alg)
         {
@@ -834,7 +834,7 @@ inline cusparseSpMMAlg_t hipSpMMAlgToCudaSpMMAlg(hipsparseSpMMAlg_t alg)
         }
     }
 #elif (CUDART_VERSION >= 11003 && CUDART_VERSION < 11021)
-inline cusparseSpMMAlg_t hipSpMMAlgToCudaSpMMAlg(hipsparseSpMMAlg_t alg)
+    inline cusparseSpMMAlg_t hipSpMMAlgToCudaSpMMAlg(hipsparseSpMMAlg_t alg)
     {
         switch(alg)
         {
@@ -864,7 +864,7 @@ inline cusparseSpMMAlg_t hipSpMMAlgToCudaSpMMAlg(hipsparseSpMMAlg_t alg)
         }
     }
 #elif (CUDART_VERSION >= 10010 && CUDART_VERSION < 11003)
-inline cusparseSpMMAlg_t hipSpMMAlgToCudaSpMMAlg(hipsparseSpMMAlg_t alg)
+    inline cusparseSpMMAlg_t hipSpMMAlgToCudaSpMMAlg(hipsparseSpMMAlg_t alg)
     {
         switch(alg)
         {
@@ -885,7 +885,7 @@ inline cusparseSpMMAlg_t hipSpMMAlgToCudaSpMMAlg(hipsparseSpMMAlg_t alg)
 #endif
 
 #if (CUDART_VERSION >= 12000)
-inline cusparseSpGEMMAlg_t hipSpGEMMAlgToCudaSpGEMMAlg(hipsparseSpGEMMAlg_t alg)
+    inline cusparseSpGEMMAlg_t hipSpGEMMAlgToCudaSpGEMMAlg(hipsparseSpGEMMAlg_t alg)
     {
         switch(alg)
         {
@@ -906,7 +906,7 @@ inline cusparseSpGEMMAlg_t hipSpGEMMAlgToCudaSpGEMMAlg(hipsparseSpGEMMAlg_t alg)
         }
     }
 #elif (CUDART_VERSION >= 11031)
-inline cusparseSpGEMMAlg_t hipSpGEMMAlgToCudaSpGEMMAlg(hipsparseSpGEMMAlg_t alg)
+    inline cusparseSpGEMMAlg_t hipSpGEMMAlgToCudaSpGEMMAlg(hipsparseSpGEMMAlg_t alg)
     {
         switch(alg)
         {
@@ -921,7 +921,7 @@ inline cusparseSpGEMMAlg_t hipSpGEMMAlgToCudaSpGEMMAlg(hipsparseSpGEMMAlg_t alg)
         }
     }
 #elif (CUDART_VERSION >= 11000)
-inline cusparseSpGEMMAlg_t hipSpGEMMAlgToCudaSpGEMMAlg(hipsparseSpGEMMAlg_t alg)
+    inline cusparseSpGEMMAlg_t hipSpGEMMAlgToCudaSpGEMMAlg(hipsparseSpGEMMAlg_t alg)
     {
         switch(alg)
         {
@@ -934,7 +934,7 @@ inline cusparseSpGEMMAlg_t hipSpGEMMAlgToCudaSpGEMMAlg(hipsparseSpGEMMAlg_t alg)
 #endif
 
 #if (CUDART_VERSION >= 11020)
-inline cusparseSparseToDenseAlg_t hipSpToDnAlgToCudaSpToDnAlg(hipsparseSparseToDenseAlg_t alg)
+    inline cusparseSparseToDenseAlg_t hipSpToDnAlgToCudaSpToDnAlg(hipsparseSparseToDenseAlg_t alg)
     {
         switch(alg)
         {
@@ -958,7 +958,7 @@ inline cusparseSparseToDenseAlg_t hipSpToDnAlgToCudaSpToDnAlg(hipsparseSparseToD
 #endif
 
 #if (CUDART_VERSION >= 11020)
-inline cusparseDenseToSparseAlg_t hipDnToSpAlgToCudaDnToSpAlg(hipsparseDenseToSparseAlg_t alg)
+    inline cusparseDenseToSparseAlg_t hipDnToSpAlgToCudaDnToSpAlg(hipsparseDenseToSparseAlg_t alg)
     {
         switch(alg)
         {
@@ -982,7 +982,7 @@ inline cusparseDenseToSparseAlg_t hipDnToSpAlgToCudaDnToSpAlg(hipsparseDenseToSp
 #endif
 
 #if (CUDART_VERSION >= 11022)
-inline cusparseSDDMMAlg_t hipSDDMMAlgToCudaSDDMMAlg(hipsparseSDDMMAlg_t alg)
+    inline cusparseSDDMMAlg_t hipSDDMMAlgToCudaSDDMMAlg(hipsparseSDDMMAlg_t alg)
     {
         switch(alg)
         {
@@ -995,7 +995,7 @@ inline cusparseSDDMMAlg_t hipSDDMMAlgToCudaSDDMMAlg(hipsparseSDDMMAlg_t alg)
 #endif
 
 #if (CUDART_VERSION >= 11030)
-inline cusparseSpSVAlg_t hipSpSVAlgToCudaSpSVAlg(hipsparseSpSVAlg_t alg)
+    inline cusparseSpSVAlg_t hipSpSVAlgToCudaSpSVAlg(hipsparseSpSVAlg_t alg)
     {
         switch(alg)
         {
@@ -1008,7 +1008,7 @@ inline cusparseSpSVAlg_t hipSpSVAlgToCudaSpSVAlg(hipsparseSpSVAlg_t alg)
 #endif
 
 #if (CUDART_VERSION >= 11031)
-inline cusparseSpSMAlg_t hipSpSMAlgToCudaSpSMAlg(hipsparseSpSMAlg_t alg)
+    inline cusparseSpSMAlg_t hipSpSMAlgToCudaSpSMAlg(hipsparseSpSMAlg_t alg)
     {
         switch(alg)
         {
