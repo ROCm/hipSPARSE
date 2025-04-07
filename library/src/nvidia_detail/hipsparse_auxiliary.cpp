@@ -26,7 +26,7 @@
 #include <cusparse_v2.h>
 #include <hip/hip_runtime_api.h>
 
-#include "../utility.h"
+#include "utility.h"
 
 hipsparseStatus_t hipsparseCreate(hipsparseHandle_t* handle)
 {

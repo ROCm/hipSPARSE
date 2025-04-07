@@ -108,7 +108,9 @@ else()
       src/nvidia_detail/conversion/hipsparse_prune_csr2csr_by_percentage.cpp
       src/nvidia_detail/conversion/hipsparse_prune_csr2csr.cpp
       src/nvidia_detail/conversion/hipsparse_prune_dense2csr_by_percentage.cpp
-      src/nvidia_detail/conversion/hipsparse_prune_dense2csr.cpp)
+      src/nvidia_detail/conversion/hipsparse_prune_dense2csr.cpp
+      # Reorder
+      src/nvidia_detail/reorder/hipsparse_csrcolor.cpp)
 endif()
 
 # hipSPARSE Fortran source

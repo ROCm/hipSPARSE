@@ -26,7 +26,7 @@
 #include <cusparse_v2.h>
 #include <hip/hip_runtime_api.h>
 
-#include "../utility.h"
+#include "utility.h"
 
 #if (CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
 hipsparseStatus_t hipsparseCreateSpVec(hipsparseSpVecDescr_t* spVecDescr,

@@ -173,7 +173,7 @@ hipsparseStatus_t hipsparseCsr2cscEx2_bufferSize(hipsparseHandle_t     handle,
                                       hipsparse::hipDataTypeToCudaDataType(valType),
                                       hipsparse::hipActionToCudaAction(copyValues),
                                       hipsparse::hipIndexBaseToCudaIndexBase(idxBase),
-                                      hipCsr2CscAlgToCudaCsr2CscAlg(alg),
+                                      hipsparse::hipCsr2CscAlgToCudaCsr2CscAlg(alg),
                                       pBufferSizeInBytes));
 }
 
@@ -207,7 +207,7 @@ hipsparseStatus_t hipsparseCsr2cscEx2(hipsparseHandle_t     handle,
                            hipsparse::hipDataTypeToCudaDataType(valType),
                            hipsparse::hipActionToCudaAction(copyValues),
                            hipsparse::hipIndexBaseToCudaIndexBase(idxBase),
-                           hipCsr2CscAlgToCudaCsr2CscAlg(alg),
+                           hipsparse::hipCsr2CscAlgToCudaCsr2CscAlg(alg),
                            buffer));
 }
 #endif

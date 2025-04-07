@@ -26,6 +26,8 @@
 #include <cusparse_v2.h>
 #include <hip/hip_runtime_api.h>
 
+#include "../utility.h"
+
 #if CUDART_VERSION < 13000
 hipsparseStatus_t
     hipsparseXbsric02_zeroPivot(hipsparseHandle_t handle, bsric02Info_t info, int* position)
