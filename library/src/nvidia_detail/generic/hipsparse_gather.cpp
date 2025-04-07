@@ -28,7 +28,7 @@
 
 #include "../utility.h"
 
-#if(CUDART_VERSION >= 12000)
+#if (CUDART_VERSION >= 12000)
 hipsparseStatus_t hipsparseGather(hipsparseHandle_t          handle,
                                   hipsparseConstDnVecDescr_t vecY,
                                   hipsparseSpVecDescr_t      vecX)
@@ -36,8 +36,8 @@ hipsparseStatus_t hipsparseGather(hipsparseHandle_t          handle,
     return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseGather(
         (cusparseHandle_t)handle, (cusparseConstDnVecDescr_t)vecY, (cusparseSpVecDescr_t)vecX));
 }
-#elif(CUDART_VERSION >= 11000)
-hipsparseStatus_t hipsparseGather(hipsparseHandle_t handle,
+#elif (CUDART_VERSION >= 11000)
+hipsparseStatus_t hipsparseGather(hipsparseHandle_t     handle,
                                   hipsparseDnVecDescr_t vecY,
                                   hipsparseSpVecDescr_t vecX)
 {

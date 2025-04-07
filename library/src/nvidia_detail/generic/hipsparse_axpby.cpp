@@ -28,7 +28,7 @@
 
 #include "../utility.h"
 
-#if(CUDART_VERSION >= 12000)
+#if (CUDART_VERSION >= 12000)
 hipsparseStatus_t hipsparseAxpby(hipsparseHandle_t          handle,
                                  const void*                alpha,
                                  hipsparseConstSpVecDescr_t vecX,
@@ -41,11 +41,11 @@ hipsparseStatus_t hipsparseAxpby(hipsparseHandle_t          handle,
                                                                  beta,
                                                                  (cusparseDnVecDescr_t)vecY));
 }
-#elif(CUDART_VERSION >= 11000)
-hipsparseStatus_t hipsparseAxpby(hipsparseHandle_t handle,
-                                 const void* alpha,
+#elif (CUDART_VERSION >= 11000)
+hipsparseStatus_t hipsparseAxpby(hipsparseHandle_t     handle,
+                                 const void*           alpha,
                                  hipsparseSpVecDescr_t vecX,
-                                 const void* beta,
+                                 const void*           beta,
                                  hipsparseDnVecDescr_t vecY)
 {
     return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseAxpby((cusparseHandle_t)handle,

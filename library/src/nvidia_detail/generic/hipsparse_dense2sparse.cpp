@@ -28,7 +28,7 @@
 
 #include "../utility.h"
 
-#if(CUDART_VERSION >= 12000)
+#if (CUDART_VERSION >= 12000)
 hipsparseStatus_t hipsparseDenseToSparse_bufferSize(hipsparseHandle_t           handle,
                                                     hipsparseConstDnMatDescr_t  matA,
                                                     hipsparseSpMatDescr_t       matB,
@@ -42,12 +42,12 @@ hipsparseStatus_t hipsparseDenseToSparse_bufferSize(hipsparseHandle_t           
                                          hipsparse::hipDnToSpAlgToCudaDnToSpAlg(alg),
                                          pBufferSizeInBytes));
 }
-#elif(CUDART_VERSION >= 11020)
-hipsparseStatus_t hipsparseDenseToSparse_bufferSize(hipsparseHandle_t handle,
-                                                    hipsparseDnMatDescr_t matA,
-                                                    hipsparseSpMatDescr_t matB,
+#elif (CUDART_VERSION >= 11020)
+hipsparseStatus_t hipsparseDenseToSparse_bufferSize(hipsparseHandle_t           handle,
+                                                    hipsparseDnMatDescr_t       matA,
+                                                    hipsparseSpMatDescr_t       matB,
                                                     hipsparseDenseToSparseAlg_t alg,
-                                                    size_t* pBufferSizeInBytes)
+                                                    size_t*                     pBufferSizeInBytes)
 {
     return hipsparse::hipCUSPARSEStatusToHIPStatus(
         cusparseDenseToSparse_bufferSize((cusparseHandle_t)handle,
@@ -58,7 +58,7 @@ hipsparseStatus_t hipsparseDenseToSparse_bufferSize(hipsparseHandle_t handle,
 }
 #endif
 
-#if(CUDART_VERSION >= 12000)
+#if (CUDART_VERSION >= 12000)
 hipsparseStatus_t hipsparseDenseToSparse_analysis(hipsparseHandle_t           handle,
                                                   hipsparseConstDnMatDescr_t  matA,
                                                   hipsparseSpMatDescr_t       matB,
@@ -72,12 +72,12 @@ hipsparseStatus_t hipsparseDenseToSparse_analysis(hipsparseHandle_t           ha
                                        hipsparse::hipDnToSpAlgToCudaDnToSpAlg(alg),
                                        externalBuffer));
 }
-#elif(CUDART_VERSION >= 11020)
-hipsparseStatus_t hipsparseDenseToSparse_analysis(hipsparseHandle_t handle,
-                                                  hipsparseDnMatDescr_t matA,
-                                                  hipsparseSpMatDescr_t matB,
+#elif (CUDART_VERSION >= 11020)
+hipsparseStatus_t hipsparseDenseToSparse_analysis(hipsparseHandle_t           handle,
+                                                  hipsparseDnMatDescr_t       matA,
+                                                  hipsparseSpMatDescr_t       matB,
                                                   hipsparseDenseToSparseAlg_t alg,
-                                                  void* externalBuffer)
+                                                  void*                       externalBuffer)
 {
     return hipsparse::hipCUSPARSEStatusToHIPStatus(
         cusparseDenseToSparse_analysis((cusparseHandle_t)handle,
@@ -88,7 +88,7 @@ hipsparseStatus_t hipsparseDenseToSparse_analysis(hipsparseHandle_t handle,
 }
 #endif
 
-#if(CUDART_VERSION >= 12000)
+#if (CUDART_VERSION >= 12000)
 hipsparseStatus_t hipsparseDenseToSparse_convert(hipsparseHandle_t           handle,
                                                  hipsparseConstDnMatDescr_t  matA,
                                                  hipsparseSpMatDescr_t       matB,
@@ -102,12 +102,12 @@ hipsparseStatus_t hipsparseDenseToSparse_convert(hipsparseHandle_t           han
                                       hipsparse::hipDnToSpAlgToCudaDnToSpAlg(alg),
                                       externalBuffer));
 }
-#elif(CUDART_VERSION >= 11020)
-hipsparseStatus_t hipsparseDenseToSparse_convert(hipsparseHandle_t handle,
-                                                 hipsparseDnMatDescr_t matA,
-                                                 hipsparseSpMatDescr_t matB,
+#elif (CUDART_VERSION >= 11020)
+hipsparseStatus_t hipsparseDenseToSparse_convert(hipsparseHandle_t           handle,
+                                                 hipsparseDnMatDescr_t       matA,
+                                                 hipsparseSpMatDescr_t       matB,
                                                  hipsparseDenseToSparseAlg_t alg,
-                                                 void* externalBuffer)
+                                                 void*                       externalBuffer)
 {
     return hipsparse::hipCUSPARSEStatusToHIPStatus(
         cusparseDenseToSparse_convert((cusparseHandle_t)handle,

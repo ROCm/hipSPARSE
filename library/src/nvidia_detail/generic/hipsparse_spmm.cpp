@@ -28,7 +28,7 @@
 
 #include "../utility.h"
 
-#if(CUDART_VERSION >= 12000)
+#if (CUDART_VERSION >= 12000)
 hipsparseStatus_t hipsparseSpMM_bufferSize(hipsparseHandle_t           handle,
                                            hipsparseOperation_t        opA,
                                            hipsparseOperation_t        opB,
@@ -54,18 +54,18 @@ hipsparseStatus_t hipsparseSpMM_bufferSize(hipsparseHandle_t           handle,
                                 hipsparse::hipSpMMAlgToCudaSpMMAlg(alg),
                                 pBufferSizeInBytes));
 }
-#elif(CUDART_VERSION >= 10010)
-hipsparseStatus_t hipsparseSpMM_bufferSize(hipsparseHandle_t handle,
-                                           hipsparseOperation_t opA,
-                                           hipsparseOperation_t opB,
-                                           const void* alpha,
+#elif (CUDART_VERSION >= 10010)
+hipsparseStatus_t hipsparseSpMM_bufferSize(hipsparseHandle_t           handle,
+                                           hipsparseOperation_t        opA,
+                                           hipsparseOperation_t        opB,
+                                           const void*                 alpha,
                                            const hipsparseSpMatDescr_t matA,
                                            const hipsparseDnMatDescr_t matB,
-                                           const void* beta,
+                                           const void*                 beta,
                                            const hipsparseDnMatDescr_t matC,
-                                           hipDataType computeType,
-                                           hipsparseSpMMAlg_t alg,
-                                           size_t* pBufferSizeInBytes)
+                                           hipDataType                 computeType,
+                                           hipsparseSpMMAlg_t          alg,
+                                           size_t*                     pBufferSizeInBytes)
 {
     return hipsparse::hipCUSPARSEStatusToHIPStatus(
         cusparseSpMM_bufferSize((cusparseHandle_t)handle,
@@ -82,7 +82,7 @@ hipsparseStatus_t hipsparseSpMM_bufferSize(hipsparseHandle_t handle,
 }
 #endif
 
-#if(CUDART_VERSION >= 12000)
+#if (CUDART_VERSION >= 12000)
 hipsparseStatus_t hipsparseSpMM_preprocess(hipsparseHandle_t           handle,
                                            hipsparseOperation_t        opA,
                                            hipsparseOperation_t        opB,
@@ -108,18 +108,18 @@ hipsparseStatus_t hipsparseSpMM_preprocess(hipsparseHandle_t           handle,
                                 hipsparse::hipSpMMAlgToCudaSpMMAlg(alg),
                                 externalBuffer));
 }
-#elif(CUDART_VERSION >= 11021)
-hipsparseStatus_t hipsparseSpMM_preprocess(hipsparseHandle_t handle,
-                                           hipsparseOperation_t opA,
-                                           hipsparseOperation_t opB,
-                                           const void* alpha,
+#elif (CUDART_VERSION >= 11021)
+hipsparseStatus_t hipsparseSpMM_preprocess(hipsparseHandle_t           handle,
+                                           hipsparseOperation_t        opA,
+                                           hipsparseOperation_t        opB,
+                                           const void*                 alpha,
                                            const hipsparseSpMatDescr_t matA,
                                            const hipsparseDnMatDescr_t matB,
-                                           const void* beta,
+                                           const void*                 beta,
                                            const hipsparseDnMatDescr_t matC,
-                                           hipDataType computeType,
-                                           hipsparseSpMMAlg_t alg,
-                                           void* externalBuffer)
+                                           hipDataType                 computeType,
+                                           hipsparseSpMMAlg_t          alg,
+                                           void*                       externalBuffer)
 {
     return hipsparse::hipCUSPARSEStatusToHIPStatus(
         cusparseSpMM_preprocess((cusparseHandle_t)handle,
@@ -136,7 +136,7 @@ hipsparseStatus_t hipsparseSpMM_preprocess(hipsparseHandle_t handle,
 }
 #endif
 
-#if(CUDART_VERSION >= 12000)
+#if (CUDART_VERSION >= 12000)
 hipsparseStatus_t hipsparseSpMM(hipsparseHandle_t           handle,
                                 hipsparseOperation_t        opA,
                                 hipsparseOperation_t        opB,
@@ -162,18 +162,18 @@ hipsparseStatus_t hipsparseSpMM(hipsparseHandle_t           handle,
                      hipsparse::hipSpMMAlgToCudaSpMMAlg(alg),
                      externalBuffer));
 }
-#elif(CUDART_VERSION >= 10010)
-hipsparseStatus_t hipsparseSpMM(hipsparseHandle_t handle,
-                                hipsparseOperation_t opA,
-                                hipsparseOperation_t opB,
-                                const void* alpha,
+#elif (CUDART_VERSION >= 10010)
+hipsparseStatus_t hipsparseSpMM(hipsparseHandle_t           handle,
+                                hipsparseOperation_t        opA,
+                                hipsparseOperation_t        opB,
+                                const void*                 alpha,
                                 const hipsparseSpMatDescr_t matA,
                                 const hipsparseDnMatDescr_t matB,
-                                const void* beta,
+                                const void*                 beta,
                                 const hipsparseDnMatDescr_t matC,
-                                hipDataType computeType,
-                                hipsparseSpMMAlg_t alg,
-                                void* externalBuffer)
+                                hipDataType                 computeType,
+                                hipsparseSpMMAlg_t          alg,
+                                void*                       externalBuffer)
 {
     return hipsparse::hipCUSPARSEStatusToHIPStatus(
         cusparseSpMM((cusparseHandle_t)handle,

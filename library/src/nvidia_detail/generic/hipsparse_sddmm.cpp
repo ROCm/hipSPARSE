@@ -28,7 +28,7 @@
 
 #include "../utility.h"
 
-#if(CUDART_VERSION >= 12000)
+#if (CUDART_VERSION >= 12000)
 hipsparseStatus_t hipsparseSDDMM_bufferSize(hipsparseHandle_t          handle,
                                             hipsparseOperation_t       opA,
                                             hipsparseOperation_t       opB,
@@ -54,18 +54,18 @@ hipsparseStatus_t hipsparseSDDMM_bufferSize(hipsparseHandle_t          handle,
                                  hipsparse::hipSDDMMAlgToCudaSDDMMAlg(alg),
                                  pBufferSizeInBytes));
 }
-#elif(CUDART_VERSION >= 11022)
-hipsparseStatus_t hipsparseSDDMM_bufferSize(hipsparseHandle_t handle,
-                                            hipsparseOperation_t opA,
-                                            hipsparseOperation_t opB,
-                                            const void* alpha,
+#elif (CUDART_VERSION >= 11022)
+hipsparseStatus_t hipsparseSDDMM_bufferSize(hipsparseHandle_t           handle,
+                                            hipsparseOperation_t        opA,
+                                            hipsparseOperation_t        opB,
+                                            const void*                 alpha,
                                             const hipsparseDnMatDescr_t matA,
                                             const hipsparseDnMatDescr_t matB,
-                                            const void* beta,
-                                            hipsparseSpMatDescr_t matC,
-                                            hipDataType computeType,
-                                            hipsparseSDDMMAlg_t alg,
-                                            size_t* pBufferSizeInBytes)
+                                            const void*                 beta,
+                                            hipsparseSpMatDescr_t       matC,
+                                            hipDataType                 computeType,
+                                            hipsparseSDDMMAlg_t         alg,
+                                            size_t*                     pBufferSizeInBytes)
 {
     return hipsparse::hipCUSPARSEStatusToHIPStatus(
         cusparseSDDMM_bufferSize((cusparseHandle_t)handle,
@@ -82,7 +82,7 @@ hipsparseStatus_t hipsparseSDDMM_bufferSize(hipsparseHandle_t handle,
 }
 #endif
 
-#if(CUDART_VERSION >= 12000)
+#if (CUDART_VERSION >= 12000)
 hipsparseStatus_t hipsparseSDDMM_preprocess(hipsparseHandle_t          handle,
                                             hipsparseOperation_t       opA,
                                             hipsparseOperation_t       opB,
@@ -108,18 +108,18 @@ hipsparseStatus_t hipsparseSDDMM_preprocess(hipsparseHandle_t          handle,
                                  hipsparse::hipSDDMMAlgToCudaSDDMMAlg(alg),
                                  tempBuffer));
 }
-#elif(CUDART_VERSION >= 11022)
-hipsparseStatus_t hipsparseSDDMM_preprocess(hipsparseHandle_t handle,
-                                            hipsparseOperation_t opA,
-                                            hipsparseOperation_t opB,
-                                            const void* alpha,
+#elif (CUDART_VERSION >= 11022)
+hipsparseStatus_t hipsparseSDDMM_preprocess(hipsparseHandle_t           handle,
+                                            hipsparseOperation_t        opA,
+                                            hipsparseOperation_t        opB,
+                                            const void*                 alpha,
                                             const hipsparseDnMatDescr_t matA,
                                             const hipsparseDnMatDescr_t matB,
-                                            const void* beta,
-                                            hipsparseSpMatDescr_t matC,
-                                            hipDataType computeType,
-                                            hipsparseSDDMMAlg_t alg,
-                                            void* tempBuffer)
+                                            const void*                 beta,
+                                            hipsparseSpMatDescr_t       matC,
+                                            hipDataType                 computeType,
+                                            hipsparseSDDMMAlg_t         alg,
+                                            void*                       tempBuffer)
 {
     return hipsparse::hipCUSPARSEStatusToHIPStatus(
         cusparseSDDMM_preprocess((cusparseHandle_t)handle,
@@ -136,7 +136,7 @@ hipsparseStatus_t hipsparseSDDMM_preprocess(hipsparseHandle_t handle,
 }
 #endif
 
-#if(CUDART_VERSION >= 12000)
+#if (CUDART_VERSION >= 12000)
 hipsparseStatus_t hipsparseSDDMM(hipsparseHandle_t          handle,
                                  hipsparseOperation_t       opA,
                                  hipsparseOperation_t       opB,
@@ -162,18 +162,18 @@ hipsparseStatus_t hipsparseSDDMM(hipsparseHandle_t          handle,
                       hipsparse::hipSDDMMAlgToCudaSDDMMAlg(alg),
                       tempBuffer));
 }
-#elif(CUDART_VERSION >= 11022)
-hipsparseStatus_t hipsparseSDDMM(hipsparseHandle_t handle,
-                                 hipsparseOperation_t opA,
-                                 hipsparseOperation_t opB,
-                                 const void* alpha,
+#elif (CUDART_VERSION >= 11022)
+hipsparseStatus_t hipsparseSDDMM(hipsparseHandle_t           handle,
+                                 hipsparseOperation_t        opA,
+                                 hipsparseOperation_t        opB,
+                                 const void*                 alpha,
                                  const hipsparseDnMatDescr_t matA,
                                  const hipsparseDnMatDescr_t matB,
-                                 const void* beta,
-                                 hipsparseSpMatDescr_t matC,
-                                 hipDataType computeType,
-                                 hipsparseSDDMMAlg_t alg,
-                                 void* tempBuffer)
+                                 const void*                 beta,
+                                 hipsparseSpMatDescr_t       matC,
+                                 hipDataType                 computeType,
+                                 hipsparseSDDMMAlg_t         alg,
+                                 void*                       tempBuffer)
 {
     return hipsparse::hipCUSPARSEStatusToHIPStatus(
         cusparseSDDMM((cusparseHandle_t)handle,

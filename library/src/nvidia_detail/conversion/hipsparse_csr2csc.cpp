@@ -142,7 +142,7 @@ hipsparseStatus_t hipsparseZcsr2csc(hipsparseHandle_t       handle,
 }
 #endif
 
-#if(CUDART_VERSION >= 10010)
+#if (CUDART_VERSION >= 10010)
 hipsparseStatus_t hipsparseCsr2cscEx2_bufferSize(hipsparseHandle_t     handle,
                                                  int                   m,
                                                  int                   n,

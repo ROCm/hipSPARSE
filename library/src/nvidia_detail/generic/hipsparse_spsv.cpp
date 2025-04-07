@@ -28,7 +28,7 @@
 
 #include "../utility.h"
 
-#if(CUDART_VERSION >= 11030)
+#if (CUDART_VERSION >= 11030)
 hipsparseStatus_t hipsparseSpSV_createDescr(hipsparseSpSVDescr_t* descr)
 {
     return hipsparse::hipCUSPARSEStatusToHIPStatus(
@@ -36,7 +36,7 @@ hipsparseStatus_t hipsparseSpSV_createDescr(hipsparseSpSVDescr_t* descr)
 }
 #endif
 
-#if(CUDART_VERSION >= 11030)
+#if (CUDART_VERSION >= 11030)
 hipsparseStatus_t hipsparseSpSV_destroyDescr(hipsparseSpSVDescr_t descr)
 {
     return hipsparse::hipCUSPARSEStatusToHIPStatus(
@@ -44,7 +44,7 @@ hipsparseStatus_t hipsparseSpSV_destroyDescr(hipsparseSpSVDescr_t descr)
 }
 #endif
 
-#if(CUDART_VERSION >= 12000)
+#if (CUDART_VERSION >= 12000)
 hipsparseStatus_t hipsparseSpSV_bufferSize(hipsparseHandle_t           handle,
                                            hipsparseOperation_t        opA,
                                            const void*                 alpha,
@@ -68,17 +68,17 @@ hipsparseStatus_t hipsparseSpSV_bufferSize(hipsparseHandle_t           handle,
                                 (cusparseSpSVDescr_t)spsvDescr,
                                 pBufferSizeInBytes));
 }
-#elif(CUDART_VERSION >= 11030)
-hipsparseStatus_t hipsparseSpSV_bufferSize(hipsparseHandle_t handle,
-                                           hipsparseOperation_t opA,
-                                           const void* alpha,
+#elif (CUDART_VERSION >= 11030)
+hipsparseStatus_t hipsparseSpSV_bufferSize(hipsparseHandle_t           handle,
+                                           hipsparseOperation_t        opA,
+                                           const void*                 alpha,
                                            const hipsparseSpMatDescr_t matA,
                                            const hipsparseDnVecDescr_t x,
                                            const hipsparseDnVecDescr_t y,
-                                           hipDataType computeType,
-                                           hipsparseSpSVAlg_t alg,
-                                           hipsparseSpSVDescr_t spsvDescr,
-                                           size_t* pBufferSizeInBytes)
+                                           hipDataType                 computeType,
+                                           hipsparseSpSVAlg_t          alg,
+                                           hipsparseSpSVDescr_t        spsvDescr,
+                                           size_t*                     pBufferSizeInBytes)
 {
     return hipsparse::hipCUSPARSEStatusToHIPStatus(
         cusparseSpSV_bufferSize((cusparseHandle_t)handle,
@@ -94,7 +94,7 @@ hipsparseStatus_t hipsparseSpSV_bufferSize(hipsparseHandle_t handle,
 }
 #endif
 
-#if(CUDART_VERSION >= 12000)
+#if (CUDART_VERSION >= 12000)
 hipsparseStatus_t hipsparseSpSV_analysis(hipsparseHandle_t           handle,
                                          hipsparseOperation_t        opA,
                                          const void*                 alpha,
@@ -118,17 +118,17 @@ hipsparseStatus_t hipsparseSpSV_analysis(hipsparseHandle_t           handle,
                               (cusparseSpSVDescr_t)spsvDescr,
                               externalBuffer));
 }
-#elif(CUDART_VERSION >= 11030)
-hipsparseStatus_t hipsparseSpSV_analysis(hipsparseHandle_t handle,
-                                         hipsparseOperation_t opA,
-                                         const void* alpha,
+#elif (CUDART_VERSION >= 11030)
+hipsparseStatus_t hipsparseSpSV_analysis(hipsparseHandle_t           handle,
+                                         hipsparseOperation_t        opA,
+                                         const void*                 alpha,
                                          const hipsparseSpMatDescr_t matA,
                                          const hipsparseDnVecDescr_t x,
                                          const hipsparseDnVecDescr_t y,
-                                         hipDataType computeType,
-                                         hipsparseSpSVAlg_t alg,
-                                         hipsparseSpSVDescr_t spsvDescr,
-                                         void* externalBuffer)
+                                         hipDataType                 computeType,
+                                         hipsparseSpSVAlg_t          alg,
+                                         hipsparseSpSVDescr_t        spsvDescr,
+                                         void*                       externalBuffer)
 {
     return hipsparse::hipCUSPARSEStatusToHIPStatus(
         cusparseSpSV_analysis((cusparseHandle_t)handle,
@@ -144,7 +144,7 @@ hipsparseStatus_t hipsparseSpSV_analysis(hipsparseHandle_t handle,
 }
 #endif
 
-#if(CUDART_VERSION >= 12000)
+#if (CUDART_VERSION >= 12000)
 hipsparseStatus_t hipsparseSpSV_solve(hipsparseHandle_t           handle,
                                       hipsparseOperation_t        opA,
                                       const void*                 alpha,
@@ -166,16 +166,16 @@ hipsparseStatus_t hipsparseSpSV_solve(hipsparseHandle_t           handle,
                            hipsparse::hipSpSVAlgToCudaSpSVAlg(alg),
                            (cusparseSpSVDescr_t)spsvDescr));
 }
-#elif(CUDART_VERSION >= 11030)
-hipsparseStatus_t hipsparseSpSV_solve(hipsparseHandle_t handle,
-                                      hipsparseOperation_t opA,
-                                      const void* alpha,
+#elif (CUDART_VERSION >= 11030)
+hipsparseStatus_t hipsparseSpSV_solve(hipsparseHandle_t           handle,
+                                      hipsparseOperation_t        opA,
+                                      const void*                 alpha,
                                       const hipsparseSpMatDescr_t matA,
                                       const hipsparseDnVecDescr_t x,
                                       const hipsparseDnVecDescr_t y,
-                                      hipDataType computeType,
-                                      hipsparseSpSVAlg_t alg,
-                                      hipsparseSpSVDescr_t spsvDescr)
+                                      hipDataType                 computeType,
+                                      hipsparseSpSVAlg_t          alg,
+                                      hipsparseSpSVDescr_t        spsvDescr)
 {
     return hipsparse::hipCUSPARSEStatusToHIPStatus(
         cusparseSpSV_solve((cusparseHandle_t)handle,

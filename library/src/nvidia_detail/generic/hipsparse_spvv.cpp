@@ -28,7 +28,7 @@
 
 #include "../utility.h"
 
-#if(CUDART_VERSION >= 12000)
+#if (CUDART_VERSION >= 12000)
 hipsparseStatus_t hipsparseSpVV_bufferSize(hipsparseHandle_t          handle,
                                            hipsparseOperation_t       opX,
                                            hipsparseConstSpVecDescr_t vecX,
@@ -46,14 +46,14 @@ hipsparseStatus_t hipsparseSpVV_bufferSize(hipsparseHandle_t          handle,
                                 hipsparse::hipDataTypeToCudaDataType(computeType),
                                 pBufferSizeInBytes));
 }
-#elif(CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
-hipsparseStatus_t hipsparseSpVV_bufferSize(hipsparseHandle_t handle,
-                                           hipsparseOperation_t opX,
+#elif (CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
+hipsparseStatus_t hipsparseSpVV_bufferSize(hipsparseHandle_t     handle,
+                                           hipsparseOperation_t  opX,
                                            hipsparseSpVecDescr_t vecX,
                                            hipsparseDnVecDescr_t vecY,
-                                           void* result,
-                                           hipDataType computeType,
-                                           size_t* pBufferSizeInBytes)
+                                           void*                 result,
+                                           hipDataType           computeType,
+                                           size_t*               pBufferSizeInBytes)
 {
     return hipsparse::hipCUSPARSEStatusToHIPStatus(
         cusparseSpVV_bufferSize((cusparseHandle_t)handle,
@@ -66,7 +66,7 @@ hipsparseStatus_t hipsparseSpVV_bufferSize(hipsparseHandle_t handle,
 }
 #endif
 
-#if(CUDART_VERSION >= 12000)
+#if (CUDART_VERSION >= 12000)
 hipsparseStatus_t hipsparseSpVV(hipsparseHandle_t          handle,
                                 hipsparseOperation_t       opX,
                                 hipsparseConstSpVecDescr_t vecX,
@@ -84,14 +84,14 @@ hipsparseStatus_t hipsparseSpVV(hipsparseHandle_t          handle,
                      hipsparse::hipDataTypeToCudaDataType(computeType),
                      externalBuffer));
 }
-#elif(CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
-hipsparseStatus_t hipsparseSpVV(hipsparseHandle_t handle,
-                                hipsparseOperation_t opX,
+#elif (CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
+hipsparseStatus_t hipsparseSpVV(hipsparseHandle_t     handle,
+                                hipsparseOperation_t  opX,
                                 hipsparseSpVecDescr_t vecX,
                                 hipsparseDnVecDescr_t vecY,
-                                void* result,
-                                hipDataType computeType,
-                                void* externalBuffer)
+                                void*                 result,
+                                hipDataType           computeType,
+                                void*                 externalBuffer)
 {
     return hipsparse::hipCUSPARSEStatusToHIPStatus(
         cusparseSpVV((cusparseHandle_t)handle,

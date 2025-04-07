@@ -29,17 +29,17 @@
 #include "../utility.h"
 
 hipsparseStatus_t hipsparseXcoo2csr(hipsparseHandle_t    handle,
-    const int*           cooRowInd,
-    int                  nnz,
-    int                  m,
-    int*                 csrRowPtr,
-    hipsparseIndexBase_t idxBase)
+                                    const int*           cooRowInd,
+                                    int                  nnz,
+                                    int                  m,
+                                    int*                 csrRowPtr,
+                                    hipsparseIndexBase_t idxBase)
 {
-return hipsparse::hipCUSPARSEStatusToHIPStatus(
-cusparseXcoo2csr((cusparseHandle_t)handle,
-cooRowInd,
-nnz,
-m,
-csrRowPtr,
-hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
+    return hipsparse::hipCUSPARSEStatusToHIPStatus(
+        cusparseXcoo2csr((cusparseHandle_t)handle,
+                         cooRowInd,
+                         nnz,
+                         m,
+                         csrRowPtr,
+                         hipsparse::hipIndexBaseToCudaIndexBase(idxBase)));
 }

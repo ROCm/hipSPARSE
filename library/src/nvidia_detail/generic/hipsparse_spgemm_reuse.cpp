@@ -28,7 +28,7 @@
 
 #include "../utility.h"
 
-#if(CUDART_VERSION >= 12000)
+#if (CUDART_VERSION >= 12000)
 hipsparseStatus_t hipsparseSpGEMMreuse_workEstimation(hipsparseHandle_t          handle,
                                                       hipsparseOperation_t       opA,
                                                       hipsparseOperation_t       opB,
@@ -52,17 +52,17 @@ hipsparseStatus_t hipsparseSpGEMMreuse_workEstimation(hipsparseHandle_t         
                                            bufferSize1,
                                            externalBuffer1));
 }
-#elif(CUDART_VERSION >= 11031)
-hipsparseStatus_t hipsparseSpGEMMreuse_workEstimation(hipsparseHandle_t handle,
-                                                      hipsparseOperation_t opA,
-                                                      hipsparseOperation_t opB,
-                                                      hipsparseSpMatDescr_t matA,
-                                                      hipsparseSpMatDescr_t matB,
-                                                      hipsparseSpMatDescr_t matC,
-                                                      hipsparseSpGEMMAlg_t alg,
+#elif (CUDART_VERSION >= 11031)
+hipsparseStatus_t hipsparseSpGEMMreuse_workEstimation(hipsparseHandle_t      handle,
+                                                      hipsparseOperation_t   opA,
+                                                      hipsparseOperation_t   opB,
+                                                      hipsparseSpMatDescr_t  matA,
+                                                      hipsparseSpMatDescr_t  matB,
+                                                      hipsparseSpMatDescr_t  matC,
+                                                      hipsparseSpGEMMAlg_t   alg,
                                                       hipsparseSpGEMMDescr_t spgemmDescr,
-                                                      size_t* bufferSize1,
-                                                      void* externalBuffer1)
+                                                      size_t*                bufferSize1,
+                                                      void*                  externalBuffer1)
 {
     return hipsparse::hipCUSPARSEStatusToHIPStatus(
         cusparseSpGEMMreuse_workEstimation((cusparseHandle_t)handle,
@@ -78,7 +78,7 @@ hipsparseStatus_t hipsparseSpGEMMreuse_workEstimation(hipsparseHandle_t handle,
 }
 #endif
 
-#if(CUDART_VERSION >= 12000)
+#if (CUDART_VERSION >= 12000)
 hipsparseStatus_t hipsparseSpGEMMreuse_nnz(hipsparseHandle_t          handle,
                                            hipsparseOperation_t       opA,
                                            hipsparseOperation_t       opB,
@@ -110,21 +110,21 @@ hipsparseStatus_t hipsparseSpGEMMreuse_nnz(hipsparseHandle_t          handle,
                                 bufferSize4,
                                 externalBuffer4));
 }
-#elif(CUDART_VERSION >= 11031)
-hipsparseStatus_t hipsparseSpGEMMreuse_nnz(hipsparseHandle_t handle,
-                                           hipsparseOperation_t opA,
-                                           hipsparseOperation_t opB,
-                                           hipsparseSpMatDescr_t matA,
-                                           hipsparseSpMatDescr_t matB,
-                                           hipsparseSpMatDescr_t matC,
-                                           hipsparseSpGEMMAlg_t alg,
+#elif (CUDART_VERSION >= 11031)
+hipsparseStatus_t hipsparseSpGEMMreuse_nnz(hipsparseHandle_t      handle,
+                                           hipsparseOperation_t   opA,
+                                           hipsparseOperation_t   opB,
+                                           hipsparseSpMatDescr_t  matA,
+                                           hipsparseSpMatDescr_t  matB,
+                                           hipsparseSpMatDescr_t  matC,
+                                           hipsparseSpGEMMAlg_t   alg,
                                            hipsparseSpGEMMDescr_t spgemmDescr,
-                                           size_t* bufferSize2,
-                                           void* externalBuffer2,
-                                           size_t* bufferSize3,
-                                           void* externalBuffer3,
-                                           size_t* bufferSize4,
-                                           void* externalBuffer4)
+                                           size_t*                bufferSize2,
+                                           void*                  externalBuffer2,
+                                           size_t*                bufferSize3,
+                                           void*                  externalBuffer3,
+                                           size_t*                bufferSize4,
+                                           void*                  externalBuffer4)
 {
     return hipsparse::hipCUSPARSEStatusToHIPStatus(
         cusparseSpGEMMreuse_nnz((cusparseHandle_t)handle,
@@ -145,7 +145,7 @@ hipsparseStatus_t hipsparseSpGEMMreuse_nnz(hipsparseHandle_t handle,
 
 #endif
 
-#if(CUDART_VERSION >= 12000)
+#if (CUDART_VERSION >= 12000)
 hipsparseStatus_t hipsparseSpGEMMreuse_compute(hipsparseHandle_t          handle,
                                                hipsparseOperation_t       opA,
                                                hipsparseOperation_t       opB,
@@ -171,17 +171,17 @@ hipsparseStatus_t hipsparseSpGEMMreuse_compute(hipsparseHandle_t          handle
                                     hipsparse::hipSpGEMMAlgToCudaSpGEMMAlg(alg),
                                     (cusparseSpGEMMDescr_t)spgemmDescr));
 }
-#elif(CUDART_VERSION >= 11031)
-hipsparseStatus_t hipsparseSpGEMMreuse_compute(hipsparseHandle_t handle,
-                                               hipsparseOperation_t opA,
-                                               hipsparseOperation_t opB,
-                                               const void* alpha,
-                                               hipsparseSpMatDescr_t matA,
-                                               hipsparseSpMatDescr_t matB,
-                                               const void* beta,
-                                               hipsparseSpMatDescr_t matC,
-                                               hipDataType computeType,
-                                               hipsparseSpGEMMAlg_t alg,
+#elif (CUDART_VERSION >= 11031)
+hipsparseStatus_t hipsparseSpGEMMreuse_compute(hipsparseHandle_t      handle,
+                                               hipsparseOperation_t   opA,
+                                               hipsparseOperation_t   opB,
+                                               const void*            alpha,
+                                               hipsparseSpMatDescr_t  matA,
+                                               hipsparseSpMatDescr_t  matB,
+                                               const void*            beta,
+                                               hipsparseSpMatDescr_t  matC,
+                                               hipDataType            computeType,
+                                               hipsparseSpGEMMAlg_t   alg,
                                                hipsparseSpGEMMDescr_t spgemmDescr)
 {
     return hipsparse::hipCUSPARSEStatusToHIPStatus(
@@ -199,7 +199,7 @@ hipsparseStatus_t hipsparseSpGEMMreuse_compute(hipsparseHandle_t handle,
 }
 #endif
 
-#if(CUDART_VERSION >= 12000)
+#if (CUDART_VERSION >= 12000)
 hipsparseStatus_t hipsparseSpGEMMreuse_copy(hipsparseHandle_t          handle,
                                             hipsparseOperation_t       opA,
                                             hipsparseOperation_t       opB,
@@ -223,17 +223,17 @@ hipsparseStatus_t hipsparseSpGEMMreuse_copy(hipsparseHandle_t          handle,
                                  bufferSize5,
                                  externalBuffer5));
 }
-#elif(CUDART_VERSION >= 11031)
-hipsparseStatus_t hipsparseSpGEMMreuse_copy(hipsparseHandle_t handle,
-                                            hipsparseOperation_t opA,
-                                            hipsparseOperation_t opB,
-                                            hipsparseSpMatDescr_t matA,
-                                            hipsparseSpMatDescr_t matB,
-                                            hipsparseSpMatDescr_t matC,
-                                            hipsparseSpGEMMAlg_t alg,
+#elif (CUDART_VERSION >= 11031)
+hipsparseStatus_t hipsparseSpGEMMreuse_copy(hipsparseHandle_t      handle,
+                                            hipsparseOperation_t   opA,
+                                            hipsparseOperation_t   opB,
+                                            hipsparseSpMatDescr_t  matA,
+                                            hipsparseSpMatDescr_t  matB,
+                                            hipsparseSpMatDescr_t  matC,
+                                            hipsparseSpGEMMAlg_t   alg,
                                             hipsparseSpGEMMDescr_t spgemmDescr,
-                                            size_t* bufferSize5,
-                                            void* externalBuffer5)
+                                            size_t*                bufferSize5,
+                                            void*                  externalBuffer5)
 {
     return hipsparse::hipCUSPARSEStatusToHIPStatus(
         cusparseSpGEMMreuse_copy((cusparseHandle_t)handle,
