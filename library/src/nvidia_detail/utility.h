@@ -40,7 +40,7 @@
 
 namespace hipsparse
 {
-    hipsparseStatus_t hipCUSPARSEStatusToHIPStatus(cusparseStatus_t cuStatus)
+    inline hipsparseStatus_t hipCUSPARSEStatusToHIPStatus(cusparseStatus_t cuStatus)
     {
 #if (CUDART_VERSION >= 11003)
         switch(cuStatus)
@@ -105,7 +105,7 @@ namespace hipsparse
 #endif
     }
 
-    cusparseStatus_t hipSPARSEStatusToCUSPARSEStatus(hipsparseStatus_t hipStatus)
+    inline cusparseStatus_t hipSPARSEStatusToCUSPARSEStatus(hipsparseStatus_t hipStatus)
     {
 #if (CUDART_VERSION >= 11003)
         switch(hipStatus)
@@ -170,7 +170,7 @@ namespace hipsparse
 #endif
     }
 
-    cusparsePointerMode_t hipPointerModeToCudaPointerMode(hipsparsePointerMode_t mode)
+    inline cusparsePointerMode_t hipPointerModeToCudaPointerMode(hipsparsePointerMode_t mode)
     {
         switch(mode)
         {
@@ -183,7 +183,7 @@ namespace hipsparse
         }
     }
 
-    hipsparsePointerMode_t CudaPointerModeToHIPPointerMode(cusparsePointerMode_t mode)
+    inline hipsparsePointerMode_t CudaPointerModeToHIPPointerMode(cusparsePointerMode_t mode)
     {
         switch(mode)
         {
@@ -196,7 +196,7 @@ namespace hipsparse
         }
     }
 
-    cusparseAction_t hipActionToCudaAction(hipsparseAction_t action)
+    inline cusparseAction_t hipActionToCudaAction(hipsparseAction_t action)
     {
         switch(action)
         {
@@ -209,7 +209,7 @@ namespace hipsparse
         }
     }
 
-    hipsparseAction_t CudaActionToHIPAction(cusparseAction_t action)
+    inline hipsparseAction_t CudaActionToHIPAction(cusparseAction_t action)
     {
         switch(action)
         {
@@ -222,7 +222,7 @@ namespace hipsparse
         }
     }
 
-    cusparseMatrixType_t hipMatrixTypeToCudaMatrixType(hipsparseMatrixType_t type)
+    inline cusparseMatrixType_t hipMatrixTypeToCudaMatrixType(hipsparseMatrixType_t type)
     {
         switch(type)
         {
@@ -239,7 +239,7 @@ namespace hipsparse
         }
     }
 
-    hipsparseMatrixType_t CudaMatrixTypeToHIPMatrixType(cusparseMatrixType_t type)
+    inline hipsparseMatrixType_t CudaMatrixTypeToHIPMatrixType(cusparseMatrixType_t type)
     {
         switch(type)
         {
@@ -256,7 +256,7 @@ namespace hipsparse
         }
     }
 
-    cusparseFillMode_t hipFillToCudaFill(hipsparseFillMode_t fill)
+    inline cusparseFillMode_t hipFillToCudaFill(hipsparseFillMode_t fill)
     {
         switch(fill)
         {
@@ -269,7 +269,7 @@ namespace hipsparse
         }
     }
 
-    hipsparseFillMode_t CudaFillToHIPFill(cusparseFillMode_t fill)
+    inline hipsparseFillMode_t CudaFillToHIPFill(cusparseFillMode_t fill)
     {
         switch(fill)
         {
@@ -282,7 +282,7 @@ namespace hipsparse
         }
     }
 
-    cusparseDiagType_t hipDiagonalToCudaDiagonal(hipsparseDiagType_t diagonal)
+    inline cusparseDiagType_t hipDiagonalToCudaDiagonal(hipsparseDiagType_t diagonal)
     {
         switch(diagonal)
         {
@@ -295,7 +295,7 @@ namespace hipsparse
         }
     }
 
-    hipsparseDiagType_t CudaDiagonalToHIPDiagonal(cusparseDiagType_t diagonal)
+    inline hipsparseDiagType_t CudaDiagonalToHIPDiagonal(cusparseDiagType_t diagonal)
     {
         switch(diagonal)
         {
@@ -308,7 +308,7 @@ namespace hipsparse
         }
     }
 
-    cusparseIndexBase_t hipIndexBaseToCudaIndexBase(hipsparseIndexBase_t base)
+    inline cusparseIndexBase_t hipIndexBaseToCudaIndexBase(hipsparseIndexBase_t base)
     {
         switch(base)
         {
@@ -321,7 +321,7 @@ namespace hipsparse
         }
     }
 
-    hipsparseIndexBase_t CudaIndexBaseToHIPIndexBase(cusparseIndexBase_t base)
+    inline hipsparseIndexBase_t CudaIndexBaseToHIPIndexBase(cusparseIndexBase_t base)
     {
         switch(base)
         {
@@ -334,7 +334,7 @@ namespace hipsparse
         }
     }
 
-    cusparseOperation_t hipOperationToCudaOperation(hipsparseOperation_t op)
+    inline cusparseOperation_t hipOperationToCudaOperation(hipsparseOperation_t op)
     {
         switch(op)
         {
@@ -349,7 +349,7 @@ namespace hipsparse
         }
     }
 
-    hipsparseOperation_t CudaOperationToHIPOperation(cusparseOperation_t op)
+    inline hipsparseOperation_t CudaOperationToHIPOperation(cusparseOperation_t op)
     {
         switch(op)
         {
@@ -364,7 +364,7 @@ namespace hipsparse
         }
     }
 
-    cusparseDirection_t hipDirectionToCudaDirection(hipsparseDirection_t op)
+    inline cusparseDirection_t hipDirectionToCudaDirection(hipsparseDirection_t op)
     {
         switch(op)
         {
@@ -377,7 +377,7 @@ namespace hipsparse
         }
     }
 
-    hipsparseDirection_t CudaDirectionToHIPDirection(cusparseDirection_t op)
+    inline hipsparseDirection_t CudaDirectionToHIPDirection(cusparseDirection_t op)
     {
         switch(op)
         {
@@ -391,7 +391,7 @@ namespace hipsparse
     }
 
 #if CUDART_VERSION < 11000
-    cusparseHybPartition_t hipHybPartitionToCudaHybPartition(hipsparseHybPartition_t part)
+    inline cusparseHybPartition_t hipHybPartitionToCudaHybPartition(hipsparseHybPartition_t part)
     {
         switch(part)
         {
@@ -407,7 +407,7 @@ namespace hipsparse
     }
 #endif
 
-    cusparseSolvePolicy_t hipPolicyToCudaPolicy(hipsparseSolvePolicy_t policy)
+    inline cusparseSolvePolicy_t hipPolicyToCudaPolicy(hipsparseSolvePolicy_t policy)
     {
         switch(policy)
         {
@@ -421,7 +421,7 @@ namespace hipsparse
     }
 
 #if CUDART_VERSION < 11050
-    cusparseSideMode_t hipSideToCudaSide(hipsparseSideMode_t side)
+inline cusparseSideMode_t hipSideToCudaSide(hipsparseSideMode_t side)
     {
         switch(side)
         {
@@ -434,7 +434,7 @@ namespace hipsparse
         }
     }
 
-    hipsparseSideMode_t CudaSideToHIPSide(cusparseSideMode_t side)
+    inline hipsparseSideMode_t CudaSideToHIPSide(cusparseSideMode_t side)
     {
         switch(side)
         {
@@ -449,7 +449,7 @@ namespace hipsparse
 #endif
 
 #if CUDART_VERSION > 10000
-    cudaDataType hipDataTypeToCudaDataType(hipDataType datatype)
+inline cudaDataType hipDataTypeToCudaDataType(hipDataType datatype)
     {
         switch(datatype)
         {
@@ -472,7 +472,7 @@ namespace hipsparse
         }
     }
 
-    hipDataType CudaDataTypeToHIPDataType(cudaDataType datatype)
+    inline hipDataType CudaDataTypeToHIPDataType(cudaDataType datatype)
     {
         switch(datatype)
         {
@@ -497,7 +497,7 @@ namespace hipsparse
 #endif
 
 #if (CUDART_VERSION >= 12000)
-    cusparseCsr2CscAlg_t hipCsr2CscAlgToCudaCsr2CscAlg(hipsparseCsr2CscAlg_t alg)
+inline cusparseCsr2CscAlg_t hipCsr2CscAlgToCudaCsr2CscAlg(hipsparseCsr2CscAlg_t alg)
     {
         switch(alg)
         {
@@ -510,7 +510,7 @@ namespace hipsparse
         }
     }
 #elif (CUDART_VERSION >= 10010 && CUDART_VERSION < 12000)
-    cusparseCsr2CscAlg_t hipCsr2CscAlgToCudaCsr2CscAlg(hipsparseCsr2CscAlg_t alg)
+inline cusparseCsr2CscAlg_t hipCsr2CscAlgToCudaCsr2CscAlg(hipsparseCsr2CscAlg_t alg)
     {
         switch(alg)
         {
@@ -526,7 +526,7 @@ namespace hipsparse
 
     /* Generic API */
 #if (CUDART_VERSION >= 12000)
-    cusparseFormat_t hipFormatToCudaFormat(hipsparseFormat_t format)
+inline cusparseFormat_t hipFormatToCudaFormat(hipsparseFormat_t format)
     {
         switch(format)
         {
@@ -543,7 +543,7 @@ namespace hipsparse
         }
     }
 #elif (CUDART_VERSION >= 11021 && CUDART_VERSION < 12000)
-    cusparseFormat_t hipFormatToCudaFormat(hipsparseFormat_t format)
+inline cusparseFormat_t hipFormatToCudaFormat(hipsparseFormat_t format)
     {
         switch(format)
         {
@@ -562,7 +562,7 @@ namespace hipsparse
         }
     }
 #elif (CUDART_VERSION >= 10010 && CUDART_VERSION < 11021)
-    cusparseFormat_t hipFormatToCudaFormat(hipsparseFormat_t format)
+inline cusparseFormat_t hipFormatToCudaFormat(hipsparseFormat_t format)
     {
         switch(format)
         {
@@ -579,7 +579,7 @@ namespace hipsparse
 #endif
 
 #if (CUDART_VERSION >= 12000)
-    hipsparseFormat_t CudaFormatToHIPFormat(cusparseFormat_t format)
+inline hipsparseFormat_t CudaFormatToHIPFormat(cusparseFormat_t format)
     {
         switch(format)
         {
@@ -596,7 +596,7 @@ namespace hipsparse
         }
     }
 #elif (CUDART_VERSION >= 11021 && CUDART_VERSION < 12000)
-    hipsparseFormat_t CudaFormatToHIPFormat(cusparseFormat_t format)
+inline hipsparseFormat_t CudaFormatToHIPFormat(cusparseFormat_t format)
     {
         switch(format)
         {
@@ -615,7 +615,7 @@ namespace hipsparse
         }
     }
 #elif (CUDART_VERSION >= 10010 && CUDART_VERSION < 11021)
-    hipsparseFormat_t CudaFormatToHIPFormat(cusparseFormat_t format)
+inline hipsparseFormat_t CudaFormatToHIPFormat(cusparseFormat_t format)
     {
         switch(format)
         {
@@ -632,7 +632,7 @@ namespace hipsparse
 #endif
 
 #if (CUDART_VERSION >= 11000)
-    cusparseOrder_t hipOrderToCudaOrder(hipsparseOrder_t op)
+inline cusparseOrder_t hipOrderToCudaOrder(hipsparseOrder_t op)
     {
         switch(op)
         {
@@ -645,7 +645,7 @@ namespace hipsparse
         }
     }
 
-    hipsparseOrder_t CudaOrderToHIPOrder(cusparseOrder_t op)
+    inline hipsparseOrder_t CudaOrderToHIPOrder(cusparseOrder_t op)
     {
         switch(op)
         {
@@ -658,7 +658,7 @@ namespace hipsparse
         }
     }
 #elif (CUDART_VERSION >= 10010)
-    cusparseOrder_t hipOrderToCudaOrder(hipsparseOrder_t op)
+inline cusparseOrder_t hipOrderToCudaOrder(hipsparseOrder_t op)
     {
         switch(op)
         {
@@ -669,7 +669,7 @@ namespace hipsparse
         }
     }
 
-    hipsparseOrder_t CudaOrderToHIPOrder(cusparseOrder_t op)
+    inline hipsparseOrder_t CudaOrderToHIPOrder(cusparseOrder_t op)
     {
         switch(op)
         {
@@ -682,7 +682,7 @@ namespace hipsparse
 #endif
 
 #if (CUDART_VERSION >= 10010)
-    cusparseIndexType_t hipIndexTypeToCudaIndexType(hipsparseIndexType_t type)
+inline cusparseIndexType_t hipIndexTypeToCudaIndexType(hipsparseIndexType_t type)
     {
         switch(type)
         {
@@ -697,7 +697,7 @@ namespace hipsparse
         }
     }
 
-    hipsparseIndexType_t CudaIndexTypeToHIPIndexType(cusparseIndexType_t type)
+    inline hipsparseIndexType_t CudaIndexTypeToHIPIndexType(cusparseIndexType_t type)
     {
         switch(type)
         {
@@ -714,7 +714,7 @@ namespace hipsparse
 #endif
 
 #if (CUDART_VERSION >= 12000)
-    cusparseSpMVAlg_t hipSpMVAlgToCudaSpMVAlg(hipsparseSpMVAlg_t alg)
+inline cusparseSpMVAlg_t hipSpMVAlgToCudaSpMVAlg(hipsparseSpMVAlg_t alg)
     {
         switch(alg)
         {
@@ -733,7 +733,7 @@ namespace hipsparse
         }
     }
 #elif (CUDART_VERSION >= 11021 && CUDART_VERSION < 12000)
-    cusparseSpMVAlg_t hipSpMVAlgToCudaSpMVAlg(hipsparseSpMVAlg_t alg)
+inline cusparseSpMVAlg_t hipSpMVAlgToCudaSpMVAlg(hipsparseSpMVAlg_t alg)
     {
         switch(alg)
         {
@@ -756,7 +756,7 @@ namespace hipsparse
         }
     }
 #elif (CUDART_VERSION >= 10010 && CUDART_VERSION < 11021)
-    cusparseSpMVAlg_t hipSpMVAlgToCudaSpMVAlg(hipsparseSpMVAlg_t alg)
+inline cusparseSpMVAlg_t hipSpMVAlgToCudaSpMVAlg(hipsparseSpMVAlg_t alg)
     {
         switch(alg)
         {
@@ -775,7 +775,7 @@ namespace hipsparse
 #endif
 
 #if (CUDART_VERSION >= 12000)
-    cusparseSpMMAlg_t hipSpMMAlgToCudaSpMMAlg(hipsparseSpMMAlg_t alg)
+inline cusparseSpMMAlg_t hipSpMMAlgToCudaSpMMAlg(hipsparseSpMMAlg_t alg)
     {
         switch(alg)
         {
@@ -802,7 +802,7 @@ namespace hipsparse
         }
     }
 #elif (CUDART_VERSION >= 11021 && CUDART_VERSION < 12000)
-    cusparseSpMMAlg_t hipSpMMAlgToCudaSpMMAlg(hipsparseSpMMAlg_t alg)
+inline cusparseSpMMAlg_t hipSpMMAlgToCudaSpMMAlg(hipsparseSpMMAlg_t alg)
     {
         switch(alg)
         {
@@ -834,7 +834,7 @@ namespace hipsparse
         }
     }
 #elif (CUDART_VERSION >= 11003 && CUDART_VERSION < 11021)
-    cusparseSpMMAlg_t hipSpMMAlgToCudaSpMMAlg(hipsparseSpMMAlg_t alg)
+inline cusparseSpMMAlg_t hipSpMMAlgToCudaSpMMAlg(hipsparseSpMMAlg_t alg)
     {
         switch(alg)
         {
@@ -864,7 +864,7 @@ namespace hipsparse
         }
     }
 #elif (CUDART_VERSION >= 10010 && CUDART_VERSION < 11003)
-    cusparseSpMMAlg_t hipSpMMAlgToCudaSpMMAlg(hipsparseSpMMAlg_t alg)
+inline cusparseSpMMAlg_t hipSpMMAlgToCudaSpMMAlg(hipsparseSpMMAlg_t alg)
     {
         switch(alg)
         {
@@ -885,7 +885,7 @@ namespace hipsparse
 #endif
 
 #if (CUDART_VERSION >= 12000)
-    cusparseSpGEMMAlg_t hipSpGEMMAlgToCudaSpGEMMAlg(hipsparseSpGEMMAlg_t alg)
+inline cusparseSpGEMMAlg_t hipSpGEMMAlgToCudaSpGEMMAlg(hipsparseSpGEMMAlg_t alg)
     {
         switch(alg)
         {
@@ -906,7 +906,7 @@ namespace hipsparse
         }
     }
 #elif (CUDART_VERSION >= 11031)
-    cusparseSpGEMMAlg_t hipSpGEMMAlgToCudaSpGEMMAlg(hipsparseSpGEMMAlg_t alg)
+inline cusparseSpGEMMAlg_t hipSpGEMMAlgToCudaSpGEMMAlg(hipsparseSpGEMMAlg_t alg)
     {
         switch(alg)
         {
@@ -921,7 +921,7 @@ namespace hipsparse
         }
     }
 #elif (CUDART_VERSION >= 11000)
-    cusparseSpGEMMAlg_t hipSpGEMMAlgToCudaSpGEMMAlg(hipsparseSpGEMMAlg_t alg)
+inline cusparseSpGEMMAlg_t hipSpGEMMAlgToCudaSpGEMMAlg(hipsparseSpGEMMAlg_t alg)
     {
         switch(alg)
         {
@@ -934,7 +934,7 @@ namespace hipsparse
 #endif
 
 #if (CUDART_VERSION >= 11020)
-    cusparseSparseToDenseAlg_t hipSpToDnAlgToCudaSpToDnAlg(hipsparseSparseToDenseAlg_t alg)
+inline cusparseSparseToDenseAlg_t hipSpToDnAlgToCudaSpToDnAlg(hipsparseSparseToDenseAlg_t alg)
     {
         switch(alg)
         {
@@ -945,7 +945,7 @@ namespace hipsparse
         }
     }
 
-    hipsparseSparseToDenseAlg_t CudaSpToDnAlgToHipSpToDnAlg(cusparseSparseToDenseAlg_t alg)
+    inline hipsparseSparseToDenseAlg_t CudaSpToDnAlgToHipSpToDnAlg(cusparseSparseToDenseAlg_t alg)
     {
         switch(alg)
         {
@@ -958,7 +958,7 @@ namespace hipsparse
 #endif
 
 #if (CUDART_VERSION >= 11020)
-    cusparseDenseToSparseAlg_t hipDnToSpAlgToCudaDnToSpAlg(hipsparseDenseToSparseAlg_t alg)
+inline cusparseDenseToSparseAlg_t hipDnToSpAlgToCudaDnToSpAlg(hipsparseDenseToSparseAlg_t alg)
     {
         switch(alg)
         {
@@ -969,7 +969,7 @@ namespace hipsparse
         }
     }
 
-    hipsparseDenseToSparseAlg_t CudaDnToSpAlgToHipDnToSpAlg(cusparseDenseToSparseAlg_t alg)
+    inline hipsparseDenseToSparseAlg_t CudaDnToSpAlgToHipDnToSpAlg(cusparseDenseToSparseAlg_t alg)
     {
         switch(alg)
         {
@@ -982,7 +982,7 @@ namespace hipsparse
 #endif
 
 #if (CUDART_VERSION >= 11022)
-    cusparseSDDMMAlg_t hipSDDMMAlgToCudaSDDMMAlg(hipsparseSDDMMAlg_t alg)
+inline cusparseSDDMMAlg_t hipSDDMMAlgToCudaSDDMMAlg(hipsparseSDDMMAlg_t alg)
     {
         switch(alg)
         {
@@ -995,7 +995,7 @@ namespace hipsparse
 #endif
 
 #if (CUDART_VERSION >= 11030)
-    cusparseSpSVAlg_t hipSpSVAlgToCudaSpSVAlg(hipsparseSpSVAlg_t alg)
+inline cusparseSpSVAlg_t hipSpSVAlgToCudaSpSVAlg(hipsparseSpSVAlg_t alg)
     {
         switch(alg)
         {
@@ -1008,7 +1008,7 @@ namespace hipsparse
 #endif
 
 #if (CUDART_VERSION >= 11031)
-    cusparseSpSMAlg_t hipSpSMAlgToCudaSpSMAlg(hipsparseSpSMAlg_t alg)
+inline cusparseSpSMAlg_t hipSpSMAlgToCudaSpSMAlg(hipsparseSpSMAlg_t alg)
     {
         switch(alg)
         {
