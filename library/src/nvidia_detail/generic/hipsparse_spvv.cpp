@@ -28,7 +28,7 @@
 
 #include "../utility.h"
 
-#if (CUDART_VERSION >= 12000)
+#if(CUDART_VERSION >= 12000)
 hipsparseStatus_t hipsparseSpVV_bufferSize(hipsparseHandle_t          handle,
                                            hipsparseOperation_t       opX,
                                            hipsparseConstSpVecDescr_t vecX,
@@ -66,7 +66,7 @@ hipsparseStatus_t hipsparseSpVV_bufferSize(hipsparseHandle_t     handle,
 }
 #endif
 
-#if (CUDART_VERSION >= 12000)
+#if(CUDART_VERSION >= 12000)
 hipsparseStatus_t hipsparseSpVV(hipsparseHandle_t          handle,
                                 hipsparseOperation_t       opX,
                                 hipsparseConstSpVecDescr_t vecX,

@@ -28,7 +28,7 @@
 
 #include "../utility.h"
 
-#if (CUDART_VERSION >= 12000)
+#if(CUDART_VERSION >= 12000)
 hipsparseStatus_t hipsparseSpGEMMreuse_workEstimation(hipsparseHandle_t          handle,
                                                       hipsparseOperation_t       opA,
                                                       hipsparseOperation_t       opB,
@@ -78,7 +78,7 @@ hipsparseStatus_t hipsparseSpGEMMreuse_workEstimation(hipsparseHandle_t      han
 }
 #endif
 
-#if (CUDART_VERSION >= 12000)
+#if(CUDART_VERSION >= 12000)
 hipsparseStatus_t hipsparseSpGEMMreuse_nnz(hipsparseHandle_t          handle,
                                            hipsparseOperation_t       opA,
                                            hipsparseOperation_t       opB,
@@ -145,7 +145,7 @@ hipsparseStatus_t hipsparseSpGEMMreuse_nnz(hipsparseHandle_t      handle,
 
 #endif
 
-#if (CUDART_VERSION >= 12000)
+#if(CUDART_VERSION >= 12000)
 hipsparseStatus_t hipsparseSpGEMMreuse_compute(hipsparseHandle_t          handle,
                                                hipsparseOperation_t       opA,
                                                hipsparseOperation_t       opB,
@@ -199,7 +199,7 @@ hipsparseStatus_t hipsparseSpGEMMreuse_compute(hipsparseHandle_t      handle,
 }
 #endif
 
-#if (CUDART_VERSION >= 12000)
+#if(CUDART_VERSION >= 12000)
 hipsparseStatus_t hipsparseSpGEMMreuse_copy(hipsparseHandle_t          handle,
                                             hipsparseOperation_t       opA,
                                             hipsparseOperation_t       opB,

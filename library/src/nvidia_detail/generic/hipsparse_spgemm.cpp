@@ -44,7 +44,7 @@ hipsparseStatus_t hipsparseSpGEMM_destroyDescr(hipsparseSpGEMMDescr_t descr)
 }
 #endif
 
-#if (CUDART_VERSION >= 12000)
+#if(CUDART_VERSION >= 12000)
 hipsparseStatus_t hipsparseSpGEMM_workEstimation(hipsparseHandle_t          handle,
                                                  hipsparseOperation_t       opA,
                                                  hipsparseOperation_t       opB,
@@ -74,7 +74,7 @@ hipsparseStatus_t hipsparseSpGEMM_workEstimation(hipsparseHandle_t          hand
                                       bufferSize1,
                                       externalBuffer1));
 }
-#elif (CUDART_VERSION >= 11000)
+#elif(CUDART_VERSION >= 11000)
 hipsparseStatus_t hipsparseSpGEMM_workEstimation(hipsparseHandle_t      handle,
                                                  hipsparseOperation_t   opA,
                                                  hipsparseOperation_t   opB,
@@ -106,7 +106,7 @@ hipsparseStatus_t hipsparseSpGEMM_workEstimation(hipsparseHandle_t      handle,
 }
 #endif
 
-#if (CUDART_VERSION >= 12000)
+#if(CUDART_VERSION >= 12000)
 hipsparseStatus_t hipsparseSpGEMM_compute(hipsparseHandle_t          handle,
                                           hipsparseOperation_t       opA,
                                           hipsparseOperation_t       opB,
@@ -136,7 +136,7 @@ hipsparseStatus_t hipsparseSpGEMM_compute(hipsparseHandle_t          handle,
                                bufferSize2,
                                externalBuffer2));
 }
-#elif (CUDART_VERSION >= 11000)
+#elif(CUDART_VERSION >= 11000)
 hipsparseStatus_t hipsparseSpGEMM_compute(hipsparseHandle_t      handle,
                                           hipsparseOperation_t   opA,
                                           hipsparseOperation_t   opB,
@@ -168,7 +168,7 @@ hipsparseStatus_t hipsparseSpGEMM_compute(hipsparseHandle_t      handle,
 }
 #endif
 
-#if (CUDART_VERSION >= 12000)
+#if(CUDART_VERSION >= 12000)
 hipsparseStatus_t hipsparseSpGEMM_copy(hipsparseHandle_t          handle,
                                        hipsparseOperation_t       opA,
                                        hipsparseOperation_t       opB,
@@ -194,7 +194,7 @@ hipsparseStatus_t hipsparseSpGEMM_copy(hipsparseHandle_t          handle,
                             hipsparse::hipSpGEMMAlgToCudaSpGEMMAlg(alg),
                             (cusparseSpGEMMDescr_t)spgemmDescr));
 }
-#elif (CUDART_VERSION >= 11000)
+#elif(CUDART_VERSION >= 11000)
 hipsparseStatus_t hipsparseSpGEMM_copy(hipsparseHandle_t      handle,
                                        hipsparseOperation_t   opA,
                                        hipsparseOperation_t   opB,

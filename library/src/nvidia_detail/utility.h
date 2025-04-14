@@ -496,7 +496,7 @@ namespace hipsparse
     }
 #endif
 
-#if (CUDART_VERSION >= 12000)
+#if(CUDART_VERSION >= 12000)
     inline cusparseCsr2CscAlg_t hipCsr2CscAlgToCudaCsr2CscAlg(hipsparseCsr2CscAlg_t alg)
     {
         switch(alg)
@@ -525,7 +525,7 @@ namespace hipsparse
 #endif
 
     /* Generic API */
-#if (CUDART_VERSION >= 12000)
+#if(CUDART_VERSION >= 12000)
     inline cusparseFormat_t hipFormatToCudaFormat(hipsparseFormat_t format)
     {
         switch(format)
@@ -578,7 +578,7 @@ namespace hipsparse
     }
 #endif
 
-#if (CUDART_VERSION >= 12000)
+#if(CUDART_VERSION >= 12000)
     inline hipsparseFormat_t CudaFormatToHIPFormat(cusparseFormat_t format)
     {
         switch(format)
@@ -681,7 +681,7 @@ namespace hipsparse
     }
 #endif
 
-#if (CUDART_VERSION >= 10010)
+#if(CUDART_VERSION >= 10010)
     inline cusparseIndexType_t hipIndexTypeToCudaIndexType(hipsparseIndexType_t type)
     {
         switch(type)
@@ -713,7 +713,7 @@ namespace hipsparse
     }
 #endif
 
-#if (CUDART_VERSION >= 12000)
+#if(CUDART_VERSION >= 12000)
     inline cusparseSpMVAlg_t hipSpMVAlgToCudaSpMVAlg(hipsparseSpMVAlg_t alg)
     {
         switch(alg)
@@ -774,7 +774,7 @@ namespace hipsparse
     }
 #endif
 
-#if (CUDART_VERSION >= 12000)
+#if(CUDART_VERSION >= 12000)
     inline cusparseSpMMAlg_t hipSpMMAlgToCudaSpMMAlg(hipsparseSpMMAlg_t alg)
     {
         switch(alg)
@@ -884,7 +884,7 @@ namespace hipsparse
     }
 #endif
 
-#if (CUDART_VERSION >= 12000)
+#if(CUDART_VERSION >= 12000)
     inline cusparseSpGEMMAlg_t hipSpGEMMAlgToCudaSpGEMMAlg(hipsparseSpGEMMAlg_t alg)
     {
         switch(alg)
@@ -920,7 +920,7 @@ namespace hipsparse
             throw "Non existant cusparseSpGEMMAlg_t";
         }
     }
-#elif (CUDART_VERSION >= 11000)
+#elif(CUDART_VERSION >= 11000)
     inline cusparseSpGEMMAlg_t hipSpGEMMAlgToCudaSpGEMMAlg(hipsparseSpGEMMAlg_t alg)
     {
         switch(alg)
@@ -933,7 +933,7 @@ namespace hipsparse
     }
 #endif
 
-#if (CUDART_VERSION >= 11020)
+#if(CUDART_VERSION >= 11020)
     inline cusparseSparseToDenseAlg_t hipSpToDnAlgToCudaSpToDnAlg(hipsparseSparseToDenseAlg_t alg)
     {
         switch(alg)
@@ -957,7 +957,7 @@ namespace hipsparse
     }
 #endif
 
-#if (CUDART_VERSION >= 11020)
+#if(CUDART_VERSION >= 11020)
     inline cusparseDenseToSparseAlg_t hipDnToSpAlgToCudaDnToSpAlg(hipsparseDenseToSparseAlg_t alg)
     {
         switch(alg)

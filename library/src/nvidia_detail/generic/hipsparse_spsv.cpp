@@ -44,7 +44,7 @@ hipsparseStatus_t hipsparseSpSV_destroyDescr(hipsparseSpSVDescr_t descr)
 }
 #endif
 
-#if (CUDART_VERSION >= 12000)
+#if(CUDART_VERSION >= 12000)
 hipsparseStatus_t hipsparseSpSV_bufferSize(hipsparseHandle_t           handle,
                                            hipsparseOperation_t        opA,
                                            const void*                 alpha,
@@ -68,7 +68,7 @@ hipsparseStatus_t hipsparseSpSV_bufferSize(hipsparseHandle_t           handle,
                                 (cusparseSpSVDescr_t)spsvDescr,
                                 pBufferSizeInBytes));
 }
-#elif (CUDART_VERSION >= 11030)
+#elif(CUDART_VERSION >= 11030)
 hipsparseStatus_t hipsparseSpSV_bufferSize(hipsparseHandle_t           handle,
                                            hipsparseOperation_t        opA,
                                            const void*                 alpha,
@@ -94,7 +94,7 @@ hipsparseStatus_t hipsparseSpSV_bufferSize(hipsparseHandle_t           handle,
 }
 #endif
 
-#if (CUDART_VERSION >= 12000)
+#if(CUDART_VERSION >= 12000)
 hipsparseStatus_t hipsparseSpSV_analysis(hipsparseHandle_t           handle,
                                          hipsparseOperation_t        opA,
                                          const void*                 alpha,
@@ -118,7 +118,7 @@ hipsparseStatus_t hipsparseSpSV_analysis(hipsparseHandle_t           handle,
                               (cusparseSpSVDescr_t)spsvDescr,
                               externalBuffer));
 }
-#elif (CUDART_VERSION >= 11030)
+#elif(CUDART_VERSION >= 11030)
 hipsparseStatus_t hipsparseSpSV_analysis(hipsparseHandle_t           handle,
                                          hipsparseOperation_t        opA,
                                          const void*                 alpha,
@@ -144,7 +144,7 @@ hipsparseStatus_t hipsparseSpSV_analysis(hipsparseHandle_t           handle,
 }
 #endif
 
-#if (CUDART_VERSION >= 12000)
+#if(CUDART_VERSION >= 12000)
 hipsparseStatus_t hipsparseSpSV_solve(hipsparseHandle_t           handle,
                                       hipsparseOperation_t        opA,
                                       const void*                 alpha,
@@ -166,7 +166,7 @@ hipsparseStatus_t hipsparseSpSV_solve(hipsparseHandle_t           handle,
                            hipsparse::hipSpSVAlgToCudaSpSVAlg(alg),
                            (cusparseSpSVDescr_t)spsvDescr));
 }
-#elif (CUDART_VERSION >= 11030)
+#elif(CUDART_VERSION >= 11030)
 hipsparseStatus_t hipsparseSpSV_solve(hipsparseHandle_t           handle,
                                       hipsparseOperation_t        opA,
                                       const void*                 alpha,

@@ -28,7 +28,7 @@
 
 #include "../utility.h"
 
-#if (CUDART_VERSION >= 12000)
+#if(CUDART_VERSION >= 12000)
 hipsparseStatus_t hipsparseScatter(hipsparseHandle_t          handle,
                                    hipsparseConstSpVecDescr_t vecX,
                                    hipsparseDnVecDescr_t      vecY)
@@ -36,7 +36,7 @@ hipsparseStatus_t hipsparseScatter(hipsparseHandle_t          handle,
     return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseScatter(
         (cusparseHandle_t)handle, (cusparseConstSpVecDescr_t)vecX, (cusparseDnVecDescr_t)vecY));
 }
-#elif (CUDART_VERSION >= 11000)
+#elif(CUDART_VERSION >= 11000)
 hipsparseStatus_t hipsparseScatter(hipsparseHandle_t     handle,
                                    hipsparseSpVecDescr_t vecX,
                                    hipsparseDnVecDescr_t vecY)
