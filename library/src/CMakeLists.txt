@@ -28,7 +28,8 @@ if(NOT USE_CUDA)
   set(hipsparse_source ${AMD_DETAIL_SOURCE})
 else()
   # hipSPARSE CUDA source
-  set(hipsparse_source src/nvidia_detail/hipsparse.cpp)
+  FILE(GLOB_RECURSE NVIDIA_DETAIL_SOURCE src/nvidia_detail/*.cpp)
+  set(hipsparse_source ${NVIDIA_DETAIL_SOURCE})
 endif()
 
 # hipSPARSE Fortran source
