@@ -42,7 +42,7 @@ hipsparseStatus_t hipsparseDenseToSparse_bufferSize(hipsparseHandle_t           
                                          hipsparse::hipDnToSpAlgToCudaDnToSpAlg(alg),
                                          pBufferSizeInBytes));
 }
-#elif (CUDART_VERSION >= 11020)
+#elif(CUDART_VERSION >= 11020)
 hipsparseStatus_t hipsparseDenseToSparse_bufferSize(hipsparseHandle_t           handle,
                                                     hipsparseDnMatDescr_t       matA,
                                                     hipsparseSpMatDescr_t       matB,
@@ -72,7 +72,7 @@ hipsparseStatus_t hipsparseDenseToSparse_analysis(hipsparseHandle_t           ha
                                        hipsparse::hipDnToSpAlgToCudaDnToSpAlg(alg),
                                        externalBuffer));
 }
-#elif (CUDART_VERSION >= 11020)
+#elif(CUDART_VERSION >= 11020)
 hipsparseStatus_t hipsparseDenseToSparse_analysis(hipsparseHandle_t           handle,
                                                   hipsparseDnMatDescr_t       matA,
                                                   hipsparseSpMatDescr_t       matB,
@@ -102,7 +102,7 @@ hipsparseStatus_t hipsparseDenseToSparse_convert(hipsparseHandle_t           han
                                       hipsparse::hipDnToSpAlgToCudaDnToSpAlg(alg),
                                       externalBuffer));
 }
-#elif (CUDART_VERSION >= 11020)
+#elif(CUDART_VERSION >= 11020)
 hipsparseStatus_t hipsparseDenseToSparse_convert(hipsparseHandle_t           handle,
                                                  hipsparseDnMatDescr_t       matA,
                                                  hipsparseSpMatDescr_t       matB,

@@ -28,7 +28,7 @@
 
 #include "../utility.h"
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 hipsparseStatus_t hipsparseSgemvi_bufferSize(hipsparseHandle_t    handle,
                                              hipsparseOperation_t transA,
                                              int                  m,
@@ -94,7 +94,7 @@ hipsparseStatus_t hipsparseZgemvi_bufferSize(hipsparseHandle_t    handle,
 }
 #endif
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 hipsparseStatus_t hipsparseSgemvi(hipsparseHandle_t    handle,
                                   hipsparseOperation_t transA,
                                   int                  m,

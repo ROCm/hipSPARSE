@@ -46,7 +46,7 @@ hipsparseStatus_t hipsparseSpVV_bufferSize(hipsparseHandle_t          handle,
                                 hipsparse::hipDataTypeToCudaDataType(computeType),
                                 pBufferSizeInBytes));
 }
-#elif (CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
+#elif(CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
 hipsparseStatus_t hipsparseSpVV_bufferSize(hipsparseHandle_t     handle,
                                            hipsparseOperation_t  opX,
                                            hipsparseSpVecDescr_t vecX,
@@ -84,7 +84,7 @@ hipsparseStatus_t hipsparseSpVV(hipsparseHandle_t          handle,
                      hipsparse::hipDataTypeToCudaDataType(computeType),
                      externalBuffer));
 }
-#elif (CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
+#elif(CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
 hipsparseStatus_t hipsparseSpVV(hipsparseHandle_t     handle,
                                 hipsparseOperation_t  opX,
                                 hipsparseSpVecDescr_t vecX,

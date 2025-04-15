@@ -28,7 +28,7 @@
 
 #include "../utility.h"
 
-#if (CUDART_VERSION >= 11000)
+#if(CUDART_VERSION >= 11000)
 hipsparseStatus_t hipsparseSpGEMM_createDescr(hipsparseSpGEMMDescr_t* descr)
 {
     return hipsparse::hipCUSPARSEStatusToHIPStatus(
@@ -36,7 +36,7 @@ hipsparseStatus_t hipsparseSpGEMM_createDescr(hipsparseSpGEMMDescr_t* descr)
 }
 #endif
 
-#if (CUDART_VERSION >= 11000)
+#if(CUDART_VERSION >= 11000)
 hipsparseStatus_t hipsparseSpGEMM_destroyDescr(hipsparseSpGEMMDescr_t descr)
 {
     return hipsparse::hipCUSPARSEStatusToHIPStatus(

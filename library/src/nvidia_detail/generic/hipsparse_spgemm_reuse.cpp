@@ -52,7 +52,7 @@ hipsparseStatus_t hipsparseSpGEMMreuse_workEstimation(hipsparseHandle_t         
                                            bufferSize1,
                                            externalBuffer1));
 }
-#elif (CUDART_VERSION >= 11031)
+#elif(CUDART_VERSION >= 11031)
 hipsparseStatus_t hipsparseSpGEMMreuse_workEstimation(hipsparseHandle_t      handle,
                                                       hipsparseOperation_t   opA,
                                                       hipsparseOperation_t   opB,
@@ -110,7 +110,7 @@ hipsparseStatus_t hipsparseSpGEMMreuse_nnz(hipsparseHandle_t          handle,
                                 bufferSize4,
                                 externalBuffer4));
 }
-#elif (CUDART_VERSION >= 11031)
+#elif(CUDART_VERSION >= 11031)
 hipsparseStatus_t hipsparseSpGEMMreuse_nnz(hipsparseHandle_t      handle,
                                            hipsparseOperation_t   opA,
                                            hipsparseOperation_t   opB,
@@ -171,7 +171,7 @@ hipsparseStatus_t hipsparseSpGEMMreuse_compute(hipsparseHandle_t          handle
                                     hipsparse::hipSpGEMMAlgToCudaSpGEMMAlg(alg),
                                     (cusparseSpGEMMDescr_t)spgemmDescr));
 }
-#elif (CUDART_VERSION >= 11031)
+#elif(CUDART_VERSION >= 11031)
 hipsparseStatus_t hipsparseSpGEMMreuse_compute(hipsparseHandle_t      handle,
                                                hipsparseOperation_t   opA,
                                                hipsparseOperation_t   opB,
@@ -223,7 +223,7 @@ hipsparseStatus_t hipsparseSpGEMMreuse_copy(hipsparseHandle_t          handle,
                                  bufferSize5,
                                  externalBuffer5));
 }
-#elif (CUDART_VERSION >= 11031)
+#elif(CUDART_VERSION >= 11031)
 hipsparseStatus_t hipsparseSpGEMMreuse_copy(hipsparseHandle_t      handle,
                                             hipsparseOperation_t   opA,
                                             hipsparseOperation_t   opB,

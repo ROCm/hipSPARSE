@@ -28,7 +28,7 @@
 
 #include "../utility.h"
 
-#if (CUDART_VERSION >= 11031)
+#if(CUDART_VERSION >= 11031)
 hipsparseStatus_t hipsparseSpSM_createDescr(hipsparseSpSMDescr_t* descr)
 {
     return hipsparse::hipCUSPARSEStatusToHIPStatus(
@@ -36,7 +36,7 @@ hipsparseStatus_t hipsparseSpSM_createDescr(hipsparseSpSMDescr_t* descr)
 }
 #endif
 
-#if (CUDART_VERSION >= 11031)
+#if(CUDART_VERSION >= 11031)
 hipsparseStatus_t hipsparseSpSM_destroyDescr(hipsparseSpSMDescr_t descr)
 {
     return hipsparse::hipCUSPARSEStatusToHIPStatus(
@@ -70,7 +70,7 @@ hipsparseStatus_t hipsparseSpSM_bufferSize(hipsparseHandle_t           handle,
                                 (cusparseSpSMDescr_t)spsmDescr,
                                 pBufferSizeInBytes));
 }
-#elif (CUDART_VERSION >= 11031)
+#elif(CUDART_VERSION >= 11031)
 hipsparseStatus_t hipsparseSpSM_bufferSize(hipsparseHandle_t           handle,
                                            hipsparseOperation_t        opA,
                                            hipsparseOperation_t        opB,
@@ -124,7 +124,7 @@ hipsparseStatus_t hipsparseSpSM_analysis(hipsparseHandle_t           handle,
                               (cusparseSpSMDescr_t)spsmDescr,
                               externalBuffer));
 }
-#elif (CUDART_VERSION >= 11031)
+#elif(CUDART_VERSION >= 11031)
 hipsparseStatus_t hipsparseSpSM_analysis(hipsparseHandle_t           handle,
                                          hipsparseOperation_t        opA,
                                          hipsparseOperation_t        opB,
@@ -177,7 +177,7 @@ hipsparseStatus_t hipsparseSpSM_solve(hipsparseHandle_t           handle,
                            hipsparse::hipSpSMAlgToCudaSpSMAlg(alg),
                            (cusparseSpSMDescr_t)spsmDescr));
 }
-#elif (CUDART_VERSION >= 11031)
+#elif(CUDART_VERSION >= 11031)
 hipsparseStatus_t hipsparseSpSM_solve(hipsparseHandle_t           handle,
                                       hipsparseOperation_t        opA,
                                       hipsparseOperation_t        opB,

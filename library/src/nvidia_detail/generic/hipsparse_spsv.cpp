@@ -28,7 +28,7 @@
 
 #include "../utility.h"
 
-#if (CUDART_VERSION >= 11030)
+#if(CUDART_VERSION >= 11030)
 hipsparseStatus_t hipsparseSpSV_createDescr(hipsparseSpSVDescr_t* descr)
 {
     return hipsparse::hipCUSPARSEStatusToHIPStatus(
@@ -36,7 +36,7 @@ hipsparseStatus_t hipsparseSpSV_createDescr(hipsparseSpSVDescr_t* descr)
 }
 #endif
 
-#if (CUDART_VERSION >= 11030)
+#if(CUDART_VERSION >= 11030)
 hipsparseStatus_t hipsparseSpSV_destroyDescr(hipsparseSpSVDescr_t descr)
 {
     return hipsparse::hipCUSPARSEStatusToHIPStatus(

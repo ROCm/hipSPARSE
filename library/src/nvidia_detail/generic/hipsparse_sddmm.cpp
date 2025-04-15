@@ -54,7 +54,7 @@ hipsparseStatus_t hipsparseSDDMM_bufferSize(hipsparseHandle_t          handle,
                                  hipsparse::hipSDDMMAlgToCudaSDDMMAlg(alg),
                                  pBufferSizeInBytes));
 }
-#elif (CUDART_VERSION >= 11022)
+#elif(CUDART_VERSION >= 11022)
 hipsparseStatus_t hipsparseSDDMM_bufferSize(hipsparseHandle_t           handle,
                                             hipsparseOperation_t        opA,
                                             hipsparseOperation_t        opB,
@@ -108,7 +108,7 @@ hipsparseStatus_t hipsparseSDDMM_preprocess(hipsparseHandle_t          handle,
                                  hipsparse::hipSDDMMAlgToCudaSDDMMAlg(alg),
                                  tempBuffer));
 }
-#elif (CUDART_VERSION >= 11022)
+#elif(CUDART_VERSION >= 11022)
 hipsparseStatus_t hipsparseSDDMM_preprocess(hipsparseHandle_t           handle,
                                             hipsparseOperation_t        opA,
                                             hipsparseOperation_t        opB,
@@ -162,7 +162,7 @@ hipsparseStatus_t hipsparseSDDMM(hipsparseHandle_t          handle,
                       hipsparse::hipSDDMMAlgToCudaSDDMMAlg(alg),
                       tempBuffer));
 }
-#elif (CUDART_VERSION >= 11022)
+#elif(CUDART_VERSION >= 11022)
 hipsparseStatus_t hipsparseSDDMM(hipsparseHandle_t           handle,
                                  hipsparseOperation_t        opA,
                                  hipsparseOperation_t        opB,

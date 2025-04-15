@@ -78,7 +78,7 @@ hipsparseStatus_t hipsparseDestroySpVec(hipsparseConstSpVecDescr_t spVecDescr)
     return hipsparse::hipCUSPARSEStatusToHIPStatus(
         cusparseDestroySpVec((cusparseConstSpVecDescr_t)spVecDescr));
 }
-#elif (CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
+#elif(CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
 hipsparseStatus_t hipsparseDestroySpVec(hipsparseSpVecDescr_t spVecDescr)
 {
     return hipsparse::hipCUSPARSEStatusToHIPStatus(
@@ -156,7 +156,7 @@ hipsparseStatus_t hipsparseSpVecGetIndexBase(hipsparseConstSpVecDescr_t spVecDes
     return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseSpVecGetIndexBase(
         (const cusparseConstSpVecDescr_t)spVecDescr, (cusparseIndexBase_t*)idxBase));
 }
-#elif (CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
+#elif(CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
 hipsparseStatus_t hipsparseSpVecGetIndexBase(const hipsparseSpVecDescr_t spVecDescr,
                                              hipsparseIndexBase_t*       idxBase)
 {
@@ -436,7 +436,7 @@ hipsparseStatus_t hipsparseDestroySpMat(hipsparseConstSpMatDescr_t spMatDescr)
     return hipsparse::hipCUSPARSEStatusToHIPStatus(
         cusparseDestroySpMat((cusparseConstSpMatDescr_t)spMatDescr));
 }
-#elif (CUDART_VERSION >= 10010)
+#elif(CUDART_VERSION >= 10010)
 hipsparseStatus_t hipsparseDestroySpMat(hipsparseSpMatDescr_t spMatDescr)
 {
     return hipsparse::hipCUSPARSEStatusToHIPStatus(
@@ -785,7 +785,7 @@ hipsparseStatus_t hipsparseConstBlockedEllGet(hipsparseConstSpMatDescr_t spMatDe
 }
 #endif
 
-#if (CUDART_VERSION >= 11000)
+#if(CUDART_VERSION >= 11000)
 hipsparseStatus_t hipsparseCsrSetPointers(hipsparseSpMatDescr_t spMatDescr,
                                           void*                 csrRowOffsets,
                                           void*                 csrColInd,
@@ -829,7 +829,7 @@ hipsparseStatus_t hipsparseSpMatGetFormat(hipsparseConstSpMatDescr_t spMatDescr,
 
     return HIPSPARSE_STATUS_SUCCESS;
 }
-#elif (CUDART_VERSION >= 10010)
+#elif(CUDART_VERSION >= 10010)
 hipsparseStatus_t hipsparseSpMatGetFormat(const hipsparseSpMatDescr_t spMatDescr,
                                           hipsparseFormat_t*          format)
 {
@@ -858,7 +858,7 @@ hipsparseStatus_t hipsparseSpMatGetIndexBase(hipsparseConstSpMatDescr_t spMatDes
 
     return HIPSPARSE_STATUS_SUCCESS;
 }
-#elif (CUDART_VERSION >= 10010)
+#elif(CUDART_VERSION >= 10010)
 hipsparseStatus_t hipsparseSpMatGetIndexBase(const hipsparseSpMatDescr_t spMatDescr,
                                              hipsparseIndexBase_t*       idxBase)
 {
@@ -905,7 +905,7 @@ hipsparseStatus_t hipsparseSpMatGetStridedBatch(hipsparseConstSpMatDescr_t spMat
     return hipsparse::hipCUSPARSEStatusToHIPStatus(
         cusparseSpMatGetStridedBatch((cusparseConstSpMatDescr_t)spMatDescr, batchCount));
 }
-#elif (CUDART_VERSION >= 10010)
+#elif(CUDART_VERSION >= 10010)
 hipsparseStatus_t hipsparseSpMatGetStridedBatch(hipsparseSpMatDescr_t spMatDescr, int* batchCount)
 {
     return hipsparse::hipCUSPARSEStatusToHIPStatus(
@@ -921,7 +921,7 @@ hipsparseStatus_t hipsparseSpMatSetStridedBatch(hipsparseSpMatDescr_t spMatDescr
 }
 #endif
 
-#if (CUDART_VERSION >= 11000)
+#if(CUDART_VERSION >= 11000)
 hipsparseStatus_t hipsparseCooSetStridedBatch(hipsparseSpMatDescr_t spMatDescr,
                                               int                   batchCount,
                                               int64_t               batchStride)
@@ -931,7 +931,7 @@ hipsparseStatus_t hipsparseCooSetStridedBatch(hipsparseSpMatDescr_t spMatDescr,
 }
 #endif
 
-#if (CUDART_VERSION >= 11000)
+#if(CUDART_VERSION >= 11000)
 hipsparseStatus_t hipsparseCsrSetStridedBatch(hipsparseSpMatDescr_t spMatDescr,
                                               int                   batchCount,
                                               int64_t               offsetsBatchStride,
@@ -968,7 +968,7 @@ hipsparseStatus_t hipsparseSpMatGetAttribute(hipsparseSpMatDescr_t     spMatDesc
 }
 #endif
 
-#if (CUDART_VERSION >= 11030)
+#if(CUDART_VERSION >= 11030)
 hipsparseStatus_t hipsparseSpMatSetAttribute(hipsparseSpMatDescr_t     spMatDescr,
                                              hipsparseSpMatAttribute_t attribute,
                                              const void*               data,
@@ -1016,7 +1016,7 @@ hipsparseStatus_t hipsparseDestroyDnVec(hipsparseConstDnVecDescr_t dnVecDescr)
     return hipsparse::hipCUSPARSEStatusToHIPStatus(
         cusparseDestroyDnVec((cusparseConstDnVecDescr_t)dnVecDescr));
 }
-#elif (CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
+#elif(CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
 hipsparseStatus_t hipsparseDestroyDnVec(hipsparseDnVecDescr_t dnVecDescr)
 {
     return hipsparse::hipCUSPARSEStatusToHIPStatus(
@@ -1134,7 +1134,7 @@ hipsparseStatus_t hipsparseDestroyDnMat(hipsparseConstDnMatDescr_t dnMatDescr)
     return hipsparse::hipCUSPARSEStatusToHIPStatus(
         cusparseDestroyDnMat((cusparseConstDnMatDescr_t)dnMatDescr));
 }
-#elif (CUDART_VERSION >= 10010)
+#elif(CUDART_VERSION >= 10010)
 hipsparseStatus_t hipsparseDestroyDnMat(hipsparseDnMatDescr_t dnMatDescr)
 {
     return hipsparse::hipCUSPARSEStatusToHIPStatus(
@@ -1227,7 +1227,7 @@ hipsparseStatus_t hipsparseDnMatGetStridedBatch(hipsparseConstDnMatDescr_t dnMat
     return hipsparse::hipCUSPARSEStatusToHIPStatus(cusparseDnMatGetStridedBatch(
         (cusparseConstDnMatDescr_t)dnMatDescr, batchCount, batchStride));
 }
-#elif (CUDART_VERSION >= 10010)
+#elif(CUDART_VERSION >= 10010)
 hipsparseStatus_t hipsparseDnMatGetStridedBatch(hipsparseDnMatDescr_t dnMatDescr,
                                                 int*                  batchCount,
                                                 int64_t*              batchStride)

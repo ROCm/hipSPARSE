@@ -52,7 +52,7 @@ hipsparseStatus_t hipsparseSpMV_bufferSize(hipsparseHandle_t           handle,
                                 hipsparse::hipSpMVAlgToCudaSpMVAlg(alg),
                                 pBufferSizeInBytes));
 }
-#elif (CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
+#elif(CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
 hipsparseStatus_t hipsparseSpMV_bufferSize(hipsparseHandle_t           handle,
                                            hipsparseOperation_t        opA,
                                            const void*                 alpha,
@@ -103,7 +103,7 @@ hipsparseStatus_t hipsparseSpMV_preprocess(hipsparseHandle_t           handle,
 
     return HIPSPARSE_STATUS_SUCCESS;
 }
-#elif (CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
+#elif(CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
 hipsparseStatus_t hipsparseSpMV_preprocess(hipsparseHandle_t           handle,
                                            hipsparseOperation_t        opA,
                                            const void*                 alpha,
@@ -154,7 +154,7 @@ hipsparseStatus_t hipsparseSpMV(hipsparseHandle_t           handle,
                      hipsparse::hipSpMVAlgToCudaSpMVAlg(alg),
                      externalBuffer));
 }
-#elif (CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
+#elif(CUDART_VERSION > 10010 || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
 hipsparseStatus_t hipsparseSpMV(hipsparseHandle_t           handle,
                                 hipsparseOperation_t        opA,
                                 const void*                 alpha,

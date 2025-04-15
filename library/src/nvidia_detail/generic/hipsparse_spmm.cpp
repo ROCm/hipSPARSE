@@ -54,7 +54,7 @@ hipsparseStatus_t hipsparseSpMM_bufferSize(hipsparseHandle_t           handle,
                                 hipsparse::hipSpMMAlgToCudaSpMMAlg(alg),
                                 pBufferSizeInBytes));
 }
-#elif (CUDART_VERSION >= 10010)
+#elif(CUDART_VERSION >= 10010)
 hipsparseStatus_t hipsparseSpMM_bufferSize(hipsparseHandle_t           handle,
                                            hipsparseOperation_t        opA,
                                            hipsparseOperation_t        opB,
@@ -108,7 +108,7 @@ hipsparseStatus_t hipsparseSpMM_preprocess(hipsparseHandle_t           handle,
                                 hipsparse::hipSpMMAlgToCudaSpMMAlg(alg),
                                 externalBuffer));
 }
-#elif (CUDART_VERSION >= 11021)
+#elif(CUDART_VERSION >= 11021)
 hipsparseStatus_t hipsparseSpMM_preprocess(hipsparseHandle_t           handle,
                                            hipsparseOperation_t        opA,
                                            hipsparseOperation_t        opB,
@@ -162,7 +162,7 @@ hipsparseStatus_t hipsparseSpMM(hipsparseHandle_t           handle,
                      hipsparse::hipSpMMAlgToCudaSpMMAlg(alg),
                      externalBuffer));
 }
-#elif (CUDART_VERSION >= 10010)
+#elif(CUDART_VERSION >= 10010)
 hipsparseStatus_t hipsparseSpMM(hipsparseHandle_t           handle,
                                 hipsparseOperation_t        opA,
                                 hipsparseOperation_t        opB,
