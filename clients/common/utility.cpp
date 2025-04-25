@@ -91,18 +91,44 @@ extern "C" {
 /*  query for hipsparse version and git commit SHA-1. */
 void query_version(char* version)
 {
+    int  hipsparse_ver;
+    char hipsparse_rev[64];
+
+
+    hipsparseStatus_t status;
+
     hipsparseHandle_t handle;
-    hipsparseCreate(&handle);
+    status = hipsparseCreate(&handle);
+    if(HIPSPARSE_STATUS_SUCCESS != status)
+    {
+        std::cerr << "The creation of the hipsparseHandle_t failed." << std::endl;
+        throw(status);
+    }
+    
+    status = hipsparseGetVersion(handle, &hipsparse_ver);
+    if(HIPSPARSE_STATUS_SUCCESS != status)
+    {
+        std::cerr << "hipsparseGetVersion failed." << std::endl;
+        throw(status);
+    }
+    
+    status = hipsparseGetGitRevision(handle, hipsparse_rev);
+    if(HIPSPARSE_STATUS_SUCCESS != status)
+    {
+        std::cerr << "hipsparseGetGitRevision failed." << std::endl;
+        throw(status);
+    }
+    
+    status = hipsparseDestroy(handle);
 
-    int ver;
-    hipsparseGetVersion(handle, &ver);
+    if(HIPSPARSE_STATUS_SUCCESS != status)
+      {
+        std::cerr << "rocsparse_destroy_handle failed." << std::endl;
+        throw(status);
+    }
 
-    char rev[128];
-    hipsparseGetGitRevision(handle, rev);
+    sprintf(version, "v%d.%d.%d-%s", hipsparse_ver / 100000, hipsparse_ver / 100 % 1000, hipsparse_ver % 100, hipsparse_rev);
 
-    sprintf(version, "v%d.%d.%d-%s", ver / 100000, ver / 100 % 1000, ver % 100, rev);
-
-    hipsparseDestroy(handle);
 }
 
 /* ============================================================================================ */
