@@ -54,7 +54,10 @@ endfunction()
 # Examples
 if (NOT WIN32)
   # C program for checking hipsparse headers are C compatible.
-  add_hipsparse_example(example_axpyi.c)
+  add_hipsparse_example(example_c_headers.c)
+  if(NOT USE_CUDA)
+    add_hipsparse_example(example_axpyi.c)
+  endif()
 endif()
 
 add_hipsparse_example(example_handle.cpp)
