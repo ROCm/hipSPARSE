@@ -1,6 +1,6 @@
 /*! \file */
 /* ************************************************************************
-* Copyright (C) 2024 Advanced Micro Devices, Inc. All rights Reserved.
+* Copyright (C) 2024-2025 Advanced Micro Devices, Inc. All rights Reserved.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -40,25 +40,25 @@ std::string hipsparse_get_version()
         std::cerr << "The creation of the hipsparseHandle_t failed." << std::endl;
         throw(status);
     }
-    
+
     status = hipsparseGetVersion(handle, &hipsparse_ver);
     if(HIPSPARSE_STATUS_SUCCESS != status)
     {
         std::cerr << "hipsparseGetVersion failed." << std::endl;
         throw(status);
     }
-    
+
     status = hipsparseGetGitRevision(handle, hipsparse_rev);
     if(HIPSPARSE_STATUS_SUCCESS != status)
     {
         std::cerr << "hipsparseGetGitRevision failed." << std::endl;
         throw(status);
     }
-    
+
     status = hipsparseDestroy(handle);
 
     if(HIPSPARSE_STATUS_SUCCESS != status)
-      {
+    {
         std::cerr << "rocsparse_destroy_handle failed." << std::endl;
         throw(status);
     }
