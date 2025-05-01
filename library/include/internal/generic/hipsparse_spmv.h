@@ -29,18 +29,13 @@ extern "C" {
 #endif
 
 /*! \ingroup generic_module
-*  \brief Buffer size step of the sparse matrix multiplication with a dense vector
-*
 *  \details
-*  \p hipsparseSpMV_bufferSize computes the required user allocated buffer size needed when computing the 
-*  sparse matrix multiplication with a dense vector:
-*  \f[
-*    y := \alpha \cdot op(A) \cdot x + \beta \cdot y,
-*  \f]
-*  where \f$op(A)\f$ is a sparse \f$m \times n\f$ matrix in CSR format, \f$x\f$ is a dense vector of length \f$n\f$ and 
-*  \f$y\f$ is a dense vector of length \f$m\f$.
+*  \p hipsparseSpMV_bufferSize computes the size of the buffer needed when performing the sparse matrix vector multiplication, 
+*  \f$y := \alpha \cdot op(A) \cdot x + \beta \cdot y\f$, where \f$A\f$ is a sparse \f$m \times n\f$ matrix in CSR, CSC, COO, 
+*  COO (AoS), BSR, or ELL format storage format, \f$x\f$ is a \f$n\f$ length dense vector, and \f$y\f$ is a \f$m\f$ length dense 
+*  vector. 
 *
-*  \ref hipsparseSpMV_bufferSize supports multiple combinations of data types and compute types. See \ref hipsparseSpMV for a complete 
+*  \p hipsparseSpMV_bufferSize supports multiple combinations of data types and compute types. See \ref hipsparseSpMV for a complete 
 *  listing of all the data type and compute type combinations available.
 *
 *  See \ref hipsparseSpMV for full code example.
@@ -99,20 +94,12 @@ hipsparseStatus_t hipsparseSpMV_bufferSize(hipsparseHandle_t           handle,
 #endif
 
 /*! \ingroup generic_module
-*  \brief Preprocess step of the sparse matrix multiplication with a dense vector (optional)
-*
 *  \details
 *  \p hipsparseSpMV_preprocess performs analysis on the sparse matrix \f$A\f$ when computing the 
-*  sparse matrix multiplication with a dense vector:
-*  \f[
-*    y := \alpha \cdot op(A) \cdot x + \beta \cdot y,
-*  \f]
-*  where \f$op(A)\f$ is a sparse \f$m \times n\f$ matrix in CSR format, \f$x\f$ is a dense vector of length \f$n\f$ and 
-*  \f$y\f$ is a dense vector of length \f$m\f$.
+*  sparse matrix vector multiplication, \f$y := \alpha \cdot op(A) \cdot x + \beta \cdot y\f$. This 
+*  step is optional but if used may results in better performance.
 *
-*  This step is optional but if used may results in better performance.
-*
-*  \ref hipsparseSpMV_preprocess supports multiple combinations of data types and compute types. See \ref hipsparseSpMV for a complete 
+*  \p hipsparseSpMV_preprocess supports multiple combinations of data types and compute types. See \ref hipsparseSpMV for a complete 
 *  listing of all the data type and compute type combinations available.
 *
 *  See \ref hipsparseSpMV for full code example.
@@ -174,17 +161,52 @@ hipsparseStatus_t hipsparseSpMV_preprocess(hipsparseHandle_t           handle,
 *  \brief Compute the sparse matrix multiplication with a dense vector
 *
 *  \details
-*  \p hipsparseSpMV computes sparse matrix multiplication with a dense vector:
+*  \p hipsparseSpMV multiplies the scalar \f$\alpha\f$ with a sparse \f$m \times n\f$ matrix \f$op(A)\f$, defined in CSR, 
+*  CSC, COO, or COO (AoS) format, with the dense vector \f$x\f$ and adds the result to the dense vector \f$y\f$ 
+*  that is multiplied by the scalar \f$\beta\f$, such that
 *  \f[
 *    y := \alpha \cdot op(A) \cdot x + \beta \cdot y,
 *  \f]
-*  where \f$op(A)\f$ is a sparse \f$m \times n\f$ matrix in CSR format, \f$x\f$ is a dense vector of length \f$n\f$ and 
-*  \f$y\f$ is a dense vector of length \f$m\f$.
+*  with
+*  \f[
+*    op(A) = \left\{
+*    \begin{array}{ll}
+*        A,   & \text{if trans == HIPSPARSE_OPERATION_NON_TRANSPOSE} \\
+*        A^T, & \text{if trans == HIPSPARSE_OPERATION_TRANSPOSE} \\
+*        A^H, & \text{if trans == HIPSPARSE_OPERATION_CONJUGATE_TRANSPOSE}
+*    \end{array}
+*    \right.
+*  \f]
 *
-*  \ref hipsparseSpMV supports multiple combinations of data types and compute types. The tables below indicate the currently
-*  supported different data types that can be used for for the sparse matrix A and the dense vectors X and Y and the compute
-*  type for \f$\alpha\f$ and \f$\beta\f$. The advantage of using different data types is to save on memory bandwidth and storage
-*  when a user application allows while performing the actual computation in a higher precision.
+*  Performing the above operation involves multiple steps. First the user calls \ref hipsparseSpMV_bufferSize with the stage parameter to 
+*  determine the size of the required temporary storage buffer. The user then allocates this buffer and calls \ref hipsparseSpMV_preprocess. 
+*  Depending on the algorithm and sparse matrix format, this will perform analysis on the sparsity pattern of \f$op(A)\f$. Finally the user 
+*  completes the operation by calling \p hipsparseSpMV. The buffer size and preprecess routines only need to be called once for a given sparse 
+*  matrix \f$op(A)\f$ while the computation stage can be repeatedly used with different \f$x\f$ and \f$y\f$ vectors. Once all calls to 
+*  \p hipsparseSpMV are complete, the temporary buffer can be deallocated. 
+*
+*  \p hipsparseSpMV supports multiple different algorithms. These algorithms have different trade offs depending on the sparsity
+*  pattern of the matrix, whether or not the results need to be deterministic, and how many times the sparse-vector product will
+*  be performed.
+*
+*  <table>
+*  <caption id="spmv_csr_algorithms">CSR/CSC Algorithms</caption>
+*  <tr><th>Algorithm                    <th>Deterministic  <th>Preprocessing
+*  <tr><td>HIPSPARSE_SPMV_CSR_ALG1</td> <td>Yes</td>       <td>No</td>
+*  <tr><td>HIPSPARSE_SPMV_CSR_ALG2</td> <td>Yes</td>       <td>No</td>
+*  </table>
+*
+*  <table>
+*  <caption id="spmv_coo_algorithms">COO Algorithms</caption>
+*  <tr><th>COO Algorithms               <th>Deterministic   <th>Preprocessing
+*  <tr><td>HIPSPARSE_SPMV_COO_ALG1</td> <td>Yes</td>        <td>Yes</td> 
+*  <tr><td>HIPSPARSE_SPMV_COO_ALG2</td> <td>No</td>         <td>No</td>
+*  </table>
+*
+*  \p hipsparseSpMV supports multiple combinations of data types and compute types. The tables below indicate the currently
+*  supported different data types that can be used for for the sparse matrix \f$op(A)\f$ and the dense vectors \f$x\f$ and 
+*  \f$y\f$ and the compute type for \f$\alpha\f$ and \f$\beta\f$. The advantage of using different data types is to save on 
+*  memory bandwidth and storage when a user application allows while performing the actual computation in a higher precision.
 *
 *  \par Uniform Precisions:
 *  <table>
@@ -219,6 +241,25 @@ hipsparseStatus_t hipsparseSpMV_preprocess(hipsparseHandle_t           handle,
 *  <tr><td>HIP_R_32F <td>HIP_C_32F
 *  <tr><td>HIP_R_64F <td>HIP_C_64F
 *  </table>
+*
+*  \p hipsparseSpMV supports \ref HIPSPARSE_INDEX_32I and \ref HIPSPARSE_INDEX_64I index precisions 
+*  for storing the row pointer and column indices arrays of the sparse matrices.
+*
+*  \note
+*  None of the algorithms above are deterministic when \f$A\f$ is transposed.
+*
+*  \note
+*  The sparse matrix formats currently supported are: \ref HIPSPARSE_FORMAT_COO, \ref HIPSPARSE_FORMAT_COO_AOS, 
+*  \ref HIPSPARSE_FORMAT_CSR, and \ref HIPSPARSE_FORMAT_CSC.
+*
+*  \note
+*  Only the \ref hipsparseSpMV_bufferSize and \ref hipsparseSpMV routines are non blocking and executed asynchronously 
+*  with respect to the host. They may return before the actual computation has finished. The \ref hipsparseSpMV_preprocess 
+*  routine is blocking with respect to the host.
+*
+*  \note
+*  Only the \ref hipsparseSpMV_bufferSize and the \ref hipsparseSpMV routines support execution in a hipGraph context. 
+*  The \ref hipsparseSpMV_preprocess stage does not support hipGraph.
 *
 *  @param[in]
 *  handle          handle to the hipsparse library context queue.

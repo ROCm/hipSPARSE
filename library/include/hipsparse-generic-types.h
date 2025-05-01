@@ -188,36 +188,36 @@ typedef struct hipsparseSpSMDescr* hipsparseSpSMDescr_t;
 #if(!defined(CUDART_VERSION))
 typedef enum
 {
-    HIPSPARSE_FORMAT_CSR         = 1, /* Compressed Sparse Row */
-    HIPSPARSE_FORMAT_CSC         = 2, /* Compressed Sparse Column */
-    HIPSPARSE_FORMAT_COO         = 3, /* Coordinate - Structure of Arrays */
-    HIPSPARSE_FORMAT_COO_AOS     = 4, /* Coordinate - Array of Structures */
-    HIPSPARSE_FORMAT_BLOCKED_ELL = 5 /* Blocked ELL */
+    HIPSPARSE_FORMAT_CSR         = 1, /**< Compressed Sparse Row */
+    HIPSPARSE_FORMAT_CSC         = 2, /**< Compressed Sparse Column */
+    HIPSPARSE_FORMAT_COO         = 3, /**< Coordinate - Structure of Arrays */
+    HIPSPARSE_FORMAT_COO_AOS     = 4, /**< Coordinate - Array of Structures */
+    HIPSPARSE_FORMAT_BLOCKED_ELL = 5 /**< Blocked ELL */
 } hipsparseFormat_t;
 #else
 #if(CUDART_VERSION >= 12000)
 typedef enum
 {
-    HIPSPARSE_FORMAT_CSR         = 1, /* Compressed Sparse Row */
-    HIPSPARSE_FORMAT_CSC         = 2, /* Compressed Sparse Column */
-    HIPSPARSE_FORMAT_COO         = 3, /* Coordinate - Structure of Arrays */
-    HIPSPARSE_FORMAT_BLOCKED_ELL = 5 /* Blocked ELL */
+    HIPSPARSE_FORMAT_CSR         = 1, /**< Compressed Sparse Row */
+    HIPSPARSE_FORMAT_CSC         = 2, /**< Compressed Sparse Column */
+    HIPSPARSE_FORMAT_COO         = 3, /**< Coordinate - Structure of Arrays */
+    HIPSPARSE_FORMAT_BLOCKED_ELL = 5 /**< Blocked ELL */
 } hipsparseFormat_t;
 #elif(CUDART_VERSION >= 11021 && CUDART_VERSION < 12000)
 typedef enum
 {
-    HIPSPARSE_FORMAT_CSR         = 1, /* Compressed Sparse Row */
-    HIPSPARSE_FORMAT_CSC         = 2, /* Compressed Sparse Column */
-    HIPSPARSE_FORMAT_COO         = 3, /* Coordinate - Structure of Arrays */
-    HIPSPARSE_FORMAT_COO_AOS     = 4, /* Coordinate - Array of Structures */
-    HIPSPARSE_FORMAT_BLOCKED_ELL = 5 /* Blocked ELL */
+    HIPSPARSE_FORMAT_CSR         = 1, /**< Compressed Sparse Row */
+    HIPSPARSE_FORMAT_CSC         = 2, /**< Compressed Sparse Column */
+    HIPSPARSE_FORMAT_COO         = 3, /**< Coordinate - Structure of Arrays */
+    HIPSPARSE_FORMAT_COO_AOS     = 4, /**< Coordinate - Array of Structures */
+    HIPSPARSE_FORMAT_BLOCKED_ELL = 5 /**< Blocked ELL */
 } hipsparseFormat_t;
 #elif(CUDART_VERSION >= 10010 && CUDART_VERSION < 11021)
 typedef enum
 {
-    HIPSPARSE_FORMAT_CSR     = 1, /* Compressed Sparse Row */
-    HIPSPARSE_FORMAT_COO     = 3, /* Coordinate - Structure of Arrays */
-    HIPSPARSE_FORMAT_COO_AOS = 4, /* Coordinate - Array of Structures */
+    HIPSPARSE_FORMAT_CSR     = 1, /**< Compressed Sparse Row */
+    HIPSPARSE_FORMAT_COO     = 3, /**< Coordinate - Structure of Arrays */
+    HIPSPARSE_FORMAT_COO_AOS = 4, /**< Coordinate - Array of Structures */
 } hipsparseFormat_t;
 #endif
 #endif
