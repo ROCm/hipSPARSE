@@ -348,7 +348,7 @@ typedef enum
     HIPSPARSE_SPMM_COO_ALG4         = 5, /**< COO algorithm 4 */
     HIPSPARSE_SPMM_CSR_ALG1         = 4, /**< CSR algorithm 1 */
     HIPSPARSE_SPMM_CSR_ALG2         = 6, /**< CSR algorithm 2 */
-    HIPSPARSE_SPMM_CSR_ALG3         = 12, /**< CSR algorithm 3 */ 
+    HIPSPARSE_SPMM_CSR_ALG3         = 12, /**< CSR algorithm 3 */
     HIPSPARSE_SPMM_BLOCKED_ELL_ALG1 = 13 /**< Blocked ELL algorithm 1 */
 } hipsparseSpMMAlg_t;
 #else
