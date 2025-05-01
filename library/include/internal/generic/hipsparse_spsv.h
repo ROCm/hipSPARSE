@@ -34,7 +34,7 @@ extern "C" {
 *  \p hipsparseSpSV_createDescr creates a sparse matrix triangular solve descriptor. It should be
 *  destroyed at the end using hipsparseSpSV_destroyDescr().
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11030)
+#if (!defined(CUDART_VERSION) || CUDART_VERSION >= 11030)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpSV_createDescr(hipsparseSpSVDescr_t* descr);
 #endif
@@ -45,7 +45,7 @@ hipsparseStatus_t hipsparseSpSV_createDescr(hipsparseSpSVDescr_t* descr);
 *  \p hipsparseSpSV_destroyDescr destroys a sparse matrix triangular solve descriptor and releases all
 *  resources used by the descriptor.
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11030)
+#if (!defined(CUDART_VERSION) || CUDART_VERSION >= 11030)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpSV_destroyDescr(hipsparseSpSVDescr_t descr);
 #endif
@@ -83,7 +83,7 @@ hipsparseStatus_t hipsparseSpSV_destroyDescr(hipsparseSpSVDescr_t descr);
 *  \retval      HIPSPARSE_STATUS_NOT_SUPPORTED \p opA, \p computeType or \p alg is
 *               currently not supported.
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+#if (!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpSV_bufferSize(hipsparseHandle_t           handle,
                                            hipsparseOperation_t        opA,
@@ -95,7 +95,7 @@ hipsparseStatus_t hipsparseSpSV_bufferSize(hipsparseHandle_t           handle,
                                            hipsparseSpSVAlg_t          alg,
                                            hipsparseSpSVDescr_t        spsvDescr,
                                            size_t*                     pBufferSizeInBytes);
-#elif(CUDART_VERSION >= 11030)
+#elif (CUDART_VERSION >= 11030)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpSV_bufferSize(hipsparseHandle_t           handle,
                                            hipsparseOperation_t        opA,
@@ -142,7 +142,7 @@ hipsparseStatus_t hipsparseSpSV_bufferSize(hipsparseHandle_t           handle,
 *  \retval      HIPSPARSE_STATUS_NOT_SUPPORTED \p opA, \p computeType or \p alg is
 *               currently not supported.
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+#if (!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpSV_analysis(hipsparseHandle_t           handle,
                                          hipsparseOperation_t        opA,
@@ -154,7 +154,7 @@ hipsparseStatus_t hipsparseSpSV_analysis(hipsparseHandle_t           handle,
                                          hipsparseSpSVAlg_t          alg,
                                          hipsparseSpSVDescr_t        spsvDescr,
                                          void*                       externalBuffer);
-#elif(CUDART_VERSION >= 11030)
+#elif (CUDART_VERSION >= 11030)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpSV_analysis(hipsparseHandle_t           handle,
                                          hipsparseOperation_t        opA,
@@ -365,7 +365,7 @@ hipsparseStatus_t hipsparseSpSV_analysis(hipsparseHandle_t           handle,
 *    hipFree(temp_buffer);
 *  \endcode
 */
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+#if (!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpSV_solve(hipsparseHandle_t           handle,
                                       hipsparseOperation_t        opA,
@@ -376,7 +376,7 @@ hipsparseStatus_t hipsparseSpSV_solve(hipsparseHandle_t           handle,
                                       hipDataType                 computeType,
                                       hipsparseSpSVAlg_t          alg,
                                       hipsparseSpSVDescr_t        spsvDescr);
-#elif(CUDART_VERSION >= 11030)
+#elif (CUDART_VERSION >= 11030)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpSV_solve(hipsparseHandle_t           handle,
                                       hipsparseOperation_t        opA,
