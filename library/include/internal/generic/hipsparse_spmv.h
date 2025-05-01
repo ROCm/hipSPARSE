@@ -30,15 +30,16 @@ extern "C" {
 
 /*! \ingroup generic_module
 *  \details
-*  \p hipsparseSpMV_bufferSize computes the size of the buffer needed when performing the sparse matrix vector multiplication, 
-*  \f$y := \alpha \cdot op(A) \cdot x + \beta \cdot y\f$, where \f$A\f$ is a sparse \f$m \times n\f$ matrix in CSR, CSC, COO, 
-*  COO (AoS), BSR, or ELL format storage format, \f$x\f$ is a \f$n\f$ length dense vector, and \f$y\f$ is a \f$m\f$ length dense 
-*  vector. 
+*  \p hipsparseSpMV_bufferSize computes the required user allocated buffer size needed when computing the 
+*  sparse matrix multiplication with a dense vector:
+*  \f[
+*    y := \alpha \cdot op(A) \cdot x + \beta \cdot y,
+*  \f]
+*  where \f$op(A)\f$ is a sparse \f$m \times n\f$ matrix in CSR, CSC, COO, or COO (AoS) format, \f$x\f$ is 
+*  a dense vector of length \f$n\f$ and \f$y\f$ is a dense vector of length \f$m\f$.
 *
 *  \p hipsparseSpMV_bufferSize supports multiple combinations of data types and compute types. See \ref hipsparseSpMV for a complete 
 *  listing of all the data type and compute type combinations available.
-*
-*  See \ref hipsparseSpMV for full code example.
 *
 *  @param[in]
 *  handle              handle to the hipsparse library context queue.
@@ -96,13 +97,16 @@ hipsparseStatus_t hipsparseSpMV_bufferSize(hipsparseHandle_t           handle,
 /*! \ingroup generic_module
 *  \details
 *  \p hipsparseSpMV_preprocess performs analysis on the sparse matrix \f$A\f$ when computing the 
-*  sparse matrix vector multiplication, \f$y := \alpha \cdot op(A) \cdot x + \beta \cdot y\f$. This 
-*  step is optional but if used may results in better performance.
+*  sparse matrix multiplication with a dense vector:
+*  \f[
+*    y := \alpha \cdot op(A) \cdot x + \beta \cdot y,
+*  \f]
+*  where \f$op(A)\f$ is a sparse \f$m \times n\f$ matrix in CSR, CSC, COO, or COO (AoS) format, \f$x\f$ 
+*  is a dense vector of length \f$n\f$ and \f$y\f$ is a dense vector of length \f$m\f$. This step is 
+*  optional but if used may results in better performance.
 *
-*  \p hipsparseSpMV_preprocess supports multiple combinations of data types and compute types. See \ref hipsparseSpMV for a complete 
-*  listing of all the data type and compute type combinations available.
-*
-*  See \ref hipsparseSpMV for full code example.
+*  \p hipsparseSpMV_preprocess supports multiple combinations of data types and compute types. See \ref hipsparseSpMV for 
+*  a complete listing of all the data type and compute type combinations available.
 *
 *  @param[in]
 *  handle          handle to the hipsparse library context queue.

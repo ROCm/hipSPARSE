@@ -31,14 +31,15 @@ extern "C" {
 /*! \ingroup generic_module
 *  \details
 *  \p hipsparseSpMM_bufferSize computes the required user allocated buffer size needed when computing the 
-*  sparse matrix multiplication with a dense matrix, \f$C := \alpha \cdot op(A) \cdot op(B) + \beta \cdot C\f$,
-*  where \f$op(A)\f$ is a sparse \f$m \times k\f$ matrix in CSR, COO, BSR or Blocked ELL storage format, \f$B\f$ 
-*  is a dense matrix of size \f$k \times n\f$ and \f$C\f$ is a dense matrix of size \f$m \times n\f$.
+*  sparse matrix multiplication with a dense matrix:
+*  \f[
+*    C := \alpha \cdot op(A) \cdot op(B) + \beta \cdot C,
+*  \f]
+*  where \f$op(A)\f$ is a sparse \f$m \times k\f$ matrix in CSR, COO, BSR or Blocked ELL storage format, 
+*  \f$B\f$ is a dense matrix of size \f$k \times n\f$ and \f$C\f$ is a dense matrix of size \f$m \times n\f$.
 *
-*  \ref hipsparseSpMM_bufferSize supports multiple combinations of data types and compute types. See \ref hipsparseSpMM for a complete 
-*  listing of all the data type and compute type combinations available.
-*
-*  See \ref hipsparseSpMM for full code example.
+*  \p hipsparseSpMM_bufferSize supports multiple combinations of data types and compute types. See \ref hipsparseSpMM 
+*  for a complete listing of all the data type and compute type combinations available.
 *
 *  @param[in]
 *  handle              handle to the hipsparse library context queue.
@@ -100,14 +101,15 @@ hipsparseStatus_t hipsparseSpMM_bufferSize(hipsparseHandle_t           handle,
 /*! \ingroup generic_module
 *  \details
 *  \p hipsparseSpMM_preprocess performs the required preprocessing used when computing the 
-*  sparse matrix multiplication with a dense matrix, \f$C := \alpha \cdot op(A) \cdot op(B) + \beta \cdot C\f$,
-*  where \f$op(A)\f$ is a sparse \f$m \times k\f$ matrix in CSR, COO, BSR or Blocked ELL storage format, \f$B\f$ 
-*  is a dense matrix of size \f$k \times n\f$ and \f$C\f$ is a dense matrix of size \f$m \times n\f$.
+*  sparse matrix multiplication with a dense matrix:
+*  \f[
+*    C := \alpha \cdot op(A) \cdot op(B) + \beta \cdot C,
+*  \f]
+*  where \f$op(A)\f$ is a sparse \f$m \times k\f$ matrix in CSR, COO, BSR or Blocked ELL storage format, 
+*  \f$B\f$ is a dense matrix of size \f$k \times n\f$ and \f$C\f$ is a dense matrix of size \f$m \times n\f$.
 *
-*  \ref hipsparseSpMM_preprocess supports multiple combinations of data types and compute types. See \ref hipsparseSpMM for a complete 
+*  \p hipsparseSpMM_preprocess supports multiple combinations of data types and compute types. See \ref hipsparseSpMM for a complete 
 *  listing of all the data type and compute type combinations available.
-*
-*  See \ref hipsparseSpMM for full code example.
 *
 *  @param[in]
 *  handle          handle to the hipsparse library context queue.

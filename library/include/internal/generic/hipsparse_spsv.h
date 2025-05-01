@@ -52,9 +52,12 @@ hipsparseStatus_t hipsparseSpSV_destroyDescr(hipsparseSpSVDescr_t descr);
 
 /*! \ingroup generic_module
 *  \details
-*  \p hipsparseSpSV_bufferSize computes the required user allocated buffer size needed when computing the 
-*  solution of triangular linear system \f$op(A) \cdot y = \alpha \cdot x\f$, where \f$A\f$ is a sparse matrix in CSR storage 
-*  format, \f$x\f$ and \f$y\f$ are dense vectors.
+*  \p hipsparseSpSV_bufferSize computes the size of the required user allocated buffer needed when solving the 
+*  triangular linear system:
+*  \f[
+*    op(A) \cdot y := \alpha \cdot x,
+*  \f]
+*  where \f$op(A)\f$ is a sparse matrix in CSR storage format, \f$x\f$ and \f$y\f$ are dense vectors.
 *
 *  @param[in]
 *  handle              handle to the hipsparse library context queue.
@@ -111,9 +114,12 @@ hipsparseStatus_t hipsparseSpSV_bufferSize(hipsparseHandle_t           handle,
 
 /*! \ingroup generic_module
 *  \details
-*  \p hipsparseSpSV_analysis performs the required analysis used when computing the 
-*  solution of triangular linear system \f$op(A) \cdot y = \alpha \cdot x\f$,
-*  where \f$A\f$ is a sparse matrix in CSR storage format, \f$x\f$ and \f$y\f$ are dense vectors.
+*  \p hipsparseSpSV_analysis performs the required analysis needed when solving the 
+*  triangular linear system:
+*  \f[
+*    op(A) \cdot y := \alpha \cdot x,
+*  \f]
+*  where \f$op(A)\f$ is a sparse matrix in CSR storage format, \f$x\f$ and \f$y\f$ are dense vectors.
 *
 *  @param[in]
 *  handle          handle to the hipsparse library context queue.

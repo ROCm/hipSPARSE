@@ -29,10 +29,14 @@ extern "C" {
 #endif
 
 /*! \ingroup generic_module
-*  \details
+*  \details 
 *  \p hipsparseSDDMM_bufferSize returns the size of the required buffer needed when computing the sampled 
-*  dense-dense matrix multiplication. This routine is used in conjunction with \ref hipsparseSDDMM_preprocess() 
-*  and \ref hipsparseSDDMM().
+*  dense-dense matrix multiplication:
+*  \f[
+*    C := \alpha (op(A) \cdot op(B)) \circ spy(C) + \beta \cdot C,
+*  \f]
+*  where \f$C\f$ is a sparse matrix and \f$A\f$ and \f$B\f$ are dense matrices. This routine is used in 
+*  conjunction with \ref hipsparseSDDMM_preprocess() and \ref hipsparseSDDMM().
 *
 *  @param[in]
 *  handle              handle to the hipsparse library context queue.
@@ -95,8 +99,12 @@ hipsparseStatus_t hipsparseSDDMM_bufferSize(hipsparseHandle_t           handle,
 /*! \ingroup generic_module
 *  \details
 *  \p hipsparseSDDMM_preprocess performs the required preprocessing used when computing the 
-*  sampled dense-dense matrix multiplication. This routine is used in conjunction with
-*  \ref hipsparseSDDMM().
+*  sampled dense dense matrix multiplication:
+*  \f[
+*    C := \alpha (op(A) \cdot op(B)) \circ spy(C) + \beta \cdot C,
+*  \f]
+*  where \f$C\f$ is a sparse matrix and \f$A\f$ and \f$B\f$ are dense matrices. This routine is 
+*  used in conjunction with \ref hipsparseSDDMM().
 *
 *  @param[in]
 *  handle       handle to the hipsparse library context queue.
