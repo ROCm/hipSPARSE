@@ -42,8 +42,8 @@ extern "C" {
 *      }
 *  \endcode
 *
-*  \p hipsparseGather supports the following uniform precision data types for the sparse and dense vectors f$x\f$ and 
-*  f$y\f$.
+*  \p hipsparseGather supports the following uniform precision data types for the sparse and dense vectors \f$x\f$ and 
+*  \f$y\f$.
 *
 *  \par Uniform Precisions:
 *  <table>
