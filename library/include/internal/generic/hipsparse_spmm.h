@@ -289,33 +289,33 @@ hipsparseStatus_t hipsparseSpMM_preprocess(hipsparseHandle_t           handle,
 *  to use the first batch mode (\f$C_i = A \times B_i\f$) with 100 batches for non-transposed \f$A\f$,
 *  \f$B\f$, and \f$C\f$, one passes:
 *  \f[
-*      batch\_count\_A=1 \\
-*      batch\_count\_B=100 \\
-*      batch\_count\_C=100 \\
-*      offsets\_batch\_stride\_A=0 \\
-*      columns\_values\_batch\_stride\_A=0 \\
-*      batch\_stride\_B=k*n \\
-*      batch\_stride\_C=m*n
+*      batchCountA=1 \\
+*      batchCountB=100 \\
+*      batchCountC=100 \\
+*      offsetsBatchStrideA=0 \\
+*      columnsValuesBatchStrideA=0 \\
+*      batchStrideB=k*n \\
+*      batchStrideC=m*n
 *  \f]
 *  To use the second batch mode (\f$C_i = A_i \times B\f$) one could use:
 *  \f[
-*      batch\_count\_A=100 \\
-*      batch\_count\_B=1 \\
-*      batch\_count\_C=100 \\
-*      offsets\_batch\_stride\_A=m+1 \\
-*      columns\_values\_batch\_stride\_A=nnz \\
-*      batch\_stride\_B=0 \\
-*      batch\_stride\_C=m*n
+*      batchCountA=100 \\
+*      batchCountB=1 \\
+*      batchCountC=100 \\
+*      offsetsBatchStrideA=m+1 \\
+*      columnsValuesBatchStrideA=nnz \\
+*      batchStrideB=0 \\
+*      batchStrideC=m*n
 *  \f]
 *  And to use the third batch mode (\f$C_i = A_i \times B_i\f$) one could use:
 *  \f[
-*      batch\_count\_A=100 \\
-*      batch\_count\_B=100 \\
-*      batch\_count\_C=100 \\
-*      offsets\_batch\_stride\_A=m+1 \\
-*      columns\_values\_batch\_stride_A=nnz \\
-*      batch\_stride_B=k*n \\
-*      batch\_stride_C=m*n
+*      batchCountA=100 \\
+*      batchCountB=100 \\
+*      batchCountC=100 \\
+*      offsetsBatchStrideA=m+1 \\
+*      columnsValuesBatchStrideA=nnz \\
+*      batchStrideB=k*n \\
+*      batchStrideC=m*n
 *  \f]
 *  See examples below.
 *

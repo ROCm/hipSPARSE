@@ -96,7 +96,7 @@ hipsparseStatus_t hipsparseSpMV_bufferSize(hipsparseHandle_t           handle,
 
 /*! \ingroup generic_module
 *  \details
-*  \p hipsparseSpMV_preprocess performs analysis on the sparse matrix \f$A\f$ when computing the 
+*  \p hipsparseSpMV_preprocess performs analysis on the sparse matrix \f$op(A)\f$ when computing the 
 *  sparse matrix multiplication with a dense vector:
 *  \f[
 *    y := \alpha \cdot op(A) \cdot x + \beta \cdot y,
@@ -182,12 +182,12 @@ hipsparseStatus_t hipsparseSpMV_preprocess(hipsparseHandle_t           handle,
 *    \right.
 *  \f]
 *
-*  Performing the above operation involves multiple steps. First the user calls \ref hipsparseSpMV_bufferSize with the stage parameter to 
-*  determine the size of the required temporary storage buffer. The user then allocates this buffer and calls \ref hipsparseSpMV_preprocess. 
-*  Depending on the algorithm and sparse matrix format, this will perform analysis on the sparsity pattern of \f$op(A)\f$. Finally the user 
-*  completes the operation by calling \p hipsparseSpMV. The buffer size and preprecess routines only need to be called once for a given sparse 
-*  matrix \f$op(A)\f$ while the computation stage can be repeatedly used with different \f$x\f$ and \f$y\f$ vectors. Once all calls to 
-*  \p hipsparseSpMV are complete, the temporary buffer can be deallocated. 
+*  Performing the above operation involves multiple steps. First the user calls \ref hipsparseSpMV_bufferSize to determine the 
+*  size of the required temporary storage buffer. The user then allocates this buffer and calls \ref hipsparseSpMV_preprocess. 
+*  Depending on the algorithm and sparse matrix format, this will perform analysis on the sparsity pattern of \f$op(A)\f$. Finally 
+*  the user completes the operation by calling \p hipsparseSpMV. The buffer size and preprecess routines only need to be called 
+*  once for a given sparse matrix \f$op(A)\f$ while the computation can be repeatedly used with different \f$x\f$ and \f$y\f$ 
+*  vectors. Once all calls to \p hipsparseSpMV are complete, the temporary buffer can be deallocated. 
 *
 *  \p hipsparseSpMV supports multiple different algorithms. These algorithms have different trade offs depending on the sparsity
 *  pattern of the matrix, whether or not the results need to be deterministic, and how many times the sparse-vector product will
@@ -208,9 +208,9 @@ hipsparseStatus_t hipsparseSpMV_preprocess(hipsparseHandle_t           handle,
 *  </table>
 *
 *  \p hipsparseSpMV supports multiple combinations of data types and compute types. The tables below indicate the currently
-*  supported different data types that can be used for for the sparse matrix \f$op(A)\f$ and the dense vectors \f$x\f$ and 
-*  \f$y\f$ and the compute type for \f$\alpha\f$ and \f$\beta\f$. The advantage of using different data types is to save on 
-*  memory bandwidth and storage when a user application allows while performing the actual computation in a higher precision.
+*  supported data types that can be used for the sparse matrix \f$op(A)\f$ and the dense vectors \f$x\f$ and \f$y\f$ and the 
+*  compute type for \f$\alpha\f$ and \f$\beta\f$. The advantage of using different data types is to save on memory bandwidth 
+*  and storage when a user application allows while performing the actual computation in a higher precision.
 *
 *  \par Uniform Precisions:
 *  <table>
@@ -247,7 +247,7 @@ hipsparseStatus_t hipsparseSpMV_preprocess(hipsparseHandle_t           handle,
 *  </table>
 *
 *  \p hipsparseSpMV supports \ref HIPSPARSE_INDEX_32I and \ref HIPSPARSE_INDEX_64I index precisions 
-*  for storing the row pointer and column indices arrays of the sparse matrices.
+*  for storing the row pointer and row/column indices arrays of the sparse matrices.
 *
 *  \note
 *  None of the algorithms above are deterministic when \f$A\f$ is transposed.

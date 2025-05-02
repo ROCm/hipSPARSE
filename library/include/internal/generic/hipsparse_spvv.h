@@ -31,9 +31,13 @@ extern "C" {
 /*! \ingroup generic_module
 *  \details
 *  \p hipsparseSpVV_bufferSize computes the required user allocated buffer size needed when computing the 
-*  inner dot product of a sparse vector with a dense vector
+*  inner dot product of a sparse vector with a dense vector:
+*  \f[
+*    \text{result} := op(x) \cdot y,
+*  \f]
 *
-*  See \ref hipsparseSpVV for full code example.
+*  \p hipsparseSpVV_bufferSize supports multiple combinations of data types and compute types. See \ref hipsparseSpVV for a complete 
+*  listing of all the data type and compute type combinations available.
 *
 *  @param[in]
 *  handle              handle to the hipsparse library context queue.
@@ -125,7 +129,7 @@ hipsparseStatus_t hipsparseSpVV_bufferSize(hipsparseHandle_t     handle,
 *  \par Mixed precisions:
 *  <table>
 *  <caption id="spvv_mixed">Mixed Precisions</caption>
-*  <tr><th>X / Y     <th>compute_type / result
+*  <tr><th>X / Y     <th>compute_type
 *  <tr><td>HIP_R_8I  <td>HIP_R_32I
 *  <tr><td>HIP_R_8I  <td>HIP_R_32F
 *  <tr><td>HIP_R_16F <td>HIP_R_32F

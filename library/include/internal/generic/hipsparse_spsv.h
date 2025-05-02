@@ -29,10 +29,9 @@ extern "C" {
 #endif
 
 /*! \ingroup generic_module
-*  \brief Create sparse matrix triangular solve descriptor
 *  \details
 *  \p hipsparseSpSV_createDescr creates a sparse matrix triangular solve descriptor. It should be
-*  destroyed at the end using hipsparseSpSV_destroyDescr().
+*  destroyed at the end using \ref hipsparseSpSV_destroyDescr().
 */
 #if (!defined(CUDART_VERSION) || CUDART_VERSION >= 11030)
 HIPSPARSE_EXPORT
@@ -40,7 +39,6 @@ hipsparseStatus_t hipsparseSpSV_createDescr(hipsparseSpSVDescr_t* descr);
 #endif
 
 /*! \ingroup generic_module
-*  \brief Destroy sparse matrix triangular solve descriptor
 *  \details
 *  \p hipsparseSpSV_destroyDescr destroys a sparse matrix triangular solve descriptor and releases all
 *  resources used by the descriptor.
@@ -57,7 +55,10 @@ hipsparseStatus_t hipsparseSpSV_destroyDescr(hipsparseSpSVDescr_t descr);
 *  \f[
 *    op(A) \cdot y := \alpha \cdot x,
 *  \f]
-*  where \f$op(A)\f$ is a sparse matrix in CSR storage format, \f$x\f$ and \f$y\f$ are dense vectors.
+*  where \f$op(A)\f$ is a sparse matrix in CSR or COO storage format, \f$x\f$ and \f$y\f$ are dense vectors.
+*
+*  \p hipsparseSpSV_bufferSize supports multiple combinations of data types and compute types. See \ref hipsparseSpSV_solve 
+*  for a complete listing of all the data type and compute type combinations available.
 *
 *  @param[in]
 *  handle              handle to the hipsparse library context queue.
@@ -119,7 +120,10 @@ hipsparseStatus_t hipsparseSpSV_bufferSize(hipsparseHandle_t           handle,
 *  \f[
 *    op(A) \cdot y := \alpha \cdot x,
 *  \f]
-*  where \f$op(A)\f$ is a sparse matrix in CSR storage format, \f$x\f$ and \f$y\f$ are dense vectors.
+*  where \f$op(A)\f$ is a sparse matrix in CSR or COO storage format, \f$x\f$ and \f$y\f$ are dense vectors.
+*
+*  \p hipsparseSpSV_analysis supports multiple combinations of data types and compute types. See \ref hipsparseSpSV_solve 
+*  for a complete listing of all the data type and compute type combinations available.
 *
 *  @param[in]
 *  handle          handle to the hipsparse library context queue.
@@ -178,8 +182,8 @@ hipsparseStatus_t hipsparseSpSV_analysis(hipsparseHandle_t           handle,
 *  \brief Sparse triangular solve
 *
 *  \details
-*  \p hipsparseSpSV_solve solves a triangular linear system of equations defined by a sparse \f$m \times m\f$ square matrix \f$op(A)\f$, 
-*  given in CSR or COO storage format, such that
+*  \p hipsparseSpSV_solve solves a triangular linear system of equations defined by a sparse \f$m \times m\f$ square matrix 
+*  \f$op(A)\f$, given in CSR or COO storage format, such that
 *  \f[
 *    op(A) \cdot y = \alpha \cdot x,
 *  \f]
@@ -194,13 +198,12 @@ hipsparseStatus_t hipsparseSpSV_analysis(hipsparseHandle_t           handle,
 *  \f]
 *  and where \f$y\f$ is the dense solution vector and \f$x\f$ is the dense right-hand side vector.
 *
-*  Performing the above operation requires three stages. First, \ref hipsparseSpSV_bufferSize must be called which will 
+*  Performing the above operation requires three steps. First, \ref hipsparseSpSV_bufferSize must be called which will 
 *  determine the size of the required temporary storage buffer. The user then allocates this buffer and calls 
 *  \ref hipsparseSpSV_analysis which will perform analysis on the sparse matrix \f$op(A)\f$. Finally, the user completes 
-*  the computation by calling \p hipsparseSpSV_solve. The buffer size, buffer allocation, and preprecess routine 
-*  only need to be called once for a given sparse matrix \f$op(A)\f$ while the computation stage can be repeatedly 
-*  used with different \f$x\f$ and \f$y\f$ vectors. Once all calls to \p hipsparseSpSV_solve are complete, the temporary buffer 
-*  can be deallocated. 
+*  the computation by calling \p hipsparseSpSV_solve. The buffer size and preprecess routines only need to be called once 
+*  for a given sparse matrix \f$op(A)\f$ while the computation can be repeatedly used with different \f$x\f$ and \f$y\f$ 
+*  vectors. Once all calls to \p hipsparseSpSV_solve are complete, the temporary buffer can be deallocated. 
 *
 *  \p hipsparseSpSV_solve supports \ref HIPSPARSE_INDEX_32I and \ref HIPSPARSE_INDEX_64I index types for 
 *  storing the row pointer and column indices arrays of the sparse matrices. \p hipsparseSpSV_solve supports the following 

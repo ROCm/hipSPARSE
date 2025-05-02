@@ -29,10 +29,9 @@ extern "C" {
 #endif
 
 /*! \ingroup generic_module
-*  \brief Create sparse matrix sparse matrix product descriptor
 *  \details
 *  \p hipsparseSpGEMM_createDescr creates a sparse matrix sparse matrix product descriptor. It should be
-*  destroyed at the end using hipsparseSpGEMM_destroyDescr().
+*  destroyed at the end using \ref hipsparseSpGEMM_destroyDescr().
 */
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
 HIPSPARSE_EXPORT
@@ -40,7 +39,6 @@ hipsparseStatus_t hipsparseSpGEMM_createDescr(hipsparseSpGEMMDescr_t* descr);
 #endif
 
 /*! \ingroup generic_module
-*  \brief Destroy sparse matrix sparse matrix product descriptor
 *  \details
 *  \p hipsparseSpGEMM_destroyDescr destroys a sparse matrix sparse matrix product descriptor and releases all
 *  resources used by the descriptor.

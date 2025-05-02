@@ -29,10 +29,9 @@ extern "C" {
 #endif
 
 /*! \ingroup generic_module
-*  \brief Create sparse matrix triangular solve with multiple rhs descriptor
 *  \details
 *  \p hipsparseSpSM_createDescr creates a sparse matrix triangular solve with multiple rhs descriptor. It should be
-*  destroyed at the end using hipsparseSpSM_destroyDescr().
+*  destroyed at the end using \ref hipsparseSpSM_destroyDescr().
 */
 #if (!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
 HIPSPARSE_EXPORT
@@ -40,7 +39,6 @@ hipsparseStatus_t hipsparseSpSM_createDescr(hipsparseSpSMDescr_t* descr);
 #endif
 
 /*! \ingroup generic_module
-*  \brief Destroy sparse matrix triangular solve with multiple rhs descriptor
 *  \details
 *  \p hipsparseSpSM_destroyDescr destroys a sparse matrix triangular solve with multiple rhs descriptor and releases all
 *  resources used by the descriptor.
@@ -58,6 +56,9 @@ hipsparseStatus_t hipsparseSpSM_destroyDescr(hipsparseSpSMDescr_t descr);
 *    op(A) \cdot C := \alpha \cdot op(B),
 *  \f]
 *  where \f$op(A)\f$ is a square sparse matrix in CSR or COO storage format, \f$B\f$ and \f$C\f$ are dense matrices.
+*
+*  \p hipsparseSpSM_bufferSize supports multiple combinations of data types and compute types. See \ref hipsparseSpSM_solve 
+*  for a complete listing of all the data type and compute type combinations available.
 *
 *  @param[in]
 *  handle              handle to the hipsparse library context queue.
@@ -124,6 +125,9 @@ hipsparseStatus_t hipsparseSpSM_bufferSize(hipsparseHandle_t           handle,
 *    op(A) \cdot C := \alpha \cdot op(B),
 *  \f]
 *  where \f$A\f$ is a sparse matrix in CSR or COO storage format, \f$B\f$ and \f$C\f$ are dense vectors.
+*
+*  \p hipsparseSpSM_bufferSize supports multiple combinations of data types and compute types. See \ref hipsparseSpSM_solve 
+*  for a complete listing of all the data type and compute type combinations available.
 *
 *  @param[in]
 *  handle          handle to the hipsparse library context queue.
@@ -215,9 +219,9 @@ hipsparseStatus_t hipsparseSpSM_analysis(hipsparseHandle_t           handle,
 *  Performing the above operation requires three steps. First, the user calls \ref hipsparseSpSM_bufferSize in order to 
 *  determine the size of the required temporary storage buffer. The user then allocates this buffer and calls 
 *  \ref hipsparseSpSM_analysis which will perform analysis on the sparse matrix \f$op(A)\f$. Finally, the user completes 
-*  the computation by calling \p hipsparseSpSM_solve. The analysis only needs to be called once for a given sparse triangular 
-*  matrix \f$op(A)\f$ while the computation can be called repeatedly with different \f$B\f$ and \f$C\f$ matrices. Once all 
-*  calls to \p hipsparseSpSM_solve are complete, the temporary buffer can be deallocated.
+*  the computation by calling \p hipsparseSpSM_solve. The buffer size and analysis routines only need to be called once 
+*  for a given sparse matrix \f$op(A)\f$ while the computation can be called repeatedly with different \f$B\f$ and \f$C\f$ 
+*  matrices. Once all calls to \p hipsparseSpSM_solve are complete, the temporary buffer can be deallocated.
 *
 *  As noted above, both \f$B\f$ and \f$C\f$ can be in row or column order (this includes mixing the order so that \f$B\f$ is 
 *  row order and \f$C\f$ is column order and vice versa). When running on an AMD system with the rocSPARSE backend, the kernels 

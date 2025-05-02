@@ -35,6 +35,9 @@ extern "C" {
 *  CSC, or COO format. This routine is used to determine the size of the buffer 
 *  needed in \ref hipsparseDenseToSparse_analysis and \ref hipsparseDenseToSparse_convert.
 *
+*  \p hipsparseDenseToSparse_bufferSize supports different data types for the dense and sparse matrices. See 
+*  \ref hipsparseDenseToSparse_convert for a complete listing of all the data types available.
+*
 *  @param[in]
 *  handle              handle to the hipsparse library context queue.
 *  @param[in]
@@ -72,6 +75,9 @@ hipsparseStatus_t hipsparseDenseToSparse_bufferSize(hipsparseHandle_t           
 *  converting a dense matrix to sparse matrix. This routine currently accepts the sparse matrix descriptor \p matB in CSR, 
 *  CSC, or COO format. This routine takes a user allocated buffer whose size must first be computed 
 *  using \ref hipsparseDenseToSparse_bufferSize.
+*
+*  \p hipsparseDenseToSparse_analysis supports different data types for the dense and sparse matrices. See 
+*  \ref hipsparseDenseToSparse_convert for a complete listing of all the data types available.
 *
 *  @param[in]
 *  handle          handle to the hipsparse library context queue.
@@ -146,9 +152,9 @@ hipsparseStatus_t hipsparseDenseToSparse_analysis(hipsparseHandle_t           ha
 *  Once the descriptors have been created, the user calls \ref hipsparseDenseToSparse_bufferSize. This routine will 
 *  determine the size of the required temporary storage buffer. The user then allocates this buffer and passes it to
 *  \ref hipsparseDenseToSparse_analysis which will perform analysis on the dense matrix in order to determine the number 
-*  of non-zeros that will exist in the sparse matrix. Once this \ref hipsparseDenseToSparse_analysis has been called, the
-*  non-zero count is stored in the sparse matrix descriptor \p matB. In order to allocate our remaining sparse matrix arrays,
-*  we query the sparse matrix descriptor \p matB for this non-zero count:
+*  of non-zeros that will exist in the sparse matrix. Once this \ref hipsparseDenseToSparse_analysis routine has been 
+*  called, the non-zero count is stored in the sparse matrix descriptor \p matB. In order to allocate our remaining sparse 
+*  matrix arrays, we query the sparse matrix descriptor \p matB for this non-zero count:
 *  \code{.c}
 *    // Grab the non-zero count from the B matrix decriptor
 *    int64_t rows;
@@ -156,8 +162,9 @@ hipsparseStatus_t hipsparseDenseToSparse_analysis(hipsparseHandle_t           ha
 *    int64_t nnz;
 *    hipsparseSpMatGetSize(matB, &rows, &cols, &nnz);
 *  \endcode
-*  The remaining arrays are allocated and then set on the sparse matrix descriptor \p matB. Finally, we complete the 
-*  conversion by calling \ref hipsparseDenseToSparse_convert. See full example below for details.
+*  The remaining arrays are then allocated and set on the sparse matrix descriptor \p matB. Finally, we complete the 
+*  conversion by calling \ref hipsparseDenseToSparse_convert. Once the conversion is complete, the user is free to deallocate 
+*  the storage buffer. See full example below for details.
 *
 *  \p hipsparseDenseToSparse_convert supports the following uniform precision data types for the dense and sparse matrices \f$A\f$ 
 *  and \f$B\f$:

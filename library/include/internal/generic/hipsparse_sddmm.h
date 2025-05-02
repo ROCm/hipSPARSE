@@ -38,6 +38,9 @@ extern "C" {
 *  where \f$C\f$ is a sparse matrix and \f$A\f$ and \f$B\f$ are dense matrices. This routine is used in 
 *  conjunction with \ref hipsparseSDDMM_preprocess() and \ref hipsparseSDDMM().
 *
+*  \p hipsparseSDDMM_bufferSize supports multiple combinations of data types and compute types. See \ref hipsparseSDDMM 
+*  for a complete listing of all the data type and compute type combinations available.
+*
 *  @param[in]
 *  handle              handle to the hipsparse library context queue.
 *  @param[in]
@@ -106,6 +109,9 @@ hipsparseStatus_t hipsparseSDDMM_bufferSize(hipsparseHandle_t           handle,
 *  where \f$C\f$ is a sparse matrix and \f$A\f$ and \f$B\f$ are dense matrices. This routine is 
 *  used in conjunction with \ref hipsparseSDDMM().
 *
+*  \p hipsparseSDDMM_preprocess supports multiple combinations of data types and compute types. See \ref hipsparseSDDMM 
+*  for a complete listing of all the data type and compute type combinations available.
+*
 *  @param[in]
 *  handle       handle to the hipsparse library context queue.
 *  @param[in]
@@ -166,7 +172,7 @@ hipsparseStatus_t hipsparseSDDMM_preprocess(hipsparseHandle_t           handle,
 #endif
 
 /*! \ingroup generic_module
-*  \brief Description: Sampled Dense-Dense Matrix Multiplication.
+*  \brief Sampled Dense-Dense Matrix Multiplication.
 *
 *  \details
 *  \p hipsparseSDDMM multiplies the scalar \f$\alpha\f$ with the dense
@@ -214,8 +220,8 @@ hipsparseStatus_t hipsparseSDDMM_preprocess(hipsparseHandle_t           handle,
 *
 *  <table>
 *  <caption id="sddmm_algorithms">Algorithms</caption>
-*  <tr><th>CSR/CSC Algorithms                <th>Deterministic  <th>Preprocessing  <th>Notes
-*  <tr><td>HIPSPARSE_SDDMM_ALG_DEFAULT</td>  <td>Yes</td>       <td>No</td>        <td>Uses the sparsity pattern of matrix C to perform a limited set of dot products </td>
+*  <tr><th>CSR/CSC Algorithms                <th>Deterministic  <th>Preprocessing
+*  <tr><td>HIPSPARSE_SDDMM_ALG_DEFAULT</td>  <td>Yes</td>       <td>No</td>
 *  </table>
 *
 *  Currently, \p hipsparseSDDMM only supports the uniform precisions indicated in the table below. For the sparse matrix 
