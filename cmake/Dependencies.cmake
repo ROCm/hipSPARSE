@@ -1,5 +1,5 @@
 # ########################################################################
-# Copyright (C) 2018-2020 Advanced Micro Devices, Inc. All rights Reserved.
+# Copyright (C) 2018-2025 Advanced Micro Devices, Inc. All rights Reserved.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -55,23 +55,26 @@ else()
 endif()
 
 # ROCm cmake package
-find_package(ROCM 0.7.3 QUIET CONFIG PATHS ${CMAKE_PREFIX_PATH})
-if(NOT ROCM_FOUND)
-  set(PROJECT_EXTERN_DIR ${CMAKE_CURRENT_BINARY_DIR}/extern)
-  set(rocm_cmake_tag "master" CACHE STRING "rocm-cmake tag to download")
-  file(DOWNLOAD https://github.com/ROCm/rocm-cmake/archive/${rocm_cmake_tag}.zip
-       ${PROJECT_EXTERN_DIR}/rocm-cmake-${rocm_cmake_tag}.zip STATUS status LOG log)
+find_package(ROCmCMakeBuildTools 0.11.0 QUIET CONFIG PATHS ${CMAKE_PREFIX_PATH})
+if(NOT ROCmCMakeBuildTools_FOUND)
+  find_package(ROCM 0.11.0 QUIET CONFIG PATHS ${CMAKE_PREFIX_PATH}) # deprecated fallback
+  if(NOT ROCM_FOUND)
+    set(PROJECT_EXTERN_DIR ${CMAKE_CURRENT_BINARY_DIR}/extern)
+    set(rocm_cmake_tag "master" CACHE STRING "rocm-cmake tag to download")
+    file(DOWNLOAD https://github.com/ROCm/rocm-cmake/archive/${rocm_cmake_tag}.zip
+         ${PROJECT_EXTERN_DIR}/rocm-cmake-${rocm_cmake_tag}.zip STATUS status LOG log)
 
-  list(GET status 0 status_code)
-  list(GET status 1 status_string)
+    list(GET status 0 status_code)
+    list(GET status 1 status_string)
 
-  if(NOT status_code EQUAL 0)
-    message(FATAL_ERROR "error: downloading
-    'https://github.com/ROCm/rocm-cmake/archive/${rocm_cmake_tag}.zip' failed
-    status_code: ${status_code}
-    status_string: ${status_string}
-    log: ${log}
-    ")
+    if(NOT status_code EQUAL 0)
+      message(FATAL_ERROR "error: downloading
+      'https://github.com/ROCm/rocm-cmake/archive/${rocm_cmake_tag}.zip' failed
+      status_code: ${status_code}
+      status_string: ${status_string}
+      log: ${log}
+      ")
+    endif()
   endif()
 
   execute_process(COMMAND ${CMAKE_COMMAND} -E tar xzf ${PROJECT_EXTERN_DIR}/rocm-cmake-${rocm_cmake_tag}.zip
@@ -81,7 +84,7 @@ if(NOT ROCM_FOUND)
   execute_process( COMMAND ${CMAKE_COMMAND} --build rocm-cmake-${rocm_cmake_tag} --target install
                   WORKING_DIRECTORY ${PROJECT_EXTERN_DIR})
 
-  find_package( ROCM 0.7.3 REQUIRED CONFIG PATHS ${PROJECT_EXTERN_DIR}/rocm-cmake )
+  find_package(ROCmCMakeBuildTools 0.11.0 REQUIRED CONFIG PATHS ${PROJECT_EXTERN_DIR}/rocm-cmake )
 endif()
 
 include(ROCMSetupVersion)
