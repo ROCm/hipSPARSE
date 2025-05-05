@@ -64,7 +64,7 @@ if (NOT WIN32)
 endif( )
 
 # hipSPARSE project
-project(hipsparse LANGUAGES CXX ${fortran_language})
+project(hipsparse LANGUAGES CXX C ${fortran_language})
 
 # Set CXX flags
 if (NOT DEFINED CMAKE_CXX_STANDARD)
@@ -144,7 +144,7 @@ if(BUILD_CLIENTS_SAMPLES OR BUILD_CLIENTS_TESTS OR BUILD_CLIENTS_BENCHMARKS)
     set(OPENMP_RPM "libgomp")
     set(OPENMP_DEB "libomp-dev")
   endif()
-  if(CLIENTS_OS STREQUAL "centos" OR CLIENTS_OS STREQUAL "rhel")
+  if(CLIENTS_OS STREQUAL "centos" OR CLIENTS_OS STREQUAL "rhel" OR CLIENTS_OS STREQUAL "almalinux")
     if(CLIENTS_OS_VERSION VERSION_GREATER_EQUAL "8")
       set(GFORTRAN_RPM "libgfortran")
     endif()
