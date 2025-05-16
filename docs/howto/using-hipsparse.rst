@@ -15,15 +15,15 @@ HIP device management
 =====================
 
 Before starting a HIP kernel, you can call :cpp:func:`hipSetDevice` to set a device.
-If you do not call the function, the system uses the default device. Unless you explicitly
+The system uses the default device if you don't call the function. Unless you explicitly
 call :cpp:func:`hipSetDevice` to specify another device, HIP kernels are always launched on device ``0``.
-This is a HIP (and CUDA) device management approach and is not specific to the hipSPARSE library.
+This HIP (and CUDA) device management approach is not specific to the hipSPARSE library.
 hipSPARSE honors this approach and assumes you have already set the preferred device before a hipSPARSE routine call.
 
 After you set the device, you can create a handle with :ref:`hipsparse_create_handle_`.
 Subsequent hipSPARSE routines take this handle as an input parameter.
 hipSPARSE only queries the specified device (using :cpp:func:`hipGetDevice`).
-It is your responsibility to provide a valid device to hipSPARSE and ensure device safety.
+You are responsible for providing a valid device to hipSPARSE and ensuring device safety.
 If it's not a valid device, hipSPARSE returns an error message.
 
 To change to another device, you must destroy the current handle using :ref:`hipsparse_destroy_handle_`,
@@ -37,7 +37,7 @@ then create another handle using :ref:`hipsparse_create_handle_`, specifying ano
 HIP stream management
 =====================
 
-HIP kernels are always launched in a queue (also known as stream). If you do not explicitly specify a stream,
+HIP kernels are always launched in a queue (also known as a stream). If you don't explicitly specify a stream,
 the system provides and maintains a default stream, which you cannot create or destroy.
 However, you can freely create new streams (using :cpp:func:`hipStreamCreate`) and bind them to the
 hipSPARSE handle using :ref:`hipsparse_set_stream_`. The hipSPARSE routines invoke HIP kernels.
@@ -49,11 +49,11 @@ See the `HIP stream management API <https://rocm.docs.amd.com/projects/HIP/en/la
 Asynchronous execution
 ======================
 
-Except for functions which allocate memory themselves, preventing asynchronicity,
+Except for functions that allocate memory themselves, preventing asynchronicity,
 all hipSPARSE library functions are non-blocking and execute asynchronously with respect to the host,
 unless otherwise stated. These functions might return before the actual computation has finished.
 To force synchronization, use either :cpp:func:`hipDeviceSynchronize` or :cpp:func:`hipStreamSynchronize`.
-This ensures that all previously executed hipSPARSE functions on the device or in the stream have completed.
+This ensures that all previously executed hipSPARSE functions on the device or stream have been completed.
 
 Multiple streams and multiple devices
 =====================================
