@@ -99,7 +99,7 @@ hipsparseStatus_t hipsparseSpSV_bufferSize(hipsparseHandle_t           handle,
                                            hipsparseSpSVAlg_t          alg,
                                            hipsparseSpSVDescr_t        spsvDescr,
                                            size_t*                     pBufferSizeInBytes);
-#elif (CUDART_VERSION >= 11030)
+#elif(CUDART_VERSION >= 11030)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpSV_bufferSize(hipsparseHandle_t           handle,
                                            hipsparseOperation_t        opA,
@@ -164,7 +164,7 @@ hipsparseStatus_t hipsparseSpSV_analysis(hipsparseHandle_t           handle,
                                          hipsparseSpSVAlg_t          alg,
                                          hipsparseSpSVDescr_t        spsvDescr,
                                          void*                       externalBuffer);
-#elif (CUDART_VERSION >= 11030)
+#elif(CUDART_VERSION >= 11030)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpSV_analysis(hipsparseHandle_t           handle,
                                          hipsparseOperation_t        opA,
@@ -385,7 +385,7 @@ hipsparseStatus_t hipsparseSpSV_solve(hipsparseHandle_t           handle,
                                       hipDataType                 computeType,
                                       hipsparseSpSVAlg_t          alg,
                                       hipsparseSpSVDescr_t        spsvDescr);
-#elif (CUDART_VERSION >= 11030)
+#elif(CUDART_VERSION >= 11030)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpSV_solve(hipsparseHandle_t           handle,
                                       hipsparseOperation_t        opA,
