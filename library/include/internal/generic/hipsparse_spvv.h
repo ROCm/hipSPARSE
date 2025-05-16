@@ -60,7 +60,7 @@ extern "C" {
 *  \retval      HIPSPARSE_STATUS_NOT_SUPPORTED \p computeType is currently not
 *               supported.
 */
-#if (!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpVV_bufferSize(hipsparseHandle_t          handle,
                                            hipsparseOperation_t       opX,
@@ -242,7 +242,7 @@ hipsparseStatus_t hipsparseSpVV_bufferSize(hipsparseHandle_t     handle,
 *    hipFree(temp_buffer);
 *  \endcode
 */
-#if (!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseSpVV(hipsparseHandle_t          handle,
                                 hipsparseOperation_t       opX,

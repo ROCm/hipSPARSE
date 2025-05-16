@@ -50,7 +50,7 @@ hipsparseStatus_t hipsparseCreate(hipsparseHandle_t* handle);
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroy(hipsparseHandle_t handle);
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION > 10000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION > 10000)
 /*! \ingroup aux_module
  *  \brief Return the string representation of a hipSPARSE status's matching backend status enum name
  *
@@ -252,7 +252,7 @@ hipsparseStatus_t hipsparseSetMatIndexBase(hipsparseMatDescr_t descrA, hipsparse
 HIPSPARSE_EXPORT
 hipsparseIndexBase_t hipsparseGetMatIndexBase(const hipsparseMatDescr_t descrA);
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
 /*! \ingroup aux_module
  *  \brief Create a \p HYB matrix structure
  *
@@ -275,7 +275,7 @@ HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroyHybMat(hipsparseHybMat_t hybA);
 #endif
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /* Info structures */
 /*! \ingroup aux_module
  *  \brief Create a bsrsv2 info structure
@@ -290,7 +290,7 @@ HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreateBsrsv2Info(bsrsv2Info_t* info);
 #endif
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup aux_module
  *  \brief Destroy a bsrsv2 info structure
  *
@@ -302,7 +302,7 @@ HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroyBsrsv2Info(bsrsv2Info_t info);
 #endif
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /* Info structures */
 /*! \ingroup aux_module
  *  \brief Create a bsrsm2 info structure
@@ -317,7 +317,7 @@ HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreateBsrsm2Info(bsrsm2Info_t* info);
 #endif
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup aux_module
  *  \brief Destroy a bsrsm2 info structure
  *
@@ -329,7 +329,7 @@ HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroyBsrsm2Info(bsrsm2Info_t info);
 #endif
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /* Info structures */
 /*! \ingroup aux_module
  *  \brief Create a bsrilu02 info structure
@@ -344,7 +344,7 @@ HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreateBsrilu02Info(bsrilu02Info_t* info);
 #endif
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup aux_module
  *  \brief Destroy a bsrilu02 info structure
  *
@@ -356,7 +356,7 @@ HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroyBsrilu02Info(bsrilu02Info_t info);
 #endif
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /* Info structures */
 /*! \ingroup aux_module
  *  \brief Create a bsric02 info structure
@@ -371,7 +371,7 @@ HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreateBsric02Info(bsric02Info_t* info);
 #endif
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup aux_module
  *  \brief Destroy a bsric02 info structure
  *
@@ -383,7 +383,7 @@ HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroyBsric02Info(bsric02Info_t info);
 #endif
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 /* Info structures */
 /*! \ingroup aux_module
  *  \brief Create a csrsv2 info structure
@@ -431,7 +431,7 @@ HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroyCsrsm2Info(csrsm2Info_t info);
 #endif
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /* Info structures */
 /*! \ingroup aux_module
  *  \brief Create a csrilu02 info structure
@@ -446,7 +446,7 @@ HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreateCsrilu02Info(csrilu02Info_t* info);
 #endif
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup aux_module
  *  \brief Destroy a csrilu02 info structure
  *
@@ -458,7 +458,7 @@ HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroyCsrilu02Info(csrilu02Info_t info);
 #endif
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /* Info structures */
 /*! \ingroup aux_module
  *  \brief Create a csric02 info structure
@@ -473,7 +473,7 @@ HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreateCsric02Info(csric02Info_t* info);
 #endif
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup aux_module
  *  \brief Destroy a csric02 info structure
  *
@@ -506,7 +506,7 @@ hipsparseStatus_t hipsparseCreateCsru2csrInfo(csru2csrInfo_t* info);
 HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroyCsru2csrInfo(csru2csrInfo_t info);
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /* Info structures */
 /*! \ingroup aux_module
  *  \brief Create a color info structure
@@ -521,7 +521,7 @@ HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreateColorInfo(hipsparseColorInfo_t* info);
 #endif
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup aux_module
  *  \brief Destroy a color info structure
  *
@@ -533,7 +533,7 @@ HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroyColorInfo(hipsparseColorInfo_t info);
 #endif
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
 /* Info structures */
 /*! \ingroup aux_module
  *  \brief Create a csrgemm2 info structure
@@ -558,7 +558,7 @@ HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseDestroyCsrgemm2Info(csrgemm2Info_t info);
 #endif
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /* Info structures */
 /*! \ingroup aux_module
  *  \brief Create a prune info structure
@@ -573,7 +573,7 @@ HIPSPARSE_EXPORT
 hipsparseStatus_t hipsparseCreatePruneInfo(pruneInfo_t* info);
 #endif
 
-#if (!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION < 13000)
 /*! \ingroup aux_module
  *  \brief Destroy a prune info structure
  *

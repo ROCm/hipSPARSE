@@ -33,7 +33,7 @@
  *  is used in hipSPARSE generic API's involving sparse vectors. It should be destroyed at the end using
  *  hipsparseDestroySpVec().
  */
-#if (!defined(CUDART_VERSION) || CUDART_VERSION > 10010 \
+#if(!defined(CUDART_VERSION) || CUDART_VERSION > 10010 \
      || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
 typedef void* hipsparseSpVecDescr_t;
 #endif
@@ -47,7 +47,7 @@ typedef void* hipsparseSpVecDescr_t;
  *  is used in hipSPARSE generic API's involving dense vectors. It should be destroyed at the end using
  *  hipsparseDestroyDnVec().
  */
-#if (!defined(CUDART_VERSION) || CUDART_VERSION > 10010 \
+#if(!defined(CUDART_VERSION) || CUDART_VERSION > 10010 \
      || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
 typedef void* hipsparseDnVecDescr_t;
 #endif
@@ -62,7 +62,7 @@ typedef void* hipsparseDnVecDescr_t;
  *  (for Blocked ELL format). The returned descriptor is used in hipSPARSE generic API's involving sparse matrices. 
  *  It should be destroyed at the end using hipsparseDestroySpMat().
  */
-#if (!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 typedef void* hipsparseSpMatDescr_t;
 #endif
 
@@ -75,7 +75,7 @@ typedef void* hipsparseSpMatDescr_t;
  *  is used in hipSPARSE generic API's involving dense matrices. It should be destroyed at the end using
  *  hipsparseDestroyDnMat().
  */
-#if (!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 typedef void* hipsparseDnMatDescr_t;
 #endif
 
@@ -88,7 +88,7 @@ typedef void* hipsparseDnMatDescr_t;
  *  is used in hipSPARSE generic API's involving sparse vectors. It should be destroyed at the end using
  *  hipsparseDestroySpVec().
  */
-#if (!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
 typedef void const* hipsparseConstSpVecDescr_t;
 #endif
 
@@ -101,7 +101,7 @@ typedef void const* hipsparseConstSpVecDescr_t;
  *  is used in hipSPARSE generic API's involving dense vectors. It should be destroyed at the end using
  *  hipsparseDestroyDnVec().
  */
-#if (!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
 typedef void const* hipsparseConstDnVecDescr_t;
 #endif
 
@@ -114,7 +114,7 @@ typedef void const* hipsparseConstDnVecDescr_t;
  *  is used in hipSPARSE generic API's involving sparse matrices. It should be destroyed at the end using
  *  hipsparseDestroySpMat().
  */
-#if (!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
 typedef void const* hipsparseConstSpMatDescr_t;
 #endif
 
@@ -127,7 +127,7 @@ typedef void const* hipsparseConstSpMatDescr_t;
  *  is used in hipSPARSE generic API's involving dense matrices. It should be destroyed at the end using
  *  hipsparseDestroyDnMat().
  */
-#if (!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
 typedef void const* hipsparseConstDnMatDescr_t;
 #endif
 
@@ -148,7 +148,7 @@ struct hipsparseSpSMDescr;
  *  be initialized using hipsparseSpGEMM_createDescr(). It should be destroyed at the end using
  *  hipsparseSpGEMM_destroyDescr().
  */
-#if (!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
 typedef struct hipsparseSpGEMMDescr* hipsparseSpGEMMDescr_t;
 #endif
 
@@ -160,7 +160,7 @@ typedef struct hipsparseSpGEMMDescr* hipsparseSpGEMMDescr_t;
  *  hipsparseSpSV_analysis(), and hipsparseSpSV_solve(). It must be initialized using hipsparseSpSV_createDescr(). 
  *  It should be destroyed at the end using hipsparseSpSV_destroyDescr().
  */
-#if (!defined(CUDART_VERSION) || CUDART_VERSION >= 11030)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11030)
 typedef struct hipsparseSpSVDescr* hipsparseSpSVDescr_t;
 #endif
 
@@ -172,7 +172,7 @@ typedef struct hipsparseSpSVDescr* hipsparseSpSVDescr_t;
  *  hipsparseSpSM_analysis(), and hipsparseSpSM_solve(). It must be initialized using hipsparseSpSM_createDescr(). 
  *  It should be destroyed at the end using hipsparseSpSM_destroyDescr().
  */
-#if (!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
 typedef struct hipsparseSpSMDescr* hipsparseSpSMDescr_t;
 #endif
 
@@ -185,7 +185,7 @@ typedef struct hipsparseSpSMDescr* hipsparseSpSMDescr_t;
  *  This is a list of the \ref hipsparseFormat_t types that are used by the hipSPARSE
  *  library.
  */
-#if (!defined(CUDART_VERSION))
+#if(!defined(CUDART_VERSION))
 typedef enum
 {
     HIPSPARSE_FORMAT_CSR         = 1, /**< Compressed Sparse Row */
@@ -195,7 +195,7 @@ typedef enum
     HIPSPARSE_FORMAT_BLOCKED_ELL = 5 /**< Blocked ELL */
 } hipsparseFormat_t;
 #else
-#if (CUDART_VERSION >= 12000)
+#if(CUDART_VERSION >= 12000)
 typedef enum
 {
     HIPSPARSE_FORMAT_CSR         = 1, /**< Compressed Sparse Row */
@@ -229,7 +229,7 @@ typedef enum
  *  This is a list of the \ref hipsparseOrder_t types that are used by the hipSPARSE
  *  library.
  */
-#if (!defined(CUDART_VERSION))
+#if(!defined(CUDART_VERSION))
 typedef enum
 {
     HIPSPARSE_ORDER_COLUMN HIPSPARSE_DEPRECATED_MSG("Please use HIPSPARSE_ORDER_COL instead")
@@ -238,7 +238,7 @@ typedef enum
     HIPSPARSE_ORDER_ROW = 2 /**< Row major */
 } hipsparseOrder_t;
 #else
-#if (CUDART_VERSION >= 11000)
+#if(CUDART_VERSION >= 11000)
 typedef enum
 {
     HIPSPARSE_ORDER_COLUMN HIPSPARSE_DEPRECATED_MSG("Please use HIPSPARSE_ORDER_COL instead")
@@ -263,7 +263,7 @@ typedef enum
  *  This is a list of the \ref hipsparseIndexType_t types that are used by the hipSPARSE
  *  library.
  */
-#if (!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 10010)
 typedef enum
 {
     HIPSPARSE_INDEX_16U = 1, /**< 16 bit unsigned integer indices */
@@ -279,7 +279,7 @@ typedef enum
  *  This is a list of the \ref hipsparseSpMVAlg_t types that are used by the hipSPARSE
  *  library.
  */
-#if (!defined(CUDART_VERSION))
+#if(!defined(CUDART_VERSION))
 typedef enum
 {
     HIPSPARSE_MV_ALG_DEFAULT   = 0,
@@ -293,7 +293,7 @@ typedef enum
     HIPSPARSE_SPMV_COO_ALG2    = 4
 } hipsparseSpMVAlg_t;
 #else
-#if (CUDART_VERSION >= 12000)
+#if(CUDART_VERSION >= 12000)
 typedef enum
 {
     HIPSPARSE_SPMV_ALG_DEFAULT = 0,
@@ -333,7 +333,7 @@ typedef enum
  *  This is a list of the \ref hipsparseSpMMAlg_t types that are used by the hipSPARSE
  *  library.
  */
-#if (!defined(CUDART_VERSION))
+#if(!defined(CUDART_VERSION))
 typedef enum
 {
     HIPSPARSE_MM_ALG_DEFAULT        = 0, /**< Default algorithm */
@@ -352,7 +352,7 @@ typedef enum
     HIPSPARSE_SPMM_BLOCKED_ELL_ALG1 = 13 /**< Blocked ELL algorithm 1 */
 } hipsparseSpMMAlg_t;
 #else
-#if (CUDART_VERSION >= 12000)
+#if(CUDART_VERSION >= 12000)
 typedef enum
 {
     HIPSPARSE_SPMM_ALG_DEFAULT      = 0, /**< Default algorithm */
@@ -419,7 +419,7 @@ typedef enum
  *  This is a list of the \ref hipsparseSparseToDenseAlg_t types that are used by the hipSPARSE
  *  library.
  */
-#if (!defined(CUDART_VERSION) || CUDART_VERSION >= 11020)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11020)
 typedef enum
 {
     HIPSPARSE_SPARSETODENSE_ALG_DEFAULT = 0,
@@ -433,7 +433,7 @@ typedef enum
  *  This is a list of the \ref hipsparseDenseToSparseAlg_t types that are used by the hipSPARSE
  *  library.
  */
-#if (!defined(CUDART_VERSION) || CUDART_VERSION >= 11020)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11020)
 typedef enum
 {
     HIPSPARSE_DENSETOSPARSE_ALG_DEFAULT = 0,
@@ -447,7 +447,7 @@ typedef enum
  *  This is a list of the \ref hipsparseSDDMMAlg_t types that are used by the hipSPARSE
  *  library.
  */
-#if (!defined(CUDART_VERSION) || CUDART_VERSION >= 11022)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11022)
 typedef enum
 {
     HIPSPARSE_SDDMM_ALG_DEFAULT = 0
@@ -461,7 +461,7 @@ typedef enum
  *  This is a list of the \ref hipsparseSpSVAlg_t types that are used by the hipSPARSE
  *  library.
  */
-#if (!defined(CUDART_VERSION) || CUDART_VERSION >= 11030)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11030)
 typedef enum
 {
     HIPSPARSE_SPSV_ALG_DEFAULT = 0
@@ -475,7 +475,7 @@ typedef enum
  *  This is a list of the \ref hipsparseSpSMAlg_t types that are used by the hipSPARSE
  *  library.
  */
-#if (!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11031)
 typedef enum
 {
     HIPSPARSE_SPSM_ALG_DEFAULT = 0
@@ -489,7 +489,7 @@ typedef enum
  *  This is a list of the \ref hipsparseSpMatAttribute_t types that are used by the hipSPARSE
  *  library.
  */
-#if (!defined(CUDART_VERSION) || CUDART_VERSION >= 11030)
+#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11030)
 typedef enum
 {
     HIPSPARSE_SPMAT_FILL_MODE = 0, /**< Fill mode attribute */
@@ -504,7 +504,7 @@ typedef enum
  *  This is a list of the \ref hipsparseSpGEMMAlg_t types that are used by the hipSPARSE
  *  library.
  */
-#if (!defined(CUDART_VERSION))
+#if(!defined(CUDART_VERSION))
 typedef enum
 {
     HIPSPARSE_SPGEMM_DEFAULT                  = 0,
@@ -515,7 +515,7 @@ typedef enum
     HIPSPARSE_SPGEMM_ALG3                     = 5
 } hipsparseSpGEMMAlg_t;
 #else
-#if (CUDART_VERSION >= 12000)
+#if(CUDART_VERSION >= 12000)
 typedef enum
 {
     HIPSPARSE_SPGEMM_DEFAULT                  = 0,
