@@ -195,16 +195,16 @@ hipsparseStatus_t hipsparseSpMV_preprocess(hipsparseHandle_t           handle,
 *
 *  <table>
 *  <caption id="spmv_csr_algorithms">CSR/CSC Algorithms</caption>
-*  <tr><th>Algorithm                    <th>Deterministic  <th>Preprocessing
-*  <tr><td>HIPSPARSE_SPMV_CSR_ALG1</td> <td>Yes</td>       <td>No</td>
-*  <tr><td>HIPSPARSE_SPMV_CSR_ALG2</td> <td>Yes</td>       <td>No</td>
+*  <tr><th>CSR Algorithms               
+*  <tr><td>HIPSPARSE_SPMV_CSR_ALG1</td>
+*  <tr><td>HIPSPARSE_SPMV_CSR_ALG2</td>
 *  </table>
 *
 *  <table>
 *  <caption id="spmv_coo_algorithms">COO Algorithms</caption>
-*  <tr><th>COO Algorithms               <th>Deterministic   <th>Preprocessing
-*  <tr><td>HIPSPARSE_SPMV_COO_ALG1</td> <td>Yes</td>        <td>Yes</td> 
-*  <tr><td>HIPSPARSE_SPMV_COO_ALG2</td> <td>No</td>         <td>No</td>
+*  <tr><th>COO Algorithms              
+*  <tr><td>HIPSPARSE_SPMV_COO_ALG1</td>
+*  <tr><td>HIPSPARSE_SPMV_COO_ALG2</td>
 *  </table>
 *
 *  \p hipsparseSpMV supports multiple combinations of data types and compute types. The tables below indicate the currently

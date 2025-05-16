@@ -218,31 +218,31 @@ hipsparseStatus_t hipsparseSpMM_preprocess(hipsparseHandle_t           handle,
 *
 *  <table>
 *  <caption id="spmm_csr_algorithms">CSR Algorithms</caption>
-*  <tr><th>CSR Algorithms                <th>Deterministic  <th>Preprocessing
-*  <tr><td>HIPSPARSE_SPMM_CSR_ALG1</td>  <td>Yes</td>       <td>No</td>
-*  <tr><td>HIPSPARSE_SPMM_CSR_ALG2</td>  <td>No</td>        <td>Yes</td>
-*  <tr><td>HIPSPARSE_SPMM_CSR_ALG3</td>  <td>No</td>        <td>Yes</td>
+*  <tr><th>CSR Algorithms              
+*  <tr><td>HIPSPARSE_SPMM_CSR_ALG1</td>
+*  <tr><td>HIPSPARSE_SPMM_CSR_ALG2</td>
+*  <tr><td>HIPSPARSE_SPMM_CSR_ALG3</td>
 *  </table>
 *
 *  <table>
 *  <caption id="spmm_coo_algorithms">COO Algorithms</caption>
-*  <tr><th>COO Algorithms               <th>Deterministic   <th>Preprocessing 
-*  <tr><td>HIPSPARSE_SPMM_COO_ALG1</td> <td>No</td>         <td>No</td>
-*  <tr><td>HIPSPARSE_SPMM_COO_ALG2</td> <td>Yes</td>        <td>No</td>
-*  <tr><td>HIPSPARSE_SPMM_COO_ALG3</td> <td>No</td>         <td>No</td>
-*  <tr><td>HIPSPARSE_SPMM_COO_ALG4</td> <td>No</td>         <td>No</td>
+*  <tr><th>COO Algorithms              
+*  <tr><td>HIPSPARSE_SPMM_COO_ALG1</td>
+*  <tr><td>HIPSPARSE_SPMM_COO_ALG2</td>
+*  <tr><td>HIPSPARSE_SPMM_COO_ALG3</td>
+*  <tr><td>HIPSPARSE_SPMM_COO_ALG4</td>
 *  </table>
 *
 *  <table>
 *  <caption id="spmm_bell_algorithms">Blocked-ELL Algorithms</caption>
-*  <tr><th>ELL Algorithms                        <th>Deterministic   <th>Preprocessing
-*  <tr><td>HIPSPARSE_SPMM_BLOCKED_ELL_ALG1</td>  <td>Yes</td>        <td>No</td>
+*  <tr><th>ELL Algorithms                      
+*  <tr><td>HIPSPARSE_SPMM_BLOCKED_ELL_ALG1</td>
 *  </table>
 *
 *  <table>
 *  <caption id="spmm_bsr_algorithms">BSR Algorithms</caption>
-*  <tr><th>BSR Algorithms                <th>Deterministic   <th>Preprocessing
-*  <tr><td>CUSPARSE_SPMM_BSR_ALG1</td>   <td>Yes</td>        <td>No</td>
+*  <tr><th>BSR Algorithms             
+*  <tr><td>CUSPARSE_SPMM_BSR_ALG1</td>
 *  </table>
 *
 *  One can also pass \ref HIPSPARSE_SPMM_ALG_DEFAULT which will automatically select from the algorithms listed above

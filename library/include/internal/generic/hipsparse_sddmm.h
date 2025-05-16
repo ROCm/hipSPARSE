@@ -220,8 +220,8 @@ hipsparseStatus_t hipsparseSDDMM_preprocess(hipsparseHandle_t           handle,
 *
 *  <table>
 *  <caption id="sddmm_algorithms">Algorithms</caption>
-*  <tr><th>CSR/CSC Algorithms                <th>Deterministic  <th>Preprocessing
-*  <tr><td>HIPSPARSE_SDDMM_ALG_DEFAULT</td>  <td>Yes</td>       <td>No</td>
+*  <tr><th>CSR/CSC Algorithms              
+*  <tr><td>HIPSPARSE_SDDMM_ALG_DEFAULT</td>
 *  </table>
 *
 *  Currently, \p hipsparseSDDMM only supports the uniform precisions indicated in the table below. For the sparse matrix 
@@ -231,10 +231,19 @@ hipsparseStatus_t hipsparseSDDMM_preprocess(hipsparseHandle_t           handle,
 *  <table>
 *  <caption id="sddmm_uniform">Uniform Precisions</caption>
 *  <tr><th>A / B / C / compute_type
+*  <tr><td>HIP_R_16F
 *  <tr><td>HIP_R_32F
 *  <tr><td>HIP_R_64F
 *  <tr><td>HIP_C_32F
 *  <tr><td>HIP_C_64F
+*  </table>
+*
+*  \par Mixed precisions:
+*  <table>
+*  <caption id="sddmm_mixed">Mixed Precisions</caption>
+*  <tr><th>A / B     <th>C         <th>compute_type
+*  <tr><td>HIP_R_16F <td>HIP_R_32F <td>HIP_R_32F
+*  <tr><td>HIP_R_16F <td>HIP_R_16F <td>HIP_R_32F
 *  </table>
 *
 *  @param[in]

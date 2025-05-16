@@ -278,7 +278,7 @@ hipsparseStatus_t hipsparseSpSM_analysis(hipsparseHandle_t           handle,
 *
 *  \par Example
 *  \code{.c}
-*   //     1 0 0 0
+*    //     1 0 0 0
 *    // A = 4 2 0 0
 *    //     0 3 7 0
 *    //     0 0 0 1
