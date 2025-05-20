@@ -34,7 +34,7 @@
  *  hipsparseDestroySpVec().
  */
 #if(!defined(CUDART_VERSION) || CUDART_VERSION > 10010 \
-     || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
+    || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
 typedef void* hipsparseSpVecDescr_t;
 #endif
 
@@ -48,7 +48,7 @@ typedef void* hipsparseSpVecDescr_t;
  *  hipsparseDestroyDnVec().
  */
 #if(!defined(CUDART_VERSION) || CUDART_VERSION > 10010 \
-     || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
+    || (CUDART_VERSION == 10010 && CUDART_10_1_UPDATE_VERSION == 1))
 typedef void* hipsparseDnVecDescr_t;
 #endif
 
