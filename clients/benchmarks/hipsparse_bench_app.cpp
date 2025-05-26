@@ -358,7 +358,7 @@ hipsparseStatus_t hipsparse_bench_app::define_results_json(std::ostream& out)
     std::vector<int> y_options_index;
     for(int k = 0; k < this->m_bench_cmdlines.get_noptions(); ++k)
     {
-      if(static_cast<size_t>(k) != option_index_x)
+        if(static_cast<size_t>(k) != option_index_x)
         {
             if(this->m_bench_cmdlines.get_option_nargs(k) > 1)
             {

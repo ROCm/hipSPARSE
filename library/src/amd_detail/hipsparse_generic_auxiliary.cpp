@@ -41,7 +41,7 @@ hipsparseStatus_t hipsparseCreateSpVec(hipsparseSpVecDescr_t* spVecDescr,
                                        hipsparseIndexBase_t   idxBase,
                                        hipDataType            valueType)
 {
-  return hipsparse::rocSPARSEStatusToHIPStatus(
+    return hipsparse::rocSPARSEStatusToHIPStatus(
         rocsparse_create_spvec_descr((rocsparse_spvec_descr*)spVecDescr,
                                      size,
                                      nnz,
@@ -50,8 +50,7 @@ hipsparseStatus_t hipsparseCreateSpVec(hipsparseSpVecDescr_t* spVecDescr,
                                      hipsparse::hipIndexTypeToHCCIndexType(idxType),
                                      hipsparse::hipBaseToHCCBase(idxBase),
                                      hipsparse::hipDataTypeToHCCDataType(valueType)));
-
-  }
+}
 
 hipsparseStatus_t hipsparseCreateConstSpVec(hipsparseConstSpVecDescr_t* spVecDescr,
                                             int64_t                     size,
@@ -181,11 +180,11 @@ hipsparseStatus_t hipsparseCreateCoo(hipsparseSpMatDescr_t* spMatDescr,
                                      hipsparseIndexBase_t   idxBase,
                                      hipDataType            valueType)
 {
-  if (spMatDescr == nullptr)
+    if(spMatDescr == nullptr)
     {
-      return HIPSPARSE_STATUS_INVALID_VALUE;
+        return HIPSPARSE_STATUS_INVALID_VALUE;
     }
-  spMatDescr[0] = new hipsparseSpMatDescr_st();
+    spMatDescr[0] = new hipsparseSpMatDescr_st();
     return hipsparse::rocSPARSEStatusToHIPStatus(
         rocsparse_create_coo_descr((rocsparse_spmat_descr*)&spMatDescr[0]->spmat_descr,
                                    rows,
@@ -210,11 +209,11 @@ hipsparseStatus_t hipsparseCreateConstCoo(hipsparseConstSpMatDescr_t* spMatDescr
                                           hipsparseIndexBase_t        idxBase,
                                           hipDataType                 valueType)
 {
-  if (spMatDescr == nullptr)
+    if(spMatDescr == nullptr)
     {
-      return HIPSPARSE_STATUS_INVALID_VALUE;
+        return HIPSPARSE_STATUS_INVALID_VALUE;
     }
-  spMatDescr[0] = new hipsparseSpMatDescr_st();
+    spMatDescr[0] = new hipsparseSpMatDescr_st();
     return hipsparse::rocSPARSEStatusToHIPStatus(
         rocsparse_create_const_coo_descr((rocsparse_const_spmat_descr*)&spMatDescr[0]->spmat_descr,
                                          rows,
@@ -239,9 +238,9 @@ hipsparseStatus_t hipsparseCreateBlockedEll(hipsparseSpMatDescr_t* spMatDescr,
                                             hipsparseIndexBase_t   idxBase,
                                             hipDataType            valueType)
 {
-  if (spMatDescr == nullptr)
+    if(spMatDescr == nullptr)
     {
-      return HIPSPARSE_STATUS_INVALID_VALUE;
+        return HIPSPARSE_STATUS_INVALID_VALUE;
     }
     spMatDescr[0] = new hipsparseSpMatDescr_st();
     return hipsparse::rocSPARSEStatusToHIPStatus(
@@ -269,9 +268,9 @@ hipsparseStatus_t hipsparseCreateConstBlockedEll(hipsparseConstSpMatDescr_t* spM
                                                  hipsparseIndexBase_t        idxBase,
                                                  hipDataType                 valueType)
 {
-  if (spMatDescr == nullptr)
+    if(spMatDescr == nullptr)
     {
-      return HIPSPARSE_STATUS_INVALID_VALUE;
+        return HIPSPARSE_STATUS_INVALID_VALUE;
     }
     spMatDescr[0] = new hipsparseSpMatDescr_st();
     return hipsparse::rocSPARSEStatusToHIPStatus(
@@ -298,9 +297,9 @@ hipsparseStatus_t hipsparseCreateCooAoS(hipsparseSpMatDescr_t* spMatDescr,
                                         hipsparseIndexBase_t   idxBase,
                                         hipDataType            valueType)
 {
-  if (spMatDescr == nullptr)
+    if(spMatDescr == nullptr)
     {
-      return HIPSPARSE_STATUS_INVALID_VALUE;
+        return HIPSPARSE_STATUS_INVALID_VALUE;
     }
     spMatDescr[0] = new hipsparseSpMatDescr_st();
     return hipsparse::rocSPARSEStatusToHIPStatus(
@@ -346,9 +345,9 @@ hipsparseStatus_t hipsparseCreateCsr(hipsparseSpMatDescr_t* spMatDescr,
                                      hipsparseIndexBase_t   idxBase,
                                      hipDataType            valueType)
 {
-  if (spMatDescr == nullptr)
+    if(spMatDescr == nullptr)
     {
-      return HIPSPARSE_STATUS_INVALID_VALUE;
+        return HIPSPARSE_STATUS_INVALID_VALUE;
     }
     spMatDescr[0] = new hipsparseSpMatDescr_st();
 
@@ -378,11 +377,11 @@ hipsparseStatus_t hipsparseCreateConstCsr(hipsparseConstSpMatDescr_t* spMatDescr
                                           hipsparseIndexBase_t        idxBase,
                                           hipDataType                 valueType)
 {
-  if (spMatDescr == nullptr)
+    if(spMatDescr == nullptr)
     {
-      return HIPSPARSE_STATUS_INVALID_VALUE;
+        return HIPSPARSE_STATUS_INVALID_VALUE;
     }
-      spMatDescr[0] = new hipsparseSpMatDescr_st();
+    spMatDescr[0] = new hipsparseSpMatDescr_st();
 
     return hipsparse::rocSPARSEStatusToHIPStatus(
         rocsparse_create_const_csr_descr((rocsparse_const_spmat_descr*)&spMatDescr[0]->spmat_descr,
@@ -410,9 +409,9 @@ hipsparseStatus_t hipsparseCreateCsc(hipsparseSpMatDescr_t* spMatDescr,
                                      hipsparseIndexBase_t   idxBase,
                                      hipDataType            valueType)
 {
-  if (spMatDescr == nullptr)
+    if(spMatDescr == nullptr)
     {
-      return HIPSPARSE_STATUS_INVALID_VALUE;
+        return HIPSPARSE_STATUS_INVALID_VALUE;
     }
     spMatDescr[0] = new hipsparseSpMatDescr_st();
 
@@ -442,9 +441,9 @@ hipsparseStatus_t hipsparseCreateConstCsc(hipsparseConstSpMatDescr_t* spMatDescr
                                           hipsparseIndexBase_t        idxBase,
                                           hipDataType                 valueType)
 {
-  if (spMatDescr == nullptr)
+    if(spMatDescr == nullptr)
     {
-      return HIPSPARSE_STATUS_INVALID_VALUE;
+        return HIPSPARSE_STATUS_INVALID_VALUE;
     }
     spMatDescr[0] = new hipsparseSpMatDescr_st();
     return hipsparse::rocSPARSEStatusToHIPStatus(
@@ -463,14 +462,15 @@ hipsparseStatus_t hipsparseCreateConstCsc(hipsparseConstSpMatDescr_t* spMatDescr
 
 hipsparseStatus_t hipsparseDestroySpMat(hipsparseConstSpMatDescr_t spMatDescr)
 {
-  if (spMatDescr == nullptr)
+    if(spMatDescr == nullptr)
     {
-      return HIPSPARSE_STATUS_INVALID_VALUE;
+        return HIPSPARSE_STATUS_INVALID_VALUE;
     }
 
-  RETURN_IF_ROCSPARSE_ERROR(rocsparse_destroy_spmat_descr((rocsparse_const_spmat_descr)spMatDescr));
-  delete spMatDescr;
-  return HIPSPARSE_STATUS_SUCCESS;
+    RETURN_IF_ROCSPARSE_ERROR(
+        rocsparse_destroy_spmat_descr((rocsparse_const_spmat_descr)spMatDescr));
+    delete spMatDescr;
+    return HIPSPARSE_STATUS_SUCCESS;
 }
 
 hipsparseStatus_t hipsparseBlockedEllGet(const hipsparseSpMatDescr_t spMatDescr,

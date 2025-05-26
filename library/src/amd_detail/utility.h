@@ -667,33 +667,34 @@ namespace hipsparse
     }
 }
 
-
 struct hipsparseSpMVDescr_st
 {
-  rocsparse_spmv_descr spmv_descr{};
-  bool is_stage_analysis_called{};
-  bool is_implicit_stage_analysis_called{};
-  size_t buffer_size_stage_analysis{};
-  size_t buffer_size_stage_compute{};
-  void * buffer{};
-  bool is_stage_compute_subsequent{};
-  bool is_buffer_size_called{};
-  
-  hipsparseSpMVDescr_st() = default;
-  ~hipsparseSpMVDescr_st()
-  {
-    (void)hipFree(this->buffer);
-  }
+    rocsparse_spmv_descr spmv_descr{};
+    bool                 is_stage_analysis_called{};
+    bool                 is_implicit_stage_analysis_called{};
+    size_t               buffer_size_stage_analysis{};
+    size_t               buffer_size_stage_compute{};
+    void*                buffer{};
+    bool                 is_stage_compute_subsequent{};
+    bool                 is_buffer_size_called{};
+
+    hipsparseSpMVDescr_st() = default;
+    ~hipsparseSpMVDescr_st()
+    {
+        (void)hipFree(this->buffer);
+    }
 };
 
 struct hipsparseSpMatDescr_st
 {
-  rocsparse_spmat_descr spmat_descr{};
-  mutable hipsparseSpMVDescr_st hip_spmv_descr{};
-  operator rocsparse_spmat_descr() { return this->spmat_descr; };
-  operator rocsparse_const_spmat_descr() { return this->spmat_descr; };  
+    rocsparse_spmat_descr         spmat_descr{};
+    mutable hipsparseSpMVDescr_st hip_spmv_descr{};
+                                  operator rocsparse_spmat_descr()
+    {
+        return this->spmat_descr;
+    };
+    operator rocsparse_const_spmat_descr()
+    {
+        return this->spmat_descr;
+    };
 };
-
-
-
-

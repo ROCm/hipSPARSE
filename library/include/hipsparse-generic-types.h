@@ -115,7 +115,7 @@ typedef void const* hipsparseConstDnVecDescr_t;
  *  hipsparseDestroySpMat().
  */
 #if(!defined(CUDART_VERSION) || CUDART_VERSION >= 12000)
-typedef struct hipsparseSpMatDescr_st const * hipsparseConstSpMatDescr_t;
+typedef struct hipsparseSpMatDescr_st const* hipsparseConstSpMatDescr_t;
 #endif
 
 /*! \ingroup types_module
