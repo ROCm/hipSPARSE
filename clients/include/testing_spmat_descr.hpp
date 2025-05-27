@@ -157,7 +157,6 @@ void testing_spmat_descr_bad_arg(void)
         "Error: val_data is nullptr");
 
     // hipsparseCreateBlockedEll
-    std::cout << "line  " << __LINE__ << std::endl;
     verify_hipsparse_status_invalid_pointer(hipsparseCreateBlockedEll(nullptr,
                                                                       rows,
                                                                       cols,
@@ -169,42 +168,35 @@ void testing_spmat_descr_bad_arg(void)
                                                                       idxBase,
                                                                       dataType),
                                             "Error: A is nullptr");
-    std::cout << "line  " << __LINE__ << std::endl;
     verify_hipsparse_status_invalid_size(
         hipsparseCreateBlockedEll(
             &A, -1, cols, ell_blocksize, ell_cols, col_data, val_data, colType, idxBase, dataType),
         "Error: rows is < 0");
 
-    std::cout << "line  " << __LINE__ << std::endl;
     verify_hipsparse_status_invalid_size(
         hipsparseCreateBlockedEll(
             &A, rows, -1, ell_blocksize, ell_cols, col_data, val_data, colType, idxBase, dataType),
         "Error: cols is < 0");
 
-    std::cout << "line  " << __LINE__ << std::endl;
     verify_hipsparse_status_invalid_size(
         hipsparseCreateBlockedEll(
             &A, rows, cols, -1, ell_cols, col_data, val_data, colType, idxBase, dataType),
         "Error: ell_blocksize is < 0");
 
-    std::cout << "line  " << __LINE__ << std::endl;
     verify_hipsparse_status_invalid_size(
         hipsparseCreateBlockedEll(
             &A, rows, cols, ell_blocksize, -1, col_data, val_data, colType, idxBase, dataType),
         "Error: ell_cols is < 0");
-    std::cout << "line  " << __LINE__ << std::endl;
     verify_hipsparse_status_invalid_pointer(
         hipsparseCreateBlockedEll(
             &A, rows, cols, ell_blocksize, ell_cols, nullptr, val_data, colType, idxBase, dataType),
         "Error: ellColInd is nullptr");
 
-    std::cout << "line  " << __LINE__ << std::endl;
     verify_hipsparse_status_invalid_pointer(
         hipsparseCreateBlockedEll(
             &A, rows, cols, ell_blocksize, ell_cols, col_data, nullptr, colType, idxBase, dataType),
         "Error: ellValue is nullptr");
 
-    std::cout << "line  " << __LINE__ << std::endl;
     // hipsparseDestroySpMat
     verify_hipsparse_status_invalid_pointer(hipsparseDestroySpMat(nullptr), "Error: A is nullptr");
 
@@ -214,7 +206,6 @@ void testing_spmat_descr_bad_arg(void)
     hipsparseSpMatDescr_t csr;
     hipsparseSpMatDescr_t csc;
 
-    std::cout << "line  " << __LINE__ << std::endl;
     hipsparseSpMatDescr_t bell;
     verify_hipsparse_status_success(hipsparseCreateBlockedEll(&bell,
                                                               rows,
@@ -227,17 +218,14 @@ void testing_spmat_descr_bad_arg(void)
                                                               idxBase,
                                                               dataType),
                                     "Success");
-    std::cout << "line  " << __LINE__ << std::endl;
     verify_hipsparse_status_success(
         hipsparseCreateCoo(
             &coo, rows, cols, nnz, row_data, col_data, val_data, rowType, idxBase, dataType),
         "Success");
-    std::cout << "line  " << __LINE__ << std::endl;
     verify_hipsparse_status_success(
         hipsparseCreateCooAoS(
             &coo_aos, rows, cols, nnz, ind_data, val_data, cooType, idxBase, dataType),
         "Success");
-    std::cout << "line  " << __LINE__ << std::endl;
     verify_hipsparse_status_success(hipsparseCreateCsr(&csr,
                                                        rows,
                                                        cols,
@@ -281,17 +269,14 @@ void testing_spmat_descr_bad_arg(void)
                                                             &idxBase,
                                                             &dataType),
                                             "Error: A is nullptr");
-    std::cout << "line  " << __LINE__ << std::endl;
     verify_hipsparse_status_invalid_pointer(
         hipsparseCooGet(
             coo, nullptr, &cols, &nnz, &row_ptr, &col_ptr, &val_ptr, &rowType, &idxBase, &dataType),
         "Error: rows is nullptr");
-    std::cout << "line  " << __LINE__ << std::endl;
     verify_hipsparse_status_invalid_pointer(
         hipsparseCooGet(
             coo, &rows, nullptr, &nnz, &row_ptr, &col_ptr, &val_ptr, &rowType, &idxBase, &dataType),
         "Error: cols is nullptr");
-    std::cout << "line  " << __LINE__ << std::endl;
     verify_hipsparse_status_invalid_pointer(hipsparseCooGet(coo,
                                                             &rows,
                                                             &cols,
@@ -303,7 +288,6 @@ void testing_spmat_descr_bad_arg(void)
                                                             &idxBase,
                                                             &dataType),
                                             "Error: nnz is nullptr");
-    std::cout << "line  " << __LINE__ << std::endl;
     verify_hipsparse_status_invalid_pointer(
         hipsparseCooGet(
             coo, &rows, &cols, &nnz, nullptr, &col_ptr, &val_ptr, &rowType, &idxBase, &dataType),
@@ -368,7 +352,6 @@ void testing_spmat_descr_bad_arg(void)
             coo_aos, &rows, &cols, &nnz, &ind_ptr, &val_ptr, &cooType, &idxBase, nullptr),
         "Error: dataType is nullptr");
 
-    std::cout << "line  " << __LINE__ << std::endl;
     // hipsparseCsrGet
     verify_hipsparse_status_invalid_pointer(hipsparseCsrGet(nullptr,
                                                             &rows,
@@ -503,7 +486,6 @@ void testing_spmat_descr_bad_arg(void)
                                                             nullptr),
                                             "Error: dataType is nullptr");
 
-    std::cout << "line  " << __LINE__ << std::endl;
     // hipsparseCscGet
     verify_hipsparse_status_invalid_pointer(hipsparseCscGet(nullptr,
                                                             &rows,
@@ -748,17 +730,13 @@ void testing_spmat_descr_bad_arg(void)
                                                                    nullptr),
                                             "Error: valueType is nullptr");
 
-    std::cout << "line  " << __LINE__ << std::endl;
     // hipsparseCsrSetPointers
     verify_hipsparse_status_invalid_pointer(
         hipsparseCsrSetPointers(nullptr, row_data, col_data, val_data), "Error: A is nullptr");
-    std::cout << "line  " << __LINE__ << std::endl;
     verify_hipsparse_status_invalid_pointer(
         hipsparseCsrSetPointers(csr, nullptr, col_data, val_data), "Error: row_data is nullptr");
-    std::cout << "line  " << __LINE__ << std::endl;
     verify_hipsparse_status_invalid_pointer(
         hipsparseCsrSetPointers(csr, row_data, nullptr, val_data), "Error: col_data is nullptr");
-    std::cout << "line  " << __LINE__ << std::endl;
     verify_hipsparse_status_invalid_pointer(
         hipsparseCsrSetPointers(csr, row_data, col_data, nullptr), "Error: val_data is nullptr");
     std::cout << "line  " << __LINE__ << std::endl;
@@ -773,28 +751,24 @@ void testing_spmat_descr_bad_arg(void)
     verify_hipsparse_status_invalid_pointer(hipsparseSpMatGetSize(coo, &rows, &cols, nullptr),
                                             "Error: nnz is nullptr");
 
-    std::cout << "line  " << __LINE__ << std::endl;
     // hipsparseSpMatGetFormat
     verify_hipsparse_status_invalid_pointer(hipsparseSpMatGetFormat(nullptr, &format),
                                             "Error: A is nullptr");
     verify_hipsparse_status_invalid_pointer(hipsparseSpMatGetFormat(coo, nullptr),
                                             "Error: format is nullptr");
 
-    std::cout << "line  " << __LINE__ << std::endl;
     // hipsparseSpMatGetIndexBase
     verify_hipsparse_status_invalid_pointer(hipsparseSpMatGetIndexBase(nullptr, &idxBase),
                                             "Error: A is nullptr");
     verify_hipsparse_status_invalid_pointer(hipsparseSpMatGetIndexBase(coo, nullptr),
                                             "Error: idxBase is nullptr");
 
-    std::cout << "line  " << __LINE__ << std::endl;
     // hipsparseSpMatGetValues
     verify_hipsparse_status_invalid_pointer(hipsparseSpMatGetValues(nullptr, &val_ptr),
                                             "Error: A is nullptr");
     verify_hipsparse_status_invalid_pointer(hipsparseSpMatGetValues(coo, nullptr),
                                             "Error: val_ptr is nullptr");
 
-    std::cout << "line  " << __LINE__ << std::endl;
     // hipsparseSpMatSetValues
     verify_hipsparse_status_invalid_pointer(hipsparseSpMatSetValues(nullptr, val_ptr),
                                             "Error: A is nullptr");
@@ -806,7 +780,6 @@ void testing_spmat_descr_bad_arg(void)
     int64_t offsets_batch_stride        = 100;
     int64_t columns_values_batch_stride = 100;
 
-    std::cout << "line  " << __LINE__ << std::endl;
     // hipsparseSpMatGetStridedBatch
     verify_hipsparse_status_invalid_pointer(hipsparseSpMatGetStridedBatch(nullptr, &batch_count),
                                             "Error: A is nullptr");
@@ -815,7 +788,6 @@ void testing_spmat_descr_bad_arg(void)
     verify_hipsparse_status_invalid_pointer(hipsparseSpMatGetStridedBatch(csr, nullptr),
                                             "Error: batch count is nullptr");
 
-    std::cout << "line  " << __LINE__ << std::endl;
     // hipsparseSpMatSetStridedBatch
     verify_hipsparse_status_invalid_pointer(hipsparseSpMatSetStridedBatch(nullptr, batch_count),
                                             "Error: A is nullptr");
@@ -824,7 +796,6 @@ void testing_spmat_descr_bad_arg(void)
     verify_hipsparse_status_invalid_size(hipsparseSpMatSetStridedBatch(csr, -1),
                                          "Error: batch count is invalid");
 
-    std::cout << "line  " << __LINE__ << std::endl;
     // hipsparseCooSetStridedBatch
     verify_hipsparse_status_invalid_pointer(
         hipsparseCooSetStridedBatch(nullptr, batch_count, batch_stride), "Error: A is nullptr");
@@ -835,7 +806,6 @@ void testing_spmat_descr_bad_arg(void)
     verify_hipsparse_status_invalid_size(hipsparseCooSetStridedBatch(coo, -1, -1),
                                          "Error: batch count and batch stride is invalid");
 
-    std::cout << "line  " << __LINE__ << std::endl;
     // hipsparseCsrSetStridedBatch
     verify_hipsparse_status_invalid_pointer(
         hipsparseCsrSetStridedBatch(
@@ -861,15 +831,13 @@ void testing_spmat_descr_bad_arg(void)
     verify_hipsparse_status_invalid_size(hipsparseCsrSetStridedBatch(csr, -1, -1, -1),
                                          "Error: batch count and batch stride is invalid");
 
-    std::cout << "line  " << __LINE__ << std::endl;
     // Destroy valid descriptors
     verify_hipsparse_status_success(hipsparseDestroySpMat(coo), "Success");
     verify_hipsparse_status_success(hipsparseDestroySpMat(coo_aos), "Success");
     verify_hipsparse_status_success(hipsparseDestroySpMat(csr), "Success");
     verify_hipsparse_status_success(hipsparseDestroySpMat(csc), "Success");
 
-    verify_hipsparse_status_success(hipsparseDestroySpMat(bell), "Success");
-    std::cout << "line  " << __LINE__ << std::endl;
+    verify_hipsparse_status_success(hipsparseDestroySpMat(bell), "Success");    
 #endif
 }
 

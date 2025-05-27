@@ -29,7 +29,6 @@
 #include <rocsparse/rocsparse.h>
 
 #include "../utility.h"
-#include <iostream>
 
 hipsparseStatus_t hipsparseSpMV_bufferSize(hipsparseHandle_t           handle,
                                            hipsparseOperation_t        opA,
@@ -43,56 +42,56 @@ hipsparseStatus_t hipsparseSpMV_bufferSize(hipsparseHandle_t           handle,
                                            size_t*                     pBufferSizeInBytes)
 {
 
-  if (handle == nullptr)
+    if(handle == nullptr)
     {
-      return HIPSPARSE_STATUS_INVALID_VALUE;
-    }
-  
-  if (alpha == nullptr)
-    {
-      return HIPSPARSE_STATUS_INVALID_VALUE;
-    }
-  
-  if (matA == nullptr)
-    {
-      return HIPSPARSE_STATUS_INVALID_VALUE;
+        return HIPSPARSE_STATUS_INVALID_VALUE;
     }
 
-  if (vecX == nullptr)
+    if(alpha == nullptr)
     {
-      return HIPSPARSE_STATUS_INVALID_VALUE;
+        return HIPSPARSE_STATUS_INVALID_VALUE;
     }
-  
-  if (beta == nullptr)
+
+    if(matA == nullptr)
     {
-      return HIPSPARSE_STATUS_INVALID_VALUE;
+        return HIPSPARSE_STATUS_INVALID_VALUE;
     }
-  
-  if (vecY == nullptr)
+
+    if(vecX == nullptr)
     {
-      return HIPSPARSE_STATUS_INVALID_VALUE;
+        return HIPSPARSE_STATUS_INVALID_VALUE;
     }
-  
-  if (pBufferSizeInBytes == nullptr)
+
+    if(beta == nullptr)
     {
-      return HIPSPARSE_STATUS_INVALID_VALUE;
+        return HIPSPARSE_STATUS_INVALID_VALUE;
     }
-    
+
+    if(vecY == nullptr)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
+
+    if(pBufferSizeInBytes == nullptr)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
+
     const rocsparse_datatype  datatype  = hipsparse::hipDataTypeToHCCDataType(computeType);
     const rocsparse_operation operation = hipsparse::hipOperationToHCCOperation(opA);
     rocsparse_spmv_alg        spmv_alg  = hipsparse::hipSpMVAlgToHCCSpMVAlg(alg);
 
-    
     //
     // Fallback algorithm?
     //
     if(spmv_alg == rocsparse_spmv_alg_csr_lrb)
     {
         rocsparse_matrix_type matrix_type;
-        RETURN_IF_ROCSPARSE_ERROR(rocsparse_spmat_get_attribute(to_rocsparse_const_spmat_descr(matA),
-                                                                rocsparse_spmat_matrix_type,
-                                                                &matrix_type,
-                                                                sizeof(matrix_type)));
+        RETURN_IF_ROCSPARSE_ERROR(
+            rocsparse_spmat_get_attribute(to_rocsparse_const_spmat_descr(matA),
+                                          rocsparse_spmat_matrix_type,
+                                          &matrix_type,
+                                          sizeof(matrix_type)));
 
         if((matrix_type == rocsparse_matrix_type_symmetric)
            || (operation != rocsparse_operation_none))
@@ -105,7 +104,6 @@ hipsparseStatus_t hipsparseSpMV_bufferSize(hipsparseHandle_t           handle,
     {
         spmv_alg = rocsparse_spmv_alg_csr_rowsplit;
     }
-
 
     //
     // If spmv_descr alreay exists, then destroy it.
@@ -182,34 +180,34 @@ hipsparseStatus_t hipsparseSpMV_preprocess(hipsparseHandle_t           handle,
                                            hipsparseSpMVAlg_t          alg,
                                            void*                       externalBuffer)
 {
-  if (handle == nullptr)
+    if(handle == nullptr)
     {
-      return HIPSPARSE_STATUS_INVALID_VALUE;
-    }
-  
-  if (alpha == nullptr)
-    {
-      return HIPSPARSE_STATUS_INVALID_VALUE;
-    }
-  
-  if (matA == nullptr)
-    {
-      return HIPSPARSE_STATUS_INVALID_VALUE;
+        return HIPSPARSE_STATUS_INVALID_VALUE;
     }
 
-  if (vecX == nullptr)
+    if(alpha == nullptr)
     {
-      return HIPSPARSE_STATUS_INVALID_VALUE;
+        return HIPSPARSE_STATUS_INVALID_VALUE;
     }
-  
-  if (beta == nullptr)
+
+    if(matA == nullptr)
     {
-      return HIPSPARSE_STATUS_INVALID_VALUE;
+        return HIPSPARSE_STATUS_INVALID_VALUE;
     }
-  
-  if (vecY == nullptr)
+
+    if(vecX == nullptr)
     {
-      return HIPSPARSE_STATUS_INVALID_VALUE;
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
+
+    if(beta == nullptr)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
+
+    if(vecY == nullptr)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
     }
 
     const rocsparse_datatype  datatype  = hipsparse::hipDataTypeToHCCDataType(computeType);
@@ -222,10 +220,11 @@ hipsparseStatus_t hipsparseSpMV_preprocess(hipsparseHandle_t           handle,
     if(spmv_alg == rocsparse_spmv_alg_csr_lrb)
     {
         rocsparse_matrix_type matrix_type;
-        RETURN_IF_ROCSPARSE_ERROR(rocsparse_spmat_get_attribute(to_rocsparse_const_spmat_descr(matA),
-                                                                rocsparse_spmat_matrix_type,
-                                                                &matrix_type,
-                                                                sizeof(matrix_type)));
+        RETURN_IF_ROCSPARSE_ERROR(
+            rocsparse_spmat_get_attribute(to_rocsparse_const_spmat_descr(matA),
+                                          rocsparse_spmat_matrix_type,
+                                          &matrix_type,
+                                          sizeof(matrix_type)));
 
         if((matrix_type == rocsparse_matrix_type_symmetric)
            || (operation != rocsparse_operation_none))
@@ -304,34 +303,34 @@ hipsparseStatus_t hipsparseSpMV(hipsparseHandle_t           handle,
                                 hipsparseSpMVAlg_t          alg,
                                 void*                       externalBuffer)
 {
-  if (handle == nullptr)
+    if(handle == nullptr)
     {
-      return HIPSPARSE_STATUS_INVALID_VALUE;
-    }
-  
-  if (alpha == nullptr)
-    {
-      return HIPSPARSE_STATUS_INVALID_VALUE;
-    }
-  
-  if (matA == nullptr)
-    {
-      return HIPSPARSE_STATUS_INVALID_VALUE;
+        return HIPSPARSE_STATUS_INVALID_VALUE;
     }
 
-  if (vecX == nullptr)
+    if(alpha == nullptr)
     {
-      return HIPSPARSE_STATUS_INVALID_VALUE;
+        return HIPSPARSE_STATUS_INVALID_VALUE;
     }
-  
-  if (beta == nullptr)
+
+    if(matA == nullptr)
     {
-      return HIPSPARSE_STATUS_INVALID_VALUE;
+        return HIPSPARSE_STATUS_INVALID_VALUE;
     }
-  
-  if (vecY == nullptr)
+
+    if(vecX == nullptr)
     {
-      return HIPSPARSE_STATUS_INVALID_VALUE;
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
+
+    if(beta == nullptr)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
+    }
+
+    if(vecY == nullptr)
+    {
+        return HIPSPARSE_STATUS_INVALID_VALUE;
     }
 
     const rocsparse_datatype  datatype  = hipsparse::hipDataTypeToHCCDataType(computeType);

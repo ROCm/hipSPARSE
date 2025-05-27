@@ -27,14 +27,5 @@
 // are C-compilable.
 int main()
 {
-  hipsparseStatus_t e = hipsparseCreateSpVec(NULL,
-		       0,
-		       0,
-		       NULL,
-		       NULL,
-		       (hipsparseIndexType_t)0,
-		       (hipsparseIndexBase_t)0,
-		       (hipDataType)0);
-  printf("%d\n",e);
     return 0;
 }

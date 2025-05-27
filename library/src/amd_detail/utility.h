@@ -684,20 +684,20 @@ struct hipsparseSpMVDescr_st
         (void)hipFree(this->buffer);
     }
 };
-#include <iostream>
+
 struct hipsparseSpMatDescr_st
 {
-  rocsparse_spmat_descr         spmat_descr{};
-  mutable hipsparseSpMVDescr_st hip_spmv_descr{};    
+    rocsparse_spmat_descr         spmat_descr{};
+    mutable hipsparseSpMVDescr_st hip_spmv_descr{};
 };
 
-
-inline rocsparse_const_spmat_descr to_rocsparse_const_spmat_descr(const hipsparseConstSpMatDescr_t source)
+inline rocsparse_const_spmat_descr
+    to_rocsparse_const_spmat_descr(const hipsparseConstSpMatDescr_t source)
 {
-  return (source != nullptr) ? source->spmat_descr : nullptr;
+    return (source != nullptr) ? source->spmat_descr : nullptr;
 }
 
 inline rocsparse_spmat_descr to_rocsparse_spmat_descr(const hipsparseSpMatDescr_t source)
 {
-  return (source != nullptr) ? source->spmat_descr : nullptr;
+    return (source != nullptr) ? source->spmat_descr : nullptr;
 }
