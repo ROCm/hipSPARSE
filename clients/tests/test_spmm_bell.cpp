@@ -22,6 +22,7 @@
  * ************************************************************************ */
 
 #include "testing_spmm_bell.hpp"
+
 #include <hipsparse.h>
 
 #if(!defined(CUDART_VERSION))
@@ -29,6 +30,7 @@ TEST(spmm_bell_bad_arg, spmm_bell_float)
 {
     testing_spmm_bell_bad_arg();
 }
+
 TEST(spmm_bell, spmm_bell_i32_float)
 {
     hipsparseStatus_t status = testing_spmm_bell<int32_t, float>();
