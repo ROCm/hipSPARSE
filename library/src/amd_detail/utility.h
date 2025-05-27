@@ -678,59 +678,55 @@ protected:
     void*                m_buffer{};
     bool                 m_is_stage_compute_subsequent{};
     bool                 m_is_buffer_size_called{};
+
 public:
+    rocsparse_spmv_descr get_spmv_descr();
+    void                 set_spmv_descr(rocsparse_spmv_descr value);
 
-  rocsparse_spmv_descr get_spmv_descr();
-  void set_spmv_descr(rocsparse_spmv_descr value);
-  
-  bool                 is_stage_analysis_called() const;
-  void                 stage_analysis_called();
-  
-  bool                 is_implicit_stage_analysis_called() const;
-  void                 implicit_stage_analysis_called();
-  
-  bool                 is_stage_compute_subsequent() const;
-  void                 stage_compute_subsequent();
-  
-  bool                 is_buffer_size_called() const;
-  void                 buffer_size_called();
-  
-  size_t               get_buffer_size_stage_analysis() const;
-  void                 set_buffer_size_stage_analysis(size_t value);
-  
-  size_t               get_buffer_size_stage_compute() const;
-  void                 set_buffer_size_stage_compute(size_t value);
+    bool is_stage_analysis_called() const;
+    void stage_analysis_called();
 
-  void*                get_buffer();
-  void                 set_buffer(void * value);
+    bool is_implicit_stage_analysis_called() const;
+    void implicit_stage_analysis_called();
 
-  void**               get_buffer_reference();
-  
-  hipsparseSpMVDescr_st() = default;
-  ~hipsparseSpMVDescr_st();
-  
+    bool is_stage_compute_subsequent() const;
+    void stage_compute_subsequent();
+
+    bool is_buffer_size_called() const;
+    void buffer_size_called();
+
+    size_t get_buffer_size_stage_analysis() const;
+    void   set_buffer_size_stage_analysis(size_t value);
+
+    size_t get_buffer_size_stage_compute() const;
+    void   set_buffer_size_stage_compute(size_t value);
+
+    void* get_buffer();
+    void  set_buffer(void* value);
+
+    void** get_buffer_reference();
+
+    hipsparseSpMVDescr_st() = default;
+    ~hipsparseSpMVDescr_st();
 };
 
 struct hipsparseSpMatDescr_st
 {
 protected:
-  rocsparse_spmat_descr         m_spmat_descr{};
-  mutable hipsparseSpMVDescr_st m_hip_spmv_descr{};
+    rocsparse_spmat_descr         m_spmat_descr{};
+    mutable hipsparseSpMVDescr_st m_hip_spmv_descr{};
+
 public:
-  
-  hipsparseSpMatDescr_st() = default;
-  ~hipsparseSpMatDescr_st() = default;
-  hipsparseSpMVDescr_st * get_hip_spmv_descr();
-  hipsparseSpMVDescr_st * get_hip_spmv_descr() const;
-  rocsparse_spmat_descr  get_spmat_descr();
-  rocsparse_const_spmat_descr  get_const_spmat_descr() const;
-  rocsparse_spmat_descr * get_spmat_descr_reference();
-  rocsparse_const_spmat_descr * get_const_spmat_descr_reference() const;
-  void set_spmat_descr(rocsparse_spmat_descr value);
+    hipsparseSpMatDescr_st()  = default;
+    ~hipsparseSpMatDescr_st() = default;
+    hipsparseSpMVDescr_st*       get_hip_spmv_descr();
+    hipsparseSpMVDescr_st*       get_hip_spmv_descr() const;
+    rocsparse_spmat_descr        get_spmat_descr();
+    rocsparse_const_spmat_descr  get_const_spmat_descr() const;
+    rocsparse_spmat_descr*       get_spmat_descr_reference();
+    rocsparse_const_spmat_descr* get_const_spmat_descr_reference() const;
+    void                         set_spmat_descr(rocsparse_spmat_descr value);
 };
 
-
-rocsparse_spmat_descr to_rocsparse_spmat_descr(const hipsparseSpMatDescr_t source);
+rocsparse_spmat_descr       to_rocsparse_spmat_descr(const hipsparseSpMatDescr_t source);
 rocsparse_const_spmat_descr to_rocsparse_const_spmat_descr(const hipsparseConstSpMatDescr_t source);
-
-

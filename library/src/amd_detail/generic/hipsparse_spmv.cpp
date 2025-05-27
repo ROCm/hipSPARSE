@@ -105,7 +105,7 @@ hipsparseStatus_t hipsparseSpMV_bufferSize(hipsparseHandle_t           handle,
         spmv_alg = rocsparse_spmv_alg_csr_rowsplit;
     }
 
-    hipsparseSpMVDescr_st * hip_spmv_descr = matA->get_hip_spmv_descr();
+    hipsparseSpMVDescr_st* hip_spmv_descr = matA->get_hip_spmv_descr();
 
     //
     // If spmv_descr alreay exists, then destroy it.
@@ -240,9 +240,9 @@ hipsparseStatus_t hipsparseSpMV_preprocess(hipsparseHandle_t           handle,
         spmv_alg = rocsparse_spmv_alg_csr_rowsplit;
     }
 
-    hipsparseSpMVDescr_st * hip_spmv_descr = matA->get_hip_spmv_descr();
-    rocsparse_spmv_descr spmv_descr = hip_spmv_descr->get_spmv_descr();
-    
+    hipsparseSpMVDescr_st* hip_spmv_descr = matA->get_hip_spmv_descr();
+    rocsparse_spmv_descr   spmv_descr     = hip_spmv_descr->get_spmv_descr();
+
     if(spmv_descr == nullptr)
     {
         //
@@ -341,9 +341,9 @@ hipsparseStatus_t hipsparseSpMV(hipsparseHandle_t           handle,
     const rocsparse_operation operation = hipsparse::hipOperationToHCCOperation(opA);
     rocsparse_spmv_alg        spmv_alg  = hipsparse::hipSpMVAlgToHCCSpMVAlg(alg);
 
-    hipsparseSpMVDescr_st * hip_spmv_descr = matA->get_hip_spmv_descr();
-    rocsparse_spmv_descr spmv_descr = hip_spmv_descr->get_spmv_descr();
-    
+    hipsparseSpMVDescr_st* hip_spmv_descr = matA->get_hip_spmv_descr();
+    rocsparse_spmv_descr   spmv_descr     = hip_spmv_descr->get_spmv_descr();
+
     if(spmv_descr == nullptr)
     {
         //
@@ -415,10 +415,10 @@ hipsparseStatus_t hipsparseSpMV(hipsparseHandle_t           handle,
         //
         // No analysis has been performed, we have to call the analysis since this is a requirement for v2_spmv.
         //
-      if(hip_spmv_descr->is_implicit_stage_analysis_called() == false)
+        if(hip_spmv_descr->is_implicit_stage_analysis_called() == false)
         {
 
-	  if(hip_spmv_descr->is_buffer_size_called() == false)
+            if(hip_spmv_descr->is_buffer_size_called() == false)
             {
                 size_t buffer_size_in_bytes;
                 RETURN_IF_ROCSPARSE_ERROR(
@@ -433,22 +433,22 @@ hipsparseStatus_t hipsparseSpMV(hipsparseHandle_t           handle,
                 hipStream_t stream{};
                 RETURN_IF_ROCSPARSE_ERROR(rocsparse_get_stream((rocsparse_handle)handle, &stream));
 
-                RETURN_IF_HIP_ERROR(hipMallocAsync(hip_spmv_descr->get_buffer_reference(), buffer_size_in_bytes, stream));
+                RETURN_IF_HIP_ERROR(hipMallocAsync(
+                    hip_spmv_descr->get_buffer_reference(), buffer_size_in_bytes, stream));
 
-                RETURN_IF_ROCSPARSE_ERROR(
-                    rocsparse_v2_spmv((rocsparse_handle)handle,
-                                      spmv_descr,
-                                      alpha,
-                                      to_rocsparse_const_spmat_descr(matA),
-                                      (rocsparse_const_dnvec_descr)vecX,
-                                      beta,
-                                      (const rocsparse_dnvec_descr)vecY,
-                                      rocsparse_v2_spmv_stage_analysis,
-				      buffer_size_in_bytes,
-                                      hip_spmv_descr->get_buffer()));
+                RETURN_IF_ROCSPARSE_ERROR(rocsparse_v2_spmv((rocsparse_handle)handle,
+                                                            spmv_descr,
+                                                            alpha,
+                                                            to_rocsparse_const_spmat_descr(matA),
+                                                            (rocsparse_const_dnvec_descr)vecX,
+                                                            beta,
+                                                            (const rocsparse_dnvec_descr)vecY,
+                                                            rocsparse_v2_spmv_stage_analysis,
+                                                            buffer_size_in_bytes,
+                                                            hip_spmv_descr->get_buffer()));
 
                 RETURN_IF_HIP_ERROR(hipFreeAsync(hip_spmv_descr->get_buffer(), stream));
-		hip_spmv_descr->set_buffer(nullptr);
+                hip_spmv_descr->set_buffer(nullptr);
             }
             else
             {
@@ -469,7 +469,7 @@ hipsparseStatus_t hipsparseSpMV(hipsparseHandle_t           handle,
                                       externalBuffer));
             }
 
-	  hip_spmv_descr->implicit_stage_analysis_called();
+            hip_spmv_descr->implicit_stage_analysis_called();
         }
 
         //
@@ -483,21 +483,24 @@ hipsparseStatus_t hipsparseSpMV(hipsparseHandle_t           handle,
         //
         // Get the buffer size for the compute phase, the buffer size returned in hipsparseSpMV_bufferSize is the buffer size for the analysis phase.
         //
-      size_t buffer_size_in_bytes;
-      RETURN_IF_ROCSPARSE_ERROR(rocsparse_v2_spmv_buffer_size((rocsparse_handle)handle,
-							      spmv_descr,
-							      to_rocsparse_const_spmat_descr(matA),
-							      (rocsparse_const_dnvec_descr)vecX,
-							      (rocsparse_dnvec_descr)vecY,
-							      rocsparse_v2_spmv_stage_compute,
-							      &buffer_size_in_bytes));
-      
-      hip_spmv_descr->set_buffer_size_stage_compute(buffer_size_in_bytes);
-      
+        size_t buffer_size_in_bytes;
+        RETURN_IF_ROCSPARSE_ERROR(
+            rocsparse_v2_spmv_buffer_size((rocsparse_handle)handle,
+                                          spmv_descr,
+                                          to_rocsparse_const_spmat_descr(matA),
+                                          (rocsparse_const_dnvec_descr)vecX,
+                                          (rocsparse_dnvec_descr)vecY,
+                                          rocsparse_v2_spmv_stage_compute,
+                                          &buffer_size_in_bytes));
+
+        hip_spmv_descr->set_buffer_size_stage_compute(buffer_size_in_bytes);
+
         hipStream_t stream{};
         RETURN_IF_ROCSPARSE_ERROR(rocsparse_get_stream((rocsparse_handle)handle, &stream));
 
-        RETURN_IF_HIP_ERROR(hipMallocAsync(hip_spmv_descr->get_buffer_reference(), hip_spmv_descr->get_buffer_size_stage_compute(), stream));
+        RETURN_IF_HIP_ERROR(hipMallocAsync(hip_spmv_descr->get_buffer_reference(),
+                                           hip_spmv_descr->get_buffer_size_stage_compute(),
+                                           stream));
 
         hip_spmv_descr->stage_compute_subsequent();
     }
