@@ -255,7 +255,6 @@ void testing_spmat_descr_bad_arg(void)
     void* col_ptr;
     void* ind_ptr;
     void* val_ptr;
-    std::cout << "line  " << __LINE__ << std::endl;
 
     // hipsparseCooGet
     verify_hipsparse_status_invalid_pointer(hipsparseCooGet(nullptr,
@@ -312,7 +311,6 @@ void testing_spmat_descr_bad_arg(void)
         hipsparseCooGet(
             coo, &rows, &cols, &nnz, &row_ptr, &col_ptr, &val_ptr, &rowType, &idxBase, nullptr),
         "Error: dataType is nullptr");
-    std::cout << "line  " << __LINE__ << std::endl;
 
     // hipsparseCooAoSGet
     verify_hipsparse_status_invalid_pointer(
@@ -739,7 +737,6 @@ void testing_spmat_descr_bad_arg(void)
         hipsparseCsrSetPointers(csr, row_data, nullptr, val_data), "Error: col_data is nullptr");
     verify_hipsparse_status_invalid_pointer(
         hipsparseCsrSetPointers(csr, row_data, col_data, nullptr), "Error: val_data is nullptr");
-    std::cout << "line  " << __LINE__ << std::endl;
 
     // hipsparseSpMatGetSize
     verify_hipsparse_status_invalid_pointer(hipsparseSpMatGetSize(nullptr, &rows, &cols, &nnz),
