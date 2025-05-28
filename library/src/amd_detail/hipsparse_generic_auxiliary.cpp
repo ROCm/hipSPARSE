@@ -605,13 +605,8 @@ hipsparseStatus_t hipsparseCreateConstCsc(hipsparseConstSpMatDescr_t* spMatDescr
 
 hipsparseStatus_t hipsparseDestroySpMat(hipsparseConstSpMatDescr_t spMatDescr)
 {
-    if(spMatDescr != nullptr)
-    {
-        RETURN_IF_ROCSPARSE_ERROR(
-            rocsparse_destroy_spmat_descr(to_rocsparse_const_spmat_descr(spMatDescr)));
-        delete spMatDescr;
-    }
-    return HIPSPARSE_STATUS_SUCCESS;
+  RETURN_IF_ROCSPARSE_ERROR(rocsparse_destroy_spmat_descr(to_rocsparse_const_spmat_descr(spMatDescr)));
+  return HIPSPARSE_STATUS_SUCCESS;
 }
 
 hipsparseStatus_t hipsparseBlockedEllGet(const hipsparseSpMatDescr_t spMatDescr,
