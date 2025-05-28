@@ -16,7 +16,6 @@ Documentation for hipSPARSE is available at
 ### Changed
 
 * Switch to defaulting to C++17 when building hipSPARSE from source. Previously hipSPARSE was using C++14 by default.
-* Implementation of hipsparseSpMV is now using rocsparse_v2_spmv since rocsparse_spmv is deprecated.
 
 ### Resolved issues
 
