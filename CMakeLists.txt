@@ -124,8 +124,8 @@ endif()
 
 
 # Setup version
-rocm_setup_version(VERSION 4.0.0)
-set(hipsparse_SOVERSION 4.0.0)
+rocm_setup_version(VERSION 4.0.1)
+set(hipsparse_SOVERSION 4.0.1)
 
 # hipSPARSE library
 add_subdirectory(library)
