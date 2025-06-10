@@ -30,6 +30,7 @@
 #include <hip/hip_runtime_api.h>
 #include <hipsparse.h>
 #include <memory>
+#include <cstdio>
 
 #define PRINT_IF_HIP_ERROR(INPUT_STATUS_FOR_CHECK)                \
     {                                                             \
