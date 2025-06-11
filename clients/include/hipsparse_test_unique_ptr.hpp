@@ -27,11 +27,10 @@
 
 #include "arg_check.hpp"
 
+#include <cstdio>
 #include <hip/hip_runtime_api.h>
 #include <hipsparse.h>
 #include <memory>
-#include <cstdio>
-
 
 #define PRINT_IF_HIP_ERROR(INPUT_STATUS_FOR_CHECK)                \
     {                                                             \
@@ -95,7 +94,7 @@ namespace hipsparse_test
         }
     };
 
-#if(!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
+#if (!defined(CUDART_VERSION) || CUDART_VERSION < 11000)
     struct hyb_struct
     {
         hipsparseHybMat_t hyb;
@@ -145,7 +144,7 @@ namespace hipsparse_test
         }
     };
 
-#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
+#if (!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     struct csrsv2_struct
     {
         csrsv2Info_t info;
@@ -243,7 +242,7 @@ namespace hipsparse_test
         }
     };
 
-#if(!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
+#if (!defined(CUDART_VERSION) || CUDART_VERSION < 12000)
     struct csrgemm2_struct
     {
         csrgemm2Info_t info;
@@ -293,7 +292,7 @@ namespace hipsparse_test
         }
     };
 
-#if(!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
+#if (!defined(CUDART_VERSION) || CUDART_VERSION >= 11000)
     struct spgemm_struct
     {
         hipsparseSpGEMMDescr_t descr;
