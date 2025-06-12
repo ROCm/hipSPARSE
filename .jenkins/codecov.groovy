@@ -50,34 +50,33 @@ def runCI =
 ci: {
     String urlJobName = auxiliary.getTopJobName(env.BUILD_URL)
 
-    def propertyList = []
+    def propertyList = [:]
     propertyList = auxiliary.appendPropertyList(propertyList)
 
-    def jobNameList = []
+    def jobNameList = [:]
     jobNameList = auxiliary.appendJobNameList(jobNameList)
 
-    propertyList.each
+    propertyList.each 
     {
         jobName, property->
         if (urlJobName == jobName)
             properties(auxiliary.addCommonProperties(property))
     }
 
-    jobNameList.each
+    Set seenJobNames = []
+    jobNameList.each 
     {
         jobName, nodeDetails->
+        seenJobNames.add(jobName)
         if (urlJobName == jobName)
-            stage(jobName) {
-                runCI(nodeDetails, jobName)
-            }
+            runCI(nodeDetails, jobName)
     }
 
-    // For url job names that are not listed by the jobNameList i.e. compute-rocm-dkms-no-npi-1901
-    if(!jobNameList.keySet().contains(urlJobName))
+    // Set standardJobNameSet = ["compute-rocm-dkms-no-npi", "compute-rocm-dkms-no-npi-hipclang", "rocm-docker"]
+    // For url job names that are outside of the standardJobNameSet i.e. compute-rocm-dkms-no-npi-1901
+    if(!seenJobNames.contains(urlJobName))
     {
         properties(auxiliary.addCommonProperties([pipelineTriggers([cron('0 1 * * *')])]))
-        stage(urlJobName) {
-            runCI([], urlJobName)
-        }
+        runCI([], urlJobName)       
     }
 }
