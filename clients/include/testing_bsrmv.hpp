@@ -35,6 +35,7 @@
 #include "utility.hpp"
 
 #include <cmath>
+#include <gtest/gtest.h>
 #include <hipsparse.h>
 #include <string>
 
