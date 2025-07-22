@@ -1,4 +1,6 @@
 # hipSPARSE
+> [!CAUTION]
+> The hipSPARSE repository is retired, please use the [ROCm/rocm-libraries](https://github.com/ROCm/rocm-libraries) repository
 
 hipSPARSE is a SPARSE marshalling library with multiple supported backends. It sits between your
 application and a 'worker' SPARSE library, where it marshals inputs to the backend library and marshals
