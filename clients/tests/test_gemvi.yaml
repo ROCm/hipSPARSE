@@ -21,19 +21,25 @@
 #
 # ########################################################################
 
-# level1
-include: test_axpyi.yaml
-include: test_doti.yaml
-include: test_dotci.yaml
-include: test_roti.yaml
-include: test_sctr.yaml
-include: test_gthr.yaml
-include: test_gthrz.yaml
-#level2
-include: test_bsrmv.yaml
-include: test_bsrsv2.yaml
-include: test_csrmv.yaml
-include: test_csrsv2.yaml
-include: test_gemvi.yaml
-include: test_hybmv.yaml
+---
+include: hipsparse_common.yaml
 
+Tests:
+- name: gemvi_bad_arg
+  category: pre_checkin
+  function: gemvi_bad_arg
+  precision: *single_double_precisions_complex_real
+
+- name: gemvi
+  category: quick
+  function: gemvi
+  precision: *single_double_precisions_complex_real
+  M: [1291]
+  N: [724]
+  nnz: [237]
+  alpha: [-0.5, 2.0]
+  alphai: [-0.2]
+  beta: [0.5, 0.0]
+  betai: [1.7]
+  transA: [HIPSPARSE_OPERATION_NON_TRANSPOSE]
+  baseA: [HIPSPARSE_INDEX_BASE_ZERO, HIPSPARSE_INDEX_BASE_ONE]
